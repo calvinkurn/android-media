@@ -13,7 +13,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/padding_small"
+            android:padding="@dimen/dp_10"
             android:orientation="vertical">
 
             <TextView
@@ -21,14 +21,14 @@
                 android:layout_height="wrap_content"
                 android:textSize="20sp"
                 android:textColor="@color/black_54"
-                android:layout_marginTop="@dimen/margin_small"
+                android:layout_marginTop="@dimen/dp_10"
                 android:text="@string/string_upload_prove"
                 />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_attachment"
                 android:layout_width="match_parent"
-                android:layout_marginTop="@dimen/margin_vs"
+                android:layout_marginTop="@dimen/dp_5"
                 android:layout_height="wrap_content">
 
             </android.support.v7.widget.RecyclerView>
@@ -38,7 +38,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="20sp"
                 android:textColor="@color/black_54"
-                android:layout_marginTop="@dimen/margin_small"
+                android:layout_marginTop="@dimen/dp_10"
                 android:text="@string/string_information_container"
                 />
 
@@ -52,14 +52,14 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/padding_small"
+            android:padding="@dimen/dp_10"
             android:background="@color/white">
 
             <com.tokopedia.design.text.TkpdTextInputLayout
                 android:id="@+id/til_information"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_small"
+                android:layout_marginTop="@dimen/dp_10"
                 app:hintTextAppearance="@style/error_appearance">
 
                 <EditText
@@ -91,7 +91,7 @@
             android:id="@+id/btn_upload"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="@dimen/margin_ms"
+            android:layout_margin="@dimen/dp_8"
             android:text="@string/string_button_upload_proof"
             android:textAllCaps="false"
             android:textColor="@color/black_38"

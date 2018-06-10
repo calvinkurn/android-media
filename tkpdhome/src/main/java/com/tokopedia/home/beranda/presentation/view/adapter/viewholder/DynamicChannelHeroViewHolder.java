@@ -2,18 +2,25 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.core.analytics.HomePageTracking;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper;
+import com.tokopedia.home.beranda.helper.TextViewHelper;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
+import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.GridSpacingItemDecoration;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
 
 /**
@@ -23,113 +30,148 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicCha
 public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChannelViewModel> {
     @LayoutRes
     public static final int LAYOUT = R.layout.home_channel_hero_4_image;
-
+    private static final String TAG = DynamicChannelHeroViewHolder.class.getSimpleName();
     private TextView channelTitle;
     private ImageView channelHeroImage;
-    private ImageView channelImage1;
-    private TextView channelCaption1;
-    private ImageView channelImage2;
-    private TextView channelCaption2;
-    private ImageView channelImage3;
-    private TextView channelCaption3;
-    private ImageView channelImage4;
-    private TextView channelCaption4;
     private TextView seeAllButton;
-    private Context context;
     private HomeCategoryListener listener;
+    private View channelTitleContainer;
+    private ItemAdapter itemAdapter;
+    private RecyclerView recyclerView;
+    private static final int spanCount = 2;
 
     public DynamicChannelHeroViewHolder(View itemView, HomeCategoryListener listener) {
         super(itemView);
-        context = itemView.getContext();
         this.listener = listener;
         findViews(itemView);
+        itemAdapter = new ItemAdapter(listener);
+        recyclerView.setAdapter(itemAdapter);
     }
 
     private void findViews(View itemView) {
-        channelTitle = (TextView)itemView.findViewById( R.id.channel_title );
-        channelHeroImage = (ImageView)itemView.findViewById( R.id.channel_hero_image );
-        channelImage1 = (ImageView)itemView.findViewById( R.id.channel_image_1 );
-        channelCaption1 = (TextView)itemView.findViewById( R.id.channel_caption_1 );
-        channelImage2 = (ImageView)itemView.findViewById( R.id.channel_image_2 );
-        channelCaption2 = (TextView)itemView.findViewById( R.id.channel_caption_2 );
-        channelImage3 = (ImageView)itemView.findViewById( R.id.channel_image_3 );
-        channelCaption3 = (TextView)itemView.findViewById( R.id.channel_caption_3 );
-        channelImage4 = (ImageView)itemView.findViewById( R.id.channel_image_4 );
-        channelCaption4 = (TextView)itemView.findViewById( R.id.channel_caption_4 );
-        seeAllButton = (TextView)itemView.findViewById(R.id.see_all_button);
+        channelTitle = (TextView) itemView.findViewById(R.id.channel_title);
+        channelTitleContainer = itemView.findViewById(R.id.channel_title_container);
+        channelHeroImage = (ImageView) itemView.findViewById(R.id.channel_hero_image);
+        seeAllButton = (TextView) itemView.findViewById(R.id.see_all_button);
+        recyclerView = itemView.findViewById(R.id.recycleList);
+        recyclerView.setLayoutManager(new GridLayoutManager(itemView.getContext(), spanCount,
+                GridLayoutManager.VERTICAL, false));
+        recyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount,
+                itemView.getResources().getDimensionPixelSize(R.dimen.dp_5), true));
     }
 
     @Override
     public void bind(final DynamicChannelViewModel element) {
-        final DynamicHomeChannel.Channels channel = element.getChannel();
-        channelTitle.setText(element.getChannel().getHeader().getName());
-        channelCaption1.setText(element.getChannel().getGrids()[0].getName());
-        channelCaption2.setText(element.getChannel().getGrids()[1].getName());
-        channelCaption3.setText(element.getChannel().getGrids()[2].getName());
-        channelCaption4.setText(element.getChannel().getGrids()[3].getName());
-        ImageHandler.loadImageThumbs(context, channelHeroImage, channel.getHero()[0].getImageUrl());
-        ImageHandler.loadImageThumbs(context, channelImage1, channel.getGrids()[0].getImageUrl());
-        ImageHandler.loadImageThumbs(context, channelImage2, channel.getGrids()[1].getImageUrl());
-        ImageHandler.loadImageThumbs(context, channelImage3, channel.getGrids()[2].getImageUrl());
-        ImageHandler.loadImageThumbs(context, channelImage4, channel.getGrids()[3].getImageUrl());
+        try {
+            final DynamicHomeChannel.Channels channel = element.getChannel();
+            String titleText = element.getChannel().getHeader().getName();
+            if (!TextUtils.isEmpty(titleText)) {
+                channelTitleContainer.setVisibility(View.VISIBLE);
+                channelTitle.setText(titleText);
+            } else {
+                channelTitleContainer.setVisibility(View.GONE);
+            }
 
-        if (!TextUtils.isEmpty(DynamicLinkHelper.getActionLink(channel.getHeader()))) {
-            seeAllButton.setVisibility(View.VISIBLE);
-        } else {
-            seeAllButton.setVisibility(View.GONE);
+            if (!TextUtils.isEmpty(DynamicLinkHelper.getActionLink(channel.getHeader()))) {
+                seeAllButton.setVisibility(View.VISIBLE);
+            } else {
+                seeAllButton.setVisibility(View.GONE);
+            }
+            itemAdapter.setChannel(channel);
+            if (channel.getHero() != null) {
+                ImageHandler.loadImageThumbs(channelHeroImage.getContext(), channelHeroImage, channel.getHero()[0].getImageUrl());
+                channelHeroImage.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        HomePageTracking.eventEnhancedClickDynamicChannelHomePage(
+                                element.getChannel().getEnhanceClickDynamicChannelHomePage(element.getChannel().getHero()[0], 1)
+                        );
+                        listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(element.getChannel().getHero()[0]),
+                                element.getChannel().getHomeAttribution(1, element.getChannel().getHero()[0].getAttribution()));
+                    }
+                });
+            }
+            seeAllButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getHeader()), channel.getHomeAttribution());
+                }
+            });
+        }catch (Exception e){
+            Crashlytics.log(0, TAG, e.getLocalizedMessage());
+        }
+    }
+
+    private static class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder> {
+
+        private final HomeCategoryListener listener;
+        private DynamicHomeChannel.Grid[] list;
+        DynamicHomeChannel.Channels channel;
+
+        public ItemAdapter(HomeCategoryListener listener) {
+            this.listener = listener;
+            this.list = new DynamicHomeChannel.Grid[0];
         }
 
-        seeAllButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getHeader()));
-            }
-        });
+        public void setChannel(DynamicHomeChannel.Channels channel) {
+            this.channel = channel;
+            this.list = channel.getGrids();
+            notifyDataSetChanged();
+        }
 
-        channelHeroImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                HomePageTracking.eventEnhancedClickDynamicChannelHomePage(
-                        element.getChannel().getEnhanceClickDynamicChannelHomePage(element.getChannel().getHero()[0], 1)
-                );
-                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(element.getChannel().getHero()[0]));
+        @Override
+        public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_hero_product_item, parent, false);
+            return new ItemViewHolder(v);
+        }
+
+        @Override
+        public void onBindViewHolder(ItemViewHolder holder, final int position) {
+            try {
+                final DynamicHomeChannel.Grid grid = list[position];
+                if (grid != null) {
+                    holder.channelCaption1.setText(grid.getName());
+                    ImageHandler.loadImageThumbs(holder.getContext(), holder.channelImage1, grid.getImageUrl());
+                    TextViewHelper.displayText(holder.channelBadge1, grid.getLabel());
+                    holder.channelImage1.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            HomePageTracking.eventEnhancedClickDynamicChannelHomePage(
+                                    channel.getEnhanceClickDynamicChannelHomePage(grid, position + 2)
+                            );
+                            listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid),
+                                    channel.getHomeAttribution(position + 2, grid.getAttribution()));
+                        }
+                    });
+                }
+            } catch (Exception e) {
+                Crashlytics.log(0, TAG, e.getLocalizedMessage());
             }
-        });
-        channelImage1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                HomePageTracking.eventEnhancedClickDynamicChannelHomePage(
-                        element.getChannel().getEnhanceClickDynamicChannelHomePage(element.getChannel().getGrids()[0], 2)
-                );
-                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(element.getChannel().getGrids()[0]));
-            }
-        });
-        channelImage2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                HomePageTracking.eventEnhancedClickDynamicChannelHomePage(
-                        element.getChannel().getEnhanceClickDynamicChannelHomePage(element.getChannel().getGrids()[1], 3)
-                );
-                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(element.getChannel().getGrids()[1]));
-            }
-        });
-        channelImage3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                HomePageTracking.eventEnhancedClickDynamicChannelHomePage(
-                        element.getChannel().getEnhanceClickDynamicChannelHomePage(element.getChannel().getGrids()[2], 4)
-                );
-                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(element.getChannel().getGrids()[2]));
-            }
-        });
-        channelImage4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                HomePageTracking.eventEnhancedClickDynamicChannelHomePage(
-                        element.getChannel().getEnhanceClickDynamicChannelHomePage(element.getChannel().getGrids()[3], 5)
-                );
-                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(element.getChannel().getGrids()[3]));
-            }
-        });
+        }
+
+        @Override
+        public int getItemCount() {
+            return list != null ? list.length : 0;
+        }
+    }
+
+    private static class ItemViewHolder extends RecyclerView.ViewHolder {
+
+        private TextView channelCaption1;
+        private ImageView channelImage1;
+        private TextView channelBadge1;
+        private View view;
+
+        public ItemViewHolder(View itemView) {
+            super(itemView);
+            this.view = itemView;
+            channelImage1 = (ImageView) itemView.findViewById(R.id.channel_image_1);
+            channelCaption1 = (TextView) itemView.findViewById(R.id.channel_caption_1);
+            channelBadge1 = (TextView) itemView.findViewById(R.id.channel_badge_1);
+        }
+
+        public Context getContext() {
+            return view.getContext();
+        }
     }
 }

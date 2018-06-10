@@ -56,8 +56,23 @@ public class UserSessionImpl implements UserSession {
     }
 
     @Override
+    public String getName() {
+        return "";
+    }
+
+    @Override
+    public String getProfilePicture() {
+        return "";
+    }
+
+    @Override
     public boolean isMsisdnVerified() {
         return sessionHandler.isMsisdnAlreadyVerified();
+    }
+
+    @Override
+    public boolean isHasPassword() {
+        return false;
     }
 
 }

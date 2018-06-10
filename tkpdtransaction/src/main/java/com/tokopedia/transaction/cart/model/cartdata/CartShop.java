@@ -44,6 +44,9 @@ public class CartShop implements Parcelable {
     @SerializedName("longitude")
     @Expose
     private String longitude;
+    @SerializedName("shop_type")
+    @Expose
+    private String shopType;
 
     public String getShopUrl() {
         return shopUrl;
@@ -133,6 +136,14 @@ public class CartShop implements Parcelable {
         this.longitude = longitude;
     }
 
+    public String getShopType() {
+        return shopType;
+    }
+
+    public void setShopType(String shopType) {
+        this.shopType = shopType;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -151,6 +162,7 @@ public class CartShop implements Parcelable {
         dest.writeString(this.postalCode);
         dest.writeString(this.latitude);
         dest.writeString(this.longitude);
+        dest.writeString(this.shopType);
     }
 
     public CartShop() {
@@ -169,6 +181,7 @@ public class CartShop implements Parcelable {
         this.postalCode = in.readString();
         this.latitude = in.readString();
         this.longitude = in.readString();
+        this.shopType = in.readString();
     }
 
     public static final Creator<CartShop> CREATOR = new Creator<CartShop>() {

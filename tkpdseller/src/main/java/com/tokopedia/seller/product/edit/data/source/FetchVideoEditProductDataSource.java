@@ -3,57 +3,44 @@ package com.tokopedia.seller.product.edit.data.source;
 import com.tokopedia.core.network.apiservices.goldmerchant.GoldMerchantService;
 import com.tokopedia.core.product.model.goldmerchant.ProductVideoData;
 import com.tokopedia.core.product.model.goldmerchant.Video;
-import com.tokopedia.core.product.model.goldmerchant.VideoData;
-import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import retrofit2.Response;
 import rx.Observable;
 import rx.functions.Func1;
-import rx.functions.Func2;
 
 /**
  * Created by normansyahputa on 5/3/17.
  */
 
-public class FetchVideoEditProductDataSource implements Func1<UploadProductInputDomainModel, Observable<UploadProductInputDomainModel>> {
+public class FetchVideoEditProductDataSource {
 
-    GoldMerchantService goldMerchantService;
-    String productId;
+    private GoldMerchantService goldMerchantService;
 
+    @Inject
     public FetchVideoEditProductDataSource(GoldMerchantService goldMerchantService) {
         this.goldMerchantService = goldMerchantService;
     }
 
-    public void setProductId(String productId) {
-        this.productId = productId;
-    }
-
-    @Override
-    public Observable<UploadProductInputDomainModel> call(UploadProductInputDomainModel uploadProductInputDomainModel) {
-
-        if (productId == null || productId.isEmpty())
-            throw new IllegalArgumentException("product Id must be passed");
-
-        Observable<Response<ProductVideoData>> fetchVideo = goldMerchantService.getApi().fetchVideo(productId);
-
-        return Observable.zip(Observable.just(uploadProductInputDomainModel), fetchVideo, new Func2<UploadProductInputDomainModel, Response<ProductVideoData>, UploadProductInputDomainModel>() {
+    public Observable<List<Video>> fetchVideos(String productId) {
+        return goldMerchantService.getApi().fetchVideo(productId).flatMap(new Func1<Response<ProductVideoData>,
+                Observable<List<Video>>>() {
             @Override
-            public UploadProductInputDomainModel call(UploadProductInputDomainModel uploadProductInputDomainModel, Response<ProductVideoData> productVideoDataResponse) {
-
-                if (productVideoDataResponse.body() != null && productVideoDataResponse.body().getData() != null) {
-                    List<String> videoIds = new ArrayList<>();
-                    VideoData videoData = productVideoDataResponse.body().getData().get(0);
-                    for (Video video : videoData.getVideo()) {
-                        videoIds.add(video.getUrl());
-                    }
-                    uploadProductInputDomainModel.setProductVideos(videoIds);
+            public Observable<List<Video>> call(Response<ProductVideoData> productVideoDataResponse) {
+                ProductVideoData productVideoData = productVideoDataResponse.body();
+                if (productVideoData != null && productVideoData.getData() != null &&
+                        productVideoData.getData().get(0) != null && productVideoData.getData().get(0).getVideo() != null
+                        && productVideoData.getData().get(0).getVideo().size() > 0) {
+                    return Observable.just(productVideoData.getData().get(0).getVideo());
+                } else {
+                    return Observable.just((List<Video>)new ArrayList<Video>());
                 }
-
-                return uploadProductInputDomainModel;
             }
         });
     }
+
 }

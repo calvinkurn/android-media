@@ -31,9 +31,9 @@ public interface AdsPresenter <V extends AdsView>{
 
     void loadTopAds();
 
-    void openProductTopAds(String click_url, Product product);
+    void openProductTopAds(int position, String click_url, Product product);
 
-    void openShopTopAds(String click_url, Shop shop);
+    void openShopTopAds(int position, String click_url, Shop shop);
 
     void setDisplayMode(DisplayMode displayMode);
 

@@ -135,7 +135,9 @@ public class InsuranceTnCFragment extends BasePresenterFragment<InsuranceTnCCont
 
     @Override
     public void hideLoading() {
-        pbLoading.setVisibility(View.GONE);
+        if (pbLoading != null) {
+            pbLoading.setVisibility(View.GONE);
+        }
     }
 
     @Override

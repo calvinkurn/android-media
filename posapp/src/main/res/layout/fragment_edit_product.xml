@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/new_margin_big">
+    android:padding="@dimen/posapp_margin_xl">
     <RelativeLayout
         android:id="@+id/container_edit_product"
         android:layout_width="match_parent"

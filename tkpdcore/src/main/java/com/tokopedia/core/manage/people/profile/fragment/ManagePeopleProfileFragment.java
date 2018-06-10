@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,13 +16,14 @@ import android.view.Window;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.manage.people.profile.customdialog.UploadImageDialog;
 import com.tokopedia.core.manage.people.profile.customview.AvatarView;
@@ -35,6 +37,7 @@ import com.tokopedia.core.manage.people.profile.presenter.ManagePeopleProfileFra
 import com.tokopedia.core.manage.people.profile.presenter.ManagePeopleProfileFragmentPresenter;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.NetworkErrorHelper.RetryClickedListener;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
@@ -64,6 +67,10 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
     public static final int REQUEST_VERIFY_PHONE = 123;
     public static final int REQUEST_CHANGE_PHONE_NUMBER = 13;
     public static final int RESULT_EMAIL_SENT = 111;
+
+    public static final int REQUEST_ADD_EMAIL = 1001;
+    public static final int REQUEST_CHANGE_NAME = 1002;
+
 
     @BindView(R2.id.layout_main)
     View layoutMain;
@@ -285,16 +292,51 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
 
     @Override
     public void showEmailVerificationDialog(String userEmail) {
-        DialogFragment fragment = EmailVerificationDialogFragment.createInstance(userEmail,
-                new EmailVerificationDialogFragment.EmailChangeConfirmationListener() {
-                    @Override
-                    public void onEmailChanged() {
-                        presenter.setOnNotifiedEmailChanged(getActivity());
-                    }
-                });
-        fragment.show(getFragmentManager(), EmailVerificationDialogFragment.class.getSimpleName());
+        UserSession session = ((AbstractionRouter)getActivity().getApplicationContext()).getSession();
+        if (session.isHasPassword()) {
+            DialogFragment fragment = EmailVerificationDialogFragment.createInstance(userEmail,
+                    new EmailVerificationDialogFragment.EmailChangeConfirmationListener() {
+                        @Override
+                        public void onEmailChanged() {
+                            presenter.setOnNotifiedEmailChanged(getActivity());
+                        }
+                    });
+            fragment.show(getFragmentManager(), EmailVerificationDialogFragment.class.getSimpleName());
+        } else {
+            showChangeEmailNoPassword(getActivity());
+        }
     }
 
+    private void showChangeEmailNoPassword(final Context context) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(context.getResources().getString(R.string.error_changeemail_no_password_title));
+        builder.setMessage(context.getResources().getString(R.string.error_changeemail_no_password_content));
+        builder.setPositiveButton(context.getResources().getString(R.string.error_no_password_yes), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                intentToAddPassword(context);
+                dialogInterface.dismiss();
+            }
+        });
+        builder.setNegativeButton(context.getResources().getString(R.string.error_no_password_no), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        dialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE).setTextColor(MethodChecker.getColor(context, R.color.black_54));
+        dialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE).setAllCaps(false);
+        dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(MethodChecker.getColor(context, R.color.tkpd_main_green));
+        dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setAllCaps(false);
+    }
+
+    private void intentToAddPassword(Context context) {
+        context.startActivity(
+                ((TkpdCoreRouter)context.getApplicationContext())
+                        .getAddPasswordIntent(context));
+    }
     @Override
     public void showPhoneVerificationDialog(String userPhone) {
         SessionHandler.setPhoneNumber(userPhone);
@@ -308,7 +350,21 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK || resultCode == GalleryBrowser.RESULT_CODE) {
+        if (requestCode == REQUEST_CHANGE_PHONE_NUMBER) {
+            if (resultCode == Activity.RESULT_OK) {
+                getProfileData().getDataUser().setUserPhone(SessionHandler.getPhoneNumber());
+                renderData();
+                NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.success_change_phone_number));
+                UnifyTracking.eventSuccessChangePhoneNumber();
+            }
+
+            if (resultCode == RESULT_EMAIL_SENT) {
+                contactSection.checkEmailInfo.setVisibility(View.VISIBLE);
+            }
+        } else if (requestCode == REQUEST_ADD_EMAIL || requestCode == REQUEST_CHANGE_NAME) {
+            if (resultCode == Activity.RESULT_OK)
+                presenter.setOnFirstTimeLaunch(getActivity());
+        } else if (resultCode == Activity.RESULT_OK || resultCode == GalleryBrowser.RESULT_CODE) {
             if (requestCode == REQUEST_VERIFY_PHONE &&
                     SessionHandler.isMsisdnVerified()) {
                 getProfileData().getDataUser().setUserPhone(SessionHandler.getPhoneNumber());
@@ -331,19 +387,6 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
                         });
             }
         }
-
-        if (requestCode == REQUEST_CHANGE_PHONE_NUMBER) {
-            if (resultCode == Activity.RESULT_OK) {
-                getProfileData().getDataUser().setUserPhone(SessionHandler.getPhoneNumber());
-                renderData();
-                NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.success_change_phone_number));
-                UnifyTracking.eventSuccessChangePhoneNumber();
-            }
-
-            if (resultCode == RESULT_EMAIL_SENT) {
-                contactSection.checkEmailInfo.setVisibility(View.VISIBLE);
-            }
-        }
     }
 
     @Override
@@ -362,6 +405,9 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
 
     @Override
     public String getPhone() {
+        if (contactSection.tvPhone.getVisibility() == View.VISIBLE) {
+            return String.valueOf(contactSection.tvPhone.getText());
+        }
         return String.valueOf(contactSection.phone.getText());
     }
 
@@ -373,19 +419,20 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
 
     @Override
     public String getEmail() {
+        if (contactSection.tvEmail.getVisibility() == View.VISIBLE) {
+            return String.valueOf(contactSection.tvEmail.getText());
+        }
         return String.valueOf(contactSection.email.getText());
     }
 
     @Override
     public void setEmailError(String errorMessage) {
-        contactSection.email.setError(errorMessage);
-        contactSection.email.requestFocus();
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
 
     @Override
     public void setVerificationError(String errorMessage) {
-        contactSection.verification.setError(errorMessage);
-        contactSection.verification.requestFocus();
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
 
     @Override
@@ -396,7 +443,10 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
 
     @Override
     public String getVerifiedPhone() {
-        return String.valueOf(contactSection.verification.getText());
+        if (contactSection.tvPhone.getVisibility() == View.VISIBLE) {
+            return String.valueOf(contactSection.tvPhone.getText());
+        }
+        return String.valueOf(contactSection.phone.getText());
     }
 
     @Override
@@ -536,5 +586,51 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
                         ),
                 REQUEST_CHANGE_PHONE_NUMBER
         );
+    }
+
+    @Override
+    public void showDialogChangePhoneNumberEmptyEmail() {
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getActivity());
+        builder.setTitle(getResources().getString(R.string.error_change_number_no_email_title));
+        builder.setMessage(getResources().getString(R.string.error_change_number_no_email_content));
+        builder.setPositiveButton(getResources().getString(R.string.error_change_number_no_email_yes), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                startAddEmailActivity();
+                dialogInterface.dismiss();
+            }
+        });
+        builder.setNegativeButton(getResources().getString(R.string.error_change_number_no_email_no), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        android.app.AlertDialog dialog = builder.create();
+        dialog.show();
+        dialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE).setTextColor(MethodChecker.getColor(getActivity(), R.color.black_54));
+        dialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE).setAllCaps(false);
+        dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(MethodChecker.getColor(getActivity(), R.color.tkpd_main_green));
+        dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setAllCaps(false);
+    }
+
+    @Override
+    public void startAddEmailActivity() {
+        startActivityForResult(
+                ((TkpdCoreRouter)getActivity().getApplicationContext())
+                        .getAddEmailIntent(getActivity()), REQUEST_ADD_EMAIL);
+    }
+
+    @Override
+    public void startChangeNameActivity() {
+        startActivityForResult(
+                ((TkpdCoreRouter)getActivity().getApplicationContext())
+                        .getChangeNameIntent(getActivity()), REQUEST_CHANGE_NAME);
+    }
+
+    @Override
+    public void storeImageToUserSession(String userImage) {
+        SessionHandler sessionHandler = new SessionHandler(MainApplication.getAppContext());
+        sessionHandler.setProfilePicture(userImage);
     }
 }

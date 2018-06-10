@@ -3,17 +3,16 @@ package com.tokopedia.seller.shop.open.util;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.tokopedia.core.network.retrofit.exception.ResponseV4ErrorException;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.seller.shop.common.exception.ShopException;
+import com.tokopedia.seller.common.exception.TomeException;
 
 import java.util.List;
 
 
 public class ShopErrorHandler {
     public static String getErrorMessage(Context context, Throwable t) {
-        if (t instanceof ShopException) {
-            List<String> errorList = ((ShopException) t).getMessageError();
+        if (t instanceof TomeException) {
+            List<String> errorList = ((TomeException) t).getMessageError();
             if (errorList != null && errorList.size() != 0) {
                 return errorList.get(0);
             }

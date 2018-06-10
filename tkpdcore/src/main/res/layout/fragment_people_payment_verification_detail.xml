@@ -29,7 +29,7 @@
             android:layout_alignParentLeft="true"
             android:layout_below="@id/txtTanggalTransaksi"
             android:text="21 Oktober 2014"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/sp_14"
             android:textStyle="bold" />
 
         <TextView
@@ -48,7 +48,7 @@
             android:layout_alignParentRight="true"
             android:layout_below="@+id/txtTotalPembayaran"
             android:text="Rp 200.000,-"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/sp_14"
             android:textStyle="bold" />
 
         <TextView
@@ -102,7 +102,7 @@
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/txtNoRekeningAsal"
             android:text="No Rekening Asal"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/sp_14"
             android:textStyle="bold" />
 
         <TextView
@@ -112,7 +112,7 @@
             android:layout_alignParentRight="true"
             android:layout_below="@+id/txtNoRekeningTujuan"
             android:text="No Rekening Tujuan"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/sp_14"
             android:textStyle="bold" />
     </RelativeLayout>
 
@@ -148,7 +148,7 @@
                 android:gravity="center"
                 android:text="Ubah Pembayaran"
                 android:textColor="@color/white"
-                android:textSize="@dimen/font_small"
+                android:textSize="@dimen/sp_14"
                 android:textStyle="bold" />
 
             <TextView
@@ -162,7 +162,7 @@
                 android:gravity="center"
                 android:text="Unggah Bukti Pembayaran"
                 android:textColor="@color/label_color"
-                android:textSize="@dimen/font_small"
+                android:textSize="@dimen/sp_14"
                 android:visibility="visible" />
         </LinearLayout>
 

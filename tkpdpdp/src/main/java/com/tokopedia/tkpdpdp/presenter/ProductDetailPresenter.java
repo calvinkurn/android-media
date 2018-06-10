@@ -1,5 +1,6 @@
 package com.tokopedia.tkpdpdp.presenter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.view.Menu;
 
 import com.tokopedia.core.network.entity.variant.Campaign;
+import com.tokopedia.core.network.entity.variant.Child;
 import com.tokopedia.core.network.entity.variant.ProductVariant;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
@@ -51,7 +53,7 @@ public interface ProductDetailPresenter {
 
     void processToLogin(@NonNull Context context, @NonNull Bundle bundle);
 
-    void processToCart(@NonNull Context context, @NonNull ProductCartPass data);
+    void processToCart(@NonNull Activity context, @NonNull ProductCartPass data);
 
     void sendAnalytics(@NonNull ProductDetailData successResult);
 
@@ -83,6 +85,8 @@ public interface ProductDetailPresenter {
 
     void saveStateProductVariant(Bundle outState, String key, ProductVariant value);
 
+    void saveStateProductStockNonVariant(Bundle outState, String key, Child value);
+
     void saveStateProductOthers(Bundle outState, String key, List<ProductOther> values);
 
     void saveStateVideoData(Bundle outState, String key, VideoData value);
@@ -112,4 +116,10 @@ public interface ProductDetailPresenter {
     void onPromoAdsClicked(Context context, String shopId, int itemId, String userId);
 
     void updateRecentView(final @NonNull Context context, final int productId);
+
+    void openPromoteAds(Context context, String url);
+
+    void initTopAdsSourceTaggingUseCase(Context context);
+
+    void saveSource(String source);
 }

@@ -24,7 +24,6 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.functions.Func1;
-import twitter4j.api.UsersResources;
 
 /**
  * @author okasurya on 3/22/18.

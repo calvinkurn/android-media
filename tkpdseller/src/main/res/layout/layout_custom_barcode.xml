@@ -28,6 +28,6 @@
         android:background="@color/zxing_transparent"
         android:text="@string/zxing_msg_default_status"
         android:textColor="@color/zxing_status_text"
-        android:layout_margin="@dimen/margin_med"/>
+        android:layout_margin="@dimen/dp_20"/>
 
 </merge>

@@ -4,12 +4,19 @@ import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
-import com.tokopedia.flight.booking.data.cloud.requestbody.DeletePassengerRequest;
 import com.tokopedia.flight.booking.data.cloud.requestbody.FlightCartRequest;
-import com.tokopedia.flight.booking.data.db.model.FlightPassengerDb;
+import com.tokopedia.flight.cancellation.data.cloud.entity.CancellationRequestEntity;
+import com.tokopedia.flight.cancellation.data.cloud.entity.EstimateRefundResultEntity;
+import com.tokopedia.flight.cancellation.data.cloud.entity.Passenger;
+import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightCancellationRequestBody;
+import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightEstimateRefundRequest;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
+import com.tokopedia.flight.orderlist.data.cloud.entity.OrderEntity;
 import com.tokopedia.flight.orderlist.data.cloud.entity.SendEmailEntity;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrder;
+import com.tokopedia.flight.passenger.data.cloud.requestbody.DeletePassengerRequest;
+import com.tokopedia.flight.passenger.data.cloud.requestbody.UpdatePassengerRequest;
+import com.tokopedia.flight.passenger.data.db.model.FlightPassengerDb;
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
 import com.tokopedia.flight.review.data.model.FlightCheckoutEntity;
 import com.tokopedia.flight.review.domain.checkout.FlightCheckoutRequest;
@@ -23,7 +30,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import retrofit2.Response;
 import rx.Observable;
 
 /**
@@ -35,7 +41,8 @@ public interface FlightRepository {
 
     Observable<FlightAirportDB> getAirportById(String aiport);
 
-    Observable<List<FlightAirportDB>> getAirportList(String query, String idCountry);
+    Observable<FlightAirportDB> getAirportWithParam(Map<String, String> params);
+
 
     Observable<List<FlightClassEntity>> getFlightClasses();
 
@@ -75,19 +82,39 @@ public interface FlightRepository {
 
     Observable<FlightOrder> getOrder(String id);
 
+    Observable<OrderEntity> getOrderEntity(String id);
+
     Observable<List<BannerDetail>> getBanners(Map<String, String> params);
 
     Observable<List<FlightAirportDB>> getPhoneCodeList(String string);
+
+    Observable<FlightAirportDB> getAirportByCountryId(String id);
 
     Observable<FlightAirlineDB> getAirlineById(String airlineId);
 
     Observable<SendEmailEntity> sendEmail(Map<String, Object> params);
 
-    Observable<List<FlightPassengerDb>> getSavedPassenger(String passengerId);
+    Observable<Boolean> isSearchCacheExpired(boolean isReturn);
+
+    Observable<List<FlightPassengerDb>> getPassengerList(String passengerId);
+
+    Observable<FlightPassengerDb> getSinglePassengerById(String passengerId);
 
     Observable<Boolean> updateIsSelected(String passengerId, int isSelected);
 
     Observable<Boolean> deleteAllListPassenger();
 
-    Observable<Response<Object>> deletePassenger(DeletePassengerRequest request, String idempotencyKey);
+    Observable<Boolean> deletePassenger(DeletePassengerRequest request, String idempotencyKey);
+
+    Observable<Boolean> updatePassengerListData(UpdatePassengerRequest request, String idempotencyKey);
+
+    Observable<List<FlightAirlineDB>> refreshAirlines();
+
+    Observable<FlightAirlineDB> getAirlineCacheById(String airlineId);
+
+    Observable<List<Passenger>> getCancelablePassenger(String invoiceId);
+
+    Observable<EstimateRefundResultEntity> estimateRefund(FlightEstimateRefundRequest object);
+
+    Observable<CancellationRequestEntity> cancellationRequest(FlightCancellationRequestBody request);
 }

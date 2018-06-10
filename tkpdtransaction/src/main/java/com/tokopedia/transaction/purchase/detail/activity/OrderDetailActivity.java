@@ -1,27 +1,33 @@
 package com.tokopedia.transaction.purchase.detail.activity;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.ActivityNotFoundException;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -32,10 +38,11 @@ import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
-import com.tokopedia.core.tracking.activity.TrackingActivity;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.bottomsheet.BottomSheetCallAction;
+import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.purchase.constant.OrderShipmentTypeDef;
 import com.tokopedia.transaction.purchase.detail.adapter.OrderItemAdapter;
 import com.tokopedia.transaction.purchase.detail.customview.OrderDetailButtonLayout;
 import com.tokopedia.transaction.purchase.detail.di.DaggerOrderDetailComponent;
@@ -55,6 +62,7 @@ import com.tokopedia.transaction.purchase.detail.model.rejectorder.EmptyVarianPr
 import com.tokopedia.transaction.purchase.detail.model.rejectorder.WrongProductPriceWeightEditable;
 import com.tokopedia.transaction.purchase.detail.presenter.OrderDetailPresenterImpl;
 import com.tokopedia.transaction.purchase.receiver.TxListUIReceiver;
+import com.tokopedia.transaction.router.ITransactionOrderDetailRouter;
 
 import java.util.List;
 
@@ -130,15 +138,65 @@ public class OrderDetailActivity extends TActivity
         setStatusView(data);
         setDriverInfoView(data);
         setItemListView(data);
+        setAwbLayout(data);
         setInvoiceView(data);
         setDescriptionView(data);
         setPriceView(data);
         setButtonView(data);
+        setPickupPointView(data);
+        setUploadAwb(data);
+    }
 
+    private void setUploadAwb(final OrderDetailData data) {
+        if (android.os.Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
+            return;
+        }
+        RelativeLayout uploadAwbHolder = findViewById(R.id.upload_awb_layout);
+        TextView tvUploadAwbMessage = findViewById(R.id.tv_upload_awb_message);
+        TextView btnUploadAwb = findViewById(R.id.btn_upload_awb);
+        View separatorAwb = findViewById(R.id.separator_awb);
+
+        if (TextUtils.isEmpty(data.getAwbUploadProofText())) {
+            uploadAwbHolder.setVisibility(View.GONE);
+            separatorAwb.setVisibility(View.VISIBLE);
+        } else {
+            uploadAwbHolder.setVisibility(View.VISIBLE);
+            separatorAwb.setVisibility(View.GONE);
+            tvUploadAwbMessage.setText(Html.fromHtml(data.getAwbUploadProofText()));
+            if (data.isShowUploadAwb()) {
+                btnUploadAwb.setVisibility(View.VISIBLE);
+                btnUploadAwb.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (getApplication() instanceof ITransactionOrderDetailRouter) {
+                            Intent intent = ((ITransactionOrderDetailRouter) getApplication())
+                                    .transactionOrderDetailRouterGetIntentUploadAwb
+                                            (data.getAwbUploadProofUrl());
+                            startActivity(intent);
+                        }
+
+                    }
+                });
+            } else {
+                btnUploadAwb.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    private void setAwbLayout(OrderDetailData data) {
+        if (data.getAwb() != null && !data.getAwb().isEmpty()) {
+            TextView referenceNumber = findViewById(R.id.reference_number);
+            TextView copyButton = findViewById(R.id.copy_reference_number);
+            referenceNumber.setText(data.getAwb());
+            copyButton.setOnClickListener(onCopyAwbListener(referenceNumber));
+        } else {
+            ViewGroup awbLayout = findViewById(R.id.awb_layout);
+            awbLayout.setVisibility(View.GONE);
+        }
     }
 
     private void setInsuranceNotificationView(OrderDetailData data) {
-        if(data.isShowInsuranceNotification() && getExtraUserMode() == SELLER_MODE) {
+        if (data.isShowInsuranceNotification() && getExtraUserMode() == SELLER_MODE) {
             ViewGroup notificationLayout = findViewById(R.id.notification_layout);
             TextView notificationTextView = findViewById(R.id.notification_text_view);
             notificationLayout.setVisibility(View.VISIBLE);
@@ -346,6 +404,11 @@ public class OrderDetailActivity extends TActivity
     private void setResponseTimeView(OrderDetailData data) {
         LinearLayout timeLimitLayout = findViewById(R.id.time_limit_layout);
         TextView responseTime = findViewById(R.id.description_response_time);
+        TextView labelResponseTime = findViewById(R.id.tv_time_limit_layout_label);
+        labelResponseTime.setText(data.getOrderCode().equalsIgnoreCase(String.valueOf(OrderShipmentTypeDef.ORDER_DELIVERED))
+                || data.getOrderCode().equalsIgnoreCase(String.valueOf(OrderShipmentTypeDef.ORDER_DELIVERED_DUE_LIMIT))
+                ? getString(R.string.label_response_auto_finish) : getString(R.string.label_response_limit));
+
         if (data.getResponseTimeLimit() == null || data.getResponseTimeLimit().isEmpty()) {
             timeLimitLayout.setVisibility(View.GONE);
         } else {
@@ -354,6 +417,49 @@ public class OrderDetailActivity extends TActivity
             GradientDrawable drawableBorder = (GradientDrawable) responseTime.getBackground().getCurrent().mutate();
             drawableBorder.setColor(Color.parseColor(data.getDeadlineColorString()));
         }
+    }
+
+    private void setPickupPointView(OrderDetailData data) {
+        LinearLayout layoutPickupPointPinCode = findViewById(R.id.layout_pickup_point_pin_code);
+        if (data.getPickupPinCode() != null) {
+            ImageButton btPinCodeInfo = findViewById(R.id.bt_pin_code_info);
+            TextView tvPinCode = findViewById(R.id.tv_pin_code);
+            tvPinCode.setText(data.getPickupPinCode());
+            btPinCodeInfo.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    BottomSheetView bottomSheetView = new BottomSheetView(OrderDetailActivity.this);
+                    bottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField
+                            .BottomSheetFieldBuilder()
+                            .setTitle(getString(R.string.title_bottomsheet_pin_code_pickup_booth))
+                            .setBody(getString(R.string.message_bottomsheet_pin_code_pickup_booth))
+                            .setImg(R.drawable.ic_pickup_point_pin_code)
+                            .build());
+
+                    bottomSheetView.show();
+                }
+            });
+            layoutPickupPointPinCode.setVisibility(View.VISIBLE);
+        } else {
+            layoutPickupPointPinCode.setVisibility(View.GONE);
+        }
+    }
+
+    private View.OnClickListener onCopyAwbListener(final TextView awbText) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ClipboardManager clipboardManager =
+                        (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                clipboardManager.setPrimaryClip(
+                        ClipData.newPlainText("awb", awbText.getText().toString())
+                );
+                NetworkErrorHelper.showSnackbar(
+                        OrderDetailActivity.this,
+                        getString(R.string.notification_awb_copied)
+                );
+            }
+        };
     }
 
     private View.OnClickListener onStatusLayoutClickedListener(final String orderId) {
@@ -395,10 +501,14 @@ public class OrderDetailActivity extends TActivity
     }
 
     @Override
-    public void trackShipment(String orderId) {
-        Intent intent = new Intent(OrderDetailActivity.this, TrackingActivity.class);
-        intent.putExtra("OrderID", orderId);
-        startActivity(intent);
+    public void trackShipment(String orderId, String trackingUrl) {
+        String routingAppLink;
+        routingAppLink = ApplinkConst.ORDER_TRACKING;
+        Uri.Builder uriBuilder = new Uri.Builder();
+        uriBuilder.appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_ORDER_ID, orderId)
+                .appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, trackingUrl);
+        routingAppLink += uriBuilder.toString();
+        RouteManager.route(this, routingAppLink);
     }
 
     @Override
@@ -435,7 +545,7 @@ public class OrderDetailActivity extends TActivity
         String id;
         String name;
         String logoUrl;
-        if(getExtraUserMode() == SELLER_MODE) {
+        if (getExtraUserMode() == SELLER_MODE) {
             id = orderData.getBuyerId();
             name = orderData.getBuyerUserName();
             logoUrl = orderData.getBuyerLogo();

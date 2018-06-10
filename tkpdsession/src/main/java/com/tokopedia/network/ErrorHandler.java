@@ -36,6 +36,11 @@ public class ErrorHandler {
     private static final String ERROR_MESSAGE = "message_error";
     private static final String ERROR_MESSAGE_TOKOCASH = "errors";
 
+    public interface ErrorForbiddenListener {
+        void onForbidden();
+        void onError(String errorMessage);
+    }
+
     public ErrorHandler(@NonNull ErrorListener listener, int code) {
         switch (code) {
             case ResponseStatus.SC_REQUEST_TIMEOUT:
@@ -55,6 +60,16 @@ public class ErrorHandler {
 
     private static String getErrorInfo(int code, String msg) {
         return "Error " + String.valueOf(code) + " : " + msg;
+    }
+
+    public static void getErrorMessage(ErrorForbiddenListener listener, Throwable e, Context context) {
+        String forbiddenMessage = context.getString(R.string.default_request_error_forbidden_auth);
+        String errorMessage = getErrorMessage(e, context);
+        if (errorMessage.equals(forbiddenMessage)) {
+            listener.onForbidden();
+        } else {
+            listener.onError(errorMessage);
+        }
     }
 
     public static String getErrorMessage(Throwable e) {

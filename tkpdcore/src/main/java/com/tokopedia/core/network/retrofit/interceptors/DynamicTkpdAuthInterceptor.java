@@ -52,11 +52,11 @@ public class DynamicTkpdAuthInterceptor extends TkpdAuthInterceptor {
         newRequest.method(originRequest.method(), originRequest.body());
     }
 
-    private Map<String,String> getHeaders(Request originRequest, String authKey) {
+    private Map<String, String> getHeaders(Request originRequest, String authKey) {
         Map<String, String> Headers = AuthUtil.generateHeaders(originRequest.url().uri()
                 .getPath(), originRequest.method(), authKey);
 
-        if(originRequest.url().toString().contains("/o2o/")) {
+        if (originRequest.url().toString().contains("/o2o/")) {
             Headers.put(AUTHORIZATION, BEARER + SessionHandler.getAccessToken());
         }
 

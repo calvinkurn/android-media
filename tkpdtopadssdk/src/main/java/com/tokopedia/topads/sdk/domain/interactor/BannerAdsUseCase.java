@@ -44,7 +44,7 @@ public class BannerAdsUseCase extends UseCase<TopAdsParams, BannerAdsContract.Vi
 
             @Override
             protected void onPreExecute() {
-                if(view == null) return;
+                if (view == null) return;
 
                 view.showLoading();
             }
@@ -56,7 +56,7 @@ public class BannerAdsUseCase extends UseCase<TopAdsParams, BannerAdsContract.Vi
 
             @Override
             protected void onPostExecute(CpmModel cpmModel) {
-                if(view == null) return;
+                if (view == null) return;
 
                 view.hideLoading();
                 if (cpmModel.getError() == null && cpmModel.getStatus().getErrorCode() == 0) {
@@ -73,7 +73,7 @@ public class BannerAdsUseCase extends UseCase<TopAdsParams, BannerAdsContract.Vi
 
             @Override
             protected void onCancelled() {
-                if(view == null) return;
+                if (view == null) return;
                 view.onCanceled();
                 view.hideLoading();
                 execute = false;
@@ -91,6 +91,7 @@ public class BannerAdsUseCase extends UseCase<TopAdsParams, BannerAdsContract.Vi
     public void unsubscribe() {
         if (task != null) {
             task.cancel(true);
+            task = null;
         }
     }
 }

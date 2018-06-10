@@ -18,7 +18,6 @@ import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
-import com.tokopedia.seller.product.manage.view.fragment.ProductManageSellerFragment;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.draft.di.component.DaggerProductDraftSaveBulkComponent;
 import com.tokopedia.seller.product.draft.di.module.ProductDraftSaveBulkModule;
@@ -27,8 +26,8 @@ import com.tokopedia.seller.product.draft.view.listener.ProductDraftSaveBulkView
 import com.tokopedia.seller.product.draft.view.presenter.ProductDraftSaveBulkPresenter;
 import com.tokopedia.seller.product.draft.view.presenter.ResolutionImageException;
 import com.tokopedia.seller.product.edit.view.activity.ProductDraftAddActivity;
+import com.tokopedia.seller.product.manage.view.fragment.ProductManageSellerFragment;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -242,17 +241,15 @@ public class ProductDraftListActivity extends DrawerPresenterActivity
     }
 
     @Override
-    public void onSaveBulkDraftSuccess(List<Long> productIds) {
+    public void onSaveBulkDraftSuccess(List<Long> draftProductIdList) {
         hideProgressDialog();
         hasSaveInstagramToDraft = true;
-        if (productIds.size() == 1) {
-            ProductDraftAddActivity.start(this,
-                    productIds.get(0).toString());
+        if (draftProductIdList.size() == 1) {
+            ProductDraftAddActivity.start(this, draftProductIdList.get(0));
         } else {
             CommonUtils.UniversalToast(this, getString(R.string.product_draft_instagram_save_success,
-                    productIds.size()));
-            ProductDraftListFragment productDraftListFragment =
-                    (ProductDraftListFragment) getSupportFragmentManager().findFragmentByTag(TAG);
+                    draftProductIdList.size()));
+            ProductDraftListFragment productDraftListFragment = (ProductDraftListFragment) getSupportFragmentManager().findFragmentByTag(TAG);
             if (productDraftListFragment != null) {
                 productDraftListFragment.resetPageAndSearch();
             }

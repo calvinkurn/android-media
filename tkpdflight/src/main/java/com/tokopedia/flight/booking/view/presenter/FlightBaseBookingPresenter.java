@@ -13,6 +13,7 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewM
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingCartData;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightInsuranceViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.mapper.FlightBookingCartDataMapper;
 import com.tokopedia.flight.common.constant.FlightErrorConstant;
@@ -55,7 +56,7 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
 
     protected abstract void updateTotalPrice(int totalPrice);
 
-    protected abstract void onCountDownTimestimeChanged(String timestamp);
+    protected abstract void onCountDownTimestampChanged(String timestamp);
 
     @Override
     public void onUpdateCart() {
@@ -75,17 +76,17 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
                             List<Fare> fares = new ArrayList<>();
                             List<String> journeyAffected = new ArrayList<>();
                             for (NewFarePrice newFare : flightBookingCartData.getNewFarePrices()) {
-                                if (newFare.getId().equalsIgnoreCase(getView().getDepartureFlightDetailViewModel().getId())){
+                                if (newFare.getId().equalsIgnoreCase(getView().getDepartureFlightDetailViewModel().getId())) {
                                     journeyAffected.add(newFare.getId());
                                     fares.add(newFare.getFare());
                                 }
-                                if (getView().getReturnFlightDetailViewModel()!= null &&
-                                        newFare.getId().equalsIgnoreCase(getView().getReturnFlightDetailViewModel().getId())){
+                                if (getView().getReturnFlightDetailViewModel() != null &&
+                                        newFare.getId().equalsIgnoreCase(getView().getReturnFlightDetailViewModel().getId())) {
                                     journeyAffected.add(newFare.getId());
                                     fares.add(newFare.getFare());
                                 }
                             }
-                            if (!journeyAffected.contains(getView().getDepartureFlightDetailViewModel().getId())){
+                            if (!journeyAffected.contains(getView().getDepartureFlightDetailViewModel().getId())) {
                                 fares.add(new Fare(
                                         CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(getView().getDepartureFlightDetailViewModel().getAdultNumericPrice()),
                                         CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(getView().getDepartureFlightDetailViewModel().getChildNumericPrice()),
@@ -96,7 +97,7 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
                                 ));
                             }
 
-                            if (getView().getReturnFlightDetailViewModel() != null && !journeyAffected.contains(getView().getReturnFlightDetailViewModel().getId())){
+                            if (getView().getReturnFlightDetailViewModel() != null && !journeyAffected.contains(getView().getReturnFlightDetailViewModel().getId())) {
                                 fares.add(new Fare(
                                         CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(getView().getReturnFlightDetailViewModel().getAdultNumericPrice()),
                                         CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(getView().getReturnFlightDetailViewModel().getChildNumericPrice()),
@@ -125,8 +126,8 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
                     }
                 })
                 .onBackpressureDrop()
-                .subscribeOn(Schedulers.newThread())
-                .unsubscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<BaseCartData>() {
                     @Override
@@ -140,8 +141,10 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
                         if (isViewAttached()) {
                             getView().hideUpdatePriceLoading();
                             getView().showUpdateDataErrorStateLayout(e);
-                            if (e instanceof FlightException && ((FlightException) e).getErrorList().contains(new FlightError(FlightErrorConstant.ADD_TO_CART))){
-                                getView().showExpireTransactionDialog();
+                            if (e instanceof FlightException && ((FlightException) e).getErrorList().contains(new FlightError(FlightErrorConstant.ADD_TO_CART))) {
+                                getView().showExpireTransactionDialog(e.getMessage());
+                            } else if (e instanceof FlightException && ((FlightException) e).getErrorList().contains(new FlightError(FlightErrorConstant.FLIGHT_SOLD_OUT))) {
+                                getView().showSoldOutDialog();
                             }
                         }
                     }
@@ -152,7 +155,7 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
                         getView().setCartId(baseCartData.getId());
                         Date expiredDate = FlightDateUtil.addTimeToCurrentDate(Calendar.SECOND, baseCartData.getRefreshTime());
                         getView().renderFinishTimeCountDown(expiredDate);
-                        onCountDownTimestimeChanged(FlightDateUtil.dateToString(expiredDate, FlightDateUtil.DEFAULT_TIMESTAMP_FORMAT));
+                        onCountDownTimestampChanged(FlightDateUtil.dateToString(expiredDate, FlightDateUtil.DEFAULT_TIMESTAMP_FORMAT));
 
                         if (baseCartData.getTotal() != getCurrentCartData().getTotal()) {
                             getView().showPriceChangesDialog(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(baseCartData.getTotal()),
@@ -162,8 +165,8 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
                                     baseCartData.getNewFarePrices(),
                                     getView().getDepartureFlightDetailViewModel(),
                                     getView().getReturnFlightDetailViewModel(),
-                                    getView().getFlightBookingPassengers()
-                            );
+                                    getView().getFlightBookingPassengers(),
+                                    getInsurances());
                         }
 
                     }
@@ -173,18 +176,39 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
     protected int calculateTotalFareAndAmenities(List<Fare> newFares,
                                                  int adult, int child, int infant,
                                                  List<FlightBookingAmenityViewModel> amenities) {
-        int newTotalPrice = 0;
+        int newTotalPrice = calculateTotalPassengerFare(newFares, adult, child, infant);
 
+        for (FlightBookingAmenityViewModel amenityViewModel : amenities) {
+            newTotalPrice += amenityViewModel.getPriceNumeric();
+        }
+
+        for (FlightInsuranceViewModel insurance : getInsurances()) {
+            newTotalPrice += insurance.getTotalPrice();
+        }
+        return newTotalPrice;
+    }
+
+    protected int calculateTotalPassengerFare(List<Fare> newFares, int adult, int child, int infant) {
+        int newTotalPrice = 0;
         for (Fare newFare : newFares) {
             newTotalPrice += newFare.getAdultNumeric() * adult;
             newTotalPrice += newFare.getChildNumeric() * child;
             newTotalPrice += newFare.getInfantNumeric() * infant;
         }
-
-        for (FlightBookingAmenityViewModel amenityViewModel : amenities) {
-            newTotalPrice += amenityViewModel.getPriceNumeric();
-        }
         return newTotalPrice;
+    }
+
+    protected int calculateTotalPassengerFare() {
+        BaseCartData cartData = getCurrentCartData();
+        List<Fare> fares = new ArrayList<>();
+        for (NewFarePrice newFare : cartData.getNewFarePrices()) {
+            fares.add(newFare.getFare());
+        }
+        return calculateTotalPassengerFare(fares,
+                cartData.getAdult(),
+                cartData.getChild(),
+                cartData.getInfant()
+        );
     }
 
     @Nullable
@@ -203,7 +227,8 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
             List<NewFarePrice> newFarePrices,
             FlightDetailViewModel departureDetailViewModel,
             FlightDetailViewModel returnDetailViewModel,
-            List<FlightBookingPassengerViewModel> flightBookingPassengers) {
+            List<FlightBookingPassengerViewModel> flightBookingPassengers,
+            List<FlightInsuranceViewModel> insurances) {
         for (NewFarePrice newFarePrice : newFarePrices) {
             if (newFarePrice.getId().equalsIgnoreCase(departureDetailViewModel.getId())) {
                 departureDetailViewModel.setAdultNumericPrice(newFarePrice.getFare().getAdultNumeric());
@@ -333,6 +358,13 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
                     CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(entry.getValue())));
 
         }
+        int totalPassenger = departureDetailViewModel.getCountAdult() + departureDetailViewModel.getCountChild() + departureDetailViewModel.getCountInfant();
+
+        for (FlightInsuranceViewModel insuranceViewModel : insurances) {
+            simpleViewModels.add(new SimpleViewModel(
+                    String.format("%s x%d", insuranceViewModel.getName(), totalPassenger),
+                    CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace((int) (insuranceViewModel.getTotalPrice()))));
+        }
 
         getView().renderPriceListDetails(simpleViewModels);
     }
@@ -347,7 +379,9 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
                         departureAirport,
                         arrivalAirport,
                         label,
-                passengerCount),
+                        passengerCount),
                 CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(price));
     }
+
+    public abstract List<FlightInsuranceViewModel> getInsurances();
 }

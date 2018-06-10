@@ -17,8 +17,8 @@
             android:id="@+id/shop_avatar"
             android:layout_width="0dp"
             android:layout_height="@dimen/img_thumb_m"
-            android:layout_marginEnd="@dimen/margin_small"
-            android:layout_marginRight="@dimen/margin_small"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10"
             android:layout_weight="0.175"
             tools:ignore="ContentDescription"
             tools:src="@drawable/common_google_signin_btn_icon_dark" />
@@ -95,8 +95,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/margin_vs"
-                    android:layout_marginRight="@dimen/margin_vs"
+                    android:layout_marginEnd="@dimen/dp_5"
+                    android:layout_marginRight="@dimen/dp_5"
                     android:text="@string/title_reference_number"
                     android:textSize="@dimen/fontvs" />
 
@@ -134,9 +134,9 @@
     <!-- android:layout_width="match_parent" -->
     <!-- android:layout_height="wrap_content" -->
     <!-- android:orientation="vertical" -->
-    <!-- android:padding="@dimen/padding_vs" -->
-    <!-- android:layout_marginLeft="@dimen/margin_small" -->
-    <!-- android:layout_marginRight="@dimen/margin_small" -->
+    <!-- android:padding="@dimen/dp_5" -->
+    <!-- android:layout_marginLeft="@dimen/dp_10" -->
+    <!-- android:layout_marginRight="@dimen/dp_10" -->
     <!-- android:background="@color/tkpd_yellow_status" -->
     <!-- > -->
 
@@ -147,7 +147,7 @@
         android:id="@+id/confirm_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_small"
+        android:layout_marginTop="@dimen/dp_10"
         android:gravity="center"
         android:orientation="horizontal"
         android:visibility="gone">
@@ -156,12 +156,12 @@
             android:id="@+id/receive_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/margin_small"
-            android:layout_marginRight="@dimen/margin_small"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10"
             android:layout_weight="0.50"
             android:background="@drawable/btn_shop"
             android:gravity="center"
-            android:padding="@dimen/padding_vs"
+            android:padding="@dimen/dp_5"
             android:text="@string/title_package_received"
             android:textColor="@color/black" />
 
@@ -172,7 +172,7 @@
             android:layout_weight="0.50"
             android:background="@drawable/btn_shop"
             android:gravity="center"
-            android:padding="@dimen/padding_vs"
+            android:padding="@dimen/dp_5"
             android:text="@string/title_package_not_rcv"
             android:textColor="@color/black" />
 
@@ -183,7 +183,7 @@
             android:layout_weight="0.50"
             android:background="@drawable/btn_shop"
             android:gravity="center"
-            android:padding="@dimen/padding_vs"
+            android:padding="@dimen/dp_5"
             android:text="@string/title_track"
             android:textColor="@color/black"
             android:visibility="gone" />
@@ -195,9 +195,9 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="horizontal"
-        android:paddingBottom="@dimen/padding_vs"
-        android:paddingLeft="@dimen/padding_small"
-        android:paddingRight="@dimen/padding_small"
+        android:paddingBottom="@dimen/dp_5"
+        android:paddingLeft="@dimen/dp_10"
+        android:paddingRight="@dimen/dp_10"
         android:visibility="gone">
 
         <TextView

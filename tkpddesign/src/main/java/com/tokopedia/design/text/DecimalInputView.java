@@ -103,8 +103,13 @@ public class DecimalInputView extends BaseCustomView {
 
     public void setText(String textValue) {
         editText.setText(textValue);
+        editText.setSelection(editText.getText().length());
         invalidate();
         requestLayout();
+    }
+
+    public void removeDefaultTextWatcher() {
+        editText.removeTextChangedListener(currentTextWatcher);
     }
 
     public void addTextChangedListener(TextWatcher textWatcher) {
@@ -138,11 +143,15 @@ public class DecimalInputView extends BaseCustomView {
 
     public double getDoubleValue() {
         String valueString = CurrencyFormatHelper.removeCurrencyPrefix(getText());
-        valueString = StringUtils.removeComma(valueString);
-        if (TextUtils.isEmpty(valueString)) {
-            return 0;
+        try {
+            valueString = StringUtils.removeComma(valueString);
+            if (TextUtils.isEmpty(valueString)) {
+                return 0;
+            }
+            return Double.parseDouble(valueString);
+        } catch (NumberFormatException e) {
+            return StringUtils.convertToNumeric(valueString, false);
         }
-        return Double.parseDouble(valueString);
     }
 
     public void setValue(double value) {
@@ -155,7 +164,7 @@ public class DecimalInputView extends BaseCustomView {
     }
 
     public void setMaxLength(int maxLengthInput) {
-        if(maxLengthInput > DEFAULT_INPUT_VALUE_LENGTH) {
+        if (maxLengthInput > DEFAULT_INPUT_VALUE_LENGTH) {
             editText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxLengthInput)});
         }
     }

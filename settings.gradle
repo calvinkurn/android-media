@@ -1,11 +1,29 @@
+ext.isCiServer = System.getenv().containsKey("CI")
+
+buildCache {
+    local {
+        enabled = !isCiServer
+    }
+    remote(HttpBuildCache) {
+        url = "${ci_url}"
+        push = isCiServer
+        allowUntrustedServer = true
+        credentials {
+            username = "${ci_username}"
+            password = "${ci_password}"
+        }
+    }
+}
+
+
 apply from: "features/settings-features.gradle"
 apply from: "libraries/settings-libraries.gradle"
 
-include 'customerapp', 'tkpdhome'
+include 'customerapp'
+include 'tkpdhome'
 include 'tkpdloyalty'
 include 'tkpdride'
 include 'tkpdfeed'
-include 'tkpddigital'
 include 'tkpdcore'
 include 'tkpdinbox'
 include 'tkpddiscovery'
@@ -16,11 +34,15 @@ include 'tkpdpdp'
 include 'tkpddesign'
 include 'sellerapp'
 include 'tkpdseller'
-include 'tkpdtopads'
 include 'tkpdtokocash'
-include 'tkpdusecase'
 include 'tkpdabstraction'
 include 'tkpdflight'
-include 'tkpdcacheapi'
-include 'tkpdevents'
+include 'tkpdcontent'
+include 'tkpdstream'
+include 'tkpdshop'
+include 'tkpdshop-common'
+include 'tkpdgm-common'
+include 'tkpdreputation-common'
+include 'tkpdwishlist-common'
+include 'tkpdtransaction-common'
 include 'posapp'

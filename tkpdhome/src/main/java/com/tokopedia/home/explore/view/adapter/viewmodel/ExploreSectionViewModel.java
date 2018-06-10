@@ -1,6 +1,7 @@
 package com.tokopedia.home.explore.view.adapter.viewmodel;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.home.beranda.domain.model.DynamicHomeIcon;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +14,7 @@ public class ExploreSectionViewModel {
 
     String title;
     int icon;
+    DynamicHomeIcon.UseCaseIcon useCaseIcon;
     List<Visitable> visitableList = new ArrayList<>();
 
     public ExploreSectionViewModel() {
@@ -22,6 +24,14 @@ public class ExploreSectionViewModel {
         this.title = title;
         this.icon = icon;
         this.visitableList = visitableList;
+    }
+
+    public DynamicHomeIcon.UseCaseIcon getUseCaseIcon() {
+        return useCaseIcon;
+    }
+
+    public void setUseCaseIcon(DynamicHomeIcon.UseCaseIcon useCaseIcon) {
+        this.useCaseIcon = useCaseIcon;
     }
 
     public String getTitle() {

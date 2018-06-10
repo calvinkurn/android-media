@@ -15,12 +15,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingBottom="@dimen/padding_small"
+        android:paddingBottom="@dimen/dp_10"
         android:paddingEnd="8dp"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
         android:paddingStart="8dp"
-        android:paddingTop="@dimen/padding_small">
+        android:paddingTop="@dimen/dp_10">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -63,7 +63,7 @@
                     android:id="@+id/order_detail_weight"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_vs"
+                    android:layout_marginBottom="@dimen/dp_5"
                     tools:text="499 gram" />
 
             </LinearLayout>
@@ -74,7 +74,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="end"
-            android:padding="@dimen/padding_vs">
+            android:padding="@dimen/dp_5">
 
             <com.tokopedia.design.component.TextViewCompat
                 android:layout_width="wrap_content"

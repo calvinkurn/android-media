@@ -16,6 +16,7 @@ import com.tokopedia.gm.subscribe.di.scope.GmSubscribeScope;
 import com.tokopedia.gm.subscribe.domain.cart.GmSubscribeCartRepository;
 import com.tokopedia.gm.subscribe.domain.product.GmSubscribeProductRepository;
 import com.tokopedia.seller.shop.common.di.scope.DeleteCacheScope;
+import com.tokopedia.seller.shop.common.domain.interactor.DeleteShopInfoTomeUseCase;
 import com.tokopedia.seller.shop.common.domain.interactor.DeleteShopInfoUseCase;
 import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepositoryImpl;
 import com.tokopedia.seller.shop.common.data.source.ShopInfoDataSource;
@@ -79,8 +80,14 @@ public class GmSubscribeModule {
 
     @GmSubscribeScope
     @Provides
-    DeleteShopInfoUseCase provideDeleteShopInfoUseCase() {
-        return new DeleteShopInfoUseCase();
+    DeleteShopInfoTomeUseCase provideDeleteShopInfoTomeUseCase() {
+        return new DeleteShopInfoTomeUseCase();
+    }
+
+    @GmSubscribeScope
+    @Provides
+    DeleteShopInfoUseCase provideDeleteShopInfoUseCase(DeleteShopInfoTomeUseCase deleteShopInfoTomeUseCase) {
+        return new DeleteShopInfoUseCase(deleteShopInfoTomeUseCase);
     }
 
 }

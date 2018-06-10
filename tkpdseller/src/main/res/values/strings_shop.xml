@@ -52,8 +52,8 @@
 
     <string name="shop_open_label_prefix_welcome">Halo,</string>
     <string name="shop_open_label_info_title_shop">Lengkapi informasi toko. Tampilan toko yang menarik, buat pembeli tertarik.</string>
-    <string name="shop_open_label_slogan">Slogan Toko</string>
-    <string name="shop_open_label_desc_shop">Deskripsi Toko</string>
+    <string name="shop_open_label_slogan">Slogan Toko (Opsional)</string>
+    <string name="shop_open_label_desc_shop">Deskripsi Toko (Opsional)</string>
     <string name="shop_open_label_logo">Logo (Opsional)</string>
     <string name="shop_open_error_should_pick_image">Logo harus diisi</string>
     <string name="shop_open_label_max_file_size">Besar file maksimum:</string>

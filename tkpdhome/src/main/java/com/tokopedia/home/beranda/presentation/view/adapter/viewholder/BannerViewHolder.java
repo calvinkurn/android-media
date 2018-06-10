@@ -17,6 +17,7 @@ import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
+import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 import com.tokopedia.loyalty.view.activity.PromoListActivity;
 
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
 
     @LayoutRes
     public static final int LAYOUT = R.layout.home_banner;
+    public static final String ATTRIBUTION = "attribution";
     private BannerView bannerView;
     private final HomeCategoryListener listener;
     private final Context context;
@@ -48,13 +50,17 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
 
     @Override
     public void bind(BannerViewModel element) {
-        slidesList = element.getSlides();
-        List<String> promoUrls = new ArrayList<>();
-        for (BannerSlidesModel slidesModel : slidesList) {
-            promoUrls.add(slidesModel.getImageUrl());
+        try {
+            slidesList = element.getSlides();
+            List<String> promoUrls = new ArrayList<>();
+            for (BannerSlidesModel slidesModel : slidesList) {
+                promoUrls.add(slidesModel.getImageUrl());
+            }
+            bannerView.setPromoList(promoUrls);
+            bannerView.buildView();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        bannerView.setPromoList(promoUrls);
-        bannerView.buildView();
     }
 
     private Promotion getPromotion(int position) {
@@ -65,34 +71,43 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
         promotion.setPromotionAlias(model.getTitle().trim().replaceAll(" ", "_"));
         promotion.setPromotionPosition(position + 1);
         promotion.setRedirectUrl(slidesList.get(position).getRedirectUrl());
+        promotion.setPromoCode(model.getPromoCode());
         return promotion;
     }
 
     @Override
     public void onPromoClick(int position) {
-        HomePageTracking.eventPromoClick(getPromotion(position));
-        listener.onPromoClick(slidesList.get(position));
+        Promotion promotion = getPromotion(position);
+        HomePageTracking.eventPromoClick(promotion);
+        listener.onPromoClick(position, slidesList.get(position),
+                String.valueOf(promotion.getImpressionDataLayer().get(ATTRIBUTION)));
+        HomeTrackingUtils.homeSlidingBannerClick(slidesList.get(position), position);
     }
 
     @Override
     public void onPromoScrolled(int position) {
         if (listener.isMainViewVisible()) {
             HomePageTracking.eventPromoImpression(getPromotion(position));
+            HomeTrackingUtils.homeSlidingBannerImpression(slidesList.get(position), position);
         }
     }
 
     @Override
     public void onPromoAllClick() {
         HomePageTracking.eventClickViewAllPromo();
+        HomeTrackingUtils.homeViewAllPromotions("PromoListActivity");
 
         boolean remoteConfigEnable;
         FirebaseRemoteConfigImpl remoteConfig = new FirebaseRemoteConfigImpl(context);
         remoteConfigEnable = remoteConfig.getBoolean(
                 TkpdCache.RemoteConfigKey.MAINAPP_NATIVE_PROMO_LIST
         );
-
         if (remoteConfigEnable) {
-            context.startActivity(PromoListActivity.newInstance(context));
+            context.startActivity(PromoListActivity.newInstance(
+                    context,
+                    PromoListActivity.DEFAULT_AUTO_SELECTED_MENU_ID,
+                    PromoListActivity.DEFAULT_AUTO_SELECTED_CATEGORY_ID
+            ));
         } else {
             Intent intent = new Intent(context, BannerWebView.class);
             intent.putExtra(BannerWebView.EXTRA_TITLE, context.getString(R.string.title_activity_promo));
@@ -100,7 +115,7 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
                     TkpdBaseURL.URL_PROMO + TkpdBaseURL.FLAG_APP
             );
             context.startActivity(intent);
-        }
 
+        }
     }
 }

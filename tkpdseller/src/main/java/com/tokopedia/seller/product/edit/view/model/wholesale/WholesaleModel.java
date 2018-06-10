@@ -24,47 +24,32 @@ public class WholesaleModel implements Parcelable, ItemType {
     /**
      * Main value : qty one, two, and price
      */
-    private int qtyOne = 0;
-    private int qtyTwo = 0;
+    private long qtyMin = 0;
     private double qtyPrice = 0;
     private int level;
 
-    public WholesaleModel() {
-
-    }
-
-    public WholesaleModel(int quantityOne, int quantityTwo, double wholeSalePrice) {
-        this.qtyOne = quantityOne;
-        this.qtyTwo = quantityTwo;
+    public WholesaleModel(long quantityOne, double wholeSalePrice) {
+        this.qtyMin = quantityOne;
         this.qtyPrice = wholeSalePrice;
     }
 
     protected WholesaleModel(Parcel in) {
-        this.qtyOne = in.readInt();
-        this.qtyTwo = in.readInt();
+        this.qtyMin = in.readLong();
         this.qtyPrice = in.readDouble();
         this.level = in.readInt();
     }
 
     public static WholesaleModel invalidWholeSaleModel() {
-        WholesaleModel wholesaleModel = new WholesaleModel(-1, -1, -1);
+        WholesaleModel wholesaleModel = new WholesaleModel(-1, -1);
         return wholesaleModel;
     }
 
-    public int getQtyOne() {
-        return qtyOne;
+    public long getQtyMin() {
+        return qtyMin;
     }
 
-    public void setQtyOne(int qtyOne) {
-        this.qtyOne = qtyOne;
-    }
-
-    public int getQtyTwo() {
-        return qtyTwo;
-    }
-
-    public void setQtyTwo(int qtyTwo) {
-        this.qtyTwo = qtyTwo;
+    public void setQtyMin(int qtyMin) {
+        this.qtyMin = qtyMin;
     }
 
     public double getQtyPrice() {
@@ -77,7 +62,7 @@ public class WholesaleModel implements Parcelable, ItemType {
 
     @Override
     public String toString() {
-        return " qty one : " + qtyOne + " qty two : " + qtyTwo + " qty price : " + qtyPrice;
+        return " qty one : " + qtyMin + " qty price : " + qtyPrice;
     }
 
     @Override
@@ -87,34 +72,9 @@ public class WholesaleModel implements Parcelable, ItemType {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.qtyOne);
-        dest.writeInt(this.qtyTwo);
+        dest.writeLong(this.qtyMin);
         dest.writeDouble(this.qtyPrice);
         dest.writeInt(this.level);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        WholesaleModel that = (WholesaleModel) o;
-
-        if (qtyOne != that.qtyOne) return false;
-        if (qtyTwo != that.qtyTwo) return false;
-        return Double.compare(that.qtyPrice, qtyPrice) == 0;
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result;
-        long temp;
-        result = qtyOne;
-        result = 31 * result + qtyTwo;
-        temp = Double.doubleToLongBits(qtyPrice);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        return result;
     }
 
     @Override

@@ -15,6 +15,7 @@ import static com.tokopedia.transaction.purchase.constant.OrderShipmentTypeDef.O
 public @interface OrderShipmentTypeDef {
     int ORDER_WAITING = 500;
     int ORDER_DELIVERED = 600;
+    int ORDER_DELIVERED_DUE_LIMIT = 699;
     int ACCEPT_FULL = 400;
     int ACCEPT_PARTIAL = 401;
 }

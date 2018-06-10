@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/margin_ms"
+    android:paddingTop="@dimen/dp_8"
     android:background="@color/white"
     android:orientation="vertical">
 
@@ -18,7 +18,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_small"
+        android:layout_marginTop="@dimen/dp_10"
         android:paddingBottom="@dimen/med_dp"
         android:paddingEnd="@dimen/small_dp"
         android:paddingLeft="@dimen/small_dp"
@@ -40,8 +40,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_small"
-            android:layout_marginStart="@dimen/margin_small"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginStart="@dimen/dp_10"
             android:layout_toEndOf="@+id/driver_photo"
             android:layout_toLeftOf="@+id/btn_call_driver"
             android:layout_toRightOf="@+id/driver_photo"

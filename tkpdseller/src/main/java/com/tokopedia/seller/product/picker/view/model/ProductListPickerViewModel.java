@@ -51,8 +51,12 @@ public class ProductListPickerViewModel implements ItemPickerType, Parcelable {
         return imageUrl;
     }
 
-    @Override
     public String getId() {
+        return productId;
+    }
+
+    @Override
+    public String getItemId() {
         return productId;
     }
 

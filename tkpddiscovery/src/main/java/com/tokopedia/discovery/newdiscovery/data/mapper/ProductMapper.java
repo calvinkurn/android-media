@@ -4,7 +4,6 @@ import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.tkpd.library.utils.network.MessageErrorException;
-import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.entity.discovery.SearchProductResponse;
 import com.tokopedia.core.network.exception.RuntimeHttpErrorException;
 import com.tokopedia.discovery.newdiscovery.domain.model.BadgeModel;
@@ -85,11 +84,15 @@ public class ProductMapper implements Func1<Response<String>, SearchResultModel>
             model.setImageUrl700(data.getImageUrl700());
             model.setRating(data.getRating());
             model.setCountReview(data.getCountReview());
+            model.setCountCourier(data.getCountCourier());
+            model.setDiscountPercentage(data.getDiscountPercentage());
+            model.setOriginalPrice(data.getOriginalPrice());
             model.setPrice(data.getPrice());
             model.setShopID(data.getShop().getId());
             model.setShopName(data.getShop().getName());
             model.setShopCity(data.getShop().getCity());
             model.setGoldMerchant(data.getShop().isIsGold());
+            model.setOfficial(data.getShop().isOfficial());
             model.setLabelList(mappingLabels(data.getLabels()));
             model.setBadgesList(mappingBadges(data.getBadges()));
             model.setFeatured(data.getIsFeatured() == 1);
@@ -100,6 +103,9 @@ public class ProductMapper implements Func1<Response<String>, SearchResultModel>
 
     private List<LabelModel> mappingLabels(List<SearchProductResponse.Data.Products.Labels> labels) {
         List<LabelModel> list = new ArrayList<>();
+
+        if (labels == null || labels.size() == 0) return list;
+
         for (SearchProductResponse.Data.Products.Labels data : labels) {
             LabelModel model = new LabelModel();
             model.setTitle(data.getTitle());
@@ -111,6 +117,7 @@ public class ProductMapper implements Func1<Response<String>, SearchResultModel>
 
     private List<BadgeModel> mappingBadges(List<SearchProductResponse.Data.Products.Badges> badges) {
         List<BadgeModel> list = new ArrayList<>();
+        if (badges == null || badges.size() == 0) return list;
         for (SearchProductResponse.Data.Products.Badges data : badges) {
             BadgeModel model = new BadgeModel();
             model.setTitle(data.getTitle());

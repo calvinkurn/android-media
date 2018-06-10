@@ -64,7 +64,6 @@ public class PosApplication extends PosRouterApplication {
         TkpdBaseURL.BASE_DOMAIN = PosAppBaseUrl.BASE_DOMAIN;
         TkpdBaseURL.ACE_DOMAIN = PosAppBaseUrl.BASE_ACE_DOMAIN;
         TkpdBaseURL.TOME_DOMAIN = PosAppBaseUrl.BASE_TOME_DOMAIN;
-        TkpdBaseURL.CLOVER_DOMAIN = PosAppBaseUrl.BASE_CLOVER_DOMAIN;
         TkpdBaseURL.TOPADS_DOMAIN = PosAppBaseUrl.BASE_TOPADS_DOMAIN;
         TkpdBaseURL.MOJITO_DOMAIN = PosAppBaseUrl.BASE_MOJITO_DOMAIN;
         TkpdBaseURL.HADES_DOMAIN = PosAppBaseUrl.BASE_HADES_DOMAIN;

@@ -178,15 +178,11 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
 
     @Override
     public TaskStackBuilder getInboxAndDetailResoStackBuilder(Context context, String resolutionId, String shopName) {
-
         Intent resInboxIntent = ResoInboxActivity.newBuyerInstance(context);
-        resInboxIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
         Intent detailResIntent = DetailResChatActivity.newBuyerInstance(context, resolutionId, shopName);
-
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
-        if (context instanceof TkpdInboxRouter){
-            Intent intent = ((TkpdInboxRouter) context).getHomeIntent(context);
+        if (context.getApplicationContext() instanceof TkpdInboxRouter){
+            Intent intent = ((TkpdInboxRouter) context.getApplicationContext()).getHomeIntent(context);
             taskStackBuilder.addNextIntent(intent);
         }
         taskStackBuilder.addNextIntent(resInboxIntent);

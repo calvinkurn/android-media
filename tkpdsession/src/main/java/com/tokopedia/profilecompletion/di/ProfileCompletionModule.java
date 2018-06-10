@@ -67,11 +67,9 @@ public class ProfileCompletionModule {
 
     @ProfileCompletionScope
     @Provides
-    GetUserInfoUseCase provideGetUserProfileUseCase(ThreadExecutor threadExecutor,
-                                                    PostExecutionThread postExecutor,
-                                                    ProfileRepository profileRepository) {
+    GetUserInfoUseCase provideGetUserProfileUseCase(ProfileRepository profileRepository) {
 
-        return new GetUserInfoUseCase(threadExecutor, postExecutor, profileRepository);
+        return new GetUserInfoUseCase(profileRepository);
     }
 
     @ProfileCompletionScope

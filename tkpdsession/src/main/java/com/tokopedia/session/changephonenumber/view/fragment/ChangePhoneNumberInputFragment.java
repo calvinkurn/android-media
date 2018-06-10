@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -15,27 +16,24 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.core.database.CacheUtil;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.util.CustomPhoneNumberUtil;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.di.SessionComponent;
 import com.tokopedia.di.SessionModule;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
-import com.tokopedia.otp.cotp.view.viewmodel.VerificationPassModel;
 import com.tokopedia.otp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.session.R;
 import com.tokopedia.session.changephonenumber.view.customview.BottomSheetInfo;
 import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberInputFragmentListener;
+import com.tokopedia.util.CustomPhoneNumberUtil;
 
 import java.util.ArrayList;
 
@@ -249,30 +247,27 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
         showErrorSnackbar(message);
     }
 
+    @SuppressWarnings("Range")
     private void showErrorSnackbar(String message) {
         if (message != null) {
-            NetworkErrorHelper.showSnackbar(getActivity(), message);
+            SnackbarManager.make(getActivity(),
+                    message,
+                    Snackbar.LENGTH_LONG)
+                    .show();
         } else {
             NetworkErrorHelper.showSnackbar(getActivity());
         }
     }
 
     private void goToVerification() {
-        GlobalCacheManager cacheManager = new GlobalCacheManager();
-
-        VerificationPassModel passModel = new VerificationPassModel(
+        Intent intent = VerificationActivity.getCallingIntent(
+                getActivity(),
                 cleanPhoneNumber(newPhoneNumber),
                 email,
                 RequestOtpUseCase.OTP_TYPE_CHANGE_PHONE_NUMBER,
-                true);
-        cacheManager.setKey(VerificationActivity.PASS_MODEL);
-        cacheManager.setValue(CacheUtil.convertModelToString(passModel,
-                new TypeToken<VerificationPassModel>() {
-                }.getType()));
-        cacheManager.store();
-
-        Intent intent = VerificationActivity.getCallingIntent(getActivity(),
-                RequestOtpUseCase.MODE_SMS);
+                true,
+                RequestOtpUseCase.MODE_SMS
+        );
         startActivityForResult(intent, REQUEST_VERIFY_CODE);
     }
 

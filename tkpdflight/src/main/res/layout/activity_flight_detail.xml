@@ -54,10 +54,17 @@
 
             <android.support.design.widget.TabLayout
                 android:id="@+id/indicator"
-                app:tabTextAppearance="@style/TitlePageWhiteIndicator"
-                style="?tabThemeWhite"
+                style="@style/Tabs.Secondary.Flight"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                app:tabGravity="fill"
+                app:tabMode="fixed"
+                app:tabIndicatorColor="@color/colorPrimary"
+                footerColor="@color/colorPrimary"
+                android:background="@color/white"
+                app:tabSelectedTextColor="@color/colorPrimary"
+                app:tabTextAppearance="@style/TitlePageWhiteIndicator"
+                app:tabTextColor="@color/font_black_disabled_38" />
 
         </android.support.design.widget.AppBarLayout>
 

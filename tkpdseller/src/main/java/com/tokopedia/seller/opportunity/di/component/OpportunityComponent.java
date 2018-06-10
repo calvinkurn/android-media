@@ -6,6 +6,7 @@ import com.tokopedia.seller.opportunity.di.scope.OpportunityScope;
 import com.tokopedia.seller.opportunity.fragment.OpportunityDetailFragment;
 import com.tokopedia.seller.opportunity.fragment.OpportunityListFragment;
 import com.tokopedia.seller.opportunity.fragment.OpportunityTncFragment;
+import com.tokopedia.seller.opportunity.snapshot.fragment.SnapShotFragment;
 
 import dagger.Component;
 
@@ -20,4 +21,6 @@ public interface OpportunityComponent {
     void inject(OpportunityDetailFragment opportunityDetailFragment);
 
     void inject(OpportunityTncFragment opportunityTncFragment);
+
+    void inject(SnapShotFragment snapShotFragment);
 }

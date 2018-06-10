@@ -21,6 +21,17 @@ public class Image implements Parcelable {
     @SerializedName("url")
     @Expose
     private String url;
+    @SerializedName("applinks")
+    @Expose
+    private String applink;
+
+    public String getApplink() {
+        return applink;
+    }
+
+    public void setApplink(String applink) {
+        this.applink = applink;
+    }
 
     public Integer getPosition() {
         return position;
@@ -47,12 +58,6 @@ public class Image implements Parcelable {
     }
 
 
-    protected Image(Parcel in) {
-        position = in.readByte() == 0x00 ? null : in.readInt();
-        imageUrl = in.readString();
-        url = in.readString();
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -60,21 +65,26 @@ public class Image implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        if (position == null) {
-            dest.writeByte((byte) (0x00));
-        } else {
-            dest.writeByte((byte) (0x01));
-            dest.writeInt(position);
-        }
-        dest.writeString(imageUrl);
-        dest.writeString(url);
+        dest.writeValue(this.position);
+        dest.writeString(this.imageUrl);
+        dest.writeString(this.url);
+        dest.writeString(this.applink);
     }
 
-    @SuppressWarnings("unused")
-    public static final Parcelable.Creator<Image> CREATOR = new Parcelable.Creator<Image>() {
+    public Image() {
+    }
+
+    protected Image(Parcel in) {
+        this.position = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.imageUrl = in.readString();
+        this.url = in.readString();
+        this.applink = in.readString();
+    }
+
+    public static final Creator<Image> CREATOR = new Creator<Image>() {
         @Override
-        public Image createFromParcel(Parcel in) {
-            return new Image(in);
+        public Image createFromParcel(Parcel source) {
+            return new Image(source);
         }
 
         @Override

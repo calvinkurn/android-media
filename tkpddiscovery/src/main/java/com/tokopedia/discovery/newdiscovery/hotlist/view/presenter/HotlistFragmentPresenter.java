@@ -60,13 +60,15 @@ public class HotlistFragmentPresenter extends SearchSectionFragmentPresenterImpl
 
     @Override
     public void requestDataForTheFirstTime(HotlistParameter parameter) {
+        int page = (parameter.getStartRow() / 12) + 1;
         getHotlistInitializeUseCase.setHotlistParameter(parameter);
-        getHotlistInitializeUseCase.execute(RequestParams.EMPTY, new GetHotlistInitializeSubscriber(getView()));
+        getHotlistInitializeUseCase.execute(RequestParams.EMPTY, new GetHotlistInitializeSubscriber(getView(), page));
     }
 
     @Override
     public void requestLoadMore() {
-        getHotlistLoadMoreUseCase.execute(getParamLoadMoreHotlist(), new GetHotlistLoadMoreSubscriber(getView()));
+        int page = (getView().getStartFrom() / 12);
+        getHotlistLoadMoreUseCase.execute(getParamLoadMoreHotlist(), new GetHotlistLoadMoreSubscriber(getView(), page));
     }
 
     private RequestParams getParamLoadMoreHotlist() {
@@ -148,7 +150,7 @@ public class HotlistFragmentPresenter extends SearchSectionFragmentPresenterImpl
 
     @Override
     public void refreshSort(HotlistHeaderViewModel headerViewModel) {
-        getProductUseCase.execute(getParamRefreshHotlist(), new RefreshHotlistSubscriber(getView(), headerViewModel));
+        getProductUseCase.execute(getParamRefreshHotlist(), new RefreshHotlistSubscriber(getView(), headerViewModel, 1));
     }
 
     private RequestParams getParamRefreshHotlist() {

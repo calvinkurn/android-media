@@ -2,7 +2,7 @@
                                             xmlns:tools="http://schemas.android.com/tools"
                                             android:layout_width="match_parent"
                                             android:layout_height="wrap_content"
-                                            android:paddingBottom="@dimen/padding_small">
+                                            android:paddingBottom="@dimen/dp_10">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -13,9 +13,9 @@
             android:id="@+id/date_tempo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_small"
-            android:layout_marginRight="@dimen/margin_small"
-            android:layout_marginTop="@dimen/margin_small"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_10"
             android:background="@drawable/bg_yellow_border_yelow"
             android:baselineAligned="false"
             android:orientation="horizontal">
@@ -25,7 +25,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight=".50"
                 android:orientation="vertical"
-                android:padding="@dimen/padding_small">
+                android:padding="@dimen/dp_10">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -49,7 +49,7 @@
                 android:layout_weight=".50"
                 android:gravity="end"
                 android:orientation="vertical"
-                android:padding="@dimen/padding_small">
+                android:padding="@dimen/dp_10">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -73,19 +73,19 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_small"
-            android:layout_marginRight="@dimen/margin_small"
-            android:layout_marginTop="@dimen/margin_vs"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_5"
             android:background="@drawable/cards_ui_2"
             android:orientation="vertical"
-            android:padding="@dimen/padding_small">
+            android:padding="@dimen/dp_10">
 
             <TextView
                 android:id="@+id/invoice_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/margin_vs"
-                android:layout_marginStart="@dimen/margin_vs"
+                android:layout_marginLeft="@dimen/dp_5"
+                android:layout_marginStart="@dimen/dp_5"
                 android:gravity="center"
                 android:textColor="@color/href_link"
                 android:textIsSelectable="true"
@@ -95,16 +95,16 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="10dp"
-            android:layout_marginBottom="@dimen/margin_small"
-            android:layout_marginTop="@dimen/margin_small"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_10"
             android:background="@drawable/gradient_black_alt"/>
 
         <LinearLayout
             android:id="@+id/order_status_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_small"
-            android:layout_marginRight="@dimen/margin_small"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10"
             android:orientation="vertical"/>
 
         <TextView
@@ -112,26 +112,26 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginLeft="@dimen/margin_small"
-            android:layout_marginRight="@dimen/margin_small"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10"
             android:background="@drawable/button_buy_from_cart"
             android:gravity="center"
-            android:padding="@dimen/padding_vs"
+            android:padding="@dimen/dp_5"
             android:text="@string/title_see_all"
             android:textColor="@color/white"/>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:layout_marginBottom="@dimen/margin_small"
-            android:layout_marginTop="@dimen/margin_small"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_10"
             android:background="@color/label_color"/>
 
         <LinearLayout
             android:id="@+id/instant_courier_driver_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_small"
+            android:layout_margin="@dimen/dp_10"
             android:background="@drawable/see_all_bg"
             android:orientation="vertical"
             android:paddingBottom="@dimen/med_dp"
@@ -152,7 +152,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_small">
+                android:layout_marginTop="@dimen/dp_10">
 
                 <ImageView
                     android:id="@+id/driver_photo"
@@ -165,8 +165,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="@dimen/margin_small"
-                    android:layout_marginStart="@dimen/margin_small"
+                    android:layout_marginLeft="@dimen/dp_10"
+                    android:layout_marginStart="@dimen/dp_10"
                     android:layout_toEndOf="@+id/driver_photo"
                     android:layout_toLeftOf="@+id/btn_call_driver"
                     android:layout_toRightOf="@+id/driver_photo"
@@ -224,9 +224,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_vs"
-            android:layout_marginLeft="@dimen/margin_small"
-            android:layout_marginRight="@dimen/margin_small"
+            android:layout_marginBottom="@dimen/dp_5"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10"
             android:background="@drawable/see_all_bg"
             android:orientation="vertical">
 
@@ -241,16 +241,16 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_small"
-            android:layout_marginRight="@dimen/margin_small"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10"
             android:background="@drawable/see_all_bg"
             android:orientation="vertical"
-            android:padding="@dimen/padding_vs">
+            android:padding="@dimen/dp_5">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_vs"
+                android:layout_marginBottom="@dimen/dp_5"
                 android:orientation="horizontal">
 
                 <TextView
@@ -271,7 +271,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_vs"
+                android:layout_marginBottom="@dimen/dp_5"
                 android:orientation="horizontal">
 
                 <TextView
@@ -292,7 +292,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_vs"
+                android:layout_marginBottom="@dimen/dp_5"
                 android:orientation="horizontal">
 
                 <TextView
@@ -340,18 +340,18 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_small"
-            android:layout_marginLeft="@dimen/margin_small"
-            android:layout_marginRight="@dimen/margin_small"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10"
             android:background="@drawable/tkpd_address_card"
             android:orientation="vertical"
-            android:padding="@dimen/padding_vs">
+            android:padding="@dimen/dp_5">
 
             <LinearLayout
                 android:id="@+id/sender_form"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_vs"
+                android:layout_marginBottom="@dimen/dp_5"
                 android:orientation="vertical">
 
                 <TextView
@@ -365,7 +365,7 @@
                     android:id="@+id/sender_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_vs"
+                    android:layout_marginBottom="@dimen/dp_5"
                     android:gravity="start"
                     android:textIsSelectable="true"
                     android:textSize="@dimen/fonts"
@@ -391,7 +391,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_vs"
+                android:layout_marginBottom="@dimen/dp_5"
                 android:orientation="vertical">
 
                 <TextView
@@ -413,7 +413,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_vs"
+                android:layout_marginBottom="@dimen/dp_5"
                 android:orientation="vertical">
 
                 <TextView
@@ -438,9 +438,9 @@
             android:id="@+id/complain_but"
             android:layout_width="match_parent"
             android:layout_height="@dimen/btn_height"
-            android:layout_marginBottom="@dimen/margin_small"
-            android:layout_marginLeft="@dimen/margin_small"
-            android:layout_marginRight="@dimen/margin_small"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10"
             android:background="@drawable/btn_shop"
             android:gravity="center"
             android:text="@string/title_show_complain"
@@ -451,9 +451,9 @@
             android:id="@+id/btn_request_cancel_order"
             android:layout_width="match_parent"
             android:layout_height="@dimen/btn_height"
-            android:layout_marginBottom="@dimen/margin_small"
-            android:layout_marginLeft="@dimen/margin_small"
-            android:layout_marginRight="@dimen/margin_small"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10"
             android:background="@drawable/btn_shop"
             android:gravity="center"
             android:text="@string/title_request_cancel_order"
@@ -464,9 +464,9 @@
             android:id="@+id/receive_btn"
             android:layout_width="match_parent"
             android:layout_height="@dimen/btn_height"
-            android:layout_marginBottom="@dimen/margin_small"
-            android:layout_marginLeft="@dimen/margin_small"
-            android:layout_marginRight="@dimen/margin_small"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10"
             android:background="@drawable/button_buy_from_cart"
             android:gravity="center"
             android:text="@string/string_finish"
@@ -477,9 +477,9 @@
             android:id="@+id/btn_do_complain"
             android:layout_width="match_parent"
             android:layout_height="@dimen/btn_height"
-            android:layout_marginBottom="@dimen/margin_small"
-            android:layout_marginLeft="@dimen/margin_small"
-            android:layout_marginRight="@dimen/margin_small"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10"
             android:background="@drawable/btn_shop"
             android:gravity="center"
             android:text="@string/title_complain_button"
@@ -490,9 +490,9 @@
             android:id="@+id/track_btn"
             android:layout_width="match_parent"
             android:layout_height="@dimen/btn_height"
-            android:layout_marginBottom="@dimen/margin_small"
-            android:layout_marginLeft="@dimen/margin_small"
-            android:layout_marginRight="@dimen/margin_small"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10"
             android:background="@drawable/btn_shop"
             android:gravity="center"
             android:text="@string/title_track"
@@ -503,9 +503,9 @@
             android:id="@+id/ask_seller"
             android:layout_width="match_parent"
             android:layout_height="@dimen/btn_height"
-            android:layout_marginBottom="@dimen/margin_small"
-            android:layout_marginLeft="@dimen/margin_small"
-            android:layout_marginRight="@dimen/margin_small"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10"
             android:background="@drawable/btn_shop"
             android:gravity="center"
             android:text="@string/title_ask_seller"
@@ -516,9 +516,9 @@
             android:id="@+id/reject_btn"
             android:layout_width="match_parent"
             android:layout_height="@dimen/btn_height"
-            android:layout_marginBottom="@dimen/margin_small"
-            android:layout_marginLeft="@dimen/margin_small"
-            android:layout_marginRight="@dimen/margin_small"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10"
             android:background="@drawable/btn_shop"
             android:gravity="center"
             android:text="@string/title_package_not_received"
@@ -529,9 +529,9 @@
             android:id="@+id/upload_proof"
             android:layout_width="match_parent"
             android:layout_height="@dimen/btn_height"
-            android:layout_marginBottom="@dimen/margin_small"
-            android:layout_marginLeft="@dimen/margin_small"
-            android:layout_marginRight="@dimen/margin_small"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10"
             android:background="@drawable/button_buy_from_cart"
             android:gravity="center"
             android:text="@string/title_upload_evidence"

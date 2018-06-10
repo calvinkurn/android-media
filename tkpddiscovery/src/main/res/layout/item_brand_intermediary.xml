@@ -9,11 +9,11 @@
     <android.support.v7.widget.CardView
         android:layout_width="@dimen/intermediary_card"
         android:layout_height="@dimen/intermediary_card"
-        android:layout_margin="@dimen/margin_vs"
+        android:layout_margin="@dimen/dp_5"
         card_view:cardCornerRadius="0dip"
         card_view:cardElevation="3dip"
-        android:padding="@dimen/padding_vvs"
-        card_view:contentPadding="@dimen/padding_vvs">
+        android:padding="@dimen/dp_3"
+        card_view:contentPadding="@dimen/dp_3">
 
         <LinearLayout
             android:id="@id/linWrapper"
@@ -21,7 +21,7 @@
             android:layout_height="match_parent"
             android:background="?android:selectableItemBackground"
             android:orientation="horizontal"
-            android:padding="@dimen/padding_vvvs">
+            android:padding="@dimen/dp_2">
 
             <ImageView
                 android:id="@id/thumbnail"
@@ -29,7 +29,7 @@
                 android:layout_height="@dimen/intermediary_brand"
                 android:scaleType="centerCrop"
                 app:srcCompat="@drawable/loading_page"
-                android:layout_margin="@dimen/padding_vvs"
+                android:layout_margin="@dimen/dp_3"
                 />
 
         </LinearLayout>

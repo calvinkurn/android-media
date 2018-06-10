@@ -29,13 +29,18 @@ import com.tokopedia.discovery.categorynav.view.CategoryNavigationActivity;
 import com.tokopedia.discovery.fragment.BrowseParentFragment;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+
 public class IntermediaryActivity extends BasePresenterActivity implements MenuItemCompat.OnActionExpandListener,YoutubeViewHolder.YouTubeThumbnailLoadInProcess{
 
     private FragmentManager fragmentManager;
     MenuItem searchItem;
     public static final String CATEGORY_DEFAULT_TITLE = "";
+    private static final String EXTRA_TRACKER_ATTRIBUTION = "tracker_attribution";
 
     private String departmentId = "";
+    private String trackerAttribution = "";
     private String categoryName = CATEGORY_DEFAULT_TITLE;
 
     Toolbar toolbar;
@@ -46,8 +51,21 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
     @DeepLink(Constants.Applinks.DISCOVERY_CATEGORY_DETAIL)
     public static Intent getCallingIntent(Context context, Bundle bundle) {
         Intent intent = new Intent(context, IntermediaryActivity.class);
-        return intent
-                .putExtras(bundle);
+        Bundle newBundle = new Bundle();
+        newBundle.putString(BrowseProductRouter.DEPARTMENT_ID, bundle.getString(BrowseProductRouter.DEPARTMENT_ID));
+        try {
+            newBundle.putString(
+                    EXTRA_TRACKER_ATTRIBUTION,
+                    URLDecoder.decode(bundle.getString("tracker_attribution", ""), "UTF-8")
+            );
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            newBundle.putString(
+                    EXTRA_TRACKER_ATTRIBUTION,
+                    bundle.getString("tracker_attribution", "").replaceAll("%20", " ")
+            );
+        }
+        return intent.putExtras(newBundle);
     }
 
     @Override
@@ -114,6 +132,7 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
     @Override
     protected void setupBundlePass(Bundle extras) {
         departmentId = extras.getString(BrowseProductRouter.DEPARTMENT_ID);
+        trackerAttribution = extras.getString(EXTRA_TRACKER_ATTRIBUTION, "");
         if (extras.getString(BrowseProductRouter.DEPARTMENT_NAME)!=null
                 && extras.getString(BrowseProductRouter.DEPARTMENT_NAME).length()>0)
             categoryName = extras.getString(BrowseProductRouter.DEPARTMENT_NAME);
@@ -188,9 +207,10 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
         Fragment fragment =
                 (fragmentManager.findFragmentByTag(IntermediaryFragment.TAG));
         if (fragment == null) {
-            fragment = IntermediaryFragment.createInstance(departmentId);
+            fragment = IntermediaryFragment.createInstance(departmentId, trackerAttribution);
         } else if (fragment instanceof IntermediaryFragment) {
             ((IntermediaryFragment)fragment).setDepartmentId(departmentId);
+            ((IntermediaryFragment)fragment).setTrackerAttribution(trackerAttribution);
         }
         inflateFragment(
                 fragment,

@@ -60,6 +60,6 @@ public class BannerAdsPresenter implements BannerAdsContract.Presenter {
             this.config.getTopAdsParams().getParam().put(TopAdsParams.KEY_TEMPLATE_ID, "3,4");
             this.config.getTopAdsParams().getParam().put(TopAdsParams.KEY_EP, "cpm");
         }
-        this.adsParams = config.getTopAdsParams();
+        this.adsParams = this.config.getTopAdsParams();
     }
 }

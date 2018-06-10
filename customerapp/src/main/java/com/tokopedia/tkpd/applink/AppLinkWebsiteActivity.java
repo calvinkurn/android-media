@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.TaskStackBuilder;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -46,6 +47,9 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
         String webUrl = extras.getString(
                 KEY_APP_LINK_QUERY_URL, TkpdBaseURL.DEFAULT_TOKOPEDIA_WEBSITE_URL
         );
+        if (TextUtils.isEmpty(webUrl)) {
+            webUrl = TkpdBaseURL.DEFAULT_TOKOPEDIA_WEBSITE_URL;
+        }
         return AppLinkWebsiteActivity.newInstance(context, webUrl);
     }
 

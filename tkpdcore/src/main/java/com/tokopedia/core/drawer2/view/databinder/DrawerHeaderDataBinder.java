@@ -17,6 +17,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AnalyticsEventTrackingHelper;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerData;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerDeposit;
@@ -28,8 +29,6 @@ import com.tokopedia.core.util.SessionHandler;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static com.tokopedia.core.drawer2.data.source.CloudDepositSource.DRAWER_CACHE_DEPOSIT;
 
 /**
  * Created by nisie on 1/11/17.
@@ -164,7 +163,8 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
     private DrawerData createDataFromCache(LocalCacheHandler drawerCache) {
         DrawerData data = new DrawerData();
         DrawerDeposit deposit = new DrawerDeposit();
-        deposit.setDeposit(drawerCache.getString(DRAWER_CACHE_DEPOSIT, ""));
+        deposit.setDeposit("");
+        //deposit.setDeposit(drawerCache.getString(DRAWER_CACHE_DEPOSIT, ""));
 
         data.setDrawerDeposit(deposit);
         return data;
@@ -276,6 +276,7 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
             @Override
             public void onClick(View v) {
                 listener.onGoToDeposit();
+
             }
         });
         holder.topPointsLayout.setOnClickListener(new View.OnClickListener() {
@@ -295,15 +296,20 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
                                 data.getDrawerTokoCash().getDrawerWalletAction().getRedirectUrlBalance(),
                                 data.getDrawerTokoCash().getDrawerWalletAction().getAppLinkBalance()
                         );
+                        AnalyticsEventTrackingHelper.homepageTokocashClick(data.getDrawerTokoCash().getDrawerWalletAction().getRedirectUrlBalance());
+
                     } else {
                         listener.onWalletActionButtonClicked(
                                 data.getDrawerTokoCash().getDrawerWalletAction().getRedirectUrlActionButton(),
                                 data.getDrawerTokoCash().getDrawerWalletAction().getAppLinkActionButton()
                         );
+                        AnalyticsEventTrackingHelper.hamburgerTokocashActivateClick();
+
                     }
                 } else {
                     tokoCashListener.onRetryTokoCash();
                 }
+
             }
         });
         holder.name.setOnClickListener(new View.OnClickListener() {

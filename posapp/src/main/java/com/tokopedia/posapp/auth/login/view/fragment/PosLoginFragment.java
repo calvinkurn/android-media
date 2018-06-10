@@ -29,6 +29,8 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.profile.model.GetUserInfoDomainData;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
+import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
+import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.posapp.PosRouterApplication;
 import com.tokopedia.posapp.R;
@@ -39,6 +41,7 @@ import com.tokopedia.posapp.outlet.view.Outlet;
 import com.tokopedia.posapp.outlet.view.activity.OutletActivity;
 import com.tokopedia.session.data.viewmodel.SecurityDomain;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
+import com.tokopedia.session.login.loginemail.view.activity.ForbiddenActivity;
 import com.tokopedia.session.register.view.activity.SmartLockActivity;
 import com.tokopedia.session.register.view.subscriber.registerinitial.GetFacebookCredentialSubscriber;
 import com.tokopedia.session.register.view.viewmodel.DiscoverItemViewModel;
@@ -244,7 +247,9 @@ public class PosLoginFragment extends BaseLoginFragment implements PosLogin.View
 
     @Override
     public void onGoToSecurityQuestion(SecurityDomain securityDomain, String fullName, String email, String phone) {
-        goToSecurityQuestion(securityDomain, fullName, email, phone, cacheManager);
+        Intent  intent = VerificationActivity.getShowChooseVerificationMethodIntent(
+                getActivity(), RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION, phone, email);
+        startActivityForResult(intent, REQUEST_SECURITY_QUESTION);
     }
 
     @Override
@@ -252,11 +257,6 @@ public class PosLoginFragment extends BaseLoginFragment implements PosLogin.View
         saveSmartLock(SmartLockActivity.RC_SAVE_SECURITY_QUESTION,
                 emailEditText.getText().toString(),
                 passwordEditText.getText().toString());
-    }
-
-    @Override
-    public void resetToken() {
-        presenter.resetToken();
     }
 
     @Override
@@ -287,6 +287,11 @@ public class PosLoginFragment extends BaseLoginFragment implements PosLogin.View
     @Override
     public void enableArrow() {
 
+    }
+
+    @Override
+    public void onForbidden() {
+        ForbiddenActivity.startActivity(getActivity());
     }
 
     @Override

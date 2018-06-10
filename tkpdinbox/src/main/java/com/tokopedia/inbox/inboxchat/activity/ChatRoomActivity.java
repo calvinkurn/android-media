@@ -1,23 +1,28 @@
 package com.tokopedia.inbox.inboxchat.activity;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.tokopedia.contact_us.createticket.ContactUsConstant;
+import com.tokopedia.contact_us.createticket.activity.ContactUsActivity;
+import com.tokopedia.abstraction.constant.TkpdState;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.app.MainApplication;
@@ -25,20 +30,18 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
+import com.tokopedia.core.loyaltysystem.util.URLGenerator;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.common.applink.ApplinkConstant;
 import com.tokopedia.inbox.inboxchat.ChatNotifInterface;
 import com.tokopedia.inbox.inboxchat.fragment.ChatRoomFragment;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
-import com.tokopedia.inbox.inboxmessageold.activity.InboxMessageActivity;
-import com.tokopedia.inbox.inboxmessageold.activity.InboxMessageDetailActivity;
-
-import java.util.List;
+import com.tokopedia.pushnotif.PushNotification;
 
 /**
  * Created by Nisie on 5/19/16.
@@ -65,6 +68,9 @@ public class ChatRoomActivity extends BasePresenterActivity
     public static final String PARAM_AVATAR = "avatar";
 
     public static final String PARAM_WEBSOCKET = "create_websocket";
+    public static final String APPLINKS = "applinks";
+    public static final String MESSAGE_ID = "message_id";
+    private BroadcastReceiver notifReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,12 +82,39 @@ public class ChatRoomActivity extends BasePresenterActivity
     protected void onResume() {
         super.onResume();
         MainApplication.setCurrentActivity(this);
+
+        if (notifReceiver == null) {
+            notifReceiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    String fromPushNotif = intent.getExtras().getString(APPLINKS);
+                    String fromRoom="";
+                    if(!TextUtils.isEmpty(getIntent().getExtras().getString(MESSAGE_ID))) {
+                        fromRoom = ApplinkConstant.TOPCHAT.concat(getIntent().getExtras().getString(MESSAGE_ID));
+                    }
+                    if (!fromRoom.equals(fromPushNotif)) {
+                        PushNotification.notify(context, intent.getExtras());
+                    }
+                }
+            };
+        }
+
+        try {
+            LocalBroadcastManager.getInstance(this).registerReceiver(notifReceiver, new IntentFilter
+                    (TkpdState.TOPCHAT));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         MainApplication.setCurrentActivity(null);
+
+        if (notifReceiver != null) {
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(notifReceiver);
+        }
     }
 
     @Override
@@ -122,15 +155,15 @@ public class ChatRoomActivity extends BasePresenterActivity
         Intent detailsIntent;
         Intent parentIntent;
 
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
-        if(remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT)) {
-            extras.putBoolean(PARAM_WEBSOCKET, true);
-            detailsIntent = new Intent(context, ChatRoomActivity.class).putExtras(extras);
+        extras.putBoolean(PARAM_WEBSOCKET, true);
+        detailsIntent = new Intent(context, ChatRoomActivity.class).putExtras(extras);
+        if(TextUtils.equals(extras.getString(TkpdInboxRouter.IS_CHAT_BOT),"true")) {
+            parentIntent = new Intent(context, ContactUsActivity.class);
+            parentIntent.putExtra(ContactUsConstant.PARAM_URL, URLGenerator.generateURLContactUs
+                    (TkpdBaseURL.BASE_CONTACT_US,context));
+        }
+        else {
             parentIntent = new Intent(context, InboxChatActivity.class);
-        } else {
-            detailsIntent = new Intent(context, InboxMessageDetailActivity.class).putExtras
-                    (extras);
-            parentIntent = new Intent(context, InboxMessageActivity.class);
         }
 
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
@@ -302,6 +335,17 @@ public class ChatRoomActivity extends BasePresenterActivity
         bundle.putString(PARAM_CUSTOM_SUBJECT, customSubject);
         bundle.putString(PARAM_CUSTOM_MESSAGE, customMessage);
         bundle.putBoolean(IS_HAS_ATTACH_BUTTON, false);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    public static Intent getChatBotIntent(Context context, String messageId){
+        Intent intent = new Intent(context, ChatRoomActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(PARAM_MESSAGE_ID, messageId);
+        bundle.putBoolean(TkpdInboxRouter.IS_CHAT_BOT,true);
+        bundle.putBoolean(IS_HAS_ATTACH_BUTTON, true);
+        bundle.putBoolean(PARAM_WEBSOCKET, true);
         intent.putExtras(bundle);
         return intent;
     }

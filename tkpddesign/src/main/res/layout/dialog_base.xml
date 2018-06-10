@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/dp_32"
+    android:padding="@dimen/dp_16">
+
+    <TextView
+        android:id="@+id/tv_title_dialog"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_16"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/tv_desc_dialog"
+        android:layout_marginBottom="@dimen/dp_24"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_14" />
+
+    <LinearLayout
+        android:layout_gravity="right|end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_cancel_dialog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:textSize="@dimen/sp_14"
+            android:textColor="@color/grey_550"
+            android:textAllCaps="false"/>
+
+        <Button
+            android:id="@+id/btn_ok_dialog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:textSize="@dimen/sp_14"
+            android:textColor="@color/tkpd_main_green"
+            android:textAllCaps="false"/>
+
+    </LinearLayout>
+
+</LinearLayout>

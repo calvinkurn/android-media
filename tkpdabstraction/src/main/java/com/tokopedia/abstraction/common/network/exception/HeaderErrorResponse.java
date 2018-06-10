@@ -8,8 +8,9 @@ import java.io.IOException;
 
 /**
  * Created by zulfikarrahman on 12/29/17.
+ * Use HeaderErrorListResponse instead
  */
-
+@Deprecated
 public class HeaderErrorResponse extends BaseResponseError {
 
     @SerializedName("header")

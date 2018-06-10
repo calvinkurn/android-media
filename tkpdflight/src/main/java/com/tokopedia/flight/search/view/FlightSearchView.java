@@ -18,13 +18,7 @@ public interface FlightSearchView extends BaseListViewListener<FlightSearchViewM
 
     void setSelectedSortItem(int itemId);
 
-    void showSortRouteLoading();
-
-    void hideSortRouteLoading();
-
-    void onSuccessGetDataFromCache(List<FlightSearchViewModel> flightSearchViewModelList);
-
-    void onSuccessGetDataFromCloud(boolean isDataEmpty, FlightMetaDataDB flightMetaDataDB);
+    void onSuccessGetDataFromCloud(boolean isDataEmpty, FlightMetaDataDB flightMetaDataDB, List<String> airlines);
 
     void onErrorDeleteFlightCache(Throwable throwable);
 
@@ -59,4 +53,34 @@ public interface FlightSearchView extends BaseListViewListener<FlightSearchViewM
     void showDepartureDateShouldAtLeastToday(@StringRes int resID);
 
     void showReturnDateShouldGreaterOrEqual(@StringRes int resID);
+
+    void finishFragment();
+
+    boolean isNeedRefreshFromCache();
+
+    void setNeedRefreshFromCache(boolean needRefreshFromCache);
+
+    void reloadDataFromCache();
+
+    void setUIMarkFilter();
+
+    void clearAdapterData();
+
+    void renderFlightSearchFromCache(List<FlightSearchViewModel> flightSearchViewModels);
+
+    void addBottomPaddingForSortAndFilterActionButton();
+
+    boolean isAlreadyFullLoadData();
+
+    void showEmptyFlightStateView();
+
+    void removeBottomPaddingForSortAndFilterActionButton();
+
+    void loadInitialData();
+
+    void actionFetchFlightSearchData();
+
+    void setNeedRefreshAirline(boolean needRefresh);
+
+    boolean isNeedRefreshAirline();
 }

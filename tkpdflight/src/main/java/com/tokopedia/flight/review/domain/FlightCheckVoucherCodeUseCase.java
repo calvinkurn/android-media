@@ -17,6 +17,7 @@ public class FlightCheckVoucherCodeUseCase extends UseCase<AttributesVoucher> {
 
     public static final String CART_ID = "cart_id";
     public static final String VOUCHER_CODE = "voucher_code";
+    public static final String IS_COUPON = "is_coupon";
 
     private final FlightRepository flightRepository;
 
@@ -34,6 +35,13 @@ public class FlightCheckVoucherCodeUseCase extends UseCase<AttributesVoucher> {
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(CART_ID, cartId);
         requestParams.putString(VOUCHER_CODE, voucherCode);
+        return requestParams;
+    }
+    public RequestParams createRequestParams(String cartId, String voucherCode, String isCoupon){
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(CART_ID, cartId);
+        requestParams.putString(VOUCHER_CODE, voucherCode);
+        requestParams.putString(IS_COUPON, isCoupon);
         return requestParams;
     }
 }

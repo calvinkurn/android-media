@@ -4,8 +4,6 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.mapper.ProfileMapper;
 import com.tokopedia.core.drawer2.data.source.CloudProfileSource;
@@ -70,7 +68,7 @@ public class ExploreModule {
     @Provides
     CloudProfileSource cloudProfileSource(@ApplicationContext Context context) {
         return new CloudProfileSource(context, new PeopleService(), new ProfileMapper(),
-                new GlobalCacheManager(), new AnalyticsCacheHandler(), new SessionHandler(context));
+                new GlobalCacheManager(), new SessionHandler(context));
     }
 
 }

@@ -78,6 +78,7 @@ public class ButtonViewAdapter extends RecyclerView.Adapter<ButtonViewAdapter.Ho
             }
             holder.btnAction.setOnClickListener(onActionButtonListener(buttonViewItem.getType()));
             holder.separator.setVisibility(buttonViewItemList.size() == 3 && position == 0 ? View.VISIBLE : View.GONE);
+            listener.doImpressionTrackingButton(buttonViewItem.getType());
         }
 
     }
@@ -88,10 +89,10 @@ public class ButtonViewAdapter extends RecyclerView.Adapter<ButtonViewAdapter.Ho
             public void onClick(View view) {
                 if (buttonType.equals(BUTTON_FINISH_COMPLAINT)) listener.setOnActionFinishResolutionClick();
                 else if (buttonType.equals(BUTTON_ACCEPT_SOLUTION)) listener.setOnActionAcceptSolutionClick();
-                else if (buttonType.equals(BUTTON_CHANGE_SOLUTION)) listener.setOnActionEditSolutionClick();
+                else if (buttonType.equals(BUTTON_CHANGE_SOLUTION)) listener.setOnActionEditSolutionClick(true);
                 else if (buttonType.equals(BUTTON_APPEAL_SOLUTION)) listener.setOnActionAppealClick();
                 else if (buttonType.equals(BUTTON_INPUT_ADDRESS)) listener.setOnActionInputAddressClick();
-                else if (buttonType.equals(BUTTON_INPUT_AWB)) listener.setOnActionInputAwbNumberClick();
+                else if (buttonType.equals(BUTTON_INPUT_AWB)) listener.setOnActionInputAwbNumberClick(true);
                 else if (buttonType.equals(BUTTON_REPORT)) listener.setOnActionHelpClick();
                 else if (buttonType.equals(BUTTON_CANCEL)) listener.setOnActionCancelResolutionClick();
                 else if (buttonType.equals(BUTTON_RECOMPLAINT)) listener.setOnActionRecomplaintClick();

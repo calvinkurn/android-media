@@ -3,8 +3,6 @@ package com.tokopedia.seller.shopsettings.edit.view;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -13,23 +11,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 
-import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.newgallery.GalleryActivity;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.seller.SellerModuleRouter;
-import com.tokopedia.seller.shop.common.domain.interactor.DeleteShopInfoUseCase;
 import com.tokopedia.seller.shop.common.di.component.DaggerDeleteCacheComponent;
 import com.tokopedia.seller.shop.common.di.component.DeleteCacheComponent;
+import com.tokopedia.seller.shop.common.domain.interactor.DeleteShopInfoUseCase;
 import com.tokopedia.seller.shopsettings.edit.presenter.ShopCreateView;
 import com.tokopedia.seller.shopsettings.edit.presenter.ShopEditorView;
 import com.tokopedia.seller.shopsettings.edit.presenter.ShopSettingView;
@@ -37,10 +31,7 @@ import com.tokopedia.seller.shopsettings.shipping.OpenShopEditShipping;
 import com.tokopedia.seller.shopsettings.shipping.fragment.EditShippingViewListener;
 import com.tokopedia.seller.shopsettings.shipping.model.openshopshipping.OpenShopData;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.inject.Inject;
@@ -170,19 +161,6 @@ public class ShopEditorActivity extends TActivity implements
     @Override
     public boolean isFragmentCreated(String tag) {
         return supportFragmentManager.findFragmentByTag(tag) != null;
-    }
-
-    public static void finishActivity(Bundle bundle, Activity activity) {
-        if (activity.getApplication() instanceof SellerModuleRouter) {
-            ((SellerModuleRouter) activity.getApplication()).goToHome(activity);
-        }
-        Intent intent = new Intent(activity, ShopInfoActivity.class);
-        intent.putExtras(bundle);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        activity.startActivity(intent);
-        if (activity instanceof AppCompatActivity) {
-            activity.finish();
-        }
     }
 
     @Override

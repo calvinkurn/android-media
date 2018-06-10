@@ -62,6 +62,8 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
+        setContentView(R.layout.activity_splash);
+
         mReceiver = new DownloadResultReceiver(new Handler());
         mReceiver.setReceiver(this);
         sessionHandler = new SessionHandler(this);

@@ -38,22 +38,22 @@ public class ReferralFriendsWelcomePresenter implements IReferralFriendsWelcomeP
 
     @Override
     public void initialize() {
-        if(sessionHandler.isV4Login()) {
+
             if (view.getActivity().getIntent() != null && view.getActivity().getIntent().getExtras() != null) {
                 String code = view.getActivity().getIntent().getExtras().getString(CODE_KEY);
                 owner = view.getActivity().getIntent().getExtras().getString(OWNER_KEY);
 
                 LocalCacheHandler localCacheHandler = new LocalCacheHandler(view.getActivity(), TkpdCache.REFERRAL);
                 if (code == null || code.equalsIgnoreCase(localCacheHandler.getString(TkpdCache.Key.REFERRAL_CODE, ""))) {
-                    view.getActivity().startActivity(ReferralActivity.getCallingIntent(view.getActivity()));
+                    if(sessionHandler.isV4Login()) {
+                        view.getActivity().startActivity(ReferralActivity.getCallingIntent(view.getActivity()));
+                    }
                     view.closeView();
                 }
                 BranchSdkUtils.REFERRAL_ADVOCATE_PROMO_CODE = code;
                 view.renderReferralCode(code);
             }
-        }else{
-            view.closeView();
-        }
+
     }
 
     @Override
@@ -77,7 +77,7 @@ public class ReferralFriendsWelcomePresenter implements IReferralFriendsWelcomeP
     @Override
     public String getReferralWelcomeMsg() {
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(view.getActivity());
-        String welcomeMessage = remoteConfig.getString(TkpdCache.RemoteConfigKey.APP_SHARE_WELCOME_MESSAGE);
+        String welcomeMessage = remoteConfig.getString(TkpdCache.RemoteConfigKey.APP_SHARE_WELCOME_MESSAGE,view.getActivity().getString(R.string.referral_welcome_desc));
         String username = SessionHandler.getLoginName(view.getActivity());
         username = username == null ? "" : " " + username;
         try {

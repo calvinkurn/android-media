@@ -14,6 +14,7 @@ import android.view.View;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.core.ForceUpdate;
 import com.tokopedia.core.MaintenancePage;
 import com.tokopedia.core.R;
@@ -86,6 +87,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         globalCacheManager = new GlobalCacheManager();
 
         HockeyAppHelper.handleLogin(this);
+        initShake();
     }
 
     @Override
@@ -93,6 +95,10 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         super.onStart();
         MainApplication.setActivityState(TkpdState.Application.ACTIVITY);
         MainApplication.setActivityname(this.getClass().getSimpleName());
+        forceRotation();
+    }
+
+    protected void forceRotation() {
         if (!MainApplication.isTablet()) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         } else {
@@ -106,6 +112,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         unregisterForceLogoutReceiver();
         MainApplication.setActivityState(0);
         MainApplication.setActivityname(null);
+        unregisterShake();
     }
 
     @Override
@@ -124,7 +131,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         initGTM();
         sendScreenAnalytics();
 
-
+        registerShake();
         registerForceLogoutReceiver();
         checkIfForceLogoutMustShow();
     }
@@ -252,6 +259,9 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
                     @Override
                     public void onDialogClicked() {
                         sessionHandler.forceLogout();
+                        try {
+                            ((TkpdCoreRouter) getApplication()).onLogout(getApplicationComponent());
+                        } catch (Exception ex) {}
                         if (GlobalConfig.isSellerApp()) {
                             Intent intent = SellerRouter.getActivitySplashScreenActivity(getBaseContext());
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -297,5 +307,27 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
 
     protected void setGoldMerchant(ShopModel shopModel) {
         sessionHandler.setGoldMerchant(shopModel.info.shopIsGold);
+    }
+
+    private void initShake() {
+        if (!GlobalConfig.isSellerApp() && getApplication() instanceof AbstractionRouter) {
+            ((AbstractionRouter) getApplication()).init();
+        }
+    }
+
+    private void registerShake() {
+        if (!GlobalConfig.isSellerApp() && getApplication() instanceof AbstractionRouter) {
+            String screenName = getScreenName();
+            if (screenName == null) {
+                screenName = this.getClass().getSimpleName();
+            }
+            ((AbstractionRouter) getApplication()).registerShake(screenName);
+        }
+    }
+
+    private void unregisterShake() {
+        if (!GlobalConfig.isSellerApp() && getApplication() instanceof AbstractionRouter) {
+            ((AbstractionRouter) getApplication()).unregisterShake();
+        }
     }
 }

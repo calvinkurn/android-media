@@ -9,6 +9,8 @@ import com.tokopedia.seller.util.ShopNetworkController;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -26,6 +28,7 @@ public class ReviewReputationMergeUseCase extends UseCase<List<Object>> {
     private final ShopInfoUseCase shopInfoUseCase;
 
 
+    @Inject
     public ReviewReputationMergeUseCase(
             ThreadExecutor threadExecutor,
             PostExecutionThread postExecutionThread,

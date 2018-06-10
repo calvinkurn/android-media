@@ -19,4 +19,6 @@ public interface IPromoListPresenter {
     void sendClickItemPromoListTrackingData(PromoData promoData, int position, String categoryName);
 
     void setPage(int page);
+
+    int getPage();
 }

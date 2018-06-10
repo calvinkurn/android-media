@@ -1,5 +1,6 @@
 package com.tokopedia.flight.search.di;
 
+import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.common.di.component.FlightComponent;
 import com.tokopedia.flight.search.view.activity.FlightSearchFilterActivity;
 import com.tokopedia.flight.search.view.fragment.FlightSearchFragment;
@@ -13,6 +14,8 @@ import dagger.Component;
 @FlightSearchScope
 @Component(modules = FlightSearchModule.class, dependencies = FlightComponent.class)
 public interface FlightSearchComponent {
+
+    FlightModuleRouter flightModuleRouter();
 
     void inject(FlightSearchFragment flightSearchFragment);
 

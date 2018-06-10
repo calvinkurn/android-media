@@ -55,6 +55,7 @@ public class ExplorePresenter extends BaseDaggerPresenter<ExploreContract.View> 
     public void getData() {
         subscription = localDataUseCase.getExecuteObservable(RequestParams.EMPTY)
                 .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(refreshAction())
                 .onErrorResumeNext(getDataFromNetwork())
@@ -109,6 +110,7 @@ public class ExplorePresenter extends BaseDaggerPresenter<ExploreContract.View> 
     public Observable<List<ExploreSectionViewModel>> getDataFromNetwork() {
         return dataUseCase.getExecuteObservable(RequestParams.EMPTY)
                 .subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 }

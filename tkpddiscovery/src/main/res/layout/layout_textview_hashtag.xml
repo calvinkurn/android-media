@@ -8,12 +8,12 @@
         android:id="@+id/hashtags_txt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/margin_vs"
+        android:layout_marginRight="@dimen/dp_5"
         android:background="@drawable/btn_cancel"
-        android:paddingBottom="@dimen/padding_vs"
-        android:paddingLeft="@dimen/padding_small"
-        android:paddingRight="@dimen/padding_small"
-        android:paddingTop="@dimen/padding_vs"
+        android:paddingBottom="@dimen/dp_5"
+        android:paddingLeft="@dimen/dp_10"
+        android:paddingRight="@dimen/dp_10"
+        android:paddingTop="@dimen/dp_5"
         android:textColor="@color/label_color" />
 
 </RelativeLayout>

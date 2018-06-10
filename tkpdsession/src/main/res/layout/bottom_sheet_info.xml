@@ -66,11 +66,11 @@
             tools:listitem="@layout/item_change_phone_number_warning"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/new_margin_small"
-            android:paddingLeft="@dimen/new_margin_med"
-            android:paddingRight="@dimen/new_margin_med"
-            android:paddingBottom="@dimen/new_margin_med"
-            android:layout_marginBottom="@dimen/new_margin_small"
+            android:paddingTop="@dimen/dp_8"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16"
+            android:paddingBottom="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_8"
             />
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>

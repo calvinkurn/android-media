@@ -8,6 +8,8 @@ import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.seller.reputation.domain.ReputationReviewRepository;
 import com.tokopedia.seller.util.ShopNetworkController;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -21,6 +23,7 @@ import rx.schedulers.Schedulers;
 public class ShopInfoUseCase extends UseCase<ShopModel> {
     private ReputationReviewRepository reputationReviewRepository;
 
+    @Inject
     public ShopInfoUseCase(
             ThreadExecutor threadExecutor,
             PostExecutionThread postExecutionThread,

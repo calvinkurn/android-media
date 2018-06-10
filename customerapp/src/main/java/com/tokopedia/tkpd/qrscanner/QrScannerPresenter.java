@@ -8,16 +8,20 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.tkpd.campaign.analytics.CampaignTracking;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.campaign.data.entity.CampaignResponseEntity;
 import com.tokopedia.tkpd.campaign.data.model.CampaignException;
 import com.tokopedia.tkpd.campaign.di.IdentifierWalletQualifier;
 import com.tokopedia.tkpd.campaign.domain.barcode.PostBarCodeDataUseCase;
+import com.tokopedia.tkpd.deeplink.domain.branchio.BranchIODeeplinkUseCase;
+import com.tokopedia.tkpd.deeplink.source.entity.BranchIOAndroidDeepLink;
 import com.tokopedia.tokocash.network.exception.WalletException;
-import com.tokopedia.tokocash.qrpayment.domain.GetBalanceTokoCashUseCase;
+import com.tokopedia.tokocash.balance.domain.GetBalanceTokoCashUseCase;
 import com.tokopedia.tokocash.qrpayment.domain.GetInfoQrTokoCashUseCase;
 import com.tokopedia.tokocash.qrpayment.presentation.activity.NominalQrPaymentActivity;
-import com.tokopedia.tokocash.qrpayment.presentation.model.BalanceTokoCash;
+import com.tokopedia.tokocash.balance.view.BalanceTokoCash;
 import com.tokopedia.tokocash.qrpayment.presentation.model.InfoQrTokoCash;
 import com.tokopedia.usecase.RequestParams;
 
@@ -27,6 +31,7 @@ import javax.inject.Inject;
 
 import rx.Subscriber;
 
+import static com.tokopedia.core.network.retrofit.utils.AuthUtil.KEY.KEY_BRANCHIO;
 import static com.tokopedia.tkpd.campaign.domain.barcode.PostBarCodeDataUseCase.CAMPAIGN_ID;
 
 
@@ -42,6 +47,7 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
     private PostBarCodeDataUseCase postBarCodeDataUseCase;
     private GetInfoQrTokoCashUseCase getInfoQrTokoCashUseCase;
     private GetBalanceTokoCashUseCase getBalanceTokoCashUseCase;
+    private BranchIODeeplinkUseCase branchIODeeplinkUseCase;
     private Context context;
     private UserSession userSession;
     private LocalCacheHandler localCacheHandler;
@@ -50,14 +56,17 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
     public QrScannerPresenter(PostBarCodeDataUseCase postBarCodeDataUseCase,
                               GetInfoQrTokoCashUseCase getInfoQrTokoCashUseCase,
                               GetBalanceTokoCashUseCase getBalanceTokoCashUseCase,
+                              BranchIODeeplinkUseCase branchIODeeplinkUseCase,
                               @ApplicationContext Context context, UserSession userSession,
-                              @IdentifierWalletQualifier LocalCacheHandler localCacheHandler) {
+                              @IdentifierWalletQualifier LocalCacheHandler localCacheHandler
+    ) {
         this.postBarCodeDataUseCase = postBarCodeDataUseCase;
         this.getInfoQrTokoCashUseCase = getInfoQrTokoCashUseCase;
         this.context = context;
         this.userSession = userSession;
         this.localCacheHandler = localCacheHandler;
         this.getBalanceTokoCashUseCase = getBalanceTokoCashUseCase;
+        this.branchIODeeplinkUseCase = branchIODeeplinkUseCase;
     }
 
     @Override
@@ -70,12 +79,48 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
                 onScanCompleteGetInfoQrPayment(uri.getPathSegments().get(0));
             } else if (host.equals(QrScannerTypeDef.CAMPAIGN_QR_CODE)) {
                 onScanCompleteGetInfoQrCampaign(uri.getPathSegments().get(0));
+            } else if(host.contains("tokopedia.link")){
+                onScanBranchIOLink(barcodeData);
+            } else if (host.contains("tokopedia")) {
+                openActivity(barcodeData);
             } else {
                 getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
             }
         } else {
             getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
         }
+    }
+
+    private void onScanBranchIOLink(String qrCode) {
+        getView().showProgressDialog();
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString("url", qrCode);
+        requestParams.putString("branch_key", KEY_BRANCHIO);
+        branchIODeeplinkUseCase.execute(requestParams, new Subscriber<BranchIOAndroidDeepLink>() {
+            @Override
+            public void onCompleted() {
+                getView().hideProgressDialog();
+                getView().finish();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                getView().hideProgressDialog();
+                if (e instanceof CampaignException) {
+                    getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
+                    CampaignTracking.eventScanQRCode("fail",context.getString(R.string.msg_dialog_wrong_scan),"");
+                } else {
+                    getView().showErrorNetwork(e);
+                    CampaignTracking.eventScanQRCode("fail",context.getString(R.string.msg_dialog_wrong_scan),"");
+                }
+            }
+
+            @Override
+            public void onNext(BranchIOAndroidDeepLink branchIOAndroidDeepLink) {
+                openActivity(Constants.Schemes.APPLINKS + "://" + branchIOAndroidDeepLink.getAndroidDeeplinkPath());
+                CampaignTracking.eventScanQRCode("success","",branchIOAndroidDeepLink.getAndroidDeeplinkPath());
+            }
+        });
     }
 
     private void onScanCompleteGetInfoQrPayment(String qrcode) {
@@ -88,33 +133,42 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
         }
     }
 
-    private void onScanCompleteGetInfoQrCampaign(String idCampaign) {
+    private void onScanCompleteGetInfoQrCampaign(final String idCampaign) {
         getView().showProgressDialog();
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(CAMPAIGN_ID, idCampaign);
         postBarCodeDataUseCase.execute(requestParams, new Subscriber<CampaignResponseEntity>() {
             @Override
             public void onCompleted() {
+                getView().hideProgressDialog();
                 getView().finish();
             }
 
             @Override
             public void onError(Throwable e) {
+                getView().hideProgressDialog();
                 if (e instanceof CampaignException) {
                     getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
                 } else {
                     getView().showErrorNetwork(e);
                 }
+                CampaignTracking.eventScanQRCode("fail",idCampaign,"");
             }
 
             @Override
             public void onNext(CampaignResponseEntity s) {
-                Uri uri = Uri.parse("" + s.getUrl());
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(uri);
-                getView().startActivity(intent);
+                openActivity(s.getUrl());
+                CampaignTracking.eventScanQRCode("success",idCampaign,s.getUrl());
             }
         });
+    }
+
+    public void openActivity(String url) {
+        Uri uri = Uri.parse("" + url);
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(uri);
+        getView().startActivity(intent);
+
     }
 
     @Override

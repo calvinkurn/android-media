@@ -33,10 +33,8 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.LabelUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
@@ -418,9 +416,11 @@ public class ReputationViewShop extends TActivity {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(
-                        PeopleInfoNoDrawerActivity.createInstance(getBaseContext(), model.userId)
-                );
+                if (getBaseContext().getApplicationContext() instanceof ReputationRouter) {
+                    startActivity(((ReputationRouter) getBaseContext().getApplicationContext())
+                            .getTopProfileIntent(getBaseContext(),
+                                    model.userId));
+                }
             }
         };
     }
@@ -429,9 +429,7 @@ public class ReputationViewShop extends TActivity {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ReputationViewShop.this, ShopInfoActivity.class);
-                Bundle bundle = ShopInfoActivity.createBundle(model.shopId, "", model.shopName, model.shopAvatarUrl, 0);
-                intent.putExtras(bundle);
+                Intent intent = ((ReputationRouter) getApplication()).getShopPageIntent(ReputationViewShop.this, model.shopId);
                 startActivity(intent);
             }
         };

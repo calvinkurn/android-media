@@ -1,7 +1,6 @@
 package com.tokopedia.topads.sdk.view;
 
 import com.tokopedia.topads.sdk.base.adapter.Item;
-import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 
@@ -25,8 +24,8 @@ public interface AdsView {
 
     void notifyAdsErrorLoaded(int errorCode, String message);
 
-    void notifyProductClickListener(Product product);
+    void notifyProductClickListener(int position, Product product);
 
-    void notifyShopClickListener(Shop shop);
+    void notifyShopClickListener(int position, Shop shop);
 
 }

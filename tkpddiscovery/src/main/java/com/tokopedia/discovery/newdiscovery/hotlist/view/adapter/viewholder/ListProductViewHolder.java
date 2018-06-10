@@ -9,6 +9,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.analytics.HotlistPageTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.model.Hotlist;
@@ -132,7 +133,7 @@ public class ListProductViewHolder extends AbstractViewHolder<HotlistProductView
     }
 
     protected void renderProductImage(String imageUrl) {
-        ImageHandler.loadImageThumbs(context, productImage, imageUrl);
+        ImageHandler.loadImageSourceSize(context, productImage, imageUrl);
     }
 
     protected void renderShopLocation(String shopCity) {

@@ -37,9 +37,11 @@ import com.tokopedia.flight.booking.di.FlightBookingComponent;
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.flight.booking.view.activity.FlightBookingPassengerActivity;
 import com.tokopedia.flight.booking.view.activity.FlightBookingPhoneCodeActivity;
+import com.tokopedia.flight.booking.view.activity.FlightInsuranceWebviewActivity;
 import com.tokopedia.flight.booking.view.adapter.FlightBookingPassengerActionListener;
 import com.tokopedia.flight.booking.view.adapter.FlightBookingPassengerAdapter;
 import com.tokopedia.flight.booking.view.adapter.FlightBookingPassengerAdapterTypeFactory;
+import com.tokopedia.flight.booking.view.adapter.FlightInsuranceAdapter;
 import com.tokopedia.flight.booking.view.adapter.FlightSimpleAdapter;
 import com.tokopedia.flight.booking.view.presenter.FlightBookingContract;
 import com.tokopedia.flight.booking.view.presenter.FlightBookingPresenter;
@@ -47,15 +49,18 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingCartData;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingParamViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightInsuranceViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.booking.widget.CardWithActionView;
 import com.tokopedia.flight.booking.widget.CountdownTimeView;
+import com.tokopedia.flight.booking.widget.FlightInsuranceView;
 import com.tokopedia.flight.common.constant.FlightFlowConstant;
 import com.tokopedia.flight.common.constant.FlightFlowExtraConstant;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.util.FlightErrorUtil;
 import com.tokopedia.flight.common.util.FlightFlowUtil;
 import com.tokopedia.flight.common.util.FlightRequestUtil;
+import com.tokopedia.flight.common.view.FullDividerItemDecoration;
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 import com.tokopedia.flight.review.view.activity.FlightBookingReviewActivity;
@@ -81,6 +86,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     private static final String INTERRUPT_DIALOG_TAG = "interrupt_dialog";
     private static final String KEY_CART_DATA = "KEY_CART_DATA";
     private static final String KEY_PARAM_VIEW_MODEL_DATA = "KEY_PARAM_VIEW_MODEL_DATA";
+    private static final String KEY_PARAM_EXPIRED_DATE = "KEY_PARAM_EXPIRED_DATE";
 
     private static final int REQUEST_CODE_PASSENGER = 1;
     private static final int REQUEST_CODEP_PHONE_CODE = 2;
@@ -109,6 +115,8 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     private AppCompatTextView tvPhoneCountryCode;
     private RecyclerView pricelistsRecyclerView;
     private AppCompatEditText etPhoneNumber;
+    private LinearLayout insuranceLayout;
+    private RecyclerView insuranceRecyclerView;
 
     private FlightSimpleAdapter priceListAdapter;
 
@@ -118,6 +126,8 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     private FlightBookingPassengerAdapter adapter;
     private String contactBirthdate;
     private int contactGender;
+    private Date expiredTransactionDate;
+    private FlightInsuranceAdapter flightInsuranceAdapter;
 
     public FlightBookingFragment() {
         // Required empty public constructor
@@ -150,11 +160,15 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        paramViewModel.setContactName(getContactName());
+        paramViewModel.setContactPhone(getContactPhoneNumber());
+        paramViewModel.setContactEmail(getContactEmail());
         outState.putParcelable(EXTRA_SEARCH_PASS_DATA, paramViewModel.getSearchParam());
         outState.putString(EXTRA_FLIGHT_DEPARTURE_ID, departureTripId);
         outState.putString(EXTRA_FLIGHT_ARRIVAL_ID, returnTripId);
         outState.putParcelable(KEY_CART_DATA, flightBookingCartData);
         outState.putParcelable(KEY_PARAM_VIEW_MODEL_DATA, paramViewModel);
+        outState.putSerializable(KEY_PARAM_EXPIRED_DATE, expiredTransactionDate);
     }
 
     @Override
@@ -167,6 +181,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         departureInfoView = (CardWithActionView) view.findViewById(R.id.cwa_departure_info);
         returnInfoView = (CardWithActionView) view.findViewById(R.id.cwa_return_info);
         passengerRecyclerView = (RecyclerView) view.findViewById(R.id.rv_passengers);
+        passengerRecyclerView.addItemDecoration(new FullDividerItemDecoration(passengerRecyclerView.getContext()));
         submitButton = (AppCompatButton) view.findViewById(R.id.button_submit);
         tilContactName = (TkpdHintTextInputLayout) view.findViewById(R.id.til_contact_name);
         etContactName = (AppCompatEditText) view.findViewById(R.id.et_contact_name);
@@ -181,6 +196,8 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         fullPageLayout = (NestedScrollView) view.findViewById(R.id.container_full_page);
         sameAsContactContainer = view.findViewById(R.id.container_same_as_contact);
         sameAsContactCheckbox = view.findViewById(R.id.checkbox);
+        insuranceLayout = view.findViewById(R.id.insurance_layout);
+        insuranceRecyclerView = view.findViewById(R.id.rv_insurance);
 
         tvPhoneCountryCode.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -245,16 +262,14 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         super.onViewCreated(view, savedInstanceState);
         presenter.attachView(this);
         if (savedInstanceState == null) {
-            presenter.processGetCartData();
+            presenter.initialize();
         } else {
             flightBookingCartData = savedInstanceState.getParcelable(KEY_CART_DATA);
             paramViewModel = savedInstanceState.getParcelable(KEY_PARAM_VIEW_MODEL_DATA);
+            expiredTransactionDate = (Date) savedInstanceState.getSerializable(KEY_PARAM_EXPIRED_DATE);
             hideFullPageLoading();
             presenter.renderUi(flightBookingCartData, true);
         }
-
-        presenter.onGetProfileData();
-        presenter.initialize();
     }
 
     @Override
@@ -401,7 +416,8 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
                         flightBookingCartData.getMealViewModels(),
                         isAirAsiaAirlines,
                         departureDate,
-                        requestId
+                        requestId,
+                        flightBookingCartData.isDomestic()
                 ),
                 REQUEST_CODE_PASSENGER
         );
@@ -430,12 +446,17 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         returnInfoView.setContentInfo("(" + FlightDateUtil.formatToUi(searchParam.getReturnDate()) + ")");
         String airLineSection = "";
         String tripInfo = "";
-        if (returnTrip.getRouteList().size() > 1) {
-            airLineSection = getString(R.string.flight_booking_multiple_airline_trip_card);
-            tripInfo += String.format(getString(R.string.flight_booking_trip_info_format), returnTrip.getRouteList().size() - 1, getString(R.string.flight_booking_transit_trip_card));
+        if (returnTrip.getAirlineDataList() != null) {
+            if (returnTrip.getAirlineDataList().size() == 1) {
+                airLineSection = returnTrip.getAirlineDataList().get(0).getShortName();
+            } else {
+                airLineSection = getString(R.string.flight_booking_multiple_airline_trip_card);
+            }
+        }
+        if (returnTrip.getTotalTransit() > 0) {
+            tripInfo += String.format(getString(R.string.flight_booking_trip_info_format), returnTrip.getTotalTransit(), getString(R.string.flight_booking_transit_trip_card));
         } else {
             tripInfo += String.format(getString(R.string.flight_booking_trip_info_format_without_count), getString(R.string.flight_booking_directly_trip_card));
-            airLineSection = returnTrip.getRouteList().get(0).getAirlineName();
         }
         returnInfoView.setSubContent(airLineSection);
         tripInfo += " " + String.format(getString(R.string.flight_booking_trip_info_airport_format), returnTrip.getDepartureTime(), returnTrip.getArrivalTime());
@@ -443,21 +464,26 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     }
 
     @Override
-    public void showAndRenderDepartureTripCardDetail(FlightSearchPassDataViewModel searchParam, FlightDetailViewModel returnTrip) {
+    public void showAndRenderDepartureTripCardDetail(FlightSearchPassDataViewModel searchParam, FlightDetailViewModel departureTrip) {
         departureInfoView.setVisibility(View.VISIBLE);
-        departureInfoView.setContent(returnTrip.getDepartureAirportCity() + " - " + returnTrip.getArrivalAirportCity());
+        departureInfoView.setContent(departureTrip.getDepartureAirportCity() + " - " + departureTrip.getArrivalAirportCity());
         departureInfoView.setContentInfo("(" + FlightDateUtil.formatToUi(searchParam.getDepartureDate()) + ")");
         String airLineSection = "";
         String tripInfo = "";
-        if (returnTrip.getRouteList().size() > 1) {
-            airLineSection = getString(R.string.flight_booking_multiple_airline_trip_card);
-            tripInfo += String.format(getString(R.string.flight_booking_trip_info_format), returnTrip.getRouteList().size() - 1, getString(R.string.flight_booking_transit_trip_card));
+        if (departureTrip.getAirlineDataList() != null) {
+            if (departureTrip.getAirlineDataList().size() == 1) {
+                airLineSection = departureTrip.getAirlineDataList().get(0).getShortName();
+            } else {
+                airLineSection = getString(R.string.flight_booking_multiple_airline_trip_card);
+            }
+        }
+        if (departureTrip.getTotalTransit() > 0) {
+            tripInfo += String.format(getString(R.string.flight_booking_trip_info_format), departureTrip.getTotalTransit(), getString(R.string.flight_booking_transit_trip_card));
         } else {
             tripInfo += String.format(getString(R.string.flight_booking_trip_info_format_without_count), getString(R.string.flight_booking_directly_trip_card));
-            airLineSection = returnTrip.getRouteList().get(0).getAirlineName();
         }
         departureInfoView.setSubContent(airLineSection);
-        tripInfo += " " + String.format(getString(R.string.flight_booking_trip_info_airport_format), returnTrip.getDepartureTime(), returnTrip.getArrivalTime());
+        tripInfo += " " + String.format(getString(R.string.flight_booking_trip_info_airport_format), departureTrip.getDepartureTime(), departureTrip.getArrivalTime());
         departureInfoView.setSubContentInfo(tripInfo);
     }
 
@@ -541,6 +567,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
 
     @Override
     public void renderFinishTimeCountDown(Date date) {
+        expiredTransactionDate = date;
         countdownFinishTransactionView.setListener(new CountdownTimeView.OnActionListener() {
             @Override
             public void onFinished() {
@@ -553,9 +580,9 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     }
 
     @Override
-    public void showExpireTransactionDialog() {
+    public void showExpireTransactionDialog(String message) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
-        dialog.setMessage(R.string.flight_booking_expired_booking_label);
+        dialog.setMessage(message);
         dialog.setPositiveButton(getActivity().getString(R.string.title_ok),
                 new DialogInterface.OnClickListener() {
                     @Override
@@ -574,6 +601,24 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     public void setCartId(String id) {
         flightBookingCartData.setId(id);
         getCurrentBookingParamViewModel().setId(id);
+    }
+
+    @Override
+    public void showSoldOutDialog() {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+        dialog.setMessage(R.string.flight_booking_sold_out_label);
+        dialog.setPositiveButton(getActivity().getString(R.string.title_ok),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        FlightFlowUtil.actionSetResultAndClose(getActivity(),
+                                getActivity().getIntent(),
+                                FlightFlowConstant.EXPIRED_JOURNEY
+                        );
+                    }
+                });
+        dialog.setCancelable(false);
+        dialog.create().show();
     }
 
     @Override
@@ -716,16 +761,53 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         getActivity().finish();
     }
 
-    public void onBackPressed() {
-        presenter.deleteAllPassengerList();
-    }
-
     @Override
     public void setSameAsContactChecked(boolean isChecked) {
         // ((CompoundButton) sameAsContactCheckbox).setChecked(isChecked);
     }
 
-//    private View.OnClickListener getCheckboxClickListener() {
+    @Override
+    public Date getExpiredTransactionDate() {
+        return expiredTransactionDate;
+    }
+
+    @Override
+    public void showInsuranceLayout() {
+        insuranceLayout.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideInsuranceLayout() {
+        insuranceLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void renderInsurance(List<FlightInsuranceViewModel> insurances) {
+        if (flightInsuranceAdapter == null) {
+            flightInsuranceAdapter = new FlightInsuranceAdapter(insurances);
+            flightInsuranceAdapter.setActionListener(new FlightInsuranceView.ActionListener() {
+                @Override
+                public void onInsuranceChecked(FlightInsuranceViewModel insurance, boolean checked) {
+                    presenter.onInsuranceChanges(insurance, checked);
+                }
+
+                @Override
+                public void onMoreInfoClicked(String tncUrl, String title) {
+                    startActivity(FlightInsuranceWebviewActivity.getCallingIntent(getActivity(), tncUrl, title));
+                    presenter.onMoreInsuranceInfoClicked();
+                }
+
+                @Override
+                public void onBenefitExpanded() {
+                    presenter.onInsuranceBenefitExpanded();
+                }
+            });
+            insuranceRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            insuranceRecyclerView.setAdapter(flightInsuranceAdapter);
+        }
+    }
+
+    //    private View.OnClickListener getCheckboxClickListener() {
 //        return new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {

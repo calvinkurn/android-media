@@ -1,6 +1,7 @@
 package com.tokopedia.tkpdpdp;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -12,7 +13,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager;
+import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.network.entity.variant.Child;
@@ -20,13 +23,15 @@ import com.tokopedia.core.network.entity.variant.Option;
 import com.tokopedia.core.network.entity.variant.ProductVariant;
 import com.tokopedia.core.network.entity.variant.Variant;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
-import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpdpdp.adapter.VariantOptionAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static android.view.View.VISIBLE;
+import static com.tokopedia.core.router.productdetail.ProductDetailRouter.EXTRA_PRODUCT_ID;
+import static com.tokopedia.core.var.TkpdCache.Key.STATE_ORIENTATION_CHANGED;
+import static com.tokopedia.core.var.TkpdCache.PRODUCT_DETAIL;
 
 
 public class VariantActivity extends TActivity  implements VariantOptionAdapter.OnVariantOptionChoosedListener  {
@@ -42,6 +47,7 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
     public static final int SELECTED_VARIANT_RESULT = 99;
     public static final int SELECTED_VARIANT_RESULT_TO_BUY = 98;
     public static final int KILL_PDP_BACKGROUND = 97;
+    private static final String CRASHLYTIC_VARIANT_TAG = "CRASHLYTIC VARIANT";
 
     private TextView topBarTitle;
     private ImageView productImage;
@@ -60,18 +66,27 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
     private TextView selectedLevel2;
     private TextView sizeChartLevel1;
     private TextView sizeChartLevel2;
+    private TextView textStock;
 
     private VariantOptionAdapter variantOptionAdapterLevel2;
     private VariantOptionAdapter variantOptionAdapterLevel1;
 
     private ProductVariant productVariant;
     private ProductDetailData productDetailData;
+    private String mainImage = "";
+    private LocalCacheHandler localCacheHandler;
+
+    @Override
+    protected void forceRotation() {
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         productVariant = getIntent().getParcelableExtra(KEY_VARIANT_DATA);
         productDetailData = getIntent().getParcelableExtra(KEY_PRODUCT_DETAIL_DATA);
+        localCacheHandler = new LocalCacheHandler(VariantActivity.this, PRODUCT_DETAIL);
         setContentView(R.layout.activity_variant);
         hideToolbar();
         initView();
@@ -100,6 +115,7 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
         selectedLevel2 = findViewById(R.id.selected_variant_level2);
         sizeChartLevel1 = findViewById(R.id.sizechart_level1);
         sizeChartLevel2 = findViewById(R.id.sizechart_level2);
+        textStock = findViewById(R.id.text_variant_stock);
         ImageHandler.LoadImage(productImage, productDetailData.getProductImages().get(0).getImageSrc300());
         if (!TextUtils.isEmpty(productVariant.getSizechart()) &&
                 productVariant.getVariant().get(0).getIdentifier().equals(IDENTIFIER_SIZE)) {
@@ -122,6 +138,23 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
             });
         }
         renderHeaderInfo();
+        setUpByConfiguration(getResources().getConfiguration());
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        setUpByConfiguration(newConfig);
+    }
+
+    private void setUpByConfiguration(Configuration configuration) {
+        if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            if (!localCacheHandler.getBoolean(STATE_ORIENTATION_CHANGED).booleanValue()) {
+                UnifyTracking.eventPDPOrientationChanged(Integer.toString(productDetailData.getInfo().getProductId()));
+                localCacheHandler.putBoolean(STATE_ORIENTATION_CHANGED,Boolean.TRUE);
+                localCacheHandler.applyEditor();
+            }
+        }
     }
 
     private void renderHeaderInfo() {
@@ -161,7 +194,7 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
 
     private void initViewListener() {
         if (getIntent().getBooleanExtra(KEY_SELLER_MODE,false)) {
-           buttonSave.setVisibility(View.GONE);
+            buttonSave.setVisibility(View.GONE);
         }
         findViewById(R.id.simple_top_bar_close_button)
                 .setOnClickListener(new View.OnClickListener() {
@@ -218,6 +251,7 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
     private Intent generateExtraSelectedIntent() {
         Intent intent = new Intent();
         intent.putExtra(KEY_PRODUCT_DETAIL_DATA,productDetailData);
+        intent.putExtra(KEY_VARIANT_DATA,productVariant);
         intent.putExtra(KEY_LEVEL1_SELECTED,variantOptionAdapterLevel1.getSelectedOption());
         if (productVariant.getVariant().size()>1)intent.putExtra(KEY_LEVEL2_SELECTED,variantOptionAdapterLevel2.getSelectedOption());
         return intent;
@@ -264,20 +298,43 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
             defaultChild = productVariant.getChildFromProductId(productVariant.getDefaultChild());
         }
 
-        int option1 = defaultChild.getOptionIds().get(0);
-        if (getIntent().getParcelableExtra(KEY_LEVEL1_SELECTED) != null
-                && getIntent().getParcelableExtra(KEY_LEVEL1_SELECTED) instanceof Option) {
-            option1 = ((Option) getIntent().getParcelableExtra(KEY_LEVEL1_SELECTED)).getId();
+        try {
+            if (defaultChild != null && TextUtils.isEmpty(defaultChild.getPicture().getThumbnail())) {
+                mainImage = productDetailData.getProductImages().get(0).getImageSrc();
+            } else if (productDetailData.getProductImages().size()>1) {
+                mainImage = productDetailData.getProductImages().get(1).getImageSrc();
+            }
+        } catch (Exception e) {
+            Crashlytics.log(
+                    0,
+                    CRASHLYTIC_VARIANT_TAG,
+                    String.valueOf(productDetailData.getInfo().getProductId()) + " " + e.getMessage()
+            );
         }
-        for (int i=0; i<variantOptionAdapterLevel1.getVariantOptions().size(); i++) {
-            variantOptionAdapterLevel1.getVariantOptions().get(i).setEnabled(
-                    productVariant.isOptionAvailable(variantOptionAdapterLevel1.getVariantOptions().get(i)));
-            if (option1 == variantOptionAdapterLevel1.getVariantOptions().get(i).getId()) {
-                variantOptionAdapterLevel1.setSelectedPosition(i);
+
+        for (Child child: productVariant.getChildren()) {
+            if (TextUtils.isEmpty(child.getPicture().getThumbnail())) {
+                child.getPicture().setThumbnail(mainImage);
+                child.getPicture().setOriginal(mainImage);
             }
         }
 
-        if (productVariant.getVariant().size()==2) {
+        if (defaultChild!=null && defaultChild.getOptionIds() != null && defaultChild.getOptionIds().size()>0) {
+            int option1 = defaultChild.getOptionIds().get(0);
+            if (getIntent().getParcelableExtra(KEY_LEVEL1_SELECTED) != null
+                    && getIntent().getParcelableExtra(KEY_LEVEL1_SELECTED) instanceof Option) {
+                option1 = ((Option) getIntent().getParcelableExtra(KEY_LEVEL1_SELECTED)).getId();
+            }
+            for (int i=0; i<variantOptionAdapterLevel1.getVariantOptions().size(); i++) {
+                variantOptionAdapterLevel1.getVariantOptions().get(i).setEnabled(
+                        productVariant.isOptionAvailable(variantOptionAdapterLevel1.getVariantOptions().get(i)));
+                if (option1 == variantOptionAdapterLevel1.getVariantOptions().get(i).getId()) {
+                    variantOptionAdapterLevel1.setSelectedPosition(i);
+                }
+            }
+        }
+
+        if (productVariant.getVariant().size()==2 && defaultChild.getOptionIds().size()>1) {
             int option2 = defaultChild.getOptionIds().get(1);
             if (getIntent().getParcelableExtra(KEY_LEVEL2_SELECTED) != null
                     && getIntent().getParcelableExtra(KEY_LEVEL2_SELECTED) instanceof Option) {
@@ -362,11 +419,22 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
         }
         Child child = getProductDatumSelected();
         if (child!=null) {
+            if(child.isEnabled()){
+                if(child.isLimitedStock()){
+                    textStock.setTextColor(ContextCompat.getColor(VariantActivity.this, R.color.tkpd_dark_red));
+                } else {
+                    textStock.setTextColor(ContextCompat.getColor(VariantActivity.this, R.color.black_70));
+                }
+                textStock.setText(child.getStockWording());
+                textStock.setVisibility(View.VISIBLE);
+            }
             productDetailData.getInfo().setProductId(child.getProductId());
             productDetailData.getInfo().setProductName(child.getName());
             productDetailData.getInfo().setProductPrice(child.getPriceFmt());
             productDetailData.getInfo().setProductUrl(child.getUrl());
             productDetailData.getInfo().setProductAlreadyWishlist(child.isWishlist()?1:0);
+            productDetailData.getInfo().setProductStockWording(child.getStockWording());
+            productDetailData.getInfo().setLimitedStock(child.isLimitedStock());
             productDetailData.setCampaign(child.getCampaign());
             if (!TextUtils.isEmpty(child.getPicture().getThumbnail()))  {
                 productDetailData.getProductImages().get(0).setImageSrc300(child.getPicture().getThumbnail());
@@ -388,6 +456,11 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
         Child childSelected = getProductDatumSelected();
         if (childSelected!=null && childSelected.isIsBuyable() && productDetailData.getShopInfo().getShopStatus()==1) {
             setResult(VariantActivity.SELECTED_VARIANT_RESULT, generateExtraSelectedIntent());
+        } else {
+            Intent intent = new Intent();
+            intent.putExtra(KEY_PRODUCT_DETAIL_DATA, productDetailData);
+            intent.putExtra(KEY_VARIANT_DATA, productVariant);
+            setResult(VariantActivity.SELECTED_VARIANT_RESULT, intent);
         }
         finish();
         VariantActivity.this.overridePendingTransition(0,com.tokopedia.core.R.anim.push_down);

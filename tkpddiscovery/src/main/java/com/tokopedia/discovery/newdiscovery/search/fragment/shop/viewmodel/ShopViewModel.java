@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.adapter.typefactory.ShopListTypeFactory;
 
 import java.util.ArrayList;
@@ -69,6 +70,7 @@ public class ShopViewModel implements Parcelable {
         private boolean isFavorited;
         private boolean isFavoriteButtonEnabled = true;
         private List<String> productImages = new ArrayList<>();
+        private int position;
 
         public String getShopGoldShop() {
             return shopGoldShop;
@@ -270,6 +272,26 @@ public class ShopViewModel implements Parcelable {
             this.productImages = productImages;
         }
 
+        public int getPosition() {
+            return position;
+        }
+
+        public void setPosition(int position) {
+            this.position = position;
+        }
+
+        public int getPage() {
+            return (position - 1) / Integer.parseInt(BrowseApi.DEFAULT_VALUE_OF_PARAMETER_ROWS) + 1;
+        }
+
+        public ShopItem() {
+        }
+
+        @Override
+        public int type(ShopListTypeFactory typeFactory) {
+            return typeFactory.type(this);
+        }
+
         @Override
         public int describeContents() {
             return 0;
@@ -302,9 +324,7 @@ public class ShopViewModel implements Parcelable {
             dest.writeByte(this.isFavorited ? (byte) 1 : (byte) 0);
             dest.writeByte(this.isFavoriteButtonEnabled ? (byte) 1 : (byte) 0);
             dest.writeStringList(this.productImages);
-        }
-
-        public ShopItem() {
+            dest.writeInt(this.position);
         }
 
         protected ShopItem(Parcel in) {
@@ -333,9 +353,10 @@ public class ShopViewModel implements Parcelable {
             this.isFavorited = in.readByte() != 0;
             this.isFavoriteButtonEnabled = in.readByte() != 0;
             this.productImages = in.createStringArrayList();
+            this.position = in.readInt();
         }
 
-        public static final Parcelable.Creator<ShopItem> CREATOR = new Parcelable.Creator<ShopItem>() {
+        public static final Creator<ShopItem> CREATOR = new Creator<ShopItem>() {
             @Override
             public ShopItem createFromParcel(Parcel source) {
                 return new ShopItem(source);
@@ -346,11 +367,6 @@ public class ShopViewModel implements Parcelable {
                 return new ShopItem[size];
             }
         };
-
-        @Override
-        public int type(ShopListTypeFactory typeFactory) {
-            return typeFactory.type(this);
-        }
     }
 
     public ShopViewModel() {

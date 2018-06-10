@@ -21,7 +21,8 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.core.util.TopAdsUtil;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.favorite.view.viewlistener.FavoriteClickListener;
@@ -150,16 +151,7 @@ public class TopAdsShopAdapter extends RecyclerView.Adapter<TopAdsShopAdapter.Vi
                 Context context = view.getContext();
                 TopAdsUtil.clickTopAdsAction(context, item.getShopClickUrl());
                 UnifyTracking.eventFavoriteViewRecommendation();
-                Intent intent = new Intent(context, ShopInfoActivity.class);
-                Bundle bundle = ShopInfoActivity.createBundle(
-                        item.getShopId(),
-                        item.getShopDomain(),
-                        item.getShopName(),
-                        item.getShopImageUrl(),
-                        item.getShopCoverUrl(),
-                        (item.isFav() ? 1 : 0));
-                bundle.putString(ShopInfoActivity.SHOP_AD_KEY, item.getAdKey());
-                intent.putExtras(bundle);
+                Intent intent = ShopPageActivity.createIntent(context, item.getShopId());
                 context.startActivity(intent);
             }
         };

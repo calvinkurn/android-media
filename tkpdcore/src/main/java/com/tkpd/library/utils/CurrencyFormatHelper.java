@@ -242,10 +242,15 @@ public final class CurrencyFormatHelper {
 	}
 
     public static int convertRupiahToInt(String rupiah) {
-        rupiah = rupiah.replace("Rp", "");
-        rupiah = rupiah.replace(".", "");
-        rupiah = rupiah.replace(" ", "");
-        return Integer.parseInt(rupiah);
+		try {
+        	rupiah = rupiah.replace("Rp", "");
+        	rupiah = rupiah.replace(".", "");
+        	rupiah = rupiah.replace(" ", "");
+			return Integer.parseInt(rupiah);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 0;
+		}
     }
 
 	public static double convertRupiahToDouble(String rupiah) {

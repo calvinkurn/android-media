@@ -26,7 +26,7 @@
             android:id="@+id/calendar_icon"
             android:layout_width="19.5dp"
             android:layout_height="19.5dp"
-            android:src="@mipmap/ic_icon_calendar_02" />
+            app:srcCompat="@mipmap/ic_icon_calendar_02" />
 
         <View
             android:layout_width="0dp"

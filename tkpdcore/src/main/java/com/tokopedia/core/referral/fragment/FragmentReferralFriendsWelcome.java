@@ -2,6 +2,7 @@ package com.tokopedia.core.referral.fragment;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -105,8 +106,8 @@ public class FragmentReferralFriendsWelcome extends BasePresenterFragment<IRefer
             }
         });
         String msg = presenter.getReferralWelcomeMsg();
-        if (msg != null && !"".equalsIgnoreCase(msg.trim()))
-            welcomeMessageTextView.setText(presenter.getReferralWelcomeMsg());
+        if (!TextUtils.isEmpty(msg))
+            welcomeMessageTextView.setText(msg);
 
         TextViewHelpLink.setText(presenter.getHowItWorks());
         TextViewHelpLink.setOnClickListener(new View.OnClickListener() {

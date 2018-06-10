@@ -1,6 +1,7 @@
 package com.tokopedia.core.myproduct.utils;
 
 import android.annotation.TargetApi;
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
@@ -13,6 +14,7 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.webkit.MimeTypeMap;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.app.MainApplication;
@@ -31,7 +33,7 @@ import java.util.Random;
  */
 public class FileUtils {
     public static final String CACHE_TOKOPEDIA = "/cache/tokopedia/";
-    public static final String PNG = ".png";
+    public static final String FILE_IMAGE_EXT = ".png"; //to handle transparent issues.
     public static final int DEF_WIDTH_CMPR = 2048;
     public static final int DEF_QLTY_COMPRESS = 100;
 
@@ -68,7 +70,7 @@ public class FileUtils {
     @NonNull
     public static File getTkpdImageCacheFile(String fileName) {
         File tkpdCachedirectory = getTkpdCacheDirectory();
-        return new File(tkpdCachedirectory.getAbsolutePath() + "/" + fileName + PNG);
+        return new File(tkpdCachedirectory.getAbsolutePath() + "/" + fileName + FILE_IMAGE_EXT);
     }
 
     /**
@@ -123,6 +125,10 @@ public class FileUtils {
     public static File writeImageToTkpdPath(String galleryOrCameraPath) {
         return writeImageToTkpdPath(convertLocalImagePathToBytes(galleryOrCameraPath, DEF_WIDTH_CMPR,
                 DEF_WIDTH_CMPR, DEF_QLTY_COMPRESS));
+    }
+    public static File writeImageToTkpdPath(String galleryOrCameraPath,  int compressionQuality) {
+        return writeImageToTkpdPath(convertLocalImagePathToBytes(galleryOrCameraPath, DEF_WIDTH_CMPR,
+                DEF_WIDTH_CMPR, compressionQuality));
     }
 
     /**
@@ -200,15 +206,46 @@ public class FileUtils {
 
     public static String getTkpdPathFromURI(Context context, Uri uri) {
         InputStream is = null;
+        if (!isImageMimeType(context, uri)) {
+            return null;
+        }
         if (uri.getAuthority() != null) {
             try {
-                is = context.getContentResolver().openInputStream(uri);
-                String path = getPathFromMediaUri(context, uri);
-                Bitmap bmp = BitmapFactory.decodeStream(is);
-                if (!TextUtils.isEmpty(path)) {
-                    bmp = ImageHandler.RotatedBitmap(bmp, path);
+                Bitmap bmp = null;
+                int inSampleSize = 1;
+                boolean oomError;
+                do {
+                    try {
+                        is = context.getContentResolver().openInputStream(uri);
+                        if (is == null) {
+                            return null;
+                        }
+                        // estimate sample size
+                        if (inSampleSize == 1 && is.available() >
+                                (1.5 * ImageHandler.IMAGE_WIDTH_HD *  ImageHandler.IMAGE_WIDTH_HD)) {
+                            inSampleSize = 2;
+                        }
+                        BitmapFactory.Options options = new BitmapFactory.Options();
+                        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+                        options.inSampleSize = inSampleSize;
+                        bmp = BitmapFactory.decodeStream(is, null, options);
+                        if (bmp == null) {
+                            return null;
+                        }
+                        oomError = false;
+                    } catch (OutOfMemoryError outOfMemoryError) {
+                        inSampleSize *= 2;
+                        oomError = true;
+                        if (inSampleSize > 16) {
+                            break;
+                        }
+                    }
+                } while (oomError);
+                if (bmp == null) {
+                    return null;
                 }
                 File file = writeImageToTkpdPath(bmp);
+                bmp.recycle();
                 if (file != null) {
                     return file.getAbsolutePath();
                 } else {
@@ -218,13 +255,34 @@ public class FileUtils {
                 e.printStackTrace();
             } finally {
                 try {
-                    is.close();
+                    if (is != null) {
+                        is.close();
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }
         return null;
+    }
+
+    private static String getMimeType(Context context, Uri uri) {
+        String mimeType = null;
+        if (uri.getScheme().equals(ContentResolver.SCHEME_CONTENT)) {
+            ContentResolver cr = context.getContentResolver();
+            mimeType = cr.getType(uri);
+        } else {
+            String fileExtension = MimeTypeMap.getFileExtensionFromUrl(uri
+                    .toString());
+            mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
+                    fileExtension.toLowerCase());
+        }
+        return mimeType;
+    }
+
+    private static boolean isImageMimeType(Context context, Uri uri) {
+        String mimeType = getMimeType(context, uri);
+        return !TextUtils.isEmpty(mimeType) && mimeType.startsWith("image");
     }
 
     public static String getPathFromMediaUri(Context context, Uri contentUri) {
@@ -241,8 +299,7 @@ public class FileUtils {
                 }
             } catch (Exception e) {
                 return null;
-            }
-            finally {
+            } finally {
                 cursor.close();
             }
         } else {

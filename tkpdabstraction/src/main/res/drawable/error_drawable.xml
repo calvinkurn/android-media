@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <inset xmlns:android="http://schemas.android.com/apk/res/android"
     android:drawable="@drawable/ic_loading_toped"
-    android:insetBottom="@dimen/padding_med"
-    android:insetLeft="@dimen/padding_med"
-    android:insetRight="@dimen/padding_med"
-    android:insetTop="@dimen/padding_med" />
+    android:insetBottom="@dimen/dp_20"
+    android:insetLeft="@dimen/dp_20"
+    android:insetRight="@dimen/dp_20"
+    android:insetTop="@dimen/dp_20" />

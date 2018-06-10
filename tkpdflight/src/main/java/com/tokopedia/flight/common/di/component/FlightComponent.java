@@ -5,8 +5,11 @@ import android.content.Context;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.flight.FlightModuleRouter;
+import com.tokopedia.flight.booking.view.fragment.FlightInsuranceWebViewFragment;
 import com.tokopedia.flight.common.di.module.FlightModule;
 import com.tokopedia.flight.common.di.qualifier.FlightQualifier;
 import com.tokopedia.flight.common.di.scope.FlightScope;
@@ -35,9 +38,15 @@ public interface FlightComponent {
 
     UserSession userSession();
 
+    CacheManager cacheManager();
+
     AnalyticTracker analyticTracker();
+
+    FlightModuleRouter flightModuleRouter();
 
     void inject(BaseFlightActivity baseFlightActivity);
 
     void inject(FlightDetailActivity flightDetailActivity);
+
+    void inject(FlightInsuranceWebViewFragment flightInsuranceWebViewFragment);
 }

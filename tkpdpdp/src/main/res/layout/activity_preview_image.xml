@@ -15,9 +15,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginLeft="@dimen/margin_med"
-        android:layout_marginRight="@dimen/margin_med"
-        android:layout_marginBottom="@dimen/margin_med"
+        android:layout_marginLeft="@dimen/dp_20"
+        android:layout_marginRight="@dimen/dp_20"
+        android:layout_marginBottom="@dimen/dp_20"
         android:background="@drawable/border_button_rounded"
         android:gravity="center"
         android:padding="@dimen/margin_2"
@@ -29,8 +29,8 @@
         android:id="@+id/close_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/margin_med"
-        android:layout_marginTop="@dimen/margin_med"
+        android:layout_marginLeft="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_20"
         app:srcCompat="@drawable/icon_close_white" />
 
 </RelativeLayout>

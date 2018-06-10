@@ -12,7 +12,7 @@ import com.tokopedia.tkpd.tkpdreputation.review.shop.view.adapter.ReviewShopMode
 
 public interface ReviewShopContract {
     interface Presenter extends CustomerPresenter<View> {
-
+        void onDestroy();
     }
 
     interface View extends BaseListViewListener<ReviewShopModelContent> {

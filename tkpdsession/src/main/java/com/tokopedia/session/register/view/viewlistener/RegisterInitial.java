@@ -5,8 +5,8 @@ import android.support.v4.app.Fragment;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
-import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.core.profile.model.GetUserInfoDomainData;
 import com.tokopedia.session.data.viewmodel.SecurityDomain;
 import com.tokopedia.session.register.view.subscriber.registerinitial.GetFacebookCredentialSubscriber;
@@ -37,15 +37,15 @@ public interface RegisterInitial {
 
         void onSuccessRegisterSosmed(String methodName);
 
-        void onGoToCreatePasswordPage(GetUserInfoDomainData userInfoDomainData);
-
-        void clearToken();
+        void onGoToCreatePasswordPage(GetUserInfoDomainData userInfoDomainData, String methodName);
 
         void onGoToSecurityQuestion(SecurityDomain securityDomain, String fullName, String email, String phone);
 
         void onGoToPhoneVerification();
 
         GetFacebookCredentialSubscriber.GetFacebookCredentialListener getFacebookCredentialListener();
+
+        void onForbidden();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -57,8 +57,6 @@ public interface RegisterInitial {
         void getFacebookCredential(Fragment fragment, CallbackManager callbackManager);
 
         void registerFacebook(AccessToken accessToken);
-
-        void clearToken();
 
         void registerGoogle(String model);
     }

@@ -1,5 +1,6 @@
 package com.tokopedia.discovery.newdiscovery.search;
 
+import com.tokopedia.discovery.imagesearch.domain.usecase.GetImageSearchUseCase;
 import com.tokopedia.discovery.newdiscovery.base.DiscoveryPresenter;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
 
@@ -10,7 +11,7 @@ import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
 public class SearchPresenter extends DiscoveryPresenter<SearchContract.View, SearchActivity>
         implements SearchContract.Presenter {
 
-    public SearchPresenter(GetProductUseCase getProductUseCase) {
-        super(getProductUseCase);
+    public SearchPresenter(GetProductUseCase getProductUseCase, GetImageSearchUseCase getImageSearchUseCase) {
+        super(getProductUseCase, getImageSearchUseCase);
     }
 }

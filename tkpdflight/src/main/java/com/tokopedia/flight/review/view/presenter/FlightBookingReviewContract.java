@@ -6,6 +6,7 @@ import android.support.annotation.StringRes;
 import com.tokopedia.flight.booking.view.presenter.FlightBaseBookingContact;
 import com.tokopedia.flight.booking.view.viewmodel.BaseCartData;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightInsuranceViewModel;
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
 import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
@@ -19,10 +20,10 @@ import java.util.List;
 public interface FlightBookingReviewContract {
 
     interface View extends FlightBaseBookingContact.View{
-
-        void onErrorCheckVoucherCode(Throwable t);
-
-        void onSuccessCheckVoucherCode(AttributesVoucher attributesVoucher);
+//
+//        void onErrorCheckVoucherCode(Throwable t);
+//
+//        void onSuccessCheckVoucherCode(AttributesVoucher attributesVoucher);
 
         void onErrorSubmitData(Throwable e);
 
@@ -69,19 +70,13 @@ public interface FlightBookingReviewContract {
         void setNeedToRefreshOnPassengerInfo();
 
         void updateFinalTotal(AttributesVoucher attributesVoucher, FlightBookingReviewModel currentBookingReviewModel);
-
-        String getVoucherCode();
     }
 
     interface Presenter extends FlightBaseBookingContact.Presenter<View>{
 
         void verifyBooking(String promoCode, int price, int adult, String cartId,
                            List<FlightBookingPassengerViewModel> flightPassengerViewModels,
-                           String contactName, String country, String email, String phone);
-
-        void checkVoucherCode(String cartId, String voucherCode);
-
-        void submitData();
+                           String contactName, String country, String email, String phone, List<FlightInsuranceViewModel> insurances);
 
         void onPaymentSuccess();
 

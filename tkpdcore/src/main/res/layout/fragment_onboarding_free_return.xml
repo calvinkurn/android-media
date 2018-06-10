@@ -23,6 +23,6 @@
         android:text="asdasdasd"
         android:layout_below="@id/image"
         android:gravity="center"
-        android:textSize="@dimen/font_small" />
+        android:textSize="@dimen/sp_14" />
 
 </RelativeLayout>

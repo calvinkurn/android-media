@@ -5,6 +5,9 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.session.login.loginphonenumber.data.mapper.GetCodeTokoCashMapper;
 import com.tokopedia.session.login.loginphonenumber.domain.model.CodeTokoCashDomain;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.inject.Inject;
 
 import rx.Observable;
@@ -25,7 +28,7 @@ public class TokoCashCodeSource {
         this.getCodeTokoCashMapper = getCodeTokoCashMapper;
     }
 
-    public Observable<CodeTokoCashDomain> getAccessToken(TKPDMapParam<String, Object> parameters) {
+    public Observable<CodeTokoCashDomain> getAccessToken(Map<String, Object> parameters) {
         return walletService.getApi().getAuthorizeCode(parameters)
                 .map(getCodeTokoCashMapper);
     }

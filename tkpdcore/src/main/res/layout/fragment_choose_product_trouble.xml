@@ -32,7 +32,7 @@
                     android:paddingBottom="@dimen/padding_vs"
                     android:paddingRight="@dimen/padding_small"
                     android:text="@string/title_invoice_no"
-                    android:textSize="@dimen/font_small" />
+                    android:textSize="@dimen/sp_14" />
 
                 <TextView
                     android:id="@+id/shop_name"
@@ -42,7 +42,7 @@
                     android:paddingBottom="@dimen/padding_vs"
                     android:paddingRight="@dimen/padding_small"
                     android:text="@string/title_shop"
-                    android:textSize="@dimen/font_small" />
+                    android:textSize="@dimen/sp_14" />
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recycler_view"

@@ -30,7 +30,7 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
 
         void onAddClick(int position);
 
-        void onItemClick(int position, ImageSelectModel imageSelectModel);
+        void onItemClick(int position, ImageSelectModel imageSelectModel, boolean isPrimary);
     }
 
     private ArrayList<ImageSelectModel> imageSelectModelList;
@@ -38,14 +38,12 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
     private int addPictureDrawableRes;
     private OnImageSelectionListener onImageSelectionListener;
     private String mainPrimaryImageString;
-    private String addProductString;
     private RecyclerView recyclerView;
 
     public static final int VIEW_TYPE_ITEM = 1;
     public static final int VIEW_TYPE_ADD = 2;
 
     private int currentSelectedIndex = -1;
-    private int currentPrimaryImageIndex = -1;
 
     public void setOnImageSelectionListener(OnImageSelectionListener onImageSelectionListener) {
         this.onImageSelectionListener = onImageSelectionListener;
@@ -55,24 +53,17 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
                                 int limit,
                                 int addPictureDrawableRes,
                                 OnImageSelectionListener onImageSelectionListener,
-                                String mainPrimaryImageString,
-                                String addProductString) {
+                                String mainPrimaryImageString) {
         this.imageSelectModelList = imageSelectModelList;
         this.limit = limit;
         this.addPictureDrawableRes = addPictureDrawableRes;
         this.onImageSelectionListener = onImageSelectionListener;
         this.mainPrimaryImageString = mainPrimaryImageString;
-        this.addProductString = addProductString;
     }
 
     public void addImage(ImageSelectModel imageSelectModel) {
-        if (imageSelectModelList.size() == 0) {
-            imageSelectModel.setPrimary(true);
-            currentPrimaryImageIndex = 0;
-        }
         imageSelectModelList.add(imageSelectModel);
-        notifyItemChanged(imageSelectModelList.size() - 1);
-        notifyNextAddProductIfNeeded();
+        notifyDataSetChanged();
 
         scrollToEnd();
     }
@@ -87,11 +78,7 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
         if (imageSelectModelList.isEmpty()) return;
         this.imageSelectModelList.addAll(imageSelectModelList);
 
-        switchPrimaryImageIfNeeded(prevSize, imageSelectModelList);
-
-        notifyItemChanged(prevSize);
-        notifyItemRangeInserted(prevSize + 1, imageSelectModelList.size());
-        notifyNextAddProductIfNeeded();
+        notifyDataSetChanged();
 
         scrollToEnd();
     }
@@ -101,44 +88,16 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
         for (int i = 0; i < imageStringList.size(); i++) {
             imageSelectModelList.add(new ImageSelectModel(imageStringList.get(i)));
         }
-        currentPrimaryImageIndex = -1;
-        switchPrimaryImageIfNeeded(0, imageSelectModelList);
         notifyDataSetChanged();
     }
 
     public void setImage(@NonNull ArrayList<ImageSelectModel> imageSelectModelList) {
         this.imageSelectModelList = imageSelectModelList;
-        currentPrimaryImageIndex = -1;
-        switchPrimaryImageIfNeeded(0, imageSelectModelList);
         notifyDataSetChanged();
     }
 
     public void setCurrentSelectedIndex(int currentSelectedIndex) {
         this.currentSelectedIndex = currentSelectedIndex;
-    }
-
-    private void switchPrimaryImageIfNeeded(int prevSize, @NonNull List<ImageSelectModel> imageSelectModelList) {
-        int previousPrimaryImageIndex = currentPrimaryImageIndex;
-        for (int i = 0, sizei = imageSelectModelList.size(); i < sizei; i++) {
-            ImageSelectModel imageSelectModel = imageSelectModelList.get(i);
-            if (imageSelectModel.isPrimary()) {
-                if (currentPrimaryImageIndex != previousPrimaryImageIndex &&
-                        currentPrimaryImageIndex != prevSize + 1) { // it comes from previous iteration, set revious imagePrimary to false
-                    imageSelectModelList.get(currentPrimaryImageIndex - prevSize).setPrimary(false);
-                }
-                // set the index image primary to this
-                currentPrimaryImageIndex = prevSize + i;
-            }
-        }
-        //primary index is moved
-        if (previousPrimaryImageIndex > -1 && currentPrimaryImageIndex != previousPrimaryImageIndex) {
-            notifyItemChanged(previousPrimaryImageIndex);
-        }
-        // no primary yet, set to 0
-        if (currentPrimaryImageIndex == -1 && imageSelectModelList.size() > 0) {
-            imageSelectModelList.get(0).setPrimary(true);
-            currentPrimaryImageIndex = prevSize;
-        }
     }
 
     @Override
@@ -165,26 +124,31 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
 
         final ImageSelectModel imageSelectModel = imageSelectModelList.get(position);
         if (imageSelectModel.isValidURL()) {
-            ImageHandler.loadImageWithTarget(holder.imageView.getContext(), imageSelectModel.getUriOrPath(), new SimpleTarget<Bitmap>() {
-                @Override
-                public void onLoadStarted(Drawable placeholder) {
-                    super.onLoadStarted(placeholder);
-                    holder.imageView.setImageDrawable(placeholder);
-                }
+            if (imageSelectModel.getWidth() != 0 && imageSelectModel.getHeight()!= 0) {
+                ImageHandler.loadImageFitCenter(holder.imageView.getContext(), holder.imageView,
+                        imageSelectModel.getUriOrPath());
+            } else { // we want to load image, meanwhile also to know its width/height
+                ImageHandler.loadImageWithTarget(holder.imageView.getContext(), imageSelectModel.getUriOrPath(), new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onLoadStarted(Drawable placeholder) {
+                        super.onLoadStarted(placeholder);
+                        holder.imageView.setImageDrawable(placeholder);
+                    }
 
-                @Override
-                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                    holder.imageView.setImageBitmap(resource);
-                    imageSelectModel.setWidth(resource.getWidth());
-                    imageSelectModel.setHeight(resource.getHeight());
-                }
+                    @Override
+                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                        holder.imageView.setImageBitmap(resource);
+                        imageSelectModel.setWidth(resource.getWidth());
+                        imageSelectModel.setHeight(resource.getHeight());
+                    }
 
-                @Override
-                public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                    super.onLoadFailed(e, errorDrawable);
-                    holder.imageView.setImageDrawable(errorDrawable);
-                }
-            });
+                    @Override
+                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                        super.onLoadFailed(e, errorDrawable);
+                        holder.imageView.setImageDrawable(errorDrawable);
+                    }
+                });
+            }
         } else { // local Uri
             ImageHandler.loadImageFromFileFitCenter(
                     holder.itemView.getContext(),
@@ -193,8 +157,8 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
             );
         }
 
-
-        if (currentPrimaryImageIndex == position) {
+        // position 0 is always primary Image
+        if (position == 0) {
             if (itemViewHolder.textViewMainPicture != null) {
                 itemViewHolder.textViewMainPicture.setVisibility(View.VISIBLE);
             }
@@ -239,11 +203,8 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
     }
 
     public class AddViewHolder extends ViewHolder{
-        TextView addImageTextView;
         public AddViewHolder(View itemView) {
             super(itemView);
-            addImageTextView = (TextView) itemView.findViewById(R.id.text_add_product);
-            addImageTextView.setText(addProductString);
             imageView.setImageResource(addPictureDrawableRes);
             itemView.setOnClickListener(this);
         }
@@ -277,14 +238,9 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
             int position = getAdapterPosition();
             currentSelectedIndex = position;
             if (onImageSelectionListener != null && position >= 0 && position < imageSelectModelList.size()) {
-                onImageSelectionListener.onItemClick(position, imageSelectModelList.get(position));
+                ImageSelectModel imageSelectModel = imageSelectModelList.get(position);
+                onImageSelectionListener.onItemClick(position, imageSelectModel, isImageModelPrimary(imageSelectModel));
             }
-        }
-    }
-
-    public void notifyNextAddProductIfNeeded() {
-        if (imageSelectModelList.size() < limit) {
-            notifyItemInserted(imageSelectModelList.size());
         }
     }
 
@@ -294,26 +250,13 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
 
     public void removeSelected(int position) {
         if (position < 0 || position >= imageSelectModelList.size()) return;
-        // if the removed position is actually primary image, remove primary index,
-        // else just decrease index by 1
-        if (currentPrimaryImageIndex == position) {
-            currentPrimaryImageIndex = -1;
-        } else {
-            currentPrimaryImageIndex--;
-        }
+
         imageSelectModelList.remove(position);
-        notifyItemRemoved(position);
 
         // because it is removed, no selected index anymore
         currentSelectedIndex = -1;
 
-        // if there is no primary image selected (maybe because it is removed), make the first image primary
-        if (currentPrimaryImageIndex == -1) {
-            switchPrimaryImageIfNeeded(0, this.imageSelectModelList);
-            if (currentPrimaryImageIndex > -1) {
-                notifyItemChanged(currentPrimaryImageIndex);
-            }
-        }
+        notifyDataSetChanged();
     }
 
     public void changeImagePath(String path) {
@@ -349,28 +292,14 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
 
         // if make it primary, make the prevous primary to false.
         if (isPrimary) {
-            unselectPreviousPrimaryIfExist(currentPrimaryImageIndex);
-            currentPrimaryImageIndex = position;
-            ImageSelectModel imageSelectModel = imageSelectModelList.get(position);
-            imageSelectModel.setPrimary(true);
-
-            movePrimaryToFirst();
-        } else { // if make it to not primary, make the first position primary
-            if (currentPrimaryImageIndex == position && currentPrimaryImageIndex != 0) {
-                currentPrimaryImageIndex = 0;
-                imageSelectModelList.get(0).setPrimary(true);
-                notifyItemChanged(0);
-            }
-            ImageSelectModel imageSelectModel = imageSelectModelList.get(position);
-            imageSelectModel.setPrimary(false);
-            notifyItemChanged(position);
+            movePrimaryToFirst(position);
         }
+        notifyDataSetChanged();
     }
 
-    private void movePrimaryToFirst(){
-        ImageSelectModel model = imageSelectModelList.remove(currentPrimaryImageIndex);
+    private void movePrimaryToFirst(int position){
+        ImageSelectModel model = imageSelectModelList.remove(position);
         imageSelectModelList.add(0,model);
-        currentPrimaryImageIndex = 0;
         notifyDataSetChanged();
 
         scrollToFirst();
@@ -398,13 +327,6 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
         }
     }
 
-    private void unselectPreviousPrimaryIfExist(int previousPrimaryIndex) {
-        if (previousPrimaryIndex > -1) {
-            imageSelectModelList.get(previousPrimaryIndex).setPrimary(false);
-            notifyItemChanged(previousPrimaryIndex);
-        }
-    }
-
     public void changeImage(ImageSelectModel imageSelectModel) {
         changeImage(imageSelectModel, currentSelectedIndex);
     }
@@ -415,17 +337,16 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
         ImageSelectModel imageSelectModelBefore = imageSelectModelList.get(position);
         imageSelectModelBefore.setUriOrPath(imageSelectModelAfter.getUriOrPath());
         imageSelectModelBefore.setDescription(imageSelectModelAfter.getDescription());
-        changeImagePrimary(imageSelectModelAfter.isPrimary());
-        notifyItemChanged(position);
+        changeImagePrimary(isImageModelPrimary(imageSelectModelAfter));
+        notifyDataSetChanged();
+    }
+
+    private boolean isImageModelPrimary(ImageSelectModel imageSelectModel){
+        return imageSelectModelList.indexOf(imageSelectModel) == 0;
     }
 
     public ImageSelectModel getPrimaryImage() {
-        if (currentPrimaryImageIndex < 0) return null;
-        return imageSelectModelList.get(currentPrimaryImageIndex);
-    }
-
-    public int getPrimaryImageIndex() {
-        return currentPrimaryImageIndex;
+        return imageSelectModelList.get(0);
     }
 
     public ImageSelectModel getSelectedImage() {

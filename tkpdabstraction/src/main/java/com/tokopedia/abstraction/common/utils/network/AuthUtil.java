@@ -2,6 +2,7 @@ package com.tokopedia.abstraction.common.utils.network;
 
 import android.content.Context;
 import android.support.v4.util.ArrayMap;
+import android.text.TextUtils;
 import android.util.Base64;
 
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
@@ -22,7 +23,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 /**
  * @author Angga.Prasetiyo on 25/11/2015.
- *         Modified by kulomady add method without params
+ * Modified by kulomady add method without params
  */
 public class AuthUtil {
     private static final String CONTENT_TYPE = "application/x-www-form-urlencoded";
@@ -37,7 +38,8 @@ public class AuthUtil {
     private static final String HEADER_DATE = "Date";
     public static final String HEADER_AUTHORIZATION = "Authorization";
     private static final String HEADER_USER_ID = "X-User-ID";
-    private static final String HEADER_X_TKPD_USER_ID = "X-Tkpd-UserId";
+    public static final String HEADER_X_TKPD_USER_ID = "X-Tkpd-UserId";
+    public static final String HEADER_TKPD_USER_ID = "Tkpd-UserId";
     public static final String HEADER_DEVICE = "X-Device";
     private static final String HEADER_X_APP_VERSION = "X-APP-VERSION";
     public static final String HEADER_X_TKPD_APP_NAME = "X-Tkpd-App-Name";
@@ -65,6 +67,9 @@ public class AuthUtil {
     public static final String DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_FLAG_APP = "1";
     public static final String DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE = "android";
     public static final String DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_UTM_SOURCE = "android";
+
+    private static final String HEADER_ACCOUNTS_AUTHORIZATION = "Accounts-Authorization";
+    private static final String BEARER_SPACE = "Bearer ";
 
     /**
      * default key is KEY_WSV$
@@ -175,6 +180,16 @@ public class AuthUtil {
         Map<String, String> finalHeader = getDefaultHeaderMap(path, strParam, method, CONTENT_TYPE, authKey, DATE_FORMAT, userId);
         finalHeader.put(HEADER_X_APP_VERSION, Integer.toString(GlobalConfig.VERSION_CODE));
         return finalHeader;
+    }
+
+    public static Map<String, String> generateHeadersWithBearer(String path, String strParam, String method, String authKey, String userId,
+                                                                String accessToken) {
+        Map<String, String> header = generateHeaders(path, strParam, method, authKey, userId);
+        header.remove(HEADER_ACCOUNTS_AUTHORIZATION);
+        if (!TextUtils.isEmpty(accessToken)) {
+            header.put(HEADER_ACCOUNTS_AUTHORIZATION, BEARER_SPACE + accessToken);
+        }
+        return header;
     }
 
     public static Map<String, String> generateHeaders(

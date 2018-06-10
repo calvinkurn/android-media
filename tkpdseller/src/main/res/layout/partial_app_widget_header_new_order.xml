@@ -7,13 +7,13 @@
     android:background="@color/tkpd_main_green"
     android:gravity="center"
     android:orientation="horizontal"
-    android:padding="@dimen/padding_ms"
+    android:padding="@dimen/dp_8"
     tools:showIn="@layout/app_widget_new_order">
 
     <ImageView
         android:layout_width="12dp"
         android:layout_height="12dp"
-        android:layout_marginRight="@dimen/margin_small"
+        android:layout_marginRight="@dimen/dp_10"
         app:srcCompat="@drawable/ic_order_widget" />
 
     <TextView

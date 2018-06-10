@@ -14,7 +14,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -68,6 +67,12 @@ public class ChooseAddressFragment extends BasePresenterFragment<ChooseAddressFr
     public static ChooseAddressFragment createInstance() {
         ChooseAddressFragment fragment = new ChooseAddressFragment();
         Bundle bundle = new Bundle();
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    public static ChooseAddressFragment createInstance(Bundle bundle) {
+        ChooseAddressFragment fragment = new ChooseAddressFragment();
         fragment.setArguments(bundle);
         return fragment;
     }

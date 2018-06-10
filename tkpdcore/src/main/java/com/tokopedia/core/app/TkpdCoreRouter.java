@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
@@ -16,6 +17,7 @@ import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gcm.ApplinkUnsupported;
 import com.tokopedia.core.gcm.model.NotificationPass;
+import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.core.util.SessionHandler;
 
 import rx.Observable;
@@ -165,6 +167,32 @@ public interface TkpdCoreRouter {
 
     Intent getLoginWebviewIntent(Context context, String name, String url);
 
+    Intent getShopPageIntent(Context context, String shopId);
+
+    Intent getShopPageIntentByDomain(Context context, String domain);
+
+    Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId);
+
     Observable<TokoCashData> getTokoCashBalance();
+
+    Intent getAddEmailIntent(Context context);
+
+    Intent getAddPasswordIntent(Context context);
+
+    Intent getChangeNameIntent(Context context);
+
+    Intent getTopProfileIntent(Context context, String userId);
+
+    Intent getGroupChatIntent(Context context, String channelUrl);
+
+    Intent getInboxChannelsIntent(Context context);
+
+    Intent getInboxMessageIntent(Context context);
+
+    void sendTrackingGroupChatLeftNavigation();
+
+    String getDesktopLinkGroupChat();
+
+    Intent getDistrictRecommendationIntent(Activity activity, Token token);
 
 }

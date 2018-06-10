@@ -35,12 +35,21 @@ public class BannerAttribute {
     @SerializedName("data_title")
     @Expose
     private String dataTitle;
-
+    @SerializedName("priority")
+    @Expose
     private int priority;
+    @SerializedName("status")
+    @Expose
     private int status;
+    @SerializedName("title")
+    @Expose
     private String title;
+    @SerializedName("subtitle")
+    @Expose
     private String subtitle;
-    private String promocode;
+    @SerializedName("promoCode")
+    @Expose
+    private String promoCode;
 
     public int getRechargeCmsbannerId() {
         return rechargeCmsbannerId;
@@ -130,11 +139,29 @@ public class BannerAttribute {
         this.subtitle = subtitle;
     }
 
-    public String getPromocode() {
-        return promocode;
+    public String getPromoCode() {
+        return promoCode;
     }
 
-    public void setPromocode(String promocode) {
-        this.promocode = promocode;
+    public void setPromoCode(String promoCode) {
+        this.promoCode = promoCode;
+    }
+
+    @Override
+    public String toString() {
+        return "BannerAttribute{" +
+                "rechargeCmsbannerId=" + rechargeCmsbannerId +
+                ", fileName='" + fileName + '\'' +
+                ", fileNameWebp='" + fileNameWebp + '\'' +
+                ", startDate='" + startDate + '\'' +
+                ", endDate='" + endDate + '\'' +
+                ", imgUrl='" + imgUrl + '\'' +
+                ", dataTitle='" + dataTitle + '\'' +
+                ", priority=" + priority +
+                ", status=" + status +
+                ", title='" + title + '\'' +
+                ", subtitle='" + subtitle + '\'' +
+                ", promoCode='" + promoCode + '\'' +
+                '}';
     }
 }

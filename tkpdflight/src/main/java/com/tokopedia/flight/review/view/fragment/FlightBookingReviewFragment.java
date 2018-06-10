@@ -25,10 +25,9 @@ import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
-import com.tokopedia.design.voucher.VoucherCartView;
+import com.tokopedia.design.voucher.VoucherCartHachikoView;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
@@ -41,12 +40,14 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewMod
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.booking.widget.CountdownTimeView;
 import com.tokopedia.flight.common.constant.FlightFlowConstant;
+import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.common.data.model.FlightError;
 import com.tokopedia.flight.common.data.model.FlightException;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.util.FlightErrorUtil;
 import com.tokopedia.flight.common.util.FlightFlowUtil;
 import com.tokopedia.flight.common.util.FlightRequestUtil;
+import com.tokopedia.flight.common.view.FullDividerItemDecoration;
 import com.tokopedia.flight.dashboard.view.activity.FlightDashboardActivity;
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailAdapter;
@@ -55,6 +56,7 @@ import com.tokopedia.flight.detail.view.adapter.FlightDetailRouteTypeFactory;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 import com.tokopedia.flight.orderlist.view.FlightOrderListActivity;
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
+import com.tokopedia.flight.review.domain.FlightVoucherCodeWrapper;
 import com.tokopedia.flight.review.view.activity.OnBackActionListener;
 import com.tokopedia.flight.review.view.adapter.FlightBookingReviewPassengerAdapter;
 import com.tokopedia.flight.review.view.adapter.FlightBookingReviewPassengerAdapterTypeFactory;
@@ -73,8 +75,10 @@ import javax.inject.Inject;
  * Created by zulfikarrahman on 11/9/17.
  */
 
-public class FlightBookingReviewFragment extends BaseDaggerFragment implements FlightBookingReviewContract.View, VoucherCartView.ActionListener, OnBackActionListener {
+public class FlightBookingReviewFragment extends BaseDaggerFragment implements
+        FlightBookingReviewContract.View, OnBackActionListener, VoucherCartHachikoView.ActionListener {
 
+    public static final String HACHIKO_FLIGHT_KEY = "flight";
     public static final String EXTRA_NEED_TO_REFRESH = "EXTRA_NEED_TO_REFRESH";
     public static final String EXTRA_DATA_REVIEW = "EXTRA_DATA_REVIEW";
     public static final int RESULT_ERROR_VERIFY = 874;
@@ -82,8 +86,12 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
     private static final String INTERRUPT_DIALOG_TAG = "interrupt_dialog";
     private static final int REQUEST_CODE_NEW_PRICE_DIALOG = 3;
     private static final int REQUEST_CODE_TOPPAY = 100;
+    private static final int REQUEST_CODE_LOYALTY = 200;
     @Inject
     FlightBookingReviewPresenter flightBookingReviewPresenter;
+    @Inject
+    FlightModuleRouter flightModuleRouter;
+
     FlightBookingReviewModel flightBookingReviewModel;
     private LinearLayout fullPageLoading;
     private LinearLayout discountAppliedLayout;
@@ -99,7 +107,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
     private TextView reviewDiscountPrice;
     private AppCompatTextView reviewFinalTotalPrice;
     private Button buttonSubmit;
-    private VoucherCartView voucherCartView;
+    private VoucherCartHachikoView voucherCartView;
     private View containerFlightReturn;
     private ProgressDialog progressDialog;
     private FlightSimpleAdapter flightBookingReviewPriceAdapter;
@@ -150,7 +158,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
         reviewDiscountPrice = (TextView) view.findViewById(R.id.tv_discount_voucher);
         reviewFinalTotalPrice = (AppCompatTextView) view.findViewById(R.id.tv_total_final_price);
         buttonSubmit = (Button) view.findViewById(R.id.button_submit);
-        voucherCartView = (VoucherCartView) view.findViewById(R.id.voucher_check_view);
+        voucherCartView = (VoucherCartHachikoView) view.findViewById(R.id.voucher_check_view);
         containerFlightReturn = view.findViewById(R.id.container_flight_return);
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.flight_booking_loading_title));
@@ -188,9 +196,18 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
     }
 
     private void actionVerifyAndCheckoutBooking() {
-        flightBookingReviewPresenter.verifyBooking(voucherCartView.getVoucherCode(), flightBookingReviewModel.getTotalPriceNumeric(),
-                flightBookingReviewModel.getAdult(), flightBookingReviewModel.getId(), flightBookingReviewModel.getDetailPassengersData(), flightBookingReviewModel.getContactName(),
-                flightBookingReviewModel.getPhoneCodeViewModel().getCountryId(), flightBookingReviewModel.getContactEmail(), flightBookingReviewModel.getContactPhone());
+        flightBookingReviewPresenter.verifyBooking(
+                voucherCartView.getVoucherCode(),
+                flightBookingReviewModel.getTotalPriceNumeric(),
+                flightBookingReviewModel.getAdult(),
+                flightBookingReviewModel.getId(),
+                flightBookingReviewModel.getDetailPassengersData(),
+                flightBookingReviewModel.getContactName(),
+                flightBookingReviewModel.getPhoneCodeViewModel().getCountryId(),
+                flightBookingReviewModel.getContactEmail(),
+                flightBookingReviewModel.getContactPhone(),
+                flightBookingReviewModel.getInsuranceIds()
+        );
     }
 
     void initView() {
@@ -225,6 +242,9 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
         FlightBookingReviewPassengerAdapterTypeFactory flightBookingReviewPassengerAdapterTypeFactory = new FlightBookingReviewPassengerAdapterTypeFactory();
         FlightBookingReviewPassengerAdapter flightBookingReviewPassengerAdapter2 = new FlightBookingReviewPassengerAdapter(flightBookingReviewPassengerAdapterTypeFactory);
         flightBookingReviewPassengerAdapter2.addElement(flightBookingReviewModel.getDetailPassengers());
+        if (flightBookingReviewModel.getDetailPassengers().size() > 1) {
+            recyclerViewDataPassenger.addItemDecoration(new FullDividerItemDecoration(recyclerViewDataPassenger.getContext()));
+        }
         recyclerViewDataPassenger.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewDataPassenger.setAdapter(flightBookingReviewPassengerAdapter2);
         flightBookingReviewPriceAdapter = new FlightSimpleAdapter();
@@ -276,23 +296,41 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
                     }
                 }
                 break;
+            case REQUEST_CODE_LOYALTY:
+                FlightVoucherCodeWrapper codeWrapper = flightModuleRouter.getFlightVoucherCodeWrapper();
+                if (resultCode == codeWrapper.voucherResultCode()) {
+                    Bundle bundle = data.getExtras();
+                    if (bundle != null) {
+                        String voucherCode = bundle.getString(codeWrapper.voucherCode(), "");
+                        String voucherMessage = bundle.getString(codeWrapper.voucherMessage(), "");
+                        long voucherDiscountAmount = bundle.getLong(codeWrapper.voucherDiscountAmount());
+
+                        voucherCartView.setVoucher(voucherCode, voucherMessage);
+
+                        AttributesVoucher attributesVoucher = new AttributesVoucher();
+                        attributesVoucher.setVoucherCode(voucherCode);
+                        attributesVoucher.setMessage(voucherMessage);
+                        attributesVoucher.setDiscountAmountPlain(voucherDiscountAmount);
+                        updateFinalTotal(attributesVoucher, getCurrentBookingReviewModel());
+                    }
+                } else if (resultCode == codeWrapper.couponResultCode()) {
+                    Bundle bundle = data.getExtras();
+                    if (bundle != null) {
+                        String couponTitle = bundle.getString(codeWrapper.couponTitle(), "");
+                        String couponMessage = bundle.getString(codeWrapper.couponMessage(), "");
+                        String couponCode = bundle.getString(codeWrapper.couponCode(), "");
+                        long couponDiscountAmount = bundle.getLong(codeWrapper.couponDiscountAmount());
+
+                        AttributesVoucher attributesVoucher = new AttributesVoucher();
+                        attributesVoucher.setVoucherCode(couponCode);
+                        attributesVoucher.setMessage(couponMessage);
+                        attributesVoucher.setDiscountAmountPlain(couponDiscountAmount);
+                        updateFinalTotal(attributesVoucher, getCurrentBookingReviewModel());
+                        voucherCartView.setCoupon(couponTitle, couponMessage, couponCode);
+                    }
+                }
+                break;
         }
-    }
-
-    @Override
-    public void onErrorCheckVoucherCode(Throwable t) {
-        voucherCartView.setErrorVoucher(FlightErrorUtil.getMessageFromException(getActivity(), t));
-    }
-
-    @Override
-    public void onSuccessCheckVoucherCode(AttributesVoucher attributesVoucher) {
-        KeyboardHandler.hideSoftKeyboard(getActivity());
-        voucherCartView.setUsedVoucher(attributesVoucher.getVoucherCode(), attributesVoucher.getMessage());
-    }
-
-    @Override
-    public String getVoucherCode() {
-        return voucherCartView.getVoucherCode();
     }
 
     @Override
@@ -301,7 +339,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
         int totalFinal = 0;
         if (attributesVoucher != null && Math.round(attributesVoucher.getDiscountAmountPlain()) > 0) {
             discountAppliedLayout.setVisibility(View.VISIBLE);
-            reviewDiscountPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace((int) Math.round(attributesVoucher.getDiscountAmountPlain())));
+            reviewDiscountPrice.setText(getFormattedDiscountPrice(attributesVoucher.getDiscountAmountPlain()));
             reviewTotalPrice.setText(flightBookingReviewModel.getTotalPrice());
             totalFinal = (int) (currentBookingReviewModel.getTotalPriceNumeric() - attributesVoucher.getDiscountAmountPlain());
         } else {
@@ -309,6 +347,10 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
             totalFinal = currentBookingReviewModel.getTotalPriceNumeric();
         }
         reviewFinalTotalPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(totalFinal));
+    }
+
+    private String getFormattedDiscountPrice(double discountAmountPlain) {
+        return String.format(getString(R.string.flight_review_minus_discount_prefix), CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace((int) Math.round(discountAmountPlain)));
     }
 
     @Override
@@ -322,29 +364,16 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
     }
 
     @Override
-    public void onVoucherCheckButtonClicked() {
-        flightBookingReviewPresenter.checkVoucherCode(flightBookingReviewModel.getId(), voucherCartView.getVoucherCode());
-    }
-
-    @Override
-    public void forceHideSoftKeyboardVoucherInput() {
-        KeyboardHandler.hideSoftKeyboard(getActivity());
-    }
-
-    @Override
-    public void forceShowSoftKeyboardVoucherInput() {
-        KeyboardHandler.showSoftKeyboard(getActivity());
+    public void onClickUseVoucher() {
+        if (getActivity() != null && getActivity().getApplication() instanceof FlightModuleRouter) {
+            Intent intent = ((FlightModuleRouter) getActivity().getApplication()).getLoyaltyWithCoupon(getActivity(), HACHIKO_FLIGHT_KEY, FlightUrl.CATEGORY_ID, getCurrentCartData().getId());
+            startActivityForResult(intent, REQUEST_CODE_LOYALTY);
+        }
     }
 
     @Override
     public void disableVoucherDiscount() {
-        KeyboardHandler.hideSoftKeyboard(getActivity());
-        updateFinalTotal(getCurrentBookingReviewModel());
-    }
-
-    @Override
-    public void trackingErrorVoucher(String errorMsg) {
-
+        updateFinalTotal(null, getCurrentBookingReviewModel());
     }
 
     @Override
@@ -382,10 +411,30 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
     }
 
     @Override
-    public void showExpireTransactionDialog() {
+    public void showExpireTransactionDialog(String message) {
         if (isAdded()) {
             AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
             dialog.setMessage(R.string.flight_booking_expired_booking_label);
+            dialog.setPositiveButton(getActivity().getString(R.string.title_ok),
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            FlightFlowUtil.actionSetResultAndClose(getActivity(),
+                                    getActivity().getIntent(),
+                                    FlightFlowConstant.EXPIRED_JOURNEY
+                            );
+                        }
+                    });
+            dialog.setCancelable(false);
+            dialog.create().show();
+        }
+    }
+
+    @Override
+    public void showSoldOutDialog() {
+        if (isAdded()) {
+            AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+            dialog.setMessage(R.string.flight_booking_sold_out_label);
             dialog.setPositiveButton(getActivity().getString(R.string.title_ok),
                     new DialogInterface.OnClickListener() {
                         @Override

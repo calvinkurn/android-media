@@ -128,7 +128,7 @@ public class ShopInfoView extends BaseView<ProductDetailData, SnapShotFragmentVi
             bundle.putString("shop_name", data.getShopInfo().getShopName());
             bundle.putString("shop_avatar", data.getShopInfo().getShopAvatar());
             bundle.putInt("shop_favorite", data.getShopInfo().getShopAlreadyFavorited());
-            listener.onProductShopNameClicked(bundle);
+            listener.onProductShopNameClicked(data.getShopInfo().getShopId());
         }
     }
 
@@ -144,7 +144,7 @@ public class ShopInfoView extends BaseView<ProductDetailData, SnapShotFragmentVi
             Bundle bundle = new Bundle();
             bundle.putInt("tab", 2);
             bundle.putString("shop_id", data.getShopInfo().getShopId());
-            listener.onProductShopRatingClicked(bundle);
+            listener.onProductShopRatingClicked(data.getShopInfo().getShopId());
         }
     }
 
@@ -162,7 +162,7 @@ public class ShopInfoView extends BaseView<ProductDetailData, SnapShotFragmentVi
             bundle.putString("shop_name", data.getShopInfo().getShopName());
             bundle.putString("shop_avatar", data.getShopInfo().getShopAvatar());
             bundle.putInt("shop_favorite", data.getShopInfo().getShopAlreadyFavorited());
-            listener.onProductShopAvatarClicked(bundle);
+            listener.onProductShopAvatarClicked(data.getShopInfo().getShopId());
         }
     }
 

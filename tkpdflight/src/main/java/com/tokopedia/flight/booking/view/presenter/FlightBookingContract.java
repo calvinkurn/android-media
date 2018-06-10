@@ -7,6 +7,7 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingCartData;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingParamViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightInsuranceViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
@@ -84,7 +85,7 @@ public interface FlightBookingContract {
 
         void renderFinishTimeCountDown(Date date);
 
-        void showExpireTransactionDialog();
+        void showExpireTransactionDialog(String message);
 
         void showPriceChangesDialog(String newTotalPrice, String oldTotalPrice);
 
@@ -120,6 +121,13 @@ public interface FlightBookingContract {
 
         void setSameAsContactChecked(boolean isChecked);
 
+        Date getExpiredTransactionDate();
+
+        void showInsuranceLayout();
+
+        void hideInsuranceLayout();
+
+        void renderInsurance(List<FlightInsuranceViewModel> insurances);
     }
 
     interface Presenter extends FlightBaseBookingContact.Presenter<View> {
@@ -160,7 +168,10 @@ public interface FlightBookingContract {
 
         void onSameAsContactClicked(boolean navigateToPassengerInfo);
 
-        void deleteAllPassengerList();
+        void onInsuranceChanges(FlightInsuranceViewModel insurance, boolean checked);
 
+        void onMoreInsuranceInfoClicked();
+
+        void onInsuranceBenefitExpanded();
     }
 }

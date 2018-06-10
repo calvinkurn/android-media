@@ -11,7 +11,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:padding="@dimen/new_margin_tiny"
+        android:padding="@dimen/posapp_padding_vs"
         android:background="@drawable/bg_white_rounded3_grey350"
         android:layout_gravity="center" >
         <ImageView

@@ -59,6 +59,9 @@ public class OrderData implements Parcelable{
     @SerializedName("order_destination")
     @Expose
     private OrderDestination orderDestination;
+    @SerializedName("pickup_info")
+    @Expose
+    private OrderPickup pickupInfo;
 
     protected OrderData(Parcel in) {
         orderDetail = in.readParcelable(OrderDetail.class.getClassLoader());
@@ -73,6 +76,7 @@ public class OrderData implements Parcelable{
         orderLast = in.readParcelable(OrderLast.class.getClassLoader());
         orderHistory = in.createTypedArrayList(OrderHistory.CREATOR);
         orderDestination = in.readParcelable(OrderDestination.class.getClassLoader());
+        pickupInfo = in.readParcelable(OrderPickup.class.getClassLoader());
     }
 
     public static final Creator<OrderData> CREATOR = new Creator<OrderData>() {
@@ -199,6 +203,14 @@ public class OrderData implements Parcelable{
         this.orderDestination = orderDestination;
     }
 
+    public OrderPickup getPickupInfo() {
+        return pickupInfo;
+    }
+
+    public void setPickupInfo(OrderPickup pickupInfo) {
+        this.pickupInfo = pickupInfo;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -218,5 +230,6 @@ public class OrderData implements Parcelable{
         dest.writeParcelable(orderLast, flags);
         dest.writeTypedList(orderHistory);
         dest.writeParcelable(orderDestination, flags);
+        dest.writeParcelable(pickupInfo, flags);
     }
 }

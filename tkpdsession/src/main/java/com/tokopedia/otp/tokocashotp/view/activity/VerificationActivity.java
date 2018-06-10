@@ -133,6 +133,17 @@ public class VerificationActivity extends TActivity implements HasComponent {
         return intent;
     }
 
+    public static Intent getRegisterPhoneNumberVerificationIntent(Context context, String phoneNumber,
+                                                            ArrayList<MethodItem> listAvailableMethod) {
+        Intent intent = new Intent(context, VerificationActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(PARAM_PHONE_NUMBER, phoneNumber);
+        bundle.putInt(PARAM_FRAGMENT_TYPE, TYPE_SMS);
+        bundle.putParcelableArrayList(PARAM_METHOD_LIST, listAvailableMethod);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
     public void goToSelectVerificationMethod() {
         if (!(getSupportFragmentManager().findFragmentById(R.id.container) instanceof
                 ChooseTokocashVerificationMethodFragment)) {

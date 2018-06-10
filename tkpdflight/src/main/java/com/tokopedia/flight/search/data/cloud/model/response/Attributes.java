@@ -40,6 +40,9 @@ public class Attributes {
     @SerializedName("total_transit")
     @Expose
     private int totalTransit;
+    @SerializedName("total_stop")
+    @Expose
+    private int totalStop;
     @SerializedName("add_day_arrival")
     @Expose
     private int addDayArrival;
@@ -128,5 +131,9 @@ public class Attributes {
 
     public Fare getFare() {
         return fare;
+    }
+
+    public int getTotalStop() {
+        return totalStop;
     }
 }

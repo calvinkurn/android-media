@@ -67,12 +67,7 @@ public abstract class BaseFlightActivity extends BaseSimpleActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_promo) {
-            if (getApplication() instanceof FlightModuleRouter
-                    && ((FlightModuleRouter) getApplication())
-                    .getBannerWebViewIntent(this, FlightUrl.ALL_PROMO_LINK) != null) {
-                startActivity(((FlightModuleRouter) getApplication())
-                        .getBannerWebViewIntent(this, FlightUrl.ALL_PROMO_LINK));
-            }
+            navigateToAllPromoPage();
             return true;
         } else if (item.getItemId() == R.id.menu_transaction_list) {
             flightAnalytics.eventClickTransactions(getScreenName());
@@ -89,6 +84,19 @@ public abstract class BaseFlightActivity extends BaseSimpleActivity {
             return true;
         } else {
             return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void navigateToAllPromoPage() {
+        if (getApplication() instanceof FlightModuleRouter) {
+            if (((FlightModuleRouter) getApplication())
+                    .isPromoNativeEnable()) {
+                startActivity(((FlightModuleRouter) getApplication())
+                        .getPromoListIntent(this));
+            } else {
+                startActivity(((FlightModuleRouter) getApplication())
+                        .getBannerWebViewIntent(this, FlightUrl.ALL_PROMO_LINK));
+            }
         }
     }
 }

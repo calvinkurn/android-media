@@ -22,6 +22,8 @@ public interface LoginPhoneNumber {
 
         void showLoading();
 
+        void onForbidden();
+
     }
 
     interface Presenter extends CustomerPresenter<View> {

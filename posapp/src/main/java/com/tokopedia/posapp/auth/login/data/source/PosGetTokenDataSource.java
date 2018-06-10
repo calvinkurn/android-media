@@ -1,11 +1,11 @@
 package com.tokopedia.posapp.auth.login.data.source;
 
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.network.service.AccountsBasicService;
 import com.tokopedia.posapp.auth.login.data.mapper.PosTokenMapper;
 import com.tokopedia.session.data.source.GetTokenDataSource;
 import com.tokopedia.session.domain.pojo.token.TokenViewModel;
+import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;
 

@@ -2,7 +2,6 @@ package com.tokopedia.flight.dashboard.di;
 
 import android.content.Context;
 
-import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.dashboard.domain.GetFlightClassesUseCase;
@@ -26,7 +25,7 @@ public class FlightDashboardModule {
     }
 
     @Provides
-    FlightDashboardCache provideFlightDashboardCache(@ApplicationContext Context context, Gson gson) {
-        return new FlightDashboardCache(context, gson);
+    FlightDashboardCache provideFlightDashboardCache(@ApplicationContext Context context) {
+        return new FlightDashboardCache(context);
     }
 }

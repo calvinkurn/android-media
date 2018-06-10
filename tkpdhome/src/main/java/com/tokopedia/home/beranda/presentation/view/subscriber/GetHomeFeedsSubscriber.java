@@ -7,12 +7,10 @@ import com.tokopedia.home.beranda.listener.HomeFeedListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationProductViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.InspirationItemDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.DataFeedDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedResult;
-import com.tokopedia.topads.sdk.domain.model.Data;
-import com.tokopedia.topads.sdk.domain.model.Product;
+import com.tokopedia.feedplus.domain.model.InspirationItemDomain;
+import com.tokopedia.feedplus.domain.model.feed.DataFeedDomain;
+import com.tokopedia.feedplus.domain.model.feed.FeedDomain;
+import com.tokopedia.feedplus.domain.model.feed.FeedResult;
 
 import java.util.ArrayList;
 import java.util.List;

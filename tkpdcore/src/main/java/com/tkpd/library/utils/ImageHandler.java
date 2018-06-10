@@ -3,6 +3,7 @@ package com.tkpd.library.utils;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -14,20 +15,26 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
-import android.support.v4.content.ContextCompat;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.v7.content.res.AppCompatResources;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.FutureTarget;
+import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.core.R;
 import com.tokopedia.core.gcm.BuildAndShowNotification;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 
 
 public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.ImageHandler {
@@ -61,6 +68,10 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
         if (orientation == ExifInterface.ORIENTATION_ROTATE_90) rotationAngle = 90;
         if (orientation == ExifInterface.ORIENTATION_ROTATE_180) rotationAngle = 180;
         if (orientation == ExifInterface.ORIENTATION_ROTATE_270) rotationAngle = 270;
+        if (orientation == ExifInterface.ORIENTATION_FLIP_HORIZONTAL)
+            return flip(bitmap, true, false);
+        if (orientation == ExifInterface.ORIENTATION_FLIP_VERTICAL)
+            return flip(bitmap, false, true);
         if (rotationAngle == 0) {
             return bitmap;
         }
@@ -69,13 +80,55 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
 
+    private static Bitmap rotate(Bitmap bitmap, float degrees) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(degrees);
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+    }
+
+    private static Bitmap flip(Bitmap bitmap, boolean horizontal, boolean vertical) {
+        Matrix matrix = new Matrix();
+        matrix.preScale(horizontal ? -1 : 1, vertical ? -1 : 1);
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+    }
+
+    public static Bitmap resizeImage(Bitmap image, int maxWidth, int maxHeight) {
+        int width = image.getWidth();
+        int height = image.getHeight();
+        float ratioBitmap = (float) width / (float) height;
+        float ratioMax = (float) maxWidth / (float) maxHeight;
+
+        int finalWidth = maxWidth;
+        int finalHeight = maxHeight;
+        if (ratioMax > ratioBitmap) {
+            finalWidth = (int) ((float) maxHeight * ratioBitmap);
+        } else {
+            finalHeight = (int) ((float) maxWidth / ratioBitmap);
+        }
+        image = Bitmap.createScaledBitmap(image, finalWidth, finalHeight, true);
+        return image;
+    }
+
+    public static Bitmap getBitmapFromUri(Context context, Uri uri, int width, int height) {
+        Bitmap bitmap = null;
+        try {
+            bitmap = Glide.with(context).load(uri).asBitmap().into(width, height).get();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return bitmap;
+    }
+
     public static void loadImageWithId(ImageView imageview, int resId) {
-        Glide.with(imageview.getContext())
-                .load(resId)
-                .placeholder(R.drawable.loading_page)
-                .dontAnimate()
-                .error(resId)
-                .into(imageview);
+        if (imageview.getContext() != null) {
+            Drawable drawable = AppCompatResources.getDrawable(imageview.getContext(), resId);
+            Glide.with(imageview.getContext())
+                    .load("")
+                    .placeholder(R.drawable.loading_page)
+                    .dontAnimate()
+                    .error(drawable)
+                    .into(imageview);
+        }
     }
 
     public static void loadImageWithId(ImageView imageview, int resId, int placeholder) {
@@ -124,12 +177,12 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
         final int width = options.outWidth;
         int inSampleSize = 1;
 
-        if (height > 960 || width > 1280) {
+        if (height > IMAGE_WIDTH_HD || width > IMAGE_WIDTH_HD) {
 
             final int halfHeight = height / 2;
             final int halfWidth = width / 2;
-            while ((halfHeight / inSampleSize) > 360
-                    && (halfWidth / inSampleSize) > 480) {
+            while ((halfHeight / inSampleSize) > IMAGE_WIDTH_MIN
+                    && (halfWidth / inSampleSize) > IMAGE_WIDTH_MIN) {
                 inSampleSize = inSampleSize * 2;
             }
         }
@@ -160,7 +213,7 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
     }
 
     public static void loadImageWithoutFit(Context context, ImageView imageview, String url) {
-        if(isContextValid(context)) {
+        if (isContextValid(context)) {
             Glide.with(context)
                     .load(url)
                     .placeholder(R.drawable.loading_page)
@@ -171,7 +224,7 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
     }
 
     public static void loadImageThumbs(Context context, ImageView imageview, String url) {
-        if(isContextValid(context)) {
+        if (isContextValid(context)) {
             Glide.with(context)
                     .load(url)
                     .dontAnimate()
@@ -183,8 +236,43 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
         }
     }
 
+    /* This method specifically designed to display cached image from different size when offline */
+    public static void loadImageSourceSize(Context context, ImageView imageview, String url) {
+        if (isContextValid(context)) {
+            Glide.with(context)
+                    .load(url)
+                    .dontAnimate()
+                    .placeholder(R.drawable.loading_page)
+                    .error(R.drawable.error_drawable)
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .into(imageview);
+        }
+    }
+
+    /* This method specifically designed to display cached image from different size when offline */
+    public static void loadImageSourceSizeFitCenter(Context context, ImageView imageview, String url) {
+        if (isContextValid(context)) {
+            Glide.with(context.getApplicationContext())
+                    .load(url)
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .fitCenter()
+                    .into(imageview);
+        }
+    }
+
+    /* This method specifically designed to display cached image from different size when offline */
+    public static void loadImageSourceSizeCenterCrop(Context context, ImageView imageview, String url) {
+        if (isContextValid(context)) {
+            Glide.with(context.getApplicationContext())
+                    .load(url)
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .centerCrop()
+                    .into(imageview);
+        }
+    }
+
     public static void loadImage(Context context, ImageView imageview, String url, int placeholder) {
-        if(isContextValid(context)) {
+        if (isContextValid(context)) {
             Glide.with(context)
                     .load(url)
                     .dontAnimate()
@@ -197,7 +285,7 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
     }
 
     public static void loadImage(Context context, ImageView imageview, String url, int placeholder, int error_image) {
-        if(isContextValid(context)) {
+        if (isContextValid(context)) {
             Glide.with(context)
                     .load(url)
                     .dontAnimate()
@@ -247,7 +335,7 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
     }
 
     public static void loadImageWithTarget(Context context, String url, SimpleTarget<Bitmap> simpleTarget) {
-        if(isContextValid(context)) {
+        if (isContextValid(context)) {
             Glide.with(context)
                     .load(url)
                     .asBitmap()
@@ -276,23 +364,25 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
         }
     }
 
-    public static void loadImageChat(ImageView imageview, String url) {
+    public static void loadImageChat(ImageView imageview, String url, RequestListener<String, GlideDrawable> requestListener) {
         if (url != null) {
             Glide.with(imageview.getContext())
                     .load(url)
                     .dontAnimate()
+                    .listener(requestListener)
                     .fitCenter()
                     .placeholder(R.drawable.loading_page)
                     .into(imageview);
         }
     }
 
-    public static void loadImageChatBlurred(ImageView imageview, String url) {
+    public static void loadImageChatBlurred(ImageView imageview, String url, RequestListener<String, GlideDrawable> requestListener) {
         if (url != null) {
             Glide.with(imageview.getContext())
                     .load(url)
                     .dontAnimate()
                     .override(30, 30)
+                    .listener(requestListener)
                     .fitCenter()
                     .placeholder(R.drawable.loading_page)
                     .into(imageview);
@@ -315,7 +405,7 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
 
 
     public static void loadImageBitmap2(Context context, String url, SimpleTarget<Bitmap> target) {
-        if(isContextValid(context)) {
+        if (isContextValid(context)) {
             Glide.with(context)
                     .load(url)
                     .asBitmap()

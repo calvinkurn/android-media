@@ -1,14 +1,8 @@
 
 package com.tokopedia.inbox.inboxchat.domain.model.reply;
 
-import android.text.Spanned;
-import android.text.SpannedString;
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.inbox.inboxchat.ChatTimeConverter;
-
-import java.util.Calendar;
 
 public class ListReply {
 
@@ -36,6 +30,9 @@ public class ListReply {
     @SerializedName("reply_time")
     @Expose
     private String replyTime;
+    @SerializedName("reply_time_nano")
+    @Expose
+    private String replyTimeNano;
     @SerializedName("fraud_status")
     @Expose
     private int fraudStatus;
@@ -66,6 +63,13 @@ public class ListReply {
     @Expose
     private String oldMessageTitle;
 
+    @SerializedName("show_rating")
+    @Expose
+    private boolean showRating;
+
+    @SerializedName("rating_status")
+    @Expose
+    private int ratingStatus;
 
     public int getReplyId() {
         return replyId;
@@ -201,5 +205,29 @@ public class ListReply {
 
     public void setAttachment(Attachment attachment) {
         this.attachment = attachment;
+    }
+
+    public boolean isShowRating() {
+        return showRating;
+    }
+
+    public void setShowRating(boolean showRating) {
+        this.showRating = showRating;
+    }
+
+    public int getRatingStatus() {
+        return ratingStatus;
+    }
+
+    public void setRatingStatus(int ratingStatus) {
+        this.ratingStatus = ratingStatus;
+    }
+
+    public String getReplyTimeNano() {
+        return replyTimeNano;
+    }
+
+    public void setReplyTimeNano(String replyTimeNano) {
+        this.replyTimeNano = replyTimeNano;
     }
 }

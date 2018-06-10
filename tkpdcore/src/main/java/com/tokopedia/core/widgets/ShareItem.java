@@ -4,7 +4,7 @@ import android.graphics.drawable.Drawable;
 import android.view.View;
 
 /**
- * Created by stevenfredian on 2/21/17.
+ * @author by StevenFredian on 2/21/17.
  */
 
 public class ShareItem {

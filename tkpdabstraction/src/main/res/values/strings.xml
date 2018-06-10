@@ -6,7 +6,7 @@
     <string name="label_done">Selesai</string>
     <string name="title_no_result">Tidak ada hasil</string>
     <string name="title_loading">Loading</string>
-    <string name="product_etalase_picker_add_etalase_add_button_dialog">Tambah</string>
+    <string name="label_add">Tambah</string>
     <string name="product_etalase_picker_add_etalase_cancel_button_dialog">Batal</string>
     <string name="msg_network_error">Terjadi kesalahan koneksi, silahkan coba lagi </string>
     <string name="msg_network_error_1">Terjadi kesalahan koneksi</string>

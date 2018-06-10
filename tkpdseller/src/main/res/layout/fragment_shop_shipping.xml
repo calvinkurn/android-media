@@ -17,8 +17,8 @@
         android:id="@+id/main_scroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="@dimen/padding_small"
-        android:layout_marginTop="@dimen/padding_small"
+        android:layout_marginBottom="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_10"
         tools:ignore="UselessParent">
 
         <LinearLayout
@@ -41,8 +41,8 @@
                 android:id="@+id/fragment_shipping_main_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/padding_small"
-                android:layout_marginTop="@dimen/padding_small"
+                android:layout_marginBottom="@dimen/dp_10"
+                android:layout_marginTop="@dimen/dp_10"
                 android:animateLayoutChanges="true"
                 android:orientation="vertical"></LinearLayout>
 
@@ -53,7 +53,7 @@
                 android:layout_gravity="center"
                 android:background="@drawable/button_buy_from_cart"
                 android:gravity="center"
-                android:padding="@dimen/margin_small"
+                android:padding="@dimen/dp_10"
                 android:text="@string/submit_but"
                 android:textColor="@color/white"
                 android:textStyle="bold"

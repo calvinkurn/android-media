@@ -5,35 +5,35 @@
     android:layout_height="wrap_content"
     android:gravity="center"
     android:orientation="vertical"
-    android:padding="@dimen/margin_sm">
+    android:padding="@dimen/dp_15">
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
-        android:layout_width="@dimen/font_loading_width_xl"
-        android:layout_height="@dimen/font_loading_width_xl"
+        android:layout_width="@dimen/dp_150"
+        android:layout_height="@dimen/dp_150"
         android:layout_gravity="center_horizontal"
         app:use_gradient="true" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
-        android:layout_width="@dimen/font_loading_width_xxxl"
-        android:layout_height="@dimen/font_loading_height_subheading"
-        android:layout_marginTop="@dimen/margin_sm"
+        android:layout_width="@dimen/dp_300"
+        android:layout_height="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_15"
         app:use_gradient="true" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
-        android:layout_width="@dimen/font_loading_width_xxxl"
-        android:layout_height="@dimen/font_loading_height_subheading"
-        android:layout_marginTop="@dimen/margin_sm"
+        android:layout_width="@dimen/dp_300"
+        android:layout_height="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_15"
         app:use_gradient="true" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
-        android:layout_width="@dimen/font_loading_width_xxxl"
-        android:layout_height="@dimen/font_loading_height_subheading"
-        android:layout_marginTop="@dimen/margin_sm"
+        android:layout_width="@dimen/dp_300"
+        android:layout_height="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_15"
         app:use_gradient="true" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
-        android:layout_width="@dimen/font_loading_width_xxxl"
-        android:layout_height="@dimen/font_loading_height_subheading"
-        android:layout_marginTop="@dimen/margin_sm"
+        android:layout_width="@dimen/dp_300"
+        android:layout_height="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_15"
         app:use_gradient="true" />
 </LinearLayout>

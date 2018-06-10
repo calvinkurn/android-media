@@ -43,6 +43,7 @@ abstract class BaseActivity extends AppCompatActivity implements
         logoutNetworkReceiver = new ErrorNetworkReceiver();
         HockeyAppHelper.handleLogin(this);
         HockeyAppHelper.checkForUpdate(this);
+        initShake();
     }
 
     @Override
@@ -50,6 +51,8 @@ abstract class BaseActivity extends AppCompatActivity implements
         super.onPause();
         unregisterForceLogoutReceiver();
         HockeyAppHelper.unregisterManager();
+        unregisterShake();
+
     }
 
     @Override
@@ -60,6 +63,28 @@ abstract class BaseActivity extends AppCompatActivity implements
 
         registerForceLogoutReceiver();
         checkIfForceLogoutMustShow();
+        registerShake();
+    }
+
+    protected void initShake() {
+        if (!GlobalConfig.isSellerApp() && getApplication() instanceof AbstractionRouter) {
+            ((AbstractionRouter) getApplication()).init();
+        }
+    }
+    protected void registerShake() {
+        if (!GlobalConfig.isSellerApp() && getApplication() instanceof AbstractionRouter) {
+            String screenName = getScreenName();
+            if(screenName ==  null) {
+                screenName = this.getClass().getSimpleName();
+            }
+            ((AbstractionRouter) getApplication()).registerShake(screenName);
+        }
+    }
+
+    protected void unregisterShake() {
+        if (!GlobalConfig.isSellerApp() &&  getApplication() instanceof AbstractionRouter) {
+            ((AbstractionRouter) getApplication()).unregisterShake();
+        }
     }
 
     private void sendScreenAnalytics() {

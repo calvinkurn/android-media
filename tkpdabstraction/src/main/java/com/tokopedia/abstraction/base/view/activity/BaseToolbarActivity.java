@@ -32,13 +32,17 @@ abstract class BaseToolbarActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setupStatusBar();
+        setupLayout(savedInstanceState);
+        setupFragment(savedInstanceState);
+        setupActionBarHomeIndicatorIcon();
+    }
+
+    protected void setupStatusBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.green_600));
         }
-        setupLayout(savedInstanceState);
-        setupFragment(savedInstanceState);
-        setupActionBarHomeIndicatorIcon();
     }
 
     private void setupActionBarHomeIndicatorIcon() {
@@ -51,7 +55,6 @@ abstract class BaseToolbarActivity extends BaseActivity {
         return false;
     }
 
-    @CallSuper
     protected void setupLayout(Bundle savedInstanceState) {
         setContentView(getLayoutRes());
         toolbar = (Toolbar) findViewById(R.id.toolbar);

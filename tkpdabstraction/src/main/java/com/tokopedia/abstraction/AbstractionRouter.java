@@ -32,6 +32,12 @@ public interface AbstractionRouter {
 
     UserSession getSession();
 
+    void init();
+
+    void registerShake(String screenName);
+
+    void unregisterShake();
+
     CacheManager getGlobalCacheManager();
 
     AnalyticTracker getAnalyticTracker();

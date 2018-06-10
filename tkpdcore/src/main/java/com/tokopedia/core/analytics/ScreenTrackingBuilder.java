@@ -39,7 +39,8 @@ public class ScreenTrackingBuilder {
     }
 
     public ScreenTrackingBuilder setKeyCompetitorIntelligence(String data) {
-        authEvent.setKeyCompetitorIntelligence(data);
+        if (!TextUtils.isEmpty(data))
+            authEvent.setKeyCompetitorIntelligence(data);
         return this;
     }
 

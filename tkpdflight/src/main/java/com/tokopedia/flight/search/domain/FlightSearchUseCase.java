@@ -139,7 +139,7 @@ public class FlightSearchUseCase extends UseCase<List<FlightSearchViewModel>> {
                                                 .flatMap(new Func1<String, Observable<FlightAirlineDB>>() {
                                                     @Override
                                                     public Observable<FlightAirlineDB> call(String airlineId) {
-                                                        return Observable.zip(flightRepository.getAirlineById(airlineId),
+                                                        return Observable.zip(flightRepository.getAirlineCacheById(airlineId),
                                                                 Observable.just(airlineId), new Func2<FlightAirlineDB, String, FlightAirlineDB>() {
                                                                     @Override
                                                                     public FlightAirlineDB call(FlightAirlineDB flightAirlineDB, String flightAirlineDB2) {

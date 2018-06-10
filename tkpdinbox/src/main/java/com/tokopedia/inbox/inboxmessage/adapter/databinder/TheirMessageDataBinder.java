@@ -9,16 +9,16 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.util.DataBindAdapter;
+import com.tokopedia.core.util.DataBinder;
+import com.tokopedia.core.util.SelectableSpannedMovementMethod;
+import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.ChatTimeConverter;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.ListReply;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomPresenter;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
 import com.tokopedia.inbox.inboxmessage.model.inboxmessagedetail.InboxMessageDetailItem;
-import com.tokopedia.core.util.DataBindAdapter;
-import com.tokopedia.core.util.DataBinder;
-import com.tokopedia.core.util.SelectableSpannedMovementMethod;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -136,7 +136,7 @@ public class TheirMessageDataBinder extends DataBinder<TheirMessageDataBinder.Vi
     @Override
     public ViewHolder newViewHolder(ViewGroup parent) {
         return new ViewHolder(LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.message_item_their, parent, false));
+                .inflate(R.layout.chat_opposite, parent, false));
     }
 
     @Override

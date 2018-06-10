@@ -15,7 +15,7 @@
         layout="@layout/bottomsheetbuilder_list_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/bottomsheet_title_vertical_margin"
+        android:layout_marginTop="@dimen/dp_16"
         android:visibility="gone"
         tools:visibility="visible"/>
 
@@ -28,7 +28,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clipToPadding="false"
-        android:paddingBottom="@dimen/bottomsheet_vertical_margin"
-        android:paddingTop="@dimen/bottomsheet_vertical_margin" />
+        android:paddingBottom="@dimen/dp_8"
+        android:paddingTop="@dimen/dp_8" />
 
 </LinearLayout>

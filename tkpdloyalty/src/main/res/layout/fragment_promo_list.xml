@@ -28,6 +28,4 @@
                 android:layout_height="match_parent"/>
         </com.tokopedia.core.customwidget.SwipeToRefresh>
     </FrameLayout>
-
-
 </LinearLayout>

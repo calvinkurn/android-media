@@ -1,8 +1,10 @@
 package com.tokopedia.flight.search.view.adapter.viewholder;
 
+import android.graphics.Paint;
 import android.support.annotation.LayoutRes;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
@@ -27,6 +29,7 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightSearchViewM
     @LayoutRes
     public static int LAYOUT = R.layout.item_flight_search;
 
+    LinearLayout containerLayout;
     TextView tvDeparture;
     TextView tvArrival;
     TextView tvAirline;
@@ -36,11 +39,13 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightSearchViewM
     TextView airlineRefundableInfo;
     TextView savingPrice;
     TextView arrivalAddDay;
+    TextView discountTag;
     View containerDetail;
     private FilterSearchAdapterTypeFactory.OnFlightSearchListener onFlightSearchListener;
 
     public FlightSearchViewHolder(View itemView, FilterSearchAdapterTypeFactory.OnFlightSearchListener onFlightSearchListener) {
         super(itemView);
+        containerLayout = (LinearLayout) itemView.findViewById(R.id.container_layout);
         tvDeparture = (TextView) itemView.findViewById(R.id.departure_time);
         tvArrival = (TextView) itemView.findViewById(R.id.arrival_time);
         tvAirline = (TextView) itemView.findViewById(R.id.tv_airline);
@@ -50,6 +55,7 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightSearchViewM
         tvDuration = (TextView) itemView.findViewById(R.id.flight_time);
         savingPrice = (TextView) itemView.findViewById(R.id.saving_price);
         arrivalAddDay = (TextView) itemView.findViewById(R.id.arrival_add_day);
+        discountTag = (TextView) itemView.findViewById(R.id.tv_discount_tag);
         containerDetail = itemView.findViewById(R.id.container_detail);
         this.onFlightSearchListener = onFlightSearchListener;
     }
@@ -79,6 +85,32 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightSearchViewM
                 onFlightSearchListener.onItemClicked(flightSearchViewModel, getAdapterPosition());
             }
         });
+        setMarginOnFirstItem();
+    }
+
+    private void setMarginOnFirstItem() {
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+
+        if (getAdapterPosition() == 0) {
+            params.setMargins(
+                    itemView.getResources().getDimensionPixelSize(R.dimen.margin_16),
+                    itemView.getResources().getDimensionPixelSize(R.dimen.margin_16),
+                    itemView.getResources().getDimensionPixelSize(R.dimen.margin_16),
+                    itemView.getResources().getDimensionPixelSize(R.dimen.margin_8)
+            );
+            containerLayout.setLayoutParams(params);
+        } else {
+            params.setMargins(
+                    itemView.getResources().getDimensionPixelSize(R.dimen.margin_16),
+                    itemView.getResources().getDimensionPixelSize(R.dimen.margin_8),
+                    itemView.getResources().getDimensionPixelSize(R.dimen.margin_16),
+                    itemView.getResources().getDimensionPixelSize(R.dimen.margin_8)
+            );
+            containerLayout.setLayoutParams(params);
+        }
     }
 
     private void setArrivalAddDay(FlightSearchViewModel flightSearchViewModel) {
@@ -104,10 +136,12 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightSearchViewM
 
     private void setSavingPrice(FlightSearchViewModel flightSearchViewModel) {
         if (TextUtils.isEmpty(flightSearchViewModel.getBeforeTotal())) {
+            discountTag.setVisibility(View.GONE);
             savingPrice.setVisibility(View.GONE);
         } else {
+            discountTag.setVisibility(View.VISIBLE);
             savingPrice.setVisibility(View.VISIBLE);
-            savingPrice.setText(MethodChecker.fromHtml(getString(R.string.flight_label_saving_price_html, flightSearchViewModel.getBeforeTotal())));
+            savingPrice.setText(flightSearchViewModel.getBeforeTotal());
         }
     }
 

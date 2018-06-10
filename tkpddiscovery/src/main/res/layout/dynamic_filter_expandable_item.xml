@@ -24,6 +24,11 @@
             tools:text="Dukungan Pengiriman"
             />
 
+        <TextView
+            android:id="@+id/see_all_button"
+            style="@style/TextView.Small.Green.Bold"
+            android:text="@string/see_all"/>
+
     </LinearLayout>
 
     <RelativeLayout
@@ -34,14 +39,6 @@
             android:id="@+id/expandable_item_selected_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-
-        <View
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/expandable_item_selected_list"
-            android:layout_alignParentRight="true"
-            android:layout_alignTop="@id/expandable_item_selected_list"
-            android:background="@drawable/gradient_horizontal_transparent_to_white" />
 
     </RelativeLayout>
 

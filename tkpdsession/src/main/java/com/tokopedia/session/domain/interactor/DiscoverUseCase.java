@@ -1,12 +1,10 @@
 package com.tokopedia.session.domain.interactor;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.session.data.source.CloudDiscoverDataSource;
 import com.tokopedia.session.data.source.LocalDiscoverDataSource;
 import com.tokopedia.session.data.viewmodel.DiscoverViewModel;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import javax.inject.Inject;
 
@@ -25,11 +23,8 @@ public class DiscoverUseCase extends UseCase<DiscoverViewModel> {
     private final LocalDiscoverDataSource localDiscoverDataSource;
 
     @Inject
-    public DiscoverUseCase(ThreadExecutor threadExecutor,
-                           PostExecutionThread postExecutionThread,
-                           CloudDiscoverDataSource cloudDiscoverDataSource,
+    public DiscoverUseCase(CloudDiscoverDataSource cloudDiscoverDataSource,
                            LocalDiscoverDataSource localDiscoverDataSource) {
-        super(threadExecutor, postExecutionThread);
         this.cloudDiscoverDataSource = cloudDiscoverDataSource;
         this.localDiscoverDataSource = localDiscoverDataSource;
 

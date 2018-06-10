@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.raizlabs.android.dbflow.sql.language.Method;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.Model;
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.flight.airline.data.cloud.model.AirlineData;
 import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
 import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB_Table;
@@ -100,17 +101,16 @@ public class FlightAirlineDataListDBSource extends BaseDataListDBSource<AirlineD
     }
 
     public Observable<FlightAirlineDB> getAirline(String airlineId) {
-        final String queryLike = "%" + airlineId + "%";
-        return Observable.unsafeCreate(new Observable.OnSubscribe<FlightAirlineDB>() {
-            @Override
-            public void call(Subscriber<? super FlightAirlineDB> subscriber) {
-                FlightAirlineDB flightAirportDBList = new Select()
-                        .from(FlightAirlineDB.class)
-                        .where(FlightAirlineDB_Table.id.like(queryLike))
-                        .querySingle();
-                subscriber.onNext(flightAirportDBList);
-            }
-        });
+        return Observable.just(airlineId)
+                .map(new Func1<String, FlightAirlineDB>() {
+                    @Override
+                    public FlightAirlineDB call(String airlineId) {
+                        FlightAirlineDB flightAirlineDb = new Select()
+                                .from(FlightAirlineDB.class)
+                                .where(FlightAirlineDB_Table.id.eq(airlineId))
+                                .querySingle();
+                        return flightAirlineDb;
+                    }
+                });
     }
-
 }

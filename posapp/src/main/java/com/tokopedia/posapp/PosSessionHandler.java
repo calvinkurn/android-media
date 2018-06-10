@@ -20,8 +20,11 @@ public class PosSessionHandler extends SessionHandler {
     private static final String OUTLET_ID = "OUTLET_ID";
     private static final String OUTLET_NAME = "OUTLET_NAME";
 
+    private Context context;
+
     public PosSessionHandler(Context context) {
         super(context);
+        this.context =context;
     }
 
     public static void clearPosUserData(Context context) {
@@ -33,19 +36,19 @@ public class PosSessionHandler extends SessionHandler {
     }
 
     public String getOutletId() {
-        return getOutletId(getContext());
+        return getOutletId(context);
     }
 
     public String getOutletName() {
-        return getOutletName(getContext());
+        return getOutletName(context);
     }
 
     public void setOutletId(String id) {
-        setOutletId(getContext(), id);
+        setOutletId(context, id);
     }
 
     public void setOutletName(String name) {
-        setOutletName(getContext(), name);
+        setOutletName(context, name);
     }
 
     public static void setOutletId(Context context, String id) {
@@ -69,11 +72,11 @@ public class PosSessionHandler extends SessionHandler {
     }
 
     public void showPasswordDialog(String title, ValidatePasswordFragment.PasswordListener listener) {
-        if (getContext() != null && getContext() instanceof AppCompatActivity && getContext() instanceof onLogoutListener) {
-            if (((AppCompatActivity) getContext()).getFragmentManager().findFragmentByTag(ValidatePasswordFragment.FRAGMENT_TAG) == null) {
+        if (context != null && context instanceof AppCompatActivity && context instanceof onLogoutListener) {
+            if (((AppCompatActivity) context).getFragmentManager().findFragmentByTag(ValidatePasswordFragment.FRAGMENT_TAG) == null) {
                 ValidatePasswordFragment validatePasswordFragment = ValidatePasswordFragment.newInstance(title);
                 validatePasswordFragment.setListener(listener);
-                validatePasswordFragment.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), ValidatePasswordFragment.FRAGMENT_TAG);
+                validatePasswordFragment.show(((AppCompatActivity) context).getSupportFragmentManager(), ValidatePasswordFragment.FRAGMENT_TAG);
             }
         }
     }

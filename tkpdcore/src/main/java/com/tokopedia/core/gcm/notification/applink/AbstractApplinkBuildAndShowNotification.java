@@ -2,6 +2,7 @@ package com.tokopedia.core.gcm.notification.applink;
 
 import android.content.Context;
 import android.content.Intent;
+import android.media.RingtoneManager;
 
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.NotificationConfiguration;
@@ -20,7 +21,7 @@ public abstract class AbstractApplinkBuildAndShowNotification<T> {
         NotificationConfiguration configuration = new NotificationConfiguration();
         configuration.setBell(fcmCacheManager.isAllowBell());
         configuration.setVibrate(fcmCacheManager.isVibrate());
-        configuration.setSoundUri(fcmCacheManager.getSoundUri());
+        configuration.setSoundUri(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
         return configuration;
     }
 }

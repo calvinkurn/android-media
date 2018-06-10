@@ -3,8 +3,8 @@ package com.tokopedia.flight.search.view.model.resultstatistics;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.abstraction.base.view.adapter.factory.BaseListCheckableTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.factory.BaseListCheckableTypeFactory;
 import com.tokopedia.flight.search.view.model.filter.RefundableEnum;
 
 public class RefundableStat implements Parcelable, Visitable<BaseListCheckableTypeFactory<RefundableStat>> {

@@ -1,10 +1,14 @@
 package com.tokopedia.flight.common.data.model;
 
+import android.os.Build;
+import android.text.TextUtils;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.abstraction.common.data.model.response.BaseResponseError;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,12 +29,24 @@ public class FlightErrorResponse extends BaseResponseError {
 
     @Override
     public boolean hasBody() {
-        return errorList!= null && errorList.size() > 0;
+        return errorList != null && errorList.size() > 0;
     }
 
     @Override
     public IOException createException() {
-        return new FlightException(errorList);
+        String message = getConcattedMessage();
+        return new FlightException(message, errorList);
     }
 
+    private String getConcattedMessage() {
+        List<String> results = new ArrayList<>();
+        for (FlightError error : errorList) {
+            results.add(error.getTitle());
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            return String.join(", ", results);
+        } else {
+            return TextUtils.join(", ", results);
+        }
+    }
 }

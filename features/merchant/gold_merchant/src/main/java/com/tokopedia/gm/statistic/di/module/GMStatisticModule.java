@@ -35,12 +35,12 @@ import com.tokopedia.gm.statistic.view.presenter.GMStatisticTransactionPresenter
 import com.tokopedia.gm.statistic.view.presenter.GMStatisticTransactionPresenterImpl;
 import com.tokopedia.gm.statistic.view.presenter.GMStatisticTransactionTablePresenter;
 import com.tokopedia.gm.statistic.view.presenter.GMStatisticTransactionTablePresenterImpl;
+import com.tokopedia.seller.product.variant.data.cloud.api.TomeProductApi;
 import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepositoryImpl;
 import com.tokopedia.seller.shop.common.data.source.ShopInfoDataSource;
 import com.tokopedia.seller.shop.common.data.source.cloud.api.ShopApi;
 import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepository;
 import com.tokopedia.seller.product.edit.domain.interactor.AddProductShopInfoUseCase;
-import com.tokopedia.seller.product.variant.data.cloud.api.TomeApi;
 
 import dagger.Module;
 import dagger.Provides;
@@ -83,8 +83,8 @@ public class GMStatisticModule {
 
     @GMStatisticScope
     @Provides
-    TomeApi provideTomeApi(@TomeQualifier Retrofit retrofit){
-        return retrofit.create(TomeApi.class);
+    TomeProductApi provideTomeApi(@TomeQualifier Retrofit retrofit){
+        return retrofit.create(TomeProductApi.class);
     }
 
     @GMStatisticScope

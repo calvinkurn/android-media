@@ -508,8 +508,9 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
         tvErrorGeoLocation.setVisibility(View.GONE);
         ShipmentPackage shipmentPackage = (ShipmentPackage) spShipmentPackage.getSelectedItem();
         if (shipmentPackage.getShowMap() == 1 && (
-                locationPass.getLatitude().equalsIgnoreCase("") ||
-                        locationPass.getLongitude().equalsIgnoreCase(""))) {
+                locationPass == null
+                        || locationPass.getLatitude().equalsIgnoreCase("")
+                        || locationPass.getLongitude().equalsIgnoreCase(""))) {
             tvErrorGeoLocation.setVisibility(View.VISIBLE);
             showSnackbar(getString(com.tokopedia.transaction.R.string.shipment_data_not_complete));
             return true;
@@ -586,7 +587,7 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
     @Override
     public void renderResultChooseLocation(@NonNull Bundle bundle) {
         LocationPass locationResult = bundle.getParcelable(GeolocationActivity.EXTRA_EXISTING_LOCATION);
-        if (locationResult != null) {
+        if (locationResult != null && !TextUtils.isEmpty(locationResult.getGeneratedAddress())) {
             this.locationPass = locationResult;
             if (locationResult.getGeneratedAddress().equals(getString(R.string.choose_this_location))) {
                 this.locationPass.setGeneratedAddress(String.format("%s, %s", locationPass.getLatitude(),

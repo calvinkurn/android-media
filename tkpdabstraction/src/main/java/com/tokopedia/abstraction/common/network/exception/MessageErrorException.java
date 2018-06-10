@@ -10,4 +10,7 @@ public class MessageErrorException extends IOException {
     public MessageErrorException(String message) {
         super(message);
     }
+
+    public MessageErrorException() {
+    }
 }

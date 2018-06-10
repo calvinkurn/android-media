@@ -95,7 +95,7 @@ public class TimeView extends BaseView<DetailData, DetailResCenterFragmentView> 
             btnGetHelp.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    listener.setOnActionHelpClick();
+                    listener.setOnActionHelpTimeViewClick();
                 }
             });
         } else {

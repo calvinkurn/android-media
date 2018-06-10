@@ -11,19 +11,4 @@ public abstract class PosDrawerActivity<T> extends DrawerPresenterActivity<T> {
     protected void getDrawerUserAttrUseCase(SessionHandler sessionHandler) {
         // no-op
     }
-
-    @Override
-    protected void getDrawerNotification() {
-        // no-op
-    }
-
-    @Override
-    protected void getDrawerDeposit() {
-        // no-op
-    }
-
-    @Override
-    protected void getDrawerTopPoints() {
-        // no-op
-    }
 }

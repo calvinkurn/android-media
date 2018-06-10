@@ -2,7 +2,7 @@ package com.tokopedia.seller.shop.open.data.model.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.seller.shop.common.exception.model.Header;
+import com.tokopedia.seller.common.exception.model.Header;
 
 /**
  * Created by zulfikarrahman on 12/19/17.

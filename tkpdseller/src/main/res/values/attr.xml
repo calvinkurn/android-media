@@ -19,8 +19,26 @@
         </attr>
         <attr name="lv_font_size" format="dimension" />
         <attr name="content_max_lines" format="integer" />
-        <attr name="switch_enable" format="boolean" />
         <attr name="lv_min_title_width" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="LabelSwitch">
+        <attr name="ls_switch_enable" format="boolean" />
+        <attr name="ls_title" format="string" />
+        <attr name="ls_title_text_size" format="dimension" />
+        <attr name="ls_title_color" format="color" />
+        <attr name="ls_content" format="string" />
+        <attr name="ls_content_color" format="color" />
+        <attr name="ls_content_text_size" format="dimension"/>
+    </declare-styleable>
+
+    <declare-styleable name="VerticalLabelView">
+        <attr name="vlv_title" format="string" />
+        <attr name="vlv_title_text_size" format="dimension" />
+        <attr name="vlv_title_color" format="color" />
+        <attr name="vlv_content" format="string" />
+        <attr name="vlv_content_color" format="color" />
+        <attr name="vlv_content_text_size" format="dimension"/>
     </declare-styleable>
 
     <declare-styleable name="DatePickerLabelView">
@@ -103,31 +121,6 @@
         <attr name="arcProgressStyle" format="reference" />
     </declare-styleable>
 
-    <!-- william chart attr -->
-    <declare-styleable name="ChartAttrs">
-
-        <attr name="chart_axisThickness" format="dimension" />
-        <attr name="chart_axisColor" format="reference|color" />
-        <attr name="chart_axisBorderSpacing" format="dimension" />
-        <attr name="chart_axisTopSpacing" format="dimension" />
-
-        <attr name="chart_labels" format="boolean" />
-        <attr name="chart_labelColor" format="reference|color" />
-        <attr name="chart_fontSize" format="dimension" />
-        <attr name="chart_typeface" format="string" />
-
-        <attr name="chart_shadowColor" format="reference|color" />
-        <attr name="chart_shadowDx" format="dimension" />
-        <attr name="chart_shadowDy" format="dimension" />
-        <attr name="chart_shadowRadius" format="dimension" />
-    </declare-styleable>
-
-    <!-- william chart attr -->
-    <declare-styleable name="BarChartAttrs">
-        <attr name="chart_barSpacing" format="dimension" />
-        <attr name="chart_setSpacing" format="dimension" />
-    </declare-styleable>
-
     <!-- Top ads widget radio expand view-->
     <declare-styleable name="TopAdsRadioExpand">
         <attr name="title_radio" format="reference|string" />
@@ -149,17 +142,15 @@
         <attr name="feature_desc" format="string" />
     </declare-styleable>
 
-    <!-- william chart tooltip -->
-    <declare-styleable name="TooltipPointerAttrs">
-        <attr name="tooltip_pointer_color" format="reference|color" />
-    </declare-styleable>
-
-
     <attr name="bottomSheetBuilderBackgroundColor" format="color" />
     <attr name="bottomSheetBuilderItemTextColor" format="color" />
     <attr name="bottomSheetBuilderTitleTextColor" format="color" />
 
     <declare-styleable name="PriceDifferentInfoView">
         <attr name="pdiv_title" format="string" />
+    </declare-styleable>
+
+    <declare-styleable name="VariantImageView">
+        <attr name="showPlusButton" format="boolean" />
     </declare-styleable>
 </resources>

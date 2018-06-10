@@ -31,6 +31,7 @@ import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gcm.ApplinkUnsupported;
 import com.tokopedia.core.gcm.model.NotificationPass;
+import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
@@ -58,6 +59,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import okhttp3.Interceptor;
 import okhttp3.Response;
 import rx.Observable;
 
@@ -193,6 +195,11 @@ public class PosRouterApplication extends MainApplication implements
     }
 
     @Override
+    public Interceptor getChuckInterceptor() {
+        return null;
+    }
+
+    @Override
     public Intent getOnBoardingActivityIntent(Context context) {
         return null;
     }
@@ -253,11 +260,6 @@ public class PosRouterApplication extends MainApplication implements
     }
 
     @Override
-    public BroadcastReceiver getBroadcastReceiverTokocashPending() {
-        return null;
-    }
-
-    @Override
     public Intent instanceIntentCartDigitalProduct(DigitalCheckoutPassData passData) {
         return null;
     }
@@ -279,6 +281,16 @@ public class PosRouterApplication extends MainApplication implements
 
     @Override
     public Intent instanceIntentDigitalWeb(String url) {
+        return null;
+    }
+
+    @Override
+    public Intent getPromoListIntent(Activity activity) {
+        return null;
+    }
+
+    @Override
+    public Intent getPromoDetailIntent(Context context, String slug) {
         return null;
     }
 
@@ -463,7 +475,72 @@ public class PosRouterApplication extends MainApplication implements
     }
 
     @Override
+    public Intent getShopPageIntent(Context context, String shopId) {
+        return null;
+    }
+
+    @Override
+    public Intent getShopPageIntentByDomain(Context context, String domain) {
+        return null;
+    }
+
+    @Override
+    public Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId) {
+        return null;
+    }
+
+    @Override
     public Observable<TokoCashData> getTokoCashBalance() {
+        return null;
+    }
+
+    @Override
+    public Intent getAddEmailIntent(Context context) {
+        return null;
+    }
+
+    @Override
+    public Intent getAddPasswordIntent(Context context) {
+        return null;
+    }
+
+    @Override
+    public Intent getChangeNameIntent(Context context) {
+        return null;
+    }
+
+    @Override
+    public Intent getTopProfileIntent(Context context, String userId) {
+        return null;
+    }
+
+    @Override
+    public Intent getGroupChatIntent(Context context, String channelUrl) {
+        return null;
+    }
+
+    @Override
+    public Intent getInboxChannelsIntent(Context context) {
+        return null;
+    }
+
+    @Override
+    public Intent getInboxMessageIntent(Context context) {
+        return null;
+    }
+
+    @Override
+    public void sendTrackingGroupChatLeftNavigation() {
+
+    }
+
+    @Override
+    public String getDesktopLinkGroupChat() {
+        return null;
+    }
+
+    @Override
+    public Intent getDistrictRecommendationIntent(Activity activity, Token token) {
         return null;
     }
 
@@ -565,6 +642,21 @@ public class PosRouterApplication extends MainApplication implements
     }
 
     @Override
+    public void init() {
+
+    }
+
+    @Override
+    public void registerShake(String screenName) {
+
+    }
+
+    @Override
+    public void unregisterShake() {
+
+    }
+
+    @Override
     public CacheManager getGlobalCacheManager() {
         if (cacheManager == null) cacheManager = new GlobalCacheManager();
         return cacheManager;
@@ -596,6 +688,11 @@ public class PosRouterApplication extends MainApplication implements
                         return screenName;
                     }
                 });
+            }
+
+            @Override
+            public void sendEnhancedEcommerce(Map<String, Object> trackingData) {
+                // no-op
             }
         };
     }

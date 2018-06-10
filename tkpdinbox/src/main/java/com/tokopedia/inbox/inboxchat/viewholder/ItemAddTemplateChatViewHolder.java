@@ -6,7 +6,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.presenter.TemplateChatContract;
@@ -16,7 +16,7 @@ import com.tokopedia.inbox.inboxchat.viewmodel.TemplateChatModel;
  * Created by stevenfredian on 11/29/17.
  */
 
-public class ItemAddTemplateChatViewHolder extends AbstractViewHolder<TemplateChatModel>{
+public class ItemAddTemplateChatViewHolder extends AbstractViewHolder<TemplateChatModel> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.item_add_template_chat_settings;

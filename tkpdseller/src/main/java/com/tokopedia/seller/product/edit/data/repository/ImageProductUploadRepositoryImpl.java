@@ -16,7 +16,7 @@ import rx.Observable;
 /**
  * Created by zulfikarrahman on 3/21/17.
  */
-
+@Deprecated
 public class ImageProductUploadRepositoryImpl implements ImageProductUploadRepository {
     private final ImageProductUploadDataSource imageProductUploadDataSource;
     private final UploadProductPictureInputMapper uploadProductPictureInputMapper;

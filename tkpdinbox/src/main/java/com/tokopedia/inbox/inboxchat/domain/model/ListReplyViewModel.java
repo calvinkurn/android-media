@@ -3,14 +3,15 @@ package com.tokopedia.inbox.inboxchat.domain.model;
 
 import android.text.Spanned;
 
-import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.inbox.inboxchat.ChatTimeConverter;
 import com.tokopedia.inbox.inboxchat.adapter.ChatRoomTypeFactory;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.Attachment;
 
 import java.util.Calendar;
 
-public abstract class ListReplyViewModel implements Visitable<ChatRoomTypeFactory>{
+public abstract class ListReplyViewModel implements
+        Visitable<ChatRoomTypeFactory> {
 
     private int msgId;
     private int userId;
@@ -21,6 +22,7 @@ public abstract class ListReplyViewModel implements Visitable<ChatRoomTypeFactor
     private String msg;
     private Spanned spanned;
     private String replyTime;
+    private long replyTimeNano;
     private int fraudStatus;
     private String readTime;
     private Attachment attachment;
@@ -31,11 +33,33 @@ public abstract class ListReplyViewModel implements Visitable<ChatRoomTypeFactor
     private boolean isOpposite;
     private boolean isHighlight;
     private String oldMessageTitle;
+    private boolean showRating;
+    private int ratingStatus;
 
     public ListReplyViewModel() {
     }
 
-    public ListReplyViewModel(int msgId, int userId, int replyId, String senderId, String senderName, String role, String msg, Spanned spanned, String replyTime, int fraudStatus, String readTime, Attachment attachment, int attachmentId, int oldMsgId, boolean showTime, boolean showHour, boolean isOpposite, boolean isHighlight, String oldMessageTitle) {
+    public ListReplyViewModel(int msgId,
+                              int userId,
+                              int replyId,
+                              String senderId,
+                              String senderName,
+                              String role,
+                              String msg,
+                              Spanned spanned,
+                              String replyTime,
+                              int fraudStatus,
+                              String readTime,
+                              Attachment attachment,
+                              int attachmentId,
+                              int oldMsgId,
+                              boolean showTime,
+                              boolean showHour,
+                              boolean isOpposite,
+                              boolean isHighlight,
+                              String oldMessageTitle,
+                              boolean showRating,
+                              int ratingStatus) {
         this.msgId = msgId;
         this.userId = userId;
         this.replyId = replyId;
@@ -55,6 +79,8 @@ public abstract class ListReplyViewModel implements Visitable<ChatRoomTypeFactor
         this.isOpposite = isOpposite;
         this.isHighlight = isHighlight;
         this.oldMessageTitle = oldMessageTitle;
+        this.showRating = showRating;
+        this.ratingStatus = ratingStatus;
     }
 
     public int getReplyId() {
@@ -211,5 +237,29 @@ public abstract class ListReplyViewModel implements Visitable<ChatRoomTypeFactor
 
     public void setAttachment(Attachment attachment) {
         this.attachment = attachment;
+    }
+
+    public boolean isShowRating() {
+        return showRating;
+    }
+
+    public void setShowRating(boolean showRating) {
+        this.showRating = showRating;
+    }
+
+    public int getRatingStatus() {
+        return ratingStatus;
+    }
+
+    public void setRatingStatus(int ratingStatus) {
+        this.ratingStatus = ratingStatus;
+    }
+
+    public long getReplyTimeNano() {
+        return replyTimeNano;
+    }
+
+    public void setReplyTimeNano(long replyTimeNano) {
+        this.replyTimeNano = replyTimeNano;
     }
 }

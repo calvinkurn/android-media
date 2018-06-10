@@ -35,7 +35,7 @@
 
     <android.support.v4.widget.Space
         android:layout_width="match_parent"
-        android:layout_height="@dimen/padding_vsmall_prof_comp" />
+        android:layout_height="@dimen/dp_5mall_prof_comp" />
 
     <ProgressBar
         android:id="@+id/ProgressBar"

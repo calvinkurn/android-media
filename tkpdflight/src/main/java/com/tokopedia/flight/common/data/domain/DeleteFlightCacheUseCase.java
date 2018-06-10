@@ -10,6 +10,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.functions.Func1;
 
 /**
  * Created by alvarisi on 10/30/17.
@@ -27,10 +28,22 @@ public class DeleteFlightCacheUseCase extends UseCase<Boolean> {
     @Override
     public Observable<Boolean> createObservable(RequestParams requestParams) {
         if (requestParams == null || requestParams.getParameters().size() == 0) {
-            return flightRepository.deleteFlightCacheSearch();
+            return flightRepository.deleteFlightCacheSearch()
+                    .flatMap(new Func1<Boolean, Observable<Boolean>>() {
+                        @Override
+                        public Observable<Boolean> call(Boolean aBoolean) {
+                            return flightRepository.deleteAllListPassenger();
+                        }
+                    });
         } else {
             boolean isReturning = requestParams.getBoolean(PARAM_RETURNING, false);
-            return flightRepository.deleteFlightCacheSearch(isReturning);
+            return flightRepository.deleteFlightCacheSearch(isReturning)
+                    .flatMap(new Func1<Boolean, Observable<Boolean>>() {
+                        @Override
+                        public Observable<Boolean> call(Boolean aBoolean) {
+                            return flightRepository.deleteAllListPassenger();
+                        }
+                    });
         }
     }
 

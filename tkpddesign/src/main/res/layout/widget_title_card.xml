@@ -20,17 +20,17 @@
             android:id="@+id/vg_title_content"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:layout_marginLeft="@dimen/margin_sm"
-            android:layout_marginRight="@dimen/margin_sm"
+            android:layout_marginLeft="@dimen/dp_15"
+            android:layout_marginRight="@dimen/dp_15"
             android:orientation="horizontal">
 
             <ImageView
                 android:id="@+id/iv_icon"
-                android:layout_width="@dimen/image_width_xs"
-                android:layout_height="@dimen/image_width_xs"
+                android:layout_width="@dimen/dp_24"
+                android:layout_height="@dimen/dp_24"
                 android:layout_gravity="center_vertical"
-                android:layout_marginEnd="@dimen/margin_ms"
-                android:layout_marginRight="@dimen/margin_ms"
+                android:layout_marginEnd="@dimen/dp_8"
+                android:layout_marginRight="@dimen/dp_8"
                 android:visibility="gone"
                 tools:src="@drawable/ic_empty_state"
                 tools:visibility="visible" />
@@ -47,8 +47,8 @@
 
             <android.support.v7.widget.AppCompatImageView
                 android:id="@+id/iv_arrow_down"
-                android:layout_width="@dimen/image_width_xxs"
-                android:layout_height="@dimen/image_width_xxxs"
+                android:layout_width="@dimen/dp_16"
+                android:layout_height="@dimen/dp_8"
                 android:layout_gravity="center_vertical"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:scaleType="fitXY"

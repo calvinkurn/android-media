@@ -1,0 +1,59 @@
+{
+  tokopointsToken {
+    resultStatus {
+        code
+        message
+        status
+   }
+    offFlag
+    sumToken
+    sumTokenStr
+    tokenUnit
+    floating {
+      tokenId
+      pageUrl
+      applink
+      timeRemainingSeconds
+      isShowTime
+      unixTimestamp
+      tokenAsset {
+        name
+        version
+        floatingImgUrl
+      }
+    }
+    home {
+      emptyState{
+          title
+          buttonText
+          buttonApplink
+          buttonURL
+          backgroundImgUrl
+          imageUrl
+          version
+      }
+      countingMessage
+      tokensUser {
+        tokenUserID
+        campaignID
+        title
+        unixTimestampFetch
+        timeRemainingSeconds
+        isShowTime
+        backgroundAsset {
+          name
+          version
+          backgroundImgUrl
+        }
+        tokenAsset {
+          name
+          version
+          floatingImgUrl
+          smallImgUrl
+          spriteUrl
+          imageUrls
+        }
+      }
+    }
+  }
+}

@@ -20,6 +20,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.core.network.entity.variant.Child;
 import com.tokopedia.core.network.entity.variant.ProductVariant;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
@@ -521,7 +522,7 @@ public class ProductDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void moveToEditFragment(boolean isEdit, String productId) {
+    public void moveToEditFragment(boolean isEdit) {
 
     }
 
@@ -557,6 +558,16 @@ public class ProductDetailFragment extends BaseDaggerFragment
 
     @Override
     public void addProductVariant(ProductVariant productVariant) {
+
+    }
+
+    @Override
+    public void setVariantFalse() {
+
+    }
+
+    @Override
+    public void addProductStock(Child productStock) {
 
     }
 
@@ -601,7 +612,17 @@ public class ProductDetailFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void renderAddToCartSuccess(String message) {
+
+    }
+
+    @Override
     public void updateButtonBuyListener() {
+
+    }
+
+    @Override
+    public void trackingEnhanceProductDetail() {
 
     }
 

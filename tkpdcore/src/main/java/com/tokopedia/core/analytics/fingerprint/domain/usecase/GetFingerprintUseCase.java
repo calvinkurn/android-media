@@ -1,11 +1,8 @@
 package com.tokopedia.core.analytics.fingerprint.domain.usecase;
 
 import com.tokopedia.core.analytics.fingerprint.domain.FingerprintRepository;
-import com.tokopedia.core.analytics.fingerprint.domain.model.FingerPrint;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 
 import rx.Observable;
 

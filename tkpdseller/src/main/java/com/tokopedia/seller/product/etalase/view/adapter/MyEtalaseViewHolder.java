@@ -16,13 +16,13 @@ import com.tokopedia.seller.product.etalase.view.model.MyEtalaseItemViewModel;
 
 class MyEtalaseViewHolder extends RecyclerView.ViewHolder {
     private final TextView itemName;
-    private final RadioButton etalaseRadioButton;
+    private final View etalaseRadioButton;
     private MyEtalaseItemViewModel viewModel;
 
     public MyEtalaseViewHolder(View view, final EtalasePickerAdapterListener listener) {
         super(view);
         itemName = (TextView) view.findViewById(R.id.etalase_picker_item_name);
-        etalaseRadioButton = (RadioButton) view.findViewById(R.id.etalase_picker_radio_button);
+        etalaseRadioButton = view.findViewById(R.id.etalase_picker_radio_button);
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -53,7 +53,11 @@ class MyEtalaseViewHolder extends RecyclerView.ViewHolder {
         Spanned etalaseName = Html.fromHtml(etalaseViewModel.getEtalaseName());
         itemName.setText(etalaseName);
         this.viewModel = etalaseViewModel;
-        etalaseRadioButton.setChecked(isSelected);
+        if (etalaseRadioButton instanceof RadioButton) {
+            ((RadioButton) etalaseRadioButton).setChecked(isSelected);
+        } else {
+            etalaseRadioButton.setVisibility(isSelected ? View.VISIBLE : View.GONE);
+        }
 
     }
 }

@@ -15,13 +15,9 @@ import javax.inject.Inject;
 
 public class PosLoginEmailUseCase extends LoginEmailUseCase {
     @Inject
-    public PosLoginEmailUseCase(ThreadExecutor threadExecutor,
-                                PostExecutionThread postExecutionThread,
-                                PosGetTokenUseCase getTokenUseCase,
+    public PosLoginEmailUseCase(PosGetTokenUseCase getTokenUseCase,
                                 GetUserInfoUseCase getUserInfoUseCase,
-                                MakeLoginUseCase makeLoginUseCase,
-                                SessionHandler sessionHandler) {
-        super(threadExecutor, postExecutionThread, getTokenUseCase,
-                getUserInfoUseCase, makeLoginUseCase, sessionHandler);
+                                MakeLoginUseCase makeLoginUseCase) {
+        super(getTokenUseCase, getUserInfoUseCase, makeLoginUseCase);
     }
 }

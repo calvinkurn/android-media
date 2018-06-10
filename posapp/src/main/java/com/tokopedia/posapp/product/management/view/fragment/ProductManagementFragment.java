@@ -192,10 +192,10 @@ public class ProductManagementFragment
         return productHeaderViewModel;
     }
 
-    private Visitable getLoadingModel() {
+    @Override
+    public LoadingModel getLoadingModel() {
         if (loadingModel == null) {
             loadingModel = new LoadingModel();
-            loadingModel.setFullScreen(true);
         }
         return loadingModel;
     }

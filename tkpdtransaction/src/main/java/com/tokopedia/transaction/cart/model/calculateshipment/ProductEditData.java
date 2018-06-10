@@ -22,6 +22,10 @@ public class ProductEditData implements Parcelable {
     @Expose
     private Integer productQuantity;
 
+    private int originalQuantity;
+
+
+
 
     public String getProductCartId() {
         return productCartId;
@@ -47,6 +51,14 @@ public class ProductEditData implements Parcelable {
         this.productQuantity = productQuantity;
     }
 
+    public Integer getOriginalQuantity() {
+        return originalQuantity;
+    }
+
+    public void setOriginalQuantity(Integer originalQuantity) {
+        this.originalQuantity = originalQuantity;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -57,6 +69,7 @@ public class ProductEditData implements Parcelable {
         dest.writeString(this.productCartId);
         dest.writeString(this.productNotes);
         dest.writeValue(this.productQuantity);
+        dest.writeInt(this.originalQuantity);
     }
 
     public ProductEditData() {
@@ -66,6 +79,7 @@ public class ProductEditData implements Parcelable {
         this.productCartId = in.readString();
         this.productNotes = in.readString();
         this.productQuantity = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.originalQuantity = in.readInt();
     }
 
     public static final Parcelable.Creator<ProductEditData> CREATOR
@@ -86,6 +100,7 @@ public class ProductEditData implements Parcelable {
         result.setProductCartId(cartProduct.getProductCartId());
         result.setProductNotes(cartProduct.getProductNotes());
         result.setProductQuantity(cartProduct.getProductQuantity());
+        result.setOriginalQuantity(cartProduct.getProductQuantity());
         return result;
     }
 }

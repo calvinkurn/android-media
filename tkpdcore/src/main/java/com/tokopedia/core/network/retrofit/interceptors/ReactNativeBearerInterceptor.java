@@ -18,7 +18,7 @@ public class ReactNativeBearerInterceptor extends ReactNativeInterceptor {
 
     @Override
     protected Request buildNewRequest(Request request, Request.Builder builder) {
-        builder.addHeader("Authorization", "Bearer " + token);
+        builder.addHeader("Accounts-Authorization", "Bearer " + token);
         return super.buildNewRequest(request, builder);
     }
 }

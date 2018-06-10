@@ -4,6 +4,7 @@ import com.tokopedia.flight.booking.data.cloud.entity.Amenity;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingCartData;
+import com.tokopedia.flight.booking.view.viewmodel.FlightInsuranceViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,18 +17,23 @@ import javax.inject.Inject;
 
 public class FlightBookingCartDataMapper {
     private FlightBookingAmenityViewModelMapper flightBookingAmenityViewModelMapper;
+    private FlightInsuranceViewModelMapper flightInsuranceViewModelMapper;
 
     @Inject
-    public FlightBookingCartDataMapper(FlightBookingAmenityViewModelMapper flightBookingAmenityViewModelMapper) {
+    public FlightBookingCartDataMapper(FlightBookingAmenityViewModelMapper flightBookingAmenityViewModelMapper,
+                                       FlightInsuranceViewModelMapper flightInsuranceViewModelMapper) {
         this.flightBookingAmenityViewModelMapper = flightBookingAmenityViewModelMapper;
+        this.flightInsuranceViewModelMapper = flightInsuranceViewModelMapper;
     }
 
-    public FlightBookingCartData transform(CartEntity entity) {
-        FlightBookingCartData data = null;
+    public FlightBookingCartData transform(FlightBookingCartData data, CartEntity entity) {
         if (entity != null) {
-            data = new FlightBookingCartData();
+            if (data == null) {
+                data = new FlightBookingCartData();
+            }
             data.setId(entity.getId());
             data.setRefreshTime(entity.getAttribute().getFlightAttribute().getRefreshTime());
+            data.setDomestic(entity.getAttribute().getFlightAttribute().isDomestic() );
             if (entity.getAttribute().getFlightAttribute().getAmenities() != null) {
                 List<FlightBookingAmenityMetaViewModel> luggageMetaViewModels = new ArrayList<>();
                 List<FlightBookingAmenityMetaViewModel> mealMetaViewModels = new ArrayList<>();
@@ -61,8 +67,19 @@ public class FlightBookingCartDataMapper {
                 data.setLuggageViewModels(new ArrayList<FlightBookingAmenityMetaViewModel>());
                 data.setMealViewModels(new ArrayList<FlightBookingAmenityMetaViewModel>());
             }
+            if (entity.getInsurances() != null && entity.getInsurances().size() > 0) {
+                List<FlightInsuranceViewModel> insuranceViewModels = flightInsuranceViewModelMapper.transform(entity.getInsurances());
+                data.setInsurances(insuranceViewModels);
+            } else {
+                data.setInsurances(new ArrayList<FlightInsuranceViewModel>());
+            }
             data.setNewFarePrices(entity.getAttribute().getFlightAttribute().getNewPrices());
         }
         return data;
+    }
+
+    public FlightBookingCartData transform(CartEntity entity) {
+        FlightBookingCartData data = null;
+        return transform(null, entity);
     }
 }

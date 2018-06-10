@@ -8,6 +8,7 @@ import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.Button;
 
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.core.appupdate.model.DetailUpdate;
 import com.tokopedia.core.gcm.ApplinkUnsupported;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
@@ -44,7 +45,7 @@ public class ApplinkUnsupportedImpl implements ApplinkUnsupported {
         detail.setUpdateTitle(remoteConfig.getString(MAINAPP_UPDATE_TITLE));
         detail.setUpdateMessage(remoteConfig.getString(MAINAPP_UPDATE_MESSAGE));
         detail.setUpdateLink(remoteConfig.getString(MAINAPP_UPDATE_LINK));
-        if (detail.isNeedUpdate() && BuildConfig.VERSION_CODE < detail.getLatestVersionCode()) {
+        if (detail.isNeedUpdate() && GlobalConfig.VERSION_CODE < detail.getLatestVersionCode()) {
             final AlertDialog alertDialog = new AlertDialog.Builder(activity)
                     .setTitle(detail.getUpdateTitle())
                     .setMessage(detail.getUpdateMessage())

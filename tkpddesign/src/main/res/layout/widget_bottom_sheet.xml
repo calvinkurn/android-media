@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    android:padding="@dimen/padding_small">
+    android:padding="@dimen/dp_10">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,25 +20,25 @@
                 android:id="@+id/title_bottom_sheet"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin_small"
-                android:textSize="@dimen/font_title_big"
+                android:layout_margin="@dimen/dp_10"
+                android:textSize="@dimen/sp_20"
                 android:textStyle="bold"
                 android:textColor="@color/font_black_primary_70"
                 tools:text="Contoh Judul"/>
 
             <TextView
                 android:id="@+id/body_bottom_sheet"
-                android:layout_marginBottom="@dimen/margin_small"
-                android:layout_marginLeft="@dimen/margin_small"
-                android:layout_marginStart="@dimen/margin_small"
+                android:layout_marginBottom="@dimen/dp_10"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:layout_marginStart="@dimen/dp_10"
                 style="@style/TextView.Small"
                 tools:text="Contoh deskripsi dari bottom sheet yang diberikan. Contoh deskripsi dari bottom sheet yang diberikan. Contoh deskripsi dari bottom sheet yang diberikan. "/>
 
             <TextView
                 android:id="@+id/link_bottom_sheet"
-                android:layout_marginBottom="@dimen/margin_small"
-                android:layout_marginLeft="@dimen/margin_small"
-                android:layout_marginStart="@dimen/margin_small"
+                android:layout_marginBottom="@dimen/dp_10"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:layout_marginStart="@dimen/dp_10"
                 style="@style/TextView.Small.Green"
                 tools:text="Lihat selengkapnya (Contoh)"/>
 
@@ -49,8 +49,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:maxHeight="@dimen/image_width_xxl"
-            android:padding="@dimen/padding_small"
+            android:maxHeight="@dimen/dp_96"
+            android:padding="@dimen/dp_10"
             android:adjustViewBounds="true"
             tools:src="@drawable/ic_badge_gold"/>
 
@@ -59,8 +59,8 @@
     <TextView
         android:id="@+id/button_opsi_bottom_sheet"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/image_width_m"
-        android:layout_margin="@dimen/margin_small"
+        android:layout_height="@dimen/dp_40"
+        android:layout_margin="@dimen/dp_10"
         android:gravity="center"
         android:background="@drawable/rect_white_rounded_stroke_gray"
         android:textColor="@color/font_black_disabled_38"
@@ -69,8 +69,8 @@
     <TextView
         android:id="@+id/button_close_bottom_sheet"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/image_width_m"
-        android:layout_margin="@dimen/margin_small"
+        android:layout_height="@dimen/dp_40"
+        android:layout_margin="@dimen/dp_10"
         android:background="@drawable/bg_button_green_enabled"
         android:gravity="center"
         android:text="@string/text_ticker_action_close"

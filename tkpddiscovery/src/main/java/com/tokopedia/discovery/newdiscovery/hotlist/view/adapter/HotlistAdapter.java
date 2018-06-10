@@ -131,7 +131,7 @@ public class HotlistAdapter extends SearchSectionGeneralAdapter {
     }
 
     public void resetStartFrom() {
-        setStartFrom(Integer.parseInt(BrowseApi.DEFAULT_VALUE_OF_PARAMETER_ROWS));
+        setStartFrom(0);
     }
 
     public boolean hasNextPage() {
@@ -208,7 +208,7 @@ public class HotlistAdapter extends SearchSectionGeneralAdapter {
 
     public void onSaveInstanceState(Bundle outState) {
         outState.putInt(INSTANCE_TOTAL_DATA, getTotalData());
-        outState.putInt(INSTANCE_START_FROM, 12);
+        outState.putInt(INSTANCE_START_FROM, getStartFrom());
         outState.putParcelableArrayList(INSTANCE_LIST_DATA, mappingIntoParcelableArrayList(getItemList()));
     }
 

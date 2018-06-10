@@ -14,7 +14,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:elevation="@dimen/toolbar_elevation"
+            app:elevation="@dimen/dp_4"
             android:theme="?toolbarTheme"/>
 
     </android.support.design.widget.AppBarLayout>

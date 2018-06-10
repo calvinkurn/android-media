@@ -5,14 +5,14 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.seller.product.variant.data.model.variantbyprd.PictureItem;
+import com.tokopedia.seller.product.variant.data.model.variantbyprdold.PictureItem;
 
 import java.util.List;
 
 /**
  * Created by hendry on 8/15/2017.
  */
-
+@Deprecated
 public class ProductVariantOptionSubmit implements Parcelable {
 
     @SerializedName("vuv")

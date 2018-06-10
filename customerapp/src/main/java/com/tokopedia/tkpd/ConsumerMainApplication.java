@@ -1,14 +1,18 @@
 package com.tokopedia.tkpd;
 
 import android.app.Activity;
-import android.content.Context;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.media.AudioAttributes;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AppCompatDelegate;
 
 import com.facebook.soloader.SoLoader;
 import com.moengage.inapp.InAppManager;
@@ -17,9 +21,13 @@ import com.moengage.inapp.InAppTracker;
 import com.moengage.pushbase.push.MoEPushCallBacks;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
+import com.raizlabs.android.dbflow.config.TkpdCacheApiGeneratedDatabaseHolder;
 import com.raizlabs.android.dbflow.config.TkpdSellerGeneratedDatabaseHolder;
+import com.sendbird.android.SendBird;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.constant.AbstractionBaseURL;
+import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
+import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -28,12 +36,31 @@ import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.digital.common.constant.DigitalUrl;
 import com.tokopedia.flight.TkpdFlight;
 import com.tokopedia.flight.common.constant.FlightUrl;
+import com.tokopedia.gamification.GamificationUrl;
+import com.tokopedia.groupchat.common.data.GroupChatUrl;
+import com.tokopedia.groupchat.common.data.SendbirdKey;
+import com.tokopedia.inbox.inboxchat.data.network.ChatBotUrl;
+import com.tokopedia.kol.common.network.KolUrl;
+import com.tokopedia.logisticdata.data.constant.LogisticDataConstantUrl;
 import com.tokopedia.network.SessionUrl;
-import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
+import com.tokopedia.otp.cotp.data.CotpUrl;
+import com.tokopedia.otp.cotp.data.SQLoginUrl;
+import com.tokopedia.payment.fingerprint.util.PaymentFingerprintConstant;
+import com.tokopedia.profile.data.network.ProfileUrl;
+import com.tokopedia.pushnotif.PushNotification;
+import com.tokopedia.reputation.common.constant.ReputationCommonUrl;
+import com.tokopedia.shop.common.constant.ShopCommonUrl;
+import com.tokopedia.shop.common.constant.ShopUrl;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
+import com.tokopedia.tkpd.utils.CacheApiWhiteList;
+import com.tokopedia.tkpdreactnative.react.fingerprint.utils.FingerprintConstantRegister;
 import com.tokopedia.tokocash.network.api.WalletUrl;
+import com.tokopedia.transaction.network.TransactionUrl;
+import com.tokopedia.transactiondata.constant.TransactionDataApiUrl;
+
+import io.hansel.hanselsdk.Hansel;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -43,14 +70,25 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         MoEPushCallBacks.OnMoEPushNavigationAction,
         InAppManager.InAppMessageListener {
 
+    private final String NOTIFICATION_CHANNEL_NAME = "Promo";
+    private final String NOTIFICATION_CHANNEL_ID = "custom_sound";
+    private final String NOTIFICATION_CHANNEL_DESC = "notification channel for custom sound.";
+
+    private final String FLAVOR_LIVE = "live";
+    private final String FLAVOR_STAGING = "staging";
+    private final String FLAVOR_ALPHA = "alpha";
+
     @Override
     public void onCreate() {
         HockeyAppHelper.setEnableDistribution(BuildConfig.ENABLE_DISTRIBUTION);
         HockeyAppHelper.setHockeyappKey(HockeyAppHelper.KEY_MAINAPP);
-        GlobalConfig.VERSION_CODE = BuildConfig.VERSION_CODE;
+        setVersionCode();
         GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
         GlobalConfig.DEBUG = BuildConfig.DEBUG;
         GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
+        com.tokopedia.config.GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
+        com.tokopedia.config.GlobalConfig.DEBUG = BuildConfig.DEBUG;
+        com.tokopedia.config.GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.DEBUG;
         generateConsumerAppBaseUrl();
         generateConsumerAppNetworkKeys();
         initializeDatabase();
@@ -62,6 +100,41 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
         IntentFilter intentFilter1 = new IntentFilter(Constants.ACTION_BC_RESET_APPLINK);
         LocalBroadcastManager.getInstance(this).registerReceiver(new ApplinkResetReceiver(), intentFilter1);
+        initCacheApi();
+        initSendbird();
+        createCustomSoundNotificationChannel();
+        Hansel.init(this);
+    }
+
+    private void createCustomSoundNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Create the NotificationChannel
+            NotificationChannel mChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID,
+                    NOTIFICATION_CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT);
+            mChannel.setDescription(NOTIFICATION_CHANNEL_DESC);
+            AudioAttributes att = new AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                    .build();
+            mChannel.setSound(Uri.parse("android.resource://" + getPackageName() + "/" +
+                    R.raw.tokopedia_endtune), att);
+            NotificationManager notificationManager = (NotificationManager) getSystemService(
+                    NOTIFICATION_SERVICE);
+            notificationManager.createNotificationChannel(mChannel);
+        }
+    }
+
+    private void setVersionCode() {
+        try {
+            PackageInfo pInfo = this.getPackageManager().getPackageInfo(this.getPackageName(), 0);
+            GlobalConfig.VERSION_CODE = pInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            GlobalConfig.VERSION_CODE = BuildConfig.VERSION_CODE;
+        }
+    }
+
+    private void initSendbird() {
+        SendBird.init(SendbirdKey.APP_ID, this);
     }
 
     private void generateConsumerAppBaseUrl() {
@@ -70,7 +143,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TkpdBaseURL.BASE_API_DOMAIN = ConsumerAppBaseUrl.BASE_API_DOMAIN;
         TkpdBaseURL.ACE_DOMAIN = ConsumerAppBaseUrl.BASE_ACE_DOMAIN;
         TkpdBaseURL.TOME_DOMAIN = ConsumerAppBaseUrl.BASE_TOME_DOMAIN;
-        TkpdBaseURL.CLOVER_DOMAIN = ConsumerAppBaseUrl.BASE_CLOVER_DOMAIN;
         TkpdBaseURL.TOPADS_DOMAIN = ConsumerAppBaseUrl.BASE_TOPADS_DOMAIN;
         TkpdBaseURL.MOJITO_DOMAIN = ConsumerAppBaseUrl.BASE_MOJITO_DOMAIN;
         TkpdBaseURL.HADES_DOMAIN = ConsumerAppBaseUrl.BASE_HADES_DOMAIN;
@@ -78,6 +150,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TkpdBaseURL.INBOX_DOMAIN = ConsumerAppBaseUrl.BASE_INBOX_DOMAIN;
         TkpdBaseURL.JS_DOMAIN = ConsumerAppBaseUrl.BASE_JS_DOMAIN;
         TkpdBaseURL.KERO_DOMAIN = ConsumerAppBaseUrl.BASE_KERO_DOMAIN;
+        TkpdBaseURL.KERO_RATES_DOMAIN = ConsumerAppBaseUrl.BASE_KERO_RATES_DOMAIN;
         TkpdBaseURL.JAHE_DOMAIN = ConsumerAppBaseUrl.BASE_JAHE_DOMAIN;
         TkpdBaseURL.PULSA_WEB_DOMAIN = ConsumerAppBaseUrl.BASE_PULSA_WEB_DOMAIN;
         TkpdBaseURL.GOLD_MERCHANT_DOMAIN = ConsumerAppBaseUrl.BASE_GOLD_MERCHANT_DOMAIN;
@@ -109,24 +182,91 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         FlightUrl.ALL_PROMO_LINK = ConsumerAppBaseUrl.BASE_WEB_DOMAIN + FlightUrl.PROMO_PATH;
         FlightUrl.CONTACT_US = ConsumerAppBaseUrl.BASE_WEB_DOMAIN + FlightUrl.CONTACT_US_PATH;
         FlightUrl.CONTACT_US_FLIGHT_PREFIX_GLOBAL = FlightUrl.CONTACT_US + FlightUrl.CONTACT_US_FLIGHT_PREFIX;
+        TransactionUrl.BASE_URL = ConsumerAppBaseUrl.BASE_API_DOMAIN;
         WalletUrl.BaseUrl.ACCOUNTS_DOMAIN = ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
         WalletUrl.BaseUrl.WALLET_DOMAIN = ConsumerAppBaseUrl.BASE_WALLET;
+        WalletUrl.BaseUrl.WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
         SessionUrl.ACCOUNTS_DOMAIN = ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
         SessionUrl.BASE_DOMAIN = ConsumerAppBaseUrl.BASE_DOMAIN;
+        ShopUrl.BASE_ACE_URL = ConsumerAppBaseUrl.BASE_ACE_DOMAIN;
+        ShopCommonUrl.BASE_URL = ConsumerAppBaseUrl.BASE_TOME_DOMAIN;
+        ShopCommonUrl.BASE_WS_URL = ConsumerAppBaseUrl.BASE_DOMAIN;
+        ReputationCommonUrl.BASE_URL = ConsumerAppBaseUrl.BASE_DOMAIN;
+        KolUrl.BASE_URL = ConsumerAppBaseUrl.GRAPHQL_DOMAIN;
+        ProfileUrl.BASE_URL = ConsumerAppBaseUrl.TOPPROFILE_DOMAIN;
         DigitalUrl.WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
+        GroupChatUrl.BASE_URL = ConsumerAppBaseUrl.CHAT_DOMAIN;
+        GamificationUrl.GQL_BASE_URL = ConsumerAppBaseUrl.GAMIFICATION_BASE_URL;
+        ChatBotUrl.BASE_URL = ConsumerAppBaseUrl.CHATBOT_DOMAIN;
+        CotpUrl.BASE_URL = ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
+        SQLoginUrl.BASE_URL = ConsumerAppBaseUrl.BASE_DOMAIN;
+        PaymentFingerprintConstant.ACCOUNTS_DOMAIN = ConsumerAppBaseUrl.ACCOUNTS_DOMAIN;
+        PaymentFingerprintConstant.TOP_PAY_DOMAIN = ConsumerAppBaseUrl.TOP_PAY_DOMAIN;
+        FingerprintConstantRegister.ACCOUNTS_DOMAIN = ConsumerAppBaseUrl.ACCOUNTS_DOMAIN;
+        FingerprintConstantRegister.TOP_PAY_DOMAIN = ConsumerAppBaseUrl.TOP_PAY_DOMAIN;
+        LogisticDataConstantUrl.BASE_DOMAIN = ConsumerAppBaseUrl.BASE_DOMAIN;
+
+        generateTransactionDataModuleBaseUrl();
+        generateLogisticDataModuleBaseUrl();
+    }
+
+    private void generateLogisticDataModuleBaseUrl() {
+        switch (BuildConfig.FLAVOR) {
+            case FLAVOR_STAGING:
+                LogisticDataConstantUrl.KeroRates.BASE_URL =
+                        LogisticDataConstantUrl.KeroRates.STAGING_BASE_URL;
+                break;
+            case FLAVOR_ALPHA:
+                LogisticDataConstantUrl.KeroRates.BASE_URL =
+                        LogisticDataConstantUrl.KeroRates.ALPHA_BASE_URL;
+                break;
+            default:
+                LogisticDataConstantUrl.KeroRates.BASE_URL =
+                        LogisticDataConstantUrl.KeroRates.LIVE_BASE_URL;
+                break;
+        }
+    }
+
+    private void generateTransactionDataModuleBaseUrl() {
+        switch (BuildConfig.FLAVOR) {
+            case FLAVOR_STAGING:
+                TransactionDataApiUrl.Cart.BASE_URL =
+                        TransactionDataApiUrl.Cart.STAGING_BASE_URL;
+                TransactionDataApiUrl.TransactionAction.BASE_URL =
+                        TransactionDataApiUrl.TransactionAction.STAGING_BASE_URL;
+                break;
+            case FLAVOR_ALPHA:
+                TransactionDataApiUrl.Cart.BASE_URL =
+                        TransactionDataApiUrl.Cart.ALPHA_BASE_URL;
+                TransactionDataApiUrl.TransactionAction.BASE_URL =
+                        TransactionDataApiUrl.TransactionAction.ALPHA_BASE_URL;
+                break;
+            default:
+                TransactionDataApiUrl.Cart.BASE_URL =
+                        TransactionDataApiUrl.Cart.LIVE_BASE_URL;
+                TransactionDataApiUrl.TransactionAction.BASE_URL =
+                        TransactionDataApiUrl.TransactionAction.LIVE_BASE_URL;
+                break;
+        }
     }
 
     private void generateConsumerAppNetworkKeys() {
         AuthUtil.KEY.KEY_CREDIT_CARD_VAULT = ConsumerAppNetworkKeys.CREDIT_CARD_VAULT_AUTH_KEY;
         AuthUtil.KEY.ZEUS_WHITELIST = ConsumerAppNetworkKeys.ZEUS_WHITELIST;
         WalletUrl.KeyHmac.HMAC_PENDING_CASHBACK = ConsumerAppNetworkKeys.HMAC_PENDING_CASHBACK;
+        SendbirdKey.APP_ID = ConsumerAppNetworkKeys.SENDBIRD_APP_ID;
+
     }
 
     public void initializeDatabase() {
         FlowManager.init(new FlowConfig.Builder(this)
                 .addDatabaseHolder(TkpdSellerGeneratedDatabaseHolder.class)
                 .build());
+        FlowManager.init(new FlowConfig.Builder(this)
+                .addDatabaseHolder(TkpdCacheApiGeneratedDatabaseHolder.class)
+                .build());
         TkpdFlight.initDatabase(getApplicationContext());
+        PushNotification.initDatabase(getApplicationContext());
     }
 
     @Override
@@ -168,7 +308,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
                 startActivity(intent);
 
-            } else if (deepLinkUri.getScheme().equals(Constants.Schemes.APPLINKS)) {
+            } else if (deepLinkUri.getScheme().equals(Constants.Schemes.APPLINKS)
+                    || deepLinkUri.getScheme().equals(Constants.Schemes.APPLINKS_SELLER)) {
                 Intent intent = new Intent(this, DeeplinkHandlerActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.setData(Uri.parse(deepLinkUri.toString()));
@@ -190,24 +331,20 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         SoLoader.init(this, false);
     }
 
-    @Override
-    public Intent getSellerHomeIntent(Activity activity) {
-        return null;
+    private void initCacheApi() {
+        CacheApiLoggingUtils.setLogEnabled(GlobalConfig.isAllowDebuggingTools());
+        new CacheApiWhiteListUseCase().executeSync(CacheApiWhiteListUseCase.createParams(
+                CacheApiWhiteList.getWhiteList(),
+                String.valueOf(getCurrentVersion(getApplicationContext()))));
     }
 
     @Override
-    public Intent getLoginGoogleIntent(Context context) {
-        return LoginActivity.getAutoLoginGoogle(context);
+    public boolean logisticUploadRouterIsSupportedDelegateDeepLink(String url) {
+        return isSupportedDelegateDeepLink(url);
     }
 
     @Override
-    public Intent getLoginFacebookIntent(Context context) {
-        return LoginActivity.getAutoLoginFacebook(context);
-
-    }
-
-    @Override
-    public Intent getLoginWebviewIntent(Context context, String name, String url) {
-        return LoginActivity.getAutoLoginWebview(context, name, url);
+    public void logisticUploadRouterActionNavigateByApplinksUrl(Activity activity, String applinks, Bundle bundle) {
+        actionNavigateByApplinksUrl(activity, applinks, bundle);
     }
 }

@@ -9,13 +9,16 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.TintableBackgroundView;
 import android.support.v4.view.ViewCompat;
+import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.network.entity.variant.Campaign;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
+import com.tokopedia.core.product.model.productdetail.ProductInfo;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpdpdp.R;
@@ -42,7 +45,10 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
     private TextView tvPriceFinal;
     private TextView textOriginalPrice;
     private TextView textDiscount;
+    private TextView textStockAvailable;
     private LinearLayout linearDiscountTimerHolder;
+    private LinearLayout linearStockAvailable;
+    private ImageView ivStockAvailable;
     private TextView textDiscountTimer;
     private Context context;
     private LinearLayout textOfficialStore;
@@ -70,8 +76,11 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
         textOriginalPrice = (TextView) findViewById(R.id.text_original_price);
         textDiscount = (TextView) findViewById(R.id.text_discount);
         linearDiscountTimerHolder = (LinearLayout) findViewById(R.id.linear_discount_timer_holder);
+        linearStockAvailable = (LinearLayout) findViewById(R.id.linear_stock_available);
+        ivStockAvailable = (ImageView) findViewById(R.id.iv_stock_available);
         textOfficialStore = (LinearLayout) findViewById(R.id.text_official_store);
         textDiscountTimer = (TextView) findViewById(R.id.text_discount_timer);
+        textStockAvailable = (TextView) findViewById(R.id.text_stock_available);
         this.context = context;
 
 
@@ -129,6 +138,38 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
     public void renderTempData(ProductPass productPass) {
         tvName.setText(MethodChecker.fromHtml(productPass.getProductName()));
         tvPriceFinal.setText(productPass.getProductPrice());
+        if (!TextUtils.isEmpty(productPass.getOriginalPrice()) && productPass.getDiscountPercentage()>0) {
+            textOriginalPrice.setText(productPass.getOriginalPrice());
+            textOriginalPrice.setPaintFlags(
+                    textOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG
+            );
+
+            textDiscount.setText(String.format(
+                    getContext().getString(R.string.label_discount_percentage),
+                    productPass.getDiscountPercentage()
+            ));
+
+            tvPriceFinal.setVisibility(VISIBLE);
+            textDiscount.setVisibility(VISIBLE);
+            textOriginalPrice.setVisibility(VISIBLE);
+        }
+        if (!TextUtils.isEmpty(productPass.getCashback())) {
+            cashbackTextView.setText(productPass.getCashback());
+            cashbackTextView.setBackgroundResource(com.tokopedia.core.R.drawable.bg_label);
+            cashbackTextView.setTextColor(ContextCompat.getColor(context, com.tokopedia.core.R.color.white));
+            ColorStateList tint = ColorStateList.valueOf(ContextCompat.getColor(context,com.tokopedia.core.R.color.tkpd_main_green));
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+                cashbackTextView.setBackgroundTintList(tint);
+            } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP && cashbackTextView instanceof TintableBackgroundView) {
+                ((TintableBackgroundView) cashbackTextView).setSupportBackgroundTintList(tint);
+            } else {
+                ViewCompat.setBackgroundTintList(cashbackTextView, tint);
+            }
+            cashbackTextView.setVisibility(VISIBLE);
+        }
+        if(productPass.isOfficial()) {
+            textOfficialStore.setVisibility(VISIBLE);
+        }
         setVisibility(VISIBLE);
     }
 
@@ -150,6 +191,20 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
             textOriginalPrice.setVisibility(VISIBLE);
 
             showCountdownTimer(campaign);
+        }
+    }
+
+    public void renderStockAvailability(ProductInfo data) {
+        if(!TextUtils.isEmpty(data.getProductStockWording())) {
+            linearStockAvailable.setVisibility(VISIBLE);
+            if (data.getLimitedStock()) {
+                ivStockAvailable.setImageResource(R.drawable.ic_limited_stock);
+                textStockAvailable.setTextColor(getContext().getResources().getColor(R.color.tkpd_dark_red));
+            } else {
+                ivStockAvailable.setImageResource(R.drawable.ic_available_stock);
+                textStockAvailable.setTextColor(getContext().getResources().getColor(R.color.black_70));
+            }
+            textStockAvailable.setText(data.getProductStockWording());
         }
     }
 

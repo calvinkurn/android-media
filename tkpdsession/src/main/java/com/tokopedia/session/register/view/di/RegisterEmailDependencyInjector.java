@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.session.register.data.factory.RegisterEmailSourceFactory;
@@ -31,8 +32,8 @@ public class RegisterEmailDependencyInjector {
                 new RegisterEmailSourceFactory(
                         viewListener.getActivity(),
                         accountsService,
-                        new RegisterEmailMapper()
-                ));
+                        new RegisterEmailMapper(),
+                        new SessionHandler(viewListener.getActivity())));
 
         RegisterEmailUseCase registerEmailUseCase = new RegisterEmailUseCase(
                 new JobExecutor(), new UIThread(), registerEmailRepository);
