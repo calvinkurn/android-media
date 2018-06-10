@@ -1,5 +1,8 @@
 package com.tokopedia.abstraction.common.utils.view;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.util.Log;
 
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
@@ -24,6 +27,16 @@ public class CommonUtils {
 
     public static <T> boolean checkNotNull(T reference) {
         return reference != null;
+    }
+
+    public static Activity getActivity(Context context) {
+        while (context instanceof ContextWrapper) {
+            if (context instanceof Activity) {
+                return (Activity)context;
+            }
+            context = ((ContextWrapper)context).getBaseContext();
+        }
+        return null;
     }
 
 }

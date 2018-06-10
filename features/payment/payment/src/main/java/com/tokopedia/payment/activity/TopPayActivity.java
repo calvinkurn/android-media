@@ -11,7 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDelegate;
+
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -102,7 +102,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
