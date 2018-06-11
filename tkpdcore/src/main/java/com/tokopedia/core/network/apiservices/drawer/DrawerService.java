@@ -1,13 +1,8 @@
 package com.tokopedia.core.network.apiservices.drawer;
 
-import android.content.Context;
-
 import com.tokopedia.core.network.apiservices.drawer.api.DrawerDataApi;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.services.AuthService;
-import com.tokopedia.network.CommonNetwork;
-import com.tokopedia.network.NetworkRouter;
-import com.tokopedia.user.session.UserSession;
 
 import retrofit2.Retrofit;
 
@@ -15,30 +10,19 @@ import retrofit2.Retrofit;
  * Created by stevenfredian on 8/31/17.
  */
 
-public class DrawerService  {
+public class DrawerService extends AuthService<DrawerDataApi> {
 
-    private Context context;
-    private UserSession userSession;
-    private NetworkRouter networkRouter;
-    private DrawerDataApi api;
-
-    public DrawerService (Context context, UserSession userSession, NetworkRouter networkRouter) {
-        this.context = context;
-        this.userSession = userSession;
-        this.networkRouter = networkRouter;
-
-        initApiService();
+    @Override
+    protected void initApiService(Retrofit retrofit) {
+        api = retrofit.create(DrawerDataApi.class);
     }
 
-    protected void initApiService() {
-        Retrofit retrofit1 = CommonNetwork.createRetrofit(context, getBaseUrl(), networkRouter, userSession);
-        api = retrofit1.create(DrawerDataApi.class);
-    }
-
+    @Override
     protected String getBaseUrl() {
         return TkpdBaseURL.HOME_DATA_BASE_URL;
     }
 
+    @Override
     public DrawerDataApi getApi() {
         return api;
     }
