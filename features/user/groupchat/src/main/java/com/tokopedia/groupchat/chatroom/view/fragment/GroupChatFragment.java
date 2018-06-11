@@ -368,13 +368,17 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     private View createContentView(PinnedMessageViewModel pinnedMessage) {
         ChannelInfoViewModel channelInfoViewModel = ((GroupChatContract.View) getActivity()).getChannelInfoViewModel();
         View view = getLayoutInflater().inflate(R.layout.layout_pinned_message_expanded, null);
-        ImageHandler.loadImageCircle2(getActivity(), (ImageView) view.findViewById(R.id.pinned_message_avatar)
+        ImageHandler.loadImage(getActivity(), (ImageView) view.findViewById(R.id.pinned_message_avatar)
                 , channelInfoViewModel.getAdminPicture(), R.drawable.ic_loading_toped_new);
         ((TextView) view.findViewById(R.id.chat_header).findViewById(R.id.nickname))
                 .setText(channelInfoViewModel.getAdminName());
         ((TextView) view.findViewById(R.id.message)).setText(pinnedMessage.getMessage());
         ImageHandler.loadImageCircle2(getActivity(), (ImageView) view.findViewById(R.id.thumbnail)
                 , pinnedMessage.getThumbnail(), R.drawable.loading_page);
+        if(!TextUtils.isEmpty(pinnedMessage.getImageUrl())){
+            ((GroupChatModuleRouter) getActivity().getApplicationContext()).openRedirectUrl
+                    (getActivity(), pinnedMessage.getImageUrl());
+        }
         return view;
     }
 
