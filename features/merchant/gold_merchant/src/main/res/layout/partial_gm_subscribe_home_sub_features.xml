@@ -63,15 +63,15 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:feature_desc="@string/gmsubscribe_feature_video"
-            app:feature_img="@drawable/ic_gmsubscribe_subfeature_video" />
+            app:feature_desc="@string/gmsubscribe_feature_filter_gold_merchant"
+            app:feature_img="@drawable/ic_filter_gm" />
 
         <com.tokopedia.gm.subscribe.view.widget.home.GmSubFeatureView
             android:id="@+id/sub_feature_pantaupasar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:feature_desc="@string/gmsubscribe_feature_pantaupasar"
+            app:feature_desc="@string/gmsubscribe_feature_wawasan_pasar"
             app:feature_img="@drawable/ic_gmsubscribe_subfeature_pantaupasar" />
 
         <com.tokopedia.gm.subscribe.view.widget.home.GmSubFeatureView
@@ -79,8 +79,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:feature_desc="@string/gmsubscribe_feature_kurs"
-            app:feature_img="@drawable/ic_gmsubscribe_subfeature_kurs" />
+            app:feature_desc="@string/gmsubscribe_featured_product"
+            app:feature_img="@drawable/ic_produk_unggulan" />
 
     </LinearLayout>
 

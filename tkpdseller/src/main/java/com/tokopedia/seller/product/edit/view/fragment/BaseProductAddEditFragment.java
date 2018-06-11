@@ -42,6 +42,7 @@ import com.tokopedia.seller.product.edit.data.source.cloud.model.catalogdata.Cat
 import com.tokopedia.seller.product.edit.view.activity.ProductAddCatalogPickerActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddDescriptionPickerActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddVideoActivity;
+import com.tokopedia.seller.product.edit.view.activity.ProductAddWholesaleActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductScoringDetailActivity;
 import com.tokopedia.seller.product.edit.view.dialog.ProductAddImageDialogFragment;
 import com.tokopedia.seller.product.edit.view.dialog.ProductAddImageDescriptionDialog;
@@ -62,6 +63,7 @@ import com.tokopedia.seller.product.edit.view.model.categoryrecomm.ProductCatego
 import com.tokopedia.seller.product.edit.view.model.edit.ProductPictureViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductVideoViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductWholesaleViewModel;
 import com.tokopedia.seller.product.edit.view.model.scoringproduct.DataScoringProductView;
 import com.tokopedia.seller.product.edit.view.model.scoringproduct.ValueIndicatorScoreModel;
 import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
@@ -71,6 +73,7 @@ import com.tokopedia.seller.product.edit.view.widget.ImagesSelectView;
 import com.tokopedia.seller.product.etalase.view.activity.EtalasePickerActivity;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantViewModel;
+import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
 import com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardActivity;
 
 import java.util.ArrayList;
@@ -119,13 +122,12 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
     private boolean hasOriginalVariantLevel1;
     private boolean hasOriginalVariantLevel2;
     private boolean hasLoadShopInfo;
+    private boolean officialStore;
 
     public interface Listener {
         void startUploadProduct(long productId);
 
         void startUploadProductWithShare(long productId);
-
-        void startAddWholeSaleDialog(@CurrencyTypeDef int currencyType, WholesaleModel previousWholesalePrice, boolean officialStore);
 
         void startUploadProductAndAddWithShare(Long productId);
 
@@ -252,12 +254,6 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
             presenter.getCategoryRecommendation(productName);
         }
     }
-
-    @Override
-    public void startAddWholeSaleDialog(@CurrencyTypeDef int currencyType, WholesaleModel previousWholesalePrice, boolean officialStore) {
-        listener.startAddWholeSaleDialog(currencyType, previousWholesalePrice, officialStore);
-    }
-
 
     // Clicked Part
     @Override
@@ -439,6 +435,7 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
 
     @Override
     public final void startProductVariantActivity(ArrayList<ProductVariantByCatModel> productVariantByCatModelList) {
+        productPriceViewHolder.updateModel(currentProductViewModel);
         if (productVariantByCatModelList == null || productVariantByCatModelList.size() == 0) {
             NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
                 @Override
@@ -448,6 +445,9 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
             }).showRetrySnackbar();
             return;
         }
+
+        boolean hasWholesale = currentProductViewModel.getProductWholesale()!=null && currentProductViewModel.getProductWholesale().size() > 0;
+
         Intent intent = ProductVariantDashboardActivity.getIntent(getActivity(),
                 productVariantByCatModelList,
                 currentProductViewModel.getProductVariant(),
@@ -459,7 +459,8 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
                 isEdittingDraft(),
                 currentProductViewModel.getProductSizeChart(),
                 hasOriginalVariantLevel1,
-                hasOriginalVariantLevel2);
+                hasOriginalVariantLevel2,
+                hasWholesale);
         startActivityForResult(intent, ProductManageViewHolder.REQUEST_CODE_VARIANT);
     }
 
@@ -497,7 +498,19 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
 
     @Override
     public boolean hasVariant() {
+        productPriceViewHolder.updateModel(currentProductViewModel);
         return currentProductViewModel.hasVariant();
+    }
+
+    @Override
+    public boolean hasWholesale() {
+        productPriceViewHolder.updateModel(currentProductViewModel);
+        return currentProductViewModel.getProductWholesale()!=null && currentProductViewModel.getProductWholesale().size() > 0;
+    }
+
+    @Override
+    public void changeAllPriceVariant(int currencyType, double currencyValue) {
+        currentProductViewModel.changePriceTo(currencyType, currencyValue);
     }
 
     @Override
@@ -529,9 +542,23 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
         });
     }
 
+    @Override
+    public void startProductAddWholesaleActivity() {
+        productPriceViewHolder.updateModel(currentProductViewModel);
+        ArrayList<ProductWholesaleViewModel> productWholesaleViewModelList = (ArrayList<ProductWholesaleViewModel>) currentProductViewModel.getProductWholesale();
+        Intent intent = ProductAddWholesaleActivity.getIntent(getActivity(),
+                productWholesaleViewModelList,
+                (int) currentProductViewModel.getProductPriceCurrency(),
+                currentProductViewModel.getProductPrice(),
+                officialStore,
+                hasVariant());
+        startActivityForResult(intent, ProductPriceViewHolder.REQUEST_CODE_GET_PRODUCT_WHOLESALE);
+    }
+
     public void onChangeAllPriceVariantSubmit(int currencyType, double currencyValue) {
         currentProductViewModel.setProductPriceCurrency(productPriceViewHolder.getCurrencyType());
         currentProductViewModel.changePriceTo(currencyType, currencyValue);
+        currentProductViewModel.setProductWholesale(new ArrayList<ProductWholesaleViewModel>());
         productPriceViewHolder.renderData(currentProductViewModel);
     }
 
@@ -656,6 +683,7 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
         productDeliveryInfoViewHolder.showViewFreeReturn(isFreeReturn);
 
         hasLoadShopInfo = true;
+        this.officialStore = officialStore;
     }
 
     public boolean isHasLoadShopInfo() {
@@ -734,10 +762,6 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
         presenter.fetchCatalogData(productName, categoryId, 0, 1);
     }
 
-    public final void addWholesaleItem(WholesaleModel wholesaleModel) {
-        productPriceViewHolder.addWholesaleItem(wholesaleModel);
-    }
-
     @Override
     public final void populateCategory(List<String> strings) {
         String[] stringArray = new String[strings.size()];
@@ -814,6 +838,7 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
         productImageViewHolder.onActivityResult(requestCode, resultCode, data);
         productManageViewHolder.onActivityResult(requestCode, resultCode, data);
         productDescriptionViewHolder.onActivityResult(requestCode, resultCode, data);
+        productPriceViewHolder.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
     }
 

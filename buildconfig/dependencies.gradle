@@ -181,6 +181,8 @@ ext {
             hansel                : "io.hansel.preprocessor:preprocessor:6.3.0",
             sendBird              : "com.sendbird.sdk:sendbird-android-sdk:3.0.49",
             apacheLang            : "org.apache.commons:commons-lang3:3.0",
+            cameraView            : "com.otaliastudios:cameraview:1.5.0",
+            ucrop                 : "com.github.yalantis:ucrop:2.2.2",
             flexBoxLayout         : "com.google.android:flexbox:0.3.2"
     ]
 
@@ -254,7 +256,7 @@ ext {
 
     tkpdLibDependencies = [
             expandableOption: "com.tokopedia.tkpdlib:expandableoption:0.7.1",
-            showcase        : "com.tokopedia.tkpdlib:showcase-stepper:0.5.12",
+            showcase        : "com.tokopedia.tkpdlib:showcase-stepper:0.5.15",
             youtubePlayer   : "com.tokopedia.youtube:player:0.0.1"
     ]
 
@@ -317,9 +319,10 @@ ext {
             cacheApi     : ":libraries:cache_api",
             useCase      : ":libraries:use_case",
             williamchart    : ":libraries:williamchart",
-            fingerprint  : ":libraries:fingerprint",
+            fingerprint     : ":libraries:fingerprint",
             bottomSheetBuilder: ":libraries:bottom_sheet_builder",
             userSession     : ":libraries:user_session",
+            imagePicker     : ":libraries:image_picker",
             imageuploader   : ":libraries:imageuploader",
             youtubeApi      : ":libraries:YouTubeAndroidPlayerApi",
             analytics       : ":libraries:analytics"
