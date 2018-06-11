@@ -37,9 +37,9 @@
     </style>
 
     <style name="Tabs.Secondary.Train">
-        <item name="android:textSize">@dimen/sp_10</item>
+        <item name="android:textSize">@dimen/sp_16</item>
         <item name="selectedBold">false</item>
-        <item name="android:textStyle">normal</item>
+        <item name="android:textStyle">bold</item>
         <item name="footerIndicatorHeight">3dp</item>
     </style>
 

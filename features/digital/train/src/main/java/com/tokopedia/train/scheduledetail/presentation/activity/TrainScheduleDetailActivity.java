@@ -1,4 +1,4 @@
-package com.tokopedia.train.scheduledetail.presentation;
+package com.tokopedia.train.scheduledetail.presentation.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,28 +13,42 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
 import com.tokopedia.tkpdtrain.R;
-import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
+import com.tokopedia.train.common.di.utils.TrainComponentUtils;
+import com.tokopedia.train.scheduledetail.di.DaggerTrainScheduleDetailComponent;
+import com.tokopedia.train.scheduledetail.di.TrainScheduleDetailComponent;
+import com.tokopedia.train.scheduledetail.presentation.contract.TrainScheduleContract;
+import com.tokopedia.train.scheduledetail.presentation.fragment.TrainScheduleDetailFragment;
+import com.tokopedia.train.scheduledetail.presentation.fragment.TrainSchedulePriceDetailFragment;
+import com.tokopedia.train.scheduledetail.presentation.model.TrainScheduleDetailViewModel;
+import com.tokopedia.train.scheduledetail.presentation.presenter.TrainSchedulePresenter;
+
+import javax.inject.Inject;
 
 /**
  * Created by Rizky on 12/05/18.
  */
-public class TrainScheduleDetailActivity extends BaseTabActivity {
+public class TrainScheduleDetailActivity extends BaseTabActivity implements TrainScheduleContract.View {
 
-    public static final String EXTRA_TRAIN_SCHEDULE_VIEW_MODEL = "EXTRA_TRAIN_SCHEDULE_VIEW_MODEL";
+    public static final String EXTRA_TRAIN_SCHEDULE_ID = "EXTRA_TRAIN_SCHEDULE_ID";
 
-    private TrainScheduleViewModel trainScheduleViewModel;
+    @Inject
+    TrainSchedulePresenter trainSchedulePresenter;
+
+    private TrainScheduleDetailComponent trainScheduleDetailComponent;
 
     private Button buttonSubmit;
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private AppBarLayout appBarLayout;
-    private TextView departureStationCode;
-    private TextView departureStationName;
-    private TextView arrivalStationCode;
-    private TextView arrivalStationName;
+    private TextView originStationCode;
+    private TextView originStationName;
+    private TextView destinationStationCode;
+    private TextView destinationStationName;
 
-    public static Intent createIntent(Context context, TrainScheduleViewModel trainScheduleViewModel) {
+    private TrainScheduleDetailViewModel trainScheduleDetailViewModel;
+
+    public static Intent createIntent(Context context, String scheduleId) {
         Intent intent = new Intent(context, TrainScheduleDetailActivity.class);
-        intent.putExtra(EXTRA_TRAIN_SCHEDULE_VIEW_MODEL, trainScheduleViewModel);
+        intent.putExtra(EXTRA_TRAIN_SCHEDULE_ID, scheduleId);
         return intent;
     }
 
@@ -45,7 +59,7 @@ public class TrainScheduleDetailActivity extends BaseTabActivity {
 
     @Override
     protected void setupLayout(Bundle savedInstanceState) {
-        trainScheduleViewModel = getIntent().getParcelableExtra(EXTRA_TRAIN_SCHEDULE_VIEW_MODEL);
+        String scheduleId = getIntent().getStringExtra(EXTRA_TRAIN_SCHEDULE_ID);
 
         super.setupLayout(savedInstanceState);
 
@@ -53,17 +67,19 @@ public class TrainScheduleDetailActivity extends BaseTabActivity {
         collapsingToolbarLayout = findViewById(R.id.collapsing_toolbar);
         collapsingToolbarLayout.setTitle("");
         appBarLayout = findViewById(R.id.app_bar_layout);
-        departureStationCode = findViewById(R.id.departure_station_code);
-        departureStationName = findViewById(R.id.departure_station_name);
-        arrivalStationCode = findViewById(R.id.arrival_station_code);
-        arrivalStationName = findViewById(R.id.arrival_station_name);
+        originStationCode = findViewById(R.id.departure_station_code);
+        originStationName = findViewById(R.id.departure_station_name);
+        destinationStationCode = findViewById(R.id.arrival_station_code);
+        destinationStationName = findViewById(R.id.arrival_station_name);
 
-        departureStationCode.setText(trainScheduleViewModel.getDepartureAirport());
-        departureStationName.setText(flightDetailViewModel.getDepartureAirportCity());
-        arrivalStationCode.setText(flightDetailViewModel.getArrivalAirport());
-        arrivalStationName.setText(flightDetailViewModel.getArrivalAirportCity());
+        appBarLayout.addOnOffsetChangedListener(onAppbarOffsetChange());
 
         tabLayout.setupWithViewPager(viewPager);
+
+        initInjector();
+
+        trainSchedulePresenter.attachView(this);
+        trainSchedulePresenter.getScheduleDetail(scheduleId);
     }
 
     @Override
@@ -81,7 +97,7 @@ public class TrainScheduleDetailActivity extends BaseTabActivity {
             @Override
             public Fragment getItem(int position) {
                 switch (position) {
-                    case 0 : return TrainScheduleDetailFragment.createInstance(trainScheduleViewModel);
+                    case 0 : return TrainScheduleDetailFragment.createInstance(trainScheduleDetailViewModel);
                     case 1 : return TrainSchedulePriceDetailFragment.createInstance();
                 }
                 return null;
@@ -98,4 +114,54 @@ public class TrainScheduleDetailActivity extends BaseTabActivity {
     protected int getPageLimit() {
         return 2;
     }
+
+    @Override
+    public void showScheduleDetail(TrainScheduleDetailViewModel trainScheduleDetailViewModel) {
+        this.trainScheduleDetailViewModel = trainScheduleDetailViewModel;
+        originStationCode.setText(trainScheduleDetailViewModel.getOriginStationCode());
+        originStationName.setText(trainScheduleDetailViewModel.getOriginStationName());
+        destinationStationCode.setText(trainScheduleDetailViewModel.getDestinationStationCode());
+        destinationStationName.setText(trainScheduleDetailViewModel.getDestinationStationName());
+    }
+
+    protected void initInjector() {
+        if (trainScheduleDetailComponent == null) {
+            trainScheduleDetailComponent = DaggerTrainScheduleDetailComponent.builder()
+                    .trainComponent(TrainComponentUtils.getTrainComponent(getApplication())).build();
+        }
+        trainScheduleDetailComponent.inject(this);
+    }
+
+    private AppBarLayout.OnOffsetChangedListener onAppbarOffsetChange() {
+        return new AppBarLayout.OnOffsetChangedListener() {
+            boolean isShow = false;
+            int scrollRange = -1;
+
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                if (scrollRange == -1) {
+                    scrollRange = appBarLayout.getTotalScrollRange();
+                }
+                if (scrollRange + verticalOffset == 0) {
+                    setUpToolbarTitle();
+                    isShow = true;
+                } else if (isShow) {
+                    collapsingToolbarLayout.setTitle(" ");
+                    isShow = false;
+                }
+            }
+        };
+    }
+
+    private void setUpToolbarTitle() {
+        String title = trainScheduleDetailViewModel.getOriginCityName() + " ➝ " +
+                trainScheduleDetailViewModel.getDestinationCityName();
+        collapsingToolbarLayout.setTitle(title);
+    }
+
+    @Override
+    protected boolean isShowCloseButton() {
+        return true;
+    }
+
 }

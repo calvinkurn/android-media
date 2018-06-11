@@ -1,4 +1,4 @@
-package com.tokopedia.train.scheduledetail.presentation;
+package com.tokopedia.train.scheduledetail.presentation.fragment;
 
 import android.support.v4.app.Fragment;
 

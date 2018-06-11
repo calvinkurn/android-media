@@ -15,7 +15,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.util.TrainDateUtil;
-import com.tokopedia.train.scheduledetail.presentation.TrainScheduleDetailActivity;
+import com.tokopedia.train.scheduledetail.presentation.activity.TrainScheduleDetailActivity;
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
 
 /**
@@ -116,7 +116,7 @@ public class TrainSearchViewHolder extends AbstractViewHolder<TrainScheduleViewM
             @Override
             public void onClick(View view) {
                 //TODO go to detail schedule
-                Intent intent = TrainScheduleDetailActivity.createIntent(context, trainScheduleViewModel);
+                Intent intent = TrainScheduleDetailActivity.createIntent(context, trainScheduleViewModel.getIdSchedule());
                 context.startActivity(intent);
             }
         });
