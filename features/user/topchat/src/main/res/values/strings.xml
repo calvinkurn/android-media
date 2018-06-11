@@ -41,6 +41,8 @@ yang ditemukan</string>
     <string name="error_no_connection_retrying">Terjadi gangguan pada koneksi. Mencoba
         menghubungkan…</string>
     <string name="title_time_machine_message">Riwayat</string>
+    <string name="security_info_chat">Mohon berhati-hati bila pengguna lain meminta Anda berkomunikasi dan bertransaksi di luar Tokopedia.</string>
+    <string name="security_info_chat_link">Cek panduan keamanan disini.</string>
 
     <!-- Chat Room -->
     <string name="time_machine_chat">Untuk melihat percakapan sebelumnya, kunjungi\nRiwayat
@@ -65,6 +67,5 @@ yang ditemukan</string>
     <string name="title_info_list_template">"Kelola Template Pesan"</string>
     <string name="body_info_list_template">"Ubah dengan tekan tombol edit, atau atur urutan dengan tahan dan geser tombol drag."</string>
     <string name="caption_switch_template">"Buat hingga 5 template untuk membantu Anda melakukan Chat tanpa perlu mengetik pesan yang sama berulang kali"</string>
-
 
 </resources>

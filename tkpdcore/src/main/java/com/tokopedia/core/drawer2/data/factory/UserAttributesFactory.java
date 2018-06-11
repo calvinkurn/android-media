@@ -14,15 +14,13 @@ public class UserAttributesFactory {
 
     private final LocalCacheHandler drawerCache;
     private DrawerService drawerService;
-    private Context context;
 
-    public UserAttributesFactory(Context context, DrawerService drawerService, LocalCacheHandler drawerCache) {
-        this.context = context;
+    public UserAttributesFactory(DrawerService drawerService, LocalCacheHandler drawerCache) {
         this.drawerService = drawerService;
         this.drawerCache = drawerCache;
     }
 
     public CloudAttrDataSource createCloudAttrDataSource() {
-        return new CloudAttrDataSource(context, drawerService, drawerCache);
+        return new CloudAttrDataSource(drawerService, drawerCache);
     }
 }

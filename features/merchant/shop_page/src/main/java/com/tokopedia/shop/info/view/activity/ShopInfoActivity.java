@@ -78,7 +78,7 @@ public class ShopInfoActivity extends BaseTabActivity implements ShopInfoView, H
         return new Intent(context, ShopInfoActivity.class)
                 .setData(uri.build())
                 .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_NOTE)
-                .putExtras(extras);
+                .putExtra(ShopParamConstant.EXTRA_SHOP_ID, extras.getString(ShopParamConstant.KEY_SHOP_ID));
     }
 
     @DeepLink(ShopAppLink.SHOP_INFO)
@@ -87,7 +87,7 @@ public class ShopInfoActivity extends BaseTabActivity implements ShopInfoView, H
         return new Intent(context, ShopInfoActivity.class)
                 .setData(uri.build())
                 .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_INFO)
-                .putExtras(extras);
+                .putExtra(ShopParamConstant.EXTRA_SHOP_ID, extras.getString(ShopParamConstant.KEY_SHOP_ID));
     }
 
     @Override

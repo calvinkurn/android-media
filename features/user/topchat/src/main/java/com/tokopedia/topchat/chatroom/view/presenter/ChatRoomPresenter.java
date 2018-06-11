@@ -33,6 +33,9 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.ChatRoomViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendMessageViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.imageupload.ImageUploadViewModel;
+import com.tokopedia.topchat.chatroom.view.viewmodel.invoiceattachment.AttachInvoiceSelectionViewModel;
+import com.tokopedia.topchat.chatroom.view.viewmodel.invoiceattachment.AttachInvoiceSentViewModel;
+import com.tokopedia.topchat.chatroom.view.viewmodel.invoiceattachment.mapper.AttachInvoiceMapper;
 import com.tokopedia.topchat.chatroom.view.viewmodel.quickreply.QuickReplyListViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.rating.ChatRatingViewModel;
 import com.tokopedia.topchat.chattemplate.domain.usecase.GetTemplateUseCase;
@@ -49,6 +52,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Subscriber;
+
+import static com.tokopedia.topchat.common.InboxMessageConstant.PARAM_MESSAGE_ID;
 
 /**
  * Created by stevenfredian on 9/26/17.
@@ -168,7 +173,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     }
 
     private void uploadWithApi(final String path, final ImageUploadViewModel model) {
-        String messageId = (getView().getArguments().getString(InboxMessageConstant.PARAM_MESSAGE_ID));
+        String messageId = (getView().getArguments().getString(PARAM_MESSAGE_ID));
         RequestParams params = ReplyMessageUseCase.generateParamAttachImage(messageId, path);
 
         replyMessageUseCase.execute(params, new Subscriber<ReplyActionData>() {
@@ -206,7 +211,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
             String startTime = SendableViewModel.generateStartTime();
             getView().addDummyMessage(reply, startTime);
             getView().setViewEnabled(false);
-            String messageId = (getView().getArguments().getString(InboxMessageConstant.PARAM_MESSAGE_ID));
+            String messageId = (getView().getArguments().getString(PARAM_MESSAGE_ID));
 
             if (networkType == InboxChatConstant.MODE_WEBSOCKET) {
                 sendReply(messageId, reply, startTime);
@@ -215,7 +220,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
                 replyMessageUseCase.execute(params, new Subscriber<ReplyActionData>() {
                     @Override
                     public void onCompleted() {
-//                        isRequesting = false;
+
                     }
 
                     @Override
@@ -275,7 +280,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         getView().setUploadingMode(true);
         String userId = SessionHandler.getTempLoginSession(getView().getActivity());
         String deviceId = GCMHandler.getRegistrationId(getView().getActivity());
-        final String messageId = (getView().getArguments().getString(InboxMessageConstant.PARAM_MESSAGE_ID));
+        final String messageId = (getView().getArguments().getString(PARAM_MESSAGE_ID));
         attachImageUseCase.execute(AttachImageUseCase.getParam(list, messageId, userId, deviceId),
                 new Subscriber<UploadImageDomain>() {
                     @Override
@@ -351,16 +356,16 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     @Override
     public void getReply(int mode) {
         RequestParams requestParam;
-        if (TextUtils.isEmpty(getView().getArguments().getString(InboxMessageConstant.PARAM_MESSAGE_ID))) {
+        if (TextUtils.isEmpty(getView().getArguments().getString(PARAM_MESSAGE_ID))) {
             return;
         }
         if (mode == InboxChatViewModel.GET_CHAT_MODE) {
             requestParam = GetReplyListUseCase.generateParam(
-                    getView().getArguments().getString(InboxMessageConstant.PARAM_MESSAGE_ID),
+                    getView().getArguments().getString(PARAM_MESSAGE_ID),
                     pagingHandler.getPage());
         } else {
             requestParam = GetReplyListUseCase.generateParamSearch(
-                    getView().getArguments().getString(InboxMessageConstant.PARAM_MESSAGE_ID));
+                    getView().getArguments().getString(PARAM_MESSAGE_ID));
         }
 
         isRequesting = true;
@@ -388,7 +393,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         getView().displayReplyField(replyData.getTextAreaReply() == 1);
         getView().setCanLoadMore(replyData.isHasNext());
 
-        if (!replyData.isHasNext() && replyData.isHasTimeMachine()) {
+        if (!replyData.isHasNext()) {
             getView().addTimeMachine();
         }
     }
@@ -481,7 +486,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     public void onOpenWebSocket() {
         if (isFirstTime) {
             isFirstTime = false;
-            String messageId = (getView().getArguments().getString(InboxMessageConstant.PARAM_MESSAGE_ID));
+            String messageId = (getView().getArguments().getString(PARAM_MESSAGE_ID));
             readMessage(messageId);
         }
     }

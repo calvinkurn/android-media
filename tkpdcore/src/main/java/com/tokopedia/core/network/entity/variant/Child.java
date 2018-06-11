@@ -34,7 +34,7 @@ public class Child implements Parcelable {
     private String name;
     @SerializedName("is_buyable")
     @Expose
-    private boolean isBuyable;
+    private boolean isBuyable = false;
     @SerializedName("picture")
     @Expose
     private PictureChild picture;

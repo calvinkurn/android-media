@@ -65,7 +65,7 @@ public class TopPayPresenter extends BaseDaggerPresenter<TopPayContract.View> im
     @Override
     public void getPostDataOtp(String transactionId, String urlOtp) {
         getView().showProgressDialog();
-        getPostDataOtpUseCase.execute(getPostDataOtpUseCase.createRequestParams(transactionId,urlOtp),
+        getPostDataOtpUseCase.execute(getPostDataOtpUseCase.createRequestParams(transactionId, urlOtp),
                 getSubscriberPostDataOTP(urlOtp));
     }
 
@@ -90,18 +90,18 @@ public class TopPayPresenter extends BaseDaggerPresenter<TopPayContract.View> im
             @Override
             public void onNext(HashMap<String, String> stringStringHashMap) {
                 getView().hideProgressBarDialog();
-                if(stringStringHashMap != null){
+                if (stringStringHashMap != null) {
                     getView().onSuccessGetPostDataOTP(urlEncodeUTF8(stringStringHashMap), urlOtp);
-                }else{
+                } else {
                     getView().onErrorGetPostDataOtp(new RuntimeException());
                 }
             }
         };
     }
 
-    private String urlEncodeUTF8(Map<String,String> map) {
+    private String urlEncodeUTF8(Map<String, String> map) {
         StringBuilder sb = new StringBuilder();
-        for (Map.Entry<String,String> entry : map.entrySet()) {
+        for (Map.Entry<String, String> entry : map.entrySet()) {
             if (sb.length() > 0) {
                 sb.append("&");
             }
@@ -137,9 +137,9 @@ public class TopPayPresenter extends BaseDaggerPresenter<TopPayContract.View> im
             @Override
             public void onNext(Boolean isSuccess) {
                 getView().hideProgressBarDialog();
-                if(isSuccess){
+                if (isSuccess) {
                     getView().onSuccessRegisterFingerPrint();
-                }else{
+                } else {
                     getView().onErrorRegisterFingerPrint(new RuntimeException());
                 }
             }
@@ -162,9 +162,9 @@ public class TopPayPresenter extends BaseDaggerPresenter<TopPayContract.View> im
             @Override
             public void onNext(ResponsePaymentFingerprint responsePaymentFingerprint) {
                 getView().hideProgressBarDialog();
-                if(responsePaymentFingerprint.isSuccess()){
+                if (responsePaymentFingerprint.isSuccess()) {
                     getView().onSuccessPaymentFingerprint(responsePaymentFingerprint.getUrl(), responsePaymentFingerprint.getParamEncode());
-                }else{
+                } else {
                     getView().onErrorPaymentFingerPrint(new RuntimeException());
                 }
             }

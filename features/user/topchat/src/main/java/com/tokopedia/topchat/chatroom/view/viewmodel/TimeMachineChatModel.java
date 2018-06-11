@@ -13,7 +13,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.ChatRoomTypeFactory;
 
 public class TimeMachineChatModel implements Visitable<ChatRoomTypeFactory> {
 
-    private String url = TkpdBaseURL.User.URL_INBOX_MESSAGE_TIME_MACHINE;
+    private String url = TkpdBaseURL.User.URL_SECURITY_INFO;
 
     public TimeMachineChatModel(String url) {
         if (!TextUtils.isEmpty(url))

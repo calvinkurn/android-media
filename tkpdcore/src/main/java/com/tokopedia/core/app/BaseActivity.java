@@ -41,6 +41,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
+
 /**
  * Created by nisie on 2/7/17.
  * refer {@link com.tokopedia.abstraction.base.view.activity.BaseActivity}
@@ -52,6 +53,8 @@ import rx.schedulers.Schedulers;
 @Deprecated
 public class BaseActivity extends AppCompatActivity implements SessionHandler.onLogoutListener,
         ErrorNetworkReceiver.ReceiveListener, ScreenTracking.IOpenScreenAnalytics {
+
+
 
     public static final String FORCE_LOGOUT = "com.tokopedia.tkpd.FORCE_LOGOUT";
     public static final String SERVER_ERROR = "com.tokopedia.tkpd.SERVER_ERROR";
@@ -94,6 +97,10 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         super.onStart();
         MainApplication.setActivityState(TkpdState.Application.ACTIVITY);
         MainApplication.setActivityname(this.getClass().getSimpleName());
+        forceRotation();
+    }
+
+    protected void forceRotation() {
         if (!MainApplication.isTablet()) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         } else {
@@ -175,7 +182,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
             finish();
             Intent intent;
             if (GlobalConfig.isSellerApp()) {
-                intent = ((TkpdCoreRouter)MainApplication.getAppContext()).getHomeIntent(this);
+                intent = ((TkpdCoreRouter) MainApplication.getAppContext()).getHomeIntent(this);
             } else {
                 invalidateCategoryCache();
                 intent = HomeRouter.getHomeActivity(this);
@@ -252,6 +259,9 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
                     @Override
                     public void onDialogClicked() {
                         sessionHandler.forceLogout();
+                        try {
+                            ((TkpdCoreRouter) getApplication()).onLogout(getApplicationComponent());
+                        } catch (Exception ex) {}
                         if (GlobalConfig.isSellerApp()) {
                             Intent intent = SellerRouter.getActivitySplashScreenActivity(getBaseContext());
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -300,10 +310,11 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
             ((AbstractionRouter) getApplication()).init();
         }
     }
+
     private void registerShake() {
         if (!GlobalConfig.isSellerApp() && getApplication() instanceof AbstractionRouter) {
             String screenName = getScreenName();
-            if(screenName ==  null) {
+            if (screenName == null) {
                 screenName = this.getClass().getSimpleName();
             }
             ((AbstractionRouter) getApplication()).registerShake(screenName);
@@ -311,7 +322,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     }
 
     private void unregisterShake() {
-        if (!GlobalConfig.isSellerApp() &&  getApplication() instanceof AbstractionRouter) {
+        if (!GlobalConfig.isSellerApp() && getApplication() instanceof AbstractionRouter) {
             ((AbstractionRouter) getApplication()).unregisterShake();
         }
     }

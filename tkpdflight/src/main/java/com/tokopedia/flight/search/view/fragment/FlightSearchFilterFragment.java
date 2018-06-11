@@ -17,6 +17,7 @@ import com.tokopedia.design.text.DecimalRangeInputView;
 import com.tokopedia.design.text.RangeInputView;
 import com.tokopedia.design.text.watcher.CurrencyTextWatcher;
 import com.tokopedia.flight.R;
+import com.tokopedia.flight.common.view.FlightRadioLabelView;
 import com.tokopedia.flight.search.view.fragment.flightinterface.OnFlightFilterListener;
 import com.tokopedia.flight.search.view.fragment.flightinterface.OnFlightBaseFilterListener;
 import com.tokopedia.flight.search.view.model.filter.DepartureTimeEnum;
@@ -81,13 +82,14 @@ public class FlightSearchFilterFragment extends BaseDaggerFragment implements On
         return view;
     }
 
-    private void populateViews(View view, FlightFilterModel filterModel, FlightSearchStatisticModel statModel){
+    private void populateViews(View view, FlightFilterModel filterModel, FlightSearchStatisticModel statModel) {
         populatePrice(view, filterModel, statModel);
         populateDuration(view, filterModel, statModel);
         populateTransitLabel(view, filterModel);
         populateAirlineLabel(view, filterModel, statModel);
         populateDepartureLabel(view, filterModel);
         populateRefundLabel(view, filterModel);
+        populateSpecialLabel(view, filterModel, statModel);
     }
 
     public void resetFilter() {
@@ -121,7 +123,7 @@ public class FlightSearchFilterFragment extends BaseDaggerFragment implements On
             filterModel.setDurationMax(statMaxDur);
         }
         EditText minValueEditText = durationDecimalRangeInputView.getMinValueEditText();
-        if (minValueDurationTextWatcher!= null) {
+        if (minValueDurationTextWatcher != null) {
             minValueEditText.removeTextChangedListener(minValueDurationTextWatcher);
         }
         minValueDurationTextWatcher = new DurationTextWatcher(minValueEditText);
@@ -302,6 +304,25 @@ public class FlightSearchFilterFragment extends BaseDaggerFragment implements On
                 onDeleteRefund(selectionItem.getKey());
             }
         });
+    }
+
+
+    private void populateSpecialLabel(View view, FlightFilterModel filterModel, FlightSearchStatisticModel statModel) {
+        FlightRadioLabelView labelView = view.findViewById(R.id.swith_special_price);
+        if (statModel.isHaveSpecialPrice()) {
+            labelView.setVisibility(View.VISIBLE);
+            labelView.setChecked(filterModel.isSpecialPrice());
+            labelView.setListener(new FlightRadioLabelView.OnCheckChangeListener() {
+                @Override
+                public void onCheckedChanged(Boolean checked) {
+                    FlightFilterModel flightFilterModel = onFilterFragmentListener.getFlightFilterModel();
+                    flightFilterModel.setSpecialPrice(checked);
+                    onFilterFragmentListener.onFilterModelChanged(flightFilterModel);
+                }
+            });
+        } else {
+            labelView.setVisibility(View.GONE);
+        }
     }
 
     private void onDeleteTransit(String transitKey) {

@@ -23,14 +23,15 @@
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:hint="@string/title_invoice_no_and_user_name"
+            >
 
             <com.tokopedia.transaction.purchase.view.ClearableEditText
                 android:id="@+id/search"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
-                android:hint="@string/title_invoice_no_and_user_name"
                 android:inputType="text"
                 android:lines="1"
                 android:maxLines="1"

@@ -31,7 +31,6 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chatroom.view.listener.ChatNotifInterface;
 import com.tokopedia.topchat.common.InboxMessageConstant;
-import com.tokopedia.topchat.common.applink.ApplinkConstant;
 import com.tokopedia.topchat.common.util.SpaceItemDecoration;
 import com.tokopedia.topchat.chatlist.adapter.IndicatorAdapter;
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics;

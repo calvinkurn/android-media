@@ -12,9 +12,12 @@ import android.widget.TextView;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpdpdp.CourierActivity;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
+import static com.tokopedia.core.router.productdetail.ProductDetailRouter.EXTRA_PRODUCT_ID;
 
 /**
  * @author alifa on 5/8/17.
@@ -72,35 +75,35 @@ public class RatingTalkCourierView extends BaseView<ProductDetailData, ProductDe
 
     @Override
     public void renderData(@NonNull final ProductDetailData data) {
-        ivQualityRate
-                .setImageResource(getRatingDrawable(data.getRating().getProductRatingStarPoint()));
-
-        String ulasan = getContext().getString(R.string.ulasan);
-        String review = data.getStatistic().getProductReviewCount() + " " + ulasan;
-        String diskusi = getContext().getString(R.string.diskusi);
-        String talk = data.getStatistic().getProductTalkCount() + " " + diskusi;
-        String kurir = getContext().getString(R.string.kurir);
-        tvReview.setText(review);
-        tvTalk.setText(talk);
-        talkContainer.setOnClickListener(new ClickTalk(data));
-        reviewContainer.setOnClickListener(new ClickReview(data));
+        ivQualityRate.setImageResource(getRatingDrawable(data.getRating().getProductRatingStarPoint()));
         int courierCount = 0;
         if (data.getShopInfo().getShopShipments() != null) {
             courierCount = data.getShopInfo().getShopShipments().size();
         }
-
-        String courierText = String.valueOf(courierCount) + " " + kurir;
-        tvCourier.setText(courierText);
+        tvReview.setText(String.format("%1$s %2$s", data.getStatistic().getProductReviewCount(), getContext().getString(R.string.ulasan)));
+        tvTalk.setText(String.format("%1$s %2$s",data.getStatistic().getProductTalkCount(), getContext().getString(R.string.diskusi)));
+        tvCourier.setText(String.format("%1$s %2$s", courierCount, getContext().getString(R.string.kurir) ));
         courierContainer.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 Bundle bundle = new Bundle();
                 bundle.putParcelableArrayList(CourierActivity.KEY_COURIER_DATA,
                         data.getShopInfo().getShopShipments());
+                bundle.putString(EXTRA_PRODUCT_ID, String.valueOf(data.getInfo().getProductId()));
                 listener.onCourierClicked(bundle);
             }
         });
+        talkContainer.setOnClickListener(new ClickTalk(data));
+        reviewContainer.setOnClickListener(new ClickReview(data));
+        setVisibility(VISIBLE);
+    }
 
+    public void renderTempdata(ProductPass productPass) {
+        ivQualityRate
+                .setImageResource(getRatingDrawable(productPass.getStarRating()));
+        tvReview.setText(String.format("%1$s %2$s", productPass.getCountReview(), getContext().getString(R.string.ulasan)));
+        tvTalk.setText(String.format("%1$s %2$s", productPass.getCountDiscussion(), getContext().getString(R.string.diskusi)));
+        tvCourier.setText(String.format("%1$s %2$s", productPass.getCountCourrier(), getContext().getString(R.string.kurir) ));
         setVisibility(VISIBLE);
     }
 

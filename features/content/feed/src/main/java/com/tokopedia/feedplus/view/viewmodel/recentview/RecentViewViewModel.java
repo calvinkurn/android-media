@@ -1,6 +1,6 @@
 package com.tokopedia.feedplus.view.viewmodel.recentview;
 
-import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactory;
 
 import java.util.ArrayList;

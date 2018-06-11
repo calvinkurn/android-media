@@ -1,9 +1,9 @@
 package com.tokopedia.seller.shop.open.view.presenter;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.ResponseIsReserveDomain;
 import com.tokopedia.seller.shop.open.domain.interactor.ShopIsReserveDomainUseCase;
 import com.tokopedia.seller.shop.open.view.listener.ShopOpenCheckDomainView;
-import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.ResponseIsReserveDomain;
 
 import javax.inject.Inject;
 
@@ -33,14 +33,16 @@ public class ShopCheckIsReservePresenterImpl extends BaseDaggerPresenter<ShopOpe
 
             @Override
             public void onError(Throwable e) {
-                if (isViewAttached()) {
+                if (isViewAttached() && getView() != null && getView().getActivity() != null) {
                     getView().onErrorCheckReserveDomain(e);
                 }
             }
 
             @Override
             public void onNext(ResponseIsReserveDomain responseIsReserveDomain) {
-                getView().onSuccessCheckReserveDomain(responseIsReserveDomain);
+                if (isViewAttached() && getView() != null && getView().getActivity() != null) {
+                    getView().onSuccessCheckReserveDomain(responseIsReserveDomain);
+                }
             }
         });
     }

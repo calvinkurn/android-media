@@ -4,13 +4,13 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatroom.ChatRatingViewHolder;
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatbot.AttachedInvoiceSelectionViewHolder;
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatbot.AttachedInvoiceSentViewHolder;
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatbot.QuickReplyViewHolder;
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatroom.ChatRatingViewHolder;
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatroom.ImageAnnouncementViewHolder;
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatroom.ProductAttachmentViewHolder;
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatroom.TimeMachineChatViewHolder;
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatroom.SecurityInfoChatViewHolder;
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatroom.TypingChatViewHolder;
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.FallbackAttachmentViewHolder;
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.ImageUploadViewHolder;
@@ -28,14 +28,6 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.message.MessageViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.productattachment.ProductAttachmentViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.quickreply.QuickReplyListViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.rating.ChatRatingViewModel;
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatbot.AttachedInvoiceSentViewHolder;
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatbot.QuickReplyViewHolder;
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.ImageUploadViewHolder;
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.MessageViewHolder;
-import com.tokopedia.topchat.chatroom.view.fragment.ChatRoomFragment;
-import com.tokopedia.topchat.chatroom.view.viewmodel.imageannouncement.ImageAnnouncementViewModel;
-import com.tokopedia.topchat.chatroom.view.viewmodel.imageupload.ImageUploadViewModel;
-import com.tokopedia.topchat.chatroom.view.viewmodel.invoiceattachment.AttachInvoiceSentViewModel;
 
 /**
  * Created by stevenfredian on 9/27/17.
@@ -51,7 +43,7 @@ public class ChatRoomTypeFactoryImpl extends BaseAdapterTypeFactory implements C
 
     @Override
     public int type(TimeMachineChatModel timeMachineChatModel) {
-        return TimeMachineChatViewHolder.LAYOUT;
+        return SecurityInfoChatViewHolder.LAYOUT;
     }
 
     @Override
@@ -110,8 +102,8 @@ public class ChatRoomTypeFactoryImpl extends BaseAdapterTypeFactory implements C
 
         AbstractViewHolder viewHolder;
 
-        if (type == TimeMachineChatViewHolder.LAYOUT)
-            viewHolder = new TimeMachineChatViewHolder(view, viewListener);
+        if (type == SecurityInfoChatViewHolder.LAYOUT)
+            viewHolder = new SecurityInfoChatViewHolder(view, viewListener);
         else if (type == TypingChatViewHolder.LAYOUT)
             viewHolder = new TypingChatViewHolder(view);
         else if (type == MessageViewHolder.LAYOUT)

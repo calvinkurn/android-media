@@ -1,7 +1,9 @@
 package com.tokopedia.loyalty.view.interactor;
+
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
 
+import rx.Observable;
 import rx.Subscriber;
 
 /**
@@ -18,4 +20,12 @@ public interface IPromoCodeInteractor {
             String voucherCode,
             TKPDMapParam<String, String> param, Subscriber<VoucherViewModel> subscriber);
 
+
+    void submitVoucherMarketPlaceCartList(
+            Observable observable, Subscriber<?> subscriber
+    );
+
+    void submitVoucherMarketPlaceCartShipment(
+            Observable observable, Subscriber<?> subscriber
+    );
 }

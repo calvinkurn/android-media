@@ -502,10 +502,31 @@ public class ProductFragment extends SearchSectionFragment
         com.tokopedia.core.var.ProductItem data = new com.tokopedia.core.var.ProductItem();
         data.setId(item.getProductID());
         data.setName(item.getProductName());
+
         data.setPrice(item.getPrice());
         data.setImgUri(item.getImageUrl());
         data.setTrackerAttribution(item.getHomeAttribution());
         data.setTrackerListName(item.getTrackerName());
+        data.setIsWishlist(item.isWishlisted());
+        data.setRating(Integer.toString(item.getRating()));
+        data.setReviewCount(Integer.toString(item.getCountReview()));
+        data.setCountCourier(item.getCountCourier());
+        data.setDiscountPercentage(item.getDiscountPercentage());
+        data.setOriginalPrice(item.getOriginalPrice());
+        data.setShop(item.getShopName());
+        data.setShopLocation(item.getShopCity());
+        data.setOfficial(item.isOfficial());
+
+        if (item.getLabelList() != null) {
+            for (int i = 0; i < item.getLabelList().size(); i++) {
+                if (item.getLabelList().get(i).getTitle().toLowerCase()
+                        .contains(com.tokopedia.core.var.ProductItem.CASHBACK)) {
+                    data.setCashback(item.getLabelList().get(i).getTitle());
+                    break;
+                }
+            }
+        }
+
         Bundle bundle = new Bundle();
         Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity());
         bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
@@ -583,7 +604,7 @@ public class ProductFragment extends SearchSectionFragment
     }
 
     @Override
-    protected void reloadData() {
+    public void reloadData() {
         adapter.clearData();
         initTopAdsParams();
         topAdsRecyclerAdapter.reset();
