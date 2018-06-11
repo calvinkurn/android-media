@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
@@ -24,4 +25,6 @@ public interface FeedModuleRouter {
     Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId);
 
     Intent getKolCommentActivity(Context context, int postId, int rowNumber);
+
+    void openRedirectUrl(Activity activity, String url);
 }

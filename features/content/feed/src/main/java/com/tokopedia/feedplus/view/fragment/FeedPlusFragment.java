@@ -931,7 +931,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onContentProductLinkClicked(String url) {
-        ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity(), url);
+        ((FeedModuleRouter) getActivity().getApplication()).openRedirectUrl(getActivity(), url);
     }
 
     @Override
