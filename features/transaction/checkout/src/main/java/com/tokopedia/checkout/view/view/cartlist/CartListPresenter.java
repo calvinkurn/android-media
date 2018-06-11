@@ -683,7 +683,7 @@ public class CartListPresenter implements ICartListPresenter {
                 if (deleteAndRefreshCartListData.getDeleteCartData().isSuccess()
                         && deleteAndRefreshCartListData.getCartListData() != null) {
                     if (deleteAndRefreshCartListData.getCartListData().getCartItemDataList().isEmpty()) {
-                        view.renderEmptyCartData(deleteAndRefreshCartListData.getCartListData());
+                        processInitialGetCartData();
                     } else {
                         view.renderInitialGetCartListDataSuccess(deleteAndRefreshCartListData.getCartListData());
                     }
