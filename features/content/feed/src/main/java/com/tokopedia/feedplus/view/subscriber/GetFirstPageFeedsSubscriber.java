@@ -20,6 +20,7 @@ import com.tokopedia.feedplus.domain.model.feed.KolCtaDomain;
 import com.tokopedia.feedplus.domain.model.feed.KolPostDomain;
 import com.tokopedia.feedplus.domain.model.feed.KolRecommendationDomain;
 import com.tokopedia.feedplus.domain.model.feed.KolRecommendationItemDomain;
+import com.tokopedia.feedplus.domain.model.feed.ProductCommunicationDomain;
 import com.tokopedia.feedplus.domain.model.feed.ProductFeedDomain;
 import com.tokopedia.feedplus.domain.model.feed.PromotionFeedDomain;
 import com.tokopedia.feedplus.domain.model.officialstore.BadgeDomain;
@@ -453,7 +454,17 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                             if (contentProductViewModel != null) {
                                 listFeedView.add(contentProductViewModel);
                             }
+                        }
 
+                        //TODO milhamj make own type
+                        if (domain.getContent() != null
+                                && domain.getContent().getProductCommunications() != null
+                                && !domain.getContent().getProductCommunications().isEmpty()) {
+                            ProductCommunicationViewModel productCommunicationViewModel =
+                                    convertToProductCommunicationViewModel(
+                                            domain.getContent().getProductCommunications()
+                                    );
+                            listFeedView.add(productCommunicationViewModel);
                         }
                         break;
                     default:
@@ -773,37 +784,16 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
     }
 
     private ProductCommunicationViewModel convertToProductCommunicationViewModel(
-            KolCtaDomain domain) {
-        if (domain == null) {
-            return null;
-        }
-
-        //TODO milhamj map the data from API
+            List<ProductCommunicationDomain> domainList) {
         List<ProductCommunicationItemViewModel> viewModelList = new ArrayList<>();
-        ProductCommunicationItemViewModel itemViewModel1 =
-                new ProductCommunicationItemViewModel(
-                        "http://www.indofoodstore.com/images/products/detail/ast.jpg",
-                        "tokopedia://people/28596211");
-        viewModelList.add(itemViewModel1);
-
-        ProductCommunicationItemViewModel itemViewModel2 =
-                new ProductCommunicationItemViewModel(
-                        "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2017/5/11/420425/420425_ea61af83-eb25-4ebe-85cd-78a272105399.jpg",
-                        "tokopedia://people/12573588");
-        viewModelList.add(itemViewModel2);
-
-        ProductCommunicationItemViewModel itemViewModel3 =
-                new ProductCommunicationItemViewModel(
-                        "https://apollo2.dl.playstation.net/cdn/UP0001/CUSA04071_00/FREE_CONTENTKj7WKRpM0PNOMmE130x7/PREVIEW_SCREENSHOT2_122976.jpg",
-                        "tokopedia://people/12573588");
-        viewModelList.add(itemViewModel3);
-
-        ProductCommunicationItemViewModel itemViewModel4 =
-                new ProductCommunicationItemViewModel(
-                        "http://www.universohq.com/wp-content/uploads/2016/02/DeadpoolDiaNamorados.jpg",
-                        "tokopedia://people/12573588");
-        viewModelList.add(itemViewModel4);
-
+        for (ProductCommunicationDomain domain : domainList) {
+            viewModelList.add(
+                    new ProductCommunicationItemViewModel(
+                            domain.getImageUrl(),
+                            domain.getRedirectUrl()
+                    )
+            );
+        }
         return new ProductCommunicationViewModel(viewModelList);
     }
 
