@@ -32,7 +32,6 @@ public class ShipmentAddressListPresenter
     private static final String DEFAULT_KEYWORD = "";
 
     private final GetPeopleAddressUseCase mGetPeopleAddressUseCase;
-    private final PagingHandler mPagingHandler;
     private int currentPage = 1;
     private boolean hasNext;
     private String lastQueryKeyword = "";
@@ -42,7 +41,6 @@ public class ShipmentAddressListPresenter
     public ShipmentAddressListPresenter(GetPeopleAddressUseCase getPeopleAddressUseCase,
                                         PagingHandler pagingHandler) {
         mGetPeopleAddressUseCase = getPeopleAddressUseCase;
-        mPagingHandler = pagingHandler;
     }
 
     @Override
@@ -93,15 +91,15 @@ public class ShipmentAddressListPresenter
                                 if (throwable instanceof UnknownHostException ||
                                         throwable instanceof ConnectException ||
                                         throwable instanceof SocketTimeoutException) {
-                                    message = getMvpView().getActivity().getResources().getString(
+                                    message = getMvpView().getActivityContext().getResources().getString(
                                             R.string.msg_no_connection);
                                 } else if (throwable instanceof UnProcessableHttpException) {
                                     message = TextUtils.isEmpty(throwable.getMessage()) ?
-                                            getMvpView().getActivity().getResources().getString(
+                                            getMvpView().getActivityContext().getResources().getString(
                                                     R.string.msg_no_connection) :
                                             throwable.getMessage();
                                 } else {
-                                    message = getMvpView().getActivity().getResources().getString(
+                                    message = getMvpView().getActivityContext().getResources().getString(
                                             R.string.default_request_error_unknown);
                                 }
                                 getMvpView().showError(message);

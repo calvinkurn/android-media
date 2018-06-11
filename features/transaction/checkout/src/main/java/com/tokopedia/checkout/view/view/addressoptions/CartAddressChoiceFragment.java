@@ -219,6 +219,11 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
     }
 
     @Override
+    public Activity getActivityContext() {
+        return getActivity();
+    }
+
+    @Override
     public void renderEmptyRecipientData() {
         llContent.setVisibility(View.GONE);
         btSendToCurrentAddress.setVisibility(View.GONE);

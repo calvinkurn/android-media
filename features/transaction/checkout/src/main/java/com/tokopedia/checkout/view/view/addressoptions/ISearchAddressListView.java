@@ -21,6 +21,6 @@ public interface ISearchAddressListView<T> {
 
     void resetPagination();
 
-    Activity getActivity();
+    Activity getActivityContext();
 
 }
