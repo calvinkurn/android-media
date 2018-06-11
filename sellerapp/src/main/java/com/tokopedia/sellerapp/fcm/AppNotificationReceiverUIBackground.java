@@ -16,11 +16,11 @@ import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.inbox.inboxchat.chatroom.listener.ChatNotifInterface;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.fcm.notification.TopAdsBelow20kNotification;
 import com.tokopedia.sellerapp.fcm.notification.TopAdsTopupSuccessNotification;
+import com.tokopedia.topchat.chatroom.view.listener.ChatNotifInterface;
 
 import java.util.Map;
 

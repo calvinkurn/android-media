@@ -24,7 +24,6 @@ import com.tokopedia.core.util.TkpdWebView;
 import com.tokopedia.core.util.TkpdWebViewClient;
 import com.tokopedia.inbox.contactus.activity.ContactUsActivity;
 import com.tokopedia.inbox.contactus.activity.ContactUsActivity.BackButtonListener;
-import com.tokopedia.inbox.inboxchat.chatroom.view.activity.ChatRoomActivity;
 
 import butterknife.BindView;
 
@@ -215,7 +214,9 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
                 } else if (url.toString().contains(CHATBOT_SCHEME)
                         && getActivity().getApplicationContext() instanceof TkpdInboxRouter) {
                     String messageId = url.getLastPathSegment();
-                    Intent chatBotIntent = ChatRoomActivity.getChatBotIntent(context,messageId);
+                    Intent chatBotIntent = ((TkpdInboxRouter) getActivity().getApplicationContext()
+                    ).getChatBotIntent(getActivity(), messageId);
+
                     startActivity(chatBotIntent);
                     return true;
                 } else if (url.toString().contains(APPLINK_SCHEME)
