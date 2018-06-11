@@ -43,7 +43,8 @@
                     android:layout_height="25dp"
                     android:padding="@dimen/padding_vs"
                     android:scaleType="fitXY"
-                    android:src="@drawable/icon_close" />
+                    android:tint="@color/grey"
+                    android:src="@drawable/icon_back_white" />
 
                 <TextView
                     android:id="@+id/tv_head_title"
@@ -51,7 +52,7 @@
                     android:layout_height="wrap_content"
                     android:paddingLeft="@dimen/padding_detail"
                     android:paddingRight="@dimen/padding_detail"
-                    android:text="Title of information"
+                    android:text="Tokopedia"
                     android:textColor="@color/grey"
                     android:textSize="@dimen/font_medium"
                     android:textStyle="bold" />

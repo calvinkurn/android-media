@@ -134,8 +134,11 @@ public class TkpdYoutubeVideoActivity extends YouTubeBaseActivity implements
         if (bundle != null) {
             videoUrl = bundle.getString(videoUrlKey, "tOgX9e75Zvg");
             Log.e("url", videoUrl);
-            tvHeadTitle.setText(bundle.getString(videoTitleKey, ""));
-            tvHeadTitle.setText(bundle.getString(videoDescHeadKey, ""));
+            String title = bundle.getString(videoDescHeadKey, "");
+            if(!TextUtils.isEmpty(title)){
+                tvHeadTitle.setText(title);
+            }
+            tvTitle.setText(bundle.getString(videoDescHeadKey, ""));
             tvDesc.setText(bundle.getString(videoDescKey, ""));
             btnCta.setText(bundle.getString(videoCtaKey, ""));
             videoLand = bundle.getString(videoLandKey, "");
