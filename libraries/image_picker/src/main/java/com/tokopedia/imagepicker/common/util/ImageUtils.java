@@ -55,12 +55,13 @@ public class ImageUtils {
     public static final String PNG_EXT = ".png";
     public static final String JPG_EXT = ".jpg";
     public static final String PNG = "png";
+    public static final String TOKOPEDIA_FOLDER_PREFIX = "Tokopedia";
 
     @StringDef({DIRECTORY_TOKOPEDIA_CACHE, DIRECTORY_TOKOPEDIA_CACHE_CAMERA, DIRECTORY_TOKOPEDIA_EDIT_RESULT})
     public @interface DirectoryDef {
-        String DIRECTORY_TOKOPEDIA_CACHE = "Tokopedia/Tokopedia Cache/";
-        String DIRECTORY_TOKOPEDIA_CACHE_CAMERA = "Tokopedia/Tokopedia Camera/";
-        String DIRECTORY_TOKOPEDIA_EDIT_RESULT = "Tokopedia/Tokopedia Edit/";
+        String DIRECTORY_TOKOPEDIA_CACHE = "Tokopedia/"+TOKOPEDIA_FOLDER_PREFIX+" Cache/";
+        String DIRECTORY_TOKOPEDIA_CACHE_CAMERA = "Tokopedia/"+TOKOPEDIA_FOLDER_PREFIX+" Camera/";
+        String DIRECTORY_TOKOPEDIA_EDIT_RESULT = "Tokopedia/"+TOKOPEDIA_FOLDER_PREFIX+" Edit/";
     }
 
     public static File getTokopediaPublicDirectory(@DirectoryDef String directoryType) {
