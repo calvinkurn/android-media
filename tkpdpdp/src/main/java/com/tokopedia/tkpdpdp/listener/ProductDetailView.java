@@ -25,6 +25,7 @@ import java.util.List;
 public interface ProductDetailView extends ViewListener {
 
     String SOURCE_BUTTON_BUY_PDP = "BUTTON_BUY_PDP";
+    String SOURCE_BUTTON_CART_PDP = "BUTTON_CART_PDP";
     String SOURCE_BUTTON_BUY_VARIANT = "BUTTON_BUY_VARIANT";
 
     /**
@@ -132,7 +133,7 @@ public interface ProductDetailView extends ViewListener {
 
     void onWholesaleClicked(@NonNull Bundle bundle);
 
-    void onVariantClicked(@NonNull Bundle bundle);
+    void openVariantPage(int source, ProductVariant productVariant, ProductDetailData productDetailData);
 
     void onInstallmentClicked(@NonNull Bundle bundle);
 

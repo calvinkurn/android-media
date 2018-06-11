@@ -170,13 +170,13 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
             btnNewBuy.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    listener.onBuyClick(ProductDetailView.SOURCE_BUTTON_BUY_PDP);
+                    listener.onBuyClick(ProductDetailView.SOURCE_BUTTON_BUY_PDP);
                 }
             });
             btnCart.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    listener.onBuyClick(ProductDetailView.SOURCE_BUTTON_BUY_PDP);
+                    listener.onBuyClick(ProductDetailView.SOURCE_BUTTON_CART_PDP);
                 }
             });
             setVisibility(VISIBLE);

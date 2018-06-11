@@ -188,6 +188,9 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public static final String STATE_APP_BAR_COLLAPSED = "STATE_APP_BAR_COLLAPSED";
     public static final String TAG_SHOWCASE_VARIANT = "-SHOWCASE_VARIANT";
     private static final String STATIC_VALUE_ENHANCE_NONE_OTHER = "none / other";
+    public static final int TYPE_BUTTON_BUY_CART = 10;
+    public static final int TYPE_BUTTON_BUY_BELI = 20;
+    public static final int TYPE_BUTTON_OPEN_VARIANT = 30;
 
     private CoordinatorLayout coordinatorLayout;
     private HeaderInfoView headerInfoView;
@@ -535,10 +538,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 }
                 onProductBuySessionLogin(pass);
             } else {
-                Bundle bundle = new Bundle();
-                bundle.putParcelable(VariantActivity.KEY_VARIANT_DATA, productVariant);
-                bundle.putParcelable(VariantActivity.KEY_PRODUCT_DETAIL_DATA, productData);
-                onVariantClicked(bundle);
+                openVariantPage(generateStateVariant(source), productVariant, productData);
             }
             if (!TextUtils.isEmpty(source) && source.equals(SOURCE_BUTTON_BUY_PDP) && productData.getInfo().getHasVariant() && variantLevel1 != null) {
                 UnifyTracking.eventBuyPDPVariant(generateVariantString());
@@ -554,6 +554,17 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
             Bundle bundle = new Bundle();
             bundle.putBoolean("login", true);
             onProductBuySessionNotLogin(bundle);
+        }
+    }
+
+    private int generateStateVariant(String source) {
+        switch (source) {
+            case ProductDetailView.SOURCE_BUTTON_BUY_PDP:
+                return VariantActivity.STATE_BUTTON_BUY;
+            case ProductDetailView.SOURCE_BUTTON_CART_PDP:
+                return VariantActivity.STATE_BUTTON_CART;
+            default:
+                return VariantActivity.STATE_VARIANT_DEFAULT;
         }
     }
 
@@ -660,18 +671,27 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     }
 
     @Override
-    public void onVariantClicked(@NonNull Bundle bundle) {
-        Intent intent = new Intent(context, VariantActivity.class);
+    public void openVariantPage(int state,
+                                ProductVariant productVariant,
+                                ProductDetailData productDetailData) {
+        Intent intent = new Intent(getActivity(), VariantActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(VariantActivity.KEY_VARIANT_DATA, productVariant);
+        bundle.putParcelable(VariantActivity.KEY_PRODUCT_DETAIL_DATA, productDetailData);
         intent.putExtras(bundle);
+        intent.putExtra(VariantActivity.KEY_STATE_OPEN_VARIANT, state);
         intent.putExtra(KEY_LEVEL1_SELECTED, variantLevel1);
         intent.putExtra(KEY_LEVEL2_SELECTED, variantLevel2);
         if (productData.getShopInfo().getShopIsOwner() == 1
-                || (productData.getShopInfo().getShopIsAllowManage() == 1 || GlobalConfig.isSellerApp())) {
+                || (productData.getShopInfo().getShopIsAllowManage() == 1
+                || GlobalConfig.isSellerApp())) {
             intent.putExtra(VariantActivity.KEY_SELLER_MODE, true);
         }
         startActivityForResult(intent, REQUEST_VARIANT);
         getActivity().overridePendingTransition(com.tokopedia.core.R.anim.pull_up, 0);
-        if (productData.getInfo().getHasVariant() && productVariant != null && variantLevel1 != null) {
+        if (productData.getInfo().getHasVariant()
+                && productVariant != null
+                && variantLevel1 != null) {
             UnifyTracking.eventClickVariant(generateVariantString());
         }
 
@@ -1176,9 +1196,11 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                         productPass.setProductId(Integer.toString(productData.getInfo().getProductId()));
                     }
                     if (resultCode == VariantActivity.SELECTED_VARIANT_RESULT_TO_BUY) {
-                        onBuyClick(SOURCE_BUTTON_BUY_VARIANT);
+//                        onBuyClick(SOURCE_BUTTON_BUY_VARIANT);
+                        throw new RuntimeException("need to define");
                     } else if (resultCode == VariantActivity.KILL_PDP_BACKGROUND) {
-                        getActivity().finish();
+//                        getActivity().finish();
+                        throw new RuntimeException("need to define");
                     }
                 }
             default:

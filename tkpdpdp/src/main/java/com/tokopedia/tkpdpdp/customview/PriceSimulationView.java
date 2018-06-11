@@ -134,10 +134,7 @@ public class PriceSimulationView extends BaseView<ProductDetailData, ProductDeta
         variantLayout.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                Bundle bundle = new Bundle();
-                bundle.putParcelable(VariantActivity.KEY_VARIANT_DATA, productVariant);
-                bundle.putParcelable(VariantActivity.KEY_PRODUCT_DETAIL_DATA, productDetailData);
-                listener.onVariantClicked(bundle);
+                listener.openVariantPage(0, productVariant, productDetailData);
 
             }
         });

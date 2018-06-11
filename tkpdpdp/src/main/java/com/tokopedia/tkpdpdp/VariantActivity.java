@@ -37,6 +37,7 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
 
     public static final String KEY_VARIANT_DATA = "VARIANT_DATA";
     public static final String KEY_PRODUCT_DETAIL_DATA = "PRODUCT_DETAIL_DATA";
+    public static final String KEY_STATE_OPEN_VARIANT = "KEY_STATE_OPEN_VARIANT";
     public static final String KEY_SELLER_MODE = "ON_SELLER_MODE";
     public static final String KEY_LEVEL1_SELECTED= "LEVEL1_OPTION";
     public static final String KEY_LEVEL2_SELECTED= "LEVEL2_OPTION";
@@ -46,6 +47,9 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
     public static final int SELECTED_VARIANT_RESULT = 99;
     public static final int SELECTED_VARIANT_RESULT_TO_BUY = 98;
     public static final int KILL_PDP_BACKGROUND = 97;
+    public static final int STATE_BUTTON_BUY = 1123;
+    public static final int STATE_BUTTON_CART = 2234;
+    public static final int STATE_VARIANT_DEFAULT = 0;
 
     private TextView topBarTitle;
     private ImageView productImage;
@@ -69,6 +73,7 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
     private VariantOptionAdapter variantOptionAdapterLevel2;
     private VariantOptionAdapter variantOptionAdapterLevel1;
 
+    private int stateFormVariantPage;
     private ProductVariant productVariant;
     private ProductDetailData productDetailData;
     private String mainImage = "";
@@ -84,6 +89,7 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
         super.onCreate(savedInstanceState);
         productVariant = getIntent().getParcelableExtra(KEY_VARIANT_DATA);
         productDetailData = getIntent().getParcelableExtra(KEY_PRODUCT_DETAIL_DATA);
+        stateFormVariantPage = getIntent().getIntExtra(KEY_STATE_OPEN_VARIANT, STATE_VARIANT_DEFAULT);
         localCacheHandler = new LocalCacheHandler(VariantActivity.this, PRODUCT_DETAIL);
         setContentView(R.layout.activity_variant);
         hideToolbar();
