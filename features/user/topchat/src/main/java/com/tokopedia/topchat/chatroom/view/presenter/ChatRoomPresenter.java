@@ -14,7 +14,6 @@ import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.topchat.R;
-import com.tokopedia.topchat.attachinvoice.view.resultmodel.SelectedInvoice;
 import com.tokopedia.topchat.attachproduct.view.resultmodel.ResultProduct;
 import com.tokopedia.topchat.chatlist.viewmodel.InboxChatViewModel;
 import com.tokopedia.topchat.chatroom.data.mapper.WebSocketMapper;
@@ -22,9 +21,11 @@ import com.tokopedia.topchat.chatroom.domain.AttachImageUseCase;
 import com.tokopedia.topchat.chatroom.domain.GetReplyListUseCase;
 import com.tokopedia.topchat.chatroom.domain.ReplyMessageUseCase;
 import com.tokopedia.topchat.chatroom.domain.SendMessageUseCase;
+import com.tokopedia.topchat.chatroom.domain.SendReasonRatingUseCase;
 import com.tokopedia.topchat.chatroom.domain.SetChatRatingUseCase;
 import com.tokopedia.topchat.chatroom.domain.WebSocketUseCase;
 import com.tokopedia.topchat.chatroom.domain.pojo.invoicesent.InvoiceLinkPojo;
+import com.tokopedia.topchat.chatroom.domain.pojo.rating.SendReasonRatingPojo;
 import com.tokopedia.topchat.chatroom.domain.pojo.rating.SetChatRatingPojo;
 import com.tokopedia.topchat.chatroom.domain.pojo.replyaction.ReplyActionData;
 import com.tokopedia.topchat.chatroom.view.listener.ChatRoomContract;
@@ -33,18 +34,15 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.ChatRoomViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendMessageViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.imageupload.ImageUploadViewModel;
-import com.tokopedia.topchat.chatroom.view.viewmodel.invoiceattachment.AttachInvoiceSelectionViewModel;
-import com.tokopedia.topchat.chatroom.view.viewmodel.invoiceattachment.AttachInvoiceSentViewModel;
-import com.tokopedia.topchat.chatroom.view.viewmodel.invoiceattachment.mapper.AttachInvoiceMapper;
 import com.tokopedia.topchat.chatroom.view.viewmodel.quickreply.QuickReplyListViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.rating.ChatRatingViewModel;
 import com.tokopedia.topchat.chattemplate.domain.usecase.GetTemplateUseCase;
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateViewModel;
 import com.tokopedia.topchat.chattemplate.view.viewmodel.TemplateChatModel;
 import com.tokopedia.topchat.common.InboxChatConstant;
-import com.tokopedia.topchat.common.InboxMessageConstant;
 import com.tokopedia.topchat.common.util.ImageUploadHandlerChat;
 import com.tokopedia.topchat.uploadimage.domain.model.UploadImageDomain;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,8 +65,10 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     private final GetReplyListUseCase getReplyListUseCase;
     private final ReplyMessageUseCase replyMessageUseCase;
     private final AttachImageUseCase attachImageUseCase;
-    private GetTemplateUseCase getTemplateUseCase;
-    private SetChatRatingUseCase setChatRatingUseCase;
+    private final GetTemplateUseCase getTemplateUseCase;
+    private final SetChatRatingUseCase setChatRatingUseCase;
+    private final SendReasonRatingUseCase sendReasonRatingUseCase;
+    private final UserSession userSession;
     private SessionHandler sessionHandler;
     public PagingHandler pagingHandler;
     boolean isRequesting;
@@ -95,7 +95,9 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
                       SendMessageUseCase sendMessageUseCase,
                       AttachImageUseCase attachImageUseCase,
                       SetChatRatingUseCase setChatRatingUseCase,
+                      SendReasonRatingUseCase sendReasonRatingUseCase,
                       SessionHandler sessionHandler,
+                      UserSession userSession,
                       WebSocketMapper webSocketMapper) {
         this.getReplyListUseCase = getReplyListUseCase;
         this.replyMessageUseCase = replyMessageUseCase;
@@ -103,7 +105,9 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         this.sendMessageUseCase = sendMessageUseCase;
         this.attachImageUseCase = attachImageUseCase;
         this.setChatRatingUseCase = setChatRatingUseCase;
+        this.sendReasonRatingUseCase = sendReasonRatingUseCase;
         this.sessionHandler = sessionHandler;
+        this.userSession = userSession;
         this.webSocketMapper = webSocketMapper;
     }
 
@@ -323,15 +327,49 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
                     }
 
                     @Override
-                    public void onError(Throwable throwable) {
-                        throwable.printStackTrace();
-                        getView().onErrorSetRating();
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        getView().onErrorSetRating(com.tokopedia.abstraction.common.utils.network
+                                .ErrorHandler.getErrorMessage(getView().getContext(), e));
                     }
 
                     @Override
                     public void onNext(SetChatRatingPojo setChatRatingPojo) {
                         element.setRatingStatus(rating);
                         getView().onSuccessSetRating(element);
+
+                        if (setChatRatingPojo.getReasons() != null
+                                && !setChatRatingPojo.getReasons().isEmpty()) {
+                            getView().showReasonRating(element.getMessageId(),
+                                    element.getReplyTimeNano(),
+                                    setChatRatingPojo.getReasons());
+                        }
+                    }
+                }
+        );
+    }
+
+    @Override
+    public void sendReasonRating(String messageId, long replyTimeNano, String reason) {
+        sendReasonRatingUseCase.execute(SendReasonRatingUseCase.getParam(
+                Integer.parseInt(messageId),
+                Integer.parseInt(userSession.getUserId()),
+                reason,
+                replyTimeNano),
+                new Subscriber<SendReasonRatingPojo>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(SendReasonRatingPojo sendReasonRatingPojo) {
+
                     }
                 }
         );

@@ -30,6 +30,9 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder;
+import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
+import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.KeyboardHandler;
@@ -80,9 +83,6 @@ import com.tokopedia.topchat.chatroom.view.presenter.WebSocketInterface;
 import com.tokopedia.topchat.chatroom.view.viewmodel.BaseChatViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.ChatRoomViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableViewModel;
-import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder;
-import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
-import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder;
 import com.tokopedia.topchat.chatroom.view.viewmodel.imageupload.ImageUploadViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.invoiceattachment.AttachInvoiceSentViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.invoiceattachment.mapper.AttachInvoiceMapper;
@@ -1489,9 +1489,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onErrorSetRating() {
-        showError(getActivity().getString(R.string.delete_error).concat("\n").concat(getString(R
-                .string.string_general_error)));
+    public void onErrorSetRating(String errorMessage) {
+        showError(errorMessage);
     }
 
     @Override
@@ -1511,5 +1510,30 @@ public class ChatRoomFragment extends BaseDaggerFragment
         adapter.removeLast();
         NetworkErrorHelper.showSnackbar(getActivity(), s);
         sendButton.setEnabled(true);
+    }
+
+    @Override
+    public void showReasonRating(String messageId, long replyTimeNano, ArrayList<String> reasons) {
+
+        BottomSheetBuilder bottomSheetBuilder = new CheckedBottomSheetBuilder(getActivity())
+                .setMode(BottomSheetBuilder.MODE_LIST);
+
+        for (int i = 0; i < reasons.size(); i++) {
+            bottomSheetBuilder.addItem(i, reasons.get(i), null);
+        }
+
+        BottomSheetDialog bottomSheetDialog = bottomSheetBuilder.expandOnStart(true)
+                .setItemClickListener(new BottomSheetItemClickListener() {
+                    @Override
+                    public void onBottomSheetItemClick(MenuItem item) {
+                        presenter.sendReasonRating(messageId,
+                                replyTimeNano,
+                                String.valueOf(item.getTitle()));
+                    }
+                })
+                .createDialog();
+
+        bottomSheetDialog.show();
+
     }
 }

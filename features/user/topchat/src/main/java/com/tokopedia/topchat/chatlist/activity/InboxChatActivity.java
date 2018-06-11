@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.app.MainApplication;
@@ -77,7 +78,7 @@ public class InboxChatActivity extends DrawerPresenterActivity
         return destination;
     }
 
-    @DeepLink(ApplinkConstant.GROUPCHAT_LIST)
+    @DeepLink(ApplinkConst.GROUPCHAT_LIST)
     public static TaskStackBuilder getCallingTaskStack(Context context) {
         Intent homeIntent = ((TkpdInboxRouter) context.getApplicationContext()).getHomeIntent(context);
         Intent channelListIntent = InboxChatActivity.getChannelCallingIntent(context);

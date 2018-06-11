@@ -1,8 +1,14 @@
 package com.tokopedia.topchat.common.di;
 
 
+import android.content.Context;
+
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
+import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse;
+import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
+import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.apiservices.accounts.UploadImageService;
@@ -51,6 +57,7 @@ import com.tokopedia.topchat.uploadimage.data.repository.ImageUploadRepository;
 import com.tokopedia.topchat.uploadimage.data.repository.ImageUploadRepositoryImpl;
 import com.tokopedia.topchat.uploadimage.domain.interactor.GenerateHostUseCase;
 import com.tokopedia.topchat.uploadimage.domain.interactor.UploadImageUseCase;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.concurrent.TimeUnit;
 
@@ -329,13 +336,20 @@ public class InboxChatModule {
         return new UploadImageService();
     }
 
+    @Provides
+    public ErrorResponseInterceptor provideResponseInterceptor() {
+        return new HeaderErrorResponseInterceptor(HeaderErrorListResponse.class);
+    }
+
     @InboxChatScope
     @Provides
-    OkHttpClient provideOkHttpClient(@InboxQualifier OkHttpRetryPolicy retryPolicy){
+    OkHttpClient provideOkHttpClient(@InboxQualifier OkHttpRetryPolicy retryPolicy,
+                                     ErrorResponseInterceptor errorResponseInterceptor) {
         return new OkHttpClient.Builder()
                 .addInterceptor(new FingerprintInterceptor())
                 .addInterceptor(new CacheApiInterceptor())
                 .addInterceptor(new DigitalHmacAuthInterceptor(AuthUtil.KEY.KEY_WSV4))
+                .addInterceptor(errorResponseInterceptor)
                 .connectTimeout(retryPolicy.connectTimeout, TimeUnit.SECONDS)
                 .readTimeout(retryPolicy.readTimeout, TimeUnit.SECONDS)
                 .writeTimeout(retryPolicy.writeTimeout, TimeUnit.SECONDS)
@@ -356,7 +370,7 @@ public class InboxChatModule {
     @InboxQualifier
     @Provides
     Retrofit provideChatRetrofit(OkHttpClient okHttpClient,
-                                 Retrofit.Builder retrofitBuilder){
+                                 Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(ChatBotUrl.BASE_URL)
                 .client(okHttpClient)
                 .build();
@@ -364,7 +378,13 @@ public class InboxChatModule {
 
     @InboxChatScope
     @Provides
-    ChatBotApi provideChatRatingApi(@InboxQualifier Retrofit retrofit){
+    ChatBotApi provideChatRatingApi(@InboxQualifier Retrofit retrofit) {
         return retrofit.create(ChatBotApi.class);
+    }
+
+    @InboxChatScope
+    @Provides
+    UserSession provideUserSession(@ApplicationContext Context context) {
+        return new UserSession(context);
     }
 }

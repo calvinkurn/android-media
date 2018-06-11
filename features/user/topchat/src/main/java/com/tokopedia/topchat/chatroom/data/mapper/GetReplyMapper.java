@@ -27,6 +27,7 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.message.MessageViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.productattachment.ProductAttachmentViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.quickreply.QuickReplyListViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.quickreply.QuickReplyViewModel;
+import com.tokopedia.topchat.chatroom.view.viewmodel.rating.ChatRatingViewModel;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,6 +35,8 @@ import java.util.List;
 
 import retrofit2.Response;
 import rx.functions.Func1;
+
+import static com.tokopedia.topchat.chatroom.data.mapper.WebSocketMapper.TYPE_CHAT_RATING;
 
 /**
  * Created by stevenfredian on 8/31/17.
@@ -84,7 +87,9 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
 
         for (ListReply item : data.getList()) {
 
-            if (item.getAttachment() != null
+            if (item.isShowRating() || item.getRatingStatus() != 0) {
+                mapToChatRating(list, item);
+            } else if (item.getAttachment() != null
                     && item.getAttachment().getType().equals(WebSocketMapper.TYPE_IMAGE_ANNOUNCEMENT)
                     && item.getRole().contains(TOKOPEDIA)) {
                 mapToImageAnnouncement(list, item);
@@ -117,6 +122,22 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
         }
         setOpponentViewModel(chatRoomViewModel, data.getContacts());
         return chatRoomViewModel;
+    }
+
+    private void mapToChatRating(ArrayList<Visitable> list, ListReply pojo) {
+        ChatRatingViewModel chatRatingViewModel = new ChatRatingViewModel(
+                String.valueOf(pojo.getMsgId()),
+                String.valueOf(pojo.getSenderId()),
+                pojo.getSenderName(),
+                pojo.getRole(),
+                pojo.getMsg(),
+                "",
+                TYPE_CHAT_RATING,
+                pojo.getReplyTime(),
+                pojo.getRatingStatus(),
+                Long.valueOf(pojo.getReplyTimeNano())
+        );
+        list.add(chatRatingViewModel);
     }
 
     private void mapToQuickReply(ArrayList<Visitable> list, ListReply item) {
