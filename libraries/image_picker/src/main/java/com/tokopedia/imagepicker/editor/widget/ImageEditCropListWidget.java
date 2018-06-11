@@ -25,6 +25,8 @@ public class ImageEditCropListWidget extends FrameLayout implements ImageEditorE
     private ViewGroup viewGroupMainContent;
 
     private OnImageEditCropWidgetListener onImageEditCropWidgetListener;
+    private ImageEditorEditCropAdapter imageEditorEditCropAdapter;
+
     public interface OnImageEditCropWidgetListener{
         void onEditCropClicked(ImageRatioTypeDef imageRatioTypeDef);
     }
@@ -59,10 +61,22 @@ public class ImageEditCropListWidget extends FrameLayout implements ImageEditorE
         viewGroupMainContent = findViewById(R.id.vg_editor_crop);
     }
 
-    public void setData(ArrayList<ImageRatioTypeDef> imageRatioTypeDefArrayList) {
-        ImageEditorEditCropAdapter imageEditorEditCropAdapter =
-                new ImageEditorEditCropAdapter(viewGroupMainContent, getContext(), imageRatioTypeDefArrayList, this);
+    public void setData(ArrayList<ImageRatioTypeDef> imageRatioTypeDefArrayList, ImageRatioTypeDef selectedImageRatio) {
+        imageEditorEditCropAdapter = new ImageEditorEditCropAdapter(viewGroupMainContent, getContext(), imageRatioTypeDefArrayList, selectedImageRatio, this);
         imageEditorEditCropAdapter.renderView();
+    }
+
+    public void setRatio(ImageRatioTypeDef selectedImageRatio){
+        imageEditorEditCropAdapter.setRatio(selectedImageRatio);
+
+    }
+
+    public @Nullable ImageRatioTypeDef getSelectedImageRatio(){
+        if (imageEditorEditCropAdapter!= null) {
+            return imageEditorEditCropAdapter.getSelectedImageRatio();
+        } else {
+            return null;
+        }
     }
 
     @Override

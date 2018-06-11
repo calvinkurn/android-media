@@ -459,7 +459,8 @@ public class ImagePickerActivity extends BaseSimpleActivity
                 imagePickerBuilder.getMinResolution(), imagePickerBuilder.getImageEditActionType(),
                 imagePickerBuilder.getImageRatioTypeDef(),
                 imagePickerBuilder.isCirclePreview(),
-                imagePickerBuilder.getMaxFileSizeInKB());
+                imagePickerBuilder.getMaxFileSizeInKB(),
+                imagePickerBuilder.getRatioOptionList());
         startActivityForResult(intent, REQUEST_CODE_EDITOR);
     }
 

@@ -19,7 +19,7 @@ public class ImagePickerEditorBuilder implements Parcelable {
     private @ImageEditActionTypeDef
     int[] imageEditActionType;
     private boolean circlePreview;
-    private List<ImageRatioTypeDef> imageRatioTypeDefs;
+    private ArrayList<ImageRatioTypeDef> imageRatioTypeDefs;
 
     public static ImagePickerEditorBuilder getDefaultBuilder(){
         return new ImagePickerEditorBuilder(
@@ -30,10 +30,10 @@ public class ImagePickerEditorBuilder implements Parcelable {
 
     public ImagePickerEditorBuilder(@ImageEditActionTypeDef int[] imageEditActionType,
                                     boolean circlePreview,
-                                    List<ImageRatioTypeDef> imageRationTypeDef) {
+                                    ArrayList<ImageRatioTypeDef> imageRatioTypeDefs) {
         this.imageEditActionType = imageEditActionType;
         this.circlePreview = circlePreview;
-        this.imageRatioTypeDefs = imageRationTypeDef;
+        this.imageRatioTypeDefs = imageRatioTypeDefs;
     }
 
     public int[] getImageEditActionType() {
@@ -44,7 +44,7 @@ public class ImagePickerEditorBuilder implements Parcelable {
         return circlePreview;
     }
 
-    public List<ImageRatioTypeDef> getImageRatioTypeDefs() {
+    public ArrayList<ImageRatioTypeDef> getImageRatioTypeDefs() {
         return imageRatioTypeDefs;
     }
 
