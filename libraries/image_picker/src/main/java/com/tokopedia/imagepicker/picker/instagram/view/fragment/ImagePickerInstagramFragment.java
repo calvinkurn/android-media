@@ -90,6 +90,9 @@ public class ImagePickerInstagramFragment extends BaseListFragment<InstagramMedi
         galleryType = bundle.getInt(ARGS_GALLERY_TYPE);
         supportMultipleSelection = bundle.getBoolean(ARGS_SUPPORT_MULTIPLE);
         minImageResolution = bundle.getInt(ARGS_MIN_RESOLUTION);
+        if(savedInstanceState != null) {
+            code = savedInstanceState.getString(InstagramConstant.EXTRA_CODE_LOGIN, "");
+        }
 
         super.onCreate(savedInstanceState);
     }
@@ -225,7 +228,6 @@ public class ImagePickerInstagramFragment extends BaseListFragment<InstagramMedi
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == REQUEST_CODE_INSTAGRAM_LOGIN && resultCode == InstagramLoginActivity.RESULT_OK){
             this.code = data.getStringExtra(InstagramConstant.EXTRA_CODE_LOGIN);
-            loadInitialData();
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -243,6 +245,12 @@ public class ImagePickerInstagramFragment extends BaseListFragment<InstagramMedi
             return false;
         }
         return true;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putString(InstagramConstant.EXTRA_CODE_LOGIN, code);
+        super.onSaveInstanceState(outState);
     }
 
     @Override

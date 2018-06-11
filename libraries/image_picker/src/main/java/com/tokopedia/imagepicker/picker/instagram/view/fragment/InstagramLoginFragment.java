@@ -13,11 +13,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.CookieManager;
+import android.webkit.CookieSyncManager;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -26,6 +28,7 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.picker.instagram.di.InstagramModule;
 import com.tokopedia.imagepicker.picker.instagram.util.InstagramConstant;
+import com.tokopedia.imagepicker.picker.instagram.view.dialog.InstagramLoginDialog;
 import com.tokopedia.imagepicker.picker.instagram.view.presenter.InstagramLoginPresenter;
 import com.tokopedia.imagepicker.picker.instagram.di.DaggerInstagramComponent;
 
@@ -38,6 +41,10 @@ import static com.tokopedia.imagepicker.picker.instagram.util.InstagramConstant.
  */
 
 public class InstagramLoginFragment extends BaseDaggerFragment{
+
+    private static final FrameLayout.LayoutParams FILL = new FrameLayout.LayoutParams(
+            ViewGroup.LayoutParams.FILL_PARENT,
+            ViewGroup.LayoutParams.FILL_PARENT);
 
     @Inject
     InstagramLoginPresenter instagramLoginPresenter;
@@ -62,12 +69,17 @@ public class InstagramLoginFragment extends BaseDaggerFragment{
         ws.setCacheMode(WebSettings.LOAD_NO_CACHE);
         ws.setSaveFormData(false);
         ws.setSavePassword(false);
+        ws.setJavaScriptCanOpenWindowsAutomatically(true);
         ws.setJavaScriptEnabled(true);
         instagramWebview.setWebViewClient(new InstagramWebViewClient());
+        instagramWebview.setLayoutParams(FILL);
 
         instagramWebview.setWebChromeClient(new MyWebChromeClient());
         instagramWebview.loadUrl(InstagramConstant.URL_LOGIN_INSTAGRAM);
         instagramWebview.clearCache(true);
+        CookieSyncManager.createInstance(getContext());
+        CookieManager cookieManager = CookieManager.getInstance();
+        cookieManager.removeAllCookie();
     }
 
     @Override
