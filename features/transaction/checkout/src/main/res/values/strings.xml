@@ -80,12 +80,12 @@
     <string name="label_dropshipper_info">Anda dapat mengirimkan barang ke alamat lain dengan data Anda sebagai pengirim</string>
     <string name="label_not_yet_pinpoint">Belum Pinpoint</string>
     <string name="message_error_no_courier_selected">Pastikan Anda telah memilih kurir pengiriman</string>
-    <string name="message_error_dropshipper_data">Lengkapi informasi dropshipper Anda</string>
-    <string name="message_error_dropshipper_name">Nama terlalu pendek</string>
-    <string name="message_error_dropshipper_name_empty">Mohon isi nama pengirim Anda</string>
-    <string name="message_error_dropshipper_phone">Nomor telepon terlalu pendek</string>
-    <string name="message_error_dropshipper_phone_empty">Mohon isi nomor telepon Anda</string>
-    <string name="message_error_dropshipper_phone_invalid">Nomor telepon yang dimasukkan tidak sesuai</string>
+    <string name="message_error_dropshipper_data">Lengkapi informasi dropshipper Anda.</string>
+    <string name="message_error_dropshipper_name">Nama terlalu pendek.</string>
+    <string name="message_error_dropshipper_name_empty">Mohon isi nama pengirim Anda.</string>
+    <string name="message_error_dropshipper_phone">Nomor telepon terlalu pendek.</string>
+    <string name="message_error_dropshipper_phone_empty">Mohon isi nomor telepon Anda.</string>
+    <string name="message_error_dropshipper_phone_invalid">Nomor telepon yang dimasukkan tidak sesuai.</string>
     <string name="message_error_no_pinpoint">Anda belum menandai lokasi tujuan dalam peta</string>
     <string name="message_error_dropshipper">Data dropshipper belum lengkap</string>
     <string name="label_main_address">Utama</string>
@@ -95,7 +95,7 @@
     <string name="title_coupon_code">Kode Kupon</string>
     <string name="label_insurance_price">Biaya Asuransi</string>
     <string name="label_hint_cart_item_dropshipper_name">Nama Pengirim</string>
-    <string name="label_hint_cart_item_dropshipper_phone">Nomor Telepon</string>
+    <string name="label_hint_cart_item_dropshipper_phone_number">Nomor Telepon</string>
     <string name="label_delivery_price">Total Ongkos Kirim</string>
     <string name="label_additional_cost">Biaya Tambahan</string>
     <string name="label_dialog_title_cancel_pickup">Batalkan Pengiriman ke Gerai Pengambilan</string>

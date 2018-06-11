@@ -22,7 +22,7 @@ public interface ICartAddressChoiceView extends CustomerView {
 
     void renderSaveButtonEnabled();
 
-    void renderRecipientData(List<RecipientAddressModel> recipientAddressModels);
+    void renderRecipientData(List<RecipientAddressModel> recipientAddressModels, boolean isNewlyCreatedAddress);
 
     void setToken(Token token);
 

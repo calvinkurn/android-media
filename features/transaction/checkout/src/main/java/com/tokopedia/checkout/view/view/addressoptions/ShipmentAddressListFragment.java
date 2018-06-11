@@ -56,16 +56,16 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     private static final int ORDER_ASC = 1;
     private static final String PARAMS = "params";
 
-    RecyclerView mRvRecipientAddressList;
-    SearchInputView mSvAddressSearchBox;
-    SwipeToRefresh swipeToRefreshLayout;
-    LinearLayout llNetworkErrorView;
-    LinearLayout llNoResult;
-    RelativeLayout rlContent;
-    Button btChangeSearch;
+    private RecyclerView mRvRecipientAddressList;
+    private SearchInputView mSvAddressSearchBox;
+    private SwipeToRefresh swipeToRefreshLayout;
+    private LinearLayout llNetworkErrorView;
+    private LinearLayout llNoResult;
+    private RelativeLayout rlContent;
+    private Button btChangeSearch;
 
-    InputMethodManager mInputMethodManager;
-    ICartAddressChoiceActivityListener mCartAddressChoiceActivityListener;
+    private InputMethodManager mInputMethodManager;
+    private ICartAddressChoiceActivityListener mCartAddressChoiceActivityListener;
     private int maxItemPosition;
     private boolean isLoading;
 

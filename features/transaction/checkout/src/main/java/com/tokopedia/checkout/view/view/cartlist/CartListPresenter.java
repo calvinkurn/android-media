@@ -683,7 +683,7 @@ public class CartListPresenter implements ICartListPresenter {
                 if (deleteAndRefreshCartListData.getDeleteCartData().isSuccess()
                         && deleteAndRefreshCartListData.getCartListData() != null) {
                     if (deleteAndRefreshCartListData.getCartListData().getCartItemDataList().isEmpty()) {
-                        view.renderEmptyCartData(null);
+                        processInitialGetCartData();
                     } else {
                         view.renderInitialGetCartListDataSuccess(deleteAndRefreshCartListData.getCartListData());
                     }
@@ -861,7 +861,7 @@ public class CartListPresenter implements ICartListPresenter {
                     view.renderErrorInitialGetCartListData(resetAndRefreshCartListData.getResetCartData().getMessage());
                 } else {
                     if (resetAndRefreshCartListData.getCartListData().getCartItemDataList().isEmpty()) {
-                        view.renderEmptyCartData(null);
+                        view.renderEmptyCartData(resetAndRefreshCartListData.getCartListData());
                     } else {
                         view.renderInitialGetCartListDataSuccess(resetAndRefreshCartListData.getCartListData());
                     }

@@ -420,7 +420,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         shipmentAdapter.updateItemPromoVoucher(cartPromo);
         if (shipmentAdapter.hasSetAllCourier()) {
             ShipmentAdapter.RequestData requestData =
-                    shipmentAdapter.getRequestData();
+                    shipmentAdapter.getRequestData(null);
             shipmentPresenter.setPromoCodeCartShipmentRequestData(requestData.getPromoRequestData());
             shipmentPresenter.checkPromoShipment();
 
@@ -526,10 +526,24 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private void onResultFromRequestCodeAddressOptions(int resultCode, Intent data) {
         switch (resultCode) {
             case CartAddressChoiceActivity.RESULT_CODE_ACTION_SELECT_ADDRESS:
-                RecipientAddressModel selectedAddress = data.getParcelableExtra(
+                RecipientAddressModel currentAddress = shipmentAdapter.getAddressShipmentData();
+                RecipientAddressModel newAddress = data.getParcelableExtra(
                         CartAddressChoiceActivity.EXTRA_SELECTED_ADDRESS_DATA);
-                shipmentPresenter.setDataChangeAddressRequestList(shipmentAdapter.getRequestData().getChangeAddressRequestData());
-                shipmentPresenter.changeShippingAddress(selectedAddress);
+
+                if (!currentAddress.getId().equals(newAddress.getId()) ||
+                        !currentAddress.getAddressName().equals(newAddress.getAddressName()) ||
+                        !currentAddress.getAddressStreet().equals(newAddress.getAddressStreet()) ||
+                        !currentAddress.getRecipientName().equals(newAddress.getRecipientName()) ||
+                        !currentAddress.getRecipientPhoneNumber().equals(newAddress.getRecipientPhoneNumber()) ||
+                        !String.valueOf(currentAddress.getLatitude()).equals(String.valueOf(newAddress.getLatitude())) ||
+                        !String.valueOf(currentAddress.getLongitude()).equals(String.valueOf(newAddress.getLongitude())) ||
+                        !currentAddress.getAddressPostalCode().equals(newAddress.getAddressPostalCode()) ||
+                        !currentAddress.getDestinationDistrictId().equals(newAddress.getDestinationDistrictId()) ||
+                        !currentAddress.getCityId().equals(newAddress.getCityId()) ||
+                        !currentAddress.getProvinceId().equals(newAddress.getProvinceId())) {
+                    shipmentPresenter.setDataChangeAddressRequestList(shipmentAdapter.getRequestData(newAddress).getChangeAddressRequestData());
+                    shipmentPresenter.changeShippingAddress(newAddress);
+                }
                 break;
             case CartAddressChoiceActivity.RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM:
                 Intent intent = new Intent();

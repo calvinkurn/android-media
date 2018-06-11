@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/bg_shadow"
     android:orientation="vertical">
 
@@ -97,8 +97,8 @@
         android:id="@+id/rl_expand_other_product"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:foreground="?selectableItemBackground"
         android:background="@color/white"
+        android:foreground="?selectableItemBackground"
         android:orientation="horizontal">
 
         <com.tokopedia.design.component.TextViewCompat
@@ -110,8 +110,8 @@
             android:layout_centerVertical="true"
             android:gravity="center"
             android:padding="16dp"
-            app:drawableRightCompat="@drawable/ic_keyboard_arrow_down_24dp"
             android:textColor="@color/medium_green"
+            app:drawableRightCompat="@drawable/ic_keyboard_arrow_down_24dp"
             tools:text="+3 Produk Lainnya" />
 
     </RelativeLayout>
@@ -167,7 +167,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        tools:visibility="gone">
+        tools:visibility="visible">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -177,7 +177,7 @@
             android:paddingLeft="@dimen/dp_16"
             android:paddingStart="@dimen/dp_16"
             android:paddingTop="@dimen/dp_8"
-            tools:visibility="visible">
+            tools:visibility="gone">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -333,7 +333,7 @@
             android:layout_marginTop="@dimen/margin_ms"
             android:orientation="vertical"
             android:visibility="gone"
-            tools:visibility="gone">
+            tools:visibility="visible">
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/text_input_layout_shipper_name"
@@ -355,7 +355,7 @@
                 android:id="@+id/text_input_layout_shipper_phone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/label_hint_cart_item_dropshipper_phone">
+                android:hint="@string/label_hint_cart_item_dropshipper_phone_number">
 
                 <EditText
                     android:id="@+id/et_shipper_phone"
@@ -408,20 +408,17 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="5dp"
                 android:layout_marginStart="5dp"
-                android:padding="5dp"
-                android:src="@drawable/chevron_thin_right"
-                android:tint="@color/black_54"
+                app:srcCompat="@drawable/ic_keyboard_arrow_down_24dp"
                 tools:ignore="ContentDescription" />
 
             <TextView
                 android:id="@+id/tv_sub_total_price"
-                style="@style/TextMid"
+                style="@style/TextMidNormalBlack70"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_toLeftOf="@id/iv_detail_option_chevron"
                 android:layout_toStartOf="@id/iv_detail_option_chevron"
-                android:textColor="@color/orange_red"
                 tools:text="Rp200.000" />
 
             <TextView

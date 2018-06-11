@@ -273,7 +273,9 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
         ImageView productImage = view.findViewById(R.id.product_image);
         ImageHandler.LoadImage(productImage, productData.getProductImageUrl());
         TextView productName = view.findViewById(R.id.product_name);
+        TextView productPrice = view.findViewById(R.id.product_price);
         productName.setText(productData.getProductName());
+        productPrice.setText(productData.getProductPrice());
     }
 
     private void setProductQuantityView(View view, MultipleAddressItemData itemData) {
@@ -297,9 +299,21 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
         ));
         decreaseButton.setOnClickListener(onDecreaseButtonClickedListener(quantityField));
         increaseButton.setOnClickListener(onIncreaseButtonClickedListener(quantityField));
-        if (itemData.getProductQty().equals("1")) {
+        if (itemData.getProductQty().equals("1") || Integer.parseInt(itemData.getProductQty()) <= itemData.getMinQuantity()) {
             decreaseButton.setEnabled(false);
             decreaseButton.setClickable(false);
+        } else {
+            decreaseButton.setEnabled(true);
+            decreaseButton.setClickable(true);
+        }
+
+        if (Integer.parseInt(itemData.getProductQty()) >= MAX_QTY_DEFAULT ||
+                Integer.parseInt(itemData.getProductQty()) >= itemData.getMaxQuantity()) {
+            increaseButton.setEnabled(false);
+            increaseButton.setClickable(false);
+        } else {
+            increaseButton.setEnabled(true);
+            increaseButton.setClickable(true);
         }
     }
 
@@ -309,7 +323,7 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
         notesLayout = view.findViewById(R.id.notes_layout);
         notesEditText = view.findViewById(R.id.notes_edit_text);
         notesEditText.addTextChangedListener(notesTextWatcher(itemData));
-        if (itemData.getProductNotes().isEmpty()) {
+        if (TextUtils.isEmpty(itemData.getProductNotes())) {
             emptyNotesLayout.setVisibility(View.VISIBLE);
             insertNotesButton.setOnClickListener(
                     onInsertNotesButtonClickedListener(emptyNotesLayout, notesLayout)

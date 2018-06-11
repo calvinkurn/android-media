@@ -365,10 +365,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
 
         if (shipmentCartItemModel.isStateDetailSubtotalViewExpanded()) {
             rlShipmentCost.setVisibility(View.VISIBLE);
-            ivDetailOptionChevron.setImageResource(R.drawable.chevron_thin_up);
+            ivDetailOptionChevron.setImageResource(R.drawable.ic_keyboard_arrow_up_24dp);
         } else {
             rlShipmentCost.setVisibility(View.GONE);
-            ivDetailOptionChevron.setImageResource(R.drawable.chevron_thin_down);
+            ivDetailOptionChevron.setImageResource(R.drawable.ic_keyboard_arrow_down_24dp);
         }
 
         String shippingFeeLabel = tvShippingFee.getContext().getString(R.string.label_delivery_price);
@@ -439,6 +439,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
 
             if (shipmentCartItemModel.isStateDropshipperHasError()) {
                 textInputLayoutShipperName.setError(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_name_empty));
+                etShipperName.setText(shipmentCartItemModel.getSelectedShipmentDetailData().getDropshipperName());
                 mActionListener.onCartDataDisableToCheckout();
             } else {
                 textInputLayoutShipperName.setErrorEnabled(false);
@@ -474,6 +475,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
             Pattern pattern = Pattern.compile(PHONE_NUMBER_REGEX_PATTERN);
             if (shipmentCartItemModel.isStateDropshipperHasError()) {
                 textInputLayoutShipperPhone.setError(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_phone_empty));
+                etShipperPhone.setText(shipmentCartItemModel.getSelectedShipmentDetailData().getDropshipperPhone());
                 mActionListener.onCartDataDisableToCheckout();
             } else {
                 textInputLayoutShipperPhone.setErrorEnabled(false);
@@ -527,6 +529,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
                     shipmentCartItemModel.getSelectedShipmentDetailData().setUseInsurance(checked);
+                    if (checked) mActionListener.onInsuranceCheckedForTrackingAnalytics();
                     mActionListener.onInsuranceChecked(getAdapterPosition());
                     mActionListener.onNeedUpdateRequestData();
                 }
