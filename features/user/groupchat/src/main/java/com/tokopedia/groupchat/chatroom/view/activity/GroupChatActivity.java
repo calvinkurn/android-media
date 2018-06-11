@@ -924,7 +924,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     private void setSponsorData() {
-        if (!TextUtils.isEmpty(viewModel.getChannelInfoViewModel().getAdsImageUrl())) {
+        if (!TextUtils.isEmpty(viewModel.getChannelInfoViewModel().getAdsId())) {
             sponsorLayout.setVisibility(View.VISIBLE);
             ImageHandler.loadImage2(sponsorImage,
                     viewModel.getChannelInfoViewModel().getAdsImageUrl(),
