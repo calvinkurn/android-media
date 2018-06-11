@@ -22,7 +22,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AppCompatDelegate;
+
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -290,7 +290,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     private void initView() {
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+
 
         Bundle bundle = new Bundle();
         if (getIntent().getExtras() != null) {
@@ -435,7 +435,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         String description = String.format("%s %s", String.format(getString(R.string.lets_join_channel),
                 viewModel.getChannelName()), link);
 
-        ((GroupChatModuleRouter) getApplication()).shareGroupChat(getSupportFragmentManager(),
+        ((GroupChatModuleRouter) getApplication()).shareGroupChat(this,
                 viewModel.getChannelUuid(), viewModel.getChannelName(), description,
                 viewModel.getChannelInfoViewModel().getBannerUrl(), viewModel.getChannelUrl());
     }

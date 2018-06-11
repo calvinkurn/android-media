@@ -366,7 +366,9 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
                             mContext.getResources().getString(R.string.on_board_desc)),
                     ShowCaseContentPosition.UNDEFINED,
                     R.color.tkpd_main_green));
-            showCaseDialog.show(((Activity) mContext), showCaseTag, showCaseObjectList);
+            if(activity != null) {
+                showCaseDialog.show(activity, showCaseTag, showCaseObjectList);
+            }
 
         }
     }

@@ -17,6 +17,7 @@ import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.autocomplete.viewmodel.BaseItemAutoCompleteSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.CategorySearch;
 import com.tokopedia.discovery.search.view.adapter.ItemClickListener;
+import com.tokopedia.discovery.util.AutoCompleteTracking;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,6 +78,17 @@ public class CategoryViewHolder extends AbstractViewHolder<CategorySearch> {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    AutoCompleteTracking.eventClickCategory(
+                            itemView.getContext(),
+                            String.format(
+                                    "keyword: %s - cat: %s - cat id: %s - po: %s - applink: %s",
+                                    rowModel.getSearchTerm(),
+                                    rowModel.getRecom(),
+                                    rowModel.getCategoryId(),
+                                    String.valueOf(getAdapterPosition() + 1),
+                                    rowModel.getApplink()
+                            )
+                    );
                     listener.onItemClicked(rowModel.getApplink(), rowModel.getUrl());
                 }
             });
