@@ -17,11 +17,13 @@ import com.tokopedia.seller.R;
 
 import java.util.ArrayList;
 
+
 /**
  * Created by Hendry on 9/25/2017.
  */
 
 public class ImageEditorActivity extends AppCompatActivity implements ImageEditorFragment.OnImageEditorFragmentListener {
+
 
     public static final int REQUEST_CODE = 520;
     public static final String EXTRA_IMAGE_URLS = "IMG_URLS";

@@ -18,7 +18,10 @@ import android.widget.ProgressBar;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.ride.R;
 
+
 public class ScroogeActivity extends AppCompatActivity {
+
+
     //callbacks URL's
     private static String ADD_CC_SUCESS_CALLBACK = "tokopedia://action_add_cc_success";
     private static String ADD_CC_FAIL_CALLBACK = "tokopedia://action_add_cc_fail";

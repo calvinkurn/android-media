@@ -2,6 +2,7 @@ package com.tokopedia.discovery.newdiscovery.search;
 
 import android.Manifest;
 import android.content.ClipData;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -12,6 +13,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.ViewTreeObserver;
+import android.webkit.MimeTypeMap;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.KeyboardHandler;
@@ -205,7 +207,8 @@ public class SearchActivity extends DiscoveryActivity
                 Uri uri = clipData.getItemAt(0).getUri();
                 SearchActivityPermissionsDispatcher.onImageSuccessWithCheck(SearchActivity.this, uri.toString());
             } else if (intent.getData() != null &&
-                    !TextUtils.isEmpty(intent.getData().toString())) {
+                    !TextUtils.isEmpty(intent.getData().toString()) &&
+                    isValidMimeType(intent.getData().toString())) {
                 searchView.hideShowCaseDialog(true);
                 sendImageSearchFromGalleryGTM("");
                 SearchActivityPermissionsDispatcher.onImageSuccessWithCheck(SearchActivity.this, intent.getData().toString());
@@ -213,6 +216,29 @@ public class SearchActivity extends DiscoveryActivity
         }
     }
 
+    private boolean isValidMimeType(String url) {
+        String mimeType = getMimeTypeUri(Uri.parse(url));
+
+        return mimeType != null &&
+                (mimeType.equalsIgnoreCase("image/jpg") ||
+                        mimeType.equalsIgnoreCase("image/png") ||
+                        mimeType.equalsIgnoreCase("image/jpeg"));
+
+    }
+
+    private String getMimeTypeUri(Uri uri) {
+        String mimeType = null;
+        if (uri.getScheme().equals(ContentResolver.SCHEME_CONTENT)) {
+            ContentResolver cr = getContentResolver();
+            mimeType = cr.getType(uri);
+        } else {
+            String fileExtension = MimeTypeMap.getFileExtensionFromUrl(uri
+                    .toString());
+            mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
+                    fileExtension.toLowerCase());
+        }
+        return mimeType;
+    }
 
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public void onImageSuccess(String uri) {
