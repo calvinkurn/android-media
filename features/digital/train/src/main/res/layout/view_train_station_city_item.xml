@@ -5,19 +5,33 @@
     android:layout_height="wrap_content"
     android:background="@drawable/selectable_background_tokopedia"
     android:orientation="vertical"
-    android:padding="@dimen/dp_16">
+    android:paddingTop="@dimen/dp_16">
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/tv_city_name"
         style="@style/TextView.Small.Bold"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingEnd="@dimen/dp_16"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
+        android:paddingStart="@dimen/dp_16"
         tools:text="Gambir (GMR)" />
 
     <android.support.v7.widget.AppCompatTextView
         style="@style/TextView.Small"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingEnd="@dimen/dp_16"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
+        android:paddingStart="@dimen/dp_16"
         android:text="@string/train_station_all_station_label" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/dp_16"
+        android:background="@drawable/bg_list_separator" />
 
 </LinearLayout>

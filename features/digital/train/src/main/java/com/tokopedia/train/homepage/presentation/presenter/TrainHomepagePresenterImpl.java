@@ -172,7 +172,26 @@ public class TrainHomepagePresenterImpl extends BaseDaggerPresenter<TrainHomepag
     }
 
     private boolean validateFields() {
-        return true;
+        boolean isValid = true;
+        TrainHomepageViewModel viewModel = getView().getHomepageViewModel();
+
+        if (viewModel.getOriginStation() == null) {
+            getView().showOriginStationEmptyError(R.string.train_homepage_origin_should_not_empty_error_message);
+            isValid = false;
+        } else if (viewModel.getDestinationStation() == null) {
+            getView().showDestinationStationEmptyError(R.string.train_homepage_destination_should_not_empty_error_message);
+            isValid = false;
+        } else if ((viewModel.getOriginStation().getStationCode() != null &&
+                viewModel.getDestinationStation().getStationCode() != null &&
+                viewModel.getOriginStation().getStationCode().equalsIgnoreCase(viewModel.getDestinationStation().getStationCode())) ||
+                (viewModel.getOriginStation().getStationCode() == null &&
+                        viewModel.getDestinationStation().getStationCode() == null &&
+                        viewModel.getOriginStation().getCityName().equalsIgnoreCase(viewModel.getDestinationStation().getCityName()))
+                ) {
+            getView().getShowOriginAndDestinationShouldNotSameError(R.string.train_homepage_origin_destination_should_not_same_error_message);
+            isValid = false;
+        }
+        return isValid;
     }
 
     private void renderUi() {
