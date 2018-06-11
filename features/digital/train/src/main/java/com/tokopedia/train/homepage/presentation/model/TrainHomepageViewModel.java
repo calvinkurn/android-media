@@ -10,7 +10,7 @@ import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 
-import com.tokopedia.train.station.presentation.adapter.viewmodel.TrainStationViewModel;
+import com.tokopedia.train.station.presentation.adapter.viewmodel.TrainStationAndCityViewModel;
 
 /**
  * @author Rizky on 21/02/18.
@@ -19,8 +19,8 @@ import com.tokopedia.train.station.presentation.adapter.viewmodel.TrainStationVi
 public class TrainHomepageViewModel implements Parcelable, Cloneable {
 
     private boolean isOneWay;
-    private TrainStationViewModel originStation;
-    private TrainStationViewModel destinationStation;
+    private TrainStationAndCityViewModel originStation;
+    private TrainStationAndCityViewModel destinationStation;
     private String departureDate;
     private String departureDateFmt;
     private String returnDate;
@@ -32,8 +32,8 @@ public class TrainHomepageViewModel implements Parcelable, Cloneable {
     }
 
     public TrainHomepageViewModel(boolean isOneWay,
-                                  TrainStationViewModel originStation,
-                                  TrainStationViewModel destinationStation,
+                                  TrainStationAndCityViewModel originStation,
+                                  TrainStationAndCityViewModel destinationStation,
                                   String departureDate,
                                   String departureDateFmt,
                                   String returnDate,
@@ -54,8 +54,8 @@ public class TrainHomepageViewModel implements Parcelable, Cloneable {
 
     protected TrainHomepageViewModel(Parcel in) {
         isOneWay = in.readByte() != 0;
-        originStation = in.readParcelable(TrainStationViewModel.class.getClassLoader());
-        destinationStation = in.readParcelable(TrainStationViewModel.class.getClassLoader());
+        originStation = in.readParcelable(TrainStationAndCityViewModel.class.getClassLoader());
+        destinationStation = in.readParcelable(TrainStationAndCityViewModel.class.getClassLoader());
         departureDate = in.readString();
         departureDateFmt = in.readString();
         returnDate = in.readString();
@@ -84,19 +84,19 @@ public class TrainHomepageViewModel implements Parcelable, Cloneable {
         isOneWay = oneWay;
     }
 
-    public TrainStationViewModel getOriginStation() {
+    public TrainStationAndCityViewModel getOriginStation() {
         return originStation;
     }
 
-    public void setOriginStation(TrainStationViewModel originStation) {
+    public void setOriginStation(TrainStationAndCityViewModel originStation) {
         this.originStation = originStation;
     }
 
-    public TrainStationViewModel getDestinationStation() {
+    public TrainStationAndCityViewModel getDestinationStation() {
         return destinationStation;
     }
 
-    public void setDestinationStation(TrainStationViewModel destinationStation) {
+    public void setDestinationStation(TrainStationAndCityViewModel destinationStation) {
         this.destinationStation = destinationStation;
     }
 
@@ -149,25 +149,18 @@ public class TrainHomepageViewModel implements Parcelable, Cloneable {
     }
 
     public CharSequence getStationTextForView(Context context, boolean isDeparture) {
-        TrainStationViewModel trainStationViewModel = isDeparture ? originStation : destinationStation;
+        TrainStationAndCityViewModel trainStationViewModel = isDeparture ? originStation : destinationStation;
 
         SpannableStringBuilder text = new SpannableStringBuilder();
-        String stationId = String.valueOf(trainStationViewModel.getStationCode());
-        if (TextUtils.isEmpty(stationId)) {
-            // id is more than one
-            String cityCode = trainStationViewModel.getCityCode();
-            if (TextUtils.isEmpty(cityCode)) {
-                text.append(trainStationViewModel.getCityName());
-                return makeBold(context, text);
-            } else {
-                text.append(cityCode);
-            }
+        if (trainStationViewModel.getStationCode() == null) {
+            text.append(trainStationViewModel.getCityName());
+            return makeBold(context, text);
         } else {
-            text.append(stationId);
+            text.append(trainStationViewModel.getStationCode());
         }
         makeBold(context, text);
         String cityName = trainStationViewModel.getCityName();
-        if (!TextUtils.isEmpty(cityName)) {
+        if (!TextUtils.isEmpty(cityName) && trainStationViewModel.getStationCode() != null) {
             SpannableStringBuilder cityNameText = new SpannableStringBuilder(cityName);
             makeSmall(cityNameText);
             text.append("\n");
@@ -212,14 +205,15 @@ public class TrainHomepageViewModel implements Parcelable, Cloneable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeByte((byte) (isOneWay ? 1 : 0));
+        parcel.writeParcelable(originStation, i);
+        parcel.writeParcelable(destinationStation, i);
         parcel.writeString(departureDate);
         parcel.writeString(departureDateFmt);
         parcel.writeString(returnDate);
         parcel.writeString(returnDateFmt);
-        parcel.writeByte((byte) (isOneWay ? 1 : 0));
         parcel.writeParcelable(trainPassengerViewModel, i);
-        parcel.writeParcelable(originStation, i);
-        parcel.writeParcelable(destinationStation, i);
+        parcel.writeString(passengerFmt);
     }
 
     public static class Builder {
@@ -229,8 +223,8 @@ public class TrainHomepageViewModel implements Parcelable, Cloneable {
         private String returnDateFmt;
         private boolean isOneWay;
         private TrainPassengerViewModel trainPassengerViewModel;
-        private TrainStationViewModel originStation;
-        private TrainStationViewModel destinationStation;
+        private TrainStationAndCityViewModel originStation;
+        private TrainStationAndCityViewModel destinationStation;
         private String passengerFmt;
 
         public Builder() {
@@ -241,12 +235,12 @@ public class TrainHomepageViewModel implements Parcelable, Cloneable {
             return this;
         }
 
-        public Builder setOriginStation(TrainStationViewModel originStation) {
+        public Builder setOriginStation(TrainStationAndCityViewModel originStation) {
             this.originStation = originStation;
             return this;
         }
 
-        public Builder setDestinationStation(TrainStationViewModel destinationStation) {
+        public Builder setDestinationStation(TrainStationAndCityViewModel destinationStation) {
             this.destinationStation = destinationStation;
             return this;
         }

@@ -30,7 +30,7 @@ import com.tokopedia.train.homepage.presentation.model.TrainSearchPassDataViewMo
 import com.tokopedia.train.homepage.presentation.presenter.TrainHomepagePresenterImpl;
 import com.tokopedia.train.search.presentation.activity.TrainSearchDepartureActivity;
 import com.tokopedia.train.station.presentation.TrainStationsActivity;
-import com.tokopedia.train.station.presentation.adapter.viewmodel.TrainStationViewModel;
+import com.tokopedia.train.station.presentation.adapter.viewmodel.TrainStationAndCityViewModel;
 import com.tokopedia.travelcalendar.view.TravelCalendarActivity;
 
 import java.util.Calendar;
@@ -95,14 +95,14 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
         layoutOriginStation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivityForResult(TrainStationsActivity.getCallingIntent(getActivity()), ORIGIN_STATION_REQUEST_CODE);
+                startActivityForResult(TrainStationsActivity.getCallingIntent(getActivity(), getString(R.string.train_station_origin_toolbar)), ORIGIN_STATION_REQUEST_CODE);
             }
         });
 
         layoutDestinationStation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivityForResult(TrainStationsActivity.getCallingIntent(getActivity()), DESTINATION_STATION_REQUEST_CODE);
+                startActivityForResult(TrainStationsActivity.getCallingIntent(getActivity(), getString(R.string.train_station_destination_toolbar)), DESTINATION_STATION_REQUEST_CODE);
             }
         });
 
@@ -305,13 +305,13 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
         switch (requestCode) {
             case ORIGIN_STATION_REQUEST_CODE:
                 if (resultCode == Activity.RESULT_OK) {
-                    TrainStationViewModel viewModel = data.getParcelableExtra(TrainStationsActivity.EXTRA_SELECTED_STATION);
+                    TrainStationAndCityViewModel viewModel = data.getParcelableExtra(TrainStationsActivity.EXTRA_SELECTED_STATION);
                     trainHomepagePresenterImpl.onOriginStationChanged(viewModel);
                 }
                 break;
             case DESTINATION_STATION_REQUEST_CODE:
                 if (resultCode == Activity.RESULT_OK) {
-                    TrainStationViewModel viewModel = data.getParcelableExtra(TrainStationsActivity.EXTRA_SELECTED_STATION);
+                    TrainStationAndCityViewModel viewModel = data.getParcelableExtra(TrainStationsActivity.EXTRA_SELECTED_STATION);
                     trainHomepagePresenterImpl.onDepartureStationChanged(viewModel);
                 }
                 break;
@@ -345,6 +345,21 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
     @Override
     public TrainHomepageViewModel getHomepageViewModel() {
         return viewModel;
+    }
+
+    @Override
+    public void showOriginStationEmptyError(int resId) {
+        showMessageErrorInSnackBar(resId);
+    }
+
+    @Override
+    public void showDestinationStationEmptyError(int resId) {
+        showMessageErrorInSnackBar(resId);
+    }
+
+    @Override
+    public void getShowOriginAndDestinationShouldNotSameError(int resId) {
+        showMessageErrorInSnackBar(resId);
     }
 
 }

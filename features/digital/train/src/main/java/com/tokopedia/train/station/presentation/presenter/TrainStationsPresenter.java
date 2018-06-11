@@ -2,112 +2,107 @@ package com.tokopedia.train.station.presentation.presenter;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.train.station.domain.TrainGetAllStationsUseCase;
 import com.tokopedia.train.station.domain.TrainGetPopularStationsUseCase;
-import com.tokopedia.train.station.domain.TrainGetStationCitiesByKeywordUseCase;
-import com.tokopedia.train.station.domain.TrainGetStationsByKeywordUseCase;
-import com.tokopedia.train.station.domain.model.TrainStation;
+import com.tokopedia.train.station.domain.TraingGetStationAutoCompleteUseCase;
+import com.tokopedia.train.station.presentation.adapter.viewmodel.TrainAllStationsViewModel;
 import com.tokopedia.train.station.presentation.adapter.viewmodel.TrainPopularStationViewModel;
-import com.tokopedia.train.station.presentation.adapter.viewmodel.TrainStationGroupViewModel;
-import com.tokopedia.train.station.presentation.adapter.viewmodel.TrainStationViewModel;
-import com.tokopedia.train.station.presentation.adapter.viewmodel.TrainStationsCityGroupViewModel;
 import com.tokopedia.train.station.presentation.adapter.viewmodel.mapper.TrainStationViewModelMapper;
 import com.tokopedia.train.station.presentation.contract.TrainStationsContract;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscriber;
-import rx.functions.Func1;
-import rx.functions.Func2;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * @author by alvarisi on 3/5/18.
  */
 
 public class TrainStationsPresenter extends BaseDaggerPresenter<TrainStationsContract.View> implements TrainStationsContract.Presenter {
-
-    private TrainGetStationsByKeywordUseCase trainGetStationsByKeywordUseCase;
     private TrainGetPopularStationsUseCase trainGetPopularStationsUseCase;
-    private TrainGetStationCitiesByKeywordUseCase trainGetStationCitiesByKeywordUseCase;
+    private TraingGetStationAutoCompleteUseCase traingGetStationAutoCompleteUseCase;
+    private TrainGetAllStationsUseCase trainGetAllStationsUseCase;
     private TrainStationViewModelMapper trainStationViewModelMapper;
+    private AutoCompleteInputListener inputListener;
 
     @Inject
-    public TrainStationsPresenter(TrainGetStationsByKeywordUseCase trainGetStationsByKeywordUseCase,
-                                  TrainGetPopularStationsUseCase trainGetPopularStationsUseCase,
-                                  TrainGetStationCitiesByKeywordUseCase trainGetStationCitiesByKeywordUseCase,
+    public TrainStationsPresenter(TrainGetPopularStationsUseCase trainGetPopularStationsUseCase,
+                                  TraingGetStationAutoCompleteUseCase traingGetStationAutoCompleteUseCase,
+                                  TrainGetAllStationsUseCase trainGetAllStationsUseCase,
                                   TrainStationViewModelMapper trainStationViewModelMapper) {
-        this.trainGetStationsByKeywordUseCase = trainGetStationsByKeywordUseCase;
         this.trainGetPopularStationsUseCase = trainGetPopularStationsUseCase;
-        this.trainGetStationCitiesByKeywordUseCase = trainGetStationCitiesByKeywordUseCase;
+        this.traingGetStationAutoCompleteUseCase = traingGetStationAutoCompleteUseCase;
+        this.trainGetAllStationsUseCase = trainGetAllStationsUseCase;
         this.trainStationViewModelMapper = trainStationViewModelMapper;
+        Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(final Subscriber<? super String> subscriber) {
+                inputListener = new AutoCompleteInputListener() {
+                    @Override
+                    public void onQuerySubmit(String query) {
+                        subscriber.onNext(String.valueOf(query));
+                    }
+                };
+            }
+        }).debounce(250, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new AutoCompleteKeywordSubscriber());
     }
 
     @Override
     public void actionOnInitialLoad() {
-        trainGetPopularStationsUseCase.execute(trainGetPopularStationsUseCase.createRequest(), new Subscriber<List<TrainStation>>() {
-            @Override
-            public void onCompleted() {
+        trainGetPopularStationsUseCase.createObservable(trainGetPopularStationsUseCase.createRequest())
+                .onErrorReturn(throwable -> new ArrayList<>()).zipWith(trainGetAllStationsUseCase.createObservable(RequestParams.create()), (trainStations, allStations) -> {
+            List<Visitable> visitables = new ArrayList<>();
+            TrainPopularStationViewModel viewModel = new TrainPopularStationViewModel();
+            viewModel.setStations(trainStationViewModelMapper.transform(trainStations));
+            visitables.add(viewModel);
+            visitables.add(new TrainAllStationsViewModel());
+            visitables.addAll(trainStationViewModelMapper.transform(allStations));
+            return visitables;
+        }).subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<List<Visitable>>() {
+                    @Override
+                    public void onCompleted() {
 
-            }
+                    }
 
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-            }
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        getView().hideLoading();
+                    }
 
-            @Override
-            public void onNext(List<TrainStation> trainStations) {
-                TrainPopularStationViewModel viewModel = new TrainPopularStationViewModel();
-                viewModel.setStations(trainStationViewModelMapper.transform(trainStations));
-                getView().renderStationList(viewModel);
-            }
-        });
+                    @Override
+                    public void onNext(List<Visitable> visitables) {
+                        getView().hideLoading();
+                        getView().renderStationList(visitables);
+                    }
+                });
     }
 
     @Override
     public void onKeywordChange(String keyword) {
+        if (inputListener != null) inputListener.onQuerySubmit(keyword);
+    }
+
+    private void onKeywordReceived(String keyword) {
         getView().clearStationList();
         getView().showLoading();
-        if (keyword.length() > 2) {
-            trainGetStationsByKeywordUseCase.createObservable(trainGetStationsByKeywordUseCase.createRequest(keyword))
-                    .onErrorReturn(new Func1<Throwable, List<TrainStation>>() {
-                        @Override
-                        public List<TrainStation> call(Throwable throwable) {
-                            return new ArrayList<>();
-                        }
-                    })
-                    .zipWith(
-                            trainGetStationCitiesByKeywordUseCase.createObservable(trainGetStationCitiesByKeywordUseCase.createRequest(keyword))
-                                    .onErrorReturn(new Func1<Throwable, List<TrainStation>>() {
-                                        @Override
-                                        public List<TrainStation> call(Throwable throwable) {
-                                            return new ArrayList<>();
-                                        }
-                                    }),
-                            new Func2<List<TrainStation>, List<TrainStation>, List<Visitable>>() {
-                                @Override
-                                public List<Visitable> call(List<TrainStation> stations, List<TrainStation> stationCities) {
-                                    List<Visitable> visitables = new ArrayList<>();
-
-                                    if (stationCities.size() > 0) {
-                                        List<TrainStationViewModel> viewModels = trainStationViewModelMapper.transform(stationCities);
-                                        TrainStationsCityGroupViewModel cityGroupViewModel = new TrainStationsCityGroupViewModel();
-                                        cityGroupViewModel.setCities(viewModels);
-                                        visitables.add(cityGroupViewModel);
-                                    }
-                                    if (stations.size() > 0) {
-                                        List<TrainStationViewModel> viewModels = trainStationViewModelMapper.transform(stations);
-                                        TrainStationGroupViewModel stationGroupViewModel = new TrainStationGroupViewModel();
-                                        stationGroupViewModel.setStations(viewModels);
-                                        visitables.add(stationGroupViewModel);
-                                    }
-
-                                    return visitables;
-                                }
-                            }
-                    ).subscribe(new Subscriber<List<Visitable>>() {
+        if (keyword.length() > 0) {
+            traingGetStationAutoCompleteUseCase.execute(traingGetStationAutoCompleteUseCase.createRequest(keyword), new Subscriber<List<Visitable>>() {
                 @Override
                 public void onCompleted() {
 
@@ -124,8 +119,36 @@ public class TrainStationsPresenter extends BaseDaggerPresenter<TrainStationsCon
                     getView().renderStationList(visitables);
                 }
             });
-        } else if (keyword.length() == 0) {
+        } else {
             actionOnInitialLoad();
+        }
+    }
+
+    public interface AutoCompleteInputListener {
+        void onQuerySubmit(String query);
+    }
+
+    private class AutoCompleteKeywordSubscriber extends Subscriber<String> {
+
+        AutoCompleteKeywordSubscriber() {
+
+        }
+
+        @Override
+        public void onCompleted() {
+
+        }
+
+        @Override
+        public void onError(Throwable e) {
+
+        }
+
+        @Override
+        public void onNext(String keyword) {
+            if (!isUnsubscribed()) {
+                onKeywordReceived(keyword);
+            }
         }
     }
 }

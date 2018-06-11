@@ -8,7 +8,7 @@ import com.tokopedia.train.station.data.databasetable.TrainStationDb_Table;
  * @author by alvarisi on 3/7/18.
  */
 
-public class TrainStationByKeywordSpecification implements DbFlowSpecification {
+public class TrainStationByKeywordSpecification extends TrainStationSpecification implements DbFlowSpecification {
 
     private String keyword;
 

@@ -16,6 +16,8 @@ import com.tokopedia.train.station.di.TrainStationsComponent;
 import com.tokopedia.train.station.presentation.adapter.TrainStationAdapterTypeFactory;
 import com.tokopedia.train.station.presentation.adapter.TrainStationTypeFactory;
 import com.tokopedia.train.station.presentation.adapter.viewholder.listener.TrainStationActionListener;
+import com.tokopedia.train.station.presentation.adapter.viewmodel.TrainStationAndCityViewModel;
+import com.tokopedia.train.station.presentation.adapter.viewmodel.TrainStationCityViewModel;
 import com.tokopedia.train.station.presentation.adapter.viewmodel.TrainStationViewModel;
 import com.tokopedia.train.station.presentation.contract.TrainStationsContract;
 import com.tokopedia.train.station.presentation.presenter.TrainStationsPresenter;
@@ -38,7 +40,7 @@ public class TrainStationsFragment extends BaseSearchListFragment<Visitable, Tra
     private boolean isFirstTime = true;
 
     public interface OnFragmentInteractionListener {
-        void onStationClicked(TrainStationViewModel viewModel);
+        void onStationClicked(TrainStationAndCityViewModel viewModel);
     }
 
     public static TrainStationsFragment newInstance() {
@@ -102,6 +104,8 @@ public class TrainStationsFragment extends BaseSearchListFragment<Visitable, Tra
     public void onItemClicked(Visitable visitable) {
         if (visitable instanceof TrainStationViewModel) {
             onStationClicked((TrainStationViewModel) visitable);
+        } else if (visitable instanceof TrainStationCityViewModel) {
+            onCityClicked((TrainStationCityViewModel) visitable);
         }
     }
 
@@ -134,7 +138,19 @@ public class TrainStationsFragment extends BaseSearchListFragment<Visitable, Tra
 
     @Override
     public void onStationClicked(TrainStationViewModel viewModel) {
-        if (interactionListener != null) interactionListener.onStationClicked(viewModel);
+        TrainStationAndCityViewModel trainStationAndCityViewModel = new TrainStationAndCityViewModel();
+        trainStationAndCityViewModel.setCityName(viewModel.getCityName());
+        trainStationAndCityViewModel.setStationCode(viewModel.getStationCode());
+        if (interactionListener != null)
+            interactionListener.onStationClicked(trainStationAndCityViewModel);
+    }
+
+    @Override
+    public void onCityClicked(TrainStationCityViewModel element) {
+        TrainStationAndCityViewModel trainStationAndCityViewModel = new TrainStationAndCityViewModel();
+        trainStationAndCityViewModel.setCityName(element.getCityName());
+        if (interactionListener != null)
+            interactionListener.onStationClicked(trainStationAndCityViewModel);
     }
 
     @Override

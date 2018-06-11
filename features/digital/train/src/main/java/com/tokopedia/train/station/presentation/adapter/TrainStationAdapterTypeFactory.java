@@ -4,12 +4,16 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.train.station.presentation.adapter.viewholder.TrainAllStationsViewHolder;
 import com.tokopedia.train.station.presentation.adapter.viewholder.TrainPopularStationViewHolder;
 import com.tokopedia.train.station.presentation.adapter.viewholder.TrainStationGroupViewHolder;
+import com.tokopedia.train.station.presentation.adapter.viewholder.TrainStationInCityViewHolder;
 import com.tokopedia.train.station.presentation.adapter.viewholder.TrainStationViewHolder;
 import com.tokopedia.train.station.presentation.adapter.viewholder.TrainStationsCityGroupViewHolder;
 import com.tokopedia.train.station.presentation.adapter.viewholder.listener.TrainStationActionListener;
+import com.tokopedia.train.station.presentation.adapter.viewmodel.TrainAllStationsViewModel;
 import com.tokopedia.train.station.presentation.adapter.viewmodel.TrainPopularStationViewModel;
+import com.tokopedia.train.station.presentation.adapter.viewmodel.TrainStationCityViewModel;
 import com.tokopedia.train.station.presentation.adapter.viewmodel.TrainStationGroupViewModel;
 import com.tokopedia.train.station.presentation.adapter.viewmodel.TrainStationViewModel;
 import com.tokopedia.train.station.presentation.adapter.viewmodel.TrainStationsCityGroupViewModel;
@@ -45,6 +49,10 @@ public class TrainStationAdapterTypeFactory extends BaseAdapterTypeFactory imple
             return new TrainPopularStationViewHolder(parent, trainStationActionListener);
         } else if (type == TrainStationGroupViewHolder.LAYOUT) {
             return new TrainStationGroupViewHolder(parent, trainStationActionListener);
+        } else if (type == TrainAllStationsViewHolder.LAYOUT) {
+            return new TrainAllStationsViewHolder(parent);
+        } else if (type == TrainStationInCityViewHolder.LAYOUT) {
+            return new TrainStationInCityViewHolder(parent, trainStationActionListener);
         } else {
             return super.createViewHolder(parent, type);
         }
@@ -58,5 +66,15 @@ public class TrainStationAdapterTypeFactory extends BaseAdapterTypeFactory imple
     @Override
     public int type(TrainStationGroupViewModel trainStationGroupViewModel) {
         return TrainStationGroupViewHolder.LAYOUT;
+    }
+
+    @Override
+    public int type(TrainAllStationsViewModel trainAllStationsViewModel) {
+        return TrainAllStationsViewHolder.LAYOUT;
+    }
+
+    @Override
+    public int type(TrainStationCityViewModel trainStationCityViewModel) {
+        return TrainStationInCityViewHolder.LAYOUT;
     }
 }

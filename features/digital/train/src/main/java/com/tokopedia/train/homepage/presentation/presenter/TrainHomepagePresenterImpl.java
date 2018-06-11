@@ -9,7 +9,7 @@ import com.tokopedia.train.homepage.presentation.listener.TrainHomepageView;
 import com.tokopedia.train.homepage.presentation.model.TrainHomepageViewModel;
 import com.tokopedia.train.homepage.presentation.model.TrainPassengerViewModel;
 import com.tokopedia.train.homepage.presentation.model.TrainSearchPassDataViewModel;
-import com.tokopedia.train.station.presentation.adapter.viewmodel.TrainStationViewModel;
+import com.tokopedia.train.station.presentation.adapter.viewmodel.TrainStationAndCityViewModel;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -125,7 +125,7 @@ public class TrainHomepagePresenterImpl extends BaseDaggerPresenter<TrainHomepag
     }
 
     @Override
-    public void onOriginStationChanged(TrainStationViewModel viewModel) {
+    public void onOriginStationChanged(TrainStationAndCityViewModel viewModel) {
         TrainHomepageViewModel homepageViewModel = getView().getHomepageViewModel();
         homepageViewModel.setOriginStation(viewModel);
         getView().setHomepageViewModel(homepageViewModel);
@@ -133,7 +133,7 @@ public class TrainHomepagePresenterImpl extends BaseDaggerPresenter<TrainHomepag
     }
 
     @Override
-    public void onDepartureStationChanged(TrainStationViewModel viewModel) {
+    public void onDepartureStationChanged(TrainStationAndCityViewModel viewModel) {
         TrainHomepageViewModel homepageViewModel = getView().getHomepageViewModel();
         homepageViewModel.setDestinationStation(viewModel);
         getView().setHomepageViewModel(homepageViewModel);
@@ -172,7 +172,26 @@ public class TrainHomepagePresenterImpl extends BaseDaggerPresenter<TrainHomepag
     }
 
     private boolean validateFields() {
-        return true;
+        boolean isValid = true;
+        TrainHomepageViewModel viewModel = getView().getHomepageViewModel();
+
+        if (viewModel.getOriginStation() == null) {
+            getView().showOriginStationEmptyError(R.string.train_homepage_origin_should_not_empty_error_message);
+            isValid = false;
+        } else if (viewModel.getDestinationStation() == null) {
+            getView().showDestinationStationEmptyError(R.string.train_homepage_destination_should_not_empty_error_message);
+            isValid = false;
+        } else if ((viewModel.getOriginStation().getStationCode() != null &&
+                viewModel.getDestinationStation().getStationCode() != null &&
+                viewModel.getOriginStation().getStationCode().equalsIgnoreCase(viewModel.getDestinationStation().getStationCode())) ||
+                (viewModel.getOriginStation().getStationCode() == null &&
+                        viewModel.getDestinationStation().getStationCode() == null &&
+                        viewModel.getOriginStation().getCityName().equalsIgnoreCase(viewModel.getDestinationStation().getCityName()))
+                ) {
+            getView().getShowOriginAndDestinationShouldNotSameError(R.string.train_homepage_origin_destination_should_not_same_error_message);
+            isValid = false;
+        }
+        return isValid;
     }
 
     private void renderUi() {
