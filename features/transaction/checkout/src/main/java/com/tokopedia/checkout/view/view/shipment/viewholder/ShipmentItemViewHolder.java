@@ -365,10 +365,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
 
         if (shipmentCartItemModel.isStateDetailSubtotalViewExpanded()) {
             rlShipmentCost.setVisibility(View.VISIBLE);
-            ivDetailOptionChevron.setImageResource(R.drawable.chevron_thin_up);
+            ivDetailOptionChevron.setImageResource(R.drawable.ic_keyboard_arrow_up_24dp);
         } else {
             rlShipmentCost.setVisibility(View.GONE);
-            ivDetailOptionChevron.setImageResource(R.drawable.chevron_thin_down);
+            ivDetailOptionChevron.setImageResource(R.drawable.ic_keyboard_arrow_down_24dp);
         }
 
         String shippingFeeLabel = tvShippingFee.getContext().getString(R.string.label_delivery_price);
