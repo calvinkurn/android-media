@@ -1,1 +1,15 @@
-{  kaiStations {    name    cities {      name      stations {        id        name        displayName        code        popularityRank      }    }  }}
+{
+    kaiStations {
+        name
+        cities {
+            name
+            stations {
+                id
+                name
+                displayName
+                code
+                popularityRank
+             }
+         }
+     }
+}

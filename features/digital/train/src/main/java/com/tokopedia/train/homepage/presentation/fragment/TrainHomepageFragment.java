@@ -28,7 +28,7 @@ import com.tokopedia.train.homepage.presentation.model.TrainHomepageViewModel;
 import com.tokopedia.train.homepage.presentation.model.TrainPassengerViewModel;
 import com.tokopedia.train.homepage.presentation.model.TrainSearchPassDataViewModel;
 import com.tokopedia.train.homepage.presentation.presenter.TrainHomepagePresenterImpl;
-import com.tokopedia.train.search.presentation.activity.TrainDepartureSearchActivity;
+import com.tokopedia.train.search.presentation.activity.TrainSearchDepartureActivity;
 import com.tokopedia.train.station.presentation.TrainStationsActivity;
 import com.tokopedia.train.station.presentation.adapter.viewmodel.TrainStationViewModel;
 import com.tokopedia.travelcalendar.view.TravelCalendarActivity;
@@ -187,6 +187,9 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
 
     @Override
     public void renderSingleTripView(TrainHomepageViewModel trainHomepageViewModel) {
+        buttonOneWayTrip.setTextColor(getResources().getColor(R.color.white));
+        buttonRoundTrip.setTextColor(getResources().getColor(R.color.grey_400));
+
         buttonOneWayTrip.setSelected(true);
         buttonRoundTrip.setSelected(false);
         textInputViewDateReturn.setVisibility(View.GONE);
@@ -210,6 +213,8 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
 
     @Override
     public void renderRoundTripView(TrainHomepageViewModel trainHomepageViewModel) {
+        buttonRoundTrip.setTextColor(getResources().getColor(R.color.white));
+        buttonOneWayTrip.setTextColor(getResources().getColor(R.color.grey_400));
         buttonOneWayTrip.setSelected(false);
         buttonRoundTrip.setSelected(true);
         textInputViewDateReturn.setVisibility(View.VISIBLE);
@@ -275,7 +280,7 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
 
     @Override
     public void navigateToSearchPage(TrainSearchPassDataViewModel passDataViewModel) {
-        Intent intent = TrainDepartureSearchActivity.getCallingIntent(getActivity(), passDataViewModel);
+        Intent intent = TrainSearchDepartureActivity.getCallingIntent(getActivity(), passDataViewModel);
         startActivity(intent);
     }
 
@@ -322,7 +327,7 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
                     Calendar calendarSelected = Calendar.getInstance();
                     calendarSelected.setTime(dateString);
                     trainHomepagePresenterImpl.onDepartureDateChange(calendarSelected.get(Calendar.YEAR),
-                            calendarSelected.get(Calendar.MONTH),calendarSelected.get(Calendar.DATE));
+                            calendarSelected.get(Calendar.MONTH), calendarSelected.get(Calendar.DATE));
                 }
                 break;
             case DATE_PICKER_RETURN_REQUEST_CODE:
@@ -331,7 +336,7 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
                     Calendar calendarSelected = Calendar.getInstance();
                     calendarSelected.setTime(dateString);
                     trainHomepagePresenterImpl.onReturnDateChange(calendarSelected.get(Calendar.YEAR),
-                            calendarSelected.get(Calendar.MONTH),calendarSelected.get(Calendar.DATE));
+                            calendarSelected.get(Calendar.MONTH), calendarSelected.get(Calendar.DATE));
                 }
                 break;
         }

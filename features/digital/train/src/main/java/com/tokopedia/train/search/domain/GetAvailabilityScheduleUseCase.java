@@ -15,18 +15,14 @@ import rx.Observable;
 
 public class GetAvailabilityScheduleUseCase extends UseCase<List<TrainScheduleViewModel>> {
 
-    private TrainRepository trainRepository;
+    public static final String TRAIN_ID_KEY = "avbKeys";
 
-    private String idTrain;
+    private TrainRepository trainRepository;
 
     private int scheduleVariant;
 
     public GetAvailabilityScheduleUseCase(TrainRepository trainRepository) {
         this.trainRepository = trainRepository;
-    }
-
-    public void setIdTrain(String idTrain) {
-        this.idTrain = idTrain;
     }
 
     public void setScheduleVariant(int scheduleVariant) {
@@ -35,6 +31,6 @@ public class GetAvailabilityScheduleUseCase extends UseCase<List<TrainScheduleVi
 
     @Override
     public Observable<List<TrainScheduleViewModel>> createObservable(RequestParams requestParams) {
-        return trainRepository.getAvailabilitySchedule(idTrain, scheduleVariant);
+        return trainRepository.getAvailabilitySchedule(requestParams.getParameters(), scheduleVariant);
     }
 }

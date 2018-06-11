@@ -6,6 +6,9 @@ package com.tokopedia.train.common.constant;
 
 public class TrainUrl {
 
-    public static String BASE_URL = "https://private-anon-4403d9b01b-kainativecontractpart1.apiary-mock.com";
+    public static final String QUERY_GQL = "query";
+    public static final String VARIABLE_GQL = "variables";
+
+    public static String BASE_URL = "http://gql-staging.tokopedia.com";
 
 }

@@ -18,9 +18,9 @@ public class GetScheduleUseCase extends UseCase<List<AvailabilityKeySchedule>> {
     public static final String TOTAL_ADULT = "adult";
     public static final String TOTAL_INFANT = "infant";
     public static final String ORIGIN_CODE = "origin";
-    public static final String ORIGIN_CITY = "origin_city";
+    public static final String ORIGIN_CITY = "originCity";
     public static final String DEST_CODE = "destination";
-    public static final String DEST_CITY = "destination_city";
+    public static final String DEST_CITY = "destinationCity";
 
     private int scheduleVariant;
 

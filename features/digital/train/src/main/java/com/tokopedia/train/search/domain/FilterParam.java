@@ -10,7 +10,7 @@ public class FilterParam {
 
     private long minPrice;
     private long maxPrice;
-    private String[] departureTimeList;
+    private List<String> departureTimeList;
     private List<String> trains;
     private List<String> trainClass;
 
@@ -46,11 +46,11 @@ public class FilterParam {
         this.trains = trains;
     }
 
-    public String[] getDepartureTimeList() {
+    public List<String> getDepartureTimeList() {
         return departureTimeList;
     }
 
-    public void setDepartureTimeList(String[] departureTimeList) {
+    public void setDepartureTimeList(List<String> departureTimeList) {
         this.departureTimeList = departureTimeList;
     }
 
@@ -66,7 +66,7 @@ public class FilterParam {
 
         private long minPrice;
         private long maxPrice;
-        private String[] departureTimeList;
+        private List<String> departureTimeList;
         private List<String> trains;
         private List<String> trainClass;
 
@@ -90,7 +90,7 @@ public class FilterParam {
             return this;
         }
 
-        public Builder departureTimeList(String[] departureTimeList) {
+        public Builder departureTimeList(List<String> departureTimeList) {
             this.departureTimeList = departureTimeList;
             return this;
         }

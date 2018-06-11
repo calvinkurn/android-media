@@ -56,16 +56,16 @@ public class TrainPassengerPickerPresenterImpl extends BaseDaggerPresenter<Train
         boolean isValid = true;
         if (!validator.validateTotalPassenger(passengerPassData)) {
             isValid = false;
-            getView().showTotalPassengerErrorMessage(R.string.select_passenger_total_passenger_error_message);
+            getView().showTotalPassengerErrorMessage(R.string.train_select_passenger_total_passenger_error_message);
         } else if (!validator.validateAdultNotGreaterThanFour(passengerPassData)) {
             isValid = false;
-            getView().showAdultCantBeGreaterThanFourErrorMessage(R.string.select_passenger_adult_cant_be_greater_than_four_error_message);
+            getView().showAdultCantBeGreaterThanFourErrorMessage(R.string.train_select_passenger_adult_cant_be_greater_than_four_error_message);
         } else if (!validator.validateInfantNotGreaterThanAdult(passengerPassData)) {
             isValid = false;
-            getView().showInfantGreaterThanAdultErrorMessage(R.string.select_passenger_infant_greater_than_adult_error_message);
+            getView().showInfantGreaterThanAdultErrorMessage(R.string.train_select_passenger_infant_greater_than_adult_error_message);
         } else if (!validator.validateAdultCountAtleastOne(passengerPassData)) {
             isValid = false;
-            getView().showAdultShouldAtleastOneErrorMessage(R.string.select_passenger_adult_atleast_one_error_message);
+            getView().showAdultShouldAtleastOneErrorMessage(R.string.train_select_passenger_adult_atleast_one_error_message);
         }
         return isValid;
     }

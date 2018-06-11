@@ -11,13 +11,13 @@ import android.widget.EditText;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.design.intdef.CurrencyEnum;
 import com.tokopedia.design.label.selection.SelectionItem;
-import com.tokopedia.design.label.selection.SelectionLabelView;
 import com.tokopedia.design.label.selection.text.SelectionTextLabelView;
 import com.tokopedia.design.text.RangeInputView;
 import com.tokopedia.design.text.watcher.CurrencyTextWatcher;
 import com.tokopedia.tkpdtrain.R;
-import com.tokopedia.train.search.domain.FilterSearchData;
+import com.tokopedia.train.search.presentation.contract.BaseTrainFilterListener;
 import com.tokopedia.train.search.presentation.contract.FilterSearchActionView;
+import com.tokopedia.train.search.presentation.model.FilterSearchData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +26,7 @@ import java.util.List;
  * Created by nabillasabbaha on 3/20/18.
  */
 
-public class TrainFilterSearchFragment extends BaseDaggerFragment {
+public class TrainFilterSearchFragment extends BaseDaggerFragment implements BaseTrainFilterListener {
 
     private FilterSearchActionView listener;
     private FilterSearchData filterSearchData;
@@ -40,8 +40,10 @@ public class TrainFilterSearchFragment extends BaseDaggerFragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_train_filter_search, container, false);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_train_filter_search, container,
+                false);
         return view;
     }
 
@@ -51,34 +53,86 @@ public class TrainFilterSearchFragment extends BaseDaggerFragment {
 
         filterSearchData = listener.getFilterSearchData();
 
+        listener.setTitleToolbar("Filter");
+        listener.setCloseButton(true);
+
+        populateView(view);
+    }
+
+    private void populateView(View view) {
         renderPriceRangeFilter(view);
         renderTrainNameFilter(view);
+        renderTrainDepartureFilter(view);
+        renderTrainClassFilter(view);
     }
 
     private void renderTrainNameFilter(View view) {
         SelectionTextLabelView selectionTextLabelViewName = view.findViewById(R.id.selection_label_train_name);
         final List<SelectionItem<String>> selectionItemList = new ArrayList<>();
-        if (filterSearchData.getTrains() != null) {
-            for (int i = 0, sizei = filterSearchData.getTrains().size(); i < sizei; i++) {
+        if (filterSearchData.getSelectedTrains() != null) {
+            for (int i = 0; i < filterSearchData.getSelectedTrains().size(); i++) {
                 SelectionItem<String> selectionItem = new SelectionItem<>();
-                selectionItem.setKey(filterSearchData.getTrains().get(0));
-                selectionItem.setValue(filterSearchData.getTrains().get(0));
+                selectionItem.setKey(filterSearchData.getSelectedTrains().get(i));
+                selectionItem.setValue(filterSearchData.getSelectedTrains().get(i));
                 selectionItemList.add(selectionItem);
             }
         }
         selectionTextLabelViewName.setItemList(selectionItemList);
-        selectionTextLabelViewName.setOnDeleteListener(new SelectionLabelView.OnDeleteListener<SelectionItem<String>>() {
-            @Override
-            public void onDelete(SelectionItem<String> selectionItem) {
-                //TODO delete
+        selectionTextLabelViewName.setOnDeleteListener(selectionItem -> {
+            for (int i = 0; i < filterSearchData.getSelectedTrains().size(); i++) {
+                if (filterSearchData.getSelectedTrains().get(i).equals(selectionItem.getKey())) {
+                    filterSearchData.getSelectedTrains().remove(i);
+                }
             }
+            listener.onChangeFilterSearchData(filterSearchData);
         });
-        selectionTextLabelViewName.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                listener.onNameFilterSearchTrainClicked();
+        selectionTextLabelViewName.setOnClickListener(v -> listener.onNameFilterSearchTrainClicked());
+    }
+
+    private void renderTrainDepartureFilter(View view) {
+        SelectionTextLabelView selectionTextLabelViewName = view.findViewById(R.id.selection_label_time_departure);
+        final List<SelectionItem<String>> selectionItemList = new ArrayList<>();
+        if (filterSearchData.getSelectedDepartureTimeList() != null) {
+            for (int i = 0; i < filterSearchData.getSelectedDepartureTimeList().size(); i++) {
+                SelectionItem<String> selectionItem = new SelectionItem<>();
+                selectionItem.setKey(filterSearchData.getSelectedDepartureTimeList().get(i));
+                selectionItem.setValue(filterSearchData.getSelectedDepartureTimeList().get(i));
+                selectionItemList.add(selectionItem);
             }
+        }
+        selectionTextLabelViewName.setItemList(selectionItemList);
+        selectionTextLabelViewName.setOnDeleteListener(selectionItem -> {
+            for (int i = 0; i < filterSearchData.getSelectedDepartureTimeList().size(); i++) {
+                if (filterSearchData.getSelectedDepartureTimeList().get(i).equals(selectionItem.getKey())) {
+                    filterSearchData.getSelectedDepartureTimeList().remove(i);
+                }
+            }
+            listener.onChangeFilterSearchData(filterSearchData);
         });
+        selectionTextLabelViewName.setOnClickListener(v -> listener.onDepartureFilterSearchTrainClicked());
+    }
+
+    private void renderTrainClassFilter(View view) {
+        SelectionTextLabelView selectionTextLabelViewName = view.findViewById(R.id.selection_label_class_name);
+        final List<SelectionItem<String>> selectionItemList = new ArrayList<>();
+        if (filterSearchData.getSelectedTrainClass() != null) {
+            for (int i = 0; i < filterSearchData.getSelectedTrainClass().size(); i++) {
+                SelectionItem<String> selectionItem = new SelectionItem<>();
+                selectionItem.setKey(filterSearchData.getSelectedTrainClass().get(i));
+                selectionItem.setValue(filterSearchData.getSelectedTrainClass().get(i));
+                selectionItemList.add(selectionItem);
+            }
+        }
+        selectionTextLabelViewName.setItemList(selectionItemList);
+        selectionTextLabelViewName.setOnDeleteListener(selectionItem -> {
+            for (int i = 0; i < filterSearchData.getSelectedTrainClass().size(); i++) {
+                if (filterSearchData.getSelectedTrainClass().get(i).equals(selectionItem.getKey())) {
+                    filterSearchData.getSelectedTrainClass().remove(i);
+                }
+            }
+            listener.onChangeFilterSearchData(filterSearchData);
+        });
+        selectionTextLabelViewName.setOnClickListener(v -> listener.onClassFilterSearchTrainClicked());
     }
 
     private void renderPriceRangeFilter(View view) {
@@ -103,14 +157,10 @@ public class TrainFilterSearchFragment extends BaseDaggerFragment {
                 (int) filterSearchData.getMaxPrice(),
                 (int) filterSearchData.getMinPrice(),
                 (int) filterSearchData.getMaxPrice());
-        rangeInputView.setOnValueChangedListener(new RangeInputView.OnValueChangedListener() {
-            @Override
-            public void onValueChanged(int minValue, int maxValue, int minBound, int maxBound) {
-                FilterSearchData filterSearchData = listener.getFilterSearchData();
-                filterSearchData.setMinPrice(minValue);
-                filterSearchData.setMaxPrice(maxValue);
-                listener.onChangeFilterSearchData(filterSearchData);
-            }
+        rangeInputView.setOnValueChangedListener((minValue, maxValue, minBound, maxBound) -> {
+            filterSearchData.setSelectedMinPrice(minValue);
+            filterSearchData.setSelectedMaxPrice(maxValue);
+            listener.onChangeFilterSearchData(filterSearchData);
         });
     }
 
@@ -127,5 +177,27 @@ public class TrainFilterSearchFragment extends BaseDaggerFragment {
     @Override
     protected void onAttachActivity(Context context) {
         listener = (FilterSearchActionView) context;
+    }
+
+    @Override
+    public void resetFilter() {
+        View view = getView();
+        if (view == null) {
+            return;
+        }
+
+        FilterSearchData filterSearchData = listener.getFilterSearchData();
+        filterSearchData.setSelectedMaxPrice(0);
+        filterSearchData.setSelectedMinPrice(0);
+        filterSearchData.setSelectedTrainClass(new ArrayList<>());
+        filterSearchData.setSelectedTrains(new ArrayList<>());
+        filterSearchData.setSelectedDepartureTimeList(new ArrayList<>());
+        populateView(view);
+        listener.onChangeFilterSearchData(filterSearchData);
+    }
+
+    @Override
+    public void changeFilterToOriginal() {
+        // no need implementation
     }
 }

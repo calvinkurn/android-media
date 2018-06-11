@@ -31,10 +31,12 @@ public class TrainScheduleDbTable extends BaseModel {
     @Column(name = "arrival_timestamp")
     private
     String arrivalTimestamp;
-
     @Column(name = "departure_timestamp")
     private
     String departureTimestamp;
+    @Column(name = "departure_hour")
+    private
+    int departureHour;
     @Column(name = "train_class")
     private
     String classTrain;
@@ -244,5 +246,13 @@ public class TrainScheduleDbTable extends BaseModel {
 
     public void setReturnSchedule(boolean returnSchedule) {
         isReturnSchedule = returnSchedule;
+    }
+
+    public int getDepartureHour() {
+        return departureHour;
+    }
+
+    public void setDepartureHour(int departureHour) {
+        this.departureHour = departureHour;
     }
 }

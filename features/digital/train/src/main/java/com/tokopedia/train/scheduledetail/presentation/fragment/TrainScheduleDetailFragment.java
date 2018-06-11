@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
@@ -14,7 +15,7 @@ import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
 /**
  * Created by Rizky on 14/05/18.
  */
-public class TrainScheduleDetailFragment extends BaseListFragment<TrainScheduleRouteDetailViewModel, TrainScheduleRouteDetailTypeFactory> {
+public class TrainScheduleDetailFragment extends BaseDaggerFragment {
 
     public static final String EXTRA_TRAIN_SCHEDULE_VIEW_MODEL = "EXTRA_TRAIN_SCHEDULE_VIEW_MODEL";
 
@@ -40,20 +41,20 @@ public class TrainScheduleDetailFragment extends BaseListFragment<TrainScheduleR
         return inflater.inflate(R.layout.fragment_train_schedule_detail, container, false);
     }
 
-    @Override
-    public void loadData(int page) {
-        renderList(trainScheduleViewModel.getScheduleRouteList());
-    }
+//    @Override
+//    public void loadData(int page) {
+//        renderList(trainScheduleViewModel.getScheduleRouteList());
+//    }
 
-    @Override
-    protected TrainScheduleRouteDetailTypeFactory getAdapterTypeFactory() {
-        return null;
-    }
+//    @Override
+//    protected TrainScheduleRouteDetailTypeFactory getAdapterTypeFactory() {
+//        return null;
+//    }
 
-    @Override
-    public void onItemClicked(TrainScheduleRouteDetailViewModel trainScheduleRouteDetailViewModel) {
-
-    }
+//    @Override
+//    public void onItemClicked(TrainScheduleRouteDetailViewModel trainScheduleRouteDetailViewModel) {
+//
+//    }
 
     @Override
     protected void initInjector() {

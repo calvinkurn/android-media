@@ -20,26 +20,25 @@
     <string name="train_search_toolbar_title">Pencarian</string>
     <string name="train_schedule_detail_toolbar_title">Detail</string>
 
-    <string name="select_passenger_adult_subtitle">(Lebih dari 3 tahun)</string>
-    <string name="select_passenger_adult_title">Dewasa</string>
-    <string name="select_passenger_infant_subtitle">(Kurang dari 2 tahun)</string>
-    <string name="select_passenger_infant_title">Bayi</string>
-    <string name="select_passenger_total_passenger_error_message">Total Penumpang maksimal 8 penumpang (Dewasa dan Anak)</string>
-    <string name="select_passenger_adult_cant_be_greater_than_four_error_message">Total Penumpang Dewasa maksimal 4 penumpang (Dewasa dan Anak)</string>
-    <string name="select_passenger_infant_greater_than_adult_error_message">Jumlah penumpang bayi tidak boleh melebihi jumlah penumpang dewasa</string>
-    <string name="select_passenger_adult_atleast_one_error_message">Penumpang dewasa harus ada</string>
-    <string name="select_passenger_submit_button">Simpan</string>
-    <string name="select_passenger_toolbar_title">Pilih Penumpang</string>
+    <string name="train_select_passenger_adult_subtitle">(Lebih dari 3 tahun)</string>
+    <string name="train_select_passenger_adult_title">Dewasa</string>
+    <string name="train_select_passenger_infant_subtitle">(Kurang dari 2 tahun)</string>
+    <string name="train_select_passenger_infant_title">Bayi</string>
+    <string name="train_select_passenger_total_passenger_error_message">Total Penumpang maksimal 8 penumpang (Dewasa dan Anak)</string>
+    <string name="train_select_passenger_adult_cant_be_greater_than_four_error_message">Total Penumpang Dewasa maksimal 4 penumpang (Dewasa dan Anak)</string>
+    <string name="train_select_passenger_infant_greater_than_adult_error_message">Jumlah penumpang bayi tidak boleh melebihi jumlah penumpang dewasa</string>
+    <string name="train_select_passenger_adult_atleast_one_error_message">Penumpang dewasa harus ada</string>
+    <string name="train_select_passenger_submit_button">Simpan</string>
+    <string name="train_select_passenger_toolbar_title">Pilih Penumpang</string>
 
     <string name="search_no_result_default">Rute tidak tersedia. Silakan ganti pencarian.</string>
     <string name="search_reset_button">Ganti Pencarian</string>
     <string name="search_no_connection_title">Tidak Ada Koneksi Internet</string>
     <string name="search_no_connection">Periksa kembali koneksi internet Anda dan coba lagi.</string>
 
-    <!-- TODO check with designer again for this bottom action -->
     <string name="sort">Urutkan</string>
     <string name="filter">Filter</string>
-    <string name="filter_time_departure">Waktu Keberangkatan</string>
+    <string name="filter_time_departure">Waktu Berangkat</string>
     <string name="filter_train_name">Kereta</string>
     <string name="filter_class_name">Kelas</string>
     <string name="filter_menu_reset">Reset</string>
@@ -47,4 +46,10 @@
     <!-- sort -->
     <string name="sort_label_min_price">Harga Minimum</string>
     <string name="sort_label_max_price">Harga Maksimum</string>
+    <string name="train_homepage_one_way_label">Sekali Jalan</string>
+    <string name="train_homepage_two_way_label">Pulang Pergi</string>
+    <string name="train_homepage_origin_label">Dari</string>
+    <string name="train_homepage_origin_hint">Kota/Stasiun Asal</string>
+    <string name="train_homepage_destination_label">Tujuan</string>
+    <string name="train_homepage_destination_hint">Kota/Statiun Tujuan</string>
 </resources>

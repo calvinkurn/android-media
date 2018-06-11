@@ -58,10 +58,12 @@ public class TrainScheduleDetailActivity extends BaseTabActivity {
         arrivalStationCode = findViewById(R.id.arrival_station_code);
         arrivalStationName = findViewById(R.id.arrival_station_name);
 
-        departureStationCode.setText(trainScheduleViewModel.getOrigin());
-//        departureStationName.setText(trainScheduleViewModel.getDepartureStationCity());
-        arrivalStationCode.setText(trainScheduleViewModel.getDestination());
-//        arrivalStationName.setText(trainScheduleViewModel.getArrivalStationCity());
+        departureStationCode.setText(trainScheduleViewModel.getDepartureAirport());
+        departureStationName.setText(flightDetailViewModel.getDepartureAirportCity());
+        arrivalStationCode.setText(flightDetailViewModel.getArrivalAirport());
+        arrivalStationName.setText(flightDetailViewModel.getArrivalAirportCity());
+
+        tabLayout.setupWithViewPager(viewPager);
     }
 
     @Override

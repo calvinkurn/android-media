@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/tv_passenger_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableEnd="@drawable/ic_arrow_down_grey"
+            android:drawableRight="@drawable/ic_arrow_down_grey"
+            android:text="Penumpang" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/grey_300" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/tv_wagon_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableEnd="@drawable/ic_arrow_down_grey"
+            android:drawableRight="@drawable/ic_arrow_down_grey"
+            android:text="Gerbong" />
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_passenger"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</LinearLayout>

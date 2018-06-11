@@ -59,8 +59,8 @@ import com.tokopedia.tkpdreactnative.react.fingerprint.utils.FingerprintConstant
 import com.tokopedia.tokocash.network.api.WalletUrl;
 import com.tokopedia.train.common.constant.TrainUrl;
 import com.tokopedia.transaction.network.TransactionUrl;
-import com.tokopedia.travelcalendar.network.TravelCalendarUrl;
 import com.tokopedia.transactiondata.constant.TransactionDataApiUrl;
+import com.tokopedia.travelcalendar.network.TravelCalendarUrl;
 
 import io.hansel.hanselsdk.Hansel;
 

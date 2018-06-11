@@ -6,7 +6,7 @@ import android.view.View;
 
 import com.tokopedia.train.homepage.presentation.model.TrainSearchPassDataViewModel;
 import com.tokopedia.train.search.data.typedef.TrainScheduleTypeDef;
-import com.tokopedia.train.search.presentation.activity.TrainReturnSearchActivity;
+import com.tokopedia.train.search.presentation.activity.TrainSearchReturnActivity;
 import com.tokopedia.train.search.presentation.activity.TrainSearchActivity;
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
 
@@ -14,10 +14,10 @@ import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
  * Created by nabillasabbaha on 3/19/18.
  */
 
-public class TrainDepartureSearchFragment extends TrainSearchFragment {
+public class TrainSearchDepartureFragment extends TrainSearchFragment {
 
-    public static TrainDepartureSearchFragment newInstance(TrainSearchPassDataViewModel trainSearchPassDataViewModel) {
-        TrainDepartureSearchFragment fragment = new TrainDepartureSearchFragment();
+    public static TrainSearchDepartureFragment newInstance(TrainSearchPassDataViewModel trainSearchPassDataViewModel) {
+        TrainSearchDepartureFragment fragment = new TrainSearchDepartureFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(TrainSearchActivity.EXTRA_SEARCH_PASS_DATA, trainSearchPassDataViewModel);
         fragment.setArguments(bundle);
@@ -49,7 +49,7 @@ public class TrainDepartureSearchFragment extends TrainSearchFragment {
     @Override
     public void onItemClicked(TrainScheduleViewModel trainScheduleViewModel) {
         if (!trainSearchPassDataViewModel.isOneWay()) {
-            startActivityForResult(TrainReturnSearchActivity.getCallingIntent(getActivity(),
+            startActivityForResult(TrainSearchReturnActivity.getCallingIntent(getActivity(),
                     trainSearchPassDataViewModel, trainScheduleViewModel.getIdSchedule()), 11);
         }
     }
