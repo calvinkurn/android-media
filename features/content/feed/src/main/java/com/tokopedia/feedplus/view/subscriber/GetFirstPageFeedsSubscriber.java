@@ -450,8 +450,10 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                                 && domain.getContent().getKolCtaDomain() != null) {
                             ContentProductViewModel contentProductViewModel =
                                     convertContentProductViewModel(domain.getContent().getKolCtaDomain());
-                            if (contentProductViewModel.isContentProductShowing())
+                            if (contentProductViewModel != null) {
                                 listFeedView.add(contentProductViewModel);
+                            }
+
                         }
                         break;
                     default:
@@ -757,16 +759,17 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                 || !TextUtils.isEmpty(domain.getButtonTitle())
                 || !TextUtils.isEmpty(domain.getApplink())
                 || !TextUtils.isEmpty(domain.getTextHeader())
-                || !TextUtils.isEmpty(domain.getTextDescription()))
+                || !TextUtils.isEmpty(domain.getTextDescription())) {
             return new ContentProductViewModel(
                     domain.getImageUrl(),
                     domain.getApplink(),
                     domain.getButtonTitle(),
                     domain.getTextHeader(),
-                    domain.getTextDescription(),
-                    true);
-        return new ContentProductViewModel(
-                false);
+                    domain.getTextDescription()
+            );
+        }
+
+        return null;
     }
 
     private ProductCommunicationViewModel convertToProductCommunicationViewModel(
@@ -779,7 +782,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
         List<ProductCommunicationItemViewModel> viewModelList = new ArrayList<>();
         ProductCommunicationItemViewModel itemViewModel1 =
                 new ProductCommunicationItemViewModel(
-                        "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2016/7/27/53001967/53001967_e327abdf-1714-4ae3-8a61-3c9bf00330a2.jpg",
+                        "http://www.indofoodstore.com/images/products/detail/ast.jpg",
                         "tokopedia://people/28596211");
         viewModelList.add(itemViewModel1);
 
@@ -794,6 +797,12 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                         "https://apollo2.dl.playstation.net/cdn/UP0001/CUSA04071_00/FREE_CONTENTKj7WKRpM0PNOMmE130x7/PREVIEW_SCREENSHOT2_122976.jpg",
                         "tokopedia://people/12573588");
         viewModelList.add(itemViewModel3);
+
+        ProductCommunicationItemViewModel itemViewModel4 =
+                new ProductCommunicationItemViewModel(
+                        "http://www.universohq.com/wp-content/uploads/2016/02/DeadpoolDiaNamorados.jpg",
+                        "tokopedia://people/12573588");
+        viewModelList.add(itemViewModel4);
 
         return new ProductCommunicationViewModel(viewModelList);
     }
