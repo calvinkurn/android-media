@@ -365,7 +365,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         dialog.show();
     }
 
-    private View createContentView(PinnedMessageViewModel pinnedMessage) {
+    private View createContentView(final PinnedMessageViewModel pinnedMessage) {
         ChannelInfoViewModel channelInfoViewModel = ((GroupChatContract.View) getActivity()).getChannelInfoViewModel();
         View view = getLayoutInflater().inflate(R.layout.layout_pinned_message_expanded, null);
         ImageHandler.loadImageCircle2(getActivity(), (ImageView) view.findViewById(R.id.pinned_message_avatar)
@@ -376,8 +376,13 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         ImageHandler.loadImage(getActivity(), (ImageView) view.findViewById(R.id.thumbnail)
                 , pinnedMessage.getThumbnail(), R.drawable.loading_page);
         if(!TextUtils.isEmpty(pinnedMessage.getImageUrl())){
-            ((GroupChatModuleRouter) getActivity().getApplicationContext()).openRedirectUrl
-                    (getActivity(), pinnedMessage.getImageUrl());
+            view.findViewById(R.id.thumbnail).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ((GroupChatModuleRouter) getActivity().getApplicationContext()).openRedirectUrl
+                            (getActivity(), pinnedMessage.getImageUrl());
+                }
+            });
         }
         return view;
     }
