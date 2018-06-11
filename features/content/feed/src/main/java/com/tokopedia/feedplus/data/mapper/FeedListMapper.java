@@ -1,9 +1,12 @@
 package com.tokopedia.feedplus.data.mapper;
 
+import android.text.TextUtils;
+
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
 import com.tokopedia.feedplus.data.pojo.ContentFeedKol;
 import com.tokopedia.feedplus.data.pojo.Feed;
+import com.tokopedia.feedplus.data.pojo.FeedBanner;
 import com.tokopedia.feedplus.data.pojo.FeedContent;
 import com.tokopedia.feedplus.data.pojo.FeedKolRecommendedType;
 import com.tokopedia.feedplus.data.pojo.FeedKolType;
@@ -26,6 +29,7 @@ import com.tokopedia.feedplus.domain.model.feed.KolCtaDomain;
 import com.tokopedia.feedplus.domain.model.feed.KolPostDomain;
 import com.tokopedia.feedplus.domain.model.feed.KolRecommendationDomain;
 import com.tokopedia.feedplus.domain.model.feed.KolRecommendationItemDomain;
+import com.tokopedia.feedplus.domain.model.feed.ProductCommunicationDomain;
 import com.tokopedia.feedplus.domain.model.feed.ProductFeedDomain;
 import com.tokopedia.feedplus.domain.model.feed.ShopFeedDomain;
 import com.tokopedia.feedplus.domain.model.feed.SourceFeedDomain;
@@ -139,12 +143,14 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
     }
 
     private ContentFeedDomain createContentFeedDomain(FeedContent content,
-                            List<ProductFeedDomain> productFeedDomains,
-                            KolPostDomain kolPostDomain,
-                            KolRecommendationDomain kolRecommendations,
-                            FavoriteCtaDomain favoriteCtaDomain,
-                            KolCtaDomain kolCtaDomain,
-                            List<Data> topadsData) {
+                                                      List<ProductFeedDomain> productFeedDomains,
+                                                      KolPostDomain kolPostDomain,
+                                                      KolRecommendationDomain kolRecommendations,
+                                                      FavoriteCtaDomain favoriteCtaDomain,
+                                                      KolCtaDomain kolCtaDomain,
+                                                      List<Data> topadsData,
+                                                      List<ProductCommunicationDomain>
+                                                              productCommunications) {
 
         if (content == null) {
             return null;
@@ -163,6 +169,7 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
                 kolRecommendations,
                 favoriteCtaDomain,
                 kolCtaDomain,
+                productCommunications,
                 content.getStatus_activity()
         );
     }
@@ -209,6 +216,9 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
 
                 List<Data> topadsData = convertToTopadsDomain(datum.getContent().getTopads());
 
+                List<ProductCommunicationDomain> productCommunications
+                        = convertToProductCommunicationDomain(datum.getContent().getBanner());
+
                 ContentFeedDomain contentFeedDomain = createContentFeedDomain(
                         datum.getContent(),
                         productFeedDomains,
@@ -216,7 +226,8 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
                         kolRecommendations,
                         favoriteCta,
                         kolCtaDomain,
-                        topadsData
+                        topadsData,
+                        productCommunications
                 );
 
                 SourceFeedDomain sourceFeedDomain =
@@ -375,6 +386,32 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
             }
         }
         return list;
+    }
+
+    private List<ProductCommunicationDomain> convertToProductCommunicationDomain(
+            List<FeedBanner> bannerList) {
+        if (bannerList == null || bannerList.isEmpty()) {
+            return null;
+        }
+
+        List<ProductCommunicationDomain> productCommunicationDomains = new ArrayList<>();
+        for (FeedBanner banner : bannerList) {
+            String redirectUrl = "";
+
+            if (!TextUtils.isEmpty(banner.getClick_applink())) {
+                redirectUrl = banner.getClick_applink();
+            } else if (!TextUtils.isEmpty(banner.getClick_url())) {
+                redirectUrl = banner.getClick_url();
+            }
+
+            productCommunicationDomains.add(
+                    new ProductCommunicationDomain(
+                            banner.getImg_url() == null ? "" : banner.getImg_url(),
+                            redirectUrl
+                    )
+            );
+        }
+        return productCommunicationDomains;
     }
 
     private DataFeedDomain createDataFeedDomain(Feed datum,

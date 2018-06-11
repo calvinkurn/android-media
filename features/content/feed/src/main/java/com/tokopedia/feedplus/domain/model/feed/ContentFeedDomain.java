@@ -58,6 +58,9 @@ public class ContentFeedDomain {
     @Nullable
     private final KolCtaDomain kolCtaDomain;
 
+    @Nullable
+    private final List<ProductCommunicationDomain> productCommunications;
+
 
     public ContentFeedDomain(@Nullable String type, @Nullable int total_product,
                              @Nullable List<ProductFeedDomain> products,
@@ -70,6 +73,7 @@ public class ContentFeedDomain {
                              @Nullable KolRecommendationDomain kolRecommendations,
                              @Nullable FavoriteCtaDomain favoriteCtaDomain,
                              @Nullable KolCtaDomain kolCtaDomain,
+                             @Nullable List<ProductCommunicationDomain> productCommunications,
                              @Nullable String status_activity) {
         this.type = type;
         this.totalProduct = total_product;
@@ -84,6 +88,7 @@ public class ContentFeedDomain {
         this.kolRecommendations = kolRecommendations;
         this.favoriteCtaDomain = favoriteCtaDomain;
         this.kolCtaDomain = kolCtaDomain;
+        this.productCommunications = productCommunications;
     }
 
     @Nullable
@@ -149,5 +154,10 @@ public class ContentFeedDomain {
     @Nullable
     public List<Data> getTopAdsList() {
         return topAdsList;
+    }
+
+    @Nullable
+    public List<ProductCommunicationDomain> getProductCommunications() {
+        return productCommunications;
     }
 }
