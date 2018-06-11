@@ -26,4 +26,5 @@ public class InstagramConstant {
     public static final int SPAN_COUNT = 3;
     public static final int SPAN_LOOK_UP = 1;
     public static final String URL_PATH_GET_LIST_MEDIA = "/v1/users/self/media/recent";
+    public static final String EXTRA_CODE_LOGIN = "extra_code_login";
 }
