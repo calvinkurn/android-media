@@ -17,8 +17,8 @@ import java.util.Date;
  * @author normansyahputa on 5/17/17.
  *         another type of {@link com.tokopedia.topads.dashboard.view.fragment.TopAdsAdListFragment}
  */
-
-public abstract class TopAdsBaseListFragment<T, U extends ItemType> extends BaseListFragment<T, U> implements
+@Deprecated
+public abstract class TopAdsOldBaseListFragment<T, U extends ItemType> extends BaseListFragment<T, U> implements
         DatePickerResultListener.DatePickerResult {
 
     protected Date startDate;

@@ -225,6 +225,7 @@
     <string name="top_ads_keyword_label_type">Tipe Kata Kunci</string>
     <string name="top_ads_keyword_title_delete">Hapus Kata Kunci?</string>
     <string name="top_ads_keyword_confirmation_delete">Kata kunci akan dihapus dari daftar iklan TopAds Anda.</string>
+    <string name="top_ads_keyword_copy_hint_desc">Kata kunci akan disalin ke grup iklan yang sudah ada.</string>
 
     <string name="top_ads_keyword_type">Tipe Kata Kunci</string>
     <string name="top_ads_choose_keyword_type">Pilih Tipe Kata Kunci</string>
@@ -246,7 +247,7 @@
     <string name="title_top_ads_filter_keyword">Filter Kata Kunci</string>
     <string name="top_ads_keyword_your_keyword_empty">Kata Kunci Anda Kosong</string>
     <string name="top_ads_keyword_your_keyword_negative_empty">Kata Kunci Negatif Anda Kosong</string>
-    <string name="top_ads_keyword_please_use">Gunakan kata kunci agar iklan Anda dapat tampil  pada pencarian yang sesuai.</string>
+    <string name="top_ads_keyword_please_use">Gunakan kata kunci agar jangkauan iklan Anda semakin luas. Kata kunci yang relevan dengan produk membuat nilai iklan Anda semakin baik.</string>
     <string name="top_ads_keyword_please_use_negative">Optimalkan anggaran iklan Anda dengan kata kunci negatif agar tidak tampil pada pencarian yang tidak sesuai.</string>
     <string name="top_ads_keyword_add_keyword">Tambah Kata Kunci</string>
     <string name="top_ads_keyword_group_title">Grup</string>
@@ -257,6 +258,11 @@
 
     <string name="topads_keyword_add_cancel_dialog">Kata kunci yang sudah Anda masukkan akan hilang\nTinggalkan halaman ini?</string>
     <string name="static_suggestion_bid_recommendation">Sesuaikan biaya dengan anggaran iklan Anda.</string>
+    <string name="topads_multi_select_title">%1$d Terpilih</string>
+    <string name="topads_status_active">Status: Aktif</string>
+    <string name="topads_status_inactive">Status: Tidak Aktif</string>
+    <string name="label_top_ads_change_group">Pindah Grup</string>
+    <string name="label_change_price">Ubah Biaya</string>
     <string name="topads_dashboard_empty_usage_title">Jangkau jutaan pengunjung Tokopedia ke toko Anda dengan TopAds</string>
     <string name="label_top_ads_income">Total Pendapatan</string>
     <string name="title_top_ads_statistic_graph_total_income">Total pendapatan dari produk terjual melalui iklan dan produk lainnya setelah klik iklan Anda.</string>
