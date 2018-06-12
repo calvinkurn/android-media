@@ -62,7 +62,7 @@ public class ImagePickerBuilder implements Parcelable {
         this.maxFileSizeInKB = maxFileSizeInKB;
         this.minResolution = minResolution;
         this.imageRatioTypeDef = imageRatioTypeDef == null ?
-                ImageRatioTypeDef.FREE:
+                ImageRatioTypeDef.ORIGINAL :
                 imageRatioTypeDef;
         this.moveImageResultToLocal = moveImageResultToLocal;
         this.imagePickerEditorBuilder = imagePickerEditorBuilder;
@@ -160,8 +160,12 @@ public class ImagePickerBuilder implements Parcelable {
         return imagePickerMultipleSelectionBuilder;
     }
 
-    public ImagePickerEditorBuilder getImagePickerEditorBuilder() {
-        return imagePickerEditorBuilder;
+    public @Nullable ArrayList<ImageRatioTypeDef> getRatioOptionList() {
+        if (imagePickerEditorBuilder != null){
+            return imagePickerEditorBuilder.getImageRatioTypeDefs();
+        } else {
+            return null;
+        }
     }
 
     public long getMaxFileSizeInKB() {

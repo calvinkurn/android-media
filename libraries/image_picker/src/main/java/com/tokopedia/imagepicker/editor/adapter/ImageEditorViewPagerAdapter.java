@@ -51,9 +51,7 @@ public class ImageEditorViewPagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         int currentStepPosition = currentEditStepIndexList.get(position);
         String localImagePath = edittedImagePaths.get(position).get(currentStepPosition);
-        ImageRatioTypeDef imageRatioTypeDef = ratioTypeList.get(position).get(currentStepPosition);
-        return ImageEditPreviewFragment.newInstance(position, localImagePath, minResolution,
-                imageRatioTypeDef.getRatioX(), imageRatioTypeDef.getRatioY(), isCirclePreview);
+        return ImageEditPreviewFragment.newInstance(position, localImagePath, minResolution, isCirclePreview);
     }
 
     @Override
