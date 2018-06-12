@@ -3,10 +3,13 @@ package com.tokopedia.topchat.common.di;
 
 import android.content.Context;
 
+import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
@@ -64,6 +67,7 @@ import java.util.concurrent.TimeUnit;
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 
 /**
@@ -344,16 +348,35 @@ public class InboxChatModule {
     @InboxChatScope
     @Provides
     OkHttpClient provideOkHttpClient(@InboxQualifier OkHttpRetryPolicy retryPolicy,
-                                     ErrorResponseInterceptor errorResponseInterceptor) {
-        return new OkHttpClient.Builder()
+                                     ErrorResponseInterceptor errorResponseInterceptor,
+                                     ChuckInterceptor chuckInterceptor,
+                                     HttpLoggingInterceptor httpLoggingInterceptor) {
+        OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .addInterceptor(new FingerprintInterceptor())
                 .addInterceptor(new CacheApiInterceptor())
                 .addInterceptor(new DigitalHmacAuthInterceptor(AuthUtil.KEY.KEY_WSV4))
                 .addInterceptor(errorResponseInterceptor)
                 .connectTimeout(retryPolicy.connectTimeout, TimeUnit.SECONDS)
                 .readTimeout(retryPolicy.readTimeout, TimeUnit.SECONDS)
-                .writeTimeout(retryPolicy.writeTimeout, TimeUnit.SECONDS)
-                .build();
+                .writeTimeout(retryPolicy.writeTimeout, TimeUnit.SECONDS);
+
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            builder.addInterceptor(chuckInterceptor)
+                    .addInterceptor(httpLoggingInterceptor);
+        }
+        return builder.build();
+    }
+
+    @InboxChatScope
+    @Provides
+    public HttpLoggingInterceptor provideHttpLoggingInterceptor() {
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+        } else {
+            logging.setLevel(HttpLoggingInterceptor.Level.NONE);
+        }
+        return logging;
     }
 
     @InboxChatScope
