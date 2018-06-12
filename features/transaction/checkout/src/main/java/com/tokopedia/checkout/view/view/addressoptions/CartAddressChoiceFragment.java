@@ -31,6 +31,7 @@ import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
 import com.tokopedia.core.manage.people.address.model.Destination;
 import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
+import com.tokopedia.design.component.TextViewCompat;
 
 import java.util.List;
 
@@ -52,7 +53,7 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
         implements ICartAddressChoiceView, ShipmentAddressListAdapter.ActionListener {
 
     private TextView tvChooseOtherAddress;
-    private LinearLayout llSendToMultipleAddress;
+    private TextViewCompat tvSendToMultipleAddress;
     private Button btSendToCurrentAddress;
     private RecyclerView rvAddress;
     private LinearLayout llNetworkErrorView;
@@ -150,7 +151,7 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
     @Override
     protected void initView(View view) {
         tvChooseOtherAddress = view.findViewById(R.id.tv_choose_other_address);
-        llSendToMultipleAddress = view.findViewById(R.id.ll_send_to_multiple_address);
+        tvSendToMultipleAddress = view.findViewById(R.id.tv_send_to_multiple_address);
         btSendToCurrentAddress = view.findViewById(R.id.bt_send_to_current_address);
         rvAddress = view.findViewById(R.id.rv_address);
         llNetworkErrorView = view.findViewById(R.id.ll_network_error_view);
@@ -164,7 +165,7 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
             }
         });
 
-        llSendToMultipleAddress.setOnClickListener(new View.OnClickListener() {
+        tvSendToMultipleAddress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onSendToMultipleAddress();
