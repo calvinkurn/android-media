@@ -18,11 +18,8 @@ import com.tokopedia.core.myproduct.utils.FileUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.UUID;
 
 /**
@@ -78,6 +75,13 @@ public class ImageUploadHandler {
         return model.cameraFileLoc;
     }
 
+    public Intent getCameraIntent() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, getOutputMediaFileUri());
+        return intent;
+    }
+
+
     private void startActivity(Intent intent, int code) {
         if (activity != null)
             activity.startActivityForResult(intent, code);
@@ -85,7 +89,7 @@ public class ImageUploadHandler {
             fragment.startActivityForResult(intent, code);
     }
 
-    private Uri getOutputMediaFileUri() {
+    public Uri getOutputMediaFileUri() {
         return MethodChecker.getUri(context, getOutputMediaFile());
     }
 
@@ -168,5 +172,7 @@ public class ImageUploadHandler {
         tempPicToUpload.compress(Bitmap.CompressFormat.JPEG, 70, bao);
         return bao.toByteArray();
     }
+
+
 
 }

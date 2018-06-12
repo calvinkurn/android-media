@@ -6,11 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.inbox.inboxchat.fragment.TemplateChatFragment;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.inbox.inboxchat.helper.ItemTouchHelperAdapter;
-import com.tokopedia.inbox.inboxchat.helper.OnStartDragListener;
 import com.tokopedia.inbox.inboxchat.presenter.TemplateChatContract;
 import com.tokopedia.inbox.inboxchat.viewholder.ItemTemplateChatViewHolder;
 import com.tokopedia.inbox.inboxchat.viewmodel.TemplateChatModel;

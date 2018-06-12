@@ -17,6 +17,7 @@ import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gcm.ApplinkUnsupported;
 import com.tokopedia.core.gcm.model.NotificationPass;
+import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.core.util.SessionHandler;
 
 import rx.Observable;
@@ -189,7 +190,8 @@ public interface TkpdCoreRouter {
 
     void sendTrackingGroupChatLeftNavigation();
 
-    Observable<TKPDMapParam<String, Object>> verifyEventPromo(RequestParams requestParams);
-
     String getDesktopLinkGroupChat();
+
+    Intent getDistrictRecommendationIntent(Activity activity, Token token);
+
 }

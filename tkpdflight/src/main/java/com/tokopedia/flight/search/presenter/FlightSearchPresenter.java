@@ -23,6 +23,7 @@ import com.tokopedia.flight.search.view.model.FlightSearchWithMetaViewModel;
 import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
 import com.tokopedia.usecase.RequestParams;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -94,14 +95,14 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
                             sortOptionId),
                     getSubscriberSortFlight(sortOptionId));
         } else {
-                flightSearchMetaUseCase.execute(
-                        FlightSearchUseCase.generateRequestParams(
-                                flightSearchApiRequestModel,
-                                isReturning,
-                                false,
-                                null,
-                                FlightSortOption.NO_PREFERENCE),
-                        getSubscriberSearchFlightCloud());
+            flightSearchMetaUseCase.execute(
+                    FlightSearchUseCase.generateRequestParams(
+                            flightSearchApiRequestModel,
+                            isReturning,
+                            false,
+                            null,
+                            FlightSortOption.NO_PREFERENCE),
+                    getSubscriberSearchFlightCloud());
         }
     }
 
@@ -299,7 +300,16 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
             public void onNext(FlightSearchWithMetaViewModel flightSearchWithMetaViewModel) {
                 List<FlightSearchViewModel> flightSearchViewModelList = flightSearchWithMetaViewModel.getFlightSearchViewModelList();
                 boolean dataFromCloudEmpty = (flightSearchWithMetaViewModel == null || flightSearchViewModelList.size() == 0);
-                getView().onSuccessGetDataFromCloud(dataFromCloudEmpty, flightSearchWithMetaViewModel.getFlightMetaDataDB());
+                List<String> airlines = new ArrayList<>();
+                for (FlightSearchViewModel viewModel : flightSearchViewModelList) {
+                    if (viewModel.getRouteList() != null && viewModel.getRouteList().size() > 1) {
+                        String airline = viewModel.getRouteList().get(0).getAirline();
+                        if (!airlines.contains(airline)) {
+                            airlines.add(airline);
+                        }
+                    }
+                }
+                getView().onSuccessGetDataFromCloud(dataFromCloudEmpty, flightSearchWithMetaViewModel.getFlightMetaDataDB(), airlines);
             }
         };
     }

@@ -35,6 +35,7 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
 
 
 
+    public static String SCREEN_NAME = "ShakeDetectCampaignActivity";
     View shakeShakeMessageButton;
     View cancelButton;
     private TkpdProgressDialog progressDialog;
@@ -70,6 +71,7 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
 
 
     }
+
 
 
     @Override
@@ -205,4 +207,8 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
         presenter.onActivityResult(requestCode, resultCode, data);
     }
 
+    @Override
+    public String getScreenName() {
+        return SCREEN_NAME;
+    }
 }

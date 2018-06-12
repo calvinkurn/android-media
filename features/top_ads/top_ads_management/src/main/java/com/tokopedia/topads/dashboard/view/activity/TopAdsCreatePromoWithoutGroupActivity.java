@@ -48,17 +48,21 @@ public class TopAdsCreatePromoWithoutGroupActivity extends BaseStepperActivity<T
     @Override
     public TopAdsCreatePromoWithoutGroupModel createNewStepperModel() {
         String itemIdToAdd = null;
+        String source = "";
         if (getIntent() != null && getIntent().getExtras() != null) {
             itemIdToAdd = getIntent().getStringExtra(TopAdsExtraConstant.EXTRA_ITEM_ID);
+            source = getIntent().getStringExtra(TopAdsExtraConstant.EXTRA_SOURCE);
         }
         stepperModel = new TopAdsCreatePromoWithoutGroupModel();
         ((TopAdsCreatePromoWithoutGroupModel)stepperModel).setIdToAdd(itemIdToAdd);
+        ((TopAdsCreatePromoWithoutGroupModel)stepperModel).setSource(source);
         return stepperModel;
     }
 
-    public static Intent createIntent(Context context, String itemIdToAdd){
+    public static Intent createIntent(Context context, String itemIdToAdd, String source){
         Intent intent = new Intent(context, TopAdsCreatePromoWithoutGroupActivity.class);
         intent.putExtra(TopAdsExtraConstant.EXTRA_ITEM_ID, itemIdToAdd);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_SOURCE, source);
         return intent;
     }
 

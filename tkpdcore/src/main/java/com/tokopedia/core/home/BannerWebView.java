@@ -9,18 +9,15 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.MenuItem;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.app.TkpdCoreWebViewActivity;
 import com.tokopedia.core.fragment.FragmentShopPreview;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.home.fragment.FragmentBannerWebView;
-import com.tokopedia.core.home.fragment.SimpleWebViewFragment;
-import com.tokopedia.core.manage.general.districtrecommendation.view.DistrictRecommendationContract;
+import com.tokopedia.core.home.fragment.SimpleWebViewWithFilePickerFragment;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
@@ -105,7 +102,7 @@ public class BannerWebView extends TkpdCoreWebViewActivity implements
 
     @Override
     public void catchToWebView(String url) {
-        SimpleWebViewFragment fragment = SimpleWebViewFragment.createInstance(url);
+        SimpleWebViewWithFilePickerFragment fragment = SimpleWebViewWithFilePickerFragment.createInstance(url);
         getFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
     }
 

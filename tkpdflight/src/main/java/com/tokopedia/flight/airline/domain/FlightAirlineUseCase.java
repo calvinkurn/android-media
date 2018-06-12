@@ -15,11 +15,10 @@ import rx.Observable;
  * Created by zulfikarrahman on 10/25/17.
  */
 
-public class FlightAirlineUseCase extends UseCase<List<FlightAirlineDB>> {
-    public static final String AIRLINE_ID = "airline_id";
+public class FlightAirlineUseCase extends UseCase<FlightAirlineDB> {
+    private static final String AIRLINE_ID = "airline_id";
     private final FlightRepository flightRepository;
 
-    @Inject
     public FlightAirlineUseCase(FlightRepository flightRepository) {
         this.flightRepository = flightRepository;
     }
@@ -31,8 +30,8 @@ public class FlightAirlineUseCase extends UseCase<List<FlightAirlineDB>> {
     }
 
     @Override
-    public Observable<List<FlightAirlineDB>> createObservable(RequestParams requestParams) {
-        return flightRepository.getAirlineList(requestParams==null?null: requestParams.getString(AIRLINE_ID, null));
+    public Observable<FlightAirlineDB> createObservable(RequestParams requestParams) {
+        return flightRepository.getAirlineById(requestParams==null?null: requestParams.getString(AIRLINE_ID, null));
     }
 
     public RequestParams createRequestParam(String airlineID) {

@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.view.adapter.viewholder.kol;
 
+import android.content.res.Resources;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +18,6 @@ import com.tokopedia.feedplus.view.analytics.FeedEnhancedTracking;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
 import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendItemViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
-import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,11 +47,11 @@ public class KolRecommendationAdapter extends RecyclerView.Adapter<KolRecommenda
 
         public ViewHolder(View itemView) {
             super(itemView);
-            avatar = (ImageView) itemView.findViewById(R.id.avatar);
-            name = (TextView) itemView.findViewById(R.id.name);
-            label = (TextView) itemView.findViewById(R.id.label);
-            followButton = (TextView) itemView.findViewById(R.id.follow_button);
-            mainView = itemView.findViewById(R.id.main_view);
+            mainView = itemView;
+            avatar = itemView.findViewById(R.id.avatar);
+            name = itemView.findViewById(R.id.name);
+            label = itemView.findViewById(R.id.label);
+            followButton = itemView.findViewById(R.id.follow_button);
 
             avatar.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -139,7 +139,7 @@ public class KolRecommendationAdapter extends RecyclerView.Adapter<KolRecommenda
         holder.label.setText(data.getListRecommend().get(position).getLabel());
 
         setFollowing(holder, position);
-
+        setMargin(holder, position);
     }
 
     private void setFollowing(ViewHolder holder, int position) {
@@ -156,6 +156,20 @@ public class KolRecommendationAdapter extends RecyclerView.Adapter<KolRecommenda
             holder.followButton.setText(holder.followButton.getContext().getString(R.string.action_follow_english));
             MethodChecker.setBackground(holder.followButton, MethodChecker.getDrawable(
                     holder.followButton.getContext(), R.drawable.green_button_rounded_unify));
+        }
+    }
+
+    private void setMargin(ViewHolder holder, int position) {
+        if (holder.mainView.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+            ViewGroup.MarginLayoutParams marginLayoutParams =
+                    (ViewGroup.MarginLayoutParams) holder.mainView.getLayoutParams();
+            Resources resources = holder.mainView.getContext().getResources();
+
+            if (position == 0) {
+                marginLayoutParams.leftMargin = (int) resources.getDimension(R.dimen.dp_16);
+            } else if (position == getItemCount() - 1) {
+                marginLayoutParams.rightMargin = (int) resources.getDimension(R.dimen.dp_16);
+            }
         }
     }
 

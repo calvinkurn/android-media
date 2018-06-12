@@ -12,12 +12,21 @@ public class AddKeywordDomainModelDatum {
     private int keyWordTypeId;
     private String groupId;
     private String shopId;
+    private String source;
 
     public AddKeywordDomainModelDatum(String keywordTag, int keyWordTypeId, String groupId, String shopId) {
         this.keywordTag = keywordTag;
         this.keyWordTypeId = keyWordTypeId;
         this.groupId = groupId;
         this.shopId = shopId;
+    }
+
+    public AddKeywordDomainModelDatum(String keywordTag, int keyWordTypeId, String groupId, String shopId, String source) {
+        this.keywordTag = keywordTag;
+        this.keyWordTypeId = keyWordTypeId;
+        this.groupId = groupId;
+        this.shopId = shopId;
+        this.source = source;
     }
 
     public String getShopId() {
@@ -50,5 +59,13 @@ public class AddKeywordDomainModelDatum {
 
     public void setGroupId(String groupId) {
         this.groupId = groupId;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
     }
 }

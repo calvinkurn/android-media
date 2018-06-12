@@ -11,7 +11,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.support.multidex.MultiDex;
-import android.support.v7.app.AppCompatDelegate;
+
 
 import com.crashlytics.android.Crashlytics;
 import com.facebook.stetho.Stetho;
@@ -275,7 +275,7 @@ public abstract class MainApplication extends BaseMainApplication{
         // initialize the Branch object
         initBranch();
         NotificationUtils.setNotificationChannel(this);
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+
     }
 
 
@@ -351,9 +351,11 @@ public abstract class MainApplication extends BaseMainApplication{
     }
 
     private void initFirebase() {
-        FirebaseOptions.Builder builder = new FirebaseOptions.Builder();
-        builder.setApplicationId("1:692092518182:android:9bb64c665e7c68ee");
-        builder.setApiKey("AIzaSyDan4qOIiANywQFOk-AG-WhRxsEMVqfcbg");
-        FirebaseApp.initializeApp(this, builder.build());
+        if (GlobalConfig.DEBUG) {
+            FirebaseOptions.Builder builder = new FirebaseOptions.Builder();
+            builder.setApplicationId("1:692092518182:android:9bb64c665e7c68ee");
+            builder.setApiKey("AIzaSyDan4qOIiANywQFOk-AG-WhRxsEMVqfcbg");
+            FirebaseApp.initializeApp(this, builder.build());
+        }
     }
 }
