@@ -25,13 +25,13 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.exception.FileSizeAboveMaximumException;
+import com.tokopedia.imagepicker.common.presenter.ImageRatioCropPresenter;
 import com.tokopedia.imagepicker.editor.widget.ImageEditCropListWidget;
 import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerPresenter;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
 import com.tokopedia.imagepicker.common.widget.NonSwipeableViewPager;
 import com.tokopedia.imagepicker.editor.adapter.ImageEditorViewPagerAdapter;
-import com.tokopedia.imagepicker.editor.presenter.ImageEditorPresenter;
 import com.tokopedia.imagepicker.editor.widget.ImageEditActionMainWidget;
 import com.tokopedia.imagepicker.editor.widget.ImageEditThumbnailListWidget;
 import com.tokopedia.imagepicker.editor.widget.TwoLineSeekBar;
@@ -52,8 +52,10 @@ import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PIC
  * Created by Hendry on 9/25/2017.
  */
 
-public class ImageEditorActivity extends BaseSimpleActivity implements ImageEditorPresenter.ImageEditorView,
-        ImageEditPreviewFragment.OnImageEditPreviewFragmentListener, ImageEditThumbnailListWidget.OnImageEditThumbnailListWidgetListener, ImageEditActionMainWidget.OnImageEditActionMainWidgetListener, ImagePickerPresenter.ImagePickerView, ImageEditCropListWidget.OnImageEditCropWidgetListener {
+public class ImageEditorActivity extends BaseSimpleActivity implements ImagePickerPresenter.ImagePickerView,
+        ImageEditPreviewFragment.OnImageEditPreviewFragmentListener, ImageEditThumbnailListWidget.OnImageEditThumbnailListWidgetListener,
+        ImageEditActionMainWidget.OnImageEditActionMainWidgetListener,
+        ImageEditCropListWidget.OnImageEditCropWidgetListener, ImageRatioCropPresenter.ImageRatioCropView {
 
     public static final String EXTRA_IMAGE_URLS = "IMG_URLS";
     public static final String EXTRA_MIN_RESOLUTION = "MIN_IMG_RESOLUTION";
@@ -93,7 +95,8 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
     private boolean isCirclePreview;
 
     private View vgDownloadProgressBar;
-    private ImageEditorPresenter imageEditorPresenter;
+    private ImagePickerPresenter imagePickerPresenter;
+    private ImageRatioCropPresenter imageRatioCropPresenter;
 
     private View vgContentContainer;
     private NonSwipeableViewPager viewPager;
@@ -737,8 +740,10 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
         }
 
         showDoneLoading();
-        initImageEditorPresenter();
-        imageEditorPresenter.cropBitmapToExpectedRatio(resultList, ratioResultList);
+
+        initImageCropPresenter();
+        imageRatioCropPresenter.cropBitmapToExpectedRatio(resultList, ratioResultList, true,
+                ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_EDIT_RESULT);
     }
 
     @Override
@@ -755,12 +760,12 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
 
     private void onFinishWithMultipleImageValidateFileSize(ArrayList<String> imagePathList) {
         showDoneLoading();
-        initImageEditorPresenter();
-        imageEditorPresenter.resizeImage(imagePathList, maxFileSize);
+        initImagePickerPresenter();
+        imagePickerPresenter.resizeImage(imagePathList, maxFileSize);
     }
 
     @Override
-    public void onErrorCropImageToRatio(Throwable e) {
+    public void onErrorCropImageToRatio(ArrayList<String> localImagePaths, Throwable e) {
         NetworkErrorHelper.showRedCloseSnackbar(this, ErrorHandler.getErrorMessage(this, e));
         hideDoneLoading();
     }
@@ -891,8 +896,8 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
             if (hasNetworkImage) {
                 showDownloadProgressDialog();
                 hideContentView();
-                initImageEditorPresenter();
-                imageEditorPresenter.convertHttpPathToLocalPath(extraImageUrls);
+                initImagePickerPresenter();
+                imagePickerPresenter.convertHttpPathToLocalPath(extraImageUrls);
             } else {
                 copyToLocalUrl(extraImageUrls);
                 startEditLocalImages();
@@ -902,18 +907,28 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImageEdit
         }
     }
 
-    private void initImageEditorPresenter() {
-        if (imageEditorPresenter == null) {
-            imageEditorPresenter = new ImageEditorPresenter();
-            imageEditorPresenter.attachView(this);
+    private void initImagePickerPresenter() {
+        if (imagePickerPresenter == null) {
+            imagePickerPresenter = new ImagePickerPresenter();
+            imagePickerPresenter.attachView(this);
+        }
+    }
+
+    private void initImageCropPresenter() {
+        if (imageRatioCropPresenter == null) {
+            imageRatioCropPresenter = new ImageRatioCropPresenter();
+            imageRatioCropPresenter.attachView(this);
         }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        if (imageEditorPresenter != null) {
-            imageEditorPresenter.detachView();
+        if (imagePickerPresenter != null) {
+            imagePickerPresenter.detachView();
+        }
+        if (imageRatioCropPresenter != null) {
+            imageRatioCropPresenter.detachView();
         }
     }
 
