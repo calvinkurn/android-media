@@ -67,10 +67,9 @@ public class TkpdYoutubeVideoActivity extends YouTubeBaseActivity implements
 
         btnCta.setOnClickListener(v -> {
             if (!TextUtils.isEmpty(videoLand)) {
-
                 RouteManager.route(TkpdYoutubeVideoActivity.this, videoLand);
-                finish();
             }
+            finish();
         });
 
         extractValues(getIntent().getExtras());
@@ -138,7 +137,7 @@ public class TkpdYoutubeVideoActivity extends YouTubeBaseActivity implements
             if(!TextUtils.isEmpty(title)){
                 tvHeadTitle.setText(title);
             }
-            tvTitle.setText(bundle.getString(videoDescHeadKey, ""));
+            tvTitle.setText(bundle.getString(videoTitleKey, ""));
             tvDesc.setText(bundle.getString(videoDescKey, ""));
             btnCta.setText(bundle.getString(videoCtaKey, ""));
             videoLand = bundle.getString(videoLandKey, "");

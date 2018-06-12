@@ -39,10 +39,8 @@
 
                 <ImageView
                     android:id="@+id/img_cross"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:padding="@dimen/padding_vs"
-                    android:scaleType="fitXY"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:tint="@color/grey"
                     android:src="@drawable/icon_back_white" />
 
