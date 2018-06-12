@@ -10,15 +10,25 @@ import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.view.compoundview.DigitalWrapContentViewPager;
 import com.tokopedia.digital.product.view.fragment.DigitalPanduanFragment;
 import com.tokopedia.digital.product.view.fragment.DigitalPromoFragment;
+import com.tokopedia.digital.product.view.model.BannerData;
+
+import java.util.List;
 
 /**
  * @author by furqan on 07/06/18.
  */
 
-public class PromoPanduanPagerAdapter extends FragmentStatePagerAdapter {
+public class PromoPanduanPagerAdapter extends FragmentStatePagerAdapter
+        implements DigitalPromoFragment.DigitalPromoConnector{
 
     private Context context;
     private int currentPosition = -1;
+
+    private DigitalPromoFragment digitalPromoFragment;
+    private String bannerDataTitle;
+    private List<BannerData> bannerDataList;
+    private String otherBannerDataTitle;
+    private List<BannerData> otherBannerDataList;
 
     public PromoPanduanPagerAdapter(FragmentManager fm, Context context) {
         super(fm);
@@ -54,7 +64,9 @@ public class PromoPanduanPagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0 :
-                return DigitalPromoFragment.createInstance();
+                digitalPromoFragment = DigitalPromoFragment.createInstance();
+                digitalPromoFragment.setDigitalPromoConnector(this);
+                return digitalPromoFragment;
             case 1 :
                 return DigitalPanduanFragment.createInstance();
             default :
@@ -65,5 +77,35 @@ public class PromoPanduanPagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public int getCount() {
         return 2;
+    }
+
+    public void setBannerDataList(String bannerDataTitle, List<BannerData> bannerDataList) {
+        this.bannerDataTitle = bannerDataTitle;
+        this.bannerDataList = bannerDataList;
+    }
+
+    public void setOtherBannerDataList(String bannerDataTitle, List<BannerData> bannerDataList) {
+        this.otherBannerDataTitle = bannerDataTitle;
+        this.otherBannerDataList = bannerDataList;
+    }
+
+    @Override
+    public String getBannerDataTitle() {
+        return bannerDataTitle;
+    }
+
+    @Override
+    public List<BannerData> getBannerDataList() {
+        return bannerDataList;
+    }
+
+    @Override
+    public String getOtherBannerDataTitle() {
+        return otherBannerDataTitle;
+    }
+
+    @Override
+    public List<BannerData> getOtherBannerDataList() {
+        return otherBannerDataList;
     }
 }

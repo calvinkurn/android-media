@@ -22,7 +22,6 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.widget.NestedScrollView;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -99,7 +98,6 @@ import com.tokopedia.digital.product.view.model.PulsaBalance;
 import com.tokopedia.digital.product.view.presenter.IProductDigitalPresenter;
 import com.tokopedia.digital.product.view.presenter.ProductDigitalPresenter;
 import com.tokopedia.digital.utils.DeviceUtil;
-import com.tokopedia.digital.utils.LinearLayoutManagerNonScroll;
 import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
@@ -161,8 +159,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     NestedScrollView mainHolderContainer;
     @BindView(R2.id.pb_main_loading)
     ProgressBar pbMainLoading;
-    @BindView(R2.id.rv_banner)
-    RecyclerView rvBanner;
     @BindView(R2.id.holder_product_detail)
     LinearLayout holderProductDetail;
     @BindView(R2.id.holder_check_balance)
@@ -212,6 +208,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     private ShowCaseDialog showCaseDialog;
     private int selectedSimIndex = 0;//start from 0
     private boolean ussdInProgress = false;
+    private PromoPanduanPagerAdapter promoPanduanPagerAdapter;
 
     public static Fragment newInstance(
             String categoryId, String operatorId, String productId, String clientNumber,
@@ -298,7 +295,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     protected void initialPresenter() {
-        bannerAdapter = new BannerAdapter(this);
+        bannerAdapter = new BannerAdapter(context, this);
 
         DigitalEndpointService digitalEndpointService = new DigitalEndpointService();
         DigitalGqlApiService digitalGqlEndpointService = new DigitalGqlApiService();
@@ -350,8 +347,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     protected void initView(View view) {
-        rvBanner.setVisibility(View.GONE);
-        rvBanner.setLayoutManager(new LinearLayoutManagerNonScroll(getActivity()));
         mainHolderContainer.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
         mainHolderContainer.setFillViewport(true);
         mainHolderContainer.setFocusable(true);
@@ -373,7 +368,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     protected void setViewListener() {
-        rvBanner.setAdapter(bannerAdapter);
+        renderPromoPanduanTab();
         checkETollBalanceView.setListener(new CheckETollBalanceView.OnCheckBalanceClickListener() {
             @Override
             public void onClick() {
@@ -405,6 +400,8 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         String formattedTitle = getResources().getString(R.string.promo_category, title);
         this.bannerDataListState = getBannerDataWithoutEmptyItem(bannerDataList);
         bannerAdapter.addBannerDataListAndTitle(bannerDataList, formattedTitle);
+
+        promoPanduanPagerAdapter.setBannerDataList(title, bannerDataList);
     }
 
     @Override
@@ -412,6 +409,8 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         String formattedTitle = getResources().getString(R.string.promo_category, title);
         this.otherBannerDataListState = getBannerDataWithoutEmptyItem(otherBannerDataList);
         bannerAdapter.addBannerDataListAndTitle(otherBannerDataList, formattedTitle);
+
+        promoPanduanPagerAdapter.setOtherBannerDataList(title, otherBannerDataList);
     }
 
     private List<BannerData> getBannerDataWithoutEmptyItem(List<BannerData> bannerDataList) {
@@ -1295,7 +1294,8 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     private PagerAdapter getViewPagerAdapter() {
-        return new PromoPanduanPagerAdapter(getFragmentManager(), context);
+        promoPanduanPagerAdapter = new PromoPanduanPagerAdapter(getFragmentManager(), context);
+        return promoPanduanPagerAdapter;
     }
 
 }

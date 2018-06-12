@@ -232,7 +232,6 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
             view.renderCategory(digitalProductView, categoryData, historyClientNumber);
 
             if (!GlobalConfig.isSellerApp()) {
-                view.renderPromoPanduanTab();
                 view.renderBannerListData(
                         categoryData.getName(),
                         bannerDataList != null ? bannerDataList : new ArrayList<BannerData>()
