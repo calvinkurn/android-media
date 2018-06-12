@@ -11,7 +11,6 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.scheduledetail.presentation.model.TrainScheduleDetailViewModel;
-import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
 
 /**
  * Created by Rizky on 14/05/18.
