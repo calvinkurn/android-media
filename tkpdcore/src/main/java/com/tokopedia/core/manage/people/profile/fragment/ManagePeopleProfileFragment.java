@@ -265,8 +265,10 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
         ImagePickerBuilder builder = new ImagePickerBuilder(getString(R.string.choose_profile_picture),
                 new int[]{TYPE_GALLERY, TYPE_CAMERA}, GalleryType.IMAGE_ONLY, DEFAULT_MAX_IMAGE_SIZE_IN_KB,
                 DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.RATIO_1_1, true,
-                new ImagePickerEditorBuilder(new int[]{ACTION_BRIGHTNESS, ACTION_CONTRAST, ACTION_CROP, ACTION_ROTATE},
-                        false)
+                new ImagePickerEditorBuilder(
+                        new int[]{ACTION_BRIGHTNESS, ACTION_CONTRAST, ACTION_CROP, ACTION_ROTATE},
+                        false,
+                        null)
                 , null);
         Intent intent = ImagePickerActivity.getIntent(getActivity(), builder);
         startActivityForResult(intent, REQUEST_CODE_PROFILE_PICTURE);
