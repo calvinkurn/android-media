@@ -141,6 +141,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
     private LinearLayout llShipmpingType;
     private TextView tvShippingTypeName;
     private TextView tvShippingEtd;
+    private TextView tvAdditionalFee;
+    private TextView tvAdditionalFeePrice;
 
     public ShipmentItemViewHolder(View itemView) {
         super(itemView);
@@ -226,6 +228,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         llShipmpingType = itemView.findViewById(R.id.ll_shipmping_type);
         tvShippingTypeName = itemView.findViewById(R.id.tv_shipping_type_name);
         tvShippingEtd = itemView.findViewById(R.id.tv_shipping_etd);
+        tvAdditionalFee = itemView.findViewById(R.id.tv_additional_fee);
+        tvAdditionalFeePrice = itemView.findViewById(R.id.tv_additional_fee_price);
     }
 
     protected void showBottomSheet(Context context, String title, String message, int image) {
@@ -404,6 +408,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         tvShippingFee.setText(shippingFeeLabel);
         tvShippingFeePrice.setText(getPriceFormat(tvShippingFee, tvShippingFeePrice, shippingPrice));
         tvInsuranceFeePrice.setText(getPriceFormat(tvInsuranceFee, tvInsuranceFeePrice, insurancePrice));
+        tvAdditionalFeePrice.setText(getPriceFormat(tvAdditionalFee, tvAdditionalFeePrice, additionalPrice));
         rlCartSubTotal.setOnClickListener(getCostDetailOptionListener(shipmentCartItemModel));
     }
 

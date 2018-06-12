@@ -98,6 +98,7 @@
     <string name="label_hint_cart_item_dropshipper_phone_number">Nomor Telepon</string>
     <string name="label_delivery_price">Total Ongkos Kirim</string>
     <string name="label_additional_cost">Biaya Tambahan</string>
+    <string name="label_seller_additional_cost">Biaya Tambahan Penjual</string>
     <string name="label_dialog_title_cancel_pickup">Batalkan Pengiriman ke Gerai Pengambilan</string>
     <string name="label_dialog_message_cancel_pickup_booth">Apakah Anda yakin ingin membatalkan pengiriman ke Gerai Pengambilan</string>
     <string name="title_bottomsheet_insurance">Asuransi Pengiriman</string>
