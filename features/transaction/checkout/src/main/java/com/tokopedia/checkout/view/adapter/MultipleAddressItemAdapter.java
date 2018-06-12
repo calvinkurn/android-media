@@ -25,12 +25,16 @@ public class MultipleAddressItemAdapter extends RecyclerView.Adapter
 
     private MultipleAddressAdapterData productData;
 
-    public MultipleAddressItemAdapter(MultipleAddressAdapterData productData,
+    private int parentItemPosition;
+
+    public MultipleAddressItemAdapter(int parentItemPosition,
+                                      MultipleAddressAdapterData productData,
                                       List<MultipleAddressItemData> itemDataList,
                                       MultipleAddressItemAdapterListener listener) {
         this.itemDataList = itemDataList;
         this.listener = listener;
         this.productData = productData;
+        this.parentItemPosition = parentItemPosition;
     }
 
     @Override
@@ -61,7 +65,7 @@ public class MultipleAddressItemAdapter extends RecyclerView.Adapter
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onEditItemChoosen(productData, data);
+                listener.onEditItemChoosen(parentItemPosition, productData, data);
             }
         };
     }
@@ -78,7 +82,8 @@ public class MultipleAddressItemAdapter extends RecyclerView.Adapter
 
     public interface MultipleAddressItemAdapterListener {
 
-        void onEditItemChoosen(MultipleAddressAdapterData productData,
+        void onEditItemChoosen(int parentItemPosition,
+                               MultipleAddressAdapterData productData,
                                MultipleAddressItemData addressData);
 
     }

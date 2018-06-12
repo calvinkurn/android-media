@@ -125,23 +125,25 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
     }
 
     @Override
-    public void onAddNewShipmentAddress(int addressPositionToAdd,
+    public void onAddNewShipmentAddress(int itemPosition,
+                                        int addressPositionToAdd,
                                         ArrayList<MultipleAddressAdapterData> dataList,
                                         MultipleAddressAdapterData data,
                                         MultipleAddressItemData addressData) {
         checkoutAnalyticsMultipleAddress.eventClickMultipleAddressClickTambahPengirimanBaruFromKirimKeBeberapaAlamat();
         startActivityForResult(AddShipmentAddressActivity
-                        .createIntent(getActivity(), dataList, data, addressData, ADD_MODE),
+                        .createIntent(getActivity(), itemPosition, dataList, data, addressData, ADD_MODE),
                 ADD_SHIPMENT_ADDRESS_REQUEST_CODE);
     }
 
     @Override
-    public void onItemChoosen(ArrayList<MultipleAddressAdapterData> dataList,
+    public void onItemChoosen(int itemPosition,
+                              ArrayList<MultipleAddressAdapterData> dataList,
                               MultipleAddressAdapterData productData,
                               MultipleAddressItemData addressData) {
         checkoutAnalyticsMultipleAddress.eventClickMultipleAddressClickEditFromKirimKeBeberapaAlamat();
         startActivityForResult(AddShipmentAddressActivity
-                        .createIntent(getActivity(), dataList, productData, addressData, EDIT_MODE),
+                        .createIntent(getActivity(), itemPosition, dataList, productData, addressData, EDIT_MODE),
                 EDIT_SHIPMENT_ADDRESS_REQUEST_CODE);
     }
 
@@ -152,6 +154,7 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
                 && resultCode == Activity.RESULT_OK) {
             ArrayList<MultipleAddressAdapterData> adapterDataList =
                     data.getParcelableArrayListExtra(AddShipmentAddressActivity.PRODUCT_DATA_LIST_EXTRAS);
+            int itemPosition = data.getIntExtra(AddShipmentAddressActivity.ITEM_ADAPTER_POSITION_EXTRA, 0);
             MultipleAddressItemData editedAddressData = data.getParcelableExtra(ADDRESS_DATA_RESULT);
             if (editedAddressData != null) {
                 adapterDataList.get(editedAddressData.getCartPosition())
@@ -160,13 +163,14 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
             }
 
             // Re-setup recycler view adapter to prevent crash if don't keep activities is on
-            setRecyclerViewAdapter(adapterDataList);
+            setRecyclerViewAdapter(adapterDataList, itemPosition);
 
         } else if (requestCode == ADD_SHIPMENT_ADDRESS_REQUEST_CODE
                 && resultCode == Activity.RESULT_OK) {
             ArrayList<MultipleAddressAdapterData> adapterDataList =
                     data.getParcelableArrayListExtra(AddShipmentAddressActivity.PRODUCT_DATA_LIST_EXTRAS);
             MultipleAddressItemData editedAddressData = data.getParcelableExtra(ADDRESS_DATA_RESULT);
+            int itemPosition = data.getIntExtra(AddShipmentAddressActivity.ITEM_ADAPTER_POSITION_EXTRA, 0);
             if (editedAddressData != null) {
                 adapterDataList.get(editedAddressData.getCartPosition())
                         .getItemListData()
@@ -174,7 +178,7 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
             }
 
             // Re-setup recycler view adapter to prevent crash if don't keep activities is on
-            setRecyclerViewAdapter(adapterDataList);
+            setRecyclerViewAdapter(adapterDataList, itemPosition);
         }
     }
 
@@ -256,12 +260,15 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
         progressDialogNormal = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         orderAddressList = view.findViewById(R.id.order_address_list);
         orderAddressList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        setRecyclerViewAdapter(initiateAdapterData());
+        setRecyclerViewAdapter(initiateAdapterData(), 0);
     }
 
-    private void setRecyclerViewAdapter(List<MultipleAddressAdapterData> addressData) {
+    private void setRecyclerViewAdapter(List<MultipleAddressAdapterData> addressData, int itemPosition) {
         multipleAddressAdapter = new MultipleAddressAdapter(addressData, this);
         orderAddressList.setAdapter(multipleAddressAdapter);
+        if (itemPosition != 0) {
+            orderAddressList.scrollToPosition(itemPosition);
+        }
     }
 
     @Override

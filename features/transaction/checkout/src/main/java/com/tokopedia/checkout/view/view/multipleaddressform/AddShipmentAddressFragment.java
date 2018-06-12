@@ -69,11 +69,13 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
     CheckoutAnalyticsMultipleAddress checkoutAnalyticsMultipleAddress;
 
     private int formMode;
+    private int itemPosition;
     ArrayList<MultipleAddressAdapterData> dataList;
     MultipleAddressAdapterData multipleAddressAdapterData;
     MultipleAddressItemData multipleAddressItemData;
 
     public static Fragment newInstance(
+            int itemPosition,
             ArrayList<MultipleAddressAdapterData> dataList,
             MultipleAddressAdapterData data,
             MultipleAddressItemData addressData,
@@ -85,6 +87,7 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
         bundle.putParcelable(AddShipmentAddressActivity.PRODUCT_DATA_EXTRAS, data);
         bundle.putParcelable(AddShipmentAddressActivity.ADDRESS_DATA_EXTRAS, addressData);
         bundle.putInt(AddShipmentAddressActivity.MODE_EXTRA, mode);
+        bundle.putInt(AddShipmentAddressActivity.ITEM_ADAPTER_POSITION_EXTRA, itemPosition);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -135,6 +138,7 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
         dataList = arguments.getParcelableArrayList(AddShipmentAddressActivity.PRODUCT_DATA_LIST_EXTRAS);
         multipleAddressAdapterData = arguments.getParcelable(AddShipmentAddressActivity.PRODUCT_DATA_EXTRAS);
         multipleAddressItemData = arguments.getParcelable(AddShipmentAddressActivity.ADDRESS_DATA_EXTRAS);
+        itemPosition = arguments.getInt(AddShipmentAddressActivity.ITEM_ADAPTER_POSITION_EXTRA);
     }
 
     @Override
@@ -377,6 +381,7 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
         );
         intent.putExtra(AddShipmentAddressActivity.ADDRESS_DATA_RESULT, newItemData);
         intent.putExtra(AddShipmentAddressActivity.PRODUCT_DATA_LIST_EXTRAS, dataList);
+        intent.putExtra(AddShipmentAddressActivity.ITEM_ADAPTER_POSITION_EXTRA, itemPosition);
         getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
     }
@@ -389,6 +394,7 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
         );
         intent.putExtra(AddShipmentAddressActivity.ADDRESS_DATA_RESULT, editedItemData);
         intent.putExtra(AddShipmentAddressActivity.PRODUCT_DATA_LIST_EXTRAS, dataList);
+        intent.putExtra(AddShipmentAddressActivity.ITEM_ADAPTER_POSITION_EXTRA, itemPosition);
         getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
     }
