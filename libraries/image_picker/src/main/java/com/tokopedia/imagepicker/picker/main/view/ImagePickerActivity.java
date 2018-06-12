@@ -111,7 +111,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
                 selectedImagePaths = imagePickerBuilder.getInitialSelectedImagePathList();
                 imageDescriptionList = new ArrayList<>();
                 //create empty description for initial images
-                if (selectedImagePaths!= null && selectedImagePaths.size() > 0) {
+                if (selectedImagePaths != null && selectedImagePaths.size() > 0) {
                     for (String path : selectedImagePaths) {
                         imageDescriptionList.add(null);
                     }
@@ -277,31 +277,26 @@ public class ImagePickerActivity extends BaseSimpleActivity
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             int cameraIndex = imagePickerBuilder.indexTypeDef(ImagePickerTabTypeDef.TYPE_CAMERA);
-            int galleryIndex = imagePickerBuilder.indexTypeDef(ImagePickerTabTypeDef.TYPE_GALLERY);
-            String[] permissions = null;
+            String[] permissions;
             if (cameraIndex > -1) {
                 permissions = new String[]{
                         Manifest.permission.CAMERA,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE};
-            } else if (galleryIndex > -1) {
+            } else {
                 permissions = new String[]{
                         Manifest.permission.WRITE_EXTERNAL_STORAGE};
             }
-            if (permissions == null) { // it is not camera or gallery; no permission is needed;
+            permissionsToRequest = new ArrayList<>();
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+                    permissionsToRequest.add(permission);
+                }
+            }
+            if (!permissionsToRequest.isEmpty()) {
+                ActivityCompat.requestPermissions(this,
+                        permissionsToRequest.toArray(new String[permissionsToRequest.size()]), REQUEST_CAMERA_PERMISSIONS);
+            } else {
                 refreshViewPager();
-            } else { // check each permission
-                permissionsToRequest = new ArrayList<>();
-                for (String permission : permissions) {
-                    if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
-                        permissionsToRequest.add(permission);
-                    }
-                }
-                if (!permissionsToRequest.isEmpty()) {
-                    ActivityCompat.requestPermissions(this,
-                            permissionsToRequest.toArray(new String[permissionsToRequest.size()]), REQUEST_CAMERA_PERMISSIONS);
-                } else {
-                    refreshViewPager();
-                }
             }
         } else { // under jellybean, no need to check runtime permission
             refreshViewPager();
@@ -467,13 +462,13 @@ public class ImagePickerActivity extends BaseSimpleActivity
         }
     }
 
-    private void startEditorActivity(String imageUrlOrPath){
+    private void startEditorActivity(String imageUrlOrPath) {
         ArrayList<String> imageUrls = new ArrayList<>();
         imageUrls.add(imageUrlOrPath);
         startEditorActivity(imageUrls);
     }
 
-    private void startEditorActivity(ArrayList<String> selectedImagePaths){
+    private void startEditorActivity(ArrayList<String> selectedImagePaths) {
         Intent intent = ImageEditorActivity.getIntent(this, selectedImagePaths, imageDescriptionList,
                 imagePickerBuilder.getMinResolution(), imagePickerBuilder.getImageEditActionType(),
                 imagePickerBuilder.getImageRatioTypeDef(),
