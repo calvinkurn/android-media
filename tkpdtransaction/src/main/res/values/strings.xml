@@ -249,7 +249,6 @@
     <string name="order_digital">DIGITAL</string>
     <string name="order_marketplace">MARKETPLACE</string>
     <string name="order_flight">FLIGHT</string>
-    <string name="search_input_hint">Cari produk atau invoice</string>
     <string name="flight_order_waiting_for_payment_title">Menunggu Pemayaran</string>
     <string name="total">Total</string>
     <string name="unggah_bukti">Unggah Bukti</string>
