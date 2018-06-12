@@ -77,6 +77,8 @@ import com.tokopedia.topchat.chatroom.view.adapter.ChatRoomAdapter;
 import com.tokopedia.topchat.chatroom.view.adapter.ChatRoomTypeFactory;
 import com.tokopedia.topchat.chatroom.view.adapter.ChatRoomTypeFactoryImpl;
 import com.tokopedia.topchat.chatroom.view.adapter.QuickReplyAdapter;
+import com.tokopedia.topchat.chatroom.view.adapter.ReasonAdapter;
+import com.tokopedia.topchat.chatroom.view.customview.ReasonBottomSheet;
 import com.tokopedia.topchat.chatroom.view.listener.ChatRoomContract;
 import com.tokopedia.topchat.chatroom.view.presenter.ChatRoomPresenter;
 import com.tokopedia.topchat.chatroom.view.presenter.WebSocketInterface;
@@ -150,6 +152,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
     private RecyclerView rvQuickReply;
     private ProgressBar progressBar;
     private View replyView;
+    private ReasonBottomSheet reasonBottomSheet;
 
     private ImageView avatar;
     private TextView user;
@@ -1515,25 +1518,20 @@ public class ChatRoomFragment extends BaseDaggerFragment
     @Override
     public void showReasonRating(String messageId, long replyTimeNano, ArrayList<String> reasons) {
 
-        BottomSheetBuilder bottomSheetBuilder = new CheckedBottomSheetBuilder(getActivity())
-                .setMode(BottomSheetBuilder.MODE_LIST);
-
-        for (int i = 0; i < reasons.size(); i++) {
-            bottomSheetBuilder.addItem(i, reasons.get(i), null);
+        if (reasonBottomSheet == null) {
+            reasonBottomSheet = ReasonBottomSheet.createInstance(getActivity(),
+                    reasons, new ReasonAdapter.OnReasonClickListener() {
+                        @Override
+                        public void onClickReason(int adapterPosition) {
+                            presenter.sendReasonRating(messageId,
+                                    replyTimeNano,
+                                    String.valueOf(reasons.get(adapterPosition)));
+                            reasonBottomSheet.dismiss();
+                        }
+                    });
         }
 
-        BottomSheetDialog bottomSheetDialog = bottomSheetBuilder.expandOnStart(true)
-                .setItemClickListener(new BottomSheetItemClickListener() {
-                    @Override
-                    public void onBottomSheetItemClick(MenuItem item) {
-                        presenter.sendReasonRating(messageId,
-                                replyTimeNano,
-                                String.valueOf(item.getTitle()));
-                    }
-                })
-                .createDialog();
-
-        bottomSheetDialog.show();
+        reasonBottomSheet.show();
 
     }
 }

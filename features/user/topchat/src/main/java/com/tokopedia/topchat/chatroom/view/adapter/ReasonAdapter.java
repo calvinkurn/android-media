@@ -19,17 +19,24 @@ import javax.inject.Inject;
  */
 public class ReasonAdapter extends RecyclerView.Adapter<ReasonAdapter.ReasonViewHolder> {
 
+    public interface OnReasonClickListener {
+        void onClickReason(int adapterPosition);
+    }
+
     private List<String> reasonList;
+    private OnReasonClickListener listener;
 
     @Inject
-    public ReasonAdapter() {
+    public ReasonAdapter(OnReasonClickListener listener) {
         reasonList = new ArrayList<>();
+        this.listener = listener;
     }
 
     @Override
     public ReasonViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.item_reason, viewGroup, false);
+
         return new ReasonViewHolder(view);
     }
 
@@ -51,12 +58,23 @@ public class ReasonAdapter extends RecyclerView.Adapter<ReasonAdapter.ReasonView
         return reasonList.size();
     }
 
+    public void addList(ArrayList<String> reasonList) {
+        this.reasonList.clear();
+        this.reasonList.addAll(reasonList);
+    }
+
     public class ReasonViewHolder extends RecyclerView.ViewHolder {
         TextView reason;
 
         public ReasonViewHolder(View itemView) {
             super(itemView);
             reason = itemView.findViewById(R.id.reason);
+            reason.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onClickReason(getAdapterPosition());
+                }
+            });
         }
     }
 
