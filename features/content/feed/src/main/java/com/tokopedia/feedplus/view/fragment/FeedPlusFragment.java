@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -80,6 +81,7 @@ import com.tokopedia.feedplus.view.viewmodel.promo.PromoCardViewModel;
 import com.tokopedia.feedplus.view.viewmodel.topads.FeedTopAdsViewModel;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
+import com.tokopedia.kol.feature.createpost.view.activity.ImageUploadActivity;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 import com.tokopedia.profile.view.activity.TopProfileActivity;
@@ -116,6 +118,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private static final int OPEN_KOL_COMMENT = 101;
     private static final int OPEN_KOL_PROFILE = 13;
     private static final int OPEN_KOL_PROFILE_FROM_RECOMMENDATION = 83;
+    private static final int CREATE_POST = 888;
     private static final int DEFAULT_VALUE = -1;
 
     private static final String ARGS_ROW_NUMBER = "row_number";
@@ -130,6 +133,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     RelativeLayout mainContent;
     View newFeed;
     Trace trace;
+    FloatingActionButton fabAddFeed;
     private ShareBottomDialog shareBottomDialog;
     private TkpdProgressDialog progressDialog;
     private RemoteConfig remoteConfig;
@@ -224,6 +228,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         swipeToRefresh = (SwipeToRefresh) parentView.findViewById(R.id.swipe_refresh_layout);
         mainContent = (RelativeLayout) parentView.findViewById(R.id.main);
         newFeed = parentView.findViewById(R.id.layout_new_feed);
+        fabAddFeed = parentView.findViewById(R.id.fab_add_post);
 
         prepareView();
         presenter.attachView(this);
@@ -243,6 +248,13 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 scrollToTop();
                 showRefresh();
                 onRefresh();
+            }
+        });
+        fabAddFeed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                startActivityForResult(ImageUploadActivity.getInstance(getActivity()), CREATE_POST);
+                startActivityForResult(ImageUploadActivity.getInstance(getActivity()), CREATE_POST);
             }
         });
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
