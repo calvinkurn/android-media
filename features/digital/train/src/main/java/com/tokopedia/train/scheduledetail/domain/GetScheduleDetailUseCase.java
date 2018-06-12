@@ -47,6 +47,8 @@ public class GetScheduleDetailUseCase extends UseCase<TrainScheduleDetailViewMod
                                 .duration(trainScheduleViewModel.getDisplayDuration())
                                 .trainClass(trainScheduleViewModel.getDisplayClass())
                                 .trainName(trainScheduleViewModel.getTrainName())
+                                .displayAdultFare(trainScheduleViewModel.getDisplayAdultFare())
+                                .displayInfantFare(trainScheduleViewModel.getDisplayInfantFare())
                                 .build()));
     }
 

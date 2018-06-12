@@ -24,6 +24,8 @@ public class TrainScheduleDetailViewModel implements Parcelable {
     private String departureTime;
     private String arrivalTime;
     private boolean isReturnTrip;
+    private String displayAdultFare;
+    private String displayInfantFare;
 
     TrainScheduleDetailViewModel(Builder builder) {
         this.originCityCode = builder.originCityCode;
@@ -42,6 +44,8 @@ public class TrainScheduleDetailViewModel implements Parcelable {
         this.departureTime = builder.departureTime;
         this.arrivalTime = builder.arrivalTime;
         this.isReturnTrip = builder.isReturnTrip;
+        this.displayAdultFare = builder.displayAdultFare;
+        this.displayInfantFare = builder.displayInfantFare;
     }
 
     private TrainScheduleDetailViewModel(Parcel in) {
@@ -61,6 +65,8 @@ public class TrainScheduleDetailViewModel implements Parcelable {
         departureTime = in.readString();
         arrivalTime = in.readString();
         isReturnTrip = in.readByte() != 0;
+        displayAdultFare = in.readString();
+        displayInfantFare = in.readString();
     }
 
     public static final Creator<TrainScheduleDetailViewModel> CREATOR = new Creator<TrainScheduleDetailViewModel>() {
@@ -139,6 +145,14 @@ public class TrainScheduleDetailViewModel implements Parcelable {
         return isReturnTrip;
     }
 
+    public String getDisplayAdultFare() {
+        return displayAdultFare;
+    }
+
+    public String getDisplayInfantFare() {
+        return displayInfantFare;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -162,6 +176,7 @@ public class TrainScheduleDetailViewModel implements Parcelable {
         dest.writeString(departureTime);
         dest.writeString(arrivalTime);
         dest.writeByte((byte) (isReturnTrip ? 1 : 0));
+        dest.writeString(displayAdultFare);
     }
 
     public static class Builder {
@@ -181,6 +196,8 @@ public class TrainScheduleDetailViewModel implements Parcelable {
         private String departureTime;
         private String arrivalTime;
         private boolean isReturnTrip;
+        private String displayAdultFare;
+        private String displayInfantFare;
 
         public Builder originCityCode(String val) {
             this.originCityCode = val;
@@ -262,10 +279,19 @@ public class TrainScheduleDetailViewModel implements Parcelable {
             return this;
         }
 
+        public Builder displayAdultFare(String val) {
+            this.displayAdultFare = val;
+            return this;
+        }
+
+        public Builder displayInfantFare(String val) {
+            this.displayInfantFare = val;
+            return this;
+        }
+
         public TrainScheduleDetailViewModel build() {
             return new TrainScheduleDetailViewModel(this);
         }
-
     }
 
 }
