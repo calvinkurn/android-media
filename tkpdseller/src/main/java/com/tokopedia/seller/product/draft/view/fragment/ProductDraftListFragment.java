@@ -1,6 +1,5 @@
 package com.tokopedia.seller.product.draft.view.fragment;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
@@ -23,14 +22,11 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customadapter.NoResultDataBinder;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.fragment.BaseListFragment;
 import com.tokopedia.seller.base.view.presenter.BlankPresenter;
-import com.tokopedia.seller.instoped.InstopedSellerActivity;
-import com.tokopedia.seller.instoped.InstopedSellerCropWatermarkActivity;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.draft.di.component.DaggerProductDraftListComponent;
 import com.tokopedia.seller.product.draft.di.module.ProductDraftListModule;
@@ -45,28 +41,24 @@ import com.tokopedia.seller.product.edit.view.activity.ProductDraftAddActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductDraftEditActivity;
 import com.tokopedia.seller.product.edit.view.imagepickerbuilder.AddProductImagePickerBuilder;
 import com.tokopedia.seller.product.edit.view.service.UploadProductService;
-import com.tokopedia.seller.product.manage.view.fragment.ProductManageSellerFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.RuntimePermissions;
-
-import static com.tokopedia.core.newgallery.GalleryActivity.INSTAGRAM_SELECT_REQUEST_CODE;
 import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
+import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.RESULT_IMAGE_DESCRIPTION_LIST;
 
 /**
  * Created by Hendry on 6/19/2017.
  */
 
-@RuntimePermissions
 public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, ProductDraftViewModel>
         implements ProductEmptyDataBinder.Callback, ProductDraftListView {
 
     public static final int REQUEST_CODE_ADD_IMAGE = 9001;
+    public static final int INSTAGRAM_SELECT_REQUEST_CODE = 9002;
 
     @Inject
     ProductDraftListPresenter productDraftListPresenter;
@@ -223,18 +215,12 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         switch (requestCode) {
             case INSTAGRAM_SELECT_REQUEST_CODE:
-                if (resultCode == Activity.RESULT_OK && intent != null) {
-                    ArrayList<String> imageUrls = intent.getStringArrayListExtra(GalleryActivity.IMAGE_URLS);
-                    ArrayList<String> imageDescList = intent.getStringArrayListExtra(InstopedSellerActivity.EXTRA_IMAGE_DESC_LIST);
-                    if (imageUrls != null) {
-                        onProductDraftListFragmentListener.saveValidImagesToDraft(imageUrls, imageDescList);
-                    }
-                }
                 if (resultCode == Activity.RESULT_OK &&
                         intent != null) {
                     ArrayList<String> imageUrlOrPathList = intent.getStringArrayListExtra(PICKER_RESULT_PATHS);
+                    ArrayList<String> imageDescList = intent.getStringArrayListExtra(RESULT_IMAGE_DESCRIPTION_LIST);
                     if (imageUrlOrPathList != null && imageUrlOrPathList.size() > 0) {
-                        ProductAddActivity.start(ProductDraftListFragment.this, getActivity(), imageUrlOrPathList);
+                        onProductDraftListFragmentListener.saveValidImagesToDraft(imageUrlOrPathList, imageDescList);
                     }
                 }
                 break;

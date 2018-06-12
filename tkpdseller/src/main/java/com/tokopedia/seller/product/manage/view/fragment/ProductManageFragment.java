@@ -1,6 +1,5 @@
 package com.tokopedia.seller.product.manage.view.fragment;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -41,7 +40,6 @@ import com.tokopedia.core.customadapter.NoResultDataBinder;
 import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.share.ShareActivity;
@@ -57,8 +55,6 @@ import com.tokopedia.seller.base.view.adapter.BaseRetryDataBinder;
 import com.tokopedia.seller.base.view.emptydatabinder.EmptyDataBinder;
 import com.tokopedia.seller.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.seller.common.utils.KMNumbers;
-import com.tokopedia.seller.instoped.InstopedSellerActivity;
-import com.tokopedia.seller.instoped.InstopedSellerCropperActivity;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
@@ -93,22 +89,19 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.RuntimePermissions;
-
-import static com.tokopedia.core.newgallery.GalleryActivity.INSTAGRAM_SELECT_REQUEST_CODE;
 import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
+import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.RESULT_IMAGE_DESCRIPTION_LIST;
 
 /**
  * Created by zulfikarrahman on 9/22/17.
  */
 
-@RuntimePermissions
 public class ProductManageFragment extends BaseSearchListFragment<ProductManagePresenter, ProductManageViewModel>
         implements ProductManageView, ProductManageListAdapter.ClickOptionCallback, BaseMultipleCheckListAdapter.CheckedCallback<ProductManageViewModel> {
 
     public static final String ERROR_CODE_LIMIT_CASHBACK = "422";
     public static final int REQUEST_CODE_ADD_IMAGE = 3859;
+    public static final int INSTAGRAM_SELECT_REQUEST_CODE = 3860;
 
     @Inject
     ProductManagePresenter productManagePresenter;
@@ -261,7 +254,8 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
             item.getSubMenu().findItem(R.id.label_view_import_from_instagram).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
-                    ProductManageFragmentPermissionsDispatcher.importFromInstagramWithCheck(ProductManageFragment.this);
+                    Intent intent = AddProductImagePickerBuilder.createPickerIntentInstagramImport(getContext());
+                    startActivityForResult(intent, INSTAGRAM_SELECT_REQUEST_CODE);
                     UnifyTracking.eventProductManageTopNav(item.getTitle().toString());
                     return false;
                 }
@@ -276,19 +270,6 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     private void openImagePickerToAddProduct(){
         Intent intent = AddProductImagePickerBuilder.createPickerIntentPrimary(getContext(), null);
         startActivityForResult(intent, REQUEST_CODE_ADD_IMAGE);
-    }
-
-    @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-    public void importFromInstagram() {
-        InstopedSellerCropperActivity.startInstopedActivityForResult(getContext(), ProductManageFragment.this,
-                INSTAGRAM_SELECT_REQUEST_CODE, ProductManageSellerFragment.MAX_INSTAGRAM_SELECT);
-        UnifyTracking.eventClickInstoped();
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        ProductManageFragmentPermissionsDispatcher.onRequestPermissionsResult(ProductManageFragment.this, requestCode, grantResults);
     }
 
     @NonNull
@@ -352,9 +333,9 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
             case INSTAGRAM_SELECT_REQUEST_CODE:
                 if (resultCode == Activity.RESULT_OK &&
                         intent != null) {
-                    ArrayList<String> imageUrls = intent.getStringArrayListExtra(GalleryActivity.IMAGE_URLS);
-                    ArrayList<String> imageDescList = intent.getStringArrayListExtra(InstopedSellerActivity.EXTRA_IMAGE_DESC_LIST);
-                    if (imageUrls != null) {
+                    ArrayList<String> imageUrls = intent.getStringArrayListExtra(PICKER_RESULT_PATHS);
+                    ArrayList<String> imageDescList = intent.getStringArrayListExtra(RESULT_IMAGE_DESCRIPTION_LIST);
+                    if (imageUrls != null && imageUrls.size() > 0) {
                         ProductDraftListActivity.startInstagramSaveBulkFromLocal(getContext(), imageUrls, imageDescList);
                     }
                 }

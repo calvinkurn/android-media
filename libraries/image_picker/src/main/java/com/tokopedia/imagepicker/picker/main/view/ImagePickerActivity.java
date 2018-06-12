@@ -40,7 +40,6 @@ import com.tokopedia.imagepicker.picker.widget.ImagePickerPreviewWidget;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity.RESULT_IMAGE_DESCRIPTION_LIST;
 import static com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity.RESULT_IS_EDITTED;
 import static com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity.RESULT_PREVIOUS_IMAGE;
 
@@ -52,6 +51,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
     public static final String EXTRA_IMAGE_PICKER_BUILDER = "x_img_pick_builder";
 
     public static final String PICKER_RESULT_PATHS = "result_paths";
+    public static final String RESULT_IMAGE_DESCRIPTION_LIST = "IMG_DESC";
 
     public static final String SAVED_SELECTED_TAB = "saved_sel_tab";
     public static final String SAVED_SELECTED_IMAGES = "saved_sel_img";

@@ -1,6 +1,5 @@
 package com.tokopedia.seller.product.manage.view.fragment;
 
-import android.Manifest;
 import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -15,7 +14,6 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.instoped.InstopedSellerCropWatermarkActivity;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.draft.di.component.DaggerProductDraftListCountComponent;
 import com.tokopedia.seller.product.draft.di.module.ProductDraftListCountModule;
@@ -26,14 +24,8 @@ import com.tokopedia.seller.product.edit.view.service.UploadProductService;
 
 import javax.inject.Inject;
 
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.RuntimePermissions;
-
-import static com.tokopedia.core.newgallery.GalleryActivity.INSTAGRAM_SELECT_REQUEST_CODE;
-
-@RuntimePermissions
 public class ProductManageSellerFragment extends ProductManageFragment implements ProductDraftListCountView {
-    public static final int MAX_INSTAGRAM_SELECT = 20;
+
     public static final boolean DEFAULT_NEED_COMPRESS_TKPD = true;
     private BroadcastReceiver draftBroadCastReceiver;
 
@@ -71,14 +63,6 @@ public class ProductManageSellerFragment extends ProductManageFragment implement
     public void onDestroy() {
         super.onDestroy();
         productDraftListCountPresenter.detachView();
-    }
-
-    @Override
-    @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-    public void importFromInstagram() {
-        InstopedSellerCropWatermarkActivity.startInstopedActivityForResult(getContext(), ProductManageSellerFragment.this,
-                INSTAGRAM_SELECT_REQUEST_CODE, ProductManageSellerFragment.MAX_INSTAGRAM_SELECT);
-        UnifyTracking.eventClickInstoped();
     }
 
     @Override

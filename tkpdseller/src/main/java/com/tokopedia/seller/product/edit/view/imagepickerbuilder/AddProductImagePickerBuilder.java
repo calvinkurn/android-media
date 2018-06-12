@@ -92,7 +92,8 @@ public class AddProductImagePickerBuilder {
     }
 
     public static Intent createEditorIntent(Context context, String uriOrPath) {
-        return ImageEditorActivity.getIntent(context, uriOrPath, ImagePickerBuilder.DEFAULT_MIN_RESOLUTION,
+        return ImageEditorActivity.getIntent(context, uriOrPath, null,
+                ImagePickerBuilder.DEFAULT_MIN_RESOLUTION,
                 new int[]{ACTION_BRIGHTNESS, ACTION_CONTRAST, ACTION_CROP, ACTION_ROTATE},
                 ImageRatioTypeDef.RATIO_1_1, false,
                 ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,

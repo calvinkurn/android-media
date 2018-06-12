@@ -47,6 +47,7 @@ import static com.tokopedia.imagepicker.editor.main.Constant.HALF_ROTATE_RANGE;
 import static com.tokopedia.imagepicker.editor.main.Constant.INITIAL_CONTRAST_VALUE;
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB;
 import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
+import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.RESULT_IMAGE_DESCRIPTION_LIST;
 
 /**
  * Created by Hendry on 9/25/2017.
@@ -74,7 +75,6 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
 
     public static final String RESULT_IS_EDITTED = "is_editted";
     public static final String RESULT_PREVIOUS_IMAGE = "ori_image";
-    public static final String RESULT_IMAGE_DESCRIPTION_LIST = "IMG_DESC";
 
     public static final int MAX_HISTORY_PER_IMAGE = 5;
     private static final int REQUEST_STORAGE_PERMISSIONS = 5109;
