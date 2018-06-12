@@ -57,6 +57,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
     private static final int IMAGE_ALPHA_DISABLED = 128;
     private static final int IMAGE_ALPHA_ENABLED = 255;
 
+    private static final float CHECKBOX_DISABLED_ALPHA = 0.4f;
+
     private static final int GRAM = 0;
     private static final int KILOGRAM = 1;
     private static final int KILOGRAM_TO_GRAM_MULTIPLIER = 1000;
@@ -542,6 +544,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
 
             final CourierItemData courierItemData = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier();
             if (courierItemData.getInsuranceType() == InsuranceConstant.INSURANCE_TYPE_MUST) {
+                cbInsurance.setAlpha(CHECKBOX_DISABLED_ALPHA);
                 cbInsurance.setChecked(true);
                 cbInsurance.setClickable(false);
                 shipmentCartItemModel.getSelectedShipmentDetailData().setUseInsurance(true);
@@ -551,6 +554,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                 llInsurance.setVisibility(View.GONE);
                 shipmentCartItemModel.getSelectedShipmentDetailData().setUseInsurance(false);
             } else if (courierItemData.getInsuranceType() == InsuranceConstant.INSURANCE_TYPE_OPTIONAL) {
+                cbInsurance.setAlpha(1);
                 cbInsurance.setClickable(true);
                 llInsurance.setOnClickListener(getInsuranceClickListener());
                 if (useInsurance == null) {
