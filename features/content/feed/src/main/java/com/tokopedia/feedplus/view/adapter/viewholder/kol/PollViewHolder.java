@@ -20,7 +20,6 @@ import com.tokopedia.kol.feature.post.view.widget.BaseKolView;
 public class PollViewHolder extends AbstractViewHolder<PollViewModel> implements BaseKolListener {
 
     private FeedPlus.View.Kol viewListener;
-    private PollAdapter pollAdapter;
     private BaseKolView baseKolView;
     private RecyclerView pollList;
     private TextView totalVoter;
@@ -30,7 +29,6 @@ public class PollViewHolder extends AbstractViewHolder<PollViewModel> implements
 
     public PollViewHolder(View itemView, FeedPlus.View.Kol viewListener) {
         super(itemView);
-        pollAdapter = new PollAdapter();
 
         this.viewListener = viewListener;
         baseKolView = itemView.findViewById(com.tokopedia.kol.R.id.base_kol_view);
@@ -49,6 +47,8 @@ public class PollViewHolder extends AbstractViewHolder<PollViewModel> implements
         );
 
         totalVoter.setText(totalVoterText);
+
+        PollAdapter pollAdapter = new PollAdapter();
         pollList.setAdapter(pollAdapter);
         pollAdapter.setList(element.getOptionViewModels());
     }
