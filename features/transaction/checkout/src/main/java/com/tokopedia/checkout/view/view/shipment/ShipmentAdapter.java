@@ -248,10 +248,21 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
 
         shipmentCheckoutButtonModel.setAbleToCheckout(!hasViewValidationError && availableCheckout);
-        if (shipmentCostModel != null) {
-            String priceTotal = shipmentCostModel.getTotalPrice() == 0 ? "-" :
-                    CurrencyFormatUtil.convertPriceValueToIdrFormat((int) shipmentCostModel.getTotalPrice(), true);
-            shipmentCheckoutButtonModel.setTotalPayment(priceTotal);
+        if (shipmentCostModel != null && shipmentCartItemModelList != null) {
+            int cartItemCounter = 0;
+            for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
+                if (shipmentCartItemModel.getSelectedShipmentDetailData() != null &&
+                        shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
+                    cartItemCounter++;
+                }
+            }
+            if (cartItemCounter == shipmentCartItemModelList.size()) {
+                String priceTotal = shipmentCostModel.getTotalPrice() == 0 ? "-" :
+                        CurrencyFormatUtil.convertPriceValueToIdrFormat((int) shipmentCostModel.getTotalPrice(), true);
+                shipmentCheckoutButtonModel.setTotalPayment(priceTotal);
+            } else {
+                shipmentCheckoutButtonModel.setTotalPayment("-");
+            }
         } else if (defaultTotal != null) {
             shipmentCheckoutButtonModel.setTotalPayment(defaultTotal);
         }
