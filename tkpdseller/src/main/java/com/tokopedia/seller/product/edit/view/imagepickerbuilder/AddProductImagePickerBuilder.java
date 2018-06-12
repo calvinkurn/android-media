@@ -81,7 +81,7 @@ public class AddProductImagePickerBuilder {
         return ImagePickerAddProductActivity.getIntent(context, builder, catalogId);
     }
 
-    public static Intent createPickerIntentInstagram(Context context) {
+    public static Intent createPickerIntentInstagramImport(Context context) {
         ImagePickerBuilder builder = AddProductImagePickerBuilder.createInstagramImportBuilder(context);
         return ImagePickerActivity.getIntent(context, builder);
     }

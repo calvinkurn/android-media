@@ -193,7 +193,8 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
             item.getSubMenu().findItem(R.id.label_view_import_from_instagram).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
-                    ProductDraftListFragmentPermissionsDispatcher.onInstagramClickedWithCheck(ProductDraftListFragment.this);
+                    Intent intent = AddProductImagePickerBuilder.createPickerIntentInstagramImport(getContext());
+                    startActivityForResult(intent, INSTAGRAM_SELECT_REQUEST_CODE);
                     return false;
                 }
             });
@@ -204,18 +205,6 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
     private void openImagePickerToAddProduct(){
         Intent intent = AddProductImagePickerBuilder.createPickerIntentPrimary(getContext(), null);
         startActivityForResult(intent, REQUEST_CODE_ADD_IMAGE);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        ProductDraftListFragmentPermissionsDispatcher.onRequestPermissionsResult(ProductDraftListFragment.this, requestCode, grantResults);
-    }
-
-    @NeedsPermission({Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    public void onInstagramClicked() {
-        InstopedSellerCropWatermarkActivity.startInstopedActivityForResult(getContext(), ProductDraftListFragment.this,
-                INSTAGRAM_SELECT_REQUEST_CODE, ProductManageSellerFragment.MAX_INSTAGRAM_SELECT);
     }
 
     @Override
@@ -239,6 +228,13 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
                     ArrayList<String> imageDescList = intent.getStringArrayListExtra(InstopedSellerActivity.EXTRA_IMAGE_DESC_LIST);
                     if (imageUrls != null) {
                         onProductDraftListFragmentListener.saveValidImagesToDraft(imageUrls, imageDescList);
+                    }
+                }
+                if (resultCode == Activity.RESULT_OK &&
+                        intent != null) {
+                    ArrayList<String> imageUrlOrPathList = intent.getStringArrayListExtra(PICKER_RESULT_PATHS);
+                    if (imageUrlOrPathList != null && imageUrlOrPathList.size() > 0) {
+                        ProductAddActivity.start(ProductDraftListFragment.this, getActivity(), imageUrlOrPathList);
                     }
                 }
                 break;
