@@ -21,5 +21,6 @@ interface SettingBankContract {
 
     interface Presenter : CustomerPresenter<View> {
 
+        fun getBankList()
     }
 }

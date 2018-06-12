@@ -14,6 +14,29 @@ class SettingBankPresenter(val userSession: UserSession,
         BaseDaggerPresenter<SettingBankContract.View>() {
 
 
+    override fun getBankList() {
+//        var page : Int = 0
+//        getBankAccountUseCase.execute(GetBankListUseCase.getParam(
+//                userSession.user
+//        ), object : Subscriber<ChangePasswordDomain>() {
+//            override fun onCompleted() {
+//
+//            }
+//
+//            override fun onError(e: Throwable) {
+//                view.onErrorChangePassword(e.toString())
+//            }
+//
+//            override fun onNext(changePasswordDomain: ChangePasswordDomain) {
+//                if (changePasswordDomain.is_success) {
+//                    view.onSuccessChangePassword()
+//                } else {
+//                    view.onErrorChangePassword("")
+//                }
+//            }
+//        })
+    }
+
     override fun detachView() {
         super.detachView()
         getBankAccountUseCase.unsubscribe()

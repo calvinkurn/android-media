@@ -48,4 +48,8 @@ class SettingBankFragment : SettingBankContract.View, BaseDaggerFragment() {
     override fun hideLoading() {
     }
 
+    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        presenter.getBankList()
+    }
 }
