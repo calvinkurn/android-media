@@ -25,7 +25,7 @@ import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDe
 public class ImageUploadActivity extends ImagePickerActivity {
 
     public static Intent getInstance(Context context) {
-        ImagePickerBuilder builder = new ImagePickerBuilder(getString(R.string.title_post),
+        ImagePickerBuilder builder = new ImagePickerBuilder(context.getString(R.string.title_post),
                 new int[]{TYPE_GALLERY, TYPE_CAMERA}, GalleryType.IMAGE_ONLY, DEFAULT_MAX_IMAGE_SIZE_IN_KB,
                 DEFAULT_MIN_RESOLUTION, 1, 1, true,
                 new ImagePickerEditorBuilder(new int[]{ACTION_BRIGHTNESS, ACTION_CONTRAST, ACTION_CROP, ACTION_ROTATE},
