@@ -13,7 +13,9 @@ import com.tokopedia.imagepicker.picker.instagram.data.source.cloud.InstagramApi
 import com.tokopedia.imagepicker.picker.instagram.domain.InstagramRepository;
 import com.tokopedia.imagepicker.picker.instagram.domain.interactor.GetListMediaInstagramUseCase;
 import com.tokopedia.imagepicker.picker.instagram.domain.interactor.SaveCookiesInstagramUseCase;
+import com.tokopedia.imagepicker.picker.instagram.view.fragment.InstagramLoginFragment;
 import com.tokopedia.imagepicker.picker.instagram.view.presenter.ImagePickerInstagramPresenter;
+import com.tokopedia.imagepicker.picker.instagram.view.presenter.InstagramLoginPresenter;
 
 import java.util.concurrent.TimeUnit;
 
@@ -35,9 +37,14 @@ public class InstagramModule {
     @InstagramScope
     @Provides
     ImagePickerInstagramPresenter provideImagePickerInstagramPresenter(GetListMediaInstagramUseCase getListMediaInstagramUseCase,
-                                                                       SaveCookiesInstagramUseCase saveCookiesInstagramUseCase,
                                                                        ClearCacheMediaInstagramUseCase clearCacheMediaInstagramUseCase) {
-        return new ImagePickerInstagramPresenter(getListMediaInstagramUseCase, saveCookiesInstagramUseCase, clearCacheMediaInstagramUseCase);
+        return new ImagePickerInstagramPresenter(getListMediaInstagramUseCase, clearCacheMediaInstagramUseCase);
+    }
+
+    @InstagramScope
+    @Provides
+    InstagramLoginPresenter provideInstagramLoginFragment(SaveCookiesInstagramUseCase saveCookiesInstagramUseCase){
+        return new InstagramLoginPresenter(saveCookiesInstagramUseCase);
     }
 
     @InstagramScope
