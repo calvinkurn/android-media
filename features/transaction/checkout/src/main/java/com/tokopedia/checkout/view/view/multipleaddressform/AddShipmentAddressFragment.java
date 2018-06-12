@@ -27,7 +27,9 @@ import com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceActivity
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsMultipleAddress;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -222,7 +224,15 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
             if (charSequence.toString().isEmpty() || Integer.parseInt(charSequence.toString()) < 1) {
                 quantityField.setText("1");
             } else {
-                if (Integer.parseInt(charSequence.toString()) > MAX_QTY_DEFAULT) {
+                if (Integer.parseInt(charSequence.toString()) > data.getMaxQuantity()) {
+                    NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.US);
+                    String numberAsString = numberFormat.format(data.getMaxQuantity());
+                    String maxValue = numberAsString.replace(",", ".");
+                    saveChangesButton.setVisibility(View.GONE);
+                    quantityErrorLayout.setVisibility(View.VISIBLE);
+                    quantityErrorTextView.setText(data.getErrorProductMaxQuantity()
+                            .replace("{{value}}", maxValue));
+                } else if (Integer.parseInt(charSequence.toString()) > MAX_QTY_DEFAULT) {
                     saveChangesButton.setVisibility(View.GONE);
                     quantityErrorLayout.setVisibility(View.VISIBLE);
                     quantityErrorTextView.setText(data.getErrorProductMaxQuantity()
@@ -232,11 +242,6 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
                     quantityErrorLayout.setVisibility(View.VISIBLE);
                     quantityErrorTextView.setText(data.getErrorProductMinQuantity()
                             .replace("{{value}}", String.valueOf(data.getMinQuantity())));
-                } else if (Integer.parseInt(charSequence.toString()) > data.getMaxQuantity()) {
-                    saveChangesButton.setVisibility(View.GONE);
-                    quantityErrorLayout.setVisibility(View.VISIBLE);
-                    quantityErrorTextView.setText(data.getErrorProductMaxQuantity()
-                            .replace("{{value}}", String.valueOf(data.getMaxQuantity())));
                 } else if (Integer.parseInt(charSequence.toString()) < data.getMinQuantity()) {
                     saveChangesButton.setVisibility(View.GONE);
                     quantityErrorLayout.setVisibility(View.VISIBLE);
