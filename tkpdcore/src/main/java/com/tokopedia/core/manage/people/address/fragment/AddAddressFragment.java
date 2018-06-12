@@ -430,6 +430,16 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
         };
     }
 
+    private void setPinpointAddress(Destination address) {
+        if (address.getLatitude() != null &&
+                address.getLongitude() != null &&
+                !address.getLatitude().equals("") &&
+                !address.getLongitude().equals("")
+                ) {
+            locationEditText.setText(address.getGeoLocation(getActivity()));
+        }
+    }
+
     public void initializeZipCodes() {
         zipCodeTextView.setText("");
         String header = getResources().getString(R.string.hint_type_postal_code);
@@ -559,6 +569,7 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
 
             zipCodeTextView.setText(address.getPostalCode());
             receiverPhoneEditText.setText(address.getReceiverPhone());
+            setPinpointAddress(address);
         } else if (address == null) {
             address = new Destination();
         }
