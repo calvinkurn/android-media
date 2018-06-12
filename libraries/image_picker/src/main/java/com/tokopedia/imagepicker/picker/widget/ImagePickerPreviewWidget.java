@@ -58,7 +58,7 @@ public class ImagePickerPreviewWidget extends FrameLayout implements ImagePicker
         LayoutInflater.from(getContext()).inflate(R.layout.widget_image_picker_thumbnail_list,
                 this, true);
         imagePickerThumbnailAdapter = new ImagePickerThumbnailAdapter(
-                getContext(), null, this);
+                getContext(), null, null, this);
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setHasFixedSize(true);
@@ -74,8 +74,9 @@ public class ImagePickerPreviewWidget extends FrameLayout implements ImagePicker
         this.onImagePickerThumbnailListWidgetListener = onImagePickerThumbnailListWidgetListener;
     }
 
-    public void setData(ArrayList<String> imagePathList, @StringRes int primaryImageStringRes) {
-        imagePickerThumbnailAdapter.setData(imagePathList, primaryImageStringRes);
+    public void setData(ArrayList<String> imagePathList, @StringRes int primaryImageStringRes,
+                        ArrayList<Integer> placeholderDrawableList) {
+        imagePickerThumbnailAdapter.setData(imagePathList, primaryImageStringRes, placeholderDrawableList);
     }
 
     public void addData(String imagePath){
