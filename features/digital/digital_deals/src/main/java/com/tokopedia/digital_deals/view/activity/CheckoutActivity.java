@@ -28,10 +28,13 @@ public class CheckoutActivity extends BaseSimpleActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        String orderId = Utils.fetchOrderId(data.getStringExtra(ScroogePGUtil.SUCCESS_MSG_URL));
-        Intent intent = ((TkpdCoreRouter) getApplication())
-                .getOrderListDetailActivity(this, "RIDE", orderId);
-        this.startActivity(intent);
+        if (data != null) {
+            String orderId = Utils.fetchOrderId(data.getStringExtra(ScroogePGUtil.SUCCESS_MSG_URL));
+
+            Intent intent = ((TkpdCoreRouter) getApplication())
+                    .getOrderListDetailActivity(this, "RIDE", orderId);
+            this.startActivity(intent);
+        }
         super.onActivityResult(requestCode, resultCode, data);
     }
 }
