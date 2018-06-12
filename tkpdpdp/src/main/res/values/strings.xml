@@ -43,4 +43,7 @@
     <string name="product_variant_onboarding">Produk ini tersedia dalam beberapa varian (seperti warna dan ukuran)</string>
 
     <string name="product_updated_on_message_container">Produk telah diperbaharui pada %1$s</string>
+    <string name="product_price">Harga Barang</string>
+    <string name="title_buy_now">Beli Sekarang</string>
+    <string name="title_add_to_cart">Tambah ke Keranjang</string>
 </resources>

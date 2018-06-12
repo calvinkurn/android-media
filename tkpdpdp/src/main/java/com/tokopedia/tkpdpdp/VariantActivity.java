@@ -3,6 +3,7 @@ package com.tokopedia.tkpdpdp;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -69,6 +70,13 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
     private TextView sizeChartLevel1;
     private TextView sizeChartLevel2;
     private TextView textStock;
+    private View viewNewCheckoutFlow;
+    private View buttonCart;
+    private View viewCartPrice;
+    private TextView textCartPrice;
+    private View buttonBuy;
+    private TextView textButtonBuy;
+    private ImageView iconCartButtonBuy;
 
     private VariantOptionAdapter variantOptionAdapterLevel2;
     private VariantOptionAdapter variantOptionAdapterLevel1;
@@ -120,6 +128,13 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
         sizeChartLevel1 = findViewById(R.id.sizechart_level1);
         sizeChartLevel2 = findViewById(R.id.sizechart_level2);
         textStock = findViewById(R.id.text_variant_stock);
+        viewNewCheckoutFlow = findViewById(R.id.container_new_checkout_flow);
+        buttonCart = findViewById(R.id.action_button_cart);
+        viewCartPrice = findViewById(R.id.view_product_price);
+        textCartPrice = findViewById(R.id.text_product_price);
+        buttonBuy = findViewById(R.id.new_button_save);
+        textButtonBuy = findViewById(R.id.new_text_button_save);
+        iconCartButtonBuy = findViewById(R.id.icon_cart);
         ImageHandler.LoadImage(productImage, productDetailData.getProductImages().get(0).getImageSrc300());
         if (!TextUtils.isEmpty(productVariant.getSizechart()) &&
                 productVariant.getVariant().get(0).getIdentifier().equals(IDENTIFIER_SIZE)) {
@@ -209,21 +224,65 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
                 });
     }
 
+    private String generateTextButtonBuy() {
+        if (productDetailData.getPreOrder() != null && productDetailData.getPreOrder().getPreorderStatus().equals("1")
+                && !productDetailData.getPreOrder().getPreorderStatus().equals("0")
+                && !productDetailData.getPreOrder().getPreorderProcessTime().equals("0")
+                && !productDetailData.getPreOrder().getPreorderProcessTimeType().equals("0")
+                && !productDetailData.getPreOrder().getPreorderProcessTimeTypeString().equals("0")) {
+            return getResources().getString(R.string.title_pre_order);
+        } else {
+            switch (stateFormVariantPage) {
+                case STATE_BUTTON_BUY:
+                    return getResources().getString(R.string.title_buy_now);
+                case STATE_BUTTON_CART:
+                    return getResources().getString(R.string.title_add_to_cart);
+                default:
+                    return getResources().getString(R.string.title_buy);
+            }
+        }
+    }
+
+    private Drawable generateBackgroundButtonBuy() {
+        switch (stateFormVariantPage) {
+            case STATE_BUTTON_CART:
+                return ContextCompat.getDrawable(VariantActivity.this, R.drawable.white_button_rounded);
+            case STATE_BUTTON_BUY:
+            default:
+                return ContextCompat.getDrawable(VariantActivity.this, R.drawable.orange_button_rounded);
+        }
+    }
+
+    private int generateColorTextButtonBuy() {
+        switch (stateFormVariantPage) {
+            case STATE_BUTTON_CART:
+                return ContextCompat.getColor(VariantActivity.this, R.color.font_black_primary_70);
+            case STATE_BUTTON_BUY:
+            default:
+                return ContextCompat.getColor(VariantActivity.this, R.color.href_link_rev);
+        }
+    }
+
+    private String generateTextPriceCart() {
+        if(productDetailData.getCampaign() != null
+                && productDetailData.getCampaign().getActive()) {
+            return productDetailData.getCampaign().getDiscountedPriceFmt();
+        } else {
+            return productDetailData.getInfo().getProductPrice();
+        }
+    }
+
     public void updateButton(Child child) {
         if (child.isIsBuyable() && productDetailData.getShopInfo().getShopStatus()==1) {
-            buttonSave.setBackground(ContextCompat.getDrawable(VariantActivity.this,R.drawable.button_save_orange));
-            textButtonSave.setTextColor(ContextCompat.getColor(VariantActivity.this,R.color.href_link_rev));
-            if (productDetailData.getPreOrder() != null && productDetailData.getPreOrder().getPreorderStatus().equals("1")
-                    && !productDetailData.getPreOrder().getPreorderStatus().equals("0")
-                    && !productDetailData.getPreOrder().getPreorderProcessTime().equals("0")
-                    && !productDetailData.getPreOrder().getPreorderProcessTimeType().equals("0")
-                    && !productDetailData.getPreOrder().getPreorderProcessTimeTypeString().equals("0")) {
-                textButtonSave.setText(getResources().getString(R.string.title_pre_order));
-            } else {
-                textButtonSave.setText(getResources().getString(R.string.title_buy));
-            }
-            buttonSave.setClickable(true);
-            buttonSave.setOnClickListener(new View.OnClickListener() {
+            viewNewCheckoutFlow.setVisibility(VISIBLE);
+            buttonSave.setVisibility(View.GONE);
+            buttonBuy.setBackground(generateBackgroundButtonBuy());
+            textButtonBuy.setTextColor(generateColorTextButtonBuy());
+            textButtonBuy.setText(generateTextButtonBuy());
+            iconCartButtonBuy.setVisibility(stateFormVariantPage == STATE_BUTTON_CART ? VISIBLE : View.GONE);
+            textCartPrice.setText(generateTextPriceCart());
+            buttonBuy.setClickable(true);
+            buttonBuy.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     setResult(VariantActivity.SELECTED_VARIANT_RESULT_TO_BUY, generateExtraSelectedIntent());
@@ -232,11 +291,15 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
                 }
             });
         } else if (child.isIsBuyable()==false) {
+            viewNewCheckoutFlow.setVisibility(View.GONE);
+            buttonSave.setVisibility(View.VISIBLE);
             textButtonSave.setText(getResources().getString(R.string.title_warehouse));
             textButtonSave.setTextColor(ContextCompat.getColor(VariantActivity.this,R.color.black_38));
             buttonSave.setBackground(ContextCompat.getDrawable(VariantActivity.this,R.drawable.button_save_grey));
             buttonSave.setClickable(false);
         } else {
+            viewNewCheckoutFlow.setVisibility(View.GONE);
+            buttonSave.setVisibility(View.VISIBLE);
             if (productDetailData.getPreOrder() != null && productDetailData.getPreOrder().getPreorderStatus().equals("1")
                     && !productDetailData.getPreOrder().getPreorderStatus().equals("0")
                     && !productDetailData.getPreOrder().getPreorderProcessTime().equals("0")
