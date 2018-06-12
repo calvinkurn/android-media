@@ -403,16 +403,18 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public void checkHasSelectAllCourier() {
         int cartItemCounter = 0;
-        for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
-            if (shipmentCartItemModel.getSelectedShipmentDetailData() != null &&
-                    shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
-                cartItemCounter++;
+        if (shipmentCartItemModelList != null) {
+            for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
+                if (shipmentCartItemModel.getSelectedShipmentDetailData() != null &&
+                        shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
+                    cartItemCounter++;
+                }
             }
-        }
-        if (cartItemCounter == shipmentCartItemModelList.size()) {
-            RequestData requestData = getRequestData(null);
-            shipmentAdapterActionListener.onFinishChoosingShipment(requestData.getPromoRequestData(),
-                    requestData.getCheckoutRequestData());
+            if (cartItemCounter == shipmentCartItemModelList.size()) {
+                RequestData requestData = getRequestData(null);
+                shipmentAdapterActionListener.onFinishChoosingShipment(requestData.getPromoRequestData(),
+                        requestData.getCheckoutRequestData());
+            }
         }
     }
 
@@ -426,28 +428,26 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         double insuranceFee = 0;
         for (ShipmentData shipmentData : shipmentDataList) {
             if (shipmentData instanceof ShipmentCartItemModel) {
-                if (shipmentData instanceof ShipmentCartItemModel) {
-                    ShipmentCartItemModel shipmentSingleAddressItem =
-                            (ShipmentCartItemModel) shipmentData;
-                    List<CartItemModel> cartItemModels = shipmentSingleAddressItem.getCartItemModels();
-                    for (CartItemModel cartItemModel : cartItemModels) {
-                        totalWeight += (cartItemModel.getWeight() * cartItemModel.getQuantity());
-                        totalItem += cartItemModel.getQuantity();
-                        totalItemPrice += (cartItemModel.getPrice() * cartItemModel.getQuantity());
-                    }
+                ShipmentCartItemModel shipmentSingleAddressItem =
+                        (ShipmentCartItemModel) shipmentData;
+                List<CartItemModel> cartItemModels = shipmentSingleAddressItem.getCartItemModels();
+                for (CartItemModel cartItemModel : cartItemModels) {
+                    totalWeight += (cartItemModel.getWeight() * cartItemModel.getQuantity());
+                    totalItem += cartItemModel.getQuantity();
+                    totalItemPrice += (cartItemModel.getPrice() * cartItemModel.getQuantity());
+                }
 
-                    if (((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData() != null &&
-                            ((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData().getSelectedCourier() != null) {
-                        Boolean useInsurance = ((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData().getUseInsurance();
-                        shippingFee += shipmentSingleAddressItem.getSelectedShipmentDetailData()
-                                .getSelectedCourier().getDeliveryPrice();
-                        if (useInsurance != null && useInsurance) {
-                            insuranceFee += shipmentSingleAddressItem.getSelectedShipmentDetailData()
-                                    .getSelectedCourier().getInsurancePrice();
-                        }
-                        additionalFee += shipmentSingleAddressItem.getSelectedShipmentDetailData()
-                                .getSelectedCourier().getAdditionalPrice();
+                if (((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData() != null &&
+                        ((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData().getSelectedCourier() != null) {
+                    Boolean useInsurance = ((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData().getUseInsurance();
+                    shippingFee += shipmentSingleAddressItem.getSelectedShipmentDetailData()
+                            .getSelectedCourier().getDeliveryPrice();
+                    if (useInsurance != null && useInsurance) {
+                        insuranceFee += shipmentSingleAddressItem.getSelectedShipmentDetailData()
+                                .getSelectedCourier().getInsurancePrice();
                     }
+                    additionalFee += shipmentSingleAddressItem.getSelectedShipmentDetailData()
+                            .getSelectedCourier().getAdditionalPrice();
                 }
             }
         }

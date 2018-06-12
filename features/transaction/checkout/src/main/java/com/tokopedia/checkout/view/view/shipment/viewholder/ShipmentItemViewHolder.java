@@ -433,7 +433,11 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
                     shipmentCartItemModel.getSelectedShipmentDetailData().setUseDropshipper(checked);
-                    if (checked) mActionListener.onDropshipCheckedForTrackingAnalytics();
+                    if (checked) {
+                        mActionListener.onDropshipCheckedForTrackingAnalytics();
+                    } else {
+                        shipmentCartItemModel.setStateDropshipperHasError(false);
+                    }
                     mActionListener.onNeedUpdateViewItem(getAdapterPosition());
                     mActionListener.onNeedUpdateRequestData();
                 }
@@ -531,7 +535,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
                     shipmentCartItemModel.getSelectedShipmentDetailData().setUseInsurance(checked);
-                    if (checked) mActionListener.onInsuranceCheckedForTrackingAnalytics();
+                    if (checked) {
+                        mActionListener.onInsuranceCheckedForTrackingAnalytics();
+                    }
                     mActionListener.onInsuranceChecked(getAdapterPosition());
                     mActionListener.onNeedUpdateRequestData();
                 }
