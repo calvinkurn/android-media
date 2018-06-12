@@ -306,7 +306,8 @@ ext {
             transactiondata     : ":features:transaction:transactiondata",
             transactionanalytics: ":features:transaction:transactionanalytics",
             tracking            : ":features:logistic:tracking",
-            logisticuploadawb : ":features:logistic:logisticuploadawb"
+            logisticuploadawb : ":features:logistic:logisticuploadawb",
+            paymentManagementSystem     : ":features:payment:paymentmanagementsysteme"
     ]
 
     libraries = [
