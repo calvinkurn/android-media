@@ -153,6 +153,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         sendMessageUseCase.unsubscribe();
         attachImageUseCase.unsubscribe();
         setChatRatingUseCase.unsubscribe();
+        sendReasonRatingUseCase.unsubscribe();
     }
 
     @Override
