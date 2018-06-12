@@ -2,6 +2,7 @@ package com.tokopedia.imagepicker.picker.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.StringRes;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
@@ -31,6 +32,7 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
     private final int thumbnailSize;
     private Context context;
     private ArrayList<String> imagePathList;
+    private ArrayList<Integer> placeholderDrawableResList;
     private int maxSize;
     private @StringRes
     int primaryImageStringRes;
@@ -41,13 +43,14 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
     public interface OnImageEditThumbnailAdapterListener {
         void onPickerThumbnailItemClicked(String imagePath, int position);
 
-        void onThumbnailRemoved();
+        void onThumbnailRemoved(int index);
     }
 
-    public ImagePickerThumbnailAdapter(Context context, ArrayList<String> imagePathList,
+    public ImagePickerThumbnailAdapter(Context context, ArrayList<String> imagePathList, ArrayList<Integer> placeholderDrawableResList,
                                        OnImageEditThumbnailAdapterListener onImageEditThumbnailAdapterListener) {
         this.context = context;
         this.imagePathList = imagePathList;
+        this.placeholderDrawableResList = placeholderDrawableResList;
         this.onImageEditThumbnailAdapterListener = onImageEditThumbnailAdapterListener;
         roundedSize = context.getResources().getDimension(R.dimen.dp_6);
         thumbnailSize = context.getResources().getDimensionPixelOffset(R.dimen.dp_72);
@@ -76,7 +79,6 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
                 removeData(position);
             } else {
                 // TODO drag and drop (long clicked?)
-                // click on item
             }
         }
 
@@ -108,24 +110,23 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
         }
     }
 
-    public class PlaceholderThumbnailViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
+    public class PlaceholderThumbnailViewHolder extends RecyclerView.ViewHolder {
+        ImageView ivPlaceholder;
         public PlaceholderThumbnailViewHolder(View itemView) {
             super(itemView);
-            itemView.setOnClickListener(this);
+            ivPlaceholder = itemView.findViewById(R.id.image_view_placeholder);
         }
 
-        @Override
-        public void onClick(View v) {
-            int position = getAdapterPosition();
-            //TODO onclick
-
+        public void bind(@DrawableRes int drawableRes) {
+            ivPlaceholder.setImageResource(drawableRes);
         }
     }
 
-    public void setData(ArrayList<String> imagePathList, @StringRes int primaryImageStringRes) {
+    public void setData(ArrayList<String> imagePathList, @StringRes int primaryImageStringRes,
+                        ArrayList<Integer> placeholderDrawableList) {
         this.imagePathList = imagePathList;
         this.primaryImageStringRes = primaryImageStringRes;
+        this.placeholderDrawableResList = placeholderDrawableList;
         notifyDataSetChanged();
     }
 
@@ -139,15 +140,16 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
         }
     }
 
-    public void removeData(String imagePath) {
+    public int removeData(String imagePath) {
         int index = this.imagePathList.indexOf(imagePath);
         removeData(index);
+        return index;
     }
 
     public void removeData(int index) {
         if (index > -1) {
             this.imagePathList.remove(index);
-            onImageEditThumbnailAdapterListener.onThumbnailRemoved();
+            onImageEditThumbnailAdapterListener.onThumbnailRemoved(index);
             notifyDataSetChanged();
         }
     }
@@ -174,7 +176,12 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
             ((ImagePickerThumbnailViewHolder) holder).bind(imagePath, position);
         } else {
             // else draw the empty preview
-            //TODO will use the placeholder given
+            if (placeholderDrawableResList!= null && placeholderDrawableResList.size() > position) {
+                int drawableRes = placeholderDrawableResList.get(position);
+                ((PlaceholderThumbnailViewHolder)holder).bind(drawableRes);
+            } else {
+                ((PlaceholderThumbnailViewHolder)holder).bind(R.drawable.ic_loading_toped_new);
+            }
         }
     }
 
