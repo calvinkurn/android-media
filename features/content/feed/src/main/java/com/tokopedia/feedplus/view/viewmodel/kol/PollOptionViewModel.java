@@ -11,10 +11,10 @@ public class PollOptionViewModel {
     public static final int SELECTED = 2;
 
     private String optionId, option, imageUrl, weblink, applink, percentage;
-    private boolean selected;
+    private int selected;
 
     public PollOptionViewModel(String optionId, String option, String imageUrl, String weblink,
-                               String applink, String percentage, boolean selected) {
+                               String applink, String percentage, int selected) {
         this.optionId = optionId;
         this.option = option;
         this.imageUrl = imageUrl;
@@ -48,8 +48,12 @@ public class PollOptionViewModel {
         return percentage;
     }
 
-    public boolean isSelected() {
+    public int getSelected() {
         return selected;
+    }
+
+    public void setSelected(int selected) {
+        this.selected = selected;
     }
 
     public int getPercentageInteger() {

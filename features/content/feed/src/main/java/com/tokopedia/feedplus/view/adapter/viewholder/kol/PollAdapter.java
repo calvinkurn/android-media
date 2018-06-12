@@ -45,7 +45,7 @@ public class PollAdapter extends RecyclerView.Adapter<PollAdapter.ViewHolder> {
         final Context context = holder.imageView.getContext();
         final PollOptionViewModel element = list.get(position);
 
-        if (element.isSelected()) {
+        if (element.getSelected() == PollOptionViewModel.DEFAULT) {
             holder.shadowLayer.setVisibility(View.GONE);
             holder.percent.setVisibility(View.GONE);
             holder.percentLayout.setVisibility(View.GONE);
@@ -59,18 +59,17 @@ public class PollAdapter extends RecyclerView.Adapter<PollAdapter.ViewHolder> {
             holder.percent.setVisibility(View.VISIBLE);
             holder.percentLayout.setVisibility(View.VISIBLE);
             holder.progressBar.setProgress(element.getPercentageInteger());
-            //TODO milhamj selected default??
-//            if (element.getSelected() == PollOptionViewModel.SELECTED) {
-////                holder.icon.setVisibility(View.VISIBLE);
-//                holder.progressBar.setProgressDrawable(
-//                        MethodChecker.getDrawable(context, R.drawable.poll_option_image_selected)
-//                );
-//            } else if (element.getSelected() == PollOptionViewModel.UNSELECTED) {
-////                holder.icon.setVisibility(View.GONE);
-//                holder.progressBar.setProgressDrawable(
-//                        MethodChecker.getDrawable(context, R.drawable.poll_option_image_unselected)
-//                );
-//            }
+            if (element.getSelected() == PollOptionViewModel.SELECTED) {
+//                holder.icon.setVisibility(View.VISIBLE);
+                holder.progressBar.setProgressDrawable(
+                        MethodChecker.getDrawable(context, R.drawable.poll_option_image_selected)
+                );
+            } else if (element.getSelected() == PollOptionViewModel.UNSELECTED) {
+//                holder.icon.setVisibility(View.GONE);
+                holder.progressBar.setProgressDrawable(
+                        MethodChecker.getDrawable(context, R.drawable.poll_option_image_unselected)
+                );
+            }
         }
 
         holder.option.setText(element.getOption());
@@ -89,11 +88,11 @@ public class PollAdapter extends RecyclerView.Adapter<PollAdapter.ViewHolder> {
                                         holder.imageView.getWidth())
                                 );
 
-//                                if (element.isSelected()) {
-//                                    holder.shadowLayer.setVisibility(View.GONE);
-//                                } else {
-//                                    holder.shadowLayer.setVisibility(View.VISIBLE);
-//                                }
+                                if (element.getSelected() == PollOptionViewModel.DEFAULT) {
+                                    holder.shadowLayer.setVisibility(View.GONE);
+                                } else {
+                                    holder.shadowLayer.setVisibility(View.VISIBLE);
+                                }
                             }
                         });
 

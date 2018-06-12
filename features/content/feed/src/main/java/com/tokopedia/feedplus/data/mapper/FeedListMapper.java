@@ -434,6 +434,14 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
             return null;
         }
 
+        //TODO milhamj supposed to be isAnswered from API
+        boolean voted = false;
+        for (PollingOption option: polling.getOptions()) {
+            if (option.getIs_selected()) {
+                voted = true;
+            }
+        }
+
         List<PollOptionViewModel> optionViewModels = new ArrayList<>();
         for (PollingOption option: polling.getOptions()) {
             optionViewModels.add(
@@ -444,7 +452,7 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
                             option.getWeblink(),
                             option.getApplink(),
                             String.valueOf(option.getPercentage()),
-                            option.getIs_selected()
+                            checkIfSelected(voted, option.getIs_selected())
                     )
             );
         }
@@ -468,8 +476,19 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
                 polling.getShow_comment(),
                 String.valueOf(polling.getPoll_id()),
                 String.valueOf(polling.getTotal_voter()),
+                voted,
                 optionViewModels
         );
+    }
+
+    private int checkIfSelected(boolean isAnswered, boolean isSelected) {
+        if (isAnswered && isSelected) {
+            return PollOptionViewModel.SELECTED;
+        } else if (isAnswered) {
+            return PollOptionViewModel.UNSELECTED;
+        } else {
+            return PollOptionViewModel.DEFAULT;
+        }
     }
 
     private DataFeedDomain createDataFeedDomain(Feed datum,
