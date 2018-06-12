@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 
@@ -130,9 +129,7 @@ import com.tokopedia.events.di.EventComponent;
 import com.tokopedia.events.di.EventModule;
 import com.tokopedia.feedplus.FeedModuleRouter;
 import com.tokopedia.feedplus.domain.model.FollowKolDomain;
-import com.tokopedia.feedplus.domain.model.LikeKolDomain;
 import com.tokopedia.feedplus.domain.usecase.FollowKolPostUseCase;
-import com.tokopedia.feedplus.domain.usecase.LikeKolPostUseCase;
 import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.feedplus.view.di.FeedPlusComponent;
 import com.tokopedia.fingerprint.util.FingerprintConstant;
@@ -163,12 +160,12 @@ import com.tokopedia.inbox.inboxchat.activity.InboxChatActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
+import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.KolRouter;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
 import com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListActivity;
 import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment;
-import com.tokopedia.kol.feature.post.view.subscriber.LikeKolPostSubscriber;
 import com.tokopedia.logisticuploadawb.ILogisticUploadAwbRouter;
 import com.tokopedia.logisticuploadawb.UploadAwbLogisticActivity;
 import com.tokopedia.loyalty.LoyaltyRouter;
@@ -419,7 +416,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
         FeedPlusComponent feedPlusComponent =
                 DaggerFeedPlusComponent.builder()
-                        .appComponent(getApplicationComponent())
+                        .kolComponent(KolComponentInstance.getKolComponent(this))
                         .build();
 
         daggerContentBuilder = DaggerContentConsumerComponent.builder()
@@ -1929,34 +1926,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public String getKolCommentArgsTotalComment() {
         return KolCommentFragment.ARGS_TOTAL_COMMENT;
-    }
-
-    @Override
-    public void doLikeKolPost(int id, LikeKolPostSubscriber likeKolPostSubscriber) {
-        likeUnlikeKolPost(id, LikeKolPostUseCase.ACTION_LIKE, likeKolPostSubscriber);
-    }
-
-    @Override
-    public void doUnlikeKolPost(int id, LikeKolPostSubscriber likeKolPostSubscriber) {
-        likeUnlikeKolPost(id, LikeKolPostUseCase.ACTION_UNLIKE, likeKolPostSubscriber);
-    }
-
-    private void likeUnlikeKolPost(int id, int action,
-                                   LikeKolPostSubscriber likeKolPostSubscriber) {
-        LikeKolPostUseCase likeKolPostUseCase = ContentGetFeedUseCase
-                .newInstance(getContentConsumerComponent())
-                .inject()
-                .getLikeKolPostUseCase();
-        likeKolPostUseCase.createObservable(LikeKolPostUseCase.getParam(id, action))
-                .map(new Func1<LikeKolDomain, Boolean>() {
-                    @Override
-                    public Boolean call(LikeKolDomain likeKolDomain) {
-                        return likeKolDomain.isSuccess();
-                    }
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(likeKolPostSubscriber);
     }
 
     @Override

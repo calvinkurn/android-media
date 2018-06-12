@@ -19,6 +19,8 @@ public interface FeedPlus {
 
     interface View extends CustomerView {
 
+        Context getContext();
+
         void showLoadingProgress();
 
         void finishLoadingProgress();
@@ -43,6 +45,20 @@ public interface FeedPlus {
             void onSuccessFollowKolFromRecommendation(int rowNumber, int position);
 
             void onSuccessUnfollowKolFromRecommendation(int rowNumber, int position);
+
+            void onGoToKolProfile(int rowNumber, String userId, int postId);
+
+            void onOpenKolTooltip(int rowNumber, String url);
+
+            void onFollowKolClicked(int rowNumber, int id);
+
+            void onUnfollowKolClicked(int rowNumber, int id);
+
+            void onLikeKolClicked(int rowNumber, int id);
+
+            void onUnlikeKolClicked(int adapterPosition, int id);
+
+            void onGoToKolComment(int rowNumber, int id);
         }
 
         void setFirstCursor(String firstCursor);

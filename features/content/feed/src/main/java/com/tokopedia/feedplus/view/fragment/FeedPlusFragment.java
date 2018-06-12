@@ -23,6 +23,7 @@ import com.google.firebase.perf.metrics.Trace;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
@@ -31,10 +32,8 @@ import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.core.base.adapter.model.EmptyModel;
 import com.tokopedia.core.base.adapter.model.RetryModel;
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.home.BannerWebView;
@@ -79,6 +78,7 @@ import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreViewMode
 import com.tokopedia.feedplus.view.viewmodel.product.ProductFeedViewModel;
 import com.tokopedia.feedplus.view.viewmodel.promo.PromoCardViewModel;
 import com.tokopedia.feedplus.view.viewmodel.topads.FeedTopAdsViewModel;
+import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
 import com.tokopedia.kol.feature.createpost.view.activity.ImageUploadActivity;
@@ -160,14 +160,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
-        AppComponent appComponent = getComponent(AppComponent.class);
-
-        DaggerFeedPlusComponent daggerFeedPlusComponent =
-                (DaggerFeedPlusComponent) DaggerFeedPlusComponent.builder()
-                        .appComponent(appComponent)
-                        .build();
-
-        daggerFeedPlusComponent.inject(this);
+        DaggerFeedPlusComponent.builder()
+                .kolComponent(KolComponentInstance.getKolComponent(getActivity().getApplication()))
+                .build()
+                .inject(this);
     }
 
     @Override
@@ -971,7 +967,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onContentProductLinkClicked(String url) {
-        ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity(), url);
+        ((FeedModuleRouter) getActivity().getApplication()).openRedirectUrl(getActivity(), url);
     }
 
     @Override
@@ -1015,44 +1011,43 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToKolProfile(int page, int rowNumber, String userId, int postId) {
+    public void onGoToKolProfile(int rowNumber, String userId, int postId) {
         Intent profileIntent = TopProfileActivity.newInstanceFromFeed(getContext(), userId, postId)
                 .putExtra(ARGS_ROW_NUMBER, rowNumber);
         startActivityForResult(profileIntent, OPEN_KOL_PROFILE);
     }
 
     @Override
-    public void onOpenKolTooltip(int page, int rowNumber, String url) {
+    public void onOpenKolTooltip(int rowNumber, String url) {
         ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity(), url);
     }
 
     @Override
-    public void onFollowKolClicked(int page, int rowNumber, int id) {
+    public void onFollowKolClicked(int rowNumber, int id) {
         presenter.followKol(id, rowNumber, this);
     }
 
     @Override
-    public void onUnfollowKolClicked(int page, int rowNumber, int id) {
+    public void onUnfollowKolClicked(int rowNumber, int id) {
         presenter.unfollowKol(id, rowNumber, this);
 
     }
 
     @Override
-    public void onLikeKolClicked(int page, int rowNumber, int id) {
+    public void onLikeKolClicked(int rowNumber, int id) {
         presenter.likeKol(id, rowNumber, this);
     }
 
     @Override
-    public void onUnlikeKolClicked(int page, int rowNumber, int id) {
+    public void onUnlikeKolClicked(int rowNumber, int id) {
         presenter.unlikeKol(id, rowNumber, this);
-
     }
 
     @Override
-    public void onGoToKolComment(int page, int rowNumber, KolPostViewModel model) {
+    public void onGoToKolComment(int rowNumber, int id) {
         if (getActivity().getApplication() instanceof FeedModuleRouter) {
             FeedModuleRouter router = ((FeedModuleRouter) getActivity().getApplication());
-            Intent intent = router.getKolCommentActivity(getContext(), model.getId(), rowNumber);
+            Intent intent = router.getKolCommentActivity(getContext(), id, rowNumber);
             startActivityForResult(intent, OPEN_KOL_COMMENT);
         }
     }

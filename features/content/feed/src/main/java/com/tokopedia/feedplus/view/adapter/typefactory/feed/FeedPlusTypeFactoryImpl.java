@@ -12,6 +12,8 @@ import com.tokopedia.feedplus.view.adapter.viewholder.favoritecta.FavoriteCtaVie
 import com.tokopedia.feedplus.view.adapter.viewholder.inspiration.InspirationViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.kol.ContentProductViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.kol.KolRecommendationViewHolder;
+import com.tokopedia.feedplus.view.adapter.viewholder.kol.PollViewHolder;
+import com.tokopedia.feedplus.view.adapter.viewholder.kol.ProductCommunicationViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.officialstore.OfficialStoreBrandsViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.officialstore.OfficialStoreCampaignViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.productcard.ActivityCardViewHolder;
@@ -33,6 +35,8 @@ import com.tokopedia.feedplus.view.viewmodel.blog.BlogViewModel;
 import com.tokopedia.feedplus.view.viewmodel.inspiration.InspirationViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.ContentProductViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
+import com.tokopedia.feedplus.view.viewmodel.kol.PollViewModel;
+import com.tokopedia.feedplus.view.viewmodel.kol.ProductCommunicationViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreBrandsViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreCampaignViewModel;
 import com.tokopedia.feedplus.view.viewmodel.product.ActivityCardViewModel;
@@ -43,6 +47,7 @@ import com.tokopedia.feedplus.view.viewmodel.promo.PromotedShopViewModel;
 import com.tokopedia.feedplus.view.viewmodel.recentview.RecentViewViewModel;
 import com.tokopedia.feedplus.view.viewmodel.topads.FeedTopAdsViewModel;
 import com.tokopedia.feedplus.view.viewmodel.toppicks.ToppicksViewModel;
+import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactory;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.EmptyKolPostViewHolder;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.ExploreViewHolder;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder;
@@ -57,7 +62,8 @@ import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
  * @author by nisie on 5/15/17.
  */
 
-public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements FeedPlusTypeFactory {
+public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
+        implements FeedPlusTypeFactory, KolPostTypeFactory {
 
     private final FeedPlus.View viewListener;
     private final TopAdsItemClickListener topAdsItemClickListener;
@@ -175,6 +181,16 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements F
     }
 
     @Override
+    public int type(ProductCommunicationViewModel productCommunicationViewModel) {
+        return ProductCommunicationViewHolder.LAYOUT;
+    }
+
+    @Override
+    public int type(PollViewModel pollViewModel) {
+        return PollViewHolder.LAYOUT;
+    }
+
+    @Override
     public int type(EmptyFeedBeforeLoginModel emptyFeedBeforeLoginModel) {
         return EmptyFeedBeforeLoginViewHolder.LAYOUT;
     }
@@ -227,6 +243,10 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements F
             viewHolder = new FavoriteCtaViewHolder(view, viewListener);
         else if (type == ContentProductViewHolder.LAYOUT)
             viewHolder = new ContentProductViewHolder(view, viewListener);
+        else if (type == ProductCommunicationViewHolder.LAYOUT)
+            viewHolder = new ProductCommunicationViewHolder(view, viewListener);
+        else if (type == PollViewHolder.LAYOUT)
+            viewHolder = new PollViewHolder(view, kolViewListener);
         else if (type == EmptyFeedBeforeLoginViewHolder.LAYOUT)
             viewHolder = new EmptyFeedBeforeLoginViewHolder(view, viewListener);
         else if (type == KolPostViewHolder.LAYOUT)

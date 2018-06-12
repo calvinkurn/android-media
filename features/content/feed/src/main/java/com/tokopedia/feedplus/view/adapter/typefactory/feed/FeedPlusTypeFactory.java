@@ -11,6 +11,8 @@ import com.tokopedia.feedplus.view.viewmodel.blog.BlogViewModel;
 import com.tokopedia.feedplus.view.viewmodel.inspiration.InspirationViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.ContentProductViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
+import com.tokopedia.feedplus.view.viewmodel.kol.PollViewModel;
+import com.tokopedia.feedplus.view.viewmodel.kol.ProductCommunicationViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreBrandsViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreCampaignViewModel;
 import com.tokopedia.feedplus.view.viewmodel.product.ActivityCardViewModel;
@@ -21,14 +23,13 @@ import com.tokopedia.feedplus.view.viewmodel.promo.PromotedShopViewModel;
 import com.tokopedia.feedplus.view.viewmodel.recentview.RecentViewViewModel;
 import com.tokopedia.feedplus.view.viewmodel.topads.FeedTopAdsViewModel;
 import com.tokopedia.feedplus.view.viewmodel.toppicks.ToppicksViewModel;
-import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactory;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 
 /**
  * @author by nisie on 5/15/17.
  */
 
-public interface FeedPlusTypeFactory extends KolPostTypeFactory {
+public interface FeedPlusTypeFactory {
 
     int type(ActivityCardViewModel viewModel);
 
@@ -63,6 +64,10 @@ public interface FeedPlusTypeFactory extends KolPostTypeFactory {
     int type(FavoriteCtaViewModel favoriteCtaViewModel);
 
     int type(ContentProductViewModel contentProductViewModel);
+
+    int type(ProductCommunicationViewModel productCommunicationViewModel);
+
+    int type(PollViewModel pollViewModel);
 
     int type(EmptyFeedBeforeLoginModel emptyFeedBeforeLoginModel);
 

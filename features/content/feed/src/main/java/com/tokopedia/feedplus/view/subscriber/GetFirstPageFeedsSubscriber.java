@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.core.analytics.FeedTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.TimeConverter;
 import com.tokopedia.feedplus.domain.model.InspirationItemDomain;
@@ -19,6 +20,7 @@ import com.tokopedia.feedplus.domain.model.feed.KolCtaDomain;
 import com.tokopedia.feedplus.domain.model.feed.KolPostDomain;
 import com.tokopedia.feedplus.domain.model.feed.KolRecommendationDomain;
 import com.tokopedia.feedplus.domain.model.feed.KolRecommendationItemDomain;
+import com.tokopedia.feedplus.domain.model.feed.ProductCommunicationDomain;
 import com.tokopedia.feedplus.domain.model.feed.ProductFeedDomain;
 import com.tokopedia.feedplus.domain.model.feed.PromotionFeedDomain;
 import com.tokopedia.feedplus.domain.model.officialstore.BadgeDomain;
@@ -36,6 +38,9 @@ import com.tokopedia.feedplus.view.viewmodel.inspiration.InspirationViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.ContentProductViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendItemViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
+import com.tokopedia.feedplus.view.viewmodel.kol.PollViewModel;
+import com.tokopedia.feedplus.view.viewmodel.kol.ProductCommunicationItemViewModel;
+import com.tokopedia.feedplus.view.viewmodel.kol.ProductCommunicationViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreBrandsViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreCampaignProductViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreCampaignViewModel;
@@ -81,6 +86,8 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
     private static final String TYPE_KOL_FOLLOWED = "followedkolpost";
     private static final String TYPE_KOL_RECOMMENDATION = "kolrecommendation";
     private static final String TYPE_FAVORITE_CTA = "favorite_cta";
+    private static final String TYPE_BANNER = "banner";
+    private static final String TYPE_POLLING = "polling";
     private static final String SHOP_ID_BRACKETS = "{shop_id}";
     private static final int TOPADS_MAX_SIZE = 6;
     private static final int TOPADS_MAX_SIZE_SMALL = 3;
@@ -104,6 +111,10 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
 
     @Override
     public void onError(Throwable e) {
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            e.printStackTrace();
+        }
+
         viewListener.onErrorGetFeedFirstPage(
                 ErrorHandler.getErrorMessage(e));
     }
@@ -374,7 +385,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
 
                             List<FeedEnhancedTracking.Promotion> list = new ArrayList<>();
                             list.add(new FeedEnhancedTracking.Promotion(
-                                    kolViewModel.getId(),
+                                    kolViewModel.getKolId(),
                                     FeedEnhancedTracking.Promotion.createContentName(
                                             kolViewModel.getTagsType(),
                                             kolViewModel.getCardType())
@@ -386,10 +397,10 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                                     kolViewModel.getLabel().equals("") ?
                                             FeedEnhancedTracking.Promotion.TRACKING_EMPTY :
                                             kolViewModel.getLabel(),
-                                    kolViewModel.getContentId(),
-                                    kolViewModel.getContentLink().equals("") ?
+                                    kolViewModel.getTagsId(),
+                                    kolViewModel.getTagsLink().equals("") ?
                                             FeedEnhancedTracking.Promotion.TRACKING_EMPTY :
-                                            kolViewModel.getContentLink()
+                                            kolViewModel.getTagsLink()
                             ));
                             TrackingUtils.eventTrackingEnhancedEcommerce(
                                     FeedEnhancedTracking.getImpressionTracking(list, loginIdInt));
@@ -442,8 +453,27 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                                 && domain.getContent().getKolCtaDomain() != null) {
                             ContentProductViewModel contentProductViewModel =
                                     convertContentProductViewModel(domain.getContent().getKolCtaDomain());
-                            if (contentProductViewModel.isContentProductShowing())
+                            if (contentProductViewModel != null) {
                                 listFeedView.add(contentProductViewModel);
+                            }
+                        }
+                    case TYPE_BANNER:
+                        if (domain.getContent() != null
+                                && domain.getContent().getProductCommunications() != null
+                                && !domain.getContent().getProductCommunications().isEmpty()) {
+                            ProductCommunicationViewModel productCommunicationViewModel =
+                                    convertToProductCommunicationViewModel(
+                                            domain.getContent().getProductCommunications()
+                                    );
+                            listFeedView.add(productCommunicationViewModel);
+                        }
+                        break;
+                    case TYPE_POLLING:
+                        if (domain.getContent() != null
+                                && domain.getContent().getPollViewModel() != null) {
+                            PollViewModel pollViewModel = domain.getContent().getPollViewModel();
+                            pollViewModel.setPage(page);
+                            listFeedView.add(pollViewModel);
                         }
                         break;
                     default:
@@ -507,30 +537,28 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
     private KolPostViewModel convertToKolViewModel(DataFeedDomain domain) {
         KolPostDomain kolPostDomain = domain.getContent().getKolPostDomain();
         return new KolPostViewModel(
+                kolPostDomain.getUserId(),
+                kolPostDomain.getCardType(),
                 kolPostDomain.getHeaderTitle(),
                 kolPostDomain.getUserName(),
                 kolPostDomain.getUserPhoto(),
                 kolPostDomain.getLabel(),
+                kolPostDomain.getUserUrl(),
                 kolPostDomain.isFollowed(),
-                kolPostDomain.getImageUrl(),
-                kolPostDomain.getCaption(),
                 kolPostDomain.getDescription(),
                 kolPostDomain.isLiked(),
                 kolPostDomain.getLikeCount(),
                 kolPostDomain.getCommentCount(),
                 page,
-                kolPostDomain.getUserUrl(),
-                kolPostDomain.getItemId(),
                 kolPostDomain.getId(),
                 TimeConverter.generateTime(kolPostDomain.getCreateTime()),
-                "",
-                kolPostDomain.getProductPrice(),
-                false,
-                kolPostDomain.getTagsType(),
-                kolPostDomain.getContentLink(),
-                kolPostDomain.getUserId(),
                 kolPostDomain.isShowComment(),
-                kolPostDomain.getCardType()
+                kolPostDomain.getImageUrl(),
+                kolPostDomain.getItemId(),
+                "",
+                kolPostDomain.getTagsType(),
+                kolPostDomain.getCaption(),
+                kolPostDomain.getContentLink()
         );
     }
 
@@ -750,16 +778,37 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                 || !TextUtils.isEmpty(domain.getButtonTitle())
                 || !TextUtils.isEmpty(domain.getApplink())
                 || !TextUtils.isEmpty(domain.getTextHeader())
-                || !TextUtils.isEmpty(domain.getTextDescription()))
+                || !TextUtils.isEmpty(domain.getTextDescription())) {
             return new ContentProductViewModel(
                     domain.getImageUrl(),
                     domain.getApplink(),
                     domain.getButtonTitle(),
                     domain.getTextHeader(),
-                    domain.getTextDescription(),
-                    true);
-        return new ContentProductViewModel(
-                false);
+                    domain.getTextDescription()
+            );
+        }
+
+        return null;
+    }
+
+    private ProductCommunicationViewModel convertToProductCommunicationViewModel(
+            List<ProductCommunicationDomain> domainList) {
+        List<ProductCommunicationItemViewModel> viewModelList = new ArrayList<>();
+        for (ProductCommunicationDomain domain : domainList) {
+            viewModelList.add(
+                    new ProductCommunicationItemViewModel(
+                            domain.getImageUrl(),
+                            domain.getRedirectUrl()
+                    )
+            );
+        }
+        return new ProductCommunicationViewModel(viewModelList);
+    }
+
+    private PollViewModel convertToPollViewModel() {
+        //TODO map data from API
+//        return new PollViewModel(null);
+        return null;
     }
 
     private void addSeeMorePromo(DataFeedDomain dataFeedDomain, ArrayList<PromoViewModel> listPromo) {

@@ -63,6 +63,7 @@ ext {
     tkpdMitraToppersVersion = '2.22'
     tkpdDistrictRecommendationVersion = '2.22'
     tkpdAnalyticsVersion = '2.22'
+    tkpdVoteVersion = '2.22'
 
     networkDependencies = [
             retrofit          : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
@@ -251,7 +252,8 @@ ext {
             mitraToppers      : "com.tokopedia.mitratoppers:mitra_toppers:${tkpdMitraToppersVersion}",
             goldMerchant      : "com.tokopedia.gm:gold_merchant:${tkpdGoldMerchantVersion}",
             topAdsManagement  : "com.tokopedia.topads:top_ads_management:${tkpdTopAdsSDKVersion}",
-            districtRecommendation: "com.tokopedia.district_recommendation:district_recommendation:${tkpdDistrictRecommendationVersion}"
+            districtRecommendation: "com.tokopedia.district_recommendation:district_recommendation:${tkpdDistrictRecommendationVersion}",
+            vote              : "com.tokopedia.user:user:${tkpdVoteVersion}"
     ]
 
     tkpdLibDependencies = [
@@ -307,7 +309,9 @@ ext {
             transactiondata     : ":features:transaction:transactiondata",
             transactionanalytics: ":features:transaction:transactionanalytics",
             tracking            : ":features:logistic:tracking",
-            logisticuploadawb : ":features:logistic:logisticuploadawb"
+            logisticuploadawb : ":features:logistic:logisticuploadawb",
+            vote            : ":features:user:vote"
+
     ]
 
     libraries = [

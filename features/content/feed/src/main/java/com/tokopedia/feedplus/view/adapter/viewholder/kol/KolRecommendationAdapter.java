@@ -18,6 +18,7 @@ import com.tokopedia.feedplus.view.analytics.FeedEnhancedTracking;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
 import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendItemViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
+import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -120,9 +121,9 @@ public class KolRecommendationAdapter extends RecyclerView.Adapter<KolRecommenda
     private void navigateToProfilePage(int adapterPosition) {
         KolRecommendItemViewModel kolItem = data.getListRecommend().get(adapterPosition);
         UnifyTracking.eventKolRecommendationGoToProfileClick(kolItem.getLabel(), kolItem.getName());
-        kolViewListener.onGoToKolProfileFromRecommendation(data.getRowNumber(),
-                adapterPosition,
-                String.valueOf(kolItem.getId()));
+        kolViewListener.onGoToKolProfile(data.getRowNumber(),
+                String.valueOf(kolItem.getId()),
+                KolPostViewModel.DEFAULT_ID);
     }
 
     @Override
