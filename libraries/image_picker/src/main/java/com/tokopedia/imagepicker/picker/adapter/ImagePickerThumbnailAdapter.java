@@ -43,7 +43,7 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
     public interface OnImageEditThumbnailAdapterListener {
         void onPickerThumbnailItemClicked(String imagePath, int position);
 
-        void onThumbnailRemoved();
+        void onThumbnailRemoved(int index);
     }
 
     public ImagePickerThumbnailAdapter(Context context, ArrayList<String> imagePathList, ArrayList<Integer> placeholderDrawableResList,
@@ -140,15 +140,16 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
         }
     }
 
-    public void removeData(String imagePath) {
+    public int removeData(String imagePath) {
         int index = this.imagePathList.indexOf(imagePath);
         removeData(index);
+        return index;
     }
 
     public void removeData(int index) {
         if (index > -1) {
             this.imagePathList.remove(index);
-            onImageEditThumbnailAdapterListener.onThumbnailRemoved();
+            onImageEditThumbnailAdapterListener.onThumbnailRemoved(index);
             notifyDataSetChanged();
         }
     }

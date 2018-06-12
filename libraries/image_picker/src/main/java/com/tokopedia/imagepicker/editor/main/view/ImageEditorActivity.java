@@ -64,6 +64,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
     public static final String EXTRA_IS_CIRCLE_PREVIEW = "IS_CIRCLE_PREVIEW";
     public static final String EXTRA_MAX_FILE_SIZE = "MAX_FILE_SIZE";
     public static final String EXTRA_RATIO_OPTION_LIST = "RATIO_OPTION_LIST";
+    public static final String EXTRA_IMAGE_DESCRIPTION_LIST = "IMG_DESC";
 
     public static final String SAVED_IMAGE_INDEX = "IMG_IDX";
     public static final String SAVED_EDITTED_PATHS = "SAVED_EDITTED_PATHS";
@@ -73,6 +74,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
 
     public static final String RESULT_IS_EDITTED = "is_editted";
     public static final String RESULT_PREVIOUS_IMAGE = "ori_image";
+    public static final String RESULT_IMAGE_DESCRIPTION_LIST = "IMG_DESC";
 
     public static final int MAX_HISTORY_PER_IMAGE = 5;
     private static final int REQUEST_STORAGE_PERMISSIONS = 5109;
@@ -128,8 +130,11 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
     private ImageRatioTypeDef defaultRatio;
     private ArrayList<ImageRatioTypeDef> imageRatioOptionList;
     private ImageEditCropListWidget imageEditCropListWidget;
+    private ArrayList<String> imageDescriptionList;
 
-    public static Intent getIntent(Context context, ArrayList<String> imageUrls, int minResolution,
+    public static Intent getIntent(Context context, ArrayList<String> imageUrls,
+                                   ArrayList<String> imageDescription,
+                                   int minResolution,
                                    @ImageEditActionTypeDef int[] imageEditActionType,
                                    ImageRatioTypeDef defaultRatio,
                                    boolean isCirclePreview,
@@ -137,6 +142,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
                                    ArrayList<ImageRatioTypeDef> ratioOptionList) {
         Intent intent = new Intent(context, ImageEditorActivity.class);
         intent.putExtra(EXTRA_IMAGE_URLS, imageUrls);
+        intent.putExtra(EXTRA_IMAGE_DESCRIPTION_LIST, imageDescription);
         intent.putExtra(EXTRA_MIN_RESOLUTION, minResolution);
         intent.putExtra(EXTRA_EDIT_ACTION_TYPE, imageEditActionType);
         intent.putExtra(EXTRA_RATIO, defaultRatio);
@@ -146,7 +152,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
         return intent;
     }
 
-    public static Intent getIntent(Context context, String imageUrl, int minResolution,
+    public static Intent getIntent(Context context, String imageUrl, String imageDescription, int minResolution,
                                    @ImageEditActionTypeDef int[] imageEditActionType,
                                    ImageRatioTypeDef imageRatioTypeDef,
                                    boolean isCirclePreview,
@@ -154,7 +160,10 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
                                    ArrayList<ImageRatioTypeDef> ratioOptionList) {
         ArrayList<String> imageUrls = new ArrayList<>();
         imageUrls.add(imageUrl);
-        return getIntent(context, imageUrls, minResolution, imageEditActionType, imageRatioTypeDef, isCirclePreview, maxFileSize,
+        ArrayList<String> imageDescriptions = new ArrayList<>();
+        imageDescriptions.add(imageDescription);
+        return getIntent(context, imageUrls, imageDescriptions,
+                minResolution, imageEditActionType, imageRatioTypeDef, isCirclePreview, maxFileSize,
                 ratioOptionList);
     }
 
@@ -184,6 +193,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
         maxFileSize = intent.getLongExtra(EXTRA_MAX_FILE_SIZE, DEFAULT_MAX_IMAGE_SIZE_IN_KB);
         defaultRatio = (ImageRatioTypeDef) intent.getSerializableExtra(EXTRA_RATIO);
         imageRatioOptionList = (ArrayList<ImageRatioTypeDef>) intent.getSerializableExtra(EXTRA_RATIO_OPTION_LIST);
+        imageDescriptionList = intent.getStringArrayListExtra(EXTRA_IMAGE_DESCRIPTION_LIST);
 
         if (savedInstanceState == null) {
             currentImageIndex = 0;
@@ -830,6 +840,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
         Intent intent = new Intent();
         intent.putStringArrayListExtra(PICKER_RESULT_PATHS, imageUrlOrPathList);
         intent.putStringArrayListExtra(RESULT_PREVIOUS_IMAGE, extraImageUrls);
+        intent.putStringArrayListExtra(RESULT_IMAGE_DESCRIPTION_LIST, imageDescriptionList);
         intent.putExtra(RESULT_IS_EDITTED, isEdittedList);
         setResult(Activity.RESULT_OK, intent);
         finish();
