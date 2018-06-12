@@ -45,6 +45,8 @@ import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
+import com.tokopedia.core.share.DefaultShare;
+import com.tokopedia.district_recommendation.domain.model.Token;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -62,7 +64,6 @@ import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
-import com.tokopedia.core.share.ShareBottomSheet;
 import com.tokopedia.core.shopinfo.limited.fragment.ShopTalkLimitedFragment;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.DeepLinkChecker;
@@ -1165,7 +1166,7 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void goToShareShop(FragmentManager fragmentManager, String shopId, String shopUrl, String shareLabel) {
+    public void goToShareShop(Activity activity, String shopId, String shopUrl, String shareLabel) {
         ShareData shareData = ShareData.Builder.aShareData()
                 .setType(ShareData.SHOP_TYPE)
                 .setName(getString(R.string.message_share_shop))
@@ -1173,7 +1174,7 @@ public abstract class SellerRouterApplication extends MainApplication
                 .setUri(shopUrl)
                 .setId(shopId)
                 .build();
-        ShareBottomSheet.show(fragmentManager, shareData);
+        new DefaultShare(activity, shareData).show();
     }
 
     @Override

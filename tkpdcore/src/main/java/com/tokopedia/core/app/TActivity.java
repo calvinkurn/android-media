@@ -16,7 +16,6 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.util.SessionHandler;
-import android.support.graphics.drawable.VectorDrawableCompat;
 
 /**
  * Created by Nisie on 31/08/15.
@@ -127,7 +126,7 @@ public abstract class TActivity extends BaseActivity {
         } else {
             toolbar.setBackgroundResource(R.drawable.bg_white_toolbar_drop_shadow);
         }
-        Drawable drawable = VectorDrawableCompat.create(getResources(), R.drawable.ic_toolbar_overflow_level_two_black, null);
+        Drawable drawable = ContextCompat.getDrawable(this, R.drawable.ic_toolbar_overflow_level_two_black);
         drawable.setBounds(5, 5, 5, 5);
         toolbar.setOverflowIcon(drawable);
 

@@ -560,7 +560,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, true);
         layoutManager.setReverseLayout(true);
-        layoutManager.setStackFromEnd(true);
+        layoutManager.setStackFromEnd(false);
         LinearLayoutManager templateLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager
                 .HORIZONTAL, false);
 

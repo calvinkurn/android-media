@@ -22,7 +22,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AppCompatDelegate;
+
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -125,8 +125,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         taskStackBuilder.addNextIntent(homeIntent);
-        if (userSession.isLoggedIn()
-                && ((GroupChatModuleRouter) context.getApplicationContext()).isEnabledGroupChat()) {
+        if (((GroupChatModuleRouter) context.getApplicationContext()).isEnabledGroupChat()) {
             taskStackBuilder.addNextIntent(parentIntent);
         }
         taskStackBuilder.addNextIntent(detailsIntent);
@@ -135,15 +134,13 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     @DeepLink(ApplinkConstant.GROUPCHAT_LIST)
     public static TaskStackBuilder getCallingTaskStackList(Context context, Bundle extras) {
-        UserSession userSession = ((AbstractionRouter) context.getApplicationContext()).getSession();
         Intent homeIntent = ((GroupChatModuleRouter) context.getApplicationContext()).getHomeIntent(context);
         Intent parentIntent = ((GroupChatModuleRouter) context.getApplicationContext())
                 .getInboxChannelsIntent(context);
 
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         taskStackBuilder.addNextIntent(homeIntent);
-        if (userSession.isLoggedIn()
-                && ((GroupChatModuleRouter) context.getApplicationContext()).isEnabledGroupChat()) {
+        if (((GroupChatModuleRouter) context.getApplicationContext()).isEnabledGroupChat()) {
             taskStackBuilder.addNextIntent(parentIntent);
         }
         return taskStackBuilder;
@@ -151,7 +148,6 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     @DeepLink(ApplinkConstant.GROUPCHAT_ROOM_VIA_LIST)
     public static TaskStackBuilder getCallingTaskStackViaList(Context context, Bundle extras) {
-        UserSession userSession = ((AbstractionRouter) context.getApplicationContext()).getSession();
         String id = extras.getString(ApplinkConstant.PARAM_CHANNEL_ID);
         Intent homeIntent = ((GroupChatModuleRouter) context.getApplicationContext()).getHomeIntent(context);
         Intent detailsIntent = GroupChatActivity.getCallingIntent(context, id);
@@ -160,8 +156,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         taskStackBuilder.addNextIntent(homeIntent);
-        if (userSession.isLoggedIn()
-                && ((GroupChatModuleRouter) context.getApplicationContext()).isEnabledGroupChat()) {
+        if (((GroupChatModuleRouter) context.getApplicationContext()).isEnabledGroupChat()) {
             taskStackBuilder.addNextIntent(parentIntent);
         }
         taskStackBuilder.addNextIntent(detailsIntent);
@@ -226,8 +221,6 @@ public class GroupChatActivity extends BaseSimpleActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (!isEnabledGroupChatRoom()) {
-            Intent intent = ((GroupChatModuleRouter) getApplicationContext()).getHomeIntent(this);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             finish();
         }
 
@@ -290,7 +283,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     private void initView() {
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+
 
         Bundle bundle = new Bundle();
         if (getIntent().getExtras() != null) {
@@ -435,7 +428,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         String description = String.format("%s %s", String.format(getString(R.string.lets_join_channel),
                 viewModel.getChannelName()), link);
 
-        ((GroupChatModuleRouter) getApplication()).shareGroupChat(getSupportFragmentManager(),
+        ((GroupChatModuleRouter) getApplication()).shareGroupChat(this,
                 viewModel.getChannelUuid(), viewModel.getChannelName(), description,
                 viewModel.getChannelInfoViewModel().getBannerUrl(), viewModel.getChannelUrl());
     }
@@ -600,10 +593,10 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     @Override
     public void onBackPressed() {
-        if(currentlyLoadingFragment()){
+        if (currentlyLoadingFragment()) {
             finish();
             super.onBackPressed();
-        }else {
+        } else {
             if (!currentFragmentIsChat()) {
                 showFragment(CHATROOM_FRAGMENT);
             } else {
@@ -613,7 +606,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     private void showDialogConfirmToExit() {
-        if(getExitMessage() == null){
+        if (getExitMessage() == null) {
             finish();
             GroupChatActivity.super.onBackPressed();
             return;
@@ -742,7 +735,7 @@ public class GroupChatActivity extends BaseSimpleActivity
             intent.putExtra(TOTAL_VIEW, channelInfoViewModel.getTotalView());
             intent.putExtra(EXTRA_POSITION, viewModel.getChannelPosition());
             setResult(Activity.RESULT_OK, intent);
-            if(exitDialog==null) {
+            if (exitDialog == null) {
                 exitDialog = createAlertDialog().create();
                 exitDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             }
