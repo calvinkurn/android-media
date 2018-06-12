@@ -63,6 +63,7 @@ ext {
     tkpdMitraToppersVersion = '2.22'
     tkpdDistrictRecommendationVersion = '2.22'
     tkpdAnalyticsVersion = '2.22'
+    tkpdGraphqlVersion = '2.22'
 
     networkDependencies = [
             retrofit          : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
@@ -327,6 +328,7 @@ ext {
             userSession     : ":libraries:user_session",
             imageuploader   : ":libraries:imageuploader",
             youtubeApi      : ":libraries:YouTubeAndroidPlayerApi",
-            analytics       : ":libraries:analytics"
+            analytics       : ":libraries:analytics",
+            graphql       : ":libraries:graphql"
     ]
 }
