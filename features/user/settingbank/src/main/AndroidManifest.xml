@@ -7,7 +7,7 @@
         android:supportsRtl="true">
 
         <activity
-            android:name=".SettingBankActivity"
+            android:name=".view.activity.SettingBankActivity"
             android:label="@string/title_setting_bank"
             android:screenOrientation="portrait"/>
 

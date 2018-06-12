@@ -1383,4 +1383,9 @@ public abstract class SellerRouterApplication extends MainApplication
     public Intent getSettingBankIntent(Context context) {
         return SettingBankActivity.Companion.createIntent(context);
     }
+
+    @Override
+    public Intent getOrderListIntent(Context context) {
+        return null;
+    }
 }

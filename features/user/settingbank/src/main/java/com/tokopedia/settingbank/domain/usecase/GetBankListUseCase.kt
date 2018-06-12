@@ -35,14 +35,14 @@ class GetBankListUseCase(val api: SettingBankApi,
 
         fun getParam(
                 userId: String,
-                page: String,
+                page: Int,
                 deviceId: String): RequestParams {
             val requestParams: RequestParams = RequestParams.create()
 
             val hash = AuthUtil.md5("$userId~$deviceId")
 
             requestParams.putString(PARAM_PROFILE_USER_ID, userId)
-            requestParams.putString(PARAM_PAGE, page)
+            requestParams.putInt(PARAM_PAGE, page)
 
             requestParams.putString(PARAM_USER_ID, userId)
             requestParams.putString(PARAM_DEVICE_ID, deviceId)
