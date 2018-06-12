@@ -31,7 +31,9 @@ import com.otaliastudios.cameraview.Flash;
 import com.otaliastudios.cameraview.Size;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.imagepicker.R;
+import com.tokopedia.imagepicker.common.presenter.ImageRatioCropPresenter;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
+import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -42,7 +44,7 @@ import java.util.Set;
  * Created by hendry on 19/04/18.
  */
 
-public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
+public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements ImageRatioCropPresenter.ImageRatioCropView {
 
     public static final String SAVED_FLASH_INDEX = "saved_flash_index";
 
@@ -59,7 +61,8 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
     private List<Flash> supportedFlashList;
     private int flashIndex;
     private ProgressDialog progressDialog;
-    private File cameraResultFile;
+    private String finalCameraResultFilePath;
+    private ImageRatioCropPresenter imageRatioCropPresenter;
 
     public interface OnImagePickerCameraFragmentListener {
         void onImageTaken(String filePath);
@@ -199,9 +202,7 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
                 if (onImagePickerCameraFragmentListener.isMaxImageReached()) {
                     return;
                 }
-                if (isAdded()) {
-                    progressDialog.show();
-                }
+                showLoading();
                 mCapturingPicture = true;
                 mCaptureTime = System.currentTimeMillis();
                 mCaptureNativeSize = cameraView.getPictureSize();
@@ -226,7 +227,7 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
         useImageLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onImagePickerCameraFragmentListener.onImageTaken(cameraResultFile.getAbsolutePath());
+                onImagePickerCameraFragmentListener.onImageTaken(finalCameraResultFilePath);
 
                 //if multiple selection, will continue preview camera
                 if (onImagePickerCameraFragmentListener.needShowCameraPreview()) {
@@ -241,8 +242,9 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
     }
 
     private boolean isOneOneRatio() {
-        return onImagePickerCameraFragmentListener.getRatioX() > 0 &&
-                onImagePickerCameraFragmentListener.getRatioX() == onImagePickerCameraFragmentListener.getRatioY();
+        int ratioX = onImagePickerCameraFragmentListener.getRatioX();
+        int ratioY = onImagePickerCameraFragmentListener.getRatioY();
+        return ratioX > 0 && ratioY > 0 && ratioX == ratioY;
     }
 
     private void setCameraFlash() {
@@ -283,42 +285,78 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
             CameraUtils.decodeBitmap(imageByte, mCaptureNativeSize.getWidth(), mCaptureNativeSize.getHeight(), new CameraUtils.BitmapCallback() {
                 @Override
                 public void onBitmapReady(Bitmap bitmap) {
-                    cameraResultFile = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA, bitmap, false);
-                    onSuccessBitmapTaken(bitmap, cameraResultFile);
+                    File cameraResultFile = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA, bitmap, false);
+                    onSuccessImageTakenFromCamera(cameraResultFile);
                 }
             });
         } catch (OutOfMemoryError error) {
-            cameraResultFile = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA, imageByte, false);
-            onSuccessImageTaken(cameraResultFile);
+            File cameraResultFile = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA, imageByte, false);
+            onSuccessImageTakenFromCamera(cameraResultFile);
         }
     }
 
-    private void onSuccessImageTaken(File file) {
+    private void onSuccessImageTakenFromCamera(File file) {
+        //crop the bitmap if it is not aligned with the expected ratio
+        if (isOneOneRatio()) {
+            initCropPresenter();
+            ArrayList<String> list = new ArrayList<>();
+            list.add(file.getAbsolutePath());
+            ArrayList<ImageRatioTypeDef> ratioList = new ArrayList<>();
+            ratioList.add(ImageRatioTypeDef.RATIO_1_1);
+            imageRatioCropPresenter.cropBitmapToExpectedRatio(list, ratioList, false,
+                    ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA);
+        } else {
+            onFinishEditAfterTakenFromCamera(file.getAbsolutePath());
+        }
+
+    }
+
+    private void initCropPresenter(){
+        if (imageRatioCropPresenter == null) {
+            imageRatioCropPresenter = new ImageRatioCropPresenter();
+            imageRatioCropPresenter.attachView(this);
+        }
+    }
+
+    @Override
+    public void onErrorCropImageToRatio(ArrayList<String> localImagePath, Throwable e) {
+        onFinishEditAfterTakenFromCamera(localImagePath.get(0));
+    }
+
+    @Override
+    public void onSuccessCropImageToRatio(ArrayList<String> cropppedImagePaths, ArrayList<Boolean> isEditted) {
+        onFinishEditAfterTakenFromCamera(cropppedImagePaths.get(0));
+    }
+
+    public void onFinishEditAfterTakenFromCamera(String imagePath) {
         if (onImagePickerCameraFragmentListener.needShowCameraPreview()) {
             try {
+                File file = new File(imagePath);
                 if (file.exists()) {
                     Bitmap myBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
                     previewImageView.setImageBitmap(myBitmap);
                 }
                 showPreviewView();
             } catch (Exception e) {
-                onImagePickerCameraFragmentListener.onImageTaken(file.getAbsolutePath());
+                onImagePickerCameraFragmentListener.onImageTaken(imagePath);
             }
         } else {
-            onImagePickerCameraFragmentListener.onImageTaken(file.getAbsolutePath());
+            onImagePickerCameraFragmentListener.onImageTaken(imagePath);
         }
+        finalCameraResultFilePath = imagePath;
         reset();
     }
 
-    private void onSuccessBitmapTaken(Bitmap bitmap, File file) {
-        //TODO crop the bitmap if it is not aligned with the expected ratio
-        if (onImagePickerCameraFragmentListener.needShowCameraPreview()) {
-            previewImageView.setImageBitmap(bitmap);
-            showPreviewView();
-        } else {
-            onImagePickerCameraFragmentListener.onImageTaken(file.getAbsolutePath());
+    private void showLoading(){
+        if (isAdded()) {
+            progressDialog.show();
         }
-        reset();
+    }
+
+    private void hideLoading(){
+        if (isAdded()) {
+            progressDialog.dismiss();
+        }
     }
 
     private void showCameraView() {
@@ -337,9 +375,7 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment {
         mCapturingPicture = false;
         mCaptureTime = 0;
         mCaptureNativeSize = null;
-        if (isAdded()) {
-            progressDialog.hide();
-        }
+        hideLoading();
     }
 
     private void toggleCamera() {

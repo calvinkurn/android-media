@@ -136,6 +136,10 @@ public class ImageUtils {
         return file.exists() && file.getAbsolutePath().contains(TOKOPEDIA_DIRECTORY);
     }
 
+    private static boolean isInTokopediaDirectory(String filePath, @DirectoryDef String directory) {
+        return filePath.contains(directory);
+    }
+
     public static boolean isPng(String referencePath) {
         return referencePath.endsWith(PNG_EXT);
     }
@@ -197,12 +201,22 @@ public class ImageUtils {
                                               @DirectoryDef String directoryDef) throws IOException {
         ArrayList<String> resultList = new ArrayList<>();
         for (String imagePathFrom : cropppedImagePaths) {
-            File outputFile = getTokopediaPhotoPath(directoryDef, imagePathFrom);
-            String resultPath = outputFile.getAbsolutePath();
-            copyFile(imagePathFrom, resultPath);
+            String resultPath = copyFileToDirectory(imagePathFrom, directoryDef);
             resultList.add(resultPath);
         }
         return resultList;
+    }
+
+    public static String copyFileToDirectory(String imagePathFrom,
+                                             @DirectoryDef String directoryDef) throws IOException {
+        if (isInTokopediaDirectory(imagePathFrom, directoryDef)) {
+            return imagePathFrom;
+        } else {
+            File outputFile = getTokopediaPhotoPath(directoryDef, imagePathFrom);
+            String resultPath = outputFile.getAbsolutePath();
+            copyFile(imagePathFrom, resultPath);
+            return resultPath;
+        }
     }
 
     public static void deleteFile(String path) {
@@ -412,7 +426,8 @@ public class ImageUtils {
         return res;
     }
 
-    public static String trimBitmap(String imagePath, float expectedRatio, float currentRatio, boolean needCheckRotate) {
+    public static String trimBitmap(String imagePath, float expectedRatio, float currentRatio, boolean needCheckRotate,
+                                    @DirectoryDef String targetDirectory) {
         Bitmap bitmapToEdit = ImageUtils.getBitmapFromPath(imagePath, ImageUtils.DEF_WIDTH,
                 ImageUtils.DEF_HEIGHT, needCheckRotate);
         int width = bitmapToEdit.getWidth();
@@ -436,8 +451,7 @@ public class ImageUtils {
         Canvas canvas = new Canvas(outputBitmap);
         canvas.drawBitmap(bitmapToEdit, new Rect(left, top, right, bottom),
                 new Rect(0, 0, expectedWidth, expectedHeight), null);
-        File file = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE,
-                outputBitmap, isPng);
+        File file = ImageUtils.writeImageToTkpdPath(targetDirectory, outputBitmap, isPng);
         bitmapToEdit.recycle();
         outputBitmap.recycle();
 

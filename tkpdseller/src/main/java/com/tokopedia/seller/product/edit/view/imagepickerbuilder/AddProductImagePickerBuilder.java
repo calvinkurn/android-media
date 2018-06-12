@@ -38,11 +38,12 @@ public class AddProductImagePickerBuilder {
                 new int[]{TYPE_GALLERY, TYPE_CAMERA, TYPE_INSTAGRAM}, GalleryType.IMAGE_ONLY, DEFAULT_MAX_IMAGE_SIZE_IN_KB,
                 DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.RATIO_1_1, true,
                 new ImagePickerEditorBuilder(new int[]{ACTION_BRIGHTNESS, ACTION_CONTRAST, ACTION_CROP, ACTION_ROTATE},
-                        false)
+                        false,
+                        null)
                 , new ImagePickerMultipleSelectionBuilder(
                 imageList,
                 null,
-                0,
+                R.string.primary,
                 MAX_IMAGE_LIMIT));
     }
 
@@ -51,7 +52,8 @@ public class AddProductImagePickerBuilder {
                 new int[]{TYPE_INSTAGRAM}, GalleryType.IMAGE_ONLY, DEFAULT_MAX_IMAGE_SIZE_IN_KB,
                 DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.RATIO_1_1, true,
                 new ImagePickerEditorBuilder(new int[]{ACTION_BRIGHTNESS, ACTION_CONTRAST, ACTION_CROP, ACTION_ROTATE},
-                        false)
+                        false,
+                        null)
                 , new ImagePickerMultipleSelectionBuilder(
                 null,
                 null,
@@ -64,7 +66,8 @@ public class AddProductImagePickerBuilder {
                 new int[]{TYPE_GALLERY, TYPE_CAMERA, TYPE_INSTAGRAM}, GalleryType.IMAGE_ONLY, DEFAULT_MAX_IMAGE_SIZE_IN_KB,
                 DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.RATIO_1_1, true,
                 new ImagePickerEditorBuilder(new int[]{ACTION_BRIGHTNESS, ACTION_CONTRAST, ACTION_CROP, ACTION_ROTATE},
-                        false)
+                        false,
+                        null)
                 , null);
     }
 
@@ -92,6 +95,7 @@ public class AddProductImagePickerBuilder {
         return ImageEditorActivity.getIntent(context, uriOrPath, ImagePickerBuilder.DEFAULT_MIN_RESOLUTION,
                 new int[]{ACTION_BRIGHTNESS, ACTION_CONTRAST, ACTION_CROP, ACTION_ROTATE},
                 ImageRatioTypeDef.RATIO_1_1, false,
-                ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB);
+                ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
+                null);
     }
 }
