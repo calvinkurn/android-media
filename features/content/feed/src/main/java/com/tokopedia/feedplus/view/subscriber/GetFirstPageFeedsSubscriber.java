@@ -20,7 +20,6 @@ import com.tokopedia.feedplus.domain.model.feed.KolCtaDomain;
 import com.tokopedia.feedplus.domain.model.feed.KolPostDomain;
 import com.tokopedia.feedplus.domain.model.feed.KolRecommendationDomain;
 import com.tokopedia.feedplus.domain.model.feed.KolRecommendationItemDomain;
-import com.tokopedia.feedplus.domain.model.feed.ProductCommunicationDomain;
 import com.tokopedia.feedplus.domain.model.feed.ProductFeedDomain;
 import com.tokopedia.feedplus.domain.model.feed.PromotionFeedDomain;
 import com.tokopedia.feedplus.domain.model.officialstore.BadgeDomain;
@@ -39,8 +38,6 @@ import com.tokopedia.feedplus.view.viewmodel.kol.ContentProductViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendItemViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollViewModel;
-import com.tokopedia.feedplus.view.viewmodel.kol.ProductCommunicationItemViewModel;
-import com.tokopedia.feedplus.view.viewmodel.kol.ProductCommunicationViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreBrandsViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreCampaignProductViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreCampaignViewModel;
@@ -459,13 +456,8 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                         }
                     case TYPE_BANNER:
                         if (domain.getContent() != null
-                                && domain.getContent().getProductCommunications() != null
-                                && !domain.getContent().getProductCommunications().isEmpty()) {
-                            ProductCommunicationViewModel productCommunicationViewModel =
-                                    convertToProductCommunicationViewModel(
-                                            domain.getContent().getProductCommunications()
-                                    );
-                            listFeedView.add(productCommunicationViewModel);
+                                && domain.getContent().getProductCommunications() != null) {
+                            listFeedView.add(domain.getContent().getProductCommunications());
                         }
                         break;
                     case TYPE_POLLING:
@@ -788,26 +780,6 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
             );
         }
 
-        return null;
-    }
-
-    private ProductCommunicationViewModel convertToProductCommunicationViewModel(
-            List<ProductCommunicationDomain> domainList) {
-        List<ProductCommunicationItemViewModel> viewModelList = new ArrayList<>();
-        for (ProductCommunicationDomain domain : domainList) {
-            viewModelList.add(
-                    new ProductCommunicationItemViewModel(
-                            domain.getImageUrl(),
-                            domain.getRedirectUrl()
-                    )
-            );
-        }
-        return new ProductCommunicationViewModel(viewModelList);
-    }
-
-    private PollViewModel convertToPollViewModel() {
-        //TODO map data from API
-//        return new PollViewModel(null);
         return null;
     }
 

@@ -32,13 +32,14 @@ import com.tokopedia.feedplus.domain.model.feed.KolCtaDomain;
 import com.tokopedia.feedplus.domain.model.feed.KolPostDomain;
 import com.tokopedia.feedplus.domain.model.feed.KolRecommendationDomain;
 import com.tokopedia.feedplus.domain.model.feed.KolRecommendationItemDomain;
-import com.tokopedia.feedplus.domain.model.feed.ProductCommunicationDomain;
 import com.tokopedia.feedplus.domain.model.feed.ProductFeedDomain;
 import com.tokopedia.feedplus.domain.model.feed.ShopFeedDomain;
 import com.tokopedia.feedplus.domain.model.feed.SourceFeedDomain;
 import com.tokopedia.feedplus.domain.model.feed.WholesaleDomain;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollOptionViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollViewModel;
+import com.tokopedia.feedplus.view.viewmodel.kol.ProductCommunicationItemViewModel;
+import com.tokopedia.feedplus.view.viewmodel.kol.ProductCommunicationViewModel;
 import com.tokopedia.topads.sdk.domain.model.Data;
 
 import org.json.JSONException;
@@ -154,8 +155,8 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
                                                       FavoriteCtaDomain favoriteCtaDomain,
                                                       KolCtaDomain kolCtaDomain,
                                                       List<Data> topadsData,
-                                                      List<ProductCommunicationDomain>
-                                                              productCommunications,
+                                                      ProductCommunicationViewModel
+                                                              productCommunicationViewModel,
                                                       PollViewModel pollViewModel) {
 
         if (content == null) {
@@ -175,7 +176,7 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
                 kolRecommendations,
                 favoriteCtaDomain,
                 kolCtaDomain,
-                productCommunications,
+                productCommunicationViewModel,
                 pollViewModel,
                 content.getStatus_activity()
         );
@@ -224,8 +225,8 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
 
                 List<Data> topadsData = convertToTopadsDomain(datum.getContent().getTopads());
 
-                List<ProductCommunicationDomain> productCommunications
-                        = convertToProductCommunicationDomain(datum.getContent().getBanner());
+                ProductCommunicationViewModel productCommunicationViewModel
+                        = convertToProductCommunicationViewModel(datum.getContent().getBanner());
 
                 PollViewModel pollViewModel
                         = convertToPollViewModel(
@@ -241,7 +242,7 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
                         favoriteCta,
                         kolCtaDomain,
                         topadsData,
-                        productCommunications,
+                        productCommunicationViewModel,
                         pollViewModel
                 );
 
@@ -403,13 +404,13 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
         return list;
     }
 
-    private List<ProductCommunicationDomain> convertToProductCommunicationDomain(
+    private ProductCommunicationViewModel convertToProductCommunicationViewModel(
             List<FeedBanner> bannerList) {
         if (bannerList == null || bannerList.isEmpty()) {
             return null;
         }
 
-        List<ProductCommunicationDomain> productCommunicationDomains = new ArrayList<>();
+        List<ProductCommunicationItemViewModel> productCommunicationItems = new ArrayList<>();
         for (FeedBanner banner : bannerList) {
             String redirectUrl = "";
 
@@ -419,14 +420,15 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
                 redirectUrl = banner.getClick_url();
             }
 
-            productCommunicationDomains.add(
-                    new ProductCommunicationDomain(
+            productCommunicationItems.add(
+                    new ProductCommunicationItemViewModel(
                             banner.getImg_url() == null ? "" : banner.getImg_url(),
                             redirectUrl
                     )
             );
         }
-        return productCommunicationDomains;
+
+        return new ProductCommunicationViewModel(productCommunicationItems);
     }
 
     private PollViewModel convertToPollViewModel(String cardType, FeedPolling polling) {

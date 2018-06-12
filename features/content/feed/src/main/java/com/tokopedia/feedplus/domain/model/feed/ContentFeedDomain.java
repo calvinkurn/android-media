@@ -3,6 +3,7 @@ package com.tokopedia.feedplus.domain.model.feed;
 import com.tokopedia.feedplus.domain.model.TopPicksDomain;
 import com.tokopedia.feedplus.domain.model.officialstore.OfficialStoreDomain;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollViewModel;
+import com.tokopedia.feedplus.view.viewmodel.kol.ProductCommunicationViewModel;
 import com.tokopedia.topads.sdk.domain.model.Data;
 
 import java.util.List;
@@ -60,7 +61,7 @@ public class ContentFeedDomain {
     private final KolCtaDomain kolCtaDomain;
 
     @Nullable
-    private final List<ProductCommunicationDomain> productCommunications;
+    private final ProductCommunicationViewModel productCommunicationViewModel;
 
     @Nullable
     private final PollViewModel pollViewModel;
@@ -76,7 +77,7 @@ public class ContentFeedDomain {
                              @Nullable KolRecommendationDomain kolRecommendations,
                              @Nullable FavoriteCtaDomain favoriteCtaDomain,
                              @Nullable KolCtaDomain kolCtaDomain,
-                             @Nullable List<ProductCommunicationDomain> productCommunications,
+                             @Nullable ProductCommunicationViewModel productCommunicationViewModel,
                              @Nullable PollViewModel pollViewModel,
                              @Nullable String status_activity) {
         this.type = type;
@@ -92,7 +93,7 @@ public class ContentFeedDomain {
         this.kolRecommendations = kolRecommendations;
         this.favoriteCtaDomain = favoriteCtaDomain;
         this.kolCtaDomain = kolCtaDomain;
-        this.productCommunications = productCommunications;
+        this.productCommunicationViewModel = productCommunicationViewModel;
         this.pollViewModel = pollViewModel;
     }
 
@@ -162,8 +163,8 @@ public class ContentFeedDomain {
     }
 
     @Nullable
-    public List<ProductCommunicationDomain> getProductCommunications() {
-        return productCommunications;
+    public ProductCommunicationViewModel getProductCommunications() {
+        return productCommunicationViewModel;
     }
 
     @Nullable
