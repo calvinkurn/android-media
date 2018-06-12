@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tkpd.library.ui.view.LinearLayoutManager
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.settingbank.R
@@ -11,6 +13,8 @@ import com.tokopedia.settingbank.view.listener.SettingBankContract
 import com.tokopedia.settingbank.view.presenter.SettingBankPresenter
 import com.tokopedia.settingbank.common.analytics.SettingBankAnalytics
 import com.tokopedia.settingbank.common.di.SettingBankDependencyInjector
+import com.tokopedia.settingbank.view.adapter.BankAccountAdapter
+import com.tokopedia.settingbank.view.adapter.BankAccountTypeFactoryImpl
 import com.tokopedia.settingbank.view.viewmodel.BankAccountListViewModel
 
 /**
@@ -41,6 +45,14 @@ class SettingBankFragment : SettingBankContract.View, BaseDaggerFragment() {
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view: View = inflater!!.inflate(R.layout.fragment_setting_bank, container, false)
+
+        val adapterTypeFactory = BankAccountTypeFactoryImpl()
+        val listBank = ArrayList<Visitable<Any>>()
+
+        val adapter = BankAccountAdapter(adapterTypeFactory, listBank)
+
+        val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+
         return view
     }
 
