@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
+import com.tokopedia.core.util.TimeConverter;
 import com.tokopedia.feedplus.data.pojo.ContentFeedKol;
 import com.tokopedia.feedplus.data.pojo.Feed;
 import com.tokopedia.feedplus.data.pojo.FeedBanner;
@@ -226,7 +227,11 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
                 List<ProductCommunicationDomain> productCommunications
                         = convertToProductCommunicationDomain(datum.getContent().getBanner());
 
-                PollViewModel pollViewModel = convertToPollViewModel(datum.getContent().getPolling());
+                PollViewModel pollViewModel
+                        = convertToPollViewModel(
+                                datum.getContent().getType(),
+                                datum.getContent().getPolling()
+                        );
 
                 ContentFeedDomain contentFeedDomain = createContentFeedDomain(
                         datum.getContent(),
@@ -424,9 +429,17 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
         return productCommunicationDomains;
     }
 
-    private PollViewModel convertToPollViewModel(FeedPolling polling) {
+    private PollViewModel convertToPollViewModel(String cardType, FeedPolling polling) {
         if (polling == null) {
             return null;
+        }
+
+        //TODO milhamj supposed to be isAnswered from API
+        boolean voted = false;
+        for (PollingOption option: polling.getOptions()) {
+            if (option.getIs_selected()) {
+                voted = true;
+            }
         }
 
         List<PollOptionViewModel> optionViewModels = new ArrayList<>();
@@ -439,14 +452,14 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
                             option.getWeblink(),
                             option.getApplink(),
                             String.valueOf(option.getPercentage()),
-                            option.getIs_selected()
+                            checkIfSelected(voted, option.getIs_selected())
                     )
             );
         }
 
         return new PollViewModel(
                 polling.getUserId() == null ? 0 : polling.getUserId(),
-                "",
+                cardType,
                 polling.getTitle(),
                 polling.getUserName(),
                 polling.getUserPhoto(),
@@ -459,12 +472,23 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
                 polling.getCommentcount(),
                 0,
                 polling.getPoll_id(),
-                "",
+                TimeConverter.generateTime(polling.getCreate_time()),
                 polling.getShow_comment(),
                 String.valueOf(polling.getPoll_id()),
                 String.valueOf(polling.getTotal_voter()),
+                voted,
                 optionViewModels
         );
+    }
+
+    private int checkIfSelected(boolean isAnswered, boolean isSelected) {
+        if (isAnswered && isSelected) {
+            return PollOptionViewModel.SELECTED;
+        } else if (isAnswered) {
+            return PollOptionViewModel.UNSELECTED;
+        } else {
+            return PollOptionViewModel.DEFAULT;
+        }
     }
 
     private DataFeedDomain createDataFeedDomain(Feed datum,

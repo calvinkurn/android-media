@@ -86,6 +86,8 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
     private static final String TYPE_KOL_FOLLOWED = "followedkolpost";
     private static final String TYPE_KOL_RECOMMENDATION = "kolrecommendation";
     private static final String TYPE_FAVORITE_CTA = "favorite_cta";
+    private static final String TYPE_BANNER = "banner";
+    private static final String TYPE_POLLING = "polling";
     private static final String SHOP_ID_BRACKETS = "{shop_id}";
     private static final int TOPADS_MAX_SIZE = 6;
     private static final int TOPADS_MAX_SIZE_SMALL = 3;
@@ -455,8 +457,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                                 listFeedView.add(contentProductViewModel);
                             }
                         }
-
-                        //TODO milhamj make own type
+                    case TYPE_BANNER:
                         if (domain.getContent() != null
                                 && domain.getContent().getProductCommunications() != null
                                 && !domain.getContent().getProductCommunications().isEmpty()) {
@@ -465,6 +466,14 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                                             domain.getContent().getProductCommunications()
                                     );
                             listFeedView.add(productCommunicationViewModel);
+                        }
+                        break;
+                    case TYPE_POLLING:
+                        if (domain.getContent() != null
+                                && domain.getContent().getPollViewModel() != null) {
+                            PollViewModel pollViewModel = domain.getContent().getPollViewModel();
+                            pollViewModel.setPage(page);
+                            listFeedView.add(pollViewModel);
                         }
                         break;
                     default:
