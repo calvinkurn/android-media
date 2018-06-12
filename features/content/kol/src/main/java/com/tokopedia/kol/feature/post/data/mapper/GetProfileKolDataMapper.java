@@ -58,7 +58,6 @@ public class GetProfileKolDataMapper
                     0,
                     postKolData.id != null ? postKolData.id : 0,
                     postKolData.createTime != null ? postKolData.createTime : "",
-                    false,
                     postKolData.showComment != null ? postKolData.showComment : true,
                     getImageUrl(content),
                     getTagId(tag),

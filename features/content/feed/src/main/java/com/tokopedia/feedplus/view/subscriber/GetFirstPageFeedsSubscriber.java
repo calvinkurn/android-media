@@ -543,7 +543,6 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                 page,
                 kolPostDomain.getId(),
                 TimeConverter.generateTime(kolPostDomain.getCreateTime()),
-                false,
                 kolPostDomain.isShowComment(),
                 kolPostDomain.getImageUrl(),
                 kolPostDomain.getItemId(),

@@ -20,11 +20,11 @@ public class KolPostViewModel extends BaseKolViewModel implements Visitable<KolP
     public KolPostViewModel(int userId, String cardType, String title, String name,
                             String avatar, String label, String kolProfileUrl, boolean followed,
                             String review, boolean liked, int totalLike, int totalComment, int page,
-                            int kolId, String time, boolean wishlisted, boolean isShowComment,
+                            int kolId, String time, boolean isShowComment,
                             String kolImage, int tagsId, String contentName, String tagsType,
                             String tagsCaption, String tagsLink) {
         super(userId, cardType, title, name, avatar, label, kolProfileUrl, followed, review,
-                liked, totalLike, totalComment, page, kolId, time, wishlisted, isShowComment);
+                liked, totalLike, totalComment, page, kolId, time, isShowComment);
         this.kolImage = kolImage;
         this.tagsId = tagsId;
         this.contentName = contentName;
