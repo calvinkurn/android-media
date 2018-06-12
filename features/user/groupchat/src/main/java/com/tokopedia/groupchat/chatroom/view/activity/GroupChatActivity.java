@@ -959,6 +959,10 @@ public class GroupChatActivity extends BaseSimpleActivity
         } else {
             sponsorLayout.setVisibility(View.GONE);
         }
+
+        if(TextUtils.isEmpty(viewModel.getChannelInfoViewModel().getAdsImageUrl())){
+            sponsorLayout.setVisibility(View.GONE);
+        }
     }
 
     private void openSponsor(String adsLink) {
