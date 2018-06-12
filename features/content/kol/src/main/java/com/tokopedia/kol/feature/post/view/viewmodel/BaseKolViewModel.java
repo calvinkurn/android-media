@@ -22,13 +22,12 @@ public class BaseKolViewModel {
     private int kolId;
     private boolean reviewExpanded;
     private String time;
-    private boolean wishlisted;
     private boolean isShowComment;
 
-    public BaseKolViewModel(int userId, String cardType, String title, String name, String
-            avatar, String label, String kolProfileUrl, boolean followed, String review, boolean
-            liked, int totalLike, int totalComment, int page, int kolId, String time, boolean
-            wishlisted, boolean isShowComment) {
+    public BaseKolViewModel(int userId, String cardType, String title, String name, String avatar,
+                            String label, String kolProfileUrl, boolean followed, String review,
+                            boolean liked, int totalLike, int totalComment, int page, int kolId,
+                            String time, boolean isShowComment) {
         this.userId = userId;
         this.cardType = cardType;
         this.title = title;
@@ -44,7 +43,6 @@ public class BaseKolViewModel {
         this.page = page;
         this.kolId = kolId;
         this.time = time;
-        this.wishlisted = wishlisted;
         this.isShowComment = isShowComment;
     }
 
@@ -174,14 +172,6 @@ public class BaseKolViewModel {
 
     public void setTime(String time) {
         this.time = time;
-    }
-
-    public boolean isWishlisted() {
-        return wishlisted;
-    }
-
-    public void setWishlisted(boolean wishlisted) {
-        this.wishlisted = wishlisted;
     }
 
     public boolean isShowComment() {
