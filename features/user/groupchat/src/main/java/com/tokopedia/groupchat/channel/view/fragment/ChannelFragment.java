@@ -85,17 +85,6 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
         presenter.attachView(this);
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-//        userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
-//        if (userSession != null && !userSession.isLoggedIn()) {
-//            startActivityForResult(((GroupChatModuleRouter) getActivity().getApplicationContext())
-//                    .getLoginIntent(getActivity()), REQUEST_LOGIN);
-//        }
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
