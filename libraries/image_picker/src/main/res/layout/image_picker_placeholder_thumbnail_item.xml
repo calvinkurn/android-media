@@ -16,11 +16,10 @@
             android:src="@drawable/rect_stroke_light_grey_dash"/>
 
         <ImageView
-            android:id="@+id/image_view_plus"
+            android:id="@+id/image_view_placeholder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:scaleType="centerInside"
-            android:background="@drawable/ic_plus_gray"
             android:layout_gravity="center"/>
     </FrameLayout>
 

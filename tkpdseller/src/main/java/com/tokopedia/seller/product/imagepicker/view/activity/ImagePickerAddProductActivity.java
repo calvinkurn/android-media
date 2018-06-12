@@ -25,7 +25,7 @@ public class ImagePickerAddProductActivity extends ImagePickerActivity implement
 
     @Override
     public void onClickImageCatalog(String url, boolean isChecked) {
-        onImageSelected(url, isChecked);
+        onImageSelected(url, isChecked, null);
     }
 
     @Override
