@@ -40,6 +40,7 @@ import com.tokopedia.imagepicker.picker.widget.ImagePickerPreviewWidget;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity.RESULT_IMAGE_DESCRIPTION_LIST;
 import static com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity.RESULT_IS_EDITTED;
 import static com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity.RESULT_PREVIOUS_IMAGE;
 
@@ -54,6 +55,8 @@ public class ImagePickerActivity extends BaseSimpleActivity
 
     public static final String SAVED_SELECTED_TAB = "saved_sel_tab";
     public static final String SAVED_SELECTED_IMAGES = "saved_sel_img";
+    public static final String SAVED_IMAGE_DESCRIPTION = "saved_img_desc";
+
     private static final int REQUEST_CAMERA_PERMISSIONS = 932;
     private static final int REQUEST_CODE_EDITOR = 933;
 
@@ -71,6 +74,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
     private ImagePickerPresenter imagePickerPresenter;
 
     private ArrayList<String> selectedImagePaths;
+    private ArrayList<String> imageDescriptionList;
     private TextView tvDone;
     private boolean isPermissionGotDenied;
     private ImagePickerPreviewWidget imagePickerPreviewWidget;
@@ -105,12 +109,21 @@ public class ImagePickerActivity extends BaseSimpleActivity
         if (savedInstanceState == null) {
             if (imagePickerBuilder.supportMultipleSelection()) {
                 selectedImagePaths = imagePickerBuilder.getInitialSelectedImagePathList();
+                imageDescriptionList = new ArrayList<>();
+                //create empty description for initial images
+                if (selectedImagePaths!= null && selectedImagePaths.size() > 0) {
+                    for (String path : selectedImagePaths) {
+                        imageDescriptionList.add(null);
+                    }
+                }
             } else {
                 selectedImagePaths = new ArrayList<>();
+                imageDescriptionList = new ArrayList<>();
             }
         } else {
             selectedTab = savedInstanceState.getInt(SAVED_SELECTED_TAB, 0);
             selectedImagePaths = savedInstanceState.getStringArrayList(SAVED_SELECTED_IMAGES);
+            imageDescriptionList = savedInstanceState.getStringArrayList(SAVED_IMAGE_DESCRIPTION);
         }
 
         super.onCreate(savedInstanceState);
@@ -153,7 +166,8 @@ public class ImagePickerActivity extends BaseSimpleActivity
         imagePickerPreviewWidget = findViewById(R.id.image_picker_preview_widget);
         if (imagePickerBuilder.supportMultipleSelection()) {
             imagePickerPreviewWidget.setData(selectedImagePaths,
-                    imagePickerBuilder.getImagePickerMultipleSelectionBuilder().getPrimaryImageStringRes());
+                    imagePickerBuilder.getImagePickerMultipleSelectionBuilder().getPrimaryImageStringRes(),
+                    imagePickerBuilder.getImagePickerMultipleSelectionBuilder().getPlaceholderImagePathResList());
             imagePickerPreviewWidget.setVisibility(View.VISIBLE);
             imagePickerPreviewWidget.setOnImagePickerThumbnailListWidgetListener(this);
             imagePickerPreviewWidget.setMaxAdapterSize(imagePickerBuilder.getMaximumNoPick());
@@ -370,7 +384,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
 
     @Override
     public void onAlbumItemClicked(MediaItem item, boolean isChecked) {
-        onImageSelected(item.getRealPath(), isChecked);
+        onImageSelected(item.getRealPath(), isChecked, null);
     }
 
     @Override
@@ -384,27 +398,31 @@ public class ImagePickerActivity extends BaseSimpleActivity
     }
 
     @Override
-    public void onClickImageInstagram(String url, boolean isChecked) {
-        onImageSelected(url, isChecked);
+    public void onClickImageInstagram(String url, boolean isChecked, String description) {
+        onImageSelected(url, isChecked, description);
     }
 
     @Override
     public void onImageTaken(String filePath) {
-        onImageSelected(filePath, true);
+        onImageSelected(filePath, true, null);
     }
 
-    protected void onImageSelected(String filePathOrUrl, boolean isChecked) {
+    protected void onImageSelected(String filePathOrUrl, boolean isChecked, String description) {
         if (imagePickerBuilder.supportMultipleSelection()) {
             if (isChecked) {
                 imagePickerPreviewWidget.addData(filePathOrUrl);
+                imageDescriptionList.add(description);
                 enableDoneView();
             } else {
                 imagePickerPreviewWidget.removeData(filePathOrUrl);
                 if (selectedImagePaths.size() == 0) {
                     disableDoneView();
                 }
+                //will trigger afterThumbnailRemoved()
             }
         } else {
+            imageDescriptionList = new ArrayList<>();
+            imageDescriptionList.add(description);
             onSingleImagePicked(filePathOrUrl);
         }
     }
@@ -415,10 +433,11 @@ public class ImagePickerActivity extends BaseSimpleActivity
     }
 
     @Override
-    public void afterThumbnailRemoved() {
+    public void afterThumbnailRemoved(int index) {
         if (selectedImagePaths.size() == 0) {
             disableDoneView();
         }
+        imageDescriptionList.remove(index);
 
         List<Fragment> fragments = getSupportFragmentManager().getFragments();
         for (Fragment fragment : fragments) {
@@ -455,7 +474,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
     }
 
     private void startEditorActivity(ArrayList<String> selectedImagePaths){
-        Intent intent = ImageEditorActivity.getIntent(this, selectedImagePaths,
+        Intent intent = ImageEditorActivity.getIntent(this, selectedImagePaths, imageDescriptionList,
                 imagePickerBuilder.getMinResolution(), imagePickerBuilder.getImageEditActionType(),
                 imagePickerBuilder.getImageRatioTypeDef(),
                 imagePickerBuilder.isCirclePreview(),
@@ -490,10 +509,12 @@ public class ImagePickerActivity extends BaseSimpleActivity
 
     private void onFinishWithMultipleFinalImage(ArrayList<String> imageUrlOrPathList,
                                                 ArrayList<String> originalImageList,
+                                                ArrayList<String> imageDescriptionList,
                                                 ArrayList<Boolean> isEdittedList) {
         Intent intent = new Intent();
         intent.putStringArrayListExtra(PICKER_RESULT_PATHS, imageUrlOrPathList);
         intent.putStringArrayListExtra(RESULT_PREVIOUS_IMAGE, originalImageList);
+        intent.putStringArrayListExtra(RESULT_IMAGE_DESCRIPTION_LIST, imageDescriptionList);
         intent.putExtra(RESULT_IS_EDITTED, isEdittedList);
         setResult(Activity.RESULT_OK, intent);
         finish();
@@ -529,7 +550,8 @@ public class ImagePickerActivity extends BaseSimpleActivity
     @Override
     public void onSuccessResizeImage(ArrayList<String> resultPaths) {
         hideDownloadProgressDialog();
-        onFinishWithMultipleFinalImage(resultPaths, selectedImagePaths, new ArrayList<Boolean>(selectedImagePaths.size()));
+        onFinishWithMultipleFinalImage(resultPaths, selectedImagePaths, imageDescriptionList,
+                new ArrayList<Boolean>(selectedImagePaths.size()));
     }
 
     private void initImagePickerPresenter() {
@@ -563,8 +585,9 @@ public class ImagePickerActivity extends BaseSimpleActivity
                 if (resultCode == Activity.RESULT_OK && data != null && data.hasExtra(PICKER_RESULT_PATHS)) {
                     ArrayList<String> finalPathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS);
                     ArrayList<String> originalImageList = data.getStringArrayListExtra(RESULT_PREVIOUS_IMAGE);
+                    ArrayList<String> imageDescriptionList = data.getStringArrayListExtra(RESULT_IMAGE_DESCRIPTION_LIST);
                     ArrayList<Boolean> isEdittedList = (ArrayList<Boolean>) data.getSerializableExtra(RESULT_IS_EDITTED);
-                    onFinishWithMultipleFinalImage(finalPathList, originalImageList, isEdittedList);
+                    onFinishWithMultipleFinalImage(finalPathList, originalImageList, imageDescriptionList, isEdittedList);
                     isFinishEditting = true;
                 }
                 break;
@@ -579,6 +602,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
         super.onSaveInstanceState(outState);
         outState.putInt(SAVED_SELECTED_TAB, tabLayout.getSelectedTabPosition());
         outState.putStringArrayList(SAVED_SELECTED_IMAGES, selectedImagePaths);
+        outState.putStringArrayList(SAVED_IMAGE_DESCRIPTION, imageDescriptionList);
     }
 
 

@@ -255,7 +255,9 @@ public class ImagePickerInstagramFragment extends BaseListFragment<InstagramMedi
 
     @Override
     public void onItemClicked(InstagramMediaModel instagramMediaModel, boolean isChecked) {
-        listenerImagePickerInstagram.onClickImageInstagram(instagramMediaModel.getImageStandardResolutionUrl(), isChecked);
+        listenerImagePickerInstagram.onClickImageInstagram(instagramMediaModel.getImageStandardResolutionUrl(),
+                isChecked,
+                instagramMediaModel.getCaption());
     }
 
     @Override
@@ -269,7 +271,7 @@ public class ImagePickerInstagramFragment extends BaseListFragment<InstagramMedi
     }
 
     public interface ListenerImagePickerInstagram {
-        void onClickImageInstagram(String url, boolean isChecked);
+        void onClickImageInstagram(String url, boolean isChecked, String imageDescription);
         boolean isMaxImageReached();
         ArrayList<String> getImagePath();
     }
