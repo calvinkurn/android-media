@@ -27,9 +27,11 @@ public class ImagePickerPreviewWidget extends FrameLayout implements ImagePicker
     private ImagePickerThumbnailAdapter imagePickerThumbnailAdapter;
 
     private ImagePickerPreviewWidget.OnImagePickerThumbnailListWidgetListener onImagePickerThumbnailListWidgetListener;
+    private RecyclerView recyclerView;
 
     public interface OnImagePickerThumbnailListWidgetListener {
         void onThumbnailItemClicked(String imagePath, int position);
+
         void afterThumbnailRemoved(int index);
     }
 
@@ -59,7 +61,7 @@ public class ImagePickerPreviewWidget extends FrameLayout implements ImagePicker
                 this, true);
         imagePickerThumbnailAdapter = new ImagePickerThumbnailAdapter(
                 getContext(), null, null, this);
-        RecyclerView recyclerView = findViewById(R.id.recycler_view);
+        recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(imagePickerThumbnailAdapter);
@@ -79,24 +81,39 @@ public class ImagePickerPreviewWidget extends FrameLayout implements ImagePicker
         imagePickerThumbnailAdapter.setData(imagePathList, primaryImageStringRes, placeholderDrawableList);
     }
 
-    public void addData(String imagePath){
+    public void addData(String imagePath) {
         imagePickerThumbnailAdapter.addData(imagePath);
+        recyclerView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                int position = imagePickerThumbnailAdapter.getImagePathList().size();
+                recyclerView.smoothScrollToPosition(
+                        position >= imagePickerThumbnailAdapter.getItemCount() ? position - 1 : position);
+            }
+        }, 1);
     }
 
-    public int removeData(String imagePath){
-        return imagePickerThumbnailAdapter.removeData(imagePath);
+    public int removeData(String imagePath) {
+        final int position = imagePickerThumbnailAdapter.removeData(imagePath);
+        recyclerView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                recyclerView.smoothScrollToPosition(position > 0 ? position - 1 : position);
+            }
+        }, 1);
+        return position;
     }
 
     @Override
     public void onPickerThumbnailItemClicked(String imagePath, int position) {
-        if (onImagePickerThumbnailListWidgetListener!= null) {
+        if (onImagePickerThumbnailListWidgetListener != null) {
             onImagePickerThumbnailListWidgetListener.onThumbnailItemClicked(imagePath, position);
         }
     }
 
     @Override
     public void onThumbnailRemoved(int index) {
-        if (onImagePickerThumbnailListWidgetListener!= null) {
+        if (onImagePickerThumbnailListWidgetListener != null) {
             onImagePickerThumbnailListWidgetListener.afterThumbnailRemoved(index);
         }
     }

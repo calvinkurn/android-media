@@ -154,6 +154,10 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
         }
     }
 
+    public ArrayList<String> getImagePathList() {
+        return imagePathList;
+    }
+
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
@@ -211,5 +215,6 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
     public void setMaxData(int size) {
         this.maxSize = size;
     }
+
 
 }
