@@ -10,12 +10,14 @@ import com.tokopedia.feedplus.data.pojo.FeedBanner;
 import com.tokopedia.feedplus.data.pojo.FeedContent;
 import com.tokopedia.feedplus.data.pojo.FeedKolRecommendedType;
 import com.tokopedia.feedplus.data.pojo.FeedKolType;
+import com.tokopedia.feedplus.data.pojo.FeedPolling;
 import com.tokopedia.feedplus.data.pojo.FeedQuery;
 import com.tokopedia.feedplus.data.pojo.FeedSource;
 import com.tokopedia.feedplus.data.pojo.Feeds;
 import com.tokopedia.feedplus.data.pojo.FeedsFavoriteCta;
 import com.tokopedia.feedplus.data.pojo.FeedsKolCta;
 import com.tokopedia.feedplus.data.pojo.KolRecommendedDataType;
+import com.tokopedia.feedplus.data.pojo.PollingOption;
 import com.tokopedia.feedplus.data.pojo.ProductFeedType;
 import com.tokopedia.feedplus.data.pojo.ShopDetail;
 import com.tokopedia.feedplus.data.pojo.TagsFeedKol;
@@ -34,6 +36,8 @@ import com.tokopedia.feedplus.domain.model.feed.ProductFeedDomain;
 import com.tokopedia.feedplus.domain.model.feed.ShopFeedDomain;
 import com.tokopedia.feedplus.domain.model.feed.SourceFeedDomain;
 import com.tokopedia.feedplus.domain.model.feed.WholesaleDomain;
+import com.tokopedia.feedplus.view.viewmodel.kol.PollOptionViewModel;
+import com.tokopedia.feedplus.view.viewmodel.kol.PollViewModel;
 import com.tokopedia.topads.sdk.domain.model.Data;
 
 import org.json.JSONException;
@@ -150,7 +154,8 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
                                                       KolCtaDomain kolCtaDomain,
                                                       List<Data> topadsData,
                                                       List<ProductCommunicationDomain>
-                                                              productCommunications) {
+                                                              productCommunications,
+                                                      PollViewModel pollViewModel) {
 
         if (content == null) {
             return null;
@@ -170,6 +175,7 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
                 favoriteCtaDomain,
                 kolCtaDomain,
                 productCommunications,
+                pollViewModel,
                 content.getStatus_activity()
         );
     }
@@ -184,9 +190,10 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
     }
 
     private FeedDomain convertToDataFeedDomain(Feeds data) {
-
-        return new FeedDomain(convertToFeedDomain(data),
-                data.getLinks().getPagination().getHas_next_page());
+        return new FeedDomain(
+                convertToFeedDomain(data),
+                data.getLinks().getPagination().getHas_next_page()
+        );
     }
 
     private List<DataFeedDomain> convertToFeedDomain(Feeds data) {
@@ -219,6 +226,8 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
                 List<ProductCommunicationDomain> productCommunications
                         = convertToProductCommunicationDomain(datum.getContent().getBanner());
 
+                PollViewModel pollViewModel = convertToPollViewModel(datum.getContent().getPolling());
+
                 ContentFeedDomain contentFeedDomain = createContentFeedDomain(
                         datum.getContent(),
                         productFeedDomains,
@@ -227,7 +236,8 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
                         favoriteCta,
                         kolCtaDomain,
                         topadsData,
-                        productCommunications
+                        productCommunications,
+                        pollViewModel
                 );
 
                 SourceFeedDomain sourceFeedDomain =
@@ -412,6 +422,49 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
             );
         }
         return productCommunicationDomains;
+    }
+
+    private PollViewModel convertToPollViewModel(FeedPolling polling) {
+        if (polling == null) {
+            return null;
+        }
+
+        List<PollOptionViewModel> optionViewModels = new ArrayList<>();
+        for (PollingOption option: polling.getOptions()) {
+            optionViewModels.add(
+                    new PollOptionViewModel(
+                            String.valueOf(option.getOption_id()),
+                            option.getOption(),
+                            option.getImage_option(),
+                            option.getWeblink(),
+                            option.getApplink(),
+                            String.valueOf(option.getPercentage()),
+                            option.getIs_selected()
+                    )
+            );
+        }
+
+        return new PollViewModel(
+                polling.getUserId() == null ? 0 : polling.getUserId(),
+                "",
+                polling.getTitle(),
+                polling.getUserName(),
+                polling.getUserPhoto(),
+                polling.getUserInfo(),
+                polling.getUserUrl(),
+                polling.getFollowed(),
+                polling.getQuestion(),
+                polling.getLiked(),
+                polling.getLikecount(),
+                polling.getCommentcount(),
+                0,
+                polling.getPoll_id(),
+                "",
+                polling.getShow_comment(),
+                String.valueOf(polling.getPoll_id()),
+                String.valueOf(polling.getTotal_voter()),
+                optionViewModels
+        );
     }
 
     private DataFeedDomain createDataFeedDomain(Feed datum,
