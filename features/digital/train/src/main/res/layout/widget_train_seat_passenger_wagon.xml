@@ -15,8 +15,12 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:drawableEnd="@drawable/ic_arrow_down_grey"
+            android:drawablePadding="@dimen/dp_4"
             android:drawableRight="@drawable/ic_arrow_down_grey"
-            android:text="Penumpang" />
+            android:padding="@dimen/dp_6"
+            android:paddingEnd="@dimen/dp_8"
+            android:paddingRight="@dimen/dp_8"
+            android:text="@string/train_seat_header_passenger_label" />
 
         <View
             android:layout_width="1dp"
@@ -30,11 +34,15 @@
             android:layout_weight="1"
             android:drawableEnd="@drawable/ic_arrow_down_grey"
             android:drawableRight="@drawable/ic_arrow_down_grey"
+            android:padding="@dimen/dp_6"
+            android:paddingEnd="@dimen/dp_8"
+            android:paddingRight="@dimen/dp_8"
             android:text="Gerbong" />
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_passenger"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_4" />
 </LinearLayout>

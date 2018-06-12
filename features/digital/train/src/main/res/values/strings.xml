@@ -63,4 +63,8 @@
     <string name="train_station_destination_toolbar">Pilih Kota atau Stasiun Tujuan</string>
     <string name="train_countdown_label">Selesaikan pembayaran Anda dalam</string>
     <string name="train_seat_submit_label">Selanjutnya</string>
+    <string name="train_seat_available_label">Tersedia</string>
+    <string name="train_seat_filled_label">Terisi</string>
+    <string name="train_seat_your_choice_label">Pilihan Anda</string>
+    <string name="train_seat_header_passenger_label">Penumpang</string>
 </resources>
