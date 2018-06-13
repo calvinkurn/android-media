@@ -10,6 +10,8 @@ import com.tokopedia.networklib.data.source.cache.RestCacheDataStore;
 import com.tokopedia.networklib.data.source.cloud.CloudRestRestDataStore;
 import com.tokopedia.networklib.domain.RestRepository;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import okhttp3.Interceptor;
@@ -26,8 +28,8 @@ public class RestRepositoryImpl implements RestRepository {
         this.mCache = new RestCacheDataStore();
     }
 
-    public RestRepositoryImpl(Interceptor interceptor, Context context) {
-        this.mCloud = new CloudRestRestDataStore(interceptor, context);
+    public RestRepositoryImpl(List<Interceptor> interceptors, Context context) {
+        this.mCloud = new CloudRestRestDataStore(interceptors, context);
         this.mCache = new RestCacheDataStore();
     }
 

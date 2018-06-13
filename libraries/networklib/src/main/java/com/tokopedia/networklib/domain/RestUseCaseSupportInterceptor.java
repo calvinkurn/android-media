@@ -13,7 +13,9 @@ import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import okhttp3.Interceptor;
@@ -25,7 +27,12 @@ public abstract class RestUseCaseSupportInterceptor extends UseCase<RestResponse
     private Gson mGson;
 
     public RestUseCaseSupportInterceptor(Interceptor interceptor, Context context) {
-        this.mRepository = new RestRepositoryImpl(interceptor, context);
+        this.mRepository = new RestRepositoryImpl(Arrays.asList(interceptor), context);
+        this.mGson = new Gson();
+    }
+
+    public RestUseCaseSupportInterceptor(List<Interceptor> interceptors, Context context) {
+        this.mRepository = new RestRepositoryImpl(interceptors, context);
         this.mGson = new Gson();
     }
 
