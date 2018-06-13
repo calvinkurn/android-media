@@ -40,6 +40,10 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
     View cancelButton;
     View cancelBtn;
     View disableShakeShake;
+    View layoutshakeShakeErrorMsg;
+    View btnShakeClose;
+    TextView shakeShakeErrorMsg;
+    View btnTurnOff;
     private TkpdProgressDialog progressDialog;
     protected CampaignComponent campaignComponent;
 
@@ -48,6 +52,8 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
 
     TextView shakeShakeMessage;
     public static final String KEY_LONG_SHAKE = "KEY_LONG_SHAKE_SHAKE";
+    private View cancelBtn1;
+    View cancelBtn2;
 
     @Override
     protected Fragment getNewFragment() {
@@ -61,14 +67,24 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
         shakeShakeMessageButton =  findViewById(R.id.shake_shake_message_button);
         cancelButton = findViewById(R.id.cancel_button);
         cancelBtn = findViewById(R.id.cancel_btn);
+        cancelBtn1 = findViewById(R.id.cancel_btn2);
+        cancelBtn2 = findViewById(R.id.cancel_btn3);
         disableShakeShake = findViewById(R.id.disable_shake_shake_button);
+        btnTurnOff = findViewById(R.id.btn_turn_off);
+        shakeShakeErrorMsg = findViewById(R.id.shake_shake_msg);
+        layoutshakeShakeErrorMsg = findViewById(R.id.layout_shake_error);
+        btnShakeClose = findViewById(R.id.btn_shake_close);
+
         initInjector();
         attachToPresenter();
         ButterKnife.bind(this);
         cancelButton.setOnClickListener(cancelListener);
         cancelBtn.setOnClickListener(cancelListener);
+        cancelBtn1.setOnClickListener(cancelListener);
+        cancelBtn2.setOnClickListener(cancelListener);
+        btnShakeClose.setOnClickListener(cancelListener);
         shakeDetect();
-        disableShakeShake.setOnClickListener(new View.OnClickListener() {
+        btnTurnOff.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 presenter.onDisableShakeShake();
@@ -150,7 +166,9 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
 
     @Override
     public void showErrorGetInfo(String message) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        shakeShakeErrorMsg.setText(message);
+        layoutshakeShakeErrorMsg.setVisibility(View.VISIBLE);
+       /* AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getString(R.string.title_dialog_wrong_scan));
         builder.setMessage(message);
         builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
@@ -165,7 +183,7 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
                     public void onClick(DialogInterface dialog, int i) {
                         dialog.dismiss();
                     }
-                }).create().show();
+                }).create().show();*/
     }
 
 
@@ -203,7 +221,7 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
 
     @Override
     public void showDisableShakeShakeVisible() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+   /*     AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(getString(R.string.disable_shake_shake));
         builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
             @Override
@@ -221,8 +239,8 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
 
 
                     }
-                }).create().show();
-        //disableShakeShake.setVisibility(View.VISIBLE);
+                }).create().show();*/
+        disableShakeShake.setVisibility(View.VISIBLE);
     }
 
     @Override
