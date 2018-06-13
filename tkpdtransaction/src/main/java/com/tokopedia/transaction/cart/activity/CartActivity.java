@@ -36,6 +36,12 @@ public class CartActivity extends BasePresenterActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        unregisterShake();
+    }
+
+    @Override
     protected void setupURIPass(Uri data) {
 
     }

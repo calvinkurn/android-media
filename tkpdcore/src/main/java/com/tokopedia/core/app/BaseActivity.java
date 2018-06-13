@@ -304,7 +304,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         }
     }
 
-    private void registerShake() {
+    protected void registerShake() {
         if (!GlobalConfig.isSellerApp() && getApplication() instanceof AbstractionRouter) {
             String screenName = getScreenName();
             if (screenName == null) {
@@ -314,7 +314,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         }
     }
 
-    private void unregisterShake() {
+    protected void unregisterShake() {
         if (!GlobalConfig.isSellerApp() && getApplication() instanceof AbstractionRouter) {
             ((AbstractionRouter) getApplication()).unregisterShake();
         }

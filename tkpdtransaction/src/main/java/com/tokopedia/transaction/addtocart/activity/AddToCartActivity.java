@@ -964,6 +964,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     @Override
     protected void onResume() {
         super.onResume();
+        unregisterShake();
     }
 
     private void showBuyError(String errorMessage) {

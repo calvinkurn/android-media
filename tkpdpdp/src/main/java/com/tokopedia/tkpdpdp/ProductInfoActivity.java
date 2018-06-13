@@ -123,6 +123,7 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
     @Override
     public void onResume() {
         super.onResume();
+        unregisterShake();
     }
 
     @Override

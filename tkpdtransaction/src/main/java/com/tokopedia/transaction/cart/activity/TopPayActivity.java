@@ -85,6 +85,13 @@ public class TopPayActivity extends BasePresenterActivity<ITopPayPresenter> impl
         return intent;
     }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        unregisterShake();
+    }
+
     @Override
     protected void setupURIPass(Uri data) {
 

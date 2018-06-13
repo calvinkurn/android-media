@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Handler;
@@ -194,7 +195,8 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
                             @Override
                             public void run() {
                                 intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                context.startActivity(intent1);
+                                if(intent1.resolveActivity(context.getPackageManager()) != null)
+                                    context.startActivity(intent1);
                             }
                         }, 500);
                     }
@@ -205,7 +207,8 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
                         @Override
                         public void run() {
                             intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            context.startActivity(intent1);
+                            if(intent1.resolveActivity(context.getPackageManager()) != null)
+                                context.startActivity(intent1);
                         }
                     }, 500);
                 }
