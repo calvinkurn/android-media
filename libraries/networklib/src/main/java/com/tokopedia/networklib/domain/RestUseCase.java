@@ -30,11 +30,11 @@ public abstract class RestUseCase<T> extends UseCase<RestResponse> {
     @Override
     public Observable<RestResponse> createObservable(RequestParams requestParams) {
         return mRepository.getResponse(buildRequest(), getCacheStrategy()).map(restResponseInternal ->
-                new RestResponse(mGson.fromJson(restResponseInternal.getOriginalResponse(), getModelType()), restResponseInternal.isCached()));
+                new RestResponse(mGson.fromJson(restResponseInternal.getOriginalResponse(), getTypeOfT()), restResponseInternal.isCached()));
     }
 
     private RestRequest buildRequest() {
-        if (getModelType() == null) {
+        if (getTypeOfT() == null) {
             throw new RuntimeException("Please add valid class type token in order to retrieve the data");
         }
 
@@ -48,7 +48,7 @@ public abstract class RestUseCase<T> extends UseCase<RestResponse> {
             throw new RuntimeException("Please set valid request body into your UseCase class");
         }
 
-        return new RestRequest.Builder(getModelType(), getUrl())
+        return new RestRequest.Builder(getTypeOfT(), getUrl())
                 .setBody(getBody())
                 .setRequestType(getHttpRequestType() == null ? RequestType.GET : getHttpRequestType())
                 .setHeaders(getHeaders() == null ? new HashMap<>() : getHeaders())
@@ -66,12 +66,16 @@ public abstract class RestUseCase<T> extends UseCase<RestResponse> {
 
     /**
      * Mandatory implementation - Valid implementation require
-     * <p>
-     * With the help of this argument library can serialize the json
+     * typeOfT The specific genericized type of src. You can obtain this type by using the
+     * {@link com.google.gson.reflect.TypeToken} class. For example, to get the type for
+     * {@code Collection<Foo>}, you should use:
+     * <pre>
+     * Type typeOfT = new TypeToken&lt;Collection&lt;Foo&gt;&gt;(){}.getType();
+     * </pre>
      *
      * @return Class type
      */
-    public abstract Type getModelType();
+    public abstract Type getTypeOfT();
 
 
     /**
