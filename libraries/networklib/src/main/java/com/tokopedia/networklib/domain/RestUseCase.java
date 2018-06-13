@@ -106,7 +106,7 @@ public abstract class RestUseCase extends UseCase<RestResponse> {
      * Optional
      * For providing Http method type, by default GET will be treated if not provided any method.
      *
-     * @return Map -> RequestType enum
+     * @return   RequestType enum
      */
     public abstract RequestType getHttpRequestType();
 

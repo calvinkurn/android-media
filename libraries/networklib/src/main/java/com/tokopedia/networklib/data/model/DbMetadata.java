@@ -7,7 +7,7 @@ import com.raizlabs.android.dbflow.annotation.ModelContainer;
 @ModelContainer
 public class DbMetadata {
 
-    public static final String NAME = "tokopedia_graphql";
+    public static final String NAME = "tokopedia_rest";
 
     public static final int VERSION = 1;
 
