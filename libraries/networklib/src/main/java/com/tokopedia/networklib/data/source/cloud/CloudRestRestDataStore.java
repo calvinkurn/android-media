@@ -7,10 +7,11 @@ import com.tokopedia.networklib.data.source.RestDataStore;
 import com.tokopedia.networklib.data.source.cloud.api.RestApi;
 import com.tokopedia.networklib.util.RestClient;
 
+import java.util.Map;
+
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.functions.Func1;
 
 public class CloudRestRestDataStore implements RestDataStore {
 
@@ -29,65 +30,62 @@ public class CloudRestRestDataStore implements RestDataStore {
             case GET:
                 return mApi.get(requests.getUrl(),
                         requests.getQueryParams(),
-                        requests.getHeaders()).map(new Func1<String, RestResponseInternal>() {
-                    @Override
-                    public RestResponseInternal call(String s) {
-                        return new RestResponseInternal(mGson.fromJson(s, requests.getTypeOfT()), true);
-                    }
-                });
+                        requests.getHeaders()).map(s -> new RestResponseInternal(mGson.fromJson(s, requests.getTypeOfT()), true));
             case POST:
-
-                String body = null;
-                try {
-                    body = mGson.toJson(requests.getBody());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                if (body == null) {
-                    throw new RuntimeException("Invalid json object provided");
-                }
-
-                return mApi.post(requests.getUrl(),
-                        body,
-                        requests.getQueryParams(),
-                        requests.getHeaders()).map(new Func1<String, RestResponseInternal>() {
-                    @Override
-                    public RestResponseInternal call(String s) {
-                        return new RestResponseInternal(mGson.fromJson(s, requests.getTypeOfT()), true);
+                if (requests.getBody() != null && requests.getBody() instanceof Map) {
+                    return mApi.post(requests.getUrl(),
+                            (Map<String, Object>) requests.getBody(),
+                            requests.getQueryParams(),
+                            requests.getHeaders()).map(s -> new RestResponseInternal(mGson.fromJson(s, requests.getTypeOfT()), true));
+                } else {
+                    String body = null;
+                    if (requests.getBody() instanceof String) {
+                        body = (String) requests.getBody();
+                    } else {
+                        try {
+                            body = mGson.toJson(requests.getBody());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
-                });
+
+                    if (body == null) {
+                        throw new RuntimeException("Invalid json object provided");
+                    }
+
+                    return mApi.post(requests.getUrl(),
+                            body,
+                            requests.getQueryParams(),
+                            requests.getHeaders()).map(s -> new RestResponseInternal(mGson.fromJson(s, requests.getTypeOfT()), true));
+                }
             case PUT:
-                body = null;
+                if (requests.getBody() != null && requests.getBody() instanceof Map) {
+                    return mApi.put(requests.getUrl(),
+                            (Map<String, Object>) requests.getBody(),
+                            requests.getQueryParams(),
+                            requests.getHeaders()).map(s -> new RestResponseInternal(mGson.fromJson(s, requests.getTypeOfT()), true));
+                } else {
+                    String body = null;
 
-                try {
-                    body = mGson.toJson(requests.getBody());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                if (body == null) {
-                    throw new RuntimeException("Invalid json object provided");
-                }
-
-                return mApi.put(requests.getUrl(),
-                        body,
-                        requests.getQueryParams(),
-                        requests.getHeaders()).map(new Func1<String, RestResponseInternal>() {
-                    @Override
-                    public RestResponseInternal call(String s) {
-                        return new RestResponseInternal(mGson.fromJson(s, requests.getTypeOfT()), true);
+                    try {
+                        body = mGson.toJson(requests.getBody());
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                });
+
+                    if (body == null) {
+                        throw new RuntimeException("Invalid json object provided");
+                    }
+
+                    return mApi.put(requests.getUrl(),
+                            body,
+                            requests.getQueryParams(),
+                            requests.getHeaders()).map(s -> new RestResponseInternal(mGson.fromJson(s, requests.getTypeOfT()), true));
+                }
             case DELETE:
                 return mApi.get(requests.getUrl(),
                         requests.getQueryParams(),
-                        requests.getHeaders()).map(new Func1<String, RestResponseInternal>() {
-                    @Override
-                    public RestResponseInternal call(String s) {
-                        return new RestResponseInternal(mGson.fromJson(s, requests.getTypeOfT()), true);
-                    }
-                });
+                        requests.getHeaders()).map(s -> new RestResponseInternal(mGson.fromJson(s, requests.getTypeOfT()), true));
             default:
                 //TODO add impl
         }

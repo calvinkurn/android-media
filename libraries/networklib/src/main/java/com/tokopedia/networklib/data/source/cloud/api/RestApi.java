@@ -4,6 +4,8 @@ import java.util.Map;
 
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
+import retrofit2.http.FieldMap;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.HeaderMap;
 import retrofit2.http.POST;
@@ -14,14 +16,22 @@ import rx.Observable;
 
 public interface RestApi {
     @GET()
-    Observable<String> get(@Url String url, @QueryMap Map<String, String> queries, @HeaderMap Map<String, String> headers);
+    Observable<String> get(@Url String url, @QueryMap(encoded = true) Map<String, Object> queries, @HeaderMap Map<String, Object> headers);
 
     @POST()
-    Observable<String> post(@Url String url, @Body String json, @QueryMap Map<String, String> queries, @HeaderMap Map<String, String> headers);
+    Observable<String> post(@Url String url, @Body String json, @QueryMap(encoded = true) Map<String, Object> queries, @HeaderMap Map<String, Object> headers);
+
+    @FormUrlEncoded
+    @POST()
+    Observable<String> post(@Url String url, @FieldMap(encoded = true) Map<String, Object> params, @QueryMap(encoded = true) Map<String, Object> queries, @HeaderMap Map<String, Object> headers);
 
     @PUT()
-    Observable<String> put(@Url String url, @Body String json, @QueryMap Map<String, String> queries, @HeaderMap Map<String, String> headers);
+    Observable<String> put(@Url String url, @Body String json, @QueryMap(encoded = true) Map<String, Object> queries, @HeaderMap Map<String, Object> headers);
+
+    @FormUrlEncoded
+    @PUT()
+    Observable<String> put(@Url String url, @FieldMap(encoded = true) Map<String, Object> params, @QueryMap(encoded = true) Map<String, Object> queries, @HeaderMap Map<String, Object> headers);
 
     @DELETE()
-    Observable<String> delete(@Url String url, @QueryMap Map<String, String> queries, @HeaderMap Map<String, String> headers);
+    Observable<String> delete(@Url String url, @QueryMap(encoded = true) Map<String, Object> queries, @HeaderMap Map<String, Object> headers);
 }

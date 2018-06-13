@@ -7,8 +7,8 @@ public class RestRequest {
     /*transient by nature hence it will not be part of request body*/
     private Type typeOfT; /*Mandatory parameter*/
     private String url; /*Mandatory parameter*/
-    private Map<String, String> headers;
-    private Map<String, String> queryParams;
+    private Map<String, Object> headers;
+    private Map<String, Object> queryParams;
     private RequestType requestType;
     private Object body;
 
@@ -25,11 +25,11 @@ public class RestRequest {
         return typeOfT;
     }
 
-    public Map<String, String> getHeaders() {
+    public Map<String, Object> getHeaders() {
         return headers;
     }
 
-    public Map<String, String> getQueryParams() {
+    public Map<String, Object> getQueryParams() {
         return queryParams;
     }
 
@@ -51,22 +51,22 @@ public class RestRequest {
         private String baseUrl; /*Mandatory parameter*/
 
         //Optional parameter/
-        private Map<String, String> headers;
-        private Map<String, String> queryParams;
+        private Map<String, Object> headers;
+        private Map<String, Object> queryParams;
         private RequestType requestType;
         private Object body;
 
-        public Builder(Type typeOfT, String url) {
-            this.typeOfT = typeOfT;
+        public Builder(Type classOfT, String url) {
+            this.typeOfT = classOfT;
             this.baseUrl = url;
         }
 
-        public Builder setHeaders(Map<String, String> headers) {
+        public Builder setHeaders(Map<String, Object> headers) {
             this.headers = headers;
             return this;
         }
 
-        public Builder setQueryParams(Map<String, String> queryParams) {
+        public Builder setQueryParams(Map<String, Object> queryParams) {
             this.queryParams = queryParams;
             return this;
         }

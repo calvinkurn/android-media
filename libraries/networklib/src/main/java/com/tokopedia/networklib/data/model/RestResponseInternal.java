@@ -1,7 +1,5 @@
 package com.tokopedia.networklib.data.model;
 
-import android.support.annotation.StringRes;
-
 /**
  * Only for internal purposes of this library in order to rewrite the original response
  */
@@ -9,7 +7,7 @@ final public class RestResponseInternal {
     private Object originalResponse;
     private boolean isCached;
 
-    public RestResponseInternal(StringRes originalResponse, boolean isCached) {
+    public RestResponseInternal(Object originalResponse, boolean isCached) {
         this.originalResponse = originalResponse;
         this.isCached = isCached;
     }
