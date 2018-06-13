@@ -3,6 +3,7 @@ package com.tokopedia.networklib.domain;
 import android.webkit.URLUtil;
 
 import com.tokopedia.networklib.data.model.RequestType;
+import com.tokopedia.networklib.data.model.RestCacheStrategy;
 import com.tokopedia.networklib.data.model.RestRequest;
 import com.tokopedia.networklib.data.model.RestResponse;
 import com.tokopedia.networklib.data.source.cloud.CloudRestRestDataStore;
@@ -61,14 +62,52 @@ public abstract class RestUseCase<T> extends UseCase<RestResponse> {
                 .build();
     }
 
-
+    /**
+     * Mandatory implementation- Valid implementation require
+     * Full URL of the endpoint including base url. This value is mandatory. Url should be valid else UseCase wil throw exception (RuntimeException("Please set valid request url into your UseCase class"))
+     *
+     * @return Map -> Full URL of the endpoint
+     */
     public abstract String getUrl();
 
+
+    /**
+     * Optional
+     * For providing extra headers to the apis.
+     *
+     * @return Key-Value pair of header
+     */
     public abstract Map<String, Object> getHeaders();
 
+    /**
+     * Optional
+     * For providing query params to the apis.
+     *
+     * @return Map -> Key-Value pair of query
+     */
     public abstract Map<String, Object> getQueriesMap();
 
+    /**
+     * Mandatory implementation (If Method type is POST or PUT else it Optional)- Valid implementation require
+     * For providing query params to the apis.
+     *
+     * @return Map -> Key-Value pair of query
+     */
     public abstract Object getBody();
 
+    /**
+     * Optional
+     * For providing Http method type, by default GET will be treated if not provided any method.
+     *
+     * @return Map -> RequestType enum
+     */
     public abstract RequestType getHttpRequestType();
+
+    /**
+     * Optional
+     * For providing CacheStrategy, by Default no caching will be perform if not provided
+     *
+     * @return Object - RestCacheStrategy
+     */
+    public abstract RestCacheStrategy getCacheStrategy();
 }
