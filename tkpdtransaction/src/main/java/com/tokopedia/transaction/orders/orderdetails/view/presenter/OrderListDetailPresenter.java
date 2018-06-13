@@ -32,7 +32,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
     @Override
     public void setOrderDetailsContent(String orderId) {
-        orderDetailsUseCase.execute(orderDetailsUseCase.getUserAttrParam(OrderCategory.DIGITAL, orderId), new Subscriber<DetailsData>() {
+        orderDetailsUseCase.execute(orderDetailsUseCase.getUserAttrParam(OrderCategory.DEALS, orderId, 1, 1), new Subscriber<DetailsData>() {
             @Override
             public void onCompleted() {
 
@@ -60,22 +60,22 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         }
         getView().setInvoice(details.invoice());
         getView().setOrderToken(details.orderToken());
-        for (Detail detail : details.detail()) {
-            getView().setDetail(detail);
-        }
-        if (details.additionalInfo().size() > 0) {
-            getView().setAdditionInfoVisibility(View.VISIBLE);
-        }
-        for (AdditionalInfo additionalInfo : details.additionalInfo()) {
-
-            getView().setAdditionalInfo(additionalInfo);
-        }
+//        for (Detail detail : details.detail()) {
+//            getView().setDetail(detail);
+//        }
+//        if (details.additionalInfo().size() > 0) {
+//            getView().setAdditionInfoVisibility(View.VISIBLE);
+//        }
+//        for (AdditionalInfo additionalInfo : details.additionalInfo()) {
+//
+//            getView().setAdditionalInfo(additionalInfo);
+//        }
         for (Pricing pricing : details.pricing()) {
             if (pricing.value() != null && !pricing.value().equals(""))
                 getView().setPricing(pricing);
         }
         getView().setPaymentData(details.paymentData());
-        getView().setContactUs(details.contactUs());
+//        getView().setContactUs(details.contactUs());
 
         if (details.actionButtons().size() == 2) {
             ActionButton leftActionButton = details.actionButtons().get(0);
@@ -84,7 +84,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             getView().setBottomActionButton(rightActionButton);
         } else if (details.actionButtons().size() == 1) {
             ActionButton actionButton = details.actionButtons().get(0);
-            if (actionButton.buttonType().equals("buy")) {
+            if (actionButton.label().equals("invoice")) {
                 getView().setBottomActionButton(actionButton);
                 getView().setActionButtonsVisibility(View.GONE, View.VISIBLE);
             } else {

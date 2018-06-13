@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
@@ -14,11 +15,14 @@ import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.applink.TransactionAppLink;
 import com.tokopedia.transaction.orders.orderlist.view.fragment.OrderListFragment;
 
+import static com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter.EXTRA_OMS_ORDER_CATEGORY;
 import static com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter.EXTRA_STATE_TAB_POSITION;
 
 public class OrderListActivity extends DrawerPresenterActivity {
     private static final String ORDER_CATEGORY = "orderCategory";
     private int drawerPosition;
+    private String orderCategory;
+
 
     @DeepLink(TransactionAppLink.ORDER_HISTORY)
     public static Intent getOrderListIntent(Context context, Bundle bundle){
@@ -37,6 +41,7 @@ public class OrderListActivity extends DrawerPresenterActivity {
     protected void setupBundlePass(Bundle extras) {
         drawerPosition = extras.getInt(EXTRA_STATE_TAB_POSITION,
                 TransactionPurchaseRouter.TAB_POSITION_PURCHASE_SUMMARY);
+        orderCategory = extras.getString(EXTRA_OMS_ORDER_CATEGORY, "DIGITAL");
     }
 
     @Override
@@ -52,8 +57,12 @@ public class OrderListActivity extends DrawerPresenterActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if(drawerHelper != null){
-            drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.PEOPLE_DIGITAL_TRANSACTION_LIST);
+        if(drawerHelper != null) {
+            if (orderCategory.equals("DIGITAL")) {
+                drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.PEOPLE_DIGITAL_TRANSACTION_LIST);
+            } else {
+                drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.PEOPLE_OMS_TRANSACTION_LIST);
+            }
         }
     }
 
@@ -71,7 +80,11 @@ public class OrderListActivity extends DrawerPresenterActivity {
             fragment = getFragmentManager().findFragmentByTag(OrderListFragment.class.getSimpleName());
         }
         Bundle arg = new Bundle();
-        arg.putInt(ORDER_CATEGORY, 2);
+        if (orderCategory.equals("DIGITAL")) {
+            arg.putInt(ORDER_CATEGORY, 2);
+        } else if (orderCategory.equals("DEALS")){
+            arg.putInt(ORDER_CATEGORY, 5);
+        }
         fragment.setArguments(arg);
         getFragmentManager()
                 .beginTransaction()
@@ -87,5 +100,20 @@ public class OrderListActivity extends DrawerPresenterActivity {
     @Override
     protected int setDrawerPosition() {
         return drawerPosition;
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+//        toolbar.setBackgroundColor(getResources().getColor(R.color.white));
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+////            toolbar.getNavigationIcon().setTint(getResources().getColor(R.color.black));
+//        }
+////        toolbar.setTitleTextAppearance(this, R.style.ToolbarText_SansSerifMedium);
+//        if (orderCategory.equals("DIGITAL")) {
+//            toolbar.setTitle("DIGITAL");
+//        } else {
+//            toolbar.setTitle("Entertainment");
+//        }
     }
 }

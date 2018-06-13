@@ -48,6 +48,7 @@ public class CheckoutActivity extends BaseSimpleActivity implements DealFragment
                 Intent intent = ((TkpdCoreRouter) getApplication())
                         .getOrderListDetailActivity(this, "RIDE", orderId);
                 this.startActivity(intent);
+                this.finish();
             }
         }
         super.onActivityResult(requestCode, resultCode, data);

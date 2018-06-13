@@ -322,6 +322,13 @@ public class DrawerBuyerHelper extends DrawerHelper
                         drawerCache.getBoolean(IS_PEOPLE_OPENED, false)
                 )
         );
+
+        buyerMenu.add(new DrawerItem(
+                        context.getString(R.string.drawer_title_oms_transaction_list),
+                        TkpdState.DrawerPosition.PEOPLE_OMS_TRANSACTION_LIST,
+                        drawerCache.getBoolean(IS_PEOPLE_OPENED, false)
+                )
+        );
         return buyerMenu;
     }
 
@@ -507,7 +514,11 @@ public class DrawerBuyerHelper extends DrawerHelper
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.PURCHASE_LIST);
                     break;
                 case TkpdState.DrawerPosition.PEOPLE_DIGITAL_TRANSACTION_LIST:
-                    context.startActivity(TransactionPurchaseRouter.createIntentOrderListSummary(context));
+                    context.startActivity(TransactionPurchaseRouter.createIntentOrderListSummary(context, "DIGITAL"));
+                    sendGTMNavigationEvent(AppEventTracking.EventLabel.DIGITAL_TRANSACTION_LIST);
+                    break;
+                case TkpdState.DrawerPosition.PEOPLE_OMS_TRANSACTION_LIST:
+                    context.startActivity(TransactionPurchaseRouter.createIntentOrderListSummary(context, "DEALS"));
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.DIGITAL_TRANSACTION_LIST);
                     break;
                 case TkpdState.DrawerPosition.PEOPLE_FLIGHT_TRANSACTION_LIST:

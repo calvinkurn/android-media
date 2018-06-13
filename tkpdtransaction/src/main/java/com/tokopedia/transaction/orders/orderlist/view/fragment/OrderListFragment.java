@@ -116,6 +116,9 @@ public class OrderListFragment extends BasePresenterFragment<OrderListContract.P
             case 4:
                 mOrderCategory = OrderCategory.RIDE;
                 break;
+            case 5:
+                mOrderCategory = OrderCategory.DEALS;
+                break;
         }
     }
 
