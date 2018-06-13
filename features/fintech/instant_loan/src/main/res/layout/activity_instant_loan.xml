@@ -9,7 +9,7 @@
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="120dp"
+        android:layout_height="?attr/actionBarSize"
         android:background="@color/tkpd_main_green"
         android:gravity="top"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
@@ -24,25 +24,64 @@
 
     </android.support.v7.widget.Toolbar>
 
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/container_outer_tab">
+        android:layout_below="@+id/toolbar">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:animateLayoutChanges="true"
             android:orientation="vertical"
-            android:paddingBottom="@dimen/il_padding_large">
+            android:paddingBottom="@dimen/il_padding_large"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <include layout="@layout/layout_instant_loan_tabs" />
 
-            <include layout="@layout/content_instant_loan_home_page" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-            <include layout="@layout/layout_bottom_banner" />
+                <android.support.design.widget.TabLayout
+                    android:id="@+id/tabs"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:tabBackground="@color/white"
+                    app:tabGravity="fill"
+                    app:tabIndicatorColor="@color/tkpd_green_header"
+                    app:tabMode="fixed"
+                    app:tabSelectedTextColor="@color/tkpd_green_header"
+                    app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
+                    app:tabTextColor="@color/grey_600" />
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@drawable/top_bar_shadow" />
+
+                <com.tokopedia.instantloan.view.ui.HeightWrappingViewPager
+                    android:id="@+id/pager"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </LinearLayout>
+
+            <!--<include layout="@layout/layout_instant_loan_tabs" />
+
+            <include layout="@layout/content_instant_loan_home_page" />-->
+
+            <include
+                layout="@layout/layout_bottom_banner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="20dp"/>
         </LinearLayout>
+
+
     </ScrollView>
+
 
 </RelativeLayout>
