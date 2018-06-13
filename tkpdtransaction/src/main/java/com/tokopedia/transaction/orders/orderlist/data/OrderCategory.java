@@ -10,5 +10,6 @@ public enum OrderCategory {
     MARKETPLACE,
     GOLD,
     DIGITAL,
-    FLIGHT
+    FLIGHT,
+    DEALS
 }

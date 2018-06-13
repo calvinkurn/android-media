@@ -32,7 +32,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
     @Override
     public void setOrderDetailsContent(String orderId) {
-        orderDetailsUseCase.execute(orderDetailsUseCase.getUserAttrParam(OrderCategory.DIGITAL, orderId), new Subscriber<DetailsData>() {
+        orderDetailsUseCase.execute(orderDetailsUseCase.getUserAttrParam(OrderCategory.DEALS, orderId, 1, 1), new Subscriber<DetailsData>() {
             @Override
             public void onCompleted() {
 
@@ -75,7 +75,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                 getView().setPricing(pricing);
         }
         getView().setPaymentData(details.paymentData());
-        getView().setContactUs(details.contactUs());
+//        getView().setContactUs(details.contactUs());
 
         if (details.actionButtons().size() == 2) {
             ActionButton leftActionButton = details.actionButtons().get(0);

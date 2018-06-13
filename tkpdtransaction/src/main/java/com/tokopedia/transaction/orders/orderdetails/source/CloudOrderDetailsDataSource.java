@@ -55,6 +55,9 @@ public class CloudOrderDetailsDataSource {
         Map<String, Object> variables = new HashMap<>();
         variables.put(OrderDetailsUseCase.ORDER_CATEGORY, params.getObject(OrderDetailsUseCase.ORDER_CATEGORY));
         variables.put(OrderDetailsUseCase.ORDER_ID, params.getString(OrderDetailsUseCase.ORDER_ID, "1"));
+        variables.put(OrderDetailsUseCase.ORDER_DETAIL, params.getInt(OrderDetailsUseCase.ORDER_DETAIL, 1));
+        variables.put(OrderDetailsUseCase.ORDER_ACTION, params.getInt(OrderDetailsUseCase.ORDER_ACTION, 1));
+
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject("query", GraphqlHelper.loadRawString(context.getResources(),
                 R.raw.orderdetails));
