@@ -1,5 +1,6 @@
 package com.tokopedia.networklib.domain;
 
+import android.content.Context;
 import android.webkit.URLUtil;
 
 import com.google.gson.Gson;
@@ -15,15 +16,16 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
+import okhttp3.Interceptor;
 import rx.Observable;
 
-public abstract class RestUseCase extends UseCase<RestResponse> {
+public abstract class RestUseCaseSupportInterceptor extends UseCase<RestResponse> {
 
     private RestRepositoryImpl mRepository;
     private Gson mGson;
 
-    public RestUseCase() {
-        this.mRepository = new RestRepositoryImpl();
+    public RestUseCaseSupportInterceptor(Interceptor interceptor, Context context) {
+        this.mRepository = new RestRepositoryImpl(interceptor, context);
         this.mGson = new Gson();
     }
 

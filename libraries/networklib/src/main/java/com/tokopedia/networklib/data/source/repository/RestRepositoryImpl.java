@@ -1,5 +1,7 @@
 package com.tokopedia.networklib.data.source.repository;
 
+import android.content.Context;
+
 import com.tokopedia.networklib.data.model.CacheType;
 import com.tokopedia.networklib.data.model.RestCacheStrategy;
 import com.tokopedia.networklib.data.model.RestRequest;
@@ -10,6 +12,7 @@ import com.tokopedia.networklib.domain.RestRepository;
 
 import javax.inject.Inject;
 
+import okhttp3.Interceptor;
 import rx.Observable;
 
 public class RestRepositoryImpl implements RestRepository {
@@ -20,6 +23,11 @@ public class RestRepositoryImpl implements RestRepository {
     @Inject
     public RestRepositoryImpl() {
         this.mCloud = new CloudRestRestDataStore();
+        this.mCache = new RestCacheDataStore();
+    }
+
+    public RestRepositoryImpl(Interceptor interceptor, Context context) {
+        this.mCloud = new CloudRestRestDataStore(interceptor, context);
         this.mCache = new RestCacheDataStore();
     }
 

@@ -1,6 +1,15 @@
 package com.tokopedia.networklib.data.source.cloud;
 
+import android.content.Context;
+
 import com.google.gson.Gson;
+import com.raizlabs.android.dbflow.config.FlowManager;
+import com.raizlabs.android.dbflow.config.networklibGeneratedDatabaseHolder;
+import com.tokopedia.network.NetworkRouter;
+import com.tokopedia.network.converter.StringResponseConverter;
+import com.tokopedia.network.interceptor.FingerprintInterceptor;
+import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
+import com.tokopedia.network.utils.TkpdOkHttpBuilder;
 import com.tokopedia.networklib.data.model.RestCacheStrategy;
 import com.tokopedia.networklib.data.model.RestRequest;
 import com.tokopedia.networklib.data.model.RestResponseInternal;
@@ -9,11 +18,16 @@ import com.tokopedia.networklib.data.source.cloud.api.RestApi;
 import com.tokopedia.networklib.util.FingerprintManager;
 import com.tokopedia.networklib.util.RestCacheManager;
 import com.tokopedia.networklib.util.RestClient;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.Map;
 
 import javax.inject.Inject;
 
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import rx.Observable;
 
 public class CloudRestRestDataStore implements RestDataStore {
@@ -26,6 +40,13 @@ public class CloudRestRestDataStore implements RestDataStore {
     @Inject
     public CloudRestRestDataStore() {
         this.mApi = RestClient.getApiInterface();
+        this.mGson = new Gson();
+        this.mCacheManager = new RestCacheManager();
+        this.mFingerprintManager = RestClient.getFingerPrintManager();
+    }
+
+    public CloudRestRestDataStore(Interceptor interceptor, Context context) {
+        this.mApi = getApiInterface(interceptor, context);
         this.mGson = new Gson();
         this.mCacheManager = new RestCacheManager();
         this.mFingerprintManager = RestClient.getFingerPrintManager();
@@ -174,5 +195,20 @@ public class CloudRestRestDataStore implements RestDataStore {
                             cacheStrategy.getExpiryTime());
             }
         }
+    }
+
+    private RestApi getApiInterface(Interceptor interceptor, Context context) {
+        UserSession userSession = new UserSession(context.getApplicationContext());
+        FlowManager.initModule(networklibGeneratedDatabaseHolder.class);
+        TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(context, new OkHttpClient.Builder());
+        tkpdOkHttpBuilder.addInterceptor(new TkpdAuthInterceptor(context, (NetworkRouter) context.getApplicationContext(), userSession));
+        tkpdOkHttpBuilder.addInterceptor(new FingerprintInterceptor((NetworkRouter) context.getApplicationContext(), userSession));
+        tkpdOkHttpBuilder.addInterceptor(interceptor);
+
+        return new Retrofit.Builder()
+                .baseUrl("http://tokopedia.com/")
+                .addConverterFactory(new StringResponseConverter())
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .client(tkpdOkHttpBuilder.build()).build().create(RestApi.class);
     }
 }
