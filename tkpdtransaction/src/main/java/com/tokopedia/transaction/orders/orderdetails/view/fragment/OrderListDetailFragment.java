@@ -133,6 +133,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     public void setStatus(Status status) {
         statusLabel.setText(status.statusLabel());
         statusValue.setText(status.statusText());
+        if(!status.textColor().equals(""))
         statusValue.setTextColor(Color.parseColor(status.textColor()));
     }
 
@@ -221,6 +222,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(paymentData.label());
         doubleTextView.setBottomText(paymentData.value());
+        if (!paymentData.textColor().equals(""))
         doubleTextView.setBottomTextColor(Color.parseColor(paymentData.textColor()));
         doubleTextView.setBottomTextSize(16);
         doubleTextView.setBottomGravity(Gravity.RIGHT);

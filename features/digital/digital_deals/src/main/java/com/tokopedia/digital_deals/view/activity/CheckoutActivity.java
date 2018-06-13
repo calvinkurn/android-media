@@ -34,6 +34,7 @@ public class CheckoutActivity extends BaseSimpleActivity {
             Intent intent = ((TkpdCoreRouter) getApplication())
                     .getOrderListDetailActivity(this, "RIDE", orderId);
             this.startActivity(intent);
+            this.finish();
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
