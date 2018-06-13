@@ -85,4 +85,17 @@ public class RestRequest {
             return new RestRequest(this);
         }
     }
+
+    //Do not rewrite on remove it
+    @Override
+    public String toString() {
+        return "RestRequest{" +
+                "typeOfT=" + typeOfT +
+                ", url='" + url + '\'' +
+                ", headers=" + headers +
+                ", queryParams=" + queryParams +
+                ", requestType=" + requestType +
+                ", body=" + body +
+                '}';
+    }
 }

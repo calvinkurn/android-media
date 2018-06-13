@@ -2,11 +2,11 @@ package com.tokopedia.networklib.domain;
 
 import android.webkit.URLUtil;
 
+import com.google.gson.Gson;
 import com.tokopedia.networklib.data.model.RequestType;
 import com.tokopedia.networklib.data.model.RestCacheStrategy;
 import com.tokopedia.networklib.data.model.RestRequest;
 import com.tokopedia.networklib.data.model.RestResponse;
-import com.tokopedia.networklib.data.source.cloud.CloudRestRestDataStore;
 import com.tokopedia.networklib.data.source.repository.RestRepositoryImpl;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
@@ -22,24 +22,20 @@ public abstract class RestUseCase<T> extends UseCase<RestResponse> {
 
     private RestRepositoryImpl mRepository;
     protected Type mType;
-
-    public RestUseCase(RestRepositoryImpl repository) {
-        mType = ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
-        this.mRepository = repository;
-    }
+    private Gson mGson;
 
     public RestUseCase() {
         mType = ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
-        this.mRepository = new RestRepositoryImpl(new CloudRestRestDataStore());
+        this.mRepository = new RestRepositoryImpl();
+        this.mGson = new Gson();
     }
 
     @Override
     public Observable<RestResponse> createObservable(RequestParams requestParams) {
-        return mRepository.getResponse(buildRequest()).map(restResponseInternal -> new RestResponse(restResponseInternal.getOriginalResponse(), restResponseInternal.isCached()));
+        return mRepository.getResponse(buildRequest(), getCacheStrategy()).map(restResponseInternal -> new RestResponse(mGson.fromJson(restResponseInternal.getOriginalResponse(), mType), restResponseInternal.isCached()));
     }
 
     private RestRequest buildRequest() {
-
 //        if (mType == null) {
 //            throw new RuntimeException("Please add valid class type token in order to retrieve the data");
 //        }

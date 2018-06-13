@@ -5,6 +5,8 @@ import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.raizlabs.android.dbflow.config.FlowManager;
+import com.raizlabs.android.dbflow.config.networklibGeneratedDatabaseHolder;
 import com.tokopedia.network.CommonNetwork;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.converter.StringResponseConverter;
@@ -22,6 +24,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RestClient {
     private static Retrofit sRetrofit = null;
     private static RestApi sRestApi = null;
+    private static FingerprintManager sFingerprintManager = null;
 
     private RestClient() {
 
@@ -33,9 +36,9 @@ public class RestClient {
             sRetrofit = CommonNetwork.createRetrofit(context.getApplicationContext(),
                     "http://tokopedia.com/", (NetworkRouter) context.getApplicationContext(),
                     userSession);
-//            sFingerprintManager = new FingerprintManager(userSession);
-//
-//            FlowManager.initModule(graphqlGeneratedDatabaseHolder.class);
+            sFingerprintManager = new FingerprintManager(userSession);
+
+            FlowManager.initModule(networklibGeneratedDatabaseHolder.class);
 
             Gson gson = new GsonBuilder()
                     .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
@@ -72,10 +75,10 @@ public class RestClient {
         return sRestApi;
     }
 
-//    public static synchronized FingerprintManager getFingerPrintManager() {
-//        if (sFingerprintManager == null) {
-//            throw new RuntimeException("Please call init() before using graphql library");
-//        }
-//        return sFingerprintManager;
-//    }
+    public static synchronized FingerprintManager getFingerPrintManager() {
+        if (sFingerprintManager == null) {
+            throw new RuntimeException("Please call init() before using graphql library");
+        }
+        return sFingerprintManager;
+    }
 }

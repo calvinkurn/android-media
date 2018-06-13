@@ -4,19 +4,19 @@ package com.tokopedia.networklib.data.model;
  * Only for internal purposes of this library in order to rewrite the original response
  */
 final public class RestResponseInternal {
-    private Object originalResponse;
+    private String originalResponse;
     private boolean isCached;
 
-    public RestResponseInternal(Object originalResponse, boolean isCached) {
+    public RestResponseInternal(String originalResponse, boolean isCached) {
         this.originalResponse = originalResponse;
         this.isCached = isCached;
     }
 
-    public Object getOriginalResponse() {
+    public String getOriginalResponse() {
         return originalResponse;
     }
 
-    public void setOriginalResponse(Object originalResponse) {
+    public void setOriginalResponse(String originalResponse) {
         this.originalResponse = originalResponse;
     }
 
