@@ -42,9 +42,10 @@ public class DealsCategoryDetailMapper implements Func1<CategoryResponse, Catego
         }
         categoryDetailsDomain.setDealBrands(dealsBrandsDomain);
 
-        JsonObject brand = categoryResponse.getPage();
-        PageDomain pageDomain = new Gson().fromJson(brand, PageDomain.class);
+        JsonObject page = categoryResponse.getPage();
+        PageDomain pageDomain = new Gson().fromJson(page, PageDomain.class);
         categoryDetailsDomain.setPage(pageDomain);
+        categoryDetailsDomain.setCount(categoryResponse.getCount());
 
         return categoryDetailsDomain;
     }

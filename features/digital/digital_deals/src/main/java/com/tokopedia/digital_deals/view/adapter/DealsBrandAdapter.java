@@ -62,7 +62,6 @@ public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         public void bindData(final BrandViewModel brandViewModel, int position) {
             ImageHandler.loadImage(context, imageViewBrandItem, brandViewModel.getFeaturedThumbnailImage(), R.color.grey_1100, R.color.grey_1100);
 
-            Log.d("Date Title 1234 ", " " + brandViewModel.getTitle());
 
             itemView.setOnClickListener(this);
         }

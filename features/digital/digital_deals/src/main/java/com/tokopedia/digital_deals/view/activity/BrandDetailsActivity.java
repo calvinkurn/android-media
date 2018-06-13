@@ -30,6 +30,7 @@ import com.tokopedia.digital_deals.di.DealsModule;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
 import com.tokopedia.digital_deals.view.contractor.BrandDetailsContract;
 import com.tokopedia.digital_deals.view.presenter.BrandDetailsPresenter;
+import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.digital_deals.view.viewmodel.BrandViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.usecase.RequestParams;
@@ -171,9 +172,10 @@ public class BrandDetailsActivity extends BaseSimpleActivity implements HasCompo
     public void renderBrandDetails(List<CategoryItemsViewModel> categoryItemsViewModels, BrandViewModel brandViewModel) {
         collapsingToolbarLayout.setTitle(brandViewModel.getTitle());
         tvExpandableDesc.setText(brandViewModel.getDescription());
+        tvCityName.setText(String.format(getResources().getString(R.string.deals_brand_detail_location), Utils.getSingletonInstance().getLocation(getActivity()).getName()));
+
         ImageHandler.loadImage(getActivity(), ivHeader, brandViewModel.getFeaturedImage(), R.color.grey_1100, R.color.grey_1100);
         ImageHandler.loadImage(getActivity(), ivBrandLogo, brandViewModel.getFeaturedThumbnailImage(), R.color.grey_1100, R.color.grey_1100);
-
         for (CategoryItemsViewModel categoryItemsViewModel : categoryItemsViewModels) {
             categoryItemsViewModel.setBrand(brandViewModel);
         }

@@ -11,11 +11,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DaggerDealsComponent;
@@ -26,6 +26,7 @@ import com.tokopedia.digital_deals.view.presenter.DealCategoryAdapterPresenter;
 import com.tokopedia.digital_deals.view.presenter.DealDetailsPresenter;
 import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
+import com.tokopedia.digital_deals.view.viewmodel.LocationViewModel;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
@@ -36,14 +37,13 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     private List<CategoryItemsViewModel> categoryItems;
     private Context context;
-    private static final int ITEM = 1;
-    private static final int FOOTER = 2;
-    private static final int ITEM2 = 3;
+    private final int ITEM = 1;
+    private final int FOOTER = 2;
+    private final int ITEM2 = 3;
     private boolean isFooterAdded = false;
     private boolean isShortLayout;
     @Inject
     DealCategoryAdapterPresenter mPresenter;
-
 
     public DealsCategoryAdapter(Context context, List<CategoryItemsViewModel> categoryItems, boolean isShortLayout) {
         this.context = context;
@@ -68,7 +68,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         View v;
         switch (viewType) {
             case ITEM:
-                v = inflater.inflate(R.layout.deals_item_card, parent, false);
+                v = inflater.inflate(R.layout.deal_item_card, parent, false);
                 holder = new ItemViewHolder(v);
                 break;
             case FOOTER:
@@ -95,14 +95,14 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         switch (getItemViewType(position)) {
             case ITEM:
-                ((ItemViewHolder) holder).bindData(categoryItems.get(position));
                 ((ItemViewHolder) holder).setIndex(position);
+                ((ItemViewHolder) holder).bindData(categoryItems.get(position));
                 break;
             case FOOTER:
                 break;
             case ITEM2:
-                ((ItemViewHolder2) holder).bindData(categoryItems.get(position));
                 ((ItemViewHolder2) holder).setIndex(position);
+                ((ItemViewHolder2) holder).bindData(categoryItems.get(position));
                 break;
             default:
                 break;
@@ -171,15 +171,13 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     @Override
     public void showLoginSnackbar(String message) {
-        Snackbar snackbar = Snackbar.make(getActivity().getWindow().getDecorView().getRootView(), message, Snackbar.LENGTH_LONG).setAction(context.getResources().getString(R.string.title_activity_login), new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = ((TkpdCoreRouter) getActivity().getApplication()).
-                        getLoginIntent(getActivity());
-                getActivity().startActivityForResult(intent, 1099);
-            }
-        });
-        snackbar.show();
+        SnackbarManager.make(getActivity(), message, Snackbar.LENGTH_LONG).setAction(
+                getActivity().getResources().getString(R.string.title_activity_login), (View.OnClickListener) v -> {
+                    Intent intent = ((TkpdCoreRouter) getActivity().getApplication()).
+                            getLoginIntent(getActivity());
+                    getActivity().startActivityForResult(intent, 1099);
+                }
+        ).show();
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -233,6 +231,10 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 hotDeal.setVisibility(View.VISIBLE);
             } else {
                 hotDeal.setVisibility(View.GONE);
+            }
+            LocationViewModel location=Utils.getSingletonInstance().getLocation(context);
+            if(location!=null) {
+                dealavailableLocations.setText(location.getName());
             }
             brandName.setText(categoryItemsViewModel.getBrand().getTitle());
             itemView.setOnClickListener(this);
@@ -292,11 +294,6 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
             int devicewidth = (int) (displaymetrics.widthPixels / 1.2);
             itemView.getLayoutParams().width = devicewidth;
-            RecyclerView.LayoutParams params= (RecyclerView.LayoutParams) itemView.getLayoutParams();
-            if(getIndex()==categoryItems.size()-1) {
-                params.setMargins(context.getResources().getDimensionPixelSize(R.dimen.dp_16),
-                        0, context.getResources().getDimensionPixelSize(R.dimen.dp_16), 0);
-            }
 
         }
 

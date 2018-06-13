@@ -1,10 +1,8 @@
 package com.tokopedia.digital_deals.view.presenter;
 
-import android.util.Log;
-
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.digital_deals.domain.PostUpdateDealLikesUseCase;
+import com.tokopedia.digital_deals.domain.postusecase.PostUpdateDealLikesUseCase;
 import com.tokopedia.digital_deals.domain.model.LikeUpdateResultDomain;
 import com.tokopedia.digital_deals.domain.model.request.likes.LikeUpdateModel;
 import com.tokopedia.digital_deals.domain.model.request.likes.Rating;
@@ -69,7 +67,7 @@ public class DealCategoryAdapterPresenter extends BaseDaggerPresenter<DealCatego
                         }
                     });
         } else {
-            getView().showLoginSnackbar("Please Login to like or share events");
+            getView().showLoginSnackbar("Please Login to like or share deals");
         }
     }
 
@@ -108,7 +106,7 @@ public class DealCategoryAdapterPresenter extends BaseDaggerPresenter<DealCatego
                         }
                     });
         } else {
-            getView().showLoginSnackbar("Please Login to like or share events");
+            getView().showLoginSnackbar("Please Login to like or share deals");
         }
     }
 }

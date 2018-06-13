@@ -1,5 +1,6 @@
-package com.tokopedia.digital_deals.domain;
+package com.tokopedia.digital_deals.domain.getusecase;
 
+import com.tokopedia.digital_deals.domain.DealsRepository;
 import com.tokopedia.digital_deals.domain.model.DealsDomain;
 import com.tokopedia.digital_deals.view.presenter.DealsHomePresenter;
 import com.tokopedia.usecase.RequestParams;

@@ -47,7 +47,7 @@ public interface DealsApi {
     Observable<LocationResponse> getLocations();
 
     @GET()
-    Observable<CategoryResponse> getCategoryDetails(@Url String url);
+    Observable<CategoryResponse> getCategoryDetails(@Url String url, @QueryMap Map<String, Object> param);
 
     @GET()
     Observable<CategoryResponse> getCategoryDetailsNext(@Url String nextUrl);

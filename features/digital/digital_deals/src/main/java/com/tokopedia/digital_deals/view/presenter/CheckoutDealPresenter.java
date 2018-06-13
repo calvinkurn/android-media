@@ -15,6 +15,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.view.contractor.CheckoutDealContractor;
 import com.tokopedia.digital_deals.view.viewmodel.DealsDetailsViewModel;
+import com.tokopedia.digital_deals.view.viewmodel.OutletViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.PackageViewModel;
 import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
 import com.tokopedia.oms.domain.model.request.cart.CartItem;
@@ -72,15 +73,12 @@ public class CheckoutDealPresenter
     @Override
     public void updatePromoCode(String code) {
         this.promocode = code;
-        if (code.length() == 0) {
-            getView().hideSuccessMessage();
-        }
     }
 
     @Override
     public void getProfile() {
         getView().showProgressBar();
-
+        getView().hidePaymentButton();
         profileUseCase.execute(com.tokopedia.core.base.domain.RequestParams.EMPTY, new Subscriber<ProfileModel>() {
             @Override
             public void onCompleted() {
@@ -102,6 +100,7 @@ public class CheckoutDealPresenter
                 email = profileModel.getProfileData().getUserInfo().getUserEmail();
                 getView().setEmailID(profileModel.getProfileData().getUserInfo().getUserEmail());
                 getView().hideProgressBar();
+                getView().showPaymentButton();
             }
         });
     }
@@ -109,7 +108,6 @@ public class CheckoutDealPresenter
 
     @Override
     public void clickGoToPromo() {
-        getView().showProgressBar();
         goToLoyaltyActivity();
     }
 
@@ -178,6 +176,7 @@ public class CheckoutDealPresenter
     public void getPaymentLink() {
         paymentparams = RequestParams.create();
         paymentparams.putObject(Utils.Constants.CHECKOUTDATA, convertCartItemToJson(cartData));
+        getView().showProgressBar();
         postPaymentUseCase.execute(paymentparams, new Subscriber<JsonObject>() {
             @Override
             public void onCompleted() {
@@ -188,6 +187,7 @@ public class CheckoutDealPresenter
             public void onError(Throwable throwable) {
                 throwable.printStackTrace();
                 getView().hideProgressBar();
+                getView().hidePaymentButton();
                 if (throwable.getMessage().equalsIgnoreCase(INVALID_EMAIL))
                     getView().showMessage(getView().getActivity().getString(R.string.please_enter_email));
                 else {
@@ -207,8 +207,13 @@ public class CheckoutDealPresenter
                 String paymentURL = checkoutResponse.get("url").getAsString();
                 ScroogePGUtil.openScroogePage(getView().getActivity(), paymentURL, true, paymentData, "Deal Payment");
                 getView().hideProgressBar();
+                getView().showPaymentButton();
 
             }
         });
+    }
+
+    public List<OutletViewModel> getOutlets(){
+        return dealDetail.getOutlets();
     }
 }

@@ -13,6 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_8"
         android:fontFamily="sans-serif"
         android:gravity="end"
         android:textColor="@color/black_38"
@@ -21,7 +22,6 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="@dimen/dp_8"
         app:layout_goneMarginRight="@dimen/dp_16"
         tools:text="Rp40.000.000" />
 
@@ -137,12 +137,12 @@
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
         android:fontFamily="sans-serif-medium"
+        android:text="@string/redeem_locations"
         android:textColor="@color/black_39"
         android:textSize="@dimen/sp_17"
         android:textStyle="normal"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider2"
-        android:text="@string/redeem_locations" />
+        app:layout_constraintTop_toBottomOf="@+id/divider2" />
 
     <TextView
         android:id="@+id/tv_number_of_locations"
@@ -237,28 +237,20 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_brand_venue"
         tools:text="PIK Avenue Ground Floor - B16, Jl. Pantai Indah Kapuk Boulevard, Kapuk Muara" />
 
-    <ImageView
-        android:id="@+id/iv_map"
-        android:layout_width="@dimen/image_width_18"
-        android:layout_height="@dimen/image_width_18"
-        android:layout_marginTop="@dimen/dp_8"
-        app:layout_constraintLeft_toLeftOf="@+id/tv_brand_address"
-        app:layout_constraintTop_toBottomOf="@+id/tv_brand_address"
-        app:srcCompat="@drawable/ic_see_location" />
 
     <TextView
         android:id="@+id/tv_view_map"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_8"
         android:fontFamily="sans-serif-medium"
+        android:drawablePadding="@dimen/dp_8"
         android:text="@string/see_on_map"
         android:textColor="@color/green_nob"
         android:textSize="@dimen/sp_12"
         android:textStyle="normal"
-        app:layout_constraintBottom_toBottomOf="@+id/iv_map"
-        app:layout_constraintLeft_toRightOf="@+id/iv_map"
-        app:layout_constraintTop_toTopOf="@+id/iv_map" />
+        android:layout_marginTop="@dimen/dp_8"
+        app:layout_constraintLeft_toLeftOf="@+id/tv_brand_address"
+        app:layout_constraintTop_toBottomOf="@+id/tv_brand_address" />
 
 
     <View
@@ -267,7 +259,7 @@
         android:layout_height="@dimen/dp_2"
         android:layout_marginTop="@dimen/dp_16"
         android:background="@color/grey_300"
-        app:layout_constraintTop_toBottomOf="@+id/iv_map" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_view_map" />
 
 
     <TextView
@@ -414,42 +406,51 @@
         android:layout_height="@dimen/dp_2"
         android:background="@color/grey_300"
         app:layout_constraintTop_toBottomOf="@+id/expand_view_tnc" />
-    
-    <ImageView
-        android:id="@+id/iv_how_to_redeem"
-        app:srcCompat="@drawable/ic_how_to_redeem"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginLeft="@dimen/dp_16"
-        app:layout_constraintTop_toBottomOf="@+id/divider5"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24" />
 
-    <TextView
-        android:id="@+id/see_how_to_redeem_voucher"
-        android:layout_width="wrap_content"
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/cl_redeem_instructions"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif"
-        android:textColor="@color/green_nob"
-        app:layout_constraintTop_toTopOf="@+id/iv_how_to_redeem"
-        app:layout_constraintBottom_toBottomOf="@+id/iv_how_to_redeem"
-        app:layout_constraintLeft_toRightOf="@+id/iv_how_to_redeem"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:textSize="@dimen/sp_14"
-        android:textStyle="normal"
-        android:text="@string/see_how_to_redeem_voucher" />
+        app:layout_constraintLeft_toLeftOf="parent"
 
-    <ImageView
-        android:id="@+id/iv_arrow"
-        app:srcCompat="@drawable/ic_arrow_right"
-        android:layout_marginRight="@dimen/dp_16"
-        android:tint="@color/grey_400"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/iv_how_to_redeem"
-        app:layout_constraintBottom_toBottomOf="@+id/iv_how_to_redeem"
-        app:layout_constraintTop_toBottomOf="@+id/divider5"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24" />
+        app:layout_constraintTop_toBottomOf="@+id/divider5">
+
+        <ImageView
+            android:id="@+id/iv_how_to_redeem"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_16"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_how_to_redeem" />
+
+        <TextView
+            android:id="@+id/see_how_to_redeem_voucher"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:fontFamily="sans-serif"
+            android:text="@string/see_how_to_redeem_voucher"
+            android:textColor="@color/green_nob"
+            android:textSize="@dimen/sp_14"
+            android:textStyle="normal"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_how_to_redeem"
+            app:layout_constraintLeft_toRightOf="@+id/iv_how_to_redeem"
+            app:layout_constraintTop_toTopOf="@+id/iv_how_to_redeem" />
+
+        <ImageView
+            android:id="@+id/iv_arrow"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:layout_marginRight="@dimen/dp_16"
+            android:tint="@color/grey_400"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_how_to_redeem"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/iv_how_to_redeem"
+            app:srcCompat="@drawable/ic_arrow_right" />
+    </android.support.constraint.ConstraintLayout>
 
     <View
         android:id="@+id/divider6"
@@ -457,7 +458,7 @@
         android:layout_height="@dimen/dp_2"
         android:layout_marginTop="@dimen/dp_16"
         android:background="@color/grey_300"
-        app:layout_constraintTop_toBottomOf="@+id/iv_how_to_redeem" />
+        app:layout_constraintTop_toBottomOf="@+id/cl_redeem_instructions" />
 
     <TextView
         android:id="@+id/tv_recommended_deals"
@@ -478,6 +479,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
+        android:paddingLeft="@dimen/dp_8"
+        android:paddingRight="@dimen/dp_8"
+        android:clipToPadding="false"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

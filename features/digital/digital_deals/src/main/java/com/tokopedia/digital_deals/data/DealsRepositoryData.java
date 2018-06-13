@@ -7,15 +7,15 @@ import com.tokopedia.digital_deals.data.mapper.BrandDetailsTransformMapper;
 import com.tokopedia.digital_deals.data.mapper.DealDetailsTransformMapper;
 import com.tokopedia.digital_deals.data.mapper.DealsCategoryDetailMapper;
 import com.tokopedia.digital_deals.data.mapper.DealsLocationTransformMapper;
+import com.tokopedia.digital_deals.data.mapper.DealsSearchMapper;
 import com.tokopedia.digital_deals.data.mapper.DealsTransformMapper;
-import com.tokopedia.digital_deals.data.mapper.SearchResponseMapper;
 import com.tokopedia.digital_deals.domain.DealsRepository;
 import com.tokopedia.digital_deals.domain.model.LikeUpdateResultDomain;
 import com.tokopedia.digital_deals.domain.model.allbrandsdomainmodel.AllBrandsDomain;
 import com.tokopedia.digital_deals.domain.model.branddetailsmodel.BrandDetailsDomain;
 import com.tokopedia.digital_deals.domain.model.DealsDomain;
 import com.tokopedia.digital_deals.domain.model.categorydomainmodel.CategoryDetailsDomain;
-import com.tokopedia.digital_deals.domain.model.dealdetailsdomailmodel.DealsDetailsDomain;
+import com.tokopedia.digital_deals.domain.model.dealdetailsdomainmodel.DealsDetailsDomain;
 import com.tokopedia.digital_deals.domain.model.locationdomainmodel.LocationDomainModel;
 import com.tokopedia.digital_deals.domain.model.searchdomainmodel.SearchDomainModel;
 
@@ -49,12 +49,12 @@ public class DealsRepositoryData implements DealsRepository {
 
     @Override
     public Observable<SearchDomainModel> getSearchDeals(HashMap<String, Object> params) {
-        return dealsDataStoreFactory.createCloudDataStore().getSearchDeals(params).map(new SearchResponseMapper());
+        return dealsDataStoreFactory.createCloudDataStore().getSearchDeals(params).map(new DealsSearchMapper());
     }
 
     @Override
     public Observable<SearchDomainModel> getSearchNext(String nextUrl) {
-        return dealsDataStoreFactory.createCloudDataStore().getSearchNext(nextUrl).map(new SearchResponseMapper());
+        return dealsDataStoreFactory.createCloudDataStore().getSearchNext(nextUrl).map(new DealsSearchMapper());
     }
 
     @Override
@@ -73,8 +73,8 @@ public class DealsRepositoryData implements DealsRepository {
     }
 
     @Override
-    public Observable<CategoryDetailsDomain> getCategoryDetails(HashMap<String, Object> parameters) {
-        return dealsDataStoreFactory.createCloudDataStore().getCategoryDetails(parameters).map(new DealsCategoryDetailMapper());
+    public Observable<CategoryDetailsDomain> getCategoryDetails(String url, HashMap<String, Object> parameters) {
+        return dealsDataStoreFactory.createCloudDataStore().getCategoryDetails(url, parameters).map(new DealsCategoryDetailMapper());
     }
 
     @Override

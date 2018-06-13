@@ -19,6 +19,7 @@ public class DealsDetailsViewModel implements Parcelable {
     private String imageWeb;
     private String thumbnailWeb;
     private String longRichDesc;
+    private String tnc;
     private int mrp;
     private int salesPrice;
     private int quantity;
@@ -48,7 +49,7 @@ public class DealsDetailsViewModel implements Parcelable {
     private List<String> mediaUrl;
     private String recommendationUrl;
     private boolean isLiked;
-
+    private String seoUrl;
 
 
     public final static Parcelable.Creator<DealsDetailsViewModel> CREATOR = new Creator<DealsDetailsViewModel>() {
@@ -106,12 +107,12 @@ public class DealsDetailsViewModel implements Parcelable {
         this.savingPercentage = in.readString();
         this.catalog = ((CatalogViewModel) in.readValue((CatalogViewModel.class.getClassLoader())));
         this.brand = ((BrandViewModel) in.readValue((BrandViewModel.class.getClassLoader())));
-        this.recommendationUrl= in.readString();
+        this.recommendationUrl = in.readString();
         this.mediaUrl = new ArrayList<>();
         in.readList(this.mediaUrl, String.class.getClassLoader());
         this.isLiked = in.readValue((Boolean.class.getClassLoader())) != null;
-
-
+        this.tnc = in.readString();
+        this.seoUrl = in.readString();
     }
 
     public DealsDetailsViewModel() {
@@ -440,6 +441,23 @@ public class DealsDetailsViewModel implements Parcelable {
         isLiked = liked;
     }
 
+
+    public String getTnc() {
+        return tnc;
+    }
+
+    public void setTnc(String tnc) {
+        this.tnc = tnc;
+    }
+
+    public String getSeoUrl() {
+        return seoUrl;
+    }
+
+    public void setSeoUrl(String seoUrl) {
+        this.seoUrl = seoUrl;
+    }
+
     public void writeToParcel(Parcel dest, int flags) {
 
         dest.writeInt(id);
@@ -482,6 +500,8 @@ public class DealsDetailsViewModel implements Parcelable {
         dest.writeString(recommendationUrl);
         dest.writeList(mediaUrl);
         dest.writeValue(isLiked);
+        dest.writeString(tnc);
+        dest.writeString(seoUrl);
     }
 
     public int describeContents() {

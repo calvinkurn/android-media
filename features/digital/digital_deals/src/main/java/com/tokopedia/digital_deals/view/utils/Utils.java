@@ -20,12 +20,15 @@ import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.domain.model.DealsCategoryDomain;
 import com.tokopedia.digital_deals.domain.model.DealsCategoryItemDomain;
+import com.tokopedia.digital_deals.domain.model.DealsDomain;
 import com.tokopedia.digital_deals.domain.model.PageDomain;
 import com.tokopedia.digital_deals.domain.model.branddetailsmodel.BrandDomain;
-import com.tokopedia.digital_deals.domain.model.dealdetailsdomailmodel.DealsDetailsDomain;
-import com.tokopedia.digital_deals.domain.model.dealdetailsdomailmodel.MediaDomain;
-import com.tokopedia.digital_deals.domain.model.dealdetailsdomailmodel.Outlet;
+import com.tokopedia.digital_deals.domain.model.dealdetailsdomainmodel.DealsDetailsDomain;
+import com.tokopedia.digital_deals.domain.model.dealdetailsdomainmodel.MediaDomain;
+import com.tokopedia.digital_deals.domain.model.dealdetailsdomainmodel.Outlet;
 import com.tokopedia.digital_deals.domain.model.locationdomainmodel.LocationItemDomain;
+import com.tokopedia.digital_deals.domain.model.searchdomainmodel.FilterDomainModel;
+import com.tokopedia.digital_deals.domain.model.searchdomainmodel.ValuesItemDomain;
 import com.tokopedia.digital_deals.view.viewmodel.BrandViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.CatalogViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
@@ -38,9 +41,13 @@ import com.tokopedia.digital_deals.view.viewmodel.PageViewModel;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.TimeZone;
 
 import static com.tokopedia.digital_deals.view.utils.Utils.Constants.DIGITAL_DEALS;
@@ -64,13 +71,13 @@ public class Utils {
         Log.d("UTILS", "Utils Instance created");
     }
 
-    public ArrayList<CategoryViewModel> convertIntoCategoryListViewModel(List<DealsCategoryDomain> categoryList) {
+    public ArrayList<CategoryViewModel> convertIntoCategoryListViewModel(DealsDomain dealsDomain) {
 
         ArrayList<CategoryViewModel> categoryViewModels = new ArrayList<>();
-        if (categoryList != null) {
-            for (DealsCategoryDomain dealsCategoryDomain : categoryList) {
+        if (dealsDomain.getDealsCategory() != null) {
+            for (DealsCategoryDomain dealsCategoryDomain : dealsDomain.getDealsCategory()) {
 
-                CategoryViewModel category=new CategoryViewModel();
+                CategoryViewModel category = new CategoryViewModel();
                 category.setTitle(dealsCategoryDomain.getTitle());
                 category.setCategoryId(dealsCategoryDomain.getId());
                 category.setCount(dealsCategoryDomain.getCount());
@@ -89,12 +96,65 @@ public class Utils {
                     default:
                         categoryViewModels.add(category);
                         break;
-
                 }
-
             }
+
+            applyFilterOnCategories(categoryViewModels, dealsDomain.getFilters());
+
+
         }
         return categoryViewModels;
+    }
+
+    private void applyFilterOnCategories(ArrayList<CategoryViewModel> categoryViewModels, List<FilterDomainModel> filters) {
+        Map<Integer, Integer> sortOrder = new HashMap<>();
+        if (filters != null) {
+            if(categoryViewModels.get(0).getCategoryId()==categoryViewModels.get(1).getCategoryId()){
+                categoryViewModels.get(1).setCategoryId(-1);            //Since carousel and top have same id's
+            }
+            sortOrder.put(categoryViewModels.get(0).getCategoryId(), -1);   //dummy for top or carousel
+            sortOrder.put(categoryViewModels.get(1).getCategoryId(), -2);   //dummy for top or carousel
+            for (FilterDomainModel filter : filters) {
+                if (filter.getAttributeName().equals("child_category_ids")) {
+                    if (filter.getValues() != null) {
+                        for (ValuesItemDomain value : filter.getValues()) {
+                            sortOrder.put(value.getId(), value.getPriority());
+                        }
+                    }
+                    if(sortOrder.size()==categoryViewModels.size()){
+                        Collections.sort(categoryViewModels, new CategoryItemComparator(sortOrder));
+                    }
+                }
+            }
+        }
+    }
+
+    private class CategoryItemComparator implements Comparator<CategoryViewModel>
+    {
+        private Map<Integer, Integer> sortOrder;
+
+        public CategoryItemComparator(Map<Integer, Integer> sortOrder)
+        {
+            this.sortOrder = sortOrder;
+        }
+
+        @Override
+        public int compare(CategoryViewModel i1, CategoryViewModel i2)
+        {
+            Integer id1 = sortOrder.get(i1.getCategoryId());
+            if (id1 == null)
+            {
+                throw new IllegalArgumentException("Bad id encountered: " +
+                        i1.getCategoryId());
+            }
+            Integer id2 = sortOrder.get(i2.getCategoryId());
+            if (id2 == null)
+            {
+                throw new IllegalArgumentException("Bad id encountered: " +
+                        i2.getCategoryId());
+            }
+            return id1.compareTo(id2);
+        }
     }
 
     public ArrayList<CategoryItemsViewModel> convertIntoCategoryListItemsViewModel(List<DealsCategoryItemDomain> categoryResponseItemsList) {
@@ -147,7 +207,7 @@ public class Utils {
 
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return categoryItemsViewModelList;
@@ -187,6 +247,8 @@ public class Utils {
         viewModel.setSaleEndDate(detailsDomain.getSaleEndDate());
         viewModel.setLikes(detailsDomain.getLikes());
         viewModel.setRecommendationUrl(detailsDomain.getRecommendationUrl());
+        viewModel.setTnc(detailsDomain.getTnc());
+        viewModel.setSeoUrl(detailsDomain.getSeoUrl());
         List<OutletViewModel> outletViewModel = null;
         if (detailsDomain.getOutlets() != null && detailsDomain.getOutlets().size() != 0) {
 
@@ -196,9 +258,9 @@ public class Utils {
             }
         }
         List<String> mediaUrl = null;
-        if(detailsDomain.getMedia()!=null && detailsDomain.getMedia().size()!=0){
-            mediaUrl=new ArrayList<>();
-            for(MediaDomain mediaDomain: detailsDomain.getMedia())
+        if (detailsDomain.getMedia() != null && detailsDomain.getMedia().size() != 0) {
+            mediaUrl = new ArrayList<>();
+            for (MediaDomain mediaDomain : detailsDomain.getMedia())
                 mediaUrl.add(mediaDomain.getUrl());
         }
         viewModel.setMediaUrl(mediaUrl);
@@ -266,7 +328,6 @@ public class Utils {
         }
         return pageViewModel;
     }
-
 
 
     public static boolean containsIgnoreCase(String src, String what) {
@@ -338,13 +399,13 @@ public class Utils {
         localCacheHandler.applyEditor();
     }
 
-    public void openGoogleMapsActivity(Context context, String latLng){
-        Uri gmmIntentUri = Uri.parse("geo:0,0?q="+latLng);
+    public void openGoogleMapsActivity(Context context, String latLng) {
+        Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + latLng);
         Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
         mapIntent.setPackage("com.google.android.apps.maps");
         if (mapIntent.resolveActivity(context.getPackageManager()) != null) {
             context.startActivity(mapIntent);
-        }else {
+        } else {
             Toast.makeText(context, context.getResources().getString(R.string.cannot_find_application), Toast.LENGTH_SHORT).show();
         }
     }
@@ -372,15 +433,15 @@ public class Utils {
         snackbar.show();
     }
 
-    public void shareDeal(String deeplinkSlug, Context context, String name, String imageUrl){
+    public void shareDeal(String deeplinkSlug, Context context, String name, String imageUrl) {
 
         ShareData shareData = ShareData.Builder.aShareData()
                 .setType("")
                 .setName(name)
-                .setUri(DIGITAL_DEALS+"/"+deeplinkSlug)
+                .setUri(DIGITAL_DEALS + "/" + deeplinkSlug)
                 .setImgUri(imageUrl)
                 .build();
-        BranchSdkUtils.generateBranchLink(shareData, (Activity) context,new BranchSdkUtils.GenerateShareContents() {
+        BranchSdkUtils.generateBranchLink(shareData, (Activity) context, new BranchSdkUtils.GenerateShareContents() {
             @Override
             public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
                 Intent share = new Intent(android.content.Intent.ACTION_SEND);
@@ -396,11 +457,11 @@ public class Utils {
 
         public final static String DEALS = "deals";
         public static final String DIGITAL_DEALS = "tokopedia://digital-deals";
-        public static final String DIGITAL_DEALS_DETAILS="tokopedia://digital-deals/{slug}";
+        public static final String DIGITAL_DEALS_DETAILS = "tokopedia://digital-deals/{slug}";
     }
 
-    public static String fetchOrderId(String url){
-        return url.substring(url.lastIndexOf('/')+1);
+    public static String fetchOrderId(String url) {
+        return url.substring(url.lastIndexOf('/') + 1);
     }
 
 }

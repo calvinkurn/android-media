@@ -245,7 +245,7 @@
                 app:layoutManager="android.support.v7.widget.LinearLayoutManager"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"
                 app:layout_constraintTop_toBottomOf="@+id/number_of_locations"
-                tools:listitem="@layout/deals_item_card" />
+                tools:listitem="@layout/deal_item_card" />
 
 
         </android.support.constraint.ConstraintLayout>

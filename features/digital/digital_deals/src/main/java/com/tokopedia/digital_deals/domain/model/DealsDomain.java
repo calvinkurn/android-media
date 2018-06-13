@@ -1,6 +1,7 @@
 package com.tokopedia.digital_deals.domain.model;
 
 import com.tokopedia.digital_deals.domain.model.branddetailsmodel.BrandDomain;
+import com.tokopedia.digital_deals.domain.model.searchdomainmodel.FilterDomainModel;
 
 import java.util.List;
 
@@ -12,6 +13,8 @@ public class DealsDomain {
     private List<BrandDomain> dealsBrands;
 
     private PageDomain page;
+
+    private List<FilterDomainModel> filters;
 
     public PageDomain getPage() {
         return page;
@@ -35,5 +38,13 @@ public class DealsDomain {
 
     public void setDealsBrands(List<BrandDomain> dealsBrands) {
         this.dealsBrands = dealsBrands;
+    }
+
+    public List<FilterDomainModel> getFilters() {
+        return filters;
+    }
+
+    public void setFilters(List<FilterDomainModel> filters) {
+        this.filters = filters;
     }
 }

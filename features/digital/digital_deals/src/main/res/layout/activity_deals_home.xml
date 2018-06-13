@@ -132,7 +132,7 @@
                     app:strokeColor="@color/grey_400" />
 
                 <TextView
-                    android:id="@+id/textView"
+                    android:id="@+id/see_all_promo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="@dimen/dp_16"
@@ -260,4 +260,4 @@
             android:layout_height="@dimen/dp_50"
             android:layout_gravity="center" />
     </FrameLayout>
-</android.support.design.widget.CoordinatorLayout><!--http://www.androhub.com/bottom-navigation-view-android/-->
+</android.support.design.widget.CoordinatorLayout>

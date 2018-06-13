@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.TaskStackBuilder;
-import android.util.Log;
 import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
@@ -42,9 +41,7 @@ public class DealDetailsActivity extends BaseSimpleActivity implements DealFragm
         taskStackBuilder.addNextIntent(homeIntent);
         taskStackBuilder.addNextIntent(new Intent(context, DealsHomeActivity.class));
 
-
         Uri.Builder uri = Uri.parse(deepLink).buildUpon();
-        Log.d("MylllllSlug", extras.getString("slug"));
 
         extras.putString(DealDetailsPresenter.HOME_DATA, extras.getString("slug"));
         destination = new Intent(context, DealDetailsActivity.class)

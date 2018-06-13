@@ -4,7 +4,7 @@ package com.tokopedia.digital_deals.domain.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.digital_deals.domain.model.branddetailsmodel.BrandDomain;
-import com.tokopedia.digital_deals.domain.model.dealdetailsdomailmodel.Catalog;
+import com.tokopedia.digital_deals.domain.model.dealdetailsdomainmodel.Catalog;
 
 public class DealsCategoryItemDomain {
 

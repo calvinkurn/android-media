@@ -4,7 +4,7 @@ package com.tokopedia.digital_deals.view.presenter;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.digital_deals.domain.GetBrandDetailsUseCase;
+import com.tokopedia.digital_deals.domain.getusecase.GetBrandDetailsUseCase;
 import com.tokopedia.digital_deals.domain.model.branddetailsmodel.BrandDetailsDomain;
 import com.tokopedia.digital_deals.view.contractor.BrandDetailsContract;
 import com.tokopedia.digital_deals.view.utils.Utils;

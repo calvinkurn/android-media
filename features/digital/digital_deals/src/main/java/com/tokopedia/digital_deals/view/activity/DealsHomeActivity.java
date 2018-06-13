@@ -81,23 +81,21 @@ public class DealsHomeActivity extends BaseSimpleActivity implements HasComponen
     private ConstraintLayout clSearch;
     private TextView tvLocationName;
     private LinearLayoutManager layoutManager;
-    private String category = null;
     private TextView tvSeeAllBrands;
-    private AppBarLayout appBarLayout;
+    private TextView tvSeeAllPromo;
 
     @DeepLink({DIGITAL_DEALS})
     public static Intent getCallingApplinksTaskStask(Context context, Bundle extras) {
         Intent destination;
         try {
             String deepLink = extras.getString(DeepLink.URI);
-            Log.d("Mydeeplink2", deepLink);
+
             Uri.Builder uri = Uri.parse(deepLink).buildUpon();
             destination = new Intent(context, DealsHomeActivity.class)
                     .setData(uri.build())
                     .putExtras(extras);
 
         } catch (Exception e) {
-            Log.d("MudeeplinkCatch", "aagya");
             destination = new Intent(context, DealsHomeActivity.class);
         }
         return destination;
@@ -140,7 +138,6 @@ public class DealsHomeActivity extends BaseSimpleActivity implements HasComponen
         rvCatItems = findViewById(R.id.rv_category_items);
         rvBrandItems = findViewById(R.id.rv_brand_items);
         rvTrendingDeals = findViewById(R.id.rv_trending_deals);
-        appBarLayout=findViewById(R.id.app_bar_layout);
         viewPager = findViewById(R.id.deals_bannerpager);
         circlePageIndicator = findViewById(R.id.pager_indicator);
         mainContent = findViewById(R.id.main_content);
@@ -149,12 +146,13 @@ public class DealsHomeActivity extends BaseSimpleActivity implements HasComponen
         baseMainContent = findViewById(R.id.base_main_content);
         searchInputView = findViewById(R.id.search_input_view);
         tvLocationName = findViewById(R.id.tv_location_name);
-
+        tvSeeAllPromo = findViewById(R.id.see_all_promo);
         clSearch = findViewById(R.id.cl_search_view);
         tvSeeAllBrands = findViewById(R.id.tv_see_all_brands);
         tvSeeAllBrands.setOnClickListener(this);
         searchInputView.setOnClickListener(this);
         tvLocationName.setOnClickListener(this);
+        tvSeeAllPromo.setOnClickListener(this);
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
 
         rvTrendingDeals.setLayoutManager(layoutManager);
@@ -168,6 +166,8 @@ public class DealsHomeActivity extends BaseSimpleActivity implements HasComponen
 
         img = getResources().getDrawable(R.drawable.ic_location_2);
         tvLocationName.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
+
+        circlePageIndicator.setRadius(getResources().getDimensionPixelOffset(R.dimen.dp_4));
     }
 
     private void initInjector() {

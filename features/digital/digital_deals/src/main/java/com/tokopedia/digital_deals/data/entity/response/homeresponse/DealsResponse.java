@@ -11,6 +11,9 @@ public class DealsResponse {
     @SerializedName("brands")
     private JsonArray brands;
 
+    @SerializedName("filters")
+    private JsonArray filters;
+
     public HomeResponse getHome() {
         return home;
     }
@@ -25,6 +28,14 @@ public class DealsResponse {
 
     public void setBrands(JsonArray brands) {
         this.brands = brands;
+    }
+
+    public JsonArray getFilters() {
+        return filters;
+    }
+
+    public void setFilters(JsonArray filters) {
+        this.filters = filters;
     }
 
     @Override

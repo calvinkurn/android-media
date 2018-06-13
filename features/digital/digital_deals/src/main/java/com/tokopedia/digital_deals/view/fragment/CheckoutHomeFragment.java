@@ -1,20 +1,20 @@
 package com.tokopedia.digital_deals.view.fragment;
 
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
-import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,11 +25,14 @@ import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DaggerDealsComponent;
 import com.tokopedia.digital_deals.di.DealsModule;
 import com.tokopedia.digital_deals.view.activity.CheckoutActivity;
+import com.tokopedia.digital_deals.view.activity.DealDetailsActivity;
 import com.tokopedia.digital_deals.view.contractor.CheckoutDealContractor;
 import com.tokopedia.digital_deals.view.presenter.CheckoutDealPresenter;
+import com.tokopedia.digital_deals.view.utils.DealFragmentCallbacks;
 import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.digital_deals.view.viewmodel.DealsDetailsViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.PackageViewModel;
+import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
 import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;
@@ -37,13 +40,11 @@ import javax.inject.Inject;
 public class CheckoutHomeFragment extends BaseDaggerFragment implements CheckoutDealContractor.View, View.OnClickListener {
 
 
-
-    private ConstraintLayout clApplyPromo;
     private ConstraintLayout clPromoApplied;
     private ConstraintLayout baseMainContent;
-    private LinearLayout mainContent;
-    private LinearLayout llPaymentMethod;
-
+    private CoordinatorLayout mainContent;
+    private TextView tvPaymentMethod;
+    private View paymentMethod;
     private ImageView imageViewBrand;
     private TextView tvDealDetails;
     private TextView tvBrandName;
@@ -55,9 +56,12 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
     private TextView tvNumberLocations;
     private TextView tvVoucherCode;
     private TextView tvDiscount;
+    private TextView tvApplyPromo;
     private TextView tvNumberVouchers;
     private TextView tvAmount;
     private EditText etEmailID;
+    private FrameLayout progressParLayout;
+    private DealFragmentCallbacks fragmentCallbacks;
 
     @Inject
     CheckoutDealPresenter mPresenter;
@@ -81,7 +85,6 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -94,8 +97,8 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
         return view;
     }
 
+
     private void setViewIds(View view) {
-        ((CheckoutActivity) getActivity()).getSupportActionBar().setTitle(getResources().getString(R.string.activity_checkout_title));
         imageViewBrand = view.findViewById(R.id.image_view_brand);
         tvDealDetails = view.findViewById(R.id.tv_deal_details);
         tvBrandName = view.findViewById(R.id.tv_brand_name);
@@ -110,11 +113,16 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
         tvDiscount = view.findViewById(R.id.amount_of_cashback);
         tvNumberVouchers = view.findViewById(R.id.tv_number_vouchers);
         etEmailID = view.findViewById(R.id.tv_email);
-        llPaymentMethod = view.findViewById(R.id.ll_select_payment_method);
-        clApplyPromo = view.findViewById(R.id.cl_apply_promo);
+        paymentMethod = view.findViewById(R.id.cl_btn_payment);
+        tvPaymentMethod = view.findViewById(R.id.ll_select_payment_method);
+        tvApplyPromo = view.findViewById(R.id.tv_promocode);
         clPromoApplied = view.findViewById(R.id.cl_promo_applied);
         baseMainContent = view.findViewById(R.id.base_main_content);
         mainContent = view.findViewById(R.id.main_content);
+        progressParLayout = view.findViewById(R.id.progress_bar_layout);
+        Drawable img = getResources().getDrawable(R.drawable.ic_promo_code);
+        tvApplyPromo.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
+
     }
 
 
@@ -131,6 +139,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
 
     @Override
     public void renderFromDetails(DealsDetailsViewModel dealDetails, PackageViewModel packageViewModel) {
+
 
         if (dealDetails.getBrand() != null) {
             ImageHandler.loadImage(getContext(), imageViewBrand,
@@ -160,21 +169,22 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
             tvNumberLocations.setText(String.format(getResources().getString(R.string.number_of_locations)
                     , dealDetails.getOutlets().size()));
         }
-        llPaymentMethod.setOnClickListener(this);
-        clApplyPromo.setOnClickListener(this);
+        tvPaymentMethod.setOnClickListener(this);
+        tvApplyPromo.setOnClickListener(this);
+        tvNumberLocations.setOnClickListener(this);
         baseMainContent.setVisibility(View.VISIBLE);
-        llPaymentMethod.setVisibility(View.VISIBLE);
+        paymentMethod.setVisibility(View.VISIBLE);
     }
 
 
     @Override
     public void showProgressBar() {
-
+        progressParLayout.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgressBar() {
-
+        progressParLayout.setVisibility(View.GONE);
     }
 
 
@@ -195,8 +205,11 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
     }
 
     @Override
-    public void showPromoSuccessMessage(String text, int color) {
-
+    public void showPromoSuccessMessage(String text, int discount) {
+        tvApplyPromo.setVisibility(View.GONE);
+        clPromoApplied.setVisibility(View.VISIBLE);
+        tvDiscount.setText(Utils.convertToCurrencyString(discount));
+        tvVoucherCode.setText(text);
     }
 
     @Override
@@ -210,40 +223,30 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
     }
 
     @Override
-    public boolean validateAllFields() {
-        return false;
+    public void hidePaymentButton() {
+        paymentMethod.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showPaymentButton() {
+        paymentMethod.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        fragmentCallbacks = (CheckoutActivity) activity;
     }
 
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.update_email) {
-            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-            if (!etEmailID.isEnabled()) {
-                etEmailID.setEnabled(true);
-                etEmailID.setTextIsSelectable(true);
-                etEmailID.setFocusable(true);
-                etEmailID.setFocusableInTouchMode(true);
-                etEmailID.setSelection(etEmailID.getText().length());
-                etEmailID.setInputType(InputType.TYPE_CLASS_TEXT);
-                etEmailID.requestFocus();
-                imm.showSoftInput(etEmailID, InputMethodManager.SHOW_IMPLICIT);
-            } else {
-                if (imm != null) {
-                    imm.hideSoftInputFromWindow(etEmailID.getWindowToken(), 0);
-                }
-                etEmailID.setEnabled(false);
-                etEmailID.setTextIsSelectable(false);
-                etEmailID.setFocusable(false);
-                etEmailID.setInputType(InputType.TYPE_NULL);
-                etEmailID.clearFocus();
-                mainContent.requestFocus();
-            }
-            mPresenter.updateEmail(etEmailID.getText().toString());
-        } else if (v.getId() == R.id.ll_select_payment_method) {
+        if (v.getId() == R.id.ll_select_payment_method) {
             mPresenter.getPaymentLink();
-        } else if (v.getId() == R.id.cl_apply_promo) {
+        } else if (v.getId() == R.id.tv_promocode) {
             mPresenter.clickGoToPromo();
+        } else if (v.getId() == R.id.tv_no_locations) {
+            fragmentCallbacks.replaceFragment(mPresenter.getOutlets(), 0);
         }
     }
 
@@ -256,5 +259,25 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
     public void onDestroyView() {
         mPresenter.onDestroy();
         super.onDestroyView();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == LoyaltyActivity.LOYALTY_REQUEST_CODE) {
+            hideProgressBar();
+            switch (resultCode) {
+                case LoyaltyActivity.VOUCHER_RESULT_CODE:
+                    mPresenter.updatePromoCode(data.getExtras().getString(LoyaltyActivity.COUPON_CODE));
+                    showPromoSuccessMessage(data.getExtras().getString(LoyaltyActivity.COUPON_MESSAGE), (int) data.getExtras().getLong(LoyaltyActivity.COUPON_DISCOUNT_AMOUNT));
+                    break;
+//                case LoyaltyActivity.VOUCHER_RESULT_CODE:
+//                    mPresenter.updatePromoCode(data.getExtras().getString(LoyaltyActivity.VOUCHER_CODE));
+//                    showPromoSuccessMessage(data.getExtras().getString(LoyaltyActivity.VOUCHER_MESSAGE), getResources().getColor(R.color.green_nob));
+//                    break;
+                default:
+                    break;
+            }
+        }
     }
 }
