@@ -360,7 +360,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
         });
     }
 
-    public void appShare(ShareApps shareApp) {
+    public void appShare(ShareApps shareApp,FragmentManager fragmentManager) {
         formatSharingContents();
         String type = ShareData.APP_SHARE_TYPE;
         if (isAppShowReferralButtonActivated()) {
@@ -395,7 +395,12 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
             sharePinterest(shareData);
 
         } else {
-
+            shareApp(fragmentManager);
+            if (isAppShowReferralButtonActivated()) {
+                UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_SHARE_CODE, getView().getReferralCodeFromTextView());
+            } else {
+                UnifyTracking.eventAppShareWhenReferralOff(AppEventTracking.Action.CLICK, AppEventTracking.EventLabel.APP_SHARE_LABEL);
+            }
         }
     }
 

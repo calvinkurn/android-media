@@ -5,10 +5,13 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.widget.NestedScrollView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tokopedia.core.R;
@@ -48,16 +51,16 @@ public class FragmentReferral extends BasePresenterFragmentV4<IReferralPresenter
     @Inject
     ReferralPresenter presenter;
 
-//    @BindView(R2.id.btn_app_share)
+    //    @BindView(R2.id.btn_app_share)
 //    TextView appShareButton;
-//    @BindView(R2.id.tv_referral_code)
-//    TextView referralCodeTextView;
-//    @BindView(R2.id.tv_app_share_desc)
-//    TextView referralContentTextView;
-//    @BindView(R2.id.tv_referral_help_link)
-//    TextView TextViewHelpLink;
-//    @BindView(R2.id.rl_referral_code)
-//    RelativeLayout referralCodeLayout;
+    @BindView(R2.id.tv_referral_code)
+    TextView referralCodeTextView;
+    @BindView(R2.id.tv_referral_desc)
+    TextView referralContentTextView;
+    @BindView(R2.id.tv_referral_help_link)
+    TextView TextViewHelpLink;
+    @BindView(R2.id.rl_referral_code)
+    RelativeLayout referralCodeLayout;
 
     @BindView(R2.id.view_pager_referral_guide)
     HeightWrappingViewPager pagerGuide;
@@ -65,6 +68,10 @@ public class FragmentReferral extends BasePresenterFragmentV4<IReferralPresenter
     TabLayout tabGuide;
     @BindView(R2.id.ll_share_icons)
     LinearLayout llShareIcons;
+    @BindView(R2.id.nested_scroll_view)
+    NestedScrollView nestedScrollView;
+    @BindView(R2.id.view_line)
+    View viewLine;
 
     private ReferralGuidePagerAdapter referralGuidePagerAdapter;
 
@@ -131,25 +138,26 @@ public class FragmentReferral extends BasePresenterFragmentV4<IReferralPresenter
     @Override
     protected void initView(View view) {
         presenter.initialize();
-//        appShareButton.setOnClickListener(getButtonAppShareClickListner());
-//        referralContentTextView.setText(presenter.getReferralContents());
-//        if (presenter.isAppShowReferralButtonActivated()) {
-//            referralCodeLayout.setVisibility(View.VISIBLE);
-//            TextViewHelpLink.setVisibility(View.VISIBLE);
-//            TextViewHelpLink.setText(presenter.getHowItWorks());
-//            renderVoucherCode(presenter.getVoucherCodeFromCache());
-//            TextViewHelpLink.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
+        //  appShareButton.setOnClickListener(getButtonAppShareClickListner());
+        referralContentTextView.setText(presenter.getReferralContents());
+        if (presenter.isAppShowReferralButtonActivated()) {
+            referralCodeLayout.setVisibility(View.VISIBLE);
+            TextViewHelpLink.setVisibility(View.VISIBLE);
+           // TextViewHelpLink.setText(presenter.getHowItWorks());
+            renderVoucherCode(presenter.getVoucherCodeFromCache());
+            TextViewHelpLink.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 //                    UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_HOW_IT_WORKS, "");
 //                    startActivity(ManageWebViewActivity.getCallingIntent(getActivity(), TkpdUrl.REFERRAL_URL, ((AppCompatActivity) getActivity()).getSupportActionBar().getTitle().toString()));
-//
-//                }
-//            });
-//        } else {
-//            referralCodeLayout.setVisibility(View.INVISIBLE);
-//            TextViewHelpLink.setVisibility(View.INVISIBLE);
-//        }
+
+                    focusOnView();
+                }
+            });
+        } else {
+            referralCodeLayout.setVisibility(View.INVISIBLE);
+            TextViewHelpLink.setVisibility(View.INVISIBLE);
+        }
 
         referralGuidePagerAdapter = new ReferralGuidePagerAdapter(getActivity());
         pagerGuide.setAdapter(referralGuidePagerAdapter);
@@ -177,7 +185,7 @@ public class FragmentReferral extends BasePresenterFragmentV4<IReferralPresenter
 
     @OnClick(R2.id.btn_copy_referral_code)
     public void clickOnCopyButton() {
-        // presenter.copyVoucherCode(referralCodeTextView.getText().toString());
+        presenter.copyVoucherCode(referralCodeTextView.getText().toString());
     }
 
     @Override
@@ -213,7 +221,7 @@ public class FragmentReferral extends BasePresenterFragmentV4<IReferralPresenter
 
     @Override
     public void renderVoucherCode(String voucherCode) {
-        //referralCodeTextView.setText(voucherCode);
+        referralCodeTextView.setText(voucherCode);
     }
 
     @Override
@@ -267,8 +275,7 @@ public class FragmentReferral extends BasePresenterFragmentV4<IReferralPresenter
 
     @Override
     public String getReferralCodeFromTextView() {
-        // return referralCodeTextView.getText().toString();
-        return "";
+         return referralCodeTextView.getText().toString();
     }
 
     @Override
@@ -305,70 +312,29 @@ public class FragmentReferral extends BasePresenterFragmentV4<IReferralPresenter
 
     @Override
     public void renderSharableApps(ShareApps shareApps, int index) {
-
+        if(index == 0){
+            llShareIcons.removeAllViews();
+        }
         ImageView imageView = new ImageView(getActivity());
         imageView.setImageResource(shareApps.getIcon());
         imageView.setTag(shareApps);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.0f);
         imageView.setLayoutParams(layoutParams);
         imageView.setOnClickListener(v -> {
-            Toast.makeText(getActivity(), shareApps.getName() + "  = " + ((ShareApps) v.getTag()).getPackageNmae(), 300).show();
-            presenter.appShare(((ShareApps) v.getTag()));
+            presenter.appShare(((ShareApps) v.getTag()), getChildFragmentManager());
         });
         llShareIcons.addView(imageView);
 
     }
 
-    //    @Override
-//    public void showDialogShareFb(String shortUrl) {
-//        if (!isAdded()) {
-//            return;
-//        }
-//        shareDialog = new ShareDialog(this);
-//        callbackManager = CallbackManager.Factory.create();
-//        shareDialog.registerCallback(callbackManager, new
-//                FacebookCallback<Sharer.Result>() {
-//                    @Override
-//                    public void onSuccess(Sharer.Result result) {
-//                        SnackbarManager.make(
-//                                getActivity(),
-//                                getString(R.string.success_share_product),
-//                                Snackbar.LENGTH_SHORT).show();
-//                        presenter.setFacebookCache();
-//                    }
-//
-//                    @Override
-//                    public void onCancel() {
-//                    }
-//
-//                    @Override
-//                    public void onError(FacebookException error) {
-//                        Log.i(TAG, "onError: " + error);
-//                    }
-//                });
-//
-//        if (ShareDialog.canShow(ShareLinkContent.class)) {
-//            if (shareData != null && !TextUtils.isEmpty(shortUrl)) {
-//                ShareLinkContent.Builder linkBuilder = new ShareLinkContent.Builder()
-//                        .setContentUrl(Uri.parse(shortUrl));
-//                if (!TextUtils.isEmpty(shareData.getName())) {
-//                    linkBuilder.setContentTitle(shareData.getName());
-//                }
-//                if (!TextUtils.isEmpty(shareData.getTextContent(getActivity()))) {
-//                    linkBuilder.setContentDescription(shareData.getTextContent(getActivity()));
-//                }
-//                if (!TextUtils.isEmpty(shareData.getDescription())) {
-//                    linkBuilder.setQuote(shareData.getDescription());
-//                }
-//                if (!TextUtils.isEmpty(shareData.getImgUri())) {
-//                    linkBuilder.setImageUrl(Uri.parse(shareData.getImgUri()));
-//                }
-//                ShareLinkContent linkContent = linkBuilder.build();
-//                shareDialog.show(linkContent);
-//                return;
-//            }
-//        }
-//        NetworkErrorHelper.showSnackbar(getActivity());
-//    }
-//}
+    private final void focusOnView(){
+        nestedScrollView.post(new Runnable() {
+            @Override
+            public void run() {
+                nestedScrollView.fling(0);
+                nestedScrollView.smoothScrollTo(0, viewLine.getBottom());
+                //nestedScrollView.smoothScrollBy(0, tabGuide.getTop());
+            }
+        });
+    }
 }
