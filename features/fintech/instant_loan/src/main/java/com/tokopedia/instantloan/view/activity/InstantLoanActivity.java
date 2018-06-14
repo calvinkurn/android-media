@@ -38,25 +38,17 @@ import javax.inject.Inject;
 
 public class InstantLoanActivity extends BaseSimpleActivity implements HasComponent<AppComponent>, BannerContractor.View, View.OnClickListener {
 
-
-    public static final int TAB_THIRD_POSITION = 2;
-    public static final int TAB_SECOND_POSITION = 1;
-    public static final int TAB_FIRST_POSITION = 0;
-
     @Inject
     BannerListPresenter mBannerPresenter;
 
     private ViewPager mBannerPager;
     private FloatingActionButton mBtnNextBanner, mBtnPreviousBanner;
-    private Dialog mDialogIntro;
-    private int mCurrentTab = -1;
     private String denganAngunanTitle;
     private String tanpaAngunanTitle;
     private String danaInstantTitle;
 
     private TabLayout tabLayout;
     private HeightWrappingViewPager viewPager;
-    private InstantLoanPagerAdapter instantLoanPagerAdapter;
 
     public static Intent createIntent(Context context) {
         return new Intent(context, InstantLoanActivity.class);
@@ -85,7 +77,7 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
 
     private void loadSection() {
         populateThreeTabItem();
-        instantLoanPagerAdapter = new InstantLoanPagerAdapter(getSupportFragmentManager());
+        InstantLoanPagerAdapter instantLoanPagerAdapter = new InstantLoanPagerAdapter(getSupportFragmentManager());
         instantLoanPagerAdapter.setData(instantLoanItemList);
         viewPager.setAdapter(instantLoanPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);

@@ -28,10 +28,8 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.viewpagerindicator.CirclePageIndicator;
-import com.tokopedia.instantloan.InstantLoanComponentInstance;
 import com.tokopedia.instantloan.R;
 import com.tokopedia.instantloan.data.model.response.UserProfileLoanEntity;
-import com.tokopedia.instantloan.di.component.InstantLoanComponent;
 import com.tokopedia.instantloan.router.InstantLoanRouter;
 import com.tokopedia.instantloan.view.activity.InstantLoanActivity;
 import com.tokopedia.instantloan.view.adapter.InstantLoanIntroViewPagerAdapter;
@@ -92,8 +90,8 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
 
     @Override
     protected void initInjector() {
-        InstantLoanComponent daggerInstantLoanComponent = InstantLoanComponentInstance.get(getActivity().getApplication());
-        daggerInstantLoanComponent.inject(this);
+        /*InstantLoanComponent daggerInstantLoanComponent = InstantLoanComponentInstance.get(getActivity().getApplication());
+        daggerInstantLoanComponent.inject(this);*/
     }
 
     @Nullable
