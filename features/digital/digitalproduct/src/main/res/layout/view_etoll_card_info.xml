@@ -28,6 +28,7 @@
                     android:id="@+id/image_issuer"
                     android:layout_width="0dp"
                     android:layout_height="50dp"
+                    android:padding="@dimen/dp_16"
                     android:layout_weight="1"
                     tools:src="@drawable/emoney" />
 
