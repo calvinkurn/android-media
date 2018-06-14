@@ -3,12 +3,20 @@ package com.tokopedia.networklib.data.model;
 import java.lang.reflect.Type;
 
 public class RestResponse {
-    private Object mResult;
+    private final Object mResult;
     private final boolean mIsCached;
+    private final int responseCode;
 
     public RestResponse(Object result, boolean isCached) {
         this.mResult = result;
         this.mIsCached = isCached;
+        responseCode = -1;
+    }
+
+    public RestResponse(Object result, int responseCode, boolean isCached) {
+        this.mResult = result;
+        this.mIsCached = isCached;
+        this.responseCode = responseCode;
     }
 
     /**
@@ -22,5 +30,9 @@ public class RestResponse {
 
     public boolean isCached() {
         return mIsCached;
+    }
+
+    public int getResponseCode() {
+        return responseCode;
     }
 }

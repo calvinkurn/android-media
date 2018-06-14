@@ -18,6 +18,11 @@ import java.util.Map;
 
 import rx.Observable;
 
+/**
+ * Rest api call UseCase
+ *
+ * @See {@link com.tokopedia.networklib.domain.RestUseCaseSupportInterceptor} class for add custom interceptor
+ */
 public abstract class RestUseCase extends UseCase<RestResponse> {
 
     private RestRepositoryImpl mRepository;
@@ -30,8 +35,17 @@ public abstract class RestUseCase extends UseCase<RestResponse> {
 
     @Override
     public Observable<RestResponse> createObservable(RequestParams requestParams) {
-        return mRepository.getResponse(buildRequest(), getCacheStrategy()).map(restResponseInternal ->
-                new RestResponse(mGson.fromJson(restResponseInternal.getOriginalResponse(), getTypeOfT()), restResponseInternal.isCached()));
+        return mRepository.getResponse(buildRequest(), getHttpRequestType() == RequestType.POST_MULTIPART ? null : getCacheStrategy())
+                .map(restResponseInternal -> {
+                    if (getHttpRequestType() == RequestType.POST_MULTIPART) {
+                        return new RestResponse(restResponseInternal.getOriginalResponse(),
+                                restResponseInternal.getResponseCode(),
+                                restResponseInternal.isCached());
+                    } else {
+                        return new RestResponse(mGson.fromJson(restResponseInternal.getOriginalResponse(), getTypeOfT()),
+                                restResponseInternal.isCached());
+                    }
+                });
     }
 
     private RestRequest buildRequest() {
@@ -107,6 +121,7 @@ public abstract class RestUseCase extends UseCase<RestResponse> {
      * 1. Map Object -->Key-Value pair of query. (For content-type -> @FormUrlEncoded) (No need to encode, library will take care of this)
      * 2. String --> Any string which can be become part of body. (For content-type -> application/json)
      * 3. Java POJO class object -> which can be serialize and deserialize later. (For content-type -> application/json)
+     * 4. String --> Path of the file which are going to upload. (For content-type -> @Multipart)
      * <p>
      * If you will trying to return other then above object, then it will trow exception later while executing the network request
      */

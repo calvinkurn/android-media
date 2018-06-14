@@ -6,8 +6,14 @@ package com.tokopedia.networklib.data.model;
 final public class RestResponseInternal {
     private String originalResponse;
     private boolean isCached;
+    private int responseCode;
 
     public RestResponseInternal(String originalResponse, boolean isCached) {
+        this.originalResponse = originalResponse;
+        this.isCached = isCached;
+    }
+
+    public RestResponseInternal(String originalResponse, int responseCode, boolean isCached) {
         this.originalResponse = originalResponse;
         this.isCached = isCached;
     }
@@ -16,23 +22,20 @@ final public class RestResponseInternal {
         return originalResponse;
     }
 
-    public void setOriginalResponse(String originalResponse) {
-        this.originalResponse = originalResponse;
-    }
-
     public boolean isCached() {
         return isCached;
     }
 
-    public void setCached(boolean isCached) {
-        this.isCached = isCached;
+    public int getResponseCode() {
+        return responseCode;
     }
 
     @Override
     public String toString() {
         return "RestResponseInternal{" +
-                "originalResponse=" + originalResponse +
+                "originalResponse='" + originalResponse + '\'' +
                 ", isCached=" + isCached +
+                ", responseCode=" + responseCode +
                 '}';
     }
 }

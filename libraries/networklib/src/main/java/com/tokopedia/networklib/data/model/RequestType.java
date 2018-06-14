@@ -11,4 +11,6 @@ public enum RequestType {
     PUT,
 
     DELETE,
+
+    POST_MULTIPART
 }
