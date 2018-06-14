@@ -3,6 +3,7 @@ package com.tokopedia.networklib.domain;
 import android.webkit.URLUtil;
 
 import com.google.gson.Gson;
+import com.tokopedia.networklib.data.model.CacheType;
 import com.tokopedia.networklib.data.model.RequestType;
 import com.tokopedia.networklib.data.model.RestCacheStrategy;
 import com.tokopedia.networklib.data.model.RestRequest;
@@ -75,7 +76,7 @@ public abstract class RestUseCase extends UseCase<RestResponse> {
      *
      * @return Class type (e.g. TestModel.class or XYZ.class)
      */
-    public abstract Type getTypeOfT();
+    protected abstract Type getTypeOfT();
 
 
     /**
@@ -84,7 +85,9 @@ public abstract class RestUseCase extends UseCase<RestResponse> {
      *
      * @return Key-Value pair of header
      */
-    public abstract Map<String, Object> getHeaders();
+    protected Map<String, Object> getHeaders() {
+        return null;
+    }
 
     /**
      * Optional
@@ -92,7 +95,9 @@ public abstract class RestUseCase extends UseCase<RestResponse> {
      *
      * @return Map -> Key-Value pair of query parameter (No need to encode, library will take care of this)
      */
-    public abstract Map<String, Object> getQueriesMap();
+    protected Map<String, Object> getQueriesMap() {
+        return null;
+    }
 
     /**
      * Mandatory implementation (If Method type is POST or PUT else it Optional)- Valid implementation require
@@ -105,7 +110,9 @@ public abstract class RestUseCase extends UseCase<RestResponse> {
      * <p>
      * If you will trying to return other then above object, then it will trow exception later while executing the network request
      */
-    public abstract Object getBody();
+    protected Object getBody() {
+        return null;
+    }
 
     /**
      * Optional
@@ -114,7 +121,9 @@ public abstract class RestUseCase extends UseCase<RestResponse> {
      * @return RequestType enum  (e.g RequestType.GET, RequestType.POST, RequestType.PUT, RequestType.DELETE)
      * default is RequestType.GET if you will return null
      */
-    public abstract RequestType getHttpRequestType();
+    protected RequestType getHttpRequestType() {
+        return RequestType.GET;
+    }
 
     /**
      * Optional
@@ -123,5 +132,7 @@ public abstract class RestUseCase extends UseCase<RestResponse> {
      * @return Object - RestCacheStrategy (RestCacheStrategy.Builder to create your RestCacheStrategy)
      * Default is NONE caching
      */
-    public abstract RestCacheStrategy getCacheStrategy();
+    protected RestCacheStrategy getCacheStrategy() {
+        return new RestCacheStrategy.Builder(CacheType.NONE).build();
+    }
 }
