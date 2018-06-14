@@ -60,7 +60,7 @@ public abstract class RestUseCase extends UseCase<RestResponse> {
      * Mandatory implementation- Valid implementation require
      * Full URL of the endpoint including base url. This value is mandatory. Url should be valid else UseCase wil throw exception (RuntimeException("Please set valid request url into your UseCase class"))
      *
-     * @return Map -> Full URL of the endpoint
+     * @return Map -> Full URL of the endpoint (e.g. https://tokopedia.com/your/path/method/xyz)
      */
     public abstract String getUrl();
 
@@ -73,7 +73,7 @@ public abstract class RestUseCase extends UseCase<RestResponse> {
      * Type typeOfT = new TypeToken&lt;Collection&lt;Foo&gt;&gt;(){}.getType();
      * </pre>
      *
-     * @return Class type
+     * @return Class type (e.g. TestModel.class or XYZ.class)
      */
     public abstract Type getTypeOfT();
 
@@ -88,9 +88,9 @@ public abstract class RestUseCase extends UseCase<RestResponse> {
 
     /**
      * Optional
-     * For providing query params to the apis.
+     * For providing query parameter to the apis.
      *
-     * @return Map -> Key-Value pair of query
+     * @return Map -> Key-Value pair of query parameter (No need to encode, library will take care of this)
      */
     public abstract Map<String, Object> getQueriesMap();
 
@@ -98,7 +98,12 @@ public abstract class RestUseCase extends UseCase<RestResponse> {
      * Mandatory implementation (If Method type is POST or PUT else it Optional)- Valid implementation require
      * For providing query params to the apis.
      *
-     * @return Map -> Key-Value pair of query
+     * @return Return argument can any one of from below
+     * 1. Map Object -->Key-Value pair of query. (For content-type -> @FormUrlEncoded) (No need to encode, library will take care of this)
+     * 2. String --> Any string which can be become part of body. (For content-type -> application/json)
+     * 3. Java POJO class object -> which can be serialize and deserialize later. (For content-type -> application/json)
+     * <p>
+     * If you will trying to return other then above object, then it will trow exception later while executing the network request
      */
     public abstract Object getBody();
 
@@ -106,7 +111,8 @@ public abstract class RestUseCase extends UseCase<RestResponse> {
      * Optional
      * For providing Http method type, by default GET will be treated if not provided any method.
      *
-     * @return   RequestType enum
+     * @return RequestType enum  (e.g RequestType.GET, RequestType.POST, RequestType.PUT, RequestType.DELETE)
+     * default is RequestType.GET if you will return null
      */
     public abstract RequestType getHttpRequestType();
 
@@ -114,7 +120,8 @@ public abstract class RestUseCase extends UseCase<RestResponse> {
      * Optional
      * For providing CacheStrategy, by Default no caching will be perform if not provided
      *
-     * @return Object - RestCacheStrategy
+     * @return Object - RestCacheStrategy (RestCacheStrategy.Builder to create your RestCacheStrategy)
+     * Default is NONE caching
      */
     public abstract RestCacheStrategy getCacheStrategy();
 }
