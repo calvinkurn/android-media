@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.support.v4.app.TaskStackBuilder;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
@@ -35,7 +36,7 @@ public class InboxTicketDetailActivity extends BasePresenterActivity<InboxTicket
 
     InboxTicketResultReceiver mReceiver;
 
-    @DeepLink(InboxTicketAppLink.CUSTOMER_CARE)
+    @DeepLink(ApplinkConst.TICKET_DETAIL)
     public static TaskStackBuilder getCallingIntent(Context context, Bundle bundle) {
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         Intent parentIntent = new Intent(context, InboxTicketActivity.class);

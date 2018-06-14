@@ -8,6 +8,7 @@ import android.os.Bundle;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.cart.fragment.CartFragment;
@@ -24,7 +25,7 @@ public class CartActivity extends BasePresenterActivity {
     }
 
 
-    @DeepLink(Constants.Applinks.CART)
+    //@DeepLink(Constants.Applinks.CART)
     public static Intent getCallingIntent(Context context, Bundle extras) {
         Intent intent = new Intent(context, CartActivity.class).putExtras(extras);
         intent.putExtras(extras);

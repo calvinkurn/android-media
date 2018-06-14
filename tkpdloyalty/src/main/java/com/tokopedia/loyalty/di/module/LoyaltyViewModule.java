@@ -1,22 +1,16 @@
 package com.tokopedia.loyalty.di.module;
-
 import android.app.Activity;
 import android.app.FragmentManager;
-
 import com.tokopedia.loyalty.di.LoyaltyScope;
 import com.tokopedia.loyalty.view.adapter.LoyaltyPagerAdapter;
 import com.tokopedia.loyalty.view.data.LoyaltyPagerItem;
 import com.tokopedia.loyalty.view.fragment.PromoCodeFragment;
 import com.tokopedia.loyalty.view.fragment.PromoCouponFragment;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.inject.Named;
-
 import dagger.Module;
 import dagger.Provides;
-
 import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.DEAL_STRING;
 import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.EVENT_STRING;
 import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.EXTRA_CART_ID;
@@ -24,30 +18,23 @@ import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.EXTRA_CATEGORY
 import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.EXTRA_CATEGORYID;
 import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.EXTRA_PLATFORM;
 import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.EXTRA_PRODUCTID;
-
 /**
  * @author anggaprasetiyo on 30/11/17.
  */
-
 @Module
 public class LoyaltyViewModule {
-
     private final Activity activity;
-
     public LoyaltyViewModule(Activity activity) {
         this.activity = activity;
     }
-
     @Provides
     FragmentManager provideFragmentManager() {
         return activity.getFragmentManager();
     }
-
     @Provides
     LoyaltyPagerAdapter provideLoyaltyPagerAdapter(FragmentManager fragmentManager) {
         return new LoyaltyPagerAdapter(fragmentManager);
     }
-
     @Provides
     @LoyaltyScope
     @Named("coupon_active")
@@ -129,7 +116,6 @@ public class LoyaltyViewModule {
         }
         return loyaltyPagerItemList;
     }
-
     @Provides
     @LoyaltyScope
     @Named("coupon_not_active")
@@ -150,5 +136,4 @@ public class LoyaltyViewModule {
         );
         return loyaltyPagerItemList;
     }
-
 }

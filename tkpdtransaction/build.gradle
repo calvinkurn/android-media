@@ -25,6 +25,8 @@ project.ext {
 }
 
 dependencies {
+    implementation project(rootProject.ext.features.transactioncommon)
+    implementation project(rootProject.ext.features.transactiondata)
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.payment)
@@ -34,6 +36,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.features.districtRecommendation)
+    implementation project(rootProject.ext.libraries.applink)
+
 
     implementation rootProject.ext.networkDependencies.glide
 

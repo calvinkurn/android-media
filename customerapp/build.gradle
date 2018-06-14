@@ -24,8 +24,9 @@ def getAbiId(String abi) {
     return 0;
 }
 
-def generateBuildId(String density, String abi) {
-    return getAbiId(abi) + getDpiId(density);
+
+def generateBuildId(String density) {
+    return getDpiId(density);
 }
 
 def getAPKArchiveFolder(variant) {
@@ -149,7 +150,6 @@ android {
 
     buildTypes {
         debug {
-            ext.enableHansel = false
             signingConfig signingConfigs.debug
             minifyEnabled false
             zipAlignEnabled false
@@ -174,8 +174,7 @@ android {
                 applicationVariants.all { variant ->
                     variant.outputs.each { output ->
                         String density = output.getFilter(com.android.build.OutputFile.DENSITY);
-                        String abi = output.getFilter(com.android.build.OutputFile.ABI);
-                        output.versionCodeOverride = (getTkpdVersionCode() * 100) + generateBuildId(density, abi);
+                        output.versionCodeOverride = (getTkpdVersionCode() * 100) + generateBuildId(density);
                     }
                     variant.assemble.doLast {
                         variant.outputs.each { output ->
@@ -208,7 +207,6 @@ android {
             include 'x86', 'armeabi-v7a'
             universalApk false
         }
-
     }
 
     defaultConfig {
@@ -230,7 +228,7 @@ android {
 
 
     dexOptions {
-        javaMaxHeapSize "8g"
+        javaMaxHeapSize "4g"
     }
 
     compileOptions {
@@ -276,6 +274,7 @@ dependencies {
     implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.features.flight)
     implementation project(rootProject.ext.features.reputation)
+    implementation project(rootProject.ext.features.transactiondata)
     implementation project(rootProject.ext.features.transaction)
     implementation project(rootProject.ext.features.seller)
     implementation project(rootProject.ext.features.productDetail)
@@ -291,6 +290,11 @@ dependencies {
     implementation project(rootProject.ext.features.topAdsCommon)
     implementation project(rootProject.ext.features.topAdsSourceTagging)
     implementation project(rootProject.ext.features.digitalDeals)
+    implementation project(rootProject.ext.features.checkout)
+    implementation project(rootProject.ext.features.logisticdata)
+    implementation project(rootProject.ext.features.tracking)
+    implementation project(rootProject.ext.features.logisticuploadawb)
+
 
     implementation project(rootProject.ext.libraries.pushNotif)
     implementation project(rootProject.ext.libraries.applink)
@@ -306,6 +310,8 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.bcaOneClick
     implementation project(rootProject.ext.features.shopCommon)
+    implementation project(rootProject.ext.libraries.network)
+    implementation project(rootProject.ext.libraries.config)
 
     implementation rootProject.ext.playServicesDependencies.remoteConfig
     implementation rootProject.ext.playServicesDependencies.firebase
@@ -418,6 +424,9 @@ dependencies {
     androidTestImplementation rootProject.ext.supportLibDependencies.appCompactV7
     androidTestImplementation rootProject.ext.supportLibDependencies.cardViewV7
     //[END] test and androidTest dependencies
+
+    implementation project(rootProject.ext.libraries.analytics)
+
 }
 
 

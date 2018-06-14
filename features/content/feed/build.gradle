@@ -39,6 +39,7 @@ dependencies {
     implementation project(rootProject.ext.features.kol)
     implementation project(rootProject.ext.features.profile)
 
+    implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.reactNative)
 

@@ -44,6 +44,12 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     @Nullable
     protected abstract String getUserIdForHeader();
 
+    /**
+     * this is to put in header
+     */
+    @Nullable
+    protected abstract String getAccessToken();
+
     @Override
     protected void initInjector() {
 
@@ -166,7 +172,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         webView.getSettings().setDisplayZoomControls(true);
         webView.setWebViewClient(new WebViewClient());
         webView.setWebChromeClient(new MyWebViewClient());
-        webView.loadAuthUrl(getUrl(), getUserIdForHeader());
+        webView.loadAuthUrl(getUrl(), getUserIdForHeader(), getAccessToken());
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {

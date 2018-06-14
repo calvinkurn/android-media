@@ -310,7 +310,7 @@ public interface AppEventTracking {
         String ECOMMERCE = "Ecommerce";
         String APPSHARE = "App share";
 
-        String DIGITAL_EVENT = "digital-event";
+        String DIGITAL_EVENT = "digital - event";
 
         String SEARCH_SHARE = "search share";
         String GRID_MENU = "grid menu";
@@ -357,6 +357,8 @@ public interface AppEventTracking {
         String UPLOAD_SUCCESS = "Success Upload";
         String CLICK_USE_VOUCHER = " Click Gunakan Voucher - ";
         String CLICK_CANCEL_VOUCHER = " Click Batalkan Voucher";
+
+        String COPY = "Copy";
 
         String CLICK_CATEGORY = "Click Category";
         String NAVIGATION_CLICK = "Navigation";

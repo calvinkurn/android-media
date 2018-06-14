@@ -44,6 +44,12 @@ public class TopAdsPaymentCreditFragment extends BaseWebViewFragment {
         return userSession.getUserId();
     }
 
+    @Nullable
+    @Override
+    protected String getAccessToken() {
+        return userSession.getAccessToken();
+    }
+
     @Override
     protected boolean shouldOverrideUrlLoading(WebView webView, String url) {
         if (getActivity() != null && ((TkpdCoreRouter) getActivity().getApplication())

@@ -3,6 +3,7 @@ package com.tokopedia.groupchat;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.FragmentManager;
 
 /**
  * @author by nisie on 3/1/18.
@@ -37,4 +38,7 @@ public interface GroupChatModuleRouter {
     public interface ShareListener {
         void onGenerateLink(String shareContents, String shareUri);
     }
+
+    void shareGroupChat(FragmentManager fragmentManager, String channelId, String title, String contentMessage, String imgUrl,
+                        String shareUrl);
 }
