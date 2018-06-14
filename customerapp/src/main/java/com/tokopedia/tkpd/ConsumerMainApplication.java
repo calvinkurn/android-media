@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd;
 
+import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Intent;
@@ -40,6 +41,7 @@ import com.tokopedia.groupchat.common.data.GroupChatUrl;
 import com.tokopedia.groupchat.common.data.SendbirdKey;
 import com.tokopedia.inbox.inboxchat.data.network.ChatBotUrl;
 import com.tokopedia.kol.common.network.KolUrl;
+import com.tokopedia.logisticdata.data.constant.LogisticDataConstantUrl;
 import com.tokopedia.network.SessionUrl;
 import com.tokopedia.otp.cotp.data.CotpUrl;
 import com.tokopedia.otp.cotp.data.SQLoginUrl;
@@ -56,9 +58,9 @@ import com.tokopedia.tkpd.utils.CacheApiWhiteList;
 import com.tokopedia.tkpdreactnative.react.fingerprint.utils.FingerprintConstantRegister;
 import com.tokopedia.tokocash.network.api.WalletUrl;
 import com.tokopedia.transaction.network.TransactionUrl;
+import com.tokopedia.transactiondata.constant.TransactionDataApiUrl;
 
 import io.hansel.hanselsdk.Hansel;
-import retrofit2.http.HEAD;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -72,6 +74,10 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     private final String NOTIFICATION_CHANNEL_ID = "custom_sound";
     private final String NOTIFICATION_CHANNEL_DESC = "notification channel for custom sound.";
 
+    private final String FLAVOR_LIVE = "live";
+    private final String FLAVOR_STAGING = "staging";
+    private final String FLAVOR_ALPHA = "alpha";
+
     @Override
     public void onCreate() {
         HockeyAppHelper.setEnableDistribution(BuildConfig.ENABLE_DISTRIBUTION);
@@ -80,6 +86,9 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
         GlobalConfig.DEBUG = BuildConfig.DEBUG;
         GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
+        com.tokopedia.config.GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
+        com.tokopedia.config.GlobalConfig.DEBUG = BuildConfig.DEBUG;
+        com.tokopedia.config.GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.DEBUG;
         generateConsumerAppBaseUrl();
         generateConsumerAppNetworkKeys();
         initializeDatabase();
@@ -141,6 +150,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TkpdBaseURL.INBOX_DOMAIN = ConsumerAppBaseUrl.BASE_INBOX_DOMAIN;
         TkpdBaseURL.JS_DOMAIN = ConsumerAppBaseUrl.BASE_JS_DOMAIN;
         TkpdBaseURL.KERO_DOMAIN = ConsumerAppBaseUrl.BASE_KERO_DOMAIN;
+        TkpdBaseURL.KERO_RATES_DOMAIN = ConsumerAppBaseUrl.BASE_KERO_RATES_DOMAIN;
         TkpdBaseURL.JAHE_DOMAIN = ConsumerAppBaseUrl.BASE_JAHE_DOMAIN;
         TkpdBaseURL.PULSA_WEB_DOMAIN = ConsumerAppBaseUrl.BASE_PULSA_WEB_DOMAIN;
         TkpdBaseURL.GOLD_MERCHANT_DOMAIN = ConsumerAppBaseUrl.BASE_GOLD_MERCHANT_DOMAIN;
@@ -195,6 +205,51 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         FingerprintConstantRegister.ACCOUNTS_DOMAIN = ConsumerAppBaseUrl.ACCOUNTS_DOMAIN;
         FingerprintConstantRegister.TOP_PAY_DOMAIN = ConsumerAppBaseUrl.TOP_PAY_DOMAIN;
         TkpdBaseURL.OMS_DOMAIN = ConsumerAppBaseUrl.OMS_DOMAIN;
+
+        LogisticDataConstantUrl.BASE_DOMAIN = ConsumerAppBaseUrl.BASE_DOMAIN;
+
+        generateTransactionDataModuleBaseUrl();
+        generateLogisticDataModuleBaseUrl();
+    }
+
+    private void generateLogisticDataModuleBaseUrl() {
+        switch (BuildConfig.FLAVOR) {
+            case FLAVOR_STAGING:
+                LogisticDataConstantUrl.KeroRates.BASE_URL =
+                        LogisticDataConstantUrl.KeroRates.STAGING_BASE_URL;
+                break;
+            case FLAVOR_ALPHA:
+                LogisticDataConstantUrl.KeroRates.BASE_URL =
+                        LogisticDataConstantUrl.KeroRates.ALPHA_BASE_URL;
+                break;
+            default:
+                LogisticDataConstantUrl.KeroRates.BASE_URL =
+                        LogisticDataConstantUrl.KeroRates.LIVE_BASE_URL;
+                break;
+        }
+    }
+
+    private void generateTransactionDataModuleBaseUrl() {
+        switch (BuildConfig.FLAVOR) {
+            case FLAVOR_STAGING:
+                TransactionDataApiUrl.Cart.BASE_URL =
+                        TransactionDataApiUrl.Cart.STAGING_BASE_URL;
+                TransactionDataApiUrl.TransactionAction.BASE_URL =
+                        TransactionDataApiUrl.TransactionAction.STAGING_BASE_URL;
+                break;
+            case FLAVOR_ALPHA:
+                TransactionDataApiUrl.Cart.BASE_URL =
+                        TransactionDataApiUrl.Cart.ALPHA_BASE_URL;
+                TransactionDataApiUrl.TransactionAction.BASE_URL =
+                        TransactionDataApiUrl.TransactionAction.ALPHA_BASE_URL;
+                break;
+            default:
+                TransactionDataApiUrl.Cart.BASE_URL =
+                        TransactionDataApiUrl.Cart.LIVE_BASE_URL;
+                TransactionDataApiUrl.TransactionAction.BASE_URL =
+                        TransactionDataApiUrl.TransactionAction.LIVE_BASE_URL;
+                break;
+        }
     }
 
     private void generateConsumerAppNetworkKeys() {
@@ -285,4 +340,13 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
                 String.valueOf(getCurrentVersion(getApplicationContext()))));
     }
 
+    @Override
+    public boolean logisticUploadRouterIsSupportedDelegateDeepLink(String url) {
+        return isSupportedDelegateDeepLink(url);
+    }
+
+    @Override
+    public void logisticUploadRouterActionNavigateByApplinksUrl(Activity activity, String applinks, Bundle bundle) {
+        actionNavigateByApplinksUrl(activity, applinks, bundle);
+    }
 }

@@ -1,13 +1,16 @@
 package com.tokopedia.tkpdpdp.customview;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.content.res.AppCompatResources;
 import android.text.util.Linkify;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.product.customview.BaseView;
@@ -29,6 +32,7 @@ public class VideoDescriptionLayout extends BaseView<ProductDetailData, ProductD
     private DescriptionTextView tvDesc;
     private LinearLayout descriptionContainer;
     private LinearLayout container;
+    private TextView desc;
     private ProductVideoHorizontalScroll productVideoHorizontalScroll;
 
     String description = "";
@@ -62,6 +66,7 @@ public class VideoDescriptionLayout extends BaseView<ProductDetailData, ProductD
     protected void initView(Context context) {
         super.initView(context);
         tvDesc = (DescriptionTextView) findViewById(R.id.tv_description);
+        desc = findViewById(R.id.desc);
         ImageView ivToggle = (ImageView) findViewById(R.id.iv_toggle);
         descriptionContainer = (LinearLayout) findViewById(R.id.tv_desc);
         productVideoHorizontalScroll
@@ -81,6 +86,7 @@ public class VideoDescriptionLayout extends BaseView<ProductDetailData, ProductD
 
     @Override
     public void renderData(@NonNull ProductDetailData data) {
+        desc.setText(getContext().getString(R.string.title_desc));
         description = data.getInfo().getProductDescription() == null ? "" :
                 data.getInfo().getProductDescription();
         productId = Integer.toString(data.getInfo().getProductId());
@@ -92,7 +98,11 @@ public class VideoDescriptionLayout extends BaseView<ProductDetailData, ProductD
                 || description.equals("0")
                 ? getResources().getString(R.string.no_description_pdp) : description);
         tvDesc.setAutoLinkMask(0);
-        Linkify.addLinks(tvDesc, Linkify.WEB_URLS);
+        try {
+            Linkify.addLinks(tvDesc, Linkify.WEB_URLS);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         if (MethodChecker.fromHtml(tvDesc.getText().toString()).length() > MAX_CHAR) {
             String subDescription = MethodChecker.fromHtml(description).toString().substring(0, MAX_CHAR);
             tvDesc.setText(MethodChecker.fromHtml(subDescription.replaceAll("(\r\n|\n)", "<br />") + "..."
@@ -101,6 +111,18 @@ public class VideoDescriptionLayout extends BaseView<ProductDetailData, ProductD
             tvDesc.setText(MethodChecker.fromHtml(tvDesc.getText().toString()));
         }
         descriptionContainer.setVisibility(VISIBLE);
+
+        Drawable drawableShadow = AppCompatResources.getDrawable(getContext(), R.drawable.bg_shadow);
+        if (drawableShadow != null) {
+            container.setBackground(drawableShadow);
+        }
+
+
+        float density = getContext().getResources().getDisplayMetrics().density;
+        float padding = 10 * density;
+
+        container.setPadding((int) padding, (int) padding, (int) padding, (int) padding);
+
         setVisibility(VISIBLE);
     }
 

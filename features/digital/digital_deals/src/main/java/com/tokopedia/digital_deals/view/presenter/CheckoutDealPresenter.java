@@ -8,6 +8,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.drawer2.data.pojo.profile.ProfileModel;
 import com.tokopedia.core.drawer2.domain.interactor.ProfileUseCase;
@@ -138,12 +139,15 @@ public class CheckoutDealPresenter
 
 
     private void goToLoyaltyActivity() {
+
+        ;
         JsonObject requestBody = convertPackageToCartItem(packageViewModel);
+
         Intent loyaltyIntent = LoyaltyActivity.newInstanceCouponActive(getView().getActivity(), com.tokopedia.digital_deals.view.utils.Utils.Constants.DEALS, com.tokopedia.digital_deals.view.utils.Utils.Constants.DEALS);
         loyaltyIntent.putExtra(com.tokopedia.oms.view.utils.Utils.Constants.CHECKOUTDATA, requestBody.toString());
-        loyaltyIntent.putExtra(LoyaltyActivity.EXTRA_PRODUCTID, packageViewModel.getDigitalProductID());
-        loyaltyIntent.putExtra(LoyaltyActivity.EXTRA_CATEGORYID, packageViewModel.getDigitalCategoryID());
-        getView().navigateToActivityRequest(loyaltyIntent, LoyaltyActivity.LOYALTY_REQUEST_CODE);
+        loyaltyIntent.putExtra(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PRODUCTID, packageViewModel.getDigitalProductID());
+        loyaltyIntent.putExtra(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CATEGORYID, packageViewModel.getDigitalCategoryID());
+        getView().navigateToActivityRequest(loyaltyIntent, IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
     }
 
     @Override

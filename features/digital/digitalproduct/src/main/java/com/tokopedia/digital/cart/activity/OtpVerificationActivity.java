@@ -193,21 +193,6 @@ public class OtpVerificationActivity extends BasePresenterActivity<IOtpVerificat
     }
 
     @Override
-    public void showDialog(Dialog dialog) {
-
-    }
-
-    @Override
-    public void dismissDialog(Dialog dialog) {
-
-    }
-
-    @Override
-    public void executeIntentService(Bundle bundle, Class<? extends IntentService> clazz) {
-
-    }
-
-    @Override
     public String getStringFromResource(@StringRes int resId) {
         return null;
     }
