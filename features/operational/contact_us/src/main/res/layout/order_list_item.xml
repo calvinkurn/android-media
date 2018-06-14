@@ -127,7 +127,7 @@
             android:layout_marginStart="@dimen/margin_ms"
             android:layout_marginTop="@dimen/new_margin_medsmall"
             android:textColor="@color/red_text"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/sp_14"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/txt_title"
             app:layout_constraintTop_toBottomOf="@+id/img_divider"

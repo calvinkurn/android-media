@@ -35,7 +35,7 @@
         android:layout_marginTop="@dimen/dp_8"
         android:text="Laporkan kendala seputar transaksi di Tokopedia"
         android:textColor="@color/grey2_text"
-        android:textSize="@dimen/font_small" />
+        android:textSize="@dimen/sp_14" />
 
     <android.support.design.widget.TabLayout
         android:id="@+id/tab"
