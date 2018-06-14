@@ -78,7 +78,6 @@ public class CheckoutDealPresenter
     @Override
     public void getProfile() {
         getView().showProgressBar();
-        getView().hidePaymentButton();
         profileUseCase.execute(com.tokopedia.core.base.domain.RequestParams.EMPTY, new Subscriber<ProfileModel>() {
             @Override
             public void onCompleted() {
@@ -100,7 +99,6 @@ public class CheckoutDealPresenter
                 email = profileModel.getProfileData().getUserInfo().getUserEmail();
                 getView().setEmailID(profileModel.getProfileData().getUserInfo().getUserEmail());
                 getView().hideProgressBar();
-                getView().showPaymentButton();
             }
         });
     }
@@ -113,12 +111,12 @@ public class CheckoutDealPresenter
 
     private JsonObject convertPackageToCartItem(PackageViewModel packageViewModel) {
         Configuration config = new Configuration();
-        config.setPrice(packageViewModel.getSalesPrice() * packageViewModel.getSelectedQuantity());
+        config.setPrice(packageViewModel.getSalesPrice());
         MetaData meta = new MetaData();
         meta.setEntityCategoryId(packageViewModel.getCategoryId());
         meta.setEntityProductId(packageViewModel.getProductId());
         meta.setTotalTicketCount(packageViewModel.getSelectedQuantity());
-        meta.setTotalTicketPrice(packageViewModel.getSalesPrice() * packageViewModel.getSelectedQuantity());
+        meta.setTotalTicketPrice(packageViewModel.getSalesPrice());
         meta.setEntityStartTime("");
 
         List<CartItem> cartItems = new ArrayList<>();
@@ -166,10 +164,12 @@ public class CheckoutDealPresenter
         Gson gson = new Gson();
         JsonObject jsonObject = gson.fromJson(cart, JsonObject.class);
 
-        for (JsonElement jsonElement: jsonObject.get("cart_items").getAsJsonArray()){
+        for (JsonElement jsonElement : jsonObject.get("cart_items").getAsJsonArray()) {
             jsonElement.getAsJsonObject().get("meta_data").getAsJsonObject().get("entity_address")
                     .getAsJsonObject().addProperty("email", this.email);
+            jsonElement.getAsJsonObject().get("meta_data").getAsJsonObject().addProperty("entity_brand_name", dealDetail.getBrand().getTitle());
         }
+        jsonObject.addProperty("promocode", promocode);
         return jsonObject;
     }
 
@@ -187,7 +187,6 @@ public class CheckoutDealPresenter
             public void onError(Throwable throwable) {
                 throwable.printStackTrace();
                 getView().hideProgressBar();
-                getView().hidePaymentButton();
                 if (throwable.getMessage().equalsIgnoreCase(INVALID_EMAIL))
                     getView().showMessage(getView().getActivity().getString(R.string.please_enter_email));
                 else {
@@ -207,13 +206,12 @@ public class CheckoutDealPresenter
                 String paymentURL = checkoutResponse.get("url").getAsString();
                 ScroogePGUtil.openScroogePage(getView().getActivity(), paymentURL, true, paymentData, "Deal Payment");
                 getView().hideProgressBar();
-                getView().showPaymentButton();
 
             }
         });
     }
 
-    public List<OutletViewModel> getOutlets(){
+    public List<OutletViewModel> getOutlets() {
         return dealDetail.getOutlets();
     }
 }

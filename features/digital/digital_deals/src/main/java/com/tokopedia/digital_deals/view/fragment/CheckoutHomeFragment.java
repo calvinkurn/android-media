@@ -42,7 +42,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
 
     private ConstraintLayout clPromoApplied;
     private ConstraintLayout baseMainContent;
-    private CoordinatorLayout mainContent;
+    private ViewGroup mainContent;
     private TextView tvPaymentMethod;
     private View paymentMethod;
     private ImageView imageViewBrand;
@@ -62,6 +62,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
     private EditText etEmailID;
     private FrameLayout progressParLayout;
     private DealFragmentCallbacks fragmentCallbacks;
+    private ImageView ivRemovePromo;
 
     @Inject
     CheckoutDealPresenter mPresenter;
@@ -120,6 +121,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
         baseMainContent = view.findViewById(R.id.base_main_content);
         mainContent = view.findViewById(R.id.main_content);
         progressParLayout = view.findViewById(R.id.progress_bar_layout);
+        ivRemovePromo = view.findViewById(R.id.iv_remove_promo);
         Drawable img = getResources().getDrawable(R.drawable.ic_promo_code);
         tvApplyPromo.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
 
@@ -172,6 +174,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
         tvPaymentMethod.setOnClickListener(this);
         tvApplyPromo.setOnClickListener(this);
         tvNumberLocations.setOnClickListener(this);
+        ivRemovePromo.setOnClickListener(this);
         baseMainContent.setVisibility(View.VISIBLE);
         paymentMethod.setVisibility(View.VISIBLE);
     }
@@ -205,10 +208,10 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
     }
 
     @Override
-    public void showPromoSuccessMessage(String text, int discount) {
+    public void showPromoSuccessMessage(String text, String message) {
         tvApplyPromo.setVisibility(View.GONE);
         clPromoApplied.setVisibility(View.VISIBLE);
-        tvDiscount.setText(Utils.convertToCurrencyString(discount));
+        tvDiscount.setText(message);
         tvVoucherCode.setText(text);
     }
 
@@ -220,16 +223,6 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
     @Override
     public void hideSuccessMessage() {
 
-    }
-
-    @Override
-    public void hidePaymentButton() {
-        paymentMethod.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void showPaymentButton() {
-        paymentMethod.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -247,6 +240,10 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
             mPresenter.clickGoToPromo();
         } else if (v.getId() == R.id.tv_no_locations) {
             fragmentCallbacks.replaceFragment(mPresenter.getOutlets(), 0);
+        } else if (v.getId() == R.id.iv_remove_promo) {
+            mPresenter.updatePromoCode("");
+            tvApplyPromo.setVisibility(View.VISIBLE);
+            clPromoApplied.setVisibility(View.GONE);
         }
     }
 
@@ -268,8 +265,8 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
             hideProgressBar();
             switch (resultCode) {
                 case LoyaltyActivity.VOUCHER_RESULT_CODE:
-                    mPresenter.updatePromoCode(data.getExtras().getString(LoyaltyActivity.COUPON_CODE));
-                    showPromoSuccessMessage(data.getExtras().getString(LoyaltyActivity.COUPON_MESSAGE), (int) data.getExtras().getLong(LoyaltyActivity.COUPON_DISCOUNT_AMOUNT));
+                    mPresenter.updatePromoCode(data.getExtras().getString(LoyaltyActivity.VOUCHER_CODE));
+                    showPromoSuccessMessage(data.getExtras().getString(LoyaltyActivity.VOUCHER_CODE),  data.getExtras().getString(LoyaltyActivity.VOUCHER_MESSAGE));
                     break;
 //                case LoyaltyActivity.VOUCHER_RESULT_CODE:
 //                    mPresenter.updatePromoCode(data.getExtras().getString(LoyaltyActivity.VOUCHER_CODE));

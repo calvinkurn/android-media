@@ -27,17 +27,14 @@ public class CheckoutActivity extends BaseSimpleActivity implements DealFragment
 
     @Override
     protected Fragment getNewFragment() {
-        return null;
+        getSupportFragmentManager().addOnBackStackChangedListener(getListener());
+        toolbar.setTitle(getResources().getString(R.string.activity_checkout_title));
+        return CheckoutHomeFragment.createInstance(getIntent().getExtras());
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getSupportFragmentManager().addOnBackStackChangedListener(getListener());
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.parent_view, CheckoutHomeFragment.createInstance(getIntent().getExtras()));
-        transaction.addToBackStack(HOME_FRAGMENT);
-        transaction.commit();
     }
 
     @Override
@@ -90,19 +87,14 @@ public class CheckoutActivity extends BaseSimpleActivity implements DealFragment
                             toolbar.setTitle(getResources().getString(R.string.redeem_locations));
                         else
                             toolbar.setTitle(getResources().getString(R.string.activity_checkout_title));
+                    }else{
+                        toolbar.setTitle(getResources().getString(R.string.activity_checkout_title));
                     }
                 }
             }
         };
 
         return result;
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        if (!getSupportFragmentManager().popBackStackImmediate())
-            finish();
     }
 }
 
