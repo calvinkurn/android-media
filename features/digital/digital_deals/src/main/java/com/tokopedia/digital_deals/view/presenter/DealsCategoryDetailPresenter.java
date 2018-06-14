@@ -7,9 +7,9 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.digital_deals.R;
-import com.tokopedia.digital_deals.domain.GetAllBrandsUseCase;
-import com.tokopedia.digital_deals.domain.GetCategoryDetailRequestUseCase;
-import com.tokopedia.digital_deals.domain.GetNextCategoryPageUseCase;
+import com.tokopedia.digital_deals.domain.getusecase.GetAllBrandsUseCase;
+import com.tokopedia.digital_deals.domain.getusecase.GetCategoryDetailRequestUseCase;
+import com.tokopedia.digital_deals.domain.getusecase.GetNextCategoryPageUseCase;
 import com.tokopedia.digital_deals.domain.model.allbrandsdomainmodel.AllBrandsDomain;
 import com.tokopedia.digital_deals.domain.model.categorydomainmodel.CategoryDetailsDomain;
 import com.tokopedia.digital_deals.view.activity.DealsHomeActivity;
@@ -156,7 +156,7 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
                 brandViewModels = Utils.getSingletonInstance().convertIntoBrandListViewModel(dealEntity.getDealBrands()); //to be removed
                 pageViewModel = Utils.getSingletonInstance().convertIntoPageViewModel(dealEntity.getPage());
                 getNextPageUrl();
-                getView().renderCategoryList(categoryViewModels);
+                getView().renderCategoryList(categoryViewModels, dealEntity.getCount());
                 checkIfToLoad(getView().getLayoutManager());
                 showHideViews();
             }

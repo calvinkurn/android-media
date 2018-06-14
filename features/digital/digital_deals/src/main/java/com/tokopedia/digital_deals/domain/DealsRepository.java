@@ -6,7 +6,7 @@ import com.tokopedia.digital_deals.domain.model.allbrandsdomainmodel.AllBrandsDo
 import com.tokopedia.digital_deals.domain.model.branddetailsmodel.BrandDetailsDomain;
 import com.tokopedia.digital_deals.domain.model.DealsDomain;
 import com.tokopedia.digital_deals.domain.model.categorydomainmodel.CategoryDetailsDomain;
-import com.tokopedia.digital_deals.domain.model.dealdetailsdomailmodel.DealsDetailsDomain;
+import com.tokopedia.digital_deals.domain.model.dealdetailsdomainmodel.DealsDetailsDomain;
 import com.tokopedia.digital_deals.domain.model.locationdomainmodel.LocationDomainModel;
 import com.tokopedia.digital_deals.domain.model.searchdomainmodel.SearchDomainModel;
 
@@ -30,7 +30,7 @@ public interface DealsRepository {
 
     Observable<LocationDomainModel> getLocations();
 
-    Observable<CategoryDetailsDomain> getCategoryDetails(HashMap<String, Object> parameters);
+    Observable<CategoryDetailsDomain> getCategoryDetails(String url, HashMap<String, Object> parameters);
 
     Observable<CategoryDetailsDomain> getCategoryDetails(String nexturl);
 

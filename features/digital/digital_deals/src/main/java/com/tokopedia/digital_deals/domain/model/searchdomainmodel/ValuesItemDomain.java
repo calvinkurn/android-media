@@ -8,11 +8,10 @@ public class ValuesItemDomain {
 	private String name;
 
 	@SerializedName("id")
-	private String id;
+	private int id;
 
-	private boolean isSelected;
-
-    private boolean multi;
+	@SerializedName("priority")
+	private int priority;
 
 	public void setName(String name){
 		this.name = name;
@@ -22,37 +21,29 @@ public class ValuesItemDomain {
 		return name;
 	}
 
-	public void setId(String id){
+	public void setId(int id){
 		this.id = id;
 	}
 
-	public String getId(){
+	public int getId(){
 		return id;
 	}
 
-	public void setIsSelected(boolean selected){
-		this.isSelected = selected;
+	public void setPriority(int priority){
+		this.priority = priority;
 	}
 
-	public boolean getIsSelected(){
-		return isSelected;
+	public int getPriority(){
+		return priority;
 	}
-
-    public boolean isMulti() {
-        return multi;
-    }
-
-    public void setMulti(boolean multi) {
-        this.multi = multi;
-    }
 
 	@Override
- 	public String toString(){
-		return 
-			"ValuesItemDomain{" +
-			"name = '" + name + '\'' + 
-			",id = '" + id + '\'' + 
-			",isSelected = '" + isSelected + '\'' +
-			"}";
-		}
+	public String toString(){
+		return
+				"ValuesItemDomain{" +
+						"name = '" + name + '\'' +
+						",id = '" + id + '\'' +
+						",priority = '" + priority + '\'' +
+						"}";
+	}
 }

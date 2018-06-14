@@ -1,6 +1,5 @@
 package com.tokopedia.oms.view.utils;
 
-import android.os.Bundle;
 import android.util.Log;
 
 import com.google.gson.JsonArray;
@@ -8,7 +7,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.net.URLEncoder;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 

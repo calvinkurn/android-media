@@ -73,12 +73,12 @@ public class SelectQuantityPresenter
 
     private JsonObject convertPackageToCartItem(PackageViewModel packageViewModel) {
         Configuration config = new Configuration();
-        config.setPrice(packageViewModel.getSalesPrice() * packageViewModel.getSelectedQuantity());
+        config.setPrice(packageViewModel.getSalesPrice());
         MetaData meta = new MetaData();
         meta.setEntityCategoryId(packageViewModel.getCategoryId());
         meta.setEntityProductId(packageViewModel.getProductId());
         meta.setTotalTicketCount(packageViewModel.getSelectedQuantity());
-        meta.setTotalTicketPrice(packageViewModel.getSalesPrice() * packageViewModel.getSelectedQuantity());
+        meta.setTotalTicketPrice(packageViewModel.getSalesPrice());
 
 
         meta.setEntityStartTime("");

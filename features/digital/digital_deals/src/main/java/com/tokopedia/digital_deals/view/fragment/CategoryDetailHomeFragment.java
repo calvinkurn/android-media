@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -54,6 +55,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     private TextView popularLocation;
     private TextView numberOfDeals;
     private LinearLayoutManager layoutManager;
+    private ScrollView noContent;
 
     @Inject
     DealsCategoryDetailPresenter mPresenter;
@@ -112,6 +114,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
         baseMainContent = view.findViewById(R.id.base_main_content);
         progressBarLayout = view.findViewById(R.id.progress_bar_layout);
         progBar = view.findViewById(R.id.prog_bar);
+        noContent = view.findViewById(R.id.scroll_view_no_content);
         seeAllBrands.setOnClickListener(this);
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerViewDeals.setLayoutManager(layoutManager);
@@ -136,14 +139,23 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     }
 
     @Override
-    public void renderCategoryList(List<CategoryItemsViewModel> deals) {
+    public void renderCategoryList(List<CategoryItemsViewModel> deals, int count) {
         if (deals != null) {
+            if (count == 0)
+                numberOfDeals.setText(String.format(getResources().getString(R.string.number_of_items), deals.size()));
+            else
+                numberOfDeals.setText(String.format(getResources().getString(R.string.number_of_items), count));
             recyclerViewDeals.setAdapter(new DealsCategoryAdapter(getActivity(), deals, !IS_SHORT_LAYOUT));
+            recyclerViewDeals.setVisibility(View.VISIBLE);
+            recyclerViewDeals.addOnScrollListener(rvOnScrollListener);
+            noContent.setVisibility(View.GONE);
+        } else {
+            numberOfDeals.setText(String.format(getResources().getString(R.string.number_of_items), count));
+            recyclerViewDeals.setVisibility(View.GONE);
+            noContent.setVisibility(View.VISIBLE);
         }
-
         popularLocation.setText(String.format(getActivity().getResources().getString(R.string.popular_deals_in_location)
                 , Utils.getSingletonInstance().getLocation(getContext()).getName()));
-        recyclerViewDeals.addOnScrollListener(rvOnScrollListener);
     }
 
     @Override
@@ -247,6 +259,8 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     public RequestParams getCategoryParams() {
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(DealsHomePresenter.TAG, categoriesModel.getUrl());
+        requestParams.putString(Utils.BRAND_QUERY_PARAM_TREE, Utils.BRAND_QUERY_PARAM_BRAND);
+//        requestParams.putInt(Utils.BRAND_QUERY_PARAM_CITY_ID, Utils.getSingletonInstance().getLocation(getContext()).getId());
         return requestParams;
     }
 
@@ -255,6 +269,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(Utils.BRAND_QUERY_PARAM_TREE, Utils.BRAND_QUERY_PARAM_BRAND);
         requestParams.putInt(Utils.BRAND_QUERY_PARAM_CHILD_CATEGORY_ID, categoriesModel.getCategoryId());
+//        requestParams.putInt(Utils.BRAND_QUERY_PARAM_CITY_ID, Utils.getSingletonInstance().getLocation(getContext()).getId());
         return requestParams;
     }
 
@@ -265,7 +280,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
 
     @Override
     public void onClick(View v) {
-        if(v.getId() == R.id.tv_see_all) {
+        if (v.getId() == R.id.tv_see_all) {
             fragmentCallbacks.replaceFragment(categoriesModel);
         } else {
             mPresenter.onOptionMenuClick(v.getId());

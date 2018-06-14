@@ -8,9 +8,9 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.digital_deals.R;
-import com.tokopedia.digital_deals.domain.GetDealDetailsUseCase;
-import com.tokopedia.digital_deals.domain.GetSearchNextUseCase;
-import com.tokopedia.digital_deals.domain.model.dealdetailsdomailmodel.DealsDetailsDomain;
+import com.tokopedia.digital_deals.domain.getusecase.GetDealDetailsUseCase;
+import com.tokopedia.digital_deals.domain.getusecase.GetSearchNextUseCase;
+import com.tokopedia.digital_deals.domain.model.dealdetailsdomainmodel.DealsDetailsDomain;
 import com.tokopedia.digital_deals.domain.model.searchdomainmodel.SearchDomainModel;
 import com.tokopedia.digital_deals.view.contractor.DealDetailsContract;
 import com.tokopedia.digital_deals.view.utils.Utils;
@@ -133,11 +133,9 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
     @Override
     public boolean onOptionMenuClick(int id) {
         if (id == R.id.action_menu_share) {
-            String seoUrl=dealsDetailsViewModel.getUrl().substring(dealsDetailsViewModel.getUrl().lastIndexOf('/')+1);
-            Utils.getSingletonInstance().shareDeal(seoUrl,
+            Utils.getSingletonInstance().shareDeal(dealsDetailsViewModel.getSeoUrl(),
                     getView().getActivity(), dealsDetailsViewModel.getDisplayName(),
-                    dealsDetailsViewModel.getImageWeb()) ;
-
+                    dealsDetailsViewModel.getImageWeb());
         } else {
             getView().getActivity().onBackPressed();
         }

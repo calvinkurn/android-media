@@ -2192,8 +2192,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             public TKPDMapParam<String, Object> call(VerifyMyCartResponse verifyCartResponse) {
                 TKPDMapParam<String, Object> resultMap = new TKPDMapParam<>();
                 resultMap.put("promocode", verifyCartResponse.getCart().get("promocode").getAsString());
-                resultMap.put("promocode_discount", verifyCartResponse.getCart().get("promocode_discount").getAsString());
-                resultMap.put("promocode_cashback", verifyCartResponse.getCart().get("promocode_cashback").getAsString());
+                resultMap.put("promocode_discount", verifyCartResponse.getCart().get("promocode_discount").getAsInt());
+                resultMap.put("promocode_cashback", verifyCartResponse.getCart().get("promocode_cashback").getAsInt());
                 resultMap.put("promocode_failure_message", verifyCartResponse.getCart().get("promocode_failure_message").getAsString());
                 resultMap.put("promocode_success_message", verifyCartResponse.getCart().get("promocode_success_message").getAsString());
                 resultMap.put("promocode_status", verifyCartResponse.getCart().get("promocode_status").getAsString());

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -18,6 +19,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DaggerDealsComponent;
 import com.tokopedia.digital_deals.di.DealsModule;
+import com.tokopedia.digital_deals.view.activity.CheckoutActivity;
 import com.tokopedia.digital_deals.view.activity.DealDetailsActivity;
 import com.tokopedia.digital_deals.view.adapter.DealDetailsAllLocationsAdapter;
 import com.tokopedia.digital_deals.view.contractor.DealDetailsAllRedeemLocationsContract;
@@ -30,13 +32,14 @@ import java.util.List;
 import javax.inject.Inject;
 
 
-public class DealDetailsAllRedeemLocationsFragment extends BaseDaggerFragment implements DealDetailsAllRedeemLocationsContract.View{
+public class DealDetailsAllRedeemLocationsFragment extends BaseDaggerFragment implements DealDetailsAllRedeemLocationsContract.View {
 
     @Inject
     public DealDetailsAllLocationsRedeemPresenter mPresenter;
     private DealFragmentCallbacks fragmentCallbacks;
     private Toolbar toolbar;
     private RecyclerView recyclerView;
+    private AppBarLayout appBarLayout;
 
 
     public static Fragment createInstance() {
@@ -59,15 +62,25 @@ public class DealDetailsAllRedeemLocationsFragment extends BaseDaggerFragment im
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        fragmentCallbacks = (DealDetailsActivity)activity;
+        if (activity instanceof DealDetailsActivity)
+            fragmentCallbacks = (DealDetailsActivity) activity;
+        else {
+            fragmentCallbacks = (CheckoutActivity) activity;
+        }
     }
 
     private void setViewIds(View view) {
         toolbar = view.findViewById(R.id.toolbar);
-        ((BaseSimpleActivity) getActivity()).setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_close_deals));
-        toolbar.setTitle(getActivity().getResources().getString(R.string.redeem_locations));
-        recyclerView=view.findViewById(R.id.recyclerView);
+        appBarLayout= view.findViewById(R.id.app_bar_layout);
+        if (getActivity() instanceof CheckoutActivity) {
+            appBarLayout.setVisibility(View.GONE);
+        } else {
+            ((BaseSimpleActivity) getActivity()).setSupportActionBar(toolbar);
+            toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_close_deals));
+            toolbar.setTitle(getActivity().getResources().getString(R.string.redeem_locations));
+        }
+        recyclerView = view.findViewById(R.id.recyclerView);
+
     }
 
     @Override
@@ -92,7 +105,7 @@ public class DealDetailsAllRedeemLocationsFragment extends BaseDaggerFragment im
     @Override
     public void renderBrandDetails(List<OutletViewModel> outletViewModelList) {
 
-        DealDetailsAllLocationsAdapter adapter=new DealDetailsAllLocationsAdapter(getActivity(), outletViewModelList);
+        DealDetailsAllLocationsAdapter adapter = new DealDetailsAllLocationsAdapter(getActivity(), outletViewModelList);
         recyclerView.setAdapter(adapter);
 
     }

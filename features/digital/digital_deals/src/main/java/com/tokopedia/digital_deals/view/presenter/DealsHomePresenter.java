@@ -10,9 +10,9 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.digital_deals.R;
-import com.tokopedia.digital_deals.domain.GetAllBrandsUseCase;
-import com.tokopedia.digital_deals.domain.GetDealsListRequestUseCase;
-import com.tokopedia.digital_deals.domain.GetNextDealPageUseCase;
+import com.tokopedia.digital_deals.domain.getusecase.GetAllBrandsUseCase;
+import com.tokopedia.digital_deals.domain.getusecase.GetDealsListRequestUseCase;
+import com.tokopedia.digital_deals.domain.getusecase.GetNextDealPageUseCase;
 import com.tokopedia.digital_deals.domain.model.DealsDomain;
 import com.tokopedia.digital_deals.domain.model.allbrandsdomainmodel.AllBrandsDomain;
 import com.tokopedia.digital_deals.view.activity.AllBrandsActivity;
@@ -30,7 +30,9 @@ import com.tokopedia.digital_deals.view.viewmodel.LocationViewModel;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -49,13 +51,12 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
     private boolean isLastPage;
     private volatile boolean isDealsLoaded = false;
     private volatile boolean isBrandsLoaded = false;
-    private String PROMOURL = "https://www.tokopedia.com/promo/tiket/events/";
-    private String FAQURL = "https://www.tokopedia.com/bantuan/faq-tiket-event/";
+    private String PROMOURL = "https://www.tokopedia.com/promo/produk-digital/entertainment";
+    private String FAQURL = "https://www.tokopedia.com/contact-us#step2";
     private String TRANSATIONSURL = "https://pulsa.tokopedia.com/order-list/";
     public final static String TAG = "url";
     private final String CAROUSEL = "carousel";
     private final String TOP = "top";
-
     private GetDealsListRequestUseCase getDealsListRequestUseCase;
     private GetAllBrandsUseCase getAllBrandsUseCase;
     private GetNextDealPageUseCase getNextDealPageUseCase;
@@ -145,6 +146,8 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
             Intent brandIntent = new Intent(getView().getActivity(), AllBrandsActivity.class);
             brandIntent.putParcelableArrayListExtra(AllBrandsActivity.EXTRA_LIST, (ArrayList<? extends Parcelable>) categoriesModels);
             getView().navigateToActivity(brandIntent);
+        } else if (id == R.id.see_all_promo) {
+            getView().startGeneralWebView(PROMOURL);
         } else {
             getView().getActivity().onBackPressed();
         }
@@ -197,9 +200,11 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
     public void getBrandsList() {
         RequestParams brandsParams = RequestParams.create();
         brandsParams.putString(Utils.BRAND_QUERY_PARAM_TREE, Utils.BRAND_QUERY_PARAM_BRAND);
-        LocationViewModel location=Utils.getSingletonInstance()
-                .getLocation(getView().getActivity());
-
+//        LocationViewModel location=Utils.getSingletonInstance()
+//                .getLocation(getView().getActivity());
+//        if(location!=null) {
+//            brandsParams.putInt(Utils.BRAND_QUERY_PARAM_CITY_ID, location.getId());
+//        }
         getView().showProgressBar();
         getAllBrandsUseCase.execute(brandsParams, new Subscriber<AllBrandsDomain>() {
 
@@ -329,11 +334,12 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
                 categoriesModel.setName(listItems.get(i).getName());
                 categoriesModel.setTitle(listItems.get(i).getTitle());
                 categoriesModel.setUrl(listItems.get(i).getUrl());
-                categoriesModel.setPosition(i-1);
+                categoriesModel.setPosition(i - 1);
                 categoriesModel.setCategoryId(listItems.get(i).getCategoryId());
                 categoriesModels.add(categoriesModel);
             }
         }
+
         CategoriesModel categoriesModel = new CategoriesModel();
         categoriesModel.setUrl("");
         categoriesModel.setTitle(getView().getActivity().getResources().getString(R.string.all_brands));
@@ -345,6 +351,6 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
 
     void processSearchResponse(DealsDomain dealEntity) {
         categoryViewModels = Utils.getSingletonInstance()
-                .convertIntoCategoryListViewModel(dealEntity.getDealsCategory());
+                .convertIntoCategoryListViewModel(dealEntity);
     }
 }

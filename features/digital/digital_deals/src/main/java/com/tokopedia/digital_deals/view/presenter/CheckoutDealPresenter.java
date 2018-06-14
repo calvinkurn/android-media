@@ -15,6 +15,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.view.contractor.CheckoutDealContractor;
 import com.tokopedia.digital_deals.view.viewmodel.DealsDetailsViewModel;
+import com.tokopedia.digital_deals.view.viewmodel.OutletViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.PackageViewModel;
 import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
 import com.tokopedia.oms.domain.model.request.cart.CartItem;
@@ -72,15 +73,11 @@ public class CheckoutDealPresenter
     @Override
     public void updatePromoCode(String code) {
         this.promocode = code;
-        if (code.length() == 0) {
-            getView().hideSuccessMessage();
-        }
     }
 
     @Override
     public void getProfile() {
         getView().showProgressBar();
-
         profileUseCase.execute(com.tokopedia.core.base.domain.RequestParams.EMPTY, new Subscriber<ProfileModel>() {
             @Override
             public void onCompleted() {
@@ -109,18 +106,17 @@ public class CheckoutDealPresenter
 
     @Override
     public void clickGoToPromo() {
-        getView().showProgressBar();
         goToLoyaltyActivity();
     }
 
     private JsonObject convertPackageToCartItem(PackageViewModel packageViewModel) {
         Configuration config = new Configuration();
-        config.setPrice(packageViewModel.getSalesPrice() * packageViewModel.getSelectedQuantity());
+        config.setPrice(packageViewModel.getSalesPrice());
         MetaData meta = new MetaData();
         meta.setEntityCategoryId(packageViewModel.getCategoryId());
         meta.setEntityProductId(packageViewModel.getProductId());
         meta.setTotalTicketCount(packageViewModel.getSelectedQuantity());
-        meta.setTotalTicketPrice(packageViewModel.getSalesPrice() * packageViewModel.getSelectedQuantity());
+        meta.setTotalTicketPrice(packageViewModel.getSalesPrice());
         meta.setEntityStartTime("");
 
         List<CartItem> cartItems = new ArrayList<>();
@@ -168,16 +164,19 @@ public class CheckoutDealPresenter
         Gson gson = new Gson();
         JsonObject jsonObject = gson.fromJson(cart, JsonObject.class);
 
-        for (JsonElement jsonElement: jsonObject.get("cart_items").getAsJsonArray()){
+        for (JsonElement jsonElement : jsonObject.get("cart_items").getAsJsonArray()) {
             jsonElement.getAsJsonObject().get("meta_data").getAsJsonObject().get("entity_address")
                     .getAsJsonObject().addProperty("email", this.email);
+            jsonElement.getAsJsonObject().get("meta_data").getAsJsonObject().addProperty("entity_brand_name", dealDetail.getBrand().getTitle());
         }
+        jsonObject.addProperty("promocode", promocode);
         return jsonObject;
     }
 
     public void getPaymentLink() {
         paymentparams = RequestParams.create();
         paymentparams.putObject(Utils.Constants.CHECKOUTDATA, convertCartItemToJson(cartData));
+        getView().showProgressBar();
         postPaymentUseCase.execute(paymentparams, new Subscriber<JsonObject>() {
             @Override
             public void onCompleted() {
@@ -210,5 +209,9 @@ public class CheckoutDealPresenter
 
             }
         });
+    }
+
+    public List<OutletViewModel> getOutlets() {
+        return dealDetail.getOutlets();
     }
 }

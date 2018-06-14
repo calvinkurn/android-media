@@ -25,7 +25,7 @@ public class DealsCategoryDetailContract {
 
         void navigateToActivity(Intent intent);
 
-        void renderCategoryList(List<CategoryItemsViewModel> deals);
+        void renderCategoryList(List<CategoryItemsViewModel> deals, int count);
 
         void renderBrandList(List<BrandViewModel> brandList);
 

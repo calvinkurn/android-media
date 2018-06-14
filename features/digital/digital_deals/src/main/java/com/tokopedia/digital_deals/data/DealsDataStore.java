@@ -32,7 +32,7 @@ public interface DealsDataStore {
 
     Observable<LocationResponse> getLocations();
 
-    Observable<CategoryResponse> getCategoryDetails(HashMap<String, Object> parameters);
+    Observable<CategoryResponse> getCategoryDetails(String url, HashMap<String, Object> parameters);
 
     Observable<CategoryResponse> getCategoryDetails(String nexturl);
 

@@ -8,6 +8,7 @@ public class AppliedItemDomain {
     @SerializedName("id")
     private String id;
 
+
     @SerializedName("name")
     private String name;
 
@@ -21,6 +22,7 @@ public class AppliedItemDomain {
 
     @SerializedName("priority")
     private int priority;
+
 
     @Override
     public String toString() {

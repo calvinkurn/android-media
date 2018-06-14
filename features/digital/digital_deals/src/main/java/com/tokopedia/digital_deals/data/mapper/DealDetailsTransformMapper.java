@@ -2,7 +2,7 @@ package com.tokopedia.digital_deals.data.mapper;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.tokopedia.digital_deals.domain.model.dealdetailsdomailmodel.DealsDetailsDomain;
+import com.tokopedia.digital_deals.domain.model.dealdetailsdomainmodel.DealsDetailsDomain;
 
 import rx.functions.Func1;
 

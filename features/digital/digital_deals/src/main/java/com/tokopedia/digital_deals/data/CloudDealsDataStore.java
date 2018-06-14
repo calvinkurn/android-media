@@ -59,8 +59,8 @@ public class CloudDealsDataStore implements DealsDataStore {
     }
 
     @Override
-    public Observable<CategoryResponse> getCategoryDetails(HashMap<String, Object> params) {
-        return dealsApi.getCategoryDetails(String.valueOf(params.get(DealsHomePresenter.TAG)));
+    public Observable<CategoryResponse> getCategoryDetails(String url, HashMap<String, Object> params) {
+        return dealsApi.getCategoryDetails(url, params);
     }
 
     @Override

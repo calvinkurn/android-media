@@ -1,4 +1,4 @@
-package com.tokopedia.digital_deals.domain.model.dealdetailsdomailmodel;
+package com.tokopedia.digital_deals.domain.model.dealdetailsdomainmodel;
 
 
 import com.google.gson.annotations.Expose;

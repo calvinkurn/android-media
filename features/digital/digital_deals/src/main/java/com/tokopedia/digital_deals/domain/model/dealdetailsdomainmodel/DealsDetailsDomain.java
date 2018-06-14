@@ -1,14 +1,19 @@
-package com.tokopedia.digital_deals.data.entity.response.searchresponse;
+package com.tokopedia.digital_deals.domain.model.dealdetailsdomainmodel;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.digital_deals.domain.model.dealdetailsdomailmodel.Catalog;
+import com.tokopedia.digital_deals.domain.model.branddetailsmodel.BrandDomain;
 
-public class GridLayoutItem {
+import java.util.List;
+
+public class DealsDetailsDomain {
 
     @SerializedName("id")
     @Expose
     private int id;
+    @SerializedName("brand_id")
+    @Expose
+    private int brandId;
     @SerializedName("category_id")
     @Expose
     private int categoryId;
@@ -27,9 +32,6 @@ public class GridLayoutItem {
     @SerializedName("url")
     @Expose
     private String url;
-    @SerializedName("seo_url")
-    @Expose
-    private String seoUrl;
     @SerializedName("image_web")
     @Expose
     private String imageWeb;
@@ -60,12 +62,6 @@ public class GridLayoutItem {
     @SerializedName("thumbs_down")
     @Expose
     private int thumbsDown;
-    @SerializedName("is_featured")
-    @Expose
-    private int isFeatured;
-    @SerializedName("is_searchable")
-    @Expose
-    private int isSearchable;
     @SerializedName("status")
     @Expose
     private int status;
@@ -105,35 +101,42 @@ public class GridLayoutItem {
     @SerializedName("city_name")
     @Expose
     private String cityName;
-    @SerializedName("rating")
-    @Expose
-    private int rating;
-    @SerializedName("likes")
-    @Expose
-    private int likes;
     @SerializedName("schedules")
     @Expose
     private Object schedules;
     @SerializedName("forms")
     @Expose
     private Object forms;
-    @SerializedName("media")
+    @SerializedName("outlets")
     @Expose
-    private Object media;
-    @SerializedName("brand")
-    private BrandItem brand;
-    @SerializedName("display_tags")
+    private List<Outlet> outlets = null;
+    @SerializedName("rating")
     @Expose
-    private String displayTags;
+    private int rating;
+    @SerializedName("likes")
+    @Expose
+    private int likes;
     @SerializedName("catalog")
     @Expose
     private Catalog catalog;
     @SerializedName("saving_percentage")
     @Expose
     private String savingPercentage;
-    @SerializedName("saving")
+    @SerializedName("brand")
     @Expose
-    private int saving;
+    private BrandDomain brand;
+    @SerializedName("recommendation_url")
+    @Expose
+    private String recommendationUrl;
+    @SerializedName("media")
+    @Expose
+    private List<MediaDomain> media;
+    @SerializedName("tnc")
+    @Expose
+    private String tnc;
+    @SerializedName("seo_url")
+    private String seoUrl;
+
 
     public int getId() {
         return id;
@@ -141,6 +144,14 @@ public class GridLayoutItem {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getBrandId() {
+        return brandId;
+    }
+
+    public void setBrandId(int brandId) {
+        this.brandId = brandId;
     }
 
     public int getCategoryId() {
@@ -189,14 +200,6 @@ public class GridLayoutItem {
 
     public void setUrl(String url) {
         this.url = url;
-    }
-
-    public String getSeoUrl() {
-        return seoUrl;
-    }
-
-    public void setSeoUrl(String seoUrl) {
-        this.seoUrl = seoUrl;
     }
 
     public String getImageWeb() {
@@ -277,22 +280,6 @@ public class GridLayoutItem {
 
     public void setThumbsDown(int thumbsDown) {
         this.thumbsDown = thumbsDown;
-    }
-
-    public int getIsFeatured() {
-        return isFeatured;
-    }
-
-    public void setIsFeatured(int isFeatured) {
-        this.isFeatured = isFeatured;
-    }
-
-    public int getIsSearchable() {
-        return isSearchable;
-    }
-
-    public void setIsSearchable(int isSearchable) {
-        this.isSearchable = isSearchable;
     }
 
     public int getStatus() {
@@ -399,22 +386,6 @@ public class GridLayoutItem {
         this.cityName = cityName;
     }
 
-    public int getRating() {
-        return rating;
-    }
-
-    public void setRating(int rating) {
-        this.rating = rating;
-    }
-
-    public int getLikes() {
-        return likes;
-    }
-
-    public void setLikes(int likes) {
-        this.likes = likes;
-    }
-
     public Object getSchedules() {
         return schedules;
     }
@@ -431,30 +402,29 @@ public class GridLayoutItem {
         this.forms = forms;
     }
 
-    public Object getMedia() {
-        return media;
+    public List<Outlet> getOutlets() {
+        return outlets;
     }
 
-    public void setMedia(Object media) {
-        this.media = media;
+    public void setOutlets(List<Outlet> outlets) {
+        this.outlets = outlets;
     }
 
-    public BrandItem getBrand() {
-        return brand;
+    public int getRating() {
+        return rating;
     }
 
-    public void setBrand(BrandItem brand) {
-        this.brand = brand;
+    public void setRating(int rating) {
+        this.rating = rating;
     }
 
-    public String getDisplayTags() {
-        return displayTags;
+    public int getLikes() {
+        return likes;
     }
 
-    public void setDisplayTags(String displayTags) {
-        this.displayTags = displayTags;
+    public void setLikes(int likes) {
+        this.likes = likes;
     }
-
 
     public Catalog getCatalog() {
         return catalog;
@@ -472,51 +442,45 @@ public class GridLayoutItem {
         this.savingPercentage = savingPercentage;
     }
 
-
-
-
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("id : " + id);
-        builder.append("categoryId : " + categoryId);
-        builder.append("providerId : " + providerId);
-        builder.append("providerProductId : " + providerProductId);
-        builder.append("providerProductName : " + providerProductName);
-        builder.append("displayName : " + displayName);
-        builder.append("url : " + url);
-        builder.append("seoUrl : " + seoUrl);
-        builder.append("imageWeb : " + imageWeb);
-        builder.append("thumbnailWeb : " + thumbnailWeb);
-        builder.append("longRichDesc : " + longRichDesc);
-        builder.append("mrp : " + mrp);
-        builder.append("salesPrice : " + salesPrice);
-        builder.append("quantity : " + quantity);
-        builder.append("soldQuantity : " + soldQuantity);
-        builder.append("sellRate : " + sellRate);
-        builder.append("thumbsUp : " + thumbsUp);
-        builder.append("thumbsDown : " + thumbsDown);
-        builder.append("isFeatured : " + isFeatured);
-        builder.append("isSearchable : " + isSearchable);
-        builder.append("status : " + status);
-        builder.append("minStartDate : " + minStartDate);
-        builder.append("maxEndDate : " + maxEndDate);
-        builder.append("saleStartDate : " + saleStartDate);
-        builder.append("saleEndDate : " + saleEndDate);
-        builder.append("createdAt : " + createdAt);
-        builder.append("updatedAt : " + updatedAt);
-        builder.append("minStartTime : " + minStartTime);
-        builder.append("maxEndTime : " + maxEndTime);
-        builder.append("saleStartTime : " + saleStartTime);
-        builder.append("saleEndTime : " + saleEndTime);
-        builder.append("dateRange : " + dateRange);
-        builder.append("cityName : " + cityName);
-        builder.append("rating : " + rating);
-        builder.append("likes : " + likes);
-        builder.append("schedules : " + schedules);
-        builder.append("forms : " + forms);
-        builder.append("media : " + media);
-        return builder.toString();
+    public BrandDomain getBrand() {
+        return brand;
     }
 
+    public void setBrand(BrandDomain brand) {
+        this.brand = brand;
+    }
+
+    public String getRecommendationUrl() {
+        return recommendationUrl;
+    }
+
+    public void setRecommendationUrl(String recommendationUrl) {
+        this.recommendationUrl = recommendationUrl;
+    }
+
+    public List<MediaDomain> getMedia() {
+        return media;
+    }
+
+    public void setMedia(List<MediaDomain> media) {
+        this.media = media;
+    }
+
+    public String getTnc() {
+        return tnc;
+    }
+
+    public void setTnc(String tnc) {
+        this.tnc = tnc;
+    }
+
+    public String getSeoUrl() {
+        return seoUrl;
+    }
+
+    public void setSeoUrl(String seoUrl) {
+        this.seoUrl = seoUrl;
+    }
 }
+
+

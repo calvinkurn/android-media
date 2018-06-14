@@ -6,13 +6,16 @@ import com.google.gson.annotations.SerializedName;
 
 public class CategoryResponse {
     @SerializedName("grid_layout")
-    JsonArray deals;
+    private JsonArray deals;
 
     @SerializedName("brands")
-    JsonArray brands;
+    private JsonArray brands;
 
     @SerializedName("page")
-    JsonObject page;
+    private JsonObject page;
+
+    @SerializedName("count")
+    private int count;
 
     public JsonArray getDeals() {
         return deals;
@@ -38,4 +41,11 @@ public class CategoryResponse {
         this.page = page;
     }
 
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
 }

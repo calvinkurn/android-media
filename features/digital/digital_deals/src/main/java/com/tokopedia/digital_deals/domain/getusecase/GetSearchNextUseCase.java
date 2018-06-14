@@ -1,25 +1,26 @@
-package com.tokopedia.digital_deals.domain;
+package com.tokopedia.digital_deals.domain.getusecase;
 
+
+
+import com.tokopedia.digital_deals.domain.DealsRepository;
 import com.tokopedia.digital_deals.domain.model.searchdomainmodel.SearchDomainModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
 import rx.Observable;
 
+public class GetSearchNextUseCase extends UseCase<SearchDomainModel> {
 
-
-public class GetSearchDealsListRequestUseCase extends UseCase<SearchDomainModel> {
     private final DealsRepository dealsRepository;
-    public final String TAG = "tags";
 
-    public GetSearchDealsListRequestUseCase(DealsRepository dealsRepository) {
+    public GetSearchNextUseCase(DealsRepository dealsRepository) {
         super();
         this.dealsRepository = dealsRepository;
     }
 
     @Override
     public Observable<SearchDomainModel> createObservable(RequestParams requestParams) {
-        return dealsRepository.getSearchDeals(requestParams.getParameters());
-
+        String nextUrl = requestParams.getString("nexturl", "");
+        return dealsRepository.getSearchNext(nextUrl);
     }
 }
