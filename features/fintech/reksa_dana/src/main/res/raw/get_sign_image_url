@@ -1,0 +1,15 @@
+mutation GetSignURL($imageDetails: GetSignUrlInput!) {
+  mf_get_sign_url(ImageDetails: $imageDetails) {
+    result {
+      code
+      message
+      success
+    }
+    signedURL
+    fileName
+    publicURL
+    originalFileName
+    contentType
+    xAmzAcl
+  }
+}

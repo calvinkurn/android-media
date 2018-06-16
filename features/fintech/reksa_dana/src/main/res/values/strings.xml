@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">Daftar Reksa Dana</string>
+
+    <string name="title_help">Bantuan</string>
+    <string name="informasi_title">Informasi Pribadi</string>
+    <string name="email">Email</string>
+    <string name="email_hint">Masukkan Email</string>
+    <string name="ktp_text">Foto KTP</string>
+    <string name="foto_text">Pastikan foto jelas (pencahayaan baik, tidak buram dan tidak terbalik)</string>
+    <string name="sign_text">Tanda Tangan Digital</string>
+    <string name="digital_text">Tanda Tangan pada area di bawah ini:</string>
+    <string name="confirm_text">Anda telah menyetujui segala syarat dan ketentuan yang berlaku.</string>
+    <string name="selesai_btn">Selesai</string>
+    <string name="name">Nama Ibu Kandung</string>
+    <string name="name_hint">Tuliskan Nama Ibu</string>
+    <string name="add_image">Pilih File</string>
+    <string name="perkerjaan_text">Masukkan Jenis Pekerjaan</string>
+    <string name="perkerjaan">Perkerjaan</string>
+    <string name="pendapatan">Sumber Pendapatan</string>
+    <string name="sumber_hint">Pilih Sumber Pendapatan</string>
+    <string name="jumlah_hint">Pilih Jumlah Pendapatan</string>
+    <string name="jumlah">Jumlah</string>
+
+</resources>

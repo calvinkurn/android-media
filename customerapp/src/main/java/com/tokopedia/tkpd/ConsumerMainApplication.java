@@ -3,6 +3,7 @@ package com.tokopedia.tkpd;
 import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
@@ -48,6 +49,7 @@ import com.tokopedia.otp.cotp.data.SQLoginUrl;
 import com.tokopedia.payment.fingerprint.util.PaymentFingerprintConstant;
 import com.tokopedia.profile.data.network.ProfileUrl;
 import com.tokopedia.pushnotif.PushNotification;
+import com.tokopedia.reksadana.view.activities.ReksaDanaHomeActivity;
 import com.tokopedia.reputation.common.constant.ReputationCommonUrl;
 import com.tokopedia.shop.common.constant.ShopCommonUrl;
 import com.tokopedia.shop.common.constant.ShopUrl;
@@ -346,5 +348,10 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     @Override
     public void logisticUploadRouterActionNavigateByApplinksUrl(Activity activity, String applinks, Bundle bundle) {
         actionNavigateByApplinksUrl(activity, applinks, bundle);
+    }
+
+    @Override
+    public Intent getReksaDanaIntent(Context context) {
+        return new Intent(context, ReksaDanaHomeActivity.class);
     }
 }

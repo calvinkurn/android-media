@@ -143,6 +143,10 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
     @Override
     public void onGimickItemClicked(LayoutRows data) {
         String redirectUrl = data.getUrl();
+        if (data.getName().equalsIgnoreCase("Pinjaman Online")) {
+            startActivity(((TkpdCoreRouter) getActivity().getApplication()).getReksaDanaIntent(getActivity()));
+            return;
+        }
         if (redirectUrl != null && redirectUrl.length() > 0) {
             String resultGenerateUrl = URLGenerator.generateURLSessionLogin(
                     Uri.encode(redirectUrl), MainApplication.getAppContext());

@@ -194,4 +194,5 @@ public interface TkpdCoreRouter {
 
     Intent getDistrictRecommendationIntent(Activity activity, Token token);
 
+    Intent getReksaDanaIntent(Context context);
 }
