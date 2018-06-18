@@ -64,20 +64,15 @@
                 <com.tokopedia.instantloan.view.ui.HeightWrappingViewPager
                     android:id="@+id/pager"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="wrap_content" />
 
             </LinearLayout>
-
-            <!--<include layout="@layout/layout_instant_loan_tabs" />
-
-            <include layout="@layout/content_instant_loan_home_page" />-->
 
             <include
                 layout="@layout/layout_bottom_banner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:layout_marginTop="20dp"/>
+                android:layout_marginBottom="20dp" />
         </LinearLayout>
 
 

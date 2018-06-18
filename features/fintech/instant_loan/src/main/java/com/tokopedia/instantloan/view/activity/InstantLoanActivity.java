@@ -3,12 +3,16 @@ package com.tokopedia.instantloan.view.activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ImageSpan;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
@@ -67,6 +71,18 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
         mBannerPresenter.loadBanners();
     }
 
+    public CharSequence getPageTitle(int imageResId, String title) {
+        // Generate title based on item position
+        Drawable image = getResources().getDrawable(imageResId);
+        image.setBounds(0, 0, image.getIntrinsicWidth(), image.getIntrinsicHeight());
+        // Replace blank spaces with image icon
+        SpannableString sb = new SpannableString(" " + "\n" + title);
+        ImageSpan imageSpan = new ImageSpan(image, ImageSpan.ALIGN_BOTTOM);
+        sb.setSpan(imageSpan, 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return sb;
+    }
+
+
     private void initResources() {
         danaInstantTitle = getString(R.string.label_instant_fund);
         tanpaAngunanTitle = getString(R.string.label_no_collateral);
@@ -95,9 +111,9 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
     }
 
     private void populateThreeTabItem() {
-        instantLoanItemList.add(new InstantLoanItem(danaInstantTitle, getDanaInstantFragment()));
-        instantLoanItemList.add(new InstantLoanItem(tanpaAngunanTitle, getTanpaAgunanFragment()));
-        instantLoanItemList.add(new InstantLoanItem(denganAngunanTitle, getDenganAngunanFragment()));
+        instantLoanItemList.add(new InstantLoanItem(getPageTitle(R.drawable.ic_dana_instan, danaInstantTitle), getDanaInstantFragment()));
+        instantLoanItemList.add(new InstantLoanItem(getPageTitle(R.drawable.ic_tapna_agunan_disable, tanpaAngunanTitle), getTanpaAgunanFragment()));
+        instantLoanItemList.add(new InstantLoanItem(getPageTitle(R.drawable.ic_dengan_agunan_enable, denganAngunanTitle), getDenganAngunanFragment()));
     }
 
     private DanaInstantFragment getDanaInstantFragment() {
@@ -199,7 +215,7 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
 
     private void initializeView() {
         tabLayout = (TabLayout) findViewById(R.id.tabs);
-        viewPager = (HeightWrappingViewPager) findViewById(R.id.pager);
+        viewPager = findViewById(R.id.pager);
         mBtnNextBanner = findViewById(R.id.button_next);
         mBtnPreviousBanner = findViewById(R.id.button_previous);
     }

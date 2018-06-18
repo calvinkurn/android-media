@@ -7,19 +7,19 @@ import android.support.v4.app.Fragment;
  */
 
 public class InstantLoanItem {
-    String title;
+    CharSequence title;
     Fragment fragment;
 
-    public InstantLoanItem(String title, Fragment fragment) {
+    public InstantLoanItem(CharSequence title, Fragment fragment) {
         this.title = title;
         this.fragment = fragment;
     }
 
-    public String getTitle() {
+    public CharSequence getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
+    public void setTitle(CharSequence title) {
         this.title = title;
     }
 

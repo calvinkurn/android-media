@@ -1,10 +1,10 @@
 package com.tokopedia.instantloan.view.fragment;
 
-import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,83 +13,55 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.instantloan.InstantLoanComponentInstance;
 import com.tokopedia.instantloan.R;
+import com.tokopedia.instantloan.data.model.response.UserProfileLoanEntity;
+import com.tokopedia.instantloan.di.component.InstantLoanComponent;
+import com.tokopedia.instantloan.router.InstantLoanRouter;
+import com.tokopedia.instantloan.view.contractor.InstantLoanContractor;
+import com.tokopedia.instantloan.view.model.PhoneDataViewModel;
 import com.tokopedia.instantloan.view.presenter.InstantLoanPresenter;
 
 import javax.inject.Inject;
 
-/**
- * Created by sachinbansal on 6/12/18.
- */
+import static com.tokopedia.instantloan.network.InstantLoanUrl.WEB_LINK_COLLATERAL_FUND;
+import static com.tokopedia.instantloan.view.fragment.DanaInstantFragment.LOGIN_REQUEST_CODE;
 
-public class DenganAgunanFragment extends BaseDaggerFragment {
-
-    public static final int REQUEST_CODE_LOGIN = 561;
-    private static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 123;
-    private static final int REQUEST_ACTIVITY_SORT_PRODUCT = 1233;
-    private static final int REQUEST_ACTIVITY_FILTER_PRODUCT = 4320;
-
+public class DenganAgunanFragment extends BaseDaggerFragment implements InstantLoanContractor.View {
 
     private Spinner mSpinnerLoanAmount;
-    private ViewPager mBannerPager;
-    private FloatingActionButton mBtnNextBanner, mBtnPreviousBanner;
-    private Dialog mDialogIntro;
-
-    private TextView mTextAmount, mTextDuration, mTextProcessingTime, mTextInterestRate;
-    private Button mBtnInstantFund;
-
-    private TextView mTextFormDescription;
-
     private SessionHandler sessionHandler;
-    private GCMHandler gcmHandler;
 
-
+    @Inject
+    InstantLoanPresenter presenter;
 
     private int mCurrentTab = 2;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (savedInstanceState != null) {
-            loadDataFromSavedState(savedInstanceState);
-        } else {
-            loadDataFromArguments();
-        }
+        presenter.attachView(this);
         sessionHandler = new SessionHandler(getContext());
-        gcmHandler = new GCMHandler(getContext());
     }
-
-    private void loadDataFromSavedState(Bundle savedInstanceState) {
-    }
-
-    private void loadDataFromArguments() {
-    }
-
 
     @Override
     protected void initInjector() {
-        /*InstantLoanComponent daggerInstantLoanComponent = InstantLoanComponentInstance.get(getActivity().getApplication());
-        daggerInstantLoanComponent.inject(this);*/
+        InstantLoanComponent daggerInstantLoanComponent = InstantLoanComponentInstance.get(getActivity().getApplication());
+        daggerInstantLoanComponent.inject(this);
     }
-
-
-//    protected void initInjector() {
-//        SearchComponent component = DaggerSearchComponent.builder()
-//                .appComponent(getComponent(AppComponent.class))
-//                .build();
-//        component.inject(this);
-//    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater,
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-//        presenter.attachView(this, this);
         return inflater.inflate(R.layout.content_dengana_agunan, null);
     }
 
@@ -110,56 +82,133 @@ public class DenganAgunanFragment extends BaseDaggerFragment {
     private void initView(View view) {
 
         mSpinnerLoanAmount = view.findViewById(R.id.spinner_value_nominal);
-        mBtnInstantFund = view.findViewById(R.id.button_instant_fund);
-        mTextAmount = view.findViewById(R.id.text_value_amount);
-        mTextDuration = view.findViewById(R.id.text_value_duration);
-        mTextProcessingTime = view.findViewById(R.id.text_value_processing_time);
-        mTextInterestRate = view.findViewById(R.id.text_value_interest_rate);
-        mTextFormDescription = view.findViewById(R.id.text_form_description);
+        TextView mTextAmount = view.findViewById(R.id.text_value_amount);
+        TextView mTextDuration = view.findViewById(R.id.text_value_duration);
+        TextView mTextProcessingTime = view.findViewById(R.id.text_value_processing_time);
+        TextView mTextInterestRate = view.findViewById(R.id.text_value_interest_rate);
+        TextView mTextFormDescription = view.findViewById(R.id.text_form_description);
 
         mTextAmount.setText(getResources().getStringArray(R.array.values_amount)[mCurrentTab]);
         mTextDuration.setText(getResources().getStringArray(R.array.values_duration)[mCurrentTab]);
         mTextProcessingTime.setText(getResources().getStringArray(R.array.values_processing_time)[mCurrentTab]);
         mTextInterestRate.setText(getResources().getStringArray(R.array.values_interest_rate)[mCurrentTab]);
         mTextFormDescription.setText(getResources().getStringArray(R.array.values_description)[mCurrentTab]);
-    }
 
+        view.findViewById(R.id.button_search_pinjaman).setOnClickListener(view1 -> {
+
+            if (mSpinnerLoanAmount.getSelectedItem().toString().equalsIgnoreCase(getString(R.string.label_select_nominal))) {
+                TextView errorText = (TextView) mSpinnerLoanAmount.getSelectedView();
+                errorText.setError("Please select");
+                errorText.setTextColor(Color.RED);
+                return;
+            }
+
+            if (sessionHandler.isV4Login()) {
+                openWebView(WEB_LINK_COLLATERAL_FUND + mSpinnerLoanAmount.getSelectedItem().toString().split(" ")[1]);
+            } else {
+                navigateToLoginPage();
+            }
+        });
+    }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public Context getAppContext() {
+        return getContext().getApplicationContext();
     }
 
+    @Override
+    public Context getActivityContext() {
+        return getContext();
+    }
+
+    @Override
+    public void onSuccessLoanProfileStatus(UserProfileLoanEntity status) {
+
+    }
+
+    @Override
+    public void onErrorLoanProfileStatus(String onErrorLoanProfileStatus) {
+
+    }
+
+    @Override
+    public void onSuccessPhoneDataUploaded(PhoneDataViewModel data) {
+
+    }
+
+    @Override
+    public void onErrorPhoneDataUploaded(String errorMessage) {
+
+    }
+
+    @Override
+    public void navigateToLoginPage() {
+        Intent intent = ((InstantLoanRouter) MainApplication.getAppContext()).getLoginIntent(getContext());
+        startActivityForResult(intent, LOGIN_REQUEST_CODE);
+    }
+
+    @Override
+    public void startIntroSlider() {
+
+    }
+
+    @Override
+    public void showToastMessage(String message, int duration) {
+        Toast.makeText(getContext(), message, duration).show();
+    }
+
+    @Override
+    public void openWebView(String url) {
+        Intent intent = SimpleWebViewWithFilePickerActivity.getIntentWithTitle(getContext(), url, "Pinjaman Online");
+        startActivity(intent);
+    }
+
+    @Override
+    public void searchLoanOnline() {
+
+    }
 
     public void showLoader() {
 //        findViewById(R.id.progress_bar_status).setVisibility(View.VISIBLE);
 //        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
     }
 
+    @Override
+    public void hideLoader() {
 
-    private String generateUserId() {
-        return sessionHandler.isV4Login() ? sessionHandler.getLoginID() : null;
     }
 
-    private String generateUniqueId() {
-        return sessionHandler.isV4Login() ?
-                AuthUtil.md5(sessionHandler.getLoginID()) :
-                AuthUtil.md5(gcmHandler.getRegistrationId());
+    @Override
+    public void showLoaderIntroDialog() {
+
+    }
+
+    @Override
+    public void hideLoaderIntroDialog() {
+
     }
 
     public String getScreenNameId() {
-        return "Tanpa Agunan";
+        return "Dengan Agunan";
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == LOGIN_REQUEST_CODE) {
+            if (!SessionHandler.isV4Login(getContext())) {
+                showToastMessage("Please login to access instant loan features", Toast.LENGTH_SHORT);
+//                getActivity().finish();
+            } else {
+                openWebView(WEB_LINK_COLLATERAL_FUND + mSpinnerLoanAmount.getSelectedItem().toString().split(" ")[1]);
+            }
+        }
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-//        presenter.detachView();
+        presenter.detachView();
     }
 
     @Override

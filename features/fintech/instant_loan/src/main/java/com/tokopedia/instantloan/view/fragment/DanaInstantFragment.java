@@ -3,7 +3,6 @@ package com.tokopedia.instantloan.view.fragment;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -28,8 +27,10 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.viewpagerindicator.CirclePageIndicator;
+import com.tokopedia.instantloan.InstantLoanComponentInstance;
 import com.tokopedia.instantloan.R;
 import com.tokopedia.instantloan.data.model.response.UserProfileLoanEntity;
+import com.tokopedia.instantloan.di.component.InstantLoanComponent;
 import com.tokopedia.instantloan.router.InstantLoanRouter;
 import com.tokopedia.instantloan.view.activity.InstantLoanActivity;
 import com.tokopedia.instantloan.view.adapter.InstantLoanIntroViewPagerAdapter;
@@ -39,8 +40,6 @@ import com.tokopedia.instantloan.view.presenter.InstantLoanPresenter;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.instantloan.network.InstantLoanUrl.WEB_LINK_COLLATERAL_FUND;
-import static com.tokopedia.instantloan.network.InstantLoanUrl.WEB_LINK_NO_COLLATERAL;
 import static com.tokopedia.instantloan.network.InstantLoanUrl.WEB_LINK_OTP;
 
 /**
@@ -56,7 +55,6 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
     public static final int TAB_WITH_COLLATERAL = 2;
 
     private ProgressBar mProgressBar;
-    private Spinner mSpinnerLoanAmount;
     private Dialog mDialogIntro;
 
     @Inject
@@ -67,11 +65,6 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (savedInstanceState != null) {
-            loadDataFromSavedState(savedInstanceState);
-        } else {
-            loadDataFromArguments();
-        }
         presenter.attachView(this);
     }
 
@@ -81,24 +74,16 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
         presenter.attachView(this);
     }
 
-    private void loadDataFromSavedState(Bundle savedInstanceState) {
-    }
-
-    private void loadDataFromArguments() {
-    }
-
-
     @Override
     protected void initInjector() {
-        /*InstantLoanComponent daggerInstantLoanComponent = InstantLoanComponentInstance.get(getActivity().getApplication());
-        daggerInstantLoanComponent.inject(this);*/
+        InstantLoanComponent daggerInstantLoanComponent = InstantLoanComponentInstance.get(getActivity().getApplication());
+        daggerInstantLoanComponent.inject(this);
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater,
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-//        presenter.attachView(this, this);
         return inflater.inflate(R.layout.content_instant_loan_home_page, null);
     }
 
@@ -106,19 +91,17 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initView(view);
-        setupLoanAmountSpinner();
     }
 
-    private void setupLoanAmountSpinner() {
+    /*private void setupLoanAmountSpinner() {
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
                 R.array.values_amount_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSpinnerLoanAmount.setAdapter(adapter);
-    }
+    }*/
 
     private void initView(View view) {
 
-        mSpinnerLoanAmount = view.findViewById(R.id.spinner_value_nominal);
         TextView mTextAmount = view.findViewById(R.id.text_value_amount);
         TextView mTextDuration = view.findViewById(R.id.text_value_duration);
         TextView mTextProcessingTime = view.findViewById(R.id.text_value_processing_time);
@@ -308,31 +291,11 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
     @Override
     public void searchLoanOnline() {
 
-        if (mCurrentTab != TAB_INSTANT_FUND
-                && mSpinnerLoanAmount.getSelectedItem().toString().equalsIgnoreCase(getString(R.string.label_select_nominal))) {
-            TextView errorText = (TextView) mSpinnerLoanAmount.getSelectedView();
-            errorText.setError("Please select");
-            errorText.setTextColor(Color.RED);
-            return;
-        }
-
         if (presenter.isUserLoggedIn()) {
-            switch (mCurrentTab) {
-                case TAB_INSTANT_FUND:
-                    presenter.getLoanProfileStatus();
-                    startIntroSlider();
-                    break;
-                case TAB_NO_COLLATERAL:
-                    openWebView(WEB_LINK_NO_COLLATERAL + mSpinnerLoanAmount.getSelectedItem().toString().split(" ")[1]);
-                    break;
-                case TAB_WITH_COLLATERAL:
-                    openWebView(WEB_LINK_COLLATERAL_FUND + mSpinnerLoanAmount.getSelectedItem().toString().split(" ")[1]);
-                    break;
-            }
+            presenter.getLoanProfileStatus();
         } else {
             navigateToLoginPage();
         }
-
 //        startIntroSlider();
     }
 
