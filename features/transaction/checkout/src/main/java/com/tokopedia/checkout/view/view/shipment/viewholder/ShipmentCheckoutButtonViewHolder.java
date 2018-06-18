@@ -28,9 +28,7 @@ public class ShipmentCheckoutButtonViewHolder extends RecyclerView.ViewHolder {
 
     public void bindViewHolder(ShipmentCheckoutButtonModel shipmentCheckoutButtonModel) {
         if (shipmentCheckoutButtonModel.isAbleToCheckout()) {
-            tvSelectPaymentMethod.setBackgroundResource(R.drawable.bg_button_orange_enabled);
-            tvSelectPaymentMethod.setTextColor(tvSelectPaymentMethod.getContext().getResources().getColor(R.color.white));
-            getSelectPaymentClickListener();
+            enableSelectShipmentButton();
         } else {
             disableSelectShipmentButton();
         }
@@ -40,6 +38,12 @@ public class ShipmentCheckoutButtonViewHolder extends RecyclerView.ViewHolder {
         } else {
             tvTotalPayment.setText("-");
         }
+    }
+
+    private void enableSelectShipmentButton() {
+        tvSelectPaymentMethod.setBackgroundResource(R.drawable.bg_button_orange_enabled);
+        tvSelectPaymentMethod.setTextColor(tvSelectPaymentMethod.getContext().getResources().getColor(R.color.white));
+        getSelectPaymentClickListener();
     }
 
     private void disableSelectShipmentButton() {

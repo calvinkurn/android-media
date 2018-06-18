@@ -3,6 +3,7 @@ package com.tokopedia.tkpd;
 import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
@@ -58,10 +59,10 @@ import com.tokopedia.tkpd.utils.CacheApiWhiteList;
 import com.tokopedia.tkpdreactnative.react.fingerprint.utils.FingerprintConstantRegister;
 import com.tokopedia.tokocash.network.api.WalletUrl;
 import com.tokopedia.transaction.network.TransactionUrl;
+import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
 import com.tokopedia.transactiondata.constant.TransactionDataApiUrl;
 
 import io.hansel.hanselsdk.Hansel;
-import retrofit2.http.HEAD;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -87,6 +88,9 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
         GlobalConfig.DEBUG = BuildConfig.DEBUG;
         GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
+        com.tokopedia.config.GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
+        com.tokopedia.config.GlobalConfig.DEBUG = BuildConfig.DEBUG;
+        com.tokopedia.config.GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.DEBUG;
         generateConsumerAppBaseUrl();
         generateConsumerAppNetworkKeys();
         initializeDatabase();
@@ -344,5 +348,10 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     @Override
     public void logisticUploadRouterActionNavigateByApplinksUrl(Activity activity, String applinks, Bundle bundle) {
         actionNavigateByApplinksUrl(activity, applinks, bundle);
+    }
+
+    @Override
+    public Intent getOrderListIntent(Context context) {
+        return OrderListActivity.getInstance(context);
     }
 }

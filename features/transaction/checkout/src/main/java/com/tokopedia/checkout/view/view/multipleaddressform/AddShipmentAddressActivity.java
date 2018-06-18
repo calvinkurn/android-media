@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
+import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressAdapterData;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressItemData;
 import com.tokopedia.checkout.view.base.BaseCheckoutActivity;
@@ -52,6 +53,18 @@ public class AddShipmentAddressActivity extends BaseCheckoutActivity {
     @Override
     protected void setupURIPass(Uri data) {
 
+    }
+
+    @Override
+    protected void setupLayout(Bundle savedInstanceState) {
+        super.setupLayout(savedInstanceState);
+        if (getSupportActionBar() != null) {
+            if (formMode == ADD_MODE) {
+                getSupportActionBar().setTitle(getString(R.string.checkout_module_title_shipping_dest_add_new));
+            } else if (formMode == EDIT_MODE) {
+                getSupportActionBar().setTitle(getString(R.string.checkout_module_title_shipping_dest));
+            }
+        }
     }
 
     @Override

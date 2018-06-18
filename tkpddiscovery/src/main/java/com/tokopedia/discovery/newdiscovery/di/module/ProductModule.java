@@ -7,8 +7,6 @@ import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
-import com.tokopedia.core.network.apiservices.mojito.MojitoNoRetryAuthService;
-import com.tokopedia.core.network.apiservices.mojito.MojitoSimpleService;
 import com.tokopedia.core.network.apiservices.mojito.apis.MojitoApi;
 import com.tokopedia.core.network.apiservices.mojito.apis.MojitoAuthApi;
 import com.tokopedia.core.network.di.qualifier.MojitoGetWishlistQualifier;
@@ -26,7 +24,6 @@ import com.tokopedia.discovery.newdiscovery.domain.usecase.RemoveWishlistActionU
 
 import dagger.Module;
 import dagger.Provides;
-import retrofit2.Retrofit;
 
 /**
  * Created by hangnadi on 10/5/17.
@@ -36,7 +33,7 @@ import retrofit2.Retrofit;
 public class ProductModule {
 
     @Provides
-    ProductRepository productRepository(ProductDataSource productDataSource){
+    ProductRepository productRepository(ProductDataSource productDataSource) {
         return new ProductRepositoryImpl(productDataSource);
     }
 
@@ -71,12 +68,12 @@ public class ProductModule {
     }
 
     @Provides
-    AddWishlistActionMapper addWishlistActionMapper(){
+    AddWishlistActionMapper addWishlistActionMapper() {
         return new AddWishlistActionMapper();
     }
 
     @Provides
-    RemoveWishlistActionMapper removeWishlistActionMapper(){
+    RemoveWishlistActionMapper removeWishlistActionMapper() {
         return new RemoveWishlistActionMapper();
     }
 

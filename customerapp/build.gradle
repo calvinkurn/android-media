@@ -16,12 +16,8 @@ def getDpiId(String density) {
     return 0;
 }
 
-def getAbiId(String abi) {
-    return 0;
-}
-
-def generateBuildId(String density, String abi) {
-    return getAbiId(abi) + getDpiId(density);
+def generateBuildId(String density) {
+    return getDpiId(density);
 }
 
 def getAPKArchiveFolder(variant) {
@@ -158,6 +154,8 @@ android {
             zipAlignEnabled true
             shrinkResources true
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
+            multiDexKeepFile file('multidex-config.txt')
+            multiDexKeepProguard file('multidex-config.pro')
             if (allowProguard()) {
                 proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
             } else {
@@ -169,8 +167,7 @@ android {
                 applicationVariants.all { variant ->
                     variant.outputs.each { output ->
                         String density = output.getFilter(com.android.build.OutputFile.DENSITY);
-                        String abi = output.getFilter(com.android.build.OutputFile.ABI);
-                        output.versionCodeOverride = (getTkpdVersionCode() * 100) + generateBuildId(density, abi);
+                        output.versionCodeOverride = (getTkpdVersionCode() * 100) + generateBuildId(density);
                     }
                     variant.assemble.doLast {
                         variant.outputs.each { output ->
@@ -197,12 +194,7 @@ android {
             include "mdpi", "hdpi", "xhdpi", "xxhdpi"
             compatibleScreens 'small', 'normal', 'large', 'xlarge'
         }
-        abi {
-            enable allowSplit()
-            reset()
-            universalApk false
-        }
-
+       
     }
 
     defaultConfig {
@@ -212,7 +204,7 @@ android {
         applicationId "com.tokopedia.tkpd"
         versionCode getTkpdVersionCode()
         versionName getTkpdVersionName()
-        vectorDrawables.useSupportLibrary = true
+        vectorDrawables.useSupportLibrary = false
         testInstrumentationRunner 'com.tokopedia.tkpd.MyRunner'
         ndk {
             abiFilters "x86", "armeabi-v7a"
@@ -304,6 +296,8 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.bcaOneClick
     implementation project(rootProject.ext.features.shopCommon)
+    implementation project(rootProject.ext.libraries.network)
+    implementation project(rootProject.ext.libraries.config)
 
     implementation rootProject.ext.playServicesDependencies.remoteConfig
     implementation rootProject.ext.playServicesDependencies.firebase
@@ -415,6 +409,9 @@ dependencies {
     androidTestImplementation rootProject.ext.supportLibDependencies.appCompactV7
     androidTestImplementation rootProject.ext.supportLibDependencies.cardViewV7
     //[END] test and androidTest dependencies
+
+    implementation project(rootProject.ext.libraries.analytics)
+
 }
 
 

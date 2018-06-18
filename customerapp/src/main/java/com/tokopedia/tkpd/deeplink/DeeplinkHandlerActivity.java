@@ -13,6 +13,8 @@ import com.tokopedia.applink.SessionApplinkModule;
 import com.tokopedia.applink.SessionApplinkModuleLoader;
 import com.tokopedia.checkout.applink.CheckoutAppLinkModule;
 import com.tokopedia.checkout.applink.CheckoutAppLinkModuleLoader;
+import com.tokopedia.contact_us.applink.CustomerCareApplinkModule;
+import com.tokopedia.contact_us.applink.CustomerCareApplinkModuleLoader;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.deeplink.CoreDeeplinkModule;
@@ -70,6 +72,7 @@ import org.json.JSONObject;
 import io.branch.referral.Branch;
 import io.branch.referral.BranchError;
 
+
 @DeepLinkHandler({
         ConsumerDeeplinkModule.class,
         CoreDeeplinkModule.class,
@@ -93,10 +96,13 @@ import io.branch.referral.BranchError;
         ProfileApplinkModule.class,
         KolApplinkModule.class,
         TrackingAppLinkModule.class,
-        CheckoutAppLinkModule.class
+        CheckoutAppLinkModule.class,
+        CustomerCareApplinkModule.class
 })
 
 public class DeeplinkHandlerActivity extends AppCompatActivity {
+
+
 
     public static DeepLinkDelegate getDelegateInstance() {
         return new DeepLinkDelegate(
@@ -122,7 +128,8 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new ProfileApplinkModuleLoader(),
                 new KolApplinkModuleLoader(),
                 new TrackingAppLinkModuleLoader(),
-                new CheckoutAppLinkModuleLoader()
+                new CheckoutAppLinkModuleLoader(),
+                new CustomerCareApplinkModuleLoader()
         );
     }
 

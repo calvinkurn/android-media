@@ -15,6 +15,7 @@ import android.view.View;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.core.ForceUpdate;
 import com.tokopedia.core.MaintenancePage;
 import com.tokopedia.core.R;
@@ -41,6 +42,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
+
 /**
  * Created by nisie on 2/7/17.
  * refer {@link com.tokopedia.abstraction.base.view.activity.BaseActivity}
@@ -52,6 +54,8 @@ import rx.schedulers.Schedulers;
 @Deprecated
 public class BaseActivity extends AppCompatActivity implements SessionHandler.onLogoutListener,
         ErrorNetworkReceiver.ReceiveListener, ScreenTracking.IOpenScreenAnalytics {
+
+
 
     public static final String FORCE_LOGOUT = "com.tokopedia.tkpd.FORCE_LOGOUT";
     public static final String SERVER_ERROR = "com.tokopedia.tkpd.SERVER_ERROR";
@@ -296,6 +300,10 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
 
     public AppComponent getApplicationComponent() {
         return ((MainApplication) getApplication()).getAppComponent();
+    }
+
+    public BaseAppComponent getBaseAppComponent() {
+        return ((MainApplication) getApplication()).getBaseAppComponent();
     }
 
     protected void setGoldMerchant(ShopModel shopModel) {

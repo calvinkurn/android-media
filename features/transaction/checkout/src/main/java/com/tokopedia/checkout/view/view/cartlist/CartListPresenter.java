@@ -18,6 +18,7 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.DeleteCartData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.UpdateToSingleAddressShipmentData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.WholesalePrice;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
+import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.domain.usecase.CancelAutoApplyCouponUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartGetCartListUseCase;
@@ -28,10 +29,10 @@ import com.tokopedia.checkout.domain.usecase.ResetCartGetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.ResetCartGetShipmentFormUseCase;
 import com.tokopedia.checkout.domain.usecase.UpdateCartGetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.view.holderitemdata.CartItemHolderData;
-import com.tokopedia.core.analytics.nishikino.model.GTMCart;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
-import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartListResult;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.transactionanalytics.EnhancedECommerceCartMapData;
+import com.tokopedia.transactionanalytics.EnhancedECommerceProductCartMapData;
 import com.tokopedia.transactiondata.entity.request.RemoveCartRequest;
 import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
 import com.tokopedia.transactiondata.exception.ResponseCartApiErrorException;
@@ -45,6 +46,7 @@ import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -165,10 +167,23 @@ public class CartListPresenter implements ICartListPresenter {
         TKPDMapParam<String, String> paramGetList = new TKPDMapParam<>();
         paramGetList.put("lang", "id");
 
+        List<CartItemData> cartItemDataList = view.getCartDataList();
+        List<UpdateCartRequest> updateCartRequestList = new ArrayList<>();
+        for (CartItemData data : cartItemDataList) {
+            updateCartRequestList.add(new UpdateCartRequest.Builder()
+                    .cartId(data.getOriginData().getCartId())
+                    .notes(data.getUpdatedData().getRemark())
+                    .quantity(data.getUpdatedData().getQuantity())
+                    .build());
+        }
+        TKPDMapParam<String, String> paramUpdate = new TKPDMapParam<>();
+        paramUpdate.put("carts", new Gson().toJson(updateCartRequestList));
 
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(DeleteCartGetCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING_DELETE_CART,
                 view.getGeneratedAuthParamNetwork(paramDelete));
+        requestParams.putObject(UpdateCartGetShipmentAddressFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART,
+                view.getGeneratedAuthParamNetwork(paramUpdate));
         requestParams.putObject(DeleteCartGetCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_CART,
                 view.getGeneratedAuthParamNetwork(paramGetList));
 
@@ -287,6 +302,7 @@ public class CartListPresenter implements ICartListPresenter {
     public void reCalculateSubTotal(List<CartItemHolderData> dataList) {
         double subtotalPrice = 0;
         int totalAllCartItemQty = 0;
+        Map<String, Double> subtotalWholesalePriceMap = new HashMap<>();
         for (CartItemHolderData data : dataList) {
             String parentId = data.getCartItemData().getOriginData().getParentId();
             String productId = data.getCartItemData().getOriginData().getProductId();
@@ -304,10 +320,11 @@ public class CartListPresenter implements ICartListPresenter {
             List<WholesalePrice> wholesalePrices = data.getCartItemData().getOriginData().getWholesalePrice();
             boolean hasCalculateWholesalePrice = false;
             if (wholesalePrices != null && wholesalePrices.size() > 0) {
+                double subTotalWholesalePrice = 0;
                 for (WholesalePrice wholesalePrice : wholesalePrices) {
                     if (itemQty >= wholesalePrice.getQtyMin() &&
                             itemQty <= wholesalePrice.getQtyMax()) {
-                        subtotalPrice = subtotalPrice + (itemQty * wholesalePrice.getPrdPrc());
+                        subTotalWholesalePrice = itemQty * wholesalePrice.getPrdPrc();
                         hasCalculateWholesalePrice = true;
                         data.getCartItemData().getOriginData().setWholesalePriceFormatted(wholesalePrice.getPrdPrcFmt());
                         break;
@@ -315,16 +332,25 @@ public class CartListPresenter implements ICartListPresenter {
                 }
                 if (!hasCalculateWholesalePrice) {
                     if (itemQty > wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrc()) {
-                        subtotalPrice = subtotalPrice + (itemQty * wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrc());
+                        subTotalWholesalePrice = itemQty * wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrc();
                         data.getCartItemData().getOriginData().setWholesalePriceFormatted(wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrcFmt());
                     } else {
-                        subtotalPrice = subtotalPrice + (itemQty * data.getCartItemData().getOriginData().getPricePlan());
+                        subTotalWholesalePrice = itemQty * data.getCartItemData().getOriginData().getPricePlan();
                         data.getCartItemData().getOriginData().setWholesalePriceFormatted(null);
                     }
+                }
+                if (!subtotalWholesalePriceMap.containsKey(parentId)) {
+                    subtotalWholesalePriceMap.put(parentId, subTotalWholesalePrice);
                 }
             } else {
                 subtotalPrice = subtotalPrice + (itemQty * data.getCartItemData().getOriginData().getPricePlan());
                 data.getCartItemData().getOriginData().setWholesalePriceFormatted(null);
+            }
+        }
+
+        if (!subtotalWholesalePriceMap.isEmpty()) {
+            for (Map.Entry<String, Double> item : subtotalWholesalePriceMap.entrySet()) {
+                subtotalPrice += item.getValue();
             }
         }
 
@@ -619,6 +645,7 @@ public class CartListPresenter implements ICartListPresenter {
 
             @Override
             public void onError(Throwable e) {
+                view.hideProgressLoading();
                 e.printStackTrace();
                 if (e instanceof UnknownHostException) {
                     /* Ini kalau ga ada internet */
@@ -656,7 +683,7 @@ public class CartListPresenter implements ICartListPresenter {
                 if (deleteAndRefreshCartListData.getDeleteCartData().isSuccess()
                         && deleteAndRefreshCartListData.getCartListData() != null) {
                     if (deleteAndRefreshCartListData.getCartListData().getCartItemDataList().isEmpty()) {
-                        view.renderEmptyCartData(null);
+                        processInitialGetCartData();
                     } else {
                         view.renderInitialGetCartListDataSuccess(deleteAndRefreshCartListData.getCartListData());
                     }
@@ -698,9 +725,9 @@ public class CartListPresenter implements ICartListPresenter {
                     /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
                     view.renderErrorToShipmentForm(e.getMessage());
                 } else if (e instanceof HttpErrorException) {
-            /* Ini Http error, misal 403, 500, 404,
-             code http errornya bisa diambil
-             e.getErrorCode */
+                    /* Ini Http error, misal 403, 500, 404,
+                    code http errornya bisa diambil
+                    e.getErrorCode */
                     view.renderErrorHttpToShipmentForm(e.getMessage());
                 } else if (e instanceof ResponseCartApiErrorException) {
                     view.renderErrorToShipmentForm(e.getMessage());
@@ -708,7 +735,7 @@ public class CartListPresenter implements ICartListPresenter {
                     /* Ini diluar dari segalanya hahahaha */
                     view.renderErrorHttpToShipmentForm(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
-
+                processInitialGetCartData();
             }
 
             @Override
@@ -834,7 +861,7 @@ public class CartListPresenter implements ICartListPresenter {
                     view.renderErrorInitialGetCartListData(resetAndRefreshCartListData.getResetCartData().getMessage());
                 } else {
                     if (resetAndRefreshCartListData.getCartListData().getCartItemDataList().isEmpty()) {
-                        view.renderEmptyCartData(null);
+                        view.renderEmptyCartData(resetAndRefreshCartListData.getCartListData());
                     } else {
                         view.renderInitialGetCartListDataSuccess(resetAndRefreshCartListData.getCartListData());
                     }
@@ -844,8 +871,8 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @NonNull
-    private Subscriber<CheckPromoCodeCartListResult> getSubscriberCheckPromoCodeFromSuggestion() {
-        return new Subscriber<CheckPromoCodeCartListResult>() {
+    private Subscriber<PromoCodeCartListData> getSubscriberCheckPromoCodeFromSuggestion() {
+        return new Subscriber<PromoCodeCartListData>() {
             @Override
             public void onCompleted() {
 
@@ -858,7 +885,7 @@ public class CartListPresenter implements ICartListPresenter {
             }
 
             @Override
-            public void onNext(CheckPromoCodeCartListResult promoCodeCartListData) {
+            public void onNext(PromoCodeCartListData promoCodeCartListData) {
                 view.hideProgressLoading();
                 if (!promoCodeCartListData.isError())
                     view.renderCheckPromoCodeFromSuggestedPromoSuccess(promoCodeCartListData);
@@ -908,48 +935,60 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @Override
-    public Map<String, Object> generateCartDataAnalytics(CartItemData removedCartItem) {
+    public Map<String, Object> generateCartDataAnalytics(CartItemData removedCartItem, String enhancedECommerceAction) {
         List<CartItemData> cartItemDataList = new ArrayList<>();
-        return generateCartDataAnalytics(cartItemDataList);
+        return generateCartDataAnalytics(cartItemDataList, enhancedECommerceAction);
     }
 
-    public Map<String, Object> generateCartDataAnalytics(List<CartItemData> cartItemDataList) {
+    @Override
+    public Map<String, Object> generateCartDataAnalytics(List<CartItemData> cartItemDataList, String enhancedECommerceAction) {
 
-        GTMCart gtmCart = new GTMCart();
+        EnhancedECommerceCartMapData enhancedECommerceCartMapData = new EnhancedECommerceCartMapData();
 
-        gtmCart.setCurrencyCode("IDR");
-        gtmCart.setAddAction(GTMCart.ADD_ACTION);
+        enhancedECommerceCartMapData.setCurrencyCode("IDR");
+        enhancedECommerceCartMapData.setAction(enhancedECommerceAction);
 
         for (CartItemData cartItemData : cartItemDataList) {
-            com.tokopedia.core.analytics.nishikino.model.Product product =
-                    new com.tokopedia.core.analytics.nishikino.model.Product();
-            product.setProductName(cartItemData.getOriginData().getProductName());
-            product.setProductID(String.valueOf(cartItemData.getOriginData().getProductId()));
-            product.setPrice(cartItemData.getOriginData().getPriceFormatted());
-            product.setBrand(com.tokopedia.core.analytics.nishikino.model.Product.DEFAULT_VALUE_NONE_OTHER);
+            EnhancedECommerceProductCartMapData enhancedECommerceProductCartMapData =
+                    new EnhancedECommerceProductCartMapData();
+            enhancedECommerceProductCartMapData.setCartId(String.valueOf(cartItemData.getOriginData().getCartId()));
+            enhancedECommerceProductCartMapData.setProductName(cartItemData.getOriginData().getProductName());
+            enhancedECommerceProductCartMapData.setProductID(String.valueOf(cartItemData.getOriginData().getProductId()));
+            enhancedECommerceProductCartMapData.setPrice(cartItemData.getOriginData().getPriceFormatted());
+            enhancedECommerceProductCartMapData.setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
 
-            product.setCategory(TextUtils.isEmpty(cartItemData.getOriginData().getCategoryForAnalytics())
-                    ? com.tokopedia.core.analytics.nishikino.model.Product.DEFAULT_VALUE_NONE_OTHER
+            enhancedECommerceProductCartMapData.setCategory(TextUtils.isEmpty(cartItemData.getOriginData().getCategoryForAnalytics())
+                    ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
                     : cartItemData.getOriginData().getCategoryForAnalytics());
-            product.setVariant(com.tokopedia.core.analytics.nishikino.model.Product.DEFAULT_VALUE_NONE_OTHER);
-            product.setQty(cartItemData.getUpdatedData().getQuantity());
-            product.setShopId(cartItemData.getOriginData().getShopId());
+            enhancedECommerceProductCartMapData.setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
+            enhancedECommerceProductCartMapData.setQty(cartItemData.getUpdatedData().getQuantity());
+            enhancedECommerceProductCartMapData.setShopId(cartItemData.getOriginData().getShopId());
             //   product.setShopType(generateShopType(productData.getShopInfo()));
-            product.setShopName(cartItemData.getOriginData().getShopName());
-            product.setCategoryId(cartItemData.getOriginData().getCategoryId());
-            product.setDimension38(
+            enhancedECommerceProductCartMapData.setShopName(cartItemData.getOriginData().getShopName());
+            enhancedECommerceProductCartMapData.setCategoryId(cartItemData.getOriginData().getCategoryId());
+            enhancedECommerceProductCartMapData.setDimension38(
                     TextUtils.isEmpty(cartItemData.getOriginData().getTrackerAttribution())
-                            ? com.tokopedia.core.analytics.nishikino.model.Product.DEFAULT_VALUE_NONE_OTHER
+                            ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
                             : cartItemData.getOriginData().getTrackerAttribution()
             );
-            product.setDimension40(
+            enhancedECommerceProductCartMapData.setAttribution(
+                    TextUtils.isEmpty(cartItemData.getOriginData().getTrackerAttribution())
+                            ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
+                            : cartItemData.getOriginData().getTrackerAttribution()
+            );
+            enhancedECommerceProductCartMapData.setDimension40(
                     TextUtils.isEmpty(cartItemData.getOriginData().getTrackerListName())
-                            ? com.tokopedia.core.analytics.nishikino.model.Product.DEFAULT_VALUE_NONE_OTHER
+                            ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
                             : cartItemData.getOriginData().getTrackerListName()
             );
-            gtmCart.addProduct(product.getProduct());
+            enhancedECommerceProductCartMapData.setListName(
+                    TextUtils.isEmpty(cartItemData.getOriginData().getTrackerListName())
+                            ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
+                            : cartItemData.getOriginData().getTrackerListName()
+            );
+            enhancedECommerceCartMapData.addProduct(enhancedECommerceProductCartMapData.getProduct());
         }
-        return gtmCart.getCartMap();
+        return enhancedECommerceCartMapData.getCartMap();
 
     }
 }

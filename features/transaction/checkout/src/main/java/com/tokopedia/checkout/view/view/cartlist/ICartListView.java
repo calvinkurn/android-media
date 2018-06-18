@@ -7,7 +7,6 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.CartTickerErrorData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.view.base.IBaseView;
-import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartListResult;
 
 import java.util.List;
 
@@ -63,7 +62,7 @@ public interface ICartListView extends IBaseView {
     void renderErrorTimeoutConnectionToShipmentMultipleAddress(String message);
 
 
-    void renderCheckPromoCodeFromSuggestedPromoSuccess(CheckPromoCodeCartListResult promoCodeCartListData);
+    void renderCheckPromoCodeFromSuggestedPromoSuccess(PromoCodeCartListData promoCodeCartListData);
 
     void renderErrorCheckPromoCodeFromSuggestedPromo(String message);
 

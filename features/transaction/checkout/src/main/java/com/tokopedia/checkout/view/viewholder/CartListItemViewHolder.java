@@ -185,6 +185,17 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
         if (quantity.length() > 0) {
             this.etQty.setSelection(quantity.length());
         }
+        this.etQty.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((AppCompatEditText) v).selectAll();
+                String qtyStr = ((AppCompatEditText) v).getText().toString();
+                actionListener.onCartItemQuantityInputFormClicked(
+                        !TextUtils.isEmpty(qtyStr) ? qtyStr : ""
+                );
+            }
+        });
+
         ImageHandler.loadImageRounded2(
                 this.itemView.getContext(), this.ivProductImage,
                 data.getCartItemData().getOriginData().getProductImage()
@@ -206,6 +217,7 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
         this.tvLabelRemarkOption.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                actionListener.onCartItemLabelInputRemarkClicked();
                 etRemark.setVisibility(View.VISIBLE);
                 tvLabelRemarkOption.setVisibility(View.GONE);
             }
@@ -365,7 +377,14 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void checkQtyMustDisabled(CartItemHolderData cartItemHolderData, int qty) {
-        if (qty <= QTY_MIN || qty <= cartItemHolderData.getCartItemData().getOriginData().getMinimalQtyOrder()) {
+        if ((qty <= QTY_MIN || qty <= cartItemHolderData.getCartItemData().getOriginData().getMinimalQtyOrder()) &&
+            (qty >= QTY_MAX || (cartItemHolderData.getCartItemData().getOriginData().getInvenageValue() != 0 &&
+                qty >= cartItemHolderData.getCartItemData().getOriginData().getInvenageValue()))) {
+            btnQtyMinus.setEnabled(false);
+            btnQtyPlus.setEnabled(false);
+            btnQtyMinus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.bg_button_counter_minus_disabled));
+            btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.bg_button_counter_plus_disabled));
+        } else if (qty <= QTY_MIN || qty <= cartItemHolderData.getCartItemData().getOriginData().getMinimalQtyOrder()) {
             btnQtyMinus.setEnabled(false);
             btnQtyPlus.setEnabled(true);
             btnQtyMinus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.bg_button_counter_minus_disabled));
@@ -470,6 +489,8 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
             for (int i = 0; i < quantity.editable.length(); i++) {
                 if (quantity.editable.charAt(i) == '0') {
                     zeroCount++;
+                } else {
+                    break;
                 }
             }
             if (zeroCount == quantity.editable.length()) {

@@ -3,6 +3,7 @@ package com.tokopedia.digital.categorylist.view.fragment;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.IntentService;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -290,6 +291,11 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     }
 
     @Override
+    public Context getAppContext() {
+        return getActivity();
+    }
+
+    @Override
     public void navigateToActivityRequest(Intent intent, int requestCode) {
         startActivityForResult(intent, requestCode);
     }
@@ -326,21 +332,6 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
 
     @Override
     public void showToastMessage(String message) {
-
-    }
-
-    @Override
-    public void showDialog(Dialog dialog) {
-
-    }
-
-    @Override
-    public void dismissDialog(Dialog dialog) {
-
-    }
-
-    @Override
-    public void executeIntentService(Bundle bundle, Class<? extends IntentService> clazz) {
 
     }
 
@@ -435,6 +426,9 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     @Override
     public void onClickCategoryHeaderMenu(DigitalCategoryItemHeader data) {
         switch (data.getTypeMenu()) {
+            case TRANSACTION:
+                startActivity(((IDigitalModuleRouter) getActivity().getApplication()).getOrderListIntent(getActivity()));
+                break;
             default:
                 startActivity(DigitalWebActivity.newInstance(getActivity(), data.getSiteUrl()));
                 break;
@@ -444,5 +438,4 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     public boolean isFromAppShortcut() {
         return fromAppShortcut;
     }
-
 }

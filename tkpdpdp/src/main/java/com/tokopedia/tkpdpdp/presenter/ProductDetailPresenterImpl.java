@@ -21,6 +21,10 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
+import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
+import com.tokopedia.abstraction.common.network.exception.ResponseDataNullException;
+import com.tokopedia.abstraction.common.network.exception.ResponseErrorException;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.PaymentTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -72,13 +76,15 @@ import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.dialog.DialogToEtalase;
 import com.tokopedia.tkpdpdp.fragment.ProductDetailFragment;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
-import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant;
 import com.tokopedia.topads.sourcetagging.data.repository.TopAdsSourceTaggingRepositoryImpl;
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingDataSource;
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingLocal;
 import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
 import com.tokopedia.topads.sourcetagging.domain.repository.TopAdsSourceTaggingRepository;
 
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -92,8 +98,6 @@ import java.util.Map;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-
-import rx.Subscriber;
 
 import static com.tokopedia.core.network.apiservices.galadriel.GaladrielApi.VALUE_TARGET_GOLD_MERCHANT;
 import static com.tokopedia.core.network.apiservices.galadriel.GaladrielApi.VALUE_TARGET_GUEST;
@@ -171,7 +175,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     public void processToCart(@NonNull Activity context, @NonNull ProductCartPass data) {
         sendAppsFlyerCheckout(context, data);
         routeToNewCheckout(context, data);
-        //routeToOldCheckout(context, data);
+        /*routeToOldCheckout(context, data);*/
         UnifyTracking.eventPDPCart();
     }
 
@@ -183,6 +187,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     private void routeToNewCheckout(@NonNull Activity context, @NonNull ProductCartPass data) {
         if (context.getApplication() instanceof PdpRouter) {
+            viewListener.showProgressLoading();
             ((PdpRouter) context.getApplication()).addToCartProduct(
                     new AddToCartRequest.Builder()
                             .productId(Integer.parseInt(data.getProductId()))
@@ -201,12 +206,34 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
                         @Override
                         public void onError(Throwable e) {
+                            viewListener.hideProgressLoading();
                             e.printStackTrace();
-                            viewListener.showToastMessage(e.getMessage());
+                            if (e instanceof UnknownHostException) {
+                                /* Ini kalau ga ada internet */
+                                viewListener.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
+                            } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
+                                /* Ini kalau timeout */
+                                viewListener.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+                            } else if (e instanceof ResponseErrorException) {
+                                /* Ini kalau error dari API kasih message error */
+                                viewListener.showToastMessage(e.getMessage());
+                            } else if (e instanceof ResponseDataNullException) {
+                                /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
+                                viewListener.showToastMessage(e.getMessage());
+                            } else if (e instanceof HttpErrorException) {
+                                /* Ini Http error, misal 403, 500, 404,
+                                code http errornya bisa diambil
+                                e.getErrorCode */
+                                viewListener.showToastMessage(e.getMessage());
+                            } else {
+                                /* Ini diluar dari segalanya hahahaha */
+                                viewListener.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                            }
                         }
 
                         @Override
                         public void onNext(AddToCartResult addToCartResult) {
+                            viewListener.hideProgressLoading();
                             if (addToCartResult.isSuccess())
                                 viewListener.renderAddToCartSuccess(addToCartResult.getMessage());
                             else
@@ -576,7 +603,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     @Override
     public void onDestroyView(@NonNull Context context) {
         retrofitInteractor.unSubscribeObservable();
-        if (topAdsAddSourceTaggingUseCase != null){
+        if (topAdsAddSourceTaggingUseCase != null) {
             topAdsAddSourceTaggingUseCase.unsubscribe();
         }
         cacheHandler = null;
@@ -1109,7 +1136,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     @Override
     public void onPromoAdsClicked(final Context context, String shopId, final int itemId, final String userId) {
-        if (topAdsSourceTaggingLocal == null){
+        if (topAdsSourceTaggingLocal == null) {
             topAdsSourceTaggingLocal = new TopAdsSourceTaggingLocal(context);
         }
         retrofitInteractor.checkPromoAds(shopId, itemId, userId, new RetrofitInteractor.CheckPromoAdsListener() {
@@ -1163,7 +1190,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     }
 
     @Override
-    public void saveSource(String source){
+    public void saveSource(String source) {
         topAdsAddSourceTaggingUseCase.execute(TopAdsAddSourceTaggingUseCase.createRequestParams(source), new Subscriber<Void>() {
             @Override
             public void onCompleted() {

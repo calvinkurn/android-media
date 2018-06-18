@@ -9,6 +9,8 @@ public interface ISearchAddressListView<T> {
 
     void showList(T t);
 
+    void updateList(T t);
+
     void showListEmpty();
 
     void showError(String message);
@@ -17,6 +19,8 @@ public interface ISearchAddressListView<T> {
 
     void hideLoading();
 
-    Activity getActivity();
+    void resetPagination();
+
+    Activity getActivityContext();
 
 }

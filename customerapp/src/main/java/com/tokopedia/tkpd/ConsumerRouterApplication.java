@@ -10,12 +10,12 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
-import com.google.gson.Gson;
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tkpd.library.utils.AnalyticsLog;
 import com.tkpd.library.utils.CommonUtils;
@@ -31,8 +31,6 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.checkout.domain.usecase.AddToCartUseCase;
-import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
-import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartShipmentUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCouponListCartMarketPlaceUseCase;
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.di.component.CartComponentInjector;
@@ -94,12 +92,9 @@ import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartRequest;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
-import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartListResult;
-import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
-import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
 import com.tokopedia.core.router.transactionmodule.sharedata.CouponListResult;
 import com.tokopedia.core.router.wallet.IWalletRouter;
-import com.tokopedia.core.share.ShareActivity;
+import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.core.shopinfo.limited.fragment.ShopTalkLimitedFragment;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.BranchSdkUtils;
@@ -180,6 +175,8 @@ import com.tokopedia.loyalty.view.activity.PromoListActivity;
 import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
 import com.tokopedia.loyalty.view.fragment.LoyaltyNotifFragmentDialog;
+import com.tokopedia.network.NetworkRouter;
+import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationProfileActivity;
@@ -259,6 +256,7 @@ import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
 import com.tokopedia.tkpd.tokocash.GetBalanceTokoCashWrapper;
 import com.tokopedia.tkpd.tokocash.datepicker.DatePickerUtil;
+import com.tokopedia.tkpd.utils.FingerprintModelGenerator;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
@@ -346,7 +344,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ImageUploaderRouter,
         ContactUsModuleRouter,
         ITransactionOrderDetailRouter,
-        ILogisticUploadAwbRouter {
+        ILogisticUploadAwbRouter,
+        NetworkRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -1635,9 +1634,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                         for (int i = 0; i < messageList.size(); i++) {
                             String string = messageList.get(i);
                             stringBuilder.append(string);
-                            if (messageList.size() > 1 && i < messageList.size() - 1) {
-                                stringBuilder.append(",");
-                            }
+                            stringBuilder.append(" ");
                         }
                         return new AddToCartResult.Builder()
                                 .message(stringBuilder.toString())
@@ -1696,60 +1693,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Observable<CheckPromoCodeCartListResult> tkpdLoyaltyGetCheckPromoCodeCartListResultObservable(
-            String promoCode,
-            String paramUpdateCartString) {
-        com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
-        if (!TextUtils.isEmpty(paramUpdateCartString)) {
-            TKPDMapParam<String, String> paramUpdateCart = new TKPDMapParam<>();
-            paramUpdateCart.put(CheckPromoCodeCartListUseCase.PARAM_CARTS, paramUpdateCartString);
-
-            requestParams.putObject(CheckPromoCodeCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART,
-                    com.tokopedia.abstraction.common.utils.network.AuthUtil.generateParamsNetwork(
-                            this, paramUpdateCart, userSession.getUserId(), userSession.getDeviceId()
-                    ));
-        }
-        TKPDMapParam<String, String> paramCheckPromo = new TKPDMapParam<>();
-        paramCheckPromo.put(CheckPromoCodeCartListUseCase.PARAM_PROMO_CODE, promoCode);
-        paramCheckPromo.put(CheckPromoCodeCartListUseCase.PARAM_PROMO_SUGGESTED,
-                CheckPromoCodeCartListUseCase.PARAM_VALUE_NOT_SUGGESTED);
-        paramCheckPromo.put(CheckPromoCodeCartListUseCase.PARAM_PROMO_LANG,
-                CheckPromoCodeCartListUseCase.PARAM_VALUE_LANG_ID);
-
-
-        requestParams.putObject(CheckPromoCodeCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING_CHECK_PROMO,
-                com.tokopedia.abstraction.common.utils.network.AuthUtil.generateParamsNetwork(
-                        this, paramCheckPromo, userSession.getUserId(), userSession.getDeviceId()
-                ));
-
-
-        return CartComponentInjector.newInstance(this)
-                .getCheckPromoCodeCartListUseCase()
-                .createObservable(requestParams);
-    }
-
-    @Override
-    public Observable<CheckPromoCodeCartShipmentResult> tkpdLoyaltyGetCheckPromoCodeCartShipmentResultObservable(
-            CheckPromoCodeCartShipmentRequest checkPromoCodeCartShipmentRequest
-    ) {
-        TKPDMapParam<String, String> param = new TKPDMapParam<>();
-        param.put(CheckPromoCodeCartShipmentUseCase.PARAM_CARTS,
-                new Gson().toJson(checkPromoCodeCartShipmentRequest));
-        param.put(CheckPromoCodeCartShipmentUseCase.PARAM_PROMO_LANG,
-                CheckPromoCodeCartShipmentUseCase.PARAM_VALUE_LANG_ID);
-        param.put(CheckPromoCodeCartShipmentUseCase.PARAM_PROMO_SUGGESTED,
-                CheckPromoCodeCartShipmentUseCase.PARAM_VALUE_NOT_SUGGESTED);
-
-        com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
-        requestParams.putObject(CheckPromoCodeCartShipmentUseCase.PARAM_REQUEST_AUTH_MAP_STRING_CHECK_PROMO,
-                com.tokopedia.abstraction.common.utils.network.AuthUtil.generateParamsNetwork(
-                        this, param, userSession.getUserId(), userSession.getDeviceId())
-        );
-        return CartComponentInjector.newInstance(this)
-                .getCheckPromoCodeCartShipmentUseCase().createObservable(requestParams);
-    }
-
-    @Override
     public Observable<CouponListResult> tkpdLoyaltyGetCouponListObservable(String page, String pageSize) {
         TKPDMapParam<String, String> tkpdMapParam = new TKPDMapParam<>();
         tkpdMapParam.put(GetCouponListCartMarketPlaceUseCase.PARAM_PAGE, page);
@@ -1763,6 +1706,21 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         );
         return CartComponentInjector.newInstance(this)
                 .getGetCouponListCartMarketPlaceUseCase().createObservable(requestParams);
+    }
+
+    @Override
+    public ChuckInterceptor loyaltyModuleRouterGetCartCheckoutChuckInterceptor() {
+        return getAppComponent().chuckInterceptor();
+    }
+
+    @Override
+    public FingerprintInterceptor loyaltyModuleRouterGetCartCheckoutFingerPrintInterceptor() {
+        return getAppComponent().fingerprintInterceptor();
+    }
+
+    @Override
+    public Converter.Factory loyaltyModuleRouterGetStringResponseConverter() {
+        return new StringResponseConverter();
     }
 
     @Override
@@ -1854,7 +1812,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void goToShareShop(Context context, String shopId, String shopUrl, String shareLabel) {
+    public void goToShareShop(Activity activity, String shopId, String shopUrl, String shareLabel) {
         ShareData shareData = ShareData.Builder.aShareData()
                 .setType(ShareData.SHOP_TYPE)
                 .setName(getString(R.string.message_share_shop))
@@ -1862,7 +1820,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 .setUri(shopUrl)
                 .setId(shopId)
                 .build();
-        context.startActivity(ShareActivity.createIntent(context, shareData));
+        new DefaultShare(activity, shareData).show();
     }
 
     @Override
@@ -2130,6 +2088,21 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
 
     @Override
+    public void shareGroupChat(Activity activity, String channelId, String title, String contentMessage, String imgUrl,
+                               String shareUrl) {
+        ShareData shareData = ShareData.Builder.aShareData()
+                .setId(channelId)
+                .setName(title)
+                .setTextContent(contentMessage)
+                .setDescription(contentMessage)
+                .setImgUri(imgUrl)
+                .setUri(shareUrl)
+                .setType(ShareData.GROUPCHAT_TYPE)
+                .build();
+        new DefaultShare(activity, shareData).show();
+    }
+
+    @Override
     public Observable<TKPDMapParam<String, Object>> verifyEventPromo(RequestParams requestParams) {
         return eventComponent.getPostVerifyCartUseCase().getExecuteObservableAsync(requestParams).map(new Func1<VerifyCartResponse, TKPDMapParam<String, Object>>() {
             @Override
@@ -2272,4 +2245,20 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public Intent getDistrictRecommendationIntent(Activity activity, com.tokopedia.core.manage.people.address.model.Token token) {
         return DistrictRecommendationActivity.createInstance(activity, new TokenMapper().convertTokenModel(token));
     }
+
+    @Override
+    public FingerprintModel getFingerprintModel() {
+        return FingerprintModelGenerator.generateFingerprintModel(this);
+    }
+
+    @Override
+    public void doRelogin(String newAccessToken) {
+        SessionRefresh sessionRefresh = new SessionRefresh(newAccessToken);
+        try {
+            sessionRefresh.gcmUpdate();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

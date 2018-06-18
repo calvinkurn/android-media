@@ -17,18 +17,24 @@ import android.widget.RelativeLayout;
 
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.data.mapper.AddressModelMapper;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.view.adapter.ShipmentAddressListAdapter;
 import com.tokopedia.checkout.view.base.BaseCheckoutFragment;
+import com.tokopedia.checkout.view.di.component.CartComponent;
 import com.tokopedia.checkout.view.di.component.DaggerShipmentAddressListComponent;
 import com.tokopedia.checkout.view.di.component.ShipmentAddressListComponent;
 import com.tokopedia.checkout.view.di.module.ShipmentAddressListModule;
+import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule;
+import com.tokopedia.checkout.view.view.multipleaddressform.MultipleAddressFormActivity;
+import com.tokopedia.checkout.view.view.shipment.ShipmentActivity;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
 import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.design.text.SearchInputView;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,22 +59,27 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     private static final int ORDER_ASC = 1;
     private static final String PARAMS = "params";
 
-    RecyclerView mRvRecipientAddressList;
-    SearchInputView mSvAddressSearchBox;
-    SwipeToRefresh swipeToRefreshLayout;
-    LinearLayout llNetworkErrorView;
-    LinearLayout llNoResult;
-    RelativeLayout rlContent;
-    Button btChangeSearch;
+    private RecyclerView mRvRecipientAddressList;
+    private SearchInputView mSvAddressSearchBox;
+    private SwipeToRefresh swipeToRefreshLayout;
+    private LinearLayout llNetworkErrorView;
+    private LinearLayout llNoResult;
+    private RelativeLayout rlContent;
+    private Button btChangeSearch;
 
-    InputMethodManager mInputMethodManager;
-    ICartAddressChoiceActivityListener mCartAddressChoiceActivityListener;
+    private InputMethodManager mInputMethodManager;
+    private ICartAddressChoiceActivityListener mCartAddressChoiceActivityListener;
+    private int maxItemPosition;
+    private boolean isLoading;
 
     @Inject
     ShipmentAddressListAdapter mShipmentAddressListAdapter;
 
     @Inject
     ShipmentAddressListPresenter mShipmentAddressListPresenter;
+
+    @Inject
+    CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
 
     private Token token;
 
@@ -93,7 +104,9 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     @Override
     protected void initInjector() {
         ShipmentAddressListComponent component = DaggerShipmentAddressListComponent.builder()
-                .shipmentAddressListModule(new ShipmentAddressListModule(this))
+                .cartComponent(getComponent(CartComponent.class))
+                .shipmentAddressListModule(new ShipmentAddressListModule( this))
+                .trackingAnalyticsModule(new TrackingAnalyticsModule())
                 .build();
         component.inject(this);
     }
@@ -123,31 +136,16 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
     }
 
-    /**
-     * apakah fragment ini support options menu?
-     *
-     * @return iya atau tidak
-     */
     @Override
     protected boolean getOptionsMenuEnable() {
         return false;
     }
 
-    /**
-     * Cast si activity ke listener atau bisa juga ini untuk context activity
-     *
-     * @param activity si activity yang punya fragment
-     */
     @Override
     protected void initialListener(Activity activity) {
         mCartAddressChoiceActivityListener = (ICartAddressChoiceActivityListener) activity;
     }
 
-    /**
-     * kalau memang argument tidak kosong. ini data argumentnya
-     *
-     * @param arguments argument nya
-     */
     @Override
     protected void setupArguments(Bundle arguments) {
 
@@ -158,13 +156,9 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         return R.layout.fragment_shipment_address_list;
     }
 
-    /**
-     * initial view atau widget.. misalkan textView = (TextView) findById...
-     *
-     * @param view root view si fragment
-     */
     @Override
     protected void initView(View view) {
+        checkoutAnalyticsChangeAddress.eventImpressionChangeAddressImpressionChangeAddress();
         mRvRecipientAddressList = view.findViewById(R.id.rv_address_list);
         mSvAddressSearchBox = view.findViewById(R.id.sv_address_search_box);
         swipeToRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
@@ -182,15 +176,35 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         swipeToRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                isLoading = true;
                 mSvAddressSearchBox.getSearchTextView().setText("");
+                maxItemPosition = 0;
                 onSearchReset();
             }
         });
+        mRvRecipientAddressList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                RecyclerView.Adapter adapter = recyclerView.getAdapter();
+                int totalItemCount = adapter.getItemCount();
+                int lastVisibleItemPosition = ((LinearLayoutManager) recyclerView.getLayoutManager())
+                        .findLastVisibleItemPosition();
+
+                if (maxItemPosition < lastVisibleItemPosition) {
+                    maxItemPosition = lastVisibleItemPosition;
+                }
+
+                if ((maxItemPosition + 1) == totalItemCount) {
+                    if (!isLoading && mShipmentAddressListPresenter.hasNext()) {
+                        performSearch(mSvAddressSearchBox.getSearchText(), false);
+                    }
+                }
+            }
+        });
+
     }
 
-    /**
-     * set listener atau attribute si view. misalkan texView.setText("blablalba");
-     */
     @Override
     protected void setViewListener() {
         mShipmentAddressListPresenter.attachView(this);
@@ -198,18 +212,12 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
     }
 
-    /**
-     * initial Variabel di fragment, selain yg sifatnya widget. Misal: variable state, handler dll
-     */
     @Override
     protected void initialVar() {
         mRvRecipientAddressList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRvRecipientAddressList.setAdapter(mShipmentAddressListAdapter);
     }
 
-    /**
-     * setup aksi, attr, atau listener untuk si variable. misal. appHandler.startAction();
-     */
     @Override
     protected void setActionVar() {
         initSearchView();
@@ -219,6 +227,13 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     @Override
     public void showList(List<RecipientAddressModel> recipientAddressModels) {
         mShipmentAddressListAdapter.setAddressList(recipientAddressModels);
+        mShipmentAddressListAdapter.notifyDataSetChanged();
+        mRvRecipientAddressList.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void updateList(List<RecipientAddressModel> recipientAddressModels) {
+        mShipmentAddressListAdapter.updateAddressList(recipientAddressModels);
         mShipmentAddressListAdapter.notifyDataSetChanged();
         mRvRecipientAddressList.setVisibility(View.VISIBLE);
     }
@@ -242,22 +257,34 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                     @Override
                     public void onRetryClicked() {
                         String keyword = mSvAddressSearchBox.getSearchText();
-                        performSearch(!TextUtils.isEmpty(keyword) ? keyword : "");
+                        performSearch(!TextUtils.isEmpty(keyword) ? keyword : "", true);
                     }
                 });
     }
 
     @Override
     public void showLoading() {
+        isLoading = true;
         swipeToRefreshLayout.setRefreshing(true);
     }
 
     @Override
     public void hideLoading() {
+        isLoading = false;
         rlContent.setVisibility(View.VISIBLE);
         llNetworkErrorView.setVisibility(View.GONE);
         llNoResult.setVisibility(View.GONE);
         swipeToRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void resetPagination() {
+        maxItemPosition = 0;
+    }
+
+    @Override
+    public Activity getActivityContext() {
+        return getActivity();
     }
 
     private void initSearchView() {
@@ -292,29 +319,28 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
     @Override
     public void onSearchSubmitted(String text) {
-        performSearch(text);
-        closeSoftKeyboard();
+        performSearch(text, true);
     }
 
     @Override
     public void onSearchTextChanged(String text) {
         openSoftKeyboard();
-//        performSearch(text);
     }
 
     @Override
     public void onSearchReset() {
         mShipmentAddressListPresenter.resetAddressList(getActivity(), ORDER_ASC,
-                (RecipientAddressModel) getArguments().getParcelable(EXTRA_CURRENT_ADDRESS));
-        closeSoftKeyboard();
+                getArguments().getParcelable(EXTRA_CURRENT_ADDRESS));
     }
 
-    private void performSearch(String query) {
+    private void performSearch(String query, boolean resetPage) {
+        checkoutAnalyticsChangeAddress.eventClickChangeAddressSubmitSearchFromPilihAlamatLainnya();
         if (!query.isEmpty()) {
             mShipmentAddressListPresenter.getAddressList(getActivity(), ORDER_ASC, query,
-                    (RecipientAddressModel) getArguments().getParcelable(EXTRA_CURRENT_ADDRESS));
+                    (RecipientAddressModel) getArguments().getParcelable(EXTRA_CURRENT_ADDRESS), true);
         } else {
-            onSearchReset();
+            mShipmentAddressListPresenter.getAddressList(getActivity(), ORDER_ASC, "",
+                    (RecipientAddressModel) getArguments().getParcelable(EXTRA_CURRENT_ADDRESS), resetPage);
         }
     }
 
@@ -325,26 +351,30 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         }
     }
 
-    private void closeSoftKeyboard() {
-        if (mInputMethodManager != null) {
-            mInputMethodManager.hideSoftInputFromWindow(
-                    mSvAddressSearchBox.getSearchTextView().getWindowToken(), 0);
-        }
-    }
-
     @Override
     public void onAddressContainerClicked(RecipientAddressModel model) {
         if (mCartAddressChoiceActivityListener != null) {
+            checkoutAnalyticsChangeAddress.eventClickChangeAddressClickChecklistAlamatFromPilihAlamatLainnya();
             mCartAddressChoiceActivityListener.finishSendResultActionSelectedAddress(model);
         }
     }
 
     @Override
     public void onEditClick(RecipientAddressModel model) {
+        checkoutAnalyticsChangeAddress.eventClickChangeAddressClickUbahFromPilihAlamatLainnya();
         AddressModelMapper mapper = new AddressModelMapper();
 
         Intent intent = AddAddressActivity.createInstance(getActivity(), mapper.transform(model), token);
         startActivityForResult(intent, ManageAddressConstant.REQUEST_CODE_PARAM_EDIT);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == ManageAddressConstant.REQUEST_CODE_PARAM_EDIT && resultCode == Activity.RESULT_OK) {
+            onSearchReset();
+        }
     }
 
 }

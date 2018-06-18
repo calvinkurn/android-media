@@ -2,7 +2,9 @@ package com.tokopedia.checkout.view.view.multipleaddressform;
 
 import android.app.Activity;
 
-import com.tokopedia.abstraction.common.utils.TKPDMapParam; /**
+import com.tokopedia.abstraction.common.utils.TKPDMapParam;
+
+/**
  * Created by kris on 2/5/18. Tokopedia
  */
 
@@ -10,7 +12,7 @@ public interface IMultipleAddressView {
 
     void successMakeShipmentData();
 
-    void showError();
+    void showError(String message);
 
     TKPDMapParam<String, String> getGeneratedAuthParamNetwork(TKPDMapParam<String, String> param);
 

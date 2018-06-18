@@ -2,15 +2,20 @@ package com.tokopedia.checkout.view.base;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.checkout.R;
+import com.tokopedia.checkout.view.di.component.CartComponent;
+import com.tokopedia.checkout.view.di.component.CartComponentInjector;
 
 import butterknife.ButterKnife;
 
 /**
  * @author anggaprasetiyo on 18/04/18.
  */
-public abstract class BaseCheckoutActivity extends BaseSimpleActivity {
+public abstract class BaseCheckoutActivity extends BaseSimpleActivity implements HasComponent<CartComponent> {
 
     protected boolean isAfterRotate;
 
@@ -34,6 +39,10 @@ public abstract class BaseCheckoutActivity extends BaseSimpleActivity {
         initVar();
         setViewListener();
         setActionVar();
+    }
+
+    protected Fragment getCurrentFragment() {
+        return getSupportFragmentManager().findFragmentById(R.id.parent_view);
     }
 
     protected abstract void initInjector();
@@ -103,4 +112,9 @@ public abstract class BaseCheckoutActivity extends BaseSimpleActivity {
      * variable nya mau diapain?
      */
     protected abstract void setActionVar();
+
+    @Override
+    public CartComponent getComponent() {
+        return CartComponentInjector.newInstance(getApplication()).getCartApiServiceComponent();
+    }
 }

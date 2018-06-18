@@ -20,12 +20,10 @@ public interface IPromoCodeInteractor {
             String voucherCode,
             TKPDMapParam<String, String> param, Subscriber<VoucherViewModel> subscriber);
 
+    void submitCheckPromoCodeMarketPlace(
+            TKPDMapParam<String, String> paramUpdateCart,
+            TKPDMapParam<String, String> paramCheckPromo,
+            Subscriber<VoucherViewModel> subscriber);
 
-    void submitVoucherMarketPlaceCartList(
-            Observable observable, Subscriber<?> subscriber
-    );
 
-    void submitVoucherMarketPlaceCartShipment(
-            Observable observable, Subscriber<?> subscriber
-    );
 }

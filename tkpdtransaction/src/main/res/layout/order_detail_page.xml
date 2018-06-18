@@ -74,7 +74,7 @@
                     android:layout_toLeftOf="@+id/btn_upload_awb"
                     android:layout_toStartOf="@+id/btn_upload_awb"
                     android:gravity="start"
-                    android:padding="@dimen/activity_vertical_margin"
+                    android:padding="@dimen/dp_16"
                     tools:text="Resi tidak terlacak. Unggah resi fisik sebelum dibatalkan otomatis pada 13 Feb, 21:10 WIB
 "/>
 
@@ -88,7 +88,7 @@
                     android:layout_centerVertical="true"
                     android:gravity="end"
                     android:paddingRight="@dimen/activity_horizontal_margin"
-                    android:text="Unggah"
+                    android:text="@string/label_oder_detail_btn_unggah_awb"
                     android:textColor="@color/green_500"
                     android:textStyle="bold"/>
 
@@ -96,13 +96,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_alignParentTop="true"
-                    android:background="#fde18e"/>
+                    android:background="@color/bg_upload_awb"/>
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_alignParentBottom="true"
-                    android:background="#fde18e"/>
+                    android:background="@color/bg_upload_awb"/>
             </RelativeLayout>
 
             <View

@@ -8,16 +8,16 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
-import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressUseCase;
-import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressAdapterData;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressItemData;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.domain.datamodel.cartmultipleshipment.SetShippingAddressData;
+import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressUseCase;
+import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
@@ -137,7 +137,7 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
         addressData.setRecipientPhoneNumber(shipmentRecipientModel.getRecipientPhoneNumber());
         addressData.setDestinationDistrictId(shipmentRecipientModel.getDestinationDistrictId());
         addressData.setDestinationDistrictName(shipmentRecipientModel.getDestinationDistrictName());
-        addressData.setMaxQuantity(updatedData.getMaxQuantity());
+        addressData.setMaxQuantity(originData.getInvenageValue() != 0 ? originData.getInvenageValue() : updatedData.getMaxQuantity());
         addressData.setMinQuantity(originData.getMinimalQtyOrder());
         addressData.setErrorCheckoutPriceLimit(messageErrorData.getErrorCheckoutPriceLimit());
         addressData.setErrorFieldBetween(messageErrorData.getErrorFieldBetween());
@@ -167,7 +167,7 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
             public void onError(Throwable e) {
                 e.printStackTrace();
                 view.hideLoading();
-                view.showError();
+                view.showError(null);
             }
 
             @Override
@@ -176,7 +176,15 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
                 if (setShippingAddressData.isSuccess()) {
                     view.successMakeShipmentData();
                 } else {
-                    view.showError();
+                    if (setShippingAddressData.getMessages() != null && setShippingAddressData.getMessages().size() > 0) {
+                        StringBuilder stringBuilder = new StringBuilder();
+                        for (String errorMessage : setShippingAddressData.getMessages()) {
+                            stringBuilder.append(errorMessage).append(" ");
+                        }
+                        view.showError(stringBuilder.toString());
+                    } else {
+                        view.showError(null);
+                    }
                 }
             }
         };

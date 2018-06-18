@@ -12,7 +12,7 @@ import java.util.List;
  * Created by kris on 5/14/18. Tokopedia
  */
 
-public class TrackingPageMapper implements ITrackingPageMapper{
+public class TrackingPageMapper implements ITrackingPageMapper {
 
     @Override
     public TrackingViewModel trackingViewModel(TrackingResponse trackingResponse) {
@@ -38,7 +38,7 @@ public class TrackingPageMapper implements ITrackingPageMapper{
             splitDate(historyViewModel, order, i);
             historyViewModel.setTitle(order.getTrackHistory().get(i).getStatus());
             trackingHistoryViewModels.add(historyViewModel);
-            if(i == 0) historyViewModel.setColor("#42b549");
+            if (i == 0) historyViewModel.setColor("#42b549");
             else historyViewModel.setColor("#9B9B9B");
         }
         model.setHistoryList(trackingHistoryViewModels);
@@ -47,9 +47,9 @@ public class TrackingPageMapper implements ITrackingPageMapper{
 
     private void splitDate(TrackingHistoryViewModel historyViewModel, TrackOrder order, int i) {
         String[] splitDate = order.getTrackHistory().get(i).getDate().split("-");
-        historyViewModel.setYear(splitDate[0]);
-        historyViewModel.setMonth(splitDate[1]);
-        historyViewModel.setYear(splitDate[2]);
+        historyViewModel.setYear(splitDate[0] != null ? splitDate[0] : "");
+        historyViewModel.setMonth(splitDate[1] != null ? splitDate[1] : "");
+        historyViewModel.setYear(splitDate[2] != null ? splitDate[2] : "");
     }
 
     private boolean switchInteger(int value) {
