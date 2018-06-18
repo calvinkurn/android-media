@@ -6,7 +6,7 @@
     <!-- font sizes-->
     <dimen name="il_text_size_xxsmall">10sp</dimen>
     <dimen name="il_text_size_xsmall">12sp</dimen>
-    <dimen name="il_text_size_small">14sp</dimen>
+    <dimen name="il_text_size_small">12sp</dimen>
     <dimen name="il_text_size_regular">16sp</dimen>
     <dimen name="il_text_size_medium">18sp</dimen>
     <dimen name="il_text_size_large">20sp</dimen>

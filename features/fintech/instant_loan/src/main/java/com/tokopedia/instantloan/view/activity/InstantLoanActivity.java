@@ -79,7 +79,7 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
         tabLayout.addOnTabSelectedListener(onTabSelectedListener);
         setActiveTab();
 
-        viewPager.addOnPageChangeListener(onPageChangeListener);
+//        viewPager.addOnPageChangeListener(onPageChangeListener);
     }
 
     private void setActiveTab() {
@@ -135,18 +135,16 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
         super.onDestroy();
         mBannerPresenter.detachView();
         tabLayout.removeOnTabSelectedListener(onTabSelectedListener);
-        viewPager.removeOnPageChangeListener(onPageChangeListener);
+//        viewPager.removeOnPageChangeListener(onPageChangeListener);
     }
 
-    ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.OnPageChangeListener() {
+    /*ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.OnPageChangeListener() {
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            viewPager.reMeasureLayout();
         }
 
         @Override
         public void onPageSelected(int position) {
-            viewPager.reMeasureLayout();
         }
 
         @Override
@@ -154,7 +152,7 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
 
         }
     };
-
+*/
     TabLayout.OnTabSelectedListener onTabSelectedListener = new TabLayout.OnTabSelectedListener() {
         @Override
         public void onTabSelected(TabLayout.Tab tab) {
