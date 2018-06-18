@@ -39,6 +39,25 @@
         <item>1 Juta - 5 Milyar</item>
     </string-array>
 
+
+    <string-array name="values_title">
+        <item>@string/label_instant_fund</item>
+        <item>@string/label_no_collateral</item>
+        <item>@string/label_with_collateral</item>
+    </string-array>
+
+    <integer-array name="values_drawable_enable">
+        <item>@drawable/ic_dana_instan_enable</item>
+        <item>@drawable/ic_tapna_agunan_enable</item>
+        <item>@drawable/ic_dengan_agunan_enable</item>
+    </integer-array>
+
+    <integer-array name="values_drawable_disable">
+        <item>@drawable/ic_dana_instan</item>
+        <item>@drawable/ic_tapna_agunan_disable</item>
+        <item>@drawable/ic_dengan_agunan_disable</item>
+    </integer-array>
+
     <string-array name="values_duration">
         <item>7 - 18 Hari</item>
         <item>1 - 36 Bulan</item>

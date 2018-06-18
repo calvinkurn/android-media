@@ -1,8 +1,8 @@
 package com.tokopedia.instantloan.view.activity;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -47,9 +47,6 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
 
     private ViewPager mBannerPager;
     private FloatingActionButton mBtnNextBanner, mBtnPreviousBanner;
-    private String denganAngunanTitle;
-    private String tanpaAngunanTitle;
-    private String danaInstantTitle;
 
     private TabLayout tabLayout;
     private HeightWrappingViewPager viewPager;
@@ -62,31 +59,12 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
     protected void setupLayout(Bundle savedInstanceState) {
         super.setupLayout(savedInstanceState);
         initInjector();
-        initResources();
         mBannerPresenter.attachView(this);
         initializeView();
         attachViewListener();
         setupToolbar();
         loadSection();
         mBannerPresenter.loadBanners();
-    }
-
-    public CharSequence getPageTitle(int imageResId, String title) {
-        // Generate title based on item position
-        Drawable image = getResources().getDrawable(imageResId);
-        image.setBounds(0, 0, image.getIntrinsicWidth(), image.getIntrinsicHeight());
-        // Replace blank spaces with image icon
-        SpannableString sb = new SpannableString(" " + "\n" + title);
-        ImageSpan imageSpan = new ImageSpan(image, ImageSpan.ALIGN_BOTTOM);
-        sb.setSpan(imageSpan, 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        return sb;
-    }
-
-
-    private void initResources() {
-        danaInstantTitle = getString(R.string.label_instant_fund);
-        tanpaAngunanTitle = getString(R.string.label_no_collateral);
-        denganAngunanTitle = getString(R.string.label_with_collateral);
     }
 
     List<InstantLoanItem> instantLoanItemList = new ArrayList<>();
@@ -97,7 +75,11 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
         instantLoanPagerAdapter.setData(instantLoanItemList);
         viewPager.setAdapter(instantLoanPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
+
+        tabLayout.addOnTabSelectedListener(onTabSelectedListener);
         setActiveTab();
+
+        viewPager.addOnPageChangeListener(onPageChangeListener);
     }
 
     private void setActiveTab() {
@@ -111,9 +93,9 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
     }
 
     private void populateThreeTabItem() {
-        instantLoanItemList.add(new InstantLoanItem(getPageTitle(R.drawable.ic_dana_instan, danaInstantTitle), getDanaInstantFragment()));
-        instantLoanItemList.add(new InstantLoanItem(getPageTitle(R.drawable.ic_tapna_agunan_disable, tanpaAngunanTitle), getTanpaAgunanFragment()));
-        instantLoanItemList.add(new InstantLoanItem(getPageTitle(R.drawable.ic_dengan_agunan_enable, denganAngunanTitle), getDenganAngunanFragment()));
+        instantLoanItemList.add(new InstantLoanItem(getEnabledPageTitle(0), getDanaInstantFragment()));
+        instantLoanItemList.add(new InstantLoanItem(getPageTitle(1), getTanpaAgunanFragment()));
+        instantLoanItemList.add(new InstantLoanItem(getPageTitle(2), getDenganAngunanFragment()));
     }
 
     private DanaInstantFragment getDanaInstantFragment() {
@@ -152,7 +134,44 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
     protected void onDestroy() {
         super.onDestroy();
         mBannerPresenter.detachView();
+        tabLayout.removeOnTabSelectedListener(onTabSelectedListener);
+        viewPager.removeOnPageChangeListener(onPageChangeListener);
     }
+
+    ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.OnPageChangeListener() {
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            viewPager.reMeasureLayout();
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+            viewPager.reMeasureLayout();
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int state) {
+
+        }
+    };
+
+    TabLayout.OnTabSelectedListener onTabSelectedListener = new TabLayout.OnTabSelectedListener() {
+        @Override
+        public void onTabSelected(TabLayout.Tab tab) {
+            tab.setText(getEnabledPageTitle(tab.getPosition()));
+        }
+
+        @Override
+        public void onTabUnselected(TabLayout.Tab tab) {
+            tab.setText(getPageTitle(tab.getPosition()));
+        }
+
+        @Override
+        public void onTabReselected(TabLayout.Tab tab) {
+
+        }
+    };
+
 
     @Override
     protected int getLayoutRes() {
@@ -274,4 +293,25 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
         }
     };
 
+    private CharSequence getPageTitle(int position) {
+        TypedArray imgs = getResources().obtainTypedArray(R.array.values_drawable_disable);
+        Drawable image = getResources().getDrawable(imgs.getResourceId(position, -1));
+        image.setBounds(0, 0, image.getIntrinsicWidth(), image.getIntrinsicHeight());
+        SpannableString sb = new SpannableString(" " + "\n" + getResources().getStringArray(R.array.values_title)[position]);
+        ImageSpan imageSpan = new ImageSpan(image, ImageSpan.ALIGN_BASELINE);
+        sb.setSpan(imageSpan, 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        imgs.recycle();
+        return sb;
+    }
+
+    private CharSequence getEnabledPageTitle(int position) {
+        TypedArray imgs = getResources().obtainTypedArray(R.array.values_drawable_enable);
+        Drawable image = getResources().getDrawable(imgs.getResourceId(position, -1));
+        image.setBounds(0, 0, image.getIntrinsicWidth(), image.getIntrinsicHeight());
+        SpannableString sb = new SpannableString(" " + "\n" + getResources().getStringArray(R.array.values_title)[position]);
+        ImageSpan imageSpan = new ImageSpan(image, ImageSpan.ALIGN_BASELINE);
+        sb.setSpan(imageSpan, 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        imgs.recycle();
+        return sb;
+    }
 }

@@ -38,5 +38,10 @@ public class HeightWrappingViewPager extends ViewPager {
         }
         // super has to be called again so the new specs are treated as exact measurements
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
+    }
+
+    public void reMeasureLayout() {
+        requestLayout();
     }
 }
