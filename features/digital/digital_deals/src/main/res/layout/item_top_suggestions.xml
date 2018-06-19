@@ -19,8 +19,8 @@
     <View
         android:id="@+id/divider"
         android:layout_width="match_parent"
-        android:paddingStart="@dimen/new_margin_med"
-        android:layout_height="@dimen/dp_2"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_height="@dimen/dp_1"
         android:background="@color/divider_color" />
 
 </LinearLayout>

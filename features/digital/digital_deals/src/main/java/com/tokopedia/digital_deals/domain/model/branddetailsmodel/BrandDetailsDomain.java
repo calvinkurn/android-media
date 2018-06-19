@@ -10,6 +10,7 @@ public class BrandDetailsDomain {
 
     private BrandDomain dealBrand;
 
+    private int count;
 
     public List<DealsCategoryItemDomain> getDealItems() {
         return dealItems;
@@ -27,4 +28,11 @@ public class BrandDetailsDomain {
         this.dealBrand = dealBrand;
     }
 
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
 }

@@ -19,8 +19,9 @@
             android:id="@+id/iv_brand"
             android:layout_width="@dimen/image_category_height"
             android:layout_height="@dimen/image_category_height"
-            android:scaleType="centerCrop"
+            android:scaleType="fitCenter"
             app:layout_constraintLeft_toLeftOf="parent"
+            android:background="@drawable/background_brand_logo"
             app:layout_constraintRight_toRightOf="parent" />
     </android.support.v7.widget.CardView>
 

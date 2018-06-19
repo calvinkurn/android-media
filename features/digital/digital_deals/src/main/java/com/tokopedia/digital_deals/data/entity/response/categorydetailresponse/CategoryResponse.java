@@ -8,9 +8,6 @@ public class CategoryResponse {
     @SerializedName("grid_layout")
     private JsonArray deals;
 
-    @SerializedName("brands")
-    private JsonArray brands;
-
     @SerializedName("page")
     private JsonObject page;
 
@@ -23,14 +20,6 @@ public class CategoryResponse {
 
     public void setDeals(JsonArray deals) {
         this.deals = deals;
-    }
-
-    public JsonArray getBrands() {
-        return brands;
-    }
-
-    public void setBrands(JsonArray brands) {
-        this.brands = brands;
     }
 
     public JsonObject getPage() {

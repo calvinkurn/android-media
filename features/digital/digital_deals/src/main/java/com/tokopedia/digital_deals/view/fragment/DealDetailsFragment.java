@@ -2,6 +2,7 @@ package com.tokopedia.digital_deals.view.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -37,7 +38,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.util.SessionHandler;
@@ -115,6 +115,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     private CirclePageIndicator circlePageIndicator;
     private final int LIKE_REQUEST_CODE = 1099;
     private ConstraintLayout clRedeemInstuctns;
+    private TextView tvDealDetails;
     private final String REDEEM_URL = "https://www.tokopedia.com/bantuan/produk-digital/tokopedia_e_voucher/seputar-tokopedia-e-voucher/#cara-menggunakan-e-voucher";
 
 
@@ -153,7 +154,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         tvViewMap = view.findViewById(R.id.tv_view_map);
         clHeader = view.findViewById(R.id.cl_header);
         toolbar = view.findViewById(R.id.toolbar);
-
+        tvDealDetails=view.findViewById(R.id.tv_deal_details);
         viewPager = view.findViewById(R.id.deals_images);
         circlePageIndicator = view.findViewById(R.id.pager_indicator);
         ((BaseSimpleActivity) getActivity()).setSupportActionBar(toolbar);
@@ -175,6 +176,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         recyclerViewDeals = view.findViewById(R.id.recycler_view);
         circlePageIndicator.setRadius(getResources().getDimension(R.dimen.dp_3));
         collapsingToolbarLayout = view.findViewById(R.id.collapsing_toolbar);
+        collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.transparent));
         appBarLayout = view.findViewById(R.id.app_bar_layout);
 
         mainContent = view.findViewById(R.id.main_content);
@@ -228,9 +230,13 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     public void renderDealDetails(DealsDetailsViewModel detailsViewModel) {
         this.dealDetail = detailsViewModel;
         collapsingToolbarLayout.setTitle(detailsViewModel.getDisplayName());
+        tvDealDetails.setText(detailsViewModel.getDisplayName());
+        tvDealDetails.setVisibility(View.VISIBLE);
 
 
         tvMrp.setText(Utils.convertToCurrencyString(detailsViewModel.getMrp()));
+        tvMrp.setPaintFlags(tvMrp.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+
 
         tvSalesPrice.setText(Utils.convertToCurrencyString(detailsViewModel.getSalesPrice()));
         tvOff.setText(detailsViewModel.getSavingPercentage());
@@ -368,9 +374,13 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
             verticalOffset = Math.abs(verticalOffset);
             int difference = appBarLayout.getTotalScrollRange() - toolbar.getHeight();
             if (verticalOffset >= difference) {
+                if(tvDealDetails.getText()!=null) {
+                    collapsingToolbarLayout.setTitle(tvDealDetails.getText());
+                }
                 DrawableCompat.setTint(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), R.color.tkpd_dark_gray_toolbar));
                 DrawableCompat.setTint(item.getIcon(), ContextCompat.getColor(getActivity(), R.color.tkpd_dark_gray_toolbar));
             } else {
+                collapsingToolbarLayout.setTitle(" ");
                 DrawableCompat.setTint(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), R.color.white));
                 DrawableCompat.setTint(item.getIcon(), ContextCompat.getColor(getActivity(), R.color.white));
             }

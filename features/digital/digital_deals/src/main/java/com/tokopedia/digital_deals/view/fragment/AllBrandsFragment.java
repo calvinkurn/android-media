@@ -49,7 +49,6 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
     private GridLayoutManager layoutManager;
 
     private RecyclerView recyclerview;
-    private ProgressBar progBar;
     private SearchInputView searchInputView;
     @Inject
     AllBrandsPresenter mPresenter;
@@ -84,7 +83,6 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
     private void setUpVariables(View view) {
         recyclerview = view.findViewById(R.id.rv_brand_items);
         searchInputView = view.findViewById(R.id.search_input_view);
-        progBar = view.findViewById(R.id.prog_bar);
         progressBarLayout = view.findViewById(R.id.progress_bar_layout);
         noContent = view.findViewById(R.id.no_content);
         baseMainContent = view.findViewById(R.id.base_main_content);
@@ -162,17 +160,14 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
         }
     }
 
-
     @Override
     public void showProgressBar() {
         progressBarLayout.setVisibility(View.VISIBLE);
-        progBar.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgressBar() {
         progressBarLayout.setVisibility(View.GONE);
-        progBar.setVisibility(View.GONE);
     }
 
     @Override
@@ -218,6 +213,16 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
     @Override
     public LinearLayoutManager getLayoutManager() {
         return layoutManager;
+    }
+
+    @Override
+    public void showEmptyView() {
+        noContent.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideEmptyView() {
+        noContent.setVisibility(View.GONE);
     }
 
     private RecyclerView.OnScrollListener rvOnScrollListener = new RecyclerView.OnScrollListener() {

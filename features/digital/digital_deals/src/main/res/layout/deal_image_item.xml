@@ -7,6 +7,5 @@
         android:id="@+id/deal_image"
         android:layout_width="match_parent"
         android:scaleType="fitXY"
-        android:alpha="0.7"
         android:layout_height="@dimen/dp_240" />
 </FrameLayout>

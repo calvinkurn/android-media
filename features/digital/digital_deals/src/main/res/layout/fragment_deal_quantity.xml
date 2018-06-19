@@ -46,7 +46,7 @@
                     android:id="@+id/iv_brand"
                     android:layout_width="@dimen/image_width_brand"
                     android:layout_height="@dimen/image_width_brand"
-                    android:background="@color/grey_1100"
+                    android:background="@drawable/background_brand_logo"
                     android:scaleType="centerCrop"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_popular"
@@ -75,7 +75,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_8"
-                android:fontFamily="sans-serif-medium"
+                android:fontFamily="sans-serif"
                 android:includeFontPadding="false"
                 android:textColor="@color/black_40"
                 android:textSize="@dimen/sp_14"
@@ -87,7 +87,7 @@
             <View
                 android:id="@+id/divider1"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_2"
+                android:layout_height="@dimen/dp_1"
                 android:layout_marginTop="@dimen/dp_16"
                 android:background="@color/divider_color"
                 app:layout_constraintTop_toBottomOf="@+id/card_view_brand" />
@@ -219,7 +219,7 @@
             <View
                 android:id="@+id/divider5"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_2"
+                android:layout_height="@dimen/dp_1"
                 android:layout_marginTop="@dimen/dp_16"
                 android:background="@color/divider_color"
                 app:layout_constraintTop_toBottomOf="@+id/tv_sales_price" />

@@ -76,7 +76,7 @@ public class BrandDetailsPresenter extends BaseDaggerPresenter<BrandDetailsContr
                 categoryViewModels = Utils.getSingletonInstance()
                         .convertIntoCategoryListItemsViewModel(dealEntity.getDealItems());
                 brandViewModel =Utils.getSingletonInstance().convertIntoBrandViewModel(dealEntity.getDealBrand());
-                getView().renderBrandDetails(categoryViewModels, brandViewModel);
+                getView().renderBrandDetails(categoryViewModels, brandViewModel, dealEntity.getCount());
                 CommonUtils.dumper("enter onNext");
             }
         });

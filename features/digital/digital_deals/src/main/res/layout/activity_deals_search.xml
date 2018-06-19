@@ -49,10 +49,6 @@
                     android:layout_marginTop="@dimen/dp_7" />
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_2"
-                android:background="@color/divider_color" />
         </LinearLayout>
 
     </android.support.v7.widget.Toolbar>
@@ -74,7 +70,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_40"
                 android:background="@color/bottomnav_bg"
-                app:layout_scrollFlags="scroll|enterAlways|exitUntilCollapsed">
+                app:layout_scrollFlags="scroll|enterAlways">
+
+                <View
+                    android:id="@+id/divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_2"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:background="@color/divider_color" />
 
                 <ImageView
                     android:id="@+id/iv_map"
@@ -84,7 +87,7 @@
                     android:layout_marginTop="@dimen/dp_11"
                     android:layout_marginBottom="@dimen/dp_11"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/divider"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:srcCompat="@drawable/ic_location_2" />
 
@@ -149,8 +152,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="@dimen/dp_16"
-                android:background="@color/white"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+                android:background="@color/white"/>
 
         </LinearLayout>
 

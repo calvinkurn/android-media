@@ -21,7 +21,6 @@ public class DealsCategoryDetailMapper implements Func1<CategoryResponse, Catego
     public CategoryDetailsDomain call(CategoryResponse categoryResponse) {
 
         CategoryDetailsDomain categoryDetailsDomain = new CategoryDetailsDomain();
-        JsonArray brands = categoryResponse.getBrands();
         JsonArray deals = categoryResponse.getDeals();
         List<DealsCategoryItemDomain> dealsCategoryItemDomains = new ArrayList<>();
         DealsCategoryItemDomain dealsCategoryDomain;
@@ -34,13 +33,6 @@ public class DealsCategoryDetailMapper implements Func1<CategoryResponse, Catego
         }
         categoryDetailsDomain.setDealItems(dealsCategoryItemDomains);
 
-        List<BrandDomain> dealsBrandsDomain = new ArrayList<>();
-        BrandDomain brandDomain;
-        for (JsonElement jsonElement : brands) {
-            brandDomain = new Gson().fromJson(jsonElement.getAsJsonObject(), BrandDomain.class);
-            dealsBrandsDomain.add(brandDomain);
-        }
-        categoryDetailsDomain.setDealBrands(dealsBrandsDomain);
 
         JsonObject page = categoryResponse.getPage();
         PageDomain pageDomain = new Gson().fromJson(page, PageDomain.class);

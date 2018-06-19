@@ -41,6 +41,7 @@ public class AllBrandsActivity extends BaseSimpleActivity {
         setCategoryViewPagerListener();
         categoryViewPager.setAdapter(brandsTabsPagerAdapter);
         tabs.setupWithViewPager(categoryViewPager);
+        categoryViewPager.setOffscreenPageLimit(5);
         categoryViewPager.setSaveFromParentEnabled(false);
     }
 

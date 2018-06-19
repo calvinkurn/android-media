@@ -140,7 +140,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
 
     @Override
     public void renderCategoryList(List<CategoryItemsViewModel> deals, int count) {
-        if (deals != null) {
+        if (deals.size() != 0) {
             if (count == 0)
                 numberOfDeals.setText(String.format(getResources().getString(R.string.number_of_items), deals.size()));
             else
