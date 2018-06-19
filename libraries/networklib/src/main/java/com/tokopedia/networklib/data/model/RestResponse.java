@@ -1,22 +1,21 @@
 package com.tokopedia.networklib.data.model;
 
+import android.support.annotation.NonNull;
+
 import java.lang.reflect.Type;
 
 public class RestResponse {
-    private final Object mResult;
-    private final boolean mIsCached;
-    private final int responseCode;
+    private final Object result;
+    private final boolean isCached;
+    private final int code;
+    private String errorBody;
+    private boolean isError;
+    private Type type;
 
-    public RestResponse(Object result, boolean isCached) {
-        this.mResult = result;
-        this.mIsCached = isCached;
-        responseCode = -1;
-    }
-
-    public RestResponse(Object result, int responseCode, boolean isCached) {
-        this.mResult = result;
-        this.mIsCached = isCached;
-        this.responseCode = responseCode;
+    public RestResponse(@NonNull Object result, int code, boolean isCached) {
+        this.result = result;
+        this.isCached = isCached;
+        this.code = code;
     }
 
     /**
@@ -25,14 +24,30 @@ public class RestResponse {
      * @return Return the object of T
      */
     public final <T> T getData(Type type) {
-        return (T) mResult;
+        return (T) result;
     }
 
-    public boolean isCached() {
-        return mIsCached;
+    public String getErrorBody() {
+        return errorBody;
     }
 
-    public int getResponseCode() {
-        return responseCode;
+    public void setErrorBody(String errorBody) {
+        this.errorBody = errorBody;
+    }
+
+    public boolean isError() {
+        return isError;
+    }
+
+    public void setError(boolean error) {
+        isError = error;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
     }
 }

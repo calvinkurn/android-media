@@ -4,13 +4,13 @@ package com.tokopedia.networklib.data.model;
  * Cache types which will be provide while creating request object for GraphQl usecase
  */
 public enum RequestType {
-    GET,
+    GET, /* Represent HTTP Get */
 
-    POST,
+    POST, /* Represent HTTP Post */
 
-    PUT,
+    PUT, /* Represent HTTP Put */
 
-    DELETE,
+    DELETE, /* Represent HTTP Delete */
 
-    POST_MULTIPART
+    POST_MULTIPART /* Represent Multipart request and invoke via HTTP Post */
 }

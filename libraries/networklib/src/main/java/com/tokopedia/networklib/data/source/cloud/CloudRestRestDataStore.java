@@ -1,19 +1,19 @@
 package com.tokopedia.networklib.data.source.cloud;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
-import com.google.gson.Gson;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.networklibGeneratedDatabaseHolder;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.converter.StringResponseConverter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.network.utils.TkpdOkHttpBuilder;
-import com.tokopedia.networklib.data.model.RestCacheStrategy;
 import com.tokopedia.networklib.data.model.RestRequest;
-import com.tokopedia.networklib.data.model.RestResponseInternal;
+import com.tokopedia.networklib.data.model.RestResponseIntermediate;
 import com.tokopedia.networklib.data.source.RestDataStore;
 import com.tokopedia.networklib.data.source.cloud.api.RestApi;
+import com.tokopedia.networklib.util.CommonUtil;
 import com.tokopedia.networklib.util.FingerprintManager;
 import com.tokopedia.networklib.util.RestCacheManager;
 import com.tokopedia.networklib.util.RestClient;
@@ -30,85 +30,79 @@ import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import rx.Observable;
 
-public class CloudRestRestDataStore implements RestDataStore {
+import static com.tokopedia.networklib.util.RestConstant.HTTP_SUCCESS;
 
+public class CloudRestRestDataStore implements RestDataStore {
     private RestApi mApi;
-    private Gson mGson;
     private RestCacheManager mCacheManager;
     private FingerprintManager mFingerprintManager;
 
     @Inject
     public CloudRestRestDataStore() {
         this.mApi = RestClient.getApiInterface();
-        this.mGson = new Gson();
         this.mCacheManager = new RestCacheManager();
         this.mFingerprintManager = RestClient.getFingerPrintManager();
     }
 
     public CloudRestRestDataStore(List<Interceptor> interceptors, Context context) {
         this.mApi = getApiInterface(interceptors, context);
-        this.mGson = new Gson();
         this.mCacheManager = new RestCacheManager();
         this.mFingerprintManager = RestClient.getFingerPrintManager();
     }
 
     @Override
-    public Observable<RestResponseInternal> getResponse(RestRequest request, RestCacheStrategy cacheStrategy) {
+    public Observable<RestResponseIntermediate> getResponse(RestRequest request) {
         switch (request.getRequestType()) {
             case GET:
-                return doGet(request, cacheStrategy);
+                return doGet(request);
             case POST:
-                return doPost(request, cacheStrategy);
+                return doPost(request);
             case PUT:
-                return doPut(request, cacheStrategy);
+                return doPut(request);
             case DELETE:
-                return delete(request, cacheStrategy);
+                return delete(request);
             case POST_MULTIPART:
                 return postMultipart(request);
             default:
-                return doGet(request, cacheStrategy);
+                return doGet(request);
         }
     }
 
     /**
      * Helper method to Invoke HTTP get request
      *
-     * @param requests      - Request object
-     * @param cacheStrategy - Caching parameter
+     * @param request - Request object
      * @return Observable which represent server response
      */
-    private Observable<RestResponseInternal> doGet(RestRequest requests, RestCacheStrategy cacheStrategy) {
-        return mApi.get(requests.getUrl(),
-                requests.getQueryParams(),
-                requests.getHeaders()).map(s -> new RestResponseInternal(s, false))
-                .doOnNext(restResponseInternal -> cachedData(cacheStrategy, restResponseInternal, requests));
+    private Observable<RestResponseIntermediate> doGet(@NonNull RestRequest request) {
+        return mApi.get(request.getUrl(), request.getQueryParams(),
+                request.getHeaders()).map(response -> processData(request, response));
     }
 
     /**
      * Helper method to Invoke HTTP post request
      *
-     * @param request       - Request object
-     * @param cacheStrategy - Caching parameter
+     * @param request - Request object
      * @return Observable which represent server response
      */
-    private Observable<RestResponseInternal> doPost(RestRequest request, RestCacheStrategy cacheStrategy) {
+    private Observable<RestResponseIntermediate> doPost(RestRequest request) {
         if (request.getBody() != null && request.getBody() instanceof Map) {
             return mApi.post(request.getUrl(),
                     (Map<String, Object>) request.getBody(),
                     request.getQueryParams(),
-                    request.getHeaders()).map(s -> new RestResponseInternal(s, false))
-                    .doOnNext(restResponseInternal -> cachedData(cacheStrategy, restResponseInternal, request));
+                    request.getHeaders()).map(response -> processData(request, response));
         } else {
             String body = null;
             if (request.getBody() instanceof String) {
                 body = (String) request.getBody();
             } else {
                 try {
-                    body = mGson.toJson(request.getBody());
+                    body = CommonUtil.toJson(request.getBody());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -121,32 +115,29 @@ public class CloudRestRestDataStore implements RestDataStore {
             return mApi.post(request.getUrl(),
                     body,
                     request.getQueryParams(),
-                    request.getHeaders()).map(s -> new RestResponseInternal(s, false))
-                    .doOnNext(restResponseInternal -> cachedData(cacheStrategy, restResponseInternal, request));
+                    request.getHeaders()).map(response -> processData(request, response));
         }
     }
 
     /**
      * Helper method to Invoke HTTP put request
      *
-     * @param request       - Request object
-     * @param cacheStrategy - Caching parameter
+     * @param request - Request object
      * @return Observable which represent server response
      */
-    private Observable<RestResponseInternal> doPut(RestRequest request, RestCacheStrategy cacheStrategy) {
+    private Observable<RestResponseIntermediate> doPut(RestRequest request) {
         if (request.getBody() != null && request.getBody() instanceof Map) {
             return mApi.put(request.getUrl(),
                     (Map<String, Object>) request.getBody(),
                     request.getQueryParams(),
-                    request.getHeaders()).map(s -> new RestResponseInternal(s, false))
-                    .doOnNext(restResponseInternal -> cachedData(cacheStrategy, restResponseInternal, request));
+                    request.getHeaders()).map(response -> processData(request, response));
         } else {
             String body = null;
             if (request.getBody() instanceof String) {
                 body = (String) request.getBody();
             } else {
                 try {
-                    body = mGson.toJson(request.getBody());
+                    body = CommonUtil.toJson(request.getBody());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -159,57 +150,69 @@ public class CloudRestRestDataStore implements RestDataStore {
             return mApi.post(request.getUrl(),
                     body,
                     request.getQueryParams(),
-                    request.getHeaders()).map(s -> new RestResponseInternal(s, false))
-                    .doOnNext(restResponseInternal -> cachedData(cacheStrategy, restResponseInternal, request));
+                    request.getHeaders()).map(response -> processData(request, response));
         }
     }
 
     /**
      * Helper method to Invoke HTTP delete request
      *
-     * @param request       - Request object
-     * @param cacheStrategy - Caching parameter
+     * @param request - Request object
      * @return Observable which represent server response
      */
-    private Observable<RestResponseInternal> delete(RestRequest request, RestCacheStrategy cacheStrategy) {
+    private Observable<RestResponseIntermediate> delete(@NonNull RestRequest request) {
         return mApi.delete(request.getUrl(),
                 request.getQueryParams(),
-                request.getHeaders()).map(s -> new RestResponseInternal(s, false))
-                .doOnNext(restResponseInternal -> cachedData(cacheStrategy, restResponseInternal, request));
+                request.getHeaders()).map(response -> processData(request, response));
     }
 
-    private Observable<RestResponseInternal> postMultipart(RestRequest request) {
+    private Observable<RestResponseIntermediate> postMultipart(RestRequest request) {
         File file = new File(String.valueOf(request.getBody()));
         RequestBody reqFile = RequestBody.create(MediaType.parse("image/*"), file);
         MultipartBody.Part multipartBody = MultipartBody.Part.createFormData("upload", file.getName(), reqFile);
 
         return mApi.postMultipart(request.getUrl(), multipartBody, request.getQueryParams(), request.getHeaders())
-                .map(response -> new RestResponseInternal(response.body(), response.code(), false));
+                .map(response -> processData(request, response));
     }
 
     /**
      * Helper method to Dump the data into cache
      *
-     * @param cacheStrategy - CacheStrategy
-     * @param response      - Current server response
-     * @param request       - Current server request
+     * @param responseString - Current server response body
+     * @param request        - Current server request
      */
-    private void cachedData(RestCacheStrategy cacheStrategy, RestResponseInternal response, RestRequest request) {
-        if (cacheStrategy != null) {
-            //trying to store the data into cache based on cache strategy;
-            switch (cacheStrategy.getType()) {
-                case NONE:
-                case CACHE_ONLY:
-                    //do nothing for now
-                    break;
-                case CACHE_FIRST:
-                case ALWAYS_CLOUD:
-                    //store the data into disk
-                    mCacheManager.save(mFingerprintManager.generateFingerPrint(request.toString(), cacheStrategy.isSessionIncluded()),
-                            response.getOriginalResponse(),
-                            cacheStrategy.getExpiryTime());
-            }
+    private void cachedData(@NonNull RestRequest request, @NonNull String responseString) {
+        //trying to store the data into cache based on cache strategy;
+        switch (request.getCacheStrategy().getType()) {
+            case NONE:
+            case CACHE_ONLY:
+                //do nothing for now
+                break;
+            case CACHE_FIRST:
+            case ALWAYS_CLOUD:
+                //store the data into disk
+                mCacheManager.save(mFingerprintManager.generateFingerPrint(request.toString(),
+                        request.getCacheStrategy().isSessionIncluded()),
+                        responseString,
+                        request.getCacheStrategy().getExpiryTime());
         }
+    }
+
+    private RestResponseIntermediate processData(RestRequest request, Response<String> response) {
+        RestResponseIntermediate returnResponse;
+        if (response.code() == HTTP_SUCCESS) {
+            returnResponse = new RestResponseIntermediate(CommonUtil.fromJson(response.body(), request.getTypeOfT()), request.getTypeOfT(), false);
+            returnResponse.setCode(response.code());
+            returnResponse.setError(false);
+
+            //For success case saving the data into cache
+            cachedData(request, response.body());
+        } else {
+            returnResponse = new RestResponseIntermediate(response.body() == null ? response.errorBody().toString() : response.body(), request.getTypeOfT(), false);
+            returnResponse.setCode(response.code());
+            returnResponse.setError(true);
+        }
+        return returnResponse;
     }
 
     private RestApi getApiInterface(List<Interceptor> interceptors, Context context) {

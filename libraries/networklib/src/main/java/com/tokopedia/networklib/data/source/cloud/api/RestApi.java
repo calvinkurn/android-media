@@ -20,10 +20,10 @@ import rx.Observable;
 
 public interface RestApi {
     @GET()
-    Observable<String> get(@Url String url, @QueryMap(encoded = true) Map<String, Object> queries, @HeaderMap Map<String, Object> headers);
+    Observable<Response<String>> get(@Url String url, @QueryMap(encoded = true) Map<String, Object> queries, @HeaderMap Map<String, Object> headers);
 
     @POST()
-    Observable<String> post(@Url String url, @Body String json, @QueryMap(encoded = true) Map<String, Object> queries, @HeaderMap Map<String, Object> headers);
+    Observable<Response<String>> post(@Url String url, @Body String json, @QueryMap(encoded = true) Map<String, Object> queries, @HeaderMap Map<String, Object> headers);
 
     @Multipart
     @POST()
@@ -31,15 +31,15 @@ public interface RestApi {
 
     @FormUrlEncoded
     @POST()
-    Observable<String> post(@Url String url, @FieldMap(encoded = true) Map<String, Object> params, @QueryMap(encoded = true) Map<String, Object> queries, @HeaderMap Map<String, Object> headers);
+    Observable<Response<String>> post(@Url String url, @FieldMap(encoded = true) Map<String, Object> params, @QueryMap(encoded = true) Map<String, Object> queries, @HeaderMap Map<String, Object> headers);
 
     @PUT()
-    Observable<String> put(@Url String url, @Body String json, @QueryMap(encoded = true) Map<String, Object> queries, @HeaderMap Map<String, Object> headers);
+    Observable<Response<String>> put(@Url String url, @Body String json, @QueryMap(encoded = true) Map<String, Object> queries, @HeaderMap Map<String, Object> headers);
 
     @FormUrlEncoded
     @PUT()
-    Observable<String> put(@Url String url, @FieldMap(encoded = true) Map<String, Object> params, @QueryMap(encoded = true) Map<String, Object> queries, @HeaderMap Map<String, Object> headers);
+    Observable<Response<String>> put(@Url String url, @FieldMap(encoded = true) Map<String, Object> params, @QueryMap(encoded = true) Map<String, Object> queries, @HeaderMap Map<String, Object> headers);
 
     @DELETE()
-    Observable<String> delete(@Url String url, @QueryMap(encoded = true) Map<String, Object> queries, @HeaderMap Map<String, Object> headers);
+    Observable<Response<String>> delete(@Url String url, @QueryMap(encoded = true) Map<String, Object> queries, @HeaderMap Map<String, Object> headers);
 }
