@@ -50,4 +50,12 @@ public class RestResponse {
     public void setType(Type type) {
         this.type = type;
     }
+
+    public boolean isCached() {
+        return isCached;
+    }
+
+    public int getCode() {
+        return code;
+    }
 }
