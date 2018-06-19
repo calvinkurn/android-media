@@ -42,7 +42,7 @@ public class RestRepositoryImpl implements RestRepository {
                 || cacheStrategy.getType() == CacheType.ALWAYS_CLOUD) {
             return getCloudResponse(request);
         } else if (cacheStrategy.getType() == CacheType.CACHE_ONLY) {
-            return mCache.getResponse(request);
+            return getCachedResponse(request);
         } else {
             return Observable.concat(getCachedResponse(request), getCloudResponse(request))
                     .first(data -> data != null);

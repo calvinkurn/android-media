@@ -13,6 +13,9 @@ final public class RestResponseIntermediate {
     private boolean isError;
 
     public RestResponseIntermediate(Object data, Type type, boolean isCached) {
+        if (data == null) {
+            throw new RuntimeException("Data cannot be null.");
+        }
         this.data = data;
         this.type = type;
         this.isCached = isCached;
