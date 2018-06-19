@@ -5,15 +5,18 @@ import android.content.Intent;
 import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.core.home.fragment.SimpleWebViewWithFilePickerFragment;
 import com.tokopedia.reksadana.R;
 import com.tokopedia.reksadana.view.fragment.ReksaDanaHomeFragment;
 
 public class ReksaDanaHomeActivity extends BaseSimpleActivity {
     @Override
     protected Fragment getNewFragment() {
-        return ReksaDanaHomeFragment.newInstance();
+        return SimpleWebViewWithFilePickerFragment.createInstance("");
     }
 
     public static Intent createIntent(Context context) {
@@ -32,5 +35,15 @@ public class ReksaDanaHomeActivity extends BaseSimpleActivity {
             toolbar.getNavigationIcon().setTint(getResources().getColor(R.color.black));
         }
         toolbar.setTitleTextAppearance(this, R.style.ToolbarText_SansSerifMedium);
+        SimpleWebViewWithFilePickerFragment.createInstanceWithWebClient("https://www.tokopedia.com/reksa-dana/",new WebViewClient(){
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                if(url.equals("")){
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        });
     }
 }

@@ -1,7 +1,6 @@
 package com.tokopedia.core.home.fragment;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -9,6 +8,7 @@ import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +32,7 @@ import static android.app.Activity.RESULT_OK;
 public class SimpleWebViewWithFilePickerFragment extends Fragment {
     private static final String SEAMLESS = "seamless";
     public static final int PROGRESS_COMPLETED = 100;
+    private static WebViewClient webViewClient;
     private ProgressBar progressBar;
     private TkpdWebView webview;
     private ValueCallback<Uri> callbackBeforeL;
@@ -132,10 +133,11 @@ public class SimpleWebViewWithFilePickerFragment extends Fragment {
 
     }
 
-    public SimpleWebViewWithFilePickerFragment() {
-    }
-
     public static SimpleWebViewWithFilePickerFragment createInstance(String url) {
+        return createInstanceWithWebClient(url, null);
+    }
+    public static SimpleWebViewWithFilePickerFragment createInstanceWithWebClient(String url,WebViewClient client) {
+        webViewClient = client;
         SimpleWebViewWithFilePickerFragment fragment = new SimpleWebViewWithFilePickerFragment();
         Bundle args = new Bundle();
         if (!TextUtils.isEmpty(url)) {
@@ -190,11 +192,13 @@ public class SimpleWebViewWithFilePickerFragment extends Fragment {
         else {
             webview.loadAuthUrl(url);
         }
-        webview.setWebViewClient(new SimpleWebViewWithFilePickerFragment.MyWebClient());
+        if(webViewClient == null)
+            webview.setWebViewClient(new SimpleWebViewWithFilePickerFragment.MyWebClient());
+        else
+            webview.setWebViewClient(webViewClient);
         webview.setWebChromeClient(new SimpleWebViewWithFilePickerFragment.MyWebViewClient());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             WebView.setWebContentsDebuggingEnabled(true);
-            webview.setWebContentsDebuggingEnabled(true);
             CommonUtils.dumper("webviewconf debugging = true");
         }
         getActivity().setProgressBarIndeterminateVisibility(true);

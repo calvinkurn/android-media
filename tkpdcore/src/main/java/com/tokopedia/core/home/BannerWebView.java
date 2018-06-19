@@ -103,7 +103,7 @@ public class BannerWebView extends TkpdCoreWebViewActivity implements
     @Override
     public void catchToWebView(String url) {
         SimpleWebViewWithFilePickerFragment fragment = SimpleWebViewWithFilePickerFragment.createInstance(url);
-        getFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
     }
 
     @Override

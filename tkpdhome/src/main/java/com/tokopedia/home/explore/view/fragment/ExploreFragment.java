@@ -143,7 +143,7 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
     @Override
     public void onGimickItemClicked(LayoutRows data) {
         String redirectUrl = data.getUrl();
-        if (data.getName().equalsIgnoreCase("Pinjaman Online")) {
+        if (false && data.getName().equalsIgnoreCase("Pinjaman Online")) {
             startActivity(((TkpdCoreRouter) getActivity().getApplication()).getReksaDanaIntent(getActivity()));
             return;
         }

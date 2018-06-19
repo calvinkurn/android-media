@@ -352,6 +352,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     @Override
     public Intent getReksaDanaIntent(Context context) {
-        return new Intent(context, ReksaDanaHomeActivity.class);
+        return ReksaDanaHomeActivity.createIntent(context);
     }
 }
