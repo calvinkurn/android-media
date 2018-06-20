@@ -5,7 +5,7 @@ import android.content.Context;
 import com.tokopedia.networklib.data.model.CacheType;
 import com.tokopedia.networklib.data.model.RestCacheStrategy;
 import com.tokopedia.networklib.data.model.RestRequest;
-import com.tokopedia.networklib.data.model.RestResponseInternal;
+import com.tokopedia.networklib.data.model.RestResponseIntermediate;
 import com.tokopedia.networklib.data.source.cache.RestCacheDataStore;
 import com.tokopedia.networklib.data.source.cloud.CloudRestRestDataStore;
 import com.tokopedia.networklib.domain.RestRepository;
@@ -16,6 +16,7 @@ import javax.inject.Inject;
 
 import okhttp3.Interceptor;
 import rx.Observable;
+import rx.functions.Func1;
 
 public class RestRepositoryImpl implements RestRepository {
 
@@ -34,28 +35,31 @@ public class RestRepositoryImpl implements RestRepository {
     }
 
     @Override
-    public Observable<RestResponseInternal> getResponse(RestRequest requests, RestCacheStrategy cacheStrategy) {
+    public Observable<RestResponseIntermediate> getResponse(RestRequest request) {
+        RestCacheStrategy cacheStrategy = request.getCacheStrategy();
         if (cacheStrategy == null
                 || cacheStrategy.getType() == CacheType.NONE
                 || cacheStrategy.getType() == CacheType.ALWAYS_CLOUD) {
-            return getCloudResponse(requests, cacheStrategy);
+            return getCloudResponse(request);
         } else if (cacheStrategy.getType() == CacheType.CACHE_ONLY) {
-            return mCache.getResponse(requests, cacheStrategy);
+            return getCachedResponse(request);
         } else {
-            return Observable.concat(getCachedResponse(requests, cacheStrategy), getCloudResponse(requests, cacheStrategy))
+            return Observable.concat(getCachedResponse(request), getCloudResponse(request))
                     .first(data -> data != null);
         }
     }
 
-    private Observable<RestResponseInternal> getCloudResponse(RestRequest requests, RestCacheStrategy cacheStrategy) {
-        return mCloud.getResponse(requests, cacheStrategy);
+    private Observable<RestResponseIntermediate> getCloudResponse(RestRequest requests) {
+        return mCloud.getResponse(requests);
     }
 
-    private Observable<RestResponseInternal> getCachedResponse(RestRequest requests, RestCacheStrategy cacheStrategy) {
-        if (cacheStrategy != null) {
-            return mCache.getResponse(requests, cacheStrategy);
-        } else {
-            return mCache.getResponse(requests, new RestCacheStrategy.Builder(CacheType.NONE).build());
-        }
+    private Observable<RestResponseIntermediate> getCachedResponse(RestRequest requests) {
+        return mCache.getResponse(requests);
+    }
+
+    @Override
+    public Observable<List<RestResponseIntermediate>> getResponses(List<RestRequest> requests) {
+        return Observable.from(requests).
+                flatMap((Func1<RestRequest, Observable<RestResponseIntermediate>>) restRequest -> getResponse(restRequest)).toList();
     }
 }

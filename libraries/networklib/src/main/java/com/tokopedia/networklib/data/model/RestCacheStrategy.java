@@ -10,14 +10,14 @@ public class RestCacheStrategy {
     private CacheType type;
 
     // optional
-    private long expiryTime = RestConstant.ExpiryTimes.HOUR.val();
+    private long expiryTime;
 
     // optional
     private boolean isSessionIncluded;
 
     private RestCacheStrategy(Builder builder) {
         this.type = builder.type;
-        this.expiryTime = builder.expiryTime;
+        this.expiryTime = builder.expiryTime < 1 ? RestConstant.ExpiryTimes.HOUR.val() : builder.expiryTime;
         this.isSessionIncluded = builder.isSessionIncluded;
     }
 

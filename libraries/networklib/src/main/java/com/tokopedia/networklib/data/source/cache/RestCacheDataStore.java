@@ -1,9 +1,9 @@
 package com.tokopedia.networklib.data.source.cache;
 
-import com.tokopedia.networklib.data.model.RestCacheStrategy;
 import com.tokopedia.networklib.data.model.RestRequest;
-import com.tokopedia.networklib.data.model.RestResponseInternal;
+import com.tokopedia.networklib.data.model.RestResponseIntermediate;
 import com.tokopedia.networklib.data.source.RestDataStore;
+import com.tokopedia.networklib.util.CommonUtil;
 import com.tokopedia.networklib.util.FingerprintManager;
 import com.tokopedia.networklib.util.RestCacheManager;
 import com.tokopedia.networklib.util.RestClient;
@@ -27,10 +27,13 @@ public class RestCacheDataStore implements RestDataStore {
     }
 
     @Override
-    public Observable<RestResponseInternal> getResponse(RestRequest requests, RestCacheStrategy cacheStrategy) {
+    public Observable<RestResponseIntermediate> getResponse(RestRequest request) {
         try {
-            String rowJson = mCacheManager.get(mFingerprintManager.generateFingerPrint(requests.toString(), cacheStrategy.isSessionIncluded()));
-            return Observable.just(new RestResponseInternal(rowJson, true));
+            String rowJson = mCacheManager.get(mFingerprintManager.generateFingerPrint(request.toString(), request.getCacheStrategy().isSessionIncluded()));
+            RestResponseIntermediate returnResponse = new RestResponseIntermediate(CommonUtil.fromJson(rowJson, request.getTypeOfT()), request.getTypeOfT(), true);
+            returnResponse.setCode(1);
+            returnResponse.setError(false);
+            return Observable.just(returnResponse);
         } catch (Exception e) {
             e.printStackTrace();
         }

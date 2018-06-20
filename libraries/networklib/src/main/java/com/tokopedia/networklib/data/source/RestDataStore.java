@@ -1,11 +1,10 @@
 package com.tokopedia.networklib.data.source;
 
-import com.tokopedia.networklib.data.model.RestCacheStrategy;
 import com.tokopedia.networklib.data.model.RestRequest;
-import com.tokopedia.networklib.data.model.RestResponseInternal;
+import com.tokopedia.networklib.data.model.RestResponseIntermediate;
 
 import rx.Observable;
 
 public interface RestDataStore {
-    Observable<RestResponseInternal> getResponse(RestRequest requests, RestCacheStrategy cacheStrategy);
+    Observable<RestResponseIntermediate> getResponse(RestRequest requests);
 }
