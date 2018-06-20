@@ -163,6 +163,24 @@ public class GroupChatActivity extends BaseSimpleActivity
         return taskStackBuilder;
     }
 
+    @DeepLink(ApplinkConstant.GROUPCHAT_VOTE_VIA_LIST)
+    public static TaskStackBuilder getCallingTaskStackVoteViaList(Context context, Bundle extras) {
+        String id = extras.getString(ApplinkConstant.PARAM_CHANNEL_ID);
+        Intent homeIntent = ((GroupChatModuleRouter) context.getApplicationContext()).getHomeIntent(context);
+        Intent detailsIntent = GroupChatActivity.getCallingIntent(context, id);
+        detailsIntent.putExtra(INITIAL_FRAGMENT, CHANNEL_VOTE_FRAGMENT);
+        Intent parentIntent = ((GroupChatModuleRouter) context.getApplicationContext())
+                .getInboxChannelsIntent(context);
+
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
+        taskStackBuilder.addNextIntent(homeIntent);
+        if (((GroupChatModuleRouter) context.getApplicationContext()).isEnabledGroupChat()) {
+            taskStackBuilder.addNextIntent(parentIntent);
+        }
+        taskStackBuilder.addNextIntent(detailsIntent);
+        return taskStackBuilder;
+    }
+
     private static final long VIBRATE_LENGTH = TimeUnit.SECONDS.toMillis(1);
     private static final long KICK_TRESHOLD_TIME = TimeUnit.MINUTES.toMillis(15);
     private static final long TOOLTIP_DELAY = 1500L;
