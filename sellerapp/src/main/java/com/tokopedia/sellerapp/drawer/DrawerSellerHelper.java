@@ -444,7 +444,7 @@ public class DrawerSellerHelper extends DrawerHelper
                     UnifyTracking.eventClickPaymentAndTopupOnDrawer();
                     break;
                 case TkpdState.DrawerPosition.MANAGE_TRANSACTION_DIGITAL:
-                    context.startActivity(TransactionPurchaseRouter.createIntentOrderListSummary(context));
+                    context.startActivity(TransactionPurchaseRouter.createIntentOrderListSummary(context, "DIGITAL"));
                     UnifyTracking.eventClickDigitalTransactionListOnDrawer();
                     break;
                 case TkpdState.DrawerPosition.DRAFT_PRODUCT:

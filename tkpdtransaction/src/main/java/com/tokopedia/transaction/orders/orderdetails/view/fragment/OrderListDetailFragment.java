@@ -52,6 +52,7 @@ import com.tokopedia.transaction.orders.common.view.DoubleTextView;
 public class OrderListDetailFragment extends BaseDaggerFragment implements OrderListDetailContract.View {
 
     public static final String KEY_ORDER_ID = "OrderId";
+    public static final String KEY_ORDER_CATEGORY = "OrderCategory";
     @Inject
     OrderListDetailPresenter presenter;
     OrderDetailsComponent orderListComponent;
@@ -88,9 +89,10 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         orderListComponent.inject(this);
     }
 
-    public static Fragment getInstance(String orderId) {
+    public static Fragment getInstance(String orderId, String orderCategory) {
         Bundle bundle = new Bundle();
         bundle.putString(KEY_ORDER_ID, orderId);
+        bundle.putString(KEY_ORDER_CATEGORY, orderCategory);
         Fragment fragment = new OrderListDetailFragment();
         fragment.setArguments(bundle);
         return fragment;
@@ -126,7 +128,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        presenter.setOrderDetailsContent((String) getArguments().get(KEY_ORDER_ID));
+        presenter.setOrderDetailsContent((String) getArguments().get(KEY_ORDER_ID), (String) getArguments().get(KEY_ORDER_CATEGORY));
     }
 
     @Override

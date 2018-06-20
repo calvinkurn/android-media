@@ -2330,8 +2330,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getOrderListDetailActivity(Context context, String type, String orderId) {
-        return new OrderListDetailActivity().createInstance(context, type, orderId);
+    public Intent getOrderListDetailActivity(Context context, String orderId, String orderCategory) {
+        return new OrderListDetailActivity().createInstance(context, orderId, orderCategory);
     }
     public FingerprintModel getFingerprintModel() {
         return FingerprintModelGenerator.generateFingerprintModel(this);

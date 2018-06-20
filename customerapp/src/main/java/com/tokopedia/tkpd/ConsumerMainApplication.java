@@ -249,7 +249,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
                         TransactionDataApiUrl.TransactionAction.LIVE_BASE_URL;
                 break;
         }
->>>>>>> upstream/release
     }
 
     private void generateConsumerAppNetworkKeys() {

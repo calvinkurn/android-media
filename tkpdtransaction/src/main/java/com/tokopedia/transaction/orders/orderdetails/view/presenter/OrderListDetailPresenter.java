@@ -31,8 +31,8 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     }
 
     @Override
-    public void setOrderDetailsContent(String orderId) {
-        orderDetailsUseCase.execute(orderDetailsUseCase.getUserAttrParam(OrderCategory.DEALS, orderId, 1, 1), new Subscriber<DetailsData>() {
+    public void setOrderDetailsContent(String orderId, String orderCategory) {
+        orderDetailsUseCase.execute(orderDetailsUseCase.getUserAttrParam(orderCategory, orderId, 1, 1), new Subscriber<DetailsData>() {
             @Override
             public void onCompleted() {
 

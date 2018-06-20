@@ -1,4 +1,4 @@
-query OMSDETAILS($orderCategory: OrderCategory, $orderId: String, $detail: Int,$action:Int) {
+query OMSDETAILS($orderCategory: String, $orderId: String, $detail: Int,$action:Int) {
   orderDetails(orderCategory: $orderCategory, orderId: $orderId,details:$detail,actions:$action) {
     status {
       status

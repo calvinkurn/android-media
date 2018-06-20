@@ -43,7 +43,7 @@ public class CheckoutActivity extends BaseSimpleActivity implements DealFragment
             if (requestCode == ScroogePGUtil.REQUEST_CODE_OPEN_SCROOGE_PAGE) {
                 String orderId = Utils.fetchOrderId(data.getStringExtra(ScroogePGUtil.SUCCESS_MSG_URL));
                 Intent intent = ((TkpdCoreRouter) getApplication())
-                        .getOrderListDetailActivity(this, "RIDE", orderId);
+                        .getOrderListDetailActivity(this, orderId, "DEALS");
                 this.startActivity(intent);
                 this.finish();
             }
