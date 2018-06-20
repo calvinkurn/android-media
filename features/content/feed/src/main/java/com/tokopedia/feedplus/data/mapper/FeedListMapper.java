@@ -467,7 +467,7 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
                 polling.getUserPhoto(),
                 polling.getUserInfo(),
                 polling.getUserUrl(),
-                polling.getFollowed(),
+                true,
                 polling.getQuestion(),
                 polling.getLiked(),
                 polling.getLikecount(),
