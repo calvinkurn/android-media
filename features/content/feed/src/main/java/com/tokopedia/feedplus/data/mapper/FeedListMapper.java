@@ -440,13 +440,15 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
 
         List<PollOptionViewModel> optionViewModels = new ArrayList<>();
         for (PollingOption option: polling.getOptions()) {
+            String redirectLink = !TextUtils.isEmpty(option.getApplink()) ?
+                    option.getApplink() : option.getWeblink();
+
             optionViewModels.add(
                     new PollOptionViewModel(
                             String.valueOf(option.getOption_id()),
                             option.getOption(),
                             option.getImage_option(),
-                            option.getWeblink(),
-                            option.getApplink(),
+                            redirectLink,
                             String.valueOf(option.getPercentage()),
                             checkIfSelected(voted, option.getIs_selected())
                     )

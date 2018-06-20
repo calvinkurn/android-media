@@ -109,7 +109,11 @@ public class PollAdapter extends RecyclerView.Adapter<PollAdapter.ViewHolder> {
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                viewListener.onVoteOptionClicked(pollId, element);
+                if (voted) {
+                    viewListener.onGoToLink(element.getRedirectLink());
+                } else {
+                    viewListener.onVoteOptionClicked(pollId, element);
+                }
             }
         });
     }

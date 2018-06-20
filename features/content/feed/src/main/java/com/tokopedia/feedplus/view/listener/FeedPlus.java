@@ -64,6 +64,8 @@ public interface FeedPlus {
 
         interface Polling {
             void onVoteOptionClicked(String pollId, PollOptionViewModel optionViewModel);
+
+            void onGoToLink(String link);
         }
 
         void setFirstCursor(String firstCursor);
