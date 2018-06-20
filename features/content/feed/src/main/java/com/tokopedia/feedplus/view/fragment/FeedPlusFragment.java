@@ -73,6 +73,7 @@ import com.tokopedia.feedplus.view.util.NpaLinearLayoutManager;
 import com.tokopedia.feedplus.view.util.ShareBottomDialog;
 import com.tokopedia.feedplus.view.viewmodel.inspiration.InspirationViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollOptionViewModel;
+import com.tokopedia.feedplus.view.viewmodel.kol.PollViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
 import com.tokopedia.feedplus.view.viewmodel.product.ProductFeedViewModel;
 import com.tokopedia.feedplus.view.viewmodel.promo.PromoCardViewModel;
@@ -89,6 +90,7 @@ import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.vote.domain.model.VoteStatisticDomainModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -1016,8 +1018,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onVoteOptionClicked(String pollId, PollOptionViewModel optionViewModel) {
-        presenter.sendVote(pollId, optionViewModel);
+    public void onVoteOptionClicked(int rowNumber, String pollId,
+                                    PollOptionViewModel optionViewModel) {
+        presenter.sendVote(rowNumber, pollId, optionViewModel);
     }
 
     @Override
@@ -1147,6 +1150,39 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void onGoToLogin() {
         Intent intent = ((FeedModuleRouter) getActivity().getApplication()).getLoginIntent(getContext());
         startActivity(intent);
+    }
+
+    @Override
+    public void onSuccessSendVote(int rowNumber, PollOptionViewModel selectedOption,
+                                  VoteStatisticDomainModel voteStatisticDomainModel) {
+        if (adapter.getlist().get(rowNumber) instanceof PollViewModel) {
+            PollViewModel pollViewModel = (PollViewModel) adapter.getlist().get(rowNumber);
+            pollViewModel.setVoted(true);
+            pollViewModel.setTotalVoter(voteStatisticDomainModel.getTotalParticipants());
+
+            int selectedIndex = pollViewModel.getOptionViewModels().indexOf(selectedOption);
+            for (int i = 0; i < pollViewModel.getOptionViewModels().size(); i++) {
+                PollOptionViewModel pollOptionViewModel
+                        = pollViewModel.getOptionViewModels().get(i);
+
+                if (selectedIndex == i) {
+                    pollOptionViewModel.setSelected(PollOptionViewModel.SELECTED);
+                } else {
+                    pollOptionViewModel.setSelected(PollOptionViewModel.UNSELECTED);
+                }
+
+                String newPercentage
+                        = voteStatisticDomainModel.getListOptions().get(i).getPercentage();
+                pollOptionViewModel.setPercentage(newPercentage);
+            }
+
+            adapter.notifyItemChanged(rowNumber);
+        }
+    }
+
+    @Override
+    public void onErrorSendVote(String message) {
+        NetworkErrorHelper.showSnackbar(getActivity(), message);
     }
 
     @Override

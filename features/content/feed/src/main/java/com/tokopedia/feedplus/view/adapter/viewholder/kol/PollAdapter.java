@@ -27,12 +27,14 @@ import java.util.List;
  */
 
 public class PollAdapter extends RecyclerView.Adapter<PollAdapter.ViewHolder> {
+    private int rowNumber;
     private String pollId;
     private boolean voted;
     private List<PollOptionViewModel> list;
     private FeedPlus.View.Polling viewListener;
 
-    PollAdapter(String pollId, boolean voted, FeedPlus.View.Polling viewListener) {
+    PollAdapter(int rowNumber, String pollId, boolean voted, FeedPlus.View.Polling viewListener) {
+        this.rowNumber = rowNumber;
         this.pollId = pollId;
         this.voted = voted;
         this.list = new ArrayList<>();
@@ -112,7 +114,7 @@ public class PollAdapter extends RecyclerView.Adapter<PollAdapter.ViewHolder> {
                 if (voted) {
                     viewListener.onGoToLink(element.getRedirectLink());
                 } else {
-                    viewListener.onVoteOptionClicked(pollId, element);
+                    viewListener.onVoteOptionClicked(rowNumber, pollId, element);
                 }
             }
         });

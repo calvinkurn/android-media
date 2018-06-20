@@ -256,10 +256,10 @@ public class FeedPlusPresenter
     }
 
     @Override
-    public void sendVote(String pollId, PollOptionViewModel optionViewModel) {
+    public void sendVote(int rowNumber, String pollId, PollOptionViewModel optionViewModel) {
         sendVoteUseCase.execute(
                 SendVoteUseCase.createParams(pollId, optionViewModel.getOptionId()),
-                new SendVoteSubscriber(getView())
+                new SendVoteSubscriber(rowNumber, optionViewModel, getView())
         );
     }
 

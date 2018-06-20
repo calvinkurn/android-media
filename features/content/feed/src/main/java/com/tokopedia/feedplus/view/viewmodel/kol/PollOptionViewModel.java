@@ -27,20 +27,40 @@ public class PollOptionViewModel {
         return optionId;
     }
 
+    public void setOptionId(String optionId) {
+        this.optionId = optionId;
+    }
+
     public String getOption() {
         return option;
+    }
+
+    public void setOption(String option) {
+        this.option = option;
     }
 
     public String getImageUrl() {
         return imageUrl;
     }
 
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
     public String getRedirectLink() {
         return redirectLink;
     }
 
+    public void setRedirectLink(String redirectLink) {
+        this.redirectLink = redirectLink;
+    }
+
     public String getPercentage() {
         return percentage;
+    }
+
+    public void setPercentage(String percentage) {
+        this.percentage = percentage;
     }
 
     public int getSelected() {

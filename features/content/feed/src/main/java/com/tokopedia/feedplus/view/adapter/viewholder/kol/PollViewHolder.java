@@ -61,7 +61,8 @@ public class PollViewHolder extends AbstractViewHolder<PollViewModel> implements
                 false);
         pollList.setLayoutManager(gridLayoutManager);
 
-        PollAdapter pollAdapter = new PollAdapter(element.getPollId(),
+        PollAdapter pollAdapter = new PollAdapter(getAdapterPosition(),
+                element.getPollId(),
                 element.isVoted(),
                 pollingViewListener);
         pollList.setAdapter(pollAdapter);
