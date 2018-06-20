@@ -2,7 +2,6 @@ package com.tokopedia.inbox.rescenter.edit.presenter;
 
 import android.content.Context;
 
-import com.drew.lang.annotations.NotNull;
 import com.tokopedia.inbox.rescenter.edit.model.responsedata.ActionParameterPassData;
 
 /**
@@ -10,9 +9,9 @@ import com.tokopedia.inbox.rescenter.edit.model.responsedata.ActionParameterPass
  */
 public interface BuyerEditSolutionPresenter {
 
-    void setOnSubmitClick(@NotNull Context context);
+    void setOnSubmitClick(Context context);
 
-    void onFirstTimeLaunched(@NotNull Context context, ActionParameterPassData passData);
+    void onFirstTimeLaunched(Context context, ActionParameterPassData passData);
 
     void unsubscribe();
 }

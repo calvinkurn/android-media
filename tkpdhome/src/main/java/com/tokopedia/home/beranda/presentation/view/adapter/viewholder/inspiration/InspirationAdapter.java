@@ -13,6 +13,7 @@ import com.tokopedia.core.analytics.HomePageTracking;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.listener.HomeFeedListener;
+import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationProductViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewModel;
 
@@ -70,6 +71,8 @@ public class InspirationAdapter extends RecyclerView.Adapter<InspirationAdapter.
                             inspirationViewModel.getListProduct().get(getAdapterPosition()).getImageSource(),
                             inspirationViewModel.getListProduct().get(getAdapterPosition()).getName(),
                             inspirationViewModel.getListProduct().get(getAdapterPosition()).getPrice());
+                    HomeTrackingUtils.homepageRecommedationClicked(inspirationViewModel.getListProduct().get(getAdapterPosition()));
+
                 }
             });
         }

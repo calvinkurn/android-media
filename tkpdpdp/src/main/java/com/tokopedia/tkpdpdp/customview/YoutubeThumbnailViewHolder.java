@@ -56,11 +56,20 @@ public class YoutubeThumbnailViewHolder extends RelativeLayout{
         mainView = (RelativeLayout) findViewById(R.id.video_thumbnail_main_view);
         YouTubeThumbnailView youTubeThumbnailView = (YouTubeThumbnailView) findViewById(R.id.youtube_thumbnail_view);
         loadingBar = (ProgressBar) findViewById(R.id.youtube_thumbnail_loading_bar);
-        youTubeThumbnailView.initialize(getContext().getApplicationContext()
-                .getString(R.string.GOOGLE_API_KEY),
-                thumbnailInitializedListener(youtubeVideoId));
-        if(youTubeThumbnailInLoadProcess != null)
-            youTubeThumbnailInLoadProcess.onIntializationStart();
+        try {
+            youTubeThumbnailView.initialize(getContext().getApplicationContext()
+                            .getString(R.string.GOOGLE_API_KEY),
+                    thumbnailInitializedListener(youtubeVideoId));
+
+            if(youTubeThumbnailInLoadProcess != null) {
+                youTubeThumbnailInLoadProcess.onIntializationStart();
+            }
+
+            //TODO Choose one of it
+            youTubeThumbnailView.setOnClickListener(onYoutubeThumbnailClickedListener());
+        }catch (IllegalStateException ise){
+          ise.printStackTrace();
+        }
 
 
         //TODO Choose one of it
@@ -73,8 +82,6 @@ public class YoutubeThumbnailViewHolder extends RelativeLayout{
             }
         });*/
 
-        //TODO Choose one of it
-        youTubeThumbnailView.setOnClickListener(onYoutubeThumbnailClickedListener());
     }
 
     private YouTubeThumbnailView
@@ -128,7 +135,8 @@ public class YoutubeThumbnailViewHolder extends RelativeLayout{
     }
 
     public void destroyReleaseProcess() {
-        youTubeThumbnailLoader.release();
+        if(youTubeThumbnailLoader!=null)
+            youTubeThumbnailLoader.release();
     }
 
     public interface YouTubeThumbnailLoadInProcess {

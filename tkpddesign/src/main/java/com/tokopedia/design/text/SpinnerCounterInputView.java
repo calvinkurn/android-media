@@ -55,7 +55,7 @@ public class SpinnerCounterInputView extends BaseCustomView {
         init();
         TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.SpinnerCounterInputView);
         try {
-            maxLength = styledAttributes.getInt(R.styleable.CounterInputView_counter_max_length, DEFAULT_INPUT_VALUE_LENGTH);
+            maxLength = styledAttributes.getInt(R.styleable.SpinnerCounterInputView_spinner_counter_max_length, DEFAULT_INPUT_VALUE_LENGTH);
             spinnerHintText = styledAttributes.getString(R.styleable.SpinnerCounterInputView_spinner_decimal_spinner_hint);
             hintText = styledAttributes.getString(R.styleable.SpinnerCounterInputView_spinner_decimal_hint);
             selectionIndex = styledAttributes.getInt(R.styleable.SpinnerCounterInputView_spinner_decimal_selection_index, 0);

@@ -3,6 +3,7 @@ package com.tokopedia.topads.dashboard.di.component;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsCreatePromoModule;
 import com.tokopedia.topads.dashboard.di.scope.TopAdsDashboardScope;
+import com.tokopedia.topads.dashboard.view.fragment.TopAdsCheckProductPromoFragment;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsDetailGroupFragment;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsEditCostExistingGroupFragment;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsEditCostShopFragment;
@@ -64,4 +65,6 @@ public interface TopAdsCreatePromoComponent {
     void inject(TopAdsDetailGroupFragment topAdsDetailGroupFragment);
 
     void inject(TopAdsEditGroupMainPageFragment topAdsEditGroupMainPageFragment);
+
+    void inject(TopAdsCheckProductPromoFragment topAdsCheckProductPromoFragment);
 }

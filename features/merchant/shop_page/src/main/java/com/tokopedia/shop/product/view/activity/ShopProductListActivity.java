@@ -14,6 +14,7 @@ import com.tokopedia.shop.ShopComponentInstance;
 import com.tokopedia.shop.common.constant.ShopAppLink;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.di.component.ShopComponent;
+import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.shop.product.view.fragment.ShopProductListFragment;
 
 /**
@@ -58,7 +59,21 @@ public class ShopProductListActivity extends BaseSimpleActivity implements HasCo
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, ShopProductListActivity.class)
                 .setData(uri.build())
-                .putExtra(ShopParamConstant.EXTRA_SHOP_ID, extras.getString(ShopParamConstant.KEY_SHOP_ID));
+                .putExtra(ShopParamConstant.EXTRA_SHOP_ID, extras.getString(ShopParamConstant.KEY_SHOP_ID))
+                .putExtra(ShopParamConstant.EXTRA_ATTRIBUTION, extras.getString(ShopPageActivity.APP_LINK_EXTRA_SHOP_ATTRIBUTION, ""))
+                .putExtra(ShopParamConstant.EXTRA_ETALASE_ID, extras.getString(ShopParamConstant.KEY_ETALASE_ID));
+    }
+
+    @DeepLink(ShopAppLink.SHOP_ETALASE_WITH_KEYWORD_AND_SORT)
+    public static Intent getCallingIntentEtalaseSelectedWithKeywordAndSort(Context context, Bundle extras) {
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        return new Intent(context, ShopProductListActivity.class)
+                .setData(uri.build())
+                .putExtra(ShopParamConstant.EXTRA_SHOP_ID, extras.getString(ShopParamConstant.KEY_SHOP_ID))
+                .putExtra(ShopParamConstant.EXTRA_ATTRIBUTION, extras.getString(ShopPageActivity.APP_LINK_EXTRA_SHOP_ATTRIBUTION, ""))
+                .putExtra(ShopParamConstant.EXTRA_ETALASE_ID, extras.getString(ShopParamConstant.KEY_ETALASE_ID))
+                .putExtra(ShopParamConstant.EXTRA_PRODUCT_KEYWORD, extras.getString(ShopParamConstant.KEY_KEYWORD))
+                .putExtra(ShopParamConstant.EXTRA_SORT_ID, extras.getString(ShopParamConstant.KEY_SORT));
     }
 
     @Override

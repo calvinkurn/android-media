@@ -152,7 +152,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:nestedScrollingEnabled="false"
-                        android:paddingBottom="@dimen/dp_10"/>
+                        android:paddingBottom="@dimen/dp_10" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -172,16 +172,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:nestedScrollingEnabled="false"
-                        android:paddingBottom="@dimen/dp_10"
-                        android:paddingLeft="@dimen/dp_20"
-                        android:paddingRight="@dimen/dp_20" />
+                        android:paddingBottom="@dimen/dp_10" />
                 </LinearLayout>
 
                 <com.tokopedia.design.voucher.VoucherCartHachikoView
                     android:id="@+id/voucher_check_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_20"/>
+                    android:layout_marginTop="@dimen/dp_20" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -245,11 +243,12 @@
                         <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/dp_10"
                             android:visibility="visible"
                             tools:visibility="visible">
 
                             <TextView
-                                style="@style/TextView.Small"
+                                style="@style/TextView.Small.Orange"
                                 android:layout_alignParentLeft="true"
                                 android:layout_centerVertical="true"
                                 android:layout_toLeftOf="@+id/tv_discount_voucher"
@@ -257,7 +256,7 @@
 
                             <TextView
                                 android:id="@+id/tv_discount_voucher"
-                                style="@style/TextView.Small"
+                                style="@style/TextView.Small.Orange"
                                 android:layout_alignParentRight="true"
                                 android:layout_centerVertical="true"
                                 tools:text="Rp. 500.0000" />

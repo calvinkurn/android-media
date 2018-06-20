@@ -302,7 +302,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                                         userSession.getName(),
                                         userSession.getProfilePicture(),
                                         false);
-//                        adapter.addDummyReply(pendingChatViewModel);
                         presenter.sendReply(pendingChatViewModel, mChannel);
                         setSendButtonEnabled(false);
                     }
@@ -395,7 +394,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         dialog.show();
     }
 
-    private View createContentView(PinnedMessageViewModel pinnedMessage) {
+    private View createContentView(final PinnedMessageViewModel pinnedMessage) {
         ChannelInfoViewModel channelInfoViewModel = ((GroupChatContract.View) getActivity()).getChannelInfoViewModel();
         View view = getLayoutInflater().inflate(R.layout.layout_pinned_message_expanded, null);
         ImageHandler.loadImageCircle2(getActivity(), (ImageView) view.findViewById(R.id.pinned_message_avatar)
@@ -403,8 +402,17 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         ((TextView) view.findViewById(R.id.chat_header).findViewById(R.id.nickname))
                 .setText(channelInfoViewModel.getAdminName());
         ((TextView) view.findViewById(R.id.message)).setText(pinnedMessage.getMessage());
-        ImageHandler.loadImageCircle2(getActivity(), (ImageView) view.findViewById(R.id.thumbnail)
+        ImageHandler.loadImage(getActivity(), (ImageView) view.findViewById(R.id.thumbnail)
                 , pinnedMessage.getThumbnail(), R.drawable.loading_page);
+        if(!TextUtils.isEmpty(pinnedMessage.getImageUrl())){
+            view.findViewById(R.id.thumbnail).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ((GroupChatModuleRouter) getActivity().getApplicationContext()).openRedirectUrl
+                            (getActivity(), pinnedMessage.getImageUrl());
+                }
+            });
+        }
         return view;
     }
 
@@ -623,12 +631,11 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     @Override
     public void onErrorSendMessage(PendingChatViewModel pendingChatViewModel, String errorMessage) {
         NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
-//        adapter.setRetry(pendingChatViewModel);
+        setSendButtonEnabled(true);
     }
 
     @Override
     public void onSuccessSendMessage(PendingChatViewModel pendingChatViewModel, ChatViewModel viewModel) {
-//        adapter.removeDummy(pendingChatViewModel);
         adapter.addReply(viewModel);
         adapter.notifyDataSetChanged();
         replyEditText.setText("");
@@ -669,13 +676,11 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
     @Override
     public void showReconnectingMessage() {
-//        NetworkErrorHelper.showSnackbar(getActivity(), "Reconnecting...");
         showLoading();
     }
 
     @Override
     public void dismissReconnectingMessage() {
-//        NetworkErrorHelper.showSnackbar(getActivity(), "Connected!");
         hideLoading();
     }
 
@@ -746,8 +751,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
     public void onUserEntered(UserActionViewModel userActionViewModel) {
         if (canShowUserEnter(userActionViewModel)) {
-//            adapter.addAction(userActionViewModel);
-//            adapter.notifyItemInserted(0);
             scrollToBottomWhenPossible();
         }
     }
@@ -963,12 +966,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
             String channelName = ((GroupChatActivity) getActivity())
                     .getChannelInfoViewModel().getTitle();
             analytics.eventClickLoyaltyWidget(channelName);
-        }
-    }
-
-    private void scrollToLastVisible() {
-        if (layoutManager.findFirstCompletelyVisibleItemPosition() == 0) {
-            chatRecyclerView.scrollToPosition(0);
         }
     }
 }

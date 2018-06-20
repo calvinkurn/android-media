@@ -35,11 +35,13 @@ import com.tokopedia.session.changephonenumber.data.source.CloudGetWarningSource
 import com.tokopedia.session.changephonenumber.data.source.CloudSendEmailSource;
 import com.tokopedia.session.changephonenumber.data.source.CloudValidateEmailCodeSource;
 import com.tokopedia.session.changephonenumber.data.source.CloudValidateNumberSource;
+import com.tokopedia.session.changephonenumber.data.source.CloudValidateOtpStatus;
 import com.tokopedia.session.changephonenumber.domain.ChangePhoneNumberRepository;
 import com.tokopedia.session.changephonenumber.domain.interactor.GetWarningUseCase;
 import com.tokopedia.session.changephonenumber.domain.interactor.SendEmailUseCase;
 import com.tokopedia.session.changephonenumber.domain.interactor.ValidateEmailCodeUseCase;
 import com.tokopedia.session.changephonenumber.domain.interactor.ValidateNumberUseCase;
+import com.tokopedia.session.changephonenumber.domain.interactor.ValidateOtpStatusUseCase;
 import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberEmailVerificationFragmentListener;
 import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberInputFragmentListener;
 import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberWarningFragmentListener;
@@ -64,6 +66,7 @@ import com.tokopedia.session.register.registerphonenumber.domain.usecase.CheckMs
 import com.tokopedia.session.register.registerphonenumber.domain.usecase.LoginRegisterPhoneNumberUseCase;
 import com.tokopedia.session.register.registerphonenumber.domain.usecase.RegisterPhoneNumberUseCase;
 import com.tokopedia.session.register.view.util.AccountsAuthInterceptor;
+import com.tokopedia.user.session.UserSession;
 
 import javax.inject.Named;
 
@@ -214,8 +217,10 @@ public class SessionModule {
 
     @SessionScope
     @Provides
-    ChangePhoneNumberWarningFragmentListener.Presenter provideChangePhoneNumberWarningPresenter(GetWarningUseCase getWarningUseCase) {
-        return new ChangePhoneNumberWarningPresenter(getWarningUseCase);
+    ChangePhoneNumberWarningFragmentListener.Presenter
+    provideChangePhoneNumberWarningPresenter(GetWarningUseCase getWarningUseCase,
+                                             ValidateOtpStatusUseCase validateOtpStatusUseCase) {
+        return new ChangePhoneNumberWarningPresenter(getWarningUseCase, validateOtpStatusUseCase);
     }
 
     @SessionScope
@@ -223,11 +228,13 @@ public class SessionModule {
     ChangePhoneNumberRepository provideChangePhoneNumberRepository(CloudGetWarningSource cloudGetWarningSource,
                                                                    CloudSendEmailSource cloudSendEmailSource,
                                                                    CloudValidateNumberSource cloudValidateNumberSource,
-                                                                   CloudValidateEmailCodeSource cloudValidateEmailCodeSource) {
+                                                                   CloudValidateEmailCodeSource cloudValidateEmailCodeSource,
+                                                                   CloudValidateOtpStatus cloudValidateOtpStatus) {
         return new ChangePhoneNumberRepositoryImpl(cloudGetWarningSource,
                 cloudSendEmailSource,
                 cloudValidateNumberSource,
-                cloudValidateEmailCodeSource);
+                cloudValidateEmailCodeSource,
+                cloudValidateOtpStatus);
     }
 
     @SessionScope
@@ -390,5 +397,11 @@ public class SessionModule {
             GetUserInfoUseCase getUserInfoUseCase,
             MakeLoginUseCase makeLoginUseCase) {
         return new LoginRegisterPhoneNumberUseCase(threadExecutor, postExecutionThread, registerPhoneNumberUseCase, getUserInfoUseCase, makeLoginUseCase);
+    }
+
+    @SessionScope
+    @Provides
+    UserSession provideUserSession(@ApplicationContext Context context){
+        return new UserSession(context);
     }
 }

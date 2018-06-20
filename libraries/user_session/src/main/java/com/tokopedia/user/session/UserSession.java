@@ -1,0 +1,228 @@
+package com.tokopedia.user.session;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.text.TextUtils;
+
+/**
+ * @author by milhamj on 04/04/18.
+ */
+
+public class UserSession {
+    private static final String DEFAULT_EMPTY_SHOP_ID = "0";
+    private static final String DEFAULT_EMPTY_SHOP_ID_ON_PREF = "-1";
+    private static final String IS_LOGIN = "IS_LOGIN";
+    private static final String LOGIN_ID = "LOGIN_ID";
+    private static final String GTM_LOGIN_ID = "GTM_LOGIN_ID";
+    private static final String FULL_NAME = "FULL_NAME";
+    private static final String LOGIN_SESSION = "LOGIN_SESSION";
+    private static final String ACCESS_TOKEN = "ACCESS_TOKEN";
+    private static final String REFRESH_TOKEN = "REFRESH_TOKEN";
+    private static final String PROFILE_PICTURE = "PROFILE_PICTURE";
+    private static final String EMAIL = "EMAIL";
+    private static final String IS_MSISDN_VERIFIED = "IS_MSISDN_VERIFIED";
+    private static final String PHONE_NUMBER = "PHONE_NUMBER";
+
+    private static final String TEMP_USER_ID = "temp_login_id";
+    private static final String TEMP_EMAIL = "TEMP_EMAIL";
+    private static final String TEMP_PHONE_NUMBER = "TEMP_PHONE_NUMBER";
+    private static final String TEMP_NAME = "TEMP_NAME";
+
+    private static final String GCM_STORAGE = "GCM_STORAGE";
+    private static final String GCM_ID = "gcm_id";
+
+    private static final String LOGIN_UUID_KEY = "LOGIN_UUID";
+    private static final String UUID_KEY = "uuid";
+
+    private static final String SHOP_ID = "SHOP_ID";
+    private static final String SHOP_NAME = "SHOP_NAME";
+    private static final String IS_GOLD_MERCHANT = "IS_GOLD_MERCHANT";
+
+    private Context context;
+
+    public UserSession(Context context) {
+        this.context = context;
+    }
+
+    /**
+     * GETTER METHOD
+     */
+
+    public String getAccessToken() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION,
+                Context.MODE_PRIVATE);
+        return sharedPrefs.getString(ACCESS_TOKEN, "");
+    }
+
+    public String getFreshToken() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION,
+                Context.MODE_PRIVATE);
+        return sharedPrefs.getString(REFRESH_TOKEN, "");
+    }
+
+    public String getUserId() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION,
+                Context.MODE_PRIVATE);
+        return sharedPrefs.getString(LOGIN_ID, "");
+    }
+
+    public boolean isLoggedIn() {
+        String u_id;
+        boolean isLogin;
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION,
+                Context.MODE_PRIVATE);
+        u_id = sharedPrefs.getString(LOGIN_ID, null);
+        isLogin = sharedPrefs.getBoolean(IS_LOGIN, false);
+        return isLogin && u_id != null;
+    }
+
+    public String getShopId() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION,
+                Context.MODE_PRIVATE);
+        String shopId = sharedPrefs.getString(SHOP_ID, DEFAULT_EMPTY_SHOP_ID);
+        if (DEFAULT_EMPTY_SHOP_ID_ON_PREF.equals(shopId)) {
+            shopId = DEFAULT_EMPTY_SHOP_ID;
+        }
+        return shopId;
+    }
+
+    public boolean hasShop() {
+        return !TextUtils.isEmpty(getShopId()) && !DEFAULT_EMPTY_SHOP_ID.equals(getShopId());
+    }
+
+    public String getName() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION,
+                Context.MODE_PRIVATE);
+        return sharedPrefs.getString(FULL_NAME, null);
+    }
+
+    public String getProfilePicture() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION,
+                Context.MODE_PRIVATE);
+        return sharedPrefs.getString(PROFILE_PICTURE, "");
+    }
+
+    public String getTemporaryUserId() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        return sharedPrefs.getString(TEMP_USER_ID, "");
+    }
+
+    public String getDeviceId() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(GCM_STORAGE, Context.MODE_PRIVATE);
+        return sharedPrefs.getString(GCM_ID, "");
+    }
+
+    public String getTempEmail() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        return sharedPrefs.getString(TEMP_EMAIL, "");
+    }
+
+    public String getTempPhoneNumber() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        return sharedPrefs.getString(TEMP_PHONE_NUMBER, "");
+    }
+
+    public boolean isMsisdnVerified() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(GCM_STORAGE, Context.MODE_PRIVATE);
+        return sharedPrefs.getBoolean(IS_MSISDN_VERIFIED, false);
+    }
+
+    /**
+     * SETTER METHOD
+     */
+
+    public void setUUID(String uuid) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_UUID_KEY, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+
+        String prevUUID = sharedPrefs.getString(UUID_KEY, "");
+        String currUUID;
+        if (prevUUID.equals("")) {
+            currUUID = uuid;
+        } else {
+            currUUID = prevUUID + "*~*" + uuid;
+        }
+        editor.putString(UUID_KEY, currUUID);
+        editor.apply();
+    }
+
+    public void setIsLogin(boolean isLogin) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putBoolean(IS_LOGIN, isLogin);
+        editor.apply();
+    }
+
+    public void setUserId(String userId) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putString(LOGIN_ID, userId);
+        editor.putString(GTM_LOGIN_ID, userId);
+
+        editor.apply();
+    }
+
+    public void setName(String fullName) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putString(FULL_NAME, fullName);
+        editor.apply();
+    }
+
+    public void setEmail(String email) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putString(EMAIL, email);
+        editor.apply();
+    }
+
+    public void setIsMsisdnVerified(boolean isMsisdnVerified) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putBoolean(IS_MSISDN_VERIFIED, isMsisdnVerified);
+        editor.apply();
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putString(PHONE_NUMBER, phoneNumber);
+        editor.apply();
+    }
+
+    public void setShopId(String shopId) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putString(SHOP_ID, shopId);
+        editor.apply();
+    }
+
+    public void setShopName(String shopName) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putString(SHOP_NAME, shopName);
+        editor.apply();
+    }
+
+    public void setIsGoldMerchant(boolean isGoldMerchant) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putBoolean(IS_GOLD_MERCHANT, isGoldMerchant);
+        editor.apply();
+    }
+
+
+    public void setTempLoginName(String fullName) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putString(TEMP_NAME, fullName);
+        editor.apply();
+    }
+
+    public void setTempUserId(String userId) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putString(TEMP_USER_ID, userId);
+        editor.apply();
+    }
+}

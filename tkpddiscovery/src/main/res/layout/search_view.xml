@@ -31,7 +31,7 @@
                 style="@style/MSV_ImageButton"
                 android:layout_gravity="center_vertical"
                 android:tint="#4b4b4b"
-                app:srcCompat="@drawable/ic_navigation_arrow_back" />
+                app:srcCompat="@drawable/ic_navigation_arrow_back"/>
 
             <com.tokopedia.design.component.EditTextCompat
                 android:id="@+id/searchTextView"
