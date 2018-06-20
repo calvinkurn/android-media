@@ -80,6 +80,7 @@ import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
+import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 import com.tokopedia.profile.view.activity.TopProfileActivity;
 import com.tokopedia.topads.sdk.domain.model.Data;
@@ -1047,14 +1048,14 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessLikeDislikeKolPost(int rowNumber) {
-        if (adapter.getlist().get(rowNumber) instanceof KolPostViewModel) {
-            KolPostViewModel kolPostViewModel = (KolPostViewModel) adapter.getlist().get(rowNumber);
-            kolPostViewModel.setLiked(!(kolPostViewModel.isLiked()));
-            if (kolPostViewModel.isLiked()) {
-                kolPostViewModel.setTotalLike(((KolPostViewModel)
+        if (adapter.getlist().get(rowNumber) instanceof BaseKolViewModel) {
+            BaseKolViewModel kolViewModel = (BaseKolViewModel) adapter.getlist().get(rowNumber);
+            kolViewModel.setLiked(!(kolViewModel.isLiked()));
+            if (kolViewModel.isLiked()) {
+                kolViewModel.setTotalLike(((BaseKolViewModel)
                         adapter.getlist().get(rowNumber)).getTotalLike() + 1);
             } else {
-                kolPostViewModel.setTotalLike(((KolPostViewModel)
+                kolViewModel.setTotalLike(((BaseKolViewModel)
                         adapter.getlist().get(rowNumber)).getTotalLike() - 1);
             }
             adapter.notifyItemChanged(rowNumber);
@@ -1081,10 +1082,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     private void onSuccessAddDeleteKolComment(int rowNumber, int totalNewComment) {
-        if (adapter.getlist().get(rowNumber) instanceof KolPostViewModel) {
-            KolPostViewModel kolPostViewModel = (KolPostViewModel) adapter.getlist().get(rowNumber);
-            kolPostViewModel.setTotalComment((
-                    (KolPostViewModel)
+        if (adapter.getlist().get(rowNumber) instanceof BaseKolViewModel) {
+            BaseKolViewModel kolViewModel = (BaseKolViewModel) adapter.getlist().get(rowNumber);
+            kolViewModel.setTotalComment((
+                    (BaseKolViewModel)
                             adapter.getlist().get(rowNumber)).getTotalComment() +
                     totalNewComment);
             adapter.notifyItemChanged(rowNumber);
@@ -1104,8 +1105,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     private void updatePostState(int rowNumber, int isLiked, int totalLike, int totalComment) {
-        if (rowNumber != DEFAULT_VALUE && adapter.getlist().get(rowNumber) instanceof KolPostViewModel) {
-            KolPostViewModel kolViewModel = (KolPostViewModel) adapter.getlist().get(rowNumber);
+        if (rowNumber != DEFAULT_VALUE && adapter.getlist().get(rowNumber) instanceof BaseKolViewModel) {
+            BaseKolViewModel kolViewModel = (BaseKolViewModel) adapter.getlist().get(rowNumber);
 
             if (isLiked != DEFAULT_VALUE) {
                 kolViewModel.setLiked(isLiked == IS_LIKE_TRUE);
