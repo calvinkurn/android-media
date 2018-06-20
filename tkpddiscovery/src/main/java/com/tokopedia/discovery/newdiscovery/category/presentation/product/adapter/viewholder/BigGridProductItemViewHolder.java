@@ -6,16 +6,11 @@ import android.view.View;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapter.listener.ItemClickListener;
 
-/**
- * Created by henrypriyono on 10/17/17.
- */
-
-public class ListProductItemViewHolder extends GridProductItemViewHolder {
-
+public class BigGridProductItemViewHolder extends GridProductItemViewHolder {
     @LayoutRes
-    public static final int LAYOUT = R.layout.search_result_product_item_list;
+    public static final int LAYOUT = R.layout.search_result_product_item_big_grid;
 
-    public ListProductItemViewHolder(View itemView, ItemClickListener itemClickListener) {
+    public BigGridProductItemViewHolder(View itemView, ItemClickListener itemClickListener) {
         super(itemView, itemClickListener);
     }
 }
