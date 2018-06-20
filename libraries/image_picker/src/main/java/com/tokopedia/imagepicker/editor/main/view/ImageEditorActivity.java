@@ -834,16 +834,21 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
         onFinishWithMultipleFinalImage(resultPaths);
     }
 
-    private void onFinishWithMultipleFinalImage(ArrayList<String> imageUrlOrPathList) {
+    protected void onFinishWithMultipleFinalImage(ArrayList<String> imageUrlOrPathList) {
         ImageUtils.deleteCacheFolder(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE);
         ImageUtils.deleteCacheFolder(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA);
+        Intent intent = getFinishIntent(imageUrlOrPathList);
+        setResult(Activity.RESULT_OK, intent);
+        finish();
+    }
+
+    protected Intent getFinishIntent(ArrayList<String> imageUrlOrPathList){
         Intent intent = new Intent();
         intent.putStringArrayListExtra(PICKER_RESULT_PATHS, imageUrlOrPathList);
         intent.putStringArrayListExtra(RESULT_PREVIOUS_IMAGE, extraImageUrls);
         intent.putStringArrayListExtra(RESULT_IMAGE_DESCRIPTION_LIST, imageDescriptionList);
         intent.putExtra(RESULT_IS_EDITTED, isEdittedList);
-        setResult(Activity.RESULT_OK, intent);
-        finish();
+        return intent;
     }
 
     /**
