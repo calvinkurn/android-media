@@ -28,11 +28,13 @@ import java.util.List;
 
 public class PollAdapter extends RecyclerView.Adapter<PollAdapter.ViewHolder> {
     private String pollId;
+    private boolean voted;
     private List<PollOptionViewModel> list;
     private FeedPlus.View.Polling viewListener;
 
-    PollAdapter(String pollId, FeedPlus.View.Polling viewListener) {
+    PollAdapter(String pollId, boolean voted, FeedPlus.View.Polling viewListener) {
         this.pollId = pollId;
+        this.voted = voted;
         this.list = new ArrayList<>();
         this.viewListener = viewListener;
     }

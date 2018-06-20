@@ -436,13 +436,7 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
             return null;
         }
 
-        //TODO milhamj supposed to be isAnswered from API
-        boolean voted = false;
-        for (PollingOption option: polling.getOptions()) {
-            if (option.getIs_selected()) {
-                voted = true;
-            }
-        }
+        boolean voted = polling.getIs_answered() == null ? false : polling.getIs_answered();
 
         List<PollOptionViewModel> optionViewModels = new ArrayList<>();
         for (PollingOption option: polling.getOptions()) {

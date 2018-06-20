@@ -37,6 +37,10 @@ public class PollViewModel extends BaseKolViewModel implements Visitable<FeedPlu
         return totalVoter;
     }
 
+    public boolean isVoted() {
+        return voted;
+    }
+
     public List<PollOptionViewModel> getOptionViewModels() {
         return optionViewModels;
     }

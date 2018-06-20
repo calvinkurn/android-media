@@ -233,6 +233,7 @@ query FeedQuery($userID: Int!, $limit: Int!, $cursor: String, $source: String) {
             followed
             show_comment
             total_voter
+            is_answered
             options {
                 option_id
                 option
