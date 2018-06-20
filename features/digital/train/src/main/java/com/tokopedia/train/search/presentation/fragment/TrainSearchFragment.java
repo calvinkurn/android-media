@@ -1,6 +1,7 @@
 package com.tokopedia.train.search.presentation.fragment;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder;
 import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
@@ -40,6 +42,7 @@ import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
 import com.tokopedia.train.search.presentation.presenter.TrainSearchPresenter;
 import com.tokopedia.usecase.RequestParams;
 
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,7 +52,8 @@ import javax.inject.Inject;
  * A simple {@link Fragment} subclass.
  */
 public abstract class TrainSearchFragment extends BaseListFragment<TrainScheduleViewModel,
-        TrainSearchAdapterTypeFactory> implements TrainSearchContract.View {
+        TrainSearchAdapterTypeFactory> implements TrainSearchContract.View,
+        TrainSearchAdapterTypeFactory.OnTrainSearchListener {
 
     private static final String TAG = TrainSearchFragment.class.getSimpleName();
     private static final String SELECTED_SORT = "selected_sort";
@@ -127,7 +131,6 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(SELECTED_SORT, selectedSortOption);
-
     }
 
     @NonNull
@@ -136,8 +139,8 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
         BaseListAdapter<TrainScheduleViewModel, TrainSearchAdapterTypeFactory> adapter = super.createAdapterInstance();
         ErrorNetworkModel errorNetworkModel = adapter.getErrorNetworkModel();
         errorNetworkModel.setIconDrawableRes(R.drawable.ic_train_error_network);
-        errorNetworkModel.setErrorMessage(getString(R.string.search_no_connection_title));
-        errorNetworkModel.setSubErrorMessage(getString(R.string.search_no_connection));
+        errorNetworkModel.setErrorMessage(getString(R.string.train_search_no_connection_title));
+        errorNetworkModel.setSubErrorMessage(getString(R.string.train_search_no_connection));
         errorNetworkModel.setOnRetryListener(this);
         adapter.setErrorNetworkModel(errorNetworkModel);
         return adapter;
@@ -180,27 +183,52 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
         }
     }
 
-
-
     @Override
     protected Visitable getEmptyDataViewModel() {
-        //TODO handle if user from filter searching
-        EmptyResultViewModel emptyResultViewModel = new EmptyResultViewModel();
-        emptyResultViewModel.setIconRes(R.drawable.ic_train_no_result);
-        emptyResultViewModel.setContentRes(R.string.search_no_result_default);
-        emptyResultViewModel.setButtonTitleRes(R.string.search_reset_button);
-        emptyResultViewModel.setCallback(new EmptyResultViewHolder.Callback() {
-            @Override
-            public void onEmptyContentItemTextClicked() {
+        clearAdapterData();
+        EmptyResultViewModel emptyResultViewModel;
+        if (filterSearchData.isHasFilter()) {
+            emptyResultViewModel = new EmptyResultViewModel();
+            emptyResultViewModel.setIconRes(R.drawable.ic_train_no_result);
+            emptyResultViewModel.setContentRes(R.string.train_search_no_result_filter);
+            emptyResultViewModel.setButtonTitleRes(R.string.train_search_reset_filter_button);
+            emptyResultViewModel.setCallback(new EmptyResultViewHolder.Callback() {
+                @Override
+                public void onEmptyContentItemTextClicked() {
 
-            }
+                }
 
-            @Override
-            public void onEmptyButtonClicked() {
+                @Override
+                public void onEmptyButtonClicked() {
+                    filterSearchData = filterSearchData.resetSelectedValue();
+                    getAdapter().clearAllNonDataElement();
+                    showLoading();
+                    markUiSortAndFilterOption();
+                    presenter.getFilteredAndSortedSchedules(filterSearchData.getMinPrice(),
+                            filterSearchData.getMaxPrice(), filterSearchData.getTrainClass(),
+                            filterSearchData.getTrains(), filterSearchData.getDepartureTimeList(),
+                            selectedSortOption);
+                }
+            });
+            return emptyResultViewModel;
+        } else {
+            emptyResultViewModel = new EmptyResultViewModel();
+            emptyResultViewModel.setIconRes(R.drawable.ic_train_no_result);
+            emptyResultViewModel.setContentRes(R.string.train_search_no_result_default);
+            emptyResultViewModel.setButtonTitleRes(R.string.train_search_reset_button);
+            emptyResultViewModel.setCallback(new EmptyResultViewHolder.Callback() {
+                @Override
+                public void onEmptyContentItemTextClicked() {
 
-            }
-        });
-        return emptyResultViewModel;
+                }
+
+                @Override
+                public void onEmptyButtonClicked() {
+                    //TODO : ask sonny about empty button ganti pencarian in empty page
+                }
+            });
+            return emptyResultViewModel;
+        }
     }
 
     @Override
@@ -209,18 +237,18 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
         requestParams.putString(GetScheduleUseCase.DATE_SCHEDULE, dateDeparture);
         if (originCode != null) {
             requestParams.putString(GetScheduleUseCase.ORIGIN_CODE, originCode);
-        }else {
+        } else {
             requestParams.putString(GetScheduleUseCase.ORIGIN_CODE, "");
         }
         requestParams.putString(GetScheduleUseCase.ORIGIN_CITY, originCity);
         if (destinationCode != null) {
             requestParams.putString(GetScheduleUseCase.DEST_CODE, destinationCode);
-        }else {
+        } else {
             requestParams.putString(GetScheduleUseCase.DEST_CODE, "");
         }
         requestParams.putString(GetScheduleUseCase.DEST_CITY, destinationCity);
 
-        //not yet implemented in query gql staging
+        //TODO : not yet implemented in query gql staging
         //requestParams.putInt(GetScheduleUseCase.TOTAL_ADULT, adultPassanger);
         //requestParams.putInt(GetScheduleUseCase.TOTAL_INFANT, infantPassanger);
         return requestParams;
@@ -237,27 +265,37 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
     }
 
     @Override
-    public void showDataFromCache(List<TrainScheduleViewModel> trainScheduleViewModels) {
-        getAdapter().hideLoading();
+    public void showEmptyResult() {
+        removePaddingSortAndFilterSearch();
+        hideFilterAndSortButtonAction();
+        getAdapter().addElement(getEmptyDataViewModel());
+    }
+
+    @Override
+    public void clearAdapterData() {
         getAdapter().clearAllElements();
+    }
+
+    @Override
+    public void showGetListError(Throwable throwable) {
+        if (throwable instanceof UnknownHostException) {
+            clearAdapterData();
+        }
+        hideLoading();
+        removePaddingSortAndFilterSearch();
+        hideFilterAndSortButtonAction();
+        super.showGetListError(throwable);
+    }
+
+    @Override
+    public void showDataScheduleFromCache(List<TrainScheduleViewModel> trainScheduleViewModels) {
+        getAdapter().hideLoading();
+        clearAdapterData();
+        addPaddingSortAndFilterSearch();
+        showFilterAndSortButtonAction();
         if (trainScheduleViewModels.size() > 0) {
-            float scale = getResources().getDisplayMetrics().density;
-            RecyclerView recyclerView = getRecyclerView(getView());
-            recyclerView.setPadding(
-                    EMPTY_MARGIN,
-                    EMPTY_MARGIN,
-                    EMPTY_MARGIN,
-                    (int) (scale * PADDING_SEARCH_LIST + DEFAULT_DIMENS_MULTIPLIER)
-            );
             getAdapter().addElement(trainScheduleViewModels);
         } else {
-            RecyclerView recyclerView = getRecyclerView(getView());
-            recyclerView.setPadding(
-                    EMPTY_MARGIN,
-                    EMPTY_MARGIN,
-                    EMPTY_MARGIN,
-                    EMPTY_MARGIN
-            );
             getAdapter().addElement(getEmptyDataViewModel());
         }
     }
@@ -274,6 +312,11 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
     }
 
     @Override
+    protected void onAttachActivity(Context context) {
+        super.onAttachActivity(context);
+    }
+
+    @Override
     protected void initInjector() {
         if (trainSearchComponent == null) {
             trainSearchComponent = DaggerTrainSearchComponent.builder()
@@ -285,16 +328,58 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
 
     @Override
     protected TrainSearchAdapterTypeFactory getAdapterTypeFactory() {
-        return new TrainSearchAdapterTypeFactory(new TrainSearchAdapterTypeFactory.OnTrainSearchListener() {
-
-        });
+        return new TrainSearchAdapterTypeFactory(this);
     }
 
-//    @Override
-//    public void onItemClicked(TrainScheduleViewModel trainScheduleViewModel) {
-//        //TODO make tap to go to detail schedule page
-//        Toast.makeText(getActivity(), trainScheduleViewModel.getTrainName(), Toast.LENGTH_SHORT).show();
-//    }
+    @Override
+    public void onRetryClicked() {
+        clearAdapterData();
+        presenter.getTrainSchedules(getScheduleVariant());
+    }
+
+    @Override
+    public void onDetailClicked(TrainScheduleViewModel trainScheduleViewModel, int adapterPosition) {
+        //TODO : detail clicked go to detail trip
+        Toast.makeText(getActivity(), "detail " + trainScheduleViewModel.getTrainName(), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onItemClicked(TrainScheduleViewModel trainScheduleViewModel, int adapterPosition) {
+        //TODO : item schedule clicked
+        Toast.makeText(getActivity(), "item " + trainScheduleViewModel.getTrainName(), Toast.LENGTH_SHORT).show();
+    }
+
+    private void removePaddingSortAndFilterSearch() {
+        RecyclerView recyclerView = getRecyclerView(getView());
+        recyclerView.setPadding(
+                EMPTY_MARGIN,
+                EMPTY_MARGIN,
+                EMPTY_MARGIN,
+                EMPTY_MARGIN
+        );
+    }
+
+    @Override
+    public void addPaddingSortAndFilterSearch() {
+        float scale = getResources().getDisplayMetrics().density;
+        RecyclerView recyclerView = getRecyclerView(getView());
+        recyclerView.setPadding(
+                EMPTY_MARGIN,
+                EMPTY_MARGIN,
+                EMPTY_MARGIN,
+                (int) (scale * PADDING_SEARCH_LIST + DEFAULT_DIMENS_MULTIPLIER)
+        );
+    }
+
+    @Override
+    public void showFilterAndSortButtonAction() {
+        filterAndSortBottomAction.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideFilterAndSortButtonAction() {
+        filterAndSortBottomAction.setVisibility(View.GONE);
+    }
 
     @Override
     public void loadData(int page) {

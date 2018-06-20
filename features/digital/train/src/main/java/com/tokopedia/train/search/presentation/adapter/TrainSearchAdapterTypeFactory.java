@@ -32,6 +32,10 @@ public class TrainSearchAdapterTypeFactory extends BaseAdapterTypeFactory
         return TrainErrorNetworkViewHolder.LAYOUT;
     }
 
+    public int type(TrainScheduleViewModel viewModel) {
+        return TrainSearchViewHolder.LAYOUT;
+    }
+
     @Override
     public AbstractViewHolder createViewHolder(View parent, int type) {
         if (type == TrainSearchViewHolder.LAYOUT) {
@@ -47,14 +51,14 @@ public class TrainSearchAdapterTypeFactory extends BaseAdapterTypeFactory
 
     @Override
     public void onRetryClicked() {
-
-    }
-
-    public int type(TrainScheduleViewModel viewModel) {
-        return TrainSearchViewHolder.LAYOUT;
+        listener.onRetryClicked();
     }
 
     public interface OnTrainSearchListener {
+        void onRetryClicked();
 
+        void onDetailClicked(TrainScheduleViewModel trainScheduleViewModel, int adapterPosition);
+
+        void onItemClicked(TrainScheduleViewModel trainScheduleViewModel, int adapterPosition);
     }
 }

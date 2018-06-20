@@ -58,8 +58,13 @@ public class TrainSearchPresenter extends BaseDaggerPresenter<TrainSearchContrac
 
                     @Override
                     public void onNext(List<AvailabilityKeySchedule> availabilityKeySchedules) {
-                        for (AvailabilityKeySchedule available : availabilityKeySchedules) {
-                            getAvailabilitySchedule(available.getIdTrain(), scheduleVariant);
+                        getView().clearAdapterData();
+                        if (availabilityKeySchedules.isEmpty()) {
+                            getView().showEmptyResult();
+                        } else {
+                            for (AvailabilityKeySchedule available : availabilityKeySchedules) {
+                                getAvailabilitySchedule(available.getIdTrain(), scheduleVariant);
+                            }
                         }
                     }
                 });
@@ -87,6 +92,8 @@ public class TrainSearchPresenter extends BaseDaggerPresenter<TrainSearchContrac
                 Log.d(TAG, idTrain);
                 if (trainScheduleViewModels != null) {
                     getView().showLayoutTripInfo();
+                    getView().addPaddingSortAndFilterSearch();
+                    getView().showFilterAndSortButtonAction();
                     getView().renderList(trainScheduleViewModels);
                 }
             }
@@ -119,9 +126,12 @@ public class TrainSearchPresenter extends BaseDaggerPresenter<TrainSearchContrac
 
             @Override
             public void onNext(List<TrainScheduleViewModel> trainSchedulesViewModel) {
-                if (trainSchedulesViewModel != null) {
+                if (trainSchedulesViewModel != null && !trainSchedulesViewModel.isEmpty()) {
                     getView().showLayoutTripInfo();
-                    getView().showDataFromCache(trainSchedulesViewModel);
+                    getView().showDataScheduleFromCache(trainSchedulesViewModel);
+                } else {
+                    getView().showEmptyResult();
+                    getView().showFilterAndSortButtonAction();
                 }
                 getView().setSortOptionId(sortOptionId);
             }

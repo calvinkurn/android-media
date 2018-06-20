@@ -9,6 +9,7 @@ import android.support.v7.widget.AppCompatImageView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
@@ -43,10 +44,12 @@ public class TrainSearchViewHolder extends AbstractViewHolder<TrainScheduleViewM
     private Context context;
     private AppCompatImageView imageRound1;
     private AppCompatImageView imageRound3;
+    private RelativeLayout itemContainer;
 
     public TrainSearchViewHolder(View itemView, TrainSearchAdapterTypeFactory.OnTrainSearchListener listener) {
         super(itemView);
         this.context = itemView.getContext();
+        itemContainer = itemView.findViewById(R.id.item_container);
         flagItemLayout = itemView.findViewById(R.id.flag_item);
         trainNameTv = itemView.findViewById(R.id.train_name);
         classNameTv = itemView.findViewById(R.id.class_name);
@@ -113,7 +116,13 @@ public class TrainSearchViewHolder extends AbstractViewHolder<TrainScheduleViewM
         detailScheduleTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO go to detail schedule
+                listener.onDetailClicked(trainScheduleViewModel, getAdapterPosition());
+            }
+        });
+        itemContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.onItemClicked(trainScheduleViewModel, getAdapterPosition());
             }
         });
     }
