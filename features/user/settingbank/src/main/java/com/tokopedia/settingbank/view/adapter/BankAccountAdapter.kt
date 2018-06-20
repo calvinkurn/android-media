@@ -17,6 +17,28 @@ class BankAccountAdapter(adapterTypeFactory: BankAccountTypeFactoryImpl,
         this.visitables.addAll(list)
         notifyItemRangeInserted(lastPosition, list.size)
     }
+
+    fun setMain(adapterPosition: Int) {
+        val tempAccount: BankAccountViewModel = this.visitables[adapterPosition] as BankAccountViewModel
+        tempAccount.isDefaultBank = true
+
+        if (this.visitables[0] is BankAccountViewModel) {
+            (this.visitables[0] as BankAccountViewModel).isDefaultBank = false
+        }
+        notifyItemChanged(0)
+
+        this.visitables.removeAt(adapterPosition)
+        notifyItemRemoved(adapterPosition)
+
+        this.visitables.add(0, tempAccount)
+        notifyItemInserted(0)
+
+    }
+
+    fun remove(adapterPosition: Int) {
+        this.visitables.removeAt(adapterPosition)
+        notifyItemRemoved(adapterPosition)
+    }
 }
 
 

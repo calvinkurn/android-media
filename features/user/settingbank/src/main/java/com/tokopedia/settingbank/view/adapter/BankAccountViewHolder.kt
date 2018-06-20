@@ -11,13 +11,15 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.core.app.MainApplication
 import com.tokopedia.settingbank.R
+import com.tokopedia.settingbank.view.listener.BankAccountPopupListener
 import com.tokopedia.settingbank.view.viewmodel.BankAccountViewModel
 
 /**
  * @author by nisie on 6/12/18.
  */
-class BankAccountViewHolder(val v: View) : AbstractViewHolder<BankAccountViewModel>
-(v) {
+class BankAccountViewHolder(val v: View, val listener: BankAccountPopupListener) :
+        AbstractViewHolder<BankAccountViewModel>(v) {
+
 
     val bankIcon: ImageView = itemView.findViewById(R.id.bank_icon)
     val bankName: TextView = itemView.findViewById(R.id.bank_name)
@@ -60,25 +62,36 @@ class BankAccountViewHolder(val v: View) : AbstractViewHolder<BankAccountViewMod
 
         if (!::popupMenu.isInitialized) {
             popupMenu = PopupMenu(context, v)
-            popupMenu.setOnMenuItemClickListener { item: MenuItem? -> onPopupMenuClicked(item) }
+            popupMenu.setOnMenuItemClickListener { item: MenuItem? ->
+                onPopupMenuClicked(item,
+                        element)
+            }
         }
         setupPopupMenu(element, popupMenu)
         popupMenu.show()
     }
 
-    private fun onPopupMenuClicked(item: MenuItem?): Boolean {
+    private fun onPopupMenuClicked(item: MenuItem?, element: BankAccountViewModel?): Boolean {
         return if (item != null) {
             when (item.itemId) {
-                R.id.menu_make_main_account -> makeMainAccount()
+                R.id.menu_make_main_account -> {
+                    listener.makeMainAccount(adapterPosition, element)
+                    return true
+                }
+                R.id.menu_edit -> {
+                    listener.editBankAccount(adapterPosition, element)
+                    return true
+                }
+                R.id.menu_delete -> {
+                    listener.deleteBankAccount(adapterPosition, element)
+                    return true
+                }
                 else -> false
             }
         } else {
+
             false
         }
-    }
-
-    private fun makeMainAccount(): Boolean {
-        return true
     }
 
     private fun setupPopupMenu(element: BankAccountViewModel?, popupMenu: PopupMenu) {

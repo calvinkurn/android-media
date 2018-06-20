@@ -6,4 +6,8 @@
     <string name="menu_edit">Ubah</string>
     <string name="menu_delete">Hapus</string>
     <string name="main_account">Rekening Utama</string>
+    <string name="make_main_account_prompt_title">Jadikan Rekening Utama?</string>
+    <string name="you_will_make_account">Anda akan menjadikan rekening Bank</string>
+    <string name="under_name">atas nama</string>
+    <string name="become_default">menjadi rekening utama</string>
 </resources>

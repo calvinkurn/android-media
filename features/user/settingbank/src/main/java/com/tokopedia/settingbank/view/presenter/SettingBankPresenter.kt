@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.settingbank.domain.usecase.GetBankListUseCase
 import com.tokopedia.settingbank.view.listener.SettingBankContract
 import com.tokopedia.settingbank.view.viewmodel.BankAccountListViewModel
+import com.tokopedia.settingbank.view.viewmodel.BankAccountViewModel
 import com.tokopedia.user.session.UserSession
 import rx.Subscriber
 
@@ -46,4 +47,7 @@ class SettingBankPresenter(val userSession: UserSession,
         getBankAccountUseCase.unsubscribe()
     }
 
+    override fun setMainAccount(adapterPosition: Int, element: BankAccountViewModel?) {
+        view.onSuccessSetMain(adapterPosition)
+    }
 }

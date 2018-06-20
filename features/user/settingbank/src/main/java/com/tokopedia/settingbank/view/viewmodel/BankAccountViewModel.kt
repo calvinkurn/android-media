@@ -8,15 +8,15 @@ import com.tokopedia.settingbank.view.adapter.BankAccountTypeFactory
  */
 
 data class BankAccountViewModel(
-        val bankId: String? = "",
-        val branchName: String? = "",
-        val accountName: String? = "",
-        val accountNumber: String? = "",
-        val isVerifiedAccount: Boolean = false,
-        val accountId: String? = "",
-        val bankName: String? = "",
-        val isDefaultBank: Boolean = false,
-        val bankLogo: String? = "")
+        var bankId: String? = "",
+        var branchName: String? = "",
+        var accountName: String? = "",
+        var accountNumber: String? = "",
+        var isVerifiedAccount: Boolean = false,
+        var accountId: String? = "",
+        var bankName: String? = "",
+        var isDefaultBank: Boolean = false,
+        var bankLogo: String? = "")
     : Visitable<BankAccountTypeFactory> {
     override fun type(typeFactory: BankAccountTypeFactory): Int {
         return typeFactory.type(this)
