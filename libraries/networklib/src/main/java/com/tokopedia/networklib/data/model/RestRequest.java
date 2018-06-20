@@ -140,7 +140,7 @@ public class RestRequest {
         private Object body;  /* Mandatory parameter of RequestType is GET or POST */
         private RestCacheStrategy cacheStrategy;
 
-        public Builder(Type classOfT, String url) {
+        public Builder(String url, Type classOfT) {
             this.typeOfT = classOfT;
             this.url = url;
         }
