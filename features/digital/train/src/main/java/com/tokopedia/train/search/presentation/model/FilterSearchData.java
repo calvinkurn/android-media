@@ -3,6 +3,7 @@ package com.tokopedia.train.search.presentation.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -178,5 +179,21 @@ public class FilterSearchData implements Parcelable {
                          filterSearchData.getSelectedTrains() != null && !filterSearchData.getSelectedTrains().isEmpty() ||
                          filterSearchData.getSelectedTrainClass() != null && !filterSearchData.getSelectedTrainClass().isEmpty() ||
                          filterSearchData.getSelectedDepartureTimeList() != null && !filterSearchData.getSelectedDepartureTimeList().isEmpty();
+    }
+
+    public FilterSearchData resetSelectedValue() {
+        FilterSearchData filterSearchData = new FilterSearchData();
+        filterSearchData.setMinPrice(getMinPrice());
+        filterSearchData.setMaxPrice(getMaxPrice());
+        filterSearchData.setTrainClass(getTrainClass());
+        filterSearchData.setTrains(getTrains());
+        filterSearchData.setDepartureTimeList(getDepartureTimeList());
+
+        filterSearchData.setSelectedMaxPrice(0);
+        filterSearchData.setSelectedMinPrice(0);
+        filterSearchData.setSelectedTrainClass(new ArrayList<>());
+        filterSearchData.setSelectedTrains(new ArrayList<>());
+        filterSearchData.setSelectedDepartureTimeList(new ArrayList<>());
+        return filterSearchData;
     }
 }

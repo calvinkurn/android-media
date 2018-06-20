@@ -189,11 +189,7 @@ public class TrainFilterSearchFragment extends BaseDaggerFragment implements Bas
         }
 
         FilterSearchData filterSearchData = listener.getFilterSearchData();
-        filterSearchData.setSelectedMaxPrice(0);
-        filterSearchData.setSelectedMinPrice(0);
-        filterSearchData.setSelectedTrainClass(new ArrayList<>());
-        filterSearchData.setSelectedTrains(new ArrayList<>());
-        filterSearchData.setSelectedDepartureTimeList(new ArrayList<>());
+        filterSearchData.resetSelectedValue();
         populateView(view);
         listener.onChangeFilterSearchData(filterSearchData);
     }
