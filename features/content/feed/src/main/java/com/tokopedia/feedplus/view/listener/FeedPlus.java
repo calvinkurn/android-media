@@ -63,7 +63,7 @@ public interface FeedPlus {
         }
 
         interface Polling {
-            void onVoteOptionClicked(String pollId, PollOptionViewModel pollViewModel);
+            void onVoteOptionClicked(String pollId, PollOptionViewModel optionViewModel);
         }
 
         void setFirstCursor(String firstCursor);
@@ -222,6 +222,7 @@ public interface FeedPlus {
 
         void unlikeKol(int id, int rowNumber, View.Kol kolListener);
 
+        void sendVote(String pollId, PollOptionViewModel optionViewModel);
 
         void followKolFromRecommendation(int id, int rowNumber, int position, View.Kol
                 kolListener);

@@ -1016,8 +1016,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onVoteOptionClicked(String pollId, PollOptionViewModel pollViewModel) {
-
+    public void onVoteOptionClicked(String pollId, PollOptionViewModel optionViewModel) {
+        presenter.sendVote(pollId, optionViewModel);
     }
 
     @Override

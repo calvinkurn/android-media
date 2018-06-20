@@ -19,9 +19,12 @@ import com.tokopedia.feedplus.view.subscriber.FollowUnfollowKolSubscriber;
 import com.tokopedia.feedplus.view.subscriber.GetFeedsSubscriber;
 import com.tokopedia.feedplus.view.subscriber.GetFirstPageFeedsSubscriber;
 import com.tokopedia.feedplus.view.subscriber.LikeKolPostSubscriber;
+import com.tokopedia.feedplus.view.subscriber.SendVoteSubscriber;
+import com.tokopedia.feedplus.view.viewmodel.kol.PollOptionViewModel;
 import com.tokopedia.kol.feature.post.domain.interactor.LikeKolPostUseCase;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.vote.domain.usecase.SendVoteUseCase;
 
 import javax.inject.Inject;
 
@@ -43,6 +46,7 @@ public class FeedPlusPresenter
     private GetFirstPageFeedsUseCase getFirstPageFeedsUseCase;
     private FavoriteShopUseCase doFavoriteShopUseCase;
     private GetFirstPageFeedsCloudUseCase getFirstPageFeedsCloudUseCase;
+    private SendVoteUseCase sendVoteUseCase;
     private String currentCursor = "";
     private FeedPlus.View viewListener;
     private PagingHandler pagingHandler;
@@ -55,7 +59,8 @@ public class FeedPlusPresenter
                       GetFirstPageFeedsCloudUseCase getFirstPageFeedsCloudUseCase,
                       CheckNewFeedUseCase checkNewFeedUseCase,
                       LikeKolPostUseCase likeKolPostUseCase,
-                      FollowKolPostUseCase followKolPostUseCase) {
+                      FollowKolPostUseCase followKolPostUseCase,
+                      SendVoteUseCase sendVoteUseCase) {
         this.userSession = userSession;
         this.pagingHandler = new PagingHandler();
         this.getFeedsUseCase = getFeedsUseCase;
@@ -65,6 +70,7 @@ public class FeedPlusPresenter
         this.checkNewFeedUseCase = checkNewFeedUseCase;
         this.likeKolPostUseCase = likeKolPostUseCase;
         this.followKolPostUseCase = followKolPostUseCase;
+        this.sendVoteUseCase = sendVoteUseCase;
     }
 
     @Override
@@ -249,6 +255,13 @@ public class FeedPlusPresenter
 
     }
 
+    @Override
+    public void sendVote(String pollId, PollOptionViewModel optionViewModel) {
+        sendVoteUseCase.execute(
+                SendVoteUseCase.createParams(pollId, optionViewModel.getOptionId()),
+                new SendVoteSubscriber(getView())
+        );
+    }
 
     public String getUserId() {
         return userSession.getUserId();

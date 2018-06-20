@@ -30,6 +30,7 @@ dependencies {
     compile project(rootProject.ext.features.kol)
     compile project(rootProject.ext.features.profile)
     compile project(rootProject.ext.features.wishlistCommon)
+    compile project(rootProject.ext.features.vote)
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
