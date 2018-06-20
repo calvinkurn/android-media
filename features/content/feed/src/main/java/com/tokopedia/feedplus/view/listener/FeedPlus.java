@@ -57,6 +57,8 @@ public interface FeedPlus {
             void onUnlikeKolClicked(int adapterPosition, int id);
 
             void onGoToKolComment(int rowNumber, int id);
+
+            void onGoToLink(String link);
         }
 
         void setFirstCursor(String firstCursor);
