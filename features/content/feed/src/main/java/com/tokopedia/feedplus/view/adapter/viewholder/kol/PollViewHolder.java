@@ -1,6 +1,7 @@
 package com.tokopedia.feedplus.view.adapter.viewholder.kol;
 
 import android.support.annotation.LayoutRes;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
@@ -19,6 +20,7 @@ import com.tokopedia.kol.feature.post.view.widget.BaseKolView;
 
 public class PollViewHolder extends AbstractViewHolder<PollViewModel> implements BaseKolListener {
 
+    private static final int SPAN_COUNT = 2;
     private FeedPlus.View.Kol viewListener;
     private BaseKolView baseKolView;
     private RecyclerView pollList;
@@ -47,6 +49,14 @@ public class PollViewHolder extends AbstractViewHolder<PollViewModel> implements
         );
 
         totalVoter.setText(totalVoterText);
+
+
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(
+                itemView.getContext(),
+                SPAN_COUNT,
+                GridLayoutManager.VERTICAL,
+                false);
+        pollList.setLayoutManager(gridLayoutManager);
 
         PollAdapter pollAdapter = new PollAdapter();
         pollList.setAdapter(pollAdapter);

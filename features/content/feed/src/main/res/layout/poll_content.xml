@@ -15,8 +15,6 @@
         android:orientation="horizontal"
         android:overScrollMode="never"
         android:scrollbars="none"
-        app:layoutManager="android.support.v7.widget.GridLayoutManager"
-        app:spanCount="1"
         tools:itemCount="2"
         tools:listitem="@layout/poll_content_item"/>
 
