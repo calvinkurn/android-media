@@ -61,6 +61,8 @@ public class PollViewHolder extends AbstractViewHolder<PollViewModel> implements
         PollAdapter pollAdapter = new PollAdapter();
         pollList.setAdapter(pollAdapter);
         pollAdapter.setList(element.getOptionViewModels());
+
+        baseKolView.setViewListener(this, element);
     }
 
     @Override
