@@ -72,6 +72,7 @@ import com.tokopedia.feedplus.view.presenter.FeedPlusPresenter;
 import com.tokopedia.feedplus.view.util.NpaLinearLayoutManager;
 import com.tokopedia.feedplus.view.util.ShareBottomDialog;
 import com.tokopedia.feedplus.view.viewmodel.inspiration.InspirationViewModel;
+import com.tokopedia.feedplus.view.viewmodel.kol.PollOptionViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
 import com.tokopedia.feedplus.view.viewmodel.product.ProductFeedViewModel;
 import com.tokopedia.feedplus.view.viewmodel.promo.PromoCardViewModel;
@@ -108,6 +109,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         implements FeedPlus.View,
         FeedPlus.View.Toppicks,
         FeedPlus.View.Kol,
+        FeedPlus.View.Polling,
         SwipeRefreshLayout.OnRefreshListener,
         TopAdsItemClickListener, TopAdsInfoClickListener,
         KolPostListener.View.ViewHolder {
@@ -1011,6 +1013,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onGoToLink(String link) {
         ((FeedModuleRouter) getActivity().getApplication()).openRedirectUrl(getActivity(), link);
+    }
+
+    @Override
+    public void onVoteOptionClicked(String pollId, PollOptionViewModel pollViewModel) {
+
     }
 
     @Override

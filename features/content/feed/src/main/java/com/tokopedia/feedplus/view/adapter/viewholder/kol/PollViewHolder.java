@@ -22,6 +22,7 @@ public class PollViewHolder extends AbstractViewHolder<PollViewModel> implements
 
     private static final int SPAN_COUNT = 2;
     private FeedPlus.View.Kol viewListener;
+    private FeedPlus.View.Polling pollingViewListener;
     private BaseKolView baseKolView;
     private RecyclerView pollList;
     private TextView totalVoter;
@@ -29,10 +30,12 @@ public class PollViewHolder extends AbstractViewHolder<PollViewModel> implements
     @LayoutRes
     public static final int LAYOUT = R.layout.poll_layout;
 
-    public PollViewHolder(View itemView, FeedPlus.View.Kol viewListener) {
+    public PollViewHolder(View itemView, FeedPlus.View.Kol viewListener,
+                          FeedPlus.View.Polling pollingViewListener) {
         super(itemView);
 
         this.viewListener = viewListener;
+        this.pollingViewListener = pollingViewListener;
         baseKolView = itemView.findViewById(com.tokopedia.kol.R.id.base_kol_view);
         View view = baseKolView.inflateContentLayout(R.layout.poll_content);
         pollList = view.findViewById(R.id.poll_list);
@@ -58,7 +61,7 @@ public class PollViewHolder extends AbstractViewHolder<PollViewModel> implements
                 false);
         pollList.setLayoutManager(gridLayoutManager);
 
-        PollAdapter pollAdapter = new PollAdapter();
+        PollAdapter pollAdapter = new PollAdapter(element.getPollId(), pollingViewListener);
         pollList.setAdapter(pollAdapter);
         pollAdapter.setList(element.getOptionViewModels());
 

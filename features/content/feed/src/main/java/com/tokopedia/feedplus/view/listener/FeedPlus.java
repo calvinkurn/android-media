@@ -6,6 +6,7 @@ import android.content.res.Resources;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.feedplus.view.viewmodel.kol.PollOptionViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
 import com.tokopedia.feedplus.view.viewmodel.product.ProductFeedViewModel;
 
@@ -59,6 +60,10 @@ public interface FeedPlus {
             void onGoToKolComment(int rowNumber, int id);
 
             void onGoToLink(String link);
+        }
+
+        interface Polling {
+            void onVoteOptionClicked(String pollId, PollOptionViewModel pollViewModel);
         }
 
         void setFirstCursor(String firstCursor);

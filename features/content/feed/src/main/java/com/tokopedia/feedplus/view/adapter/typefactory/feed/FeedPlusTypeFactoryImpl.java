@@ -68,6 +68,7 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
     private final TopAdsInfoClickListener topAdsInfoClickListener;
     private final FeedPlus.View.Toppicks toppicksListener;
     private final FeedPlus.View.Kol kolViewListener;
+    private final FeedPlus.View.Polling pollingViewListener;
     private final KolPostListener.View.ViewHolder kolPostListener;
 
 
@@ -78,6 +79,7 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
         this.toppicksListener = context;
         this.kolViewListener = context;
         this.kolPostListener = context;
+        this.pollingViewListener = context;
     }
 
     @Override
@@ -239,7 +241,7 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
         else if (type == ProductCommunicationViewHolder.LAYOUT)
             viewHolder = new ProductCommunicationViewHolder(view, viewListener);
         else if (type == PollViewHolder.LAYOUT)
-            viewHolder = new PollViewHolder(view, kolViewListener);
+            viewHolder = new PollViewHolder(view, kolViewListener, pollingViewListener);
         else if (type == EmptyFeedBeforeLoginViewHolder.LAYOUT)
             viewHolder = new EmptyFeedBeforeLoginViewHolder(view, viewListener);
         else if (type == KolPostViewHolder.LAYOUT)
