@@ -403,6 +403,9 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
         if (onImagePickerCameraFragmentListener.isFinishEditting()) {
             return;
         }
+        if (getActivity().isFinishing()) {
+            return;
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             String permission = Manifest.permission.CAMERA;
             if (ActivityCompat.checkSelfPermission(getContext(), permission) == PackageManager.PERMISSION_GRANTED) {
