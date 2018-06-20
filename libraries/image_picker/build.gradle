@@ -19,7 +19,7 @@ dependencies {
     compile rootProject.ext.miscDependencies.dagger
     apt rootProject.ext.miscDependencies.daggerCompiler
 
-    compile rootProject.ext.miscDependencies.cameraView
+    compile project(rootProject.ext.libraries.cameraView)
 
     compile (rootProject.ext.miscDependencies.ucrop){
         exclude group: 'com.android.support'
