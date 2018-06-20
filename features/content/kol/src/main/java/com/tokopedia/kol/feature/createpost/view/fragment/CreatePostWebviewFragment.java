@@ -10,7 +10,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseWebViewFragment;
  */
 public class CreatePostWebviewFragment extends BaseWebViewFragment {
 
-    private static final String PARAM_URL = "param_url";
+    public static final String FORM_URL = "form_url";
 
     public static CreatePostWebviewFragment newInstance(Bundle bundle) {
         CreatePostWebviewFragment fragment = new CreatePostWebviewFragment();
@@ -30,7 +30,7 @@ public class CreatePostWebviewFragment extends BaseWebViewFragment {
 
     @Override
     protected String getUrl() {
-        return getArguments().getString(PARAM_URL);
+        return getArguments().getString(FORM_URL);
     }
 
     @Nullable

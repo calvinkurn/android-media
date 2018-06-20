@@ -1,0 +1,11 @@
+query CheckWhitelistQuery() {
+    feed_check_whitelist() {
+        __typename
+        content {
+            __typename
+            iswhitelist
+            url
+        }
+        error
+    }
+}

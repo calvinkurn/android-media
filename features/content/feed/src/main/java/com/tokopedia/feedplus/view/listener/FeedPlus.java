@@ -197,6 +197,10 @@ public interface FeedPlus {
         void onGoToLogin();
 
         int getAdapterListSize();
+
+        void onSuccessGetWhitelist(boolean isWhitelist);
+
+        void onErrorGetWhitelist(String error);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -224,5 +228,6 @@ public interface FeedPlus {
         void unfollowKolFromRecommendation(int id, int rowNumber, int position, View.Kol
                 kolListener);
 
+        void getWhitelist();
     }
 }

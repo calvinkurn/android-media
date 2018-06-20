@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,13 +23,11 @@ import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.imagepicker.R;
+import com.tokopedia.imagepicker.picker.instagram.di.DaggerInstagramComponent;
 import com.tokopedia.imagepicker.picker.instagram.di.InstagramModule;
 import com.tokopedia.imagepicker.picker.instagram.util.InstagramConstant;
-import com.tokopedia.imagepicker.picker.instagram.view.dialog.InstagramLoginDialog;
 import com.tokopedia.imagepicker.picker.instagram.view.presenter.InstagramLoginPresenter;
-import com.tokopedia.imagepicker.picker.instagram.di.DaggerInstagramComponent;
 
 import javax.inject.Inject;
 

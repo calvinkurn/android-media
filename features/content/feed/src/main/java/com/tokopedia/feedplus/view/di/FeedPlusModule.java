@@ -27,6 +27,7 @@ import com.tokopedia.feedplus.data.mapper.FeedDetailListMapper;
 import com.tokopedia.feedplus.data.mapper.FeedListMapper;
 import com.tokopedia.feedplus.data.mapper.FeedResultMapper;
 import com.tokopedia.feedplus.data.mapper.RecentProductMapper;
+import com.tokopedia.feedplus.data.mapper.WhitelistMapper;
 import com.tokopedia.feedplus.data.repository.FavoriteShopRepository;
 import com.tokopedia.feedplus.data.repository.FavoriteShopRepositoryImpl;
 import com.tokopedia.feedplus.data.repository.FeedRepository;
@@ -198,7 +199,8 @@ public class FeedPlusModule {
                                    GlobalCacheManager globalCacheManager,
                                    MojitoService mojitoService,
                                    RecentProductMapper recentProductMapper,
-                                   CheckNewFeedMapper checkNewFeedMapper) {
+                                   CheckNewFeedMapper checkNewFeedMapper,
+                                   WhitelistMapper whitelistMapper) {
         return new FeedFactory(
                 context,
                 feedApi,
@@ -210,7 +212,8 @@ public class FeedPlusModule {
                 feedDetailListMapper,
                 mojitoService,
                 recentProductMapper,
-                checkNewFeedMapper
+                checkNewFeedMapper,
+                whitelistMapper
         );
     }
 

@@ -9,6 +9,7 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.feedplus.data.api.FeedApi;
 import com.tokopedia.feedplus.data.mapper.FeedListMapper;
 import com.tokopedia.feedplus.data.mapper.FeedResultMapper;
+import com.tokopedia.feedplus.data.mapper.WhitelistMapper;
 import com.tokopedia.feedplus.data.source.cloud.CloudFeedDataSource;
 import com.tokopedia.feedplus.data.source.local.LocalFeedDataSource;
 import com.tokopedia.feedplus.domain.model.feed.FeedDomain;
@@ -28,8 +29,9 @@ public class CloudFirstFeedDataSource extends CloudFeedDataSource {
                                     FeedApi feedApi,
                                     FeedListMapper feedListMapper,
                                     FeedResultMapper feedResultMapperCloud,
+                                    WhitelistMapper whitelistMapper,
                                     GlobalCacheManager globalCacheManager) {
-        super(context, feedApi, feedListMapper, feedResultMapperCloud, globalCacheManager);
+        super(context, feedApi, feedListMapper, feedResultMapperCloud, whitelistMapper, globalCacheManager);
     }
 
     public Observable<FeedResult> getFirstPageFeedsList(RequestParams requestParams) {

@@ -13,6 +13,7 @@ import com.tokopedia.feedplus.domain.usecase.FollowKolPostUseCase;
 import com.tokopedia.feedplus.domain.usecase.GetFeedsUseCase;
 import com.tokopedia.feedplus.domain.usecase.GetFirstPageFeedsCloudUseCase;
 import com.tokopedia.feedplus.domain.usecase.GetFirstPageFeedsUseCase;
+import com.tokopedia.feedplus.domain.usecase.GetWhitelistUseCase;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
 import com.tokopedia.feedplus.view.subscriber.FollowUnfollowKolRecommendationSubscriber;
 import com.tokopedia.feedplus.view.subscriber.FollowUnfollowKolSubscriber;
@@ -41,6 +42,7 @@ public class FeedPlusPresenter
     private final FollowKolPostUseCase followKolPostUseCase;
     private GetFeedsUseCase getFeedsUseCase;
     private GetFirstPageFeedsUseCase getFirstPageFeedsUseCase;
+    private GetWhitelistUseCase getWhitelistUseCase;
     private FavoriteShopUseCase doFavoriteShopUseCase;
     private GetFirstPageFeedsCloudUseCase getFirstPageFeedsCloudUseCase;
     private String currentCursor = "";
@@ -55,7 +57,8 @@ public class FeedPlusPresenter
                       GetFirstPageFeedsCloudUseCase getFirstPageFeedsCloudUseCase,
                       CheckNewFeedUseCase checkNewFeedUseCase,
                       LikeKolPostUseCase likeKolPostUseCase,
-                      FollowKolPostUseCase followKolPostUseCase) {
+                      FollowKolPostUseCase followKolPostUseCase,
+                      GetWhitelistUseCase whitelistUseCase) {
         this.userSession = userSession;
         this.pagingHandler = new PagingHandler();
         this.getFeedsUseCase = getFeedsUseCase;
@@ -65,6 +68,7 @@ public class FeedPlusPresenter
         this.checkNewFeedUseCase = checkNewFeedUseCase;
         this.likeKolPostUseCase = likeKolPostUseCase;
         this.followKolPostUseCase = followKolPostUseCase;
+        this.getWhitelistUseCase = whitelistUseCase;
     }
 
     @Override
@@ -252,5 +256,10 @@ public class FeedPlusPresenter
 
     public String getUserId() {
         return userSession.getUserId();
+    }
+
+    @Override
+    public void getWhitelist() {
+
     }
 }

@@ -81,7 +81,7 @@ import com.tokopedia.feedplus.view.viewmodel.topads.FeedTopAdsViewModel;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
-import com.tokopedia.kol.feature.createpost.view.activity.ImageUploadActivity;
+import com.tokopedia.kol.feature.createpost.view.activity.CreatePostImagePickerActivity;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 import com.tokopedia.profile.view.activity.TopProfileActivity;
@@ -249,8 +249,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
         fabAddFeed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                startActivityForResult(ImageUploadActivity.getInstance(getActivity()), CREATE_POST);
-                startActivityForResult(ImageUploadActivity.getInstance(getActivity()), CREATE_POST);
+//                startActivityForResult(CreatePostImagePickerActivity.getInstance(getActivity()), CREATE_POST);
+                startActivityForResult(CreatePostImagePickerActivity.getInstance(getActivity()), CREATE_POST);
             }
         });
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -1203,6 +1203,20 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public int getAdapterListSize() {
         return adapter.getItemCount();
+    }
+
+    @Override
+    public void onSuccessGetWhitelist(boolean isWhitelist) {
+        if (isWhitelist)
+            fabAddFeed.show();
+        else
+            fabAddFeed.hide();
+
+    }
+
+    @Override
+    public void onErrorGetWhitelist(String error) {
+        NetworkErrorHelper.showSnackbar(getActivity(), error);
     }
 
     @Override

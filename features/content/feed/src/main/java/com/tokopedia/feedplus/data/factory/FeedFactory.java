@@ -11,6 +11,7 @@ import com.tokopedia.feedplus.data.mapper.FeedDetailListMapper;
 import com.tokopedia.feedplus.data.mapper.FeedListMapper;
 import com.tokopedia.feedplus.data.mapper.FeedResultMapper;
 import com.tokopedia.feedplus.data.mapper.RecentProductMapper;
+import com.tokopedia.feedplus.data.mapper.WhitelistMapper;
 import com.tokopedia.feedplus.data.source.CloudCheckNewFeedDataSource;
 import com.tokopedia.feedplus.data.source.CloudFirstFeedDataSource;
 import com.tokopedia.feedplus.data.source.cloud.CloudFeedDataSource;
@@ -35,6 +36,7 @@ public class FeedFactory {
     private final MojitoService mojitoService;
     private final RecentProductMapper recentProductMapper;
     private final CheckNewFeedMapper checkNewFeedMapper;
+    private final WhitelistMapper whitelistMapper;
 
     public FeedFactory(Context context, FeedApi feedApi, ApolloClient apolloClient,
                        FeedListMapper feedListMapper, FeedResultMapper feedResultMapperLocal,
@@ -42,7 +44,8 @@ public class FeedFactory {
                        GlobalCacheManager globalCacheManager,
                        FeedDetailListMapper feedDetailListMapper, MojitoService mojitoService,
                        RecentProductMapper recentProductMapper,
-                       CheckNewFeedMapper checkNewFeedMapper) {
+                       CheckNewFeedMapper checkNewFeedMapper,
+                       WhitelistMapper whitelistMapper) {
         this.context = context;
         this.feedApi = feedApi;
         this.apolloClient = apolloClient;
@@ -54,10 +57,11 @@ public class FeedFactory {
         this.mojitoService = mojitoService;
         this.recentProductMapper = recentProductMapper;
         this.checkNewFeedMapper = checkNewFeedMapper;
+        this.whitelistMapper = whitelistMapper;
     }
 
     public CloudFeedDataSource createCloudFeedDataSource() {
-        return new CloudFeedDataSource(context, feedApi, feedListMapper, feedResultMapperCloud,
+        return new CloudFeedDataSource(context, feedApi, feedListMapper, feedResultMapperCloud,whitelistMapper,
                 globalCacheManager);
     }
 
@@ -70,7 +74,7 @@ public class FeedFactory {
     }
 
     public CloudFirstFeedDataSource createCloudFirstFeedDataSource() {
-        return new CloudFirstFeedDataSource(context, feedApi, feedListMapper, feedResultMapperCloud,
+        return new CloudFirstFeedDataSource(context, feedApi, feedListMapper, feedResultMapperCloud, whitelistMapper,
                 globalCacheManager);
     }
 

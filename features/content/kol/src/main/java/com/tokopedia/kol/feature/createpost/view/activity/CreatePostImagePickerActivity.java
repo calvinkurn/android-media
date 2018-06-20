@@ -9,8 +9,10 @@ import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerEditorBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
-
 import com.tokopedia.kol.R;
+
+import java.util.ArrayList;
+
 import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_BRIGHTNESS;
 import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CONTRAST;
 import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CROP;
@@ -23,7 +25,7 @@ import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDe
 /**
  * @author by yfsx on 08/06/18.
  */
-public class ImageUploadActivity extends ImagePickerActivity {
+public class CreatePostImagePickerActivity extends ImagePickerActivity {
 
     public static Intent getInstance(Context context) {
         ImagePickerBuilder builder = new ImagePickerBuilder(context.getString(R.string.title_post),
@@ -34,6 +36,27 @@ public class ImageUploadActivity extends ImagePickerActivity {
                         false,
                         null)
                 ,null);
-        return ImagePickerActivity.getIntent(context, builder);
+        Intent intent = new Intent(context, CreatePostImagePickerActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(EXTRA_IMAGE_PICKER_BUILDER, builder);
+        intent.putExtra(EXTRA_IMAGE_PICKER_BUILDER, bundle);
+        return intent;
     }
+
+    @Override
+    protected void startEditorActivity(ArrayList<String> selectedImagePaths) {
+        Intent intent = getEditorIntent(selectedImagePaths);
+        startActivityForResult(intent, REQUEST_CODE_EDITOR);
+    }
+
+    @Override
+    protected Intent getEditorIntent(ArrayList<String> selectedImagePaths){
+        return CreatePostImageEditorActivity.getInstance(this, selectedImagePaths, imageDescriptionList,
+                imagePickerBuilder.getMinResolution(), imagePickerBuilder.getImageEditActionType(),
+                imagePickerBuilder.getImageRatioTypeDef(),
+                imagePickerBuilder.isCirclePreview(),
+                imagePickerBuilder.getMaxFileSizeInKB(),
+                imagePickerBuilder.getRatioOptionList());
+    }
+
 }

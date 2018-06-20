@@ -30,6 +30,9 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder;
+import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
+import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.KeyboardHandler;
@@ -54,9 +57,9 @@ import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
-import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder;
-import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
-import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder;
+import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
+import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.attachinvoice.view.activity.AttachInvoiceActivity;
 import com.tokopedia.inbox.attachinvoice.view.resultmodel.SelectedInvoice;
@@ -124,6 +127,11 @@ import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB;
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MIN_RESOLUTION;
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_CAMERA;
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_GALLERY;
+import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
 import static com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity.PARAM_SENDER_ROLE;
 import static com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity.PARAM_WEBSOCKET;
 
@@ -134,6 +142,7 @@ import static com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity.PARAM_WEBS
 @RuntimePermissions
 public class ChatRoomFragment extends BaseDaggerFragment
         implements ChatRoomContract.View, InboxMessageConstant, InboxChatConstant, WebSocketInterface {
+    public static final int REQUEST_CODE_CHAT_IMAGE = 2325;
     private static final String CONTACT_US_PATH_SEGMENT = "toped-contact-us";
     private static final String BASE_DOMAIN_SHORTENED = "tkp.me";
     private static final String APPLINK_SCHEME = "tokopedia";
@@ -360,27 +369,12 @@ public class ChatRoomFragment extends BaseDaggerFragment
                         TopChatAnalytics.Action.CHAT_DETAIL_ATTACH,
                         TopChatAnalytics.Name.CHAT_DETAIL);
 
-                AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(getActivity());
-                myAlertDialog.setMessage(getActivity().getString(R.string.dialog_upload_option));
-                myAlertDialog.setPositiveButton(getActivity().getString(R.string.title_gallery),
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                ChatRoomFragmentPermissionsDispatcher.actionImagePickerWithCheck
-                                        (ChatRoomFragment.this);
-                            }
-                        });
-                myAlertDialog.setNegativeButton(getActivity().getString(R.string.title_camera),
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                ChatRoomFragmentPermissionsDispatcher.actionCameraWithCheck
-                                        (ChatRoomFragment.this);
-                            }
-                        });
-                Dialog dialog = myAlertDialog.create();
-                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                dialog.show();
+                ImagePickerBuilder builder = new ImagePickerBuilder(getString(R.string.choose_image),
+                        new int[]{TYPE_GALLERY, TYPE_CAMERA}, GalleryType.IMAGE_ONLY, DEFAULT_MAX_IMAGE_SIZE_IN_KB,
+                        DEFAULT_MIN_RESOLUTION, null, true,
+                        null,null);
+                Intent intent = ImagePickerActivity.getIntent(getContext(), builder);
+                startActivityForResult(intent, REQUEST_CODE_CHAT_IMAGE);
             }
         });
 
@@ -896,6 +890,37 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 }
                 adapter.addReply(list);
                 presenter.startUpload(list, networkType);
+                break;
+            case REQUEST_CODE_CHAT_IMAGE:
+                if (resultCode == Activity.RESULT_OK && data!= null) {
+                    ArrayList<String> imagePathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS);
+                    if (imagePathList!= null && imagePathList.size() > 0) {
+                        String imagePath = imagePathList.get(0);
+                        List<DummyChatViewModel> chatViewModelList = new ArrayList<>();
+
+                        if (!TextUtils.isEmpty(imagePath)) {
+                            ImageUpload model = new ImageUpload();
+                            model.setImageId(String.valueOf(System.currentTimeMillis() / 1000));
+                            model.setFileLoc(imagePath);
+                            DummyChatViewModel temp = generateChatViewModelWithImage(model);
+                            chatViewModelList.add(temp);
+                        } else {
+                            ArrayList<String> imageUrls = data.getStringArrayListExtra(GalleryActivity
+                                    .IMAGE_URLS);
+                            if (imageUrls != null) {
+                                for (int i = 0; i < imageUrls.size(); i++) {
+                                    ImageUpload model = new ImageUpload();
+                                    model.setImageId(String.valueOf(System.currentTimeMillis() / 1000));
+                                    model.setFileLoc(imageUrls.get(i));
+                                    DummyChatViewModel temp = generateChatViewModelWithImage(model);
+                                    chatViewModelList.add(temp);
+                                }
+                            }
+                        }
+
+                        presenter.startUpload(chatViewModelList, networkType);
+                    }
+                }
                 break;
             case AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE:
                 if (data == null)
