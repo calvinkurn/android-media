@@ -11,7 +11,8 @@
     app:cardCornerRadius="3dp"
     app:cardElevation="0dp"
     app:cardPreventCornerOverlap="false"
-    app:cardUseCompatPadding="false">
+    app:cardUseCompatPadding="false"
+    android:layout_marginRight="@dimen/dp_10">
 
     <RelativeLayout
         android:layout_width="match_parent"
