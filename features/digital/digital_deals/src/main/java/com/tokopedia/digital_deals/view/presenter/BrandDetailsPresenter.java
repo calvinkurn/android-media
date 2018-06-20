@@ -21,7 +21,7 @@ import rx.Subscriber;
 public class BrandDetailsPresenter extends BaseDaggerPresenter<BrandDetailsContract.View>
         implements BrandDetailsContract.Presenter {
 
-    public final String TAG="url";
+    public final static String TAG="url";
     public final static String BRAND_DATA="brand_data";
     private GetBrandDetailsUseCase getBrandDetailsUseCase;
     private List<CategoryItemsViewModel> categoryViewModels;

@@ -60,6 +60,7 @@ public class Utils {
     public static String BRAND_QUERY_PARAM_BRAND = "brand";
     public static String BRAND_QUERY_PARAM_CHILD_CATEGORY_ID = "child_category_ids";
     public static String BRAND_QUERY_PARAM_CITY_ID = "cities";
+    public static String BRAND_QUERY_PARAM_LOCATION_ID= "location_id";
 
     synchronized public static Utils getSingletonInstance() {
         if (singleInstance == null)

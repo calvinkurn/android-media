@@ -1,10 +1,10 @@
 package com.tokopedia.digital_deals.domain;
 
 import com.google.gson.JsonObject;
+import com.tokopedia.digital_deals.domain.model.DealsDomain;
 import com.tokopedia.digital_deals.domain.model.LikeUpdateResultDomain;
 import com.tokopedia.digital_deals.domain.model.allbrandsdomainmodel.AllBrandsDomain;
 import com.tokopedia.digital_deals.domain.model.branddetailsmodel.BrandDetailsDomain;
-import com.tokopedia.digital_deals.domain.model.DealsDomain;
 import com.tokopedia.digital_deals.domain.model.categorydomainmodel.CategoryDetailsDomain;
 import com.tokopedia.digital_deals.domain.model.dealdetailsdomainmodel.DealsDetailsDomain;
 import com.tokopedia.digital_deals.domain.model.locationdomainmodel.LocationDomainModel;
@@ -24,7 +24,7 @@ public interface DealsRepository {
 
     Observable<SearchDomainModel> getSearchNext(String nextUrl);
 
-    Observable<BrandDetailsDomain> getBrandDetails(String url);
+    Observable<BrandDetailsDomain> getBrandDetails(String url, HashMap<String, Object> params);
 
     Observable<DealsDetailsDomain> getDealDetails(String url);
 

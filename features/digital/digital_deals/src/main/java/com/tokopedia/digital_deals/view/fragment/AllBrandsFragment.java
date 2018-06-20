@@ -75,9 +75,13 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_category_brands, container, false);
         setUpVariables(view);
-        mPresenter.getAllBrands();
-
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mPresenter.getAllBrands();
     }
 
     private void setUpVariables(View view) {
@@ -173,6 +177,7 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
     @Override
     public void showViews() {
         baseMainContent.setVisibility(View.VISIBLE);
+        noContent.setVisibility(View.GONE);
         llSearchView.setVisibility(View.VISIBLE);
     }
 

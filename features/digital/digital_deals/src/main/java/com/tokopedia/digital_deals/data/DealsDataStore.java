@@ -26,7 +26,7 @@ public interface DealsDataStore {
 
     Observable<SearchResponse> getSearchNext(String nextUrl);
 
-    Observable<BrandDetailsResponse> getBrandDetails(String url);
+    Observable<BrandDetailsResponse> getBrandDetails(String url, HashMap<String, Object> params);
 
     Observable<JsonObject> getDealDetails(String url);
 

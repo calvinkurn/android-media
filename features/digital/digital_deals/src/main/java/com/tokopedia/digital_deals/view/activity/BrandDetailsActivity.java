@@ -227,7 +227,8 @@ public class BrandDetailsActivity extends BaseSimpleActivity implements HasCompo
     public RequestParams getParams() {
         BrandViewModel brandViewModel = getIntent().getParcelableExtra(BrandDetailsPresenter.BRAND_DATA);
         RequestParams requestParams = RequestParams.create();
-        requestParams.putString(mPresenter.TAG, brandViewModel.getUrl());
+        requestParams.putString(BrandDetailsPresenter.TAG, brandViewModel.getUrl());
+        requestParams.putInt(Utils.BRAND_QUERY_PARAM_LOCATION_ID, Utils.getSingletonInstance().getLocation(getActivity()).getId());
         return requestParams;
     }
 
