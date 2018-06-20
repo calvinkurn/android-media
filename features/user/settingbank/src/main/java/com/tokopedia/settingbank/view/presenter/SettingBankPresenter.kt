@@ -28,10 +28,12 @@ class SettingBankPresenter(val userSession: UserSession,
             }
 
             override fun onError(e: Throwable) {
+                view.hideLoading()
                 view.onErrorGetListBank(e.toString())
             }
 
             override fun onNext(bankAccountList: BankAccountListViewModel) {
+                view.hideLoading()
                 if (bankAccountList.list?.isNotEmpty()!!) {
                     view.onSuccessGetListBank(bankAccountList)
                 }

@@ -47,7 +47,7 @@ class GetBankListMapper : Func1<Response<BankAccountListPojo>,
         )
     }
 
-    private fun mapToList(data: Data?): List<BankAccountViewModel>? {
+    private fun mapToList(data: Data?): ArrayList<BankAccountViewModel>? {
         val accountBankList: ArrayList<BankAccountViewModel> = ArrayList()
 
         for (bankAccount in data?.list!!) {

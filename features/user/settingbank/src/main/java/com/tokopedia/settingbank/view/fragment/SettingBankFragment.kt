@@ -16,6 +16,8 @@ import com.tokopedia.settingbank.common.di.SettingBankDependencyInjector
 import com.tokopedia.settingbank.view.adapter.BankAccountAdapter
 import com.tokopedia.settingbank.view.adapter.BankAccountTypeFactoryImpl
 import com.tokopedia.settingbank.view.viewmodel.BankAccountListViewModel
+import com.tokopedia.settingbank.view.viewmodel.BankAccountViewModel
+import kotlinx.android.synthetic.main.fragment_setting_bank.*
 
 /**
  * @author by nisie on 6/7/18.
@@ -24,6 +26,7 @@ import com.tokopedia.settingbank.view.viewmodel.BankAccountListViewModel
 class SettingBankFragment : SettingBankContract.View, BaseDaggerFragment() {
 
     lateinit var presenter: SettingBankPresenter
+    lateinit var adapter: BankAccountAdapter
 
     companion object {
 
@@ -45,14 +48,6 @@ class SettingBankFragment : SettingBankContract.View, BaseDaggerFragment() {
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view: View = inflater!!.inflate(R.layout.fragment_setting_bank, container, false)
-
-        val adapterTypeFactory = BankAccountTypeFactoryImpl()
-        val listBank = ArrayList<Visitable<Any>>()
-
-        val adapter = BankAccountAdapter(adapterTypeFactory, listBank)
-
-        val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-
         return view
     }
 
@@ -64,7 +59,22 @@ class SettingBankFragment : SettingBankContract.View, BaseDaggerFragment() {
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupView()
         getBankList()
+    }
+
+    private fun setupView() {
+        val adapterTypeFactory = BankAccountTypeFactoryImpl()
+        val listBank = ArrayList<Visitable<*>>()
+        listBank.add(BankAccountViewModel("1", "", "", "", true, "", "", true, ""))
+        listBank.add(BankAccountViewModel("2", "", "", "", true, "", "", true, ""))
+        listBank.add(BankAccountViewModel("3", "", "", "", true, "", "", true, ""))
+
+        adapter = BankAccountAdapter(adapterTypeFactory, listBank)
+        val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+
+        account_list_rv.layoutManager = linearLayoutManager
+        account_list_rv.adapter = adapter
     }
 
     private fun getBankList() {
@@ -78,7 +88,7 @@ class SettingBankFragment : SettingBankContract.View, BaseDaggerFragment() {
     }
 
     override fun onSuccessGetListBank(bankAccountList: BankAccountListViewModel) {
-
+        adapter.addList(bankAccountList.list!!)
     }
 
 }

@@ -9,7 +9,8 @@
         <activity
             android:name=".view.activity.SettingBankActivity"
             android:label="@string/title_setting_bank"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"/>
 
     </application>
 </manifest>

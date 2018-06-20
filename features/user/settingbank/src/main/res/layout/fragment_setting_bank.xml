@@ -20,8 +20,9 @@
         android:fontFamily="sans-serif-medium"
         android:gravity="center_horizontal"
         android:text="@string/add_bank_account"
-        android:textColor="#ffffff"
-        android:textSize="14sp"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp_14"
+        android:background="@drawable/bg_button_green"
         android:textStyle="normal"
         tools:text="Tambah Rekening"
         />
