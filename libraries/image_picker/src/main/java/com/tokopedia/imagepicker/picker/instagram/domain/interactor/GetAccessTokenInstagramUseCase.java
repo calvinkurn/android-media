@@ -1,6 +1,6 @@
 package com.tokopedia.imagepicker.picker.instagram.domain.interactor;
 
-import com.tokopedia.imagepicker.picker.instagram.InstagramConstant;
+import com.tokopedia.imagepicker.picker.instagram.util.InstagramConstant;
 import com.tokopedia.imagepicker.picker.instagram.domain.InstagramRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
@@ -8,7 +8,6 @@ import com.tokopedia.usecase.UseCase;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.functions.Action1;
 import rx.functions.Func1;
 
 /**
