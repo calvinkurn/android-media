@@ -9,12 +9,12 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.settingbank.R
-import com.tokopedia.settingbank.view.listener.SettingBankContract
-import com.tokopedia.settingbank.view.presenter.SettingBankPresenter
 import com.tokopedia.settingbank.common.analytics.SettingBankAnalytics
 import com.tokopedia.settingbank.common.di.SettingBankDependencyInjector
 import com.tokopedia.settingbank.view.adapter.BankAccountAdapter
 import com.tokopedia.settingbank.view.adapter.BankAccountTypeFactoryImpl
+import com.tokopedia.settingbank.view.listener.SettingBankContract
+import com.tokopedia.settingbank.view.presenter.SettingBankPresenter
 import com.tokopedia.settingbank.view.viewmodel.BankAccountListViewModel
 import com.tokopedia.settingbank.view.viewmodel.BankAccountViewModel
 import kotlinx.android.synthetic.main.fragment_setting_bank.*
@@ -66,9 +66,9 @@ class SettingBankFragment : SettingBankContract.View, BaseDaggerFragment() {
     private fun setupView() {
         val adapterTypeFactory = BankAccountTypeFactoryImpl()
         val listBank = ArrayList<Visitable<*>>()
-        listBank.add(BankAccountViewModel("1", "", "", "", true, "", "", true, ""))
-        listBank.add(BankAccountViewModel("2", "", "", "", true, "", "", true, ""))
-        listBank.add(BankAccountViewModel("3", "", "", "", true, "", "", true, ""))
+        listBank.add(BankAccountViewModel("1", "", "", "", true, "", "", false, ""))
+        listBank.add(BankAccountViewModel("2", "", "", "", true, "", "", false, ""))
+        listBank.add(BankAccountViewModel("3", "", "", "", true, "", "", false, ""))
 
         adapter = BankAccountAdapter(adapterTypeFactory, listBank)
         val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)

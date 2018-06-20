@@ -10,19 +10,22 @@
         android:id="@+id/account_list_rv"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
         android:layout_weight="1"
         />
 
     <TextView
         android:id="@+id/add_account_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_48"
+        android:layout_margin="@dimen/dp_16"
+        android:background="@drawable/bg_button_green"
         android:fontFamily="sans-serif-medium"
-        android:gravity="center_horizontal"
+        android:gravity="center"
         android:text="@string/add_bank_account"
         android:textColor="@color/white"
         android:textSize="@dimen/sp_14"
-        android:background="@drawable/bg_button_green"
         android:textStyle="normal"
         tools:text="Tambah Rekening"
         />

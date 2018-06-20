@@ -2,5 +2,8 @@
     <string name="app_name">SettingBank</string>
     <string name="title_setting_bank">Atur Bank</string>
     <string name="add_bank_account">Tambah Rekening</string>
-
+    <string name="menu_make_main_account">Jadikan Rekening Utama</string>
+    <string name="menu_edit">Ubah</string>
+    <string name="menu_delete">Hapus</string>
+    <string name="main_account">Rekening Utama</string>
 </resources>

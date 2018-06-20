@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="menu_make_main_account" type="id">101</item>
+    <item name="menu_edit" type="id">102</item>
+    <item name="menu_delete" type="id">103</item>
+</resources>
