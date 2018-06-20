@@ -31,21 +31,23 @@
     <string name="train_select_passenger_submit_button">Simpan</string>
     <string name="train_select_passenger_toolbar_title">Pilih Penumpang</string>
 
-    <string name="search_no_result_default">Rute tidak tersedia. Silakan ganti pencarian.</string>
-    <string name="search_reset_button">Ganti Pencarian</string>
-    <string name="search_no_connection_title">Tidak Ada Koneksi Internet</string>
-    <string name="search_no_connection">Periksa kembali koneksi internet Anda dan coba lagi.</string>
+    <string name="train_search_no_result_default">Rute tidak tersedia. Silakan ganti pencarian.</string>
+    <string name="train_search_reset_button">Ganti Pencarian</string>
+    <string name="train_search_no_result_filter">Terdapat 0 rute yang sesuai dengan filter.</string>
+    <string name="train_search_reset_filter_button">Reset Filter</string>
+    <string name="train_search_no_connection_title">Tidak Ada Koneksi Internet</string>
+    <string name="train_search_no_connection">Periksa kembali koneksi internet Anda dan coba lagi.</string>
 
     <string name="train_search_sort">Urutkan</string>
     <string name="train_search_filter">Filter</string>
-    <string name="filter_time_departure">Waktu Berangkat</string>
-    <string name="filter_train_name">Kereta</string>
-    <string name="filter_class_name">Kelas</string>
-    <string name="filter_menu_reset">Reset</string>
+    <string name="train_filter_time_departure">Waktu Berangkat</string>
+    <string name="train_filter_train_name">Kereta</string>
+    <string name="train_filter_class_name">Kelas</string>
+    <string name="train_filter_menu_reset">Reset</string>
 
     <!-- sort -->
-    <string name="sort_label_min_price">Harga Minimum</string>
-    <string name="sort_label_max_price">Harga Maksimum</string>
+    <string name="train_sort_label_min_price">Harga Minimum</string>
+    <string name="train_sort_label_max_price">Harga Maksimum</string>
     <string name="train_homepage_one_way_label">Sekali Jalan</string>
     <string name="train_homepage_two_way_label">Pulang Pergi</string>
     <string name="train_homepage_origin_label">Dari</string>
