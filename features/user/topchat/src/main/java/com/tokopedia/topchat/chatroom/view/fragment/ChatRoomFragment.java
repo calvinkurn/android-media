@@ -550,7 +550,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
         if (needCreateWebSocket()) {
             presenter.getReply(mode);
         } else {
-            progressBar.setVisibility(View.GONE);
+            //progressBar.setVisibility(View.GONE);
+            presenter.getExistingChat();
         }
 
         adapter.notifyDataSetChanged();
@@ -1511,5 +1512,15 @@ public class ChatRoomFragment extends BaseDaggerFragment
         adapter.removeLast();
         NetworkErrorHelper.showSnackbar(getActivity(), s);
         sendButton.setEnabled(true);
+    }
+
+    @Override
+    public void setMessageId(String messageId) {
+        getArguments().putString(ChatRoomActivity.PARAM_MESSAGE_ID,messageId);
+    }
+
+    @Override
+    public void enableWebSocket() {
+        getArguments().putBoolean(ChatRoomActivity.PARAM_WEBSOCKET,true);
     }
 }

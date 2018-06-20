@@ -19,15 +19,19 @@ import com.tokopedia.topchat.attachproduct.view.resultmodel.ResultProduct;
 import com.tokopedia.topchat.chatlist.viewmodel.InboxChatViewModel;
 import com.tokopedia.topchat.chatroom.data.mapper.WebSocketMapper;
 import com.tokopedia.topchat.chatroom.domain.AttachImageUseCase;
+import com.tokopedia.topchat.chatroom.domain.GetExistingChatUseCase;
 import com.tokopedia.topchat.chatroom.domain.GetReplyListUseCase;
 import com.tokopedia.topchat.chatroom.domain.ReplyMessageUseCase;
 import com.tokopedia.topchat.chatroom.domain.SendMessageUseCase;
 import com.tokopedia.topchat.chatroom.domain.SetChatRatingUseCase;
 import com.tokopedia.topchat.chatroom.domain.WebSocketUseCase;
+import com.tokopedia.topchat.chatroom.domain.pojo.existingchat.ExistingChatPojo;
 import com.tokopedia.topchat.chatroom.domain.pojo.invoicesent.InvoiceLinkPojo;
 import com.tokopedia.topchat.chatroom.domain.pojo.rating.SetChatRatingPojo;
 import com.tokopedia.topchat.chatroom.domain.pojo.replyaction.ReplyActionData;
+import com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity;
 import com.tokopedia.topchat.chatroom.view.listener.ChatRoomContract;
+import com.tokopedia.topchat.chatroom.view.subscriber.GetExistingChatSubscriber;
 import com.tokopedia.topchat.chatroom.view.subscriber.GetReplySubscriber;
 import com.tokopedia.topchat.chatroom.view.viewmodel.ChatRoomViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendMessageViewModel;
@@ -50,6 +54,9 @@ import javax.inject.Inject;
 
 import rx.Subscriber;
 
+import static com.tokopedia.topchat.common.InboxMessageConstant.PARAM_MESSAGE_ID;
+import static com.tokopedia.topchat.common.InboxMessageConstant.PARAM_SENDER_ID;
+
 /**
  * Created by stevenfredian on 9/26/17.
  */
@@ -64,6 +71,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     private final AttachImageUseCase attachImageUseCase;
     private GetTemplateUseCase getTemplateUseCase;
     private SetChatRatingUseCase setChatRatingUseCase;
+    private GetExistingChatUseCase getExistingChatUseCase;
     private SessionHandler sessionHandler;
     public PagingHandler pagingHandler;
     boolean isRequesting;
@@ -91,7 +99,8 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
                       AttachImageUseCase attachImageUseCase,
                       SetChatRatingUseCase setChatRatingUseCase,
                       SessionHandler sessionHandler,
-                      WebSocketMapper webSocketMapper) {
+                      WebSocketMapper webSocketMapper,
+                      GetExistingChatUseCase getExistingChatUseCase) {
         this.getReplyListUseCase = getReplyListUseCase;
         this.replyMessageUseCase = replyMessageUseCase;
         this.getTemplateUseCase = getTemplateUseCase;
@@ -100,6 +109,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         this.setChatRatingUseCase = setChatRatingUseCase;
         this.sessionHandler = sessionHandler;
         this.webSocketMapper = webSocketMapper;
+        this.getExistingChatUseCase = getExistingChatUseCase;
     }
 
     @Override
@@ -144,6 +154,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         sendMessageUseCase.unsubscribe();
         attachImageUseCase.unsubscribe();
         setChatRatingUseCase.unsubscribe();
+        getExistingChatUseCase.unsubscribe();
     }
 
     @Override
@@ -168,7 +179,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     }
 
     private void uploadWithApi(final String path, final ImageUploadViewModel model) {
-        String messageId = (getView().getArguments().getString(InboxMessageConstant.PARAM_MESSAGE_ID));
+        String messageId = (getView().getArguments().getString(PARAM_MESSAGE_ID));
         RequestParams params = ReplyMessageUseCase.generateParamAttachImage(messageId, path);
 
         replyMessageUseCase.execute(params, new Subscriber<ReplyActionData>() {
@@ -206,7 +217,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
             String startTime = SendableViewModel.generateStartTime();
             getView().addDummyMessage(reply, startTime);
             getView().setViewEnabled(false);
-            String messageId = (getView().getArguments().getString(InboxMessageConstant.PARAM_MESSAGE_ID));
+            String messageId = (getView().getArguments().getString(PARAM_MESSAGE_ID));
 
             if (networkType == InboxChatConstant.MODE_WEBSOCKET) {
                 sendReply(messageId, reply, startTime);
@@ -275,7 +286,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         getView().setUploadingMode(true);
         String userId = SessionHandler.getTempLoginSession(getView().getActivity());
         String deviceId = GCMHandler.getRegistrationId(getView().getActivity());
-        final String messageId = (getView().getArguments().getString(InboxMessageConstant.PARAM_MESSAGE_ID));
+        final String messageId = (getView().getArguments().getString(PARAM_MESSAGE_ID));
         attachImageUseCase.execute(AttachImageUseCase.getParam(list, messageId, userId, deviceId),
                 new Subscriber<UploadImageDomain>() {
                     @Override
@@ -351,16 +362,16 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     @Override
     public void getReply(int mode) {
         RequestParams requestParam;
-        if (TextUtils.isEmpty(getView().getArguments().getString(InboxMessageConstant.PARAM_MESSAGE_ID))) {
+        if (TextUtils.isEmpty(getView().getArguments().getString(PARAM_MESSAGE_ID))) {
             return;
         }
         if (mode == InboxChatViewModel.GET_CHAT_MODE) {
             requestParam = GetReplyListUseCase.generateParam(
-                    getView().getArguments().getString(InboxMessageConstant.PARAM_MESSAGE_ID),
+                    getView().getArguments().getString(PARAM_MESSAGE_ID),
                     pagingHandler.getPage());
         } else {
             requestParam = GetReplyListUseCase.generateParamSearch(
-                    getView().getArguments().getString(InboxMessageConstant.PARAM_MESSAGE_ID));
+                    getView().getArguments().getString(PARAM_MESSAGE_ID));
         }
 
         isRequesting = true;
@@ -481,7 +492,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     public void onOpenWebSocket() {
         if (isFirstTime) {
             isFirstTime = false;
-            String messageId = (getView().getArguments().getString(InboxMessageConstant.PARAM_MESSAGE_ID));
+            String messageId = (getView().getArguments().getString(PARAM_MESSAGE_ID));
             readMessage(messageId);
         }
     }
@@ -524,7 +535,36 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
                 });
     }
 
+    public void createWebSocketIfNull(){
+        if(webSocketUseCase == null) {
+            webSocketUseCase = new WebSocketUseCase(magicString, getView().getUserSession(), listener);
+        }
+    }
+
     public void recreateWebSocket() {
         webSocketUseCase.recreateWebSocket();
+    }
+
+    @Override
+    public void getExistingChat() {
+        RequestParams requestParam;
+        if (!TextUtils.isEmpty(getView().getArguments().getString(PARAM_MESSAGE_ID))) {
+            ExistingChatPojo pojo = new ExistingChatPojo();
+            pojo.setMsgId(getView().getArguments().getString(PARAM_MESSAGE_ID));
+            new GetExistingChatSubscriber(getView(),this).onNext(pojo);
+            return;
+        }
+        boolean isUserToShop = getView().getArguments().getString(ChatRoomActivity
+                .PARAM_SENDER_TAG).equals(ChatRoomActivity.ROLE_SELLER);
+        String destinationId = "";
+        if(isUserToShop){
+           destinationId = getView().getArguments().getString(PARAM_SENDER_ID);
+        } else {
+            destinationId = getView().getArguments().getString(ChatRoomActivity.PARAM_USER_ID);
+        }
+        String source = getView().getArguments().getString(ChatRoomActivity.PARAM_SOURCE);
+
+        requestParam = GetExistingChatUseCase.generateParam(isUserToShop,destinationId,source);
+        getExistingChatUseCase.execute(requestParam, new GetExistingChatSubscriber(getView(), this));
     }
 }

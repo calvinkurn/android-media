@@ -15,6 +15,7 @@ import com.tokopedia.topchat.chatlist.data.repository.MessageRepositoryImpl;
 import com.tokopedia.topchat.chatlist.data.repository.SendMessageSource;
 import com.tokopedia.topchat.chatlist.domain.usecase.GetMessageListUseCase;
 import com.tokopedia.topchat.chatroom.data.factory.ReplyFactory;
+import com.tokopedia.topchat.chatroom.data.mapper.GetExistingChatMapper;
 import com.tokopedia.topchat.chatroom.data.mapper.GetReplyMapper;
 import com.tokopedia.topchat.chatroom.data.mapper.ReplyMessageMapper;
 import com.tokopedia.topchat.chatroom.data.mapper.SendMessageMapper;
@@ -22,6 +23,7 @@ import com.tokopedia.topchat.chatroom.data.mapper.WebSocketMapper;
 import com.tokopedia.topchat.chatroom.data.repository.ReplyRepository;
 import com.tokopedia.topchat.chatroom.data.repository.ReplyRepositoryImpl;
 import com.tokopedia.topchat.chatroom.domain.AttachImageUseCase;
+import com.tokopedia.topchat.chatroom.domain.GetExistingChatUseCase;
 import com.tokopedia.topchat.chatroom.domain.GetReplyListUseCase;
 import com.tokopedia.topchat.chatroom.domain.ReplyMessageUseCase;
 import com.tokopedia.topchat.chatroom.domain.SendMessageUseCase;
@@ -62,8 +64,9 @@ public class ChatRoomModule {
     ReplyFactory provideReplyFactory(
             ChatService chatService,
             GetReplyMapper getReplyMapper,
-            ReplyMessageMapper replyMessageMapper) {
-        return new ReplyFactory(chatService, getReplyMapper, replyMessageMapper);
+            ReplyMessageMapper replyMessageMapper,
+            GetExistingChatMapper getExistingChatMapper) {
+        return new ReplyFactory(chatService, getReplyMapper, replyMessageMapper, getExistingChatMapper);
     }
 
     @InboxChatScope
@@ -104,6 +107,11 @@ public class ChatRoomModule {
         return new TemplateChatMapper();
     }
 
+    @InboxChatScope
+    @Provides
+    GetExistingChatMapper provideGetExistingMapper(){
+        return new GetExistingChatMapper();
+    }
 
     @InboxChatScope
     @Provides
@@ -155,6 +163,14 @@ public class ChatRoomModule {
                                                  PostExecutionThread postExecutor,
                                                  TemplateRepository templateRepository) {
         return new GetTemplateUseCase(threadExecutor, postExecutor, templateRepository);
+    }
+
+    @InboxChatScope
+    @Provides
+    GetExistingChatUseCase provideGetExistingChat(ThreadExecutor threadExecutor,
+                                                  PostExecutionThread postExecutor,
+                                                  ReplyRepository replyRepository) {
+        return new GetExistingChatUseCase(threadExecutor, postExecutor, replyRepository);
     }
 
     @InboxChatScope

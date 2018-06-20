@@ -14,6 +14,7 @@ import com.tokopedia.core.network.retrofit.interceptors.DigitalHmacAuthIntercept
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.topchat.chatroom.data.mapper.GetExistingChatMapper;
 import com.tokopedia.topchat.chatlist.data.factory.MessageFactory;
 import com.tokopedia.topchat.chatlist.data.factory.SearchFactory;
 import com.tokopedia.topchat.chatlist.data.mapper.DeleteMessageMapper;
@@ -51,7 +52,7 @@ import com.tokopedia.topchat.uploadimage.data.repository.ImageUploadRepository;
 import com.tokopedia.topchat.uploadimage.data.repository.ImageUploadRepositoryImpl;
 import com.tokopedia.topchat.uploadimage.domain.interactor.GenerateHostUseCase;
 import com.tokopedia.topchat.uploadimage.domain.interactor.UploadImageUseCase;
-
+import com.tokopedia.topchat.chatroom.domain.GetExistingChatUseCase;
 import java.util.concurrent.TimeUnit;
 
 import dagger.Module;
@@ -85,8 +86,9 @@ public class InboxChatModule {
     ReplyFactory provideReplyFactory(
             ChatService chatService,
             GetReplyMapper getReplyMapper,
-            ReplyMessageMapper replyMessageMapper) {
-        return new ReplyFactory(chatService, getReplyMapper, replyMessageMapper);
+            ReplyMessageMapper replyMessageMapper,
+            GetExistingChatMapper getExistingChatMapper) {
+        return new ReplyFactory(chatService, getReplyMapper, replyMessageMapper, getExistingChatMapper);
     }
 
     @InboxChatScope
@@ -131,6 +133,11 @@ public class InboxChatModule {
         return new DeleteMessageMapper();
     }
 
+    @InboxChatScope
+    @Provides
+    GetExistingChatMapper provideGetExistingMapper(){
+        return new GetExistingChatMapper();
+    }
 
     @InboxChatScope
     @Provides
@@ -222,6 +229,13 @@ public class InboxChatModule {
         return new GetTemplateUseCase(threadExecutor, postExecutor, templateRepository);
     }
 
+    @InboxChatScope
+    @Provides
+    GetExistingChatUseCase provideGetExistingChat(ThreadExecutor threadExecutor,
+                                                  PostExecutionThread postExecutor,
+                                                  ReplyRepository replyRepository) {
+        return new GetExistingChatUseCase(threadExecutor, postExecutor, replyRepository);
+    }
 
     @InboxChatScope
     @Provides
