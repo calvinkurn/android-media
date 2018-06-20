@@ -23,7 +23,11 @@ interface SettingBankContract {
 
         fun onSuccessGetListBank(bankAccountList: BankAccountListViewModel)
 
-        fun onSuccessSetMain(adapterPosition: Int)
+        fun onSuccessSetDefault(adapterPosition: Int, statusMessage: String)
+
+        fun onSuccessDeleteAccount(adapterPosition: Int)
+
+        fun onErrorSetDefaultBank(errorMessage: String)
 
     }
 
@@ -32,5 +36,7 @@ interface SettingBankContract {
         fun getBankList()
 
         fun setMainAccount(adapterPosition: Int, element: BankAccountViewModel?)
+
+        fun deleteAccount(adapterPosition: Int, element: BankAccountViewModel?)
     }
 }

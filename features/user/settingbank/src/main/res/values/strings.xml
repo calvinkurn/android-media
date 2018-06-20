@@ -10,4 +10,7 @@
     <string name="you_will_make_account">Anda akan menjadikan rekening Bank</string>
     <string name="under_name">atas nama</string>
     <string name="become_default">menjadi rekening utama</string>
+    <string name="yes_delete">Ya, Hapus</string>
+    <string name="delete_bank_account_prompt_title">Hapus Rekening Bank?</string>
+    <string name="you_will_delete">Anda akan menghapus rekening Bank</string>
 </resources>

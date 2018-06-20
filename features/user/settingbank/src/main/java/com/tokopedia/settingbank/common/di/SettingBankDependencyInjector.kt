@@ -15,7 +15,9 @@ import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor
 import com.tokopedia.settingbank.data.SettingBankApi
 import com.tokopedia.settingbank.data.SettingBankUrl
 import com.tokopedia.settingbank.domain.mapper.GetBankListMapper
+import com.tokopedia.settingbank.domain.mapper.SetDefaultBankAccountMapper
 import com.tokopedia.settingbank.domain.usecase.GetBankListUseCase
+import com.tokopedia.settingbank.domain.usecase.SetDefaultBankAccountUseCase
 import com.tokopedia.settingbank.view.presenter.SettingBankPresenter
 import com.tokopedia.user.session.UserSession
 import okhttp3.OkHttpClient
@@ -95,7 +97,12 @@ class SettingBankDependencyInjector {
 
             val getBankListUseCase = GetBankListUseCase(settingBankApi, getBankListMapper)
 
-            return SettingBankPresenter(session, getBankListUseCase)
+            val setDefaultBankAccountMapper = SetDefaultBankAccountMapper()
+
+            val setDefaultBankAccountUseCase = SetDefaultBankAccountUseCase(settingBankApi,
+                    setDefaultBankAccountMapper)
+
+            return SettingBankPresenter(session, getBankListUseCase, setDefaultBankAccountUseCase)
         }
     }
 }

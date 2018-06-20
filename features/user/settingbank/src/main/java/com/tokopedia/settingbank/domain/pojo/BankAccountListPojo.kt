@@ -4,12 +4,12 @@ package com.tokopedia.settingbank.domain.pojo
  * @author by nisie on 6/8/18.
  */
 data class BankAccountListPojo(
-        val data: Data? = null,
+        val data: GetListBankAccountData? = null,
         val message_error: List<String>? = ArrayList(),
         val message_status: List<String>? = ArrayList()
 )
 
-data class Data(
+data class GetListBankAccountData(
         val paging: PagingModel? = PagingModel(),
         val list: List<BankAccount> = ArrayList()
 )

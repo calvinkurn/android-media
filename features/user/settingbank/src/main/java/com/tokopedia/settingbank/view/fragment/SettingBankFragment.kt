@@ -100,7 +100,7 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
         }
 
         alertDialog.setTitle(getString(R.string.make_main_account_prompt_title))
-        alertDialog.setDesc(composeDescription(element))
+        alertDialog.setDesc(composeMakeMainDescription(element))
         alertDialog.setBtnCancel(getString(R.string.No))
         alertDialog.setBtnOk(getString(R.string.yes))
         alertDialog.setOnCancelClickListener({ alertDialog.dismiss() })
@@ -113,13 +113,17 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
 
     }
 
-    override fun onSuccessSetMain(adapterPosition: Int) {
+    override fun onSuccessSetDefault(adapterPosition: Int, statusMessage: String) {
         adapter.setMain(adapterPosition)
     }
 
-    private fun composeDescription(element: BankAccountViewModel?): String {
-        if (element != null) {
-            return String.format("%s %s %s %s %s %s",
+    override fun onErrorSetDefaultBank(errorMessage: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    private fun composeMakeMainDescription(element: BankAccountViewModel?): String {
+        return if (element != null) {
+            String.format("%s %s %s %s %s %s",
                     getString(R.string.you_will_make_account),
                     element.bankName,
                     element.accountNumber,
@@ -128,7 +132,7 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
                     getString(R.string.become_default)
             )
         } else {
-            return ""
+            ""
         }
     }
 
@@ -137,6 +141,39 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
     }
 
     override fun deleteBankAccount(adapterPosition: Int, element: BankAccountViewModel?) {
+        if (!::alertDialog.isInitialized) {
+            alertDialog = Dialog(activity, Dialog.Type.PROMINANCE)
+        }
+
+        alertDialog.setTitle(getString(R.string.delete_bank_account_prompt_title))
+        alertDialog.setDesc(composeDeleteDescription(element))
+        alertDialog.setBtnCancel(getString(R.string.No))
+        alertDialog.setBtnOk(getString(R.string.yes_delete))
+        alertDialog.setOnCancelClickListener({ alertDialog.dismiss() })
+        alertDialog.setOnOkClickListener({
+            presenter.deleteAccount(adapterPosition, element)
+            alertDialog.dismiss()
+        })
+
+        alertDialog.show()
+    }
+
+    private fun composeDeleteDescription(element: BankAccountViewModel?): String {
+        return if (element != null) {
+            String.format("%s %s %s %s %s",
+                    getString(R.string.you_will_delete),
+                    element.bankName,
+                    element.accountNumber,
+                    getString(R.string.under_name),
+                    element.accountName)
+        } else {
+            ""
+        }
+    }
+
+    override fun onSuccessDeleteAccount(adapterPosition: Int) {
         adapter.remove(adapterPosition)
     }
+
+
 }

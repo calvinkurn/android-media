@@ -2,7 +2,7 @@ package com.tokopedia.settingbank.domain.mapper
 
 import com.tokopedia.settingbank.domain.pojo.BankAccount
 import com.tokopedia.settingbank.domain.pojo.BankAccountListPojo
-import com.tokopedia.settingbank.domain.pojo.Data
+import com.tokopedia.settingbank.domain.pojo.GetListBankAccountData
 import com.tokopedia.settingbank.view.viewmodel.BankAccountListViewModel
 import com.tokopedia.settingbank.view.viewmodel.BankAccountViewModel
 import retrofit2.Response
@@ -47,7 +47,7 @@ class GetBankListMapper : Func1<Response<BankAccountListPojo>,
         )
     }
 
-    private fun mapToList(data: Data?): ArrayList<BankAccountViewModel>? {
+    private fun mapToList(data: GetListBankAccountData?): ArrayList<BankAccountViewModel>? {
         val accountBankList: ArrayList<BankAccountViewModel> = ArrayList()
 
         for (bankAccount in data?.list!!) {
