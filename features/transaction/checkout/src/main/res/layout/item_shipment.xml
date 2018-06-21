@@ -194,7 +194,7 @@
 
                     <TextView
                         android:id="@+id/tv_shipping_type_name"
-                        style="@style/TextMidMediumBlack70"
+                        style="@style/TextMidNormalBlack70"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:lineSpacingExtra="4sp"
@@ -202,11 +202,11 @@
 
                     <TextView
                         android:id="@+id/tv_shipping_etd"
-                        style="@style/TextMidMediumBlack70"
+                        style="@style/TextMidNormalBlack70"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dp_8"
-                        android:layout_marginRight="@dimen/dp_8"
+                        android:layout_marginLeft="@dimen/dp_4"
+                        android:layout_marginRight="@dimen/dp_4"
                         tools:text="(1-2 Hari Kerja)" />
 
                 </LinearLayout>
@@ -218,14 +218,14 @@
 
                     <TextView
                         android:id="@+id/tv_courier_name"
-                        style="@style/TextSmallMediumBlack54"
+                        style="@style/TextSmallNormalBlack54"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:lineSpacingExtra="4sp"
                         tools:text="JNE Reg (Reguler)" />
 
                     <TextView
-                        style="@style/TextSmallMediumBlack54"
+                        style="@style/TextSmallNormalBlack54"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dp_4"
@@ -234,7 +234,7 @@
 
                     <TextView
                         android:id="@+id/tv_courier_price"
-                        style="@style/TextSmallMediumBlack54"
+                        style="@style/TextSmallNormalBlack54"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         tools:text="Rp 10.000" />
