@@ -1,6 +1,5 @@
 package com.tokopedia.instantloan.view.presenter;
 
-import android.os.Environment;
 import android.provider.CallLog;
 import android.provider.ContactsContract;
 import android.provider.Telephony;
@@ -23,17 +22,13 @@ import com.tokopedia.instantloan.ddcollector.contact.Contact;
 import com.tokopedia.instantloan.ddcollector.sms.Sms;
 import com.tokopedia.instantloan.domain.interactor.GetLoanProfileStatusUseCase;
 import com.tokopedia.instantloan.domain.interactor.PostPhoneDataUseCase;
-import com.tokopedia.instantloan.domain.model.LoanProfileStatusModelDomain;
 import com.tokopedia.instantloan.domain.model.PhoneDataModelDomain;
 import com.tokopedia.instantloan.view.contractor.InstantLoanContractor;
 import com.tokopedia.instantloan.view.mapper.LoanStatusMapper;
 import com.tokopedia.instantloan.view.mapper.PhoneDataMapper;
-import com.tokopedia.instantloan.view.model.LoanProfileStatusViewModel;
 import com.tokopedia.instantloan.view.model.PhoneDataViewModel;
 import com.tokopedia.usecase.RequestParams;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -169,54 +164,59 @@ public class InstantLoanPresenter extends BaseDaggerPresenter<InstantLoanContrac
         JsonArray messages = new JsonArray();
         JsonObject message;
 
-        for (Map<String, String> entry : (List<HashMap<String, String>>) map.get(Sms.DD_SMS)) {
-            if (entry == null) {
-                continue;
+        if (map.get(Sms.DD_SMS) != null) {
+            for (Map<String, String> entry : (List<HashMap<String, String>>) map.get(Sms.DD_SMS)) {
+                if (entry == null) {
+                    continue;
+                }
+                message = new JsonObject();
+                message.addProperty(DeviceDataKeys.Sms.PHONE, entry.get(Telephony.Sms.Inbox.ADDRESS));
+                message.addProperty(DeviceDataKeys.Sms.CONTENT, entry.get(Telephony.Sms.Inbox.BODY));
+                message.addProperty(DeviceDataKeys.Sms.TYPE, entry.get(Telephony.Sms.Inbox.TYPE));
+                message.addProperty(DeviceDataKeys.Sms.TIME, entry.get(Telephony.Sms.Inbox.DATE));
+                messages.add(message);
+                if (messages.size() == 100) {
+                    break;
+                }
             }
-            message = new JsonObject();
-            message.addProperty(DeviceDataKeys.Sms.PHONE, entry.get(Telephony.Sms.Inbox.ADDRESS));
-            message.addProperty(DeviceDataKeys.Sms.CONTENT, entry.get(Telephony.Sms.Inbox.BODY));
-            message.addProperty(DeviceDataKeys.Sms.TYPE, entry.get(Telephony.Sms.Inbox.TYPE));
-            message.addProperty(DeviceDataKeys.Sms.TIME, entry.get(Telephony.Sms.Inbox.DATE));
-            messages.add(message);
-            if (messages.size() == 100) {
-                break;
-            }
-        }
 
+        }
         data.addProperty(DeviceDataKeys.SMS, messages.toString());
 
         JsonArray contacts = new JsonArray();
         JsonObject contact;
 
-        for (Map<String, String> entry : (List<HashMap<String, String>>) map.get(Contact.DD_CONTACT)) {
-            if (entry == null) {
-                continue;
+        if (map.get(Contact.DD_CONTACT) != null) {
+            for (Map<String, String> entry : (List<HashMap<String, String>>) map.get(Contact.DD_CONTACT)) {
+                if (entry == null) {
+                    continue;
+                }
+                contact = new JsonObject();
+                contact.addProperty(DeviceDataKeys.Contact.NAME, entry.get(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+                contact.addProperty(DeviceDataKeys.Contact.PHONE, entry.get(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                contact.addProperty(DeviceDataKeys.Contact.TIME, entry.get(ContactsContract.CommonDataKinds.Phone.CONTACT_STATUS_TIMESTAMP));
+                contact.addProperty(DeviceDataKeys.Contact.TIMES, entry.get(ContactsContract.CommonDataKinds.Phone.TIMES_CONTACTED));
+                contact.addProperty(DeviceDataKeys.Contact.LAST_TIME, entry.get(ContactsContract.CommonDataKinds.Phone.LAST_TIME_CONTACTED));
+                contacts.add(contact);
             }
-            contact = new JsonObject();
-            contact.addProperty(DeviceDataKeys.Contact.NAME, entry.get(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-            contact.addProperty(DeviceDataKeys.Contact.PHONE, entry.get(ContactsContract.CommonDataKinds.Phone.NUMBER));
-            contact.addProperty(DeviceDataKeys.Contact.TIME, entry.get(ContactsContract.CommonDataKinds.Phone.CONTACT_STATUS_TIMESTAMP));
-            contact.addProperty(DeviceDataKeys.Contact.TIMES, entry.get(ContactsContract.CommonDataKinds.Phone.TIMES_CONTACTED));
-            contact.addProperty(DeviceDataKeys.Contact.LAST_TIME, entry.get(ContactsContract.CommonDataKinds.Phone.LAST_TIME_CONTACTED));
-            contacts.add(contact);
         }
-
         data.addProperty(DeviceDataKeys.CONTACT, contacts.toString());
 
         JsonArray callLogs = new JsonArray();
         JsonObject callLog;
 
-        for (Map<String, String> entry : (List<HashMap<String, String>>) map.get(Call.DD_CALL)) {
-            if (entry == null) {
-                continue;
+        if (map.get(Call.DD_CALL) != null) {
+            for (Map<String, String> entry : (List<HashMap<String, String>>) map.get(Call.DD_CALL)) {
+                if (entry == null) {
+                    continue;
+                }
+                callLog = new JsonObject();
+                callLog.addProperty(DeviceDataKeys.Call.PHONE, entry.get(CallLog.Calls.NUMBER));
+                callLog.addProperty(DeviceDataKeys.Call.TYPE, entry.get(CallLog.Calls.TYPE));
+                callLog.addProperty(DeviceDataKeys.Call.DURATION, entry.get(CallLog.Calls.DURATION));
+                callLog.addProperty(DeviceDataKeys.Call.TIME, entry.get(CallLog.Calls.DATE));
+                callLogs.add(callLog);
             }
-            callLog = new JsonObject();
-            callLog.addProperty(DeviceDataKeys.Call.PHONE, entry.get(CallLog.Calls.NUMBER));
-            callLog.addProperty(DeviceDataKeys.Call.TYPE, entry.get(CallLog.Calls.TYPE));
-            callLog.addProperty(DeviceDataKeys.Call.DURATION, entry.get(CallLog.Calls.DURATION));
-            callLog.addProperty(DeviceDataKeys.Call.TIME, entry.get(CallLog.Calls.DATE));
-            callLogs.add(callLog);
         }
 
         data.addProperty(DeviceDataKeys.CALL, callLogs.toString());
@@ -224,14 +224,16 @@ public class InstantLoanPresenter extends BaseDaggerPresenter<InstantLoanContrac
         JsonArray accounts = new JsonArray();
         JsonObject account;
 
-        for (Map<String, String> entry : (List<HashMap<String, String>>) map.get(Account.DD_ACCOUNT)) {
-            if (entry == null) {
-                continue;
+        if (map.get(Account.DD_ACCOUNT) != null) {
+            for (Map<String, String> entry : (List<HashMap<String, String>>) map.get(Account.DD_ACCOUNT)) {
+                if (entry == null) {
+                    continue;
+                }
+                account = new JsonObject();
+                account.addProperty(DeviceDataKeys.Account.NAME, entry.get(Account.NAME));
+                account.addProperty(DeviceDataKeys.Account.TYPE, entry.get(Account.TYPE));
+                accounts.add(account);
             }
-            account = new JsonObject();
-            account.addProperty(DeviceDataKeys.Account.NAME, entry.get(Account.NAME));
-            account.addProperty(DeviceDataKeys.Account.TYPE, entry.get(Account.TYPE));
-            accounts.add(account);
         }
 
         data.addProperty(DeviceDataKeys.ACCOUNTS, accounts.toString());
@@ -239,17 +241,19 @@ public class InstantLoanPresenter extends BaseDaggerPresenter<InstantLoanContrac
         JsonArray apps = new JsonArray();
         JsonObject app;
 
-        for (Map<String, String> entry : (List<HashMap<String, String>>) map.get(Application.DD_APPLICATION)) {
-            if (entry == null) {
-                continue;
+        if (map.get(Application.DD_APPLICATION) != null) {
+            for (Map<String, String> entry : (List<HashMap<String, String>>) map.get(Application.DD_APPLICATION)) {
+                if (entry == null) {
+                    continue;
+                }
+                app = new JsonObject();
+                app.addProperty(DeviceDataKeys.App.APP_NAME, entry.get(Application.NAME));
+                app.addProperty(DeviceDataKeys.App.PACKAGE_NAME, entry.get(Application.PACKAGE_NAME));
+                app.addProperty(DeviceDataKeys.App.INSTALL_TIME, entry.get(Application.FIRST_INSTALL_TIME));
+                app.addProperty(DeviceDataKeys.App.UPDATE_TIME, entry.get(Application.LAST_UPDATE_TIME));
+                app.addProperty(DeviceDataKeys.App.APP_TYPE, entry.get(Application.TYPE));
+                apps.add(app);
             }
-            app = new JsonObject();
-            app.addProperty(DeviceDataKeys.App.APP_NAME, entry.get(Application.NAME));
-            app.addProperty(DeviceDataKeys.App.PACKAGE_NAME, entry.get(Application.PACKAGE_NAME));
-            app.addProperty(DeviceDataKeys.App.INSTALL_TIME, entry.get(Application.FIRST_INSTALL_TIME));
-            app.addProperty(DeviceDataKeys.App.UPDATE_TIME, entry.get(Application.LAST_UPDATE_TIME));
-            app.addProperty(DeviceDataKeys.App.APP_TYPE, entry.get(Application.TYPE));
-            apps.add(app);
         }
 
         data.addProperty(DeviceDataKeys.APPS, apps.toString());
