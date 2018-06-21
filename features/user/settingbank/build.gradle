@@ -29,6 +29,8 @@ dependencies {
 
     implementation project(rootProject.ext.libraries.userSession)
 
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+
     implementation(rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'
         exclude group: 'com.squareup.okio'

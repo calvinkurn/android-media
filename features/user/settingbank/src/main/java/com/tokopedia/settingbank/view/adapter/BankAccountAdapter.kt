@@ -39,6 +39,11 @@ class BankAccountAdapter(adapterTypeFactory: BankAccountTypeFactoryImpl,
 
     }
 
+    fun setMain(adapterPosition: Int) {
+        (this.visitables[adapterPosition] as BankAccountViewModel).isDefaultBank = true
+        notifyItemChanged(adapterPosition)
+    }
+
     fun remove(adapterPosition: Int) {
         this.visitables.removeAt(adapterPosition)
         notifyItemRemoved(adapterPosition)
@@ -57,11 +62,6 @@ class BankAccountAdapter(adapterTypeFactory: BankAccountTypeFactoryImpl,
 
     fun getList(): MutableList<Visitable<Any>>? {
         return visitables
-    }
-
-    fun setMain(adapterPosition: Int) {
-        (this.visitables[adapterPosition] as BankAccountViewModel).isDefaultBank = true
-        notifyItemChanged(adapterPosition)
     }
 }
 
