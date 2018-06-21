@@ -12,6 +12,7 @@ import com.tokopedia.core.network.exception.ServerErrorException;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
+import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.campaign.analytics.CampaignTracking;
 import com.tokopedia.tkpd.campaign.data.entity.CampaignResponseEntity;
@@ -102,6 +103,11 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
             if (ShakeDetectManager.sTopActivity != null) {
                 requestParams.putString(SCREEN_NAME, ShakeDetectManager.sTopActivity.trim().replaceAll(" ", "_"));
             }
+            //For Testing
+            if(BuildConfig.DEBUG) {
+                requestParams.putString("is_qc","1");
+            }
+            //For Testing
             shakeUseCase.execute(requestParams, new Subscriber<CampaignResponseEntity>() {
                 @Override
                 public void onCompleted() {
