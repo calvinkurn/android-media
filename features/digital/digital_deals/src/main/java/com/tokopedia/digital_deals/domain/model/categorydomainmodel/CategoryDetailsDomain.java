@@ -12,8 +12,6 @@ public class CategoryDetailsDomain {
 
     private PageDomain page;
 
-    private List<BrandDomain> dealBrands;
-
     private int count;
 
     public List<DealsCategoryItemDomain> getDealItems() {
@@ -30,14 +28,6 @@ public class CategoryDetailsDomain {
 
     public void setPage(PageDomain page) {
         this.page = page;
-    }
-
-    public List<BrandDomain> getDealBrands() {
-        return dealBrands;
-    }
-
-    public void setDealBrands(List<BrandDomain> dealBrands) {
-        this.dealBrands = dealBrands;
     }
 
     public int getCount() {

@@ -59,7 +59,7 @@ public class BrandDetailsActivity extends BaseSimpleActivity implements HasCompo
     private View progressBarLayout;
     private at.blogc.android.views.ExpandableTextView tvExpandableDesc;
     private ProgressBar progBar;
-
+    private LinearLayout noContent;
     @Inject
     public BrandDetailsPresenter mPresenter;
     private DealsComponent dealsComponent;
@@ -103,7 +103,7 @@ public class BrandDetailsActivity extends BaseSimpleActivity implements HasCompo
         appBarLayout = findViewById(R.id.app_bar_layout);
         ivHeader = findViewById(R.id.header_image);
         ivBrandLogo = findViewById(R.id.iv_brand_logo);
-        recyclerViewDeals = findViewById(R.id.recyclerView);
+        recyclerViewDeals = findViewById(R.id.recycler_view);
         tvSeeMore = findViewById(R.id.seemorebutton_description);
         ivArrowSeeMore = findViewById(R.id.down_arrow_description);
         progressBarLayout = findViewById(R.id.progress_bar_layout);
@@ -111,6 +111,7 @@ public class BrandDetailsActivity extends BaseSimpleActivity implements HasCompo
         baseMainContent = findViewById(R.id.base_main_content);
         progBar = findViewById(R.id.prog_bar);
         flHeader = findViewById(R.id.fl_header);
+        noContent = findViewById(R.id.no_content);
         collapsingToolbarLayout.setTitle(" ");
         tvSeeMoreBtn.setOnClickListener(this);
         tvExpandableDesc.setInterpolator(new OvershootInterpolator());
@@ -169,7 +170,7 @@ public class BrandDetailsActivity extends BaseSimpleActivity implements HasCompo
 
 
     @Override
-    public void renderBrandDetails(List<CategoryItemsViewModel> categoryItemsViewModels, BrandViewModel brandViewModel) {
+    public void renderBrandDetails(List<CategoryItemsViewModel> categoryItemsViewModels, BrandViewModel brandViewModel, int count) {
         collapsingToolbarLayout.setTitle(brandViewModel.getTitle());
         tvExpandableDesc.setText(brandViewModel.getDescription());
         tvCityName.setText(String.format(getResources().getString(R.string.deals_brand_detail_location), Utils.getSingletonInstance().getLocation(getActivity()).getName()));
@@ -179,9 +180,22 @@ public class BrandDetailsActivity extends BaseSimpleActivity implements HasCompo
         for (CategoryItemsViewModel categoryItemsViewModel : categoryItemsViewModels) {
             categoryItemsViewModel.setBrand(brandViewModel);
         }
-        categoryAdapter = new DealsCategoryAdapter(getActivity(), categoryItemsViewModels, !isShortLayout);
-        tvDealsCount.setText(String.format(getString(R.string.number_of_items), categoryItemsViewModels.size()));
-        recyclerViewDeals.setAdapter(categoryAdapter);
+        if (categoryItemsViewModels.size() != 0) {
+            if (count == 0)
+                tvDealsCount.setText(String.format(getResources().getString(R.string.number_of_items), categoryItemsViewModels.size()));
+            else
+                tvDealsCount.setText(String.format(getResources().getString(R.string.number_of_items), count));
+            categoryAdapter = new DealsCategoryAdapter(getActivity(), categoryItemsViewModels, !isShortLayout);
+
+            recyclerViewDeals.setAdapter(categoryAdapter);
+            recyclerViewDeals.setVisibility(View.VISIBLE);
+            noContent.setVisibility(View.GONE);
+        } else {
+            tvDealsCount.setText(String.format(getResources().getString(R.string.number_of_items), count));
+            recyclerViewDeals.setVisibility(View.GONE);
+            noContent.setVisibility(View.VISIBLE);
+        }
+
         baseMainContent.setVisibility(View.VISIBLE);
 
     }
@@ -213,7 +227,8 @@ public class BrandDetailsActivity extends BaseSimpleActivity implements HasCompo
     public RequestParams getParams() {
         BrandViewModel brandViewModel = getIntent().getParcelableExtra(BrandDetailsPresenter.BRAND_DATA);
         RequestParams requestParams = RequestParams.create();
-        requestParams.putString(mPresenter.TAG, brandViewModel.getUrl());
+        requestParams.putString(BrandDetailsPresenter.TAG, brandViewModel.getUrl());
+        requestParams.putInt(Utils.BRAND_QUERY_PARAM_LOCATION_ID, Utils.getSingletonInstance().getLocation(getActivity()).getId());
         return requestParams;
     }
 

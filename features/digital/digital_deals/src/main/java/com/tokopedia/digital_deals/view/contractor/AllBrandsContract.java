@@ -42,6 +42,10 @@ public class AllBrandsContract {
         void addBrandsToCards(List<BrandViewModel> brandList);
 
         LinearLayoutManager getLayoutManager();
+
+        void showEmptyView();
+
+        void hideEmptyView();
     }
 
     public interface Presenter extends CustomerPresenter<AllBrandsContract.View> {

@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DaggerDealsComponent;
 import com.tokopedia.digital_deals.di.DealsModule;
@@ -261,12 +262,12 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == LoyaltyActivity.LOYALTY_REQUEST_CODE) {
+        if (requestCode == IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE) {
             hideProgressBar();
             switch (resultCode) {
-                case LoyaltyActivity.VOUCHER_RESULT_CODE:
-                    mPresenter.updatePromoCode(data.getExtras().getString(LoyaltyActivity.VOUCHER_CODE));
-                    showPromoSuccessMessage(data.getExtras().getString(LoyaltyActivity.VOUCHER_CODE),  data.getExtras().getString(LoyaltyActivity.VOUCHER_MESSAGE));
+                case IRouterConstant.LoyaltyModule.ResultLoyaltyActivity.VOUCHER_RESULT_CODE:
+                    mPresenter.updatePromoCode(data.getExtras().getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_CODE));
+                    showPromoSuccessMessage(data.getExtras().getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_CODE),  data.getExtras().getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_MESSAGE));
                     break;
 //                case LoyaltyActivity.VOUCHER_RESULT_CODE:
 //                    mPresenter.updatePromoCode(data.getExtras().getString(LoyaltyActivity.VOUCHER_CODE));

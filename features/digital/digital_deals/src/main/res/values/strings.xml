@@ -11,6 +11,7 @@
     <string name="search_input_hint_location">Cari Kota</string>
     <string name="empty_search_text_upper">Hasil pencarian Anda tidak dapat ditemukan.</string>
     <string name="empty_search_text_lower">Silakan lakukan pencarian dengan kata kunci / filter lain</string>
+    <string name="empty_search_brand_text_lower">Silakan lakukan pencarian dengan kata kunci lain</string>
     <string name="search_sort_label">Urutkan</string>
     <string name="search_filter_label">Filter</string>
 

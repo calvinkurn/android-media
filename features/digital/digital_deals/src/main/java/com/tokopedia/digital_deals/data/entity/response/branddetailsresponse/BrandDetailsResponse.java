@@ -12,6 +12,9 @@ public class BrandDetailsResponse {
     @SerializedName("products")
     private JsonArray deals;
 
+    @SerializedName("count")
+    private int count;
+
     public JsonObject getBrand() {
         return brand;
     }
@@ -26,6 +29,14 @@ public class BrandDetailsResponse {
 
     public void setDeals(JsonArray deals) {
         this.deals = deals;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
     }
 
     @Override

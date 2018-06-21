@@ -71,6 +71,7 @@ public class AllBrandsPresenter extends BaseDaggerPresenter<AllBrandsContract.Vi
     }
 
     public void getAllBrands() {
+        getView().hideEmptyView();
         getView().showProgressBar();
         getAllBrandsUseCase.execute(getView().getParams(), new Subscriber<AllBrandsDomain>() {
 

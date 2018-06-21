@@ -9,7 +9,6 @@ import com.tokopedia.digital_deals.data.entity.response.categorydetailresponse.C
 import com.tokopedia.digital_deals.data.entity.response.homeresponse.DealsResponse;
 import com.tokopedia.digital_deals.data.entity.response.searchresponse.SearchResponse;
 import com.tokopedia.digital_deals.data.source.DealsApi;
-import com.tokopedia.digital_deals.view.presenter.DealsHomePresenter;
 
 import java.util.HashMap;
 
@@ -44,8 +43,8 @@ public class CloudDealsDataStore implements DealsDataStore {
     }
 
     @Override
-    public Observable<BrandDetailsResponse> getBrandDetails(String url) {
-        return dealsApi.getBrandDetails(url);
+    public Observable<BrandDetailsResponse> getBrandDetails(String url, HashMap<String, Object> params) {
+        return dealsApi.getBrandDetails(url, params);
     }
 
     @Override

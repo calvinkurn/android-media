@@ -28,7 +28,9 @@ import dagger.Provides;
 @Module
 public class LoyaltyViewModule {
 
+
     private final LoyaltyActivity activity;
+
 
     public LoyaltyViewModule(LoyaltyActivity activity) {
         this.activity = activity;
@@ -62,6 +64,7 @@ public class LoyaltyViewModule {
                         .build()
         );
         String events = "events";
+        String deals="deals";
         if (activity.getPlatformString().equals(events)) {
             loyaltyPagerItemList.add(
                     new LoyaltyPagerItem.Builder()
@@ -74,7 +77,21 @@ public class LoyaltyViewModule {
                             .tabTitle("Kupon Saya")
                             .build()
             );
-        } else {
+        }
+        else if (activity.getPlatformString().equals(deals)) {
+            loyaltyPagerItemList.add(
+                    new LoyaltyPagerItem.Builder()
+                            .fragment(PromoCouponFragment.newInstanceEvent(
+                                    activity.getPlatformString(),
+                                    activity.getCategoryString(),
+                                    activity.getCategoryId(),
+                                    activity.getProductId()))
+                            .position(0)
+                            .tabTitle("Kupon Saya")
+                            .build()
+            );
+        }
+        else {
             loyaltyPagerItemList.add(
                     new LoyaltyPagerItem.Builder()
                             .fragment(PromoCouponFragment.newInstance(

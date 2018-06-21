@@ -7,103 +7,116 @@
     android:layout_height="match_parent"
     android:background="@color/bottomnav_bg">
 
-    <android.support.design.widget.AppBarLayout
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="?attr/actionBarSize"
+        android:layout_gravity="top"
+        android:minHeight="?attr/actionBarSize"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        app:contentInsetStartWithNavigation="0dp"
+        app:elevation="0dp" />
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:minHeight="?attr/actionBarSize" />
-
-        <View
-            android:id="@+id/divider1"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/divider_height_thinv"
-            android:background="@color/divider_color" />
-
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/cl_search_view"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:visibility="gone"
-            android:background="@color/bottomnav_bg"
-            app:layout_behavior="com.tokopedia.digital_deals.view.behaviour.QuickHideBehavior">
-
-
-            <TextView
-                android:id="@+id/search_input_view"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_8"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_15"
-                android:layout_marginTop="@dimen/dp_8"
-                android:layout_weight="1"
-                android:background="@drawable/rect_grey_search_background"
-                android:drawableLeft="@drawable/ic_search_grey"
-                android:drawablePadding="@dimen/dp_4"
-                android:ellipsize="end"
-                android:gravity="center_vertical"
-                android:hint="@string/search_input_hint_deals"
-                android:maxLines="1"
-                android:orientation="horizontal"
-                android:padding="@dimen/dp_10"
-                android:textColor="@color/black_70"
-                android:textSize="@dimen/sp_14"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toLeftOf="@+id/guideline"
-                app:layout_constraintTop_toTopOf="parent" />
-
-
-            <android.support.constraint.Guideline
-                android:id="@+id/guideline"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.67" />
-
-
-            <TextView
-                android:id="@+id/tv_location_name"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/dp_16"
-                android:drawableLeft="@drawable/ic_location_2"
-                android:drawablePadding="@dimen/dp_8"
-                android:fontFamily="sans-serif"
-                android:gravity="center_vertical"
-                android:paddingBottom="@dimen/dp_8"
-                android:paddingTop="@dimen/dp_8"
-                android:text="Surabayhjhhhhhhhhhhjhjhjhhghgha"
-                android:textColor="@color/black_39"
-                android:textSize="@dimen/sp_14"
-                android:textStyle="normal"
-                android:lines="1"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toRightOf="@+id/guideline"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-        </android.support.constraint.ConstraintLayout>
-
-    </android.support.design.widget.AppBarLayout>
 
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/base_main_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
         android:background="@color/bottomnav_bg"
-        android:visibility="gone"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:visibility="gone">
+
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/app_bar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/dp_1"
+            >
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/cl_search_view"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/bottomnav_bg"
+                android:visibility="gone"
+                app:layout_scrollFlags="scroll|enterAlways">
+
+
+                <View
+                    android:id="@+id/divider1"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/divider_height_thinv"
+                    android:background="@color/divider_color"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/search_input_view"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dp_8"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginRight="@dimen/dp_15"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:layout_weight="1"
+                    android:background="@drawable/rect_grey_search_background"
+                    android:drawableLeft="@drawable/ic_search_grey"
+                    android:drawablePadding="@dimen/dp_4"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:hint="@string/search_input_hint_deals"
+                    android:maxLines="1"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/dp_10"
+                    android:textColor="@color/black_70"
+                    android:textSize="@dimen/sp_14"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toLeftOf="@+id/guideline"
+                    app:layout_constraintTop_toBottomOf="@+id/divider1" />
+
+
+                <android.support.constraint.Guideline
+                    android:id="@+id/guideline"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.67" />
+
+
+                <TextView
+                    android:id="@+id/tv_location_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:drawableLeft="@drawable/ic_location_2"
+                    android:drawablePadding="@dimen/dp_8"
+                    android:fontFamily="sans-serif"
+                    android:gravity="center_vertical"
+                    android:lines="1"
+                    android:paddingBottom="@dimen/dp_8"
+                    android:paddingTop="@dimen/dp_8"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    android:text="Surabayhjhhhhhhhhhhjhjhjhhghgha"
+                    android:textColor="@color/black_39"
+                    android:textSize="@dimen/sp_14"
+                    android:textStyle="normal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toRightOf="@+id/guideline"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </android.support.constraint.ConstraintLayout>
+
+        </android.support.design.widget.AppBarLayout>
 
 
         <android.support.v4.widget.NestedScrollView
             android:id="@+id/nested_scroll_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
@@ -128,7 +141,7 @@
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/deals_bannerpager"
                     app:pageColor="@color/grey_400"
-                    app:radius="@dimen/dp_4"
+                    app:radius="@dimen/dp_3"
                     app:strokeColor="@color/grey_400" />
 
                 <TextView
@@ -215,8 +228,9 @@
                     android:id="@+id/tv_see_all_brands"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="@dimen/dp_16"
                     android:text="@string/see_all"
+                    android:paddingRight="@dimen/dp_16"
+                    android:paddingLeft="@dimen/dp_16"
                     android:textColor="@color/green_nob"
                     android:textSize="@dimen/sp_12"
                     android:textStyle="normal"

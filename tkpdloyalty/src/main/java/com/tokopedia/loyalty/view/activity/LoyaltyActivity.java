@@ -55,37 +55,7 @@ import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.E
 public class LoyaltyActivity extends BasePresenterActivity
         implements HasComponent<AppComponent>,
         PromoCodeFragment.ManualInsertCodeListener,
-        PromoCouponFragment.ChooseCouponListener
-{
-    public static final String EXTRA_COUPON_ACTIVE = "EXTRA_COUPON_ACTIVE";
-    public static final String EXTRA_SELECTED_TAB = "EXTRA_SELECTED_TAB";
-    public static final String EXTRA_PLATFORM = "EXTRA_PLATFORM";
-    public static final String EXTRA_CATEGORY = "EXTRA_CATEGORY";
-    public static final String EXTRA_PRODUCTID = "EXTRA_PRODUCTID";
-    public static final String EXTRA_CATEGORYID = "EXTRA_CATEGORYID";
-    public static final String MARKETPLACE_STRING = "marketplace";
-    public static final String EXTRA_CART_ID = "EXTRA_CART_ID";
-    public static final String DIGITAL_STRING = "digital";
-    public static final String EVENT_STRING = "events";
-    public static final String DEAL_STRING = "deals";
-    public static final String FLIGHT_STRING = "flight";
-    public static final String VOUCHER_CODE = "voucher_code";
-    public static final String VOUCHER_MESSAGE = "voucher_message";
-    public static final String VOUCHER_AMOUNT = "voucher_amount";
-    public static final int LOYALTY_REQUEST_CODE = 77;
-    public static final int VOUCHER_RESULT_CODE = 12;
-    public static final int COUPON_RESULT_CODE = 15;
-    public static final String COUPON_STATE = "coupon";
-    public static final String COUPON_CODE = "coupon_code";
-    public static final String COUPON_MESSAGE = "coupon_message";
-    public static final String COUPON_AMOUNT = "coupon_amount";
-    public static final String COUPON_TITLE = "coupon_title";
-    public static final String VOUCHER_CASHBACK_AMOUNT = "VOUCHER_CASHBACK_AMOUNT";
-    public static final String VOUCHER_DISCOUNT_AMOUNT = "VOUCHER_DISCOUNT_AMOUNT";
-    public static final String COUPON_DISCOUNT_AMOUNT = "COUPON_DISCOUNT_AMOUNT";
-    public static final String COUPON_CASHBACK_AMOUNT = "COUPON_CASHBACK_AMOUNT";
-    public static final int VOUCHER_TAB = 0;
-    public static final int COUPON_TAB = 1;
+        PromoCouponFragment.ChooseCouponListener {
 
     public static final String DEFAULT_COUPON_TAB_SELECTED = "coupon";
     @BindView(R2.id.pager)

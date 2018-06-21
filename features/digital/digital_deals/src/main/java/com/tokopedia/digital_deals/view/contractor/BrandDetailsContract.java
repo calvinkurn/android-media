@@ -19,7 +19,7 @@ public class BrandDetailsContract {
 
         void navigateToActivityRequest(Intent intent, int requestCode);
 
-        void renderBrandDetails(List<CategoryItemsViewModel> categoryItemsViewModels, BrandViewModel brandViewModel);
+        void renderBrandDetails(List<CategoryItemsViewModel> categoryItemsViewModels, BrandViewModel brandViewModel, int count);
 
         void showProgressBar();
 

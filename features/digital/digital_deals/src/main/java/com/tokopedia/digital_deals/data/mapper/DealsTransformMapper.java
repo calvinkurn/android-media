@@ -29,10 +29,12 @@ public class DealsTransformMapper implements Func1<DealsResponse, DealsDomain> {
         JsonObject layout = homeResponse.getLayout();
         List<DealsCategoryDomain> dealsCategoryDomains = new ArrayList<>();
         DealsCategoryDomain dealsCategoryDomain;
-        for (Map.Entry<String, JsonElement> entry : layout.entrySet()) {
-            JsonObject object = entry.getValue().getAsJsonObject();
-            dealsCategoryDomain = new Gson().fromJson(object, DealsCategoryDomain.class);
-            dealsCategoryDomains.add(dealsCategoryDomain);
+        if (layout != null) {
+            for (Map.Entry<String, JsonElement> entry : layout.entrySet()) {
+                JsonObject object = entry.getValue().getAsJsonObject();
+                dealsCategoryDomain = new Gson().fromJson(object, DealsCategoryDomain.class);
+                dealsCategoryDomains.add(dealsCategoryDomain);
+            }
         }
         dealsDomain.setDealsCategory(dealsCategoryDomains);
 
@@ -40,18 +42,22 @@ public class DealsTransformMapper implements Func1<DealsResponse, DealsDomain> {
         JsonArray brands = dealsResponse.getBrands();
         List<BrandDomain> dealsBrandsDomain = new ArrayList<>();
         BrandDomain brandDomain;
-        for (JsonElement jsonElement : brands) {
-            brandDomain = new Gson().fromJson(jsonElement.getAsJsonObject(), BrandDomain.class);
-            dealsBrandsDomain.add(brandDomain);
+        if (brands != null) {
+            for (JsonElement jsonElement : brands) {
+                brandDomain = new Gson().fromJson(jsonElement.getAsJsonObject(), BrandDomain.class);
+                dealsBrandsDomain.add(brandDomain);
+            }
         }
         dealsDomain.setDealsBrands(dealsBrandsDomain);
 
         JsonArray filters = dealsResponse.getFilters();
         List<FilterDomainModel> filterDomainModels = new ArrayList<>();
         FilterDomainModel filterDomainModel;
-        for (JsonElement jsonElement : filters) {
-            filterDomainModel = new Gson().fromJson(jsonElement.getAsJsonObject(), FilterDomainModel.class);
-            filterDomainModels.add(filterDomainModel);
+        if (filters != null) {
+            for (JsonElement jsonElement : filters) {
+                filterDomainModel = new Gson().fromJson(jsonElement.getAsJsonObject(), FilterDomainModel.class);
+                filterDomainModels.add(filterDomainModel);
+            }
         }
 
         dealsDomain.setFilters(filterDomainModels);

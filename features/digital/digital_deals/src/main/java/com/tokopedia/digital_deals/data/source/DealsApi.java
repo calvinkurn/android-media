@@ -38,7 +38,7 @@ public interface DealsApi {
 //    Observable<BrandDetailsResponse> getBrandDetails(@Url String brandDetailUrl);
 
     @GET()
-    Observable<BrandDetailsResponse> getBrandDetails(@Url String brandDetailUrl);
+    Observable<BrandDetailsResponse> getBrandDetails(@Url String brandDetailUrl, @QueryMap Map<String, Object> param);
 
     @GET(DealsUrl.DEALS_PRODUCT + "/{url}")
     Observable<JsonObject> getDealDetails(@Path("url") String dealDetailUrl);

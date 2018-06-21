@@ -2,6 +2,7 @@ package com.tokopedia.digital_deals.view.adapter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import com.tokopedia.digital_deals.view.fragment.AllBrandsFragment;
@@ -10,7 +11,7 @@ import com.tokopedia.digital_deals.view.viewmodel.CategoriesModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BrandsFragmentPagerAdapter extends FragmentStatePagerAdapter {
+public class BrandsFragmentPagerAdapter extends FragmentPagerAdapter {
     private List<CategoriesModel> categoryList;
     private ArrayList<Fragment> fragmentArrayList;
 

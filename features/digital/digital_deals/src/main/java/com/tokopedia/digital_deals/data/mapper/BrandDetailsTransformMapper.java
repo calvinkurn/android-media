@@ -37,6 +37,8 @@ public class BrandDetailsTransformMapper implements Func1<BrandDetailsResponse, 
 
         dealsDomain.setDealBrand(brandDomain);
 
+        dealsDomain.setCount(brandDetailsResponse.getCount());
+
         return dealsDomain;
     }
 }

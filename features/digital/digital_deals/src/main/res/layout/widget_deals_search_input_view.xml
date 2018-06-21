@@ -17,6 +17,7 @@
             android:id="@+id/image_view_search"
             android:layout_width="@dimen/dp_24"
             android:layout_height="@dimen/dp_24"
+            android:tint="@color/black_50"
             app:srcCompat="@drawable/ic_search_grey" />
 
         <EditText
@@ -33,6 +34,7 @@
             android:imeOptions="actionSearch"
             android:inputType="text"
             android:maxLines="1"
+            android:textColorHint="@color/black_50"
             android:textColor="@color/black_39"
             android:textSize="@dimen/sp_14" />
 
@@ -41,6 +43,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@null"
+            android:visibility="gone"
             app:srcCompat="@drawable/ic_close_search" />
     </LinearLayout>
 

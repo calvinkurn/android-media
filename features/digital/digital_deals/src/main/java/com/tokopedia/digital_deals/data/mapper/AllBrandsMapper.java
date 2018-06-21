@@ -25,9 +25,11 @@ public class AllBrandsMapper implements Func1<AllBrandsResponse, AllBrandsDomain
 
         List<BrandDomain> dealsBrandsDomain = new ArrayList<>();
         BrandDomain brandDomain;
-        for (JsonElement jsonElement : brands) {
-            brandDomain = new Gson().fromJson(jsonElement.getAsJsonObject(), BrandDomain.class);
-            dealsBrandsDomain.add(brandDomain);
+        if(brands!=null) {
+            for (JsonElement jsonElement : brands) {
+                brandDomain = new Gson().fromJson(jsonElement.getAsJsonObject(), BrandDomain.class);
+                dealsBrandsDomain.add(brandDomain);
+            }
         }
         allBrandsDomain.setBrands(dealsBrandsDomain);
 

@@ -153,7 +153,6 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
                 isDealsLoaded=true;
                 categoryViewModels = Utils.getSingletonInstance()
                         .convertIntoCategoryListItemsViewModel(dealEntity.getDealItems());
-                brandViewModels = Utils.getSingletonInstance().convertIntoBrandListViewModel(dealEntity.getDealBrands()); //to be removed
                 pageViewModel = Utils.getSingletonInstance().convertIntoPageViewModel(dealEntity.getPage());
                 getNextPageUrl();
                 getView().renderCategoryList(categoryViewModels, dealEntity.getCount());

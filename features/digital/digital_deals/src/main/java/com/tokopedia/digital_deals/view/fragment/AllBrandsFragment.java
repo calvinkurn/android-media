@@ -49,7 +49,6 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
     private GridLayoutManager layoutManager;
 
     private RecyclerView recyclerview;
-    private ProgressBar progBar;
     private SearchInputView searchInputView;
     @Inject
     AllBrandsPresenter mPresenter;
@@ -76,15 +75,18 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_category_brands, container, false);
         setUpVariables(view);
-        mPresenter.getAllBrands();
-
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mPresenter.getAllBrands();
     }
 
     private void setUpVariables(View view) {
         recyclerview = view.findViewById(R.id.rv_brand_items);
         searchInputView = view.findViewById(R.id.search_input_view);
-        progBar = view.findViewById(R.id.prog_bar);
         progressBarLayout = view.findViewById(R.id.progress_bar_layout);
         noContent = view.findViewById(R.id.no_content);
         baseMainContent = view.findViewById(R.id.base_main_content);
@@ -162,22 +164,20 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
         }
     }
 
-
     @Override
     public void showProgressBar() {
         progressBarLayout.setVisibility(View.VISIBLE);
-        progBar.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgressBar() {
         progressBarLayout.setVisibility(View.GONE);
-        progBar.setVisibility(View.GONE);
     }
 
     @Override
     public void showViews() {
         baseMainContent.setVisibility(View.VISIBLE);
+        noContent.setVisibility(View.GONE);
         llSearchView.setVisibility(View.VISIBLE);
     }
 
@@ -218,6 +218,16 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
     @Override
     public LinearLayoutManager getLayoutManager() {
         return layoutManager;
+    }
+
+    @Override
+    public void showEmptyView() {
+        noContent.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideEmptyView() {
+        noContent.setVisibility(View.GONE);
     }
 
     private RecyclerView.OnScrollListener rvOnScrollListener = new RecyclerView.OnScrollListener() {

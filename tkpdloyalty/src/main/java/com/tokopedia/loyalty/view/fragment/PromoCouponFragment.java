@@ -34,7 +34,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-
 /**
  * @author anggaprasetiyo on 29/11/17.
  */
@@ -387,9 +386,11 @@ public class PromoCouponFragment extends BasePresenterFragment
                 IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING)) {
             dPresenter.submitDigitalVoucher(data, getArguments().getString(CATEGORY_KEY));
         } else if (getArguments().getString(PLATFORM_KEY).equalsIgnoreCase(
-                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EVENT_STRING)) {
+                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EVENT_STRING)
+                || getArguments().getString(PLATFORM_KEY).equalsIgnoreCase(
+                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DEALS_STRING)) {
             String jsonbody = getActivity().getIntent().getStringExtra(CHECKOUT);
-            dPresenter.parseAndSubmitEventVoucher(jsonbody, data, "");
+            dPresenter.parseAndSubmitEventVoucher(jsonbody, data, PLATFORM_KEY);
         } else if (getArguments().getString(PLATFORM_KEY).equalsIgnoreCase(
                 IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.FLIGHT_STRING)) {
             dPresenter.submitFlightVoucher(data, getArguments().getString(CART_ID_KEY));
@@ -424,7 +425,9 @@ public class PromoCouponFragment extends BasePresenterFragment
     public void onRefresh(View view) {
         if (refreshHandler.isRefreshing())
             if (getArguments().getString(PLATFORM_KEY, "").equals(
-                    IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EVENT_STRING)) {
+                    IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EVENT_STRING)
+                    || getArguments().getString(PLATFORM_KEY, "").equals(
+                    IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DEALS_STRING)) {
                 dPresenter.processGetEventCouponList(getArguments().getInt(DIGITAL_CATEGORY_ID), getArguments().getInt(DIGITAL_PRODUCT_ID));
             } else {
                 dPresenter.processGetCouponList(getArguments().getString(PLATFORM_KEY));
@@ -458,3 +461,4 @@ public class PromoCouponFragment extends BasePresenterFragment
 
 
 }
+

@@ -167,7 +167,6 @@ public class DealsHomeActivity extends BaseSimpleActivity implements HasComponen
         img = getResources().getDrawable(R.drawable.ic_location_2);
         tvLocationName.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
 
-        circlePageIndicator.setRadius(getResources().getDimensionPixelOffset(R.dimen.dp_4));
     }
 
     private void initInjector() {

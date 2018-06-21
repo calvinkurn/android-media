@@ -15,6 +15,7 @@ import com.tokopedia.digital_deals.view.fragment.CheckoutHomeFragment;
 import com.tokopedia.digital_deals.view.fragment.DealDetailsAllRedeemLocationsFragment;
 import com.tokopedia.digital_deals.view.fragment.DealDetailsFragment;
 import com.tokopedia.digital_deals.view.fragment.SelectDealQuantityFragment;
+import com.tokopedia.digital_deals.view.fragment.VoucherListFragment;
 import com.tokopedia.oms.domain.postusecase.PostVerifyCartUseCase;
 
 import dagger.Component;
@@ -49,4 +50,6 @@ public interface DealsComponent {
     void inject(CheckoutHomeFragment fragment);
 
     void inject(DealsCategoryAdapter dealsCategoryAdapter);
+
+    void inject(VoucherListFragment fragment);
 }

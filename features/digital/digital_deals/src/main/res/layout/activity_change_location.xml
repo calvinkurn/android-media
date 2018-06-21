@@ -10,7 +10,8 @@
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/bottomnav_bg">
+        android:background="@color/bottomnav_bg"
+        app:elevation="@dimen/dp_0">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
@@ -89,6 +90,8 @@
             android:background="@color/bottomnav_bg"
             android:gravity="center_horizontal"
             android:orientation="vertical"
+            android:paddingLeft="@dimen/dp_20"
+            android:paddingRight="@dimen/dp_20"
             android:visibility="gone"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 

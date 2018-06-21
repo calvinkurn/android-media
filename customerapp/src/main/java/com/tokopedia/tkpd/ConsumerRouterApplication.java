@@ -288,9 +288,12 @@ import com.tokopedia.tokocash.pendingcashback.receiver.TokocashPendingDataBroadc
 import com.tokopedia.topads.sourcetagging.util.TopAdsAppLinkUtil;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.bcaoneklik.usecase.CreditCardFingerPrintUseCase;
+
 import com.tokopedia.transaction.orders.orderdetails.view.activity.OrderListDetailActivity;
+
 import com.tokopedia.transaction.insurance.view.InsuranceTnCActivity;
 import com.tokopedia.transaction.pickuppoint.view.activity.PickupPointActivity;
+
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.transaction.router.ITransactionOrderDetailRouter;
@@ -324,7 +327,6 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.SHARE_
  * @author normansyahputa on 12/15/16.
  */
 public abstract class ConsumerRouterApplication extends MainApplication implements
-
         TkpdCoreRouter,
         SellerModuleRouter,
         IDigitalModuleRouter,
@@ -363,8 +365,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ITransactionOrderDetailRouter,
         ILogisticUploadAwbRouter,
         NetworkRouter,
-                DealsModuleRouter,
-                OmsModuleRouter{
+        DealsModuleRouter,
+        OmsModuleRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -2333,6 +2335,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public Intent getOrderListDetailActivity(Context context, String orderId, String orderCategory) {
         return new OrderListDetailActivity().createInstance(context, orderId, orderCategory);
     }
+
+
     public FingerprintModel getFingerprintModel() {
         return FingerprintModelGenerator.generateFingerprintModel(this);
     }

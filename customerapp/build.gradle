@@ -207,6 +207,7 @@ android {
             include 'x86', 'armeabi-v7a'
             universalApk false
         }
+
     }
 
     defaultConfig {
