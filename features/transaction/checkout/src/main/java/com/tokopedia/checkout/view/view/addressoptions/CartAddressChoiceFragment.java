@@ -183,15 +183,7 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
         mCartAddressChoicePresenter.attachView(this);
         if (getArguments() != null) {
             RecipientAddressModel model = getArguments().getParcelable(EXTRA_DEFAULT_SELECTED_ADDRESS);
-            if (getArguments().getBoolean(EXTRA_NAVIGATION_FROM_ADDRESS_LIST)) {
-                Intent intent = new Intent();
-                intent.putExtra(EXTRA_SELECTED_ADDRESS_DATA, model);
-
-                getActivity().setResult(RESULT_CODE_ACTION_SELECT_ADDRESS, intent);
-                getActivity().finish();
-            } else {
-                mCartAddressChoicePresenter.setSelectedRecipientAddress(model);
-            }
+            mCartAddressChoicePresenter.setSelectedRecipientAddress(model);
         }
         swipeToRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
