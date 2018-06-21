@@ -191,8 +191,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
             ((PdpRouter) context.getApplication()).addToCartProduct(
                     new AddToCartRequest.Builder()
                             .productId(Integer.parseInt(data.getProductId()))
-                            .notes("")
-                            .quantity(data.getMinOrder())
+                            .notes(data.getNotes())
+                            .quantity(data.getOrderQuantity())
                             .shopId(Integer.parseInt(data.getShopId()))
                             .build()
             ).subscribeOn(Schedulers.newThread())

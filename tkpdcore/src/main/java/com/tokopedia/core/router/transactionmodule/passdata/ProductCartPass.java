@@ -24,6 +24,7 @@ public class ProductCartPass implements Parcelable {
     private String shopType;
     private String trackerAttribution;
     private String listName;
+    private int orderQuantity;
 
     public ProductCartPass() {
     }
@@ -164,6 +165,7 @@ public class ProductCartPass implements Parcelable {
         shopType = in.readString();
         trackerAttribution = in.readString();
         listName = in.readString();
+        orderQuantity = in.readInt();
     }
 
 
@@ -189,6 +191,7 @@ public class ProductCartPass implements Parcelable {
         dest.writeString(shopType);
         dest.writeString(trackerAttribution);
         dest.writeString(listName);
+        dest.writeInt(orderQuantity);
     }
 
     @SuppressWarnings("unused")
@@ -205,6 +208,13 @@ public class ProductCartPass implements Parcelable {
                 }
             };
 
+    public int getOrderQuantity() {
+        return orderQuantity;
+    }
+
+    public void setOrderQuantity(int orderQuantity) {
+        this.orderQuantity = orderQuantity;
+    }
 
     public static class Builder {
         private String productId;
@@ -222,6 +232,7 @@ public class ProductCartPass implements Parcelable {
         private String shopType;
         private String homeAttribution;
         private String listName;
+        private int orderQuantity;
 
         private Builder() {
         }
@@ -305,7 +316,10 @@ public class ProductCartPass implements Parcelable {
             return this;
         }
 
-
+        public Builder setOrderQuantity(int orderQuantity) {
+            this.orderQuantity = orderQuantity;
+            return this;
+        }
 
         public Builder but() {
             return aProductCartPass()
@@ -323,7 +337,8 @@ public class ProductCartPass implements Parcelable {
                     .setCategoryLevelName(categoryLevelName)
                     .setShopType(shopType)
                     .setHomeAttribution(homeAttribution)
-                    .setListName(listName);
+                    .setListName(listName)
+                    .setOrderQuantity(orderQuantity);
 
         }
 
@@ -344,6 +359,7 @@ public class ProductCartPass implements Parcelable {
             productCartPass.setShopType(shopType);
             productCartPass.setTrackerAttribution(homeAttribution);
             productCartPass.setListName(listName);
+            productCartPass.setOrderQuantity(orderQuantity);
             return productCartPass;
         }
     }

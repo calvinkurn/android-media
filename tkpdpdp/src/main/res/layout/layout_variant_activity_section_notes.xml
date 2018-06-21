@@ -20,7 +20,7 @@
         android:text="@string/catatan_untuk_penjual_opsional"
         />
 
-    <android.support.v7.widget.AppCompatEditText
+    <com.tokopedia.design.component.EditTextCompat
         android:id="@+id/et_remark"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

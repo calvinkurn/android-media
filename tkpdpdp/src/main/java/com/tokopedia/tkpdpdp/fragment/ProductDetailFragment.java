@@ -146,6 +146,8 @@ import static com.tokopedia.core.var.TkpdCache.PRODUCT_DETAIL;
 import static com.tokopedia.tkpdpdp.VariantActivity.KEY_LEVEL1_SELECTED;
 import static com.tokopedia.tkpdpdp.VariantActivity.KEY_LEVEL2_SELECTED;
 import static com.tokopedia.tkpdpdp.VariantActivity.KEY_PRODUCT_DETAIL_DATA;
+import static com.tokopedia.tkpdpdp.VariantActivity.KEY_REMARK_FOR_SELLER;
+import static com.tokopedia.tkpdpdp.VariantActivity.KEY_SELECTED_QUANTIY;
 import static com.tokopedia.tkpdpdp.VariantActivity.KEY_VARIANT_DATA;
 
 /**
@@ -240,6 +242,8 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     private Option variantLevel2;
     private boolean onClickBuyWhileRequestingVariant = false;
     private UserSession userSession;
+    private int selectedQuantity;
+    private String selectedRemarkNotes;
 
     private RemoteConfig remoteConfig;
     private ShowCaseDialog showCaseDialog;
@@ -524,8 +528,10 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                         .setShopType(generateShopType(productData.getShopInfo()))
                         .setListName(productPass.getTrackerListName())
                         .setHomeAttribution(productPass.getTrackerAttribution())
+                        .setNotes(selectedRemarkNotes)
+                        .setOrderQuantity(selectedQuantity)
                         .build();
-                pass.setNotes(generateVariantString());
+
                 if (!productData.getBreadcrumb().isEmpty()) {
                     pass.setProductCategory(productData.getBreadcrumb().get(0).getDepartmentName());
                     pass.setCategoryId(productData.getBreadcrumb().get(0).getDepartmentId());
@@ -680,6 +686,8 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         bundle.putParcelable(VariantActivity.KEY_PRODUCT_DETAIL_DATA, productDetailData);
         intent.putExtras(bundle);
         intent.putExtra(VariantActivity.KEY_STATE_OPEN_VARIANT, state);
+        intent.putExtra(VariantActivity.KEY_SELECTED_QUANTIY, selectedQuantity);
+        intent.putExtra(VariantActivity.KEY_REMARK_FOR_SELLER, selectedRemarkNotes);
         intent.putExtra(KEY_LEVEL1_SELECTED, variantLevel1);
         intent.putExtra(KEY_LEVEL2_SELECTED, variantLevel2);
         if (productData.getShopInfo().getShopIsOwner() == 1
@@ -773,6 +781,11 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         this.presenter.startIndexingApp(appIndexHandler, successResult);
         this.refreshMenu();
         this.updateWishListStatus(productData.getInfo().getProductAlreadyWishlist());
+        try {
+            this.selectedQuantity = Integer.parseInt(this.productData.getInfo().getProductMinOrder());
+        } catch (NumberFormatException e) {
+            this.selectedQuantity = 1;
+        }
     }
 
     @Override
@@ -1194,13 +1207,13 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                                 productData.getInfo().getProductId()).isIsBuyable(), productData);
                         updateWishListStatus(productData.getInfo().getProductAlreadyWishlist());
                         productPass.setProductId(Integer.toString(productData.getInfo().getProductId()));
+                        selectedQuantity = data.getIntExtra(KEY_SELECTED_QUANTIY, 1);
+                        selectedRemarkNotes = data.getStringExtra(KEY_REMARK_FOR_SELLER);
                     }
                     if (resultCode == VariantActivity.SELECTED_VARIANT_RESULT_TO_BUY) {
-//                        onBuyClick(SOURCE_BUTTON_BUY_VARIANT);
-                        throw new RuntimeException("need to define");
+                        onBuyClick(SOURCE_BUTTON_BUY_VARIANT);
                     } else if (resultCode == VariantActivity.KILL_PDP_BACKGROUND) {
-//                        getActivity().finish();
-                        throw new RuntimeException("need to define");
+                        getActivity().finish();
                     }
                 }
             default:

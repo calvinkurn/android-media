@@ -24,13 +24,14 @@ import com.tokopedia.core.network.entity.variant.Option;
 import com.tokopedia.core.network.entity.variant.ProductVariant;
 import com.tokopedia.core.network.entity.variant.Variant;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
+import com.tokopedia.design.component.EditTextCompat;
+import com.tokopedia.design.component.NumberPickerWithCounterView;
 import com.tokopedia.tkpdpdp.adapter.VariantOptionAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static android.view.View.VISIBLE;
-import static com.tokopedia.core.router.productdetail.ProductDetailRouter.EXTRA_PRODUCT_ID;
 import static com.tokopedia.core.var.TkpdCache.Key.STATE_ORIENTATION_CHANGED;
 import static com.tokopedia.core.var.TkpdCache.PRODUCT_DETAIL;
 
@@ -40,6 +41,8 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
     public static final String KEY_VARIANT_DATA = "VARIANT_DATA";
     public static final String KEY_PRODUCT_DETAIL_DATA = "PRODUCT_DETAIL_DATA";
     public static final String KEY_STATE_OPEN_VARIANT = "KEY_STATE_OPEN_VARIANT";
+    public static final String KEY_SELECTED_QUANTIY = "KEY_QUANTITY";
+    public static final String KEY_REMARK_FOR_SELLER = "KEY_REMARK_FOR_SELLER";
     public static final String KEY_SELLER_MODE = "ON_SELLER_MODE";
     public static final String KEY_LEVEL1_SELECTED= "LEVEL1_OPTION";
     public static final String KEY_LEVEL2_SELECTED= "LEVEL2_OPTION";
@@ -80,11 +83,17 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
     private View buttonBuy;
     private TextView textButtonBuy;
     private ImageView iconCartButtonBuy;
+    private NumberPickerWithCounterView widgetQty;
+    private EditTextCompat etNotesSeller;
+    private View viewContainerQty;
+    private View viewContainerRemark;
 
     private VariantOptionAdapter variantOptionAdapterLevel2;
     private VariantOptionAdapter variantOptionAdapterLevel1;
 
     private int stateFormVariantPage;
+    private int selectedQuantity;
+    private String selectedRemarkNotes;
     private ProductVariant productVariant;
     private ProductDetailData productDetailData;
     private String mainImage = "";
@@ -101,6 +110,8 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
         productVariant = getIntent().getParcelableExtra(KEY_VARIANT_DATA);
         productDetailData = getIntent().getParcelableExtra(KEY_PRODUCT_DETAIL_DATA);
         stateFormVariantPage = getIntent().getIntExtra(KEY_STATE_OPEN_VARIANT, STATE_VARIANT_DEFAULT);
+        selectedQuantity = getIntent().getIntExtra(KEY_SELECTED_QUANTIY, 1);
+        selectedRemarkNotes = getIntent().getStringExtra(KEY_REMARK_FOR_SELLER);
         localCacheHandler = new LocalCacheHandler(VariantActivity.this, PRODUCT_DETAIL);
         setContentView(R.layout.activity_variant);
         hideToolbar();
@@ -138,6 +149,10 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
         buttonBuy = findViewById(R.id.new_button_save);
         textButtonBuy = findViewById(R.id.new_text_button_save);
         iconCartButtonBuy = findViewById(R.id.icon_cart);
+        widgetQty = findViewById(R.id.number_picker_quantitiy_product);
+        etNotesSeller = findViewById(R.id.et_remark);
+        viewContainerQty = findViewById(R.id.view_qty_product);
+        viewContainerRemark = findViewById(R.id.view_remark_for_seller);
         ImageHandler.LoadImage(productImage, productDetailData.getProductImages().get(0).getImageSrc300());
         if (!TextUtils.isEmpty(productVariant.getSizechart()) &&
                 productVariant.getVariant().get(0).getIdentifier().equals(IDENTIFIER_SIZE)) {
@@ -182,6 +197,13 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
     private void renderHeaderInfo() {
         productName.setText(productDetailData.getInfo().getProductName());
         productPrice.setText(productDetailData.getInfo().getProductPrice());
+        widgetQty.setNumber(selectedQuantity);
+        etNotesSeller.setText(selectedRemarkNotes);
+        try {
+            widgetQty.setMinValue(Integer.parseInt(productDetailData.getInfo().getProductMinOrder()));
+        } catch (NumberFormatException e) {
+            widgetQty.setMinValue(1);
+        }
         if(productDetailData.getCampaign() != null
                 && productDetailData.getCampaign().getActive()) {
             textOriginalPrice.setText(productDetailData.getCampaign().getOriginalPriceFmt());
@@ -217,6 +239,9 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
     private void initViewListener() {
         if (getIntent().getBooleanExtra(KEY_SELLER_MODE,false)) {
             buttonSave.setVisibility(View.GONE);
+            viewNewCheckoutFlow.setVisibility(View.GONE);
+            viewContainerRemark.setVisibility(View.GONE);
+            viewContainerQty.setVisibility(View.GONE);
         }
         findViewById(R.id.simple_top_bar_close_button)
                 .setOnClickListener(new View.OnClickListener() {
@@ -293,6 +318,13 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
                     VariantActivity.this.overridePendingTransition(0,com.tokopedia.core.R.anim.push_down);
                 }
             });
+            buttonCart.setVisibility(stateFormVariantPage == STATE_VARIANT_DEFAULT ? VISIBLE : View.GONE);
+            viewCartPrice.setVisibility(stateFormVariantPage == STATE_VARIANT_DEFAULT ? View.GONE : VISIBLE);
+            buttonCart.setOnClickListener(view -> {
+                setResult(VariantActivity.SELECTED_VARIANT_RESULT, generateExtraSelectedIntent());
+                finish();
+                VariantActivity.this.overridePendingTransition(0,com.tokopedia.core.R.anim.push_down);
+            });
         } else if (child.isIsBuyable()==false) {
             viewNewCheckoutFlow.setVisibility(View.GONE);
             buttonSave.setVisibility(View.VISIBLE);
@@ -320,10 +352,14 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
 
     private Intent generateExtraSelectedIntent() {
         Intent intent = new Intent();
-        intent.putExtra(KEY_PRODUCT_DETAIL_DATA,productDetailData);
-        intent.putExtra(KEY_VARIANT_DATA,productVariant);
-        intent.putExtra(KEY_LEVEL1_SELECTED,variantOptionAdapterLevel1.getSelectedOption());
-        if (productVariant.getVariant().size()>1)intent.putExtra(KEY_LEVEL2_SELECTED,variantOptionAdapterLevel2.getSelectedOption());
+        intent.putExtra(KEY_PRODUCT_DETAIL_DATA, productDetailData);
+        intent.putExtra(KEY_VARIANT_DATA, productVariant);
+        intent.putExtra(KEY_SELECTED_QUANTIY, widgetQty.getValue());
+        intent.putExtra(KEY_REMARK_FOR_SELLER, String.valueOf(etNotesSeller.getText()));
+        intent.putExtra(KEY_LEVEL1_SELECTED, variantOptionAdapterLevel1.getSelectedOption());
+        if (productVariant.getVariant().size() > 1) {
+            intent.putExtra(KEY_LEVEL2_SELECTED, variantOptionAdapterLevel2.getSelectedOption());
+        }
         return intent;
     }
 
