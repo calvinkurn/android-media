@@ -226,7 +226,10 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
                 List<Data> topadsData = convertToTopadsDomain(datum.getContent().getTopads());
 
                 ProductCommunicationViewModel productCommunicationViewModel
-                        = convertToProductCommunicationViewModel(datum.getContent().getBanner());
+                        = convertToProductCommunicationViewModel(
+                        datum.getId(),
+                        datum.getContent().getBanner()
+                );
 
                 PollViewModel pollViewModel
                         = convertToPollViewModel(
@@ -405,6 +408,7 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
     }
 
     private ProductCommunicationViewModel convertToProductCommunicationViewModel(
+            String activityId,
             List<FeedBanner> bannerList) {
         if (bannerList == null || bannerList.isEmpty()) {
             return null;
@@ -422,6 +426,7 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
 
             productCommunicationItems.add(
                     new ProductCommunicationItemViewModel(
+                            Integer.valueOf(activityId),
                             banner.getImgUrl() == null ? "" : banner.getImgUrl(),
                             redirectUrl
                     )

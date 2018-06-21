@@ -474,14 +474,13 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                                                 .size()
                                 );
 
-                                //TODO milhamj activity id ???
                                 list.add(new FeedEnhancedTracking.Promotion(
-                                        0,
+                                        item.getActivityId(),
                                         FeedEnhancedTracking.Promotion.createContentNameBanner(),
                                         item.getImageUrl(),
                                         currentPosition,
                                         String.valueOf(totalBanner),
-                                        0,
+                                        item.getActivityId(),
                                         item.getRedirectUrl()
                                 ));
                             }
