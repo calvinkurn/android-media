@@ -28,7 +28,6 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.picker.instagram.di.InstagramModule;
 import com.tokopedia.imagepicker.picker.instagram.util.InstagramConstant;
-import com.tokopedia.imagepicker.picker.instagram.view.dialog.InstagramLoginDialog;
 import com.tokopedia.imagepicker.picker.instagram.view.presenter.InstagramLoginPresenter;
 import com.tokopedia.imagepicker.picker.instagram.di.DaggerInstagramComponent;
 
