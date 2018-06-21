@@ -87,6 +87,7 @@ public class MultipleAddressFormActivity extends BaseCheckoutActivity {
                 setResult(RESULT_CODE_FORCE_RESET_CART_ADDRESS_FORM);
                 fragment.deleteChanges();
                 finish();
+                dialog.dismiss();
             }
         });
         dialog.setOnOkClickListener(new View.OnClickListener() {

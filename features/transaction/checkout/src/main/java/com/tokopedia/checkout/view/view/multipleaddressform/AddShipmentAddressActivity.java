@@ -64,9 +64,9 @@ public class AddShipmentAddressActivity extends BaseCheckoutActivity {
         super.setupLayout(savedInstanceState);
         if (getSupportActionBar() != null) {
             if (formMode == ADD_MODE) {
-                getSupportActionBar().setTitle(getString(R.string.checkout_module_title_shipping_dest_add_new));
+                getSupportActionBar().setTitle(getString(R.string.checkout_module_title_shipping_dest_multiple_address));
             } else if (formMode == EDIT_MODE) {
-                getSupportActionBar().setTitle(getString(R.string.checkout_module_title_shipping_dest));
+                getSupportActionBar().setTitle(getString(R.string.checkout_module_title_change_address));
             }
         }
     }
@@ -106,7 +106,9 @@ public class AddShipmentAddressActivity extends BaseCheckoutActivity {
 
     @Override
     public void onBackPressed() {
-        fragment.onCloseButtonPressed();
+        if (fragment != null) {
+            fragment.onCloseButtonPressed();
+        }
         Intent intent = new Intent();
         intent.putExtra(PRODUCT_DATA_LIST_EXTRAS, dataList);
         intent.putExtra(ITEM_ADAPTER_POSITION_EXTRA, itemPosition);
