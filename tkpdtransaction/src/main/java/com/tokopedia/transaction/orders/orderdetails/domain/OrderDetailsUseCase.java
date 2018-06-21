@@ -34,7 +34,7 @@ public class OrderDetailsUseCase extends UseCase<DetailsData> {
 
     public RequestParams getUserAttrParam(String orderCategory, String orderId, int orderDetail, int orderAction){
         RequestParams params = RequestParams.create();
-        params.putObject(ORDER_CATEGORY, orderCategory);
+        params.putString(ORDER_CATEGORY, orderCategory);
         params.putString(ORDER_ID, orderId);
         params.putInt(ORDER_DETAIL, orderDetail);
         params.putInt(ORDER_ACTION, orderAction);

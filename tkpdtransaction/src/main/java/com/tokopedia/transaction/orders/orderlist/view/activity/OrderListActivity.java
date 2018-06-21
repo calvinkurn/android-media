@@ -13,6 +13,7 @@ import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.applink.TransactionAppLink;
+import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
 import com.tokopedia.transaction.orders.orderlist.view.fragment.OrderListFragment;
 
 import static com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter.EXTRA_OMS_ORDER_CATEGORY;
@@ -41,7 +42,11 @@ public class OrderListActivity extends DrawerPresenterActivity {
     protected void setupBundlePass(Bundle extras) {
         drawerPosition = extras.getInt(EXTRA_STATE_TAB_POSITION,
                 TransactionPurchaseRouter.TAB_POSITION_PURCHASE_SUMMARY);
-        orderCategory = extras.getString(EXTRA_OMS_ORDER_CATEGORY, "DIGITAL");
+        if (extras.getString(EXTRA_OMS_ORDER_CATEGORY).equals(OrderCategory.DEALS)) {
+            orderCategory = OrderCategory.DEALS;
+        } else {
+            orderCategory = OrderCategory.DIGITAL;
+        }
     }
 
     @Override
@@ -58,7 +63,7 @@ public class OrderListActivity extends DrawerPresenterActivity {
     protected void onResume() {
         super.onResume();
         if(drawerHelper != null) {
-            if (orderCategory.equals("DIGITAL")) {
+            if (orderCategory.equals(OrderCategory.DIGITAL)) {
                 drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.PEOPLE_DIGITAL_TRANSACTION_LIST);
             } else {
                 drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.PEOPLE_OMS_TRANSACTION_LIST);
@@ -80,10 +85,10 @@ public class OrderListActivity extends DrawerPresenterActivity {
             fragment = getFragmentManager().findFragmentByTag(OrderListFragment.class.getSimpleName());
         }
         Bundle arg = new Bundle();
-        if (orderCategory.equals("DIGITAL")) {
-            arg.putInt(ORDER_CATEGORY, 2);
-        } else if (orderCategory.equals("DEALS")){
-            arg.putInt(ORDER_CATEGORY, 5);
+        if (orderCategory.equals(OrderCategory.DIGITAL)) {
+            arg.putString(ORDER_CATEGORY, OrderCategory.DIGITAL);
+        } else if (orderCategory.equals(OrderCategory.DEALS)){
+            arg.putString(ORDER_CATEGORY, OrderCategory.DEALS);
         }
         fragment.setArguments(arg);
         getFragmentManager()

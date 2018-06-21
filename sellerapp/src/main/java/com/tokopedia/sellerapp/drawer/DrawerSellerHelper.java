@@ -51,6 +51,7 @@ import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
 import com.tokopedia.shop.info.view.activity.ShopInfoActivity;
 import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
+import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
 
 import java.util.ArrayList;
 
@@ -444,7 +445,7 @@ public class DrawerSellerHelper extends DrawerHelper
                     UnifyTracking.eventClickPaymentAndTopupOnDrawer();
                     break;
                 case TkpdState.DrawerPosition.MANAGE_TRANSACTION_DIGITAL:
-                    context.startActivity(TransactionPurchaseRouter.createIntentOrderListSummary(context, "DIGITAL"));
+                    context.startActivity(TransactionPurchaseRouter.createIntentOrderListSummary(context, OrderCategory.DIGITAL));
                     UnifyTracking.eventClickDigitalTransactionListOnDrawer();
                     break;
                 case TkpdState.DrawerPosition.DRAFT_PRODUCT:

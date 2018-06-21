@@ -1,5 +1,5 @@
-query OMSDETAILS($orderCategory: String, $orderId: String, $detail: Int,$action:Int) {
-  orderDetails(orderCategory: $orderCategory, orderId: $orderId,details:$detail,actions:$action) {
+query OMSDETAILS($orderCategory: OrderCategory, $orderId: String, $detail: Int, $action: Int) {
+  orderDetails(orderCategory: $orderCategory, orderId: $orderId, details: $detail, actions: $action) {
     status {
       status
       statusText
@@ -20,12 +20,64 @@ query OMSDETAILS($orderCategory: String, $orderId: String, $detail: Int,$action:
       invoiceRefNum
       invoiceUrl
     }
+    items {
+      imageUrl
+      title
+      quantity
+      price
+      promotionAmount
+      metaData
+      actionButtons {
+        label
+        buttonType
+        uri
+        mappingUri
+        weight
+        key
+        method
+        uriWeb
+        Value
+        Name
+        Control
+        Header
+        Body {
+          AppURL
+          WebURL
+          Method
+          Body
+        }
+      }
+      tapActions {
+        label
+        buttonType
+        uri
+        mappingUri
+        weight
+        key
+        method
+        uriWeb
+        Value
+        Name
+        Control
+        Header
+        Body {
+          AppURL
+          WebURL
+          Method
+          Body
+        }
+      }
+    }
     pricing {
       label
       value
       textColor
       backgroundColor
       imageUrl
+    }
+    detail {
+      label
+      value
     }
     paymentData {
       label
@@ -36,6 +88,8 @@ query OMSDETAILS($orderCategory: String, $orderId: String, $detail: Int,$action:
     }
     actionButtons {
       label
+      key
+      Value
       weight
       Control
       Header
@@ -45,18 +99,6 @@ query OMSDETAILS($orderCategory: String, $orderId: String, $detail: Int,$action:
         Method
         Body
       }
-    }
-    tapActions {
-      label
-      weight
-      Control
-      Header
-         Body {
-           AppURL
-           WebURL
-           Method
-          Body
-         }
     }
     conditionalInfo {
       text
@@ -68,6 +110,23 @@ query OMSDETAILS($orderCategory: String, $orderId: String, $detail: Int,$action:
     paymentMethod {
       label
       value
+    }
+    beforeOrderId
+    resolutionId
+    driverDetails {
+      name
+      phone
+      photo
+      licenseNumber
+      trackingURL
+    }
+    promoCode
+    additionalInfo {
+      label
+      value
+      label
+      textColor
+      backgroundColor
     }
   }
 }
