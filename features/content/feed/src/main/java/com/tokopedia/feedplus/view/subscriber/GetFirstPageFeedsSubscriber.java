@@ -37,7 +37,9 @@ import com.tokopedia.feedplus.view.viewmodel.inspiration.InspirationViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.ContentProductViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendItemViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
+import com.tokopedia.feedplus.view.viewmodel.kol.PollOptionViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollViewModel;
+import com.tokopedia.feedplus.view.viewmodel.kol.ProductCommunicationItemViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreBrandsViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreCampaignProductViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreCampaignViewModel;
@@ -400,7 +402,8 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                                             kolViewModel.getTagsLink()
                             ));
                             TrackingUtils.eventTrackingEnhancedEcommerce(
-                                    FeedEnhancedTracking.getImpressionTracking(list, loginIdInt));
+                                    FeedEnhancedTracking.getImpressionTracking(list, loginIdInt)
+                            );
                         }
                         break;
                     case TYPE_KOL_RECOMMENDATION:
@@ -432,9 +435,9 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                                                 recItem.getUrl()
                                 ));
                             }
-                            TrackingUtils.eventTrackingEnhancedEcommerce(FeedEnhancedTracking
-                                    .getImpressionTracking(list,
-                                            loginIdInt));
+                            TrackingUtils.eventTrackingEnhancedEcommerce(
+                                    FeedEnhancedTracking.getImpressionTracking(list, loginIdInt)
+                            );
                         }
                         break;
                     case TYPE_FAVORITE_CTA:
@@ -458,6 +461,33 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                         if (domain.getContent() != null
                                 && domain.getContent().getProductCommunications() != null) {
                             listFeedView.add(domain.getContent().getProductCommunications());
+
+                            List<FeedEnhancedTracking.Promotion> list = new ArrayList<>();
+                            for (ProductCommunicationItemViewModel item :
+                                    domain.getContent()
+                                            .getProductCommunications()
+                                            .getItemViewModels()) {
+
+                                String totalBanner = String.valueOf(
+                                        domain.getContent().getProductCommunications()
+                                                .getItemViewModels()
+                                                .size()
+                                );
+
+                                //TODO milhamj activity id ???
+                                list.add(new FeedEnhancedTracking.Promotion(
+                                        0,
+                                        FeedEnhancedTracking.Promotion.createContentNameBanner(),
+                                        item.getImageUrl(),
+                                        currentPosition,
+                                        String.valueOf(totalBanner),
+                                        0,
+                                        item.getRedirectUrl()
+                                ));
+                            }
+                            TrackingUtils.eventTrackingEnhancedEcommerce(
+                                    FeedEnhancedTracking.getImpressionTracking(list, loginIdInt)
+                            );
                         }
                         break;
                     case TYPE_POLLING:
@@ -466,6 +496,22 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                             PollViewModel pollViewModel = domain.getContent().getPollViewModel();
                             pollViewModel.setPage(page);
                             listFeedView.add(pollViewModel);
+
+                            List<FeedEnhancedTracking.Promotion> list = new ArrayList<>();
+                            for (PollOptionViewModel option : pollViewModel.getOptionViewModels()) {
+                                list.add(new FeedEnhancedTracking.Promotion(
+                                        Integer.valueOf(option.getOptionId()),
+                                        FeedEnhancedTracking.Promotion.createContentNameVote(),
+                                        option.getOption(),
+                                        currentPosition,
+                                        pollViewModel.getReview(),
+                                        Integer.valueOf(pollViewModel.getPollId()),
+                                        pollViewModel.getKolProfileUrl()
+                                ));
+                            }
+                            TrackingUtils.eventTrackingEnhancedEcommerce(
+                                    FeedEnhancedTracking.getImpressionTracking(list, loginIdInt)
+                            );
                         }
                         break;
                     default:

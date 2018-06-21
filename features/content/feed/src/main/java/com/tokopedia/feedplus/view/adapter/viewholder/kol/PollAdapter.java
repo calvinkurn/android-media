@@ -62,6 +62,7 @@ public class PollAdapter extends RecyclerView.Adapter<PollAdapter.ViewHolder> {
             holder.progressBar.setProgressDrawable(
                     MethodChecker.getDrawable(context, R.drawable.poll_option_image_default)
             );
+            //TODO milhamj
 //            holder.icon.setVisibility(View.GONE);
         } else {
             holder.shadowLayer.setVisibility(View.VISIBLE);
