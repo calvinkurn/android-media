@@ -1,6 +1,7 @@
 package com.tokopedia.settingbank.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.settingbank.domain.usecase.DeleteBankAccountUseCase
 import com.tokopedia.settingbank.domain.usecase.GetBankListUseCase
 import com.tokopedia.settingbank.domain.usecase.SetDefaultBankAccountUseCase
@@ -35,7 +36,7 @@ class SettingBankPresenter(private val userSession: UserSession,
 
             override fun onError(e: Throwable) {
                 view.hideLoadingFull()
-                view.onErrorGetListBankFirstTime(e.toString())
+                view.onErrorGetListBankFirstTime(ErrorHandler.getErrorMessage(view.getContext(), e))
             }
 
             override fun onNext(bankAccountList: BankAccountListViewModel) {
@@ -63,7 +64,7 @@ class SettingBankPresenter(private val userSession: UserSession,
 
             override fun onError(e: Throwable) {
                 view.hideLoadingList()
-                view.onErrorGetListBank(e.toString())
+                view.onErrorGetListBank(ErrorHandler.getErrorMessage(view.getContext(), e))
             }
 
             override fun onNext(bankAccountList: BankAccountListViewModel) {
@@ -90,7 +91,7 @@ class SettingBankPresenter(private val userSession: UserSession,
 
                 override fun onError(e: Throwable) {
                     view.hideLoadingDialog()
-                    view.onErrorSetDefaultBank(e.toString())
+                    view.onErrorSetDefaultBank(ErrorHandler.getErrorMessage(view.getContext(), e))
                 }
 
                 override fun onNext(statusMessage: String) {
@@ -115,7 +116,7 @@ class SettingBankPresenter(private val userSession: UserSession,
 
                 override fun onError(e: Throwable) {
                     view.hideLoadingDialog()
-                    view.onErrorDeleteAccount(e.toString())
+                    view.onErrorDeleteAccount(ErrorHandler.getErrorMessage(view.getContext(), e))
                 }
 
                 override fun onNext(statusMessage: String) {

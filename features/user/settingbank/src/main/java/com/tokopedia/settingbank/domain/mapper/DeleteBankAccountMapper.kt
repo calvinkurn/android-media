@@ -1,5 +1,7 @@
 package com.tokopedia.settingbank.domain.mapper
 
+import com.tkpd.library.utils.network.MessageErrorException
+import com.tokopedia.abstraction.common.data.model.response.ResponseV4ErrorException
 import com.tokopedia.settingbank.domain.pojo.DeleteBankAccountPojo
 import retrofit2.Response
 import rx.functions.Func1
@@ -23,10 +25,9 @@ class DeleteBankAccountMapper : Func1<Response<DeleteBankAccountPojo>, String> {
                 return pojo.message_status[0]
 
             } else if (pojo.message_error?.isNotEmpty()!!) {
-                messageError = response.body().message_error!![0]
-                throw RuntimeException(messageError)
+                throw ResponseV4ErrorException(response.body().message_error)
             } else {
-                throw RuntimeException("")
+                throw MessageErrorException("")
             }
 
         } else {

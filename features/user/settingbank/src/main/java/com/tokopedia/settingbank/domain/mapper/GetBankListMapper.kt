@@ -1,5 +1,8 @@
 package com.tokopedia.settingbank.domain.mapper
 
+import com.tkpd.library.utils.network.MessageErrorException
+import com.tokopedia.abstraction.common.data.model.response.ResponseV4ErrorException
+import com.tokopedia.core.network.ErrorMessageException
 import com.tokopedia.settingbank.domain.pojo.BankAccount
 import com.tokopedia.settingbank.domain.pojo.BankAccountListPojo
 import com.tokopedia.settingbank.domain.pojo.GetListBankAccountData
@@ -28,10 +31,9 @@ class GetBankListMapper : Func1<Response<BankAccountListPojo>,
                 return mapToViewModel(pojo)
 
             } else if (pojo.message_error?.isNotEmpty()!!) {
-                messageError = response.body().message_error!![0]
-                throw RuntimeException(messageError)
+                throw ResponseV4ErrorException(response.body().message_error)
             } else {
-                throw RuntimeException("")
+                throw MessageErrorException("")
             }
 
         } else {
