@@ -23,6 +23,12 @@ import com.tokopedia.seller.product.picker.domain.GetProductListSellingRepositor
 import com.tokopedia.seller.product.picker.domain.interactor.GetProductListSellingUseCase;
 import com.tokopedia.seller.product.variant.data.cloud.api.TomeProductApi;
 import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
+import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant;
+import com.tokopedia.topads.sourcetagging.data.repository.TopAdsSourceTaggingRepositoryImpl;
+import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingDataSource;
+import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingLocal;
+import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
+import com.tokopedia.topads.sourcetagging.domain.repository.TopAdsSourceTaggingRepository;
 
 import dagger.Module;
 import dagger.Provides;
@@ -43,8 +49,11 @@ public class ProductManageModule {
                                                                 DeleteProductUseCase deleteProductUseCase,
                                                                 GetProductListManageMapperView getProductListManageMapperView,
                                                                 SellerModuleRouter sellerModuleRouter,
-                                                                MultipleDeleteProductUseCase multipleDeleteProductUseCase){
-        return new ProductManagePresenterImpl(getShopInfoUseCase, getProductListSellingUseCase, editPriceProductUseCase, deleteProductUseCase, getProductListManageMapperView,sellerModuleRouter, multipleDeleteProductUseCase);
+                                                                MultipleDeleteProductUseCase multipleDeleteProductUseCase,
+                                                                TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase){
+        return new ProductManagePresenterImpl(getShopInfoUseCase, getProductListSellingUseCase, editPriceProductUseCase,
+                deleteProductUseCase, getProductListManageMapperView,sellerModuleRouter, multipleDeleteProductUseCase,
+                topAdsAddSourceTaggingUseCase);
     }
 
     @Provides
@@ -58,6 +67,7 @@ public class ProductManageModule {
     public GetProductListSellerApi provideGetProductListSellerApi(@WsV4QualifierWithErrorHander Retrofit retrofit){
         return retrofit.create(GetProductListSellerApi.class);
     }
+
 
     @Provides
     @ProductManageScope
@@ -86,4 +96,24 @@ public class ProductManageModule {
             return null;
         }
     }
+
+    @Provides
+    @ProductManageScope
+    public TopAdsSourceTaggingLocal provideTopAdsSourceTracking(@ApplicationContext Context context){
+        return new TopAdsSourceTaggingLocal(context);
+    }
+
+    @Provides
+    @ProductManageScope
+    public TopAdsSourceTaggingDataSource provideTopAdsSourceTaggingDataSource(TopAdsSourceTaggingLocal topAdsSourceTaggingLocal){
+        return new TopAdsSourceTaggingDataSource(topAdsSourceTaggingLocal);
+    }
+
+    @Provides
+    @ProductManageScope
+    public TopAdsSourceTaggingRepository provideTopAdsSourceTaggingRepository(TopAdsSourceTaggingDataSource dataSource){
+        return new TopAdsSourceTaggingRepositoryImpl(dataSource);
+    }
+
+
 }

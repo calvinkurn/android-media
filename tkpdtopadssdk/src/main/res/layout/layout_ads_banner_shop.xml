@@ -17,16 +17,15 @@
         android:paddingLeft="@dimen/dp_5">
 
         <android.support.v7.widget.CardView
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_48"
             app:cardUseCompatPadding="true">
 
-            <com.tokopedia.topads.sdk.view.SquareImageView
+            <ImageView
                 android:id="@+id/icon"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:adjustViewBounds="true"
-                android:gravity="center" />
+                android:adjustViewBounds="true" />
 
         </android.support.v7.widget.CardView>
 

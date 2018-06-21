@@ -31,6 +31,7 @@ public class FlightSearchSingleRouteDB extends BaseModel {
     public static final String DEPARTURE_TIME_INT = "departure_time_int";
     public static final String DURATION_MINUTE = "duration_minute";
     public static final String TOTAL_TRANSIT = "total_transit";
+    public static final String BEFORE_TOTAL = "before_total";
     @PrimaryKey
     @Column(name = ID)
     String id;
@@ -80,7 +81,7 @@ public class FlightSearchSingleRouteDB extends BaseModel {
     @Column(name = TOTAL_NUMERIC)
     int totalNumeric;
 
-    @Column(name = "before_total")
+    @Column(name = BEFORE_TOTAL)
     String beforeTotal;
 
     @Column(name = "routes")

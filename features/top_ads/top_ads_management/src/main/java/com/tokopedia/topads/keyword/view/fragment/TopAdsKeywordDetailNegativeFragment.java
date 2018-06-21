@@ -10,6 +10,7 @@ import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordEditDetailNegativeActivity;
 import com.tokopedia.topads.keyword.view.model.KeywordAd;
 import com.tokopedia.topads.dashboard.view.model.Ad;
+import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
 
 /**
  * Created by zulfikarrahman on 5/30/17.

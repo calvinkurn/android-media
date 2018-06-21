@@ -204,6 +204,11 @@ public class FragmentFavorite extends BaseDaggerFragment
     }
 
     @Override
+    public void stopLoadingFavoriteShop() {
+        favoriteAdapter.hideLoading();
+    }
+
+    @Override
     protected void initInjector() {
         DaggerFavoriteComponent daggerFavoriteComponent
                 = (DaggerFavoriteComponent) DaggerFavoriteComponent.builder()

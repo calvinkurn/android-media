@@ -289,9 +289,11 @@ public class SearchProductResponse {
             @SerializedName("department_id")
             private String departmentId;
             @SerializedName("rating")
-            private String rating;
+            private int rating;
             @SerializedName("count_review")
-            private String countReview;
+            private int countReview;
+            @SerializedName("courier_count")
+            private int countCourier;
             @SerializedName("original_price")
             private String originalPrice;
             @SerializedName("discount_percentage")
@@ -377,20 +379,29 @@ public class SearchProductResponse {
                 this.departmentId = departmentId;
             }
 
-            public String getRating() {
+
+            public int getRating() {
                 return rating;
             }
 
-            public void setRating(String rating) {
+            public void setRating(int rating) {
                 this.rating = rating;
             }
 
-            public String getCountReview() {
+            public int getCountReview() {
                 return countReview;
             }
 
-            public void setCountReview(String countReview) {
+            public void setCountReview(int countReview) {
                 this.countReview = countReview;
+            }
+
+            public int getCountCourier() {
+                return countCourier;
+            }
+
+            public void setCountCourier(int countCourier) {
+                this.countCourier = countCourier;
             }
 
             public String getOriginalPrice() {
@@ -450,6 +461,8 @@ public class SearchProductResponse {
                 private String url;
                 @SerializedName("is_gold")
                 private boolean isGold;
+                @SerializedName("is_official")
+                private boolean isOfficial;
                 @SerializedName("location")
                 private String location;
                 @SerializedName("city")
@@ -521,6 +534,14 @@ public class SearchProductResponse {
 
                 public void setClover(String clover) {
                     this.clover = clover;
+                }
+
+                public boolean isOfficial() {
+                    return isOfficial;
+                }
+
+                public void setOfficial(boolean official) {
+                    isOfficial = official;
                 }
             }
 

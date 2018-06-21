@@ -4,14 +4,12 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Token;
+import com.tokopedia.district_recommendation.domain.model.Token;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.seller.shopsettings.shipping.interactor.EditShippingInteractorImpl;
 import com.tokopedia.seller.shopsettings.shipping.model.openshopshipping.OpenShopData;
-
-import javax.inject.Inject;
 
 import retrofit2.Response;
 import rx.Observable;

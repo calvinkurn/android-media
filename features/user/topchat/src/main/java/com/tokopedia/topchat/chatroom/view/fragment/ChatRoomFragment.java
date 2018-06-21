@@ -36,6 +36,7 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.contact_us.createticket.ContactUsConstant;
 import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
@@ -53,9 +54,9 @@ import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.design.bottomsheet.BottomSheetBuilder;
-import com.tokopedia.design.bottomsheet.adapter.BottomSheetItemClickListener;
-import com.tokopedia.design.bottomsheet.custom.CheckedBottomSheetBuilder;
+import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder;
+import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
+import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder;
 import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.attachinvoice.view.activity.AttachInvoiceActivity;
 import com.tokopedia.topchat.attachinvoice.view.resultmodel.SelectedInvoice;
@@ -562,7 +563,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, true);
         layoutManager.setReverseLayout(true);
-        layoutManager.setStackFromEnd(true);
+        layoutManager.setStackFromEnd(false);
         LinearLayoutManager templateLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager
                 .HORIZONTAL, false);
 
@@ -1450,7 +1451,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         replyColumn.setText("");
         showError(getActivity().getString(R.string.delete_error).concat("\n").concat(getString(R
                 .string.string_general_error)));
-        if (quickReplyAdapter.getItemCount() != 0) {
+        if (quickReplyAdapter!=null && quickReplyAdapter.getItemCount() != 0) {
             rvQuickReply.setVisibility(View.VISIBLE);
             templateRecyclerView.setVisibility(View.GONE);
         }

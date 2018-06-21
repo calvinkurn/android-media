@@ -93,8 +93,6 @@ public class ShopProductSortFragment extends BaseListFragment<ShopProductSortMod
                     list.get(i).setSelected(true);
                 }
             }
-        } else {
-            list.get(0).setSelected(true);
         }
         super.renderList(list, hasNextPage);
     }

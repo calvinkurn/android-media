@@ -44,6 +44,8 @@ public interface ManagePeopleAddressFragmentPresenter {
 
     void setOnSuccessInitAddressList(GetPeopleAddress data);
 
+    void setOnEmptyAddressList(GetPeopleAddress data);
+
     void setActionDefaultButtonClicked(AddressModel data);
 
     void setOnStartActionSetDefaultAddress(String addressID);

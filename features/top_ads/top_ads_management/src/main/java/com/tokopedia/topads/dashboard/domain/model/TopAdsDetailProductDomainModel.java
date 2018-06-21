@@ -26,6 +26,7 @@ public class TopAdsDetailProductDomainModel {
     private long suggestionBidValue;
     private String suggestionBidButton;
     private boolean isEnoughDeposit;
+    private String source;
 
     public boolean isEnoughDeposit() {
         return isEnoughDeposit;
@@ -185,5 +186,13 @@ public class TopAdsDetailProductDomainModel {
 
     public void setSuggestionBidButton(String suggestionBidButton) {
         this.suggestionBidButton = suggestionBidButton;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
     }
 }

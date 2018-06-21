@@ -1,15 +1,13 @@
 package com.tokopedia.flight.detail.view.adapter;
 
 import android.support.annotation.LayoutRes;
-import android.support.graphics.drawable.VectorDrawableCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatImageView;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
@@ -18,8 +16,6 @@ import com.tokopedia.flight.R;
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteInfoViewModel;
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel;
 import com.tokopedia.flight.search.data.cloud.model.response.Amenity;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,7 +65,8 @@ public class FlightDetailFacilityViewHolder extends AbstractViewHolder<FlightDet
         airlineName.setText(route.getAirlineName());
         airlineCode.setText(String.format("%s - %s", route.getAirlineCode(), route.getFlightNumber()));
         ImageHandler.loadImageWithoutPlaceholder(imageAirline, route.getAirlineLogo(),
-                VectorDrawableCompat.create(itemView.getResources(), R.drawable.ic_airline_default, itemView.getContext().getTheme()));
+                ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_airline_default)
+        );
         setRefundableInfo(route);
     }
 
@@ -89,7 +86,7 @@ public class FlightDetailFacilityViewHolder extends AbstractViewHolder<FlightDet
             separatorInfoView.setVisibility(View.VISIBLE);
             facilityInfoTextView.setVisibility(View.VISIBLE);
             adapterAmenity.addData(flightDetailRouteViewModel.getAmenities());
-        }else {
+        } else {
             separatorInfoView.setVisibility(View.GONE);
             gridAmenity.setVisibility(View.GONE);
             facilityInfoTextView.setVisibility(View.GONE);

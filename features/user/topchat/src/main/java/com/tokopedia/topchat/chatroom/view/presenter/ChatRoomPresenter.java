@@ -226,7 +226,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
                 replyMessageUseCase.execute(params, new Subscriber<ReplyActionData>() {
                     @Override
                     public void onCompleted() {
-//                        isRequesting = false;
+
                     }
 
                     @Override
@@ -399,7 +399,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         getView().displayReplyField(replyData.getTextAreaReply() == 1);
         getView().setCanLoadMore(replyData.isHasNext());
 
-        if (!replyData.isHasNext() && replyData.isHasTimeMachine()) {
+        if (!replyData.isHasNext() && !getView().isChatBot()) {
             getView().addTimeMachine();
         }
     }
