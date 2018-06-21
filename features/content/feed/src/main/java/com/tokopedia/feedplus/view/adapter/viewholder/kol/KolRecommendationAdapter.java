@@ -121,9 +121,9 @@ public class KolRecommendationAdapter extends RecyclerView.Adapter<KolRecommenda
     private void navigateToProfilePage(int adapterPosition) {
         KolRecommendItemViewModel kolItem = data.getListRecommend().get(adapterPosition);
         UnifyTracking.eventKolRecommendationGoToProfileClick(kolItem.getLabel(), kolItem.getName());
-        kolViewListener.onGoToKolProfile(data.getRowNumber(),
-                String.valueOf(kolItem.getId()),
-                KolPostViewModel.DEFAULT_ID);
+        kolViewListener.onGoToKolProfileFromRecommendation(data.getRowNumber(),
+                adapterPosition,
+                String.valueOf(kolItem.getId()));
     }
 
     @Override

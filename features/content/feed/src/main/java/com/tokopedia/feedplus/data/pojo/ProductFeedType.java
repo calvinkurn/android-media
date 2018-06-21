@@ -20,7 +20,7 @@ public class ProductFeedType {
 
   @SerializedName("price_int")
   @Expose
-  private Integer price_int;
+  private Integer priceInt;
 
   @SerializedName("image")
   @Expose
@@ -28,7 +28,7 @@ public class ProductFeedType {
 
   @SerializedName("image_single")
   @Expose
-  private String image_single;
+  private String imageSingle;
 
   @SerializedName("wholesale")
   @Expose
@@ -74,16 +74,16 @@ public class ProductFeedType {
     this.price = price;
   }
 
-  public void setPrice_int(Integer price_int) {
-    this.price_int = price_int;
+  public void setPriceInt(Integer priceInt) {
+    this.priceInt = priceInt;
   }
 
   public void setImage(String image) {
     this.image = image;
   }
 
-  public void setImage_single(String image_single) {
-    this.image_single = image_single;
+  public void setImageSingle(String imageSingle) {
+    this.imageSingle = imageSingle;
   }
 
   public void setWholesale(List<Wholesale> wholesale) {
@@ -130,16 +130,16 @@ public class ProductFeedType {
     return this.price;
   }
 
-  public Integer getPrice_int() {
-    return this.price_int;
+  public Integer getPriceInt() {
+    return this.priceInt;
   }
 
   public String getImage() {
     return this.image;
   }
 
-  public String getImage_single() {
-    return this.image_single;
+  public String getImageSingle() {
+    return this.imageSingle;
   }
 
   public List<Wholesale> getWholesale() {

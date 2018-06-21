@@ -8,7 +8,7 @@ import java.util.List;
 public class FeedPolling {
   @SerializedName("poll_id")
   @Expose
-  private Integer poll_id;
+  private Integer pollId;
 
   @SerializedName("title")
   @Expose
@@ -24,15 +24,15 @@ public class FeedPolling {
 
   @SerializedName("commentcount")
   @Expose
-  private Integer commentcount;
+  private Integer commentCount;
 
   @SerializedName("likecount")
   @Expose
-  private Integer likecount;
+  private Integer likeCount;
 
   @SerializedName("create_time")
   @Expose
-  private String create_time;
+  private String createTime;
 
   @SerializedName("liked")
   @Expose
@@ -44,15 +44,15 @@ public class FeedPolling {
 
   @SerializedName("show_comment")
   @Expose
-  private Boolean show_comment;
+  private Boolean showComment;
 
   @SerializedName("total_voter")
   @Expose
-  private Integer total_voter;
+  private Integer totalVoter;
 
   @SerializedName("is_answered")
   @Expose
-  private Boolean is_answered;
+  private Boolean isAnswered;
 
   @SerializedName("userName")
   @Expose
@@ -78,8 +78,8 @@ public class FeedPolling {
   @Expose
   private List<PollingOption> options;
 
-  public void setPoll_id(Integer poll_id) {
-    this.poll_id = poll_id;
+  public void setPollId(Integer pollId) {
+    this.pollId = pollId;
   }
 
   public void setTitle(String title) {
@@ -94,16 +94,16 @@ public class FeedPolling {
     this.question = question;
   }
 
-  public void setCommentcount(Integer commentcount) {
-    this.commentcount = commentcount;
+  public void setCommentCount(Integer commentCount) {
+    this.commentCount = commentCount;
   }
 
-  public void setLikecount(Integer likecount) {
-    this.likecount = likecount;
+  public void setLikeCount(Integer likeCount) {
+    this.likeCount = likeCount;
   }
 
-  public void setCreate_time(String create_time) {
-    this.create_time = create_time;
+  public void setCreateTime(String createTime) {
+    this.createTime = createTime;
   }
 
   public void setLiked(Boolean liked) {
@@ -114,16 +114,16 @@ public class FeedPolling {
     this.followed = followed;
   }
 
-  public void setShow_comment(Boolean show_comment) {
-    this.show_comment = show_comment;
+  public void setShowComment(Boolean showComment) {
+    this.showComment = showComment;
   }
 
-  public void setTotal_voter(Integer total_voter) {
-    this.total_voter = total_voter;
+  public void setTotalVoter(Integer totalVoter) {
+    this.totalVoter = totalVoter;
   }
 
-  public void setIs_answered(Boolean is_answered) {
-    this.is_answered = is_answered;
+  public void setIsAnswered(Boolean isAnswered) {
+    this.isAnswered = isAnswered;
   }
 
   public void setUserName(String userName) {
@@ -150,8 +150,8 @@ public class FeedPolling {
     this.options = options;
   }
 
-  public Integer getPoll_id() {
-    return this.poll_id;
+  public Integer getPollId() {
+    return this.pollId;
   }
 
   public String getTitle() {
@@ -166,16 +166,16 @@ public class FeedPolling {
     return this.question;
   }
 
-  public Integer getCommentcount() {
-    return this.commentcount;
+  public Integer getCommentCount() {
+    return this.commentCount;
   }
 
-  public Integer getLikecount() {
-    return this.likecount;
+  public Integer getLikeCount() {
+    return this.likeCount;
   }
 
-  public String getCreate_time() {
-    return this.create_time;
+  public String getCreateTime() {
+    return this.createTime;
   }
 
   public Boolean getLiked() {
@@ -186,16 +186,16 @@ public class FeedPolling {
     return this.followed;
   }
 
-  public Boolean getShow_comment() {
-    return this.show_comment;
+  public Boolean getShowComment() {
+    return this.showComment;
   }
 
-  public Integer getTotal_voter() {
-    return this.total_voter;
+  public Integer getTotalVoter() {
+    return this.totalVoter;
   }
 
-  public Boolean getIs_answered() {
-    return this.is_answered;
+  public Boolean getIsAnswered() {
+    return this.isAnswered;
   }
 
   public String getUserName() {

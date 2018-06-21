@@ -595,7 +595,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     @Override
     public void onBackPressed() {
-        if (currentlyLoadingFragment()) {
+        if(currentlyLoadingFragment() || hasErrorEmptyState()){
             finish();
             super.onBackPressed();
         } else {
@@ -605,6 +605,11 @@ public class GroupChatActivity extends BaseSimpleActivity
                 showDialogConfirmToExit();
             }
         }
+    }
+
+    private boolean hasErrorEmptyState() {
+        return rootView.findViewById(R.id.main_retry)!=null
+                && rootView.findViewById(R.id.main_retry).getVisibility() == View.VISIBLE;
     }
 
     private void showDialogConfirmToExit() {
@@ -921,7 +926,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     private void setSponsorData() {
-        if (!TextUtils.isEmpty(viewModel.getChannelInfoViewModel().getAdsImageUrl())) {
+        if (!TextUtils.isEmpty(viewModel.getChannelInfoViewModel().getAdsId())) {
             sponsorLayout.setVisibility(View.VISIBLE);
             ImageHandler.loadImage2(sponsorImage,
                     viewModel.getChannelInfoViewModel().getAdsImageUrl(),
@@ -954,6 +959,10 @@ public class GroupChatActivity extends BaseSimpleActivity
                 }
             });
         } else {
+            sponsorLayout.setVisibility(View.GONE);
+        }
+
+        if(TextUtils.isEmpty(viewModel.getChannelInfoViewModel().getAdsImageUrl())){
             sponsorLayout.setVisibility(View.GONE);
         }
     }

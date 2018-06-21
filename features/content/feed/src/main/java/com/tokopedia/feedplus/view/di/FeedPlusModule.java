@@ -38,6 +38,7 @@ import com.tokopedia.feedplus.data.repository.WishlistRepository;
 import com.tokopedia.feedplus.data.repository.WishlistRepositoryImpl;
 import com.tokopedia.feedplus.data.source.KolSource;
 import com.tokopedia.feedplus.domain.model.feed.FeedResult;
+import com.tokopedia.vote.di.VoteModule;
 import com.tokopedia.wishlist.common.data.interceptor.MojitoInterceptor;
 
 import java.util.concurrent.TimeUnit;
@@ -55,7 +56,7 @@ import retrofit2.Retrofit;
  * @author by nisie on 5/15/17.
  */
 
-@Module
+@Module(includes = {VoteModule.class})
 public class FeedPlusModule {
 
     private static final int NET_READ_TIMEOUT = 60;

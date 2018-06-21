@@ -1,6 +1,7 @@
 package com.tokopedia.feedplus.view.adapter.viewholder.kol;
 
 import android.support.annotation.LayoutRes;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
@@ -19,20 +20,23 @@ import com.tokopedia.kol.feature.post.view.widget.BaseKolView;
 
 public class PollViewHolder extends AbstractViewHolder<PollViewModel> implements BaseKolListener {
 
+    private static final int SPAN_COUNT = 2;
     private FeedPlus.View.Kol viewListener;
-    private PollAdapter pollAdapter;
+    private FeedPlus.View.Polling pollingViewListener;
+    private BaseKolView baseKolView;
     private RecyclerView pollList;
     private TextView totalVoter;
 
     @LayoutRes
     public static final int LAYOUT = R.layout.poll_layout;
 
-    public PollViewHolder(View itemView, FeedPlus.View.Kol viewListener) {
+    public PollViewHolder(View itemView, FeedPlus.View.Kol viewListener,
+                          FeedPlus.View.Polling pollingViewListener) {
         super(itemView);
-        pollAdapter = new PollAdapter();
 
         this.viewListener = viewListener;
-        BaseKolView baseKolView = itemView.findViewById(com.tokopedia.kol.R.id.base_kol_view);
+        this.pollingViewListener = pollingViewListener;
+        baseKolView = itemView.findViewById(com.tokopedia.kol.R.id.base_kol_view);
         View view = baseKolView.inflateContentLayout(R.layout.poll_content);
         pollList = view.findViewById(R.id.poll_list);
         totalVoter = view.findViewById(R.id.total_voter);
@@ -40,14 +44,31 @@ public class PollViewHolder extends AbstractViewHolder<PollViewModel> implements
 
     @Override
     public void bind(PollViewModel element) {
+        baseKolView.bind(element);
+
         String totalVoterText = String.format(
                 getString(R.string.total_voter),
                 element.getTotalVoter()
         );
 
         totalVoter.setText(totalVoterText);
+
+
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(
+                itemView.getContext(),
+                SPAN_COUNT,
+                GridLayoutManager.VERTICAL,
+                false);
+        pollList.setLayoutManager(gridLayoutManager);
+
+        PollAdapter pollAdapter = new PollAdapter(getAdapterPosition(),
+                element.getPollId(),
+                element.isVoted(),
+                pollingViewListener);
         pollList.setAdapter(pollAdapter);
         pollAdapter.setList(element.getOptionViewModels());
+
+        baseKolView.setViewListener(this, element);
     }
 
     @Override
@@ -85,9 +106,6 @@ public class PollViewHolder extends AbstractViewHolder<PollViewModel> implements
     }
 
     private void goToProfile(final BaseKolViewModel element) {
-        viewListener.onGoToKolProfile(getAdapterPosition(),
-                String.valueOf(element.getUserId()),
-                element.getKolId()
-        );
+        viewListener.onGoToLink(element.getKolProfileUrl());
     }
 }

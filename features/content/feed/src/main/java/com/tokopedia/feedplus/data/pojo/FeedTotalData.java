@@ -6,13 +6,13 @@ import com.google.gson.annotations.SerializedName;
 public class FeedTotalData {
   @SerializedName("total_data")
   @Expose
-  private Integer total_data;
+  private Integer totalData;
 
-  public void setTotal_data(Integer total_data) {
-    this.total_data = total_data;
+  public void setTotalData(Integer totalData) {
+    this.totalData = totalData;
   }
 
-  public Integer getTotal_data() {
-    return this.total_data;
+  public Integer getTotalData() {
+    return this.totalData;
   }
 }

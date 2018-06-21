@@ -32,13 +32,14 @@ import com.tokopedia.feedplus.domain.model.feed.KolCtaDomain;
 import com.tokopedia.feedplus.domain.model.feed.KolPostDomain;
 import com.tokopedia.feedplus.domain.model.feed.KolRecommendationDomain;
 import com.tokopedia.feedplus.domain.model.feed.KolRecommendationItemDomain;
-import com.tokopedia.feedplus.domain.model.feed.ProductCommunicationDomain;
 import com.tokopedia.feedplus.domain.model.feed.ProductFeedDomain;
 import com.tokopedia.feedplus.domain.model.feed.ShopFeedDomain;
 import com.tokopedia.feedplus.domain.model.feed.SourceFeedDomain;
 import com.tokopedia.feedplus.domain.model.feed.WholesaleDomain;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollOptionViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollViewModel;
+import com.tokopedia.feedplus.view.viewmodel.kol.ProductCommunicationItemViewModel;
+import com.tokopedia.feedplus.view.viewmodel.kol.ProductCommunicationViewModel;
 import com.tokopedia.topads.sdk.domain.model.Data;
 
 import org.json.JSONException;
@@ -97,15 +98,15 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
         if (product == null) return null;
         return new ProductFeedDomain(
                 product.getId(), product.getName(), product.getPrice(), product.getImage(),
-                product.getImage_single(), wholesaleDomains, product.getFreereturns(),
+                product.getImageSingle(), wholesaleDomains, product.getFreereturns(),
                 product.getPreorder(), product.getCashback(), product.getUrl(),
                 product.getProductLink(), product.getWishlist(), product.getRating(),
-                String.valueOf(product.getPrice_int()), cursor
+                String.valueOf(product.getPriceInt()), cursor
         );
     }
 
     private WholesaleDomain createWholesaleDomain(Wholesale wholesale) {
-        return new WholesaleDomain(wholesale.getQty_min_fmt());
+        return new WholesaleDomain(wholesale.getQtyMinFmt());
     }
 
     private List<WholesaleDomain> convertToWholesaleDomain(List<Wholesale> wholesales) {
@@ -154,8 +155,8 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
                                                       FavoriteCtaDomain favoriteCtaDomain,
                                                       KolCtaDomain kolCtaDomain,
                                                       List<Data> topadsData,
-                                                      List<ProductCommunicationDomain>
-                                                              productCommunications,
+                                                      ProductCommunicationViewModel
+                                                              productCommunicationViewModel,
                                                       PollViewModel pollViewModel) {
 
         if (content == null) {
@@ -164,7 +165,7 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
 
         return new ContentFeedDomain(
                 content.getType(),
-                content.getTotal_product() != null ? content.getTotal_product() : 0,
+                content.getTotalProduct() != null ? content.getTotalProduct() : 0,
                 productFeedDomains,
                 null,
                 null,
@@ -175,9 +176,9 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
                 kolRecommendations,
                 favoriteCtaDomain,
                 kolCtaDomain,
-                productCommunications,
+                productCommunicationViewModel,
                 pollViewModel,
-                content.getStatus_activity()
+                content.getStatusActivity()
         );
     }
 
@@ -193,7 +194,7 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
     private FeedDomain convertToDataFeedDomain(Feeds data) {
         return new FeedDomain(
                 convertToFeedDomain(data),
-                data.getLinks().getPagination().getHas_next_page()
+                data.getLinks().getPagination().getHasNextPage()
         );
     }
 
@@ -218,14 +219,14 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
                         = convertToKolRecommendationDomain(datum.getContent().getKolrecommendation());
 
                 FavoriteCtaDomain favoriteCta
-                        = convertToFavoriteCtaDomain(datum.getContent().getFavorite_cta());
+                        = convertToFavoriteCtaDomain(datum.getContent().getFavoriteCta());
 
-                KolCtaDomain kolCtaDomain = convertToKolCtaDomain(datum.getContent().getKol_cta());
+                KolCtaDomain kolCtaDomain = convertToKolCtaDomain(datum.getContent().getKolCta());
 
                 List<Data> topadsData = convertToTopadsDomain(datum.getContent().getTopads());
 
-                List<ProductCommunicationDomain> productCommunications
-                        = convertToProductCommunicationDomain(datum.getContent().getBanner());
+                ProductCommunicationViewModel productCommunicationViewModel
+                        = convertToProductCommunicationViewModel(datum.getContent().getBanner());
 
                 PollViewModel pollViewModel
                         = convertToPollViewModel(
@@ -241,7 +242,7 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
                         favoriteCta,
                         kolCtaDomain,
                         topadsData,
-                        productCommunications,
+                        productCommunicationViewModel,
                         pollViewModel
                 );
 
@@ -280,8 +281,8 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
         }
 
         return new FavoriteCtaDomain(
-                    favoriteCta.getTitle_id() == null ? "" : favoriteCta.getTitle_id(),
-                    favoriteCta.getSubtitle_id() == null ? "" : favoriteCta.getSubtitle_id()
+                    favoriteCta.getTitleId() == null ? "" : favoriteCta.getTitleId(),
+                    favoriteCta.getSubtitleId() == null ? "" : favoriteCta.getSubtitleId()
         );
     }
 
@@ -379,9 +380,9 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
         }
 
         return new KolCtaDomain(
-                kolCta.getImg_header(),
-                kolCta.getClick_applink(),
-                kolCta.getButton_text(),
+                kolCta.getImgHeader(),
+                kolCta.getClickApplink(),
+                kolCta.getButtonText(),
                 kolCta.getTitle(),
                 kolCta.getSubtitle()
         );
@@ -403,30 +404,31 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
         return list;
     }
 
-    private List<ProductCommunicationDomain> convertToProductCommunicationDomain(
+    private ProductCommunicationViewModel convertToProductCommunicationViewModel(
             List<FeedBanner> bannerList) {
         if (bannerList == null || bannerList.isEmpty()) {
             return null;
         }
 
-        List<ProductCommunicationDomain> productCommunicationDomains = new ArrayList<>();
+        List<ProductCommunicationItemViewModel> productCommunicationItems = new ArrayList<>();
         for (FeedBanner banner : bannerList) {
             String redirectUrl = "";
 
-            if (!TextUtils.isEmpty(banner.getClick_applink())) {
-                redirectUrl = banner.getClick_applink();
-            } else if (!TextUtils.isEmpty(banner.getClick_url())) {
-                redirectUrl = banner.getClick_url();
+            if (!TextUtils.isEmpty(banner.getClickApplink())) {
+                redirectUrl = banner.getClickApplink();
+            } else if (!TextUtils.isEmpty(banner.getClickUrl())) {
+                redirectUrl = banner.getClickUrl();
             }
 
-            productCommunicationDomains.add(
-                    new ProductCommunicationDomain(
-                            banner.getImg_url() == null ? "" : banner.getImg_url(),
+            productCommunicationItems.add(
+                    new ProductCommunicationItemViewModel(
+                            banner.getImgUrl() == null ? "" : banner.getImgUrl(),
                             redirectUrl
                     )
             );
         }
-        return productCommunicationDomains;
+
+        return new ProductCommunicationViewModel(productCommunicationItems);
     }
 
     private PollViewModel convertToPollViewModel(String cardType, FeedPolling polling) {
@@ -434,25 +436,21 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
             return null;
         }
 
-        //TODO milhamj supposed to be isAnswered from API
-        boolean voted = false;
-        for (PollingOption option: polling.getOptions()) {
-            if (option.getIs_selected()) {
-                voted = true;
-            }
-        }
+        boolean voted = polling.getIsAnswered() == null ? false : polling.getIsAnswered();
 
         List<PollOptionViewModel> optionViewModels = new ArrayList<>();
         for (PollingOption option: polling.getOptions()) {
+            String redirectLink = !TextUtils.isEmpty(option.getApplink()) ?
+                    option.getApplink() : option.getWeblink();
+
             optionViewModels.add(
                     new PollOptionViewModel(
-                            String.valueOf(option.getOption_id()),
+                            String.valueOf(option.getOptionId()),
                             option.getOption(),
-                            option.getImage_option(),
-                            option.getWeblink(),
-                            option.getApplink(),
+                            option.getImageOption(),
+                            redirectLink,
                             String.valueOf(option.getPercentage()),
-                            checkIfSelected(voted, option.getIs_selected())
+                            checkIfSelected(voted, option.getIsSelected())
                     )
             );
         }
@@ -465,17 +463,17 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
                 polling.getUserPhoto(),
                 polling.getUserInfo(),
                 polling.getUserUrl(),
-                polling.getFollowed(),
+                true,
                 polling.getQuestion(),
                 polling.getLiked(),
-                polling.getLikecount(),
-                polling.getCommentcount(),
+                polling.getLikeCount(),
+                polling.getCommentCount(),
                 0,
-                polling.getPoll_id(),
-                TimeConverter.generateTime(polling.getCreate_time()),
-                polling.getShow_comment(),
-                String.valueOf(polling.getPoll_id()),
-                String.valueOf(polling.getTotal_voter()),
+                polling.getPollId(),
+                TimeConverter.generateTime(polling.getCreateTime()),
+                polling.getShowComment(),
+                String.valueOf(polling.getPollId()),
+                String.valueOf(polling.getTotalVoter()),
                 voted,
                 optionViewModels
         );
@@ -496,7 +494,7 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
                                                 SourceFeedDomain sourceFeedDomain) {
         return new DataFeedDomain(
                 datum.getId(),
-                datum.getCreate_time(),
+                datum.getCreateTime(),
                 datum.getType(),
                 datum.getCursor(),
                 sourceFeedDomain,

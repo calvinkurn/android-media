@@ -10,7 +10,7 @@ public class Feed {
 
   @SerializedName("create_time")
   @Expose
-  private String create_time;
+  private String createTime;
 
   @SerializedName("type")
   @Expose
@@ -32,8 +32,8 @@ public class Feed {
     this.id = id;
   }
 
-  public void setCreate_time(String create_time) {
-    this.create_time = create_time;
+  public void setCreateTime(String createTime) {
+    this.createTime = createTime;
   }
 
   public void setType(String type) {
@@ -56,8 +56,8 @@ public class Feed {
     return this.id;
   }
 
-  public String getCreate_time() {
-    return this.create_time;
+  public String getCreateTime() {
+    return this.createTime;
   }
 
   public String getType() {

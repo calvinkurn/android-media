@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 public class PollingOption {
   @SerializedName("option_id")
   @Expose
-  private Integer option_id;
+  private Integer optionId;
 
   @SerializedName("option")
   @Expose
@@ -30,14 +30,14 @@ public class PollingOption {
 
   @SerializedName("is_selected")
   @Expose
-  private Boolean is_selected;
+  private Boolean isSelected;
 
   @SerializedName("image_option")
   @Expose
-  private String image_option;
+  private String imageOption;
 
-  public void setOption_id(Integer option_id) {
-    this.option_id = option_id;
+  public void setOptionId(Integer optionId) {
+    this.optionId = optionId;
   }
 
   public void setOption(String option) {
@@ -60,16 +60,16 @@ public class PollingOption {
     this.applink = applink;
   }
 
-  public void setIs_selected(Boolean is_selected) {
-    this.is_selected = is_selected;
+  public void setIsSelected(Boolean isSelected) {
+    this.isSelected = isSelected;
   }
 
-  public void setImage_option(String image_option) {
-    this.image_option = image_option;
+  public void setImageOption(String imageOption) {
+    this.imageOption = imageOption;
   }
 
-  public Integer getOption_id() {
-    return this.option_id;
+  public Integer getOptionId() {
+    return this.optionId;
   }
 
   public String getOption() {
@@ -92,11 +92,11 @@ public class PollingOption {
     return this.applink;
   }
 
-  public Boolean getIs_selected() {
-    return this.is_selected;
+  public Boolean getIsSelected() {
+    return this.isSelected;
   }
 
-  public String getImage_option() {
-    return this.image_option;
+  public String getImageOption() {
+    return this.imageOption;
   }
 }

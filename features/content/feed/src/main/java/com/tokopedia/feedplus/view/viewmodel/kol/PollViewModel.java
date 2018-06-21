@@ -33,12 +33,32 @@ public class PollViewModel extends BaseKolViewModel implements Visitable<FeedPlu
         return pollId;
     }
 
+    public void setPollId(String pollId) {
+        this.pollId = pollId;
+    }
+
     public String getTotalVoter() {
         return totalVoter;
     }
 
+    public void setTotalVoter(String totalVoter) {
+        this.totalVoter = totalVoter;
+    }
+
+    public boolean isVoted() {
+        return voted;
+    }
+
+    public void setVoted(boolean voted) {
+        this.voted = voted;
+    }
+
     public List<PollOptionViewModel> getOptionViewModels() {
         return optionViewModels;
+    }
+
+    public void setOptionViewModels(List<PollOptionViewModel> optionViewModels) {
+        this.optionViewModels = optionViewModels;
     }
 
     @Override

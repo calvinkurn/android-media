@@ -73,6 +73,8 @@ import com.tokopedia.feedplus.view.presenter.FeedPlusPresenter;
 import com.tokopedia.feedplus.view.util.NpaLinearLayoutManager;
 import com.tokopedia.feedplus.view.util.ShareBottomDialog;
 import com.tokopedia.feedplus.view.viewmodel.inspiration.InspirationViewModel;
+import com.tokopedia.feedplus.view.viewmodel.kol.PollOptionViewModel;
+import com.tokopedia.feedplus.view.viewmodel.kol.PollViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
 import com.tokopedia.feedplus.view.viewmodel.product.ProductFeedViewModel;
@@ -83,6 +85,7 @@ import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
 import com.tokopedia.kol.feature.createpost.view.activity.CreatePostImagePickerActivity;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
+import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 import com.tokopedia.profile.view.activity.TopProfileActivity;
 import com.tokopedia.topads.sdk.domain.model.Data;
@@ -90,6 +93,7 @@ import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.vote.domain.model.VoteStatisticDomainModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -110,6 +114,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         implements FeedPlus.View,
         FeedPlus.View.Toppicks,
         FeedPlus.View.Kol,
+        FeedPlus.View.Polling,
         SwipeRefreshLayout.OnRefreshListener,
         TopAdsItemClickListener, TopAdsInfoClickListener,
         KolPostListener.View.ViewHolder {
@@ -1053,6 +1058,17 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onGoToLink(String link) {
+        ((FeedModuleRouter) getActivity().getApplication()).openRedirectUrl(getActivity(), link);
+    }
+
+    @Override
+    public void onVoteOptionClicked(int rowNumber, String pollId,
+                                    PollOptionViewModel optionViewModel) {
+        presenter.sendVote(rowNumber, pollId, optionViewModel);
+    }
+
+    @Override
     public void onGoToListKolRecommendation(int page, int rowNumber, String url) {
         if (remoteConfig != null && !remoteConfig.getBoolean(KEY_EXPLORE_NATIVE_ENABLE, false)) {
             url = remoteConfig.getString(KEY_EXPLORE_URL, DEFAULT_EXPLORE_URL);
@@ -1092,14 +1108,14 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessLikeDislikeKolPost(int rowNumber) {
-        if (adapter.getlist().get(rowNumber) instanceof KolPostViewModel) {
-            KolPostViewModel kolPostViewModel = (KolPostViewModel) adapter.getlist().get(rowNumber);
-            kolPostViewModel.setLiked(!(kolPostViewModel.isLiked()));
-            if (kolPostViewModel.isLiked()) {
-                kolPostViewModel.setTotalLike(((KolPostViewModel)
+        if (adapter.getlist().get(rowNumber) instanceof BaseKolViewModel) {
+            BaseKolViewModel kolViewModel = (BaseKolViewModel) adapter.getlist().get(rowNumber);
+            kolViewModel.setLiked(!(kolViewModel.isLiked()));
+            if (kolViewModel.isLiked()) {
+                kolViewModel.setTotalLike(((BaseKolViewModel)
                         adapter.getlist().get(rowNumber)).getTotalLike() + 1);
             } else {
-                kolPostViewModel.setTotalLike(((KolPostViewModel)
+                kolViewModel.setTotalLike(((BaseKolViewModel)
                         adapter.getlist().get(rowNumber)).getTotalLike() - 1);
             }
             adapter.notifyItemChanged(rowNumber);
@@ -1126,10 +1142,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     private void onSuccessAddDeleteKolComment(int rowNumber, int totalNewComment) {
-        if (adapter.getlist().get(rowNumber) instanceof KolPostViewModel) {
-            KolPostViewModel kolPostViewModel = (KolPostViewModel) adapter.getlist().get(rowNumber);
-            kolPostViewModel.setTotalComment((
-                    (KolPostViewModel)
+        if (adapter.getlist().get(rowNumber) instanceof BaseKolViewModel) {
+            BaseKolViewModel kolViewModel = (BaseKolViewModel) adapter.getlist().get(rowNumber);
+            kolViewModel.setTotalComment((
+                    (BaseKolViewModel)
                             adapter.getlist().get(rowNumber)).getTotalComment() +
                     totalNewComment);
             adapter.notifyItemChanged(rowNumber);
@@ -1149,8 +1165,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     private void updatePostState(int rowNumber, int isLiked, int totalLike, int totalComment) {
-        if (rowNumber != DEFAULT_VALUE && adapter.getlist().get(rowNumber) instanceof KolPostViewModel) {
-            KolPostViewModel kolViewModel = (KolPostViewModel) adapter.getlist().get(rowNumber);
+        if (rowNumber != DEFAULT_VALUE && adapter.getlist().get(rowNumber) instanceof BaseKolViewModel) {
+            BaseKolViewModel kolViewModel = (BaseKolViewModel) adapter.getlist().get(rowNumber);
 
             if (isLiked != DEFAULT_VALUE) {
                 kolViewModel.setLiked(isLiked == IS_LIKE_TRUE);
@@ -1198,6 +1214,39 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void onGoToLogin() {
         Intent intent = ((FeedModuleRouter) getActivity().getApplication()).getLoginIntent(getContext());
         startActivity(intent);
+    }
+
+    @Override
+    public void onSuccessSendVote(int rowNumber, PollOptionViewModel selectedOption,
+                                  VoteStatisticDomainModel voteStatisticDomainModel) {
+        if (adapter.getlist().get(rowNumber) instanceof PollViewModel) {
+            PollViewModel pollViewModel = (PollViewModel) adapter.getlist().get(rowNumber);
+            pollViewModel.setVoted(true);
+            pollViewModel.setTotalVoter(voteStatisticDomainModel.getTotalParticipants());
+
+            int selectedIndex = pollViewModel.getOptionViewModels().indexOf(selectedOption);
+            for (int i = 0; i < pollViewModel.getOptionViewModels().size(); i++) {
+                PollOptionViewModel pollOptionViewModel
+                        = pollViewModel.getOptionViewModels().get(i);
+
+                if (selectedIndex == i) {
+                    pollOptionViewModel.setSelected(PollOptionViewModel.SELECTED);
+                } else {
+                    pollOptionViewModel.setSelected(PollOptionViewModel.UNSELECTED);
+                }
+
+                String newPercentage
+                        = voteStatisticDomainModel.getListOptions().get(i).getPercentage();
+                pollOptionViewModel.setPercentage(newPercentage);
+            }
+
+            adapter.notifyItemChanged(rowNumber);
+        }
+    }
+
+    @Override
+    public void onErrorSendVote(String message) {
+        NetworkErrorHelper.showSnackbar(getActivity(), message);
     }
 
     @Override

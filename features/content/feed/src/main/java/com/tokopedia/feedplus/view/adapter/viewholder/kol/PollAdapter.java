@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.image.SquareImageView;
 import com.tokopedia.feedplus.R;
+import com.tokopedia.feedplus.view.listener.FeedPlus;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollOptionViewModel;
 
 import java.util.ArrayList;
@@ -26,10 +27,18 @@ import java.util.List;
  */
 
 public class PollAdapter extends RecyclerView.Adapter<PollAdapter.ViewHolder> {
+    private int rowNumber;
+    private String pollId;
+    private boolean voted;
     private List<PollOptionViewModel> list;
+    private FeedPlus.View.Polling viewListener;
 
-    PollAdapter() {
-        list = new ArrayList<>();
+    PollAdapter(int rowNumber, String pollId, boolean voted, FeedPlus.View.Polling viewListener) {
+        this.rowNumber = rowNumber;
+        this.pollId = pollId;
+        this.voted = voted;
+        this.list = new ArrayList<>();
+        this.viewListener = viewListener;
     }
 
     @Override
@@ -102,7 +111,11 @@ public class PollAdapter extends RecyclerView.Adapter<PollAdapter.ViewHolder> {
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                viewListener.onVoteOptionClicked(element);
+                if (voted) {
+                    viewListener.onGoToLink(element.getRedirectLink());
+                } else {
+                    viewListener.onVoteOptionClicked(rowNumber, pollId, element);
+                }
             }
         });
     }

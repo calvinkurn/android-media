@@ -88,9 +88,11 @@ public class BaseKolView extends BaseCustomView {
 
         if (TextUtils.isEmpty(element.getTitle())) {
             title.setVisibility(View.GONE);
+            topSeparator.setVisibility(View.GONE);
         } else {
             title.setVisibility(View.VISIBLE);
             title.setText(MethodChecker.fromHtml(element.getTitle()));
+            topSeparator.setVisibility(View.VISIBLE);
         }
 
         if (element.isFollowed()) {
@@ -101,7 +103,6 @@ public class BaseKolView extends BaseCustomView {
 
         if (element.isFollowed() && !element.isTemporarilyFollowed()) {
             followButton.setVisibility(View.GONE);
-            topSeparator.setVisibility(View.GONE);
         } else if (element.isFollowed() && element.isTemporarilyFollowed()) {
             followButton.setVisibility(View.VISIBLE);
             followButton.setBackground(MethodChecker.getDrawable(followButton.getContext(),
@@ -109,7 +110,6 @@ public class BaseKolView extends BaseCustomView {
             followText.setText(R.string.following);
             followText.setTextColor(MethodChecker.getColor(followText.getContext(),
                     R.color.black_54));
-            topSeparator.setVisibility(View.VISIBLE);
         } else {
             followButton.setVisibility(View.VISIBLE);
             followButton.setBackground(MethodChecker.getDrawable(followButton.getContext(),
@@ -117,7 +117,6 @@ public class BaseKolView extends BaseCustomView {
             followText.setTextColor(MethodChecker.getColor(followText.getContext(),
                     R.color.white));
             followText.setText(R.string.action_follow_english);
-            topSeparator.setVisibility(View.VISIBLE);
         }
 
         UrlUtil.setTextWithClickableTokopediaUrl(kolText, getKolText(element));

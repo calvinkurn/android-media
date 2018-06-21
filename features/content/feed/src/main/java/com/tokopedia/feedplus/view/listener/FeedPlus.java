@@ -6,8 +6,10 @@ import android.content.res.Resources;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.feedplus.view.viewmodel.kol.PollOptionViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
 import com.tokopedia.feedplus.view.viewmodel.product.ProductFeedViewModel;
+import com.tokopedia.vote.domain.model.VoteStatisticDomainModel;
 
 import java.util.ArrayList;
 
@@ -59,6 +61,15 @@ public interface FeedPlus {
             void onUnlikeKolClicked(int adapterPosition, int id);
 
             void onGoToKolComment(int rowNumber, int id);
+
+            void onGoToLink(String link);
+        }
+
+        interface Polling {
+            void onVoteOptionClicked(int rowNumber, String pollId,
+                                     PollOptionViewModel optionViewModel);
+
+            void onGoToLink(String link);
         }
 
         void setFirstCursor(String firstCursor);
@@ -196,6 +207,11 @@ public interface FeedPlus {
 
         void onGoToLogin();
 
+        void onSuccessSendVote(int rowNumber, PollOptionViewModel optionViewModel,
+                               VoteStatisticDomainModel voteStatisticDomainModel);
+
+        void onErrorSendVote(String message);
+
         int getAdapterListSize();
 
         void onSuccessGetWhitelist(boolean isWhitelist);
@@ -221,6 +237,7 @@ public interface FeedPlus {
 
         void unlikeKol(int id, int rowNumber, View.Kol kolListener);
 
+        void sendVote(int rowNumber, String pollId, PollOptionViewModel optionViewModel);
 
         void followKolFromRecommendation(int id, int rowNumber, int position, View.Kol
                 kolListener);

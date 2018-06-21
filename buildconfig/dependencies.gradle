@@ -289,8 +289,8 @@ ext {
             shopCommon          : ":features:merchant:shop_common",
             shopPage            : ":features:merchant:shop_page",
             topAdsManagement    : ":features:top_ads:top_ads_management",
-            topAdsCommon    : ":features:top_ads:top_ads_management_common",
-            topAdsSourceTagging: ":features:top_ads:top_ads_management_sourcetagging",
+            topAdsCommon        : ":features:top_ads:top_ads_management_common",
+            topAdsSourceTagging : ":features:top_ads:top_ads_management_sourcetagging",
             tokoCash            : ":features:fintech:tokocash",
             flight              : ":tkpdflight",
             flightNoOp          : ":features:digital:flight_no_op",
@@ -303,15 +303,14 @@ ext {
             groupchat           : ":features:user:groupchat",
             gamification        : ":features:promo:gamification",
             profile             : ":features:user:profile",
-            contactUs       : ":features:operational:contact_us",
+            contactUs           : ":features:operational:contact_us",
             otp                 : ":features:user:otp",
             logisticdata        : ":features:logistic:logisticdata",
             transactiondata     : ":features:transaction:transactiondata",
             transactionanalytics: ":features:transaction:transactionanalytics",
             tracking            : ":features:logistic:tracking",
-            logisticuploadawb : ":features:logistic:logisticuploadawb",
-            vote            : ":features:user:vote"
-
+            logisticuploadawb   : ":features:logistic:logisticuploadawb",
+            vote                : ":features:user:vote"
     ]
 
     libraries = [
