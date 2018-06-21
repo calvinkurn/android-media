@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatDelegate;
+
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
@@ -75,7 +75,7 @@ public class FlightDashboardActivity extends BaseFlightActivity implements HasCo
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         toolbar.setContentInsetStartWithNavigation(0);
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+
     }
 
     @Override
