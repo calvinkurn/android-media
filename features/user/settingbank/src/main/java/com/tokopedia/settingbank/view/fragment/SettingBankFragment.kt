@@ -1,7 +1,6 @@
 package com.tokopedia.settingbank.view.fragment
 
 import android.os.Bundle
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,8 +11,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.settingbank.R
-import com.tokopedia.settingbank.R.id.account_list_rv
-import com.tokopedia.settingbank.R.id.add_account_button
 import com.tokopedia.settingbank.common.analytics.SettingBankAnalytics
 import com.tokopedia.settingbank.common.di.SettingBankDependencyInjector
 import com.tokopedia.settingbank.view.adapter.BankAccountAdapter
@@ -24,8 +21,7 @@ import com.tokopedia.settingbank.view.listener.SettingBankContract
 import com.tokopedia.settingbank.view.presenter.SettingBankPresenter
 import com.tokopedia.settingbank.view.viewmodel.BankAccountListViewModel
 import com.tokopedia.settingbank.view.viewmodel.BankAccountViewModel
-import kotlinx.android.synthetic.main.fragment_setting_bank.*
-
+import kotlinx.android.synthetic.main.fragment_setting_bank.view.*
 /**
  * @author by nisie on 6/7/18.
  */
@@ -136,7 +132,7 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
     }
 
     override fun onSuccessSetDefault(adapterPosition: Int, statusMessage: String) {
-        adapter.setMain(adapterPosition)
+        adapter.changeMain(adapterPosition)
         linearLayoutManager.scrollToPosition(0)
     }
 
@@ -196,6 +192,9 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
 
     override fun onSuccessDeleteAccount(adapterPosition: Int, statusMessage: String) {
         adapter.remove(adapterPosition)
+        if (adapterPosition == 0 && adapter.getList()!!.size > 0) {
+            adapter.setMain(0)
+        }
     }
 
     override fun onErrorDeleteAccount(errorMessage: String) {
