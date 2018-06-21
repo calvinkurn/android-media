@@ -35,7 +35,7 @@ public abstract class TrainSearchActivity extends TrainBaseActivity {
 
     protected void initializeDataFromIntent() {
         trainSearchPassDataViewModel = getIntent().getParcelableExtra(EXTRA_SEARCH_PASS_DATA);
-        dateString = TrainDateUtil.formatDate(TrainDateUtil.DEFAULT_FORMAT,
+        dateString = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_SEARCH,
                 TrainDateUtil.DEFAULT_VIEW_LOCAL_DETAIL, getDepartureDate());
         adultPassenger = String.format(getString(R.string.train_search_passenger_adult), trainSearchPassDataViewModel.getAdult());
         infantPassenger = String.format(getString(R.string.train_search_passenger_infant), trainSearchPassDataViewModel.getInfant());
