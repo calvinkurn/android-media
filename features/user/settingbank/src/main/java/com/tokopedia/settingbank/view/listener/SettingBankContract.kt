@@ -15,28 +15,42 @@ interface SettingBankContract {
     interface View : CustomerView {
         fun getContext(): Context
 
-        fun showLoading()
+        fun showLoadingFull()
 
-        fun hideLoading()
+        fun hideLoadingFull()
 
-        fun onErrorGetListBank(errorMessage: String)
+        fun onErrorGetListBankFirstTime(errorMessage: String)
 
         fun onSuccessGetListBank(bankAccountList: BankAccountListViewModel)
 
         fun onSuccessSetDefault(adapterPosition: Int, statusMessage: String)
 
-        fun onSuccessDeleteAccount(adapterPosition: Int)
+        fun onSuccessDeleteAccount(adapterPosition: Int, statusMessage: String)
 
         fun onErrorSetDefaultBank(errorMessage: String)
+
+        fun onErrorDeleteAccount(errorMessage: String)
+
+        fun onEmptyList()
+
+        fun showLoadingDialog()
+
+        fun hideLoadingDialog()
+        fun showLoadingList()
+        fun hideLoadingList()
+
+        fun onErrorGetListBank(errorMessage: String)
 
     }
 
     interface Presenter : CustomerPresenter<View> {
 
-        fun getBankList()
+        fun getBankListFirstTime()
 
         fun setMainAccount(adapterPosition: Int, element: BankAccountViewModel?)
 
         fun deleteAccount(adapterPosition: Int, element: BankAccountViewModel?)
+
+        fun loadMore()
     }
 }

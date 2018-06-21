@@ -1,4 +1,4 @@
-package com.tokopedia.settingbank.view.adapter
+package com.tokopedia.settingbank.view.adapter.viewholder
 
 import android.content.Context
 import android.support.v7.widget.PopupMenu

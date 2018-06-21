@@ -1,6 +1,7 @@
 package com.tokopedia.settingbank.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.settingbank.domain.usecase.DeleteBankAccountUseCase
 import com.tokopedia.settingbank.domain.usecase.GetBankListUseCase
 import com.tokopedia.settingbank.domain.usecase.SetDefaultBankAccountUseCase
 import com.tokopedia.settingbank.view.listener.SettingBankContract
@@ -12,15 +13,17 @@ import rx.Subscriber
 /**
  * @author by nisie on 6/7/18.
  */
-class SettingBankPresenter(val userSession: UserSession,
-                           val getBankAccountUseCase: GetBankListUseCase,
-                           val setDefaultBankAccountUseCase: SetDefaultBankAccountUseCase) :
+class SettingBankPresenter(private val userSession: UserSession,
+                           private val getBankAccountUseCase: GetBankListUseCase,
+                           private val setDefaultBankAccountUseCase: SetDefaultBankAccountUseCase,
+                           private val deleteBankAccountUseCase: DeleteBankAccountUseCase) :
         SettingBankContract.Presenter,
         BaseDaggerPresenter<SettingBankContract.View>() {
 
+    var page = 0
 
-    override fun getBankList() {
-        val page = 0
+    override fun getBankListFirstTime() {
+        view.showLoadingFull()
         getBankAccountUseCase.execute(GetBankListUseCase.getParam(
                 userSession.userId,
                 page,
@@ -31,26 +34,50 @@ class SettingBankPresenter(val userSession: UserSession,
             }
 
             override fun onError(e: Throwable) {
-                view.hideLoading()
+                view.hideLoadingFull()
+                view.onErrorGetListBankFirstTime(e.toString())
+            }
+
+            override fun onNext(bankAccountList: BankAccountListViewModel) {
+                view.hideLoadingFull()
+                if (bankAccountList.list?.isNotEmpty()!!) {
+                    page++
+                    view.onSuccessGetListBank(bankAccountList)
+                } else {
+                    view.onEmptyList()
+                }
+            }
+        })
+    }
+
+    override fun loadMore() {
+        view.showLoadingList()
+        getBankAccountUseCase.execute(GetBankListUseCase.getParam(
+                userSession.userId,
+                page,
+                userSession.deviceId
+        ), object : Subscriber<BankAccountListViewModel>() {
+            override fun onCompleted() {
+
+            }
+
+            override fun onError(e: Throwable) {
+                view.hideLoadingList()
                 view.onErrorGetListBank(e.toString())
             }
 
             override fun onNext(bankAccountList: BankAccountListViewModel) {
-                view.hideLoading()
+                view.hideLoadingList()
                 if (bankAccountList.list?.isNotEmpty()!!) {
+                    page++
                     view.onSuccessGetListBank(bankAccountList)
                 }
             }
         })
     }
 
-    override fun detachView() {
-        super.detachView()
-        getBankAccountUseCase.unsubscribe()
-        setDefaultBankAccountUseCase.unsubscribe()
-    }
-
     override fun setMainAccount(adapterPosition: Int, element: BankAccountViewModel?) {
+        view.showLoadingDialog()
         if (element != null) {
             setDefaultBankAccountUseCase.execute(SetDefaultBankAccountUseCase.getParam(
                     userSession.userId,
@@ -62,12 +89,12 @@ class SettingBankPresenter(val userSession: UserSession,
                 }
 
                 override fun onError(e: Throwable) {
-                    view.hideLoading()
+                    view.hideLoadingDialog()
                     view.onErrorSetDefaultBank(e.toString())
                 }
 
                 override fun onNext(statusMessage: String) {
-                    view.hideLoading()
+                    view.hideLoadingDialog()
                     view.onSuccessSetDefault(adapterPosition, statusMessage)
                 }
             })
@@ -75,6 +102,36 @@ class SettingBankPresenter(val userSession: UserSession,
     }
 
     override fun deleteAccount(adapterPosition: Int, element: BankAccountViewModel?) {
-        view.onSuccessDeleteAccount(adapterPosition)
+        view.showLoadingDialog()
+        if (element != null) {
+            deleteBankAccountUseCase.execute(DeleteBankAccountUseCase.getParam(
+                    userSession.userId,
+                    element.accountId!!,
+                    userSession.deviceId
+            ), object : Subscriber<String>() {
+                override fun onCompleted() {
+
+                }
+
+                override fun onError(e: Throwable) {
+                    view.hideLoadingDialog()
+                    view.onErrorDeleteAccount(e.toString())
+                }
+
+                override fun onNext(statusMessage: String) {
+                    view.hideLoadingDialog()
+                    view.onSuccessDeleteAccount(adapterPosition, statusMessage)
+                }
+            })
+
+        }
     }
+
+    override fun detachView() {
+        super.detachView()
+        getBankAccountUseCase.unsubscribe()
+        setDefaultBankAccountUseCase.unsubscribe()
+        deleteBankAccountUseCase.unsubscribe()
+    }
+
 }

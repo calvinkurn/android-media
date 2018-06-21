@@ -1,20 +1,25 @@
 package com.tokopedia.settingbank.view.fragment
 
 import android.os.Bundle
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tkpd.library.ui.utilities.TkpdProgressDialog
 import com.tkpd.library.ui.view.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.settingbank.R
+import com.tokopedia.settingbank.R.id.account_list_rv
+import com.tokopedia.settingbank.R.id.add_account_button
 import com.tokopedia.settingbank.common.analytics.SettingBankAnalytics
 import com.tokopedia.settingbank.common.di.SettingBankDependencyInjector
 import com.tokopedia.settingbank.view.adapter.BankAccountAdapter
 import com.tokopedia.settingbank.view.adapter.BankAccountTypeFactoryImpl
 import com.tokopedia.settingbank.view.listener.BankAccountPopupListener
+import com.tokopedia.settingbank.view.listener.EmptyBankAccountListener
 import com.tokopedia.settingbank.view.listener.SettingBankContract
 import com.tokopedia.settingbank.view.presenter.SettingBankPresenter
 import com.tokopedia.settingbank.view.viewmodel.BankAccountListViewModel
@@ -25,11 +30,14 @@ import kotlinx.android.synthetic.main.fragment_setting_bank.*
  * @author by nisie on 6/7/18.
  */
 
-class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, BaseDaggerFragment() {
+class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, EmptyBankAccountListener,
+        BaseDaggerFragment() {
 
     lateinit var presenter: SettingBankPresenter
     lateinit var adapter: BankAccountAdapter
     lateinit var alertDialog: Dialog
+    lateinit var linearLayoutManager: LinearLayoutManager
+    lateinit var progressDialog: TkpdProgressDialog
 
     companion object {
 
@@ -49,15 +57,9 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
     }
 
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view: View = inflater!!.inflate(R.layout.fragment_setting_bank, container, false)
-        return view
-    }
-
-    override fun showLoading() {
-    }
-
-    override fun hideLoading() {
+    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        return inflater!!.inflate(R.layout.fragment_setting_bank, container, false)
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
@@ -67,31 +69,51 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
     }
 
     private fun setupView() {
-        val adapterTypeFactory = BankAccountTypeFactoryImpl(this)
+        val adapterTypeFactory = BankAccountTypeFactoryImpl(this, this)
         val listBank = ArrayList<Visitable<*>>()
-        listBank.add(BankAccountViewModel("1", "", "", "", true, "", "", false, ""))
-        listBank.add(BankAccountViewModel("2", "", "", "", true, "", "", false, ""))
-        listBank.add(BankAccountViewModel("3", "", "", "", true, "", "", false, ""))
-
         adapter = BankAccountAdapter(adapterTypeFactory, listBank)
-        val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 
         account_list_rv.layoutManager = linearLayoutManager
         account_list_rv.adapter = adapter
+
+        add_account_button.setOnClickListener({ addNewAccount() })
+        account_list_rv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val index = linearLayoutManager.findLastVisibleItemPosition()
+                if (adapter.checkLoadMore(index)) {
+                    presenter.loadMore()
+                }
+            }
+        })
     }
 
     private fun getBankList() {
-        presenter.getBankList()
+        presenter.getBankListFirstTime()
     }
 
-    override fun onErrorGetListBank(errorMessage: String) {
-        NetworkErrorHelper.showEmptyState(context, view) {
+    override fun onErrorGetListBankFirstTime(errorMessage: String) {
+        NetworkErrorHelper.showEmptyState(activity, view) {
             getBankList()
         }
     }
 
+    override fun onErrorGetListBank(errorMessage: String) {
+        NetworkErrorHelper.showSnackbar(activity, errorMessage)
+    }
+
+
     override fun onSuccessGetListBank(bankAccountList: BankAccountListViewModel) {
         adapter.addList(bankAccountList.list!!)
+        account_list_rv.visibility = View.VISIBLE
+        add_account_button.visibility = View.VISIBLE
+    }
+
+    override fun onEmptyList() {
+        adapter.showEmpty()
+        account_list_rv.visibility = View.VISIBLE
+        add_account_button.visibility = View.GONE
     }
 
     override fun makeMainAccount(adapterPosition: Int, element: BankAccountViewModel?) {
@@ -115,10 +137,11 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
 
     override fun onSuccessSetDefault(adapterPosition: Int, statusMessage: String) {
         adapter.setMain(adapterPosition)
+        linearLayoutManager.scrollToPosition(0)
     }
 
     override fun onErrorSetDefaultBank(errorMessage: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        NetworkErrorHelper.showSnackbar(activity, errorMessage)
     }
 
     private fun composeMakeMainDescription(element: BankAccountViewModel?): String {
@@ -171,9 +194,42 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
         }
     }
 
-    override fun onSuccessDeleteAccount(adapterPosition: Int) {
+    override fun onSuccessDeleteAccount(adapterPosition: Int, statusMessage: String) {
         adapter.remove(adapterPosition)
     }
 
+    override fun onErrorDeleteAccount(errorMessage: String) {
+        NetworkErrorHelper.showSnackbar(activity, errorMessage)
+    }
 
+    override fun addNewAccount() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun showLoadingFull() {
+        progress_bar.visibility = View.VISIBLE
+    }
+
+    override fun hideLoadingFull() {
+        progress_bar.visibility = View.GONE
+    }
+
+    override fun showLoadingDialog() {
+        if (!::progressDialog.isInitialized) {
+            progressDialog = TkpdProgressDialog(context, TkpdProgressDialog.NORMAL_PROGRESS)
+        }
+        progressDialog.showDialog()
+    }
+
+    override fun hideLoadingDialog() {
+        if (::progressDialog.isInitialized) progressDialog.dismiss()
+    }
+
+    override fun showLoadingList() {
+        adapter.showLoading()
+    }
+
+    override fun hideLoadingList() {
+        adapter.hideLoading()
+    }
 }

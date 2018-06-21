@@ -13,4 +13,8 @@
     <string name="yes_delete">Ya, Hapus</string>
     <string name="delete_bank_account_prompt_title">Hapus Rekening Bank?</string>
     <string name="you_will_delete">Anda akan menghapus rekening Bank</string>
+    <string name="empty_bank_title">Oops, rekening bank masih kosong</string>
+    <string name="empty_bank_subtitle">Tambahkan rekening bank untuk
+mempermudah proses penarikan dana</string>
+
 </resources>

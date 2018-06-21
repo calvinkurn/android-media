@@ -60,7 +60,7 @@
 
         <TextView
             android:id="@+id/bank_name"
-            android:layout_width="273dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_10"
             android:layout_marginTop="@dimen/dp_10"
@@ -80,7 +80,7 @@
 
         <TextView
             android:id="@+id/account_number"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_10"
             android:layout_marginTop="@dimen/dp_5"
@@ -88,8 +88,11 @@
             android:lineSpacingExtra="@dimen/sp_5"
             android:textColor="@color/font_black_primary_70"
             android:textSize="@dimen/sp_14"
+            android:ellipsize="end"
             android:textStyle="normal"
+            android:maxLines="1"
             app:layout_constraintLeft_toRightOf="@id/bank_icon"
+            app:layout_constraintRight_toLeftOf="@id/dropdown_menu"
             app:layout_constraintStart_toEndOf="@id/bank_icon"
             app:layout_constraintTop_toBottomOf="@id/bank_name"
             tools:text="1829373625"
@@ -97,7 +100,7 @@
 
         <TextView
             android:id="@+id/account_name"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp_15"
             android:layout_marginLeft="@dimen/dp_10"
@@ -109,7 +112,9 @@
             android:textSize="@dimen/sp_14"
             android:textStyle="normal"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/dropdown_menu"
             app:layout_constraintLeft_toRightOf="@id/bank_icon"
+            app:layout_constraintRight_toLeftOf="@id/dropdown_menu"
             app:layout_constraintStart_toEndOf="@id/bank_icon"
             app:layout_constraintTop_toBottomOf="@id/account_number"
             tools:text="Ignatius Gregory Wade Wilson"

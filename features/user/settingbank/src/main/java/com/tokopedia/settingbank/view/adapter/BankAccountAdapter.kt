@@ -2,6 +2,8 @@ package com.tokopedia.settingbank.view.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.settingbank.view.viewmodel.BankAccountViewModel
 
 /**
@@ -11,6 +13,8 @@ import com.tokopedia.settingbank.view.viewmodel.BankAccountViewModel
 class BankAccountAdapter(adapterTypeFactory: BankAccountTypeFactoryImpl,
                          listBank: ArrayList<Visitable<*>>)
     : BaseAdapter<BankAccountTypeFactoryImpl>(adapterTypeFactory, listBank) {
+
+    val emptyModel: EmptyModel = EmptyModel()
 
     fun addList(list: ArrayList<BankAccountViewModel>) {
         val lastPosition = this.visitables.size
@@ -38,6 +42,17 @@ class BankAccountAdapter(adapterTypeFactory: BankAccountTypeFactoryImpl,
     fun remove(adapterPosition: Int) {
         this.visitables.removeAt(adapterPosition)
         notifyItemRemoved(adapterPosition)
+    }
+
+    fun showEmpty() {
+        this.visitables.add(emptyModel)
+        notifyItemInserted(0)
+    }
+
+    fun checkLoadMore(index: Int): Boolean {
+        return if (index == itemCount - 1) {
+            this.visitables[index] is LoadingMoreModel
+        } else false
     }
 }
 

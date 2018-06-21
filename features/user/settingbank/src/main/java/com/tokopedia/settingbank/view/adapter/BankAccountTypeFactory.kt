@@ -1,6 +1,7 @@
 package com.tokopedia.settingbank.view.adapter
 
 import android.view.View
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.settingbank.view.viewmodel.BankAccountViewModel
 
@@ -10,6 +11,8 @@ import com.tokopedia.settingbank.view.viewmodel.BankAccountViewModel
 interface BankAccountTypeFactory{
 
     fun type(viewModel: BankAccountViewModel): Int
+
+    fun type(emptyModel: EmptyModel):Int
 
     fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*>
 
