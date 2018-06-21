@@ -468,14 +468,18 @@ public class ImagePickerActivity extends BaseSimpleActivity
         startEditorActivity(imageUrls);
     }
 
-    private void startEditorActivity(ArrayList<String> selectedImagePaths) {
-        Intent intent = ImageEditorActivity.getIntent(this, selectedImagePaths, imageDescriptionList,
+    protected void startEditorActivity(ArrayList<String> selectedImagePaths) {
+        Intent intent = getEditorIntent(selectedImagePaths);
+        startActivityForResult(intent, REQUEST_CODE_EDITOR);
+    }
+
+    protected Intent getEditorIntent(ArrayList<String> selectedImagePaths){
+        return ImageEditorActivity.getIntent(this, selectedImagePaths, imageDescriptionList,
                 imagePickerBuilder.getMinResolution(), imagePickerBuilder.getImageEditActionType(),
                 imagePickerBuilder.getImageRatioTypeDef(),
                 imagePickerBuilder.isCirclePreview(),
                 imagePickerBuilder.getMaxFileSizeInKB(),
                 imagePickerBuilder.getRatioOptionList());
-        startActivityForResult(intent, REQUEST_CODE_EDITOR);
     }
 
     private void onFinishWithSingleImage(String imageUrlOrPath) {
