@@ -120,8 +120,7 @@ public class TrainSearchPresenter extends BaseDaggerPresenter<TrainSearchContrac
 
             @Override
             public void onError(Throwable e) {
-                e.printStackTrace();
-                Log.e(TAG, "onError: " + e.getMessage());
+                getView().showGetListError(e);
             }
 
             @Override

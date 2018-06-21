@@ -44,12 +44,10 @@ public class TrainSearchViewHolder extends AbstractViewHolder<TrainScheduleViewM
     private Context context;
     private AppCompatImageView imageRound1;
     private AppCompatImageView imageRound3;
-    private RelativeLayout itemContainer;
 
     public TrainSearchViewHolder(View itemView, TrainSearchAdapterTypeFactory.OnTrainSearchListener listener) {
         super(itemView);
         this.context = itemView.getContext();
-        itemContainer = itemView.findViewById(R.id.item_container);
         flagItemLayout = itemView.findViewById(R.id.flag_item);
         trainNameTv = itemView.findViewById(R.id.train_name);
         classNameTv = itemView.findViewById(R.id.class_name);
@@ -119,27 +117,22 @@ public class TrainSearchViewHolder extends AbstractViewHolder<TrainScheduleViewM
                 listener.onDetailClicked(trainScheduleViewModel, getAdapterPosition());
             }
         });
-        itemContainer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                listener.onItemClicked(trainScheduleViewModel, getAdapterPosition());
-            }
-        });
     }
 
     private void setFlagTrainSchedule(boolean isOutOfStock, boolean isFastestFlag, boolean isCheapestFlag) {
         clearHolder(flagItemLayout);
         flagItemLayout.setVisibility(isFastestFlag || isCheapestFlag ? View.VISIBLE : View.GONE);
         if (isOutOfStock) {
-            setContentFlag(isCheapestFlag ? "TERMURAH" : "TERCEPAT", R.color.font_white_disabled_38,
+            setContentFlag(isCheapestFlag ? getString(R.string.train_search_cheapest_label) :
+                            getString(R.string.train_search_fastest_label), R.color.font_white_disabled_38,
                     R.color.font_black_disabled_38, R.color.font_black_disabled_38);
         } else {
             if (isCheapestFlag) {
-                setContentFlag("TERMURAH", R.color.light_green, R.color.tkpd_main_green,
+                setContentFlag(getString(R.string.train_search_cheapest_label), R.color.light_green, R.color.tkpd_main_green,
                         R.color.tkpd_main_green);
             }
             if (isFastestFlag) {
-                setContentFlag("TERCEPAT", R.color.light_orange, R.color.orange,
+                setContentFlag(getString(R.string.train_search_fastest_label), R.color.light_orange, R.color.orange,
                         R.color.deep_orange);
             }
         }
@@ -176,10 +169,10 @@ public class TrainSearchViewHolder extends AbstractViewHolder<TrainScheduleViewM
         } else {
             availabilitySeatTv.setVisibility(View.VISIBLE);
             if (availableSeat == OUT_OF_STOCK) {
-                availabilitySeatTv.setText("Penuh");
+                availabilitySeatTv.setText(getString(R.string.train_search_seat_full_label));
                 setColorTextDisable(availabilitySeatTv);
             } else if (availableSeat > OUT_OF_STOCK) {
-                availabilitySeatTv.setText("Sisa " + availableSeat + " kursi");
+                availabilitySeatTv.setText(String.format(getString(R.string.train_search_remains_seat_label), availableSeat));
                 setColorTextEnable(availabilitySeatTv, R.color.colorRed);
             }
         }

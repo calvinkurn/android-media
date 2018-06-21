@@ -53,7 +53,7 @@ public class TrainFilterSearchFragment extends BaseDaggerFragment implements Bas
 
         filterSearchData = listener.getFilterSearchData();
 
-        listener.setTitleToolbar("Filter");
+        listener.setTitleToolbar(getString(R.string.train_search_filter));
         listener.setCloseButton(true);
 
         populateView(view);

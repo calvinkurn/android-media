@@ -343,12 +343,6 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
         Toast.makeText(getActivity(), "detail " + trainScheduleViewModel.getTrainName(), Toast.LENGTH_SHORT).show();
     }
 
-    @Override
-    public void onItemClicked(TrainScheduleViewModel trainScheduleViewModel, int adapterPosition) {
-        //TODO : item schedule clicked
-        Toast.makeText(getActivity(), "item " + trainScheduleViewModel.getTrainName(), Toast.LENGTH_SHORT).show();
-    }
-
     private void removePaddingSortAndFilterSearch() {
         RecyclerView recyclerView = getRecyclerView(getView());
         recyclerView.setPadding(
@@ -388,7 +382,7 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
     public void showSortBottomSheets() {
         BottomSheetBuilder bottomSheetBuilder = new CheckedBottomSheetBuilder(getActivity())
                 .setMode(BottomSheetBuilder.MODE_LIST)
-                .addTitleItem("Urutkan");
+                .addTitleItem(getString(R.string.train_search_sort));
 
         ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(TrainSortOption.EARLIEST_DEPARTURE, "Waktu Keberangkatan Terpagi", null, isSortSelected(TrainSortOption.EARLIEST_DEPARTURE));
         ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(TrainSortOption.LATEST_DEPARTURE, "Waktu Keberangkatan Termalam", null, isSortSelected(TrainSortOption.LATEST_DEPARTURE));
@@ -422,7 +416,7 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK && requestCode == 133) {
-            filterSearchData = data.getExtras().getParcelable("model_filter");
+            filterSearchData = data.getExtras().getParcelable(TrainFilterSearchActivity.MODEL_SEARCH_FILTER);
             long minPrice = filterSearchData.getSelectedMinPrice() == 0 ? filterSearchData.getMinPrice() : filterSearchData.getSelectedMinPrice();
             long maxPrice = filterSearchData.getSelectedMaxPrice() == 0 ? filterSearchData.getMaxPrice() : filterSearchData.getSelectedMaxPrice();
             List<String> trains = filterSearchData.getSelectedTrains() != null && !filterSearchData.getSelectedTrains().isEmpty() ?

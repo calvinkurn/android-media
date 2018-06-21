@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
+import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.search.presentation.model.FilterSearchData;
 
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ public class FilterTrainDepartureFragment extends BaseFilterTrainFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        listener.setTitleToolbar("Waktu Berangkat");
+        listener.setTitleToolbar(getString(R.string.train_filter_time_departure));
         adapter.addList(filterSearchData.getDepartureTimeList(),
                 filterSearchData.getSelectedDepartureTimeList());
         adapter.setListener(listObjectFilter -> {
