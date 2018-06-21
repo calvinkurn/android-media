@@ -6,37 +6,37 @@ import com.google.gson.annotations.SerializedName;
 public class TopAdslistShopProduct {
   @SerializedName("product_id")
   @Expose
-  private String product_id;
+  private String productId;
 
   @SerializedName("product_name")
   @Expose
-  private String product_name;
+  private String productName;
 
   @SerializedName("image_url")
   @Expose
-  private String image_url;
+  private String imageUrl;
 
-  public void setProduct_id(String product_id) {
-    this.product_id = product_id;
+  public void setProductId(String productId) {
+    this.productId = productId;
   }
 
-  public void setProduct_name(String product_name) {
-    this.product_name = product_name;
+  public void setProductName(String productName) {
+    this.productName = productName;
   }
 
-  public void setImage_url(String image_url) {
-    this.image_url = image_url;
+  public void setImageUrl(String imageUrl) {
+    this.imageUrl = imageUrl;
   }
 
-  public String getProduct_id() {
-    return this.product_id;
+  public String getProductId() {
+    return this.productId;
   }
 
-  public String getProduct_name() {
-    return this.product_name;
+  public String getProductName() {
+    return this.productName;
   }
 
-  public String getImage_url() {
-    return this.image_url;
+  public String getImageUrl() {
+    return this.imageUrl;
   }
 }

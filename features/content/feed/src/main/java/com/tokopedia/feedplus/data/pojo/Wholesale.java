@@ -6,13 +6,13 @@ import com.google.gson.annotations.SerializedName;
 public class Wholesale {
   @SerializedName("qty_min_fmt")
   @Expose
-  private String qty_min_fmt;
+  private String qtyMinFmt;
 
-  public void setQty_min_fmt(String qty_min_fmt) {
-    this.qty_min_fmt = qty_min_fmt;
+  public void setQtyMinFmt(String qtyMinFmt) {
+    this.qtyMinFmt = qtyMinFmt;
   }
 
-  public String getQty_min_fmt() {
-    return this.qty_min_fmt;
+  public String getQtyMinFmt() {
+    return this.qtyMinFmt;
   }
 }

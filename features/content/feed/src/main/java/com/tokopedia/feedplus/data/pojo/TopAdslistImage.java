@@ -6,73 +6,73 @@ import com.google.gson.annotations.SerializedName;
 public class TopAdslistImage {
   @SerializedName("m_url")
   @Expose
-  private String m_url;
+  private String mUrl;
 
   @SerializedName("s_url")
   @Expose
-  private String s_url;
+  private String sUrl;
 
   @SerializedName("xs_url")
   @Expose
-  private String xs_url;
+  private String xsUrl;
 
   @SerializedName("m_ecs")
   @Expose
-  private String m_ecs;
+  private String mEcs;
 
   @SerializedName("s_ecs")
   @Expose
-  private String s_ecs;
+  private String sEcs;
 
   @SerializedName("xs_ecs")
   @Expose
-  private String xs_ecs;
+  private String xsEcs;
 
-  public void setM_url(String m_url) {
-    this.m_url = m_url;
+  public void setmUrl(String mUrl) {
+    this.mUrl = mUrl;
   }
 
-  public void setS_url(String s_url) {
-    this.s_url = s_url;
+  public void setsUrl(String sUrl) {
+    this.sUrl = sUrl;
   }
 
-  public void setXs_url(String xs_url) {
-    this.xs_url = xs_url;
+  public void setXsUrl(String xsUrl) {
+    this.xsUrl = xsUrl;
   }
 
-  public void setM_ecs(String m_ecs) {
-    this.m_ecs = m_ecs;
+  public void setmEcs(String mEcs) {
+    this.mEcs = mEcs;
   }
 
-  public void setS_ecs(String s_ecs) {
-    this.s_ecs = s_ecs;
+  public void setsEcs(String sEcs) {
+    this.sEcs = sEcs;
   }
 
-  public void setXs_ecs(String xs_ecs) {
-    this.xs_ecs = xs_ecs;
+  public void setXsEcs(String xsEcs) {
+    this.xsEcs = xsEcs;
   }
 
-  public String getM_url() {
-    return this.m_url;
+  public String getmUrl() {
+    return this.mUrl;
   }
 
-  public String getS_url() {
-    return this.s_url;
+  public String getsUrl() {
+    return this.sUrl;
   }
 
-  public String getXs_url() {
-    return this.xs_url;
+  public String getXsUrl() {
+    return this.xsUrl;
   }
 
-  public String getM_ecs() {
-    return this.m_ecs;
+  public String getmEcs() {
+    return this.mEcs;
   }
 
-  public String getS_ecs() {
-    return this.s_ecs;
+  public String getsEcs() {
+    return this.sEcs;
   }
 
-  public String getXs_ecs() {
-    return this.xs_ecs;
+  public String getXsEcs() {
+    return this.xsEcs;
   }
 }

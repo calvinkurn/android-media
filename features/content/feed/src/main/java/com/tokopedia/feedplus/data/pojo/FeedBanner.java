@@ -6,49 +6,49 @@ import com.google.gson.annotations.SerializedName;
 public class FeedBanner {
   @SerializedName("img_url")
   @Expose
-  private String img_url;
+  private String imgUrl;
 
   @SerializedName("click_url")
   @Expose
-  private String click_url;
+  private String clickUrl;
 
   @SerializedName("click_applink")
   @Expose
-  private String click_applink;
+  private String clickApplink;
 
   @SerializedName("width_to_height_ratio")
   @Expose
-  private Float width_to_height_ratio;
+  private Float widthToHeightRatio;
 
-  public void setImg_url(String img_url) {
-    this.img_url = img_url;
+  public void setImgUrl(String imgUrl) {
+    this.imgUrl = imgUrl;
   }
 
-  public void setClick_url(String click_url) {
-    this.click_url = click_url;
+  public void setClickUrl(String clickUrl) {
+    this.clickUrl = clickUrl;
   }
 
-  public void setClick_applink(String click_applink) {
-    this.click_applink = click_applink;
+  public void setClickApplink(String clickApplink) {
+    this.clickApplink = clickApplink;
   }
 
-  public void setWidth_to_height_ratio(Float width_to_height_ratio) {
-    this.width_to_height_ratio = width_to_height_ratio;
+  public void setWidthToHeightRatio(Float widthToHeightRatio) {
+    this.widthToHeightRatio = widthToHeightRatio;
   }
 
-  public String getImg_url() {
-    return this.img_url;
+  public String getImgUrl() {
+    return this.imgUrl;
   }
 
-  public String getClick_url() {
-    return this.click_url;
+  public String getClickUrl() {
+    return this.clickUrl;
   }
 
-  public String getClick_applink() {
-    return this.click_applink;
+  public String getClickApplink() {
+    return this.clickApplink;
   }
 
-  public Float getWidth_to_height_ratio() {
-    return this.width_to_height_ratio;
+  public Float getWidthToHeightRatio() {
+    return this.widthToHeightRatio;
   }
 }

@@ -16,7 +16,7 @@ public class FeedContent {
 
   @SerializedName("total_product")
   @Expose
-  private Integer total_product;
+  private Integer totalProduct;
 
   @SerializedName("display")
   @Expose
@@ -24,19 +24,19 @@ public class FeedContent {
 
   @SerializedName("status_activity")
   @Expose
-  private String status_activity;
+  private String statusActivity;
 
   @SerializedName("new_status_activity")
   @Expose
-  private StatusActivity new_status_activity;
+  private StatusActivity newStatusActivity;
 
   @SerializedName("total_store")
   @Expose
-  private Integer total_store;
+  private Integer totalStore;
 
   @SerializedName("redirect_url_app")
   @Expose
-  private String redirect_url_app;
+  private String redirectUrlApp;
 
   @SerializedName("polling")
   @Expose
@@ -60,11 +60,11 @@ public class FeedContent {
 
   @SerializedName("favorite_cta")
   @Expose
-  private FeedsFavoriteCta favorite_cta;
+  private FeedsFavoriteCta favoriteCta;
 
   @SerializedName("kol_cta")
   @Expose
-  private FeedsKolCta kol_cta;
+  private FeedsKolCta kolCta;
 
   @SerializedName("topads")
   @Expose
@@ -78,28 +78,28 @@ public class FeedContent {
     this.type = type;
   }
 
-  public void setTotal_product(Integer total_product) {
-    this.total_product = total_product;
+  public void setTotalProduct(Integer totalProduct) {
+    this.totalProduct = totalProduct;
   }
 
   public void setDisplay(String display) {
     this.display = display;
   }
 
-  public void setStatus_activity(String status_activity) {
-    this.status_activity = status_activity;
+  public void setStatusActivity(String statusActivity) {
+    this.statusActivity = statusActivity;
   }
 
-  public void setNew_status_activity(StatusActivity new_status_activity) {
-    this.new_status_activity = new_status_activity;
+  public void setNewStatusActivity(StatusActivity newStatusActivity) {
+    this.newStatusActivity = newStatusActivity;
   }
 
-  public void setTotal_store(Integer total_store) {
-    this.total_store = total_store;
+  public void setTotalStore(Integer totalStore) {
+    this.totalStore = totalStore;
   }
 
-  public void setRedirect_url_app(String redirect_url_app) {
-    this.redirect_url_app = redirect_url_app;
+  public void setRedirectUrlApp(String redirectUrlApp) {
+    this.redirectUrlApp = redirectUrlApp;
   }
 
   public void setPolling(FeedPolling polling) {
@@ -122,12 +122,12 @@ public class FeedContent {
     this.kolrecommendation = kolrecommendation;
   }
 
-  public void setFavorite_cta(FeedsFavoriteCta favorite_cta) {
-    this.favorite_cta = favorite_cta;
+  public void setFavoriteCta(FeedsFavoriteCta favoriteCta) {
+    this.favoriteCta = favoriteCta;
   }
 
-  public void setKol_cta(FeedsKolCta kol_cta) {
-    this.kol_cta = kol_cta;
+  public void setKolCta(FeedsKolCta kolCta) {
+    this.kolCta = kolCta;
   }
 
   public void setTopads(List<TopAd> topads) {
@@ -142,28 +142,28 @@ public class FeedContent {
     return this.type;
   }
 
-  public Integer getTotal_product() {
-    return this.total_product;
+  public Integer getTotalProduct() {
+    return this.totalProduct;
   }
 
   public String getDisplay() {
     return this.display;
   }
 
-  public String getStatus_activity() {
-    return this.status_activity;
+  public String getStatusActivity() {
+    return this.statusActivity;
   }
 
-  public StatusActivity getNew_status_activity() {
-    return this.new_status_activity;
+  public StatusActivity getNewStatusActivity() {
+    return this.newStatusActivity;
   }
 
-  public Integer getTotal_store() {
-    return this.total_store;
+  public Integer getTotalStore() {
+    return this.totalStore;
   }
 
-  public String getRedirect_url_app() {
-    return this.redirect_url_app;
+  public String getRedirectUrlApp() {
+    return this.redirectUrlApp;
   }
 
   public FeedPolling getPolling() {
@@ -186,12 +186,12 @@ public class FeedContent {
     return this.kolrecommendation;
   }
 
-  public FeedsFavoriteCta getFavorite_cta() {
-    return this.favorite_cta;
+  public FeedsFavoriteCta getFavoriteCta() {
+    return this.favoriteCta;
   }
 
-  public FeedsKolCta getKol_cta() {
-    return this.kol_cta;
+  public FeedsKolCta getKolCta() {
+    return this.kolCta;
   }
 
   public List<TopAd> getTopads() {

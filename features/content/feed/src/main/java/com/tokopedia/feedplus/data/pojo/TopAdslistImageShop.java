@@ -6,61 +6,61 @@ import com.google.gson.annotations.SerializedName;
 public class TopAdslistImageShop {
   @SerializedName("cover_ecs")
   @Expose
-  private String cover_ecs;
+  private String coverEcs;
 
   @SerializedName("s_ecs")
   @Expose
-  private String s_ecs;
+  private String sEcs;
 
   @SerializedName("xs_ecs")
   @Expose
-  private String xs_ecs;
+  private String xsEcs;
 
   @SerializedName("s_url")
   @Expose
-  private String s_url;
+  private String sUrl;
 
   @SerializedName("xs_url")
   @Expose
-  private String xs_url;
+  private String xsUrl;
 
-  public void setCover_ecs(String cover_ecs) {
-    this.cover_ecs = cover_ecs;
+  public void setCoverEcs(String coverEcs) {
+    this.coverEcs = coverEcs;
   }
 
-  public void setS_ecs(String s_ecs) {
-    this.s_ecs = s_ecs;
+  public void setsEcs(String sEcs) {
+    this.sEcs = sEcs;
   }
 
-  public void setXs_ecs(String xs_ecs) {
-    this.xs_ecs = xs_ecs;
+  public void setXsEcs(String xsEcs) {
+    this.xsEcs = xsEcs;
   }
 
-  public void setS_url(String s_url) {
-    this.s_url = s_url;
+  public void setsUrl(String sUrl) {
+    this.sUrl = sUrl;
   }
 
-  public void setXs_url(String xs_url) {
-    this.xs_url = xs_url;
+  public void setXsUrl(String xsUrl) {
+    this.xsUrl = xsUrl;
   }
 
-  public String getCover_ecs() {
-    return this.cover_ecs;
+  public String getCoverEcs() {
+    return this.coverEcs;
   }
 
-  public String getS_ecs() {
-    return this.s_ecs;
+  public String getsEcs() {
+    return this.sEcs;
   }
 
-  public String getXs_ecs() {
-    return this.xs_ecs;
+  public String getXsEcs() {
+    return this.xsEcs;
   }
 
-  public String getS_url() {
-    return this.s_url;
+  public String getsUrl() {
+    return this.sUrl;
   }
 
-  public String getXs_url() {
-    return this.xs_url;
+  public String getXsUrl() {
+    return this.xsUrl;
   }
 }

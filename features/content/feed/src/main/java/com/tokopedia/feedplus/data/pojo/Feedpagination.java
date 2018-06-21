@@ -6,13 +6,13 @@ import com.google.gson.annotations.SerializedName;
 public class Feedpagination {
   @SerializedName("has_next_page")
   @Expose
-  private Boolean has_next_page;
+  private Boolean hasNextPage;
 
-  public void setHas_next_page(Boolean has_next_page) {
-    this.has_next_page = has_next_page;
+  public void setHasNextPage(Boolean hasNextPage) {
+    this.hasNextPage = hasNextPage;
   }
 
-  public Boolean getHas_next_page() {
-    return this.has_next_page;
+  public Boolean getHasNextPage() {
+    return this.hasNextPage;
   }
 }

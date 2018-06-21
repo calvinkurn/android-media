@@ -10,7 +10,7 @@ public class TopAd {
 
   @SerializedName("ad_ref_key")
   @Expose
-  private String ad_ref_key;
+  private String adRefKey;
 
   @SerializedName("redirect")
   @Expose
@@ -18,19 +18,19 @@ public class TopAd {
 
   @SerializedName("sticker_id")
   @Expose
-  private String sticker_id;
+  private String stickerId;
 
   @SerializedName("sticker_image")
   @Expose
-  private String sticker_image;
+  private String stickerImage;
 
   @SerializedName("product_click_url")
   @Expose
-  private String product_click_url;
+  private String productClickUrl;
 
   @SerializedName("shop_click_url")
   @Expose
-  private String shop_click_url;
+  private String shopClickUrl;
 
   @SerializedName("product")
   @Expose
@@ -48,28 +48,28 @@ public class TopAd {
     this.id = id;
   }
 
-  public void setAd_ref_key(String ad_ref_key) {
-    this.ad_ref_key = ad_ref_key;
+  public void setAdRefKey(String adRefKey) {
+    this.adRefKey = adRefKey;
   }
 
   public void setRedirect(String redirect) {
     this.redirect = redirect;
   }
 
-  public void setSticker_id(String sticker_id) {
-    this.sticker_id = sticker_id;
+  public void setStickerId(String stickerId) {
+    this.stickerId = stickerId;
   }
 
-  public void setSticker_image(String sticker_image) {
-    this.sticker_image = sticker_image;
+  public void setStickerImage(String stickerImage) {
+    this.stickerImage = stickerImage;
   }
 
-  public void setProduct_click_url(String product_click_url) {
-    this.product_click_url = product_click_url;
+  public void setProductClickUrl(String productClickUrl) {
+    this.productClickUrl = productClickUrl;
   }
 
-  public void setShop_click_url(String shop_click_url) {
-    this.shop_click_url = shop_click_url;
+  public void setShopClickUrl(String shopClickUrl) {
+    this.shopClickUrl = shopClickUrl;
   }
 
   public void setProduct(TopAdslistProduct product) {
@@ -88,28 +88,28 @@ public class TopAd {
     return this.id;
   }
 
-  public String getAd_ref_key() {
-    return this.ad_ref_key;
+  public String getAdRefKey() {
+    return this.adRefKey;
   }
 
   public String getRedirect() {
     return this.redirect;
   }
 
-  public String getSticker_id() {
-    return this.sticker_id;
+  public String getStickerId() {
+    return this.stickerId;
   }
 
-  public String getSticker_image() {
-    return this.sticker_image;
+  public String getStickerImage() {
+    return this.stickerImage;
   }
 
-  public String getProduct_click_url() {
-    return this.product_click_url;
+  public String getProductClickUrl() {
+    return this.productClickUrl;
   }
 
-  public String getShop_click_url() {
-    return this.shop_click_url;
+  public String getShopClickUrl() {
+    return this.shopClickUrl;
   }
 
   public TopAdslistProduct getProduct() {

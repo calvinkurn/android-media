@@ -10,21 +10,21 @@ public class TopAdsBadge {
 
   @SerializedName("image_url")
   @Expose
-  private String image_url;
+  private String imageUrl;
 
   public void setTitle(String title) {
     this.title = title;
   }
 
-  public void setImage_url(String image_url) {
-    this.image_url = image_url;
+  public void setImageUrl(String imageUrl) {
+    this.imageUrl = imageUrl;
   }
 
   public String getTitle() {
     return this.title;
   }
 
-  public String getImage_url() {
-    return this.image_url;
+  public String getImageUrl() {
+    return this.imageUrl;
   }
 }

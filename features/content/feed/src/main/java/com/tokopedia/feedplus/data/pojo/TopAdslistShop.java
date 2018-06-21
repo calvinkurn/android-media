@@ -32,31 +32,31 @@ public class TopAdslistShop {
 
   @SerializedName("image_product")
   @Expose
-  private List<TopAdslistShopProduct> image_product;
+  private List<TopAdslistShopProduct> imageProduct;
 
   @SerializedName("image_shop")
   @Expose
-  private TopAdslistImageShop image_shop;
+  private TopAdslistImageShop imageShop;
 
   @SerializedName("gold_shop")
   @Expose
-  private Boolean gold_shop;
+  private Boolean goldShop;
 
   @SerializedName("lucky_shop")
   @Expose
-  private String lucky_shop;
+  private String luckyShop;
 
   @SerializedName("shop_is_official")
   @Expose
-  private Boolean shop_is_official;
+  private Boolean shopIsOfficial;
 
   @SerializedName("owner_id")
   @Expose
-  private String owner_id;
+  private String ownerId;
 
   @SerializedName("is_owner")
   @Expose
-  private Boolean is_owner;
+  private Boolean isOwner;
 
   @SerializedName("badges")
   @Expose
@@ -68,7 +68,7 @@ public class TopAdslistShop {
 
   @SerializedName("gold_shop_badge")
   @Expose
-  private Boolean gold_shop_badge;
+  private Boolean goldShopBadge;
 
   public void setId(String id) {
     this.id = id;
@@ -94,32 +94,32 @@ public class TopAdslistShop {
     this.city = city;
   }
 
-  public void setImage_product(List<TopAdslistShopProduct> image_product) {
-    this.image_product = image_product;
+  public void setImageProduct(List<TopAdslistShopProduct> imageProduct) {
+    this.imageProduct = imageProduct;
   }
 
-  public void setImage_shop(TopAdslistImageShop image_shop) {
-    this.image_shop = image_shop;
+  public void setImageShop(TopAdslistImageShop imageShop) {
+    this.imageShop = imageShop;
   }
 
-  public void setGold_shop(Boolean gold_shop) {
-    this.gold_shop = gold_shop;
+  public void setGoldShop(Boolean goldShop) {
+    this.goldShop = goldShop;
   }
 
-  public void setLucky_shop(String lucky_shop) {
-    this.lucky_shop = lucky_shop;
+  public void setLuckyShop(String luckyShop) {
+    this.luckyShop = luckyShop;
   }
 
-  public void setShop_is_official(Boolean shop_is_official) {
-    this.shop_is_official = shop_is_official;
+  public void setShopIsOfficial(Boolean shopIsOfficial) {
+    this.shopIsOfficial = shopIsOfficial;
   }
 
-  public void setOwner_id(String owner_id) {
-    this.owner_id = owner_id;
+  public void setOwnerId(String ownerId) {
+    this.ownerId = ownerId;
   }
 
-  public void setIs_owner(Boolean is_owner) {
-    this.is_owner = is_owner;
+  public void setIsOwner(Boolean isOwner) {
+    this.isOwner = isOwner;
   }
 
   public void setBadges(List<TopAdsBadge> badges) {
@@ -130,8 +130,8 @@ public class TopAdslistShop {
     this.uri = uri;
   }
 
-  public void setGold_shop_badge(Boolean gold_shop_badge) {
-    this.gold_shop_badge = gold_shop_badge;
+  public void setGoldShopBadge(Boolean goldShopBadge) {
+    this.goldShopBadge = goldShopBadge;
   }
 
   public String getId() {
@@ -158,32 +158,32 @@ public class TopAdslistShop {
     return this.city;
   }
 
-  public List<TopAdslistShopProduct> getImage_product() {
-    return this.image_product;
+  public List<TopAdslistShopProduct> getImageProduct() {
+    return this.imageProduct;
   }
 
-  public TopAdslistImageShop getImage_shop() {
-    return this.image_shop;
+  public TopAdslistImageShop getImageShop() {
+    return this.imageShop;
   }
 
-  public Boolean getGold_shop() {
-    return this.gold_shop;
+  public Boolean getGoldShop() {
+    return this.goldShop;
   }
 
-  public String getLucky_shop() {
-    return this.lucky_shop;
+  public String getLuckyShop() {
+    return this.luckyShop;
   }
 
-  public Boolean getShop_is_official() {
-    return this.shop_is_official;
+  public Boolean getShopIsOfficial() {
+    return this.shopIsOfficial;
   }
 
-  public String getOwner_id() {
-    return this.owner_id;
+  public String getOwnerId() {
+    return this.ownerId;
   }
 
-  public Boolean getIs_owner() {
-    return this.is_owner;
+  public Boolean getIsOwner() {
+    return this.isOwner;
   }
 
   public List<TopAdsBadge> getBadges() {
@@ -194,7 +194,7 @@ public class TopAdslistShop {
     return this.uri;
   }
 
-  public Boolean getGold_shop_badge() {
-    return this.gold_shop_badge;
+  public Boolean getGoldShopBadge() {
+    return this.goldShopBadge;
   }
 }
