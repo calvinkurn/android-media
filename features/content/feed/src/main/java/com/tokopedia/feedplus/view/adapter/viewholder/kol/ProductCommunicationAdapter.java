@@ -1,14 +1,19 @@
 package com.tokopedia.feedplus.view.adapter.viewholder.kol;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.feedplus.R;
+import com.tokopedia.feedplus.view.analytics.FeedEnhancedTracking;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
 import com.tokopedia.feedplus.view.viewmodel.kol.ProductCommunicationItemViewModel;
 
@@ -22,10 +27,12 @@ import java.util.List;
 public class ProductCommunicationAdapter
         extends RecyclerView.Adapter<ProductCommunicationAdapter.ViewHolder> {
 
+    private final int rowNumber;
     private List<ProductCommunicationItemViewModel> itemViewModels;
     private FeedPlus.View viewListener;
 
-    public ProductCommunicationAdapter(FeedPlus.View viewListener) {
+    public ProductCommunicationAdapter(int rowNumber, FeedPlus.View viewListener) {
+        this.rowNumber = rowNumber;
         this.viewListener = viewListener;
         itemViewModels = new ArrayList<>();
     }
@@ -62,8 +69,35 @@ public class ProductCommunicationAdapter
                 int adapterPosition = holder.getAdapterPosition();
                 viewListener.onContentProductLinkClicked(
                         itemViewModels.get(adapterPosition).getRedirectUrl());
+
+                doEnhancedTracking(
+                        holder.parentView.getContext(),
+                        itemViewModels.get(adapterPosition)
+                );
             }
         });
+    }
+
+    private void doEnhancedTracking(Context context, ProductCommunicationItemViewModel item) {
+        int loginId = Integer.valueOf(
+                !TextUtils.isEmpty(SessionHandler.getLoginID(context)) ?
+                        SessionHandler.getLoginID(context) : "0"
+        );
+
+        List<FeedEnhancedTracking.Promotion> list = new ArrayList<>();
+        list.add(new FeedEnhancedTracking.Promotion(
+                item.getActivityId(),
+                FeedEnhancedTracking.Promotion.createContentNameBanner(),
+                item.getImageUrl(),
+                rowNumber,
+                String.valueOf(itemViewModels.size()),
+                item.getActivityId(),
+                item.getRedirectUrl()
+        ));
+
+        TrackingUtils.eventTrackingEnhancedEcommerce(
+                FeedEnhancedTracking.getClickTracking(list, loginId)
+        );
     }
 
     @Override

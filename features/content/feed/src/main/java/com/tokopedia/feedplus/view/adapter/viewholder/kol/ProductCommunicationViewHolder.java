@@ -26,7 +26,7 @@ public class ProductCommunicationViewHolder extends
         super(itemView);
         RecyclerView productCommunicationRv = itemView.findViewById(R.id.product_communication_rv);
 
-        adapter = new ProductCommunicationAdapter(viewListener);
+        adapter = new ProductCommunicationAdapter(getAdapterPosition(), viewListener);
         productCommunicationRv.setAdapter(adapter);
     }
 

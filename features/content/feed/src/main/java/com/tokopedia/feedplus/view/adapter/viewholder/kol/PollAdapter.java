@@ -119,11 +119,6 @@ public class PollAdapter extends RecyclerView.Adapter<PollAdapter.ViewHolder> {
             @Override
             public void onClick(View view) {
                 String trackingPromoCode;
-                int loginId = Integer.valueOf(
-                        !TextUtils.isEmpty(SessionHandler.getLoginID(context)) ?
-                                SessionHandler.getLoginID(context) : "0"
-                );
-
                 if (voted) {
                     viewListener.onGoToLink(element.getRedirectLink());
                     trackingPromoCode = pollViewModel.getKolProfileUrl();
@@ -131,25 +126,34 @@ public class PollAdapter extends RecyclerView.Adapter<PollAdapter.ViewHolder> {
                     viewListener.onVoteOptionClicked(rowNumber, pollViewModel.getPollId(), element);
                     trackingPromoCode = FeedEnhancedTracking.Promotion.TRACKING_EMPTY;
                 }
-
-                List<FeedEnhancedTracking.Promotion> list = new ArrayList<>();
-                list.add(new FeedEnhancedTracking.Promotion(
-                        Integer.valueOf(element.getOptionId()),
-                        FeedEnhancedTracking.Promotion.createContentNameVote(),
-                        element.getOption(),
-                        rowNumber,
-                        pollViewModel.getReview(),
-                        Integer.valueOf(pollViewModel.getPollId()),
-                        trackingPromoCode
-                ));
-                TrackingUtils.eventTrackingEnhancedEcommerce(
-                        FeedEnhancedTracking.getClickTracking(
-                                list,
-                                loginId
-                        )
-                );
+                doEnhancedTracking(context, element, trackingPromoCode);
             }
         });
+    }
+
+    private void doEnhancedTracking(Context context, PollOptionViewModel element,
+                                    String trackingPromoCode) {
+        int loginId = Integer.valueOf(
+                !TextUtils.isEmpty(SessionHandler.getLoginID(context)) ?
+                        SessionHandler.getLoginID(context) : "0"
+        );
+
+        List<FeedEnhancedTracking.Promotion> list = new ArrayList<>();
+        list.add(new FeedEnhancedTracking.Promotion(
+                Integer.valueOf(element.getOptionId()),
+                FeedEnhancedTracking.Promotion.createContentNameVote(),
+                element.getOption(),
+                rowNumber,
+                pollViewModel.getReview(),
+                Integer.valueOf(pollViewModel.getPollId()),
+                trackingPromoCode
+        ));
+        TrackingUtils.eventTrackingEnhancedEcommerce(
+                FeedEnhancedTracking.getClickTracking(
+                        list,
+                        loginId
+                )
+        );
     }
 
     @Override
