@@ -53,8 +53,7 @@ public class DrawerInjector {
         UserSession userSession = new UserSession(context);
 
         UserAttributesRepository userAttributesRepository = new UserAttributesRepositoryImpl(
-//                new UserAttributesFactory(new DrawerService(), drawerCache)
-                new UserAttributesFactory(context, new DrawerService(context, userSession, networkRouter), drawerCache)
+                new UserAttributesFactory(new DrawerService(context, userSession, networkRouter), drawerCache)
         );
 
         GetUserAttributesUseCase getUserAttributesUseCase = new GetUserAttributesUseCase(jobExecutor,
