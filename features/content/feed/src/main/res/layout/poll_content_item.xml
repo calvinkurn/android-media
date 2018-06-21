@@ -93,6 +93,7 @@
                 android:progress="10"
                 android:progressDrawable="@drawable/poll_option_image_default" />
 
+            <!--//TODO milhamj-->
             <!--<ImageView-->
             <!--android:id="@+id/icon"-->
             <!--android:layout_width="wrap_content"-->
