@@ -17,6 +17,7 @@ import com.tokopedia.feedplus.data.source.CloudFirstFeedDataSource;
 import com.tokopedia.feedplus.data.source.cloud.CloudFeedDataSource;
 import com.tokopedia.feedplus.data.source.cloud.CloudFeedDetailDataSource;
 import com.tokopedia.feedplus.data.source.cloud.CloudRecentProductDataSource;
+import com.tokopedia.feedplus.data.source.cloud.WhitelistDataSource;
 import com.tokopedia.feedplus.data.source.local.LocalFeedDataSource;
 
 /**
@@ -60,8 +61,12 @@ public class FeedFactory {
         this.whitelistMapper = whitelistMapper;
     }
 
+    public WhitelistDataSource createWhitelistDataSource() {
+        return new WhitelistDataSource(context, feedApi, whitelistMapper);
+    }
+
     public CloudFeedDataSource createCloudFeedDataSource() {
-        return new CloudFeedDataSource(context, feedApi, feedListMapper, feedResultMapperCloud,whitelistMapper,
+        return new CloudFeedDataSource(context, feedApi, feedListMapper, feedResultMapperCloud,
                 globalCacheManager);
     }
 
@@ -74,7 +79,7 @@ public class FeedFactory {
     }
 
     public CloudFirstFeedDataSource createCloudFirstFeedDataSource() {
-        return new CloudFirstFeedDataSource(context, feedApi, feedListMapper, feedResultMapperCloud, whitelistMapper,
+        return new CloudFirstFeedDataSource(context, feedApi, feedListMapper, feedResultMapperCloud,
                 globalCacheManager);
     }
 

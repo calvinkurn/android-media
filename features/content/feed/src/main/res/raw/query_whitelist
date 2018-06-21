@@ -1,4 +1,4 @@
-query CheckWhitelistQuery() {
+query WhitelistQuery() {
     feed_check_whitelist() {
         __typename
         content {

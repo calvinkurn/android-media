@@ -5,7 +5,6 @@ import com.tokopedia.feedplus.data.source.KolSource;
 import com.tokopedia.feedplus.domain.model.CheckFeedDomain;
 import com.tokopedia.feedplus.domain.model.FollowKolDomain;
 import com.tokopedia.feedplus.domain.model.feed.FeedResult;
-import com.tokopedia.feedplus.domain.model.feed.WhitelistDomain;
 import com.tokopedia.feedplus.domain.model.feeddetail.DataFeedDetailDomain;
 import com.tokopedia.feedplus.domain.model.recentview.RecentViewProductDomain;
 import com.tokopedia.usecase.RequestParams;
@@ -62,10 +61,5 @@ public class FeedRepositoryImpl implements FeedRepository {
     @Override
     public Observable<FollowKolDomain> followUnfollowKol(RequestParams requestParams) {
         return kolSource.followKolPost(requestParams);
-    }
-
-    @Override
-    public Observable<WhitelistDomain> getWhitelist(RequestParams requestParams) {
-        return feedFactory.createCloudFeedDataSource().getWhiteList(requestParams);
     }
 }

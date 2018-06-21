@@ -10,10 +10,8 @@ import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.data.api.FeedApi;
 import com.tokopedia.feedplus.data.mapper.FeedListMapper;
 import com.tokopedia.feedplus.data.mapper.FeedResultMapper;
-import com.tokopedia.feedplus.data.mapper.WhitelistMapper;
 import com.tokopedia.feedplus.domain.model.feed.FeedDomain;
 import com.tokopedia.feedplus.domain.model.feed.FeedResult;
-import com.tokopedia.feedplus.domain.model.feed.WhitelistDomain;
 import com.tokopedia.feedplus.domain.usecase.GetFeedsUseCase;
 import com.tokopedia.usecase.RequestParams;
 
@@ -44,20 +42,17 @@ public class CloudFeedDataSource {
     private final FeedListMapper feedListMapper;
     protected final GlobalCacheManager globalCacheManager;
     protected final FeedResultMapper feedResultMapper;
-    private final WhitelistMapper whitelistMapper;
 
     public CloudFeedDataSource(@ApplicationContext Context context,
                                FeedApi feedApi,
                                FeedListMapper feedListMapper,
                                FeedResultMapper feedResultMapper,
-                               WhitelistMapper whitelistMapper,
                                GlobalCacheManager globalCacheManager) {
         this.context = context;
         this.feedApi = feedApi;
         this.feedListMapper = feedListMapper;
         this.globalCacheManager = globalCacheManager;
         this.feedResultMapper = feedResultMapper;
-        this.whitelistMapper = whitelistMapper;
     }
 
     public Observable<FeedResult> getNextPageFeedsList(RequestParams requestParams) {
@@ -67,11 +62,6 @@ public class CloudFeedDataSource {
     protected Observable<FeedDomain> getFeedsList(RequestParams requestParams) {
         return feedApi.getFeedData(getRequestPayload(requestParams, R.raw.query_feed))
                 .map(feedListMapper);
-    }
-
-    public Observable<WhitelistDomain> getWhiteList(RequestParams requestParams) {
-        return feedApi.getWhiteList(getRequestPayload(requestParams, R.raw.query_whitelist))
-                .map(whitelistMapper);
     }
 
     private GraphqlRequest getRequestPayload(RequestParams requestParams, int rawResourceId) {

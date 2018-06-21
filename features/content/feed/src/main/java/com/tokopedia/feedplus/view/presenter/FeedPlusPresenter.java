@@ -19,6 +19,7 @@ import com.tokopedia.feedplus.view.subscriber.FollowUnfollowKolRecommendationSub
 import com.tokopedia.feedplus.view.subscriber.FollowUnfollowKolSubscriber;
 import com.tokopedia.feedplus.view.subscriber.GetFeedsSubscriber;
 import com.tokopedia.feedplus.view.subscriber.GetFirstPageFeedsSubscriber;
+import com.tokopedia.feedplus.view.subscriber.GetWhitelistSubsciber;
 import com.tokopedia.feedplus.view.subscriber.LikeKolPostSubscriber;
 import com.tokopedia.kol.feature.post.domain.interactor.LikeKolPostUseCase;
 import com.tokopedia.topads.sdk.domain.model.Data;
@@ -260,6 +261,7 @@ public class FeedPlusPresenter
 
     @Override
     public void getWhitelist() {
-
+        viewListener.showLoadingProgress();
+        getWhitelistUseCase.execute(RequestParams.create(), new GetWhitelistSubsciber(viewListener));
     }
 }

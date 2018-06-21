@@ -1,6 +1,6 @@
 package com.tokopedia.feedplus.domain.usecase;
 
-import com.tokopedia.feedplus.data.repository.FeedRepository;
+import com.tokopedia.feedplus.data.repository.WhitelistRepository;
 import com.tokopedia.feedplus.domain.model.feed.WhitelistDomain;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
@@ -14,16 +14,16 @@ import rx.Observable;
  */
 public class GetWhitelistUseCase extends UseCase<WhitelistDomain> {
 
-    protected FeedRepository feedRepository;
+    private WhitelistRepository whitelistRepository;
 
     @Inject
-    public GetWhitelistUseCase(FeedRepository feedRepository) {
-        this.feedRepository = feedRepository;
+    public GetWhitelistUseCase(WhitelistRepository whitelistRepository) {
+        this.whitelistRepository = whitelistRepository;
     }
 
     @Override
     public Observable<WhitelistDomain> createObservable(RequestParams requestParams) {
-        return feedRepository.getWhitelist(requestParams);
+        return whitelistRepository.getWhitelist(requestParams);
     }
 
 }
