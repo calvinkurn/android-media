@@ -12,6 +12,7 @@ public interface GraphqlConstant {
         String VARIABLES = "variables";
         String OPERATION_NAME = "operationName";
         String DATA = "data";
+        String ERROR = "errors";
     }
 
     enum ExpiryTimes {
