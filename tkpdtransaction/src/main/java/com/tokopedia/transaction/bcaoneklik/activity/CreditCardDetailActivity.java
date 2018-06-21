@@ -6,19 +6,18 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.core.remoteconfig.RemoteConfig;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.bcaoneklik.di.DaggerPaymentOptionComponent;
 import com.tokopedia.transaction.bcaoneklik.di.PaymentOptionComponent;
 import com.tokopedia.transaction.bcaoneklik.dialog.DeleteCreditCardDialog;
@@ -27,10 +26,6 @@ import com.tokopedia.transaction.bcaoneklik.model.creditcard.CreditCardModelItem
 import com.tokopedia.transaction.bcaoneklik.presenter.ListPaymentTypePresenterImpl;
 
 import javax.inject.Inject;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * @author Aghny A. Putra on 09/01/18
@@ -89,11 +84,15 @@ public class CreditCardDetailActivity extends TActivity
     }
 
     private String getBackgroundAssets(CreditCardModelItem item) {
-        final String resourceUrl = TkpdBaseURL.Payment.CDN_IMG_ANDROID_DOMAIN + "%s/%s/%s.png";
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
+        String baseUrl = remoteConfig.getString(TkpdCache.RemoteConfigKey.IMAGE_HOST,
+                TkpdBaseURL.Payment.DEFAULT_HOST);
+
+        final String resourceUrl = baseUrl + TkpdBaseURL.Payment.CDN_IMG_ANDROID_DOMAIN;
         String assetName = getBackgroundResource(item);
         String density = DisplayMetricUtils.getScreenDensity(this);
 
-        return String.format(resourceUrl, assetName, density, assetName);
+        return String.format(resourceUrl + "%s/%s/%s.png", assetName, density, assetName);
     }
 
     private String getBackgroundResource(CreditCardModelItem item) {

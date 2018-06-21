@@ -1,0 +1,2 @@
+-keep class com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData
+-keep class com.tokopedia.payment.model.PaymentPassData

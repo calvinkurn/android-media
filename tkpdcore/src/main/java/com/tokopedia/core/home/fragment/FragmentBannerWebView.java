@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.CookieManager;
 import android.webkit.SslErrorHandler;
+import android.webkit.ValueCallback;
 import android.webkit.WebBackForwardList;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
@@ -53,6 +54,10 @@ public class FragmentBannerWebView extends Fragment {
     private static final int LOGIN_GPLUS = 123453;
     private boolean isAlreadyFirstRedirect;
 
+    private ValueCallback<Uri> callbackBeforeL;
+    public ValueCallback<Uri[]> callbackAfterL;
+    public final static int ATTACH_FILE_REQUEST = 1;
+
     private class MyWebViewClient extends WebChromeClient {
         @Override
         public void onProgressChanged(WebView view, int newProgress) {
@@ -66,6 +71,57 @@ public class FragmentBannerWebView extends Fragment {
                 e.printStackTrace();
             }
             super.onProgressChanged(view, newProgress);
+        }
+
+        //For Android 3.0+
+        public void openFileChooser(ValueCallback<Uri> uploadMsg) {
+            callbackBeforeL = uploadMsg;
+            Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+            i.addCategory(Intent.CATEGORY_OPENABLE);
+            i.setType("*/*");
+            startActivityForResult(Intent.createChooser(i, "File Chooser"), ATTACH_FILE_REQUEST);
+        }
+
+        // For Android 3.0+, above method not supported in some android 3+ versions, in such case we use this
+        public void openFileChooser(ValueCallback uploadMsg, String acceptType) {
+            callbackBeforeL = uploadMsg;
+            Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+            i.addCategory(Intent.CATEGORY_OPENABLE);
+            i.setType("*/*");
+            startActivityForResult(
+                    Intent.createChooser(i, "File Browser"), ATTACH_FILE_REQUEST);
+        }
+
+        //For Android 4.1+
+        public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType, String capture) {
+            callbackBeforeL = uploadMsg;
+            Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+            i.addCategory(Intent.CATEGORY_OPENABLE);
+            i.setType("*/*");
+            startActivityForResult(Intent.createChooser(i, "File Chooser"), ATTACH_FILE_REQUEST);
+        }
+
+        //For Android 5.0+
+        public boolean onShowFileChooser(
+                WebView webView, ValueCallback<Uri[]> filePathCallback,
+                WebChromeClient.FileChooserParams fileChooserParams) {
+            if (callbackAfterL != null) {
+                callbackAfterL.onReceiveValue(null);
+            }
+            callbackAfterL = filePathCallback;
+
+            Intent contentSelectionIntent = new Intent(Intent.ACTION_GET_CONTENT);
+            contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE);
+            contentSelectionIntent.setType("*/*");
+            Intent[] intentArray = new Intent[0];
+
+            Intent chooserIntent = new Intent(Intent.ACTION_CHOOSER);
+            chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent);
+            chooserIntent.putExtra(Intent.EXTRA_TITLE, "File Chooser");
+            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray);
+            startActivityForResult(chooserIntent, ATTACH_FILE_REQUEST);
+            return true;
+
         }
     }
 

@@ -3,7 +3,7 @@ package com.tokopedia.inbox.inboxchat.presenter;
 import android.util.Log;
 
 import com.google.gson.JsonArray;
-import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.util.SessionHandler;

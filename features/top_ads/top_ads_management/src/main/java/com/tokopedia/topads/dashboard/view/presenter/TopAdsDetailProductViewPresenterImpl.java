@@ -3,6 +3,7 @@ package com.tokopedia.topads.dashboard.view.presenter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.tokopedia.topads.common.util.TopAdsSourceTaggingUseCaseUtil;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.topads.dashboard.domain.interactor.ListenerInteractor;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsProductAdInteractor;
@@ -11,9 +12,13 @@ import com.tokopedia.topads.dashboard.data.model.data.ProductAdBulkAction;
 import com.tokopedia.topads.dashboard.data.model.request.DataRequest;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailViewListener;
 import com.tokopedia.topads.dashboard.view.model.Ad;
+import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
+import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import rx.Subscriber;
 
 /**
  * Created by zulfikarrahman on 12/30/16.
@@ -90,4 +95,8 @@ public class TopAdsDetailProductViewPresenterImpl<T extends Ad> extends TopAdsDe
         return dataRequest;
     }
 
+    @Override
+    public void unSubscribe() {
+        super.unSubscribe();
+    }
 }
