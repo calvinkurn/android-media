@@ -177,21 +177,8 @@ public class WholesaleAddAdapter extends RecyclerView.Adapter<WholesaleAddAdapte
             });
         }
 
-        public double getDoubleValue() {
-            String valueString = CurrencyFormatHelper.removeCurrencyPrefix(etWholeSalePrice.getText().toString());
-            try {
-                valueString = StringUtils.removeComma(valueString);
-                if (TextUtils.isEmpty(valueString)) {
-                    return 0;
-                }
-                return Double.parseDouble(valueString);
-            } catch (NumberFormatException e) {
-                return StringUtils.convertToNumeric(valueString, false);
-            }
-        }
-
         private void setValueAndRefresh(double number){
-            wholesaleModels.get(getAdapterPosition()).setQtyPrice(getDoubleValue());
+            wholesaleModels.get(getAdapterPosition()).setQtyPrice(number);
             wholesaleModels.get(getAdapterPosition()).setFocusPrice(false);
             currentPositionFocusPrice = getAdapterPosition();
             currentPositionFocusQty = -1;
