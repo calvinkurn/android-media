@@ -12,8 +12,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.settingbank.R
-import com.tokopedia.settingbank.R.id.account_list_rv
-import com.tokopedia.settingbank.R.id.add_account_button
 import com.tokopedia.settingbank.common.analytics.SettingBankAnalytics
 import com.tokopedia.settingbank.common.di.SettingBankDependencyInjector
 import com.tokopedia.settingbank.view.adapter.BankAccountAdapter
@@ -136,7 +134,7 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
     }
 
     override fun onSuccessSetDefault(adapterPosition: Int, statusMessage: String) {
-        adapter.setMain(adapterPosition)
+        adapter.changeMain(adapterPosition)
         linearLayoutManager.scrollToPosition(0)
     }
 
@@ -196,6 +194,11 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
 
     override fun onSuccessDeleteAccount(adapterPosition: Int, statusMessage: String) {
         adapter.remove(adapterPosition)
+        if (adapter.getList()!!.size > 0) {
+            adapter.setMain(0)
+        } else {
+            onEmptyList()
+        }
     }
 
     override fun onErrorDeleteAccount(errorMessage: String) {

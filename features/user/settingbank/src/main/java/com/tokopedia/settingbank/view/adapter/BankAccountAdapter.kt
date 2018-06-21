@@ -22,7 +22,7 @@ class BankAccountAdapter(adapterTypeFactory: BankAccountTypeFactoryImpl,
         notifyItemRangeInserted(lastPosition, list.size)
     }
 
-    fun setMain(adapterPosition: Int) {
+    fun changeMain(adapterPosition: Int) {
         val tempAccount: BankAccountViewModel = this.visitables[adapterPosition] as BankAccountViewModel
         tempAccount.isDefaultBank = true
 
@@ -53,6 +53,15 @@ class BankAccountAdapter(adapterTypeFactory: BankAccountTypeFactoryImpl,
         return if (index == itemCount - 1) {
             this.visitables[index] is LoadingMoreModel
         } else false
+    }
+
+    fun getList(): MutableList<Visitable<Any>>? {
+        return visitables
+    }
+
+    fun setMain(adapterPosition: Int) {
+        (this.visitables[adapterPosition] as BankAccountViewModel).isDefaultBank = true
+        notifyItemChanged(adapterPosition)
     }
 }
 

@@ -47,7 +47,12 @@ class BankAccountViewHolder(val v: View, val listener: BankAccountPopupListener)
                 mainAccount.visibility = View.GONE
             }
 
-            ImageHandler.LoadImage(bankIcon, element.bankLogo)
+            if (!element.bankLogo.isNullOrBlank()) {
+                bankIcon.visibility = View.VISIBLE
+                ImageHandler.LoadImage(bankIcon, element.bankLogo)
+            } else {
+                bankIcon.visibility = View.INVISIBLE
+            }
 
             dropDownMenu.setOnClickListener { v: View? ->
                 if (v != null) {
