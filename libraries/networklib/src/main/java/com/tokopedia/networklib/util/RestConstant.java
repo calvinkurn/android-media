@@ -1,6 +1,7 @@
 package com.tokopedia.networklib.util;
 
 public interface RestConstant {
+    String BASE_URL = "http://tokopedia.com/";
     long HTTP_SUCCESS = 200;
     long MINUTE_MS = 1000 * 60;
     long HOUR_MS = MINUTE_MS * 60;

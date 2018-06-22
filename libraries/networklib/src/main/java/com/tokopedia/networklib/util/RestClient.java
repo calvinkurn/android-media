@@ -17,6 +17,8 @@ import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 
+import static com.tokopedia.networklib.util.RestConstant.BASE_URL;
+
 public class RestClient {
     private static Retrofit sRetrofit = null;
     private static RestApi sRestApi = null;
@@ -36,7 +38,7 @@ public class RestClient {
             tkpdOkHttpBuilder.addInterceptor(new TkpdAuthInterceptor(context, (NetworkRouter) context.getApplicationContext(), userSession));
             tkpdOkHttpBuilder.addInterceptor(new FingerprintInterceptor((NetworkRouter) context.getApplicationContext(), userSession));
             sRetrofit = new Retrofit.Builder()
-                    .baseUrl("http://tokopedia.com/")
+                    .baseUrl(BASE_URL)
                     .addConverterFactory(new StringResponseConverter())
                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                     .client(tkpdOkHttpBuilder.build()).build();
@@ -45,7 +47,7 @@ public class RestClient {
 
     private static Retrofit getRetrofit() {
         if (sRetrofit == null) {
-            throw new RuntimeException("Please call init() before using graphql library");
+            throw new RuntimeException("Please call RestClient.init() to start the network library.");
         }
 
         return sRetrofit;
@@ -60,7 +62,7 @@ public class RestClient {
 
     public static synchronized FingerprintManager getFingerPrintManager() {
         if (sFingerprintManager == null) {
-            throw new RuntimeException("Please call init() before using graphql library");
+            throw new RuntimeException("Please call RestClient.init() to start the network library.");
         }
         return sFingerprintManager;
     }

@@ -19,11 +19,18 @@ public class RestResponse {
     }
 
     /**
-     * @param <T>  Class type of T ( e.g. object of Xyx class)
+     * @param <T> Class type of T ( e.g. object of Xyx class)
      * @return Return the object of T
      */
     public final <T> T getData() {
-        return (T) result;
+        try {
+            return (T) result;
+        } catch (ClassCastException cce) {
+            cce.printStackTrace();
+            throw new RuntimeException("Class type mismatch, please use same class object whose type token was provided in Request object."
+                    + "Current object type is :"
+                    + result == null ? "null" : result.getClass().getName());
+        }
     }
 
     public String getErrorBody() {
