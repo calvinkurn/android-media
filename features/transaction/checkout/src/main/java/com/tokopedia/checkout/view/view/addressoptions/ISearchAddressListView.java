@@ -2,6 +2,7 @@ package com.tokopedia.checkout.view.view.addressoptions;
 
 import android.app.Activity;
 
+import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.core.manage.people.address.model.Token;
 
 /**
@@ -26,5 +27,7 @@ public interface ISearchAddressListView<T> {
     Activity getActivity();
 
     void setToken(Token token);
+
+    void navigateToCheckoutPage(RecipientAddressModel recipientAddressModel);
 
 }

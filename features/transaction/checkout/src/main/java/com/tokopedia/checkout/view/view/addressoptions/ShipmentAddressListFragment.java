@@ -261,12 +261,11 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         mShipmentAddressListAdapter.setAddressList(recipientAddressModels);
         mShipmentAddressListAdapter.notifyDataSetChanged();
         mRvRecipientAddressList.setVisibility(View.VISIBLE);
-        for (RecipientAddressModel recipientAddressModel : recipientAddressModels) {
-            if (recipientAddressModel.isSelected()) {
-                onAddressContainerClicked(recipientAddressModel);
-                break;
-            }
-        }
+    }
+
+    @Override
+    public void navigateToCheckoutPage(RecipientAddressModel recipientAddressModel) {
+        onAddressContainerClicked(recipientAddressModel);
     }
 
     @Override

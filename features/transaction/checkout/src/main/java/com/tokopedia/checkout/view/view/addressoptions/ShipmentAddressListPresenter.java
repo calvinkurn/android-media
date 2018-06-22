@@ -129,6 +129,7 @@ public class ShipmentAddressListPresenter
                                         if (peopleAddressModel.getRecipientAddressModelList().isEmpty()) {
                                             getMvpView().showListEmpty();
                                         } else {
+                                            RecipientAddressModel newlyCreatedAddress = null;
                                             if (currentAddress != null) {
                                                 for (RecipientAddressModel recipientAddressModel : peopleAddressModel.getRecipientAddressModelList()) {
                                                     if (recipientAddressModel.getId().equalsIgnoreCase(currentAddress.getId()) ||
@@ -141,13 +142,18 @@ public class ShipmentAddressListPresenter
                                                                     recipientAddressModel.getRecipientPhoneNumber().equals(currentAddress.getRecipientPhoneNumber()) &&
                                                                     recipientAddressModel.getRecipientName().equals(currentAddress.getRecipientName()))
                                                             ) {
+                                                        newlyCreatedAddress = recipientAddressModel;
                                                         recipientAddressModel.setSelected(true);
                                                         break;
                                                     }
                                                 }
                                             }
                                             if (ShipmentAddressListPresenter.this.resetPage) {
-                                                getMvpView().showList(peopleAddressModel.getRecipientAddressModelList());
+                                                if (currentAddress != null && currentAddress.getId() == null && newlyCreatedAddress != null) {
+                                                    getMvpView().navigateToCheckoutPage(newlyCreatedAddress);
+                                                } else {
+                                                    getMvpView().showList(peopleAddressModel.getRecipientAddressModelList());
+                                                }
                                             } else {
                                                 getMvpView().updateList(peopleAddressModel.getRecipientAddressModelList());
                                             }
