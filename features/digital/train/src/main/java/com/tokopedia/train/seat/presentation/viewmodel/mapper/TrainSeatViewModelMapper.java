@@ -19,7 +19,7 @@ public class TrainSeatViewModelMapper {
             viewModel = new TrainSeatViewModel();
             viewModel.setColumn(entity.getColumn());
             viewModel.setRow(entity.getRow());
-            viewModel.setStatus(entity.getStatus());
+            viewModel.setAvailable(entity.getStatus() == 0);
         }
         return viewModel;
     }

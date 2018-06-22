@@ -1,33 +1,12 @@
 package com.tokopedia.train.seat.presentation.viewmodel;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-public class TrainSeatViewModel implements Parcelable{
+public class TrainSeatViewModel {
     private String column;
     private int row;
-    private int status;
+    private boolean available;
 
     public TrainSeatViewModel() {
     }
-
-    protected TrainSeatViewModel(Parcel in) {
-        column = in.readString();
-        row = in.readInt();
-        status = in.readInt();
-    }
-
-    public static final Creator<TrainSeatViewModel> CREATOR = new Creator<TrainSeatViewModel>() {
-        @Override
-        public TrainSeatViewModel createFromParcel(Parcel in) {
-            return new TrainSeatViewModel(in);
-        }
-
-        @Override
-        public TrainSeatViewModel[] newArray(int size) {
-            return new TrainSeatViewModel[size];
-        }
-    };
 
     public String getColumn() {
         return column;
@@ -45,23 +24,16 @@ public class TrainSeatViewModel implements Parcelable{
         this.row = row;
     }
 
-    public int getStatus() {
-        return status;
+    public boolean isAvailable() {
+        return available;
     }
 
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
+    public void setAvailable(boolean available) {
+        this.available = available;
     }
 
     @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(column);
-        parcel.writeInt(row);
-        parcel.writeInt(status);
+    public boolean equals(Object obj) {
+        return obj instanceof TrainSeatViewModel && ((TrainSeatViewModel) obj).getRow() == row && ((TrainSeatViewModel) obj).getColumn().equals(column);
     }
 }

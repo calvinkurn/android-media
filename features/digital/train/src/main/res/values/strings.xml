@@ -67,4 +67,5 @@
     <string name="train_seat_filled_label">Terisi</string>
     <string name="train_seat_your_choice_label">Pilihan Anda</string>
     <string name="train_seat_header_passenger_label">Penumpang</string>
+    <string name="train_seat_popup_choose_passenger">Pilih Penumpang</string>
 </resources>

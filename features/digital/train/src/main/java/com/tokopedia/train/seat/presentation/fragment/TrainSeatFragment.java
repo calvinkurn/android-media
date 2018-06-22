@@ -13,11 +13,13 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.seat.di.TrainSeatComponent;
 import com.tokopedia.train.seat.presentation.contract.TrainSeatContract;
+import com.tokopedia.train.seat.presentation.fragment.viewpager.TrainSeatPagerAdapter;
 import com.tokopedia.train.seat.presentation.presenter.TrainSeatPresenter;
 import com.tokopedia.train.seat.presentation.viewmodel.TrainWagonViewModel;
 import com.tokopedia.train.seat.presentation.widget.CountdownTimeView;
 import com.tokopedia.train.seat.presentation.widget.TrainSeatPassengerAndWagonView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -88,6 +90,12 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
 
     @Override
     public void renderWagon(List<TrainWagonViewModel> trainWagonViewModels) {
+        List<TrainWagonFragment> fragments = new ArrayList<>();
+        for (TrainWagonViewModel wagon : trainWagonViewModels) {
+            fragments.add(TrainWagonFragment.newInstance(wagon));
 
+        }
+        TrainSeatPagerAdapter adapter = new TrainSeatPagerAdapter(getChildFragmentManager(), fragments);
+        wagonViewPager.setAdapter(adapter);
     }
 }
