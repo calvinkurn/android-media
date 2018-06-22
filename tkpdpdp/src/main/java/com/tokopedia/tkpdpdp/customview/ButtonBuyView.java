@@ -11,7 +11,6 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.util.GlobalConfig;
@@ -170,13 +169,25 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
             btnNewBuy.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onBuyClick(ProductDetailView.SOURCE_BUTTON_BUY_PDP);
+                    if (data.getInfo().getHasVariant()) {
+                        listener.openVariantPage(
+                                listener.generateStateVariant(ProductDetailView.SOURCE_BUTTON_BUY_PDP)
+                        );
+                    } else {
+                        listener.onBuyClick(ProductDetailView.SOURCE_BUTTON_BUY_PDP);
+                    }
                 }
             });
             btnCart.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onBuyClick(ProductDetailView.SOURCE_BUTTON_CART_PDP);
+                    if (data.getInfo().getHasVariant()) {
+                        listener.openVariantPage(
+                                listener.generateStateVariant(ProductDetailView.SOURCE_BUTTON_CART_PDP)
+                        );
+                    } else {
+                        listener.onBuyClick(ProductDetailView.SOURCE_BUTTON_CART_PDP);
+                    }
                 }
             });
             setVisibility(VISIBLE);

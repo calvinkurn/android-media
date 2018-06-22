@@ -137,6 +137,7 @@ import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
+import static android.app.Activity.RESULT_OK;
 import static com.tokopedia.core.product.model.productdetail.ProductInfo.PRD_STATE_PENDING;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.EXTRA_PRODUCT_ID;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.WIHSLIST_STATUS_IS_WISHLIST;
@@ -148,7 +149,11 @@ import static com.tokopedia.tkpdpdp.VariantActivity.KEY_LEVEL2_SELECTED;
 import static com.tokopedia.tkpdpdp.VariantActivity.KEY_PRODUCT_DETAIL_DATA;
 import static com.tokopedia.tkpdpdp.VariantActivity.KEY_REMARK_FOR_SELLER;
 import static com.tokopedia.tkpdpdp.VariantActivity.KEY_SELECTED_QUANTIY;
+import static com.tokopedia.tkpdpdp.VariantActivity.KEY_STATE_OPEN_VARIANT;
+import static com.tokopedia.tkpdpdp.VariantActivity.KEY_STATE_RESULT_VARIANT;
 import static com.tokopedia.tkpdpdp.VariantActivity.KEY_VARIANT_DATA;
+import static com.tokopedia.tkpdpdp.VariantActivity.SELECTED_VARIANT_RESULT_TO_BUY;
+import static com.tokopedia.tkpdpdp.VariantActivity.SELECTED_VARIANT_RESULT_TO_CART;
 
 /**
  * ProductDetailFragment
@@ -505,8 +510,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                     productData.getInfo().getHasVariant() && productVariant == null) {
                 onClickBuyWhileRequestingVariant = true;
                 buttonBuyView.changeToLoading();
-            } else if (productData != null && !productData.getInfo().getHasVariant() && productVariant == null ||
-                    productData.getInfo().getHasVariant() && productVariant != null && variantLevel1 != null) {
+            } else {
                 String weightProduct = "";
                 switch (productData.getInfo().getProductWeightUnit()) {
                     case "gr":
@@ -543,9 +547,10 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                     );
                 }
                 onProductBuySessionLogin(pass);
-            } else {
-                openVariantPage(generateStateVariant(source), productVariant, productData);
+
             }
+            /*
+            todo : tracking
             if (!TextUtils.isEmpty(source) && source.equals(SOURCE_BUTTON_BUY_PDP) && productData.getInfo().getHasVariant() && variantLevel1 != null) {
                 UnifyTracking.eventBuyPDPVariant(generateVariantString());
             } else if (!TextUtils.isEmpty(source) && source.equals(SOURCE_BUTTON_BUY_PDP) && productData.getInfo().getHasVariant()) {
@@ -556,6 +561,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                 Long timestamp = System.currentTimeMillis() / 1000;
                 UnifyTracking.eventBuyPageVariant(timestamp.toString() + "-" + generateVariantString());
             }
+            */
         } else {
             Bundle bundle = new Bundle();
             bundle.putBoolean("login", true);
@@ -563,7 +569,8 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         }
     }
 
-    private int generateStateVariant(String source) {
+    @Override
+    public int generateStateVariant(String source) {
         switch (source) {
             case ProductDetailView.SOURCE_BUTTON_BUY_PDP:
                 return VariantActivity.STATE_BUTTON_BUY;
@@ -586,7 +593,8 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     public void updateButtonBuyListener() {
         buttonBuyView.removeLoading();
         if (onClickBuyWhileRequestingVariant) {
-            onBuyClick(SOURCE_BUTTON_BUY_PDP);
+//            openVariantPage();
+            throw new RuntimeException("need to know from click cart or button buy");
         }
     }
 
@@ -677,15 +685,13 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     }
 
     @Override
-    public void openVariantPage(int state,
-                                ProductVariant productVariant,
-                                ProductDetailData productDetailData) {
+    public void openVariantPage(int state) {
         Intent intent = new Intent(getActivity(), VariantActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(VariantActivity.KEY_VARIANT_DATA, productVariant);
-        bundle.putParcelable(VariantActivity.KEY_PRODUCT_DETAIL_DATA, productDetailData);
+        bundle.putParcelable(VariantActivity.KEY_PRODUCT_DETAIL_DATA, productData);
         intent.putExtras(bundle);
-        intent.putExtra(VariantActivity.KEY_STATE_OPEN_VARIANT, state);
+        intent.putExtra(KEY_STATE_OPEN_VARIANT, state);
         intent.putExtra(VariantActivity.KEY_SELECTED_QUANTIY, selectedQuantity);
         intent.putExtra(VariantActivity.KEY_REMARK_FOR_SELLER, selectedRemarkNotes);
         intent.putExtra(KEY_LEVEL1_SELECTED, variantLevel1);
@@ -1183,37 +1189,45 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                     presenter.requestProductDetail(getActivity(), productPass, RE_REQUEST, true, useVariant);
                 break;
             case REQUEST_VARIANT:
-                if (data.getParcelableExtra(KEY_PRODUCT_DETAIL_DATA) != null) {
-                    productData = data.getParcelableExtra(KEY_PRODUCT_DETAIL_DATA);
-                }
-                if (productVariant == null && data.getParcelableExtra(KEY_VARIANT_DATA) != null) {
-                    productVariant = data.getParcelableExtra(KEY_VARIANT_DATA);
-                }
-                if (data != null && data.getParcelableExtra(KEY_LEVEL1_SELECTED) != null && data.getParcelableExtra(KEY_LEVEL1_SELECTED) instanceof Option) {
-                    variantLevel1 = data.getParcelableExtra(KEY_LEVEL1_SELECTED);
-                    if (data.getParcelableExtra(KEY_LEVEL2_SELECTED) != null && data.getParcelableExtra(KEY_LEVEL2_SELECTED) instanceof Option) {
-                        variantLevel2 = data.getParcelableExtra(KEY_LEVEL2_SELECTED);
+                if (resultCode == RESULT_OK) {
+                    if (data.getParcelableExtra(KEY_PRODUCT_DETAIL_DATA) != null) {
+                        productData = data.getParcelableExtra(KEY_PRODUCT_DETAIL_DATA);
                     }
-                    priceSimulationView.updateVariant(generateVariantString());
-                    if (productVariant != null) {
-                        pictureView.renderData(productData);
-                        headerInfoView.renderData(productData);
-                        headerInfoView.renderStockAvailability(productData.getInfo());
-                        shopInfoView.renderData(productData);
-                        presenter.updateRecentView(getActivity(), productData.getInfo().getProductId());
-                        ratingTalkCourierView.renderData(productData);
-                        latestTalkView.renderData(productData);
-                        buttonBuyView.updateButtonForVariantProduct(productVariant.getChildFromProductId(
-                                productData.getInfo().getProductId()).isIsBuyable(), productData);
-                        updateWishListStatus(productData.getInfo().getProductAlreadyWishlist());
-                        productPass.setProductId(Integer.toString(productData.getInfo().getProductId()));
-                        selectedQuantity = data.getIntExtra(KEY_SELECTED_QUANTIY, 1);
-                        selectedRemarkNotes = data.getStringExtra(KEY_REMARK_FOR_SELLER);
+                    if (productVariant == null && data.getParcelableExtra(KEY_VARIANT_DATA) != null) {
+                        productVariant = data.getParcelableExtra(KEY_VARIANT_DATA);
                     }
-                    if (resultCode == VariantActivity.SELECTED_VARIANT_RESULT_TO_BUY) {
-                        onBuyClick(SOURCE_BUTTON_BUY_VARIANT);
-                    } else if (resultCode == VariantActivity.KILL_PDP_BACKGROUND) {
-                        getActivity().finish();
+                    if (data != null && data.getParcelableExtra(KEY_LEVEL1_SELECTED) != null && data.getParcelableExtra(KEY_LEVEL1_SELECTED) instanceof Option) {
+                        variantLevel1 = data.getParcelableExtra(KEY_LEVEL1_SELECTED);
+                        if (data.getParcelableExtra(KEY_LEVEL2_SELECTED) != null && data.getParcelableExtra(KEY_LEVEL2_SELECTED) instanceof Option) {
+                            variantLevel2 = data.getParcelableExtra(KEY_LEVEL2_SELECTED);
+                        }
+                        priceSimulationView.updateVariant(generateVariantString());
+                        if (productVariant != null) {
+                            pictureView.renderData(productData);
+                            headerInfoView.renderData(productData);
+                            headerInfoView.renderStockAvailability(productData.getInfo());
+                            shopInfoView.renderData(productData);
+                            presenter.updateRecentView(getActivity(), productData.getInfo().getProductId());
+                            ratingTalkCourierView.renderData(productData);
+                            latestTalkView.renderData(productData);
+                            buttonBuyView.updateButtonForVariantProduct(productVariant.getChildFromProductId(
+                                    productData.getInfo().getProductId()).isIsBuyable(), productData);
+                            updateWishListStatus(productData.getInfo().getProductAlreadyWishlist());
+                            productPass.setProductId(Integer.toString(productData.getInfo().getProductId()));
+                            selectedQuantity = data.getIntExtra(KEY_SELECTED_QUANTIY, 1);
+                            selectedRemarkNotes = data.getStringExtra(KEY_REMARK_FOR_SELLER);
+                        }
+                        switch (data.getIntExtra(KEY_STATE_RESULT_VARIANT, 0)) {
+                            case SELECTED_VARIANT_RESULT_TO_BUY:
+                                onBuyClick(SOURCE_BUTTON_BUY_VARIANT);
+                                break;
+                            case SELECTED_VARIANT_RESULT_TO_CART:
+                                onBuyClick(SOURCE_BUTTON_CART_VARIANT);
+                                break;
+                            default:
+                                getActivity().finish();
+                                break;
+                        }
                     }
                 }
             default:

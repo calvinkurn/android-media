@@ -41,6 +41,7 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
     public static final String KEY_VARIANT_DATA = "VARIANT_DATA";
     public static final String KEY_PRODUCT_DETAIL_DATA = "PRODUCT_DETAIL_DATA";
     public static final String KEY_STATE_OPEN_VARIANT = "KEY_STATE_OPEN_VARIANT";
+    public static final String KEY_STATE_RESULT_VARIANT = "KEY_STATE_RESULT_VARIANT";
     public static final String KEY_SELECTED_QUANTIY = "KEY_QUANTITY";
     public static final String KEY_REMARK_FOR_SELLER = "KEY_REMARK_FOR_SELLER";
     public static final String KEY_SELLER_MODE = "ON_SELLER_MODE";
@@ -51,6 +52,7 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
 
     public static final int SELECTED_VARIANT_RESULT = 99;
     public static final int SELECTED_VARIANT_RESULT_TO_BUY = 98;
+    public static final int SELECTED_VARIANT_RESULT_TO_CART = 97;
     public static final int KILL_PDP_BACKGROUND = 97;
     private static final String CRASHLYTIC_VARIANT_TAG = "CRASHLYTIC VARIANT";
 
@@ -300,6 +302,26 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
         }
     }
 
+    private View.OnClickListener onButtonCartClick() {
+        return view -> {
+            Intent intent = generateExtraSelectedIntent();
+            intent.putExtra(KEY_STATE_RESULT_VARIANT, VariantActivity.SELECTED_VARIANT_RESULT_TO_CART);
+            setResult(RESULT_OK, intent);
+            finish();
+            VariantActivity.this.overridePendingTransition(0,com.tokopedia.core.R.anim.push_down);
+        };
+    }
+
+    private View.OnClickListener onButtonBuyClick() {
+        return view -> {
+            Intent intent = generateExtraSelectedIntent();
+            intent.putExtra(KEY_STATE_RESULT_VARIANT, VariantActivity.SELECTED_VARIANT_RESULT_TO_BUY);
+            setResult(RESULT_OK, intent);
+            finish();
+            VariantActivity.this.overridePendingTransition(0,com.tokopedia.core.R.anim.push_down);
+        };
+    }
+
     public void updateButton(Child child) {
         if (child.isIsBuyable() && productDetailData.getShopInfo().getShopStatus()==1) {
             viewNewCheckoutFlow.setVisibility(VISIBLE);
@@ -307,24 +329,15 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
             buttonBuy.setBackground(generateBackgroundButtonBuy());
             textButtonBuy.setTextColor(generateColorTextButtonBuy());
             textButtonBuy.setText(generateTextButtonBuy());
-            iconCartButtonBuy.setVisibility(stateFormVariantPage == STATE_BUTTON_CART ? VISIBLE : View.GONE);
             textCartPrice.setText(generateTextPriceCart());
-            buttonBuy.setClickable(true);
-            buttonBuy.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    setResult(VariantActivity.SELECTED_VARIANT_RESULT_TO_BUY, generateExtraSelectedIntent());
-                    finish();
-                    VariantActivity.this.overridePendingTransition(0,com.tokopedia.core.R.anim.push_down);
-                }
-            });
+
+            iconCartButtonBuy.setVisibility(stateFormVariantPage == STATE_BUTTON_CART ? VISIBLE : View.GONE);
             buttonCart.setVisibility(stateFormVariantPage == STATE_VARIANT_DEFAULT ? VISIBLE : View.GONE);
             viewCartPrice.setVisibility(stateFormVariantPage == STATE_VARIANT_DEFAULT ? View.GONE : VISIBLE);
-            buttonCart.setOnClickListener(view -> {
-                setResult(VariantActivity.SELECTED_VARIANT_RESULT, generateExtraSelectedIntent());
-                finish();
-                VariantActivity.this.overridePendingTransition(0,com.tokopedia.core.R.anim.push_down);
-            });
+
+            buttonBuy.setClickable(true);
+            buttonBuy.setOnClickListener(stateFormVariantPage == STATE_BUTTON_CART ? onButtonCartClick() : onButtonBuyClick());
+            buttonCart.setOnClickListener(onButtonCartClick());
         } else if (child.isIsBuyable()==false) {
             viewNewCheckoutFlow.setVisibility(View.GONE);
             buttonSave.setVisibility(View.VISIBLE);
@@ -557,18 +570,4 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
         }
     }
 
-    @Override
-    public void onBackPressed(){
-        Child childSelected = getProductDatumSelected();
-        if (childSelected!=null && childSelected.isIsBuyable() && productDetailData.getShopInfo().getShopStatus()==1) {
-            setResult(VariantActivity.SELECTED_VARIANT_RESULT, generateExtraSelectedIntent());
-        } else {
-            Intent intent = new Intent();
-            intent.putExtra(KEY_PRODUCT_DETAIL_DATA, productDetailData);
-            intent.putExtra(KEY_VARIANT_DATA, productVariant);
-            setResult(VariantActivity.SELECTED_VARIANT_RESULT, intent);
-        }
-        finish();
-        VariantActivity.this.overridePendingTransition(0,com.tokopedia.core.R.anim.push_down);
-    }
 }
