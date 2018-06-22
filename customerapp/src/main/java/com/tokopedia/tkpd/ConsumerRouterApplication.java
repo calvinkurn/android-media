@@ -1722,7 +1722,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
         requestParams.putObject(CheckPromoCodeCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING_CHECK_PROMO,
                 com.tokopedia.abstraction.common.utils.network.AuthUtil.generateParamsNetwork(
-                        this, paramCheckPromo, userSession.getUserId(), userSession.getDeviceId()
+                        this, paramCheckPromo, getSession().getUserId(), getSession().getDeviceId()
                 ));
 
 
