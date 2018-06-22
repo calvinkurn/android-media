@@ -330,7 +330,8 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
                             address.setProvinceId(province.getProvinceId());
                         }
 
-                        if (!isEdit()) presenter.onProvinceSelected(pos);
+                        if(isEdit()) presenter.onEditProvinceSelected(pos);
+                        else presenter.onProvinceSelected(pos);
                     }
 
                     @Override
@@ -350,6 +351,7 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
                     City city = cityList.get(pos - 1);
                     address.setCityName(city.getCityName());
                     address.setCityId(city.getCityId());
+                    presenter.onRegencySelected(pos);
                 }
 
                 if (!isEdit()) presenter.onRegencySelected(pos);
@@ -819,6 +821,19 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
             spinnerRegency.setSelection(regencyAdapter.getPositionFromName(addressModel.getCityName()));
             presenter.getListDistrict(regencyAdapter.getList().get(spinnerRegency.getSelectedItemPosition() - 1));
         }
+        this.mCities = new ArrayList<>(cities);
+    }
+
+    @Override
+    public void changeProvince(List<City> cities){
+        progressRegency.setVisibility(View.GONE);
+        regencyTitle.setVisibility(View.VISIBLE);
+        spinnerRegency.setVisibility(View.VISIBLE);
+        regencyAdapter.setList(cities);
+        Destination addressModel = getArguments().getParcelable(EDIT_PARAM);
+        if(addressModel != null)
+            spinnerRegency
+                    .setSelection(regencyAdapter.getPositionFromName(addressModel.getCityName()));
         this.mCities = new ArrayList<>(cities);
     }
 
