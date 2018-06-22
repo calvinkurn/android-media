@@ -38,7 +38,7 @@ public class GraphqlUseCase extends UseCase<GraphqlResponse> {
     /**
      * Method name refactoring
      *
-     * @deprecated use {@link this.addRequest(List<GraphqlRequest>)} instead.
+     * @deprecated use {@link this.addRequest(GraphqlRequest )} instead.
      */
     @Deprecated
     public void setRequest(GraphqlRequest requestObject) {
