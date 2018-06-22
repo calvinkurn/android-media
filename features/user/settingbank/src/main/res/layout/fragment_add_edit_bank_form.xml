@@ -15,7 +15,9 @@
         android:lineSpacingExtra="6sp"
         android:text="@string/add_bank_prompt"
         android:textColor="@color/black_38"
-        android:textSize="@dimen/sp_14"
+        android:textSize="@dimen/sp_12"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_8"
         android:textStyle="normal"
         />
 
@@ -35,6 +37,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="asd"
+            android:clickable="false"
             android:focusable="false"
             android:singleLine="true"
             android:textColor="@color/font_black_primary_70"

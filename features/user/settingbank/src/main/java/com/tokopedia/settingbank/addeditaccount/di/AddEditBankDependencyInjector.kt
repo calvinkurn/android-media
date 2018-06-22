@@ -1,8 +1,30 @@
 package com.tokopedia.settingbank.addeditaccount.di
 
 import android.content.Context
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.readystatesoftware.chuck.ChuckInterceptor
+import com.tokopedia.abstraction.AbstractionRouter
+import com.tokopedia.abstraction.common.network.interceptor.DebugInterceptor
+import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor
+import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.core.network.retrofit.coverters.GeneratedHostConverter
+import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter
+import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter
+import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor
+import com.tokopedia.settingbank.addeditaccount.domain.mapper.AddBankMapper
+import com.tokopedia.settingbank.addeditaccount.domain.mapper.EditBankMapper
+import com.tokopedia.settingbank.addeditaccount.domain.usecase.AddBankUseCase
+import com.tokopedia.settingbank.addeditaccount.domain.usecase.EditBankUseCase
 import com.tokopedia.settingbank.addeditaccount.view.presenter.AddEditBankPresenter
+import com.tokopedia.settingbank.banklist.data.SettingBankApi
+import com.tokopedia.settingbank.banklist.data.SettingBankUrl
 import com.tokopedia.user.session.UserSession
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
+import retrofit2.converter.gson.GsonConverterFactory
 
 /**
  * @author by nisie on 6/22/18.
@@ -14,7 +36,71 @@ class AddEditBankDependencyInjector {
         fun inject(context: Context): AddEditBankPresenter {
             val session = UserSession(context)
 
-            return AddEditBankPresenter(session)
+            val gson: Gson = GsonBuilder()
+                    .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
+                    .setPrettyPrinting()
+                    .serializeNulls().create()
+
+            val stringResponseConverter = StringResponseConverter()
+
+            val tkpdResponseConverter = TkpdResponseConverter()
+
+            val generatedHostConverter = GeneratedHostConverter()
+
+            val retrofitBuilder: Retrofit.Builder = Retrofit.Builder()
+                    .addConverterFactory(generatedHostConverter)
+                    .addConverterFactory(tkpdResponseConverter)
+                    .addConverterFactory(stringResponseConverter)
+                    .addConverterFactory(GsonConverterFactory.create(gson))
+                    .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+
+            val chuckInterceptor = ChuckInterceptor(context)
+
+            val httpLoggingInterceptor = HttpLoggingInterceptor()
+
+            if (com.tokopedia.core.util.GlobalConfig.isAllowDebuggingTools()) {
+                httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
+            } else {
+                httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.NONE
+            }
+
+            val fingerprintInterceptor = FingerprintInterceptor()
+
+            val abstractionSession: com.tokopedia.abstraction.common.data.model.session.UserSession = (context as AbstractionRouter).session
+
+            val abstractionRouter: AbstractionRouter = context
+
+            val tkpdAuthInterceptor = TkpdAuthInterceptor(context,
+                    abstractionRouter, abstractionSession)
+
+            val builder: OkHttpClient.Builder = OkHttpClient.Builder()
+
+            if (GlobalConfig.isAllowDebuggingTools()) {
+                builder.addInterceptor(chuckInterceptor)
+                builder.addInterceptor(DebugInterceptor())
+                builder.addInterceptor(httpLoggingInterceptor)
+            }
+
+            builder.addInterceptor(fingerprintInterceptor)
+            builder.addInterceptor(tkpdAuthInterceptor)
+
+            val okHttpClient: OkHttpClient = builder.build()
+
+            val retrofit: Retrofit = retrofitBuilder.baseUrl(SettingBankUrl.BASE_URL)
+                    .client(okHttpClient)
+                    .build()
+
+            val settingBankApi: SettingBankApi = retrofit.create(SettingBankApi::class.java)
+
+            val addBankMapper = AddBankMapper()
+
+            val addBankUseCase = AddBankUseCase(settingBankApi, addBankMapper)
+
+            val editBankMapper = EditBankMapper()
+
+            val editBankUseCase = EditBankUseCase(settingBankApi, editBankMapper)
+
+            return AddEditBankPresenter(session, addBankUseCase, editBankUseCase)
         }
     }
 }

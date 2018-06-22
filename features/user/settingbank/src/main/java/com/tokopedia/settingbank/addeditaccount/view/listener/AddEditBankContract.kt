@@ -14,6 +14,20 @@ interface AddEditBankContract {
     interface View : CustomerView {
         fun getContext(): Context
 
+        fun showLoading()
+
+        fun resetError()
+
+        fun hideLoading()
+
+        fun onSuccessAddEditBank(statusMessage: String)
+
+        fun onErrorAccountNumber(errorMessage: String)
+
+        fun onErrorAccountName(errorMessage: String)
+
+        fun onErrorGeneral(errorMessage: String?)
+
     }
 
     interface Presenter : CustomerPresenter<View> {

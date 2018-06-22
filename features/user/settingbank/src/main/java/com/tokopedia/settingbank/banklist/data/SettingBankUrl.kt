@@ -12,7 +12,8 @@ class SettingBankUrl {
         const val PATH_GET_BANK_ACCOUNT: String = "v4/people/get_bank_account.pl"
         const val PATH_SET_DEFAULT_BANK_ACCOUNT: String = "v4/action/people/edit_default_bank_account.pl"
         const val PATH_DELETE_BANK_ACCOUNT: String = "v4/action/people/delete_bank_account.pl"
-
+        const val PATH_ADD_BANK_ACCOUNT: String = "v4/action/people/add_bank_account.pl"
+        const val PATH_EDIT_BANK_ACCOUNT: String = "v4/action/people/edit_bank_account.pl"
     }
 
 }

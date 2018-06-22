@@ -1,13 +1,18 @@
 package com.tokopedia.settingbank.addeditaccount.view.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.BottomSheetDialog
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.widget.ImageView
+import com.tkpd.library.ui.utilities.TkpdProgressDialog
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.core.network.NetworkErrorHelper
 import com.tokopedia.design.text.TkpdHintTextInputLayout
 import com.tokopedia.settingbank.R
 import com.tokopedia.settingbank.addeditaccount.analytics.AddEditBankAnalytics
@@ -26,6 +31,8 @@ class AddEditBankFormFragment : AddEditBankContract.View,
         BaseDaggerFragment() {
 
     lateinit var presenter: AddEditBankPresenter
+    lateinit var progressDialog: TkpdProgressDialog
+    lateinit var bottomInfoDialog: BottomSheetDialog
     private var bankFormModel = BankFormModel()
 
     override fun getScreenName(): String {
@@ -33,7 +40,7 @@ class AddEditBankFormFragment : AddEditBankContract.View,
     }
 
     override fun initInjector() {
-        presenter = AddEditBankDependencyInjector.Companion.inject(activity)
+        presenter = AddEditBankDependencyInjector.Companion.inject(activity.applicationContext)
         presenter.attachView(this)
     }
 
@@ -44,11 +51,11 @@ class AddEditBankFormFragment : AddEditBankContract.View,
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        setHasOptionsMenu(true)
         setMode()
         submit_button.setOnClickListener({
             setupBankFormModel()
-            if (!bankFormModel.status.isNullOrBlank()) {
+            if (!bankFormModel.status.isBlank()) {
                 if (bankFormModel.status == BankFormModel.Companion.STATUS_ADD)
                     presenter.addBank(bankFormModel)
                 else
@@ -58,6 +65,39 @@ class AddEditBankFormFragment : AddEditBankContract.View,
         bank_name_edit_text.setOnClickListener({
             goToAddBank()
         })
+    }
+
+
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_info_add_bank_account, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return if (item.itemId == R.id.menu_info) {
+            onInfoClicked()
+            true
+        } else {
+            super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun onInfoClicked() {
+        if (!::bottomInfoDialog.isInitialized) {
+            bottomInfoDialog = BottomSheetDialog(context)
+            val bottomLayout: View = activity.layoutInflater.inflate(R.layout
+                    .bottom_sheet_info_add_bank_account, null)
+            bottomInfoDialog.setContentView(bottomLayout)
+
+            val bankAccountImage: ImageView = bottomLayout.findViewById(R.id.bank_account_image)
+            ImageHandler.LoadImage(bankAccountImage, "https://i.pinimg.com/564x/f3/1c/05/f31c0579b58bac246e46da14bb1525cd.jpg")
+
+            val closeButton: ImageView = bottomLayout.findViewById(R.id.close_button)
+            closeButton.setOnClickListener({ bottomInfoDialog.dismiss() })
+
+        }
+
+        bottomInfoDialog.show()
     }
 
     private fun goToAddBank() {
@@ -175,9 +215,49 @@ class AddEditBankFormFragment : AddEditBankContract.View,
         submit_button.isEnabled = false
     }
 
+    override fun showLoading() {
+        if (!::progressDialog.isInitialized) {
+            progressDialog = TkpdProgressDialog(context, TkpdProgressDialog.NORMAL_PROGRESS)
+        }
+        progressDialog.showDialog()
+    }
+
+    override fun resetError() {
+        setWrapperError(wrapper_account_number, "")
+        setWrapperError(wrapper_account_name, "")
+        setWrapperError(wrapper_bank_name, "")
+    }
+
+    override fun hideLoading() {
+        if (::progressDialog.isInitialized) progressDialog.dismiss()
+    }
+
+    override fun onSuccessAddEditBank(statusMessage: String) {
+        NetworkErrorHelper.showSnackbar(activity, statusMessage)
+        val intent = Intent()
+        val bundle = Bundle()
+        bundle.putParcelable(AddEditBankActivity.PARAM_DATA, bankFormModel)
+        intent.putExtras(bundle)
+        activity.setResult(Activity.RESULT_OK, intent)
+        activity.finish()
+    }
+
+    override fun onErrorAccountNumber(errorMessage: String) {
+        setWrapperError(wrapper_account_number, errorMessage)
+    }
+
+    override fun onErrorAccountName(errorMessage: String) {
+        setWrapperError(wrapper_account_name, errorMessage)
+    }
+
+    override fun onErrorGeneral(errorMessage: String?) {
+        NetworkErrorHelper.showSnackbar(activity, errorMessage)
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         presenter.detachView()
     }
+
 
 }

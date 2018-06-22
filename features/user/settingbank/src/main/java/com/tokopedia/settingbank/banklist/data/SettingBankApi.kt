@@ -1,5 +1,7 @@
 package com.tokopedia.settingbank.banklist.data
 
+import com.tokopedia.settingbank.addeditaccount.domain.pojo.AddBankAccountPojo
+import com.tokopedia.settingbank.addeditaccount.domain.pojo.EditBankAccountPojo
 import com.tokopedia.settingbank.banklist.domain.pojo.BankAccountListPojo
 import com.tokopedia.settingbank.banklist.domain.pojo.DeleteBankAccountPojo
 import com.tokopedia.settingbank.banklist.domain.pojo.SetDefaultBankAccountPojo
@@ -28,5 +30,16 @@ interface SettingBankApi {
     @POST(SettingBankUrl.PATH_DELETE_BANK_ACCOUNT)
     fun deleteBank(@FieldMap params: HashMap<String, Any>):
             Observable<Response<DeleteBankAccountPojo>>
+
+    @FormUrlEncoded
+    @POST(SettingBankUrl.PATH_ADD_BANK_ACCOUNT)
+    fun addBankAccount(@FieldMap params: HashMap<String, Any>):
+            Observable<Response<AddBankAccountPojo>>
+
+    @FormUrlEncoded
+    @POST(SettingBankUrl.PATH_EDIT_BANK_ACCOUNT)
+    fun editBankAccount(@FieldMap params: HashMap<String, Any>):
+            Observable<Response<EditBankAccountPojo>>
+
 
 }

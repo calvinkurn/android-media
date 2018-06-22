@@ -24,5 +24,10 @@ mempermudah proses penarikan dana</string>
     <string name="button_next">Selanjutnya</string>
     <string name="title_add_bank">Tambah Rekening</string>
     <string name="title_edit_bank">Ubah Rekening</string>
+    <string name="menu_info">Info</string>
+    <string name="_1">1</string>
+    <string name="_2">2</string>
+    <string name="bottom_dialog_add_bank_info">Keterangan dapat ditemukan pada halaman depan buku tabungan</string>
+    <string name="bottom_dialog_add_bank_title">Contoh Buku Tabungan</string>
 
 </resources>
