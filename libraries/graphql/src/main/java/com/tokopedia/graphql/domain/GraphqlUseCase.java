@@ -25,11 +25,31 @@ public class GraphqlUseCase extends UseCase<GraphqlResponse> {
         this.mRequests = new ArrayList<>();
     }
 
+    /**
+     * Method name refactoring
+     *
+     * @deprecated use {@link this.addRequest(List<GraphqlRequest>)} instead.
+     */
+    @Deprecated
     public void setRequest(List<GraphqlRequest> requests) {
         mRequests.addAll(requests);
     }
 
+    /**
+     * Method name refactoring
+     *
+     * @deprecated use {@link this.addRequest(List<GraphqlRequest>)} instead.
+     */
+    @Deprecated
     public void setRequest(GraphqlRequest requestObject) {
+        this.mRequests.add(requestObject);
+    }
+
+    public void addRequests(List<GraphqlRequest> requests) {
+        mRequests.addAll(requests);
+    }
+
+    public void addRequest(GraphqlRequest requestObject) {
         this.mRequests.add(requestObject);
     }
 
