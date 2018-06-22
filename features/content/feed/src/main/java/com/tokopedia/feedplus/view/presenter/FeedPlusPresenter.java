@@ -275,6 +275,8 @@ public class FeedPlusPresenter
     @Override
     public void getWhitelist() {
         viewListener.showLoadingProgress();
-        getWhitelistUseCase.execute(RequestParams.create(), new GetWhitelistSubsciber(viewListener));
+        getWhitelistUseCase.setRequest(getWhitelistUseCase.getRequest());
+        getWhitelistUseCase.execute(RequestParams.create(),new GetWhitelistSubsciber(viewListener));
     }
+
 }

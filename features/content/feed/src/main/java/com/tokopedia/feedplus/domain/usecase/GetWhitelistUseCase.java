@@ -1,29 +1,28 @@
 package com.tokopedia.feedplus.domain.usecase;
 
-import com.tokopedia.feedplus.data.repository.WhitelistRepository;
-import com.tokopedia.feedplus.domain.model.feed.WhitelistDomain;
-import com.tokopedia.usecase.RequestParams;
-import com.tokopedia.usecase.UseCase;
+import android.content.Context;
+
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.feedplus.R;
+import com.tokopedia.feedplus.data.pojo.WhitelistQuery;
+import com.tokopedia.graphql.data.model.GraphqlRequest;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
 
 import javax.inject.Inject;
-
-import rx.Observable;
 
 /**
  * @author by yfsx on 20/06/18.
  */
-public class GetWhitelistUseCase extends UseCase<WhitelistDomain> {
+public class GetWhitelistUseCase extends GraphqlUseCase {
 
-    private WhitelistRepository whitelistRepository;
+    private final Context context;
 
     @Inject
-    public GetWhitelistUseCase(WhitelistRepository whitelistRepository) {
-        this.whitelistRepository = whitelistRepository;
+    public GetWhitelistUseCase(Context context) {
+        this.context = context;
     }
 
-    @Override
-    public Observable<WhitelistDomain> createObservable(RequestParams requestParams) {
-        return whitelistRepository.getWhitelist(requestParams);
+    public GraphqlRequest getRequest() {
+        return new GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(),R.raw.query_whitelist), WhitelistQuery.class);
     }
-
 }

@@ -263,5 +263,4 @@ public class FeedPlusModule {
     WhitelistRepository provideWhitelistRepository(FeedFactory feedFactory) {
         return new WhitelistRepositoryImpl(feedFactory);
     }
-
 }
