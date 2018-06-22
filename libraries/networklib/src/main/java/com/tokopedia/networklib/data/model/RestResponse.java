@@ -19,11 +19,10 @@ public class RestResponse {
     }
 
     /**
-     * @param type Class type (E.g. Xyx.class)
      * @param <T>  Class type of T ( e.g. object of Xyx class)
      * @return Return the object of T
      */
-    public final <T> T getData(Type type) {
+    public final <T> T getData() {
         return (T) result;
     }
 
