@@ -7,16 +7,19 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.train.seat.presentation.fragment.TrainWagonFragment;
+import com.tokopedia.train.seat.presentation.viewmodel.TrainWagonViewModel;
 
 import java.util.List;
 
-public class TrainSeatPagerAdapter extends FragmentStatePagerAdapter {
+public class TrainWagonsPagerAdapter extends FragmentStatePagerAdapter {
 
-    private List<TrainWagonFragment> fragments;
+    private List<TrainWagonViewModel> wagons;
+    private TrainWagonFragment.OnFragmentInteraction interactionListener;
 
-    public TrainSeatPagerAdapter(FragmentManager fm, List<TrainWagonFragment> fragments) {
+    public TrainWagonsPagerAdapter(FragmentManager fm, List<TrainWagonViewModel> wagons, TrainWagonFragment.OnFragmentInteraction interactionListener) {
         super(fm);
-        this.fragments = fragments;
+        this.wagons = wagons;
+        this.interactionListener = interactionListener;
     }
 
     /**
@@ -24,7 +27,7 @@ public class TrainSeatPagerAdapter extends FragmentStatePagerAdapter {
      */
     @Override
     public int getCount() {
-        return fragments.size();
+        return wagons.size();
     }
 
     @Override
@@ -39,7 +42,7 @@ public class TrainSeatPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return fragments.get(position);
+        return TrainWagonFragment.newInstance(wagons.get(position), interactionListener);
     }
 
     @Override

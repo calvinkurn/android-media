@@ -13,18 +13,19 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.seat.di.TrainSeatComponent;
 import com.tokopedia.train.seat.presentation.contract.TrainSeatContract;
-import com.tokopedia.train.seat.presentation.fragment.viewpager.TrainSeatPagerAdapter;
+import com.tokopedia.train.seat.presentation.fragment.viewpager.TrainWagonsPagerAdapter;
 import com.tokopedia.train.seat.presentation.presenter.TrainSeatPresenter;
+import com.tokopedia.train.seat.presentation.viewmodel.TrainSeatPassengerViewModel;
+import com.tokopedia.train.seat.presentation.viewmodel.TrainSeatViewModel;
 import com.tokopedia.train.seat.presentation.viewmodel.TrainWagonViewModel;
 import com.tokopedia.train.seat.presentation.widget.CountdownTimeView;
 import com.tokopedia.train.seat.presentation.widget.TrainSeatPassengerAndWagonView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
-public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatContract.View {
+public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatContract.View, TrainSeatPassengerAndWagonView.TrainSeatActionListener {
 
     @Inject
     TrainSeatPresenter presenter;
@@ -33,6 +34,7 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
     private TrainSeatPassengerAndWagonView trainSeatHeader;
     private ViewPager wagonViewPager;
     private Button submitButton;
+    private List<TrainSeatPassengerViewModel> passengers;
 
 
     public static Fragment newInstance() {
@@ -90,12 +92,25 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
 
     @Override
     public void renderWagon(List<TrainWagonViewModel> trainWagonViewModels) {
-        List<TrainWagonFragment> fragments = new ArrayList<>();
-        for (TrainWagonViewModel wagon : trainWagonViewModels) {
-            fragments.add(TrainWagonFragment.newInstance(wagon));
+        trainSeatHeader.renderWagon(trainWagonViewModels.get(0).getWagonCode());
+        trainSeatHeader.renderPassenger(passengers);
 
-        }
-        TrainSeatPagerAdapter adapter = new TrainSeatPagerAdapter(getChildFragmentManager(), fragments);
+        TrainWagonsPagerAdapter adapter = new TrainWagonsPagerAdapter(getChildFragmentManager(), trainWagonViewModels, new TrainWagonFragment.OnFragmentInteraction() {
+            @Override
+            public List<TrainSeatPassengerViewModel> getPassengers() {
+                return passengers;
+            }
+
+            @Override
+            public void onPassengerSeatChange(TrainSeatPassengerViewModel passenger, TrainSeatViewModel seat) {
+
+            }
+        });
         wagonViewPager.setAdapter(adapter);
+    }
+
+    @Override
+    public void onWagonClicked() {
+
     }
 }
