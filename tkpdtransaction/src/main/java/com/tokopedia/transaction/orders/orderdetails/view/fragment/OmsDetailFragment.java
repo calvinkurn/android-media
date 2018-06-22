@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -27,6 +28,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.orders.common.view.DoubleTextView;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
 import com.tokopedia.transaction.orders.orderdetails.data.AdditionalInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.ContactUs;
@@ -39,45 +41,44 @@ import com.tokopedia.transaction.orders.orderdetails.data.Status;
 import com.tokopedia.transaction.orders.orderdetails.data.Title;
 import com.tokopedia.transaction.orders.orderdetails.di.DaggerOrderDetailsComponent;
 import com.tokopedia.transaction.orders.orderdetails.di.OrderDetailsComponent;
+import com.tokopedia.transaction.orders.orderdetails.view.adapter.ItemsAdapter;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailContract;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailPresenter;
 import com.tokopedia.transaction.orders.orderlist.data.ConditionalInfo;
 import com.tokopedia.transaction.orders.orderlist.data.PaymentData;
 
-import javax.inject.Inject;
-
-import com.tokopedia.transaction.orders.common.view.DoubleTextView;
-
 import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * Created by baghira on 09/05/18.
  */
-public class OrderListDetailFragment extends BaseDaggerFragment implements OrderListDetailContract.View {
+
+public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDetailContract.View {
 
     public static final String KEY_ORDER_ID = "OrderId";
     public static final String KEY_ORDER_CATEGORY = "OrderCategory";
     @Inject
     OrderListDetailPresenter presenter;
-    OrderDetailsComponent orderListComponent;
 
-    LinearLayout mainView;
-    TextView statusLabel;
-    TextView statusValue;
-    TextView conditionalInfoText;
-    LinearLayout statusDetail;
-    TextView invoiceView;
-    TextView lihat;
-    TextView detailLabel;
-    LinearLayout detailContent;
-    TextView additionalText;
-    LinearLayout additionalInfoLayout;
-    TextView infoLabel;
-    LinearLayout infoValue;
-    LinearLayout totalPrice;
-    TextView helpLabel;
-    TextView langannan;
-    TextView beliLagi;
+    OrderDetailsComponent orderListComponent;
+    private LinearLayout mainView;
+    private TextView statusLabel;
+    private TextView statusValue;
+    private TextView conditionalInfoText;
+    private LinearLayout statusDetail;
+    private TextView invoiceView;
+    private TextView lihat;
+    private TextView detailLabel;
+    private TextView infoLabel;
+    private LinearLayout infoValue;
+    private LinearLayout totalPrice;
+    private TextView helpLabel;
+    private TextView langannan;
+    private TextView beliLagi;
+    private RecyclerView recyclerView;
+    private TextView redeemInfo;
 
 
     @Override
@@ -98,7 +99,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         Bundle bundle = new Bundle();
         bundle.putString(KEY_ORDER_ID, orderId);
         bundle.putString(KEY_ORDER_CATEGORY, orderCategory);
-        Fragment fragment = new OrderListDetailFragment();
+        Fragment fragment = new OmsDetailFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -106,7 +107,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_order_list_detail, container, false);
+        View view = inflater.inflate(R.layout.fragment_oms_list_detail, container, false);
         mainView = view.findViewById(R.id.main_view);
         statusLabel = view.findViewById(R.id.status_label);
         statusValue = view.findViewById(R.id.status_value);
@@ -115,15 +116,14 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         invoiceView = view.findViewById(R.id.invoice);
         lihat = view.findViewById(R.id.lihat);
         detailLabel = view.findViewById(R.id.detail_label);
-        detailContent = view.findViewById(R.id.detail_content);
-        additionalText = view.findViewById(R.id.additional);
-        additionalInfoLayout = view.findViewById(R.id.additional_info);
         infoLabel = view.findViewById(R.id.info_label);
         infoValue = view.findViewById(R.id.info_value);
         totalPrice = view.findViewById(R.id.total_price);
         helpLabel = view.findViewById(R.id.help_label);
         langannan = view.findViewById(R.id.langannan);
         beliLagi = view.findViewById(R.id.beli_lagi);
+        recyclerView = view.findViewById(R.id.recycler_view);
+        redeemInfo=view.findViewById(R.id.tv_redeem_info);
         initInjector();
         setMainViewVisible(View.GONE);
         presenter.attachView(this);
@@ -151,8 +151,8 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         GradientDrawable shape = new GradientDrawable();
         shape.setShape(GradientDrawable.RECTANGLE);
         shape.setCornerRadius(9);
-        shape.setColor(android.graphics.Color.parseColor(conditionalInfo.color().background()));
-        shape.setStroke(1, android.graphics.Color.parseColor(conditionalInfo.color().border()));
+        shape.setColor(Color.parseColor(conditionalInfo.color().background()));
+        shape.setStroke(1, Color.parseColor(conditionalInfo.color().border()));
         conditionalInfoText.setBackground(shape);
         conditionalInfoText.setPadding(16, 16, 16, 16);
         conditionalInfoText.setText(conditionalInfo.text());
@@ -170,9 +170,6 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     @Override
     public void setInvoice(final Invoice invoice) {
         invoiceView.setText(invoice.invoiceRefNum());
-        if (invoice.invoiceUrl().equals("")) {
-            lihat.setVisibility(View.GONE);
-        }
         lihat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -188,33 +185,17 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
 
     @Override
     public void setDetail(Detail detail) {
-        DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
-        doubleTextView.setTopText(detail.label());
-        doubleTextView.setBottomText(detail.value());
-        detailContent.addView(doubleTextView);
+
     }
 
     @Override
     public void setAdditionInfoVisibility(int visibility) {
-        additionalText.setVisibility(visibility);
-        additionalText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                additionalText.setOnClickListener(null);
-                additionalText.setText(getResources().getString(R.string.additional_text));
-                additionalText.setTypeface(Typeface.DEFAULT_BOLD);
-                additionalText.setTextColor(getResources().getColor(R.color.black_70));
-                additionalInfoLayout.setVisibility(View.VISIBLE);
-            }
-        });
+
     }
 
     @Override
     public void setAdditionalInfo(AdditionalInfo additionalInfo) {
-        DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
-        doubleTextView.setTopText(additionalInfo.label());
-        doubleTextView.setBottomText(additionalInfo.value());
-        additionalInfoLayout.addView(doubleTextView);
+
     }
 
     @Override
@@ -244,23 +225,25 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         String text = Html.fromHtml(contactUs.helpText()).toString();
         SpannableString spannableString = new SpannableString(text);
         int startIndexOfLink = text.indexOf("disini");
-        spannableString.setSpan(new ClickableSpan() {
-            @Override
-            public void onClick(View view) {
-                TransactionPurchaseRouter.startWebViewActivity(getContext(), contactUs.helpUrl());
-            }
+        if (startIndexOfLink != -1) {
+            spannableString.setSpan(new ClickableSpan() {
+                @Override
+                public void onClick(View view) {
+                    TransactionPurchaseRouter.startWebViewActivity(getContext(), contactUs.helpUrl());
+                }
 
-            @Override
-            public void updateDrawState(TextPaint ds) {
-                super.updateDrawState(ds);
-                ds.setUnderlineText(false);
-                ds.setColor(getResources().getColor(R.color.green_250)); // specific color for this link
-            }
-        }, startIndexOfLink, startIndexOfLink + "disini".length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        helpLabel.setHighlightColor(Color.TRANSPARENT);
-        helpLabel.setMovementMethod(LinkMovementMethod.getInstance());
+                @Override
+                public void updateDrawState(TextPaint ds) {
+                    super.updateDrawState(ds);
+                    ds.setUnderlineText(false);
+                    ds.setColor(getResources().getColor(R.color.green_250)); // specific color for this link
+                }
+            }, startIndexOfLink, startIndexOfLink + "disini".length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            helpLabel.setHighlightColor(Color.TRANSPARENT);
+            helpLabel.setMovementMethod(LinkMovementMethod.getInstance());
 
-        helpLabel.setText(spannableString, TextView.BufferType.SPANNABLE);
+            helpLabel.setText(spannableString, TextView.BufferType.SPANNABLE);
+        }
     }
 
     @Override
@@ -312,7 +295,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
 
     @Override
     public void setItems(List<Items> items) {
-
+        recyclerView.setAdapter(new ItemsAdapter(getContext(), items, false));
     }
 
     @Override

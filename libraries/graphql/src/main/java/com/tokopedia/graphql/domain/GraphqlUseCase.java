@@ -78,6 +78,7 @@ public class GraphqlUseCase extends UseCase<GraphqlResponse> {
                                                 mRequests.get(i).getTypeOfT()));
                             } catch (Exception e) {
                                 //Just to avoid any accidental data loss
+                                e.printStackTrace();
                             }
                         }
 

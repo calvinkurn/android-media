@@ -1,4 +1,4 @@
-package com.tokopedia.digital_deals.view.customview;
+package com.tokopedia.transaction.orders.orderdetails.view.customview;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -19,7 +19,8 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 
-import com.tokopedia.digital_deals.R;
+
+import com.tokopedia.transaction.R;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

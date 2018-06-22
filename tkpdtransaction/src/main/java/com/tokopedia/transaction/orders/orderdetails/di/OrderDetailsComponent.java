@@ -5,6 +5,7 @@ package com.tokopedia.transaction.orders.orderdetails.di;
  */
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.transaction.orders.orderdetails.view.fragment.OmsDetailFragment;
 import com.tokopedia.transaction.orders.orderdetails.view.fragment.OrderListDetailFragment;
 import com.tokopedia.transaction.orders.orderlist.di.OrderListModuleScope;
 
@@ -15,4 +16,6 @@ import dagger.Component;
 @Component(modules = {OrderDetailsModule.class}, dependencies = {BaseAppComponent.class})
 public interface  OrderDetailsComponent {
     void inject(OrderListDetailFragment orderListDetailFragment);
+
+    void inject(OmsDetailFragment omsDetailFragment);
 }

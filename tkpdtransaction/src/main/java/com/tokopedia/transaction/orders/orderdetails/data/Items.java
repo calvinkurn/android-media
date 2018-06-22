@@ -1,9 +1,11 @@
 package com.tokopedia.transaction.orders.orderdetails.data;
 
+import java.util.List;
+
 public class Items {
     private String title;
 
-    private TapActions[] tapActions;
+    private List<TapActions> tapActions;
 
     private String price;
 
@@ -13,7 +15,7 @@ public class Items {
 
     private String promotionAmount;
 
-    private String[] actionButtons;
+    private List<ActionButton> actionButtons;
 
     private String metaData;
 
@@ -25,11 +27,11 @@ public class Items {
         this.title = title;
     }
 
-    public TapActions[] getTapActions() {
+    public List<TapActions> getTapActions() {
         return tapActions;
     }
 
-    public void setTapActions(TapActions[] tapActions) {
+    public void setTapActions(List<TapActions> tapActions) {
         this.tapActions = tapActions;
     }
 
@@ -65,11 +67,11 @@ public class Items {
         this.promotionAmount = promotionAmount;
     }
 
-    public String[] getActionButtons() {
+    public List<ActionButton> getActionButtons() {
         return actionButtons;
     }
 
-    public void setActionButtons(String[] actionButtons) {
+    public void setActionButtons(List<ActionButton> actionButtons) {
         this.actionButtons = actionButtons;
     }
 

@@ -90,6 +90,9 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         for (Detail detail : details.detail()) {
             getView().setDetail(detail);
         }
+        if(details.getItems()!=null && details.getItems().size()>0){
+            getView().setItems(details.getItems());
+        }
         if (details.additionalInfo().size() > 0) {
             getView().setAdditionInfoVisibility(View.VISIBLE);
         }
@@ -102,7 +105,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                 getView().setPricing(pricing);
         }
         getView().setPaymentData(details.paymentData());
-        getView().setContactUs(details.contactUs());
+//        getView().setContactUs(details.contactUs());
 
         if (details.actionButtons().size() == 2) {
             ActionButton leftActionButton = details.actionButtons().get(0);
@@ -122,6 +125,8 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         } else {
             getView().setActionButtonsVisibility(View.GONE, View.GONE);
         }
+
+
 
         getView().setMainViewVisible(View.VISIBLE);
     }

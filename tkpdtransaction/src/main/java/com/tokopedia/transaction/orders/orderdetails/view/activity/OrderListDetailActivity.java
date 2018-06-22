@@ -8,7 +8,9 @@ import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.orders.orderdetails.view.fragment.OmsDetailFragment;
 import com.tokopedia.transaction.orders.orderdetails.view.fragment.OrderListDetailFragment;
+import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
 
 import static com.tokopedia.transaction.orders.orderdetails.view.fragment.OrderListDetailFragment.KEY_ORDER_CATEGORY;
 import static com.tokopedia.transaction.orders.orderdetails.view.fragment.OrderListDetailFragment.KEY_ORDER_ID;
@@ -28,7 +30,12 @@ public class OrderListDetailActivity extends BaseSimpleActivity{
 
     @Override
     protected Fragment getNewFragment() {
-        return OrderListDetailFragment.getInstance((String) getIntent().getExtras().get(KEY_ORDER_ID), (String) getIntent().getExtras().get(KEY_ORDER_CATEGORY));
+        if(getIntent().getStringExtra(KEY_ORDER_CATEGORY).equals(OrderCategory.DIGITAL)) {
+            return OrderListDetailFragment.getInstance((String) getIntent().getExtras().get(KEY_ORDER_ID), (String) getIntent().getExtras().get(KEY_ORDER_CATEGORY));
+        }  else {
+            return OmsDetailFragment.getInstance((String) getIntent().getExtras().get(KEY_ORDER_ID), (String) getIntent().getExtras().get(KEY_ORDER_CATEGORY));
+
+        }
     }
     @Override
     protected void onCreate(Bundle arg) {

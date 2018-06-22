@@ -1,20 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white"
-    >
-
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/dp_16"
+    android:layout_marginRight="@dimen/dp_16"
+    android:layout_marginBottom="@dimen/dp_16">
 
     <android.support.constraint.ConstraintLayout
-        android:id="@+id/cl_parent"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="@dimen/dp_16">
+        android:layout_height="wrap_content">
 
         <com.tokopedia.transaction.orders.orderdetails.view.customview.CustomTicketView
             android:layout_width="match_parent"
@@ -44,11 +39,10 @@
             app:scallopRadius="8dp"
             app:showBorder="false"
             app:showBottomShadow="true"
-            app:showTopShadow="true"
             app:ticketElevation="4dp" />
 
-        <!--v.setLayerType(View.LAYER_TYPE_SOFTWARE, null);-->
 
+        <!--v.setLayerType(View.LAYER_TYPE_SOFTWARE, null);-->
         <ImageView
             android:id="@+id/divider1"
             android:layout_width="0dp"
@@ -62,54 +56,29 @@
             app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
 
-        <TextView
-            android:id="@+id/tv_congrats"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-medium"
-            android:gravity="center_horizontal"
-            android:lineSpacingExtra="5sp"
-            android:padding="@dimen/dp_16"
-            android:text="Selamat, Penukaran voucher berhasil dilakukan!"
-            android:textColor="@color/black_39"
-            android:textSize="@dimen/sp_17"
-            android:textStyle="normal"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <!--v.setLayerType(View.LAYER_TYPE_SOFTWARE, null);, if doesn't workthen use android:srcCompat-->
-
-        <ImageView
-            android:id="@+id/divider2"
-            android:layout_width="0dp"
-            android:layout_height="6dp"
-            android:layout_marginLeft="2dp"
-            android:layout_marginRight="2dp"
-            android:background="@drawable/dash_line_grey"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_congrats" />
-
         <com.tokopedia.core.customView.RoundedCornerImageView
             android:id="@+id/imageView"
             android:layout_width="@dimen/image_width_brand"
             android:layout_height="@dimen/image_width_brand"
-            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_16"
             android:background="@color/grey_1100"
             android:scaleType="centerCrop"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/divider2" />
+            app:layout_constraintTop_toTopOf="parent" />
 
 
         <TextView
             android:id="@+id/tv_deal_intro"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginRight="@dimen/margin_small"
             android:fontFamily="sans-serif-medium"
 
+            android:lines="2"
             android:maxLines="2"
             android:text="1 Set Jumbo Bento for 2 persons on Weekdays (Monday - Friday)"
             android:textColor="@color/black_39"
@@ -123,12 +92,12 @@
             android:id="@+id/tv_brand_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_8"
             android:fontFamily="sans-serif"
             android:text="Bakerzin"
             android:textColor="@color/black_40"
-            android:textSize="@dimen/sp_12"
+            android:textSize="@dimen/dp_12"
             android:textStyle="normal"
             app:layout_constraintBottom_toTopOf="@+id/tv_redeem_locations"
             app:layout_constraintLeft_toRightOf="@+id/imageView" />
@@ -137,84 +106,104 @@
             android:id="@+id/tv_redeem_locations"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_4"
             android:fontFamily="sans-serif"
             android:text="Dapat ditukar di "
             android:textColor="@color/black_40"
-            android:textSize="@dimen/sp_12"
+            android:textSize="@dimen/dp_12"
             android:textStyle="normal"
             app:layout_constraintBottom_toBottomOf="@+id/imageView"
             app:layout_constraintLeft_toRightOf="@+id/imageView" />
 
 
-        <TextView
-            android:id="@+id/tv_voucher"
+        <LinearLayout
+            android:id="@+id/ll_valid"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_16"
-            android:fontFamily="sans-serif"
-            android:gravity="center_horizontal"
-            android:text="Kode Voucher"
-            android:textColor="@color/black_40"
+            android:background="@drawable/rect_grey"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/dp_8"
+            android:paddingLeft="@dimen/dp_12"
+            android:paddingRight="@dimen/dp_12"
+            android:paddingTop="@dimen/dp_8"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/divider1">
+
+            <TextView
+                android:id="@+id/tv_valid_till"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:gravity="center_horizontal"
+                android:text="Berlaku hingga "
+                android:textColor="@color/black_39"
+                android:textSize="@dimen/dp_12"
+                android:textStyle="normal" />
+
+            <TextView
+                android:id="@+id/tv_valid_till_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:gravity="center_horizontal"
+                android:text="15 April 2018"
+                android:textColor="@color/black_39"
+                android:textSize="@dimen/dp_12"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/tv_redeem_voucher"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/redeem_button_height"
+            android:layout_marginBottom="2dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:layout_marginTop="@dimen/dp_16"
+            android:background="@drawable/background_redeem_voucher"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
+            android:lineSpacingExtra="10sp"
+            android:text="@string/text_redeem_voucher"
+            android:textColor="@color/white"
             android:textSize="@dimen/sp_14"
             android:textStyle="normal"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/divider1" />
-
-        <TextView
-            android:id="@+id/tv_voucher_code"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_8"
-            android:fontFamily="sans-serif-medium"
-            android:gravity="center_horizontal"
-            android:letterSpacing="0.05"
-            android:text="112233445566"
-            android:textColor="@color/green_nob"
-            android:textSize="@dimen/sp_20"
-            android:textStyle="normal"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_voucher" />
-
-        <TextView
-            android:id="@+id/tv_redeem_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_25"
-            android:layout_marginTop="@dimen/dp_8"
-            android:fontFamily="sans-serif"
-            android:gravity="center_horizontal"
-            android:text="Waktu Redeem: 12 April 2018 - 03:50 PM"
-            android:textColor="@color/black_40"
-            android:textSize="@dimen/sp_12"
-            android:textStyle="normal"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-
-            app:layout_constraintTop_toBottomOf="@+id/tv_voucher_code" />
+            app:layout_constraintTop_toBottomOf="@+id/ll_valid" />
     </android.support.constraint.ConstraintLayout>
 
     <TextView
-        android:id="@+id/tv_info"
-        android:layout_width="0dp"
+        android:id="@+id/tv_voucher_redeemed"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/sp_12"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="66dp"
+        android:layout_marginLeft="@dimen/margin_small"
+        android:layout_marginRight="@dimen/margin_small"
+        android:layout_marginTop="@dimen/dp_8"
+        android:background="@drawable/background_rect_black"
         android:fontFamily="sans-serif"
-        app:layout_constraintTop_toBottomOf="@+id/cl_parent"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/dp_8"
+        android:paddingLeft="@dimen/dp_12"
+        android:paddingRight="@dimen/dp_12"
+        android:paddingTop="@dimen/dp_8"
+        android:text="Redeem hanya dapat dilakukan oleh petugas outlet terkait"
+        android:textColor="@color/white"
+        android:textSize="@dimen/dp_12"
         android:textStyle="normal"
+        android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
+        app:layout_constraintTop_toBottomOf="@+id/ll_valid"
+        app:layout_constraintWidth_default="wrap" />
 
-        android:textColor="@color/black_40"
-        android:layout_marginTop="@dimen/dp_24"
-        android:gravity="center_horizontal"
-        android:text="Kode Voucher hanya dapat dipakai untuk satu kali transaksi, dan Voucher Anda akan otomatis di-non-aktif-kan oleh sistem setelah digunakan."
-        />
-
-</android.support.constraint.ConstraintLayout>
+</FrameLayout>
