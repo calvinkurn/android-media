@@ -64,9 +64,9 @@ public class AddShipmentAddressActivity extends BaseCheckoutActivity {
         super.setupLayout(savedInstanceState);
         if (getSupportActionBar() != null) {
             if (formMode == ADD_MODE) {
-                getSupportActionBar().setTitle(getString(R.string.checkout_module_title_shipping_dest_multiple_address));
+                getSupportActionBar().setTitle(getString(R.string.checkout_module_title_shipping_dest_add_new));
             } else if (formMode == EDIT_MODE) {
-                getSupportActionBar().setTitle(getString(R.string.checkout_module_title_change_address));
+                getSupportActionBar().setTitle(getString(R.string.checkout_module_title_shipping_dest));
             }
         }
     }

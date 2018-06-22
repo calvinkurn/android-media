@@ -8,10 +8,12 @@ import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -150,6 +152,7 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
 
     @Override
     protected void initView(View view) {
+        mCartAddressChoiceListener.setToolbarTitle(getActivity().getString(R.string.checkout_module_title_shipping_dest));
         tvChooseOtherAddress = view.findViewById(R.id.tv_choose_other_address);
         tvSendToMultipleAddress = view.findViewById(R.id.tv_send_to_multiple_address);
         btSendToCurrentAddress = view.findViewById(R.id.bt_send_to_current_address);

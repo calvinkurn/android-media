@@ -24,6 +24,7 @@ import com.tokopedia.checkout.view.di.component.DaggerMultipleAddressComponent;
 import com.tokopedia.checkout.view.di.component.MultipleAddressComponent;
 import com.tokopedia.checkout.view.di.module.MultipleAddressModule;
 import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule;
+import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsMultipleAddress;
@@ -59,6 +60,7 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
     private static final String ADD_SHIPMENT_FRAGMENT_TAG = "ADD_SHIPMENT_FRAGMENT_TAG";
     private static final String CART_LIST_DATA = "CART_LIST_DATA";
     private static final String ADDRESS_EXTRA = "ADDRESS_EXTRA";
+    private static final String DISTRICT_RECOMMENDATION_TOKEN = "DISTRICT_RECOMMENDATION_TOKEN";
 
     private MultipleAddressAdapter multipleAddressAdapter;
     private RecyclerView orderAddressList;
@@ -66,12 +68,14 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
 
     public static MultipleAddressFragment newInstance(
             CartListData cartListData,
-            RecipientAddressModel recipientModel
+            RecipientAddressModel recipientModel,
+            Token token
     ) {
         MultipleAddressFragment fragment = new MultipleAddressFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ADDRESS_EXTRA, recipientModel);
         bundle.putParcelable(CART_LIST_DATA, cartListData);
+        bundle.putParcelable(DISTRICT_RECOMMENDATION_TOKEN, token);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -114,7 +118,8 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
     private List<MultipleAddressAdapterData> initiateAdapterData() {
         CartListData cartListData = getArguments().getParcelable(CART_LIST_DATA);
         RecipientAddressModel recipientAddressModel = getArguments().getParcelable(ADDRESS_EXTRA);
-        return presenter.initiateMultipleAddressAdapterData(cartListData, recipientAddressModel);
+        Token token = getArguments().getParcelable(DISTRICT_RECOMMENDATION_TOKEN);
+        return presenter.initiateMultipleAddressAdapterData(cartListData, recipientAddressModel, token);
     }
 
     @Override

@@ -7,6 +7,9 @@ import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -24,6 +27,10 @@ import com.tokopedia.checkout.view.di.component.CartComponent;
 import com.tokopedia.checkout.view.di.component.DaggerAddShipmentAddressComponent;
 import com.tokopedia.checkout.view.di.module.AddShipmentAddressModule;
 import com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceActivity;
+import com.tokopedia.core.manage.people.address.ManageAddressConstant;
+import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
+import com.tokopedia.core.manage.people.address.model.Destination;
+import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsMultipleAddress;
 
@@ -32,6 +39,9 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceActivity.EXTRA_CURRENT_ADDRESS;
+import static com.tokopedia.core.manage.people.address.ManageAddressConstant.EXTRA_ADDRESS;
 
 /**
  * @author anggaprasetiyo on 20/04/18.
@@ -202,6 +212,24 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
                     getActivity().finish();
                     break;
             }
+        } else if (requestCode == ManageAddressConstant.REQUEST_CODE_PARAM_CREATE) {
+            RecipientAddressModel newRecipientAddressModel = null;
+            if (data != null && data.hasExtra(EXTRA_ADDRESS)) {
+                Destination newAddress = data.getParcelableExtra(EXTRA_ADDRESS);
+                newRecipientAddressModel = new RecipientAddressModel();
+                newRecipientAddressModel.setAddressName(newAddress.getAddressName());
+                newRecipientAddressModel.setDestinationDistrictId(newAddress.getDistrictId());
+                newRecipientAddressModel.setCityId(newAddress.getCityId());
+                newRecipientAddressModel.setProvinceId(newAddress.getProvinceId());
+                newRecipientAddressModel.setRecipientName(newAddress.getReceiverName());
+                newRecipientAddressModel.setRecipientPhoneNumber(newAddress.getReceiverPhone());
+                newRecipientAddressModel.setAddressStreet(newAddress.getAddressStreet());
+//                mCartAddressChoicePresenter.getAddressShortedList(getActivity(), newRecipientAddressModel, true);
+            } else {
+                newRecipientAddressModel = (RecipientAddressModel) getArguments().getParcelable(EXTRA_CURRENT_ADDRESS);
+//                mCartAddressChoicePresenter.getAddressShortedList(getActivity(), newRecipientAddressModel, false);
+            }
+
         }
     }
 

@@ -28,6 +28,7 @@ import com.tokopedia.checkout.domain.usecase.ResetCartGetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.ResetCartGetShipmentFormUseCase;
 import com.tokopedia.checkout.domain.usecase.UpdateCartGetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.view.holderitemdata.CartItemHolderData;
+import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartListResult;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
@@ -233,7 +234,7 @@ public class CartListPresenter implements ICartListPresenter {
 
     @SuppressWarnings("deprecation")
     @Override
-    public void processToShipmentMultipleAddress(final RecipientAddressModel selectedAddress) {
+    public void processToShipmentMultipleAddress(final RecipientAddressModel selectedAddress, Token token) {
         view.showProgressLoading();
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         param.put("lang", "id");
@@ -290,7 +291,7 @@ public class CartListPresenter implements ICartListPresenter {
                             public void onNext(CartListData cartListData) {
                                 view.hideProgressLoading();
                                 if (!cartListData.isError())
-                                    view.renderToShipmentMultipleAddressSuccess(cartListData, selectedAddress);
+                                    view.renderToShipmentMultipleAddressSuccess(cartListData, selectedAddress, token);
                                 else
                                     view.renderErrorToShipmentMultipleAddress(cartListData.getErrorMessage());
                             }

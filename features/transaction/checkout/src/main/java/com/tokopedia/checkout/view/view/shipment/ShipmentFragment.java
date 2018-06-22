@@ -79,6 +79,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private TkpdProgressDialog progressDialogNormal;
     private CourierBottomsheet courierBottomsheet;
 
+    private CartShipmentAddressFormData cartShipmentAddressFormData;
+
     @Inject
     ShipmentAdapter shipmentAdapter;
     @Inject
@@ -159,8 +161,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     protected void setupArguments(Bundle arguments) {
-        CartShipmentAddressFormData cartShipmentAddressFormData
-                = arguments.getParcelable(ARG_EXTRA_SHIPMENT_FORM_DATA);
+        cartShipmentAddressFormData = arguments.getParcelable(ARG_EXTRA_SHIPMENT_FORM_DATA);
         if (cartShipmentAddressFormData != null) {
             if (!cartShipmentAddressFormData.isMultiple()) {
                 shipmentPresenter.setRecipientAddressModel(
@@ -549,6 +550,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 Intent intent = new Intent();
                 intent.putExtra(ShipmentActivity.EXTRA_SELECTED_ADDRESS_RECIPIENT_DATA,
                         shipmentAdapter.getAddressShipmentData());
+                Token token = new Token();
+                token.setDistrictRecommendation(cartShipmentAddressFormData.getKeroDiscomToken());
+                token.setUt(cartShipmentAddressFormData.getKeroUnixTime());
+                intent.putExtra(ShipmentActivity.EXTRA_DISTRICT_RECOMMENDATION_TOKEN, token);
                 getActivity().setResult(ShipmentActivity.RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM, intent);
                 getActivity().finish();
                 break;

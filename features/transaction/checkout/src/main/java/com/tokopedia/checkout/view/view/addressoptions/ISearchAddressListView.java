@@ -2,6 +2,8 @@ package com.tokopedia.checkout.view.view.addressoptions;
 
 import android.app.Activity;
 
+import com.tokopedia.core.manage.people.address.model.Token;
+
 /**
  * @author Aghny A. Putra on 26/01/18
  */
@@ -22,5 +24,7 @@ public interface ISearchAddressListView<T> {
     void resetPagination();
 
     Activity getActivity();
+
+    void setToken(Token token);
 
 }

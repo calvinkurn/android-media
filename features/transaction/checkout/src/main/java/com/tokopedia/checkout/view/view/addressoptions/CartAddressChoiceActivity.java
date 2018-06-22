@@ -75,6 +75,13 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     }
 
     @Override
+    public void setToolbarTitle(String title) {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(title);
+        }
+    }
+
+    @Override
     protected void setupBundlePass(Bundle extras) {
         this.typeRequest = extras.getInt(EXTRA_TYPE_REQUEST);
         this.token = extras.getParcelable(EXTRA_DISCOM_TOKEN);
@@ -175,6 +182,7 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
             ((CartAddressChoiceFragment) getCurrentFragment())
                     .checkoutAnalyticsChangeAddress.eventClickChangeAddressClickArrowBackFromGantiAlamat();
         }
+        setToolbarTitle(getString(R.string.checkout_module_title_shipping_dest));
         super.onBackPressed();
 
     }

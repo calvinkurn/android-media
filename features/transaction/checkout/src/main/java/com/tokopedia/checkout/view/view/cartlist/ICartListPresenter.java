@@ -3,6 +3,7 @@ package com.tokopedia.checkout.view.view.cartlist;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.view.holderitemdata.CartItemHolderData;
+import com.tokopedia.core.manage.people.address.model.Token;
 
 import java.util.List;
 import java.util.Map;
@@ -23,7 +24,7 @@ public interface ICartListPresenter {
 
     void processToShipmentSingleAddress();
 
-    void processToShipmentMultipleAddress(RecipientAddressModel selectedAddress);
+    void processToShipmentMultipleAddress(RecipientAddressModel selectedAddress, Token token);
 
     void reCalculateSubTotal(List<CartItemHolderData> dataList);
 
