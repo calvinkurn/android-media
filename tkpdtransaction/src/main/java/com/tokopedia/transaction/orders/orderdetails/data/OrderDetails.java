@@ -21,8 +21,9 @@ public class OrderDetails {
     private PaymentData paymentData;
     private ContactUs contactUs;
     private List<ActionButton> actionButtons;
+    private List<Items> items;
 
-    public OrderDetails(Status status, ConditionalInfo conditionalInfo, List<Title> title, Invoice invoice, OrderToken orderToken, List<Detail> detail, List<AdditionalInfo> additionalInfo, List<Pricing> pricing, PaymentData paymentData, ContactUs contactUs, List<ActionButton> actionButtons) {
+    public OrderDetails(Status status, ConditionalInfo conditionalInfo, List<Title> title, Invoice invoice, OrderToken orderToken, List<Detail> detail, List<AdditionalInfo> additionalInfo, List<Pricing> pricing, PaymentData paymentData, ContactUs contactUs, List<ActionButton> actionButtons, List<Items> items) {
         this.status = status;
         this.conditionalInfo = conditionalInfo;
         this.title = title;
@@ -34,6 +35,8 @@ public class OrderDetails {
         this.paymentData = paymentData;
         this.contactUs = contactUs;
         this.actionButtons = actionButtons;
+        this.items = items;
+
     }
 
     public Status status() {
@@ -80,6 +83,10 @@ public class OrderDetails {
         return actionButtons;
     }
 
+    public List<Items> getItems() {
+        return items;
+    }
+
     @Override
     public String toString() {
         return "[OrderDetails:{"
@@ -93,7 +100,8 @@ public class OrderDetails {
                 + "pricing="+pricing +","
                 + "paymentData="+paymentData +","
                 + "contactUs="+contactUs +","
-                + "actionButtons="+actionButtons
+                + "actionButtons="+actionButtons + ","
+                + "items="
                 + "}]";
     }
 }
