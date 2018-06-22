@@ -1,6 +1,7 @@
 package com.tokopedia.digital_deals.view.presenter;
 
 
+import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 
 import com.tkpd.library.utils.CommonUtils;
@@ -9,8 +10,10 @@ import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.domain.getusecase.GetDealDetailsUseCase;
+import com.tokopedia.digital_deals.domain.getusecase.GetDealLikesUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetSearchNextUseCase;
 import com.tokopedia.digital_deals.domain.model.dealdetailsdomainmodel.DealsDetailsDomain;
+import com.tokopedia.digital_deals.domain.model.request.likes.GetLikesDomain;
 import com.tokopedia.digital_deals.domain.model.searchdomainmodel.SearchDomainModel;
 import com.tokopedia.digital_deals.view.contractor.DealDetailsContract;
 import com.tokopedia.digital_deals.view.utils.Utils;
@@ -35,19 +38,22 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
     private int currentPage, totalPages;
     private GetDealDetailsUseCase getDealDetailsUseCase;
     private GetSearchNextUseCase getSearchNextUseCase;
+    private GetDealLikesUseCase getDealLikesUseCase;
     private DealsDetailsViewModel dealsDetailsViewModel;
     public static final String HOME_DATA = "home_data";
     public final static String TAG = "url";
-    String PROMOURL = "https://www.tokopedia.com/promo/tiket/events/";
-    String FAQURL = "https://www.tokopedia.com/bantuan/faq-tiket-event/";
-    String TRANSATIONSURL = "https://pulsa.tokopedia.com/order-list/";
     private TouchViewPager mTouchViewPager;
+    private boolean isLoading;
+    private boolean isLastPage;
+    private final int PAGE_SIZE = 20;
+    private RequestParams searchNextParams=RequestParams.create();
 
 
     @Inject
-    public DealDetailsPresenter(GetDealDetailsUseCase getDealDetailsUseCase, GetSearchNextUseCase getSearchNextUseCase) {
+    public DealDetailsPresenter(GetDealDetailsUseCase getDealDetailsUseCase, GetSearchNextUseCase getSearchNextUseCase, GetDealLikesUseCase getDealLikesUseCase) {
         this.getDealDetailsUseCase = getDealDetailsUseCase;
-        this.getSearchNextUseCase=getSearchNextUseCase;
+        this.getSearchNextUseCase = getSearchNextUseCase;
+        this.getDealLikesUseCase = getDealLikesUseCase;
     }
 
     @Override
@@ -94,15 +100,39 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
                 dealsDetailsViewModel = Utils.getSingletonInstance()
                         .convertIntoDealDetailsViewModel(dealEntity);
                 getView().renderDealDetails(dealsDetailsViewModel);
+                searchNextParams.putString("nexturl", dealsDetailsViewModel.getRecommendationUrl());
                 getRecommendedDeals();
                 CommonUtils.dumper("enter onNext");
+                getLikes();
+            }
+        });
+    }
+
+    private void getLikes() {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString("deal_id", String.valueOf(dealsDetailsViewModel.getId()));
+        getDealLikesUseCase.execute(requestParams, new Subscriber<GetLikesDomain>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(GetLikesDomain getLikesDomain) {
+                getView().setLikes(getLikesDomain.getTotalLikes());
+
             }
         });
     }
 
     private void getRecommendedDeals() {
-        RequestParams searchNextParams = RequestParams.create();
-        searchNextParams.putString("nexturl", dealsDetailsViewModel.getRecommendationUrl());
+
+        isLoading = true;
         getSearchNextUseCase.execute(searchNextParams, new Subscriber<SearchDomainModel>() {
             @Override
             public void onCompleted() {
@@ -111,14 +141,19 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
 
             @Override
             public void onError(Throwable throwable) {
-                    Log.d("inOnErrrror", throwable.getMessage());
+                Log.d("inOnErrrror", throwable.getMessage());
             }
 
             @Override
             public void onNext(SearchDomainModel searchDomainModel) {
                 Log.d("inOnNext", "ds");
 
-                    getView().addDealsToCards(processSearchResponse(searchDomainModel));
+                isLoading = false;
+                getView().removeFooter();
+
+                getView().addDealsToCards(processSearchResponse(searchDomainModel));
+
+                checkIfToLoad(getView().getLayoutManager());
 
             }
         });
@@ -126,10 +161,18 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
 
     List<CategoryItemsViewModel> processSearchResponse(SearchDomainModel searchDomainModel) {
 
+        String nexturl = searchDomainModel.getPage().getUriNext();
+        if (nexturl != null && !nexturl.isEmpty() && nexturl.length() > 0) {
+            searchNextParams.putString("nexturl", nexturl);
+            isLastPage = false;
+        } else {
+            isLastPage = true;
+        }
         List<CategoryItemsViewModel> categoryItemsViewModels = Utils.getSingletonInstance()
                 .convertIntoCategoryListItemsViewModel(searchDomainModel.getDeals());
         return categoryItemsViewModels;
     }
+
     @Override
     public boolean onOptionMenuClick(int id) {
         if (id == R.id.action_menu_share) {
@@ -189,6 +232,26 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
         else
             return null;
     }
+
+    public void onRecyclerViewScrolled(LinearLayoutManager layoutManager) {
+        checkIfToLoad(layoutManager);
+    }
+
+    private void checkIfToLoad(LinearLayoutManager layoutManager) {
+        int visibleItemCount = layoutManager.getChildCount();
+        int totalItemCount = layoutManager.getItemCount();
+        int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
+
+        if (!isLoading && !isLastPage) {
+            if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
+                    && firstVisibleItemPosition >= 0) {
+                getRecommendedDeals();
+            } else {
+                getView().addFooter();
+            }
+        }
+    }
+
 
 
 }

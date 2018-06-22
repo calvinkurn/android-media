@@ -8,6 +8,7 @@ import com.tokopedia.digital_deals.domain.model.branddetailsmodel.BrandDetailsDo
 import com.tokopedia.digital_deals.domain.model.categorydomainmodel.CategoryDetailsDomain;
 import com.tokopedia.digital_deals.domain.model.dealdetailsdomainmodel.DealsDetailsDomain;
 import com.tokopedia.digital_deals.domain.model.locationdomainmodel.LocationDomainModel;
+import com.tokopedia.digital_deals.domain.model.request.likes.GetLikesDomain;
 import com.tokopedia.digital_deals.domain.model.searchdomainmodel.SearchDomainModel;
 
 import java.util.HashMap;
@@ -39,5 +40,7 @@ public interface DealsRepository {
     Observable<AllBrandsDomain> getAllBrandsNext(String nextUrl);
 
     Observable<LikeUpdateResultDomain> updateLikes(JsonObject requestBody);
+
+    Observable<GetLikesDomain> getLikes(String dealId);
 
 }

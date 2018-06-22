@@ -199,8 +199,7 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
 
         if (!isLoading && !isLastPage) {
             if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
-                    && firstVisibleItemPosition >= 0
-                    && totalItemCount >= PAGE_SIZE) {
+                    && firstVisibleItemPosition >= 0) {
                 loadMoreItems();
             } else {
                 getView().addFooter();

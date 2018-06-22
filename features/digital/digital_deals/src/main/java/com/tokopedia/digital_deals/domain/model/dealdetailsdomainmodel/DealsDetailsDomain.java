@@ -136,7 +136,8 @@ public class DealsDetailsDomain {
     private String tnc;
     @SerializedName("seo_url")
     private String seoUrl;
-
+    @SerializedName("is_liked")
+    private boolean isLiked;
 
     public int getId() {
         return id;
@@ -480,6 +481,14 @@ public class DealsDetailsDomain {
 
     public void setSeoUrl(String seoUrl) {
         this.seoUrl = seoUrl;
+    }
+
+    public boolean isLiked() {
+        return isLiked;
+    }
+
+    public void setLiked(boolean liked) {
+        isLiked = liked;
     }
 }
 

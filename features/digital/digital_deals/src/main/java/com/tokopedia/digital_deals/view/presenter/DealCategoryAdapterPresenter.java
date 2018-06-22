@@ -29,10 +29,10 @@ public class DealCategoryAdapterPresenter extends BaseDaggerPresenter<DealCatego
 
     @Override
     public void onDestroy() {
-
+        postUpdateDealLikesUseCase.unsubscribe();
     }
 
-    public void setEventLike(final CategoryItemsViewModel model, final int position) {
+    public void setDealLike(final CategoryItemsViewModel model, final int position) {
         if (SessionHandler.isV4Login(getView().getActivity())) {
             LikeUpdateModel requestModel = new LikeUpdateModel();
             Rating rating = new Rating();
@@ -71,11 +71,11 @@ public class DealCategoryAdapterPresenter extends BaseDaggerPresenter<DealCatego
         }
     }
 
-    public void setEventLike(final DealsDetailsViewModel model, final int position) {
+    public void setDealLike(final DealsDetailsViewModel model, final int position) {
         if (SessionHandler.isV4Login(getView().getActivity())) {
             LikeUpdateModel requestModel = new LikeUpdateModel();
             Rating rating = new Rating();
-            if (model.isLiked()) {
+            if (model.getIsLiked()) {
                 rating.setIsLiked("false");
             } else {
                 rating.setIsLiked("true");
@@ -101,7 +101,7 @@ public class DealCategoryAdapterPresenter extends BaseDaggerPresenter<DealCatego
 
                         @Override
                         public void onNext(LikeUpdateResultDomain likeUpdateResultDomain) {
-                            model.setLiked(likeUpdateResultDomain.isLiked());
+                            model.setIsLiked(likeUpdateResultDomain.isLiked());
                             getView().notifyDataSetChanged(position);
                         }
                     });

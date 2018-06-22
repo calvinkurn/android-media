@@ -260,6 +260,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(DealsHomePresenter.TAG, categoriesModel.getUrl());
         requestParams.putString(Utils.BRAND_QUERY_PARAM_TREE, Utils.BRAND_QUERY_PARAM_BRAND);
+//        requestParams.putInt("page_size", 5);
 //        requestParams.putInt(Utils.BRAND_QUERY_PARAM_CITY_ID, Utils.getSingletonInstance().getLocation(getContext()).getId());
         return requestParams;
     }

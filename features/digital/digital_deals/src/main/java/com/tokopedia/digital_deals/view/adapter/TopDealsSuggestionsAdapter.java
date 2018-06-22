@@ -155,7 +155,7 @@ public class TopDealsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVie
     public class DealsTitleHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView tvDealTitle;
-
+        TextView tvBrandName;
         View itemView;
         CategoryItemsViewModel valueItem;
         int mPosition;
@@ -165,6 +165,7 @@ public class TopDealsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVie
             this.itemView=itemView;
             itemView.setOnClickListener(this);
             tvDealTitle =itemView.findViewById(R.id.tv_simple_item);
+            tvBrandName =itemView.findViewById(R.id.tv_brand_name);
         }
 
         private void setDealTitle(int position, CategoryItemsViewModel value) {
@@ -184,6 +185,7 @@ public class TopDealsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVie
                 spannableString.setSpan(styleSpan, fromindex, toIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
             tvDealTitle.setText(spannableString);
+            tvBrandName.setText(value.getBrand().getTitle());
         }
 
 

@@ -29,6 +29,7 @@ import com.tokopedia.digital_deals.domain.getusecase.GetAllBrandsUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetBrandDetailsUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetCategoryDetailRequestUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetDealDetailsUseCase;
+import com.tokopedia.digital_deals.domain.getusecase.GetDealLikesUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetDealsListRequestUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetLocationListRequestUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetNextBrandPageUseCase;
@@ -142,6 +143,12 @@ public class DealsModule {
     @DealsScope
     PostUpdateDealLikesUseCase providePostUpdateDealLikesUseCase(DealsRepository dealsRepository) {
         return new PostUpdateDealLikesUseCase(dealsRepository);
+    }
+
+    @Provides
+    @DealsScope
+    GetDealLikesUseCase provideGetDealLikesUseCase(DealsRepository dealsRepository) {
+        return new GetDealLikesUseCase(dealsRepository);
     }
 
     @Provides

@@ -249,6 +249,7 @@ public class Utils {
         viewModel.setLikes(detailsDomain.getLikes());
         viewModel.setRecommendationUrl(detailsDomain.getRecommendationUrl());
         viewModel.setTnc(detailsDomain.getTnc());
+        viewModel.setIsLiked(detailsDomain.isLiked());
         viewModel.setSeoUrl(detailsDomain.getSeoUrl());
         List<OutletViewModel> outletViewModel = null;
         if (detailsDomain.getOutlets() != null && detailsDomain.getOutlets().size() != 0) {
@@ -457,8 +458,8 @@ public class Utils {
     public static class Constants {
 
         public final static String DEALS = "deals";
-        public static final String DIGITAL_DEALS = "tokopedia://digital-deals";
-        public static final String DIGITAL_DEALS_DETAILS = "tokopedia://digital-deals/{slug}";
+        public static final String DIGITAL_DEALS = "tokopedia://deals";
+        public static final String DIGITAL_DEALS_DETAILS = "tokopedia://deals/{slug}";
     }
 
     public static String fetchOrderId(String url) {

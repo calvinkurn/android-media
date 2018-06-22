@@ -10,6 +10,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.animation.OvershootInterpolator;
@@ -35,6 +36,7 @@ import com.tokopedia.digital_deals.view.viewmodel.BrandViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.usecase.RequestParams;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -64,6 +66,7 @@ public class BrandDetailsActivity extends BaseSimpleActivity implements HasCompo
     public BrandDetailsPresenter mPresenter;
     private DealsComponent dealsComponent;
     private DealsCategoryAdapter categoryAdapter;
+    private LinearLayoutManager layoutManager;
 
     @Override
     protected Fragment getNewFragment() {
@@ -115,6 +118,8 @@ public class BrandDetailsActivity extends BaseSimpleActivity implements HasCompo
         collapsingToolbarLayout.setTitle(" ");
         tvSeeMoreBtn.setOnClickListener(this);
         tvExpandableDesc.setInterpolator(new OvershootInterpolator());
+        layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        recyclerViewDeals.setLayoutManager(layoutManager);
 
     }
 
@@ -190,10 +195,12 @@ public class BrandDetailsActivity extends BaseSimpleActivity implements HasCompo
             recyclerViewDeals.setAdapter(categoryAdapter);
             recyclerViewDeals.setVisibility(View.VISIBLE);
             noContent.setVisibility(View.GONE);
+            recyclerViewDeals.addOnScrollListener(rvOnScrollListener);
         } else {
             tvDealsCount.setText(String.format(getResources().getString(R.string.number_of_items), count));
             recyclerViewDeals.setVisibility(View.GONE);
             noContent.setVisibility(View.VISIBLE);
+            recyclerViewDeals.removeOnScrollListener(rvOnScrollListener);
         }
 
         baseMainContent.setVisibility(View.VISIBLE);
@@ -229,6 +236,7 @@ public class BrandDetailsActivity extends BaseSimpleActivity implements HasCompo
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(BrandDetailsPresenter.TAG, brandViewModel.getUrl());
         requestParams.putInt(Utils.BRAND_QUERY_PARAM_LOCATION_ID, Utils.getSingletonInstance().getLocation(getActivity()).getId());
+//        requestParams.putInt("size", 5);
         return requestParams;
     }
 
@@ -236,6 +244,40 @@ public class BrandDetailsActivity extends BaseSimpleActivity implements HasCompo
     public View getRootView() {
         return mainContent;
     }
+
+    @Override
+    public void removeFooter() {
+        ((DealsCategoryAdapter) recyclerViewDeals.getAdapter()).removeFooter();
+
+    }
+
+    @Override
+    public LinearLayoutManager getLayoutManager() {
+        return layoutManager;
+    }
+
+    @Override
+    public void addFooter() {
+        ((DealsCategoryAdapter) recyclerViewDeals.getAdapter()).addFooter();
+    }
+
+    @Override
+    public void addDealsToCards(ArrayList<CategoryItemsViewModel> categoryList) {
+        ((DealsCategoryAdapter) recyclerViewDeals.getAdapter()).addAll(categoryList);
+    }
+    private RecyclerView.OnScrollListener rvOnScrollListener = new RecyclerView.OnScrollListener() {
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+        }
+
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            mPresenter.onRecyclerViewScrolled(layoutManager);
+        }
+    };
+
 
     @Override
     protected void onDestroy() {

@@ -23,6 +23,8 @@ public class GetBrandDetailsUseCase extends UseCase<BrandDetailsDomain> {
         String url = requestParams.getString(BrandDetailsPresenter.TAG, "");
         HashMap<String, Object> params= requestParams.getParameters();
         params.remove(BrandDetailsPresenter.TAG);
+        if(requestParams.getBoolean("search_next", false))
+            params=new HashMap<>();
         return dealsRepository.getBrandDetails(url, params);
     }
 }

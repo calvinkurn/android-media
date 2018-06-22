@@ -21,6 +21,7 @@ public class GetSearchNextUseCase extends UseCase<SearchDomainModel> {
     @Override
     public Observable<SearchDomainModel> createObservable(RequestParams requestParams) {
         String nextUrl = requestParams.getString("nexturl", "");
+        nextUrl+="&page_size=5";
         return dealsRepository.getSearchNext(nextUrl);
     }
 }

@@ -5,6 +5,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.tokopedia.digital_deals.data.entity.response.branddetailsresponse.BrandDetailsResponse;
+import com.tokopedia.digital_deals.domain.model.PageDomain;
 import com.tokopedia.digital_deals.domain.model.branddetailsmodel.BrandDetailsDomain;
 import com.tokopedia.digital_deals.domain.model.branddetailsmodel.BrandDomain;
 import com.tokopedia.digital_deals.domain.model.DealsCategoryItemDomain;
@@ -38,6 +39,10 @@ public class BrandDetailsTransformMapper implements Func1<BrandDetailsResponse, 
         dealsDomain.setDealBrand(brandDomain);
 
         dealsDomain.setCount(brandDetailsResponse.getCount());
+        JsonObject page = brandDetailsResponse.getPage();
+        PageDomain pageDomain = new Gson().fromJson(page, PageDomain.class);
+
+        dealsDomain.setPage(pageDomain);
 
         return dealsDomain;
     }

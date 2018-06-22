@@ -1,5 +1,6 @@
 package com.tokopedia.digital_deals.data;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.tokopedia.digital_deals.data.entity.response.LikeUpdateResponse;
 import com.tokopedia.digital_deals.data.entity.response.allbrandsresponse.AllBrandsResponse;
@@ -80,6 +81,11 @@ public class CloudDealsDataStore implements DealsDataStore {
     @Override
     public Observable<LikeUpdateResponse> updateLikes(JsonObject requestBody) {
         return dealsApi.updateLikes(requestBody);
+    }
+
+    @Override
+    public Observable<JsonArray> getLikes(String dealId) {
+        return dealsApi.getLikes(dealId);
     }
 
 
