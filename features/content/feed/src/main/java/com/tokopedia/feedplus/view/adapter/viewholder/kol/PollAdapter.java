@@ -34,15 +34,12 @@ import java.util.List;
 public class PollAdapter extends RecyclerView.Adapter<PollAdapter.ViewHolder> {
     private int rowNumber;
     private PollViewModel pollViewModel;
-    private boolean voted;
     private List<PollOptionViewModel> list;
     private FeedPlus.View.Polling viewListener;
 
-    PollAdapter(int rowNumber, PollViewModel pollViewModel, boolean voted,
-                FeedPlus.View.Polling viewListener) {
+    PollAdapter(int rowNumber, PollViewModel pollViewModel, FeedPlus.View.Polling viewListener) {
         this.rowNumber = rowNumber;
         this.pollViewModel = pollViewModel;
-        this.voted = voted;
         this.list = new ArrayList<>();
         this.viewListener = viewListener;
     }
@@ -119,7 +116,7 @@ public class PollAdapter extends RecyclerView.Adapter<PollAdapter.ViewHolder> {
             @Override
             public void onClick(View view) {
                 String trackingPromoCode;
-                if (voted) {
+                if (pollViewModel.isVoted()) {
                     viewListener.onGoToLink(element.getRedirectLink());
                     trackingPromoCode = pollViewModel.getKolProfileUrl();
                 } else {
