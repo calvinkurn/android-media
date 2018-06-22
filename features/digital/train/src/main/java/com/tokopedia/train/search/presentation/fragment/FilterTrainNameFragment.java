@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
+import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.search.presentation.adapter.TrainFilterAdapter;
 import com.tokopedia.train.search.presentation.model.FilterSearchData;
 
@@ -26,7 +27,7 @@ public class FilterTrainNameFragment extends BaseFilterTrainFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        listener.setTitleToolbar("Kereta");
+        listener.setTitleToolbar(getString(R.string.train_filter_train_name));
         adapter.addList(filterSearchData.getTrains(), filterSearchData.getSelectedTrains());
         adapter.setListener(new TrainFilterAdapter.ActionListener() {
             @Override

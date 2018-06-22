@@ -38,8 +38,10 @@ import javax.inject.Inject;
 public class TrainFilterSearchActivity extends TrainBaseActivity
         implements TrainFilterSearchContract.View, FilterSearchActionView {
 
+    public static final String MODEL_SEARCH_FILTER = "model_filter";
     private static final String MAP_PARAM_SCHEDULE = "map_param_schedule";
     private static final String SCHEDULE_VARIANT = "schedule_variant";
+    private static final String FILTER_SEARCH = "filter_search";
 
     @Inject
     TrainFilterSearchPresenter presenter;
@@ -50,10 +52,12 @@ public class TrainFilterSearchActivity extends TrainBaseActivity
     private Button filterButton;
     private boolean showCloseButton;
 
-    public static Intent getCallingIntent(Activity activity, HashMap<String, Object> mapParam, int scheduleVariant) {
+    public static Intent getCallingIntent(Activity activity, HashMap<String, Object> mapParam,
+                                          int scheduleVariant, FilterSearchData filterSearchData) {
         Intent intent = new Intent(activity, TrainFilterSearchActivity.class);
         intent.putExtra(MAP_PARAM_SCHEDULE, mapParam);
         intent.putExtra(SCHEDULE_VARIANT, scheduleVariant);
+        intent.putExtra(FILTER_SEARCH, filterSearchData);
         return intent;
     }
 
@@ -93,7 +97,7 @@ public class TrainFilterSearchActivity extends TrainBaseActivity
 
     @Override
     public void showCountSchedule(int totalSchedule) {
-        filterButton.setText("Terdapat " + totalSchedule + " perjalanan");
+        filterButton.setText(String.format(getString(R.string.train_filter_button_info), totalSchedule));
     }
 
     @Override
@@ -113,6 +117,11 @@ public class TrainFilterSearchActivity extends TrainBaseActivity
     public void hideLoading() {
         progressBar.setVisibility(View.GONE);
         containerLayout.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public FilterSearchData getFilterSearchDataFromIntent() {
+        return getIntent().getParcelableExtra(FILTER_SEARCH);
     }
 
     @Override
@@ -198,11 +207,11 @@ public class TrainFilterSearchActivity extends TrainBaseActivity
         }
     }
 
-    //TODO refactor this
     private void onFilterButtonClick() {
         if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
             Intent intent = new Intent();
-            intent.putExtra("model_filter", filterSearchData);
+            filterSearchData.setHasFilter(filterSearchData);
+            intent.putExtra(MODEL_SEARCH_FILTER, filterSearchData);
             setResult(Activity.RESULT_OK, intent);
             finish();
         }

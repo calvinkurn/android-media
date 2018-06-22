@@ -11,8 +11,8 @@
         app:bav_2_display="true"
         app:bav_icon_1="@drawable/ic_train_search_filter"
         app:bav_icon_2="@drawable/ic_train_search_sort"
-        app:bav_label_1="@string/filter"
-        app:bav_label_2="@string/sort"
+        app:bav_label_1="@string/train_search_filter"
+        app:bav_label_2="@string/train_search_sort"
         app:layout_anchor="@id/recycler_view"
         app:layout_anchorGravity="bottom|center_horizontal" />
 

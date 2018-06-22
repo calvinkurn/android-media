@@ -71,6 +71,12 @@ public class TrainFilterSearchPresenter extends BaseDaggerPresenter<TrainFilterS
             @Override
             public void onNext(FilterSearchData filterSearchData) {
                 getView().hideLoading();
+                FilterSearchData filterSearchDataFromIntent = getView().getFilterSearchDataFromIntent();
+                filterSearchData.setSelectedMinPrice(filterSearchDataFromIntent.getSelectedMinPrice());
+                filterSearchData.setSelectedMaxPrice(filterSearchDataFromIntent.getSelectedMaxPrice());
+                filterSearchData.setSelectedDepartureTimeList(filterSearchDataFromIntent.getSelectedDepartureTimeList());
+                filterSearchData.setSelectedTrains(filterSearchDataFromIntent.getSelectedTrains());
+                filterSearchData.setSelectedTrainClass(filterSearchDataFromIntent.getSelectedTrainClass());
                 getView().renderFilterSearchData(filterSearchData);
             }
         });
