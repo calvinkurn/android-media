@@ -411,6 +411,7 @@ public class DealsHomeActivity extends BaseSimpleActivity implements HasComponen
     @Override
     protected void onDestroy() {
         mPresenter.onDestroy();
+        ((DealsCategoryAdapter) rvTrendingDeals.getAdapter()).unsubscribeUseCase();
         super.onDestroy();
     }
 }

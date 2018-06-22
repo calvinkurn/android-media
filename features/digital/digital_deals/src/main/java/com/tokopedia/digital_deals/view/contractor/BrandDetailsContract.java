@@ -2,6 +2,7 @@ package com.tokopedia.digital_deals.view.contractor;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.support.v7.widget.LinearLayoutManager;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
@@ -9,6 +10,7 @@ import com.tokopedia.digital_deals.view.viewmodel.BrandViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.usecase.RequestParams;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class BrandDetailsContract {
@@ -33,6 +35,13 @@ public class BrandDetailsContract {
 
         android.view.View getRootView();
 
+        void removeFooter();
+
+        LinearLayoutManager getLayoutManager();
+
+        void addFooter();
+
+        void addDealsToCards(ArrayList<CategoryItemsViewModel> categoryList);
     }
 
     public interface Presenter extends CustomerPresenter<BrandDetailsContract.View> {

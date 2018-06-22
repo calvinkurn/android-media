@@ -14,16 +14,12 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DaggerDealsComponent;
 import com.tokopedia.digital_deals.di.DealsModule;
-import com.tokopedia.digital_deals.view.activity.AllBrandsActivity;
-import com.tokopedia.digital_deals.view.activity.CategoryDetailActivity;
-import com.tokopedia.digital_deals.view.activity.CheckoutActivity;
 import com.tokopedia.digital_deals.view.adapter.DealsBrandAdapter;
 import com.tokopedia.digital_deals.view.contractor.AllBrandsContract;
 import com.tokopedia.digital_deals.view.customview.SearchInputView;
@@ -160,6 +156,7 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
             }
         } else {
             recyclerview.setVisibility(View.GONE);
+            recyclerview.removeOnScrollListener(rvOnScrollListener);
             noContent.setVisibility(View.VISIBLE);
         }
     }
@@ -185,6 +182,7 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
     public RequestParams getParams() {
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(Utils.BRAND_QUERY_PARAM_TREE, Utils.BRAND_QUERY_PARAM_BRAND);
+//        requestParams.putInt("page_size", 5);
         if (categoriesModel.getPosition() != 0) {
             requestParams.putInt(Utils.BRAND_QUERY_PARAM_CHILD_CATEGORY_ID, categoriesModel.getCategoryId());
         }

@@ -15,6 +15,9 @@ public class BrandDetailsResponse {
     @SerializedName("count")
     private int count;
 
+    @SerializedName("page")
+    private JsonObject page;
+
     public JsonObject getBrand() {
         return brand;
     }
@@ -37,6 +40,14 @@ public class BrandDetailsResponse {
 
     public void setCount(int count) {
         this.count = count;
+    }
+
+    public JsonObject getPage() {
+        return page;
+    }
+
+    public void setPage(JsonObject page) {
+        this.page = page;
     }
 
     @Override

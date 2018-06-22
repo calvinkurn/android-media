@@ -433,11 +433,11 @@ public class DealsDetailsViewModel implements Parcelable {
         this.mediaUrl = mediaUrl;
     }
 
-    public boolean isLiked() {
+    public boolean getIsLiked() {
         return isLiked;
     }
 
-    public void setLiked(boolean liked) {
+    public void setIsLiked(boolean liked) {
         isLiked = liked;
     }
 

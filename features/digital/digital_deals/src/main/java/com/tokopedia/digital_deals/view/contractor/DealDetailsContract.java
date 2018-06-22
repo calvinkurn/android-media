@@ -2,6 +2,7 @@ package com.tokopedia.digital_deals.view.contractor;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.support.v7.widget.LinearLayoutManager;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
@@ -42,6 +43,13 @@ public class DealDetailsContract {
 
         void showCollapsingHeader();
 
+        void setLikes(int likes);
+
+        LinearLayoutManager getLayoutManager();
+
+        void addFooter();
+
+        void removeFooter();
     }
     public interface Presenter extends CustomerPresenter<DealDetailsContract.View> {
 

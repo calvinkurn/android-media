@@ -1,5 +1,6 @@
 package com.tokopedia.digital_deals.data.source;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.tokopedia.digital_deals.data.entity.response.LikeUpdateResponse;
 import com.tokopedia.digital_deals.data.entity.response.allbrandsresponse.AllBrandsResponse;
@@ -62,4 +63,7 @@ public interface DealsApi {
     @POST(DealsUrl.DEALS_LIKES)
     @Headers({"Content-Type: application/json"})
     Observable<LikeUpdateResponse> updateLikes(@Body JsonObject requestBody);
+
+    @GET(DealsUrl.DEALS_LIKES_PRODUCT + "/{url}")
+    Observable<JsonArray> getLikes(@Path("url") String dealId);
 }

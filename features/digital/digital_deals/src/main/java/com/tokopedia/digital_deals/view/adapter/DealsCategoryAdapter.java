@@ -257,7 +257,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                         context, categoryItems.get(getIndex()).getDisplayName(),
                         categoryItems.get(getIndex()).getImageWeb()) ;
             } else if (v.getId() == R.id.iv_wish_list) {
-                mPresenter.setEventLike(categoryItems.get(getIndex()), getIndex());
+                mPresenter.setDealLike(categoryItems.get(getIndex()), getIndex());
             } else {
                 Intent detailsIntent = new Intent(context, DealDetailsActivity.class);
                 detailsIntent.putExtra(DealDetailsPresenter.HOME_DATA, categoryItems.get(getIndex()).getSeoUrl());
@@ -342,4 +342,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
     }
 
+    public void unsubscribeUseCase(){
+        mPresenter.onDestroy();
+    }
 }

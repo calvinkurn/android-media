@@ -1,5 +1,8 @@
 package com.tokopedia.digital_deals.data;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.tokopedia.digital_deals.data.entity.response.LikeUpdateResponse;
 import com.tokopedia.digital_deals.data.mapper.AllBrandsMapper;
@@ -10,6 +13,7 @@ import com.tokopedia.digital_deals.data.mapper.DealsLocationTransformMapper;
 import com.tokopedia.digital_deals.data.mapper.DealsSearchMapper;
 import com.tokopedia.digital_deals.data.mapper.DealsTransformMapper;
 import com.tokopedia.digital_deals.domain.DealsRepository;
+import com.tokopedia.digital_deals.domain.model.DealsCategoryItemDomain;
 import com.tokopedia.digital_deals.domain.model.LikeUpdateResultDomain;
 import com.tokopedia.digital_deals.domain.model.allbrandsdomainmodel.AllBrandsDomain;
 import com.tokopedia.digital_deals.domain.model.branddetailsmodel.BrandDetailsDomain;
@@ -17,9 +21,12 @@ import com.tokopedia.digital_deals.domain.model.DealsDomain;
 import com.tokopedia.digital_deals.domain.model.categorydomainmodel.CategoryDetailsDomain;
 import com.tokopedia.digital_deals.domain.model.dealdetailsdomainmodel.DealsDetailsDomain;
 import com.tokopedia.digital_deals.domain.model.locationdomainmodel.LocationDomainModel;
+import com.tokopedia.digital_deals.domain.model.request.likes.GetLikesDomain;
 import com.tokopedia.digital_deals.domain.model.searchdomainmodel.SearchDomainModel;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -104,6 +111,26 @@ public class DealsRepositoryData implements DealsRepository {
                         likeUpdateResultDomain.setStatus(likeUpdateResponse.getStatus());
                         likeUpdateResultDomain.setLiked(likeUpdateResponse.isLiked());
                         return likeUpdateResultDomain;
+                    }
+                });
+    }
+
+    @Override
+    public Observable<GetLikesDomain> getLikes(String dealId) {
+        return dealsDataStoreFactory
+                .createCloudDataStore()
+                .getLikes(dealId).map(new Func1<JsonArray, GetLikesDomain>() {
+                    @Override
+                    public GetLikesDomain call(JsonArray response) {
+
+                        GetLikesDomain getLikesDomain = null;
+                        if (response != null) {
+                            for (JsonElement entry : response) {
+                                getLikesDomain = new Gson().fromJson(entry.getAsJsonObject(), GetLikesDomain.class);
+                                break;
+                            }
+                        }
+                        return getLikesDomain;
                     }
                 });
     }

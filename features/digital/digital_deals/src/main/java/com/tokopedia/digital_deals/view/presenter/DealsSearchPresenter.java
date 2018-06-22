@@ -171,8 +171,7 @@ public class DealsSearchPresenter
 
         if (!isLoading && !isLastPage) {
             if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
-                    && firstVisibleItemPosition >= 0
-                    && totalItemCount >= PAGE_SIZE) {
+                    && firstVisibleItemPosition >= 0) {
                 loadMoreItems();
             } else {
                 getView().addFooter(SEARCH_SUBMITTED);

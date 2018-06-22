@@ -202,6 +202,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         recyclerViewDeals.setLayoutManager(mLayoutManager);
         recyclerViewDeals.setAdapter(new DealsCategoryAdapter(getActivity(), new ArrayList<CategoryItemsViewModel>(), IS_SHORT_LAYOUT));
+        recyclerViewDeals.addOnScrollListener(rvOnScrollListener);
     }
 
 
@@ -426,7 +427,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
 
     @Override
     public void notifyDataSetChanged(int position) {
-        if (dealDetail.isLiked()) {
+        if (dealDetail.getIsLiked()) {
             ivFavourite.setBackgroundResource(R.drawable.ic_wishlist_filled);
         } else {
             ivFavourite.setBackgroundResource(R.drawable.ic_wishlist_unfilled);
@@ -455,6 +456,28 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     public void showCollapsingHeader() {
         showShareButton();
         clHeader.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void setLikes(int likes) {
+        tvLikes.setText(String.valueOf(likes));
+    }
+
+    @Override
+    public LinearLayoutManager getLayoutManager() {
+        return mLayoutManager;
+    }
+
+    @Override
+    public void addFooter() {
+        ((DealsCategoryAdapter) recyclerViewDeals.getAdapter()).addFooter();
+
+    }
+
+    @Override
+    public void removeFooter() {
+        ((DealsCategoryAdapter) recyclerViewDeals.getAdapter()).removeFooter();
+
     }
 
     @Override
@@ -493,7 +516,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         } else if (v.getId() == R.id.tv_view_map) {
             Utils.getSingletonInstance().openGoogleMapsActivity(getContext(), latLng);
         } else if (v.getId() == R.id.iv_wish_list) {
-            mPresenter2.setEventLike(dealDetail, 0);
+            mPresenter2.setDealLike(dealDetail, 0);
         } else if (v.getId() == R.id.cl_redeem_instructions) {
             startGeneralWebView(REDEEM_URL);
 
@@ -509,6 +532,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     @Override
     public void onDestroyView() {
         mPresenter.onDestroy();
+        mPresenter2.onDestroy();
         super.onDestroyView();
     }
 
@@ -517,8 +541,21 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == LIKE_REQUEST_CODE) {
             if (SessionHandler.isV4Login(getActivity())) {
-                mPresenter2.setEventLike(dealDetail, 0);
+                mPresenter2.setDealLike(dealDetail, 0);
             }
         }
     }
+
+    private RecyclerView.OnScrollListener rvOnScrollListener = new RecyclerView.OnScrollListener() {
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+        }
+
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            mPresenter.onRecyclerViewScrolled(mLayoutManager);
+        }
+    };
 }
