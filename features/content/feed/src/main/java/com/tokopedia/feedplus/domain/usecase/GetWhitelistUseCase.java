@@ -2,8 +2,8 @@ package com.tokopedia.feedplus.domain.usecase;
 
 import android.content.Context;
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
-import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.data.pojo.WhitelistQuery;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
