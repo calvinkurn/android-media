@@ -12,7 +12,7 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.LayoutRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatDelegate;
+
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -23,7 +23,6 @@ import android.view.WindowManager;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.utils.MenuTintUtils;
-import android.support.graphics.drawable.VectorDrawableCompat;
 
 /**
  * Created by nathan on 7/11/17.
@@ -93,8 +92,8 @@ abstract class BaseToolbarActivity extends BaseActivity {
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(this, R.color.white)));
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-        Drawable upArrow = VectorDrawableCompat.create(getResources(), android.support.v7.appcompat.R.drawable.abc_ic_ab_back_material, null);
+
+        Drawable upArrow = ContextCompat.getDrawable(this, R.drawable.ic_action_back);
         if (upArrow != null) {
             upArrow.setColorFilter(ContextCompat.getColor(this, R.color.grey_700), PorterDuff.Mode.SRC_ATOP);
             getSupportActionBar().setHomeAsUpIndicator(upArrow);

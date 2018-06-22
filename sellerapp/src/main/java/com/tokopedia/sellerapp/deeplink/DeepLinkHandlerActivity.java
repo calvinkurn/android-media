@@ -34,6 +34,7 @@ import com.tokopedia.topads.applink.TopAdsApplinkModuleLoader;
 import com.tokopedia.tracking.applink.TrackingAppLinkModule;
 import com.tokopedia.tracking.applink.TrackingAppLinkModuleLoader;
 
+
 /**
  * @author rizkyfadillah on 26/07/17.
  */
@@ -49,6 +50,8 @@ import com.tokopedia.tracking.applink.TrackingAppLinkModuleLoader;
         TrackingAppLinkModule.class
 })
 public class DeepLinkHandlerActivity extends AppCompatActivity {
+
+
 
     public static DeepLinkDelegate getDelegateInstance() {
         return new DeepLinkDelegate(

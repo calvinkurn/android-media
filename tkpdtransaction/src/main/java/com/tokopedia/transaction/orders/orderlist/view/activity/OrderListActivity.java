@@ -20,6 +20,9 @@ public class OrderListActivity extends DrawerPresenterActivity {
     private static final String ORDER_CATEGORY = "orderCategory";
     private int drawerPosition;
 
+    public static Intent getInstance(Context context){
+        return new Intent(context, OrderListActivity.class);
+    }
     @DeepLink(TransactionAppLink.ORDER_HISTORY)
     public static Intent getOrderListIntent(Context context, Bundle bundle){
         Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
@@ -65,18 +68,14 @@ public class OrderListActivity extends DrawerPresenterActivity {
     @Override
     protected void initVar() {
         Fragment fragment;
-        if (getFragmentManager().findFragmentByTag(OrderListFragment.class.getSimpleName()) == null) {
             fragment = new OrderListFragment();
-        } else {
-            fragment = getFragmentManager().findFragmentByTag(OrderListFragment.class.getSimpleName());
-        }
-        Bundle arg = new Bundle();
-        arg.putInt(ORDER_CATEGORY, 2);
-        fragment.setArguments(arg);
-        getFragmentManager()
-                .beginTransaction()
-                .replace(R.id.order_list_main, fragment, OrderListFragment.class.getSimpleName())
-                .commit();
+            Bundle arg = new Bundle();
+            arg.putInt(ORDER_CATEGORY, 2);
+            fragment.setArguments(arg);
+            getFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.order_list_main, fragment, OrderListFragment.class.getSimpleName())
+                    .commit();
     }
 
     @Override

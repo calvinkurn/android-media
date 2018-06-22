@@ -19,6 +19,7 @@ import com.tokopedia.core.analytics.SearchTracking;
 import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.discovery.model.Search;
+import com.tokopedia.core.helper.KeyboardHelper;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdynamicfilter.AbstractDynamicFilterDetailActivity;
@@ -56,6 +57,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
 
     public static final String FILTER_CHECKED_STATE_PREF = "filter_checked_state";
     public static final String FILTER_TEXT_PREF = "filter_text";
+    public static final String FILTER_SHOWN_IN_MAIN_PREF = "filter_shown_in_main";
     public static final String FILTER_SELECTED_CATEGORY_ROOT_ID_PREF = "filter_selected_category_root_id";
     public static final String FILTER_SELECTED_CATEGORY_ID_PREF = "filter_selected_category_id";
     public static final String FILTER_SELECTED_CATEGORY_NAME_PREF = "filter_selected_category_name";
@@ -111,6 +113,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         bottomSheetLayout = this;
         buttonFinish = (TextView) rootView.findViewById(R.id.button_finish);
         loadingView = rootView.findViewById(R.id.filterProgressBar);
+        initKeyboardVisibilityListener();
     }
 
     public void setCallback(Callback callback) {
@@ -127,6 +130,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
     private void recoverLastFilterState(Bundle savedInstanceState) {
         savedCheckedState = (HashMap<String, Boolean>) savedInstanceState.getSerializable(FILTER_CHECKED_STATE_PREF);
         savedTextInput = (HashMap<String, String>) savedInstanceState.getSerializable(FILTER_TEXT_PREF);
+        shownInMainState = (HashMap<String, Boolean>) savedInstanceState.getSerializable(FILTER_SHOWN_IN_MAIN_PREF);
         selectedCategoryId = savedInstanceState.getString(FILTER_SELECTED_CATEGORY_ID_PREF);
         selectedCategoryName = savedInstanceState.getString(FILTER_SELECTED_CATEGORY_NAME_PREF);
         selectedCategoryRootId = savedInstanceState.getString(FILTER_SELECTED_CATEGORY_ROOT_ID_PREF);
@@ -139,7 +143,8 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
 
     public void closeView() {
         if (bottomSheetBehavior != null
-                && bottomSheetBehavior.getState() != BottomSheetBehavior.STATE_HIDDEN) {
+                && bottomSheetBehavior.getState() != BottomSheetBehavior.STATE_HIDDEN
+                && buttonFinish.getVisibility() == View.VISIBLE) {
             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
         }
     }
@@ -259,7 +264,10 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         List<Option> checkedOptions = new ArrayList<>();
 
         for (Option option : filter.getOptions()) {
-            if (Boolean.TRUE.equals(shownInMainState.get(option.getUniqueId())) && !option.isPopular()) {
+            boolean isDisplayed = Boolean.TRUE.equals(loadLastCheckedState(option))
+                    || Boolean.TRUE.equals(shownInMainState.get(option.getUniqueId()));
+
+            if (isDisplayed && !option.isPopular()) {
                 checkedOptions.add(option);
             }
         }
@@ -298,6 +306,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         resetSelectedCategory();
         clearPriceRangeRecentValue();
         savedCheckedState.clear();
+        shownInMainState.clear();
         savedTextInput.clear();
         filterMainAdapter.notifyDataSetChanged();
         updateResetButtonVisibility();
@@ -733,6 +742,30 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
                 = data.getStringExtra(DynamicFilterCategoryActivity.EXTRA_SELECTED_CATEGORY_ROOT_ID);
         selectedCategoryName
                 = data.getStringExtra(DynamicFilterCategoryActivity.EXTRA_SELECTED_CATEGORY_NAME);
+    }
+
+    private void initKeyboardVisibilityListener() {
+        KeyboardHelper.setKeyboardVisibilityChangedListener(bottomSheetLayout, new KeyboardHelper.OnKeyboardVisibilityChangedListener() {
+            @Override
+            public void onKeyboardShown() {
+                buttonFinish.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onKeyboardHide() {
+                buttonFinish.setVisibility(View.VISIBLE);
+                bottomSheetLayout.requestFocus();
+            }
+        });
+    }
+
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putSerializable(FILTER_CHECKED_STATE_PREF, savedCheckedState);
+        outState.putSerializable(FILTER_TEXT_PREF, savedTextInput);
+        outState.putSerializable(FILTER_SHOWN_IN_MAIN_PREF, shownInMainState);
+        outState.putString(FILTER_SELECTED_CATEGORY_ID_PREF, selectedCategoryId);
+        outState.putString(FILTER_SELECTED_CATEGORY_ROOT_ID_PREF, selectedCategoryRootId);
+        outState.putString(FILTER_SELECTED_CATEGORY_NAME_PREF, selectedCategoryName);
     }
 
     public interface Callback {

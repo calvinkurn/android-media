@@ -123,9 +123,8 @@ public class InboxReputationDetailActivity extends BasePresenterActivity impleme
             toolbar.setElevation(10);
         }
 
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-        Drawable upArrow = VectorDrawableCompat.create(getResources(), R.drawable
-                .ic_action_back, null);
+
+        Drawable upArrow = ContextCompat.getDrawable(this, R.drawable.ic_action_back);
         if (upArrow != null) {
             upArrow.setColorFilter(ContextCompat.getColor(this, R.color.grey_700),
                     PorterDuff.Mode.SRC_ATOP);

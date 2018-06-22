@@ -9,7 +9,10 @@ import android.support.v7.app.AppCompatActivity;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.welcome.view.WelcomeFragment;
 
+
 public class WelcomeActivity extends AppCompatActivity {
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

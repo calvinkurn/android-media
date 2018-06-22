@@ -560,7 +560,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, true);
         layoutManager.setReverseLayout(true);
-        layoutManager.setStackFromEnd(true);
+        layoutManager.setStackFromEnd(false);
         LinearLayoutManager templateLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager
                 .HORIZONTAL, false);
 
@@ -1473,7 +1473,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         replyColumn.setText("");
         showError(getActivity().getString(R.string.delete_error).concat("\n").concat(getString(R
                 .string.string_general_error)));
-        if (quickReplyAdapter.getItemCount() != 0) {
+        if (quickReplyAdapter!=null && quickReplyAdapter.getItemCount() != 0) {
             rvQuickReply.setVisibility(View.VISIBLE);
             templateRecyclerView.setVisibility(View.GONE);
         }

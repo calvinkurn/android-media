@@ -286,6 +286,11 @@ public class OrderListFragment extends BasePresenterFragment<OrderListContract.P
 
     }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        presenter.detachView();
+    }
 
     @Override
     public void startUri(String uri) {
