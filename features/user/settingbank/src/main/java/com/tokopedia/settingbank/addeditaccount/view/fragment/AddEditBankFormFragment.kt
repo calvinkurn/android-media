@@ -1,13 +1,22 @@
 package com.tokopedia.settingbank.addeditaccount.view.fragment
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.design.text.TkpdHintTextInputLayout
 import com.tokopedia.settingbank.R
 import com.tokopedia.settingbank.addeditaccount.analytics.AddEditBankAnalytics
+import com.tokopedia.settingbank.addeditaccount.di.AddEditBankDependencyInjector
+import com.tokopedia.settingbank.addeditaccount.view.activity.AddEditBankActivity
 import com.tokopedia.settingbank.addeditaccount.view.listener.AddEditBankContract
+import com.tokopedia.settingbank.addeditaccount.view.presenter.AddEditBankPresenter
+import com.tokopedia.settingbank.addeditaccount.view.viewmodel.BankFormModel
+import kotlinx.android.synthetic.main.fragment_add_edit_bank_form.*
 
 /**
  * @author by nisie on 6/21/18.
@@ -16,16 +25,159 @@ import com.tokopedia.settingbank.addeditaccount.view.listener.AddEditBankContrac
 class AddEditBankFormFragment : AddEditBankContract.View,
         BaseDaggerFragment() {
 
+    lateinit var presenter: AddEditBankPresenter
+    private var bankFormModel = BankFormModel()
+
     override fun getScreenName(): String {
-       return AddEditBankAnalytics.SCREEN_NAME_ADD
+        return AddEditBankAnalytics.SCREEN_NAME_ADD
     }
 
     override fun initInjector() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        presenter = AddEditBankDependencyInjector.Companion.inject(activity)
+        presenter.attachView(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         return inflater!!.inflate(R.layout.fragment_add_edit_bank_form, container, false)
     }
+
+    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        setMode()
+        submit_button.setOnClickListener({
+            setupBankFormModel()
+            if (!bankFormModel.status.isNullOrBlank()) {
+                if (bankFormModel.status == BankFormModel.Companion.STATUS_ADD)
+                    presenter.addBank(bankFormModel)
+                else
+                    presenter.editBank(bankFormModel)
+            }
+        })
+        bank_name_edit_text.setOnClickListener({
+            goToAddBank()
+        })
+    }
+
+    private fun goToAddBank() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    private fun setMode() {
+        if (activity.intent.getStringExtra(AddEditBankActivity.Companion.PARAM_ACTION) == BankFormModel.Companion.STATUS_ADD) {
+            activity.title = getString(R.string.title_add_bank)
+            bankFormModel.status = BankFormModel.Companion.STATUS_ADD
+        } else {
+            activity.title = getString(R.string.title_edit_bank)
+            bankFormModel = activity.intent.getParcelableExtra(AddEditBankActivity.Companion.PARAM_DATA)
+            account_name_edit_text.setText(bankFormModel.accountName)
+            account_number_edit_text.setText(bankFormModel.accountNumber)
+            bank_name_edit_text.setText(bankFormModel.bankName)
+        }
+    }
+
+    private fun setupBankFormModel() {
+        bankFormModel.accountName = account_name_edit_text.text.toString()
+        bankFormModel.accountNumber = account_number_edit_text.text.toString()
+        bankFormModel.bankName = bank_name_edit_text.text.toString()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setViewListener()
+    }
+
+    private fun setViewListener() {
+        account_name_edit_text.addTextChangedListener(accountNameWatcher(wrapper_account_name))
+        account_number_edit_text.addTextChangedListener(accountNumberWatcher(wrapper_account_number))
+    }
+
+    private fun accountNameWatcher(wrapper: TkpdHintTextInputLayout): TextWatcher? {
+        return object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                if (s.isNotEmpty()) {
+                    setWrapperError(wrapper, null)
+                }
+            }
+
+            override fun afterTextChanged(text: Editable) {
+                if (text.isEmpty()) {
+                    setWrapperError(wrapper_account_name, getString(R.string.error_field_required))
+                }
+                checkIsValidForm()
+
+            }
+        }
+    }
+
+    private fun accountNumberWatcher(wrapper: TkpdHintTextInputLayout): TextWatcher? {
+        return object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                if (s.isNotEmpty()) {
+                    setWrapperError(wrapper, null)
+                }
+            }
+
+            override fun afterTextChanged(text: Editable) {
+                if (text.isEmpty()) {
+                    setWrapperError(wrapper_account_number, getString(R.string.error_field_required))
+                }
+                checkIsValidForm()
+
+            }
+        }
+    }
+
+
+    private fun setWrapperError(wrapper: TkpdHintTextInputLayout, s: String?) {
+        if (s.isNullOrBlank()) {
+            wrapper.error = s
+            wrapper.setErrorEnabled(false)
+        } else {
+            wrapper.setErrorEnabled(true)
+            wrapper.error = s
+        }
+    }
+
+
+    private fun checkIsValidForm() {
+        val accountName = account_name_edit_text.text.toString().trim()
+        val accountNumber = account_number_edit_text.text.toString().trim()
+        val bankName = bank_name_edit_text.text.toString().trim()
+
+        if (presenter.isValidForm(accountName, accountNumber, bankName)) {
+            enableSubmitButton()
+        } else {
+            disableSubmitButton()
+        }
+    }
+
+    private fun enableSubmitButton() {
+        MethodChecker.setBackground(submit_button, MethodChecker.getDrawable(context, R.drawable
+                .bg_button_green_enabled))
+        submit_button.setTextColor(MethodChecker.getColor(context, R.color.white))
+        submit_button.isEnabled = true
+    }
+
+    private fun disableSubmitButton() {
+        MethodChecker.setBackground(submit_button, MethodChecker.getDrawable(context, R.drawable
+                .bg_button_disabled))
+        submit_button.setTextColor(MethodChecker.getColor(context, R.color.black_38))
+        submit_button.isEnabled = false
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        presenter.detachView()
+    }
+
 }

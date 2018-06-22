@@ -7,8 +7,13 @@
         android:supportsRtl="true">
 
         <activity
-            android:name=".view.activity.SettingBankActivity"
+            android:name=".banklist.view.activity.SettingBankActivity"
             android:label="@string/title_setting_bank"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"/>
+
+        <activity
+            android:name=".addeditaccount.view.activity.AddEditBankActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"/>
 

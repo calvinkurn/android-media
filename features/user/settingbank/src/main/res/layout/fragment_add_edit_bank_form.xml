@@ -34,10 +34,10 @@
             android:id="@+id/bank_name_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:clickable="false"
+            android:text="asd"
             android:focusable="false"
             android:singleLine="true"
-            android:textColor="@color/font_black_disabled_38"
+            android:textColor="@color/font_black_primary_70"
             app:drawableRightCompat="@drawable/ic_arrow_down_grey"/>
     </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
@@ -56,10 +56,10 @@
             android:id="@+id/account_number_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:clickable="false"
-            android:focusable="false"
+            android:digits="01234567890"
+            android:inputType="number"
             android:singleLine="true"
-            android:textColor="@color/font_black_disabled_38"/>
+            android:textColor="@color/font_black_primary_70"/>
     </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
     <com.tokopedia.design.text.TkpdHintTextInputLayout
@@ -77,18 +77,18 @@
             android:id="@+id/account_name_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:clickable="false"
-            android:focusable="false"
+            android:inputType="textPersonName"
             android:singleLine="true"
-            android:textColor="@color/font_black_disabled_38"/>
+            android:textColor="@color/font_black_primary_70"/>
     </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
     <TextView
-        android:id="@+id/save_button"
+        android:id="@+id/submit_button"
         android:layout_width="match_parent"
         android:layout_height="@dimen/btn_height"
         android:layout_alignParentBottom="true"
         android:layout_marginTop="@dimen/dp_40"
+        android:textColor="@color/font_black_disabled_38"
         android:background="@drawable/bg_button_disabled"
         android:fontFamily="sans-serif-medium"
         android:gravity="center"

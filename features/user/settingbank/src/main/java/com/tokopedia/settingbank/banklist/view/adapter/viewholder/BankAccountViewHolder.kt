@@ -20,6 +20,10 @@ import com.tokopedia.settingbank.banklist.view.viewmodel.BankAccountViewModel
 class BankAccountViewHolder(val v: View, val listener: BankAccountPopupListener) :
         AbstractViewHolder<BankAccountViewModel>(v) {
 
+    private val MENU_MAKE_DEFAULT: Int = 101
+    private val MENU_EDIT: Int = 102
+    private val MENU_DELETE: Int = 103
+
 
     val bankIcon: ImageView = itemView.findViewById(R.id.bank_icon)
     val bankName: TextView = itemView.findViewById(R.id.bank_name)
@@ -76,18 +80,19 @@ class BankAccountViewHolder(val v: View, val listener: BankAccountPopupListener)
         popupMenu.show()
     }
 
+
     private fun onPopupMenuClicked(item: MenuItem?, element: BankAccountViewModel?): Boolean {
         return if (item != null) {
             when (item.itemId) {
-                R.id.menu_make_main_account -> {
+                MENU_MAKE_DEFAULT -> {
                     listener.makeMainAccount(adapterPosition, element)
                     return true
                 }
-                R.id.menu_edit -> {
+                MENU_EDIT -> {
                     listener.editBankAccount(adapterPosition, element)
                     return true
                 }
-                R.id.menu_delete -> {
+                MENU_DELETE -> {
                     listener.deleteBankAccount(adapterPosition, element)
                     return true
                 }
@@ -105,12 +110,12 @@ class BankAccountViewHolder(val v: View, val listener: BankAccountPopupListener)
             popupMenu.menu.clear()
 
             if (!element.isDefaultBank) {
-                popupMenu.menu.add(1, R.id.menu_make_main_account, 1, MainApplication.getAppContext()
+                popupMenu.menu.add(1, MENU_MAKE_DEFAULT, 1, MainApplication.getAppContext()
                         .getString(R.string.menu_make_main_account))
             }
-            popupMenu.menu.add(1, R.id.menu_edit, 2, MainApplication.getAppContext()
+            popupMenu.menu.add(1, MENU_EDIT, 2, MainApplication.getAppContext()
                     .getString(R.string.menu_edit))
-            popupMenu.menu.add(1, R.id.menu_delete, 3, MainApplication.getAppContext()
+            popupMenu.menu.add(1, MENU_DELETE, 3, MainApplication.getAppContext()
                     .getString(R.string.menu_delete))
 
         }

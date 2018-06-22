@@ -1,5 +1,7 @@
 package com.tokopedia.settingbank.banklist.view.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -12,6 +14,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.settingbank.R
+import com.tokopedia.settingbank.addeditaccount.view.activity.AddEditBankActivity
 import com.tokopedia.settingbank.banklist.analytics.SettingBankAnalytics
 import com.tokopedia.settingbank.banklist.di.SettingBankDependencyInjector
 import com.tokopedia.settingbank.banklist.view.adapter.BankAccountAdapter
@@ -30,6 +33,8 @@ import kotlinx.android.synthetic.main.fragment_setting_bank.*
 
 class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, EmptyBankAccountListener,
         BaseDaggerFragment() {
+
+    private val REQUEST_ADD_BANK: Int = 101
 
     lateinit var presenter: SettingBankPresenter
     lateinit var adapter: BankAccountAdapter
@@ -205,8 +210,10 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
         NetworkErrorHelper.showSnackbar(activity, errorMessage)
     }
 
+
     override fun addNewAccount() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+        startActivityForResult(AddEditBankActivity.createIntentAddBank(activity), REQUEST_ADD_BANK)
     }
 
     override fun showLoadingFull() {
@@ -234,5 +241,20 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
 
     override fun hideLoadingList() {
         adapter.hideLoading()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == REQUEST_ADD_BANK && resultCode == Activity.RESULT_OK) {
+            //TODO : Add activity result add bank
+
+        }
+
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        presenter.detachView()
     }
 }
