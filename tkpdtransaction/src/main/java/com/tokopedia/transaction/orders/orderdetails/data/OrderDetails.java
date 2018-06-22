@@ -1,5 +1,7 @@
 package com.tokopedia.transaction.orders.orderdetails.data;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 import com.tokopedia.transaction.orders.orderlist.data.ConditionalInfo;
 import com.tokopedia.transaction.orders.orderlist.data.PaymentData;
 
@@ -10,20 +12,53 @@ import java.util.List;
  */
 
 public class OrderDetails {
+    @SerializedName("status")
+    @Expose
     private Status status;
+    @SerializedName("conditionalInfo")
+    @Expose
     private ConditionalInfo conditionalInfo;
+    @SerializedName("title")
+    @Expose
     private List<Title> title;
+    @SerializedName("invoice")
+    @Expose
     private Invoice invoice;
+    @SerializedName("orderToken")
+    @Expose
     private OrderToken orderToken;
+    @SerializedName("detail")
+    @Expose
     private List<Detail> detail;
+    @SerializedName("additionalInfo")
+    @Expose
     private List<AdditionalInfo> additionalInfo;
+    @SerializedName("pricing")
+    @Expose
     private List<Pricing> pricing;
+
+    @SerializedName("paymentMethod")
+    @Expose
+    private PaymentMethod paymentMethod;
+
+    @SerializedName("payMethod")
+    @Expose
+    private List<PayMethod> payMethods;
+
+    @SerializedName("paymentData")
+    @Expose
     private PaymentData paymentData;
+    @SerializedName("contactUs")
+    @Expose
     private ContactUs contactUs;
+    @SerializedName("actionButtons")
+    @Expose
     private List<ActionButton> actionButtons;
+    @SerializedName("conditionalInfo")
+    @Expose
     private List<Items> items;
 
-    public OrderDetails(Status status, ConditionalInfo conditionalInfo, List<Title> title, Invoice invoice, OrderToken orderToken, List<Detail> detail, List<AdditionalInfo> additionalInfo, List<Pricing> pricing, PaymentData paymentData, ContactUs contactUs, List<ActionButton> actionButtons, List<Items> items) {
+    public OrderDetails(Status status, ConditionalInfo conditionalInfo, List<Title> title, Invoice invoice, OrderToken orderToken, List<Detail> detail, List<AdditionalInfo> additionalInfo, List<Pricing> pricing, PaymentMethod paymentMethod, List<PayMethod> payMethods, PaymentData paymentData, ContactUs contactUs, List<ActionButton> actionButtons, List<Items> items) {
         this.status = status;
         this.conditionalInfo = conditionalInfo;
         this.title = title;
@@ -32,6 +67,8 @@ public class OrderDetails {
         this.detail = detail;
         this.additionalInfo = additionalInfo;
         this.pricing = pricing;
+        this.paymentMethod = paymentMethod;
+        this.payMethods = payMethods;
         this.paymentData = paymentData;
         this.contactUs = contactUs;
         this.actionButtons = actionButtons;
@@ -71,6 +108,14 @@ public class OrderDetails {
         return pricing;
     }
 
+    public PaymentMethod getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public List<PayMethod> getPayMethods() {
+        return payMethods;
+    }
+
     public PaymentData paymentData() {
         return paymentData;
     }
@@ -98,10 +143,12 @@ public class OrderDetails {
                 + "detail="+detail +","
                 + "additionalInfo="+additionalInfo +","
                 + "pricing="+pricing +","
+                + "paymentMethod="+paymentMethod +","
+                + "paymethods="+payMethods +","
                 + "paymentData="+paymentData +","
                 + "contactUs="+contactUs +","
                 + "actionButtons="+actionButtons + ","
-                + "items="
+                + "items="+items
                 + "}]";
     }
 }

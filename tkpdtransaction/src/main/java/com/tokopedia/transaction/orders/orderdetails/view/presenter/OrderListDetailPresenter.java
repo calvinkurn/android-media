@@ -114,7 +114,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             getView().setBottomActionButton(rightActionButton);
         } else if (details.actionButtons().size() == 1) {
             ActionButton actionButton = details.actionButtons().get(0);
-            if (actionButton.label().equals("invoice")) {
+            if (actionButton.getLabel().equals("invoice")) {
                 getView().setBottomActionButton(actionButton);
                 getView().setActionButtonsVisibility(View.GONE, View.VISIBLE);
             } else {

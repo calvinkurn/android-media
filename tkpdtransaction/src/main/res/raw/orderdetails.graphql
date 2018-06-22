@@ -115,6 +115,10 @@ query OMSDETAILS($orderCategory: OrderCategory, $orderId: String, $detail: Int, 
       label
       value
     }
+    payMethod{
+      label
+      value
+    }
     beforeOrderId
     resolutionId
     driverDetails {

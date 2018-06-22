@@ -14,8 +14,6 @@ import com.tokopedia.transaction.orders.orderdetails.data.Items;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<Items> itemsList;

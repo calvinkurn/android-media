@@ -1,23 +1,43 @@
 package com.tokopedia.transaction.orders.orderdetails.data;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 public class Items {
+    @SerializedName("title")
+    @Expose
     private String title;
 
+    @SerializedName("tapActions")
+    @Expose
     private List<TapActions> tapActions;
 
+    @SerializedName("price")
+    @Expose
     private String price;
 
+    @SerializedName("imageUrl")
+    @Expose
     private String imageUrl;
 
+    @SerializedName("quantity")
+    @Expose
     private String quantity;
 
+    @SerializedName("promotionAmount")
+    @Expose
     private String promotionAmount;
 
+    @SerializedName("actionButtons")
+    @Expose
     private List<ActionButton> actionButtons;
 
-    private String metaData;
+    @SerializedName("metaData")
+    @Expose
+    private MetaDataInfo metaData;
+
 
     public String getTitle() {
         return title;
@@ -75,11 +95,11 @@ public class Items {
         this.actionButtons = actionButtons;
     }
 
-    public String getMetaData() {
+    public MetaDataInfo getMetaData() {
         return metaData;
     }
 
-    public void setMetaData(String metaData) {
+    public void setMetaData(MetaDataInfo metaData) {
         this.metaData = metaData;
     }
 

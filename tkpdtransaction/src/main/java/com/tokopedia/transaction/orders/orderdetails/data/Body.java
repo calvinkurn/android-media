@@ -1,12 +1,24 @@
 package com.tokopedia.transaction.orders.orderdetails.data;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 public class Body {
+
+    @SerializedName("Body")
+    @Expose
     private String Body;
 
+    @SerializedName("WebURL")
+    @Expose
     private String WebURL;
 
+    @SerializedName("Method")
+    @Expose
     private String Method;
 
+    @SerializedName("AppURL")
+    @Expose
     private String AppURL;
 
     public String getBody() {
