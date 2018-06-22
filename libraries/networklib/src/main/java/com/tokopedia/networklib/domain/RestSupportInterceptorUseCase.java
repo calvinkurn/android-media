@@ -1,0 +1,109 @@
+package com.tokopedia.networklib.domain;
+
+import android.content.Context;
+
+import com.tokopedia.networklib.data.ObservableFactory;
+import com.tokopedia.networklib.data.model.RestRequest;
+import com.tokopedia.networklib.data.model.RestResponse;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
+import okhttp3.Interceptor;
+import rx.Observable;
+
+/**
+ * Rest api call UseCase
+ *
+ * @See {@link RestSupportInterceptorUseCase} class for add custom interceptor
+ */
+public abstract class RestSupportInterceptorUseCase extends UseCase<Map<Type, RestResponse>> {
+    private List<RestRequest> mRequests;
+    private List<Interceptor> mInterceptors;
+    private Context mContext;
+
+    public RestSupportInterceptorUseCase(Interceptor interceptor, Context context) {
+        this.mRequests = new ArrayList<>();
+        this.mInterceptors = Arrays.asList(interceptor);
+        this.mContext = context;
+    }
+
+    public RestSupportInterceptorUseCase(List<Interceptor> interceptors, Context context) {
+        this.mRequests = new ArrayList<>();
+        this.mInterceptors = interceptors;
+        this.mContext = context;
+    }
+
+    @Override
+    public Observable<Map<Type, RestResponse>> createObservable(RequestParams requestParams) {
+        return ObservableFactory.create(getRequests(), mInterceptors, mContext);
+    }
+
+    private List<RestRequest> getRequests() {
+        if (!mRequests.isEmpty()) {
+            return mRequests;
+        }
+
+        mRequests.addAll(buildRequest());
+        return mRequests;
+    }
+
+    /**
+     * For creating requests object, please follow below rule.
+     * <p>
+     * #1. Mandatory parameter - Valid implementation require
+     * typeOfT The specific genericized type of src. You can obtain this type by using the
+     * {@link com.google.gson.reflect.TypeToken} class. For example, to get the type for
+     * {@code Collection<Foo>}, you should use:
+     * <pre>
+     * Type typeOfT = new TypeToken&lt;Collection&lt;Foo&gt;&gt;(){}.getType();
+     * </pre>
+     * e.g. TestModel.class or XYZ.class
+     * <p>
+     * <p>
+     * #2. Mandatory parameter - Valid implementation require
+     * Full URL of the endpoint including base url. This value is mandatory. Url should be valid else UseCase wil throw exception (RuntimeException("Please set valid request url into your UseCase class"))
+     * e.g. https://tokopedia.com/your/path/method/xyz
+     * <p>
+     * <p>
+     * #3. Optional parameter
+     * For providing extra headers to the apis, As Key-Value pair of header.
+     * <p>
+     * <p>
+     * #4. Optional parameter
+     * For providing query parameter to the apis, Map -> Key-Value pair of query parameter (No need to encode, library will take care of this)
+     * <p>
+     * <p>
+     * #5.Optional parameter
+     * For providing Http method type, by default GET will be treated if not provided any method.
+     * E.g RequestType enum  (e.g RequestType.GET, RequestType.POST, RequestType.PUT, RequestType.DELETE)
+     * default is RequestType.GET if you will return null
+     * <p>
+     * <p>
+     * #6. Mandatory parameter (If Method type is POST or PUT else it Optional)- Valid implementation require
+     * For providing query params to the apis.
+     * <p>
+     * E.g. Return argument can any one of from below
+     * 1. Map Object -->Key-Value pair of query. (For content-type -> @FormUrlEncoded) (No need to encode, library will take care of this)
+     * 2. String --> Any string which can be become part of body. (For content-type -> application/json)
+     * 3. Java POJO class object -> which can be serialize and deserialize later. (For content-type -> application/json)
+     * 4. String --> Path of the file which are going to upload. (For content-type -> @Multipart)
+     * <p>
+     * If you will trying to set other then above object, then it will trow exception later while executing the network request
+     * <p>
+     * <p>
+     * #7. Optional parameter
+     * For providing CacheStrategy, by Default no caching will be perform if not provided
+     * <p>
+     * E.g. Object - RestCacheStrategy (RestCacheStrategy.Builder to create your RestCacheStrategy)
+     * Default is NONE caching
+     *
+     * @return List of RestRequest object which may or may not contain above parameter
+     */
+    protected abstract List<RestRequest> buildRequest();
+}
