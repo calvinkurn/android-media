@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.GroupChatTypeFactory;
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.QuickReplyTypeFactory;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatQuickReplyItemViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,5 +60,4 @@ public class QuickReplyAdapter extends RecyclerView.Adapter<AbstractViewHolder> 
         this.list.addAll(list);
         notifyDataSetChanged();
     }
-
 }

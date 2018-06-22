@@ -4,11 +4,10 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.viewholder.ChatViewHolder;
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.viewholder.QuickReplyItemViewHolder;
 import com.tokopedia.groupchat.chatroom.view.fragment.GroupChatFragment;
 import com.tokopedia.groupchat.chatroom.view.listener.ChatroomContract;
-import com.tokopedia.groupchat.chatroom.view.listener.GroupChatContract;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatQuickReplyItemViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatQuickReplyViewModel;
 
 /**
@@ -25,7 +24,7 @@ public class QuickReplyTypeFactoryImpl extends BaseAdapterTypeFactory implements
     }
 
     @Override
-    public int type(GroupChatQuickReplyViewModel groupChatQuickReplyViewModel) {
+    public int type(GroupChatQuickReplyItemViewModel groupChatQuickReplyViewModel) {
         return QuickReplyItemViewHolder.LAYOUT;
     }
 
@@ -40,5 +39,10 @@ public class QuickReplyTypeFactoryImpl extends BaseAdapterTypeFactory implements
         }
 
         return viewHolder;
+    }
+
+    @Override
+    public int type(GroupChatQuickReplyViewModel groupChatQuickReplyViewModel) {
+        return QuickReplyItemViewHolder.LAYOUT;
     }
 }

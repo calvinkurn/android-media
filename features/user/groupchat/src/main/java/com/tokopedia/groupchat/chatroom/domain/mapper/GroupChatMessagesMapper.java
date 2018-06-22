@@ -20,6 +20,7 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.AdminAnnouncemen
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.AdsViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.ChatViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GeneratedMessageViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatQuickReplyViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.ImageAnnouncementViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.PinnedMessageViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleAnnouncementViewModel;
@@ -85,6 +86,8 @@ public class GroupChatMessagesMapper {
             return true;
         } else if (mappedMessage instanceof AdsViewModel) {
             return true;
+        } else if (mappedMessage instanceof GroupChatQuickReplyViewModel) {
+            return true;
         } else {
             return false;
         }
@@ -135,9 +138,20 @@ public class GroupChatMessagesMapper {
                 return mapToPinnedMessage(message, message.getData());
             case AdsViewModel.TYPE:
                 return mapToAds(message, message.getData());
+            case GroupChatQuickReplyViewModel.TYPE:
+                return mapToQuickReply(message, message.getData());
             default:
                 return mapToUserChat(message);
         }
+    }
+
+    private Visitable mapToQuickReply(UserMessage message, String json) {
+        if(TextUtils.isEmpty(json)){
+            return new GroupChatQuickReplyViewModel();
+        }
+        Gson gson = new Gson();
+        GroupChatQuickReplyViewModel groupChatQuickReplyViewModel = gson.fromJson(json, GroupChatQuickReplyViewModel.class);
+        return groupChatQuickReplyViewModel;
     }
 
     private Visitable mapToAds(UserMessage message, String json) {

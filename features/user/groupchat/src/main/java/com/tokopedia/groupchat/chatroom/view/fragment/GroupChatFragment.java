@@ -51,6 +51,7 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.AdsViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.ChatViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatPointsViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatQuickReplyItemViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatQuickReplyViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.PendingChatViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.PinnedMessageViewModel;
@@ -196,18 +197,18 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         QuickReplyTypeFactory quickReplyTypeFactory = new QuickReplyTypeFactoryImpl(this);
         quickReplyAdapter = new QuickReplyAdapter(quickReplyTypeFactory);
         List<Visitable> list = new ArrayList<>();
-        list.add(new GroupChatQuickReplyViewModel("1","Hello &#128522"));
-        list.add(new GroupChatQuickReplyViewModel("1","&#128512"));
-        list.add(new GroupChatQuickReplyViewModel("1","&#128532"));
-        list.add(new GroupChatQuickReplyViewModel("1","Hello &#128522"));
-        list.add(new GroupChatQuickReplyViewModel("1","&#128512"));
-        list.add(new GroupChatQuickReplyViewModel("1","&#128532"));
-        list.add(new GroupChatQuickReplyViewModel("1","Hello &#128522"));
-        list.add(new GroupChatQuickReplyViewModel("1","&#128512"));
-        list.add(new GroupChatQuickReplyViewModel("1","&#128532"));
-        list.add(new GroupChatQuickReplyViewModel("1","Hello &#128522"));
-        list.add(new GroupChatQuickReplyViewModel("1","&#128512"));
-        list.add(new GroupChatQuickReplyViewModel("1","&#128532"));
+        list.add(new GroupChatQuickReplyItemViewModel("1","Hello &#128522"));
+        list.add(new GroupChatQuickReplyItemViewModel("1","&#128512"));
+        list.add(new GroupChatQuickReplyItemViewModel("1","&#128532"));
+        list.add(new GroupChatQuickReplyItemViewModel("1","Hello &#128522"));
+        list.add(new GroupChatQuickReplyItemViewModel("1","&#128512"));
+        list.add(new GroupChatQuickReplyItemViewModel("1","&#128532"));
+        list.add(new GroupChatQuickReplyItemViewModel("1","Hello &#128522"));
+        list.add(new GroupChatQuickReplyItemViewModel("1","&#128512"));
+        list.add(new GroupChatQuickReplyItemViewModel("1","&#128532"));
+        list.add(new GroupChatQuickReplyItemViewModel("1","Hello &#128522"));
+        list.add(new GroupChatQuickReplyItemViewModel("1","&#128512"));
+        list.add(new GroupChatQuickReplyItemViewModel("1","&#128532"));
         quickReplyAdapter.setList(list);
         layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setReverseLayout(true);
@@ -369,6 +370,19 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 });
             } else {
                 pinnedMessageView.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    private void setQuickReply(final GroupChatQuickReplyViewModel groupChatQuickReplyViewModel) {
+        if (getView() != null) {
+            if (groupChatQuickReplyViewModel != null
+                    && groupChatQuickReplyViewModel.getList() != null
+                    && !groupChatQuickReplyViewModel.getList().isEmpty()){
+                quickReplyRecyclerView.setVisibility(View.VISIBLE);
+                quickReplyAdapter.setList(groupChatQuickReplyViewModel.getList());
+            } else {
+                quickReplyRecyclerView.setVisibility(View.GONE);
             }
         }
     }
@@ -712,6 +726,10 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
         if (messageItem instanceof PinnedMessageViewModel) {
             setPinnedMessage((PinnedMessageViewModel) messageItem);
+        }
+
+        if (messageItem instanceof GroupChatQuickReplyViewModel){
+            setQuickReply(messageItem);
         }
 
         if (!groupChatMessagesMapper.shouldHideMessage(messageItem)) {
