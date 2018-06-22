@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dp_72"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_14"
+        android:layout_marginBottom="@dimen/dp_9">
+
+        <com.tokopedia.feedplus.view.customview.RoundedCornerImageView
+            android:id="@+id/iv_photo"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            app:layout_constraintTop_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:background="@color/red_50"/>
+
+        <ImageView
+            android:id="@+id/iv_chevron"
+            android:layout_width="@dimen/dp_25"
+            android:layout_height="@dimen/dp_18"
+            android:layout_marginTop="@dimen/dp_18"
+            android:layout_marginRight="@dimen/dp_15"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:src="@drawable/chevron_down"
+            android:tint="@color/grey_chevron"
+            />
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/font_black_primary_70"
+            app:layout_constraintEnd_toStartOf="@id/iv_chevron"
+            app:layout_constraintStart_toEndOf="@id/iv_photo"
+            app:layout_constraintTop_toTopOf="@id/iv_photo"
+            tools:text="Hi, Febby Mulia" />
+
+        <TextView
+            android:id="@+id/tv_desc"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/tv_title"
+            app:layout_constraintLeft_toLeftOf="@id/tv_title"
+            android:textColor="@color/font_black_disabled_38"
+            tools:text="Apa ceritamu di Tokopedia"
+            android:maxLines="1"
+            android:ellipsize="end" />
+
+    </android.support.constraint.ConstraintLayout>
+</android.support.v7.widget.CardView>

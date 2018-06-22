@@ -106,6 +106,8 @@ public class FeedPlusPresenter
             getFirstPageFeedsUseCase.execute(
                     getFirstPageFeedsUseCase.getRefreshParam(userSession),
                     new GetFirstPageFeedsSubscriber(viewListener, pagingHandler.getPage()));
+
+            getWhitelist();
         } else {
             viewListener.onUserNotLogin();
         }
@@ -276,7 +278,7 @@ public class FeedPlusPresenter
     public void getWhitelist() {
         viewListener.showLoadingProgress();
         getWhitelistUseCase.setRequest(getWhitelistUseCase.getRequest());
-        getWhitelistUseCase.execute(RequestParams.create(),new GetWhitelistSubsciber(viewListener));
+        getWhitelistUseCase.execute(RequestParams.create(), new GetWhitelistSubsciber(viewListener));
     }
 
 }

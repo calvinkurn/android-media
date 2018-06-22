@@ -73,13 +73,14 @@ import com.tokopedia.feedplus.view.presenter.FeedPlusPresenter;
 import com.tokopedia.feedplus.view.util.NpaLinearLayoutManager;
 import com.tokopedia.feedplus.view.util.ShareBottomDialog;
 import com.tokopedia.feedplus.view.viewmodel.inspiration.InspirationViewModel;
+import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollOptionViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollViewModel;
-import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
 import com.tokopedia.feedplus.view.viewmodel.product.ProductFeedViewModel;
 import com.tokopedia.feedplus.view.viewmodel.promo.PromoCardViewModel;
 import com.tokopedia.feedplus.view.viewmodel.topads.FeedTopAdsViewModel;
+import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
@@ -173,6 +174,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        GraphqlClient.init(getActivity());
         trace = TrackingUtils.startTrace("feed_trace");
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null && savedInstanceState.getString(FIRST_CURSOR) != null)
@@ -243,6 +245,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         recyclerView.setAdapter(adapter);
         swipeToRefresh.setOnRefreshListener(this);
         infoBottomSheet = TopAdsInfoBottomSheet.newInstance(getActivity());
+        fabAddFeed.hide();
         newFeed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -254,7 +257,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
         fabAddFeed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                startActivityForResult(CreatePostImagePickerActivity.getInstance(getActivity()), CREATE_POST);
                 startActivityForResult(CreatePostImagePickerActivity.getInstance(getActivity()), CREATE_POST);
             }
         });

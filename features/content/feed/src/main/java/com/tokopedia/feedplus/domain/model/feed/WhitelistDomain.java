@@ -4,15 +4,25 @@ package com.tokopedia.feedplus.domain.model.feed;
  * @author by yfsx on 20/06/18.
  */
 public class WhitelistDomain {
-    private WhitelistContentDomain content;
-    private String error;
 
-    public WhitelistContentDomain getContent() {
-        return content;
+    private String error;
+    private boolean isWhitelist;
+    private String url;
+
+    public boolean isWhitelist() {
+        return isWhitelist;
     }
 
-    public void setContent(WhitelistContentDomain content) {
-        this.content = content;
+    public void setWhitelist(boolean whitelist) {
+        isWhitelist = whitelist;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public String getError() {

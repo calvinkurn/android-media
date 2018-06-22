@@ -4,7 +4,6 @@ import android.text.TextUtils;
 
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.feedplus.data.pojo.WhitelistQuery;
-import com.tokopedia.feedplus.domain.model.feed.WhitelistContentDomain;
 import com.tokopedia.feedplus.domain.model.feed.WhitelistDomain;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
@@ -37,21 +36,24 @@ public class GetWhitelistSubsciber extends Subscriber<GraphqlResponse> {
     public void onNext(GraphqlResponse response) {
         mainView.finishLoadingProgress();
         WhitelistDomain domain = mappingWhitelistDomain(response);
-        if (TextUtils.isEmpty(domain.getError())) {
-            mainView.onSuccessGetWhitelist(domain.getContent().isWhitelist());
-        } else {
+        if (domain == null) {
+            mainView.onErrorGetWhitelist(ErrorHandler.getErrorMessage(new Throwable()));
+        } else  if (!TextUtils.isEmpty(domain.getError())) {
             mainView.onErrorGetWhitelist(domain.getError());
+        } else {
+            mainView.onSuccessGetWhitelist(domain.isWhitelist());
         }
     }
 
     private WhitelistDomain mappingWhitelistDomain(GraphqlResponse response) {
         WhitelistQuery query = response.getData(WhitelistQuery.class);
-        WhitelistDomain domain = new WhitelistDomain();
-        domain.setError(query.getWhitelist().getError());
-        WhitelistContentDomain contentDomain = new WhitelistContentDomain();
-        contentDomain.setWhitelist(query.getWhitelist().getContent().isWhitelist());
-        contentDomain.setUrl(query.getWhitelist().getContent().getUrl());
-        domain.setContent(contentDomain);
-        return domain;
+        if (query == null) return null;
+        else {
+            WhitelistDomain domain = new WhitelistDomain();
+            domain.setError(query.getWhitelist().getError());
+            domain.setUrl(query.getWhitelist().getUrl());
+            domain.setWhitelist(query.getWhitelist().isWhitelist());
+            return domain;
+        }
     }
 }
