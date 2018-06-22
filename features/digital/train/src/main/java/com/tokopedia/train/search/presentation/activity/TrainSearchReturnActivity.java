@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 
+import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.homepage.presentation.model.TrainSearchPassDataViewModel;
 import com.tokopedia.train.search.presentation.fragment.TrainSearchReturnFragment;
 
@@ -30,7 +31,7 @@ public class TrainSearchReturnActivity extends TrainSearchActivity {
 
     @Override
     protected String getTitleTrainToolbar() {
-        return "Perjalanan Pulang";
+        return getString(R.string.train_search_return_title);
     }
 
     @Override

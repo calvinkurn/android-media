@@ -20,9 +20,19 @@ public interface TrainSearchContract {
 
         void showLayoutTripInfo();
 
-        void showDataFromCache(List<TrainScheduleViewModel> trainScheduleViewModels);
+        void showEmptyResult();
+
+        void clearAdapterData();
+
+        void showDataScheduleFromCache(List<TrainScheduleViewModel> trainScheduleViewModels);
 
         void setSortOptionId(int sortOptionId);
+
+        void addPaddingSortAndFilterSearch();
+
+        void showFilterAndSortButtonAction();
+
+        void hideFilterAndSortButtonAction();
     }
 
     interface Presenter extends CustomerPresenter<View> {

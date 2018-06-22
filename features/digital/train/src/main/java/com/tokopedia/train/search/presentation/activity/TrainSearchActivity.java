@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 
-import com.tokopedia.design.R;
+import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.presentation.TrainBaseActivity;
 import com.tokopedia.train.common.util.TrainDateUtil;
 import com.tokopedia.train.homepage.presentation.model.TrainSearchPassDataViewModel;
@@ -17,8 +17,8 @@ public abstract class TrainSearchActivity extends TrainBaseActivity {
     public static final String EXTRA_SEARCH_PASS_DATA = "EXTRA_SEARCH_PASS_DATA";
     protected TrainSearchPassDataViewModel trainSearchPassDataViewModel;
     private String dateString;
-    private String adultPassanger;
-    private String infantPassanger;
+    private String adultPassenger;
+    private String infantPassenger;
     private int infantTotal;
 
     @Override
@@ -35,18 +35,18 @@ public abstract class TrainSearchActivity extends TrainBaseActivity {
 
     protected void initializeDataFromIntent() {
         trainSearchPassDataViewModel = getIntent().getParcelableExtra(EXTRA_SEARCH_PASS_DATA);
-        dateString = TrainDateUtil.formatDate(TrainDateUtil.DEFAULT_FORMAT,
+        dateString = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_SEARCH,
                 TrainDateUtil.DEFAULT_VIEW_LOCAL_DETAIL, getDepartureDate());
-        adultPassanger = trainSearchPassDataViewModel.getAdult() + " Dewasa";
-        infantPassanger = trainSearchPassDataViewModel.getInfant() + " Infant";
+        adultPassenger = String.format(getString(R.string.train_search_passenger_adult), trainSearchPassDataViewModel.getAdult());
+        infantPassenger = String.format(getString(R.string.train_search_passenger_infant), trainSearchPassDataViewModel.getInfant());
         infantTotal = trainSearchPassDataViewModel.getInfant();
     }
 
     private void setupTrainToolbar() {
         toolbar.setContentInsetStartWithNavigation(0);
         toolbar.setSubtitleTextColor(ContextCompat.getColor(this, R.color.grey_500));
-        String subtitle = dateString + " | " + adultPassanger + ", " + infantPassanger;
-        String subtitleNonInfant = dateString + " | " + adultPassanger;
+        String subtitle = dateString + " | " + adultPassenger + ", " + infantPassenger;
+        String subtitleNonInfant = dateString + " | " + adultPassenger;
         updateTitle(getTitleTrainToolbar(), infantTotal == 0 ? subtitleNonInfant : subtitle);
     }
 

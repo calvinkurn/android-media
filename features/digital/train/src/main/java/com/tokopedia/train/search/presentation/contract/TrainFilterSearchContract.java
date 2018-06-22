@@ -21,6 +21,8 @@ public interface TrainFilterSearchContract {
 
         void hideLoading();
 
+        FilterSearchData getFilterSearchDataFromIntent();
+
     }
 
     interface Presenter extends CustomerPresenter<View> {

@@ -9,6 +9,7 @@ import android.support.v7.widget.AppCompatImageView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
@@ -113,7 +114,7 @@ public class TrainSearchViewHolder extends AbstractViewHolder<TrainScheduleViewM
         detailScheduleTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO go to detail schedule
+                listener.onDetailClicked(trainScheduleViewModel, getAdapterPosition());
             }
         });
     }
@@ -122,15 +123,16 @@ public class TrainSearchViewHolder extends AbstractViewHolder<TrainScheduleViewM
         clearHolder(flagItemLayout);
         flagItemLayout.setVisibility(isFastestFlag || isCheapestFlag ? View.VISIBLE : View.GONE);
         if (isOutOfStock) {
-            setContentFlag(isCheapestFlag ? "TERMURAH" : "TERCEPAT", R.color.font_white_disabled_38,
+            setContentFlag(isCheapestFlag ? getString(R.string.train_search_cheapest_label) :
+                            getString(R.string.train_search_fastest_label), R.color.font_white_disabled_38,
                     R.color.font_black_disabled_38, R.color.font_black_disabled_38);
         } else {
             if (isCheapestFlag) {
-                setContentFlag("TERMURAH", R.color.light_green, R.color.tkpd_main_green,
+                setContentFlag(getString(R.string.train_search_cheapest_label), R.color.light_green, R.color.tkpd_main_green,
                         R.color.tkpd_main_green);
             }
             if (isFastestFlag) {
-                setContentFlag("TERCEPAT", R.color.light_orange, R.color.orange,
+                setContentFlag(getString(R.string.train_search_fastest_label), R.color.light_orange, R.color.orange,
                         R.color.deep_orange);
             }
         }
@@ -167,10 +169,10 @@ public class TrainSearchViewHolder extends AbstractViewHolder<TrainScheduleViewM
         } else {
             availabilitySeatTv.setVisibility(View.VISIBLE);
             if (availableSeat == OUT_OF_STOCK) {
-                availabilitySeatTv.setText("Penuh");
+                availabilitySeatTv.setText(getString(R.string.train_search_seat_full_label));
                 setColorTextDisable(availabilitySeatTv);
             } else if (availableSeat > OUT_OF_STOCK) {
-                availabilitySeatTv.setText("Sisa " + availableSeat + " kursi");
+                availabilitySeatTv.setText(String.format(getString(R.string.train_search_remains_seat_label), availableSeat));
                 setColorTextEnable(availabilitySeatTv, R.color.colorRed);
             }
         }
