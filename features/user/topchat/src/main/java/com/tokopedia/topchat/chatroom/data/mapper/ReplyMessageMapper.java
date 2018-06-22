@@ -16,35 +16,9 @@ import rx.functions.Func1;
  * Created by stevenfredian on 8/31/17.as
  */
 
-public class ReplyMessageMapper implements Func1<Response<TkpdResponse>, ReplyActionData> {
-
-    private static final String ERROR = "error";
-    private static final String ERROR_DESCRIPTION = "error_description";
-
+public class ReplyMessageMapper extends BaseChatAPICallMapper<ReplyActionData,ReplyActionData> {
     @Override
-    public ReplyActionData call(Response<TkpdResponse> response) {
-        if (response.isSuccessful()) {
-            if ((!response.body().isNullData()
-                    && response.body().getErrorMessageJoined().equals(""))
-                    || !response.body().isNullData() && response.body().getErrorMessages() == null) {
-                ReplyActionData data = response.body().convertDataObj(ReplyActionData.class);
-                return data;
-            } else {
-                if (response.body().getErrorMessages() != null
-                        && !response.body().getErrorMessages().isEmpty()) {
-                    throw new ErrorMessageException(response.body().getErrorMessageJoined());
-                } else {
-                    throw new ErrorMessageException(MainApplication.getAppContext().getString
-                            (R.string.default_request_error_unknown));
-                }
-            }
-        } else {
-            String messageError = ErrorHandler.getErrorMessage(response);
-            if (!TextUtils.isEmpty(messageError)) {
-                throw new ErrorMessageException(messageError);
-            } else {
-                throw new RuntimeException(String.valueOf(response.code()));
-            }
-        }
+    ReplyActionData mappingToDomain(ReplyActionData data) {
+        return data;
     }
 }

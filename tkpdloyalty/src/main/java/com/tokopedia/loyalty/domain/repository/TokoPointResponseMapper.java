@@ -1,10 +1,12 @@
 package com.tokopedia.loyalty.domain.repository;
 
+import android.text.TextUtils;
+
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.loyalty.domain.entity.response.Coupon;
 import com.tokopedia.loyalty.domain.entity.response.CouponListDataResponse;
 import com.tokopedia.loyalty.domain.entity.response.DigitalVoucherData;
-import com.tokopedia.loyalty.domain.entity.response.TokoPointDrawerDataResponse;
+import com.tokopedia.loyalty.domain.entity.response.GqlTokoPointDrawerDataResponse;
 import com.tokopedia.loyalty.domain.entity.response.TokoPointResponse;
 import com.tokopedia.loyalty.domain.entity.response.ValidateRedeemCouponResponse;
 import com.tokopedia.loyalty.domain.entity.response.VoucherResponse;
@@ -37,67 +39,69 @@ public class TokoPointResponseMapper implements ITokoPointResponseMapper {
     @Override
     public List<CouponData> convertCouponListData(CouponListDataResponse couponListDataResponse) {
         List<CouponData> couponDataList = new ArrayList<>();
-        if(couponListDataResponse != null && couponListDataResponse.getCoupons() != null)
-        for (Coupon coupon : couponListDataResponse.getCoupons()) {
-            couponDataList.add(
-                    new CouponData.Builder()
-                            .id(coupon.getId())
-                            .promoId(coupon.getPromoId())
-                            .code(coupon.getCode())
-                            .title(coupon.getTitle())
-                            .subTitle(coupon.getSubTitle())
-                            .description(coupon.getDescription())
-                            .expired(coupon.getExpired())
-                            .imageUrl(coupon.getImageUrl())
-                            .imageUrlMobile(coupon.getImageUrlMobile())
-                            .icon(coupon.getIcon())
-                            .build()
-            );
-        }
+        if (couponListDataResponse != null && couponListDataResponse.getCoupons() != null)
+            for (Coupon coupon : couponListDataResponse.getCoupons()) {
+                couponDataList.add(
+                        new CouponData.Builder()
+                                .id(coupon.getId())
+                                .promoId(coupon.getPromoId())
+                                .code(coupon.getCode())
+                                .title(coupon.getTitle())
+                                .subTitle(coupon.getSubTitle())
+                                .description(coupon.getDescription())
+                                .expired(coupon.getExpired())
+                                .imageUrl(coupon.getImageUrl())
+                                .imageUrlMobile(coupon.getImageUrlMobile())
+                                .icon(coupon.getIcon())
+                                .build()
+                );
+            }
         return couponDataList;
     }
 
+
     @Override
-    public TokoPointDrawerData convertTokoplusPointDrawer(TokoPointDrawerDataResponse tokoplusPointDrawerData) {
-        TokoPointDrawerData.Catalog catalog = new TokoPointDrawerData.Catalog();
+    public TokoPointDrawerData convertTokoplusPointDrawer(GqlTokoPointDrawerDataResponse tokoplusPointDrawerData) {
         TokoPointDrawerData.PopUpNotif popUpNotif = new TokoPointDrawerData.PopUpNotif();
         TokoPointDrawerData.UserTier userTier = new TokoPointDrawerData.UserTier();
         TokoPointDrawerData tokoPointDrawerData = new TokoPointDrawerData();
-        tokoPointDrawerData.setHasNotif(tokoplusPointDrawerData.getHasNotif());
-        tokoPointDrawerData.setOffFlag(tokoplusPointDrawerData.getOffFlag());
-        tokoPointDrawerData.setMainPageUrl(tokoplusPointDrawerData.getMainPageUrl());
-        tokoPointDrawerData.setMainPageTitle(tokoplusPointDrawerData.getMainPageTitle());
-        if (tokoplusPointDrawerData.getUserTier() != null) {
-            userTier.setRewardPoints(tokoplusPointDrawerData.getUserTier().getRewardPoints());
-            userTier.setRewardPointsStr(tokoplusPointDrawerData.getUserTier().getRewardPointsStr());
-            userTier.setTierId(tokoplusPointDrawerData.getUserTier().getTierId());
-            userTier.setTierName(tokoplusPointDrawerData.getUserTier().getTierName());
-            userTier.setTierNameDesc(tokoplusPointDrawerData.getUserTier().getTierNameDesc());
-            userTier.setTierImageUrl(tokoplusPointDrawerData.getUserTier().getTierImageUrl());
-            userTier.setMainPageUrl(tokoplusPointDrawerData.getMainPageUrl());
+
+        if (tokoplusPointDrawerData.getGqlTokoPointPopupNotif() != null &&
+                !TextUtils.isEmpty(tokoplusPointDrawerData.getGqlTokoPointPopupNotif().getTitle())) {
+            tokoPointDrawerData.setHasNotif(1);
+        } else {
+            tokoPointDrawerData.setHasNotif(0);
+        }
+
+        tokoPointDrawerData.setOffFlag(tokoplusPointDrawerData.getOffFlag() ? 1 : 0);
+        tokoPointDrawerData.setMainPageUrl(tokoplusPointDrawerData.getGqlTokoPointUrl().getMainPageUrl());
+
+        tokoPointDrawerData.setMainPageTitle("");
+
+        if (tokoplusPointDrawerData.getGqlTokoPointStatus() != null &&
+                tokoplusPointDrawerData.getGqlTokoPointStatus().getGqlTokoPointTier() != null) {
+            userTier.setTierNameDesc(tokoplusPointDrawerData.getGqlTokoPointStatus().getGqlTokoPointTier().getNameDesc());
+            userTier.setTierImageUrl(tokoplusPointDrawerData.getGqlTokoPointStatus().getGqlTokoPointTier().getImageUrl());
             tokoPointDrawerData.setUserTier(userTier);
         } else {
             tokoPointDrawerData.setUserTier(null);
         }
 
-        if (tokoplusPointDrawerData.getPopUpNotif() != null) {
-            popUpNotif.setAppLink(tokoplusPointDrawerData.getPopUpNotif().getAppLink());
-            popUpNotif.setButtonText(tokoplusPointDrawerData.getPopUpNotif().getButtonText());
-            popUpNotif.setButtonUrl(tokoplusPointDrawerData.getPopUpNotif().getButtonUrl());
-            popUpNotif.setImageUrl(tokoplusPointDrawerData.getPopUpNotif().getImageUrl());
-            popUpNotif.setNotes(tokoplusPointDrawerData.getPopUpNotif().getNotes());
-            popUpNotif.setText(tokoplusPointDrawerData.getPopUpNotif().getText());
-            popUpNotif.setTitle(tokoplusPointDrawerData.getPopUpNotif().getTitle());
-            if (tokoplusPointDrawerData.getPopUpNotif().getCatalog() != null) {
-                catalog.setPoints(tokoplusPointDrawerData.getPopUpNotif().getCatalog().getPoints());
-                catalog.setSubTitle(tokoplusPointDrawerData.getPopUpNotif().getCatalog().getSubTitle());
-                catalog.setThumbnailUrl(tokoplusPointDrawerData.getPopUpNotif().getCatalog().getThumbnailUrl());
-                catalog.setThumbnailUrlMobile(tokoplusPointDrawerData.getPopUpNotif().getCatalog().getThumbnailUrlMobile());
-                catalog.setTitle(tokoplusPointDrawerData.getPopUpNotif().getCatalog().getTitle());
-                popUpNotif.setCatalog(catalog);
-            } else {
-                popUpNotif.setCatalog(null);
-            }
+        if (tokoplusPointDrawerData.getGqlTokoPointStatus() != null &&
+                tokoplusPointDrawerData.getGqlTokoPointStatus().getGqlTokoPointPoints() != null) {
+            userTier.setRewardPointsStr(tokoplusPointDrawerData.getGqlTokoPointStatus().getGqlTokoPointPoints().getRewardString());//getUserTier().getRewardPointsStr());
+
+        } else {
+            userTier.setRewardPointsStr("");
+        }
+
+        if (tokoplusPointDrawerData.getGqlTokoPointPopupNotif() != null) {
+            popUpNotif.setAppLink(tokoplusPointDrawerData.getGqlTokoPointPopupNotif().getAppLink());
+            popUpNotif.setButtonText(tokoplusPointDrawerData.getGqlTokoPointPopupNotif().getButtonText());
+            popUpNotif.setButtonUrl(tokoplusPointDrawerData.getGqlTokoPointPopupNotif().getButtonURL());
+            popUpNotif.setImageUrl(tokoplusPointDrawerData.getGqlTokoPointPopupNotif().getImageURL());
+            popUpNotif.setText(tokoplusPointDrawerData.getGqlTokoPointPopupNotif().getText());
+            popUpNotif.setTitle(tokoplusPointDrawerData.getGqlTokoPointPopupNotif().getTitle());
             tokoPointDrawerData.setPopUpNotif(popUpNotif);
         } else {
             tokoPointDrawerData.setPopUpNotif(null);
@@ -159,7 +163,7 @@ public class TokoPointResponseMapper implements ITokoPointResponseMapper {
 
     private EmptyMessage convertEmptyMessageData(CouponListDataResponse couponListDataResponse) {
         EmptyMessage emptyMessage = null;
-        if (couponListDataResponse != null && couponListDataResponse.getEmptyMessage() != null){
+        if (couponListDataResponse != null && couponListDataResponse.getEmptyMessage() != null) {
             emptyMessage = new EmptyMessage();
             emptyMessage.setTitle(couponListDataResponse.getEmptyMessage().getTitle());
             emptyMessage.setSubTitle(couponListDataResponse.getEmptyMessage().getSubTitle());

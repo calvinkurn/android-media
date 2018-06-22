@@ -1,5 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'android-apt'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
@@ -17,22 +16,62 @@ buildscript {
     }
 }
 
+project.ext {
+    artifactId = 'topchat'
+    groupId = 'com.tokopedia.topchat'
+    versionName = "${tkpdInboxVersion}"
+    artifactName = "topchat-release"
+}
+
 dependencies {
 
-    compile project(rootProject.ext.features.core)
+    implementation project(rootProject.ext.features.core)
+    implementation project(rootProject.ext.libraries.bottomSheetBuilder)
 
-    compile project(rootProject.ext.libraries.abstraction)
-    compile project(rootProject.ext.libraries.useCase)
-    compile project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.cacheApi)
+    implementation project(rootProject.ext.libraries.useCase)
+    implementation project(rootProject.ext.libraries.pushNotif)
+    implementation project(rootProject.ext.features.contactUs)
 
-    compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
-    apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
+    implementation (rootProject.ext.debugToolsDependencies.chuck) {
+        exclude group: 'com.squareup.okhttp3'
+        exclude group: 'com.squareup.okio'
+        exclude group: 'com.android.support'
+    }
 
-    compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    implementation rootProject.ext.networkDependencies.glide
 
-    provided rootProject.ext.miscDependencies.javaxAnnotation
-    compile rootProject.ext.miscDependencies.dagger
-    apt rootProject.ext.miscDependencies.daggerCompiler
+    implementation rootProject.ext.miscDependencies.multiDex
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
+        exclude group: 'com.android.support'
+    }
+
+    annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
+    implementation rootProject.ext.dbDependencies.dbFlowCore
+    implementation rootProject.ext.dbDependencies.dbFlow
+
+    implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
+    annotationProcessor  rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
+
+    implementation rootProject.ext.butterKnifeDependencies.butterKnife
+    annotationProcessor  rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
+
+    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+
+    implementation rootProject.ext.miscDependencies.parcelerApi
+    annotationProcessor rootProject.ext.miscDependencies.parceler
+    implementation rootProject.ext.miscDependencies.scannerZxing
+
+    implementation rootProject.ext.playServicesDependencies.maps
+
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+
+    implementation rootProject.ext.viewDependencies.appIntro
 
 }
+
+apply from: '../../../publish_local.gradle'

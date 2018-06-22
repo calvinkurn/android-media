@@ -1,13 +1,17 @@
 package com.tokopedia.loyalty.di.module;
 
-import android.app.Activity;
 import android.app.FragmentManager;
 
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.loyalty.di.LoyaltyScope;
+import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
 import com.tokopedia.loyalty.view.adapter.LoyaltyPagerAdapter;
 import com.tokopedia.loyalty.view.data.LoyaltyPagerItem;
 import com.tokopedia.loyalty.view.fragment.PromoCodeFragment;
 import com.tokopedia.loyalty.view.fragment.PromoCouponFragment;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsCartPage;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsCartShipmentPage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,10 +21,6 @@ import javax.inject.Named;
 import dagger.Module;
 import dagger.Provides;
 
-import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.EXTRA_CART_ID;
-import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.EXTRA_CATEGORY;
-import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.EXTRA_PLATFORM;
-
 /**
  * @author anggaprasetiyo on 30/11/17.
  */
@@ -28,9 +28,9 @@ import static com.tokopedia.loyalty.view.activity.LoyaltyActivity.EXTRA_PLATFORM
 @Module
 public class LoyaltyViewModule {
 
-    private final Activity activity;
+    private final LoyaltyActivity activity;
 
-    public LoyaltyViewModule(Activity activity) {
+    public LoyaltyViewModule(LoyaltyActivity activity) {
         this.activity = activity;
     }
 
@@ -52,35 +52,43 @@ public class LoyaltyViewModule {
         loyaltyPagerItemList.add(
                 new LoyaltyPagerItem.Builder()
                         .fragment(PromoCodeFragment.newInstance(
-                                activity.getIntent()
-                                        .getExtras()
-                                        .getString(EXTRA_PLATFORM, ""),
-                                activity.getIntent()
-                                        .getExtras()
-                                        .getString(EXTRA_CATEGORY, ""),
-                                activity.getIntent()
-                                        .getExtras()
-                                        .getString(EXTRA_CART_ID, "")))
-                        .position(0)
+                                activity.getPlatformString(),
+                                activity.getPlatformPageString(),
+                                activity.getCategoryString(),
+                                activity.getCartIdString(),
+                                activity.getAdditionalDataString())
+                        ).position(0)
                         .tabTitle("Kode Promo")
                         .build()
         );
-        loyaltyPagerItemList.add(
-                new LoyaltyPagerItem.Builder()
-                        .fragment(PromoCouponFragment.newInstance(
-                                activity.getIntent()
-                                        .getExtras()
-                                        .getString(EXTRA_PLATFORM, ""),
-                                activity.getIntent()
-                                        .getExtras()
-                                        .getString(EXTRA_CATEGORY, ""),
-                                activity.getIntent()
-                                        .getExtras()
-                                        .getString(EXTRA_CART_ID, "")))
-                        .position(0)
-                        .tabTitle("Kupon Saya")
-                        .build()
-        );
+        String events = "events";
+        if (activity.getPlatformString().equals(events)) {
+            loyaltyPagerItemList.add(
+                    new LoyaltyPagerItem.Builder()
+                            .fragment(PromoCouponFragment.newInstanceEvent(
+                                    activity.getPlatformString(),
+                                    activity.getCategoryString(),
+                                    activity.getCategoryId(),
+                                    activity.getProductId()))
+                            .position(0)
+                            .tabTitle("Kupon Saya")
+                            .build()
+            );
+        } else {
+            loyaltyPagerItemList.add(
+                    new LoyaltyPagerItem.Builder()
+                            .fragment(PromoCouponFragment.newInstance(
+                                    activity.getPlatformString(),
+                                    activity.getPlatformPageString(),
+                                    activity.getCategoryString(),
+                                    activity.getCartIdString(),
+                                    activity.getCategoryId(),
+                                    activity.getProductId()))
+                            .position(0)
+                            .tabTitle("Kupon Saya")
+                            .build()
+            );
+        }
         return loyaltyPagerItemList;
     }
 
@@ -92,17 +100,34 @@ public class LoyaltyViewModule {
         loyaltyPagerItemList.add(
                 new LoyaltyPagerItem.Builder()
                         .fragment(PromoCodeFragment.newInstance(
-                                activity.getIntent()
-                                        .getExtras()
-                                        .getString(EXTRA_PLATFORM, ""),
-                                activity.getIntent()
-                                        .getExtras()
-                                        .getString(EXTRA_CATEGORY, "")))
+                                activity.getPlatformString(),
+                                activity.getPlatformPageString(),
+                                activity.getCategoryString(),
+                                activity.getCartIdString(),
+                                activity.getAdditionalDataString()))
                         .position(0)
                         .tabTitle("Kode Promo")
                         .build()
         );
         return loyaltyPagerItemList;
+    }
+
+    @Provides
+    CheckoutAnalyticsCartPage provideCheckoutAnalyticsCartPage() {
+        AnalyticTracker analyticTracker = null;
+        if (activity.getApplication() instanceof AbstractionRouter) {
+            analyticTracker = ((AbstractionRouter) activity.getApplication()).getAnalyticTracker();
+        }
+        return new CheckoutAnalyticsCartPage(analyticTracker);
+    }
+
+    @Provides
+    CheckoutAnalyticsCartShipmentPage provideCheckoutAnalyticsCartShipmentPage() {
+        AnalyticTracker analyticTracker = null;
+        if (activity.getApplication() instanceof AbstractionRouter) {
+            analyticTracker = ((AbstractionRouter) activity.getApplication()).getAnalyticTracker();
+        }
+        return new CheckoutAnalyticsCartShipmentPage(analyticTracker);
     }
 
 }

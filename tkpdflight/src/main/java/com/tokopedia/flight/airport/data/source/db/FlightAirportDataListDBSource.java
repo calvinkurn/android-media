@@ -2,7 +2,6 @@ package com.tokopedia.flight.airport.data.source.db;
 
 import android.text.TextUtils;
 
-import com.raizlabs.android.dbflow.sql.language.Condition;
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.Method;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
@@ -80,6 +79,7 @@ public class FlightAirportDataListDBSource extends BaseDataListDBSource<FlightAi
                     }
 
                     private void insertFlight(FlightAirportCountry flightAirportCountry, FlightAirportCity flightAirportCity, FlightAirportDetail flightAirportDetail, String airportIds) {
+
                         FlightAirportDB flightAirportDB = new FlightAirportDB();
                         flightAirportDB.setCountryId(flightAirportCountry.getId());
                         flightAirportDB.setCountryName(flightAirportCountry.getAttributes().getName());
@@ -142,13 +142,10 @@ public class FlightAirportDataListDBSource extends BaseDataListDBSource<FlightAi
     }
 
     private ConditionGroup buildQuery(HashMap<String, Object> params) {
-        String idCountry = FlightAirportDataListSource.getIdCountryFromMap(params);
         String queryText = FlightAirportDataListSource.getQueryFromMap(params);
 
         ConditionGroup conditions = ConditionGroup.clause();
-        if (!TextUtils.isEmpty(idCountry)) {
-            conditions.and(FlightAirportDB_Table.country_id.eq(idCountry));
-        }
+        conditions.and(FlightAirportDB_Table.city_name.notEq(""));
         if (!TextUtils.isEmpty(queryText)) {
             String queryLike = "%" + queryText + "%";
             ConditionGroup likeConditionsGroup = ConditionGroup.clause();
@@ -268,7 +265,6 @@ public class FlightAirportDataListDBSource extends BaseDataListDBSource<FlightAi
                             flightAirportDB.setAliases(aliases);
                             flightAirportDB.insert();
                         }
-
                     }
                 })
                 .toList()
@@ -290,6 +286,19 @@ public class FlightAirportDataListDBSource extends BaseDataListDBSource<FlightAi
                         .where(FlightAirportDB_Table.country_name.like(queryLike))
                         .queryList();
                 subscriber.onNext(flightAirportDBList);
+            }
+        });
+    }
+
+    public Observable<FlightAirportDB> getAirportByCountryId(final String id) {
+        return Observable.unsafeCreate(new Observable.OnSubscribe<FlightAirportDB>() {
+            @Override
+            public void call(Subscriber<? super FlightAirportDB> subscriber) {
+                FlightAirportDB flightAirportDB = new Select()
+                        .from(FlightAirportDB.class)
+                        .where(FlightAirportDB_Table.country_id.eq(id))
+                        .querySingle();
+                subscriber.onNext(flightAirportDB);
             }
         });
     }

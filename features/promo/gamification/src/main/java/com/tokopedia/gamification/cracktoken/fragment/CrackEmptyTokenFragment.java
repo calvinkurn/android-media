@@ -4,7 +4,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.AppCompatImageView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,7 +40,6 @@ public class CrackEmptyTokenFragment extends BaseDaggerFragment {
     private TokenData tokenData;
     private TextView title;
     private ImageView ivContainer;
-    private AppCompatImageView emptyTokenImg;
 
     public static Fragment newInstance(TokenData tokenData) {
         Fragment fragment = new CrackEmptyTokenFragment();
@@ -59,7 +57,6 @@ public class CrackEmptyTokenFragment extends BaseDaggerFragment {
         tokenEmptyImage = rootView.findViewById(R.id.empty_lucky_egg);
         getMoreTokenBtn = rootView.findViewById(R.id.get_more_token_button);
         ivContainer = rootView.findViewById(R.id.iv_container);
-        emptyTokenImg = rootView.findViewById(R.id.empty_lucky_egg);
 
         return rootView;
     }
@@ -76,7 +73,7 @@ public class CrackEmptyTokenFragment extends BaseDaggerFragment {
         ImageHandler.loadImageWithSignature(ivContainer, tokenData.getHome().getTokenEmptyState().getBackgroundImgUrl(),
                 new StringSignature(String.valueOf(tokenData.getHome().getTokenEmptyState().getVersion())));
 
-        ImageHandler.loadImageWithSignature(emptyTokenImg, tokenData.getHome().getTokenEmptyState().getImageUrl(),
+        ImageHandler.loadImageWithSignature(tokenEmptyImage, tokenData.getHome().getTokenEmptyState().getImageUrl(),
                 new StringSignature(String.valueOf(tokenData.getHome().getTokenEmptyState().getVersion())));
 
         rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -95,7 +92,7 @@ public class CrackEmptyTokenFragment extends BaseDaggerFragment {
         getMoreTokenBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (getActivity().getApplication() instanceof AbstractionRouter) {
+                if (getActivity() != null && getActivity().getApplication() instanceof AbstractionRouter) {
                     ((AbstractionRouter) getActivity().getApplication())
                             .getAnalyticTracker()
                             .sendEventTracking(
@@ -129,7 +126,7 @@ public class CrackEmptyTokenFragment extends BaseDaggerFragment {
         ivFullLp.topMargin = imageMarginTop;
         tokenEmptyImage.requestLayout();
 
-        int titleMarginTop = imageMarginTop - getContext().getResources().getDimensionPixelOffset(R.dimen.dp_112);
+        int titleMarginTop = imageMarginTop - getActivity().getResources().getDimensionPixelOffset(R.dimen.dp_112);
         FrameLayout.LayoutParams titleLp = (FrameLayout.LayoutParams) title.getLayoutParams();
         ivFullLp.gravity = CENTER_HORIZONTAL;
         titleLp.topMargin = titleMarginTop;

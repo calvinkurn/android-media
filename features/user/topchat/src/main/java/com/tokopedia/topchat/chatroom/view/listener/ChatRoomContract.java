@@ -157,6 +157,9 @@ public class ChatRoomContract {
 
         UserSession getUserSession();
 
+        void setMessageId(String messageId);
+
+        void enableWebSocket();
     }
 
     public interface Presenter extends CustomerPresenter<View> {
@@ -184,5 +187,7 @@ public class ChatRoomContract {
         String getFileLocFromCamera();
 
         void setChatRating(ChatRatingViewModel model, int userId, int rating);
+
+        void getExistingChat();
     }
 }

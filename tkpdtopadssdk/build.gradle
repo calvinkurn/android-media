@@ -1,19 +1,35 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://hansel.io/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+project.ext {
+    artifactId = 'topads'
+    groupId = 'com.tokopedia.topads.sdk'
+    versionName = "2.22"
+    artifactName ="tkpdtopadssdk-release"
+}
+
 
 dependencies {
-    androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    androidTestCompile rootProject.ext.testDependencies.androidAnnotation
+    implementation project(rootProject.ext.libraries.design)
 
-    compile project(rootProject.ext.libraries.design)
+    androidTestImplementation rootProject.ext.testDependencies.androidAnnotation
 
-    testCompile rootProject.ext.testDependencies.junit
-    compile group: 'org.apache.commons', name: 'commons-text', version: '1.0'
-    compile rootProject.ext.supportLibDependencies.appCompactV7
-    compile rootProject.ext.supportLibDependencies.design
-    compile rootProject.ext.supportLibDependencies.cardViewV7
-    compile rootProject.ext.networkDependencies.glide
-    compile rootProject.ext.supportLibDependencies.constraintLayout
+    implementation group: 'org.apache.commons', name: 'commons-text', version: '1.0'
+
+    implementation rootProject.ext.networkDependencies.glide
+
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
 }
+
+apply from: '../publish_local.gradle'
