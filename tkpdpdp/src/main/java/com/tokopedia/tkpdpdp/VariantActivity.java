@@ -51,8 +51,8 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
     public static final String IDENTIFIER_SIZE = "size";
 
     public static final int SELECTED_VARIANT_RESULT = 99;
-    public static final int SELECTED_VARIANT_RESULT_TO_BUY = 98;
-    public static final int SELECTED_VARIANT_RESULT_TO_CART = 97;
+    public static final int SELECTED_VARIANT_RESULT_SKIP_TO_CART = 98;
+    public static final int SELECTED_VARIANT_RESULT_STAY_IN_PDP = 97;
     public static final int KILL_PDP_BACKGROUND = 97;
     private static final String CRASHLYTIC_VARIANT_TAG = "CRASHLYTIC VARIANT";
 
@@ -305,7 +305,7 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
     private View.OnClickListener onButtonCartClick() {
         return view -> {
             Intent intent = generateExtraSelectedIntent();
-            intent.putExtra(KEY_STATE_RESULT_VARIANT, VariantActivity.SELECTED_VARIANT_RESULT_TO_CART);
+            intent.putExtra(KEY_STATE_RESULT_VARIANT, VariantActivity.SELECTED_VARIANT_RESULT_STAY_IN_PDP);
             setResult(RESULT_OK, intent);
             finish();
             VariantActivity.this.overridePendingTransition(0,com.tokopedia.core.R.anim.push_down);
@@ -315,7 +315,7 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
     private View.OnClickListener onButtonBuyClick() {
         return view -> {
             Intent intent = generateExtraSelectedIntent();
-            intent.putExtra(KEY_STATE_RESULT_VARIANT, VariantActivity.SELECTED_VARIANT_RESULT_TO_BUY);
+            intent.putExtra(KEY_STATE_RESULT_VARIANT, VariantActivity.SELECTED_VARIANT_RESULT_SKIP_TO_CART);
             setResult(RESULT_OK, intent);
             finish();
             VariantActivity.this.overridePendingTransition(0,com.tokopedia.core.R.anim.push_down);
@@ -336,7 +336,11 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
             viewCartPrice.setVisibility(stateFormVariantPage == STATE_VARIANT_DEFAULT ? View.GONE : VISIBLE);
 
             buttonBuy.setClickable(true);
-            buttonBuy.setOnClickListener(stateFormVariantPage == STATE_BUTTON_CART ? onButtonCartClick() : onButtonBuyClick());
+            buttonBuy.setOnClickListener(
+                    stateFormVariantPage == STATE_BUTTON_CART ?
+                            onButtonCartClick() :
+                            onButtonBuyClick()
+            );
             buttonCart.setOnClickListener(onButtonCartClick());
         } else if (child.isIsBuyable()==false) {
             viewNewCheckoutFlow.setVisibility(View.GONE);

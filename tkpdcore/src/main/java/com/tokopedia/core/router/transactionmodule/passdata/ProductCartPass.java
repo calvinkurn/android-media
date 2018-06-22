@@ -25,6 +25,7 @@ public class ProductCartPass implements Parcelable {
     private String trackerAttribution;
     private String listName;
     private int orderQuantity;
+    private boolean skipToCart;
 
     public ProductCartPass() {
     }
@@ -216,6 +217,14 @@ public class ProductCartPass implements Parcelable {
         this.orderQuantity = orderQuantity;
     }
 
+    public boolean isSkipToCart() {
+        return skipToCart;
+    }
+
+    public void setSkipToCart(boolean skipToCart) {
+        this.skipToCart = skipToCart;
+    }
+
     public static class Builder {
         private String productId;
         private String productName;
@@ -233,6 +242,7 @@ public class ProductCartPass implements Parcelable {
         private String homeAttribution;
         private String listName;
         private int orderQuantity;
+        private boolean isSkipToCart;
 
         private Builder() {
         }
@@ -321,6 +331,11 @@ public class ProductCartPass implements Parcelable {
             return this;
         }
 
+        public Builder setSkipToCart(boolean skipToCart) {
+            this.isSkipToCart = skipToCart;
+            return this;
+        }
+
         public Builder but() {
             return aProductCartPass()
                     .setProductId(productId)
@@ -338,7 +353,8 @@ public class ProductCartPass implements Parcelable {
                     .setShopType(shopType)
                     .setHomeAttribution(homeAttribution)
                     .setListName(listName)
-                    .setOrderQuantity(orderQuantity);
+                    .setOrderQuantity(orderQuantity)
+                    .setSkipToCart(isSkipToCart);
 
         }
 
@@ -360,6 +376,7 @@ public class ProductCartPass implements Parcelable {
             productCartPass.setTrackerAttribution(homeAttribution);
             productCartPass.setListName(listName);
             productCartPass.setOrderQuantity(orderQuantity);
+            productCartPass.setSkipToCart(isSkipToCart);
             return productCartPass;
         }
     }

@@ -79,7 +79,6 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
-import com.tokopedia.design.dialog.AddToCartConfirmationDialog;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
@@ -152,8 +151,8 @@ import static com.tokopedia.tkpdpdp.VariantActivity.KEY_SELECTED_QUANTIY;
 import static com.tokopedia.tkpdpdp.VariantActivity.KEY_STATE_OPEN_VARIANT;
 import static com.tokopedia.tkpdpdp.VariantActivity.KEY_STATE_RESULT_VARIANT;
 import static com.tokopedia.tkpdpdp.VariantActivity.KEY_VARIANT_DATA;
-import static com.tokopedia.tkpdpdp.VariantActivity.SELECTED_VARIANT_RESULT_TO_BUY;
-import static com.tokopedia.tkpdpdp.VariantActivity.SELECTED_VARIANT_RESULT_TO_CART;
+import static com.tokopedia.tkpdpdp.VariantActivity.SELECTED_VARIANT_RESULT_SKIP_TO_CART;
+import static com.tokopedia.tkpdpdp.VariantActivity.SELECTED_VARIANT_RESULT_STAY_IN_PDP;
 
 /**
  * ProductDetailFragment
@@ -534,6 +533,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                         .setHomeAttribution(productPass.getTrackerAttribution())
                         .setNotes(selectedRemarkNotes)
                         .setOrderQuantity(selectedQuantity)
+                        .setSkipToCart(source.equals(SOURCE_BUTTON_BUY_VARIANT) || source.equals(SOURCE_BUTTON_BUY_PDP))
                         .build();
 
                 if (!productData.getBreadcrumb().isEmpty()) {
@@ -1218,10 +1218,10 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                             selectedRemarkNotes = data.getStringExtra(KEY_REMARK_FOR_SELLER);
                         }
                         switch (data.getIntExtra(KEY_STATE_RESULT_VARIANT, 0)) {
-                            case SELECTED_VARIANT_RESULT_TO_BUY:
+                            case SELECTED_VARIANT_RESULT_SKIP_TO_CART:
                                 onBuyClick(SOURCE_BUTTON_BUY_VARIANT);
                                 break;
-                            case SELECTED_VARIANT_RESULT_TO_CART:
+                            case SELECTED_VARIANT_RESULT_STAY_IN_PDP:
                                 onBuyClick(SOURCE_BUTTON_CART_VARIANT);
                                 break;
                             default:
@@ -1677,34 +1677,25 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     }
 
     @Override
+    public void renderAddToCartSuccessOpenCart(String message) {
+        checkoutAnalyticsAddToCart.eventClickAddToCartImpressionAtcSuccess();
+        updateCartNotification();
+        enhanceEcommerceAtc();
+        if (getActivity().getApplication() instanceof PdpRouter) {
+            Intent intent = ((PdpRouter) getActivity().getApplication())
+                    .getCartIntent(getActivity());
+            startActivity(intent);
+        }
+    }
+
+    @Override
     public void renderAddToCartSuccess(String message) {
         checkoutAnalyticsAddToCart.eventClickAddToCartImpressionAtcSuccess();
         updateCartNotification();
-        android.support.v4.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.add(
-                AddToCartConfirmationDialog.newInstance(
-                        message,
-                        new AddToCartConfirmationDialog.ActionListener() {
-                            @Override
-                            public void onButtonAddToCartPayClicked() {
-                                checkoutAnalyticsAddToCart.eventClickAddToCartClickBayarOnAtcSuccess();
-                                if (getActivity().getApplication() instanceof PdpRouter) {
-                                    Intent intent = ((PdpRouter) getActivity().getApplication())
-                                            .getCartIntent(getActivity());
-                                    startActivity(intent);
-                                }
-                            }
+        enhanceEcommerceAtc();
+    }
 
-                            @Override
-                            public void onButtonAddToCartContinueShopingClicked() {
-                                checkoutAnalyticsAddToCart.eventClickAddToCartClickLanjutkanBelanjaOnAtcSuccess();
-                            }
-                        }),
-                AddToCartConfirmationDialog.ADD_TO_CART_DIALOG_FRAGMENT_TAG
-        );
-        ft.commitAllowingStateLoss();
-
-
+    private void enhanceEcommerceAtc() {
         EnhancedECommerceProductCartMapData enhancedECommerceProductCartMapData =
                 new EnhancedECommerceProductCartMapData();
         enhancedECommerceProductCartMapData.setProductName(productData.getInfo().getProductName());

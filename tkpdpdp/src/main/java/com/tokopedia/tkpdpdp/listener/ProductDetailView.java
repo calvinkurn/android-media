@@ -319,6 +319,8 @@ public interface ProductDetailView extends ViewListener {
 
     void renderAddToCartSuccess(String message);
 
+    void renderAddToCartSuccessOpenCart(String message);
+
     int generateStateVariant(String source);
 
     void updateButtonBuyListener();
