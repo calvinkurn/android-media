@@ -562,6 +562,7 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
             zipCodeTextView.setText(address.getPostalCode());
             postCodeEditText.setText(address.getPostalCode());
             receiverPhoneEditText.setText(address.getReceiverPhone());
+            locationEditText.setText(address.getGeoLocation(getActivity()));
         } else if (address == null) {
             address = new Destination();
         }
