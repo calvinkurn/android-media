@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">SettingBank</string>
     <string name="title_setting_bank">Rekening Bank</string>
+    <string name="title_choose_bank">Pilih Bank</string>
     <string name="add_bank_account">Tambah Rekening</string>
     <string name="menu_make_main_account">Jadikan Rekening Utama</string>
     <string name="menu_edit">Ubah</string>
@@ -29,5 +30,6 @@ mempermudah proses penarikan dana</string>
     <string name="_2">2</string>
     <string name="bottom_dialog_add_bank_info">Keterangan dapat ditemukan pada halaman depan buku tabungan</string>
     <string name="bottom_dialog_add_bank_title">Contoh Buku Tabungan</string>
+    <string name="search_bank_hint">Cari Bank</string>
 
 </resources>

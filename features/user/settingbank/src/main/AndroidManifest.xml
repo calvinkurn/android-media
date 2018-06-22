@@ -17,5 +17,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"/>
 
+        <activity
+            android:name=".choosebank.view.activity.ChooseBankActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/title_choose_bank"
+            android:theme="@style/Theme.White"/>
+
     </application>
 </manifest>

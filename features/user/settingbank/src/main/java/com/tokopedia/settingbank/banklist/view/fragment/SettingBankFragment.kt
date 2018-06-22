@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.settingbank.R
 import com.tokopedia.settingbank.addeditaccount.view.activity.AddEditBankActivity
+import com.tokopedia.settingbank.addeditaccount.view.viewmodel.BankFormModel
 import com.tokopedia.settingbank.banklist.analytics.SettingBankAnalytics
 import com.tokopedia.settingbank.banklist.di.SettingBankDependencyInjector
 import com.tokopedia.settingbank.banklist.view.adapter.BankAccountAdapter
@@ -35,6 +36,8 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
         BaseDaggerFragment() {
 
     private val REQUEST_ADD_BANK: Int = 101
+    private val REQUEST_EDIT_BANK: Int = 102
+
 
     lateinit var presenter: SettingBankPresenter
     lateinit var adapter: BankAccountAdapter
@@ -163,7 +166,19 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
     }
 
     override fun editBankAccount(adapterPosition: Int, element: BankAccountViewModel?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if (element != null) {
+            startActivityForResult(AddEditBankActivity.createIntentEditBank(
+                    activity
+                    , BankFormModel(
+                    BankFormModel.Companion.STATUS_EDIT,
+                    element.bankId!!,
+                    element.accountName!!,
+                    element.accountNumber!!,
+                    element.bankName!!,
+                    adapterPosition
+            )), REQUEST_EDIT_BANK)
+        }
+
     }
 
     override fun deleteBankAccount(adapterPosition: Int, element: BankAccountViewModel?) {
@@ -212,7 +227,6 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
 
 
     override fun addNewAccount() {
-
         startActivityForResult(AddEditBankActivity.createIntentAddBank(activity), REQUEST_ADD_BANK)
     }
 

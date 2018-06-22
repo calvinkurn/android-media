@@ -21,6 +21,7 @@ import com.tokopedia.settingbank.addeditaccount.view.activity.AddEditBankActivit
 import com.tokopedia.settingbank.addeditaccount.view.listener.AddEditBankContract
 import com.tokopedia.settingbank.addeditaccount.view.presenter.AddEditBankPresenter
 import com.tokopedia.settingbank.addeditaccount.view.viewmodel.BankFormModel
+import com.tokopedia.settingbank.choosebank.view.activity.ChooseBankActivity
 import kotlinx.android.synthetic.main.fragment_add_edit_bank_form.*
 
 /**
@@ -30,13 +31,19 @@ import kotlinx.android.synthetic.main.fragment_add_edit_bank_form.*
 class AddEditBankFormFragment : AddEditBankContract.View,
         BaseDaggerFragment() {
 
+    private val REQUEST_CHOOSE_BANK: Int = 101
+
     lateinit var presenter: AddEditBankPresenter
     lateinit var progressDialog: TkpdProgressDialog
     lateinit var bottomInfoDialog: BottomSheetDialog
     private var bankFormModel = BankFormModel()
 
     override fun getScreenName(): String {
-        return AddEditBankAnalytics.SCREEN_NAME_ADD
+        if (activity.intent.getStringExtra(AddEditBankActivity.Companion.PARAM_ACTION) == BankFormModel.Companion.STATUS_ADD) {
+            return AddEditBankAnalytics.SCREEN_NAME_ADD
+        } else {
+            return AddEditBankAnalytics.SCREEN_NAME_EDIT
+        }
     }
 
     override fun initInjector() {
@@ -90,6 +97,7 @@ class AddEditBankFormFragment : AddEditBankContract.View,
             bottomInfoDialog.setContentView(bottomLayout)
 
             val bankAccountImage: ImageView = bottomLayout.findViewById(R.id.bank_account_image)
+            //TODO : Change Image
             ImageHandler.LoadImage(bankAccountImage, "https://i.pinimg.com/564x/f3/1c/05/f31c0579b58bac246e46da14bb1525cd.jpg")
 
             val closeButton: ImageView = bottomLayout.findViewById(R.id.close_button)
@@ -100,8 +108,10 @@ class AddEditBankFormFragment : AddEditBankContract.View,
         bottomInfoDialog.show()
     }
 
+
     private fun goToAddBank() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        startActivityForResult(ChooseBankActivity.createIntentChooseBank(activity),
+                REQUEST_CHOOSE_BANK)
     }
 
     private fun setMode() {
@@ -252,6 +262,13 @@ class AddEditBankFormFragment : AddEditBankContract.View,
 
     override fun onErrorGeneral(errorMessage: String?) {
         NetworkErrorHelper.showSnackbar(activity, errorMessage)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CHOOSE_BANK && resultCode == Activity.RESULT_OK) {
+            //TODO Add Bank Name to edit text
+        }
     }
 
     override fun onDestroyView() {

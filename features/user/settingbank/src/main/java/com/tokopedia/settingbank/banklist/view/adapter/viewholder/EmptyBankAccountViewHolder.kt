@@ -16,8 +16,8 @@ import com.tokopedia.settingbank.banklist.view.listener.EmptyBankAccountListener
 class EmptyBankAccountViewHolder(val v: View, val listener: EmptyBankAccountListener) :
         AbstractViewHolder<EmptyModel>(v) {
 
-    val emptyIcon: ImageView = itemView.findViewById(R.id.empty_image)
-    val addAccountButton: TextView = itemView.findViewById(R.id.add_account_button_empty)
+    private val emptyIcon: ImageView = itemView.findViewById(R.id.empty_image)
+    private val addAccountButton: TextView = itemView.findViewById(R.id.add_account_button_empty)
 
 
     companion object {
@@ -26,6 +26,7 @@ class EmptyBankAccountViewHolder(val v: View, val listener: EmptyBankAccountList
 
     override fun bind(element: EmptyModel?) {
 
+        //TODO : Change Image
         ImageHandler.LoadImage(emptyIcon, "https://ecs7.tokopedia.net/img/gold-active-large.png")
         addAccountButton.setOnClickListener({ listener.addNewAccount() })
     }
