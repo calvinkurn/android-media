@@ -3,6 +3,9 @@ package com.tokopedia.imagepicker.picker.main.builder;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_BRIGHTNESS;
 import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CONTRAST;
 import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CROP;
@@ -16,17 +19,21 @@ public class ImagePickerEditorBuilder implements Parcelable {
     private @ImageEditActionTypeDef
     int[] imageEditActionType;
     private boolean circlePreview;
+    private ArrayList<ImageRatioTypeDef> imageRatioTypeDefs;
 
     public static ImagePickerEditorBuilder getDefaultBuilder(){
         return new ImagePickerEditorBuilder(
                 new int[]{ACTION_BRIGHTNESS, ACTION_CONTRAST, ACTION_CROP, ACTION_ROTATE},
-                true);
+                false,
+                null);
     }
 
     public ImagePickerEditorBuilder(@ImageEditActionTypeDef int[] imageEditActionType,
-                                    boolean circlePreview) {
+                                    boolean circlePreview,
+                                    ArrayList<ImageRatioTypeDef> imageRatioTypeDefs) {
         this.imageEditActionType = imageEditActionType;
         this.circlePreview = circlePreview;
+        this.imageRatioTypeDefs = imageRatioTypeDefs;
     }
 
     public int[] getImageEditActionType() {
@@ -35,6 +42,10 @@ public class ImagePickerEditorBuilder implements Parcelable {
 
     public boolean isCirclePreview() {
         return circlePreview;
+    }
+
+    public ArrayList<ImageRatioTypeDef> getImageRatioTypeDefs() {
+        return imageRatioTypeDefs;
     }
 
     @Override
@@ -46,14 +57,17 @@ public class ImagePickerEditorBuilder implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeIntArray(this.imageEditActionType);
         dest.writeByte(this.circlePreview ? (byte) 1 : (byte) 0);
+        dest.writeList(this.imageRatioTypeDefs);
     }
 
     protected ImagePickerEditorBuilder(Parcel in) {
         this.imageEditActionType = in.createIntArray();
         this.circlePreview = in.readByte() != 0;
+        this.imageRatioTypeDefs = new ArrayList<ImageRatioTypeDef>();
+        in.readList(this.imageRatioTypeDefs, ImageRatioTypeDef.class.getClassLoader());
     }
 
-    public static final Parcelable.Creator<ImagePickerEditorBuilder> CREATOR = new Parcelable.Creator<ImagePickerEditorBuilder>() {
+    public static final Creator<ImagePickerEditorBuilder> CREATOR = new Creator<ImagePickerEditorBuilder>() {
         @Override
         public ImagePickerEditorBuilder createFromParcel(Parcel source) {
             return new ImagePickerEditorBuilder(source);

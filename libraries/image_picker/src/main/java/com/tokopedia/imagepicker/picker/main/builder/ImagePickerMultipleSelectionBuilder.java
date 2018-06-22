@@ -3,6 +3,7 @@ package com.tokopedia.imagepicker.picker.main.builder;
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.DrawableRes;
 
 import java.util.ArrayList;
 
@@ -38,13 +39,13 @@ public class ImagePickerMultipleSelectionBuilder implements Parcelable {
     }
 
     public ImagePickerMultipleSelectionBuilder(ArrayList<String> initialSelectedImagePathList,
-                                               ArrayList<Integer> placeholderImagePathResList,
+                                               @DrawableRes ArrayList<Integer> placeholderImagePathResList,
                                                int primaryImageStringRes,
                                                int maximumNoPick) {
+        this.maximumNoPick = maximumNoPick;
         setInitialSelectedImagePathList(initialSelectedImagePathList);
         this.placeholderImagePathResList = placeholderImagePathResList;
         this.primaryImageStringRes = primaryImageStringRes;
-        this.maximumNoPick = maximumNoPick;
     }
 
     private void setInitialSelectedImagePathList(ArrayList<String> initialSelectedImagePathList){

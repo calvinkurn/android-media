@@ -20,31 +20,25 @@
         android:layout_marginBottom="@dimen/dp_20"
         android:layout_marginTop="@dimen/dp_5"
         android:gravity="center_horizontal"
-        app:srcCompat="@drawable/ic_empty_page_error_cloud_"
+        app:srcCompat="@drawable/ic_ig_not_login"
         tools:ignore="ContentDescription" />
 
     <TextView
+        android:layout_marginTop="@dimen/dp_5"
+        android:layout_marginBottom="@dimen/dp_5"
+        android:layout_marginRight="@dimen/dp_40"
+        android:layout_marginLeft="@dimen/dp_40"
         android:id="@+id/message_retry"
         style="@style/TextView.Title.BlackSecondary"
-        android:layout_margin="@dimen/dp_5"
         android:gravity="center"
-        android:text="Anda Belum Login Instagram"
-        android:textColor="@color/black"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/sub_message_retry"
-        style="@style/TextView.Micro.BlackSecondary"
-        android:layout_margin="@dimen/dp_5"
-        android:gravity="center"
-        android:text="Silahkan login terlebih dahulu"
-        android:textColor="@color/grey_400"
-        android:textStyle="bold" />
+        android:text="@string/instagram_label_not_logged_in"
+        android:textColor="@color/font_black_primary_70" />
 
     <Button
         android:id="@+id/button_retry"
         style="@style/Button.Submit.Green"
-        android:layout_marginTop="@dimen/dp_40"
-        android:text="Login Instagram" />
+        android:layout_marginTop="@dimen/dp_20"
+        android:layout_width="wrap_content"
+        android:text="@string/instagram_label_login_ig" />
 
 </LinearLayout>

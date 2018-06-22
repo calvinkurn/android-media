@@ -50,11 +50,7 @@ public class ImageInstagramAdapter extends BaseListAdapter<InstagramMediaModel, 
 
                     String itemUrl = item.getImageStandardResolutionUrl();
                     if (supportMultipleSelection) {
-                        if (selectedImagePath.contains(itemUrl)) {
-                            isChecked = false;
-                        } else {
-                            isChecked = true;
-                        }
+                        isChecked = !selectedImagePath.contains(itemUrl);
                     }
 
                     if (isChecked && !listener.canAddMoreImage()) {
@@ -73,17 +69,6 @@ public class ImageInstagramAdapter extends BaseListAdapter<InstagramMediaModel, 
             ((ImagePickerInstagramViewHolder)holder).setIsCheck(selectedImagePath.contains(item.getImageStandardResolutionUrl()));
         }
         super.onBindViewHolder(holder, position);
-    }
-
-    public void removeImageFromSelection(String imagePath) {
-        if (visitables == null || visitables.size() == 0) {
-            return;
-        }
-        if (!supportMultipleSelection) {
-            return;
-        }
-        selectedImagePath.remove(imagePath);
-        notifyDataSetChanged();
     }
 
 }

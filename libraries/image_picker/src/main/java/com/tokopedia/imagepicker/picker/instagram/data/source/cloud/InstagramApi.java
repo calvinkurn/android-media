@@ -1,5 +1,6 @@
 package com.tokopedia.imagepicker.picker.instagram.data.source.cloud;
 
+import com.tokopedia.imagepicker.picker.instagram.util.InstagramConstant;
 import com.tokopedia.imagepicker.picker.instagram.data.model.ResponseGetAccessToken;
 import com.tokopedia.imagepicker.picker.instagram.data.model.ResponseListMediaInstagram;
 
@@ -24,7 +25,7 @@ public interface InstagramApi {
     @POST("/oauth/access_token")
     Observable<Response<ResponseGetAccessToken>> getAccessToken(@FieldMap Map<String, String> params);
 
-    @GET("/v1/users/self/media/recent")
+    @GET(InstagramConstant.URL_PATH_GET_LIST_MEDIA)
     Observable<Response<ResponseListMediaInstagram>> getSelfMedia(
             @Header("Cookie") String cookies,
             @Query("access_token") String accessToken,

@@ -1,53 +1,63 @@
-package com.tokopedia.imagepicker.picker.instagram.view.dialog;
+package com.tokopedia.imagepicker.picker.instagram.view.fragment;
 
-import android.app.Dialog;
-import android.content.Context;
-import android.content.SharedPreferences;
+import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
-import android.support.design.widget.BottomSheetBehavior;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
+import android.view.ViewGroup;
 import android.webkit.CookieManager;
+import android.webkit.CookieSyncManager;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.ImageButton;
+import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 
-import com.tokopedia.design.component.BottomSheets;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.imagepicker.R;
-import com.tokopedia.imagepicker.picker.instagram.InstagramConstant;
+import com.tokopedia.imagepicker.picker.instagram.di.InstagramModule;
+import com.tokopedia.imagepicker.picker.instagram.util.InstagramConstant;
+import com.tokopedia.imagepicker.picker.instagram.view.presenter.InstagramLoginPresenter;
+import com.tokopedia.imagepicker.picker.instagram.di.DaggerInstagramComponent;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.imagepicker.picker.instagram.InstagramConstant.SESSIONID;
+import static com.tokopedia.imagepicker.picker.instagram.util.InstagramConstant.SESSIONID;
 
 /**
- * Created by zulfikarrahman on 5/4/18.
+ * Created by zulfikarrahman on 6/8/18.
  */
 
-public class InstagramLoginDialog extends BottomSheets {
+public class InstagramLoginFragment extends BaseDaggerFragment{
 
-    private ListenerLoginInstagram listenerLoginInstagram;
+    private static final FrameLayout.LayoutParams FILL = new FrameLayout.LayoutParams(
+            ViewGroup.LayoutParams.FILL_PARENT,
+            ViewGroup.LayoutParams.FILL_PARENT);
+
+    @Inject
+    InstagramLoginPresenter instagramLoginPresenter;
     private WebView instagramWebview;
     private ProgressBar progressBar;
 
+    @Nullable
     @Override
-    protected String title() {
-        return getString(R.string.instagram_label_login);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.layout_instagram_login, container, false);
+        initView(view);
+        return view;
     }
 
-    @Override
-    public int getLayoutResourceId() {
-        return R.layout.layout_instagram_login;
-    }
-
-    @Override
     public void initView(View view) {
         instagramWebview = view.findViewById(R.id.webview_instagram);
         progressBar = view.findViewById(R.id.progressbar);
@@ -58,43 +68,34 @@ public class InstagramLoginDialog extends BottomSheets {
         ws.setCacheMode(WebSettings.LOAD_NO_CACHE);
         ws.setSaveFormData(false);
         ws.setSavePassword(false);
+        ws.setJavaScriptCanOpenWindowsAutomatically(true);
         ws.setJavaScriptEnabled(true);
         instagramWebview.setWebViewClient(new InstagramWebViewClient());
+        instagramWebview.setLayoutParams(FILL);
 
         instagramWebview.setWebChromeClient(new MyWebChromeClient());
         instagramWebview.loadUrl(InstagramConstant.URL_LOGIN_INSTAGRAM);
         instagramWebview.clearCache(true);
+        CookieSyncManager.createInstance(getContext());
+        CookieManager cookieManager = CookieManager.getInstance();
+        cookieManager.removeAllCookie();
     }
 
     @Override
-    public void setupDialog(Dialog dialog, int style) {
-        super.setupDialog(dialog, style);
-        int screenHeight = getResources().getDisplayMetrics().heightPixels;
-        updateHeight(screenHeight/2);
-
-        ImageButton btnClose = getDialog().findViewById(com.tokopedia.design.R.id.btn_close);
-        btnClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismiss();
-            }
-        });
+    protected String getScreenName() {
+        return null;
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+    protected void initInjector() {
+        DaggerInstagramComponent
+                .builder()
+                .instagramModule(new InstagramModule())
+                .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
+                .build()
+                .inject(this);
     }
 
-    public void setListenerLoginInstagram(ListenerLoginInstagram listenerLoginInstagram) {
-        this.listenerLoginInstagram = listenerLoginInstagram;
-    }
-
-    public interface ListenerLoginInstagram {
-        void onSuccessLogin(String code);
-        void saveCookies(String cookies);
-    }
 
     private class MyWebChromeClient extends WebChromeClient {
         @Override
@@ -122,11 +123,10 @@ public class InstagramLoginDialog extends BottomSheets {
             if (url.contains("?code")) {
                 Uri codeUri = Uri.parse(url);
                 String code = codeUri.getQueryParameter("code");
-                if (listenerLoginInstagram != null) {
-                    listenerLoginInstagram.onSuccessLogin(code);
-                    dismiss();
-                } else
-                    throw new RuntimeException("Listener is null");
+                Intent intent = new Intent();
+                intent.putExtra(InstagramConstant.EXTRA_CODE_LOGIN, code);
+                getActivity().setResult(Activity.RESULT_OK, intent);
+                getActivity().finish();
                 view.stopLoading();
             } else {
                 view.loadUrl(url);
@@ -139,9 +139,7 @@ public class InstagramLoginDialog extends BottomSheets {
             super.onPageFinished(view, url);
             String cookies = CookieManager.getInstance().getCookie(url);
             if (!TextUtils.isEmpty(cookies) && cookies.contains(SESSIONID)) {
-                if (listenerLoginInstagram != null) {
-                    listenerLoginInstagram.saveCookies(cookies);
-                }
+                instagramLoginPresenter.saveCookies(cookies);
             }
 
         }
