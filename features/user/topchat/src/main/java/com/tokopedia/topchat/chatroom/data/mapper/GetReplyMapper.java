@@ -42,7 +42,10 @@ import static com.tokopedia.topchat.chatroom.data.mapper.WebSocketMapper.TYPE_CH
  * Created by stevenfredian on 8/31/17.
  */
 
-public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomViewModel> {
+public class GetReplyMapper extends BaseChatAPICallMapper<ReplyData,ChatRoomViewModel>{
+    //implements
+// Func1<Response<TkpdResponse>,
+// ChatRoomViewModel> {
 
     private static final String TOKOPEDIA = "Tokopedia";
     private final SessionHandler sessionHandler;
@@ -51,35 +54,36 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
         this.sessionHandler = sessionHandler;
     }
 
+//    @Override
+//    public ChatRoomViewModel call(Response<TkpdResponse> response) {
+//        if (response.isSuccessful()) {
+//            if ((!response.body().isNullData()
+//                    && response.body().getErrorMessageJoined().equals(""))
+//                    || !response.body().isNullData() && response.body().getErrorMessages() == null) {
+//                ReplyData data = response.body().convertDataObj(ReplyData.class);
+//
+//                return mappingToDomain(data);
+//            } else {
+//                if (response.body().getErrorMessages() != null
+//                        && !response.body().getErrorMessages().isEmpty()) {
+//                    throw new ErrorMessageException(response.body().getErrorMessageJoined());
+//                } else {
+//                    throw new ErrorMessageException(MainApplication.getAppContext().getString
+//                            (R.string.default_request_error_unknown));
+//                }
+//            }
+//        } else {
+//            String messageError = ErrorHandler.getErrorMessage(response);
+//            if (!TextUtils.isEmpty(messageError)) {
+//                throw new ErrorMessageException(messageError);
+//            } else {
+//                throw new RuntimeException(String.valueOf(response.code()));
+//            }
+//        }
+//    }
+
     @Override
-    public ChatRoomViewModel call(Response<TkpdResponse> response) {
-        if (response.isSuccessful()) {
-            if ((!response.body().isNullData()
-                    && response.body().getErrorMessageJoined().equals(""))
-                    || !response.body().isNullData() && response.body().getErrorMessages() == null) {
-                ReplyData data = response.body().convertDataObj(ReplyData.class);
-
-                return mappingToDomain(data);
-            } else {
-                if (response.body().getErrorMessages() != null
-                        && !response.body().getErrorMessages().isEmpty()) {
-                    throw new ErrorMessageException(response.body().getErrorMessageJoined());
-                } else {
-                    throw new ErrorMessageException(MainApplication.getAppContext().getString
-                            (R.string.default_request_error_unknown));
-                }
-            }
-        } else {
-            String messageError = ErrorHandler.getErrorMessage(response);
-            if (!TextUtils.isEmpty(messageError)) {
-                throw new ErrorMessageException(messageError);
-            } else {
-                throw new RuntimeException(String.valueOf(response.code()));
-            }
-        }
-    }
-
-    private ChatRoomViewModel mappingToDomain(ReplyData data) {
+    ChatRoomViewModel mappingToDomain(ReplyData data) {
 
         ChatRoomViewModel chatRoomViewModel = new ChatRoomViewModel();
 

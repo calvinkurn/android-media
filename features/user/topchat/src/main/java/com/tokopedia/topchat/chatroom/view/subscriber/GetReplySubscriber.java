@@ -38,7 +38,8 @@ public class GetReplySubscriber extends Subscriber<ChatRoomViewModel> {
     @Override
     public void onNext(ChatRoomViewModel model) {
         view.setViewEnabled(true);
-        view.setResult(model);
+        if(model.getChatList().size()>0) view.setResult(model);
+        else view.hideMainLoading();
         presenter.finishRequest();
     }
 }

@@ -3,6 +3,7 @@ package com.tokopedia.topchat.chatroom.data.repository;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.topchat.chatroom.data.factory.ReplyFactory;
+import com.tokopedia.topchat.chatroom.domain.pojo.existingchat.ExistingChatPojo;
 import com.tokopedia.topchat.chatroom.domain.pojo.replyaction.ReplyActionData;
 import com.tokopedia.topchat.chatroom.view.viewmodel.ChatRoomViewModel;
 
@@ -28,5 +29,10 @@ public class ReplyRepositoryImpl implements ReplyRepository{
     @Override
     public Observable<ReplyActionData> replyMessage(TKPDMapParam<String, Object> parameters) {
         return replyFactory.createCloudReplyActionDataSource().replyMessage(parameters);
+    }
+
+    @Override
+    public Observable<ExistingChatPojo> getExistingChat(TKPDMapParam<String, Object> parameters) {
+        return replyFactory.createCloudGetExistingChatDataSource().getExistingChat(parameters);
     }
 }

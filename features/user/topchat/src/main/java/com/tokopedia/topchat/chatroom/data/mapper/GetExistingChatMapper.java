@@ -7,18 +7,20 @@ import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.topchat.R;
-import com.tokopedia.topchat.chatroom.domain.pojo.replyaction.ReplyActionData;
+import com.tokopedia.topchat.chatroom.domain.pojo.existingchat.ExistingChatPojo;
+import com.tokopedia.topchat.chatroom.domain.pojo.reply.ReplyData;
+import com.tokopedia.topchat.chatroom.view.viewmodel.ChatRoomViewModel;
 
 import retrofit2.Response;
 import rx.functions.Func1;
 
 /**
- * Created by stevenfredian on 8/31/17.as
+ * Created by Hendri on 07/06/18.
  */
+public class GetExistingChatMapper extends BaseChatAPICallMapper<ExistingChatPojo,ExistingChatPojo> {
 
-public class ReplyMessageMapper extends BaseChatAPICallMapper<ReplyActionData,ReplyActionData> {
     @Override
-    ReplyActionData mappingToDomain(ReplyActionData data) {
+    ExistingChatPojo mappingToDomain(ExistingChatPojo data) {
         return data;
     }
 }

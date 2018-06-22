@@ -87,7 +87,7 @@ public class ChatRoomActivity extends BasePresenterActivity
                     String fromRoom = "";
                     if (!TextUtils.isEmpty(getIntent().getExtras().getString(MESSAGE_ID, ""))) {
                         fromRoom = ApplinkConst.TOPCHAT.concat(getIntent().getExtras().getString
-                                (MESSAGE_ID, "¬"));
+                                (MESSAGE_ID, ""));
                     }
                     if (!fromRoom.equals(fromPushNotif)) {
                         PushNotification.notify(context, intent.getExtras());

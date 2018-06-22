@@ -299,14 +299,14 @@ ext {
             groupchat           : ":features:user:groupchat",
             gamification        : ":features:promo:gamification",
             profile             : ":features:user:profile",
-            contactUs       : ":features:operational:contact_us",
+            topchat             : ":features:user:topchat",
+            contactUs           : ":features:operational:contact_us",
             otp                 : ":features:user:otp",
             logisticdata        : ":features:logistic:logisticdata",
             transactiondata     : ":features:transaction:transactiondata",
             transactionanalytics: ":features:transaction:transactionanalytics",
             tracking            : ":features:logistic:tracking",
-            logisticuploadawb : ":features:logistic:logisticuploadawb",
-            topchat         : ":features:user:topchat"
+            logisticuploadawb : ":features:logistic:logisticuploadawb"
     ]
 
     libraries = [

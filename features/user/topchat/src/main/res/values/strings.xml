@@ -69,4 +69,7 @@ yang ditemukan</string>
     <string name="caption_switch_template">"Buat hingga 5 template untuk membantu Anda melakukan Chat tanpa perlu mengetik pesan yang sama berulang kali"</string>
     <string name="title_reason_bottom_sheet">Beritahu kami apa yang salah?</string>
 
+    <string name="security_info_chat">Mohon berhati-hati bila pengguna lain meminta Anda berkomunikasi dan bertransaksi di luar Tokopedia.</string>
+    <string name="security_info_chat_link">Cek panduan keamanan disini.</string>
+
 </resources>

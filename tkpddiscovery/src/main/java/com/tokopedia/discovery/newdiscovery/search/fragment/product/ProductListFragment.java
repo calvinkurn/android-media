@@ -679,6 +679,9 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void reloadData() {
+        if (adapter == null) {
+            return;
+        }
         if (!adapter.hasGuidedSearch()) {
             getGuidedSearch();
         }

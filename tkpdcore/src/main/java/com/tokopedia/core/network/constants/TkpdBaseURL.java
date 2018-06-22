@@ -913,6 +913,7 @@ public class TkpdBaseURL {
         public static final String SET_TEMPLATE = "tc/v1/templates";
         public static final String SET_TEMPLATE_OLD = "tc/v1/update_chat_templates";
         public static final String CREATE_TEMPLATE = "tc/v1/templates";
+        public static final String GET_EXISTING_CHAT = "/tc/v1/existing_chat";
     }
 
     public static class Reputation {

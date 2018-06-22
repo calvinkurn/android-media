@@ -18,17 +18,21 @@ import com.tokopedia.topchat.attachproduct.view.resultmodel.ResultProduct;
 import com.tokopedia.topchat.chatlist.viewmodel.InboxChatViewModel;
 import com.tokopedia.topchat.chatroom.data.mapper.WebSocketMapper;
 import com.tokopedia.topchat.chatroom.domain.AttachImageUseCase;
+import com.tokopedia.topchat.chatroom.domain.GetExistingChatUseCase;
 import com.tokopedia.topchat.chatroom.domain.GetReplyListUseCase;
 import com.tokopedia.topchat.chatroom.domain.ReplyMessageUseCase;
 import com.tokopedia.topchat.chatroom.domain.SendMessageUseCase;
 import com.tokopedia.topchat.chatroom.domain.SendReasonRatingUseCase;
 import com.tokopedia.topchat.chatroom.domain.SetChatRatingUseCase;
 import com.tokopedia.topchat.chatroom.domain.WebSocketUseCase;
+import com.tokopedia.topchat.chatroom.domain.pojo.existingchat.ExistingChatPojo;
 import com.tokopedia.topchat.chatroom.domain.pojo.invoicesent.InvoiceLinkPojo;
 import com.tokopedia.topchat.chatroom.domain.pojo.rating.SendReasonRatingPojo;
 import com.tokopedia.topchat.chatroom.domain.pojo.rating.SetChatRatingPojo;
 import com.tokopedia.topchat.chatroom.domain.pojo.replyaction.ReplyActionData;
+import com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity;
 import com.tokopedia.topchat.chatroom.view.listener.ChatRoomContract;
+import com.tokopedia.topchat.chatroom.view.subscriber.GetExistingChatSubscriber;
 import com.tokopedia.topchat.chatroom.view.subscriber.GetReplySubscriber;
 import com.tokopedia.topchat.chatroom.view.viewmodel.ChatRoomViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendMessageViewModel;
@@ -52,6 +56,7 @@ import javax.inject.Inject;
 import rx.Subscriber;
 
 import static com.tokopedia.topchat.common.InboxMessageConstant.PARAM_MESSAGE_ID;
+import static com.tokopedia.topchat.common.InboxMessageConstant.PARAM_SENDER_ID;
 
 /**
  * Created by stevenfredian on 9/26/17.
@@ -66,6 +71,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     private final ReplyMessageUseCase replyMessageUseCase;
     private final AttachImageUseCase attachImageUseCase;
     private final GetTemplateUseCase getTemplateUseCase;
+    private final GetExistingChatUseCase getExistingChatUseCase;
     private final SetChatRatingUseCase setChatRatingUseCase;
     private final SendReasonRatingUseCase sendReasonRatingUseCase;
     private final UserSession userSession;
@@ -97,8 +103,9 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
                       SetChatRatingUseCase setChatRatingUseCase,
                       SendReasonRatingUseCase sendReasonRatingUseCase,
                       SessionHandler sessionHandler,
-                      UserSession userSession,
-                      WebSocketMapper webSocketMapper) {
+                      WebSocketMapper webSocketMapper,
+                      GetExistingChatUseCase getExistingChatUseCase,
+                      UserSession userSession) {
         this.getReplyListUseCase = getReplyListUseCase;
         this.replyMessageUseCase = replyMessageUseCase;
         this.getTemplateUseCase = getTemplateUseCase;
@@ -109,6 +116,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         this.sessionHandler = sessionHandler;
         this.userSession = userSession;
         this.webSocketMapper = webSocketMapper;
+        this.getExistingChatUseCase = getExistingChatUseCase;
     }
 
     @Override
@@ -153,6 +161,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         sendMessageUseCase.unsubscribe();
         attachImageUseCase.unsubscribe();
         setChatRatingUseCase.unsubscribe();
+        getExistingChatUseCase.unsubscribe();
         sendReasonRatingUseCase.unsubscribe();
     }
 
@@ -432,7 +441,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         getView().displayReplyField(replyData.getTextAreaReply() == 1);
         getView().setCanLoadMore(replyData.isHasNext());
 
-        if (!replyData.isHasNext()) {
+        if (!replyData.isHasNext() && !getView().isChatBot()) {
             getView().addTimeMachine();
         }
     }
@@ -568,7 +577,36 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
                 });
     }
 
+    public void createWebSocketIfNull() {
+        if (webSocketUseCase == null) {
+            webSocketUseCase = new WebSocketUseCase(magicString, getView().getUserSession(), listener);
+        }
+    }
+
     public void recreateWebSocket() {
         webSocketUseCase.recreateWebSocket();
+    }
+
+    @Override
+    public void getExistingChat() {
+        RequestParams requestParam;
+        if (!TextUtils.isEmpty(getView().getArguments().getString(PARAM_MESSAGE_ID))) {
+            ExistingChatPojo pojo = new ExistingChatPojo();
+            pojo.setMsgId(getView().getArguments().getString(PARAM_MESSAGE_ID));
+            new GetExistingChatSubscriber(getView(), this).onNext(pojo);
+            return;
+        }
+        boolean isUserToShop = getView().getArguments().getString(ChatRoomActivity
+                .PARAM_SENDER_TAG).equals(ChatRoomActivity.ROLE_SELLER);
+        String destinationId = "";
+        if (isUserToShop) {
+            destinationId = getView().getArguments().getString(PARAM_SENDER_ID);
+        } else {
+            destinationId = getView().getArguments().getString(ChatRoomActivity.PARAM_USER_ID);
+        }
+        String source = getView().getArguments().getString(ChatRoomActivity.PARAM_SOURCE);
+
+        requestParam = GetExistingChatUseCase.generateParam(isUserToShop, destinationId, source);
+        getExistingChatUseCase.execute(requestParam, new GetExistingChatSubscriber(getView(), this));
     }
 }

@@ -154,6 +154,10 @@ public class ChatRoomContract {
 
         UserSession getUserSession();
 
+        void setMessageId(String messageId);
+
+        void enableWebSocket();
+
         void showReasonRating(String messageId, long replyTimeNano, ArrayList<String> reasons);
     }
 
@@ -182,6 +186,8 @@ public class ChatRoomContract {
         String getFileLocFromCamera();
 
         void setChatRating(ChatRatingViewModel model, int userId, int rating);
+
+        void getExistingChat();
 
         void sendReasonRating(String messageId, long replyTimeNano, String reason);
     }
