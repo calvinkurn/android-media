@@ -2287,10 +2287,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getChatBotIntent(Context context, String messageId) {
-        return ChatRoomActivity.getChatBotIntent(context, messageId);
-    }
-    @Override
     public Intent transactionOrderDetailRouterGetIntentUploadAwb(String urlUpload) {
         return UploadAwbLogisticActivity.newInstance(this, urlUpload);
     }

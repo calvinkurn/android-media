@@ -10,7 +10,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatbot.AttachedIn
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatbot.QuickReplyViewHolder;
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatroom.ImageAnnouncementViewHolder;
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatroom.ProductAttachmentViewHolder;
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatroom.TimeMachineChatViewHolder;
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatroom.SecurityInfoChatViewHolder;
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatroom.TypingChatViewHolder;
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.FallbackAttachmentViewHolder;
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.ImageUploadViewHolder;
@@ -51,7 +51,7 @@ public class ChatRoomTypeFactoryImpl extends BaseAdapterTypeFactory implements C
 
     @Override
     public int type(TimeMachineChatModel timeMachineChatModel) {
-        return TimeMachineChatViewHolder.LAYOUT;
+        return SecurityInfoChatViewHolder.LAYOUT;
     }
 
     @Override
@@ -110,8 +110,8 @@ public class ChatRoomTypeFactoryImpl extends BaseAdapterTypeFactory implements C
 
         AbstractViewHolder viewHolder;
 
-        if (type == TimeMachineChatViewHolder.LAYOUT)
-            viewHolder = new TimeMachineChatViewHolder(view, viewListener);
+        if (type == SecurityInfoChatViewHolder.LAYOUT)
+            viewHolder = new SecurityInfoChatViewHolder(view, viewListener);
         else if (type == TypingChatViewHolder.LAYOUT)
             viewHolder = new TypingChatViewHolder(view);
         else if (type == MessageViewHolder.LAYOUT)

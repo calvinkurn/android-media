@@ -43,6 +43,7 @@ import com.tokopedia.topchat.common.InboxMessageConstant;
 import com.tokopedia.topchat.common.TopChatRouter;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.pushnotif.PushNotification;
+import com.tokopedia.topchat.common.applink.ApplinkConstant;
 
 /**
  * Created by Nisie on 5/19/16.
@@ -91,7 +92,8 @@ public class ChatRoomActivity extends BasePresenterActivity
                     String fromPushNotif = intent.getExtras().getString(APPLINKS);
                     String fromRoom="";
                     if(!TextUtils.isEmpty(getIntent().getExtras().getString(MESSAGE_ID))) {
-                        fromRoom = ApplinkConstant.TOPCHAT.concat(getIntent().getExtras().getString(MESSAGE_ID));
+                        fromRoom = ApplinkConstant.TOPCHAT.concat(getIntent().getExtras().getString
+                                (MESSAGE_ID));
                     }
                     if (!fromRoom.equals(fromPushNotif)) {
                         PushNotification.notify(context, intent.getExtras());
