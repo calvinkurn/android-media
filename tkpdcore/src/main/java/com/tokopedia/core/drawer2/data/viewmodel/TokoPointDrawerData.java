@@ -7,7 +7,7 @@ import android.os.Parcelable;
  * @author anggaprasetiyo on 04/12/17.
  */
 
-public class TokoPointDrawerData implements Parcelable {
+public class TokoPointDrawerData implements Parcelable{
 
     private int offFlag;
     private int hasNotif;
@@ -15,6 +15,27 @@ public class TokoPointDrawerData implements Parcelable {
     private PopUpNotif popUpNotif;
     private String mainPageUrl;
     private String mainPageTitle;
+
+    protected TokoPointDrawerData(Parcel in) {
+        offFlag = in.readInt();
+        hasNotif = in.readInt();
+        userTier = in.readParcelable(UserTier.class.getClassLoader());
+        popUpNotif = in.readParcelable(PopUpNotif.class.getClassLoader());
+        mainPageUrl = in.readString();
+        mainPageTitle = in.readString();
+    }
+
+    public static final Creator<TokoPointDrawerData> CREATOR = new Creator<TokoPointDrawerData>() {
+        @Override
+        public TokoPointDrawerData createFromParcel(Parcel in) {
+            return new TokoPointDrawerData(in);
+        }
+
+        @Override
+        public TokoPointDrawerData[] newArray(int size) {
+            return new TokoPointDrawerData[size];
+        }
+    };
 
     public int getOffFlag() {
         return offFlag;
@@ -64,8 +85,23 @@ public class TokoPointDrawerData implements Parcelable {
         this.mainPageUrl = mainPageUrl;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 
-    public static class PopUpNotif implements Parcelable {
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(offFlag);
+        parcel.writeInt(hasNotif);
+        parcel.writeParcelable(userTier, i);
+        parcel.writeParcelable(popUpNotif, i);
+        parcel.writeString(mainPageUrl);
+        parcel.writeString(mainPageTitle);
+    }
+
+
+    public static class PopUpNotif implements Parcelable{
 
         private String title;
         private String text;
@@ -73,6 +109,27 @@ public class TokoPointDrawerData implements Parcelable {
         private String buttonText;
         private String buttonUrl;
         private String appLink;
+
+        protected PopUpNotif(Parcel in) {
+            title = in.readString();
+            text = in.readString();
+            imageUrl = in.readString();
+            buttonText = in.readString();
+            buttonUrl = in.readString();
+            appLink = in.readString();
+        }
+
+        public static final Creator<PopUpNotif> CREATOR = new Creator<PopUpNotif>() {
+            @Override
+            public PopUpNotif createFromParcel(Parcel in) {
+                return new PopUpNotif(in);
+            }
+
+            @Override
+            public PopUpNotif[] newArray(int size) {
+                return new PopUpNotif[size];
+            }
+        };
 
         public String getTitle() {
             return title;
@@ -131,42 +188,39 @@ public class TokoPointDrawerData implements Parcelable {
         }
 
         @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeString(this.title);
-            dest.writeString(this.text);
-            dest.writeString(this.imageUrl);
-            dest.writeString(this.buttonText);
-            dest.writeString(this.buttonUrl);
-            dest.writeString(this.appLink);
+        public void writeToParcel(Parcel parcel, int i) {
+            parcel.writeString(title);
+            parcel.writeString(text);
+            parcel.writeString(imageUrl);
+            parcel.writeString(buttonText);
+            parcel.writeString(buttonUrl);
+            parcel.writeString(appLink);
         }
-
-        protected PopUpNotif(Parcel in) {
-            this.title = in.readString();
-            this.text = in.readString();
-            this.imageUrl = in.readString();
-            this.buttonText = in.readString();
-            this.buttonUrl = in.readString();
-            this.appLink = in.readString();
-        }
-
-        public static final Creator<PopUpNotif> CREATOR = new Creator<PopUpNotif>() {
-            @Override
-            public PopUpNotif createFromParcel(Parcel source) {
-                return new PopUpNotif(source);
-            }
-
-            @Override
-            public PopUpNotif[] newArray(int size) {
-                return new PopUpNotif[size];
-            }
-        };
     }
 
-    public static class UserTier implements Parcelable {
+    public static class UserTier implements Parcelable{
 
         private String tierNameDesc;
         private String tierImageUrl;
         private String rewardPointsStr;
+
+        protected UserTier(Parcel in) {
+            tierNameDesc = in.readString();
+            tierImageUrl = in.readString();
+            rewardPointsStr = in.readString();
+        }
+
+        public static final Creator<UserTier> CREATOR = new Creator<UserTier>() {
+            @Override
+            public UserTier createFromParcel(Parcel in) {
+                return new UserTier(in);
+            }
+
+            @Override
+            public UserTier[] newArray(int size) {
+                return new UserTier[size];
+            }
+        };
 
         public String getTierNameDesc() {
             return tierNameDesc;
@@ -201,68 +255,15 @@ public class TokoPointDrawerData implements Parcelable {
         }
 
         @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeString(this.tierNameDesc);
-            dest.writeString(this.tierImageUrl);
-            dest.writeString(this.rewardPointsStr);
+        public void writeToParcel(Parcel parcel, int i) {
+            parcel.writeString(tierNameDesc);
+            parcel.writeString(tierImageUrl);
+            parcel.writeString(rewardPointsStr);
         }
-
-        protected UserTier(Parcel in) {
-            this.tierNameDesc = in.readString();
-            this.tierImageUrl = in.readString();
-            this.rewardPointsStr = in.readString();
-        }
-
-        public static final Creator<UserTier> CREATOR = new Creator<UserTier>() {
-            @Override
-            public UserTier createFromParcel(Parcel source) {
-                return new UserTier(source);
-            }
-
-            @Override
-            public UserTier[] newArray(int size) {
-                return new UserTier[size];
-            }
-        };
     }
 
     public TokoPointDrawerData() {
     }
 
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.offFlag);
-        dest.writeInt(this.hasNotif);
-        dest.writeParcelable(this.userTier, flags);
-        dest.writeParcelable(this.popUpNotif, flags);
-        dest.writeString(this.mainPageUrl);
-        dest.writeString(this.mainPageTitle);
-    }
-
-    protected TokoPointDrawerData(Parcel in) {
-        this.offFlag = in.readInt();
-        this.hasNotif = in.readInt();
-        this.userTier = in.readParcelable(UserTier.class.getClassLoader());
-        this.popUpNotif = in.readParcelable(PopUpNotif.class.getClassLoader());
-        this.mainPageUrl = in.readString();
-        this.mainPageTitle = in.readString();
-    }
-
-    public static final Creator<TokoPointDrawerData> CREATOR = new Creator<TokoPointDrawerData>() {
-        @Override
-        public TokoPointDrawerData createFromParcel(Parcel source) {
-            return new TokoPointDrawerData(source);
-        }
-
-        @Override
-        public TokoPointDrawerData[] newArray(int size) {
-            return new TokoPointDrawerData[size];
-        }
-    };
 }
