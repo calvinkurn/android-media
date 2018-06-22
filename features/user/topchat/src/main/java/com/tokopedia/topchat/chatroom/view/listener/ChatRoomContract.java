@@ -9,7 +9,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.topchat.attachinvoice.view.resultmodel.SelectedInvoice;
 import com.tokopedia.topchat.chatroom.domain.pojo.invoicesent.InvoiceLinkPojo;
 import com.tokopedia.topchat.chatroom.domain.pojo.reply.Attachment;
 import com.tokopedia.topchat.chatroom.domain.pojo.replyaction.ReplyActionData;
@@ -20,10 +19,8 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.imageupload.ImageUploadView
 import com.tokopedia.topchat.chatroom.view.viewmodel.quickreply.QuickReplyListViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.quickreply.QuickReplyViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.rating.ChatRatingViewModel;
-import com.tokopedia.topchat.chatroom.view.adapter.ChatRoomAdapter;
-import com.tokopedia.topchat.chatroom.view.presenter.WebSocketInterface;
-import com.tokopedia.topchat.chatroom.view.viewmodel.imageupload.ImageUploadViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -147,7 +144,7 @@ public class ChatRoomContract {
 
         void onSuccessSetRating(ChatRatingViewModel element);
 
-        void onErrorSetRating();
+        void onErrorSetRating(String errorMessage);
 
         void showSearchInvoiceScreen();
 
@@ -160,6 +157,8 @@ public class ChatRoomContract {
         void setMessageId(String messageId);
 
         void enableWebSocket();
+
+        void showReasonRating(String messageId, long replyTimeNano, ArrayList<String> reasons);
     }
 
     public interface Presenter extends CustomerPresenter<View> {
@@ -189,5 +188,7 @@ public class ChatRoomContract {
         void setChatRating(ChatRatingViewModel model, int userId, int rating);
 
         void getExistingChat();
+
+        void sendReasonRating(String messageId, long replyTimeNano, String reason);
     }
 }

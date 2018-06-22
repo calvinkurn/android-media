@@ -30,13 +30,15 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder;
+import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
+import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.contact_us.createticket.ContactUsConstant;
 import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
@@ -54,9 +56,6 @@ import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
-import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder;
-import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
-import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder;
 import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.attachinvoice.view.activity.AttachInvoiceActivity;
 import com.tokopedia.topchat.attachinvoice.view.resultmodel.SelectedInvoice;
@@ -78,6 +77,8 @@ import com.tokopedia.topchat.chatroom.view.adapter.ChatRoomAdapter;
 import com.tokopedia.topchat.chatroom.view.adapter.ChatRoomTypeFactory;
 import com.tokopedia.topchat.chatroom.view.adapter.ChatRoomTypeFactoryImpl;
 import com.tokopedia.topchat.chatroom.view.adapter.QuickReplyAdapter;
+import com.tokopedia.topchat.chatroom.view.adapter.ReasonAdapter;
+import com.tokopedia.topchat.chatroom.view.customview.ReasonBottomSheet;
 import com.tokopedia.topchat.chatroom.view.listener.ChatRoomContract;
 import com.tokopedia.topchat.chatroom.view.presenter.ChatRoomPresenter;
 import com.tokopedia.topchat.chatroom.view.presenter.WebSocketInterface;
@@ -151,6 +152,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
     private RecyclerView rvQuickReply;
     private ProgressBar progressBar;
     private View replyView;
+    private ReasonBottomSheet reasonBottomSheet;
 
     private ImageView avatar;
     private TextView user;
@@ -1491,9 +1493,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onErrorSetRating() {
-        showError(getActivity().getString(R.string.delete_error).concat("\n").concat(getString(R
-                .string.string_general_error)));
+    public void onErrorSetRating(String errorMessage) {
+        showError(errorMessage);
     }
 
     @Override
@@ -1523,5 +1524,25 @@ public class ChatRoomFragment extends BaseDaggerFragment
     @Override
     public void enableWebSocket() {
         getArguments().putBoolean(ChatRoomActivity.PARAM_WEBSOCKET,true);
+    }
+
+    @Override
+    public void showReasonRating(String messageId, long replyTimeNano, ArrayList<String> reasons) {
+
+        if (reasonBottomSheet == null) {
+            reasonBottomSheet = ReasonBottomSheet.createInstance(getActivity(),
+                    reasons, new ReasonAdapter.OnReasonClickListener() {
+                        @Override
+                        public void onClickReason(int adapterPosition) {
+                            presenter.sendReasonRating(messageId,
+                                    replyTimeNano,
+                                    String.valueOf(reasons.get(adapterPosition)));
+                            reasonBottomSheet.dismiss();
+                        }
+                    });
+        }
+
+        reasonBottomSheet.show();
+
     }
 }

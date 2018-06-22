@@ -2,7 +2,7 @@ package com.tokopedia.topchat.chatroom.data.mapper;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.core.network.ErrorMessageException;
-import com.tokopedia.topchat.chatroom.domain.pojo.rating.SetChatRatingPojo;
+import com.tokopedia.topchat.chatroom.domain.pojo.rating.SendReasonRatingPojo;
 
 import javax.inject.Inject;
 
@@ -10,23 +10,17 @@ import retrofit2.Response;
 import rx.functions.Func1;
 
 /**
- * @author by alvinatin on 28/03/18.
+ * @author by nisie on 6/11/18.
  */
-
-public class SetChatRatingMapper implements
-        Func1<Response<DataResponse<SetChatRatingPojo>>, SetChatRatingPojo> {
+public class SendReasonRatingMapper implements Func1<Response<DataResponse<SendReasonRatingPojo>>,
+        SendReasonRatingPojo> {
 
     @Inject
-    public SetChatRatingMapper() {
+    public SendReasonRatingMapper() {
     }
 
     @Override
-    public SetChatRatingPojo call(Response<DataResponse<SetChatRatingPojo>>
-                                          setChatRatingPojoResponse) {
-        return getDataorError(setChatRatingPojoResponse);
-    }
-
-    private SetChatRatingPojo getDataorError(Response<DataResponse<SetChatRatingPojo>> response) {
+    public SendReasonRatingPojo call(Response<DataResponse<SendReasonRatingPojo>> response) {
         if (response.isSuccessful()
                 && response.body() != null
                 && response.body().getData().isSuccess()) {

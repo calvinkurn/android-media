@@ -10,40 +10,34 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
-
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.contact_us.createticket.ContactUsConstant;
-import com.tokopedia.contact_us.createticket.activity.ContactUsActivity;
 import com.tokopedia.abstraction.constant.TkpdState;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
 import com.tokopedia.topchat.chatroom.view.fragment.ChatRoomFragment;
 import com.tokopedia.topchat.chatroom.view.listener.ChatNotifInterface;
 import com.tokopedia.topchat.common.InboxMessageConstant;
 import com.tokopedia.topchat.common.TopChatRouter;
-import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.pushnotif.PushNotification;
-import com.tokopedia.topchat.common.applink.ApplinkConstant;
 
 /**
  * Created by Nisie on 5/19/16.
@@ -89,11 +83,11 @@ public class ChatRoomActivity extends BasePresenterActivity
             notifReceiver = new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent intent) {
-                    String fromPushNotif = intent.getExtras().getString(APPLINKS);
-                    String fromRoom="";
-                    if(!TextUtils.isEmpty(getIntent().getExtras().getString(MESSAGE_ID))) {
-                        fromRoom = ApplinkConstant.TOPCHAT.concat(getIntent().getExtras().getString
-                                (MESSAGE_ID));
+                    String fromPushNotif = intent.getExtras().getString(APPLINKS, "");
+                    String fromRoom = "";
+                    if (!TextUtils.isEmpty(getIntent().getExtras().getString(MESSAGE_ID, ""))) {
+                        fromRoom = ApplinkConst.TOPCHAT.concat(getIntent().getExtras().getString
+                                (MESSAGE_ID, ""));
                     }
                     if (!fromRoom.equals(fromPushNotif)) {
                         PushNotification.notify(context, intent.getExtras());
@@ -128,11 +122,13 @@ public class ChatRoomActivity extends BasePresenterActivity
         toolbar.addView(mCustomView);
         setSupportActionBar(toolbar);
 
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
-                .getColor(R.color.white)));
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
+                    .getColor(R.color.white)));
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
+        }
         setTitle("");
         toolbar.setContentInsetStartWithNavigation(0);
         toolbar.setContentInsetEndWithActions(0);
@@ -147,7 +143,7 @@ public class ChatRoomActivity extends BasePresenterActivity
         }
     }
 
-    @DeepLink(Constants.Applinks.TOPCHAT)
+    @DeepLink(ApplinkConst.TOPCHAT)
     public static TaskStackBuilder getCallingTaskStack(Context context, Bundle extras) {
         Intent homeIntent = null;
         if (GlobalConfig.isSellerApp()) {

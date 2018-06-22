@@ -40,7 +40,7 @@ import javax.inject.Inject;
  */
 public class WebSocketMapper {
 
-    private static final String TYPE_CHAT_RATING = "-1";
+    public static final String TYPE_CHAT_RATING = "-1";
     public static final String TYPE_IMAGE_ANNOUNCEMENT = "1";
     public static final String TYPE_IMAGE_UPLOAD = "2";
     public static final String TYPE_PRODUCT_ATTACHMENT = "3";
