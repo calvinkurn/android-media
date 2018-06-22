@@ -5,9 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
-import com.tokopedia.analytics.LoginAnalytics;
 import com.tokopedia.analytics.OTPAnalytics;
-import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.session.R;

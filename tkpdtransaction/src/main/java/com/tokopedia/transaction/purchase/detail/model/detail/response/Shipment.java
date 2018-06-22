@@ -27,6 +27,9 @@ public class Shipment {
     @SerializedName("info")
     @Expose
     private Info info;
+    @SerializedName("awb_upload_proof_text")
+    @Expose
+    private String awbUploadProofText;
 
     public Integer getId() {
         return id;
@@ -82,5 +85,9 @@ public class Shipment {
 
     public void setInfo(Info info) {
         this.info = info;
+    }
+
+    public String getAwbUploadProofText() {
+        return awbUploadProofText;
     }
 }

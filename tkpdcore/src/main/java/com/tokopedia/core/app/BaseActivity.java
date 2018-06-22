@@ -41,6 +41,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
+
 /**
  * Created by nisie on 2/7/17.
  * refer {@link com.tokopedia.abstraction.base.view.activity.BaseActivity}
@@ -52,6 +53,8 @@ import rx.schedulers.Schedulers;
 @Deprecated
 public class BaseActivity extends AppCompatActivity implements SessionHandler.onLogoutListener,
         ErrorNetworkReceiver.ReceiveListener, ScreenTracking.IOpenScreenAnalytics {
+
+
 
     public static final String FORCE_LOGOUT = "com.tokopedia.tkpd.FORCE_LOGOUT";
     public static final String SERVER_ERROR = "com.tokopedia.tkpd.SERVER_ERROR";
@@ -94,6 +97,10 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         super.onStart();
         MainApplication.setActivityState(TkpdState.Application.ACTIVITY);
         MainApplication.setActivityname(this.getClass().getSimpleName());
+        forceRotation();
+    }
+
+    protected void forceRotation() {
         if (!MainApplication.isTablet()) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         } else {

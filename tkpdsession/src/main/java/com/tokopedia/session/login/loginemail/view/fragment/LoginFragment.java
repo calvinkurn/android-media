@@ -34,11 +34,11 @@ import android.widget.TextView;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.LoginAnalytics;
+import com.tokopedia.analytics.SessionTrackingUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -49,7 +49,6 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.customView.LoginTextView;
 import com.tokopedia.core.customView.TextDrawable;
-import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.profile.model.GetUserInfoDomainData;
 import com.tokopedia.core.util.BranchSdkUtils;
@@ -57,10 +56,8 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.di.SessionModule;
+import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
-import com.tokopedia.otp.cotp.view.viewmodel.InterruptVerificationViewModel;
-import com.tokopedia.otp.cotp.view.viewmodel.VerificationPassModel;
-import com.tokopedia.otp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.session.R;
 import com.tokopedia.session.WebViewLoginFragment;
@@ -287,6 +284,7 @@ public class LoginFragment extends BaseDaggerFragment
                 presenter.login(emailEditText.getText().toString().trim(),
                         passwordEditText.getText().toString());
                 UnifyTracking.eventCTAAction();
+                SessionTrackingUtils.loginPageClickLogin();
             }
         });
 
@@ -299,6 +297,8 @@ public class LoginFragment extends BaseDaggerFragment
                         .toString());
                 intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
                 startActivity(intent);
+                SessionTrackingUtils.loginPageClickForgotPassword("ForgotPasswordActivity");
+
             }
         });
 
@@ -578,30 +578,8 @@ public class LoginFragment extends BaseDaggerFragment
     @Override
     public void onGoToSecurityQuestion(SecurityDomain securityDomain, String fullName,
                                        String email, String phone) {
-
-        InterruptVerificationViewModel interruptVerificationViewModel;
-        if (securityDomain.getUserCheckSecurity2() == TYPE_SQ_PHONE) {
-            interruptVerificationViewModel = InterruptVerificationViewModel
-                    .createDefaultSmsInterruptPage(phone);
-        } else {
-            interruptVerificationViewModel = InterruptVerificationViewModel
-                    .createDefaultEmailInterruptPage(email);
-        }
-
-        VerificationPassModel passModel = new
-                VerificationPassModel(phone, email,
-                RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION,
-                interruptVerificationViewModel,
-                securityDomain.getUserCheckSecurity2() == TYPE_SQ_PHONE
-        );
-        cacheManager.setKey(VerificationActivity.PASS_MODEL);
-        cacheManager.setValue(CacheUtil.convertModelToString(passModel,
-                new TypeToken<VerificationPassModel>() {
-                }.getType()));
-        cacheManager.store();
-
-        Intent intent = VerificationActivity.getSecurityQuestionVerificationIntent(getActivity(),
-                securityDomain.getUserCheckSecurity2());
+        Intent  intent = VerificationActivity.getShowChooseVerificationMethodIntent(
+                getActivity(), RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION, phone, email);
         startActivityForResult(intent, REQUEST_SECURITY_QUESTION);
 
     }
@@ -745,17 +723,22 @@ public class LoginFragment extends BaseDaggerFragment
         UnifyTracking.eventTracking(LoginAnalytics.getEventClickLoginPhoneNumber());
         Intent intent = LoginPhoneNumberActivity.getCallingIntent(getActivity());
         startActivityForResult(intent, REQUEST_LOGIN_PHONE_NUMBER);
+        SessionTrackingUtils.loginPageClickLoginPhone("LoginPhoneNumberActivity");
+
     }
 
     private void onLoginGoogleClick() {
         UnifyTracking.eventTracking(LoginAnalytics.getEventClickLoginGoogle());
         Intent intent = new Intent(getActivity(), GoogleSignInActivity.class);
         startActivityForResult(intent, RC_SIGN_IN_GOOGLE);
+        SessionTrackingUtils.loginPageClickLoginGoogle("GoogleSignInActivity");
+
     }
 
     private void onLoginFacebookClick() {
         UnifyTracking.eventTracking(LoginAnalytics.getEventClickLoginFacebook());
         presenter.getFacebookCredential(this, callbackManager);
+        SessionTrackingUtils.loginPageClickLoginFacebook("Facebook");
     }
 
     private DiscoverItemViewModel getLoginPhoneNumberBean() {

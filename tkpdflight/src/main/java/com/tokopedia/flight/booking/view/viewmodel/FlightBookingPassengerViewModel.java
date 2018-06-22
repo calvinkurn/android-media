@@ -24,6 +24,10 @@ public class FlightBookingPassengerViewModel implements Parcelable, Visitable<Fl
     private List<FlightBookingAmenityMetaViewModel> flightBookingLuggageMetaViewModels;
     private List<FlightBookingAmenityMetaViewModel> flightBookingMealMetaViewModels;
     private int passengerTitleId;
+    private String passportNumber;
+    private String passportExpiredDate;
+    private FlightBookingPhoneCodeViewModel passportNationality;
+    private FlightBookingPhoneCodeViewModel passportIssuerCountry;
 
     public FlightBookingPassengerViewModel() {
     }
@@ -40,6 +44,34 @@ public class FlightBookingPassengerViewModel implements Parcelable, Visitable<Fl
         flightBookingLuggageMetaViewModels = in.createTypedArrayList(FlightBookingAmenityMetaViewModel.CREATOR);
         flightBookingMealMetaViewModels = in.createTypedArrayList(FlightBookingAmenityMetaViewModel.CREATOR);
         passengerTitleId = in.readInt();
+        passportNumber = in.readString();
+        passportExpiredDate = in.readString();
+        passportNationality = in.readParcelable(FlightBookingPhoneCodeViewModel.class.getClassLoader());
+        passportIssuerCountry = in.readParcelable(FlightBookingPhoneCodeViewModel.class.getClassLoader());
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(passengerLocalId);
+        dest.writeInt(type);
+        dest.writeString(passengerId);
+        dest.writeString(passengerTitle);
+        dest.writeString(headerTitle);
+        dest.writeString(passengerFirstName);
+        dest.writeString(passengerLastName);
+        dest.writeString(passengerBirthdate);
+        dest.writeTypedList(flightBookingLuggageMetaViewModels);
+        dest.writeTypedList(flightBookingMealMetaViewModels);
+        dest.writeInt(passengerTitleId);
+        dest.writeString(passportNumber);
+        dest.writeString(passportExpiredDate);
+        dest.writeParcelable(passportNationality, flags);
+        dest.writeParcelable(passportIssuerCountry, flags);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<FlightBookingPassengerViewModel> CREATOR = new Creator<FlightBookingPassengerViewModel>() {
@@ -155,29 +187,41 @@ public class FlightBookingPassengerViewModel implements Parcelable, Visitable<Fl
         this.passengerId = passengerId;
     }
 
+    public String getPassportNumber() {
+        return passportNumber;
+    }
+
+    public void setPassportNumber(String passportNumber) {
+        this.passportNumber = passportNumber;
+    }
+
+    public String getPassportExpiredDate() {
+        return passportExpiredDate;
+    }
+
+    public void setPassportExpiredDate(String passportExpiredDate) {
+        this.passportExpiredDate = passportExpiredDate;
+    }
+
+    public FlightBookingPhoneCodeViewModel getPassportNationality() {
+        return passportNationality;
+    }
+
+    public void setPassportNationality(FlightBookingPhoneCodeViewModel passportNationality) {
+        this.passportNationality = passportNationality;
+    }
+
+    public FlightBookingPhoneCodeViewModel getPassportIssuerCountry() {
+        return passportIssuerCountry;
+    }
+
+    public void setPassportIssuerCountry(FlightBookingPhoneCodeViewModel passportIssuerCountry) {
+        this.passportIssuerCountry = passportIssuerCountry;
+    }
+
     @Override
     public int type(FlightBookingPassengerTypeFactory typeFactory) {
         return typeFactory.type(this);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(passengerLocalId);
-        dest.writeInt(type);
-        dest.writeString(passengerId);
-        dest.writeString(passengerTitle);
-        dest.writeString(headerTitle);
-        dest.writeString(passengerFirstName);
-        dest.writeString(passengerLastName);
-        dest.writeString(passengerBirthdate);
-        dest.writeTypedList(flightBookingLuggageMetaViewModels);
-        dest.writeTypedList(flightBookingMealMetaViewModels);
-        dest.writeInt(passengerTitleId);
     }
 
 }

@@ -2,7 +2,6 @@ package com.tokopedia.discovery.view;
 
 import android.support.v4.util.ArrayMap;
 
-import com.drew.lang.annotations.Nullable;
 import com.tokopedia.core.discovery.model.Breadcrumb;
 import com.tokopedia.core.discovery.model.DataValue;
 import com.tokopedia.core.network.entity.discovery.BannerOfficialStoreModel;
@@ -37,7 +36,7 @@ public interface BrowseProductParentView extends BaseView {
     void initDiscoveryTicker();
     int getActiveTab();
     boolean checkHasFilterAttrIsNull(int activeTab);
-    @Nullable
+
     List<Breadcrumb> getProductBreadCrumb();
 
     BrowseProductModel getDataForBrowseProduct();

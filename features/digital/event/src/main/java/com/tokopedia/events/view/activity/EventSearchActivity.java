@@ -23,18 +23,17 @@ import com.tokopedia.events.view.adapter.TopEventsSuggestionsAdapter;
 import com.tokopedia.events.view.contractor.EventSearchContract;
 import com.tokopedia.events.view.customview.SearchInputView;
 import com.tokopedia.events.view.presenter.EventSearchPresenter;
-import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.utils.EventsGAConst;
+import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
-import com.tokopedia.events.view.viewmodel.SearchViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
@@ -57,6 +56,8 @@ public class EventSearchActivity extends TActivity implements
     ProgressBar progBar;
     @BindView(R2.id.search_input_view)
     SearchInputView searchInputView;
+    @BindView(R2.id.no_search_results)
+    View noResults;
 
     @BindView(R2.id.rv_search_results)
     RecyclerView rvSearchResults;
@@ -142,7 +143,7 @@ public class EventSearchActivity extends TActivity implements
     }
 
     @Override
-    public void setTopEvents(List<SearchViewModel> searchViewModels) {
+    public void setTopEvents(List<CategoryItemsViewModel> searchViewModels) {
         if (searchViewModels != null && !searchViewModels.isEmpty()) {
             TopEventsSuggestionsAdapter adapter = new TopEventsSuggestionsAdapter(this, searchViewModels, mPresenter);
             rvTopEventSuggestions.setLayoutManager(layoutManager);
@@ -152,15 +153,17 @@ public class EventSearchActivity extends TActivity implements
             tvTopevents.setVisibility(View.VISIBLE);
             rvTopEventSuggestions.setVisibility(View.VISIBLE);
             rvSearchResults.setVisibility(View.GONE);
+            noResults.setVisibility(View.GONE);
         } else {
             tvTopevents.setVisibility(View.GONE);
             rvTopEventSuggestions.setVisibility(View.GONE);
             rvSearchResults.setVisibility(View.GONE);
+            noResults.setVisibility(View.GONE);
         }
     }
 
     @Override
-    public void setSuggestions(List<SearchViewModel> suggestions, String highlight) {
+    public void setSuggestions(List<CategoryItemsViewModel> suggestions, String highlight) {
         if (suggestions != null && !suggestions.isEmpty()) {
             TopEventsSuggestionsAdapter adapter = new TopEventsSuggestionsAdapter(this, suggestions, mPresenter);
             adapter.setHighLightText(highlight);
@@ -170,11 +173,11 @@ public class EventSearchActivity extends TActivity implements
             tvTopevents.setVisibility(View.GONE);
             rvTopEventSuggestions.setVisibility(View.VISIBLE);
             rvSearchResults.setVisibility(View.GONE);
+            noResults.setVisibility(View.GONE);
         } else {
             rvSearchResults.setVisibility(View.GONE);
             rvTopEventSuggestions.setVisibility(View.GONE);
-            tvTopevents.setText("No Events Found");
-            tvTopevents.setVisibility(View.VISIBLE);
+            noResults.setVisibility(View.VISIBLE);
         }
     }
 
@@ -190,7 +193,7 @@ public class EventSearchActivity extends TActivity implements
     }
 
     @Override
-    public void addEvents(List<SearchViewModel> searchViewModels) {
+    public void addEvents(List<CategoryItemsViewModel> searchViewModels) {
         ((TopEventsSuggestionsAdapter) rvTopEventSuggestions.getAdapter()).addAll(searchViewModels);
 
     }
@@ -239,5 +242,10 @@ public class EventSearchActivity extends TActivity implements
     @Override
     public String getScreenName() {
         return mPresenter.getSCREEN_NAME();
+    }
+
+    @OnClick(R2.id.iv_finish)
+    void clickFinish() {
+        finish();
     }
 }

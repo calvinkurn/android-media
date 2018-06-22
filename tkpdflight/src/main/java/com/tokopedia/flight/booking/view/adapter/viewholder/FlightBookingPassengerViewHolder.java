@@ -89,6 +89,11 @@ public class FlightBookingPassengerViewHolder extends AbstractViewHolder<FlightB
             ))));
         }
 
+        if (viewModel.getPassportNumber() != null && viewModel.getPassportNumber().length() > 0) {
+            simpleViewModels.add(new SimpleViewModel(itemView.getContext().getString(
+                    R.string.flight_passenger_passport_number_hint) + " :", viewModel.getPassportNumber()));
+        }
+
         if (viewModel.getFlightBookingLuggageMetaViewModels() != null) {
             for (FlightBookingAmenityMetaViewModel flightBookingLuggageRouteViewModel : viewModel.getFlightBookingLuggageMetaViewModels()) {
                 ArrayList<String> selectedLuggages = new ArrayList<>();

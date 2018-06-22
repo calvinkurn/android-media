@@ -40,7 +40,6 @@ public class GetReplySubscriber extends Subscriber<ChatRoomViewModel> {
     public void onError(Throwable e) {
         view.setViewEnabled(true);
         view.showError(ErrorHandler.getErrorMessage(e));
-        view.finishLoading();
         view.hideMainLoading();
         presenter.finishRequest();
     }
@@ -49,7 +48,6 @@ public class GetReplySubscriber extends Subscriber<ChatRoomViewModel> {
     public void onNext(ChatRoomViewModel model) {
         view.setViewEnabled(true);
         view.setResult(model);
-        view.finishLoading();
         presenter.finishRequest();
     }
 }

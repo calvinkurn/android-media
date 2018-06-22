@@ -3,7 +3,7 @@ package com.tokopedia.flight.common.view;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatDelegate;
+
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -23,9 +23,7 @@ import javax.inject.Inject;
  */
 
 public abstract class BaseFlightActivity extends BaseSimpleActivity {
-    static {
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-    }
+
 
     @Inject
     FlightAnalytics flightAnalytics;

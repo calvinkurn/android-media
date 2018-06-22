@@ -126,69 +126,6 @@ public class FlightSearchViewModel implements Parcelable, Visitable<FilterSearch
         airlineDataList = in.createTypedArrayList(FlightAirlineDB.CREATOR);
     }
 
-    public void mergeWithAirportAndAirlines(HashMap<String, FlightAirlineDB> dbAirlineMaps,
-                                            HashMap<String, FlightAirportDB> dbAirportMaps) {
-        List<Route> routeList = getRouteList();
-        List<FlightAirlineDB> airlineDBArrayList = new ArrayList<>();
-        List<String>addedAirlineIDList = new ArrayList<>();
-        for (int j = 0, sizej = routeList.size(); j < sizej; j++) {
-            Route route = routeList.get(j);
-            String airlineID = route.getAirline();
-            // to set the airline in route to the summary
-
-            if (dbAirlineMaps.containsKey(airlineID)) {
-                String airlineNameFromMap = dbAirlineMaps.get(airlineID).getFullName();
-                String airlineShortNameFromMap = dbAirlineMaps.get(airlineID).getShortName();
-                String airlineLogoFromMap = dbAirlineMaps.get(airlineID).getLogo();
-                int mandatory = dbAirlineMaps.get(airlineID).getMandatoryDob();
-                route.setAirlineName(airlineNameFromMap);
-                route.setAirlineLogo(airlineLogoFromMap);
-                if (!addedAirlineIDList.contains(airlineID)) {
-                    addedAirlineIDList.add(airlineID);
-                    airlineDBArrayList.add(new FlightAirlineDB(airlineID, airlineNameFromMap, airlineShortNameFromMap, airlineLogoFromMap, mandatory));
-                }
-            } else {
-                if (!addedAirlineIDList.contains(airlineID)) {
-                    addedAirlineIDList.add(airlineID);
-                    airlineDBArrayList.add(new FlightAirlineDB(airlineID, "", "", "", 0));
-                }
-            }
-
-
-            String depAirportID = route.getDepartureAirport();
-            if (dbAirportMaps.containsKey(depAirportID)) {
-                String name = dbAirportMaps.get(depAirportID).getAirportName();
-                String city = dbAirportMaps.get(depAirportID).getCityName();
-                route.setDepartureAirportName(name);
-                route.setDepartureAirportCity(city);
-            }
-            String arrAirportID = route.getArrivalAirport();
-            if (dbAirportMaps.containsKey(arrAirportID)) {
-                String name = dbAirportMaps.get(arrAirportID).getAirportName();
-                String city = dbAirportMaps.get(arrAirportID).getCityName();
-                route.setArrivalAirportName(name);
-                route.setArrivalAirportCity(city);
-            }
-        }
-        setAirlineDataList(airlineDBArrayList);
-
-        String depAirport = getDepartureAirport();
-        if (dbAirportMaps.containsKey(depAirport)) {
-            String name = dbAirportMaps.get(depAirport).getAirportName();
-            String city = dbAirportMaps.get(depAirport).getCityName();
-            setDepartureAirportName(name);
-            setDepartureAirportCity(city);
-        }
-
-        String arrAirport = getArrivalAirport();
-        if (dbAirportMaps.containsKey(arrAirport)) {
-            String name = dbAirportMaps.get(arrAirport).getAirportName();
-            String city = dbAirportMaps.get(arrAirport).getCityName();
-            setArrivalAirportName(name);
-            setArrivalAirportCity(city);
-        }
-    }
-
     public String getId() {
         return id;
     }
