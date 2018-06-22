@@ -93,6 +93,7 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
             } else {
                 location.setText(MethodChecker.fromHtml(productItem.getShopCity()));
             }
+            location.setVisibility(View.VISIBLE);
         } else {
             location.setVisibility(View.INVISIBLE);
         }
@@ -137,7 +138,6 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
         }
 
         renderBadges(productItem.getBadgesList());
-        renderLabels(productItem.getLabelList());
     }
 
     private boolean isBadgesExist(ProductItem productItem) {
@@ -152,15 +152,6 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
             }
         }
         return false;
-    }
-
-    protected void renderLabels(List<LabelItem> labelList) {
-        List<String> titles = new ArrayList<>();
-        List<String> colors = new ArrayList<>();
-        for (int i = 0; i < labelList.size(); i++) {
-            titles.add(labelList.get(i).getTitle());
-            colors.add(labelList.get(i).getColor());
-        }
     }
 
     protected void renderBadges(List<BadgeItem> badgesList) {

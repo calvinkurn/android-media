@@ -93,6 +93,7 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
             } else {
                 location.setText(MethodChecker.fromHtml(productItem.getShopCity()));
             }
+            location.setVisibility(View.VISIBLE);
         } else {
             location.setVisibility(View.INVISIBLE);
         }
