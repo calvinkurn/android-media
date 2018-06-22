@@ -27,13 +27,10 @@ import com.tokopedia.feedplus.data.mapper.FeedDetailListMapper;
 import com.tokopedia.feedplus.data.mapper.FeedListMapper;
 import com.tokopedia.feedplus.data.mapper.FeedResultMapper;
 import com.tokopedia.feedplus.data.mapper.RecentProductMapper;
-import com.tokopedia.feedplus.data.mapper.WhitelistMapper;
 import com.tokopedia.feedplus.data.repository.FavoriteShopRepository;
 import com.tokopedia.feedplus.data.repository.FavoriteShopRepositoryImpl;
 import com.tokopedia.feedplus.data.repository.FeedRepository;
 import com.tokopedia.feedplus.data.repository.FeedRepositoryImpl;
-import com.tokopedia.feedplus.data.repository.WhitelistRepository;
-import com.tokopedia.feedplus.data.repository.WhitelistRepositoryImpl;
 import com.tokopedia.feedplus.data.repository.WishlistRepository;
 import com.tokopedia.feedplus.data.repository.WishlistRepositoryImpl;
 import com.tokopedia.feedplus.data.source.KolSource;
@@ -202,8 +199,7 @@ public class FeedPlusModule {
                                    GlobalCacheManager globalCacheManager,
                                    MojitoService mojitoService,
                                    RecentProductMapper recentProductMapper,
-                                   CheckNewFeedMapper checkNewFeedMapper,
-                                   WhitelistMapper whitelistMapper) {
+                                   CheckNewFeedMapper checkNewFeedMapper) {
         return new FeedFactory(
                 context,
                 feedApi,
@@ -215,8 +211,7 @@ public class FeedPlusModule {
                 feedDetailListMapper,
                 mojitoService,
                 recentProductMapper,
-                checkNewFeedMapper,
-                whitelistMapper
+                checkNewFeedMapper
         );
     }
 
@@ -256,11 +251,5 @@ public class FeedPlusModule {
     @Provides
     WishlistRepository provideWishlistRepository(WishlistFactory wishlistFactory) {
         return new WishlistRepositoryImpl(wishlistFactory);
-    }
-
-    @FeedPlusScope
-    @Provides
-    WhitelistRepository provideWhitelistRepository(FeedFactory feedFactory) {
-        return new WhitelistRepositoryImpl(feedFactory);
     }
 }
