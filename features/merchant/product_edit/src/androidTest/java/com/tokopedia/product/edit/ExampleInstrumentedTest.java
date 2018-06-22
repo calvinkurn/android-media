@@ -1,4 +1,4 @@
-package com.tokopedia.productedit;
+package com.tokopedia.product.edit;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
