@@ -253,7 +253,7 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
         districtLayout = view.findViewById(R.id.district_layout);
         districtEditText = view.findViewById(R.id.district);
         zipCodeLayout = view.findViewById(R.id.postal_code_layout);
-        zipCodeTextView = view.findViewById(R.id.postal_code);
+        zipCodeTextView = view.findViewById(R.id.autocomplete_postal_code);
 
         postCodeLayout = view.findViewById(R.id.post_code_layout);
         postCodeEditText = view.findViewById(R.id.post_code);
@@ -560,6 +560,7 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
             )));
 
             zipCodeTextView.setText(address.getPostalCode());
+            postCodeEditText.setText(address.getPostalCode());
             receiverPhoneEditText.setText(address.getReceiverPhone());
         } else if (address == null) {
             address = new Destination();
