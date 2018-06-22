@@ -56,6 +56,7 @@ import com.tokopedia.seller.seller.info.view.activity.SellerInfoActivity;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.ParentIndexHome;
+import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
 
 import java.util.ArrayList;
 
@@ -533,13 +534,13 @@ public class DrawerBuyerHelper extends DrawerHelper
 
                     break;
                 case TkpdState.DrawerPosition.PEOPLE_DIGITAL_TRANSACTION_LIST:
-                    intent = TransactionPurchaseRouter.createIntentOrderListSummary(context, "DIGITAL");
+                    intent = TransactionPurchaseRouter.createIntentOrderListSummary(context, OrderCategory.DIGITAL);
                     context.startActivity(intent);
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.DIGITAL_TRANSACTION_LIST);
                     AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(),AppEventTracking.EventLabel.DIGITAL_TRANSACTION_LIST, AppEventTracking.EventLabel.PURCHASE);
                     break;
                 case TkpdState.DrawerPosition.PEOPLE_OMS_TRANSACTION_LIST:
-                    intent = TransactionPurchaseRouter.createIntentOrderListSummary(context, "DEALS");
+                    intent = TransactionPurchaseRouter.createIntentOrderListSummary(context, OrderCategory.DEALS);
                     context.startActivity(intent);
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.DIGITAL_TRANSACTION_LIST);
                     AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(),AppEventTracking.EventLabel.DIGITAL_TRANSACTION_LIST, AppEventTracking.EventLabel.PURCHASE);

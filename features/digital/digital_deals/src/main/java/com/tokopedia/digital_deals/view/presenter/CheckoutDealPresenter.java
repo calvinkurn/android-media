@@ -174,6 +174,7 @@ public class CheckoutDealPresenter
             jsonElement.getAsJsonObject().get("meta_data").getAsJsonObject().addProperty("entity_brand_name", dealDetail.getBrand().getTitle());
         }
         jsonObject.addProperty("promocode", promocode);
+        jsonObject.addProperty("order_title", dealDetail.getDisplayName());
         return jsonObject;
     }
 

@@ -259,4 +259,8 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         return deepLinkDelegate.supportsUri(appLink);
     }
 
+    @Override
+    public Intent getOrderListDetailActivity(Context context, String type, String orderId) {
+        return null;
+    }
 }

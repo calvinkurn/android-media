@@ -41,14 +41,16 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private ListAdapterContract.Presenter orderListPresenter;
     OrderListViewHolder currentHolder;
     ArrayList<Order> mOrderList;
+    String mOrderCategory;
 
     OnMenuItemListener menuListener;
     private boolean loading = false;
 
 
-    public OrderListAdapter(Context context, OnMenuItemListener listener) {
+    public OrderListAdapter(Context context, OnMenuItemListener listener, String orderCategory) {
         this.context = context;
         menuListener = listener;
+        this.mOrderCategory = orderCategory;
         orderListPresenter = new ListAdapterPresenterImpl();
 
     }
@@ -287,7 +289,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 if(!orderData.get(1).uri().equals("")){
                     menuListener.startUri(orderData.get(1).uri());
                 } else{
-                    context.startActivity(OrderListDetailActivity.createInstance(context, orderId));
+                    context.startActivity(OrderListDetailActivity.createInstance(context, orderId, mOrderCategory));
                 }
                 return true;
             } else {
@@ -348,7 +350,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         @Override
         public void onClick(View view) {
-            context.startActivity(OrderListDetailActivity.createInstance(context, orderId));
+            context.startActivity(OrderListDetailActivity.createInstance(context, orderId, mOrderCategory));
         }
 
         public void bindData(Order order, int position) {

@@ -1363,10 +1363,10 @@ public abstract class SellerRouterApplication extends MainApplication
         return intent;
     }
 
-    @Override
-    public Observable<TKPDMapParam<String, Object>> verifyEventPromo(RequestParams requestParams) {
-        return null;
-    }
+//    @Override
+//    public Observable<TKPDMapParam<String, Object>> verifyEventPromo(RequestParams requestParams) {
+//        return null;
+//    }
 
     @Override
     public Intent getChangePhoneNumberRequestIntent(Context context) {

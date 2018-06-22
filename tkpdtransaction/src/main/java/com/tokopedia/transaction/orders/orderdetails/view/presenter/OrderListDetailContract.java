@@ -53,6 +53,6 @@ public interface OrderListDetailContract {
     }
 
     public interface Presenter extends CustomerPresenter<View>{
-        void setOrderDetailsContent(String orderId);
+        void setOrderDetailsContent(String orderId, String orderCategory);
     }
 }
