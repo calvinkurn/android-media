@@ -102,6 +102,10 @@ query OMSDETAILS($orderCategory: OrderCategory, $orderId: String, $detail: Int, 
     }
     conditionalInfo {
       text
+      color {
+        border
+        background
+      }
     }
     contactUs {
       helpText

@@ -1,5 +1,7 @@
 package com.tokopedia.transaction.orders.orderdetails.view.presenter;
 
+import android.content.Context;
+
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
@@ -50,6 +52,8 @@ public interface OrderListDetailContract {
         void setAdditionInfoVisibility(int visible);
 
         void setActionButtonsVisibility(int topBtnVisibility, int bottomBtnVisibility);
+
+        Context getAppContext();
     }
 
     public interface Presenter extends CustomerPresenter<View>{

@@ -1,6 +1,7 @@
 package com.tokopedia.transaction.orders.orderlist.view.fragment;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,14 +14,15 @@ import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.util.RefreshHandler;
+import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.orderlist.data.Order;
 import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
+import com.tokopedia.transaction.orders.orderlist.di.DaggerOrderListComponent;
 import com.tokopedia.transaction.orders.orderlist.di.OrderListComponent;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.OrderListAdapter;
 import com.tokopedia.transaction.orders.orderlist.view.presenter.OrderListContract;
 import com.tokopedia.transaction.orders.orderlist.view.presenter.OrderListPresenterImpl;
-import com.tokopedia.transaction.orders.orderlist.di.DaggerOrderListComponent;
 import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractor;
 
 import java.util.ArrayList;
@@ -90,6 +92,7 @@ public class OrderListFragment extends BasePresenterFragment<OrderListContract.P
         orderListComponent = DaggerOrderListComponent.builder()
                 .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
                 .build();
+        GraphqlClient.init(getActivity());
         orderListComponent.inject(this);
     }
 
@@ -206,6 +209,11 @@ public class OrderListFragment extends BasePresenterFragment<OrderListContract.P
             swipeToRefresh.setVisibility(View.GONE);
             emptyLayout.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    public Context getAppContext() {
+        return getActivity().getApplicationContext();
     }
 
     private NetworkErrorHelper.RetryClickedListener getEditShipmentRetryListener() {

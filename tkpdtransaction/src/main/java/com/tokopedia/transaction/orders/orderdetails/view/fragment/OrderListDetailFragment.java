@@ -1,5 +1,6 @@
 package com.tokopedia.transaction.orders.orderdetails.view.fragment;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
@@ -24,6 +25,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
+import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
 import com.tokopedia.transaction.orders.orderdetails.data.AdditionalInfo;
@@ -34,6 +36,7 @@ import com.tokopedia.transaction.orders.orderdetails.data.OrderToken;
 import com.tokopedia.transaction.orders.orderdetails.data.Pricing;
 import com.tokopedia.transaction.orders.orderdetails.data.Status;
 import com.tokopedia.transaction.orders.orderdetails.data.Title;
+import com.tokopedia.transaction.orders.orderdetails.di.DaggerOrderDetailsComponent;
 import com.tokopedia.transaction.orders.orderdetails.di.OrderDetailsComponent;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailContract;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailPresenter;
@@ -42,13 +45,11 @@ import com.tokopedia.transaction.orders.orderlist.data.PaymentData;
 
 import javax.inject.Inject;
 
-import com.tokopedia.transaction.orders.orderdetails.di.DaggerOrderDetailsComponent;
 import com.tokopedia.transaction.orders.common.view.DoubleTextView;
 
 /**
  * Created by baghira on 09/05/18.
  */
-
 public class OrderListDetailFragment extends BaseDaggerFragment implements OrderListDetailContract.View {
 
     public static final String KEY_ORDER_ID = "OrderId";
@@ -86,6 +87,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         orderListComponent = DaggerOrderDetailsComponent.builder()
                 .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
                 .build();
+        GraphqlClient.init(getActivity());
         orderListComponent.inject(this);
     }
 
@@ -165,6 +167,9 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     @Override
     public void setInvoice(final Invoice invoice) {
         invoiceView.setText(invoice.invoiceRefNum());
+        if (invoice.invoiceUrl().equals("")) {
+            lihat.setVisibility(View.GONE);
+        }
         lihat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -300,6 +305,11 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     public void setActionButtonsVisibility(int topBtnVisibility, int bottomBtnVisibility) {
         langannan.setVisibility(topBtnVisibility);
         beliLagi.setVisibility(bottomBtnVisibility);
+    }
+
+    @Override
+    public Context getAppContext() {
+        return getActivity().getApplicationContext();
     }
 
     @Override

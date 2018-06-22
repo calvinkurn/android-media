@@ -31,6 +31,8 @@ public class OrderListContract {
         void showErrorNetwork(String errorMessage);
 
         void renderEmptyList(int typeRequest);
+
+        Context getAppContext();
     }
 
     public interface Presenter extends CustomerPresenter<View> {
