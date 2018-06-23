@@ -9,6 +9,7 @@ public interface RestConstant {
     long DAY_MS = 24 * HOUR_MS;
 
     enum ExpiryTimes {
+        MINUTE_30(30 * MINUTE_MS),
         HOUR(HOUR_MS),
         MINUTE_90(90 * MINUTE_MS),
         DAY(DAY_MS),

@@ -17,7 +17,7 @@ public class RestCacheStrategy {
 
     private RestCacheStrategy(Builder builder) {
         this.type = builder.type;
-        this.expiryTime = builder.expiryTime < 1 ? RestConstant.ExpiryTimes.HOUR.val() : builder.expiryTime;
+        this.expiryTime = builder.expiryTime < 1 ? RestConstant.ExpiryTimes.MINUTE_30.val() : builder.expiryTime;
         this.isSessionIncluded = builder.isSessionIncluded;
     }
 
