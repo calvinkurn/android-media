@@ -212,24 +212,6 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
                     getActivity().finish();
                     break;
             }
-        } else if (requestCode == ManageAddressConstant.REQUEST_CODE_PARAM_CREATE) {
-            RecipientAddressModel newRecipientAddressModel = null;
-            if (data != null && data.hasExtra(EXTRA_ADDRESS)) {
-                Destination newAddress = data.getParcelableExtra(EXTRA_ADDRESS);
-                newRecipientAddressModel = new RecipientAddressModel();
-                newRecipientAddressModel.setAddressName(newAddress.getAddressName());
-                newRecipientAddressModel.setDestinationDistrictId(newAddress.getDistrictId());
-                newRecipientAddressModel.setCityId(newAddress.getCityId());
-                newRecipientAddressModel.setProvinceId(newAddress.getProvinceId());
-                newRecipientAddressModel.setRecipientName(newAddress.getReceiverName());
-                newRecipientAddressModel.setRecipientPhoneNumber(newAddress.getReceiverPhone());
-                newRecipientAddressModel.setAddressStreet(newAddress.getAddressStreet());
-//                mCartAddressChoicePresenter.getAddressShortedList(getActivity(), newRecipientAddressModel, true);
-            } else {
-                newRecipientAddressModel = (RecipientAddressModel) getArguments().getParcelable(EXTRA_CURRENT_ADDRESS);
-//                mCartAddressChoicePresenter.getAddressShortedList(getActivity(), newRecipientAddressModel, false);
-            }
-
         }
     }
 
