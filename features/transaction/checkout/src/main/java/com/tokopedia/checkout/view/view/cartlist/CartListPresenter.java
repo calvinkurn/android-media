@@ -806,7 +806,8 @@ public class CartListPresenter implements ICartListPresenter {
                 if (cartShipmentAddressFormData.isError()) {
                     view.renderErrorToShipmentForm(cartShipmentAddressFormData.getErrorMessage());
                 } else {
-                    view.renderToShipmentFormSuccess(cartShipmentAddressFormData);
+                    view.renderToAddressChoice(cartShipmentAddressFormData);
+//                    view.renderToShipmentFormSuccess(cartShipmentAddressFormData);
                 }
             }
         };

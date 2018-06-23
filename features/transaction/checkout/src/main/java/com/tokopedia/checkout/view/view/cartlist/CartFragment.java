@@ -683,9 +683,17 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     }
 
     @Override
-    public void renderToShipmentFormSuccess(CartShipmentAddressFormData shipmentAddressFormData) {
-        Intent intent = ShipmentActivity.createInstance(getActivity(), shipmentAddressFormData,
-                promoCodeAppliedData, cartListData.getCartPromoSuggestion(), cartListData.getDefaultPromoDialogTab()
+    public void renderToShipmentFormSuccess(CartShipmentAddressFormData cartShipmentAddressFormData) {
+        Intent intent = ShipmentActivity.createInstance(getActivity(), cartShipmentAddressFormData,
+                promoCodeAppliedData, cartListData.getCartPromoSuggestion(), cartListData.getDefaultPromoDialogTab(), false
+        );
+        startActivityForResult(intent, ShipmentActivity.REQUEST_CODE);
+    }
+
+    @Override
+    public void renderToAddressChoice(CartShipmentAddressFormData cartShipmentAddressFormData) {
+        Intent intent = ShipmentActivity.createInstance(getActivity(), cartShipmentAddressFormData,
+                promoCodeAppliedData, cartListData.getCartPromoSuggestion(), cartListData.getDefaultPromoDialogTab(), true
         );
         startActivityForResult(intent, ShipmentActivity.REQUEST_CODE);
     }

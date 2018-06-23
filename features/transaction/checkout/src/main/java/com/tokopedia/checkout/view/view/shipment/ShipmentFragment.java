@@ -72,6 +72,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public static final String ARG_EXTRA_CART_PROMO_SUGGESTION = "ARG_EXTRA_CART_PROMO_SUGGESTION";
     public static final String ARG_EXTRA_PROMO_CODE_APPLIED_DATA = "ARG_EXTRA_PROMO_CODE_APPLIED_DATA";
     public static final String ARG_EXTRA_DEFAULT_SELECTED_TAB_PROMO = "ARG_EXTRA_DEFAULT_SELECTED_TAB_PROMO";
+    public static final String ARG_EXTRA_NAVIGATE_TO_ADDRESS_CHOICE = "ARG_EXTRA_NAVIGATE_TO_ADDRESS_CHOICE";
     private static final String NO_PINPOINT_ETD = "Belum Pinpoint";
     private static final int TOASTER_DURATION = 3000;
 
@@ -95,12 +96,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public static ShipmentFragment newInstance(CartShipmentAddressFormData cartShipmentAddressFormData,
                                                PromoCodeAppliedData promoCodeAppliedData,
                                                CartPromoSuggestion cartPromoSuggestionData,
-                                               String defaultSelectedTabPromo) {
+                                               String defaultSelectedTabPromo,
+                                               boolean navigateToAddressChoice) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARG_EXTRA_SHIPMENT_FORM_DATA, cartShipmentAddressFormData);
         bundle.putParcelable(ARG_EXTRA_CART_PROMO_SUGGESTION, cartPromoSuggestionData);
         bundle.putParcelable(ARG_EXTRA_PROMO_CODE_APPLIED_DATA, promoCodeAppliedData);
         bundle.putString(ARG_EXTRA_DEFAULT_SELECTED_TAB_PROMO, defaultSelectedTabPromo);
+        bundle.putBoolean(ARG_EXTRA_NAVIGATE_TO_ADDRESS_CHOICE, navigateToAddressChoice);
         ShipmentFragment shipmentFragment = new ShipmentFragment();
         shipmentFragment.setArguments(bundle);
 
@@ -193,6 +196,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         rvShipment = view.findViewById(R.id.rv_shipment);
         progressDialogNormal = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         ((SimpleItemAnimator) rvShipment.getItemAnimator()).setSupportsChangeAnimations(false);
+        if (getArguments().getBoolean(ARG_EXTRA_NAVIGATE_TO_ADDRESS_CHOICE, false)) {
+            onAddOrChangeAddress();
+        }
     }
 
     @Override

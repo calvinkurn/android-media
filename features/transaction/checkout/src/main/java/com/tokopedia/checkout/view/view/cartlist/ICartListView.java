@@ -43,6 +43,8 @@ public interface ICartListView extends IBaseView {
 
     void renderToShipmentFormSuccess(CartShipmentAddressFormData shipmentAddressFormData);
 
+    void renderToAddressChoice(CartShipmentAddressFormData cartShipmentAddressFormData);
+
     void renderErrorToShipmentForm(String message);
 
     void renderErrorHttpToShipmentForm(String message);
