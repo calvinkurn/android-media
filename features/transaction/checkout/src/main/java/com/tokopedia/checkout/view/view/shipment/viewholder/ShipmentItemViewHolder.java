@@ -64,7 +64,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
     private static final int KILOGRAM_TO_GRAM_MULTIPLIER = 1000;
 
     private static final int DROPSHIPPER_MIN_NAME_LENGTH = 3;
+    private static final int DROPSHIPPER_MAX_NAME_LENGTH = 100;
     private static final int DROPSHIPPER_MIN_PHONE_LENGTH = 6;
+    private static final int DROPSHIPPER_MAX_PHONE_LENGTH = 20;
     private static final String PHONE_NUMBER_REGEX_PATTERN = "[0-9]+";
 
     private ShipmentAdapterActionListener mActionListener;
@@ -469,7 +471,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                         textInputLayoutShipperName.setError(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_name_empty));
                         mActionListener.onCartDataDisableToCheckout();
                     } else if (etShipperName.getText().length() < DROPSHIPPER_MIN_NAME_LENGTH) {
-                        textInputLayoutShipperName.setError(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_name));
+                        textInputLayoutShipperName.setError(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_name_min_length));
+                        mActionListener.onCartDataDisableToCheckout();
+                    } else if (etShipperName.getText().length() > DROPSHIPPER_MAX_NAME_LENGTH) {
+                        textInputLayoutShipperName.setError(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_name_max_length));
                         mActionListener.onCartDataDisableToCheckout();
                     } else {
                         textInputLayoutShipperName.setErrorEnabled(false);
@@ -509,7 +514,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                         textInputLayoutShipperPhone.setError(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_phone_invalid));
                         mActionListener.onCartDataDisableToCheckout();
                     } else if (etShipperPhone.getText().length() < DROPSHIPPER_MIN_PHONE_LENGTH) {
-                        textInputLayoutShipperPhone.setError(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_phone));
+                        textInputLayoutShipperPhone.setError(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_phone_min_length));
+                        mActionListener.onCartDataDisableToCheckout();
+                    } else if (etShipperPhone.getText().length() > DROPSHIPPER_MAX_PHONE_LENGTH) {
+                        textInputLayoutShipperPhone.setError(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_phone_max_length));
                         mActionListener.onCartDataDisableToCheckout();
                     } else {
                         textInputLayoutShipperPhone.setErrorEnabled(false);
