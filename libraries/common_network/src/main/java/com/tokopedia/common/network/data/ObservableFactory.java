@@ -28,6 +28,7 @@ public class ObservableFactory {
 
                 RestResponse response = new RestResponse(res.getOriginalResponse(), res.getCode(), res.isCached());
                 response.setError(res.isError());
+                response.setErrorBody(res.getErrorBody());
                 results.put(res.getType(), response);
             }
 
@@ -46,6 +47,7 @@ public class ObservableFactory {
 
                 RestResponse response = new RestResponse(res.getOriginalResponse(), res.getCode(), res.isCached());
                 response.setError(res.isError());
+                response.setErrorBody(res.getErrorBody());
                 results.put(res.getType(), response);
             }
 

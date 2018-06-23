@@ -199,16 +199,28 @@ public class CloudRestRestDataStore implements RestDataStore {
 
     private RestResponseIntermediate processData(RestRequest request, Response<String> response) {
         RestResponseIntermediate returnResponse;
-        if (response.code() == RestConstant.HTTP_SUCCESS) {
-            returnResponse = new RestResponseIntermediate(CommonUtil.fromJson(response.body(), request.getTypeOfT()), request.getTypeOfT(), false);
-            returnResponse.setCode(response.code());
-            returnResponse.setError(false);
+        try {
+            if (response.code() == RestConstant.HTTP_SUCCESS) {
+                returnResponse = new RestResponseIntermediate(CommonUtil.fromJson(response.body(), request.getTypeOfT()), request.getTypeOfT(), false);
+                returnResponse.setCode(response.code());
+                returnResponse.setError(false);
 
-            //For success case saving the data into cache
-            cachedData(request, response.body());
-        } else {
-            returnResponse = new RestResponseIntermediate(response.body() == null ? response.errorBody().toString() : response.body(), request.getTypeOfT(), false);
-            returnResponse.setCode(response.code());
+                //For success case saving the data into cache
+                cachedData(request, response.body());
+            } else {
+                //For any kind of error body always be null
+                //E.g. error response like HTTP error code = 400,401,410 or 500 etc.
+                returnResponse = new RestResponseIntermediate(null, request.getTypeOfT(), false);
+                returnResponse.setCode(response.code());
+                returnResponse.setErrorBody(response.body() == null ? response.errorBody().toString() : response.body());
+                returnResponse.setError(true);
+            }
+        } catch (Exception e) {
+            //For any kind of error body always be null
+            //E.g. JSONException while serializing json to POJO.
+            returnResponse = new RestResponseIntermediate(null, request.getTypeOfT(), false);
+            returnResponse.setCode(RestConstant.INTERNAL_EXCEPTION);
+            returnResponse.setErrorBody("Caught Exception please fix it--> Responsible class : " + e.getClass().toString() + " Detailed Message: " + e.getMessage() + ", Cause" + e.getCause());
             returnResponse.setError(true);
         }
         return returnResponse;

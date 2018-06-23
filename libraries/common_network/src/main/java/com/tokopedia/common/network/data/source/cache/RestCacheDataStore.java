@@ -7,6 +7,7 @@ import com.tokopedia.common.network.util.CommonUtil;
 import com.tokopedia.common.network.util.FingerprintManager;
 import com.tokopedia.common.network.util.RestCacheManager;
 import com.tokopedia.common.network.util.RestClient;
+import com.tokopedia.common.network.util.RestConstant;
 
 import javax.inject.Inject;
 
@@ -28,14 +29,20 @@ public class RestCacheDataStore implements RestDataStore {
 
     @Override
     public Observable<RestResponseIntermediate> getResponse(RestRequest request) {
+        RestResponseIntermediate returnResponse;
         try {
             String rowJson = mCacheManager.get(mFingerprintManager.generateFingerPrint(request.toString(), request.getCacheStrategy().isSessionIncluded()));
-            RestResponseIntermediate returnResponse = new RestResponseIntermediate(CommonUtil.fromJson(rowJson, request.getTypeOfT()), request.getTypeOfT(), true);
+            returnResponse = new RestResponseIntermediate(CommonUtil.fromJson(rowJson, request.getTypeOfT()), request.getTypeOfT(), true);
             returnResponse.setCode(1);
             returnResponse.setError(false);
             return Observable.just(returnResponse);
         } catch (Exception e) {
-            e.printStackTrace();
+            //For any kind of error body always be null,
+            //E.g. JSONException while serializing json to POJO.
+            returnResponse = new RestResponseIntermediate(null, request.getTypeOfT(), true);
+            returnResponse.setCode(RestConstant.INTERNAL_EXCEPTION);
+            returnResponse.setErrorBody("Caught Exception please fix it--> Responsible class : " + e.getClass().toString() + " Detailed Message: " + e.getMessage() + ", Cause" + e.getCause());
+            returnResponse.setError(true);
         }
 
         return Observable.just(null);

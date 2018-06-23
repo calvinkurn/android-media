@@ -7,15 +7,13 @@ import java.lang.reflect.Type;
  */
 final public class RestResponseIntermediate {
     final private Object data;
+    private String errorBody;
     final private boolean isCached;
     final private Type type;
     private int code;
     private boolean isError;
 
     public RestResponseIntermediate(Object data, Type type, boolean isCached) {
-        if (data == null) {
-            throw new RuntimeException("Data cannot be null.");
-        }
         this.data = data;
         this.type = type;
         this.isCached = isCached;
@@ -47,6 +45,14 @@ final public class RestResponseIntermediate {
 
     public void setError(boolean error) {
         isError = error;
+    }
+
+    public String getErrorBody() {
+        return errorBody;
+    }
+
+    public void setErrorBody(String errorBody) {
+        this.errorBody = errorBody;
     }
 
     @Override
