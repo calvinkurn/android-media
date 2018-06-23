@@ -83,7 +83,7 @@ public class MultipleAddressFormActivity extends BaseCheckoutActivity {
     public void onBackPressed() {
         final Dialog dialog = new Dialog(this, Dialog.Type.LONG_PROMINANCE);
         fragment.backPressed();
-        dialog.setTitle(getString(R.string.dialog_title_back_to_cart));
+        dialog.setTitle(getString(R.string.dialog_title_back_to_choose_address));
         dialog.setDesc(getString(R.string.dialog_message_back_to_cart));
         dialog.setBtnCancel(getString(R.string.label_dialog_back_to_cart_button_positive));
         dialog.setBtnOk(getString(R.string.label_dialog_back_to_cart_button_negative));
