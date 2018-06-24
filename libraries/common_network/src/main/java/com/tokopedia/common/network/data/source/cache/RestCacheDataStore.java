@@ -13,6 +13,8 @@ import javax.inject.Inject;
 
 import rx.Observable;
 
+import static com.tokopedia.common.network.util.RestConstant.RES_CODE_CACHE;
+
 /**
  * Retrieve the response from cache only
  */
@@ -31,9 +33,14 @@ public class RestCacheDataStore implements RestDataStore {
     public Observable<RestResponseIntermediate> getResponse(RestRequest request) {
         RestResponseIntermediate returnResponse;
         try {
-            String rowJson = mCacheManager.get(mFingerprintManager.generateFingerPrint(request.toString(), request.getCacheStrategy().isSessionIncluded()));
-            returnResponse = new RestResponseIntermediate(CommonUtil.fromJson(rowJson, request.getTypeOfT()), request.getTypeOfT(), true);
-            returnResponse.setCode(1);
+            String rawJson = mCacheManager.get(mFingerprintManager.generateFingerPrint(request.toString(), request.getCacheStrategy().isSessionIncluded()));
+
+            if (rawJson == null || rawJson.isEmpty()) {
+                return Observable.just(null);
+            }
+
+            returnResponse = new RestResponseIntermediate(CommonUtil.fromJson(rawJson, request.getTypeOfT()), request.getTypeOfT(), true);
+            returnResponse.setCode(RES_CODE_CACHE);
             returnResponse.setError(false);
             return Observable.just(returnResponse);
         } catch (Exception e) {
@@ -41,11 +48,11 @@ public class RestCacheDataStore implements RestDataStore {
             //E.g. JSONException while serializing json to POJO.
             returnResponse = new RestResponseIntermediate(null, request.getTypeOfT(), true);
             returnResponse.setCode(RestConstant.INTERNAL_EXCEPTION);
-            returnResponse.setErrorBody("Caught Exception please fix it--> Responsible class : " + e.getClass().toString() + " Detailed Message: " + e.getMessage() + ", Cause" + e.getCause());
+            returnResponse.setErrorBody("Caught Exception please fix it--> Responsible class : " + e.getClass().toString() + " Detailed Message: " + e.getMessage() + ", Cause by: " + e.getCause());
             returnResponse.setError(true);
         }
 
-        return Observable.just(null);
+        return Observable.just(returnResponse);
     }
 }
 

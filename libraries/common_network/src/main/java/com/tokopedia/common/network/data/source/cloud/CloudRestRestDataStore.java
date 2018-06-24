@@ -182,18 +182,23 @@ public class CloudRestRestDataStore implements RestDataStore {
      */
     private void cachedData(@NonNull RestRequest request, @NonNull String responseString) {
         //trying to store the data into cache based on cache strategy;
-        switch (request.getCacheStrategy().getType()) {
-            case NONE:
-            case CACHE_ONLY:
-                //do nothing for now
-                break;
-            case CACHE_FIRST:
-            case ALWAYS_CLOUD:
-                //store the data into disk
-                mCacheManager.save(mFingerprintManager.generateFingerPrint(request.toString(),
-                        request.getCacheStrategy().isSessionIncluded()),
-                        responseString,
-                        request.getCacheStrategy().getExpiryTime());
+        try {
+            switch (request.getCacheStrategy().getType()) {
+                case NONE:
+                case CACHE_ONLY:
+                    //do nothing for now
+                    break;
+                case CACHE_FIRST:
+                case ALWAYS_CLOUD:
+                    //store the data into disk
+                    mCacheManager.save(mFingerprintManager.generateFingerPrint(request.toString(),
+                            request.getCacheStrategy().isSessionIncluded()),
+                            responseString,
+                            request.getCacheStrategy().getExpiryTime());
+            }
+        } catch (Exception e){
+            //Just a defencive check in order to avoid any collision between success response.
+            e.printStackTrace();
         }
     }
 
@@ -220,7 +225,7 @@ public class CloudRestRestDataStore implements RestDataStore {
             //E.g. JSONException while serializing json to POJO.
             returnResponse = new RestResponseIntermediate(null, request.getTypeOfT(), false);
             returnResponse.setCode(RestConstant.INTERNAL_EXCEPTION);
-            returnResponse.setErrorBody("Caught Exception please fix it--> Responsible class : " + e.getClass().toString() + " Detailed Message: " + e.getMessage() + ", Cause" + e.getCause());
+            returnResponse.setErrorBody("Caught Exception please fix it--> Responsible class : " + e.getClass().toString() + " Detailed Message: " + e.getMessage() + ", Cause by: " + e.getCause());
             returnResponse.setError(true);
         }
         return returnResponse;
