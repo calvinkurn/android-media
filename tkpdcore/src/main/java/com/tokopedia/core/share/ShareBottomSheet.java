@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.HotlistPageTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.utils.StringUtils;
@@ -343,6 +344,9 @@ public class ShareBottomSheet extends BottomSheets implements ShareAdapter.OnIte
             case ShareData.APP_SHARE_TYPE:
                 UnifyTracking.eventAppShareWhenReferralOff(AppEventTracking.Action.SELECT_CHANNEL,
                         channel);
+                break;
+            case ShareData.HOTLIST_TYPE:
+                HotlistPageTracking.eventShareHotlist(channel);
                 break;
             default:
                 UnifyTracking.eventShare(channel);
