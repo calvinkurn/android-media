@@ -101,6 +101,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     public static final int TYPE_SQ_PHONE = 1;
     public static final int TYPE_SQ_EMAIL = 2;
 
+    private TextView optionTitle;
     private PartialRegisterInputView partialRegisterInputView;
     private LinearLayout registerContainer, llLayout;
     private LoginTextView registerButton, registerPhoneNumberButton;
@@ -165,6 +166,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
             savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_register_initial, parent, false);
 
+        optionTitle = (TextView) view.findViewById(R.id.register_option_title);
         partialRegisterInputView = (PartialRegisterInputView) view.findViewById(R.id.register_input_view);
         registerContainer = (LinearLayout) view.findViewById(R.id.register_container);
         registerButton = (LoginTextView) view.findViewById(R.id.register);
@@ -195,6 +197,12 @@ public class RegisterInitialFragment extends BaseDaggerFragment
         registerButton.setVisibility(View.GONE);
         registerPhoneNumberButton.setVisibility(View.GONE);
         partialRegisterInputView.setVisibility(View.GONE);
+
+        if (!GlobalConfig.isSellerApp()){
+            optionTitle.setText(R.string.register_option_title);
+            optionTitle.setTypeface(Typeface.DEFAULT);
+            optionTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
+        }
 
         registerButton.setColor(Color.WHITE);
         registerButton.setBorderColor(MethodChecker.getColor(getActivity(), R.color.black_38));
@@ -630,12 +638,12 @@ public class RegisterInitialFragment extends BaseDaggerFragment
         final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
         dialog.setTitle(phone);
         dialog.setDesc(getResources().getString(R.string.phone_number_not_registered_info));
-        dialog.setBtnOk(getString(R.string.already_registered_yes));
+        dialog.setBtnOk(getString(R.string.proceed_with_phone_number));
         dialog.setOnOkClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                onGoToPhoneVerification();
+                goToVerificationPhoneRegister(phone);
             }
         });
         dialog.setBtnCancel(getString(R.string.already_registered_no));
