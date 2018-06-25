@@ -305,7 +305,7 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
             if (itemData.getMinQuantity() != 0) {
                 quantityField.setText(String.valueOf(itemData.getMinQuantity()));
             } else {
-                quantityField.setText("1");
+                quantityField.setText(itemData.getMinQuantity() != 0 ? String.valueOf(itemData.getMinQuantity()) : "1");
             }
         } else {
             quantityField.setText(itemData.getProductQty());
@@ -515,7 +515,7 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
             @Override
             public void afterTextChanged(Editable editable) {
                 if (TextUtils.isEmpty(editable)) {
-                    quantityField.setText("1");
+                    quantityField.setText(data.getMinQuantity() != 0 ? String.valueOf(data.getMinQuantity()) : "1");
                 } else {
                     int zeroCount = 0;
                     for (int i = 0; i < editable.length(); i++) {
@@ -524,13 +524,13 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
                         }
                     }
                     if (zeroCount == editable.length()) {
-                        quantityField.setText("1");
+                        quantityField.setText(data.getMinQuantity() != 0 ? String.valueOf(data.getMinQuantity()) : "1");
                     } else if (editable.charAt(0) == '0') {
                         quantityField.setText(editable.toString().substring(zeroCount, editable.length()));
-                        quantityField.setSelection(quantityField.length());
                     }
                     setQuantityButtonAvailability(editable, decreaseButton, increaseButton);
                     setEditButtonVisibility(editable, data);
+                    quantityField.setSelection(quantityField.length());
                 }
             }
         };
