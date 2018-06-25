@@ -57,11 +57,11 @@ public class GetVideoRecommendationPresenter extends BaseDaggerPresenter<GetVide
                 GraphqlRequest(GraphqlHelper.loadRawString(getView().getContext().getResources(),
                 R.raw.gql_video_recommendation), type, variables);
 
-        GraphqlCacheStrategy graphqlCacheStrategy = new GraphqlCacheStrategy.Builder(CacheType.CACHE_ONLY)
-                .setExpiryTime(GraphqlConstant.ExpiryTimes.HOUR.val())
-                .setSessionIncluded(true)
-                .build();
-        graphqlUseCase.setCacheStrategy(graphqlCacheStrategy);
+//        GraphqlCacheStrategy graphqlCacheStrategy = new GraphqlCacheStrategy.Builder(CacheType.CACHE_ONLY)
+//                .setExpiryTime(GraphqlConstant.ExpiryTimes.HOUR.val())
+//                .setSessionIncluded(true)
+//                .build();
+//        graphqlUseCase.setCacheStrategy(graphqlCacheStrategy);
 
         graphqlUseCase.setRequest(graphqlRequest);
 
