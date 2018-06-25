@@ -56,12 +56,12 @@
                         app:srcCompat="@drawable/ic_toa" />
                 </RelativeLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:id="@+id/top_label_container"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/sp_11"
-                    android:background="@drawable/bg_preorder_label"
-                    android:text="Preorder" />
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal" />
 
             </LinearLayout>
 
@@ -69,9 +69,9 @@
                 android:id="@+id/wishlist_button_container"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
+                android:layout_gravity="top|right"
                 android:layout_marginRight="-2dp"
                 android:layout_marginTop="-2dp"
-                android:layout_gravity="top|right"
                 android:background="@drawable/circle_wishlist"
                 android:visibility="visible">
 
@@ -84,15 +84,12 @@
                     android:background="@drawable/ic_wishlist" />
             </RelativeLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/bottom_label_container"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|left"
-                android:layout_margin="5dp"
-                android:textColor="#42b549"
-                android:textSize="@dimen/sp_11"
-                android:background="@drawable/bg_cashback_label"
-                android:text="Cashback 5%" />
+                android:orientation="horizontal" />
 
         </FrameLayout>
     </android.support.v7.widget.CardView>
@@ -203,19 +200,6 @@
         android:text="@string/baru"
         android:textColor="#279ba4"
         android:textSize="@dimen/text_size_xsmall"
-        android:visibility="gone" />
-
-    <com.tokopedia.topads.sdk.view.FlowLayout
-        android:id="@id/label_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/location_container"
-        android:layout_marginBottom="@dimen/product_grid_padding"
-        android:layout_marginLeft="@dimen/product_grid_padding"
-        android:layout_marginRight="@dimen/product_grid_padding"
-        android:layout_marginTop="5dp"
-        android:gravity="left"
-        android:orientation="horizontal"
         android:visibility="gone" />
 
 </RelativeLayout>

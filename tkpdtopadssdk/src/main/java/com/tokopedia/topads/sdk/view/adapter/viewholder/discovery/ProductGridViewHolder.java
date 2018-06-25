@@ -9,6 +9,7 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.BulletSpan;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -42,7 +43,6 @@ public class ProductGridViewHolder extends AbstractViewHolder<ProductGridViewMod
     private Data data;
     private Context context;
     public LinearLayout badgeContainer;
-    public FlowLayout labelContainer;
     public TextView productName;
     public TextView productPrice;
     public TextView shopLocation;
@@ -51,6 +51,8 @@ public class ProductGridViewHolder extends AbstractViewHolder<ProductGridViewMod
     private ImageView rating;
     private TextView newLabelTxt;
     private TextView reviewCount;
+    private LinearLayout topLabelContainer;
+    private LinearLayout bottomLabelContainer;
 
 
     public ProductGridViewHolder(View itemView, ImageLoader imageLoader, LocalAdsClickListener itemClickListener) {
@@ -60,7 +62,6 @@ public class ProductGridViewHolder extends AbstractViewHolder<ProductGridViewMod
         this.imageLoader = imageLoader;
         context = itemView.getContext();
         badgeContainer = (LinearLayout) itemView.findViewById(R.id.badges_container);
-        labelContainer = (FlowLayout) itemView.findViewById(R.id.label_container);
         productImage = (ImageView) itemView.findViewById(R.id.product_image);
         productName = (TextView) itemView.findViewById(R.id.title);
         productPrice = (TextView) itemView.findViewById(R.id.price);
@@ -68,21 +69,23 @@ public class ProductGridViewHolder extends AbstractViewHolder<ProductGridViewMod
         rating = (ImageView) itemView.findViewById(R.id.rating);
         reviewCount = (TextView) itemView.findViewById(R.id.review_count);
         newLabelTxt = itemView.findViewById(R.id.new_label);
+        topLabelContainer = itemView.findViewById(R.id.top_label_container);
+        bottomLabelContainer = itemView.findViewById(R.id.bottom_label_container);
     }
 
     @Override
     public void bind(ProductGridViewModel element) {
         data = element.getData();
-        if(data.getProduct()!=null){
+        if (data.getProduct() != null) {
             bindProduct(data.getProduct());
         }
-        if(data.getShop()!=null) {
+        if (data.getShop() != null) {
             bindShop(data.getShop());
         }
     }
 
     private void bindShop(Shop shop) {
-        if(shop.getBadges() !=null){
+        if (shop.getBadges() != null) {
             imageLoader.loadBadge(badgeContainer, shop.getBadges());
             SpannableString loc = new SpannableString(shop.getLocation());
             loc.setSpan(new BulletSpan(10, Color.GRAY), 0,
@@ -103,14 +106,11 @@ public class ProductGridViewHolder extends AbstractViewHolder<ProductGridViewMod
             productName.setText(Html.fromHtml(product.getName()));
         }
         productPrice.setText(product.getPriceFormat());
-        if(product.getLabels()!=null){
-            LabelLoader.initLabel(context, labelContainer, product.getLabels());
-        }
 
         if (data.getProduct().getProductRating() == 0) {
             rating.setVisibility(View.GONE);
             reviewCount.setVisibility(View.GONE);
-            if(data.getProduct().isProductNewLabel()){
+            if (data.getProduct().isProductNewLabel()) {
                 newLabelTxt.setVisibility(View.VISIBLE);
             } else {
                 newLabelTxt.setVisibility(View.GONE);
@@ -124,6 +124,24 @@ public class ProductGridViewHolder extends AbstractViewHolder<ProductGridViewMod
             );
             reviewCount.setText("(" + data.getProduct().getCountReviewFormat() + ")");
         }
+        topLabelContainer.removeAllViews();
+        if (product.getTopLabels() != null) {
+            for (String l : product.getTopLabels()) {
+                TextView label = (TextView) LayoutInflater.from(context).inflate(R.layout.layout_top_label,
+                        null, false);
+                label.setText(l);
+                topLabelContainer.addView(label);
+            }
+        }
+        bottomLabelContainer.removeAllViews();
+        if (product.getBottomLabels() != null) {
+            for (String l : product.getBottomLabels()) {
+                TextView label = (TextView) LayoutInflater.from(context).inflate(R.layout.layout_bottom_label,
+                        null, false);
+                label.setText(l);
+                bottomLabelContainer.addView(label);
+            }
+        }
     }
 
     private int getStarCount(int rating) {
@@ -132,7 +150,7 @@ public class ProductGridViewHolder extends AbstractViewHolder<ProductGridViewMod
 
     @Override
     public void onClick(View v) {
-        if(itemClickListener!=null) {
+        if (itemClickListener != null) {
             itemClickListener.onProductItemClicked(getAdapterPosition(), data);
         }
     }
