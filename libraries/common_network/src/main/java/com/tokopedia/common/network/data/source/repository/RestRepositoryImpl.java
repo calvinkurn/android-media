@@ -7,7 +7,7 @@ import com.tokopedia.common.network.data.model.RestCacheStrategy;
 import com.tokopedia.common.network.data.model.RestRequest;
 import com.tokopedia.common.network.data.model.RestResponseIntermediate;
 import com.tokopedia.common.network.data.source.cache.RestCacheDataStore;
-import com.tokopedia.common.network.data.source.cloud.CloudRestRestDataStore;
+import com.tokopedia.common.network.data.source.cloud.RestCloudDataStore;
 import com.tokopedia.common.network.domain.RestRepository;
 
 import java.util.List;
@@ -20,17 +20,17 @@ import rx.functions.Func1;
 
 public class RestRepositoryImpl implements RestRepository {
 
-    private CloudRestRestDataStore mCloud;
+    private RestCloudDataStore mCloud;
     private RestCacheDataStore mCache;
 
     @Inject
     public RestRepositoryImpl() {
-        this.mCloud = new CloudRestRestDataStore();
+        this.mCloud = new RestCloudDataStore();
         this.mCache = new RestCacheDataStore();
     }
 
     public RestRepositoryImpl(List<Interceptor> interceptors, Context context) {
-        this.mCloud = new CloudRestRestDataStore(interceptors, context);
+        this.mCloud = new RestCloudDataStore(interceptors, context);
         this.mCache = new RestCacheDataStore();
     }
 

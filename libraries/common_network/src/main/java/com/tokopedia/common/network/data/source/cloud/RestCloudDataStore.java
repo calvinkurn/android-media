@@ -36,19 +36,19 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import rx.Observable;
 
-public class CloudRestRestDataStore implements RestDataStore {
+public class RestCloudDataStore implements RestDataStore {
     private RestApi mApi;
     private RestCacheManager mCacheManager;
     private FingerprintManager mFingerprintManager;
 
     @Inject
-    public CloudRestRestDataStore() {
+    public RestCloudDataStore() {
         this.mApi = NetworkClient.getApiInterface();
         this.mCacheManager = new RestCacheManager();
         this.mFingerprintManager = NetworkClient.getFingerPrintManager();
     }
 
-    public CloudRestRestDataStore(List<Interceptor> interceptors, Context context) {
+    public RestCloudDataStore(List<Interceptor> interceptors, Context context) {
         this.mApi = getApiInterface(interceptors, context);
         this.mCacheManager = new RestCacheManager();
         this.mFingerprintManager = NetworkClient.getFingerPrintManager();
