@@ -8,7 +8,6 @@ import com.tokopedia.core.analytics.FeedTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.TimeConverter;
 import com.tokopedia.feedplus.domain.model.InspirationItemDomain;
 import com.tokopedia.feedplus.domain.model.TopPicksDomain;
@@ -234,7 +233,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
 
     private void addFeedData(ArrayList<Visitable> listFeedView,
                              List<DataFeedDomain> listFeedDomain) {
-        String loginIdString = SessionHandler.getLoginID(viewListener.getActivity());
+        String loginIdString = viewListener.getUserSession().getUserId();
         int loginIdInt = loginIdString.isEmpty() ? 0 : Integer.valueOf(loginIdString);
         int positionFeedProductCard = cache.getInt(LAST_POSITION_ENHANCE_PRODUCT, 0);
         if (listFeedDomain != null)

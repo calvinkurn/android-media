@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.Resources;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollOptionViewModel;
@@ -23,11 +24,20 @@ public interface FeedPlus {
 
         Context getContext();
 
+        Context getActivity();
+
+        UserSession getUserSession();
+
+        Resources getResources();
+
         void showLoadingProgress();
 
         void finishLoadingProgress();
 
         interface Kol {
+
+            UserSession getUserSession();
+
             void onGoToKolProfileFromRecommendation(int position, int itemPosition, String userId);
 
             void onGoToListKolRecommendation(int page, int rowNumber, String url);
@@ -66,6 +76,8 @@ public interface FeedPlus {
         }
 
         interface Polling {
+            UserSession getUserSession();
+
             void onVoteOptionClicked(int rowNumber, String pollId,
                                      PollOptionViewModel optionViewModel);
 
@@ -132,8 +144,6 @@ public interface FeedPlus {
 
         void showSnackbar(String s);
 
-        Context getActivity();
-
         void updateFavorite(int adapterPosition);
 
         void onViewMorePromoClicked(int page, int rowNumber);
@@ -163,8 +173,6 @@ public interface FeedPlus {
         String getString(int msg_network_error);
 
         int getColor(int black);
-
-        Resources getResources();
 
         void onSeeAllRecentView();
 

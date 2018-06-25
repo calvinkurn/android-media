@@ -1,6 +1,5 @@
 package com.tokopedia.feedplus.view.adapter.viewholder.kol;
 
-import android.content.Context;
 import android.content.res.Resources;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -9,9 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.view.analytics.FeedEnhancedTracking;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
@@ -70,18 +69,15 @@ public class ProductCommunicationAdapter
                 viewListener.onContentProductLinkClicked(
                         itemViewModels.get(adapterPosition).getRedirectUrl());
 
-                doEnhancedTracking(
-                        holder.parentView.getContext(),
-                        itemViewModels.get(adapterPosition)
-                );
+                doEnhancedTracking(itemViewModels.get(adapterPosition));
             }
         });
     }
 
-    private void doEnhancedTracking(Context context, ProductCommunicationItemViewModel item) {
+    private void doEnhancedTracking(ProductCommunicationItemViewModel item) {
+        UserSession userSession = viewListener.getUserSession();
         int loginId = Integer.valueOf(
-                !TextUtils.isEmpty(SessionHandler.getLoginID(context)) ?
-                        SessionHandler.getLoginID(context) : "0"
+                !TextUtils.isEmpty(userSession.getUserId()) ? userSession.getUserId() : "0"
         );
 
         List<FeedEnhancedTracking.Promotion> list = new ArrayList<>();

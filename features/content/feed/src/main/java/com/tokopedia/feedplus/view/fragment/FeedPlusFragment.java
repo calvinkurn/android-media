@@ -52,7 +52,6 @@ import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.util.ClipboardHandler;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.feedplus.FeedModuleRouter;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.domain.usecase.FollowKolPostUseCase;
@@ -72,9 +71,9 @@ import com.tokopedia.feedplus.view.presenter.FeedPlusPresenter;
 import com.tokopedia.feedplus.view.util.NpaLinearLayoutManager;
 import com.tokopedia.feedplus.view.util.ShareBottomDialog;
 import com.tokopedia.feedplus.view.viewmodel.inspiration.InspirationViewModel;
+import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollOptionViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollViewModel;
-import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
 import com.tokopedia.feedplus.view.viewmodel.product.ProductFeedViewModel;
 import com.tokopedia.feedplus.view.viewmodel.promo.PromoCardViewModel;
@@ -203,8 +202,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 false);
         FacebookSdk.sdkInitialize(getActivity().getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
-        String loginIdString = SessionHandler.getLoginID(getActivity());
-        loginIdInt = loginIdString.isEmpty() ? 0 : Integer.valueOf(loginIdString);
 
         if (getActivity().getApplication() instanceof AbstractionRouter) {
             abstractionRouter = (AbstractionRouter) getActivity().getApplication();
@@ -212,6 +209,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
             throw new IllegalStateException("Application must implement " +
                     AbstractionRouter.class.getSimpleName());
         }
+
+        String loginIdString = getUserSession().getUserId();
+        loginIdInt = loginIdString.isEmpty() ? 0 : Integer.valueOf(loginIdString);
     }
 
     @Nullable
@@ -416,7 +416,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 productUrl,
                 positionFeedCard,
                 itemPosition,
-                SessionHandler.getLoginID(getContext()),
+                getUserSession().getUserId(),
                 eventLabel
         );
         goToProductDetail(productId, imageSourceSingle, name, price);
@@ -451,7 +451,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 positionFeedCard,
                 itemPosition,
                 source,
-                SessionHandler.getLoginID(getContext()),
+                getUserSession().getUserId(),
                 eventLabel
         );
 

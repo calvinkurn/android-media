@@ -13,10 +13,10 @@ import android.widget.TextView;
 
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.image.SquareImageView;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.view.analytics.FeedEnhancedTracking;
@@ -123,16 +123,16 @@ public class PollAdapter extends RecyclerView.Adapter<PollAdapter.ViewHolder> {
                     viewListener.onVoteOptionClicked(rowNumber, pollViewModel.getPollId(), element);
                     trackingPromoCode = FeedEnhancedTracking.Promotion.TRACKING_EMPTY;
                 }
-                doEnhancedTracking(context, element, trackingPromoCode);
+                doEnhancedTracking(element, trackingPromoCode);
             }
         });
     }
 
-    private void doEnhancedTracking(Context context, PollOptionViewModel element,
+    private void doEnhancedTracking(PollOptionViewModel element,
                                     String trackingPromoCode) {
+        UserSession userSession = viewListener.getUserSession();
         int loginId = Integer.valueOf(
-                !TextUtils.isEmpty(SessionHandler.getLoginID(context)) ?
-                        SessionHandler.getLoginID(context) : "0"
+                !TextUtils.isEmpty(userSession.getUserId()) ? userSession.getUserId() : "0"
         );
 
         List<FeedEnhancedTracking.Promotion> list = new ArrayList<>();
