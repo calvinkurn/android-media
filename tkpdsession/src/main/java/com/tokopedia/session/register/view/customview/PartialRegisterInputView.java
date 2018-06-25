@@ -3,12 +3,15 @@ package com.tokopedia.session.register.view.customview;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tokopedia.design.base.BaseCustomView;
+import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.session.R;
 import com.tokopedia.session.register.view.presenter.RegisterInitialPresenter;
 
@@ -22,9 +25,9 @@ public class PartialRegisterInputView extends BaseCustomView{
 
     EditText tvInputRegister;
     TextView tvMessage;
-    TextView tvErrorPhone;
-    TextView tvErrorEmail;
+    TextView tvError;
     TextView btnRegister;
+    TkpdHintTextInputLayout wrapper;
 
     @Inject
     RegisterInitialPresenter presenter;
@@ -53,15 +56,55 @@ public class PartialRegisterInputView extends BaseCustomView{
         View view = inflate(getContext(), R.layout.partial_register_input, this);
         tvInputRegister = (EditText) view.findViewById(R.id.input_register);
         tvMessage = view.findViewById(R.id.message);
-        tvErrorPhone = view.findViewById(R.id.error_phone);
-        tvErrorEmail = view.findViewById(R.id.error_email);
+        tvError = view.findViewById(R.id.error_message);
         btnRegister = view.findViewById(R.id.register_btn);
+        wrapper = view.findViewById(R.id.input_layout);
 
         renderData();
     }
 
     public void renderData(){
+        tvInputRegister.addTextChangedListener(watcher(wrapper));
+
         btnRegister.setOnClickListener(new ClickRegister());
+    }
+
+    public void onErrorValidate(String message){
+        setWrapperError(wrapper, message);
+    }
+
+    private void setWrapperError(TkpdHintTextInputLayout wrapper, String s) {
+        if (s == null) {
+            wrapper.setError(null);
+            wrapper.setErrorEnabled(false);
+        } else {
+            wrapper.setErrorEnabled(true);
+            wrapper.setError(s);
+        }
+    }
+
+    private TextWatcher watcher(final TkpdHintTextInputLayout wrapper) {
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(s.length() > 0) {
+                    setWrapperError(wrapper, null);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() == 0){
+                    setWrapperError(wrapper,
+                            getContext().getString(R.string.register_input_empty_error));
+                }
+            }
+        };
     }
 
     private class ClickRegister implements OnClickListener{

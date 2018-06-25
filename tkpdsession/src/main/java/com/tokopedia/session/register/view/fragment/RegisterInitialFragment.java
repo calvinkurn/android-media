@@ -272,6 +272,13 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void goToRegisterEmailPageWithEmail(String email){
+        showProgressBar();
+        Intent intent = RegisterEmailActivity.getCallingIntentWithEmail(getActivity(), email);
+        startActivityForResult(intent, REQUEST_REGISTER_EMAIL);
+    }
+
+    @Override
     public void goToVerificationPhoneRegister(String phone){
         Intent intent = VerificationActivity.getCallingIntent(
                 getActivity(),
@@ -639,6 +646,11 @@ public class RegisterInitialFragment extends BaseDaggerFragment
             }
         });
         dialog.show();
+    }
+
+    @Override
+    public void onErrorValidateRegister(String message) {
+        partialRegisterInputView.onErrorValidate(message);
     }
 
     @Override

@@ -95,7 +95,7 @@ public class RegisterInitialPresenter extends BaseDaggerPresenter<RegisterInitia
 
             @Override
             public void onError(Throwable throwable) {
-
+                getView().onErrorValidateRegister(throwable.getMessage());
             }
 
             @Override
@@ -125,7 +125,7 @@ public class RegisterInitialPresenter extends BaseDaggerPresenter<RegisterInitia
                 getView().showRegisteredEmailDialog(model.getView());
             }
             else {
-                getView().goToRegisterEmailPage();
+                getView().goToRegisterEmailPageWithEmail(model.getView());
             }
         }
     }

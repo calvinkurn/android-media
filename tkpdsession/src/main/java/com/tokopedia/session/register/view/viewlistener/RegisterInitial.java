@@ -55,7 +55,11 @@ public interface RegisterInitial {
 
         void goToRegisterEmailPage();
 
+        void goToRegisterEmailPageWithEmail(String email);
+
         void goToVerificationPhoneRegister(String phone);
+
+        void onErrorValidateRegister(String message);
     }
 
     interface Presenter extends CustomerPresenter<View> {

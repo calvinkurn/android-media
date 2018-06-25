@@ -102,6 +102,7 @@
     <string name="phone_or_email_input">Nomor Ponsel atau Email</string>
     <string name="already_registered_yes">Ya, Masuk</string>
     <string name="already_registered_no">Ubah</string>
+    <string name="register_input_empty_error">Masukkan nomor ponsel atau email untuk mendaftar</string>
 
     <!-- LOGIN PHONE NUMBER -->
     <string name="login_with_phone_number">Masuk dengan Nomor Ponsel</string>
