@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.TextUtils;
 import android.text.style.ImageSpan;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -20,6 +21,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.instantloan.InstantLoanComponentInstance;
 import com.tokopedia.instantloan.R;
 import com.tokopedia.instantloan.ddcollector.DDCollectorManager;
@@ -40,7 +42,10 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class InstantLoanActivity extends BaseSimpleActivity implements HasComponent<AppComponent>, BannerContractor.View, View.OnClickListener {
+public class InstantLoanActivity extends BaseSimpleActivity implements HasComponent<AppComponent>,
+        BannerContractor.View,
+        BannerPagerAdapter.BannerClick,
+        View.OnClickListener {
 
     @Inject
     BannerListPresenter mBannerPresenter;
@@ -185,7 +190,7 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
             findViewById(R.id.container_banner).setVisibility(View.VISIBLE);
             mBannerPager = findViewById(R.id.view_pager_banner);
             mBannerPager.setOffscreenPageLimit(2);
-            mBannerPager.setAdapter(new BannerPagerAdapter(this, banners));
+            mBannerPager.setAdapter(new BannerPagerAdapter(this, banners, this));
             mBannerPager.setPadding(getResources().getDimensionPixelOffset(R.dimen.il_margin_large), 0, getResources().getDimensionPixelOffset(R.dimen.il_margin_large), 0);
             mBannerPager.setClipToPadding(false);
             mBannerPager.setPageMargin(getResources().getDimensionPixelOffset(R.dimen.il_margin_medium));
@@ -312,4 +317,18 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
         imgs.recycle();
         return sb;
     }
+
+    @Override
+    public void onBannerClick(View view) {
+        String url = (String) view.getTag();
+        if (!TextUtils.isEmpty(url)) {
+            openWebView(url);
+        }
+    }
+
+    private void openWebView(String url) {
+        Intent intent = SimpleWebViewWithFilePickerActivity.getIntentWithTitle(this, url, "Pinjaman Online");
+        startActivity(intent);
+    }
 }
+

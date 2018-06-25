@@ -19,10 +19,12 @@ public class BannerPagerAdapter extends PagerAdapter {
 
     private List<BannerViewModel> banners;
     LayoutInflater mInflater;
+    private BannerClick bannerClick;
 
-    public BannerPagerAdapter(Context context, List<BannerViewModel> images) {
+    public BannerPagerAdapter(Context context, List<BannerViewModel> images, BannerClick bannerClick) {
         this.banners = images;
         mInflater = LayoutInflater.from(context);
+        this.bannerClick = bannerClick;
     }
 
     @Override
@@ -46,6 +48,15 @@ public class BannerPagerAdapter extends PagerAdapter {
         ImageHandler.LoadImage(banner,banners.get(position).getImage());
         view.addView(banner);
 
+        banner.setTag(banners.get(position).getLink());
+        banner.setOnClickListener(view1 -> {
+            bannerClick.onBannerClick(view1);
+        });
+
         return banner;
+    }
+
+    public interface BannerClick{
+        public void onBannerClick(View view);
     }
 }
