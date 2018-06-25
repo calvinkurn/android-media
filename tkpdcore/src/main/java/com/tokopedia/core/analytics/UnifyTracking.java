@@ -3226,15 +3226,6 @@ public class UnifyTracking extends TrackingUtils {
         ).setUserId().getEvent());
     }
 
-    public static void eventSearchResultFilter(String screenName, Map<String, String> selectedFilter) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.SEARCH_RESULT,
-                AppEventTracking.Category.FILTER_PRODUCT,
-                AppEventTracking.Action.FILTER.toLowerCase() + " - " + screenName,
-                generateFilterEventLabel(selectedFilter)
-        ).setUserId().getEvent());
-    }
-
     public static void eventSearchResultQuickFilter(String filterName, String filterValue, boolean isSelected) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.SEARCH_RESULT,

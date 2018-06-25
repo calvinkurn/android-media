@@ -320,7 +320,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
                 if (getActivity() instanceof HotlistActivity) {
                     HotlistPageTracking.eventHotlistFilter(getSelectedFilter());
                 } else {
-                    UnifyTracking.eventSearchResultFilter(getScreenName(), getSelectedFilter());
+                    SearchTracking.eventSearchResultFilter(getScreenName(), getSelectedFilter());
                 }
                 clearDataFilterSort();
                 showBottomBarNavigation(false);
