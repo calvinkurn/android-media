@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
@@ -26,10 +27,12 @@ public class ImagePickerPreviewWidget extends FrameLayout implements ImagePicker
     private ImagePickerThumbnailAdapter imagePickerThumbnailAdapter;
 
     private ImagePickerPreviewWidget.OnImagePickerThumbnailListWidgetListener onImagePickerThumbnailListWidgetListener;
+    private RecyclerView recyclerView;
 
     public interface OnImagePickerThumbnailListWidgetListener {
         void onThumbnailItemClicked(String imagePath, int position);
-        void onThumbnailRemoved(String imagePath);
+
+        void afterThumbnailRemoved(int index);
     }
 
     public ImagePickerPreviewWidget(@NonNull Context context) {
@@ -57,8 +60,8 @@ public class ImagePickerPreviewWidget extends FrameLayout implements ImagePicker
         LayoutInflater.from(getContext()).inflate(R.layout.widget_image_picker_thumbnail_list,
                 this, true);
         imagePickerThumbnailAdapter = new ImagePickerThumbnailAdapter(
-                getContext(), null, this);
-        RecyclerView recyclerView = findViewById(R.id.recycler_view);
+                getContext(), null, null, this);
+        recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(imagePickerThumbnailAdapter);
@@ -73,29 +76,45 @@ public class ImagePickerPreviewWidget extends FrameLayout implements ImagePicker
         this.onImagePickerThumbnailListWidgetListener = onImagePickerThumbnailListWidgetListener;
     }
 
-    public void setData(ArrayList<String> imagePathList) {
-        imagePickerThumbnailAdapter.setData(imagePathList);
+    public void setData(ArrayList<String> imagePathList, @StringRes int primaryImageStringRes,
+                        ArrayList<Integer> placeholderDrawableList) {
+        imagePickerThumbnailAdapter.setData(imagePathList, primaryImageStringRes, placeholderDrawableList);
     }
 
-    public void addData(String imagePath){
+    public void addData(String imagePath) {
         imagePickerThumbnailAdapter.addData(imagePath);
+        recyclerView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                int position = imagePickerThumbnailAdapter.getImagePathList().size();
+                recyclerView.smoothScrollToPosition(
+                        position >= imagePickerThumbnailAdapter.getItemCount() ? position - 1 : position);
+            }
+        }, 1);
     }
 
-    public void removeData(String imagePath){
-        imagePickerThumbnailAdapter.removeData(imagePath);
+    public int removeData(String imagePath) {
+        final int position = imagePickerThumbnailAdapter.removeData(imagePath);
+        recyclerView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                recyclerView.smoothScrollToPosition(position > 0 ? position - 1 : position);
+            }
+        }, 1);
+        return position;
     }
 
     @Override
     public void onPickerThumbnailItemClicked(String imagePath, int position) {
-        if (onImagePickerThumbnailListWidgetListener!= null) {
+        if (onImagePickerThumbnailListWidgetListener != null) {
             onImagePickerThumbnailListWidgetListener.onThumbnailItemClicked(imagePath, position);
         }
     }
 
     @Override
-    public void onThumbnailRemoved(String imagePath) {
-        if (onImagePickerThumbnailListWidgetListener!= null) {
-            onImagePickerThumbnailListWidgetListener.onThumbnailRemoved(imagePath);
+    public void onThumbnailRemoved(int index) {
+        if (onImagePickerThumbnailListWidgetListener != null) {
+            onImagePickerThumbnailListWidgetListener.afterThumbnailRemoved(index);
         }
     }
 

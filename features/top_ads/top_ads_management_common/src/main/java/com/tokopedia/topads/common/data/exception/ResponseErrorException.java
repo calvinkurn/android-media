@@ -1,5 +1,7 @@
 package com.tokopedia.topads.common.data.exception;
 
+import com.tokopedia.topads.common.data.response.Error;
+
 import java.io.IOException;
 import java.util.List;
 
