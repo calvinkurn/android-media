@@ -10,11 +10,14 @@ import com.tokopedia.digital_deals.view.activity.DealsLocationActivity;
 import com.tokopedia.digital_deals.view.activity.DealsSearchActivity;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
 import com.tokopedia.digital_deals.view.fragment.AllBrandsFragment;
+import com.tokopedia.digital_deals.view.fragment.BrandDetailsFragment;
 import com.tokopedia.digital_deals.view.fragment.CategoryDetailHomeFragment;
 import com.tokopedia.digital_deals.view.fragment.CheckoutHomeFragment;
 import com.tokopedia.digital_deals.view.fragment.DealDetailsAllRedeemLocationsFragment;
 import com.tokopedia.digital_deals.view.fragment.DealDetailsFragment;
+import com.tokopedia.digital_deals.view.fragment.DealsHomeFragment;
 import com.tokopedia.digital_deals.view.fragment.SelectDealQuantityFragment;
+import com.tokopedia.digital_deals.view.fragment.SelectLocationFragment;
 import com.tokopedia.digital_deals.view.fragment.VoucherListFragment;
 import com.tokopedia.oms.domain.postusecase.PostVerifyCartUseCase;
 
@@ -27,15 +30,7 @@ public interface DealsComponent {
 
     PostVerifyCartUseCase getPostVerifyCartUseCase();
 
-    void inject(DealsHomeActivity activity);
-
     void inject(DealsSearchActivity activity);
-
-    void inject(BrandDetailsActivity activity);
-
-    void inject(DealDetailsActivity activity);
-
-    void inject(DealsLocationActivity activity);
 
     void inject(DealDetailsFragment fragment);
 
@@ -52,4 +47,10 @@ public interface DealsComponent {
     void inject(DealsCategoryAdapter dealsCategoryAdapter);
 
     void inject(VoucherListFragment fragment);
+
+    void inject(SelectLocationFragment fragment);
+
+    void inject(BrandDetailsFragment fragment);
+
+    void inject(DealsHomeFragment dealsHomeFragment);
 }

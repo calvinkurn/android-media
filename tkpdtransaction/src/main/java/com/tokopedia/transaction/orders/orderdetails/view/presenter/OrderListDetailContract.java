@@ -11,6 +11,7 @@ import com.tokopedia.transaction.orders.orderdetails.data.Detail;
 import com.tokopedia.transaction.orders.orderdetails.data.Invoice;
 import com.tokopedia.transaction.orders.orderdetails.data.Items;
 import com.tokopedia.transaction.orders.orderdetails.data.OrderToken;
+import com.tokopedia.transaction.orders.orderdetails.data.PayMethod;
 import com.tokopedia.transaction.orders.orderdetails.data.Pricing;
 import com.tokopedia.transaction.orders.orderdetails.data.Status;
 import com.tokopedia.transaction.orders.orderdetails.data.Title;
@@ -59,6 +60,8 @@ public interface OrderListDetailContract {
         void setItems(List<Items> items);
 
         Context getAppContext();
+
+        void setPayMethodInfo(PayMethod payMethod);
     }
 
     public interface Presenter extends CustomerPresenter<View>{

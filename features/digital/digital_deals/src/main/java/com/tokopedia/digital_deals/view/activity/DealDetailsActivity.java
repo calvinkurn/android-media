@@ -53,6 +53,11 @@ public class DealDetailsActivity extends BaseSimpleActivity implements DealFragm
     }
 
     @Override
+    protected int getLayoutRes() {
+        return R.layout.activity_base_simple_deals;
+    }
+
+    @Override
     protected Fragment getNewFragment() {
         String seoUrl = getIntent().getStringExtra(DealDetailsPresenter.HOME_DATA);
         Bundle bundle = new Bundle();

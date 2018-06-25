@@ -40,7 +40,6 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
     private final int SPAN_COUNT_3 = 3;
     private LinearLayout baseMainContent;
     private LinearLayout noContent;
-    private LinearLayout llSearchView;
     private FrameLayout progressBarLayout;
     private GridLayoutManager layoutManager;
 
@@ -86,7 +85,6 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
         progressBarLayout = view.findViewById(R.id.progress_bar_layout);
         noContent = view.findViewById(R.id.no_content);
         baseMainContent = view.findViewById(R.id.base_main_content);
-        llSearchView = view.findViewById(R.id.ll_search);
         searchInputView.setSearchHint(getResources().getString(R.string.search_input_hint_brand));
         searchInputView.setSearchTextSize(getResources().getDimension(R.dimen.sp_17));
         searchInputView.setSearchImageViewDimens(getResources().getDimensionPixelSize(R.dimen.dp_24), getResources().getDimensionPixelSize(R.dimen.dp_24));
@@ -175,7 +173,6 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
     public void showViews() {
         baseMainContent.setVisibility(View.VISIBLE);
         noContent.setVisibility(View.GONE);
-        llSearchView.setVisibility(View.VISIBLE);
     }
 
     @Override

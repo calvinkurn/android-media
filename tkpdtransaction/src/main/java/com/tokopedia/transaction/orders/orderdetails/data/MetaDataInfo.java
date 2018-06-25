@@ -5,163 +5,134 @@ import com.google.gson.annotations.SerializedName;
 
 public class MetaDataInfo {
 
-    @SerializedName("entity_category_id")
-    @Expose
-    private String entity_category_id;
-
     @SerializedName("end_date")
     @Expose
-    private String end_date;
-
-    @SerializedName("entity_provider_id")
-    @Expose
-    private String entity_provider_id;
-
-    @SerializedName("entity_image")
-    @Expose
-    private String entity_image;
-
-    @SerializedName("entity_product_id")
-    @Expose
-    private String entity_product_id;
-
-    @SerializedName("total_ticket_price")
-    @Expose
-    private String total_ticket_price;
-
-    @SerializedName("entity_brand_name")
-    @Expose
-    private String entity_brand_name;
-
-    @SerializedName("total_ticket_count")
-    @Expose
-    private String total_ticket_count;
-
-    @SerializedName("start_date")
-    @Expose
-    private String start_date;
-
-    @SerializedName("entity_product_name")
-    @Expose
-    private String entity_product_name;
-
+    private String endDate;
     @SerializedName("entity_address")
     @Expose
-    private EntityAddress entityaddress;
+    private EntityAddress entityAddress;
+    @SerializedName("entity_brand_name")
+    @Expose
+    private String entityBrandName;
+    @SerializedName("entity_category_id")
+    @Expose
+    private int entityCategoryId;
+    @SerializedName("entity_image")
+    @Expose
+    private String entityImage;
+    @SerializedName("entity_product_id")
+    @Expose
+    private int entityProductId;
+    @SerializedName("entity_product_name")
+    @Expose
+    private String entityProductName;
+    @SerializedName("entity_provider_id")
+    @Expose
+    private int entityProviderId;
+    @SerializedName("start_date")
+    @Expose
+    private String startDate;
+    @SerializedName("total_ticket_count")
+    @Expose
+    private int totalTicketCount;
+    @SerializedName("total_ticket_price")
+    @Expose
+    private int totalTicketPrice;
 
-
-    public String getEntity_category_id ()
-    {
-        return entity_category_id;
+    public String getEndDate() {
+        return endDate;
     }
 
-    public void setEntity_category_id (String entity_category_id)
-    {
-        this.entity_category_id = entity_category_id;
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
     }
 
-    public String getEnd_date ()
-    {
-        return end_date;
+    public EntityAddress getEntityAddress() {
+        return entityAddress;
     }
 
-    public void setEnd_date (String end_date)
-    {
-        this.end_date = end_date;
+    public void setEntityAddress(EntityAddress entityAddress) {
+        this.entityAddress = entityAddress;
     }
 
-    public String getEntity_provider_id ()
-    {
-        return entity_provider_id;
+    public String getEntityBrandName() {
+        return entityBrandName;
     }
 
-    public void setEntity_provider_id (String entity_provider_id)
-    {
-        this.entity_provider_id = entity_provider_id;
+    public void setEntityBrandName(String entityBrandName) {
+        this.entityBrandName = entityBrandName;
     }
 
-    public String getEntity_image ()
-    {
-        return entity_image;
+    public int getEntityCategoryId() {
+        return entityCategoryId;
     }
 
-    public void setEntity_image (String entity_image)
-    {
-        this.entity_image = entity_image;
+    public void setEntityCategoryId(int entityCategoryId) {
+        this.entityCategoryId = entityCategoryId;
     }
 
-    public String getEntity_product_id ()
-    {
-        return entity_product_id;
+    public String getEntityImage() {
+        return entityImage;
     }
 
-    public void setEntity_product_id (String entity_product_id)
-    {
-        this.entity_product_id = entity_product_id;
+    public void setEntityImage(String entityImage) {
+        this.entityImage = entityImage;
     }
 
-    public String getTotal_ticket_price ()
-    {
-        return total_ticket_price;
+    public int getEntityProductId() {
+        return entityProductId;
     }
 
-    public void setTotal_ticket_price (String total_ticket_price)
-    {
-        this.total_ticket_price = total_ticket_price;
+    public void setEntityProductId(int entityProductId) {
+        this.entityProductId = entityProductId;
     }
 
-    public String getEntity_brand_name ()
-    {
-        return entity_brand_name;
+    public String getEntityProductName() {
+        return entityProductName;
     }
 
-    public void setEntity_brand_name (String entity_brand_name)
-    {
-        this.entity_brand_name = entity_brand_name;
+    public void setEntityProductName(String entityProductName) {
+        this.entityProductName = entityProductName;
     }
 
-    public String getTotal_ticket_count ()
-    {
-        return total_ticket_count;
+    public int getEntityProviderId() {
+        return entityProviderId;
     }
 
-    public void setTotal_ticket_count (String total_ticket_count)
-    {
-        this.total_ticket_count = total_ticket_count;
+    public void setEntityProviderId(int entityProviderId) {
+        this.entityProviderId = entityProviderId;
     }
 
-    public String getStart_date ()
-    {
-        return start_date;
+    public String getStartDate() {
+        return startDate;
     }
 
-    public void setStart_date (String start_date)
-    {
-        this.start_date = start_date;
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
     }
 
-    public String getEntity_product_name ()
-    {
-        return entity_product_name;
+    public int getTotalTicketCount() {
+        return totalTicketCount;
     }
 
-    public void setEntity_product_name (String entity_product_name)
-    {
-        this.entity_product_name = entity_product_name;
+    public void setTotalTicketCount(int totalTicketCount) {
+        this.totalTicketCount = totalTicketCount;
     }
 
-    public EntityAddress getEntityaddress () {
-        return entityaddress;
+    public int getTotalTicketPrice() {
+        return totalTicketPrice;
     }
 
-    public void setEntity_address (EntityAddress entityaddress)
-    {
-        this.entityaddress = entityaddress;
+    public void setTotalTicketPrice(int totalTicketPrice) {
+        this.totalTicketPrice = totalTicketPrice;
     }
 
-    @Override
-    public String toString()
-    {
-        return "ClassPojo [entity_category_id = "+entity_category_id+", end_date = "+end_date+", entity_provider_id = "+entity_provider_id+", entity_image = "+entity_image+", entity_product_id = "+entity_product_id+", total_ticket_price = "+total_ticket_price+", entity_brand_name = "+entity_brand_name+", total_ticket_count = "+total_ticket_count+", start_date = "+start_date+", entity_product_name = "+entity_product_name+", entity_address = "+entityaddress+"]";
+    public EntityAddress getEntityaddress() {
+        return entityAddress;
     }
+
+    public void setEntity_address(EntityAddress entityaddress) {
+        this.entityAddress = entityaddress;
+    }
+
 }

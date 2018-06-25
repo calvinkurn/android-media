@@ -13,18 +13,11 @@
         android:background="@color/bottomnav_bg"
         app:elevation="@dimen/dp_0">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:minHeight="?attr/actionBarSize" />
-
         <LinearLayout
             android:id="@+id/ll_search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            >
+            android:orientation="vertical">
 
             <View
                 android:id="@+id/divider1"
@@ -41,7 +34,6 @@
                 android:layout_marginRight="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_8" />
         </LinearLayout>
-
 
     </android.support.design.widget.AppBarLayout>
 

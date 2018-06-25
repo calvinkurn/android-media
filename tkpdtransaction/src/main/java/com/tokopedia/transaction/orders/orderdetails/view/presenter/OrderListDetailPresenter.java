@@ -14,6 +14,7 @@ import com.tokopedia.transaction.orders.orderdetails.data.AdditionalInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.Detail;
 import com.tokopedia.transaction.orders.orderdetails.data.DetailsData;
 import com.tokopedia.transaction.orders.orderdetails.data.OrderDetails;
+import com.tokopedia.transaction.orders.orderdetails.data.PayMethod;
 import com.tokopedia.transaction.orders.orderdetails.data.Pricing;
 import com.tokopedia.transaction.orders.orderdetails.data.Title;
 import com.tokopedia.transaction.orders.orderdetails.domain.OrderDetailsUseCase;
@@ -68,7 +69,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             @Override
             public void onNext(GraphqlResponse response) {
 
-                if(response != null) {
+                if (response != null) {
                     DetailsData data = response.getData(DetailsData.class);
 
                     setDetailsData(data.orderDetails());
@@ -90,7 +91,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         for (Detail detail : details.detail()) {
             getView().setDetail(detail);
         }
-        if(details.getItems()!=null && details.getItems().size()>0){
+        if (details.getItems() != null && details.getItems().size() > 0) {
             getView().setItems(details.getItems());
         }
         if (details.additionalInfo().size() > 0) {
@@ -99,6 +100,10 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         for (AdditionalInfo additionalInfo : details.additionalInfo()) {
 
             getView().setAdditionalInfo(additionalInfo);
+        }
+        for (PayMethod payMethod : details.getPayMethods()) {
+            if (payMethod.getValue() != null && !payMethod.getValue().equals(""))
+                getView().setPayMethodInfo(payMethod);
         }
         for (Pricing pricing : details.pricing()) {
             if (pricing.value() != null && !pricing.value().equals(""))
@@ -125,7 +130,6 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         } else {
             getView().setActionButtonsVisibility(View.GONE, View.GONE);
         }
-
 
 
         getView().setMainViewVisible(View.VISIBLE);

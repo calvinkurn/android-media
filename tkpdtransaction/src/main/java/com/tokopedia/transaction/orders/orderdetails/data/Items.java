@@ -36,7 +36,7 @@ public class Items {
 
     @SerializedName("metaData")
     @Expose
-    private MetaDataInfo metaData;
+    private String metaData;
 
 
     public String getTitle() {
@@ -95,11 +95,11 @@ public class Items {
         this.actionButtons = actionButtons;
     }
 
-    public MetaDataInfo getMetaData() {
+    public String getMetaData() {
         return metaData;
     }
 
-    public void setMetaData(MetaDataInfo metaData) {
+    public void setMetaData(String metaData) {
         this.metaData = metaData;
     }
 

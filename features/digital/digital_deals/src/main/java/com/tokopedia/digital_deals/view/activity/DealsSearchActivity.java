@@ -30,6 +30,7 @@ import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
 import com.tokopedia.digital_deals.view.adapter.TopDealsSuggestionsAdapter;
 import com.tokopedia.digital_deals.view.contractor.DealsSearchContract;
 import com.tokopedia.digital_deals.view.customview.SearchInputView;
+import com.tokopedia.digital_deals.view.fragment.SelectLocationFragment;
 import com.tokopedia.digital_deals.view.presenter.DealsSearchPresenter;
 import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
@@ -52,15 +53,12 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
     private LinearLayout llDeals;
     private CoordinatorLayout baseMainContent;
     private ConstraintLayout clLocation;
-    private LinearLayout llTopEvents;
+
     private LinearLayoutManager layoutManager;
-    private LinearLayoutManager layoutManager1;
 
     private android.view.View progressBarLayout;
-    private ProgressBar progBar;
     private SearchInputView searchInputView;
-    private RecyclerView rvSearchResults;
-    private RecyclerView rvTopDealsSuggestions;
+    private RecyclerView rvDeals;
     private TextView tvTopDeals;
     private ImageView back;
     private TextView dealsInCity;
@@ -90,14 +88,11 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
     }
 
     private void setUpVariables() {
-        rvTopDealsSuggestions = findViewById(R.id.rv_top_events_suggestions);
-        rvSearchResults = findViewById(R.id.rv_search_results);
+        rvDeals = findViewById(R.id.rv_search_results);
         searchInputView = findViewById(R.id.search_input_view);
-        progBar = findViewById(R.id.prog_bar);
         progressBarLayout = findViewById(R.id.progress_bar_layout);
         mainContent = findViewById(R.id.main_content);
         tvTopDeals = findViewById(R.id.tv_topevents);
-        llTopEvents = findViewById(R.id.ll_topevents);
         back = findViewById(R.id.imageViewBack);
         noContent = findViewById(R.id.no_content);
         llDeals = findViewById(R.id.ll_deals);
@@ -113,9 +108,8 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
         searchInputView.setSearchImageViewDimens(getResources().getDimensionPixelSize(R.dimen.dp_18), getResources().getDimensionPixelSize(R.dimen.dp_18));
         searchInputView.setSearchImageView(getResources().getDrawable(R.drawable.ic_search_grey));
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-        layoutManager1 = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-        rvTopDealsSuggestions.setLayoutManager(layoutManager);
-        rvSearchResults.setLayoutManager(layoutManager1);
+        rvDeals.setLayoutManager(layoutManager);
+
     }
 
     @Override
@@ -157,22 +151,22 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
 
         if (categoryItemsViewModels != null && categoryItemsViewModels.size() != 0) {
             DealsCategoryAdapter dealsCategoryAdapter = new DealsCategoryAdapter(getActivity(), categoryItemsViewModels, !IS_SHORT_LAYOUT);
-            rvSearchResults.addOnScrollListener(rvOnScrollListener);
-            rvSearchResults.setAdapter(dealsCategoryAdapter);
+            rvDeals.addOnScrollListener(rvOnScrollListener);
+            rvDeals.setAdapter(dealsCategoryAdapter);
             llDeals.setVisibility(View.VISIBLE);
             noContent.setVisibility(View.GONE);
+            dealsInCity.setVisibility(View.VISIBLE);
+            tvTopDeals.setVisibility(View.GONE);
             dealsInCity.setText(String.format(getString(R.string.deals_search_location_result), searchText, location.getName()));
-            llTopEvents.setVisibility(View.GONE);
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             if (imm != null) {
                 imm.hideSoftInputFromWindow(searchInputView.getSearchTextView().getWindowToken(), 0);
-                rvSearchResults.requestFocus();
+                rvDeals.requestFocus();
             }
 
 
         } else {
             llDeals.setVisibility(View.GONE);
-            llTopEvents.setVisibility(View.GONE);
             noContent.setVisibility(View.VISIBLE);
         }
         clLocation.setVisibility(View.VISIBLE);
@@ -211,21 +205,21 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
 
         if (searchViewModels != null && !searchViewModels.isEmpty()) {
             TopDealsSuggestionsAdapter adapter = new TopDealsSuggestionsAdapter(this, searchViewModels, mPresenter);
-            rvTopDealsSuggestions.setAdapter(adapter);
-            rvTopDealsSuggestions.removeOnScrollListener(rvOnScrollListener);
-            rvSearchResults.removeOnScrollListener(rvOnScrollListener);
+            llDeals.setVisibility(View.VISIBLE);
+            rvDeals.setAdapter(adapter);
+            rvDeals.removeOnScrollListener(rvOnScrollListener);
             tvTopDeals.setVisibility(View.VISIBLE);
+            dealsInCity.setVisibility(View.GONE);
             noContent.setVisibility(View.GONE);
-            llTopEvents.setVisibility(View.VISIBLE);
             clLocation.setVisibility(View.GONE);
 
         } else {
-            llTopEvents.setVisibility(View.GONE);
+            llDeals.setVisibility(View.GONE);
             noContent.setVisibility(View.VISIBLE);
             clLocation.setVisibility(View.VISIBLE);
 
         }
-        llDeals.setVisibility(View.GONE);
+
         tvCityName.setText(location.getName());
 
     }
@@ -236,55 +230,51 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
         if (suggestions != null && !suggestions.isEmpty()) {
             TopDealsSuggestionsAdapter adapter = new TopDealsSuggestionsAdapter(this, suggestions, mPresenter);
             adapter.setHighLightText(highlight);
-            rvTopDealsSuggestions.setAdapter(adapter);
-            rvTopDealsSuggestions.addOnScrollListener(rvOnScrollListener);
-            llTopEvents.setVisibility(View.VISIBLE);
+            llDeals.setVisibility(View.VISIBLE);
+            rvDeals.setAdapter(adapter);
+            rvDeals.addOnScrollListener(rvOnScrollListener);
             tvTopDeals.setVisibility(View.GONE);
+            dealsInCity.setVisibility(View.GONE);
             noContent.setVisibility(View.GONE);
             clLocation.setVisibility(View.GONE);
         } else {
-            llTopEvents.setVisibility(View.GONE);
+            llDeals.setVisibility(View.GONE);
             noContent.setVisibility(View.VISIBLE);
             clLocation.setVisibility(View.VISIBLE);
         }
-        llDeals.setVisibility(View.GONE);
         tvCityName.setText(location.getName());
     }
 
     @Override
     public void removeFooter(boolean searchSubmitted) {
         if (searchSubmitted) {
-            ((DealsCategoryAdapter) rvSearchResults.getAdapter()).removeFooter();
+            ((DealsCategoryAdapter) rvDeals.getAdapter()).removeFooter();
         } else
-            ((TopDealsSuggestionsAdapter) rvTopDealsSuggestions.getAdapter()).removeFooter();
+            ((TopDealsSuggestionsAdapter) rvDeals.getAdapter()).removeFooter();
     }
 
     @Override
     public void addFooter(boolean searchSubmitted) {
         if (searchSubmitted)
-            ((DealsCategoryAdapter) rvSearchResults.getAdapter()).addFooter();
+            ((DealsCategoryAdapter) rvDeals.getAdapter()).addFooter();
         else
-            ((TopDealsSuggestionsAdapter) rvTopDealsSuggestions.getAdapter()).addFooter();
+            ((TopDealsSuggestionsAdapter) rvDeals.getAdapter()).addFooter();
     }
 
     @Override
     public void addDealsToCards(List<CategoryItemsViewModel> categoryItemsViewModels) {
-        ((DealsCategoryAdapter) rvSearchResults.getAdapter()).addAll(categoryItemsViewModels);
+        ((DealsCategoryAdapter) rvDeals.getAdapter()).addAll(categoryItemsViewModels);
     }
 
 
     @Override
     public void addDeals(List<CategoryItemsViewModel> searchViewModels) {
-        ((TopDealsSuggestionsAdapter) rvTopDealsSuggestions.getAdapter()).addAll(searchViewModels);
+        ((TopDealsSuggestionsAdapter) rvDeals.getAdapter()).addAll(searchViewModels);
     }
 
     @Override
     public LinearLayoutManager getLayoutManager() {
-        if (llTopEvents.getVisibility()==View.VISIBLE){
-            return layoutManager;
-        }else{
-            return layoutManager1;
-        }
+        return layoutManager;
     }
 
     private void initInjector() {
@@ -332,7 +322,7 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
                         finish();
                     } else {
                         if (data != null) {
-                            boolean isLocationUpdated = data.getBooleanExtra(DealsLocationActivity.EXTRA_CALLBACK_LOCATION, true);
+                            boolean isLocationUpdated = data.getBooleanExtra(SelectLocationFragment.EXTRA_CALLBACK_LOCATION, true);
                             if (isLocationUpdated)
                                 Utils.getSingletonInstance().setSnackBarLocationChange(location.getName(), getActivity(), mainContent);
                         }

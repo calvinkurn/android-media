@@ -14,6 +14,12 @@ import com.tokopedia.digital_deals.view.viewmodel.CategoriesModel;
 
 public class CategoryDetailActivity extends BaseSimpleActivity implements CategoryDetailCallbacks{
 
+
+    @Override
+    protected int getLayoutRes() {
+        return R.layout.activity_base_simple_deals;
+    }
+
     @Override
     protected Fragment getNewFragment() {
         Bundle bundle = new Bundle();

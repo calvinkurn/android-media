@@ -1,6 +1,7 @@
 package com.tokopedia.transaction.orders.orderdetails.view.adapter;
 
 import android.content.Context;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,8 +10,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 
+import com.google.gson.Gson;
+import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.orders.orderdetails.data.EntityAddress;
 import com.tokopedia.transaction.orders.orderdetails.data.Items;
+import com.tokopedia.transaction.orders.orderdetails.data.MetaDataInfo;
 
 import java.util.List;
 
@@ -92,31 +99,51 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         private TextView validDate;
         private TextView redeemButton;
         private TextView voucherRedeemedDate;
+        private ConstraintLayout clCard;
         private int index;
 
         public ItemViewHolder(View itemView, boolean isShortLayout) {
             super(itemView);
             this.itemView = itemView;
-            dealImage = itemView.findViewById(R.id.imageView);
+            dealImage = itemView.findViewById(R.id.iv_deal);
             dealsDetails = itemView.findViewById(R.id.tv_deal_intro);
             brandName = itemView.findViewById(R.id.tv_brand_name);
             cityName = itemView.findViewById(R.id.tv_redeem_locations);
             if (!isShortLayout) {
                 validDate = itemView.findViewById(R.id.tv_valid_till_date);
                 redeemButton = itemView.findViewById(R.id.tv_redeem_voucher);
-                voucherRedeemedDate=itemView.findViewById(R.id.tv_voucher_redeemed);
+                voucherRedeemedDate = itemView.findViewById(R.id.tv_voucher_redeemed);
+                clCard = itemView.findViewById(R.id.cl_card);
 
             }
-
 
         }
 
-        public void bindData(final Items items, boolean isShortLayout) {
+        public void bindData(final Items item, boolean isShortLayout) {
 
-            if (!isShortLayout) {
-//                validDate.setText();
-                redeemButton.setOnClickListener(this);
+            MetaDataInfo metaDataInfo = null;
+
+            if (item.getMetaData() != null) {
+                Gson gson = new Gson();
+                metaDataInfo = gson.fromJson(item.getMetaData(), MetaDataInfo.class);
             }
+            if(metaDataInfo!=null) {
+                ImageHandler.loadImage(context, dealImage, metaDataInfo.getEntityImage(), R.color.grey_1100, R.color.grey_1100);
+                dealsDetails.setText(metaDataInfo.getEntityProductName());
+                brandName.setText(metaDataInfo.getEntityBrandName());
+                if (!isShortLayout) {
+//                validDate.setText();
+                    redeemButton.setOnClickListener(this);
+                    validDate.setText(String.format(context.getResources().getString(R.string.text_valid_till), metaDataInfo.getEndDate()));
+                }
+                EntityAddress entityAddress = metaDataInfo.getEntityAddress();
+                if (entityAddress != null) {
+                    cityName.setText(entityAddress.getAddress() + ", " + entityAddress.getCity() + ", " + entityAddress.getDistrict() + ", " + entityAddress.getState());
+                }
+            }
+
+
+
         }
 
         public void setIndex(int position) {

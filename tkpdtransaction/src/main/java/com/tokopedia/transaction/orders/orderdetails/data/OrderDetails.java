@@ -54,7 +54,7 @@ public class OrderDetails {
     @SerializedName("actionButtons")
     @Expose
     private List<ActionButton> actionButtons;
-    @SerializedName("conditionalInfo")
+    @SerializedName("items")
     @Expose
     private List<Items> items;
 

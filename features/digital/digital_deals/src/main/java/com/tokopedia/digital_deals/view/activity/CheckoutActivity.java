@@ -25,6 +25,12 @@ public class CheckoutActivity extends BaseSimpleActivity implements DealFragment
     private final String LOCATION_FRAGMENT = "LOCATION_FRAGMENT";
     private final String HOME_FRAGMENT = "HOME_FRAGMENT";
 
+
+    @Override
+    protected int getLayoutRes() {
+        return R.layout.activity_base_simple_deals;
+    }
+
     @Override
     protected Fragment getNewFragment() {
         getSupportFragmentManager().addOnBackStackChangedListener(getListener());
@@ -87,7 +93,7 @@ public class CheckoutActivity extends BaseSimpleActivity implements DealFragment
                             toolbar.setTitle(getResources().getString(R.string.redeem_locations));
                         else
                             toolbar.setTitle(getResources().getString(R.string.activity_checkout_title));
-                    }else{
+                    } else {
                         toolbar.setTitle(getResources().getString(R.string.activity_checkout_title));
                     }
                 }

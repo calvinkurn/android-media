@@ -53,7 +53,6 @@ public class DealsSearchPresenter
         highlight = searchText;
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(getSearchDealsListRequestUseCase.TAG, searchText);
-
         getSearchDealsListRequestUseCase.execute(requestParams, new Subscriber<SearchDomainModel>() {
             @Override
             public void onCompleted() {

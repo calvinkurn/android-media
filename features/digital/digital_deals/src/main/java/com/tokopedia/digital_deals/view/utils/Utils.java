@@ -413,7 +413,7 @@ public class Utils {
     }
 
     public void setSnackBarLocationChange(String locationName, Context context, ViewGroup coordinatorLayout) {
-        final Snackbar snackbar = Snackbar.make(coordinatorLayout, locationName, Snackbar.LENGTH_INDEFINITE);
+        final Snackbar snackbar = Snackbar.make(coordinatorLayout, locationName, Snackbar.LENGTH_LONG);
         Snackbar.SnackbarLayout layout = (Snackbar.SnackbarLayout) snackbar.getView();
 
         TextView textView = layout.findViewById(android.support.design.R.id.snackbar_text);

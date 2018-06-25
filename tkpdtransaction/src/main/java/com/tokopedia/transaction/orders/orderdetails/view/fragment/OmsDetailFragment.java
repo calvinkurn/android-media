@@ -36,6 +36,7 @@ import com.tokopedia.transaction.orders.orderdetails.data.Detail;
 import com.tokopedia.transaction.orders.orderdetails.data.Invoice;
 import com.tokopedia.transaction.orders.orderdetails.data.Items;
 import com.tokopedia.transaction.orders.orderdetails.data.OrderToken;
+import com.tokopedia.transaction.orders.orderdetails.data.PayMethod;
 import com.tokopedia.transaction.orders.orderdetails.data.Pricing;
 import com.tokopedia.transaction.orders.orderdetails.data.Status;
 import com.tokopedia.transaction.orders.orderdetails.data.Title;
@@ -79,6 +80,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     private TextView beliLagi;
     private RecyclerView recyclerView;
     private TextView redeemInfo;
+    LinearLayout paymentMethodInfo;
 
 
     @Override
@@ -124,6 +126,8 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         beliLagi = view.findViewById(R.id.beli_lagi);
         recyclerView = view.findViewById(R.id.recycler_view);
         redeemInfo=view.findViewById(R.id.tv_redeem_info);
+        paymentMethodInfo = view.findViewById(R.id.info_payment);
+
         initInjector();
         setMainViewVisible(View.GONE);
         presenter.attachView(this);
@@ -248,26 +252,26 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
 
     @Override
     public void setTopActionButton(ActionButton actionButton) {
-        langannan.setText(actionButton.label());
+        langannan.setText(actionButton.getLabel());
         GradientDrawable shape = new GradientDrawable();
         shape.setShape(GradientDrawable.RECTANGLE);
         shape.setCornerRadius(4);
         shape.setColor(getResources().getColor(R.color.white));
         shape.setStroke(2, getResources().getColor(R.color.grey_300));
         langannan.setBackground(shape);
-        langannan.setOnClickListener(getActionButtonClickListener(actionButton.uri()));
+        langannan.setOnClickListener(getActionButtonClickListener(actionButton.getLabel()));
     }
 
     @Override
     public void setBottomActionButton(ActionButton actionButton) {
-        beliLagi.setText(actionButton.label());
+        beliLagi.setText(actionButton.getLabel());
         GradientDrawable shape = new GradientDrawable();
         shape.setShape(GradientDrawable.RECTANGLE);
         shape.setCornerRadius(4);
         shape.setColor(getResources().getColor(R.color.deep_orange_500));
         beliLagi.setBackground(shape);
         beliLagi.setTextColor(getResources().getColor(R.color.white));
-        beliLagi.setOnClickListener(getActionButtonClickListener(actionButton.uri()));
+        beliLagi.setOnClickListener(getActionButtonClickListener(actionButton.getUri()));
     }
 
     private View.OnClickListener getActionButtonClickListener(final String uri) {
@@ -301,6 +305,15 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     @Override
     public Context getAppContext() {
         return getActivity().getApplicationContext();
+    }
+
+    @Override
+    public void setPayMethodInfo(PayMethod payMethod) {
+        DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
+        doubleTextView.setTopText(payMethod.getLabel());
+        doubleTextView.setBottomText(payMethod.getValue());
+        doubleTextView.setBottomGravity(Gravity.RIGHT);
+        paymentMethodInfo.addView(doubleTextView);
     }
 
     @Override
