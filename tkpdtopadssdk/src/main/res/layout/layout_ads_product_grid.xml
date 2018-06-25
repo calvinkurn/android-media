@@ -39,7 +39,8 @@
                 android:layout_alignParentTop="true"
                 android:layout_margin="5dp"
                 android:background="@drawable/circle_white"
-                android:visibility="visible">
+                android:visibility="visible"
+                android:id="@+id/relativeLayout">
 
                 <ImageView
                     android:id="@id/info_topads"
@@ -67,8 +68,24 @@
                     android:layout_marginLeft="@dimen/dp_5"
                     android:layout_centerVertical="true"
                     android:background="@drawable/ic_wishlist" />
-
             </RelativeLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/relativeLayout"
+                android:layout_toEndOf="@+id/relativeLayout"
+                android:layout_toRightOf="@+id/relativeLayout"
+                android:text="Preorder" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/relativeLayout"
+                android:layout_alignParentBottom="true"
+                android:layout_alignStart="@+id/relativeLayout"
+                android:layout_marginBottom="7dp"
+                android:text="Cashback 5%" />
         </RelativeLayout>
     </android.support.v7.widget.CardView>
 
