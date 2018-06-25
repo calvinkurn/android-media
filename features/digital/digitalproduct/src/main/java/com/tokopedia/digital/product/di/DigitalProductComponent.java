@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.digital.product.view.activity.DigitalProductBaseDaggerActivity;
 
 import dagger.Component;
 
@@ -17,5 +18,5 @@ public interface DigitalProductComponent {
 
     @ApplicationContext Context context();
 
-
+    void inject(DigitalProductBaseDaggerActivity digitalProductBaseDaggerActivity);
 }
