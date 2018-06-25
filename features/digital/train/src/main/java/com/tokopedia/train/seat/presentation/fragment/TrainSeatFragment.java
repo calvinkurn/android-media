@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.design.component.Menus;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.seat.di.TrainSeatComponent;
 import com.tokopedia.train.seat.presentation.contract.TrainSeatContract;
@@ -21,6 +22,7 @@ import com.tokopedia.train.seat.presentation.viewmodel.TrainWagonViewModel;
 import com.tokopedia.train.seat.presentation.widget.CountdownTimeView;
 import com.tokopedia.train.seat.presentation.widget.TrainSeatPassengerAndWagonView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -35,6 +37,7 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
     private ViewPager wagonViewPager;
     private Button submitButton;
     private List<TrainSeatPassengerViewModel> passengers;
+    private List<TrainWagonViewModel> wagons;
 
 
     public static Fragment newInstance() {
@@ -92,6 +95,7 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
 
     @Override
     public void renderWagon(List<TrainWagonViewModel> trainWagonViewModels) {
+        wagons = trainWagonViewModels;
         trainSeatHeader.renderWagon(trainWagonViewModels.get(0).getWagonCode());
         trainSeatHeader.renderPassenger(passengers);
 
@@ -106,11 +110,33 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
 
             }
         });
+        wagonViewPager.setOffscreenPageLimit(1);
         wagonViewPager.setAdapter(adapter);
     }
 
     @Override
     public void onWagonClicked() {
+        Menus menus = new Menus(getActivity());
+        String[] wagonsTitle = new String[wagons.size()];
+        for (int i = 0; i < wagons.size(); i++) {
+            wagonsTitle[i] = wagons.get(i).getWagonCode();
+        }
 
+        menus.setItemMenuList(wagonsTitle);
+        menus.setActionText(getString(R.string.train_seat_choose_wagon_title));
+        menus.setOnActionClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                menus.dismiss();
+            }
+        });
+        menus.setOnItemMenuClickListener(new Menus.OnItemMenuClickListener() {
+            @Override
+            public void onClick(Menus.ItemMenus itemMenus, int pos) {
+                wagonViewPager.setCurrentItem(pos);
+                menus.dismiss();
+            }
+        });
+        menus.show();
     }
 }
