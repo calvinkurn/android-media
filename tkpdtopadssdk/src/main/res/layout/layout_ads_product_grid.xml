@@ -19,8 +19,8 @@
         app:cardElevation="0dp"
         app:cardUseCompatPadding="true">
 
-        <RelativeLayout
-            android:layout_width="wrap_content"
+        <FrameLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <com.tokopedia.topads.sdk.view.SquareImageView
@@ -32,32 +32,46 @@
                 android:scaleType="centerCrop"
                 tools:src="@color/red_100" />
 
-            <RelativeLayout
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                android:layout_margin="5dp"
-                android:background="@drawable/circle_white"
-                android:visibility="visible"
-                android:id="@+id/relativeLayout">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|left"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-                <ImageView
-                    android:id="@id/info_topads"
-                    android:layout_width="16dp"
-                    android:layout_height="10dp"
-                    android:layout_centerInParent="true"
-                    app:srcCompat="@drawable/ic_toa" />
-            </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/relativeLayout"
+                    android:layout_width="24dp"
+                    android:layout_height="19dp"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/bg_preorder_label"
+                    android:visibility="visible">
+
+                    <ImageView
+                        android:id="@id/info_topads"
+                        android:layout_width="16dp"
+                        android:layout_height="10dp"
+                        android:layout_centerInParent="true"
+                        app:srcCompat="@drawable/ic_toa" />
+                </RelativeLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/sp_11"
+                    android:background="@drawable/bg_preorder_label"
+                    android:text="Preorder" />
+
+            </LinearLayout>
 
             <RelativeLayout
                 android:id="@+id/wishlist_button_container"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentTop="true"
                 android:layout_marginRight="-2dp"
                 android:layout_marginTop="-2dp"
+                android:layout_gravity="top|right"
                 android:background="@drawable/circle_wishlist"
                 android:visibility="visible">
 
@@ -65,28 +79,22 @@
                     android:id="@+id/wishlist_button"
                     android:layout_width="19dp"
                     android:layout_height="19dp"
-                    android:layout_marginLeft="@dimen/dp_5"
                     android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/dp_5"
                     android:background="@drawable/ic_wishlist" />
             </RelativeLayout>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/relativeLayout"
-                android:layout_toEndOf="@+id/relativeLayout"
-                android:layout_toRightOf="@+id/relativeLayout"
-                android:text="Preorder" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/relativeLayout"
-                android:layout_alignParentBottom="true"
-                android:layout_alignStart="@+id/relativeLayout"
-                android:layout_marginBottom="7dp"
+                android:layout_gravity="bottom|left"
+                android:layout_margin="5dp"
+                android:textColor="#42b549"
+                android:textSize="@dimen/sp_11"
+                android:background="@drawable/bg_cashback_label"
                 android:text="Cashback 5%" />
-        </RelativeLayout>
+
+        </FrameLayout>
     </android.support.v7.widget.CardView>
 
 
@@ -145,12 +153,12 @@
             android:id="@+id/location"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
             android:gravity="center_vertical"
+            android:maxLines="2"
             android:minHeight="25dp"
             android:textColor="@color/black_70"
             android:textSize="@dimen/text_size_xsmall"
-            android:maxLines="2"
-            android:ellipsize="end"
             tools:text="Jakarta" />
     </LinearLayout>
 
@@ -192,10 +200,10 @@
         android:background="@drawable/bg_new_label"
         android:fontFamily="sans-serif-medium"
         android:gravity="center"
+        android:text="@string/baru"
         android:textColor="#279ba4"
         android:textSize="@dimen/text_size_xsmall"
-        android:visibility="gone"
-        android:text="@string/baru" />
+        android:visibility="gone" />
 
     <com.tokopedia.topads.sdk.view.FlowLayout
         android:id="@id/label_container"
