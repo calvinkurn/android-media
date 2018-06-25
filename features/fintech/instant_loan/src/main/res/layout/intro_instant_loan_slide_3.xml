@@ -35,6 +35,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/il_margin_medium"
+        android:lineSpacingExtra="7sp"
         android:text="@string/description_intro_slide_3"
         app:layout_constraintTop_toBottomOf="@+id/img_main" />
 
@@ -76,8 +77,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/il_margin_medium"
+        android:lineSpacingExtra="3sp"
         android:gravity="center"
-        android:paddingBottom="@dimen/il_padding_medium"
+        android:paddingBottom="@dimen/il_margin_mlarge"
         android:text="@string/label_tnc"
         app:layout_constraintTop_toBottomOf="@+id/card_connect_device" />
 

@@ -326,7 +326,7 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
         }
     }
 
-    private void openWebView(String url) {
+    public void openWebView(String url) {
         Intent intent = SimpleWebViewWithFilePickerActivity.getIntentWithTitle(this, url, "Pinjaman Online");
         startActivity(intent);
     }

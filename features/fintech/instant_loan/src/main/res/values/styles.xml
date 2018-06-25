@@ -23,6 +23,12 @@
         <item name="android:textColor">@color/black_54</item>
     </style>
 
+    <style name="DefaultTncLabelText">
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textSize">@dimen/il_text_size_xxsmall</item>
+        <item name="android:textColor">@color/black_54</item>
+    </style>
+
     <style name="DefaultValueText" parent="Normal">
         <item name="android:textSize">@dimen/il_text_size_regular</item>
         <item name="android:textColor">@color/black_70</item>
@@ -36,8 +42,9 @@
     </style>
 
     <style name="HeaderText" parent="Bold">
-        <item name="android:textSize">@dimen/il_text_size_large</item>
+        <item name="android:textSize">@dimen/il_text_size_regular</item>
         <item name="android:textColor">@color/black_70</item>
+        <item name="android:lineSpacingExtra">@dimen/il_line_spacing_header</item>
     </style>
 
     <style name="SubmitButton" parent="Bold">

@@ -19,6 +19,7 @@
     <dimen name="il_margin_regular">12dp</dimen>
     <dimen name="il_margin_medium">16dp</dimen>
     <dimen name="il_margin_large">24dp</dimen>
+    <dimen name="il_margin_mlarge">28dp</dimen>
     <dimen name="il_margin_xlarge">32dp</dimen>
 
     <!-- padding values-->
@@ -30,6 +31,7 @@
     <dimen name="il_padding_xlarge">32dp</dimen>
 
 
+    <dimen name="il_line_spacing_header" >5sp</dimen>
     <dimen name="shadow_card_tab">8dp</dimen>
     <dimen name="height_il_tab_button">104dp</dimen>
     <dimen name="width_il_tab_button">96dp</dimen>
