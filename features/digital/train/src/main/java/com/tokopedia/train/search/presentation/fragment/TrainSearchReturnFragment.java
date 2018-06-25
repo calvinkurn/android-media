@@ -10,11 +10,13 @@ import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.di.utils.TrainComponentUtils;
 import com.tokopedia.train.common.util.TrainDateUtil;
 import com.tokopedia.train.homepage.presentation.model.TrainSearchPassDataViewModel;
+import com.tokopedia.train.passenger.activity.TrainBookingPassengerActivity;
 import com.tokopedia.train.search.data.typedef.TrainScheduleTypeDef;
 import com.tokopedia.train.search.di.DaggerTrainSearchComponent;
-import com.tokopedia.train.search.presentation.activity.TrainSearchReturnActivity;
 import com.tokopedia.train.search.presentation.activity.TrainSearchActivity;
+import com.tokopedia.train.search.presentation.activity.TrainSearchReturnActivity;
 import com.tokopedia.train.search.presentation.contract.TrainSearchReturnContract;
+import com.tokopedia.train.search.presentation.model.TrainScheduleBookingPassData;
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
 import com.tokopedia.train.search.presentation.presenter.TrainSearchReturnPresenter;
 
@@ -34,23 +36,26 @@ public class TrainSearchReturnFragment extends TrainSearchFragment
     private TextView trainNameTv;
     private TextView detailDepartureInfoTv;
     private LinearLayout departureDetailLayout;
+    private TrainScheduleBookingPassData trainScheduleBookingPassData;
 
     public static TrainSearchReturnFragment newInstance(TrainSearchPassDataViewModel trainSearchPassDataViewModel,
-                                                        String idSchedule) {
+                                                        String idSchedule, TrainScheduleBookingPassData scheduleBookingPassData) {
         TrainSearchReturnFragment fragment = new TrainSearchReturnFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(TrainSearchActivity.EXTRA_SEARCH_PASS_DATA, trainSearchPassDataViewModel);
         bundle.putString(TrainSearchReturnActivity.EXTRA_SEARCH_ID_SCHEDULE, idSchedule);
+        bundle.putParcelable(TrainSearchReturnActivity.EXTRA_SCHEDULE_BOOKING, scheduleBookingPassData);
         fragment.setArguments(bundle);
         return fragment;
     }
 
     @Override
     protected void getDataFromFragment() {
+        trainScheduleBookingPassData = getArguments().getParcelable(TrainSearchReturnActivity.EXTRA_SCHEDULE_BOOKING);
         trainSearchPassDataViewModel = getArguments().getParcelable(TrainSearchActivity.EXTRA_SEARCH_PASS_DATA);
         dateDeparture = trainSearchPassDataViewModel.getReturnDate();
-        adultPassanger = trainSearchPassDataViewModel.getAdult();
-        infantPassanger = trainSearchPassDataViewModel.getInfant();
+        adultPassenger = trainSearchPassDataViewModel.getAdult();
+        infantPassenger = trainSearchPassDataViewModel.getInfant();
         originCode = trainSearchPassDataViewModel.getDestinationStationCode();
         originCity = trainSearchPassDataViewModel.getDestinationCityName();
         destinationCode = trainSearchPassDataViewModel.getOriginStationCode();
@@ -65,7 +70,6 @@ public class TrainSearchReturnFragment extends TrainSearchFragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         titleDepartureInfoTv = view.findViewById(R.id.title_departure_info);
         trainNameTv = view.findViewById(R.id.train_name);
         detailDepartureInfoTv = view.findViewById(R.id.detail_departure_info);
@@ -75,8 +79,9 @@ public class TrainSearchReturnFragment extends TrainSearchFragment
     }
 
     @Override
-    public void onItemClicked(TrainScheduleViewModel trainScheduleViewModel) {
-
+    public void selectSchedule(TrainScheduleViewModel trainScheduleViewModel) {
+        trainScheduleBookingPassData.setReturnTrip(trainScheduleViewModel);
+        startActivity(TrainBookingPassengerActivity.callingIntent(getActivity(), trainScheduleBookingPassData));
     }
 
     @Override
