@@ -7,6 +7,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.TaskStackBuilder;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextPaint;
@@ -34,6 +35,7 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.customView.LoginTextView;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
@@ -43,21 +45,26 @@ import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.design.component.Dialog;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
+import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.session.R;
 import com.tokopedia.session.WebViewLoginFragment;
 import com.tokopedia.session.data.viewmodel.SecurityDomain;
 import com.tokopedia.session.google.GoogleSignInActivity;
 import com.tokopedia.session.login.loginemail.view.activity.ForbiddenActivity;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
+import com.tokopedia.session.register.registerphonenumber.view.activity.AddNameActivity;
 import com.tokopedia.session.register.registerphonenumber.view.activity.RegisterPhoneNumberActivity;
 import com.tokopedia.session.register.view.activity.CreatePasswordActivity;
 import com.tokopedia.session.register.view.activity.RegisterEmailActivity;
+import com.tokopedia.session.register.view.customview.PartialRegisterInputView;
 import com.tokopedia.session.register.view.presenter.RegisterInitialPresenter;
-import com.tokopedia.session.register.view.subscriber.registerinitial.GetFacebookCredentialSubscriber;
+import com.tokopedia.session.register.view.subscriber.registerinitial
+        .GetFacebookCredentialSubscriber;
 import com.tokopedia.session.register.view.viewlistener.RegisterInitial;
 import com.tokopedia.session.register.view.viewmodel.DiscoverItemViewModel;
 import com.tokopedia.session.register.view.viewmodel.createpassword.CreatePasswordViewModel;
@@ -81,6 +88,9 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     private static final int REQUEST_CREATE_PASSWORD = 102;
     private static final int REQUEST_SECURITY_QUESTION = 103;
     private static final int REQUEST_REGISTER_PHONE_NUMBER = 104;
+    private static final int REQUEST_VERIFY_PHONE = 105;
+    private static final int REQUEST_WELCOME_PAGE = 106;
+    private static final int REQUEST_ADD_NAME = 107;
 
     private static final String FACEBOOK = "facebook";
     private static final String GPLUS = "gplus";
@@ -91,6 +101,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     public static final int TYPE_SQ_PHONE = 1;
     public static final int TYPE_SQ_EMAIL = 2;
 
+    private PartialRegisterInputView partialRegisterInputView;
     private LinearLayout registerContainer, llLayout;
     private LoginTextView registerButton, registerPhoneNumberButton;
     private TextView loginButton;
@@ -98,6 +109,8 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     private RelativeLayout progressBar;
 
     private String socmedMethod = "";
+    private String email = "";
+    private String phoneNumber = "";
 
     @Inject
     RegisterInitialPresenter presenter;
@@ -152,6 +165,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
             savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_register_initial, parent, false);
 
+        partialRegisterInputView = (PartialRegisterInputView) view.findViewById(R.id.register_input_view);
         registerContainer = (LinearLayout) view.findViewById(R.id.register_container);
         registerButton = (LoginTextView) view.findViewById(R.id.register);
         registerPhoneNumberButton = (LoginTextView) view.findViewById(R.id.register_phone_number);
@@ -173,11 +187,14 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
     private void initData() {
         presenter.getProvider();
+        partialRegisterInputView.setPresenter(presenter);
     }
 
     protected void prepareView(View view) {
         UserAuthenticationAnalytics.setActiveRegister();
+        registerButton.setVisibility(View.GONE);
         registerPhoneNumberButton.setVisibility(View.GONE);
+        partialRegisterInputView.setVisibility(View.GONE);
 
         registerButton.setColor(Color.WHITE);
         registerButton.setBorderColor(MethodChecker.getColor(getActivity(), R.color.black_38));
@@ -188,12 +205,16 @@ public class RegisterInitialFragment extends BaseDaggerFragment
             public void onClick(View v) {
                 UnifyTracking.eventTracking(LoginAnalytics.getEventClickRegisterEmail());
                 UnifyTracking.eventMoRegistrationStart(AppEventTracking.GTMCacheValue.EMAIL);
-                showProgressBar();
-                Intent intent = RegisterEmailActivity.getCallingIntent(getActivity());
-                startActivityForResult(intent, REQUEST_REGISTER_EMAIL);
+                goToRegisterEmailPage();
 
             }
         });
+
+        if (GlobalConfig.isSellerApp()){
+            registerButton.setVisibility(View.VISIBLE);
+        } else {
+            partialRegisterInputView.setVisibility(View.VISIBLE);
+        }
         registerPhoneNumberButton.setColor(Color.WHITE);
         registerPhoneNumberButton.setBorderColor(MethodChecker.getColor(getActivity(), R.color.black_38));
         registerPhoneNumberButton.setRoundCorner(10);
@@ -244,6 +265,25 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void goToRegisterEmailPage() {
+        showProgressBar();
+        Intent intent = RegisterEmailActivity.getCallingIntent(getActivity());
+        startActivityForResult(intent, REQUEST_REGISTER_EMAIL);
+    }
+
+    @Override
+    public void goToVerificationPhoneRegister(String phone){
+        Intent intent = VerificationActivity.getCallingIntent(
+                getActivity(),
+                phone,
+                com.tokopedia.otp.domain.interactor.RequestOtpUseCase.OTP_TYPE_REGISTER_PHONE_NUMBER,
+                true,
+                com.tokopedia.otp.domain.interactor.RequestOtpUseCase.MODE_SMS
+        );
+        startActivityForResult(intent, REQUEST_VERIFY_PHONE);
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         callbackManager.onActivityResult(requestCode, resultCode, data);
 
@@ -279,6 +319,15 @@ public class RegisterInitialFragment extends BaseDaggerFragment
         } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_CANCELED) {
             dismissProgressBar();
             getActivity().setResult(Activity.RESULT_CANCELED);
+        } else if (requestCode == REQUEST_VERIFY_PHONE && resultCode == Activity.RESULT_OK) {
+            startActivityForResult(AddNameActivity.newInstance(getActivity(), phoneNumber), REQUEST_ADD_NAME);
+        } else if (requestCode == REQUEST_WELCOME_PAGE) {
+            if (resultCode == Activity.RESULT_OK) {
+                goToProfileCompletionPage();
+            } else {
+                getActivity().setResult(Activity.RESULT_OK);
+                getActivity().finish();
+            }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
@@ -290,6 +339,18 @@ public class RegisterInitialFragment extends BaseDaggerFragment
         } else {
             presenter.registerWebview(data);
         }
+    }
+
+    private void goToProfileCompletionPage() {
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(getActivity());
+        Intent parentIntent = ((TkpdCoreRouter) getActivity().getApplicationContext()).getHomeIntent(getActivity());
+        parentIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        Intent childIntent = new Intent(getActivity(), ProfileCompletionActivity.class);
+        stackBuilder.addNextIntent(parentIntent);
+        stackBuilder.addNextIntent(childIntent);
+        getActivity().startActivities(stackBuilder.getIntents());
+        getActivity().setResult(Activity.RESULT_OK);
+        getActivity().finish();
     }
 
     @Override
@@ -351,8 +412,8 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                     registerContainer.addView(loginTextView, registerContainer.getChildCount(), layoutParams);
                 }
             } else if (!GlobalConfig.isSellerApp() && remoteConfig.getBoolean(REMOTE_CONFIG_SHOW_REGISTER_PHONE_NUMBER)) {
-                registerPhoneNumberButton.setVisibility(View.VISIBLE);
-                registerPhoneNumberButton.setImage(item.getImage());
+//                registerPhoneNumberButton.setVisibility(View.VISIBLE);
+//                registerPhoneNumberButton.setImage(item.getImage());
             }
         }
 
@@ -504,6 +565,80 @@ public class RegisterInitialFragment extends BaseDaggerFragment
         startActivity(
                 PhoneVerificationActivationActivity.getCallingIntent(getActivity()));
         getActivity().finish();
+    }
+
+    @Override
+    public void showRegisteredEmailDialog(String email) {
+        final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
+        dialog.setTitle(getString(R.string.email_already_registered));
+        dialog.setDesc(
+                String.format(getResources().getString(
+                        R.string.email_already_registered_info), email));
+        dialog.setBtnOk(getString(R.string.already_registered_yes));
+        dialog.setOnOkClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                goToRegisterEmailPage();
+            }
+        });
+        dialog.setBtnCancel(getString(R.string.already_registered_no));
+        dialog.setOnCancelClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
+
+    @Override
+    public void showRegisteredPhoneDialog(String phone) {
+        final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
+        dialog.setTitle(getString(R.string.phone_number_already_registered));
+        dialog.setDesc(
+                String.format(getResources().getString(
+                        R.string.reigster_page_phone_number_already_registered_info), phone));
+        dialog.setBtnOk(getString(R.string.already_registered_yes));
+        dialog.setOnOkClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                phoneNumber = phone;
+                goToVerificationPhoneRegister(phoneNumber);
+            }
+        });
+        dialog.setBtnCancel(getString(R.string.already_registered_no));
+        dialog.setOnCancelClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
+
+    @Override
+    public void showProceedWithPhoneDialog(String phone) {
+        final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
+        dialog.setTitle(phone);
+        dialog.setDesc(getResources().getString(R.string.phone_number_not_registered_info));
+        dialog.setBtnOk(getString(R.string.already_registered_yes));
+        dialog.setOnOkClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                onGoToPhoneVerification();
+            }
+        });
+        dialog.setBtnCancel(getString(R.string.already_registered_no));
+        dialog.setOnCancelClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
     }
 
     @Override

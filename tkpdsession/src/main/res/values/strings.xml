@@ -99,6 +99,9 @@
     <string name="hi">Hai</string>
     <string name="success_request_otp">Kode verifikasi telah dikirim.</string>
     <string name="title_activity_register_2">Daftar dengan Email</string>
+    <string name="phone_or_email_input">Nomor Ponsel atau Email</string>
+    <string name="already_registered_yes">Ya, Masuk</string>
+    <string name="already_registered_no">Ubah</string>
 
     <!-- LOGIN PHONE NUMBER -->
     <string name="login_with_phone_number">Masuk dengan Nomor Ponsel</string>
@@ -140,8 +143,9 @@
     <string name="limit_otp_email_reached">Anda Sudah Melakukan 3 Kali Validasi. Silakan Mencoba Kembali 1 Jam Kemudian.</string>
     <string name="phone_number_not_registered">Nomor ponsel belum terdaftar</string>
     <string name="phone_number_already_registered">Nomor Ponsel Sudah Terdaftar</string>
+    <string name="reigster_page_phone_number_already_registered_info">Lanjut masuk dengan nomor ini %1$s?</string>
     <string name="email_already_registered">Email Sudah Terdaftar</string>
-    <string name="email_already_registered_info">Masuk dengan email %1$s?</string>
+    <string name="email_already_registered_info">Lanjut masuk dengan email ini %1$s?</string>
     <string name="phone_number_invalid">Nomor ponsel tidak benar</string>
     <string name="error_wrong_otp">Kode yang Anda masukkan salah</string>
     <string name="login">Masuk</string>

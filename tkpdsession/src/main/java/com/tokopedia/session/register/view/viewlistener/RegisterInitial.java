@@ -46,6 +46,16 @@ public interface RegisterInitial {
         GetFacebookCredentialSubscriber.GetFacebookCredentialListener getFacebookCredentialListener();
 
         void onForbidden();
+
+        void showRegisteredEmailDialog(String email);
+
+        void showRegisteredPhoneDialog(String phone);
+
+        void showProceedWithPhoneDialog(String phone);
+
+        void goToRegisterEmailPage();
+
+        void goToVerificationPhoneRegister(String phone);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -59,5 +69,7 @@ public interface RegisterInitial {
         void registerFacebook(AccessToken accessToken);
 
         void registerGoogle(String model);
+
+        void validateRegister(String id);
     }
 }
