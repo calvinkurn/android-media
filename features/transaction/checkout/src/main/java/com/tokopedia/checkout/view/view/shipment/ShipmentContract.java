@@ -1,5 +1,7 @@
 package com.tokopedia.checkout.view.view.shipment;
 
+import android.app.Activity;
+
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
@@ -64,6 +66,8 @@ public interface ShipmentContract {
         void renderChangeAddressSuccess(RecipientAddressModel recipientAddressModel);
 
         void renderCancelAutoApplyCouponSuccess();
+
+        Activity getActivityContext();
     }
 
     interface Presenter extends CustomerPresenter<View> {
