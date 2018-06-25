@@ -6,8 +6,8 @@ import android.view.View;
 
 import com.tokopedia.train.homepage.presentation.model.TrainSearchPassDataViewModel;
 import com.tokopedia.train.search.data.typedef.TrainScheduleTypeDef;
-import com.tokopedia.train.search.presentation.activity.TrainSearchReturnActivity;
 import com.tokopedia.train.search.presentation.activity.TrainSearchActivity;
+import com.tokopedia.train.search.presentation.activity.TrainSearchReturnActivity;
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
 
 /**

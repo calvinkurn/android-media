@@ -150,6 +150,7 @@ android {
         }
         release {
             signingConfig signingConfigs.debug
+            ext.enableHansel=false
             minifyEnabled true
             zipAlignEnabled true
             shrinkResources true

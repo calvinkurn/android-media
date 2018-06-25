@@ -36,7 +36,7 @@
         android:layout_gravity="center"
         android:text="@string/msg_network_error_2" />
 
-    <TextView
+    <Button
         android:id="@+id/button_retry"
         style="@style/Button"
         android:background="@drawable/bg_button_green"

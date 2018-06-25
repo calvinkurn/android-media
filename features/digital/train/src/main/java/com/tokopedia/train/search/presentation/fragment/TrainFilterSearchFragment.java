@@ -53,7 +53,7 @@ public class TrainFilterSearchFragment extends BaseDaggerFragment implements Bas
 
         filterSearchData = listener.getFilterSearchData();
 
-        listener.setTitleToolbar("Filter");
+        listener.setTitleToolbar(getString(R.string.train_search_filter));
         listener.setCloseButton(true);
 
         populateView(view);
@@ -139,6 +139,10 @@ public class TrainFilterSearchFragment extends BaseDaggerFragment implements Bas
         RangeInputView rangeInputView = view.findViewById(R.id.price_filter_search);
         EditText minPriceEditText = rangeInputView.getMinValueEditText();
         EditText maxPriceEditText = rangeInputView.getMaxValueEditText();
+        long minPrice = filterSearchData.getSelectedMinPrice() > 0 ? filterSearchData.getSelectedMinPrice() :
+                filterSearchData.getMinPrice();
+        long maxPrice = filterSearchData.getSelectedMaxPrice() > 0 ? filterSearchData.getSelectedMaxPrice() :
+                filterSearchData.getMaxPrice();
 
         if (minCurrencyTextWatcher != null) {
             minPriceEditText.removeTextChangedListener(minCurrencyTextWatcher);
@@ -153,10 +157,8 @@ public class TrainFilterSearchFragment extends BaseDaggerFragment implements Bas
         maxPriceEditText.addTextChangedListener(maxCurrencyTextWatcher);
 
         rangeInputView.setPower(1);
-        rangeInputView.setData((int) filterSearchData.getMinPrice(),
-                (int) filterSearchData.getMaxPrice(),
-                (int) filterSearchData.getMinPrice(),
-                (int) filterSearchData.getMaxPrice());
+        rangeInputView.setData((int) filterSearchData.getMinPrice(), (int) filterSearchData.getMaxPrice(),
+                (int) minPrice, (int) maxPrice);
         rangeInputView.setOnValueChangedListener((minValue, maxValue, minBound, maxBound) -> {
             filterSearchData.setSelectedMinPrice(minValue);
             filterSearchData.setSelectedMaxPrice(maxValue);
@@ -187,11 +189,7 @@ public class TrainFilterSearchFragment extends BaseDaggerFragment implements Bas
         }
 
         FilterSearchData filterSearchData = listener.getFilterSearchData();
-        filterSearchData.setSelectedMaxPrice(0);
-        filterSearchData.setSelectedMinPrice(0);
-        filterSearchData.setSelectedTrainClass(new ArrayList<>());
-        filterSearchData.setSelectedTrains(new ArrayList<>());
-        filterSearchData.setSelectedDepartureTimeList(new ArrayList<>());
+        filterSearchData.resetSelectedValue();
         populateView(view);
         listener.onChangeFilterSearchData(filterSearchData);
     }

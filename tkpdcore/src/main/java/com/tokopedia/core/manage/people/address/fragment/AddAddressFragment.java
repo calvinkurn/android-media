@@ -284,7 +284,8 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
     }
 
     private void selectLayout() {
-        if (isDistrictRecommendation()) {
+        // TODO ATTENTION: when new checkout flow is fully released, please refactor (remove) this part immediately
+        if (isDistrictRecommendation() && token != null) {
             addressSpinerLayout.setVisibility(View.GONE);
             postCodeLayout.setVisibility(View.GONE);
             districtLayout.setVisibility(View.VISIBLE);

@@ -87,9 +87,9 @@ public class TrainSearchReturnFragment extends TrainSearchFragment
     @Override
     public void loadDetailSchedule(TrainScheduleViewModel viewModel) {
         departureDetailLayout.setVisibility(View.VISIBLE);
-        String dateDepartureString = TrainDateUtil.formatDate(TrainDateUtil.DEFAULT_FORMAT,
+        String dateDepartureString = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_SEARCH,
                 TrainDateUtil.DEFAULT_VIEW_FORMAT, trainSearchPassDataViewModel.getDepartureDate());
-        titleDepartureInfoTv.setText("Perjalanan Pergi - " + dateDepartureString);
+        titleDepartureInfoTv.setText(getString(R.string.train_search_departure_title) + " - " + dateDepartureString);
         trainNameTv.setText(viewModel.getTrainName());
         String timeDepartureString = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
                 TrainDateUtil.FORMAT_TIME, viewModel.getDepartureTimestamp());

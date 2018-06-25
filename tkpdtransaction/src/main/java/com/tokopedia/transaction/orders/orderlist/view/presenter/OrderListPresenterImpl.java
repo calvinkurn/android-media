@@ -1,7 +1,6 @@
 package com.tokopedia.transaction.orders.orderlist.view.presenter;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
@@ -29,42 +28,45 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
 
     @Override
     public void getAllOrderData(Context context, String orderCategory, final int typeRequest, int page) {
-        getView().showProcessGetData(orderCategory);
-        RequestParams params = RequestParams.create();
-        params.putInt(OrderListUseCase.PAGE_NUM, page);
-        getOrderListUseCase.execute(getOrderListUseCase.getUserAttrParam(orderCategory, params), new Subscriber<Data>() {
-            @Override
-            public void onCompleted() {
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                CommonUtils.dumper(e.toString());
-                getView().removeProgressBarView();
-                getView().unregisterScrollListener();
-                if (e instanceof UnknownHostException || e instanceof ConnectException) {
-                    getView().showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
-                } else if (e instanceof SocketTimeoutException) {
-                    getView().showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+        if(isViewAttached()) {
+            getView().showProcessGetData(orderCategory);
+            RequestParams params = RequestParams.create();
+            params.putInt(OrderListUseCase.PAGE_NUM, page);
+            getOrderListUseCase.execute(getOrderListUseCase.getUserAttrParam(orderCategory, params), new Subscriber<Data>() {
+                @Override
+                public void onCompleted() {
                 }
-            }
 
-            @Override
-            public void onNext(Data data) {
-                getView().removeProgressBarView();
-                if (data != null) {
-                    if (!data.orders().isEmpty()) {
-                        getView().renderDataList(data.orders());
+                @Override
+                public void onError(Throwable e) {
+                    CommonUtils.dumper(e.toString());
+                    getView().removeProgressBarView();
+                    getView().unregisterScrollListener();
+                    if (e instanceof UnknownHostException || e instanceof ConnectException) {
+                        getView().showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
+                    } else if (e instanceof SocketTimeoutException) {
+                        getView().showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+                    }
+                }
+
+                @Override
+                public void onNext(Data data) {
+                    getView().removeProgressBarView();
+                    if (data != null) {
+                        if (!data.orders().isEmpty()) {
+                            getView().renderDataList(data.orders());
+                        } else {
+                            getView().unregisterScrollListener();
+                            getView().renderEmptyList(typeRequest);
+                        }
                     } else {
                         getView().unregisterScrollListener();
                         getView().renderEmptyList(typeRequest);
                     }
-                } else {
-                    getView().unregisterScrollListener();
-                    getView().renderEmptyList(typeRequest);
-                }
 
-            }
-        });
+                }
+            });
+        }
     }
+
 }

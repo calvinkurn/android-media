@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
+import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.search.presentation.model.FilterSearchData;
 
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ public class FilterTrainClassFragment extends BaseFilterTrainFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        listener.setTitleToolbar("Kelas");
+        listener.setTitleToolbar(getString(R.string.train_filter_class_name));
         adapter.addList(filterSearchData.getTrainClass(),
                 filterSearchData.getSelectedTrainClass());
         adapter.setListener(listObjectFilter -> {
