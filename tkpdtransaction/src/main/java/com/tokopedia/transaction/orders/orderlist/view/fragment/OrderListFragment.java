@@ -1,10 +1,10 @@
 package com.tokopedia.transaction.orders.orderlist.view.fragment;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -17,11 +17,11 @@ import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.orderlist.data.Order;
 import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
+import com.tokopedia.transaction.orders.orderlist.di.DaggerOrderListComponent;
 import com.tokopedia.transaction.orders.orderlist.di.OrderListComponent;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.OrderListAdapter;
 import com.tokopedia.transaction.orders.orderlist.view.presenter.OrderListContract;
 import com.tokopedia.transaction.orders.orderlist.view.presenter.OrderListPresenterImpl;
-import com.tokopedia.transaction.orders.orderlist.di.DaggerOrderListComponent;
 import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractor;
 
 import java.util.ArrayList;
@@ -56,6 +56,13 @@ public class OrderListFragment extends BasePresenterFragment<OrderListContract.P
     private String mOrderCategory;
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        initInjector();
+        presenter.attachView(this);
+    }
+
+    @Override
     protected boolean isRetainInstance() {
         return false;
     }
@@ -83,8 +90,6 @@ public class OrderListFragment extends BasePresenterFragment<OrderListContract.P
 
     @Override
     protected void initialPresenter() {
-        initInjector();
-        presenter.attachView(this);
     }
 
     protected void initInjector() {
