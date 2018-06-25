@@ -65,6 +65,7 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
     private ICartAddressChoiceActivityListener mCartAddressChoiceListener;
 
     private Token token;
+    private RecipientAddressModel currentAddress;
 
     @Inject
     CartAddressChoicePresenter mCartAddressChoicePresenter;
@@ -142,7 +143,7 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
 
     @Override
     protected void setupArguments(Bundle arguments) {
-
+        currentAddress = (RecipientAddressModel) getArguments().getParcelable(EXTRA_CURRENT_ADDRESS);
     }
 
     @Override
@@ -192,7 +193,7 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
             @Override
             public void onRefresh() {
                 mCartAddressChoicePresenter.getAddressShortedList(getActivity(),
-                        (RecipientAddressModel) getArguments().getParcelable(EXTRA_CURRENT_ADDRESS), false);
+                        currentAddress, false);
             }
         });
     }
@@ -207,6 +208,11 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
     public void renderRecipientData(List<RecipientAddressModel> recipientAddressModels, boolean isNewlyCreatedAddress) {
         mShipmentAddressListAdapter.setAddressList(recipientAddressModels);
         mShipmentAddressListAdapter.notifyDataSetChanged();
+        for (RecipientAddressModel recipientAddressModel : recipientAddressModels) {
+            if (recipientAddressModel.isSelected()) {
+                currentAddress = recipientAddressModel;
+            }
+        }
     }
 
     @Override
@@ -248,7 +254,7 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
     @Override
     protected void setActionVar() {
         mCartAddressChoicePresenter.getAddressShortedList(getActivity(),
-                (RecipientAddressModel) getArguments().getParcelable(EXTRA_CURRENT_ADDRESS), false);
+                currentAddress, false);
     }
 
     @Override
@@ -278,7 +284,7 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
                     @Override
                     public void onRetryClicked() {
                         mCartAddressChoicePresenter.getAddressShortedList(getActivity(),
-                                (RecipientAddressModel) getArguments().getParcelable(EXTRA_CURRENT_ADDRESS), false);
+                                currentAddress, false);
                     }
                 });
     }
@@ -292,8 +298,7 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
     }
 
     private void onChooseOtherAddressClick() {
-        ShipmentAddressListFragment fragment = ShipmentAddressListFragment.newInstance(
-                (RecipientAddressModel) getArguments().getParcelable(EXTRA_CURRENT_ADDRESS));
+        ShipmentAddressListFragment fragment = ShipmentAddressListFragment.newInstance(currentAddress);
         getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         getFragmentManager().beginTransaction()
                 .add(R.id.parent_view, fragment, fragment.getClass().getSimpleName())
@@ -355,13 +360,12 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
                         newRecipientAddressModel.setAddressStreet(newAddress.getAddressStreet());
                         mCartAddressChoicePresenter.getAddressShortedList(getActivity(), newRecipientAddressModel, true);
                     } else {
-                        newRecipientAddressModel = (RecipientAddressModel) getArguments().getParcelable(EXTRA_CURRENT_ADDRESS);
-                        mCartAddressChoicePresenter.getAddressShortedList(getActivity(), newRecipientAddressModel, false);
+                        mCartAddressChoicePresenter.getAddressShortedList(getActivity(), currentAddress, false);
                     }
                     break;
                 case ManageAddressConstant.REQUEST_CODE_PARAM_EDIT:
                     mCartAddressChoicePresenter.getAddressShortedList(getActivity(),
-                            (RecipientAddressModel) getArguments().getParcelable(EXTRA_CURRENT_ADDRESS), false);
+                            currentAddress, false);
                     break;
                 default:
                     break;
