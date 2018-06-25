@@ -5,7 +5,9 @@ dependencies {
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.useCase)
+    implementation project(rootProject.ext.libraries.graphql)
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
+    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
 }
