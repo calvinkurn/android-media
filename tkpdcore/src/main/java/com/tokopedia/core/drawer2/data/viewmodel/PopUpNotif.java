@@ -58,12 +58,11 @@ public class PopUpNotif implements Parcelable{
     }
 
     public String getImageUrl() {
-        return imageUrl;
+        return this.imageUrl;
     }
 
     public void setImageUrl(String imageUrl) {
-        if(TextUtils.isEmpty(imageUrl)) this.imageUrl = "";
-        else this.imageUrl = imageUrl;
+        this.imageUrl = imageUrl;
     }
 
     public String getButtonText() {
