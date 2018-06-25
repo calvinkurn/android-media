@@ -30,9 +30,11 @@ public class ShipmentActivity extends BaseCheckoutActivity {
 
     public static final String EXTRA_SHIPMENT_FORM_DATA = "EXTRA_SHIPMENT_FORM_DATA";
     public static final String EXTRA_SELECTED_ADDRESS_RECIPIENT_DATA = "EXTRA_DEFAULT_ADDRESS_RECIPIENT_DATA";
+    public static final String EXTRA_DISTRICT_RECOMMENDATION_TOKEN = "EXTRA_DISTRICT_RECOMMENDATION_TOKEN";
     public static final String EXTRA_CART_PROMO_SUGGESTION = "EXTRA_CART_PROMO_SUGGESTION";
     public static final String EXTRA_PROMO_CODE_APPLIED_DATA = "EXTRA_PROMO_CODE_APPLIED_DATA";
     public static final String EXTRA_PROMO_CODE_COUPON_DEFAULT_SELECTED_TAB = "EXTRA_PROMO_CODE_COUPON_DEFAULT_SELECTED_TAB";
+    public static final String EXTRA_NAVIGATE_TO_ADDRESS_CHOICE = "EXTRA_NAVIGATE_TO_ADDRESS_CHOICE";
     private CheckoutAnalyticsCourierSelection checkoutAnalyticsCourierSelection;
 
 
@@ -40,12 +42,14 @@ public class ShipmentActivity extends BaseCheckoutActivity {
                                         CartShipmentAddressFormData cartShipmentAddressFormData,
                                         PromoCodeAppliedData promoCodeCartListData,
                                         CartPromoSuggestion cartPromoSuggestion,
-                                        String defaultSelectedTabPromo) {
+                                        String defaultSelectedTabPromo,
+                                        boolean navigateToAddressChoice) {
         Intent intent = new Intent(context, ShipmentActivity.class);
         intent.putExtra(EXTRA_PROMO_CODE_APPLIED_DATA, promoCodeCartListData);
         intent.putExtra(EXTRA_SHIPMENT_FORM_DATA, cartShipmentAddressFormData);
         intent.putExtra(EXTRA_CART_PROMO_SUGGESTION, cartPromoSuggestion);
         intent.putExtra(EXTRA_PROMO_CODE_COUPON_DEFAULT_SELECTED_TAB, defaultSelectedTabPromo);
+        intent.putExtra(EXTRA_NAVIGATE_TO_ADDRESS_CHOICE, navigateToAddressChoice);
         return intent;
     }
 
@@ -97,7 +101,8 @@ public class ShipmentActivity extends BaseCheckoutActivity {
                 getIntent().getParcelableExtra(EXTRA_SHIPMENT_FORM_DATA),
                 getIntent().getParcelableExtra(EXTRA_PROMO_CODE_APPLIED_DATA),
                 getIntent().getParcelableExtra(EXTRA_CART_PROMO_SUGGESTION),
-                getIntent().getStringExtra(EXTRA_PROMO_CODE_COUPON_DEFAULT_SELECTED_TAB)
+                getIntent().getStringExtra(EXTRA_PROMO_CODE_COUPON_DEFAULT_SELECTED_TAB),
+                getIntent().getBooleanExtra(EXTRA_NAVIGATE_TO_ADDRESS_CHOICE, false)
         );
     }
 

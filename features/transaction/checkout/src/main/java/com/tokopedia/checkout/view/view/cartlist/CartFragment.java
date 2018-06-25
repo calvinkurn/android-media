@@ -683,9 +683,17 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     }
 
     @Override
-    public void renderToShipmentFormSuccess(CartShipmentAddressFormData shipmentAddressFormData) {
-        Intent intent = ShipmentActivity.createInstance(getActivity(), shipmentAddressFormData,
-                promoCodeAppliedData, cartListData.getCartPromoSuggestion(), cartListData.getDefaultPromoDialogTab()
+    public void renderToShipmentFormSuccess(CartShipmentAddressFormData cartShipmentAddressFormData) {
+        Intent intent = ShipmentActivity.createInstance(getActivity(), cartShipmentAddressFormData,
+                promoCodeAppliedData, cartListData.getCartPromoSuggestion(), cartListData.getDefaultPromoDialogTab(), false
+        );
+        startActivityForResult(intent, ShipmentActivity.REQUEST_CODE);
+    }
+
+    @Override
+    public void renderToAddressChoice(CartShipmentAddressFormData cartShipmentAddressFormData) {
+        Intent intent = ShipmentActivity.createInstance(getActivity(), cartShipmentAddressFormData,
+                promoCodeAppliedData, cartListData.getCartPromoSuggestion(), cartListData.getDefaultPromoDialogTab(), true
         );
         startActivityForResult(intent, ShipmentActivity.REQUEST_CODE);
     }
@@ -711,9 +719,9 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     }
 
     @Override
-    public void renderToShipmentMultipleAddressSuccess(CartListData cartListData, RecipientAddressModel selectedAddress) {
+    public void renderToShipmentMultipleAddressSuccess(CartListData cartListData, RecipientAddressModel selectedAddress, Token token) {
         startActivityForResult(MultipleAddressFormActivity.createInstance(
-                getActivity(), cartListData, selectedAddress
+                getActivity(), cartListData, selectedAddress, token
         ), MultipleAddressFormActivity.REQUEST_CODE);
     }
 
@@ -1005,7 +1013,8 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
             RecipientAddressModel selectedAddress = data.getParcelableExtra(
                     ShipmentActivity.EXTRA_SELECTED_ADDRESS_RECIPIENT_DATA
             );
-            dPresenter.processToShipmentMultipleAddress(selectedAddress);
+            Token token = data.getParcelableExtra(ShipmentActivity.EXTRA_DISTRICT_RECOMMENDATION_TOKEN);
+            dPresenter.processToShipmentMultipleAddress(selectedAddress, token);
         } else if (resultCode == ShipmentActivity.RESULT_CODE_FORCE_RESET_CART_FROM_SINGLE_SHIPMENT ||
                 resultCode == ShipmentActivity.RESULT_CODE_FORCE_RESET_CART_FROM_MULTIPLE_SHIPMENT) {
             dPresenter.processResetAndRefreshCartData();

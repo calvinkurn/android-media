@@ -17,7 +17,7 @@ import static com.tokopedia.core.manage.people.address.ManageAddressConstant.REQ
 
 /**
  * @author Irfan Khoirul on 05/02/18
- *         Aghny A. Putra on 07/02/18
+ * Aghny A. Putra on 07/02/18
  */
 
 public class CartAddressChoiceActivity extends BaseCheckoutActivity
@@ -65,19 +65,6 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     }
 
     @Override
-    protected void setupLayout(Bundle savedInstanceState) {
-        super.setupLayout(savedInstanceState);
-        if (getSupportActionBar() != null) {
-            if (getIntent().getExtras() != null && getIntent().hasExtra(EXTRA_TYPE_REQUEST)) {
-                if (getIntent().getIntExtra(EXTRA_TYPE_REQUEST, 0) == TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST) {
-                    getSupportActionBar().setTitle(getString(R.string.checkout_module_title_change_address));
-                }
-
-            }
-        }
-    }
-
-    @Override
     protected void initInjector() {
 
     }
@@ -85,6 +72,13 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     @Override
     protected void setupURIPass(Uri data) {
 
+    }
+
+    @Override
+    public void setToolbarTitle(String title) {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(title);
+        }
     }
 
     @Override
@@ -188,6 +182,7 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
             ((CartAddressChoiceFragment) getCurrentFragment())
                     .checkoutAnalyticsChangeAddress.eventClickChangeAddressClickArrowBackFromGantiAlamat();
         }
+        setToolbarTitle(getString(R.string.checkout_module_title_shipping_dest));
         super.onBackPressed();
 
     }

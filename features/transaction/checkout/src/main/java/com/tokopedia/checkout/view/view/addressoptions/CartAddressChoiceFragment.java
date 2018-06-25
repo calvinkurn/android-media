@@ -8,10 +8,12 @@ import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -31,6 +33,7 @@ import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
 import com.tokopedia.core.manage.people.address.model.Destination;
 import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
+import com.tokopedia.design.component.TextViewCompat;
 
 import java.util.List;
 
@@ -52,7 +55,7 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
         implements ICartAddressChoiceView, ShipmentAddressListAdapter.ActionListener {
 
     private TextView tvChooseOtherAddress;
-    private LinearLayout llSendToMultipleAddress;
+    private TextViewCompat tvSendToMultipleAddress;
     private Button btSendToCurrentAddress;
     private RecyclerView rvAddress;
     private LinearLayout llNetworkErrorView;
@@ -149,8 +152,9 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
 
     @Override
     protected void initView(View view) {
+        mCartAddressChoiceListener.setToolbarTitle(getActivity().getString(R.string.checkout_module_title_shipping_dest));
         tvChooseOtherAddress = view.findViewById(R.id.tv_choose_other_address);
-        llSendToMultipleAddress = view.findViewById(R.id.ll_send_to_multiple_address);
+        tvSendToMultipleAddress = view.findViewById(R.id.tv_send_to_multiple_address);
         btSendToCurrentAddress = view.findViewById(R.id.bt_send_to_current_address);
         rvAddress = view.findViewById(R.id.rv_address);
         llNetworkErrorView = view.findViewById(R.id.ll_network_error_view);
@@ -164,7 +168,7 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
             }
         });
 
-        llSendToMultipleAddress.setOnClickListener(new View.OnClickListener() {
+        tvSendToMultipleAddress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onSendToMultipleAddress();
@@ -182,15 +186,7 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
         mCartAddressChoicePresenter.attachView(this);
         if (getArguments() != null) {
             RecipientAddressModel model = getArguments().getParcelable(EXTRA_DEFAULT_SELECTED_ADDRESS);
-            if (getArguments().getBoolean(EXTRA_NAVIGATION_FROM_ADDRESS_LIST)) {
-                Intent intent = new Intent();
-                intent.putExtra(EXTRA_SELECTED_ADDRESS_DATA, model);
-
-                getActivity().setResult(RESULT_CODE_ACTION_SELECT_ADDRESS, intent);
-                getActivity().finish();
-            } else {
-                mCartAddressChoicePresenter.setSelectedRecipientAddress(model);
-            }
+            mCartAddressChoicePresenter.setSelectedRecipientAddress(model);
         }
         swipeToRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
