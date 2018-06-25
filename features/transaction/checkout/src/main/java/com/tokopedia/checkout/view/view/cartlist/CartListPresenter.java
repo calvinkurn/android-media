@@ -111,8 +111,6 @@ public class CartListPresenter implements ICartListPresenter {
     @Override
     public void processInitialGetCartData() {
         view.renderLoadGetCartData();
-        view.disableSwipeRefresh();
-
 
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(
@@ -421,7 +419,6 @@ public class CartListPresenter implements ICartListPresenter {
     @Override
     public void processResetAndRefreshCartData() {
         view.renderLoadGetCartData();
-        view.disableSwipeRefresh();
         view.showProgressLoading();
         TKPDMapParam<String, String> paramResetCart = new TKPDMapParam<>();
         paramResetCart.put("lang", "id");
@@ -575,9 +572,9 @@ public class CartListPresenter implements ICartListPresenter {
                 if (cartListData.getCartItemDataList().isEmpty()) {
                     view.renderEmptyCartData(cartListData);
                 } else {
+                    view.disableSwipeRefresh();
                     view.renderInitialGetCartListDataSuccess(cartListData);
                 }
-
             }
         };
     }
@@ -865,6 +862,7 @@ public class CartListPresenter implements ICartListPresenter {
                 if (resetAndRefreshCartListData.getCartListData() == null) {
                     view.renderErrorInitialGetCartListData(resetAndRefreshCartListData.getResetCartData().getMessage());
                 } else {
+                    view.disableSwipeRefresh();
                     if (resetAndRefreshCartListData.getCartListData().getCartItemDataList().isEmpty()) {
                         view.renderEmptyCartData(resetAndRefreshCartListData.getCartListData());
                     } else {
