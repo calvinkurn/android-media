@@ -329,7 +329,9 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
     }
 
     public void moveViewToTop() {
-        getView().moveViewToTop();
+        if (getView() != null) {
+            getView().moveViewToTop();
+        }
     }
 
     public int getMenuID() {
