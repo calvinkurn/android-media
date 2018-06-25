@@ -30,6 +30,7 @@ import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.di.utils.TrainComponentUtils;
 import com.tokopedia.train.homepage.presentation.model.TrainSearchPassDataViewModel;
+import com.tokopedia.train.scheduledetail.presentation.activity.TrainScheduleDetailActivity;
 import com.tokopedia.train.search.constant.TrainSortOption;
 import com.tokopedia.train.search.di.DaggerTrainSearchComponent;
 import com.tokopedia.train.search.di.TrainSearchComponent;
@@ -340,7 +341,9 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
     @Override
     public void onDetailClicked(TrainScheduleViewModel trainScheduleViewModel, int adapterPosition) {
         //TODO : detail clicked go to detail trip
-        Toast.makeText(getActivity(), "detail " + trainScheduleViewModel.getTrainName(), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getActivity(), "detail " + trainScheduleViewModel.getTrainName(), Toast.LENGTH_SHORT).show();
+        Intent intent = TrainScheduleDetailActivity.createIntent(getActivity(), trainScheduleViewModel.getIdSchedule());
+        getActivity().startActivity(intent);
     }
 
     private void removePaddingSortAndFilterSearch() {
