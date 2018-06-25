@@ -1002,9 +1002,10 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     }
 
     private void onResultFromRequestCodeMultipleAddressForm(int resultCode) {
-        if (resultCode == MultipleAddressFormActivity.RESULT_CODE_SUCCESS_SET_SHIPPING
-                || resultCode == MultipleAddressFormActivity.RESULT_CODE_FORCE_RESET_CART_ADDRESS_FORM) {
-            dPresenter.processToShipmentForm();
+        if (resultCode == MultipleAddressFormActivity.RESULT_CODE_SUCCESS_SET_SHIPPING) {
+            dPresenter.processToShipmentForm(false);
+        } else if (resultCode == MultipleAddressFormActivity.RESULT_CODE_FORCE_RESET_CART_ADDRESS_FORM) {
+            dPresenter.processToShipmentForm(true);
         }
     }
 
@@ -1085,7 +1086,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
 
     private void onResultFromRequestCodeAddressChoiceActivity(int resultCode) {
         if (resultCode == CartAddressChoiceActivity.RESULT_CODE_ACTION_ADD_DEFAULT_ADDRESS) {
-            dPresenter.processToShipmentForm();
+            dPresenter.processToShipmentForm(false);
         }
     }
 
