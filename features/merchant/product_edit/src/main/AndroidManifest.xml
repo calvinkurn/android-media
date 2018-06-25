@@ -4,7 +4,13 @@
 
     <application>
         <activity
-            android:name=".activity.ProductAddVideoActivity"/>
+            android:name=".activity.ProductAddVideoActivity"
+            android:theme="@style/Theme.White"/>
+
+        <activity
+            android:name=".activity.TestProductAddVideoActivity"
+            android:theme="@style/Theme.White"/>
+
     </application>
 
 </manifest>
