@@ -488,9 +488,11 @@ public class ChatRoomFragment extends BaseDaggerFragment
             Uri uri = Uri.parse(url);
             KeyboardHandler.DropKeyboard(getActivity(), getView());
             if (uri != null) {
-                boolean isTargetDomainTokopedia = uri.getHost().endsWith("tokopedia.com");
-                boolean isTargetTkpMeAndNotRedirect = (TextUtils.equals(uri.getHost(), BASE_DOMAIN_SHORTENED) &&
-                        !TextUtils.equals(uri.getEncodedPath(), "/r"));
+                boolean isTargetDomainTokopedia
+                        = uri.getHost() != null && uri.getHost().endsWith("tokopedia.com");
+                boolean isTargetTkpMeAndNotRedirect
+                        = (TextUtils.equals(uri.getHost(), BASE_DOMAIN_SHORTENED)
+                        && !TextUtils.equals(uri.getEncodedPath(), "/r"));
                 boolean isNeedAuthToken = (isTargetDomainTokopedia || isTargetTkpMeAndNotRedirect);
 
                 if (uri.getScheme().equals(APPLINK_SCHEME)) {
