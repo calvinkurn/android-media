@@ -5,5 +5,5 @@ package com.tokopedia.imagepicker.picker.main.view;
  */
 
 public interface ImagePickerInterface {
-    void onThumbnailImageRemoved(String imagePath);
+    void afterThumbnailImageRemoved();
 }

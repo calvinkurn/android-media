@@ -56,12 +56,13 @@ public class ImageUtils {
     public static final String JPG_EXT = ".jpg";
     public static final String PNG = "png";
     public static final String TOKOPEDIA_FOLDER_PREFIX = "Tokopedia";
+    public static final String TOKOPEDIA_DIRECTORY = "Tokopedia/";
 
     @StringDef({DIRECTORY_TOKOPEDIA_CACHE, DIRECTORY_TOKOPEDIA_CACHE_CAMERA, DIRECTORY_TOKOPEDIA_EDIT_RESULT})
     public @interface DirectoryDef {
-        String DIRECTORY_TOKOPEDIA_CACHE = "Tokopedia/"+TOKOPEDIA_FOLDER_PREFIX+" Cache/";
-        String DIRECTORY_TOKOPEDIA_CACHE_CAMERA = "Tokopedia/"+TOKOPEDIA_FOLDER_PREFIX+" Camera/";
-        String DIRECTORY_TOKOPEDIA_EDIT_RESULT = "Tokopedia/"+TOKOPEDIA_FOLDER_PREFIX+" Edit/";
+        String DIRECTORY_TOKOPEDIA_CACHE = TOKOPEDIA_DIRECTORY + TOKOPEDIA_FOLDER_PREFIX + " Cache/";
+        String DIRECTORY_TOKOPEDIA_CACHE_CAMERA = TOKOPEDIA_DIRECTORY + TOKOPEDIA_FOLDER_PREFIX + " Camera/";
+        String DIRECTORY_TOKOPEDIA_EDIT_RESULT = TOKOPEDIA_DIRECTORY + TOKOPEDIA_FOLDER_PREFIX + " Edit/";
     }
 
     public static File getTokopediaPublicDirectory(@DirectoryDef String directoryType) {
@@ -106,6 +107,37 @@ public class ImageUtils {
             }
             directory.delete();
         }
+    }
+
+    public static void deleteFileInTokopediaFolder(String filesToDelete) {
+        if (TextUtils.isEmpty(filesToDelete)) {
+            return;
+        }
+        File fileToDelete = new File(filesToDelete);
+        if (isInTokopediaDirectory(fileToDelete)) {
+            fileToDelete.delete();
+        }
+    }
+
+    public static void deleteFilesInTokopediaFolder(ArrayList<String> filesToDelete) {
+        if (filesToDelete == null || filesToDelete.size() == 0) {
+            return;
+        }
+        for (int i = 0, sizei = filesToDelete.size(); i < sizei; i++) {
+            String filePathToDelete = filesToDelete.get(i);
+            deleteFileInTokopediaFolder(filePathToDelete);
+        }
+    }
+
+    /**
+     * check if the file is in Tokopedia directory.
+     */
+    private static boolean isInTokopediaDirectory(File file) {
+        return file.exists() && file.getAbsolutePath().contains(TOKOPEDIA_DIRECTORY);
+    }
+
+    private static boolean isInTokopediaDirectory(String filePath, @DirectoryDef String directory) {
+        return filePath.contains(directory);
     }
 
     public static boolean isPng(String referencePath) {
@@ -169,12 +201,22 @@ public class ImageUtils {
                                               @DirectoryDef String directoryDef) throws IOException {
         ArrayList<String> resultList = new ArrayList<>();
         for (String imagePathFrom : cropppedImagePaths) {
-            File outputFile = getTokopediaPhotoPath(directoryDef, imagePathFrom);
-            String resultPath = outputFile.getAbsolutePath();
-            copyFile(imagePathFrom, resultPath);
+            String resultPath = copyFileToDirectory(imagePathFrom, directoryDef);
             resultList.add(resultPath);
         }
         return resultList;
+    }
+
+    public static String copyFileToDirectory(String imagePathFrom,
+                                             @DirectoryDef String directoryDef) throws IOException {
+        if (isInTokopediaDirectory(imagePathFrom, directoryDef)) {
+            return imagePathFrom;
+        } else {
+            File outputFile = getTokopediaPhotoPath(directoryDef, imagePathFrom);
+            String resultPath = outputFile.getAbsolutePath();
+            copyFile(imagePathFrom, resultPath);
+            return resultPath;
+        }
     }
 
     public static void deleteFile(String path) {
@@ -384,7 +426,8 @@ public class ImageUtils {
         return res;
     }
 
-    public static String trimBitmap(String imagePath, float expectedRatio, float currentRatio, boolean needCheckRotate) {
+    public static String trimBitmap(String imagePath, float expectedRatio, float currentRatio, boolean needCheckRotate,
+                                    @DirectoryDef String targetDirectory) {
         Bitmap bitmapToEdit = ImageUtils.getBitmapFromPath(imagePath, ImageUtils.DEF_WIDTH,
                 ImageUtils.DEF_HEIGHT, needCheckRotate);
         int width = bitmapToEdit.getWidth();
@@ -408,8 +451,7 @@ public class ImageUtils {
         Canvas canvas = new Canvas(outputBitmap);
         canvas.drawBitmap(bitmapToEdit, new Rect(left, top, right, bottom),
                 new Rect(0, 0, expectedWidth, expectedHeight), null);
-        File file = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE,
-                outputBitmap, isPng);
+        File file = ImageUtils.writeImageToTkpdPath(targetDirectory, outputBitmap, isPng);
         bitmapToEdit.recycle();
         outputBitmap.recycle();
 
@@ -697,7 +739,7 @@ public class ImageUtils {
         return exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
     }
 
-    public static int getOrientation(ExifInterface exif)  {
+    public static int getOrientation(ExifInterface exif) {
         return exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
     }
 
