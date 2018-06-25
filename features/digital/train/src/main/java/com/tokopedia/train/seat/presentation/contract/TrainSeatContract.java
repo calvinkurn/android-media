@@ -14,6 +14,12 @@ public interface TrainSeatContract {
         void hideGetSeatMapLoading();
 
         void renderWagon(List<TrainWagonViewModel> trainWagonViewModels);
+
+        void hidePage();
+
+        void showPage();
+
+        void showErrorGetSeatMaps(String message);
     }
 
     interface Presenter extends CustomerPresenter<View> {

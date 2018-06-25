@@ -8,8 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.component.Menus;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.seat.di.TrainSeatComponent;
@@ -35,6 +38,8 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
     private CountdownTimeView countdownTimeView;
     private TrainSeatPassengerAndWagonView trainSeatHeader;
     private ViewPager wagonViewPager;
+    private LinearLayout container;
+    private ProgressBar progressBar;
     private Button submitButton;
     private List<TrainSeatPassengerViewModel> passengers;
     private List<TrainWagonViewModel> wagons;
@@ -42,6 +47,13 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
 
     public static Fragment newInstance() {
         return new TrainSeatFragment();
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // TODO : assign passengers from soft book responses
+        passengers = new ArrayList<>();
     }
 
     @Override
@@ -66,6 +78,9 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
         countdownTimeView = (CountdownTimeView) view.findViewById(R.id.ct_countdown);
         trainSeatHeader = (TrainSeatPassengerAndWagonView) view.findViewById(R.id.train_seat_header);
         wagonViewPager = (ViewPager) view.findViewById(R.id.vp_wagon);
+        container = (LinearLayout) view.findViewById(R.id.container);
+        progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
+        wagonViewPager = (ViewPager) view.findViewById(R.id.vp_wagon);
         submitButton = (Button) view.findViewById(R.id.btn_submit);
 
         submitButton.setOnClickListener(new View.OnClickListener() {
@@ -85,12 +100,12 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
 
     @Override
     public void showGetSeatMapLoading() {
-
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideGetSeatMapLoading() {
-
+        progressBar.setVisibility(View.GONE);
     }
 
     @Override
@@ -107,11 +122,31 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
 
             @Override
             public void onPassengerSeatChange(TrainSeatPassengerViewModel passenger, TrainSeatViewModel seat) {
-
+                // TODO: hit api and refresh seats
             }
         });
         wagonViewPager.setOffscreenPageLimit(1);
         wagonViewPager.setAdapter(adapter);
+    }
+
+    @Override
+    public void hidePage() {
+        container.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showPage() {
+        container.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showErrorGetSeatMaps(String message) {
+        NetworkErrorHelper.showEmptyState(getActivity(), getView(), message, new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                presenter.getSeatMaps();
+            }
+        });
     }
 
     @Override

@@ -24,6 +24,7 @@ public class TrainSeatPresenter extends BaseDaggerPresenter<TrainSeatContract.Vi
     @Override
     public void getSeatMaps() {
         getView().showGetSeatMapLoading();
+        getView().hidePage();
         trainGetSeatsUseCase.execute(RequestParams.create(), new Subscriber<List<TrainWagonViewModel>>() {
             @Override
             public void onCompleted() {
@@ -34,12 +35,14 @@ public class TrainSeatPresenter extends BaseDaggerPresenter<TrainSeatContract.Vi
             public void onError(Throwable e) {
                 e.printStackTrace();
                 if (isViewAttached()){
+                    getView().showErrorGetSeatMaps(e.getMessage());
                     getView().hideGetSeatMapLoading();
                 }
             }
 
             @Override
             public void onNext(List<TrainWagonViewModel> trainWagonViewModels) {
+                getView().showPage();
                 getView().hideGetSeatMapLoading();
                 getView().renderWagon(trainWagonViewModels);
             }
