@@ -1,28 +1,26 @@
-package com.tokopedia.topads.dashboard.view.activity;
+package com.tokopedia.topads.product.view.activity;
 
 import android.graphics.Color;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.topads.R;
+import com.tokopedia.topads.common.view.fragment.TopAdsBaseListFragment;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
-import com.tokopedia.topads.dashboard.view.fragment.TopAdsAdListFragment;
-import com.tokopedia.topads.dashboard.view.fragment.TopAdsProductAdListFragment;
-import com.tokopedia.topads.dashboard.view.listener.OneUseGlobalLayoutListener;
+
 import com.tokopedia.topads.common.view.utils.ShowCaseDialogFactory;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
-import com.tokopedia.showcase.ShowCasePreference;
+import com.tokopedia.topads.product.view.fragment.TopAdsProductListFragment;
 
 import java.util.ArrayList;
 
 public class TopAdsProductAdListActivity extends BaseSimpleActivity
-        implements TopAdsAdListFragment.OnAdListFragmentListener {
+        implements TopAdsBaseListFragment.OnAdListFragmentListener {
 
     private static final String TAG = "TopAdsProductAdListActi";
 
@@ -36,34 +34,34 @@ public class TopAdsProductAdListActivity extends BaseSimpleActivity
     @Override
     public void startShowCase() {
         final String showCaseTag = TopAdsProductAdListActivity.class.getName();
-        if (ShowCasePreference.hasShown(this, showCaseTag)) {
-            return;
-        }
-        if (showCaseDialog != null) {
-            return;
-        }
-        final TopAdsProductAdListFragment topAdsProductAdListFragment =
-                (TopAdsProductAdListFragment) getSupportFragmentManager().findFragmentByTag(TAG);
+        final TopAdsProductListFragment topAdsProductAdListFragment =
+                (TopAdsProductListFragment) getSupportFragmentManager().findFragmentByTag(TAG);
         if (topAdsProductAdListFragment == null || topAdsProductAdListFragment.getView() == null) {
             return;
         }
 
         final ArrayList<ShowCaseObject> showCaseList = new ArrayList<>();
 
-        showCaseList.add(
-                new ShowCaseObject(
-                        topAdsProductAdListFragment.getSearchView(),
-                        getString(R.string.topads_showcase_product_list_title_1),
-                        getString(R.string.topads_showcase_product_list_desc_1),
-                        ShowCaseContentPosition.UNDEFINED,
-                        Color.WHITE));
+        if (topAdsProductAdListFragment.getSearchView() != null
+                && topAdsProductAdListFragment.getSearchView().getVisibility() == View.VISIBLE) {
+            showCaseList.add(
+                    new ShowCaseObject(
+                            topAdsProductAdListFragment.getSearchView(),
+                            getString(R.string.topads_showcase_product_list_title_1),
+                            getString(R.string.topads_showcase_product_list_desc_1),
+                            ShowCaseContentPosition.UNDEFINED,
+                            Color.WHITE));
+        }
 
-        showCaseList.add(
-                new ShowCaseObject(
-                        topAdsProductAdListFragment.getFilterView(),
-                        getString(R.string.topads_showcase_product_list_title_2),
-                        getString(R.string.topads_showcase_product_list_desc_2),
-                        ShowCaseContentPosition.UNDEFINED));
+        if (topAdsProductAdListFragment.getFilterView() != null
+                && topAdsProductAdListFragment.getFilterView().getVisibility() == View.VISIBLE) {
+            showCaseList.add(
+                    new ShowCaseObject(
+                            topAdsProductAdListFragment.getFilterView(),
+                            getString(R.string.topads_showcase_product_list_title_2),
+                            getString(R.string.topads_showcase_product_list_desc_2),
+                            ShowCaseContentPosition.UNDEFINED));
+        }
 
         RecyclerView recyclerView = topAdsProductAdListFragment.getRecyclerView();
         recyclerView.postDelayed(new Runnable() {
@@ -107,7 +105,7 @@ public class TopAdsProductAdListActivity extends BaseSimpleActivity
             return fragment;
         } else {
             GroupAd groupAd = getIntent().getParcelableExtra(TopAdsExtraConstant.EXTRA_GROUP);
-            fragment = TopAdsProductAdListFragment.createInstance(groupAd);
+            fragment = TopAdsProductListFragment.createInstance(groupAd);
             return fragment;
         }
     }
@@ -115,10 +113,5 @@ public class TopAdsProductAdListActivity extends BaseSimpleActivity
     @Override
     protected String getTagFragment() {
         return TAG;
-    }
-
-    @Override
-    protected boolean isToolbarWhite() {
-        return true;
     }
 }

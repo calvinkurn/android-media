@@ -7,7 +7,6 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
@@ -21,7 +20,7 @@ import com.tokopedia.seller.product.edit.utils.ProductPriceRangeUtils;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductWholesaleViewModel;
 import com.tokopedia.seller.product.edit.view.model.wholesale.WholesaleModel;
 import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
-import com.tokopedia.seller.util.CurrencyUsdTextWatcher;
+import com.tokopedia.seller.util.CurrencyUsdPrefixEdittextTextWatcher;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -35,6 +34,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 
 public class WholesaleAddAdapter extends RecyclerView.Adapter<WholesaleAddAdapter.ViewHolder> {
+
+    public final static String PREFIX_RUPIAH = "Rp ";
+    public final static String PREFIX_DOLLAR = "$US ";
 
     private List<WholesaleModel> wholesaleModels;
     private Listener listener;
@@ -76,7 +78,7 @@ public class WholesaleAddAdapter extends RecyclerView.Adapter<WholesaleAddAdapte
         private final PrefixEditText etRangeWholesale;
         private final TextInputLayout tilRangeWholesale;
         private final ImageView imageWholesale;
-        private final EditText etWholeSalePrice;
+        private final PrefixEditText etWholeSalePrice;
         private final TextInputLayout tilWholeSalePrice;
         private final Locale dollarLocale = Locale.US;
         private NumberFormat formatter;
@@ -101,7 +103,8 @@ public class WholesaleAddAdapter extends RecyclerView.Adapter<WholesaleAddAdapte
             TextWatcher textWatcher = new CurrencyIdrTextWatcher(etWholeSalePrice);
             switch (listener.getCurrencyType()) {
                 case CurrencyTypeDef.TYPE_USD:
-                    textWatcher = new CurrencyUsdTextWatcher(etWholeSalePrice) {
+                    etWholeSalePrice.setPrefix(PREFIX_DOLLAR);
+                    textWatcher = new CurrencyUsdPrefixEdittextTextWatcher(etWholeSalePrice) {
                         @Override
                         public void onNumberChanged(double number) {
                             if (wholesaleModels.get(getAdapterPosition()).isFocusPrice()) {
@@ -111,6 +114,7 @@ public class WholesaleAddAdapter extends RecyclerView.Adapter<WholesaleAddAdapte
                     };
                     break;
                 case CurrencyTypeDef.TYPE_IDR:
+                    etWholeSalePrice.setPrefix(PREFIX_RUPIAH);
                     textWatcher = new CurrencyIdrTextWatcher(etWholeSalePrice) {
                         @Override
                         public void onNumberChanged(double number) {
@@ -173,21 +177,8 @@ public class WholesaleAddAdapter extends RecyclerView.Adapter<WholesaleAddAdapte
             });
         }
 
-        public double getDoubleValue() {
-            String valueString = CurrencyFormatHelper.removeCurrencyPrefix(etWholeSalePrice.getText().toString());
-            try {
-                valueString = StringUtils.removeComma(valueString);
-                if (TextUtils.isEmpty(valueString)) {
-                    return 0;
-                }
-                return Double.parseDouble(valueString);
-            } catch (NumberFormatException e) {
-                return StringUtils.convertToNumeric(valueString, false);
-            }
-        }
-
         private void setValueAndRefresh(double number){
-            wholesaleModels.get(getAdapterPosition()).setQtyPrice(getDoubleValue());
+            wholesaleModels.get(getAdapterPosition()).setQtyPrice(number);
             wholesaleModels.get(getAdapterPosition()).setFocusPrice(false);
             currentPositionFocusPrice = getAdapterPosition();
             currentPositionFocusQty = -1;

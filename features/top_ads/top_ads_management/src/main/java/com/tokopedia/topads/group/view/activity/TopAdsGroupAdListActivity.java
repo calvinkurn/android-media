@@ -1,4 +1,4 @@
-package com.tokopedia.topads.dashboard.view.activity;
+package com.tokopedia.topads.group.view.activity;
 
 import android.graphics.Color;
 import android.support.v4.app.Fragment;
@@ -6,16 +6,15 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.topads.R;
-import com.tokopedia.topads.dashboard.view.fragment.TopAdsAdListFragment;
-import com.tokopedia.topads.dashboard.view.fragment.TopAdsGroupAdListFragment;
+import com.tokopedia.topads.common.view.fragment.TopAdsBaseListFragment;
 import com.tokopedia.topads.dashboard.view.listener.OneUseGlobalLayoutListener;
 import com.tokopedia.topads.common.view.utils.ShowCaseDialogFactory;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
-import com.tokopedia.showcase.ShowCasePreference;
+import com.tokopedia.topads.group.view.fragment.TopAdsGroupAdListFragment;
 
 import java.util.ArrayList;
 
@@ -24,7 +23,7 @@ import java.util.ArrayList;
  */
 
 public class TopAdsGroupAdListActivity extends BaseSimpleActivity
-        implements TopAdsAdListFragment.OnAdListFragmentListener {
+        implements TopAdsBaseListFragment.OnAdListFragmentListener {
     private ShowCaseDialog showCaseDialog;
 
     @Override
@@ -35,12 +34,6 @@ public class TopAdsGroupAdListActivity extends BaseSimpleActivity
     @Override
     public void startShowCase() {
         final String showCaseTag = TopAdsGroupAdListActivity.class.getName();
-        if (ShowCasePreference.hasShown(this, showCaseTag)){
-            return;
-        }
-        if (showCaseDialog != null){
-            return;
-        }
         final TopAdsGroupAdListFragment topAdsGroupAdListFragment =
                 (TopAdsGroupAdListFragment) getSupportFragmentManager().findFragmentByTag(TopAdsGroupAdListFragment.class.getSimpleName());
         if (topAdsGroupAdListFragment == null || topAdsGroupAdListFragment.getView() == null) {
@@ -127,10 +120,5 @@ public class TopAdsGroupAdListActivity extends BaseSimpleActivity
     @Override
     protected String getTagFragment() {
         return TopAdsGroupAdListFragment.class.getSimpleName();
-    }
-
-    @Override
-    protected boolean isToolbarWhite() {
-        return true;
     }
 }

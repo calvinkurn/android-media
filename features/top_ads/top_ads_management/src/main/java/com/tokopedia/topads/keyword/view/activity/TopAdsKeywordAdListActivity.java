@@ -2,55 +2,44 @@ package com.tokopedia.topads.keyword.view.activity;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.seller.base.view.activity.BaseTabActivity;
-import com.tokopedia.seller.common.datepicker.view.listener.DatePickerTabListener;
+import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
+import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
-import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.topads.R;
+import com.tokopedia.topads.TopAdsComponentInstance;
+import com.tokopedia.topads.common.view.fragment.TopAdsBaseListFragment;
 import com.tokopedia.topads.common.view.utils.ShowCaseDialogFactory;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.topads.dashboard.view.fragment.TopAdsAdListFragment;
-import com.tokopedia.topads.dashboard.view.listener.OneUseGlobalLayoutListener;
+import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.keyword.view.adapter.TopAdsPagerAdapter;
-import com.tokopedia.topads.keyword.view.fragment.TopAdsKeywordListFragment;
-import com.tokopedia.topads.keyword.view.listener.AdListMenuListener;
+import com.tokopedia.topads.keyword.view.fragment.TopAdsKeywordAdListFragment;
 
 import java.util.ArrayList;
 
 /**
- * Created by nathan on 5/15/17.
+ * Created by hadi.putra on 11/05/18.
  */
 
-public class TopAdsKeywordListActivity extends BaseTabActivity implements
-        HasComponent<AppComponent>,
-        TopAdsAdListFragment.OnAdListFragmentListener, TopAdsKeywordListFragment.GroupTopAdsListener {
+public class TopAdsKeywordAdListActivity extends BaseTabActivity implements HasComponent<TopAdsComponent>,
+        TopAdsBaseListFragment.OnAdListFragmentListener, TopAdsKeywordAdListFragment.GroupTopAdsListener {
 
     public static final int OFFSCREEN_PAGE_LIMIT = 2;
-    private static final String TAG = TopAdsKeywordListActivity.class.getName();
+    private static final String TAG = TopAdsKeywordAdListActivity.class.getName();
     private static final int DELAY_SHOW_CASE_THREAD = 300;//ms
     boolean isShowingShowCase = false;
     private ShowCaseDialog showCaseDialog;
-    private SearchView searchView;
-    private MenuItem searchItem;
     private int totalGroupAd;
-    private MenuItem filter;
-
-    @Override
-    protected boolean isAllowElevation() {
-        return false;
-    }
+    private TopAdsPagerAdapter topAdsPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,18 +50,22 @@ public class TopAdsKeywordListActivity extends BaseTabActivity implements
     @Override
     protected void setupLayout(Bundle savedInstanceState) {
         super.setupLayout(savedInstanceState);
-        tabLayout.addOnTabSelectedListener(new DatePickerTabListener(viewPager));
+        tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+        tabLayout.addOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager));
         tabLayout.addTab(tabLayout.newTab().setText(R.string.top_ads_keyword_title));
         tabLayout.addTab(tabLayout.newTab().setText(R.string.top_ads_keyword_title_negative));
     }
 
     @Override
     protected TopAdsPagerAdapter getViewPagerAdapter() {
-        String[] titles = {
-                getString(R.string.top_ads_keyword_title),
-                getString(R.string.top_ads_keyword_title_negative)
-        };
-        return new TopAdsPagerAdapter(getSupportFragmentManager(), titles);
+        if (topAdsPagerAdapter == null) {
+            String[] titles = {
+                    getString(R.string.top_ads_keyword_title),
+                    getString(R.string.top_ads_keyword_title_negative)
+            };
+            topAdsPagerAdapter = new TopAdsPagerAdapter(getSupportFragmentManager(), titles);
+        }
+        return topAdsPagerAdapter;
     }
 
     @Override
@@ -81,55 +74,39 @@ public class TopAdsKeywordListActivity extends BaseTabActivity implements
     }
 
     @Override
-    public String getScreenName() {
-        return null;
+    public TopAdsComponent getComponent() {
+        return TopAdsComponentInstance.getComponent(getApplication());
     }
 
-    @Override
-    public AppComponent getComponent() {
-        return getApplicationComponent();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        menu.clear();
-        getMenuInflater().inflate(R.menu.menu_top_ads_list, menu);
-        return true;
-    }
-
-    private AdListMenuListener getTopAdsBaseKeywordListFragment() {
+    private TopAdsKeywordAdListFragment getTopAdsBaseKeywordListFragment() {
         Fragment registeredFragment = getCurrentFragment();
         if (registeredFragment != null && registeredFragment.isVisible()) {
-            if (registeredFragment instanceof AdListMenuListener) {
-                return ((AdListMenuListener) registeredFragment);
+            if (registeredFragment instanceof TopAdsKeywordAdListFragment) {
+                return ((TopAdsKeywordAdListFragment) registeredFragment);
             }
         }
         return null;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
-            return true;
-        } else if (item.getItemId() == R.id.menu_add) {
-            if (getTopAdsBaseKeywordListFragment() != null) {
-                getTopAdsBaseKeywordListFragment().onCreateAd();
-            }
-            return true;
+    protected Fragment getCurrentFragment() {
+        if (topAdsPagerAdapter == null) {
+            return null;
         }
-        return super.onOptionsItemSelected(item);
+        return (Fragment) topAdsPagerAdapter.instantiateItem(viewPager, tabLayout.getSelectedTabPosition());
+    }
+
+    @Override
+    public int getGroupTopAdsSize() {
+        return totalGroupAd;
+    }
+
+    @Override
+    public void setGroupTopAdsSize(int size) {
+        totalGroupAd = size;
     }
 
     @Override
     public void startShowCase() {
-        if (ShowCasePreference.hasShown(this, TAG)) {
-            return;
-        }
-        if (showCaseDialog != null || isShowingShowCase) {
-            return;
-        }
-        isShowingShowCase = true;
 
         viewPager.setCurrentItem(0);
         viewPager.post(new Runnable() {
@@ -144,7 +121,7 @@ public class TopAdsKeywordListActivity extends BaseTabActivity implements
     }
 
     private void displayShowCase() {
-        final TopAdsKeywordListFragment topAdsKeywordListFragment = (TopAdsKeywordListFragment) getCurrentFragment();
+        final TopAdsKeywordAdListFragment topAdsKeywordListFragment = (TopAdsKeywordAdListFragment) getCurrentFragment();
         if (topAdsKeywordListFragment == null || topAdsKeywordListFragment.getView() == null) {
             return;
         }
@@ -154,22 +131,28 @@ public class TopAdsKeywordListActivity extends BaseTabActivity implements
         if (searchView == null) {
             return;
         }
-        // Pencarian
-        showCaseList.add(
-                new ShowCaseObject(
-                        searchView,
-                        getString(R.string.topads_showcase_keyword_list_title_1),
-                        getString(R.string.topads_showcase_keyword_list_desc_1),
-                        ShowCaseContentPosition.UNDEFINED,
-                        Color.WHITE));
 
-        // Filter
-        showCaseList.add(
-                new ShowCaseObject(
-                        topAdsKeywordListFragment.getFilterView(),
-                        getString(R.string.topads_showcase_keyword_list_title_2),
-                        getString(R.string.topads_showcase_keyword_list_desc_2),
-                        ShowCaseContentPosition.UNDEFINED));
+        if (searchView.getVisibility() == View.VISIBLE) {
+            // Pencarian
+            showCaseList.add(
+                    new ShowCaseObject(
+                            searchView,
+                            getString(R.string.topads_showcase_keyword_list_title_1),
+                            getString(R.string.topads_showcase_keyword_list_desc_1),
+                            ShowCaseContentPosition.UNDEFINED,
+                            Color.WHITE));
+        }
+
+        if (topAdsKeywordListFragment.getFilterView() != null &&
+                topAdsKeywordListFragment.getFilterView().getVisibility() == View.VISIBLE) {
+            // Filter
+            showCaseList.add(
+                    new ShowCaseObject(
+                            topAdsKeywordListFragment.getFilterView(),
+                            getString(R.string.topads_showcase_keyword_list_title_2),
+                            getString(R.string.topads_showcase_keyword_list_desc_2),
+                            ShowCaseContentPosition.UNDEFINED));
+        }
 
         RecyclerView recyclerView = topAdsKeywordListFragment.getRecyclerView();
         recyclerView.postDelayed(new Runnable() {
@@ -208,23 +191,9 @@ public class TopAdsKeywordListActivity extends BaseTabActivity implements
                                     getString(R.string.topads_showcase_keyword_list_desc_5)));
                 }
                 showCaseDialog = ShowCaseDialogFactory.createTkpdShowCase();
-                showCaseDialog.show(TopAdsKeywordListActivity.this, TAG, showCaseList);
+                showCaseDialog.show(TopAdsKeywordAdListActivity.this, TAG, showCaseList);
             }
         }, DELAY_SHOW_CASE_THREAD);
     }
 
-    @Override
-    public int getGroupTopAdsSize() {
-        return totalGroupAd;
-    }
-
-    @Override
-    public void setGroupTopAdsSize(int size) {
-        totalGroupAd = size;
-    }
-
-    @Override
-    protected boolean isToolbarWhite() {
-        return true;
-    }
 }

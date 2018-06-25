@@ -18,14 +18,14 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:background="@null"
-            app:srcCompat="@drawable/ic_close_default"/>
+            app:srcCompat="@drawable/ic_close_default"/>O
 
         <TextView
             android:id="@+id/tv_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/grey_750"
-            android:textSize="@dimen/sp_16"
+            android:textSize="@dimen/sp_17"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginStart="@dimen/dp_16"/>
 
