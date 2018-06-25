@@ -144,7 +144,8 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
     public void onSuccessLoanProfileStatus(UserProfileLoanEntity data) {
 //TODO @lavekush check possible error cases from @OKA
 
-        if (!data.getWhitelist()) {
+        startIntroSlider();
+        /*if (!data.getWhitelist()) {
             // TODO: 6/5/18 open coming soon web view
 
             if (!TextUtils.isEmpty(data.getWhiteListUrl())) {
@@ -173,7 +174,7 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
 
         } else {
             startIntroSlider();
-        }
+        }*/
     }
 
     @Override
@@ -266,15 +267,15 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
 
 
         mDialogIntro.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        mDialogIntro.setContentView(view);//, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-        lp.copyFrom(mDialogIntro.getWindow().getAttributes());
-        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        lp.gravity = Gravity.CENTER;
+        mDialogIntro.setContentView(view, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+//        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+//        lp.copyFrom(mDialogIntro.getWindow().getAttributes());
+//        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+//        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+//        lp.gravity = Gravity.CENTER;
         mDialogIntro.setCanceledOnTouchOutside(false);
         mDialogIntro.show();
-        mDialogIntro.getWindow().setAttributes(lp);
+//        mDialogIntro.getWindow().setAttributes(lp);
     }
 
     @Override
