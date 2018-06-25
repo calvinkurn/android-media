@@ -105,7 +105,7 @@ public class AppNotificationReceiver implements IAppNotificationReceiver {
         LocalBroadcastManager.getInstance(mContext).sendBroadcast(loyaltyGroupChat);
     }
 
-    private boolean canBroadcastPointReceived(String tkpCode){
+    private boolean canBroadcastPointReceived(String tkpCode) {
         final String GROUP_CHAT_BROADCAST_TKP_CODE = "140";
         final String GROUP_CHAT_BROADCAST_TKP_CODE_GENERAL = "1400";
 

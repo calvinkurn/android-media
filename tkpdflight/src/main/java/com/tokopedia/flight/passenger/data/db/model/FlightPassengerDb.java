@@ -31,6 +31,14 @@ public class FlightPassengerDb extends BaseModel implements Parcelable {
     int titleId;
     @Column(name = "is_selected")
     int isSelected;
+    @Column(name = "nationality")
+    String passportNationality;
+    @Column(name = "passport_country")
+    String passportCountry;
+    @Column(name = "passport_expiry")
+    String passportExpiry;
+    @Column(name = "passport_no")
+    String passportNo;
 
     public FlightPassengerDb() {
     }
@@ -48,10 +56,25 @@ public class FlightPassengerDb extends BaseModel implements Parcelable {
             );
         }
 
+        if (passengerListEntity.getPassengerAttribute().getPassportNo() != null) {
+            this.passportNo = passengerListEntity.getPassengerAttribute().getPassportNo();
+        }
+
+        if (passengerListEntity.getPassengerAttribute().getPassportExpiry() != null) {
+            this.passportExpiry = passengerListEntity.getPassengerAttribute().getPassportExpiry();
+        }
+
+        if (passengerListEntity.getPassengerAttribute().getPassportCountry() != null) {
+            this.passportCountry = passengerListEntity.getPassengerAttribute().getPassportCountry();
+        }
+
+        if (passengerListEntity.getPassengerAttribute().getNationality() != null) {
+            this.passportNationality = passengerListEntity.getPassengerAttribute().getNationality();
+        }
+
         this.titleId = passengerListEntity.getPassengerAttribute().getTitle();
         this.isSelected = 0;
     }
-
 
     protected FlightPassengerDb(Parcel in) {
         passengerId = in.readString();
@@ -60,6 +83,29 @@ public class FlightPassengerDb extends BaseModel implements Parcelable {
         birthdate = in.readString();
         titleId = in.readInt();
         isSelected = in.readInt();
+        passportNationality = in.readString();
+        passportCountry = in.readString();
+        passportExpiry = in.readString();
+        passportNo = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(passengerId);
+        dest.writeString(firstName);
+        dest.writeString(lastName);
+        dest.writeString(birthdate);
+        dest.writeInt(titleId);
+        dest.writeInt(isSelected);
+        dest.writeString(passportNationality);
+        dest.writeString(passportCountry);
+        dest.writeString(passportExpiry);
+        dest.writeString(passportNo);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<FlightPassengerDb> CREATOR = new Creator<FlightPassengerDb>() {
@@ -122,18 +168,35 @@ public class FlightPassengerDb extends BaseModel implements Parcelable {
         this.titleId = titleId;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public String getPassportNationality() {
+        return passportNationality;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(passengerId);
-        dest.writeString(firstName);
-        dest.writeString(lastName);
-        dest.writeString(birthdate);
-        dest.writeInt(titleId);
-        dest.writeInt(isSelected);
+    public void setPassportNationality(String passportNationality) {
+        this.passportNationality = passportNationality;
+    }
+
+    public String getPassportCountry() {
+        return passportCountry;
+    }
+
+    public void setPassportCountry(String passportCountry) {
+        this.passportCountry = passportCountry;
+    }
+
+    public String getPassportExpiry() {
+        return passportExpiry;
+    }
+
+    public void setPassportExpiry(String passportExpiry) {
+        this.passportExpiry = passportExpiry;
+    }
+
+    public String getPassportNo() {
+        return passportNo;
+    }
+
+    public void setPassportNo(String passportNo) {
+        this.passportNo = passportNo;
     }
 }

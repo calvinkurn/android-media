@@ -80,6 +80,7 @@ dependencies {
     implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
         exclude group: 'com.android.support'
     }
+    implementation project(rootProject.ext.libraries.analytics)
     implementation rootProject.ext.miscDependencies.flexBoxLayout
 }
 

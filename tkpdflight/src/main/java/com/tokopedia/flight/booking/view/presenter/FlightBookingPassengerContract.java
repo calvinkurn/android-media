@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
 
 import java.util.Date;
 import java.util.List;
@@ -30,6 +31,8 @@ public interface FlightBookingPassengerContract {
         String getReturnTripId();
 
         String getDepartureId();
+
+        boolean isDomestic();
 
         List<FlightBookingAmenityMetaViewModel> getLuggageViewModels();
 
@@ -57,6 +60,10 @@ public interface FlightBookingPassengerContract {
 
         String getPassengerBirthDate();
 
+        String getPassportExpiredDate();
+
+        String getPassportNumber();
+
         void showPassengerBirthdateEmptyError(int resId);
 
         void showPassengerChildBirthdateShouldMoreThan2Years(int resId);
@@ -78,6 +85,8 @@ public interface FlightBookingPassengerContract {
         void renderPassengerTitle(String passengerTitle);
 
         void renderSelectedList(String passengerName);
+
+        void renderPassportExpiredDate(String expiredDateStr);
 
         void navigateToLuggagePicker(List<FlightBookingAmenityViewModel> luggages, FlightBookingAmenityMetaViewModel selected);
 
@@ -103,6 +112,10 @@ public interface FlightBookingPassengerContract {
 
         void hideKeyboard();
 
+        void hidePassportContainer();
+
+        void showPassportContainer();
+
         boolean isMandatoryDoB();
 
         String getDepartureDateString();
@@ -112,6 +125,28 @@ public interface FlightBookingPassengerContract {
         String getString(int resId);
 
         void showPassengerChildBirthdateShouldLessThanEqual12Years(int resId);
+
+        void showPassportExpiredDatePickerDialog(Date selectedDate, Date minDate, Date maxDate);
+
+        void showPassportExpiredDateShouldMoreThan6MonthsFromDeparture(@StringRes int resId, String dateAfterSixMonth);
+
+        void showPassportExpiredDateMax20Years(@StringRes int resId, String dateAfterTwentyYears);
+
+        void renderPassportNationality(String countryName);
+
+        void renderPassportIssuerCountry(String countryName);
+
+        void renderPassportNumber(String passportNumber);
+
+        void showPassengerPassportNumberEmptyError(@StringRes int resId);
+
+        void showPassportNationalityEmptyError(@StringRes int resId);
+
+        void showPassportIssuerCountryEmptyError(@StringRes int resId);
+
+        void showPassengerPassportExpiredDateEmptyError(@StringRes int resId);
+
+        void showPassengerPassportNumberShouldAlphaNumericError(@StringRes int resId);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -142,5 +177,12 @@ public interface FlightBookingPassengerContract {
 
         void onChangeFromSavedPassenger(FlightBookingPassengerViewModel selectedPassenger);
 
+        void onPassportExpiredClicked();
+
+        void onPassportExpiredDateChanged(int year, int month, int dayOfMonth, Date minDate, Date maxxDate);
+
+        void onNationalityChanged(FlightBookingPhoneCodeViewModel flightPassportNationalityViewModel);
+
+        void onIssuerCountryChanged(FlightBookingPhoneCodeViewModel flightPassportIssuerCountry);
     }
 }

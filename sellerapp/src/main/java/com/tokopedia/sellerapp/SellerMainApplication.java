@@ -19,14 +19,15 @@ import com.raizlabs.android.dbflow.config.TkpdCacheApiGeneratedDatabaseHolder;
 import com.raizlabs.android.dbflow.config.TkpdGMGeneratedDatabaseHolder;
 import com.raizlabs.android.dbflow.config.TkpdSellerGeneratedDatabaseHolder;
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.constant.AbstractionBaseURL;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.router.transactionmodule.TransactionRouter;
+import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartRequest;
+import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.digital.common.constant.DigitalUrl;
@@ -43,8 +44,6 @@ import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.utils.CacheApiWhiteList;
 import com.tokopedia.shop.common.constant.ShopCommonUrl;
 import com.tokopedia.shop.common.constant.ShopUrl;
-
-import rx.Observable;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -226,6 +225,21 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
     }
 
     @Override
+    public Observable<AddToCartResult> addToCartProduct(AddToCartRequest addToCartRequest) {
+        return null;
+    }
+
+    @Override
+    public Intent getCartIntent(Activity activity) {
+        return null;
+    }
+
+    @Override
+    public void updateMarketplaceCartCounter(TransactionRouter.CartNotificationListener listener) {
+
+    }
+
+    @Override
     public Intent getPromoListIntent(Activity activity) {
         return null;
     }
@@ -242,8 +256,17 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
     }
 
     @Override
-    public Observable<TKPDMapParam<String, Object>> verifyEventPromo(RequestParams requestParams) {
+    public Intent getHelpUsIntent(Context context) {
         return null;
     }
 
+    @Override
+    public Intent getWebviewActivityWithIntent(Context context, String url, String title) {
+        return null;
+    }
+
+    @Override
+    public Intent getWebviewActivityWithIntent(Context context, String url) {
+        return null;
+    }
 }

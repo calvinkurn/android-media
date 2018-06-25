@@ -50,7 +50,8 @@ public class FlightBookingVerifyUseCase extends UseCase<DataResponseVerify> {
 
     public RequestParams createRequestParams(String promoCode, int price, String cartId,
                                              List<FlightBookingPassengerViewModel> flightPassengerViewModels,
-                                             String contactName, String country, String email, String phone) {
+                                             String contactName, String country, String email, String phone,
+                                             List<String> insuranceIds) {
         RequestParams requestParams = RequestParams.create();
         VerifyRequest verifyRequest = new VerifyRequest();
         Data data = new Data();
@@ -71,6 +72,7 @@ public class FlightBookingVerifyUseCase extends UseCase<DataResponseVerify> {
         metaData.setPhone(phone);
         metaData.setCartId(cartId);
         metaData.setPassengers(generatePassengers(flightPassengerViewModels));
+        metaData.setInsurances(insuranceIds);
         cartItem.setMetaData(metaData);
         cartItems.add(cartItem);
         attributesData.setCartItems(cartItems);
@@ -91,6 +93,20 @@ public class FlightBookingVerifyUseCase extends UseCase<DataResponseVerify> {
             passenger.setTitle(flightPassengerViewModel.getPassengerTitleId());
             passenger.setType(flightPassengerViewModel.getType());
             passenger.setAmenities(generateAmenities(flightPassengerViewModel.getFlightBookingLuggageMetaViewModels(), flightPassengerViewModel.getFlightBookingMealMetaViewModels()));
+
+            if (flightPassengerViewModel.getPassportNumber() != null) {
+                passenger.setPassportNo(flightPassengerViewModel.getPassportNumber());
+            }
+            if (flightPassengerViewModel.getPassportExpiredDate() != null) {
+                passenger.setPassportExpiry(FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.FORMAT_DATE_API, flightPassengerViewModel.getPassportExpiredDate()));
+            }
+            if (flightPassengerViewModel.getPassportNationality() != null) {
+                passenger.setNationality(flightPassengerViewModel.getPassportNationality().getCountryId());
+            }
+            if (flightPassengerViewModel.getPassportIssuerCountry() != null) {
+                passenger.setPassportCountry(flightPassengerViewModel.getPassportIssuerCountry().getCountryId());
+            }
+
             passengers.add(passenger);
         }
         return passengers;
