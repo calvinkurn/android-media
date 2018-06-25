@@ -157,6 +157,13 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
         notifyDataSetChanged();
     }
 
+    public void setElement(Visitable data) {
+        List<Visitable> buffer = new ArrayList<>();
+        buffer.add(data);
+        visitables = buffer;
+        notifyDataSetChanged();
+    }
+
     public void clearAllElements() {
         visitables.clear();
     }

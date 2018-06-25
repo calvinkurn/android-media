@@ -25,6 +25,7 @@ public class HotlistProductViewModel implements Visitable<HotlistAdapterTypeFact
     private String imageUrl700;
     private String rating;
     private String countReview;
+    private String countCourier;
     private String price;
     private String shopID;
     private String shopName;
@@ -38,6 +39,9 @@ public class HotlistProductViewModel implements Visitable<HotlistAdapterTypeFact
     private String trackerName;
     private String trackerPosition;
     private String homeAttribution;
+    private String originalPrice;
+    private int discountPercentage;
+    private boolean isOfficial;
 
     public HotlistProductViewModel() {
         isWishlistButtonEnabled = true;
@@ -177,6 +181,38 @@ public class HotlistProductViewModel implements Visitable<HotlistAdapterTypeFact
 
     public boolean isFeatured() {
         return featured;
+    }
+
+    public String getCountCourier() {
+        return countCourier;
+    }
+
+    public void setCountCourier(String countCourier) {
+        this.countCourier = countCourier;
+    }
+
+    public String getOriginalPrice() {
+        return originalPrice;
+    }
+
+    public void setOriginalPrice(String originalPrice) {
+        this.originalPrice = originalPrice;
+    }
+
+    public int getDiscountPercentage() {
+        return discountPercentage;
+    }
+
+    public void setDiscountPercentage(int discountPercentage) {
+        this.discountPercentage = discountPercentage;
+    }
+
+    public boolean isOfficial() {
+        return isOfficial;
+    }
+
+    public void setOfficial(boolean official) {
+        isOfficial = official;
     }
 
     public Map<String, Object> generateImpressionDataLayer() {
@@ -359,6 +395,7 @@ public class HotlistProductViewModel implements Visitable<HotlistAdapterTypeFact
         dest.writeString(this.imageUrl700);
         dest.writeString(this.rating);
         dest.writeString(this.countReview);
+        dest.writeString(this.countCourier);
         dest.writeString(this.price);
         dest.writeString(this.shopID);
         dest.writeString(this.shopName);
@@ -372,6 +409,9 @@ public class HotlistProductViewModel implements Visitable<HotlistAdapterTypeFact
         dest.writeString(this.trackerName);
         dest.writeString(this.trackerPosition);
         dest.writeString(this.homeAttribution);
+        dest.writeString(this.originalPrice);
+        dest.writeInt(this.discountPercentage);
+        dest.writeByte(this.isOfficial ? (byte) 1 : (byte) 0);
     }
 
     protected HotlistProductViewModel(Parcel in) {
@@ -382,6 +422,7 @@ public class HotlistProductViewModel implements Visitable<HotlistAdapterTypeFact
         this.imageUrl700 = in.readString();
         this.rating = in.readString();
         this.countReview = in.readString();
+        this.countCourier = in.readString();
         this.price = in.readString();
         this.shopID = in.readString();
         this.shopName = in.readString();
@@ -395,6 +436,9 @@ public class HotlistProductViewModel implements Visitable<HotlistAdapterTypeFact
         this.trackerName = in.readString();
         this.trackerPosition = in.readString();
         this.homeAttribution = in.readString();
+        this.originalPrice = in.readString();
+        this.discountPercentage = in.readInt();
+        this.isOfficial = in.readByte() != 0;
     }
 
     public static final Creator<HotlistProductViewModel> CREATOR = new Creator<HotlistProductViewModel>() {

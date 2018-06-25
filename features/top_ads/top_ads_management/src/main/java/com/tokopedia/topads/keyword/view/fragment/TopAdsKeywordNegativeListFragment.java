@@ -6,6 +6,7 @@ import android.view.View;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.topads.R;
+import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
 import com.tokopedia.topads.dashboard.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordDetailNegativeActivity;
 import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordNewChooseGroupActivity;
@@ -58,11 +59,13 @@ public class TopAdsKeywordNegativeListFragment extends TopAdsKeywordListFragment
     @Override
     public void onCreateAd() {
         UnifyTracking.eventTopAdsProductNewPromoKeywordNegatif();
+        topAdsKeywordListPresenter.saveSourceTagging(TopAdsSourceOption.SA_MANAGE_KEYWORD_NEGATIVE);
         TopAdsKeywordNewChooseGroupActivity.start(this, getActivity(), REQUEST_CODE_AD_ADD, isPositive());
     }
 
     @Override
     public void onItemClicked(KeywordAd ad) {
+        topAdsKeywordListPresenter.saveSourceTagging(TopAdsSourceOption.SA_MANAGE_KEYWORD_NEGATIVE);
         startActivityForResult(TopAdsKeywordDetailNegativeActivity.createInstance(getActivity(), ad, ""), REQUEST_CODE_AD_CHANGE);
     }
 }

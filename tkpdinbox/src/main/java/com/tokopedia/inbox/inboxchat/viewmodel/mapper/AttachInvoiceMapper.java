@@ -3,12 +3,9 @@ package com.tokopedia.inbox.inboxchat.viewmodel.mapper;
 import com.tokopedia.inbox.attachinvoice.view.resultmodel.SelectedInvoice;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.Attachment;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentInvoice;
-import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponseData;
 import com.tokopedia.inbox.inboxchat.helper.AttachmentChatHelper;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSelectionViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSentViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSingleViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 
 import java.util.ArrayList;
 

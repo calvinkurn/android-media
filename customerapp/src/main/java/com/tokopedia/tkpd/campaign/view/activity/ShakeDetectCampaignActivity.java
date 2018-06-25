@@ -35,6 +35,7 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
 
 
 
+    public static String SCREEN_NAME = "ShakeDetectCampaignActivity";
     View shakeShakeMessageButton;
     View cancelButton;
     private TkpdProgressDialog progressDialog;
@@ -70,6 +71,7 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
 
 
     }
+
 
 
     @Override
@@ -145,12 +147,17 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getString(R.string.title_dialog_wrong_scan));
         builder.setMessage(message);
+        builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                presenter.onRetryClick();
+            }
+        });
         builder.setPositiveButton(getString(R.string.btn_dialog_wrong_scan),
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int i) {
                         dialog.dismiss();
-                        presenter.onRetryClick();
                     }
                 }).create().show();
     }
@@ -200,4 +207,8 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
         presenter.onActivityResult(requestCode, resultCode, data);
     }
 
+    @Override
+    public String getScreenName() {
+        return SCREEN_NAME;
+    }
 }

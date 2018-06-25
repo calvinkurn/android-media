@@ -144,7 +144,8 @@ public interface IGTMContainer {
 
     void enhanceClickSearchResultProduct(Object object,
                                          String keyword,
-                                         String actionField);
+                                         String actionField,
+                                         String activeFilter);
 
     void enhanceClickImageSearchResultProduct(Object object,
                                          String actionField);

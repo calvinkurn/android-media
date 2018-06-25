@@ -1,5 +1,7 @@
 package com.tokopedia.discovery.newdiscovery.domain.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 /**
@@ -13,8 +15,9 @@ public class ProductModel {
     private String productUrl;
     private String imageUrl;
     private String imageUrl700;
-    private String rating;
-    private String countReview;
+    private int rating;
+    private int countReview;
+    private int countCourier;
     private String price;
     private String shopID;
     private String shopName;
@@ -24,6 +27,9 @@ public class ProductModel {
     private List<BadgeModel> badgesList;
     private List<LabelModel> labelList;
     private boolean featured;
+    private String originalPrice;
+    private int discountPercentage;
+    private boolean isOfficial;
 
     public String getProductUrl() {
         return productUrl;
@@ -63,22 +69,6 @@ public class ProductModel {
 
     public String getImageUrl700() {
         return imageUrl700;
-    }
-
-    public void setRating(String rating) {
-        this.rating = rating;
-    }
-
-    public String getRating() {
-        return rating;
-    }
-
-    public void setCountReview(String countReview) {
-        this.countReview = countReview;
-    }
-
-    public String getCountReview() {
-        return countReview;
     }
 
     public void setPrice(String price) {
@@ -151,5 +141,53 @@ public class ProductModel {
 
     public boolean isFeatured() {
         return featured;
+    }
+
+    public int getRating() {
+        return rating;
+    }
+
+    public void setRating(int rating) {
+        this.rating = rating;
+    }
+
+    public int getCountReview() {
+        return countReview;
+    }
+
+    public void setCountReview(int countReview) {
+        this.countReview = countReview;
+    }
+
+    public int getCountCourier() {
+        return countCourier;
+    }
+
+    public void setCountCourier(int countCourier) {
+        this.countCourier = countCourier;
+    }
+
+    public String getOriginalPrice() {
+        return originalPrice;
+    }
+
+    public void setOriginalPrice(String originalPrice) {
+        this.originalPrice = originalPrice;
+    }
+
+    public int getDiscountPercentage() {
+        return discountPercentage;
+    }
+
+    public void setDiscountPercentage(int discountPercentage) {
+        this.discountPercentage = discountPercentage;
+    }
+
+    public boolean isOfficial() {
+        return isOfficial;
+    }
+
+    public void setOfficial(boolean official) {
+        isOfficial = official;
     }
 }

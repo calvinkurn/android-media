@@ -4,7 +4,7 @@ import android.support.annotation.StringRes;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
+import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
 import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightDashboardPassDataViewModel;
@@ -88,6 +88,8 @@ public interface FlightDashboardContract {
         void hideProgressBar();
 
         void showFormContainer();
+
+        void startAirportSyncInBackground(long airportVersion);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -112,9 +114,9 @@ public interface FlightDashboardContract {
 
         void onFlightPassengerChange(FlightPassengerViewModel passengerViewModel);
 
-        void onDepartureAirportChange(FlightAirportDB departureAirport);
+        void onDepartureAirportChange(FlightAirportViewModel departureAirport);
 
-        void onArrivalAirportChange(FlightAirportDB arrivalAirport);
+        void onArrivalAirportChange(FlightAirportViewModel arrivalAirport);
 
         void onSearchTicketButtonClicked();
 

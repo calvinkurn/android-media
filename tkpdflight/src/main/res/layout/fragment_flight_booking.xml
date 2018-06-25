@@ -120,11 +120,11 @@
                         android:text="@string/flight_booking_passenger_data_label" />
 
                     <LinearLayout
+                        android:id="@+id/container_same_as_contact"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/container_same_as_contact"
-                        android:visibility="gone"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:visibility="gone">
 
                         <TextView
                             style="@style/TextView.Micro"
@@ -132,7 +132,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:layout_weight="1"
-                            android:text="@string/flight_booking_data_pemesan_sama_contact_label"/>
+                            android:text="@string/flight_booking_data_pemesan_sama_contact_label" />
 
                         <android.support.v7.widget.AppCompatCheckBox
                             android:id="@+id/checkbox"
@@ -144,6 +144,26 @@
 
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/rv_passengers"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/insurance_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_20"
+                    android:background="@color/white"
+                    android:orientation="vertical"
+                    android:paddingBottom="@dimen/dp_10"
+                    android:paddingEnd="@dimen/padding_16"
+                    android:paddingLeft="@dimen/padding_16"
+                    android:paddingRight="@dimen/padding_16"
+                    android:paddingStart="@dimen/padding_16"
+                    android:paddingTop="@dimen/dp_10">
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/rv_insurance"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
                 </LinearLayout>

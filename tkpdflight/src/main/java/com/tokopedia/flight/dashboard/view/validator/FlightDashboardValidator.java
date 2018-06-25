@@ -3,9 +3,12 @@ package com.tokopedia.flight.dashboard.view.validator;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightDashboardViewModel;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.TimeZone;
 
 import javax.inject.Inject;
@@ -29,7 +32,25 @@ public class FlightDashboardValidator {
     }
 
     public boolean validateArrivalAndDestinationNotSame(FlightDashboardViewModel currentDashboardViewModel) {
-        return !currentDashboardViewModel.getDepartureAirport().getAirportId().equalsIgnoreCase(currentDashboardViewModel.getArrivalAirport().getAirportId());
+        List<String> departureAirports = new ArrayList<>();
+        if (currentDashboardViewModel.getDepartureAirport().getAirportCode() != null) {
+            departureAirports.add(currentDashboardViewModel.getDepartureAirport().getAirportCode());
+        }
+
+        if (currentDashboardViewModel.getDepartureAirport().getCityAirports() != null && currentDashboardViewModel.getDepartureAirport().getCityAirports().length > 0) {
+            departureAirports.addAll(Arrays.asList(currentDashboardViewModel.getDepartureAirport().getCityAirports()));
+        }
+        List<String> arrivalAirports = new ArrayList<>();
+        if (currentDashboardViewModel.getArrivalAirport().getAirportCode() != null) {
+            arrivalAirports.add(currentDashboardViewModel.getArrivalAirport().getAirportCode());
+        }
+
+        if (currentDashboardViewModel.getArrivalAirport().getCityAirports() != null && currentDashboardViewModel.getArrivalAirport().getCityAirports().length > 0) {
+            arrivalAirports.addAll(Arrays.asList(currentDashboardViewModel.getArrivalAirport().getCityAirports()));
+        }
+        List<String> commons = new ArrayList<>(departureAirports);
+        commons.retainAll(arrivalAirports);
+        return commons.size() == 0;
     }
 
     public boolean validateDepartureDateAtLeastToday(FlightDashboardViewModel currentDashboardViewModel) {
