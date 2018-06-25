@@ -19,6 +19,7 @@ public class TrainScheduleDetailFragment extends BaseDaggerFragment {
 
     public static final String EXTRA_TRAIN_SCHEDULE_VIEW_MODEL = "EXTRA_TRAIN_SCHEDULE_VIEW_MODEL";
 
+    private TextView trip;
     private TextView trainName;
     private TextView trainClass;
     private TextView date;
@@ -33,21 +34,8 @@ public class TrainScheduleDetailFragment extends BaseDaggerFragment {
     private TextView destinationStationName;
     private TextView destinationCityName;
 
-    private TrainScheduleDetailViewModel trainScheduleDetailViewModel;
-
-    public static Fragment createInstance(TrainScheduleDetailViewModel trainScheduleDetailViewModel) {
-        TrainScheduleDetailFragment fragment = new TrainScheduleDetailFragment();
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(EXTRA_TRAIN_SCHEDULE_VIEW_MODEL, trainScheduleDetailViewModel);
-        fragment.setArguments(bundle);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        trainScheduleDetailViewModel = getArguments().getParcelable(EXTRA_TRAIN_SCHEDULE_VIEW_MODEL);
+    public static Fragment createInstance() {
+        return new TrainScheduleDetailFragment();
     }
 
     @Nullable
@@ -55,6 +43,7 @@ public class TrainScheduleDetailFragment extends BaseDaggerFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootview = inflater.inflate(R.layout.fragment_train_schedule_detail, container, false);
 
+        trip = rootview.findViewById(R.id.trip);
         trainName = rootview.findViewById(R.id.train_name);
         trainClass = rootview.findViewById(R.id.train_class);
         date = rootview.findViewById(R.id.date);
@@ -72,9 +61,17 @@ public class TrainScheduleDetailFragment extends BaseDaggerFragment {
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    protected void initInjector() {
 
+    }
+
+    @Override
+    protected String getScreenName() {
+        return null;
+    }
+
+    public void showScheduleDetail(TrainScheduleDetailViewModel trainScheduleDetailViewModel) {
+        trip.setText(trainScheduleDetailViewModel.isReturnTrip() ? "Perjalan Pulang" : "Perjalanan Pergi");
         trainName.setText(trainScheduleDetailViewModel.getTrainName());
         trainClass.setText(trainScheduleDetailViewModel.getTrainClass());
         date.setText(trainScheduleDetailViewModel.getDepartureDate());
@@ -87,16 +84,6 @@ public class TrainScheduleDetailFragment extends BaseDaggerFragment {
         arrivalDate.setText(trainScheduleDetailViewModel.getArrivalDate());
         destinationStationName.setText(trainScheduleDetailViewModel.getDestinationStationName());
         destinationCityName.setText(trainScheduleDetailViewModel.getDestinationCityName());
-    }
-
-    @Override
-    protected void initInjector() {
-
-    }
-
-    @Override
-    protected String getScreenName() {
-        return null;
     }
 
 }

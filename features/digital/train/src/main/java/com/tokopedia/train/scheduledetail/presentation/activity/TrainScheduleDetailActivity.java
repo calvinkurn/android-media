@@ -58,9 +58,19 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
     }
 
     @Override
-    protected void setupLayout(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        initInjector();
+
         String scheduleId = getIntent().getStringExtra(EXTRA_TRAIN_SCHEDULE_ID);
 
+        trainSchedulePresenter.attachView(this);
+        trainSchedulePresenter.getScheduleDetail(scheduleId);
+    }
+
+    @Override
+    protected void setupLayout(Bundle savedInstanceState) {
         super.setupLayout(savedInstanceState);
 
         buttonSubmit = findViewById(R.id.button_submit);
@@ -73,13 +83,7 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
         destinationStationName = findViewById(R.id.arrival_station_name);
 
         appBarLayout.addOnOffsetChangedListener(onAppbarOffsetChange());
-
         tabLayout.setupWithViewPager(viewPager);
-
-        initInjector();
-
-        trainSchedulePresenter.attachView(this);
-        trainSchedulePresenter.getScheduleDetail(scheduleId);
     }
 
     @Override
@@ -97,7 +101,7 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
             @Override
             public Fragment getItem(int position) {
                 switch (position) {
-                    case 0 : return TrainScheduleDetailFragment.createInstance(trainScheduleDetailViewModel);
+                    case 0 : return TrainScheduleDetailFragment.createInstance();
                     case 1 : return TrainSchedulePriceDetailFragment.createInstance();
                 }
                 return null;
@@ -122,6 +126,18 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
         originStationName.setText(trainScheduleDetailViewModel.getOriginStationName());
         destinationStationCode.setText(trainScheduleDetailViewModel.getDestinationStationCode());
         destinationStationName.setText(trainScheduleDetailViewModel.getDestinationStationName());
+
+//        if (viewPager.getAdapter() instanceof ShopInfoPagerAdapter) {
+//            ShopInfoPagerAdapter adapter = (ShopInfoPagerAdapter) viewPager.getAdapter();
+            Fragment fragmentInfo = (Fragment) viewPager.getAdapter().instantiateItem(viewPager, 0);
+            if(fragmentInfo instanceof TrainScheduleDetailFragment) {
+                ((TrainScheduleDetailFragment) fragmentInfo).showScheduleDetail(trainScheduleDetailViewModel);
+            }
+//            Fragment fragmentNote = (Fragment) adapter.instantiateItem(viewPager, 1);
+//            if(fragmentNote instanceof ShopNoteListFragment) {
+//                ((ShopNoteListFragment) fragmentNote).updateShopInfo(shopInfo);
+//            }
+//        }
     }
 
     protected void initInjector() {
