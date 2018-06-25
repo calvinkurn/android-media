@@ -11,6 +11,8 @@ import com.tokopedia.usecase.UseCase;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
@@ -21,6 +23,7 @@ public class GraphqlUseCase extends UseCase<GraphqlResponse> {
     private List<GraphqlRequest> mRequests;
     private GraphqlCacheStrategy mCacheStrategy;
 
+    @Inject
     public GraphqlUseCase() {
         this.mRequests = new ArrayList<>();
     }
