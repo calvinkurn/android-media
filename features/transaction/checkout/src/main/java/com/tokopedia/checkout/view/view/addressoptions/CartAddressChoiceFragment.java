@@ -205,12 +205,8 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
 
     @Override
     public void renderRecipientData(List<RecipientAddressModel> recipientAddressModels, boolean isNewlyCreatedAddress) {
-        if (isNewlyCreatedAddress) {
-            onSendToCurrentAddress();
-        } else {
-            mShipmentAddressListAdapter.setAddressList(recipientAddressModels);
-            mShipmentAddressListAdapter.notifyDataSetChanged();
-        }
+        mShipmentAddressListAdapter.setAddressList(recipientAddressModels);
+        mShipmentAddressListAdapter.notifyDataSetChanged();
     }
 
     @Override
