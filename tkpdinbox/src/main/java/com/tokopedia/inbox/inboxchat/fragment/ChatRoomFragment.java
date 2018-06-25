@@ -573,7 +573,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 int index = layoutManager.findLastVisibleItemPosition();
-                if (adapter.checkLoadMore(index)) {
+                if (index != -1 && adapter.checkLoadMore(index)) {
                     presenter.onLoadMore();
                 }
             }
