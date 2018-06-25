@@ -2332,8 +2332,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getOrderListDetailActivity(Context context, String orderId, String orderCategory) {
-        return new OrderListDetailActivity().createInstance(context, orderId, orderCategory);
+    public Intent getOrderListDetailActivity(Context context, String orderId, String orderCategory, boolean fromPayment) {
+        return new OrderListDetailActivity().createInstance(context, orderId, orderCategory, fromPayment);
     }
 
 
