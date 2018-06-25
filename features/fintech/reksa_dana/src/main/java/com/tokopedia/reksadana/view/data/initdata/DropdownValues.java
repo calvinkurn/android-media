@@ -23,4 +23,11 @@ public class DropdownValues {
     public String value() {
         return value;
     }
+
+    @Override
+    public String toString() {
+        return "DropdownValues["+
+                "key="+key+","+
+                "value="+value+"]";
+    }
 }

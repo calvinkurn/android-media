@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -55,6 +57,13 @@ public class OrderListFragment extends BasePresenterFragment<OrderListContract.P
     private OrderCategory mOrderCategory;
 
     @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        initInjector();
+        presenter.attachView(this);
+        return super.onCreateView(inflater, container, savedInstanceState);
+    }
+
+    @Override
     protected boolean isRetainInstance() {
         return false;
     }
@@ -82,8 +91,6 @@ public class OrderListFragment extends BasePresenterFragment<OrderListContract.P
 
     @Override
     protected void initialPresenter() {
-        initInjector();
-        presenter.attachView(this);
     }
 
     protected void initInjector() {

@@ -67,7 +67,7 @@ public class ReksaDanaPresenter extends BaseDaggerPresenter<ReksaDanaContract.Vi
 
             @Override
             public void onError(Throwable e) {
-
+                getView().disableProgressVisibility();
             }
 
             @Override
@@ -76,8 +76,7 @@ public class ReksaDanaPresenter extends BaseDaggerPresenter<ReksaDanaContract.Vi
                 Register register = data.register();
                 List<FieldData> fieldDataList = register.fieldData();
                 Result result = register.result();
-
-                if (result.success()) {
+                if (result.success() && fieldDataList != null) {
                     getView().setOccupation(fieldDataList.get(1));
                     getView().setEducation(fieldDataList.get(2));
                     getView().setIncomeSource(fieldDataList.get(3));
@@ -90,7 +89,7 @@ public class ReksaDanaPresenter extends BaseDaggerPresenter<ReksaDanaContract.Vi
     }
 
     @Override
-    public void submitData() {
+    public void submitData(ImageDetails imageDetails) {
         getView().setProgressVisility();
         getView().setProgressText(VALIDATING_EMAIL);
 
@@ -106,6 +105,7 @@ public class ReksaDanaPresenter extends BaseDaggerPresenter<ReksaDanaContract.Vi
 
             @Override
             public void onError(Throwable e) {
+                getView().disableProgressVisibility();
                 Log.e("sandeep", "error in email validation =" + e.toString());
             }
 
@@ -116,56 +116,8 @@ public class ReksaDanaPresenter extends BaseDaggerPresenter<ReksaDanaContract.Vi
                     if (data.mf_get_sign_url().valid()) {
                         getView().setProgressText(UPLOADING_IMAGE);
                         Log.e("sandeep", "response = " + data);
+                        getSignImageUrl(imageDetails);
 
-                        uploadUseCase = new UploadImageUseCase(getView().getAppContext(), mSignedUrl);
-
-                        RequestParams params = RequestParams.create();
-                        params.putString(UploadImageUseCase.KEY_FILE_NAME, getView().getFileLoc());
-                        Log.e("sandeep", getView().getFileLoc());
-                        uploadUseCase.execute(params, new Subscriber<ResponseBody>() {
-                            @Override
-                            public void onCompleted() {
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                Log.e("sandeep", "erro r = " + e.toString());
-                            }
-
-                            @Override
-                            public void onNext(ResponseBody responseBody) {
-                                Log.e("sandeep","response of upload ="+responseBody.toString());
-                                getView().setProgressText(UPLOADING_DATA);
-                                if (responseBody != null) {
-                                    CommonUtils.dumper(responseBody.toString());
-                                }
-                                Map<String, Object> variables = new HashMap<>();
-                                getView().saveSignature();
-                                UserDetails details = getView().getRegistrationData(mPublicUrl);
-                                variables.put(USER_DETAILS, details);
-                                Log.e("sandeep", details.toString());
-                                GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
-                                        R.raw.submit_registration_data), com.tokopedia.reksadana.view.data.submit.Data.class, variables);
-                                submitUseCase.setRequest(graphqlRequest);
-                                submitUseCase.execute(new Subscriber<GraphqlResponse>() {
-                                    @Override
-                                    public void onCompleted() {
-
-                                    }
-
-                                    @Override
-                                    public void onError(Throwable e) {
-                                        Log.e("sandeep", "error in submit =" + e.toString());
-                                    }
-
-                                    @Override
-                                    public void onNext(GraphqlResponse graphqlResponse) {
-                                        getView().disableProgressVisibility();
-                                        Log.e("sandeep", "response = " + graphqlResponse.toString());
-                                    }
-                                });
-                            }
-                        });
                     } else {
                         getView().disableProgressVisibility();
                         Log.e("sandeep", "invalid email entered");
@@ -194,7 +146,7 @@ public class ReksaDanaPresenter extends BaseDaggerPresenter<ReksaDanaContract.Vi
 
             @Override
             public void onError(Throwable e) {
-
+                getView().disableProgressVisibility();
             }
 
             @Override
@@ -210,6 +162,56 @@ public class ReksaDanaPresenter extends BaseDaggerPresenter<ReksaDanaContract.Vi
 
                 mSignedUrl = getSignUrl.signedURL();
                 mPublicUrl = getSignUrl.publicURL();
+                uploadUseCase = new UploadImageUseCase(getView().getAppContext(), mSignedUrl);
+
+                RequestParams params = RequestParams.create();
+                params.putString(UploadImageUseCase.KEY_FILE_NAME, getView().getFileLoc());
+                uploadUseCase.execute(params, new Subscriber<ResponseBody>() {
+                    @Override
+                    public void onCompleted() {
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        getView().disableProgressVisibility();
+                        Log.e("sandeep", "erro r = " + e.toString());
+                    }
+
+                    @Override
+                    public void onNext(ResponseBody responseBody) {
+                        Log.e("sandeep","response of upload ="+responseBody.toString());
+                        getView().setProgressText(UPLOADING_DATA);
+                        if (responseBody != null) {
+                            CommonUtils.dumper(responseBody.toString());
+                        }
+                        Map<String, Object> variables = new HashMap<>();
+                        getView().saveSignature();
+                        UserDetails details = getView().getRegistrationData(mPublicUrl);
+                        variables.put(USER_DETAILS, details);
+                        Log.e("sandeep", details.toString());
+                        GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
+                                R.raw.submit_registration_data), com.tokopedia.reksadana.view.data.submit.Data.class, variables);
+                        submitUseCase.setRequest(graphqlRequest);
+                        submitUseCase.execute(new Subscriber<GraphqlResponse>() {
+                            @Override
+                            public void onCompleted() {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                getView().disableProgressVisibility();
+                                Log.e("sandeep", "error in submit =" + e.toString());
+                            }
+
+                            @Override
+                            public void onNext(GraphqlResponse graphqlResponse) {
+                                getView().disableProgressVisibility();
+                                Log.e("sandeep", "response = " + graphqlResponse.toString());
+                            }
+                        });
+                    }
+                });
             }
         });
     }

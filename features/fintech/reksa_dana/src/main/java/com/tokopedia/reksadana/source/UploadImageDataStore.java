@@ -39,14 +39,14 @@ public class UploadImageDataStore {
         }
 
 
-        RequestBody reqFile = RequestBody.create(MediaType.parse("application/octet-stream"), buf);
+        RequestBody reqFile = RequestBody.create(MediaType.parse("image/jpeg"), buf);
 
         CommonUtils.dumper("in cloud ="+url);
-        try {
+        /*try {
             url = URLDecoder.decode(url, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
-        }
+        }*/
         return uploadImageApi.postImage(url, reqFile);
     }
 }

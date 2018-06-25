@@ -83,8 +83,7 @@ public class UserDetails {
                 "income="+income+", "+
                 "incomeSource="+incomeSource+", "+
                 "investmentObjective="+investmentObjective+", "+
-                "identityFileURL="+identityFileURL+", "+
-                "signatureFileBase64="+signatureFileBase64+"]";
+                "identityFileURL="+identityFileURL+", "+"]";
 
     }
 }

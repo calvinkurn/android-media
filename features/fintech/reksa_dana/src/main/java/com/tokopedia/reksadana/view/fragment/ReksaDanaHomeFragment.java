@@ -113,6 +113,12 @@ public class ReksaDanaHomeFragment extends BaseDaggerFragment implements ReksaDa
     Model model = new Model();
     String fileName;
     String fileLoc;
+    ImageDetails imageDetails;
+    List<String> occupationKeys;
+    List<String> educationKeys;
+    List<String> incomeKeys;
+    List<String> incomeSourceKeys;
+    List<String> investmentKeys;
     @Inject
     ReksaDanaPresenter presenter;
     private Bitmap bitmap;
@@ -180,6 +186,11 @@ public class ReksaDanaHomeFragment extends BaseDaggerFragment implements ReksaDa
         checkBox = view.findViewById(R.id.checkbox);
         checkBoxText = view.findViewById(R.id.checkbox_text);
         submitBtn = view.findViewById(R.id.submit_btn);
+        occupationKeys = new ArrayList<>();
+        educationKeys = new ArrayList<>();
+        incomeKeys = new ArrayList<>();
+        incomeSourceKeys = new ArrayList<>();
+        investmentKeys = new ArrayList<>();
         String text = checkBoxText.getText().toString();
         SpannableString spannableString = new SpannableString(text);
         int startIndexOfLink = text.indexOf("syarat");
@@ -241,7 +252,7 @@ public class ReksaDanaHomeFragment extends BaseDaggerFragment implements ReksaDa
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.submitData();
+                presenter.submitData(imageDetails);
             }
         });
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -284,16 +295,15 @@ public class ReksaDanaHomeFragment extends BaseDaggerFragment implements ReksaDa
         byte[] byteArray = byteArrayOutputStream.toByteArray();
 
         UserDetails details = null;
-        if(email.getText() != null && educationSpinner.getSelectedItem() != null &&
+        if (email.getText() != null && educationSpinner.getSelectedItem() != null &&
                 occupationSpinner.getSelectedItem() != null && incomeSpinner.getSelectedItem() != null
                 && incomeSourceSpinner.getSelectedItem() != null && investmentSpinner.getSelectedItem() != null) {
-            details = new UserDetails(email.getText().toString(), educationSpinner.getSelectedItem().toString(),
-                    occupationSpinner.getSelectedItem().toString(),
-                    incomeSpinner.getSelectedItem().toString(),
-                    incomeSourceSpinner.getSelectedItem().toString(),
-                    investmentSpinner.getSelectedItem().toString(), publicUrl,
+            details = new UserDetails(email.getText().toString(), educationKeys.get(educationSpinner.getSelectedItemPosition() - 1),
+                    occupationKeys.get(occupationSpinner.getSelectedItemPosition() - 1),
+                    incomeKeys.get(incomeSpinner.getSelectedItemPosition() - 1),
+                    incomeSourceKeys.get(incomeSourceSpinner.getSelectedItemPosition() - 1),
+                    investmentKeys.get(investmentSpinner.getSelectedItemPosition() - 1), publicUrl,
                     Base64.encodeToString(byteArray, Base64.DEFAULT));
-            Log.e("sandeep","details:"+details.toString());
         }
         return details;
     }
@@ -312,47 +322,47 @@ public class ReksaDanaHomeFragment extends BaseDaggerFragment implements ReksaDa
 
     @Override
     public void setEducation(FieldData educationData) {
-        educationText.setText(educationData.defaultText());
-        educationSpinner.setAdapter(getSpinnerArray(educationData.defaultText(), educationData.dropdownValues()));
-
+        educationText.setText(educationData.itemName());
+        educationSpinner.setAdapter(getSpinnerArray(educationData.defaultText(), educationData.dropdownValues(), educationKeys));
     }
 
     @Override
     public void setIncome(FieldData incomeData) {
-        incomeText.setText(incomeData.defaultText());
-        incomeSpinner.setAdapter(getSpinnerArray(incomeData.defaultText(), incomeData.dropdownValues()));
+        incomeText.setText(incomeData.itemName());
+        incomeSpinner.setAdapter(getSpinnerArray(incomeData.defaultText(), incomeData.dropdownValues(), incomeKeys));
 
     }
 
     @Override
     public void setIncomeSource(FieldData incomeSourceData) {
-        incomeSourceText.setText(incomeSourceData.defaultText());
-        incomeSourceSpinner.setAdapter(getSpinnerArray(incomeSourceData.defaultText(), incomeSourceData.dropdownValues()));
+        incomeSourceText.setText(incomeSourceData.itemName());
+        incomeSourceSpinner.setAdapter(getSpinnerArray(incomeSourceData.defaultText(), incomeSourceData.dropdownValues(), incomeSourceKeys));
     }
 
     @Override
     public void setInvestment(FieldData investmentData) {
-        investmentText.setText(investmentData.defaultText());
-        investmentSpinner.setAdapter(getSpinnerArray(investmentData.defaultText(), investmentData.dropdownValues()));
+        investmentText.setText(investmentData.itemName());
+        investmentSpinner.setAdapter(getSpinnerArray(investmentData.defaultText(), investmentData.dropdownValues(), investmentKeys));
     }
 
     @Override
     public void setOccupation(FieldData occupationData) {
-        occupationText.setText(occupationData.defaultText());
-        occupationSpinner.setAdapter(getSpinnerArray(occupationData.defaultText(), occupationData.dropdownValues()));
+        occupationText.setText(occupationData.itemName());
+        occupationSpinner.setAdapter(getSpinnerArray(occupationData.defaultText(), occupationData.dropdownValues(), occupationKeys));
     }
 
-    private ArrayAdapter<String> getSpinnerArray(String defaultText, List<DropdownValues> dropdownValuesList) {
+    private ArrayAdapter<String> getSpinnerArray(String defaultText, List<DropdownValues> dropdownValuesList, List<String> keys) {
         ArrayList<String> spinnerArray = new ArrayList<>();
         spinnerArray.add(defaultText);
         for (DropdownValues dropdownValues : dropdownValuesList) {
+            keys.add(dropdownValues.key());
             spinnerArray.add(dropdownValues.value());
         }
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(),
                 android.R.layout.simple_spinner_item, spinnerArray) {
             @Override
             public boolean isEnabled(int position) {
-                if(position == 0) return false;
+                if (position == 0) return false;
                 return true;
             }
 
@@ -456,13 +466,12 @@ public class ReksaDanaHomeFragment extends BaseDaggerFragment implements ReksaDa
         if (fileLoc == null) {
             ImageHandler.LoadImage(idImage, model.cameraFileLoc);
             this.fileLoc = model.cameraFileLoc;
-        }else {
+        } else {
             ImageHandler.loadImageFromFile(getActivity(), idImage, new File(fileLoc));
             this.fileLoc = fileLoc;
         }
         fileName = fileLoc.substring(fileLoc.lastIndexOf("/") + 1);
-        ImageDetails imageDetails = new ImageDetails(fileName, 1, "image/jpeg");
-        presenter.getSignImageUrl(imageDetails);
+        imageDetails = new ImageDetails(fileName, 1, "image/jpeg");
     }
 
     @Override

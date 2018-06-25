@@ -50,4 +50,13 @@ public class FieldData {
         return dropdownValues;
     }
 
+    @Override
+    public String toString() {
+        return "FieldData["+
+                "itemName = "+itemName+"," +
+                "id = "+id+"," +
+                "defaultText ="+defaultText+", "+
+                "dropdownValues="+dropdownValues+"]";
+
+    }
 }

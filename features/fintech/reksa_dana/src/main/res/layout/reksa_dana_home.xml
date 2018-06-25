@@ -59,6 +59,29 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_4"
                     android:hint="@string/email_hint" />
+                <TextView
+                    android:id="@+id/occupation_key"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_10" />
+
+                <Spinner
+                    android:id="@+id/occupation_spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:spinnerMode="dialog"
+                    android:layout_gravity="start"
+                    android:gravity="start"
+                    android:paddingLeft="@dimen/dp_0"
+                    style="@style/Widget.AppCompat.Spinner.Underlined" />
+
+                <TextView
+                    android:id="@+id/occupation_error"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="error"
+                    android:textColor="@color/red_300"
+                    android:visibility="gone"/>
 
                 <TextView
                     android:id="@+id/education_key"
@@ -79,29 +102,6 @@
 
                 <TextView
                     android:id="@+id/education_error"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="error"
-                    android:textColor="@color/red_300"
-                    android:visibility="gone"/>
-                <TextView
-                    android:id="@+id/income_key"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_10" />
-
-                <Spinner
-                    android:id="@+id/income_spinner"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:spinnerMode="dialog"
-                    android:layout_gravity="start"
-                    android:gravity="start"
-                    android:paddingLeft="@dimen/dp_0"
-                    style="@style/Widget.AppCompat.Spinner.Underlined" />
-
-                <TextView
-                    android:id="@+id/income_error"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="error"
@@ -133,6 +133,29 @@
                     android:visibility="gone"/>
 
                 <TextView
+                    android:id="@+id/income_key"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_10" />
+
+                <Spinner
+                    android:id="@+id/income_spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:spinnerMode="dialog"
+                    android:layout_gravity="start"
+                    android:gravity="start"
+                    android:paddingLeft="@dimen/dp_0"
+                    style="@style/Widget.AppCompat.Spinner.Underlined" />
+
+                <TextView
+                    android:id="@+id/income_error"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="error"
+                    android:textColor="@color/red_300"
+                    android:visibility="gone"/>
+                <TextView
                     android:id="@+id/investment_key"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -156,29 +179,6 @@
                     android:textColor="@color/red_300"
                     android:visibility="gone"/>
 
-                <TextView
-                    android:id="@+id/occupation_key"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_10" />
-
-                <Spinner
-                    android:id="@+id/occupation_spinner"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:spinnerMode="dialog"
-                    android:layout_gravity="start"
-                    android:gravity="start"
-                    android:paddingLeft="@dimen/dp_0"
-                    style="@style/Widget.AppCompat.Spinner.Underlined" />
-
-                <TextView
-                    android:id="@+id/occupation_error"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="error"
-                    android:textColor="@color/red_300"
-                    android:visibility="gone"/>
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

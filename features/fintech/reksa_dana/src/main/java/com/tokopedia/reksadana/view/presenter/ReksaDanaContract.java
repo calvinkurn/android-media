@@ -11,7 +11,7 @@ import com.tokopedia.reksadana.view.data.submit.UserDetails;
 public interface ReksaDanaContract {
     interface Presenter extends CustomerPresenter<View> {
         void fetchData();
-        void submitData();
+        void submitData(ImageDetails imageDetails);
         void getSignImageUrl(ImageDetails imageDetails);
     }
 
