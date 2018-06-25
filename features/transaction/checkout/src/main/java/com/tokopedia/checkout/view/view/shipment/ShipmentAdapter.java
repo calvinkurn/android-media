@@ -495,6 +495,9 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 if (itemAdapter instanceof CartPromoSuggestion) {
                     ((CartPromoSuggestion) itemAdapter).setVisible(false);
                     notifyItemChanged(i);
+                } else if (itemAdapter instanceof CartItemPromoHolderData) {
+                    ((CartItemPromoHolderData) itemAdapter).setVisible(false);
+                    notifyItemChanged(i);
                 }
             }
         } else {
