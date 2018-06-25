@@ -57,12 +57,12 @@ import com.tokopedia.topads.dashboard.view.activity.TopAdsAddingPromoOptionActiv
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDetailShopActivity;
 import com.tokopedia.topads.group.view.activity.TopAdsGroupAdListActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupNewPromoActivity;
+import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordOldNewChooseGroupActivity;
 import com.tokopedia.topads.product.view.activity.TopAdsProductAdListActivity;
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsStatisticPagerAdapter;
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsTabAdapter;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDashboardView;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter;
-import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordNewChooseGroupActivity;
 import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordAdListActivity;
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
 
@@ -543,7 +543,7 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
 
     private void gotoCreateKeyword() {
         topAdsDashboardPresenter.saveSourceTagging(TopAdsSourceOption.SA_MANAGE_KEYWORD_POSITIVE);
-        TopAdsKeywordNewChooseGroupActivity.start(this, getActivity(), REQUEST_CODE_AD_STATUS, true);
+        TopAdsKeywordOldNewChooseGroupActivity.start(this, getActivity(), REQUEST_CODE_AD_STATUS, true);
     }
 
     private void handlingResultDateSelection(Intent data){

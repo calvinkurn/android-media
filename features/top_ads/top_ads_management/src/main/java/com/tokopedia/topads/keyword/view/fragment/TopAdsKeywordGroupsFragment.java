@@ -31,7 +31,7 @@ import com.tokopedia.topads.keyword.di.module.TopAdsKeywordNewChooseGroupModule;
 import com.tokopedia.topads.keyword.view.adapter.TopAdsKeywordGroupListAdapter;
 import com.tokopedia.topads.keyword.view.listener.TopAdsKeywordGroupListListener;
 import com.tokopedia.topads.keyword.view.listener.TopAdsKeywordGroupListView;
-import com.tokopedia.topads.keyword.view.presenter.TopAdsKeywordNewChooseGroupPresenter;
+import com.tokopedia.topads.keyword.view.presenter.TopAdsKeywordOldNewChooseGroupPresenter;
 
 import java.util.List;
 
@@ -41,12 +41,12 @@ import javax.inject.Inject;
  * @author normansyahputa on 5/26/17.
  */
 
-public class TopAdsKeywordGroupsFragment extends BaseListFragment<TopAdsKeywordNewChooseGroupPresenter, GroupAd>
+public class TopAdsKeywordGroupsFragment extends BaseListFragment<TopAdsKeywordOldNewChooseGroupPresenter, GroupAd>
         implements TopAdsKeywordGroupListView, BaseFilterContentViewListener {
 
     protected BaseFilterContentFragment.Callback callback;
     @Inject
-    TopAdsKeywordNewChooseGroupPresenter topAdsKeywordNewChooseGroupPresenter;
+    TopAdsKeywordOldNewChooseGroupPresenter topAdsKeywordOldNewChooseGroupPresenter;
     private EditText groupFilterSearch;
     private GroupAd selection;
 
@@ -68,7 +68,7 @@ public class TopAdsKeywordGroupsFragment extends BaseListFragment<TopAdsKeywordN
 
         @Override
         public void afterTextChanged(Editable editable) {
-            topAdsKeywordNewChooseGroupPresenter.searchGroupName(editable.toString());
+            topAdsKeywordOldNewChooseGroupPresenter.searchGroupName(editable.toString());
         }
     };
     private View hideThings;
@@ -123,7 +123,7 @@ public class TopAdsKeywordGroupsFragment extends BaseListFragment<TopAdsKeywordN
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        topAdsKeywordNewChooseGroupPresenter.attachView(this);
+        topAdsKeywordOldNewChooseGroupPresenter.attachView(this);
         View view = super.onCreateView(inflater, container, savedInstanceState);
         groupFilterSearch = (EditText) view.findViewById(R.id.group_filter_search);
         groupFilterImage = (ImageView) view.findViewById(R.id.group_filter_search_icon);
@@ -168,7 +168,7 @@ public class TopAdsKeywordGroupsFragment extends BaseListFragment<TopAdsKeywordN
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        topAdsKeywordNewChooseGroupPresenter.detachView();
+        topAdsKeywordOldNewChooseGroupPresenter.detachView();
     }
 
     @Override
@@ -241,7 +241,7 @@ public class TopAdsKeywordGroupsFragment extends BaseListFragment<TopAdsKeywordN
 
     @Override
     protected void searchForPage(int page) {
-        topAdsKeywordNewChooseGroupPresenter.searchGroupName(groupFilterSearch.getText().toString());
+        topAdsKeywordOldNewChooseGroupPresenter.searchGroupName(groupFilterSearch.getText().toString());
     }
 
     @Override

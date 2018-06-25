@@ -19,27 +19,66 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <TextView
+                style="@style/TextView.Small.Bold"
+                android:text="@string/label_top_ads_choose_group"/>
+
+            <TextView
+                style="@style/TextView.Micro.BlackSecondary"
+                android:text="@string/label_top_ads_choose_group_desc"
+                android:layout_marginBottom="@dimen/dp_24"/>
+
             <include layout="@layout/partial_top_ads_search_group" />
 
-            <com.tokopedia.design.text.SpinnerTextView
-                android:id="@+id/spinner_keyword_type"
+            <TextView
+                android:id="@+id/view_info"
+                style="@style/TextView.Micro.BlackSecondary"
+                android:text="@string/label_top_ads_choose_group_info"/>
+
+            <TextView
+                style="@style/TextView.Small.Bold"
+                android:text="@string/label_top_ads_choose_type"
+                android:layout_marginTop="@dimen/dp_36"/>
+
+            <RadioGroup
+                android:id="@+id/keywordRadioGroup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_10"
-                app:spinner_entries="@array/top_ads_keyword_type_entries"
-                app:spinner_hint="@string/top_ads_choose_keyword_type"
-                app:spinner_selection_index="-1"
-                app:spinner_values="@array/top_ads_keyword_type_values"
-                app:spinner_text_size="@dimen/font_medium"/>
+                style="@style/TopAdsCustomRadioGroup">
 
-            <include layout="@layout/partial_top_ads_keyword_info" />
+                <RadioButton
+                    android:id="@+id/keywordPositiveRadioButton"
+                    style="@style/RadioButton"
+                    android:layout_width="match_parent"
+                    android:minHeight="@dimen/dp_64"
+                    android:checked="true"
+                    android:text="@string/top_ads_keyword_title"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_1"
+                    android:background="@drawable/bg_line_separator"/>
+
+                <RadioButton
+                    android:id="@+id/keywordNegativeRadioButton"
+                    style="@style/RadioButton"
+                    android:layout_width="match_parent"
+                    android:minHeight="@dimen/dp_64"
+                    android:text="@string/top_ads_keyword_title_negative"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_1"
+                    android:background="@drawable/bg_line_separator"/>
+
+            </RadioGroup>
 
         </android.support.v7.widget.LinearLayoutCompat>
 
     </ScrollView>
 
     <Button
-        android:id="@+id/button_next"
+        android:id="@+id/buttonNext"
         style="@style/Button.Submit.Green"
         android:enabled="false"
         android:text="@string/next"

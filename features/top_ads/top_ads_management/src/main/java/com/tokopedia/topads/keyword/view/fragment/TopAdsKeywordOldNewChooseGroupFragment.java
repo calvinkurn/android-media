@@ -21,7 +21,6 @@ import com.tokopedia.design.text.TkpdTextInputLayout;
 import com.tokopedia.seller.product.edit.utils.ViewUtils;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.TopAdsComponentInstance;
-import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.common.view.fragment.TopAdsBaseStepperFragment;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
@@ -33,7 +32,7 @@ import com.tokopedia.topads.keyword.di.module.TopAdsKeywordNewChooseGroupModule;
 import com.tokopedia.topads.keyword.helper.KeywordTypeMapper;
 import com.tokopedia.topads.keyword.view.listener.TopAdsKeywordNewChooseGroupView;
 import com.tokopedia.topads.keyword.view.model.TopAdsKeywordStepperModel;
-import com.tokopedia.topads.keyword.view.presenter.TopAdsKeywordNewChooseGroupPresenter;
+import com.tokopedia.topads.keyword.view.presenter.TopAdsKeywordOldNewChooseGroupPresenter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,9 +43,9 @@ import javax.inject.Inject;
  * Created by zulfikarrahman on 2/22/17.
  */
 
-public class TopAdsKeywordNewChooseGroupFragment extends TopAdsBaseStepperFragment<TopAdsKeywordStepperModel> implements TopAdsKeywordNewChooseGroupView {
+public class TopAdsKeywordOldNewChooseGroupFragment extends TopAdsBaseStepperFragment<TopAdsKeywordStepperModel> implements TopAdsKeywordNewChooseGroupView {
 
-    public static final String TAG = TopAdsKeywordNewChooseGroupFragment.class.getSimpleName();
+    public static final String TAG = TopAdsKeywordOldNewChooseGroupFragment.class.getSimpleName();
     public static final int ADD_REQUEST_CODE = 100;
     private static final String EXTRA_CHOOSEN_GROUP = "EXTRA_CHOOSEN_GROUP";
     private static final String EXTRA_IS_POSITIVE = "is_pos";
@@ -55,7 +54,7 @@ public class TopAdsKeywordNewChooseGroupFragment extends TopAdsBaseStepperFragme
     private static final String SAVED_KEYWORD_COUNT = "key_count";
     private static final String SAVED_SPINNER_POS = "spinner_pos";
     @Inject
-    public TopAdsKeywordNewChooseGroupPresenter topAdsKeywordNewChooseGroupPresenter;
+    public TopAdsKeywordOldNewChooseGroupPresenter topAdsKeywordOldNewChooseGroupPresenter;
 
     private TopAdsAutoCompleteAdapter adapterChooseGroup;
     private TkpdTextInputLayout inputLayoutChooseGroup;
@@ -78,7 +77,7 @@ public class TopAdsKeywordNewChooseGroupFragment extends TopAdsBaseStepperFragme
     private String groupId;
 
     public static Fragment newInstance() {
-        return new TopAdsKeywordNewChooseGroupFragment();
+        return new TopAdsKeywordOldNewChooseGroupFragment();
     }
 
     @Override
@@ -129,7 +128,7 @@ public class TopAdsKeywordNewChooseGroupFragment extends TopAdsBaseStepperFragme
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,  @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_top_ads_keyword_new_choose_group, container, false);
+        View view = inflater.inflate(R.layout.fragment_top_ads_keyword_old_new_choose_group, container, false);
 
         buttonNext = view.findViewById(R.id.button_next);
         inputLayoutChooseGroup = (TkpdTextInputLayout) view.findViewById(R.id.input_layout_choose_group);
@@ -185,7 +184,7 @@ public class TopAdsKeywordNewChooseGroupFragment extends TopAdsBaseStepperFragme
             @Override
             public void onFocusChange(View view, boolean isFocus) {
                 if(isFocus) {
-                    topAdsKeywordNewChooseGroupPresenter.searchGroupName("");
+                    topAdsKeywordOldNewChooseGroupPresenter.searchGroupName("");
                 }
             }
         });
@@ -208,7 +207,7 @@ public class TopAdsKeywordNewChooseGroupFragment extends TopAdsBaseStepperFragme
                 inputLayoutChooseGroup.hideErrorSuccess();
                 buttonNext.setEnabled(false);
                 chosenId = "";
-                topAdsKeywordNewChooseGroupPresenter.searchGroupName(editable.toString());
+                topAdsKeywordOldNewChooseGroupPresenter.searchGroupName(editable.toString());
             }
         });
         autoCompleteChooseGroup.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -228,7 +227,7 @@ public class TopAdsKeywordNewChooseGroupFragment extends TopAdsBaseStepperFragme
         if(groupId != null){
             autoCompleteChooseGroup.setText(groupId);
             autoCompleteChooseGroup.lockView();
-            topAdsKeywordNewChooseGroupPresenter.searchGroupName("");
+            topAdsKeywordOldNewChooseGroupPresenter.searchGroupName("");
         }
 
         adapterChooseGroup.setListenerGetData(new TopAdsAutoCompleteAdapter.ListenerGetData() {
@@ -305,7 +304,7 @@ public class TopAdsKeywordNewChooseGroupFragment extends TopAdsBaseStepperFragme
                 .topAdsComponent(TopAdsComponentInstance.getComponent(getActivity().getApplication()))
                 .build()
                 .inject(this);
-        topAdsKeywordNewChooseGroupPresenter.attachView(this);
+        topAdsKeywordOldNewChooseGroupPresenter.attachView(this);
     }
 
     @Override
@@ -353,7 +352,7 @@ public class TopAdsKeywordNewChooseGroupFragment extends TopAdsBaseStepperFragme
     @Override
     public void onDestroy() {
         super.onDestroy();
-        topAdsKeywordNewChooseGroupPresenter.detachView();
+        topAdsKeywordOldNewChooseGroupPresenter.detachView();
     }
 
     @Override

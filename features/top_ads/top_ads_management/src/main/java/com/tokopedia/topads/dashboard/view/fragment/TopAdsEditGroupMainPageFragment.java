@@ -20,9 +20,7 @@ import com.tokopedia.topads.dashboard.view.activity.TopAdsEditCostExistingGroupA
 import com.tokopedia.topads.dashboard.view.activity.TopAdsEditGroupNameActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsEditScheduleExistingGroupActivity;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailGroupPresenterImpl;
-import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordNewChooseGroupActivity;
-import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
-import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
+import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordOldNewChooseGroupActivity;
 
 import javax.inject.Inject;
 
@@ -125,7 +123,7 @@ public class TopAdsEditGroupMainPageFragment extends TopAdsDetailEditMainPageFra
             @Override
             public void onClick(View v) {
                 if (isAdded() && ad != null) {
-                    TopAdsKeywordNewChooseGroupActivity.start(TopAdsEditGroupMainPageFragment.this, getActivity(), REQUEST_CODE_AD_EDIT, true, ad.getName());
+                    TopAdsKeywordOldNewChooseGroupActivity.start(TopAdsEditGroupMainPageFragment.this, getActivity(), REQUEST_CODE_AD_EDIT, true, ad.getName());
                 }
             }
         });
