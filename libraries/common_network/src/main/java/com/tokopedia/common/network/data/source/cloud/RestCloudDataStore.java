@@ -11,8 +11,8 @@ import com.tokopedia.common.network.data.source.RestDataStore;
 import com.tokopedia.common.network.data.source.cloud.api.RestApi;
 import com.tokopedia.common.network.util.CommonUtil;
 import com.tokopedia.common.network.util.FingerprintManager;
+import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.common.network.util.RestCacheManager;
-import com.tokopedia.common.network.util.RestClient;
 import com.tokopedia.common.network.util.RestConstant;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.converter.StringResponseConverter;
@@ -43,15 +43,15 @@ public class CloudRestRestDataStore implements RestDataStore {
 
     @Inject
     public CloudRestRestDataStore() {
-        this.mApi = RestClient.getApiInterface();
+        this.mApi = NetworkClient.getApiInterface();
         this.mCacheManager = new RestCacheManager();
-        this.mFingerprintManager = RestClient.getFingerPrintManager();
+        this.mFingerprintManager = NetworkClient.getFingerPrintManager();
     }
 
     public CloudRestRestDataStore(List<Interceptor> interceptors, Context context) {
         this.mApi = getApiInterface(interceptors, context);
         this.mCacheManager = new RestCacheManager();
-        this.mFingerprintManager = RestClient.getFingerPrintManager();
+        this.mFingerprintManager = NetworkClient.getFingerPrintManager();
     }
 
     @Override

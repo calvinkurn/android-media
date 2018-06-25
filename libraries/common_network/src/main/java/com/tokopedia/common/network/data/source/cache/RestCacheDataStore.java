@@ -6,7 +6,7 @@ import com.tokopedia.common.network.data.source.RestDataStore;
 import com.tokopedia.common.network.util.CommonUtil;
 import com.tokopedia.common.network.util.FingerprintManager;
 import com.tokopedia.common.network.util.RestCacheManager;
-import com.tokopedia.common.network.util.RestClient;
+import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.common.network.util.RestConstant;
 
 import javax.inject.Inject;
@@ -26,7 +26,7 @@ public class RestCacheDataStore implements RestDataStore {
     @Inject
     public RestCacheDataStore() {
         this.mCacheManager = new RestCacheManager();
-        this.mFingerprintManager = RestClient.getFingerPrintManager();
+        this.mFingerprintManager = NetworkClient.getFingerPrintManager();
     }
 
     @Override

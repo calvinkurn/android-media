@@ -17,13 +17,13 @@ import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 
-public class RestClient {
+public class NetworkClient {
     private static Retrofit sRetrofit = null;
     private static RestApi sRestApi = null;
     private static FingerprintManager sFingerprintManager = null;
     private static UserSession sUserSession;
 
-    private RestClient() {
+    private NetworkClient() {
 
     }
 
@@ -45,7 +45,7 @@ public class RestClient {
 
     private static Retrofit getRetrofit() {
         if (sRetrofit == null) {
-            throw new RuntimeException("Please call RestClient.init() to start the network library.");
+            throw new RuntimeException("Please call NetworkClient.init() to start the network library.");
         }
 
         return sRetrofit;
@@ -60,7 +60,7 @@ public class RestClient {
 
     public static synchronized FingerprintManager getFingerPrintManager() {
         if (sFingerprintManager == null) {
-            throw new RuntimeException("Please call RestClient.init() to start the network library.");
+            throw new RuntimeException("Please call NetworkClient.init() to start the network library.");
         }
         return sFingerprintManager;
     }
