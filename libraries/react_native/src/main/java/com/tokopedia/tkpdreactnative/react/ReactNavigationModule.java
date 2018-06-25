@@ -10,6 +10,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
@@ -165,6 +166,14 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule implements
     public void sendTrackingEvent(ReadableMap dataLayer) {
         HashMap<String, Object> maps = dataLayer.toHashMap();
         TrackingUtils.eventTrackingEnhancedEcommerce(maps);
+    }
+
+    @ReactMethod
+    public void trackScreenName(String name) {
+        if(context.getApplicationContext() instanceof AbstractionRouter) {
+            AnalyticTracker analyticTracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+            analyticTracker.sendScreen(getCurrentActivity(), name);
+        }
     }
 
     @ReactMethod
