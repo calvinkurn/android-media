@@ -748,13 +748,18 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         KeyboardHelper.setKeyboardVisibilityChangedListener(bottomSheetLayout, new KeyboardHelper.OnKeyboardVisibilityChangedListener() {
             @Override
             public void onKeyboardShown() {
-                buttonFinish.setVisibility(View.GONE);
+                if (bottomSheetBehavior != null
+                        && bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+                    buttonFinish.setVisibility(View.GONE);
+                }
             }
 
             @Override
             public void onKeyboardHide() {
-                buttonFinish.setVisibility(View.VISIBLE);
-                bottomSheetLayout.requestFocus();
+                if (bottomSheetBehavior != null
+                        && bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+                    buttonFinish.setVisibility(View.VISIBLE);
+                }
             }
         });
     }
