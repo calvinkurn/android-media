@@ -21,8 +21,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.contact_us.createticket.ContactUsConstant;
-import com.tokopedia.contact_us.createticket.activity.ContactUsActivity;
 import com.tokopedia.abstraction.constant.TkpdState;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
@@ -31,8 +29,6 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
-import com.tokopedia.core.loyaltysystem.util.URLGenerator;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -160,9 +156,7 @@ public class ChatRoomActivity extends BasePresenterActivity
         extras.putBoolean(PARAM_WEBSOCKET, true);
         detailsIntent = new Intent(context, ChatRoomActivity.class).putExtras(extras);
         if(TextUtils.equals(extras.getString(TkpdInboxRouter.IS_CHAT_BOT),"true")) {
-            parentIntent = new Intent(context, ContactUsActivity.class);
-            parentIntent.putExtra(ContactUsConstant.PARAM_URL, URLGenerator.generateURLContactUs
-                    (TkpdBaseURL.BASE_CONTACT_US,context));
+            parentIntent = ((TkpdInboxRouter)context.getApplicationContext()).getContactUsIntent(context);
         }
         else {
             parentIntent = new Intent(context, InboxChatActivity.class);
