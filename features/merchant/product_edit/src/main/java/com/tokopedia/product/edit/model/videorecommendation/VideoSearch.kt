@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.model
+package com.tokopedia.product.edit.model.videorecommendation
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

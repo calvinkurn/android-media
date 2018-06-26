@@ -6,27 +6,38 @@ import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.graphql.data.GraphqlClient;
-import com.tokopedia.product.edit.model.VideoRecommendationData;
-import com.tokopedia.product.edit.presenter.GetVideoRecommendationPresenter;
+import com.tokopedia.networklib.util.RestClient;
+import com.tokopedia.product.edit.model.videorecommendation.VideoRecommendationData;
+import com.tokopedia.product.edit.model.youtube.YoutubeVideoModel;
+import com.tokopedia.product.edit.presenter.YouTubeVideoPresenter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by hendry on 25/06/18.
  */
 
-public class TestProductAddVideoActivity extends BaseSimpleActivity implements GetVideoRecommendationPresenter.GetVideoRecommendationView {
+public class TestProductAddVideoActivity extends BaseSimpleActivity implements YouTubeVideoPresenter.GetVideoRecommendationView {
 
-    private GetVideoRecommendationPresenter getVideoRecommendationPresenter;
+    private YouTubeVideoPresenter youTubeVideoPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         GraphqlClient.init(getApplicationContext());
-        getVideoRecommendationPresenter = new GetVideoRecommendationPresenter();
-        getVideoRecommendationPresenter.attachView(this);
-        getVideoRecommendationPresenter.getVideoRecommendation("iphone", 3);
+        RestClient.init(getApplicationContext());
+
+        youTubeVideoPresenter = new YouTubeVideoPresenter();
+        youTubeVideoPresenter.attachView(this);
+//        youTubeVideoPresenter.getVideoRecommendation("iphone", 3);
+
+        youTubeVideoPresenter.getVideoDetail("qifuYKVi23I");
+        ArrayList<String> videoIdList = new ArrayList<>();
+        videoIdList.add("ruUq2F72oao");
+        videoIdList.add("qifuYKVi23I");
+        youTubeVideoPresenter.getVideoDetail(videoIdList);
     }
 
     @Override
@@ -40,6 +51,26 @@ public class TestProductAddVideoActivity extends BaseSimpleActivity implements G
     }
 
     @Override
+    public void onSuccessGetVideoDetail(YoutubeVideoModel youtubeVideoModel) {
+        //TODO update UI
+    }
+
+    @Override
+    public void onErrorGetVideoDetail(Throwable e) {
+        //TODO update UI
+    }
+
+    @Override
+    public void onSuccessGetVideoDetailList(ArrayList<YoutubeVideoModel> youtubeVideoModelArrayList) {
+        //TODO update UI
+    }
+
+    @Override
+    public void onErrorGetVideoDetailList(Throwable e) {
+        //TODO update UI
+    }
+
+    @Override
     protected Fragment getNewFragment() {
         return null;
     }
@@ -47,5 +78,11 @@ public class TestProductAddVideoActivity extends BaseSimpleActivity implements G
     @Override
     public Context getContext() {
         return this;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        youTubeVideoPresenter.detachView();
     }
 }

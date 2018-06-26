@@ -1,4 +1,4 @@
-package com.tokopedia.product.edit.model
+package com.tokopedia.product.edit.model.videorecommendation
 
 /**
  * Created by hendry on 25/06/18.
