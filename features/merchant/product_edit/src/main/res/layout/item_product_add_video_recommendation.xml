@@ -29,7 +29,7 @@
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="@dimen/image_add_video_url_container_margin"
         android:layout_marginStart="@dimen/image_add_video_url_container_margin"
-        android:layout_weight="0.6"
+        android:layout_weight="0.67"
         android:orientation="vertical">
 
         <TextView
@@ -59,14 +59,16 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="0.2"
+        android:layout_weight="0.13"
         android:gravity="center"
         android:orientation="horizontal">
 
         <CheckBox
             android:id="@+id/cb_add_video_url_remove"
-            android:layout_width="@dimen/dp_16"
-            android:layout_height="@dimen/dp_16" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:theme="@style/GreenCheckbox"/>
+
     </LinearLayout>
 
 </LinearLayout>

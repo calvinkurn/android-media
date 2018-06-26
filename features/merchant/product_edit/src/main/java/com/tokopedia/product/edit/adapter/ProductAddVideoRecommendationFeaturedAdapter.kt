@@ -4,12 +4,12 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.tokopedia.product.edit.R
-import com.tokopedia.product.edit.adapter.viewholder.VideoRecommendationViewHolder
+import com.tokopedia.product.edit.adapter.viewholder.VideoRecommendationFeaturedViewHolder
 
-class ProductAddVideoRecommendationFeaturedAdapter(var videoFeaturedList: List<String>) : RecyclerView.Adapter<VideoRecommendationViewHolder>(){
+class ProductAddVideoRecommendationFeaturedAdapter(var videoFeaturedList: List<String>) : RecyclerView.Adapter<VideoRecommendationFeaturedViewHolder>(){
 
 
-    override fun onBindViewHolder(holder: VideoRecommendationViewHolder?, position: Int) {
+    override fun onBindViewHolder(holder: VideoRecommendationFeaturedViewHolder?, position: Int) {
 //        holder.mainContent
     }
 
@@ -17,11 +17,11 @@ class ProductAddVideoRecommendationFeaturedAdapter(var videoFeaturedList: List<S
         return videoFeaturedList.size
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): VideoRecommendationViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): VideoRecommendationFeaturedViewHolder {
         val itemLayoutView = LayoutInflater.from(parent!!.context)
                 .inflate(R.layout.item_product_add_video_recommendation_featured, parent, false)
 
-        return VideoRecommendationViewHolder(itemLayoutView)
+        return VideoRecommendationFeaturedViewHolder(itemLayoutView)
     }
 
 }

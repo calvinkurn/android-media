@@ -8,12 +8,12 @@ import android.support.v7.widget.RecyclerView
 import android.util.TypedValue
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.view.CommonUtils
 import com.tokopedia.product.edit.R
 import com.tokopedia.product.edit.adapter.ProductAddVideoRecommendationFeaturedAdapter
+import com.tokopedia.product.edit.viewmodel.SectionVideoRecommendationViewModel
 import com.tokopedia.product.edit.viewmodel.VideoRecommendationViewModel
 
-class SectionVideoRecommendationViewHolder(itemView: View) : AbstractViewHolder<VideoRecommendationViewModel>(itemView) {
+class SectionVideoRecommendationViewHolder(itemView: View) : AbstractViewHolder<SectionVideoRecommendationViewModel>(itemView) {
 
     private lateinit var productAddVideoRecommendationFeaturedAdapter: ProductAddVideoRecommendationFeaturedAdapter
     private lateinit var recyclerView: RecyclerView
@@ -54,7 +54,7 @@ class SectionVideoRecommendationViewHolder(itemView: View) : AbstractViewHolder<
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, valueInDp.toFloat(), metrics)
     }
 
-    override fun bind(videoRecommendationViewModel: VideoRecommendationViewModel) {
+    override fun bind(videoRecommendationViewModel: SectionVideoRecommendationViewModel) {
 
     }
 

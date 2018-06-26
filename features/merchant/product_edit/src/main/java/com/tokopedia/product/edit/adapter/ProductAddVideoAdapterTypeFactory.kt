@@ -7,14 +7,11 @@ import com.tokopedia.product.edit.adapter.viewholder.EmptyVideoViewHolder
 import com.tokopedia.product.edit.adapter.viewholder.TitleVideoChoosenViewHolder
 import com.tokopedia.product.edit.adapter.viewholder.SectionVideoRecommendationViewHolder
 import com.tokopedia.product.edit.adapter.viewholder.VideoViewHolder
-import com.tokopedia.product.edit.viewmodel.EmptyVideoViewModel
-import com.tokopedia.product.edit.viewmodel.TitleVideoChoosenViewModel
-import com.tokopedia.product.edit.viewmodel.VideoRecommendationViewModel
-import com.tokopedia.product.edit.viewmodel.VideoViewModel
+import com.tokopedia.product.edit.viewmodel.*
 
 class ProductAddVideoAdapterTypeFactory : BaseAdapterTypeFactory() {
 
-    fun type(videoRecommendationViewModel: VideoRecommendationViewModel): Int {
+    fun type(sectionVideoRecommendationViewModel: SectionVideoRecommendationViewModel): Int {
         return SectionVideoRecommendationViewHolder.LAYOUT
     }
 

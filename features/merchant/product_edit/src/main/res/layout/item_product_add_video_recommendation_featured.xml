@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="@dimen/dp_150"
+    android:layout_width="@dimen/dp_145"
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:layout_margin="@dimen/dp_8"
@@ -12,13 +12,13 @@
 
         <ImageView
             android:id="@+id/image_video"
-            android:layout_width="@dimen/dp_150"
+            android:layout_width="@dimen/dp_145"
             android:layout_height="@dimen/dp_80"
             android:background="@color/grey_300"/>
 
         <ImageView
-            android:layout_width="@dimen/dp_30"
-            android:layout_height="@dimen/dp_30"
+            android:layout_width="@dimen/dp_25"
+            android:layout_height="@dimen/dp_25"
             android:background="@color/grey_400"
             android:layout_alignRight="@+id/image_video"/>
 
@@ -30,8 +30,8 @@
             android:layout_alignRight="@+id/image_video"
             android:layout_alignBottom="@+id/image_video"
             android:background="@drawable/rounded_grey"
-            android:paddingLeft="@dimen/dp_4"
-            android:paddingRight="@dimen/dp_4"
+            android:paddingLeft="@dimen/dp_6"
+            android:paddingRight="@dimen/dp_6"
             android:paddingTop="@dimen/dp_2"
             android:paddingBottom="@dimen/dp_2"
             android:textColor="@color/white"/>

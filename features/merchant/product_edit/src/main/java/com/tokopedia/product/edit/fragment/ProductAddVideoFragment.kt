@@ -9,14 +9,10 @@ import android.view.ViewGroup
 import android.widget.Button
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.product.edit.R
-import com.tokopedia.product.edit.activity.ProductAddVideoActivity
 import com.tokopedia.product.edit.activity.ProductAddVideoRecommendationActivity
 import com.tokopedia.product.edit.adapter.ProductAddVideoAdapterTypeFactory
-import com.tokopedia.product.edit.mapper.VideoViewMapper
-import com.tokopedia.product.edit.viewmodel.EmptyVideoViewModel
-import com.tokopedia.product.edit.viewmodel.ProductAddVideoBaseViewModel
-import com.tokopedia.product.edit.viewmodel.TitleVideoChoosenViewModel
-import com.tokopedia.product.edit.viewmodel.VideoRecommendationViewModel
+import com.tokopedia.product.edit.mapper.ProductAddVideoMapper
+import com.tokopedia.product.edit.viewmodel.*
 import java.util.ArrayList
 
 class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, ProductAddVideoAdapterTypeFactory>() {
@@ -30,7 +26,7 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
         if(activity.intent != null){
             videoIDs = activity.intent.getStringArrayListExtra(EXTRA_VIDEOS_LINKS)
         }
-        (activity as AppCompatActivity).supportActionBar!!.subtitle = getString(R.string.product_from_to_video, videoIDs.size, MAX_VIDEO)
+        (activity as AppCompatActivity).supportActionBar?.subtitle = getString(R.string.product_from_to_video, videoIDs.size, MAX_VIDEO)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -61,20 +57,20 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
     override fun initInjector() {}
 
     override fun loadData(page: Int) {
-        val mapper = VideoViewMapper()
+        val mapper = ProductAddVideoMapper()
         val productAddVideoBaseViewModels : ArrayList<ProductAddVideoBaseViewModel> = ArrayList()
 
         if(!videoIDs.isEmpty()){
-            productAddVideoBaseViewModels.addAll(mapper.transform(videoIDs))
+            productAddVideoBaseViewModels.addAll(mapper.transformDataToVideoViewModel(videoIDs))
             val titleVideoChoosenViewModel = TitleVideoChoosenViewModel()
             productAddVideoBaseViewModels.add(0, titleVideoChoosenViewModel)
-            (activity as AppCompatActivity).supportActionBar!!.subtitle = getString(R.string.product_from_to_video, videoIDs.size, MAX_VIDEO)
+            (activity as AppCompatActivity).supportActionBar?.subtitle = getString(R.string.product_from_to_video, videoIDs.size, MAX_VIDEO)
         } else {
             val emptyVideoViewModel = EmptyVideoViewModel()
             productAddVideoBaseViewModels.add(0, emptyVideoViewModel)
         }
-        val videoRecommendationViewModel = VideoRecommendationViewModel()
-        productAddVideoBaseViewModels.add(0, videoRecommendationViewModel)
+        val sectionVideoRecommendationViewModel = SectionVideoRecommendationViewModel()
+        productAddVideoBaseViewModels.add(0, sectionVideoRecommendationViewModel)
         renderList(productAddVideoBaseViewModels)
     }
 

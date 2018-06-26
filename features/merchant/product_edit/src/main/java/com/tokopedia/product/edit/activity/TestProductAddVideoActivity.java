@@ -6,8 +6,11 @@ import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.product.edit.listener.ProductAddVideoRecommendationView;
 import com.tokopedia.product.edit.model.VideoRecommendationData;
-import com.tokopedia.product.edit.presenter.GetVideoRecommendationPresenter;
+import com.tokopedia.product.edit.presenter.ProductAddVideoRecommendationPresenter;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -15,16 +18,16 @@ import java.util.List;
  * Created by hendry on 25/06/18.
  */
 
-public class TestProductAddVideoActivity extends BaseSimpleActivity implements GetVideoRecommendationPresenter.GetVideoRecommendationView {
+public class TestProductAddVideoActivity extends BaseSimpleActivity implements ProductAddVideoRecommendationView {
 
-    private GetVideoRecommendationPresenter getVideoRecommendationPresenter;
+    private ProductAddVideoRecommendationPresenter getVideoRecommendationPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         GraphqlClient.init(getApplicationContext());
-        getVideoRecommendationPresenter = new GetVideoRecommendationPresenter();
+        getVideoRecommendationPresenter = new ProductAddVideoRecommendationPresenter();
         getVideoRecommendationPresenter.attachView(this);
         getVideoRecommendationPresenter.getVideoRecommendation("iphone", 3);
     }
@@ -44,8 +47,9 @@ public class TestProductAddVideoActivity extends BaseSimpleActivity implements G
         return null;
     }
 
+    @NotNull
     @Override
-    public Context getContext() {
+    public Context getContextView() {
         return this;
     }
 }
