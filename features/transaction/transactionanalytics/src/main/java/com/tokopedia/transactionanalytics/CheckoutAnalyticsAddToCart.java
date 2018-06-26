@@ -20,7 +20,7 @@ public class CheckoutAnalyticsAddToCart extends CheckoutAnalytics {
     public void enhancedECommerceAddToCart(Map<String, Object> cartMap, String eventLabel) {
         if (analyticTracker != null)
             analyticTracker.sendEnhancedEcommerce(
-                    DataLayer.mapOf("event", "addToCart",
+                    DataLayer.mapOf("event", ConstantTransactionAnalytics.EventName.ADD_TO_CART,
                             "eventCategory", ConstantTransactionAnalytics.EventCategory.ADD_TO_CART,
                             "eventAction", ConstantTransactionAnalytics.EventLabel.CLICK_BELI,
                             "eventLabel", eventLabel,

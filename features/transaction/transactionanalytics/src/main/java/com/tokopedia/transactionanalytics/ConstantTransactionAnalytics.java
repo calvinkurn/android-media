@@ -10,6 +10,7 @@ public interface ConstantTransactionAnalytics {
         String CLICK_ATC = "clickATC";
         String VIEW_ATC = "viewATC";
         String REMOVE_FORM_CART = "removeFromCart";
+        String ADD_TO_CART = "addToCart";
     }
 
     interface EventCategory {
