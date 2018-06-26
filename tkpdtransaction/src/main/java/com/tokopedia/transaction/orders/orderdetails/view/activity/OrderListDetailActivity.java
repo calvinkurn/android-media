@@ -21,10 +21,13 @@ import static com.tokopedia.transaction.orders.orderdetails.view.fragment.OrderL
 
 public class OrderListDetailActivity extends BaseSimpleActivity{
 
-    public static Intent createInstance(Context context, String orderId, String orderCategory) {
+    private boolean fromPayment = false;
+
+    public static Intent createInstance(Context context, String orderId, String orderCategory, boolean fromPayment) {
          Intent intent = new Intent(context, OrderListDetailActivity.class);
          intent.putExtra(KEY_ORDER_ID, orderId);
         intent.putExtra(KEY_ORDER_CATEGORY, orderCategory);
+        intent.putExtra("fromPayment", fromPayment);
         return intent;
     }
 
@@ -45,5 +48,9 @@ public class OrderListDetailActivity extends BaseSimpleActivity{
             toolbar.getNavigationIcon().setTint(getResources().getColor(R.color.black));
         }
         toolbar.setTitleTextAppearance(this, R.style.ToolbarText_SansSerifMedium);
+        if (getIntent().getBooleanExtra("fromPayment", false)) {
+            toolbar.setTitle("Thank You");
+        }
+
     }
 }

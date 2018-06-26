@@ -289,7 +289,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 if(!orderData.get(1).uri().equals("")){
                     menuListener.startUri(orderData.get(1).uri());
                 } else{
-                    context.startActivity(OrderListDetailActivity.createInstance(context, orderId, mOrderCategory));
+                    context.startActivity(OrderListDetailActivity.createInstance(context, orderId, mOrderCategory, false));
                 }
                 return true;
             } else {
@@ -350,7 +350,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         @Override
         public void onClick(View view) {
-            context.startActivity(OrderListDetailActivity.createInstance(context, orderId, mOrderCategory));
+            context.startActivity(OrderListDetailActivity.createInstance(context, orderId, mOrderCategory, false));
         }
 
         public void bindData(Order order, int position) {

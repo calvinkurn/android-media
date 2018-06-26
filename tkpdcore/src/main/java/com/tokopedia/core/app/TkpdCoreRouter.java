@@ -194,6 +194,6 @@ public interface TkpdCoreRouter {
 
     Intent getDistrictRecommendationIntent(Activity activity, Token token);
 
-    Intent getOrderListDetailActivity(Context context, String orderId, String orderCategory);
+    Intent getOrderListDetailActivity(Context context, String orderId, String orderCategory, boolean fromPayment);
 
 }
