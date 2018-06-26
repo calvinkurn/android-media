@@ -10,18 +10,17 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AppCompatDelegate;
+
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.contact_us.createticket.ContactUsConstant;
-import com.tokopedia.contact_us.createticket.activity.ContactUsActivity;
 import com.tokopedia.abstraction.constant.TkpdState;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
@@ -30,12 +29,11 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
-import com.tokopedia.core.loyaltysystem.util.URLGenerator;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.common.applink.ApplinkConstant;
 import com.tokopedia.inbox.inboxchat.ChatNotifInterface;
@@ -136,8 +134,8 @@ public class ChatRoomActivity extends BasePresenterActivity
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.setElevation(10);
         }
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-        Drawable upArrow = ContextCompat.getDrawable(this, R.drawable.abc_ic_ab_back_material);
+
+        Drawable upArrow = ContextCompat.getDrawable(this, R.drawable.ic_action_back);
         if (upArrow != null) {
             upArrow.setColorFilter(ContextCompat.getColor(this, R.color.grey_700), PorterDuff.Mode.SRC_ATOP);
             getSupportActionBar().setHomeAsUpIndicator(upArrow);
@@ -158,9 +156,7 @@ public class ChatRoomActivity extends BasePresenterActivity
         extras.putBoolean(PARAM_WEBSOCKET, true);
         detailsIntent = new Intent(context, ChatRoomActivity.class).putExtras(extras);
         if(TextUtils.equals(extras.getString(TkpdInboxRouter.IS_CHAT_BOT),"true")) {
-            parentIntent = new Intent(context, ContactUsActivity.class);
-            parentIntent.putExtra(ContactUsConstant.PARAM_URL, URLGenerator.generateURLContactUs
-                    (TkpdBaseURL.BASE_CONTACT_US,context));
+            parentIntent = ((TkpdInboxRouter)context.getApplicationContext()).getContactUsIntent(context);
         }
         else {
             parentIntent = new Intent(context, InboxChatActivity.class);

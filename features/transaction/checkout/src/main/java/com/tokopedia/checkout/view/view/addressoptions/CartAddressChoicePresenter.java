@@ -24,7 +24,7 @@ import static java.lang.Math.min;
 
 /**
  * @author Irfan Khoirul on 05/02/18
- *         Aghny A. Putra on 27/02/18
+ * Aghny A. Putra on 27/02/18
  */
 
 public class CartAddressChoicePresenter extends BaseDaggerPresenter<ICartAddressChoiceView>
@@ -78,15 +78,15 @@ public class CartAddressChoicePresenter extends BaseDaggerPresenter<ICartAddress
                             if (throwable instanceof UnknownHostException
                                     || throwable instanceof ConnectException
                                     || throwable instanceof SocketTimeoutException) {
-                                message = getView().getActivity().getResources().getString(
+                                message = getView().getActivityContext().getResources().getString(
                                         R.string.msg_no_connection);
                             } else if (throwable instanceof UnProcessableHttpException) {
                                 message = TextUtils.isEmpty(throwable.getMessage()) ?
-                                        getView().getActivity().getResources().getString(
+                                        getView().getActivityContext().getResources().getString(
                                                 R.string.msg_no_connection) :
                                         throwable.getMessage();
                             } else {
-                                message = getView().getActivity().getResources().getString(
+                                message = getView().getActivityContext().getResources().getString(
                                         R.string.default_request_error_unknown);
                             }
                             getView().showNoConnection(message);

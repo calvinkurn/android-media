@@ -1,7 +1,6 @@
 package com.tokopedia.transaction.orders.orderlist.domain;
 
 import com.tokopedia.transaction.orders.orderlist.data.Data;
-import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -24,7 +23,7 @@ public class OrderListUseCase extends UseCase<Data> {
         return orderListRepository.getOrderList(requestParams) ;
     }
 
-    public RequestParams getUserAttrParam(OrderCategory orderCategory, RequestParams requestParams){
+    public RequestParams getUserAttrParam(String orderCategory, RequestParams requestParams){
         RequestParams params = RequestParams.create();
         params.putObject(ORDER_CATEGORY, orderCategory);
         int page = requestParams.getInt(PAGE_NUM,1);

@@ -221,6 +221,11 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
     }
 
     @Override
+    public Activity getActivityContext() {
+        return getActivity();
+    }
+
+    @Override
     public void renderEmptyRecipientData() {
         llContent.setVisibility(View.GONE);
         btSendToCurrentAddress.setVisibility(View.GONE);
@@ -308,8 +313,8 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
     }
 
     private void onSendToMultipleAddress() {
-        mCartAddressChoiceListener.finishSendResultActionToMultipleAddressForm();
         checkoutAnalyticsChangeAddress.eventClickChangeAddressClickKirimKeBeberapaAlamatFromGantiAlamat();
+        mCartAddressChoiceListener.finishSendResultActionToMultipleAddressForm();
     }
 
     private void onSendToCurrentAddress() {

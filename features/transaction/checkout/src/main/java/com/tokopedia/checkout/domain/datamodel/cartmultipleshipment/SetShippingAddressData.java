@@ -69,7 +69,7 @@ public class SetShippingAddressData implements Parcelable {
             return this;
         }
 
-        public Builder messages(List<String> val){
+        public Builder messages(List<String> val) {
             messages = val;
             return this;
         }

@@ -26,7 +26,7 @@ public interface ICartAddressChoiceView extends CustomerView {
 
     void setToken(Token token);
 
-    Activity getActivity();
+    Activity getActivityContext();
 
     void renderEmptyRecipientData();
 }

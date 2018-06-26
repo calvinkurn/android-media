@@ -80,6 +80,7 @@ public class LoyaltyViewModule {
                             .fragment(PromoCouponFragment.newInstance(
                                     activity.getPlatformString(),
                                     activity.getPlatformPageString(),
+                                    activity.getAdditionalDataString(),
                                     activity.getCategoryString(),
                                     activity.getCartIdString(),
                                     activity.getCategoryId(),

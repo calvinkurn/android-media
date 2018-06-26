@@ -24,7 +24,7 @@ public interface ISearchAddressListView<T> {
 
     void resetPagination();
 
-    Activity getActivity();
+    Activity getActivityContext();
 
     void setToken(Token token);
 

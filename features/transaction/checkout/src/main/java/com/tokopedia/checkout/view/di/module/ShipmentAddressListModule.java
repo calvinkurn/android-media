@@ -1,7 +1,5 @@
 package com.tokopedia.checkout.view.di.module;
 
-import android.app.Activity;
-
 import com.tokopedia.checkout.data.repository.PeopleAddressRepository;
 import com.tokopedia.checkout.domain.usecase.GetPeopleAddressUseCase;
 import com.tokopedia.checkout.view.adapter.ShipmentAddressListAdapter;
@@ -22,9 +20,8 @@ public class ShipmentAddressListModule {
 
     private final ShipmentAddressListAdapter.ActionListener actionListener;
 
-    public ShipmentAddressListModule(Activity activity, ShipmentAddressListFragment shipmentAddressListFragment) {
+    public ShipmentAddressListModule(ShipmentAddressListFragment shipmentAddressListFragment) {
         actionListener = shipmentAddressListFragment;
-        Activity activity1 = activity;
     }
 
     @Provides

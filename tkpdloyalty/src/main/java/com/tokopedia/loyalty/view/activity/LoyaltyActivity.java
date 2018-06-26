@@ -13,10 +13,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.loyalty.R;
@@ -53,7 +53,7 @@ import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.E
  */
 
 public class LoyaltyActivity extends BasePresenterActivity
-        implements HasComponent<AppComponent>,
+        implements HasComponent<BaseAppComponent>,
         PromoCodeFragment.ManualInsertCodeListener,
         PromoCouponFragment.ChooseCouponListener {
 
@@ -270,9 +270,10 @@ public class LoyaltyActivity extends BasePresenterActivity
 
 
     @Override
-    public AppComponent getComponent() {
-        return getApplicationComponent();
+    public BaseAppComponent getComponent() {
+        return getBaseAppComponent();
     }
+
 
     @Override
     public void onCodeSuccess(String voucherCode, String voucherMessage, String voucherAmount) {

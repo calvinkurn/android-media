@@ -1,6 +1,8 @@
 package com.tokopedia.loyalty.view.presenter;
 
+import android.app.Activity;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -8,7 +10,6 @@ import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseErrorException;
@@ -19,7 +20,6 @@ import com.tokopedia.loyalty.domain.usecase.FlightCheckVoucherUseCase;
 import com.tokopedia.loyalty.exception.LoyaltyErrorException;
 import com.tokopedia.loyalty.exception.TokoPointResponseErrorException;
 import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
-import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
 import com.tokopedia.loyalty.view.data.CouponData;
 import com.tokopedia.loyalty.view.data.CouponViewModel;
 import com.tokopedia.loyalty.view.data.CouponsDataWrapper;
@@ -171,46 +171,53 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
     }
 
     @Override
-    public void processPostCouponValidateRedeem() {
+    public void processCheckMarketPlaceCartListPromoCode(Activity activity, CouponData couponData,
+                                                         String paramUpdateCartString) {
+        TKPDMapParam<String, String> paramUpdateCart = null;
+        if (!TextUtils.isEmpty(paramUpdateCartString)) {
+            paramUpdateCart = new TKPDMapParam<>();
+            paramUpdateCart.put("carts", paramUpdateCartString);
+        }
+        TKPDMapParam<String, String> paramCheckPromo = new TKPDMapParam<>();
+        paramCheckPromo.put("promo_code", couponData.getCode());
+        paramCheckPromo.put("suggested", "0");
+        paramCheckPromo.put("lang", "id");
 
-    }
+        promoCouponInteractor.submitCheckPromoCodeMarketPlace(
+                paramUpdateCart != null ? AuthUtil.generateParamsNetwork(activity, paramUpdateCart) : null,
+                AuthUtil.generateParamsNetwork(activity, paramCheckPromo),
+                new Subscriber<CouponViewModel>() {
+                    @Override
+                    public void onCompleted() {
 
-    @Override
-    public void processPostCouponRedeem() {
+                    }
 
-    }
+                    @Override
+                    public void onError(Throwable e) {
+                        view.hideProgressLoading();
+                        if (e instanceof LoyaltyErrorException || e instanceof ResponseErrorException) {
+                            couponData.setErrorMessage(e.getMessage());
+                            view.couponError();
+                        } else {
+                            view.showSnackbarError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                        }
+                    }
 
-    @Override
-    public void processGetPointRecentHistory() {
+                    @Override
+                    public void onNext(CouponViewModel couponViewModel) {
+                        if (couponViewModel.isSuccess()) {
+                            couponViewModel.setTitle(couponData.getTitle());
+                            view.receiveResult(couponViewModel);
+                            view.hideProgressLoading();
+                        } else {
+                            couponData.setErrorMessage(couponViewModel.getMessage());
+                            view.couponError();
+                        }
 
-    }
+                    }
+                }
 
-    @Override
-    public void processGetCatalogList() {
-
-    }
-
-    @Override
-    public void processGetCatalogDetail() {
-
-    }
-
-    @Override
-    public void processGetCatalogFilterCategory() {
-
-    }
-
-    @Override
-    public void submitVoucher(final CouponData couponData) {
-        view.showProgressLoading();
-        TKPDMapParam<String, String> param = new TKPDMapParam<>();
-        param.put(VOUCHER_CODE, couponData.getCode());
-        promoCouponInteractor.submitVoucher(
-                couponData.getTitle(),
-                couponData.getCode(),
-                AuthUtil.generateParamsNetwork(view.getContext(), param
-                ), makeCouponSubscriber(couponData));
-
+        );
     }
 
     @Override
@@ -326,7 +333,7 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
     }
 
     @Override
-    public void parseAndSubmitEventVoucher(String jsonbody,CouponData data) {
+    public void parseAndSubmitEventVoucher(String jsonbody, CouponData data) {
         JsonObject requestBody;
         if (jsonbody != null || jsonbody.length() > 0) {
             JsonElement jsonElement = new JsonParser().parse(jsonbody);

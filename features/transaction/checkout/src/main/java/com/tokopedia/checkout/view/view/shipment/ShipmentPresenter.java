@@ -18,6 +18,8 @@ import com.tokopedia.checkout.domain.datamodel.cartshipmentform.GroupShop;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.checkout.domain.datamodel.toppay.ThanksTopPayData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
+import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
+import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartShipmentData;
 import com.tokopedia.checkout.domain.usecase.CancelAutoApplyCouponUseCase;
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
@@ -29,11 +31,9 @@ import com.tokopedia.checkout.domain.usecase.GetThanksToppayUseCase;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCheckoutButtonModel;
 import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartListResult;
-import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
-import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.payment.utils.ErrorNetMessage;
+import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.transactiondata.entity.request.CheckoutRequest;
 import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
@@ -138,7 +138,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     public void onError(Throwable e) {
                                         e.printStackTrace();
                                         getView().hideLoading();
-                                        getView().showToastError(getView().getActivity().getString(R.string.default_request_error_unknown_short));
+                                        getView().showToastError(getView().getActivityContext().getString(R.string.default_request_error_unknown_short));
                                     }
 
                                     @Override
@@ -170,14 +170,14 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         return originParams == null
                 ?
                 AuthUtil.generateParamsNetwork(
-                        getView().getActivity(), SessionHandler.getLoginID(getView().getActivity()),
-                        GCMHandler.getRegistrationId(getView().getActivity())
+                        getView().getActivityContext(), SessionHandler.getLoginID(getView().getActivityContext()),
+                        GCMHandler.getRegistrationId(getView().getActivityContext())
                 )
                 :
                 AuthUtil.generateParamsNetwork(
-                        getView().getActivity(), originParams,
-                        SessionHandler.getLoginID(getView().getActivity()),
-                        GCMHandler.getRegistrationId(getView().getActivity())
+                        getView().getActivityContext(), originParams,
+                        SessionHandler.getLoginID(getView().getActivityContext()),
+                        GCMHandler.getRegistrationId(getView().getActivityContext())
                 );
     }
 
@@ -199,7 +199,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             .subscribe(getSubscriberCheckoutCart())
             );
         } else {
-            getView().showToastError(getView().getActivity().getString(R.string.default_request_error_unknown));
+            getView().showToastError(getView().getActivityContext().getString(R.string.default_request_error_unknown));
         }
     }
 
@@ -243,7 +243,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         .subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
                         .unsubscribeOn(Schedulers.newThread())
-                        .subscribe(new Subscriber<CheckPromoCodeCartShipmentResult>() {
+                        .subscribe(new Subscriber<PromoCodeCartShipmentData>() {
                             @Override
                             public void onCompleted() {
 
@@ -256,11 +256,13 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             }
 
                             @Override
-                            public void onNext(CheckPromoCodeCartShipmentResult checkPromoCodeCartShipmentResult) {
-                                if (!checkPromoCodeCartShipmentResult.isError()) {
-                                    getView().renderCheckPromoShipmentDataSuccess(checkPromoCodeCartShipmentResult);
+                            public void onNext(PromoCodeCartShipmentData promoCodeCartShipmentData) {
+                                if (!promoCodeCartShipmentData.isError()) {
+                                    getView().renderCheckPromoShipmentDataSuccess(promoCodeCartShipmentData);
                                 } else {
-                                    getView().renderErrorCheckPromoShipmentData(checkPromoCodeCartShipmentResult.getErrorMessage());
+                                    getView().renderErrorCheckPromoShipmentData(
+                                            promoCodeCartShipmentData.getErrorMessage()
+                                    );
                                 }
                             }
                         })
@@ -279,13 +281,13 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             public void onError(Throwable e) {
                 e.printStackTrace();
                 getView().hideLoading();
-                getView().showToastError(getView().getActivity().getString(R.string.default_request_error_unknown));
+                getView().showToastError(getView().getActivityContext().getString(R.string.default_request_error_unknown));
             }
 
             @Override
             public void onNext(ThanksTopPayData thanksTopPayData) {
                 getView().hideLoading();
-                getView().renderThanksTopPaySuccess(getView().getActivity().getString(R.string.message_payment_success));
+                getView().renderThanksTopPaySuccess(getView().getActivityContext().getString(R.string.message_payment_success));
             }
         };
     }
@@ -302,7 +304,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             public void onError(Throwable e) {
                 e.printStackTrace();
                 getView().hideLoading();
-                getView().showToastError(getView().getActivity().getString(R.string.default_request_error_unknown));
+                getView().showToastError(getView().getActivityContext().getString(R.string.default_request_error_unknown));
                 getView().sendAnalyticsChoosePaymentMethodFailed();
             }
 
@@ -335,7 +337,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         .subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
                         .unsubscribeOn(Schedulers.newThread())
-                        .subscribe(new Subscriber<CheckPromoCodeCartListResult>() {
+                        .subscribe(new Subscriber<PromoCodeCartListData>() {
                             @Override
                             public void onCompleted() {
 
@@ -345,11 +347,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             public void onError(Throwable e) {
                                 e.printStackTrace();
                                 getView().hideLoading();
-                                getView().showToastError(getView().getActivity().getString(R.string.default_request_error_unknown));
+                                getView().showToastError(getView().getActivityContext().getString(R.string.default_request_error_unknown));
                             }
 
                             @Override
-                            public void onNext(CheckPromoCodeCartListResult
+                            public void onNext(PromoCodeCartListData
                                                        promoCodeCartListData) {
                                 getView().hideLoading();
                                 if (!promoCodeCartListData.isError()) {
@@ -364,7 +366,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     private CheckoutRequest generateCheckoutRequest(String promoCode, int isDonation) {
         if (dataCheckoutRequestList == null) {
-            getView().showToastError(getView().getActivity().getString(R.string.default_request_error_unknown_short));
+            getView().showToastError(getView().getActivityContext().getString(R.string.default_request_error_unknown_short));
             return null;
         }
 
@@ -479,7 +481,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             @Override
                             public void onError(Throwable e) {
                                 e.printStackTrace();
-                                getView().showToastError(getView().getActivity().getString(R.string.default_request_error_unknown));
+                                getView().showToastError(getView().getActivityContext().getString(R.string.default_request_error_unknown));
                             }
 
                             @Override
@@ -506,7 +508,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     if (!TextUtils.isEmpty(messageError)) {
                                         getView().showToastError(messageError);
                                     } else {
-                                        getView().showToastError(getView().getActivity().getString(R.string.default_request_error_unknown));
+                                        getView().showToastError(getView().getActivityContext().getString(R.string.default_request_error_unknown));
                                     }
                                 }
                             }
@@ -590,7 +592,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             @Override
                             public void onError(Throwable e) {
                                 e.printStackTrace();
-                                getView().showToastError(getView().getActivity().getString(R.string.default_request_error_unknown));
+                                getView().showToastError(getView().getActivityContext().getString(R.string.default_request_error_unknown));
                             }
 
                             @Override
@@ -607,7 +609,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                 if (resultSuccess) {
                                     getView().renderCancelAutoApplyCouponSuccess();
                                 } else {
-                                    getView().showToastError(getView().getActivity().getString(R.string.default_request_error_unknown));
+                                    getView().showToastError(getView().getActivityContext().getString(R.string.default_request_error_unknown));
                                 }
 
                             }
@@ -625,9 +627,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         RequestParams requestParam = RequestParams.create();
 
         TKPDMapParam<String, String> authParam = AuthUtil.generateParamsNetwork(
-                getView().getActivity(), param,
-                SessionHandler.getLoginID(getView().getActivity()),
-                GCMHandler.getRegistrationId(getView().getActivity()));
+                getView().getActivityContext(), param,
+                SessionHandler.getLoginID(getView().getActivityContext()),
+                GCMHandler.getRegistrationId(getView().getActivityContext()));
 
         requestParam.putAllString(authParam);
 
@@ -646,14 +648,14 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             public void onError(Throwable e) {
                                 getView().hideLoading();
                                 e.printStackTrace();
-                                getView().showToastError(getView().getActivity().getString(R.string.default_request_error_unknown));
+                                getView().showToastError(getView().getActivityContext().getString(R.string.default_request_error_unknown));
                             }
 
                             @Override
                             public void onNext(SetShippingAddressData setShippingAddressData) {
                                 getView().hideLoading();
                                 if (setShippingAddressData.isSuccess()) {
-                                    getView().showToastNormal(getView().getActivity().getString(R.string.label_change_address_success));
+                                    getView().showToastNormal(getView().getActivityContext().getString(R.string.label_change_address_success));
                                     getView().renderChangeAddressSuccess(recipientAddressModel);
                                 } else {
                                     if (setShippingAddressData.getMessages() != null &&
@@ -664,7 +666,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                         }
                                         getView().showToastError(stringBuilder.toString());
                                     } else {
-                                        getView().showToastError(getView().getActivity().getString(R.string.label_change_address_failed));
+                                        getView().showToastError(getView().getActivityContext().getString(R.string.label_change_address_failed));
                                     }
                                 }
                             }

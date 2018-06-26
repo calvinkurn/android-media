@@ -112,7 +112,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     protected void initInjector() {
         ShipmentAddressListComponent component = DaggerShipmentAddressListComponent.builder()
                 .cartComponent(getComponent(CartComponent.class))
-                .shipmentAddressListModule(new ShipmentAddressListModule(getActivity(), this))
+                .shipmentAddressListModule(new ShipmentAddressListModule( this))
                 .trackingAnalyticsModule(new TrackingAnalyticsModule())
                 .build();
         component.inject(this);
@@ -317,6 +317,11 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     @Override
     public void resetPagination() {
         maxItemPosition = 0;
+    }
+
+    @Override
+    public Activity getActivityContext() {
+        return getActivity();
     }
 
     private void initSearchView() {
