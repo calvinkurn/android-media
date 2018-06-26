@@ -27,6 +27,12 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
     }
 
     @Override
+    public void detachView() {
+        super.detachView();
+        getOrderListUseCase.unsubscribe();
+    }
+
+    @Override
     public void getAllOrderData(Context context, String orderCategory, final int typeRequest, int page) {
         if(isViewAttached()) {
             getView().showProcessGetData(orderCategory);
@@ -40,14 +46,12 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                 @Override
                 public void onError(Throwable e) {
                     CommonUtils.dumper(e.toString());
-                    if(getView()!= null) {
-                        getView().removeProgressBarView();
-                        getView().unregisterScrollListener();
-                        if (e instanceof UnknownHostException || e instanceof ConnectException) {
-                            getView().showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
-                        } else if (e instanceof SocketTimeoutException) {
-                            getView().showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
-                        }
+                    getView().removeProgressBarView();
+                    getView().unregisterScrollListener();
+                    if (e instanceof UnknownHostException || e instanceof ConnectException) {
+                        getView().showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
+                    } else if (e instanceof SocketTimeoutException) {
+                        getView().showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
                     }
                 }
 
