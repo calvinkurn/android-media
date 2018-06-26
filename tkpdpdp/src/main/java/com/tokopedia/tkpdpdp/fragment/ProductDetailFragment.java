@@ -72,6 +72,7 @@ import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
+import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
 import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.core.util.AppIndexHandler;
 import com.tokopedia.core.util.GlobalConfig;
@@ -1628,13 +1629,13 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     }
 
     @Override
-    public void renderAddToCartSuccess(String message) {
+    public void renderAddToCartSuccess(AddToCartResult addToCartResult) {
         checkoutAnalyticsAddToCart.eventClickAddToCartImpressionAtcSuccess();
         updateCartNotification();
         android.support.v4.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.add(
                 AddToCartConfirmationDialog.newInstance(
-                        message,
+                        addToCartResult.getMessage(),
                         new AddToCartConfirmationDialog.ActionListener() {
                             @Override
                             public void onButtonAddToCartPayClicked() {
@@ -1663,7 +1664,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         enhancedECommerceProductCartMapData.setPrice(productData.getInfo().getProductPrice());
         enhancedECommerceProductCartMapData.setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
         String categoryLevelStr = generateCategoryStringLevel(productData.getBreadcrumb());
-
+        enhancedECommerceProductCartMapData.setCartId(addToCartResult.getCartId());
         enhancedECommerceProductCartMapData.setCategory(TextUtils.isEmpty(categoryLevelStr)
                 ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
                 : categoryLevelStr);
