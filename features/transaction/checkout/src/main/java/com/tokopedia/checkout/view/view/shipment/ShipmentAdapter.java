@@ -523,6 +523,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ShipmentData shipmentData = shipmentDataList.get(i);
             if (shipmentData instanceof CartItemPromoHolderData) {
                 shipmentDataList.set(i, cartPromo);
+                cartItemPromoHolderData = cartPromo;
                 checkDataForCheckout();
                 checkDataForCheckout();
                 notifyItemChanged(i);
