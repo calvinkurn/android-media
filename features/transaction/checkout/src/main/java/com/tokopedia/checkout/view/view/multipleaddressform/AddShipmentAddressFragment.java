@@ -342,12 +342,14 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
         notesLayout = view.findViewById(R.id.notes_layout);
         notesEditText = view.findViewById(R.id.notes_edit_text);
         notesEditText.addTextChangedListener(notesTextWatcher(itemData));
-        if (TextUtils.isEmpty(itemData.getProductNotes())) {
+        if (TextUtils.isEmpty(itemData.getProductNotes()) || formMode == ADD_MODE) {
+            notesLayout.setVisibility(View.GONE);
             emptyNotesLayout.setVisibility(View.VISIBLE);
             insertNotesButton.setOnClickListener(
                     onInsertNotesButtonClickedListener(emptyNotesLayout, notesLayout)
             );
         } else {
+            emptyNotesLayout.setVisibility(View.GONE);
             notesLayout.setVisibility(View.VISIBLE);
             if (formMode == EDIT_MODE) {
                 notesEditText.setText(itemData.getProductNotes());
