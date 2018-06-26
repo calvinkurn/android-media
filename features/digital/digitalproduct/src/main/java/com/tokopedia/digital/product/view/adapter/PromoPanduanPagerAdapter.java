@@ -53,7 +53,7 @@ public class PromoPanduanPagerAdapter extends FragmentStatePagerAdapter
         if (position != currentPosition) {
             Fragment fragment = (Fragment) object;
             DigitalWrapContentViewPager pager = (DigitalWrapContentViewPager) container;
-            if (fragment != null && fragment.getView() != null) {
+            if (fragment != null) {
                 currentPosition = position;
                 pager.measureCurrentView(fragment.getView());
             }
