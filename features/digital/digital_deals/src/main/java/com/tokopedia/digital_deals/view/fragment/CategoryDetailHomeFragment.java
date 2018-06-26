@@ -89,8 +89,9 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_category_detail_home, container, false);
-        setViewIds(view);
         setHasOptionsMenu(true);
+        setViewIds(view);
+
 
 
         mPresenter.getCategoryDetails();

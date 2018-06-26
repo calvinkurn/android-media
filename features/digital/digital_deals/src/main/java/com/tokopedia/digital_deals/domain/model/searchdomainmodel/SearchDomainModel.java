@@ -10,6 +10,7 @@ public class SearchDomainModel {
     private List<DealsCategoryItemDomain> deals;
     private List<FilterDomainModel> filters;
     private PageDomain page;
+    private int count;
 
     public List<DealsCategoryItemDomain> getDeals() {
         return deals;
@@ -35,5 +36,11 @@ public class SearchDomainModel {
         this.page = page;
     }
 
+    public int getCount() {
+        return count;
+    }
 
+    public void setCount(int count) {
+        this.count = count;
+    }
 }

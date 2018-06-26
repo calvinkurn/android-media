@@ -52,18 +52,18 @@
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_8"
+            android:ellipsize="end"
             android:fontFamily="sans-serif-medium"
-            tools:text="1 Set Jumbo Bento for 2 persons ddfdfdsfdfdsfdsfdon Weekdays (Monday - Friday)"
+            android:lines="2"
+            android:maxLines="2"
             android:textColor="@color/black_39"
             android:textSize="@dimen/sp_14"
             android:textStyle="normal"
-            android:ellipsize="end"
-            android:lines="2"
-            android:maxLines="2"
+            app:layout_constraintBottom_toBottomOf="@+id/cv_brand"
             app:layout_constraintLeft_toRightOf="@+id/cv_brand"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toBottomOf="@+id/cv_brand"
-            app:layout_constraintTop_toBottomOf="@+id/iv_product" />
+            app:layout_constraintTop_toBottomOf="@+id/iv_product"
+            tools:text="1 Set Jumbo Bento for 2 persons ddfdfdsfdfdsfdsfdon Weekdays (Monday - Friday)" />
 
 
         <android.support.v7.widget.CardView
@@ -73,7 +73,6 @@
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginTop="154dp"
             app:cardCornerRadius="@dimen/dp_8"
-            app:cardElevation="0dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -81,8 +80,8 @@
                 android:id="@+id/iv_brand"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/grey_1100"
-                android:scaleType="centerCrop" />
+                android:background="@drawable/background_brand_logo"
+                android:scaleType="fitCenter" />
 
         </android.support.v7.widget.CardView>
 
@@ -91,11 +90,11 @@
             android:layout_width="@dimen/dp_18"
             android:layout_height="@dimen/dp_18"
             android:layout_marginLeft="@dimen/dp_8"
-            app:srcCompat="@drawable/ic_hotlist"
             android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="@+id/tv_sales_price"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/tv_salesPri_pe" />
+            app:layout_constraintTop_toTopOf="@+id/tv_salesPri_pe"
+            app:srcCompat="@drawable/ic_hotlist" />
 
 
         <TextView
@@ -103,14 +102,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_8"
+            android:ellipsize="end"
             android:fontFamily="sans-serif"
-            tools:text="Bakerzin"
+            android:maxWidth="@dimen/dp_145"
             android:textColor="@color/black_38"
             android:textSize="@dimen/sp_12"
             android:textStyle="normal"
             app:layout_constraintBottom_toBottomOf="@+id/iv_tag"
             app:layout_constraintLeft_toRightOf="@+id/iv_tag"
-            app:layout_constraintTop_toTopOf="@+id/iv_tag" />
+            app:layout_constraintTop_toTopOf="@+id/iv_tag"
+            tools:text="Bakerzin" />
 
 
         <TextView
@@ -126,12 +127,12 @@
             android:paddingLeft="@dimen/dp_8"
             android:paddingRight="@dimen/dp_8"
             android:paddingTop="@dimen/dp_2"
-            tools:text="20% OFF"
             android:textColor="@color/colorRed"
             android:textSize="@dimen/sp_11"
             android:textStyle="bold"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_deal_intro" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_deal_intro"
+            tools:text="20% OFF" />
 
 
         <TextView
@@ -141,13 +142,13 @@
             android:layout_marginRight="@dimen/dp_4"
             android:fontFamily="sans-serif"
             android:gravity="end"
-            tools:text="Rp50.000.000"
             android:textColor="@color/black_40"
             android:textSize="@dimen/sp_10"
             android:textStyle="normal"
             app:layout_constraintBottom_toBottomOf="@+id/tv_off"
             app:layout_constraintRight_toLeftOf="@+id/tv_off"
-            app:layout_constraintTop_toTopOf="@+id/tv_off" />
+            app:layout_constraintTop_toTopOf="@+id/tv_off"
+            tools:text="Rp50.000.000" />
 
         <TextView
             android:id="@+id/tv_sales_price"
@@ -156,12 +157,12 @@
             android:layout_marginRight="@dimen/dp_8"
             android:fontFamily="sans-serif-medium"
             android:includeFontPadding="false"
-            tools:text="Rp40.000.000"
             android:textColor="@color/red_800"
             android:textSize="@dimen/sp_17"
             android:textStyle="normal"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_off" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_off"
+            tools:text="Rp40.000.000" />
 
 
     </android.support.constraint.ConstraintLayout>

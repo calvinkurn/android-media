@@ -222,6 +222,7 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
         if (isBrandsLoaded && isDealsLoaded) {
             getView().hideProgressBar();
             getView().showViews();
+            getView().showSearchButton();
         }
     }
 

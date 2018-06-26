@@ -47,6 +47,7 @@ public class DealsSearchMapper  implements Func1<SearchResponse, SearchDomainMod
 
             searchDomainModel.setPage(pageDomain);
         }
+        searchDomainModel.setCount(searchResponseEntity.getCount());
 
         return searchDomainModel;
     }

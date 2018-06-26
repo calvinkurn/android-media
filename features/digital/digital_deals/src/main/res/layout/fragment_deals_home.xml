@@ -8,7 +8,6 @@
     android:background="@color/bottomnav_bg">
 
 
-
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/base_main_content"
         android:layout_width="match_parent"
@@ -20,8 +19,7 @@
             android:id="@+id/app_bar_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/dp_1"
-            >
+            android:paddingBottom="@dimen/dp_1">
 
             <android.support.constraint.ConstraintLayout
                 android:id="@+id/cl_search_view"
@@ -85,12 +83,12 @@
                     android:lines="1"
                     android:paddingBottom="@dimen/dp_8"
                     android:paddingTop="@dimen/dp_8"
-                    app:layout_constraintHorizontal_bias="1.0"
                     android:text="Surabayhjhhhhhhhhhhjhjhjhhghgha"
                     android:textColor="@color/black_39"
                     android:textSize="@dimen/sp_14"
                     android:textStyle="normal"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintHorizontal_bias="1.0"
                     app:layout_constraintLeft_toRightOf="@+id/guideline"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -175,30 +173,6 @@
                     tools:listitem="@layout/category_item" />
 
                 <TextView
-                    android:id="@+id/tv_popular"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:fontFamily="sans-serif-medium"
-                    android:paddingBottom="@dimen/dp_16"
-                    android:paddingTop="@dimen/dp_16"
-                    android:text="@string/text_trending_deals"
-                    android:textColor="@color/black_39"
-                    android:textSize="@dimen/sp_17"
-                    android:textStyle="normal"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/rv_category_items" />
-
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/rv_trending_deals"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:nestedScrollingEnabled="false"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_popular" />
-
-
-                <TextView
                     android:id="@+id/tv_popular_brand"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -210,15 +184,15 @@
                     android:textSize="@dimen/sp_17"
                     android:textStyle="normal"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/rv_trending_deals" />
+                    app:layout_constraintTop_toBottomOf="@+id/rv_category_items" />
 
                 <TextView
                     android:id="@+id/tv_see_all_brands"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/see_all"
-                    android:paddingRight="@dimen/dp_16"
                     android:paddingLeft="@dimen/dp_16"
+                    android:paddingRight="@dimen/dp_16"
+                    android:text="@string/see_all"
                     android:textColor="@color/green_nob"
                     android:textSize="@dimen/sp_12"
                     android:textStyle="normal"
@@ -239,6 +213,30 @@
                     app:layout_constraintTop_toBottomOf="@+id/tv_popular_brand"
                     app:spanCount="4"
                     tools:listitem="@layout/item_brand" />
+
+                <TextView
+                    android:id="@+id/tv_popular"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:fontFamily="sans-serif-medium"
+                    android:paddingBottom="@dimen/dp_16"
+                    android:paddingTop="@dimen/dp_16"
+                    android:text="@string/text_trending_deals"
+                    android:textColor="@color/black_39"
+                    android:textSize="@dimen/sp_17"
+                    android:textStyle="normal"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/rv_brand_items" />
+
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rv_trending_deals"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_popular" />
+
 
             </android.support.constraint.ConstraintLayout>
 

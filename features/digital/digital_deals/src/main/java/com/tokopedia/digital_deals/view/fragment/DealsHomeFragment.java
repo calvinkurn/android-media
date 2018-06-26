@@ -1,6 +1,7 @@
 package com.tokopedia.digital_deals.view.fragment;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -8,6 +9,8 @@ import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -146,11 +149,18 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
                 GridLayoutManager.VERTICAL, false));
 
         Drawable img = getResources().getDrawable(R.drawable.ic_search_grey);
+        setDrawableTint(img);
         searchInputView.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
 
         img = getResources().getDrawable(R.drawable.ic_location_2);
         tvLocationName.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
 
+    }
+
+    private void setDrawableTint(Drawable img) {
+        Drawable wrappedDrawable = DrawableCompat.wrap(img);
+        Drawable mutableDrawable = wrappedDrawable.mutate();
+        DrawableCompat.setTint(mutableDrawable, ContextCompat.getColor(getContext(), R.color.color_search_icon));
     }
 
     @Override

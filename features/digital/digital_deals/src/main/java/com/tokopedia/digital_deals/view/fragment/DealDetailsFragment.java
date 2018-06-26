@@ -100,6 +100,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     private TextView tvBrandAddress;
     private TextView tvViewMap;
     private TextView tvOff;
+    private TextView tvRecommendedDeals;
     private ImageView ivBrandLogo;
     private TextView buyDealNow;
     private Menu mMenu;
@@ -152,6 +153,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         tvBrandVenue = view.findViewById(R.id.tv_brand_venue);
         tvBrandAddress = view.findViewById(R.id.tv_brand_address);
         tvViewMap = view.findViewById(R.id.tv_view_map);
+        tvRecommendedDeals=view.findViewById(R.id.tv_recommended_deals);
         clHeader = view.findViewById(R.id.cl_header);
         toolbar = view.findViewById(R.id.toolbar);
         tvDealDetails=view.findViewById(R.id.tv_deal_details);
@@ -339,8 +341,9 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
 
     @Override
     public void addDealsToCards(List<CategoryItemsViewModel> categoryItemsViewModels) {
-        Log.d("hdjshdjhsjdhjdhsajhdj", "aagye");
         ((DealsCategoryAdapter) recyclerViewDeals.getAdapter()).addAll(categoryItemsViewModels);
+        if(((DealsCategoryAdapter) recyclerViewDeals.getAdapter()).getItemCount()==0)
+            tvRecommendedDeals.setVisibility(View.GONE);
     }
 
     @Override

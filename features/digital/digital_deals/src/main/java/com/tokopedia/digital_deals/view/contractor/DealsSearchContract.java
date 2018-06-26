@@ -23,7 +23,7 @@ public class DealsSearchContract {
 
         void navigateToActivityRequest(Intent intent, int requestCode);
 
-        void renderFromSearchResults(List<CategoryItemsViewModel> categoryItemsViewModels, String searchText);
+        void renderFromSearchResults(List<CategoryItemsViewModel> categoryItemsViewModels, String searchText, int count);
 
         void showProgressBar();
 

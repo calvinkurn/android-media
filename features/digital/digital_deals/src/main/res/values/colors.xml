@@ -8,4 +8,6 @@
     <color name="vlight_green">#daf5db</color>
     <color name="vlight_red">#fdebec</color>
     <color name="tkpd_dark_gray_toolbar">#666666</color>
+    <color name="green_toast_color">#f3fef3</color>
+    <color name="color_search_icon">#BDBDBD</color>
 </resources>

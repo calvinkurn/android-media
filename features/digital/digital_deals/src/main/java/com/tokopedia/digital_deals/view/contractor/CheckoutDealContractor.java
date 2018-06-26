@@ -25,7 +25,7 @@ public class CheckoutDealContractor {
 
         void hideProgressBar();
 
-        void setEmailID(String emailID);
+        void setEmailIDPhoneNumber(String emailID, String phoneNumber);
 
         RequestParams getParams();
 

@@ -3,6 +3,7 @@ package com.tokopedia.digital_deals.view.activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewCompat;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.digital_deals.R;
@@ -17,7 +18,7 @@ public class CategoryDetailActivity extends BaseSimpleActivity implements Catego
 
     @Override
     protected int getLayoutRes() {
-        return R.layout.activity_base_simple_deals;
+        return R.layout.activity_category_detail;
     }
 
     @Override

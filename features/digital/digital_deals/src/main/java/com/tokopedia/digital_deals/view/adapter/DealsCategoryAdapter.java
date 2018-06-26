@@ -217,7 +217,13 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             dealsDetails.setText(categoryItemsViewModel.getDisplayName());
             ImageHandler.loadImage(context, dealImage, categoryItemsViewModel.getImageWeb(), R.color.grey_1100, R.color.grey_1100);
             ImageHandler.loadImage(context, brandImage, categoryItemsViewModel.getBrand().getFeaturedThumbnailImage(), R.color.grey_1100, R.color.grey_1100);
-            likes.setText(String.valueOf(categoryItemsViewModel.getLikes()));
+            if(categoryItemsViewModel.getLikes()!=0) {
+                likes.setVisibility(View.VISIBLE);
+                likes.setText(String.valueOf(categoryItemsViewModel.getLikes()));
+            }
+            else {
+                likes.setVisibility(View.GONE);
+            }
             dealListPrice.setText(Utils.convertToCurrencyString(categoryItemsViewModel.getMrp()));
             dealListPrice.setPaintFlags(dealListPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             discount.setText(categoryItemsViewModel.getSavingPercentage());

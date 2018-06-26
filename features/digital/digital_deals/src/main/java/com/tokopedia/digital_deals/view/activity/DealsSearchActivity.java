@@ -12,11 +12,14 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextPaint;
+import android.text.style.ClickableSpan;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -146,18 +149,42 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
     }
 
     @Override
-    public void renderFromSearchResults(List<CategoryItemsViewModel> categoryItemsViewModels, String searchText) {
+    public void renderFromSearchResults(List<CategoryItemsViewModel> categoryItemsViewModels, String searchText,int count) {
         LocationViewModel location = Utils.getSingletonInstance().getLocation(getActivity());
 
         if (categoryItemsViewModels != null && categoryItemsViewModels.size() != 0) {
             DealsCategoryAdapter dealsCategoryAdapter = new DealsCategoryAdapter(getActivity(), categoryItemsViewModels, !IS_SHORT_LAYOUT);
+            dealsInCity.setVisibility(View.VISIBLE);
+
             rvDeals.addOnScrollListener(rvOnScrollListener);
             rvDeals.setAdapter(dealsCategoryAdapter);
             llDeals.setVisibility(View.VISIBLE);
             noContent.setVisibility(View.GONE);
-            dealsInCity.setVisibility(View.VISIBLE);
             tvTopDeals.setVisibility(View.GONE);
-            dealsInCity.setText(String.format(getString(R.string.deals_search_location_result), searchText, location.getName()));
+            String text=String.format(getString(R.string.deals_search_location_result), searchText);
+
+            int startIndexOfLink = text.length();
+            if (categoryItemsViewModels.size() != 0) {
+                if (count == 0)
+                    count=categoryItemsViewModels.size();
+            }
+            text+=" "+String.format(getActivity().getResources().getString(R.string.number_of_items), count);
+            SpannableString spannableString = new SpannableString(text);
+
+
+            spannableString.setSpan(new ClickableSpan() {
+                @Override
+                public void onClick(View view) {
+                }
+
+                @Override
+                public void updateDrawState(TextPaint ds) {
+                    super.updateDrawState(ds);
+                    ds.setUnderlineText(false);
+                    ds.setColor(getResources().getColor(R.color.black_38)); // specific color for this link
+                }
+            }, startIndexOfLink, text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            dealsInCity.setText(spannableString);
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             if (imm != null) {
                 imm.hideSoftInputFromWindow(searchInputView.getSearchTextView().getWindowToken(), 0);

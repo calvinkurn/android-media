@@ -1,7 +1,6 @@
 package com.tokopedia.digital_deals.view.presenter;
 
 import android.content.Intent;
-import android.os.Bundle;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -98,7 +97,9 @@ public class CheckoutDealPresenter
             public void onNext(ProfileModel model) {
                 profileModel = model;
                 email = profileModel.getProfileData().getUserInfo().getUserEmail();
-                getView().setEmailID(profileModel.getProfileData().getUserInfo().getUserEmail());
+                getView().setEmailIDPhoneNumber(profileModel.getProfileData().getUserInfo().getUserEmail(),
+                        profileModel.getProfileData().getUserInfo().getUserPhone());
+
                 getView().hideProgressBar();
             }
         });
@@ -180,9 +181,25 @@ public class CheckoutDealPresenter
 
     public void getPaymentLink() {
         paymentparams = RequestParams.create();
-        paymentparams.putObject(Utils.Constants.CHECKOUTDATA, convertCartItemToJson(cartData));
+        try {
+            paymentparams.putObject(Utils.Constants.CHECKOUTDATA, convertCartItemToJson(cartData));
+        }catch(Exception e){
+            NetworkErrorHelper.showEmptyState(getView().getActivity(),
+                    getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
+                        @Override
+                        public void onRetryClicked() {
+                            getPaymentLink();
+                        }
+                    });
+        }
         getView().showProgressBar();
         postPaymentUseCase.execute(paymentparams, new Subscriber<JsonObject>() {
+
+            @Override
+            public void onStart() {
+                super.onStart();
+            }
+
             @Override
             public void onCompleted() {
 

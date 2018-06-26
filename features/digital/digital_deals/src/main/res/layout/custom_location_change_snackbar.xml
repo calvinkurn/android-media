@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    android:background="@color/red_50">
+    android:background="@color/green_toast_color">
     <View
         android:id="@+id/divider"
         android:layout_width="match_parent"

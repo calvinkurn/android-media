@@ -8,21 +8,31 @@
     android:background="@color/bottomnav_bg">
 
 
-    <LinearLayout
-        android:id="@+id/base_main_content"
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/bottomnav_bg"
-        android:orientation="vertical">
-
+        android:layout_height="wrap_content"
+        app:elevation="@dimen/dp_0"
+        android:background="@color/white">
 
         <com.tokopedia.digital_deals.view.customview.SearchInputView
             android:id="@+id/search_input_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_16" />
+            app:layout_scrollFlags="scroll" />
+    </android.support.design.widget.AppBarLayout>
+
+    <LinearLayout
+        android:id="@+id/base_main_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bottomnav_bg"
+        android:orientation="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
 
         <android.support.v7.widget.RecyclerView

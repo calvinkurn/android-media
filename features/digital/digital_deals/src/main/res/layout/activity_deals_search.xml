@@ -47,7 +47,15 @@
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginRight="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_7" />
+
+
             </LinearLayout>
+
+            <View
+                android:id="@+id/divider"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_2"
+                android:background="@color/divider_color" />
 
         </LinearLayout>
 
@@ -72,12 +80,6 @@
                 android:background="@color/bottomnav_bg"
                 app:layout_scrollFlags="scroll|enterAlways">
 
-                <View
-                    android:id="@+id/divider"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_2"
-                    android:background="@color/divider_color"
-                    app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageView
                     android:id="@+id/iv_map"
@@ -88,7 +90,7 @@
                     android:layout_marginTop="@dimen/dp_11"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/divider"
+                    app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/ic_location_2" />
 
                 <TextView
@@ -126,48 +128,55 @@
         </android.support.design.widget.AppBarLayout>
 
 
-        <LinearLayout
-            android:id="@+id/ll_deals"
+        <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/white"
-            android:orientation="vertical"
+            android:layout_height="wrap_content"
+            android:clipToPadding="true"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-
-            <TextView
-                android:id="@+id/deals_in_city"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_24"
-                android:fontFamily="sans-serif-medium"
-                android:textColor="#b3000000"
-                android:textSize="@dimen/sp_17"
-                android:textStyle="normal"
-                tools:text="Deals ‘Spaghetti’ di Jakarta" />
-
-            <TextView
-                android:id="@+id/tv_topevents"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:fontFamily="sans-serif-medium"
-                android:gravity="center_vertical"
-                android:paddingEnd="@dimen/dp_16"
-                android:paddingStart="@dimen/dp_16"
-                android:text="@string/trending_deals"
-                android:textColor="@color/black_38"
-                android:textSize="@dimen/sp_12"
-                android:textStyle="normal" />
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rv_search_results"
+            <LinearLayout
+                android:id="@+id/ll_deals"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/white" />
+                android:background="@color/white"
+                android:orientation="vertical">
 
-        </LinearLayout>
 
+                <TextView
+                    android:id="@+id/deals_in_city"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-medium"
+                    android:padding="@dimen/dp_16"
+                    android:textColor="@color/black_39"
+                    android:textSize="@dimen/sp_17"
+                    android:textStyle="normal"
+                    tools:text="Deals ‘Spaghetti’ di Jakarta" />
+
+                <TextView
+                    android:id="@+id/tv_topevents"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-medium"
+                    android:gravity="center_vertical"
+                    android:padding="@dimen/dp_16"
+                    android:text="@string/trending_deals"
+                    android:textColor="@color/black_38"
+
+                    android:textSize="@dimen/sp_12"
+                    android:textStyle="normal" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rv_search_results"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/white"
+                    android:nestedScrollingEnabled="false"
+                    tools:listitem="@layout/deal_item_card"/>
+
+            </LinearLayout>
+
+        </android.support.v4.widget.NestedScrollView>
 
         <com.tokopedia.design.button.BottomActionView
             android:id="@+id/bottom_action_view"

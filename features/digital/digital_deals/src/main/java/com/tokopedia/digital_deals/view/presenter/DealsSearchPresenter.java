@@ -68,7 +68,7 @@ public class DealsSearchPresenter
             @Override
             public void onNext(SearchDomainModel searchDomainModel) {
                 if (SEARCH_SUBMITTED)
-                    getView().renderFromSearchResults(processSearchResponse(searchDomainModel), searchText);
+                    getView().renderFromSearchResults(processSearchResponse(searchDomainModel), searchText, searchDomainModel.getCount());
                 else
                     getView().setSuggestions(processSearchResponse(searchDomainModel), highlight);
                 checkIfToLoad(getView().getLayoutManager());
