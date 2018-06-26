@@ -194,7 +194,7 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
                 int drawableRes = placeholderDrawableResList.get(position);
                 ((PlaceholderThumbnailViewHolder) holder).bind(drawableRes, grayColor);
             } else {
-                ((PlaceholderThumbnailViewHolder) holder).bind(R.drawable.ic_loading_toped_new, whiteColor);
+                ((PlaceholderThumbnailViewHolder) holder).bind(R.drawable.ic_plus, whiteColor);
             }
         }
     }
