@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -36,7 +37,6 @@ public class ETollCardInfoView extends FrameLayout {
     private TextView textDate;
     private TextView textLabelCardNumber;
     private TextView textCardNumber;
-//    private ProgressBar progressBar;
     private LinearLayout viewRemainingBalance;
     private ImageView imageIssuer;
 
@@ -66,23 +66,24 @@ public class ETollCardInfoView extends FrameLayout {
         textLabelCardNumber = view.findViewById(R.id.text_label_card_number);
         textCardNumber = view.findViewById(R.id.text_card_number);
         textDate = view.findViewById(R.id.text_date);
-//        progressBar = view.findViewById(R.id.progress_bar);
         viewRemainingBalance = view.findViewById(R.id.view_remaining_balance);
         imageIssuer = view.findViewById(R.id.image_issuer);
     }
 
     public void showCardInfo(CardInfo cardInfo) {
         this.cardInfo = cardInfo;
-        viewRemainingBalance.setVisibility(VISIBLE);
-//        progressBar.setVisibility(GONE);
+
         imageIssuer.setVisibility(VISIBLE);
         Glide.with(context)
                 .load(cardInfo.getIssuerImage())
                 .into(imageIssuer);
+
         textLabelCardNumber.setText(getResources().getString(R.string.emoney_card_info_label_card_number));
         textCardNumber.setText(cardInfo.getFormattedCardNumber());
         textCardNumber.setTextColor(getResources().getColor(R.color.black));
         textCardNumber.setTypeface(textCardNumber.getTypeface(), Typeface.BOLD);
+
+        textLabelBalance.setText(getResources().getString(R.string.emoney_card_info_label_your_balance));
         textRemainingBalance.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(cardInfo.getLastBalance(), true));
         textRemainingBalance.setTextColor(getResources().getColor(R.color.green_400));
 
@@ -93,17 +94,33 @@ public class ETollCardInfoView extends FrameLayout {
     }
 
     public void showLoading() {
-        viewRemainingBalance.setVisibility(GONE);
-//        progressBar.setVisibility(VISIBLE);
+        textLabelBalance.setText("Saldo Anda:");
+        textLabelBalance.measure(0, 0);
+        ViewGroup.LayoutParams paramsTextLabelBalance = textLabelBalance.getLayoutParams();
+        paramsTextLabelBalance.width = textLabelBalance.getMeasuredWidth();
+        textLabelBalance.setLayoutParams(paramsTextLabelBalance);
+
+        textRemainingBalance.setText("Rp. 1.000.000");
+        textRemainingBalance.measure(0, 0);
+        ViewGroup.LayoutParams paramsTextRemainingBalance = textRemainingBalance.getLayoutParams();
+        paramsTextRemainingBalance.width = textRemainingBalance.getMeasuredWidth();
+        textRemainingBalance.setLayoutParams(paramsTextRemainingBalance);
+
+        textDate.setText("26 Jun 2018, 13:47");
+        textDate.measure(0, 0);
+        ViewGroup.LayoutParams paramsTextDate = textDate.getLayoutParams();
+        paramsTextDate.width = textDate.getMeasuredWidth();
+        textDate.setLayoutParams(paramsTextDate);
+
         ((LoaderTextView) findViewById(R.id.text_label_balance)).resetLoader();
         ((LoaderTextView) findViewById(R.id.text_remaining_balance)).resetLoader();
         ((LoaderTextView) findViewById(R.id.text_label_card_number)).resetLoader();
         ((LoaderTextView) findViewById(R.id.text_card_number)).resetLoader();
+        ((LoaderTextView) findViewById(R.id.text_date)).resetLoader();
     }
 
     public void stopLoading() {
-        viewRemainingBalance.setVisibility(VISIBLE);
-//        progressBar.setVisibility(GONE);
+
     }
 
     public String getCardNumber() {

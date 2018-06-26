@@ -80,7 +80,6 @@ public class ETollUpdateBalanceResultView extends LinearLayout {
         textLabelProgressMessage.setText(erroMessage);
         textLabelProgressMessage.setTextColor(getResources().getColor(R.color.grey));
         eTollCardInfoView.setVisibility(VISIBLE);
-        eTollCardInfoView.stopLoading();
         eTollCardInfoView.removeCardInfo();
         buttonTopup.setVisibility(GONE);
     }
