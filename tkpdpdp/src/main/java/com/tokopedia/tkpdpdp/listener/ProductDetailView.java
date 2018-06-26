@@ -320,7 +320,7 @@ public interface ProductDetailView extends ViewListener {
 
     void renderAddToCartSuccess(AddToCartResult addToCartResult);
 
-    void renderAddToCartSuccessOpenCart(String message);
+    void renderAddToCartSuccessOpenCart(AddToCartResult addToCartResult);
 
     int generateStateVariant(String source);
 

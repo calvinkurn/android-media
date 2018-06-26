@@ -3,6 +3,7 @@ package com.tokopedia.tkpdpdp.customview;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
@@ -169,25 +171,13 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
             btnNewBuy.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (data.getInfo().getHasVariant()) {
-                        listener.openVariantPage(
-                                listener.generateStateVariant(ProductDetailView.SOURCE_BUTTON_BUY_PDP)
-                        );
-                    } else {
-                        listener.onBuyClick(ProductDetailView.SOURCE_BUTTON_BUY_PDP);
-                    }
+                    listener.onBuyClick(ProductDetailView.SOURCE_BUTTON_BUY_PDP);
                 }
             });
             btnCart.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (data.getInfo().getHasVariant()) {
-                        listener.openVariantPage(
-                                listener.generateStateVariant(ProductDetailView.SOURCE_BUTTON_CART_PDP)
-                        );
-                    } else {
-                        listener.onBuyClick(ProductDetailView.SOURCE_BUTTON_CART_PDP);
-                    }
+                    listener.onBuyClick(ProductDetailView.SOURCE_BUTTON_CART_PDP);
                 }
             });
             setVisibility(VISIBLE);

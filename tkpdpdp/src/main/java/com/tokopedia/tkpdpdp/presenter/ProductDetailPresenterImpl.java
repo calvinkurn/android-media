@@ -195,7 +195,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
             public void onNext(AddToCartResult addToCartResult) {
                 viewListener.hideProgressLoading();
                 if (addToCartResult.isSuccess())
-                    viewListener.renderAddToCartSuccess(addToCartResult.getMessage());
+                    viewListener.renderAddToCartSuccess(addToCartResult);
                 else
                     viewListener.showToastMessage(addToCartResult.getMessage());
             }
@@ -244,7 +244,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
             public void onNext(AddToCartResult addToCartResult) {
                 viewListener.hideProgressLoading();
                 if (addToCartResult.isSuccess())
-                    viewListener.renderAddToCartSuccessOpenCart(addToCartResult.getMessage());
+                    viewListener.renderAddToCartSuccessOpenCart(addToCartResult);
                 else
                     viewListener.showToastMessage(addToCartResult.getMessage());
             }

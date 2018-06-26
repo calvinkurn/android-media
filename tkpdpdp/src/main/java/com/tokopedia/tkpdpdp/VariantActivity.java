@@ -84,7 +84,6 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
     private TextView textCartPrice;
     private View buttonBuy;
     private TextView textButtonBuy;
-    private ImageView iconCartButtonBuy;
     private NumberPickerWithCounterView widgetQty;
     private EditTextCompat etNotesSeller;
     private View viewContainerQty;
@@ -150,7 +149,6 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
         textCartPrice = findViewById(R.id.text_product_price);
         buttonBuy = findViewById(R.id.new_button_save);
         textButtonBuy = findViewById(R.id.new_text_button_save);
-        iconCartButtonBuy = findViewById(R.id.icon_cart);
         widgetQty = findViewById(R.id.number_picker_quantitiy_product);
         etNotesSeller = findViewById(R.id.et_remark);
         viewContainerQty = findViewById(R.id.view_qty_product);
@@ -326,14 +324,12 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
         if (child.isIsBuyable() && productDetailData.getShopInfo().getShopStatus()==1) {
             viewNewCheckoutFlow.setVisibility(VISIBLE);
             buttonSave.setVisibility(View.GONE);
-            buttonBuy.setBackground(generateBackgroundButtonBuy());
-            textButtonBuy.setTextColor(generateColorTextButtonBuy());
+            buttonBuy.setBackground(ContextCompat.getDrawable(VariantActivity.this, R.drawable.orange_button_rounded));
+
             textButtonBuy.setText(generateTextButtonBuy());
             textCartPrice.setText(generateTextPriceCart());
 
-            iconCartButtonBuy.setVisibility(stateFormVariantPage == STATE_BUTTON_CART ? VISIBLE : View.GONE);
             buttonCart.setVisibility(stateFormVariantPage == STATE_VARIANT_DEFAULT ? VISIBLE : View.GONE);
-            viewCartPrice.setVisibility(stateFormVariantPage == STATE_VARIANT_DEFAULT ? View.GONE : VISIBLE);
 
             buttonBuy.setClickable(true);
             buttonBuy.setOnClickListener(

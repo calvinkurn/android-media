@@ -80,6 +80,7 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
+import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
@@ -198,6 +199,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     public static final int TYPE_BUTTON_BUY_CART = 10;
     public static final int TYPE_BUTTON_BUY_BELI = 20;
     public static final int TYPE_BUTTON_OPEN_VARIANT = 30;
+    private static final int TOASTER_DURATION = 3000;
 
     private CoordinatorLayout coordinatorLayout;
     private HeaderInfoView headerInfoView;
@@ -253,6 +255,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     private RemoteConfig remoteConfig;
     private ShowCaseDialog showCaseDialog;
     private CheckoutAnalyticsAddToCart checkoutAnalyticsAddToCart;
+    private String lastStateOnClickBuyWhileRequestVariant;
 
     public static ProductDetailFragment newInstance(@NonNull ProductPass productPass) {
         ProductDetailFragment fragment = new ProductDetailFragment();
@@ -506,68 +509,74 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     @Override
     public void onBuyClick(String source) {
         if (SessionHandler.isV4Login(getActivity())) {
-            if (onClickBuyWhileRequestingVariant == false && productData != null &&
-                    productData.getInfo().getHasVariant() && productVariant == null) {
-                onClickBuyWhileRequestingVariant = true;
-                buttonBuyView.changeToLoading();
+            if (productData.getInfo().getHasVariant()) {
+                if (!onClickBuyWhileRequestingVariant) {
+                    openVariantPage(generateStateVariant(source));
+                } else {
+                    onClickBuyWhileRequestingVariant = true;
+                    lastStateOnClickBuyWhileRequestVariant = source;
+                    buttonBuyView.changeToLoading();
+                }
             } else {
-                String weightProduct = "";
-                switch (productData.getInfo().getProductWeightUnit()) {
-                    case "gr":
-                        weightProduct = String.valueOf((Float.parseFloat(productData.getInfo()
-                                .getProductWeight())) / 1000);
-                        break;
-                    case "kg":
-                        weightProduct = productData.getInfo().getProductWeight();
-                        break;
-                }
-                ProductCartPass pass = ProductCartPass.Builder.aProductCartPass()
-                        .setImageUri(productData.getProductImages().get(0).getImageSrc300())
-                        .setMinOrder(Integer.parseInt(productData.getInfo().getProductMinOrder()))
-                        .setProductId(String.valueOf(productData.getInfo().getProductId()))
-                        .setProductName(productData.getInfo().getProductName())
-                        .setWeight(weightProduct)
-                        .setShopId(productData.getShopInfo().getShopId())
-                        .setPrice(String.valueOf(productData.getInfo().getProductPriceUnformatted()))
-                        .setShopType(generateShopType(productData.getShopInfo()))
-                        .setListName(productPass.getTrackerListName())
-                        .setHomeAttribution(productPass.getTrackerAttribution())
-                        .setNotes(selectedRemarkNotes)
-                        .setOrderQuantity(selectedQuantity)
-                        .setSkipToCart(source.equals(SOURCE_BUTTON_BUY_VARIANT) || source.equals(SOURCE_BUTTON_BUY_PDP))
-                        .build();
-
-                if (!productData.getBreadcrumb().isEmpty()) {
-                    pass.setProductCategory(productData.getBreadcrumb().get(0).getDepartmentName());
-                    pass.setCategoryId(productData.getBreadcrumb().get(0).getDepartmentId());
-                    pass.setCategoryLevelName(
-                            productData.getBreadcrumb()
-                                    .get(0)
-                                    .getDepartmentIdentifier()
-                                    .replace("_", "/")
-                    );
-                }
-                onProductBuySessionLogin(pass);
-
+                onProductBuySessionLogin(createProductCartPass(source));
             }
-            /*
-            todo : tracking
-            if (!TextUtils.isEmpty(source) && source.equals(SOURCE_BUTTON_BUY_PDP) && productData.getInfo().getHasVariant() && variantLevel1 != null) {
-                UnifyTracking.eventBuyPDPVariant(generateVariantString());
-            } else if (!TextUtils.isEmpty(source) && source.equals(SOURCE_BUTTON_BUY_PDP) && productData.getInfo().getHasVariant()) {
-                UnifyTracking.eventBuyPDPVariant("");
-            } else if (!TextUtils.isEmpty(source) && source.equals(SOURCE_BUTTON_BUY_PDP) && !productData.getInfo().getHasVariant()) {
-                UnifyTracking.eventBuyPDPVariant(NON_VARIANT);
-            } else if (!TextUtils.isEmpty(source) && source.equals(SOURCE_BUTTON_BUY_VARIANT) && productData.getInfo().getHasVariant()) {
-                Long timestamp = System.currentTimeMillis() / 1000;
-                UnifyTracking.eventBuyPageVariant(timestamp.toString() + "-" + generateVariantString());
-            }
-            */
+
         } else {
             Bundle bundle = new Bundle();
             bundle.putBoolean("login", true);
             onProductBuySessionNotLogin(bundle);
         }
+    }
+
+    private ProductCartPass createProductCartPass(String source) {
+        String weightProduct = "";
+        switch (productData.getInfo().getProductWeightUnit()) {
+            case "gr":
+                weightProduct = String.valueOf((Float.parseFloat(productData.getInfo()
+                        .getProductWeight())) / 1000);
+                break;
+            case "kg":
+                weightProduct = productData.getInfo().getProductWeight();
+                break;
+        }
+        ProductCartPass pass = ProductCartPass.Builder.aProductCartPass()
+                .setImageUri(productData.getProductImages().get(0).getImageSrc300())
+                .setMinOrder(Integer.parseInt(productData.getInfo().getProductMinOrder()))
+                .setProductId(String.valueOf(productData.getInfo().getProductId()))
+                .setProductName(productData.getInfo().getProductName())
+                .setWeight(weightProduct)
+                .setShopId(productData.getShopInfo().getShopId())
+                .setPrice(String.valueOf(productData.getInfo().getProductPriceUnformatted()))
+                .setShopType(generateShopType(productData.getShopInfo()))
+                .setListName(productPass.getTrackerListName())
+                .setHomeAttribution(productPass.getTrackerAttribution())
+                .setNotes(selectedRemarkNotes)
+                .setOrderQuantity(selectedQuantity)
+                .setSkipToCart(source.equals(SOURCE_BUTTON_BUY_VARIANT) || source.equals(SOURCE_BUTTON_BUY_PDP))
+                .build();
+
+        if (!productData.getBreadcrumb().isEmpty()) {
+            pass.setProductCategory(productData.getBreadcrumb().get(0).getDepartmentName());
+            pass.setCategoryId(productData.getBreadcrumb().get(0).getDepartmentId());
+            pass.setCategoryLevelName(
+                    productData.getBreadcrumb()
+                            .get(0)
+                            .getDepartmentIdentifier()
+                            .replace("_", "/")
+            );
+        }
+
+        /*if (!TextUtils.isEmpty(source) && source.equals(SOURCE_BUTTON_BUY_PDP) && productData.getInfo().getHasVariant() && variantLevel1 != null) {
+            UnifyTracking.eventBuyPDPVariant(generateVariantString());
+        } else if (!TextUtils.isEmpty(source) && source.equals(SOURCE_BUTTON_BUY_PDP) && productData.getInfo().getHasVariant()) {
+            UnifyTracking.eventBuyPDPVariant("");
+        } else if (!TextUtils.isEmpty(source) && source.equals(SOURCE_BUTTON_BUY_PDP) && !productData.getInfo().getHasVariant()) {
+            UnifyTracking.eventBuyPDPVariant(NON_VARIANT);
+        } else if (!TextUtils.isEmpty(source) && source.equals(SOURCE_BUTTON_BUY_VARIANT) && productData.getInfo().getHasVariant()) {
+            Long timestamp = System.currentTimeMillis() / 1000;
+            UnifyTracking.eventBuyPageVariant(timestamp.toString() + "-" + generateVariantString());
+        }*/
+        return pass;
     }
 
     @Override
@@ -594,8 +603,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     public void updateButtonBuyListener() {
         buttonBuyView.removeLoading();
         if (onClickBuyWhileRequestingVariant) {
-//            openVariantPage();
-            throw new RuntimeException("need to know from click cart or button buy");
+            onBuyClick(lastStateOnClickBuyWhileRequestVariant);
         }
     }
 
@@ -1220,10 +1228,10 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                         }
                         switch (data.getIntExtra(KEY_STATE_RESULT_VARIANT, 0)) {
                             case SELECTED_VARIANT_RESULT_SKIP_TO_CART:
-                                onBuyClick(SOURCE_BUTTON_BUY_VARIANT);
+                                onProductBuySessionLogin(createProductCartPass(SOURCE_BUTTON_BUY_VARIANT));
                                 break;
                             case SELECTED_VARIANT_RESULT_STAY_IN_PDP:
-                                onBuyClick(SOURCE_BUTTON_CART_VARIANT);
+                                onProductBuySessionLogin(createProductCartPass(SOURCE_BUTTON_CART_VARIANT));
                                 break;
                             default:
                                 getActivity().finish();
@@ -1678,10 +1686,10 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     }
 
     @Override
-    public void renderAddToCartSuccessOpenCart(String message) {
+    public void renderAddToCartSuccessOpenCart(AddToCartResult addToCartResult) {
         checkoutAnalyticsAddToCart.eventClickAddToCartImpressionAtcSuccess();
         updateCartNotification();
-        enhanceEcommerceAtc();
+        enhanceEcommerceAtc(addToCartResult);
         if (getActivity().getApplication() instanceof PdpRouter) {
             Intent intent = ((PdpRouter) getActivity().getApplication())
                     .getCartIntent(getActivity());
@@ -1690,13 +1698,18 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     }
 
     @Override
-    public void renderAddToCartSuccess(String message) {
+    public void renderAddToCartSuccess(AddToCartResult addToCartResult) {
         checkoutAnalyticsAddToCart.eventClickAddToCartImpressionAtcSuccess();
         updateCartNotification();
-        enhanceEcommerceAtc();
+        enhanceEcommerceAtc(addToCartResult);
+        showSnackbarSuccessAtc(addToCartResult.getMessage());
     }
 
-    private void enhanceEcommerceAtc() {
+    private void showSnackbarSuccessAtc(String message) {
+        ToasterNormal.make(getView(), message, TOASTER_DURATION).show();
+    }
+
+    private void enhanceEcommerceAtc(AddToCartResult addToCartResult) {
         EnhancedECommerceProductCartMapData enhancedECommerceProductCartMapData =
                 new EnhancedECommerceProductCartMapData();
         enhancedECommerceProductCartMapData.setProductName(productData.getInfo().getProductName());
