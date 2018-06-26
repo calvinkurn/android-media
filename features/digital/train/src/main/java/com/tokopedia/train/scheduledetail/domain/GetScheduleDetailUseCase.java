@@ -1,6 +1,7 @@
 package com.tokopedia.train.scheduledetail.domain;
 
 import com.tokopedia.train.common.domain.TrainRepository;
+import com.tokopedia.train.common.util.TrainDateUtil;
 import com.tokopedia.train.scheduledetail.presentation.model.TrainScheduleDetailViewModel;
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
 import com.tokopedia.train.station.domain.model.TrainStation;
@@ -42,8 +43,14 @@ public class GetScheduleDetailUseCase extends UseCase<TrainScheduleDetailViewMod
                                 .originStationCode(origin.getStationCode())
                                 .destinationStationName(destination.getStationName())
                                 .destinationStationCode(destination.getStationCode())
-                                .arrivalDate(trainScheduleViewModel.getArrivalTimestamp())
-                                .departureDate(trainScheduleViewModel.getDepartureTimestamp())
+                                .arrivalDate(TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
+                                        TrainDateUtil.DEFAULT_VIEW_LOCAL_DETAIL, trainScheduleViewModel.getArrivalTimestamp()))
+                                .arrivalTime(TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
+                                        TrainDateUtil.FORMAT_TIME, trainScheduleViewModel.getArrivalTimestamp()))
+                                .departureDate(TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
+                                        TrainDateUtil.DEFAULT_VIEW_LOCAL_DETAIL, trainScheduleViewModel.getDepartureTimestamp()))
+                                .departureTime(TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
+                                        TrainDateUtil.FORMAT_TIME, trainScheduleViewModel.getDepartureTimestamp()))
                                 .duration(trainScheduleViewModel.getDisplayDuration())
                                 .trainClass(trainScheduleViewModel.getDisplayClass())
                                 .trainName(trainScheduleViewModel.getTrainName())

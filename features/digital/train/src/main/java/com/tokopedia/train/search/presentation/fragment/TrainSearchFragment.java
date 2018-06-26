@@ -340,8 +340,6 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
 
     @Override
     public void onDetailClicked(TrainScheduleViewModel trainScheduleViewModel, int adapterPosition) {
-        //TODO : detail clicked go to detail trip
-//        Toast.makeText(getActivity(), "detail " + trainScheduleViewModel.getTrainName(), Toast.LENGTH_SHORT).show();
         Intent intent = TrainScheduleDetailActivity.createIntent(getActivity(), trainScheduleViewModel.getIdSchedule());
         getActivity().startActivity(intent);
     }

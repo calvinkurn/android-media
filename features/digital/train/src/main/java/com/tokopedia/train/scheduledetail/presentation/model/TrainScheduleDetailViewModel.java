@@ -270,7 +270,7 @@ public class TrainScheduleDetailViewModel implements Parcelable {
         }
 
         public Builder arrivalTime(String val) {
-            this.arrivalDate = val;
+            this.arrivalTime = val;
             return this;
         }
 

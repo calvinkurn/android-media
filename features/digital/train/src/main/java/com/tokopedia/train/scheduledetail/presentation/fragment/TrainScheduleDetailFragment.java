@@ -10,14 +10,13 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.tkpdtrain.R;
+import com.tokopedia.train.common.util.TrainDateUtil;
 import com.tokopedia.train.scheduledetail.presentation.model.TrainScheduleDetailViewModel;
 
 /**
  * Created by Rizky on 14/05/18.
  */
 public class TrainScheduleDetailFragment extends BaseDaggerFragment {
-
-    public static final String EXTRA_TRAIN_SCHEDULE_VIEW_MODEL = "EXTRA_TRAIN_SCHEDULE_VIEW_MODEL";
 
     private TextView trip;
     private TextView trainName;
@@ -75,13 +74,13 @@ public class TrainScheduleDetailFragment extends BaseDaggerFragment {
         trainName.setText(trainScheduleDetailViewModel.getTrainName());
         trainClass.setText(trainScheduleDetailViewModel.getTrainClass());
         date.setText(trainScheduleDetailViewModel.getDepartureDate());
-        departureTime.setText(trainScheduleDetailViewModel.getDepartureTime());
         arrivalTime.setText(trainScheduleDetailViewModel.getArrivalTime());
+        arrivalDate.setText(trainScheduleDetailViewModel.getArrivalDate());
+        departureTime.setText(trainScheduleDetailViewModel.getDepartureTime());
         departureDate.setText(trainScheduleDetailViewModel.getDepartureDate());
         originStationName.setText(trainScheduleDetailViewModel.getOriginStationName());
         originCityName.setText(trainScheduleDetailViewModel.getOriginCityName());
         tripDuration.setText(trainScheduleDetailViewModel.getDuration());
-        arrivalDate.setText(trainScheduleDetailViewModel.getArrivalDate());
         destinationStationName.setText(trainScheduleDetailViewModel.getDestinationStationName());
         destinationCityName.setText(trainScheduleDetailViewModel.getDestinationCityName());
     }

@@ -129,14 +129,14 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
 
 //        if (viewPager.getAdapter() instanceof ShopInfoPagerAdapter) {
 //            ShopInfoPagerAdapter adapter = (ShopInfoPagerAdapter) viewPager.getAdapter();
-            Fragment fragmentInfo = (Fragment) viewPager.getAdapter().instantiateItem(viewPager, 0);
-            if(fragmentInfo instanceof TrainScheduleDetailFragment) {
-                ((TrainScheduleDetailFragment) fragmentInfo).showScheduleDetail(trainScheduleDetailViewModel);
-            }
-//            Fragment fragmentNote = (Fragment) adapter.instantiateItem(viewPager, 1);
-//            if(fragmentNote instanceof ShopNoteListFragment) {
-//                ((ShopNoteListFragment) fragmentNote).updateShopInfo(shopInfo);
-//            }
+        Fragment fragmentTrip = (Fragment) viewPager.getAdapter().instantiateItem(viewPager, 0);
+        if (fragmentTrip instanceof TrainScheduleDetailFragment) {
+            ((TrainScheduleDetailFragment) fragmentTrip).showScheduleDetail(trainScheduleDetailViewModel);
+        }
+        Fragment fragmentPrice = (Fragment) viewPager.getAdapter().instantiateItem(viewPager, 1);
+        if (fragmentPrice instanceof TrainSchedulePriceDetailFragment) {
+//            ((TrainSchedulePriceDetailFragment) fragmentPrice).showPrice(shopInfo);
+        }
 //        }
     }
 
