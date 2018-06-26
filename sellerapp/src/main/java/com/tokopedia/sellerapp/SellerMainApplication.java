@@ -44,6 +44,7 @@ import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.utils.CacheApiWhiteList;
 import com.tokopedia.shop.common.constant.ShopCommonUrl;
 import com.tokopedia.shop.common.constant.ShopUrl;
+import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -247,6 +248,11 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
     @Override
     public Intent getPromoDetailIntent(Context context, String slug) {
         return null;
+    }
+
+    @Override
+    public Intent getOrderListIntent(Context context) {
+        return OrderListActivity.getInstance(context);
     }
 
     @Override
