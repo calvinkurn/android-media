@@ -84,7 +84,7 @@
         <item>Dana Pinjaman bervariasi sesuai nilai jaminan. Pinjaman diproses cepat dengan bunga ringan.</item>
     </string-array>
 
-    <string name="label_tnc"><![CDATA[Dengan mengklik tombol diata Anda sudah menyetujui <font color="%1$s">syarat dan ketentuan.</font> kami]]></string>
+    <string name="label_tnc"><![CDATA[Dengan mengklik tombol diata Anda sudah menyetujui <font color="%1$s">syarat dan ketentuan</font> kami]]></string>
     <string name="description_intro_slide_2">Tingkatkan keberhasilan pengajuan pinjaman Anda hanya dipengaruhi oleh nilai profil kredit Anda. Pelajari Selengkapnya</string>
 
 

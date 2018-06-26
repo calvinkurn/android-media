@@ -269,12 +269,14 @@ public class InstantLoanPresenter extends BaseDaggerPresenter<InstantLoanContrac
 
         @Override
         public void permissionDenied(int requestCode) {
-            //TODO @lavekush need show popup for why we asking these permission
+            getView().hideIntroDialog();
+            getView().hideLoaderIntroDialog();
         }
 
         @Override
         public void neverAskAgain(int requestCode) {
-            //TODO @lavekush show never ask again help page and exit from instant loan features
+            getView().hideIntroDialog();
+            getView().hideLoaderIntroDialog();
         }
     };
 }

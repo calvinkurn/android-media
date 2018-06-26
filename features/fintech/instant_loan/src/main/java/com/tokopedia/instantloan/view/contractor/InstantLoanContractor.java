@@ -44,6 +44,8 @@ public interface InstantLoanContractor {
         void showLoaderIntroDialog();
 
         void hideLoaderIntroDialog();
+
+        void hideIntroDialog();
     }
 
     interface Presenter extends CustomerPresenter<View> {

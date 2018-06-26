@@ -5,7 +5,8 @@
 
     <!-- font sizes-->
     <dimen name="il_text_size_xxsmall">10sp</dimen>
-    <dimen name="il_text_size_xsmall">12sp</dimen>
+    <dimen name="il_text_size_xsmall">10sp</dimen>
+    <dimen name="il_text_size_label_info">10sp</dimen>
     <dimen name="il_text_size_small">12sp</dimen>
     <dimen name="il_text_size_regular">16sp</dimen>
     <dimen name="il_text_size_medium">18sp</dimen>
@@ -42,4 +43,6 @@
     <dimen name="height_dialog_intro_slider">450dp</dimen>
     <dimen name="height_view_pager_banner">160dp</dimen>
 
+    <dimen name="line_separator_vertical">2dp</dimen>
+    <dimen name="line_spacing_11">11sp</dimen>
 </resources>

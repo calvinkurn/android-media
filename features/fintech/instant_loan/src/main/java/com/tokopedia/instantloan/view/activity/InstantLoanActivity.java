@@ -249,7 +249,7 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
 
     private void setupToolbar() {
         toolbar = findViewById(R.id.toolbar);
-        toolbar.setNavigationIcon(R.drawable.ic_action_back);
+        toolbar.setNavigationIcon(R.drawable.ic_icon_back_black);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);

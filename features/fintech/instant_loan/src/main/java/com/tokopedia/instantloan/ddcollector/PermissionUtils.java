@@ -104,7 +104,7 @@ class PermissionUtils {
                     }
 
                     if (pendingPermissions.size() > 0) {
-                        //TODO @lavekush-t Need add logic for re-traversals for permission either for partial denied case or full denied case
+                        mCallback.permissionDenied(requestCode);
                     } else {
                         mCallback.permissionGranted(requestCode);
                     }

@@ -28,6 +28,7 @@ import com.tokopedia.instantloan.view.presenter.InstantLoanPresenter;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.instantloan.network.InstantLoanUrl.LOAN_AMOUNT_QUERY_PARAM;
 import static com.tokopedia.instantloan.network.InstantLoanUrl.WEB_LINK_COLLATERAL_FUND;
 import static com.tokopedia.instantloan.view.fragment.DanaInstantFragment.LOGIN_REQUEST_CODE;
 
@@ -100,7 +101,7 @@ public class DenganAgunanFragment extends BaseDaggerFragment implements InstantL
             }
 
             if (sessionHandler.isV4Login()) {
-                openWebView(WEB_LINK_COLLATERAL_FUND + mSpinnerLoanAmount.getSelectedItem().toString().split(" ")[1]);
+                openWebView(WEB_LINK_COLLATERAL_FUND + LOAN_AMOUNT_QUERY_PARAM + mSpinnerLoanAmount.getSelectedItem().toString().split(" ")[1]);
             } else {
                 navigateToLoginPage();
             }
@@ -184,6 +185,11 @@ public class DenganAgunanFragment extends BaseDaggerFragment implements InstantL
 
     }
 
+    @Override
+    public void hideIntroDialog() {
+
+    }
+
     public String getScreenNameId() {
         return "Dengan Agunan";
     }
@@ -196,7 +202,7 @@ public class DenganAgunanFragment extends BaseDaggerFragment implements InstantL
                 showToastMessage("Please login to access instant loan features", Toast.LENGTH_SHORT);
 //                getActivity().finish();
             } else {
-                openWebView(WEB_LINK_COLLATERAL_FUND + mSpinnerLoanAmount.getSelectedItem().toString().split(" ")[1]);
+                openWebView(WEB_LINK_COLLATERAL_FUND + LOAN_AMOUNT_QUERY_PARAM + mSpinnerLoanAmount.getSelectedItem().toString().split(" ")[1]);
             }
         }
     }

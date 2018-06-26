@@ -8,16 +8,13 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -268,14 +265,14 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
 
         mDialogIntro.requestWindowFeature(Window.FEATURE_NO_TITLE);
         mDialogIntro.setContentView(view, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-//        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-//        lp.copyFrom(mDialogIntro.getWindow().getAttributes());
-//        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-//        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-//        lp.gravity = Gravity.CENTER;
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(mDialogIntro.getWindow().getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        lp.gravity = Gravity.CENTER;
         mDialogIntro.setCanceledOnTouchOutside(false);
         mDialogIntro.show();
-//        mDialogIntro.getWindow().setAttributes(lp);
+        mDialogIntro.getWindow().setAttributes(lp);
     }
 
     @Override
@@ -330,6 +327,14 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
 
         mDialogIntro.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         mDialogIntro.findViewById(R.id.view_pager_il_intro).findViewWithTag(2).findViewById(R.id.progress_bar_status).setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void hideIntroDialog() {
+        if (mDialogIntro == null || getActivity().isFinishing()) {
+            return;
+        }
+        mDialogIntro.dismiss();
     }
 
     public String getScreenNameId() {

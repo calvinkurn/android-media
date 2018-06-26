@@ -21,6 +21,14 @@
         <item name="android:fontFamily">sans-serif</item>
         <item name="android:textSize">@dimen/il_text_size_small</item>
         <item name="android:textColor">@color/black_54</item>
+        <item name="android:lineSpacingExtra">5sp</item>
+    </style>
+
+    <style name="LoanInfoLabelText">
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textSize">@dimen/il_text_size_label_info</item>
+        <item name="android:lineSpacingExtra">@dimen/line_spacing_11</item>
+        <item name="android:textColor">@color/black_54</item>
     </style>
 
     <style name="DefaultTncLabelText">

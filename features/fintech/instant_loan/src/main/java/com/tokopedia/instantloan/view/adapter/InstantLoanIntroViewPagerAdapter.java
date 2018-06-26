@@ -5,6 +5,7 @@ import android.support.v4.view.PagerAdapter;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
@@ -12,11 +13,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tokopedia.instantloan.R;
 import com.tokopedia.instantloan.view.activity.InstantLoanActivity;
 import com.tokopedia.instantloan.view.presenter.InstantLoanPresenter;
+
+import static com.tokopedia.instantloan.network.InstantLoanUrl.WEB_LINK_LEARN_MORE;
+import static com.tokopedia.instantloan.network.InstantLoanUrl.WEB_LINK_TNC;
 
 //import static com.tokopedia.core.network.constants.TkpdBaseURL.InstantLoan.WEB_LINK_TNC;
 
@@ -24,8 +27,6 @@ import com.tokopedia.instantloan.view.presenter.InstantLoanPresenter;
  * View pager adapter
  */
 public class InstantLoanIntroViewPagerAdapter extends PagerAdapter {
-    private static final String WEB_LINK_TNC = "https://www.tokopedia.com/bantuan/syarat-dan-ketentuan-pinjaman-dana-tunai/";
-    private static final String WEB_LINK_LEARN_MORE = "https://www.tokopedia.com/pinjaman-online/profil-kredit/";
     private LayoutInflater mLayoutInflater;
     private int[] mLayouts;
     private InstantLoanPresenter mPresenter;
@@ -47,21 +48,24 @@ public class InstantLoanIntroViewPagerAdapter extends PagerAdapter {
             TextView textView = view.findViewById(R.id.text_label_processing_time);
 
             ClickableSpan clickableSpan = new ClickableSpan() {
+
+                @Override
+                public void updateDrawState(TextPaint ds) {
+                    super.updateDrawState(ds);
+                    ds.setColor(mActivity.getResources().getColor(R.color.tkpd_green_header));
+                    ds.setUnderlineText(false);
+                }
+
                 @Override
                 public void onClick(View view) {
                     mActivity.openWebView(WEB_LINK_LEARN_MORE);
-//                    Toast.makeText(mActivity, "Click",Toast.LENGTH_SHORT).show();
                 }
             };
 
             SpannableString spannableString = new SpannableString(textView.getText().toString());
 
-            spannableString.setSpan(new ForegroundColorSpan(mActivity.getResources().getColor(R.color.tkpd_main_green)),
-                    mActivity.getResources().getString(R.string.text_intro_slide_2).length(),
-                    textView.getText().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
             spannableString.setSpan(clickableSpan,
-                    mActivity.getResources().getString(R.string.text_intro_slide_2).length(),
+                    mActivity.getResources().getString(R.string.text_intro_slide_2).length() + 1,
                     textView.getText().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
             textView.setText(spannableString);
