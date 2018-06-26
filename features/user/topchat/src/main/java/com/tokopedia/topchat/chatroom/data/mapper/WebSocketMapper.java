@@ -44,6 +44,7 @@ public class WebSocketMapper {
     public static final String TYPE_IMAGE_ANNOUNCEMENT = "1";
     public static final String TYPE_IMAGE_UPLOAD = "2";
     public static final String TYPE_PRODUCT_ATTACHMENT = "3";
+    public static final String TYPE_IMAGE_DUAL_ANNOUNCEMENT = "4";
     public static final String TYPE_INVOICES_SELECTION = "6";
     public static final String TYPE_INVOICE_SEND = "7";
     public static final String TYPE_QUICK_REPLY = "8";

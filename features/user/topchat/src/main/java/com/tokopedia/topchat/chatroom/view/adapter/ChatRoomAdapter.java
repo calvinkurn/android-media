@@ -12,6 +12,8 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatbot.AttachedInvoiceSentViewHolder;
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatroom.ImageAnnouncementViewHolder;
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatroom
+        .ImageDualAnnouncementViewHolder;
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatroom.ProductAttachmentViewHolder;
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.ImageUploadViewHolder;
 import com.tokopedia.topchat.chatroom.view.viewmodel.BaseChatViewModel;
@@ -69,7 +71,9 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
             ((ImageUploadViewHolder) holder).onViewRecycled();
         } else if (holder instanceof ImageAnnouncementViewHolder) {
             ((ImageAnnouncementViewHolder) holder).onViewRecycled();
-        } else if (holder instanceof ProductAttachmentViewHolder) {
+        } else if (holder instanceof ImageDualAnnouncementViewHolder) {
+            ((ImageDualAnnouncementViewHolder) holder).onViewRecycled();
+        }else if (holder instanceof ProductAttachmentViewHolder) {
             ((ProductAttachmentViewHolder) holder).onViewRecycled();
         } else if (holder instanceof AttachedInvoiceSentViewHolder) {
             ((AttachedInvoiceSentViewHolder) holder).onViewRecycled();

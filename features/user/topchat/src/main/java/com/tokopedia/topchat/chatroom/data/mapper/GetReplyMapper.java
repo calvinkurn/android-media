@@ -19,6 +19,8 @@ import com.tokopedia.topchat.chatroom.domain.pojo.quickreply.QuickReplyListPojo;
 import com.tokopedia.topchat.chatroom.domain.pojo.quickreply.QuickReplyPojo;
 import com.tokopedia.topchat.chatroom.view.viewmodel.ChatRoomViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.imageannouncement.ImageAnnouncementViewModel;
+import com.tokopedia.topchat.chatroom.view.viewmodel.imageannouncement
+        .ImageDualAnnouncementViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.imageupload.ImageUploadViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.invoiceattachment.AttachInvoiceSelectionViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.invoiceattachment.AttachInvoiceSentViewModel;
@@ -97,7 +99,11 @@ public class GetReplyMapper extends BaseChatAPICallMapper<ReplyData,ChatRoomView
                     && item.getAttachment().getType().equals(WebSocketMapper.TYPE_IMAGE_ANNOUNCEMENT)
                     && item.getRole().contains(TOKOPEDIA)) {
                 mapToImageAnnouncement(list, item);
-            } else if (item.getAttachment() != null
+            } else if(item.getAttachment() != null
+                    && item.getAttachment().getType().equals(WebSocketMapper.TYPE_IMAGE_DUAL_ANNOUNCEMENT)
+                    && item.getRole().contains(TOKOPEDIA)){
+                mapToImageDualAnnouncement(list, item);
+            }else if (item.getAttachment() != null
                     && item.getAttachment().getType().equals(WebSocketMapper.TYPE_IMAGE_UPLOAD)) {
                 mapToImageUpload(list, item);
             } else if (item.getAttachment() != null
@@ -211,6 +217,25 @@ public class GetReplyMapper extends BaseChatAPICallMapper<ReplyData,ChatRoomView
         );
 
         list.add(imageAnnouncement);
+    }
+
+    private void mapToImageDualAnnouncement(ArrayList<Visitable> list, ListReply item) {
+        ImageDualAnnouncementViewModel imageDualAnnouncement = new ImageDualAnnouncementViewModel(
+                String.valueOf(item.getMsgId()),
+                item.getSenderId(),
+                item.getSenderName(),
+                item.getRole(),
+                item.getAttachment().getId(),
+                item.getAttachment().getType(),
+                item.getReplyTime(),
+                item.getMsg(),
+                item.getAttachment().getAttributes().getImageUrl(),
+                item.getAttachment().getAttributes().getUrl(),
+                item.getAttachment().getAttributes().getImageUrl2(),
+                item.getAttachment().getAttributes().getUrl2()
+        );
+
+        list.add(imageDualAnnouncement);
     }
 
     private void mapToInvoiceSend(ArrayList<Visitable> list, ListReply item) {

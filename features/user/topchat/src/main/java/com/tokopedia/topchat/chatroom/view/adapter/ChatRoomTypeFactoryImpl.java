@@ -9,6 +9,8 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatbot.AttachedIn
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatbot.QuickReplyViewHolder;
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatroom.ChatRatingViewHolder;
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatroom.ImageAnnouncementViewHolder;
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatroom
+        .ImageDualAnnouncementViewHolder;
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatroom.ProductAttachmentViewHolder;
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatroom.SecurityInfoChatViewHolder;
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatroom.TypingChatViewHolder;
@@ -21,6 +23,8 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.TimeMachineChatModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.TypingChatModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.fallback.FallbackAttachmentViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.imageannouncement.ImageAnnouncementViewModel;
+import com.tokopedia.topchat.chatroom.view.viewmodel.imageannouncement
+        .ImageDualAnnouncementViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.imageupload.ImageUploadViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.invoiceattachment.AttachInvoiceSelectionViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.invoiceattachment.AttachInvoiceSentViewModel;
@@ -98,6 +102,11 @@ public class ChatRoomTypeFactoryImpl extends BaseAdapterTypeFactory implements C
     }
 
     @Override
+    public int type(ImageDualAnnouncementViewModel imageDualAnnouncementViewModel) {
+        return ImageDualAnnouncementViewHolder.LAYOUT;
+    }
+
+    @Override
     public AbstractViewHolder createViewHolder(View view, int type) {
 
         AbstractViewHolder viewHolder;
@@ -124,6 +133,8 @@ public class ChatRoomTypeFactoryImpl extends BaseAdapterTypeFactory implements C
             viewHolder = new ProductAttachmentViewHolder(view, viewListener);
         else if (type == ImageAnnouncementViewHolder.LAYOUT)
             viewHolder = new ImageAnnouncementViewHolder(view, viewListener);
+        else if (type == ImageDualAnnouncementViewHolder.LAYOUT)
+            viewHolder = new ImageDualAnnouncementViewHolder(view,viewListener);
         else
             return super.createViewHolder(view, type);
 
