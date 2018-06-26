@@ -121,6 +121,39 @@ public class FlightBookingReviewModel implements Parcelable {
         insuranceIds = in.createTypedArrayList(FlightInsuranceViewModel.CREATOR);
     }
 
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeTypedList(detailPassengersData);
+        dest.writeString(id);
+        dest.writeParcelable(detailViewModelListDeparture, flags);
+        dest.writeParcelable(detailViewModelListReturn, flags);
+        dest.writeTypedList(detailPassengers);
+        dest.writeTypedList(flightReviewFares);
+        dest.writeString(dateFinishTime);
+        dest.writeString(totalPrice);
+        dest.writeInt(totalPriceNumeric);
+        dest.writeParcelable(phoneCodeViewModel, flags);
+        dest.writeString(contactName);
+        dest.writeString(contactEmail);
+        dest.writeString(contactPhone);
+        dest.writeTypedList(farePrices);
+        dest.writeInt(adult);
+        dest.writeInt(children);
+        dest.writeInt(infant);
+        dest.writeString(returnTripId);
+        dest.writeParcelable(flightClass, flags);
+        dest.writeString(departureDate);
+        dest.writeString(returnDate);
+        dest.writeString(departureTripId);
+        dest.writeParcelable(voucherViewModel, flags);
+        dest.writeTypedList(insuranceIds);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
     public static final Creator<FlightBookingReviewModel> CREATOR = new Creator<FlightBookingReviewModel>() {
         @Override
         public FlightBookingReviewModel createFromParcel(Parcel in) {
@@ -401,38 +434,5 @@ public class FlightBookingReviewModel implements Parcelable {
             labelLuggage = labelLuggage + flightBookingLuggageViewModel.getTitle() + "\n";
         }
         return labelLuggage;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(id);
-        dest.writeParcelable(detailViewModelListDeparture, flags);
-        dest.writeParcelable(detailViewModelListReturn, flags);
-        dest.writeTypedList(detailPassengers);
-        dest.writeTypedList(flightReviewFares);
-        dest.writeString(dateFinishTime);
-        dest.writeString(totalPrice);
-        dest.writeInt(totalPriceNumeric);
-        dest.writeTypedList(detailPassengersData);
-        dest.writeParcelable(phoneCodeViewModel, flags);
-        dest.writeString(contactName);
-        dest.writeString(contactEmail);
-        dest.writeString(contactPhone);
-        dest.writeTypedList(farePrices);
-        dest.writeInt(adult);
-        dest.writeInt(children);
-        dest.writeInt(infant);
-        dest.writeString(returnTripId);
-        dest.writeParcelable(flightClass, flags);
-        dest.writeString(departureDate);
-        dest.writeString(returnDate);
-        dest.writeString(departureTripId);
-        dest.writeParcelable(voucherViewModel, flags);
-        dest.writeTypedList(insuranceIds);
     }
 }
