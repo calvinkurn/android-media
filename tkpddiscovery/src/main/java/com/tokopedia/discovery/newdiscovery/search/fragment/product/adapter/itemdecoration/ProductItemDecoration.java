@@ -38,26 +38,26 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
 
         final int totalSpanCount = getTotalSpanCount(parent);
 
-        outRect.top = isTopProductItem(parent, relativePos, totalSpanCount) ? spacing : spacing / 2;
+        outRect.top = isTopProductItem(parent, absolutePos, relativePos, totalSpanCount) ? spacing : spacing / 2;
         outRect.left = isFirstInRow(relativePos, totalSpanCount) ? spacing : spacing / 2;
         outRect.right = isLastInRow(relativePos, totalSpanCount) ? spacing : spacing / 2;
-        outRect.bottom = isBottomProductItem(parent, relativePos, totalSpanCount) ? spacing : spacing / 2;
+        outRect.bottom = isBottomProductItem(parent, absolutePos, relativePos, totalSpanCount) ? spacing : spacing / 2;
     }
 
-    private boolean isTopProductItem(RecyclerView parent, int position, int totalSpanCount) {
-        return !isProductItem(parent, position - position % totalSpanCount - 1);
+    private boolean isTopProductItem(RecyclerView parent, int absolutePos, int relativePos, int totalSpanCount) {
+        return !isProductItem(parent, absolutePos - relativePos % totalSpanCount - 1);
     }
 
-    private boolean isBottomProductItem(RecyclerView parent, int position, int totalSpanCount) {
-        return !isProductItem(parent, position + totalSpanCount - position % totalSpanCount);
+    private boolean isBottomProductItem(RecyclerView parent, int absolutePos, int relativePos, int totalSpanCount) {
+        return !isProductItem(parent, absolutePos + totalSpanCount - relativePos % totalSpanCount);
     }
 
-    private boolean isFirstInRow(int position, int spanCount) {
-        return position % spanCount == 0;
+    private boolean isFirstInRow(int relativePos, int spanCount) {
+        return relativePos % spanCount == 0;
     }
 
-    private boolean isLastInRow(int position, int spanCount) {
-        return isFirstInRow(position + 1, spanCount);
+    private boolean isLastInRow(int relativePos, int spanCount) {
+        return isFirstInRow(relativePos + 1, spanCount);
     }
 
     private int getTotalSpanCount(RecyclerView parent) {
