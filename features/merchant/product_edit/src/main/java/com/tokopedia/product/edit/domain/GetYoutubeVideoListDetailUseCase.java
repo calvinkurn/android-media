@@ -37,7 +37,7 @@ public class GetYoutubeVideoListDetailUseCase extends UseCase<List<Map<Type, Res
     @Override
     public Observable<List<Map<Type, RestResponse>>> createObservable(RequestParams requestParams) {
         return Observable.from(getVideoIdList(requestParams))
-                .flatMap(new Func1<String, Observable<Map<Type, RestResponse>>>() {
+                .concatMap(new Func1<String, Observable<Map<Type, RestResponse>>>() {
                     @Override
                     public Observable<Map<Type, RestResponse>> call(String videoId) {
                         return getYoutubeVideoDetailUseCase.createObservable(
