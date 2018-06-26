@@ -319,4 +319,6 @@ yang ditemukan</string>
 
     <!-- attach invoice -->
     <string name="total_invoice">Total: </string>
+    <string name="title_video">Video</string>
+    <string name="title_image">Gambar</string>
 </resources>
