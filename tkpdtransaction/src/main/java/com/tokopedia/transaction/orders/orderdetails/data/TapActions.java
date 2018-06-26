@@ -4,11 +4,11 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class TapActions {
-    @SerializedName("Body")
+    @SerializedName("body")
     @Expose
     private Body Body;
 
-    @SerializedName("Value")
+    @SerializedName("value")
     @Expose
     private String Value;
 
@@ -32,11 +32,11 @@ public class TapActions {
     @Expose
     private String uri;
 
-    @SerializedName("Control")
+    @SerializedName("control")
     @Expose
     private String Control;
 
-    @SerializedName("Name")
+    @SerializedName("name")
     @Expose
     private String Name;
 
@@ -44,7 +44,7 @@ public class TapActions {
     @Expose
     private String buttonType;
 
-    @SerializedName("Header")
+    @SerializedName("header")
     @Expose
     private String Header;
 

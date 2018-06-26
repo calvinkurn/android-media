@@ -36,15 +36,15 @@ query OMSDETAILS($orderCategory: OrderCategory, $orderId: String, $detail: Int, 
         key
         method
         uriWeb
-        Value
-        Name
-        Control
-        Header
-        Body {
-          AppURL
-          WebURL
-          Method
-          Body
+        value
+        name
+        control
+        header
+        body {
+          appURL
+          webURL
+          method
+          body
         }
       }
       tapActions {
@@ -56,15 +56,15 @@ query OMSDETAILS($orderCategory: OrderCategory, $orderId: String, $detail: Int, 
         key
         method
         uriWeb
-        Value
-        Name
-        Control
-        Header
-        Body {
-          AppURL
-          WebURL
-          Method
-          Body
+        value
+        name
+        control
+        header
+        body {
+          appURL
+          webURL
+          method
+          body
         }
       }
     }
@@ -89,15 +89,15 @@ query OMSDETAILS($orderCategory: OrderCategory, $orderId: String, $detail: Int, 
     actionButtons {
       label
       key
-      Value
+      value
       weight
-      Control
-      Header
-      Body {
-        AppURL
-        WebURL
-        Method
-        Body
+      control
+      header
+      body {
+        appURL
+        webURL
+        method
+        body
       }
     }
     conditionalInfo {
