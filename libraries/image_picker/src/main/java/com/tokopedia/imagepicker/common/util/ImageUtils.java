@@ -826,13 +826,17 @@ public class ImageUtils {
         Paint paint = new Paint();
         paint.setColorFilter(colorFilter);
 
-        Bitmap resultBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
-        Canvas canvas = new Canvas(resultBitmap);
-        canvas.drawBitmap(resultBitmap, 0, 0, paint);
+        try {
+            Bitmap resultBitmap = bitmap.copy(bitmap.getConfig(), true);
+            Canvas canvas = new Canvas(resultBitmap);
+            canvas.drawBitmap(resultBitmap, 0, 0, paint);
 
-        bitmap.recycle();
+            bitmap.recycle();
 
-        return resultBitmap;
+            return resultBitmap;
+        } catch (OutOfMemoryError error) {
+            return bitmap;
+        }
     }
 
     public static Bitmap contrastBitmap(Bitmap bitmap, float contrast) {
@@ -850,13 +854,17 @@ public class ImageUtils {
         Paint paint = new Paint();
         paint.setColorFilter(colorFilter);
 
-        Bitmap resultBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
-        Canvas canvas = new Canvas(resultBitmap);
-        canvas.drawBitmap(resultBitmap, 0, 0, paint);
+        try {
+            Bitmap resultBitmap = bitmap.copy(bitmap.getConfig(), true);
+            Canvas canvas = new Canvas(resultBitmap);
+            canvas.drawBitmap(resultBitmap, 0, 0, paint);
 
-        bitmap.recycle();
+            bitmap.recycle();
+            return resultBitmap;
+        } catch (OutOfMemoryError outOfMemoryError) {
+            return bitmap;
+        }
 
-        return resultBitmap;
     }
 
     public static Bitmap convertToMutable(Bitmap imgIn) throws Exception {
