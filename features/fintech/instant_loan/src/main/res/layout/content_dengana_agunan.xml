@@ -7,7 +7,8 @@
     android:layout_marginRight="@dimen/il_margin_medium"
     android:layout_marginTop="@dimen/il_margin_medium"
     android:animateLayoutChanges="true"
-    app:cardBackgroundColor="@color/white">
+    app:cardBackgroundColor="@color/white"
+    app:cardElevation="4dp">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -34,7 +35,7 @@
 
         <TextView
             android:id="@+id/text_label_amount"
-            style="@style/DefaultLabelText"
+            style="@style/LoanInfoLabelText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/il_margin_medium"
@@ -53,7 +54,7 @@
 
         <View
             android:id="@+id/line_separator_vertical_one"
-            android:layout_width="0.5dp"
+            android:layout_width="2dp"
             android:layout_height="48dp"
             android:layout_marginBottom="8dp"
             android:background="@color/white_four"
@@ -63,7 +64,7 @@
 
         <TextView
             android:id="@+id/text_label_duration"
-            style="@style/DefaultLabelText"
+            style="@style/LoanInfoLabelText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_small_sm"
@@ -88,14 +89,14 @@
         <View
             android:id="@+id/line_separator"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="2dp"
             android:layout_marginTop="8dp"
             android:background="@color/white_four"
             app:layout_constraintTop_toBottomOf="@+id/text_value_duration" />
 
         <TextView
             android:id="@+id/text_label_processing_time"
-            style="@style/DefaultLabelText"
+            style="@style/LoanInfoLabelText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/il_margin_regular"
@@ -114,7 +115,7 @@
 
         <View
             android:id="@+id/line_separator_vertical_two"
-            android:layout_width="0.5dp"
+            android:layout_width="2dp"
             android:layout_height="48dp"
             android:layout_marginTop="8dp"
             android:background="@color/white_four"
@@ -124,7 +125,7 @@
 
         <TextView
             android:id="@+id/text__interest_rate"
-            style="@style/DefaultLabelText"
+            style="@style/LoanInfoLabelText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_small_sm"

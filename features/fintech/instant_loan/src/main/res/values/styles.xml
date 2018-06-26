@@ -20,7 +20,8 @@
     <style name="DefaultLabelText">
         <item name="android:fontFamily">sans-serif</item>
         <item name="android:textSize">@dimen/il_text_size_small</item>
-        <item name="android:textColor">@color/black_54</item>
+        <item name="android:textColor">@color/black_38</item>
+        <item name="android:textStyle">normal</item>
         <item name="android:lineSpacingExtra">5sp</item>
     </style>
 
@@ -40,6 +41,8 @@
     <style name="DefaultValueText" parent="Normal">
         <item name="android:textSize">@dimen/il_text_size_regular</item>
         <item name="android:textColor">@color/black_70</item>
+        <item name="android:lineSpacingExtra">9sp</item>
+        <item name="textStyle">normal</item>
         <item name="android:fontFamily">sans-serif</item>
     </style>
 
@@ -50,8 +53,9 @@
     </style>
 
     <style name="HeaderText" parent="Bold">
-        <item name="android:textSize">@dimen/il_text_size_regular</item>
+        <item name="android:textSize">@dimen/il_text_size_header</item>
         <item name="android:textColor">@color/black_70</item>
+        <item name="android:textStyle">normal</item>
         <item name="android:lineSpacingExtra">@dimen/il_line_spacing_header</item>
     </style>
 

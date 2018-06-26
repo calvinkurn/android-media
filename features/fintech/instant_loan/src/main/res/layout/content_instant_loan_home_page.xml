@@ -6,7 +6,8 @@
     android:layout_marginRight="@dimen/il_margin_medium"
     android:layout_marginTop="@dimen/il_margin_medium"
     android:animateLayoutChanges="true"
-    app:cardBackgroundColor="@color/white">
+    app:cardBackgroundColor="@color/white"
+    app:cardElevation="4dp">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"

@@ -9,6 +9,7 @@
     <dimen name="il_text_size_label_info">10sp</dimen>
     <dimen name="il_text_size_small">12sp</dimen>
     <dimen name="il_text_size_regular">16sp</dimen>
+    <dimen name="il_text_size_header">17sp</dimen>
     <dimen name="il_text_size_medium">18sp</dimen>
     <dimen name="il_text_size_large">20sp</dimen>
     <dimen name="il_text_size_xlarge">22sp</dimen>
@@ -32,7 +33,7 @@
     <dimen name="il_padding_xlarge">32dp</dimen>
 
 
-    <dimen name="il_line_spacing_header" >5sp</dimen>
+    <dimen name="il_line_spacing_header" >4sp</dimen>
     <dimen name="shadow_card_tab">8dp</dimen>
     <dimen name="height_il_tab_button">104dp</dimen>
     <dimen name="width_il_tab_button">96dp</dimen>
