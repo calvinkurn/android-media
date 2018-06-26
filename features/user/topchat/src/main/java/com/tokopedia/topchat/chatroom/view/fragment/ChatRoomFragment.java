@@ -495,9 +495,11 @@ public class ChatRoomFragment extends BaseDaggerFragment
             Uri uri = Uri.parse(url);
             KeyboardHandler.DropKeyboard(getActivity(), getView());
             if (uri != null) {
-                boolean isTargetDomainTokopedia = uri.getHost().endsWith("tokopedia.com");
-                boolean isTargetTkpMeAndNotRedirect = (TextUtils.equals(uri.getHost(), BASE_DOMAIN_SHORTENED) &&
-                        !TextUtils.equals(uri.getEncodedPath(), "/r"));
+                boolean isTargetDomainTokopedia
+                        = uri.getHost() != null && uri.getHost().endsWith("tokopedia.com");
+                boolean isTargetTkpMeAndNotRedirect
+                        = (TextUtils.equals(uri.getHost(), BASE_DOMAIN_SHORTENED)
+                        && !TextUtils.equals(uri.getEncodedPath(), "/r"));
                 boolean isNeedAuthToken = (isTargetDomainTokopedia || isTargetTkpMeAndNotRedirect);
 
                 if (uri.getScheme().equals(APPLINK_SCHEME)) {
@@ -578,7 +580,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 int index = layoutManager.findLastVisibleItemPosition();
-                if (adapter.checkLoadMore(index)) {
+                if (index != -1 && adapter.checkLoadMore(index)) {
                     presenter.onLoadMore();
                 }
             }

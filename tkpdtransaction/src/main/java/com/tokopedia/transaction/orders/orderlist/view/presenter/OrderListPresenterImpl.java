@@ -40,12 +40,14 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                 @Override
                 public void onError(Throwable e) {
                     CommonUtils.dumper(e.toString());
-                    getView().removeProgressBarView();
-                    getView().unregisterScrollListener();
-                    if (e instanceof UnknownHostException || e instanceof ConnectException) {
-                        getView().showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
-                    } else if (e instanceof SocketTimeoutException) {
-                        getView().showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+                    if(getView()!= null) {
+                        getView().removeProgressBarView();
+                        getView().unregisterScrollListener();
+                        if (e instanceof UnknownHostException || e instanceof ConnectException) {
+                            getView().showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
+                        } else if (e instanceof SocketTimeoutException) {
+                            getView().showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+                        }
                     }
                 }
 
