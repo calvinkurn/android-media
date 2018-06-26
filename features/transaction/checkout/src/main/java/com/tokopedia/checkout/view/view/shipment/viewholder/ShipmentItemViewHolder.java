@@ -453,7 +453,11 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
             });
 
             etShipperName.setText(shipmentCartItemModel.getSelectedShipmentDetailData().getDropshipperName());
-            validateDropshipperName(etShipperName.getText(), false);
+            if (shipmentCartItemModel.isStateDropshipperHasError()) {
+                validateDropshipperName(etShipperName.getText(), true);
+            } else {
+                validateDropshipperName(etShipperName.getText(), false);
+            }
             etShipperName.setSelection(etShipperName.length());
             etShipperName.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -475,7 +479,11 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
 
             Pattern pattern = Pattern.compile(PHONE_NUMBER_REGEX_PATTERN);
             etShipperPhone.setText(shipmentCartItemModel.getSelectedShipmentDetailData().getDropshipperPhone());
-            validateDropshipperPhone(etShipperPhone.getText(), pattern, false);
+            if (shipmentCartItemModel.isStateDropshipperHasError()) {
+                validateDropshipperPhone(etShipperPhone.getText(), pattern, true);
+            } else {
+                validateDropshipperPhone(etShipperPhone.getText(), pattern, false);
+            }
             etShipperPhone.setSelection(etShipperPhone.length());
             etShipperPhone.addTextChangedListener(new TextWatcher() {
                 @Override
