@@ -430,10 +430,11 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
 
     @Override
     public final void startYoutubeVideoActivity(ArrayList<String> videoIds) {
-        Intent intent = new Intent(getActivity(), ProductAddVideoActivity.class);
-        if (CommonUtils.checkCollectionNotNull(videoIds)) {
-            intent.putStringArrayListExtra(YoutubeAddVideoView.KEY_VIDEOS_LINK, videoIds);
+        Intent intent = new Intent(getActivity(), com.tokopedia.product.edit.activity.ProductAddVideoActivity.class);
+        if (!CommonUtils.checkCollectionNotNull(videoIds)) {
+            videoIds = new ArrayList<>();
         }
+        intent.putStringArrayListExtra(com.tokopedia.product.edit.fragment.ProductAddVideoFragment.EXTRA_VIDEOS_LINKS, videoIds);
         startActivityForResult(intent, ProductDescriptionViewHolder.REQUEST_CODE_GET_VIDEO);
     }
 
