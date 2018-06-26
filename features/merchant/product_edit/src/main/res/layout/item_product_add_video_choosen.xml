@@ -19,7 +19,8 @@
                 <ImageView
                     android:id="@+id/image_add_video_url"
                     android:layout_width="@dimen/dp_72"
-                    android:layout_height="@dimen/dp_72" />
+                    android:layout_height="@dimen/dp_72"
+                    tools:background="@color/grey_300"/>
         </LinearLayout>
 
         <LinearLayout

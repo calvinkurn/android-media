@@ -1,12 +1,16 @@
 package com.tokopedia.product.edit.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.product.edit.R
+import com.tokopedia.product.edit.activity.ProductAddVideoActivity
+import com.tokopedia.product.edit.activity.ProductAddVideoRecommendationActivity
 import com.tokopedia.product.edit.adapter.ProductAddVideoAdapterTypeFactory
 import com.tokopedia.product.edit.mapper.VideoViewMapper
 import com.tokopedia.product.edit.viewmodel.EmptyVideoViewModel
@@ -29,8 +33,17 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
         (activity as AppCompatActivity).supportActionBar!!.subtitle = getString(R.string.product_from_to_video, videoIDs.size, MAX_VIDEO)
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater?.inflate(R.layout.fragment_product_add_video, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        val view: View = inflater.inflate(R.layout.fragment_product_add_video, container, false)
+
+        var btnTambah: Button = view.findViewById(R.id.button_tambah)
+
+        btnTambah.setOnClickListener({
+            val intent = Intent(activity, ProductAddVideoRecommendationActivity::class.java)
+            startActivityForResult(intent, REQUEST_CODE_GET_VIDEO_RECOMMENDATION)
+        })
+
+        return view
     }
 
     override fun getAdapterTypeFactory(): ProductAddVideoAdapterTypeFactory {
@@ -70,6 +83,8 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
 
         const val MAX_VIDEO = 3
         const val MAX_VIDEO_RECOMMENDATION = 3
+
+        const val REQUEST_CODE_GET_VIDEO_RECOMMENDATION = 1
 
         fun createInstance(): android.support.v4.app.Fragment {
             return ProductAddVideoFragment()

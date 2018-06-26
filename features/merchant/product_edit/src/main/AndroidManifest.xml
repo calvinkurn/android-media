@@ -5,7 +5,14 @@
     <application>
         <activity
             android:name=".activity.ProductAddVideoActivity"
-            android:label="@string/title_activity_video"/>
+            android:label="@string/title_activity_video"
+            android:theme="@style/Theme.White"/>
+
+        <activity
+            android:name=".activity.ProductAddVideoRecommendationActivity"
+            android:label="@string/title_activity_video_recommendation"
+            android:theme="@style/Theme.White"/>
+
     </application>
 
 </manifest>

@@ -15,14 +15,14 @@
             android:textSize="@dimen/sp_16"
             android:text="@string/product_add_title_video_recommendation"
             android:textStyle="bold"
-            android:layout_margin="@dimen/dp_16"/>
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/sp_12"
+            android:textSize="@dimen/sp_14"
             android:text="@string/product_add_title_video_recommendation_show_more"
-            android:textStyle="bold"
             android:layout_margin="@dimen/dp_16"
             android:textColor="@color/tkpd_main_green"/>
     </LinearLayout>
@@ -30,7 +30,8 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_16" />
 
     <View
         android:layout_width="match_parent"

@@ -27,6 +27,8 @@ class VideoViewHolder(itemView: View) : AbstractViewHolder<VideoViewModel>(itemV
     }
 
     override fun bind(videoViewModel: VideoViewModel) {
+        textAddVideoUrlTitle.text = "Test Title"
+        textAddVideoUrlDescription.text = "Test Channel"
     }
 
     companion object {
