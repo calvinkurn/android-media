@@ -36,6 +36,7 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.contact_us.createticket.ContactUsConstant;
+import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -861,35 +862,29 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 break;
 
             case REQUEST_CODE_CHAT_IMAGE:
-                if (resultCode == Activity.RESULT_OK && data!= null) {
-                    ArrayList<String> imagePathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS);
-                    if (imagePathList!= null && imagePathList.size() > 0) {
-                        String imagePath = imagePathList.get(0);
-                        List<MyChatViewModel> chatViewModelList = new ArrayList<>();
-
-                        if (!TextUtils.isEmpty(imagePath)) {
-                            ImageUpload model = new ImageUpload();
-                            model.setImageId(String.valueOf(System.currentTimeMillis() / 1000));
-                            model.setFileLoc(imagePath);
-                            MyChatViewModel temp = addAttachImageBalloonToChatList(model);
-                            chatViewModelList.add(temp);
-                        } else {
-                            ArrayList<String> imageUrls = data.getStringArrayListExtra(GalleryActivity
-                                    .IMAGE_URLS);
-                            if (imageUrls != null) {
-                                for (int i = 0; i < imageUrls.size(); i++) {
-                                    ImageUpload model = new ImageUpload();
-                                    model.setImageId(String.valueOf(System.currentTimeMillis() / 1000));
-                                    model.setFileLoc(imageUrls.get(i));
-                                    MyChatViewModel temp = addAttachImageBalloonToChatList(model);
-                                    chatViewModelList.add(temp);
-                                }
-                            }
+                if (resultCode != Activity.RESULT_OK || data == null) {
+                    return;
+                }
+                ArrayList<String> imagePathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS);
+                if (imagePathList == null || imagePathList.size() <= 0) {
+                    return;
+                }
+                String imagePath = imagePathList.get(0);
+                List<DummyChatViewModel> list = new ArrayList<>();
+                if (!TextUtils.isEmpty(imagePath)) {
+                    DummyChatViewModel temp = generateChatViewModelWithImage(imagePath);
+                    list.add(temp);
+                } else {
+                    ArrayList<String> imagePaths = data.getStringArrayListExtra(GalleryActivity.IMAGE_URLS);
+                    if (imagePaths != null) {
+                        for (int i = 0; i < imagePaths.size(); i++) {
+                            DummyChatViewModel temp = generateChatViewModelWithImage(imagePaths.get(i));
+                            list.add(temp);
                         }
-                adapter.addReply(list);
-                        presenter.startUpload(chatViewModelList, networkType);
                     }
                 }
+                adapter.addReply(list);
+                presenter.startUpload(list, networkType);
                 break;
             case AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE:
                 if (data == null)
