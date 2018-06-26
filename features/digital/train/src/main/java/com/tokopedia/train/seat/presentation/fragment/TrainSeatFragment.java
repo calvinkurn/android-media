@@ -17,6 +17,7 @@ import com.tokopedia.design.component.Menus;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.seat.di.TrainSeatComponent;
 import com.tokopedia.train.seat.presentation.contract.TrainSeatContract;
+import com.tokopedia.train.seat.presentation.fragment.listener.TrainSeatListener;
 import com.tokopedia.train.seat.presentation.fragment.viewpager.TrainWagonsPagerAdapter;
 import com.tokopedia.train.seat.presentation.presenter.TrainSeatPresenter;
 import com.tokopedia.train.seat.presentation.viewmodel.TrainSeatPassengerViewModel;
@@ -26,6 +27,7 @@ import com.tokopedia.train.seat.presentation.widget.CountdownTimeView;
 import com.tokopedia.train.seat.presentation.widget.TrainSeatPassengerAndWagonView;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -41,9 +43,13 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
     private LinearLayout container;
     private ProgressBar progressBar;
     private Button submitButton;
-    private List<TrainSeatPassengerViewModel> passengers;
-    private List<TrainWagonViewModel> wagons;
 
+    private TrainWagonsPagerAdapter adapter;
+
+    private List<TrainSeatPassengerViewModel> passengers;
+    private List<TrainSeatPassengerViewModel> originPassengers;
+    private List<TrainWagonViewModel> wagons;
+    private String expiredTime;
 
     public static Fragment newInstance() {
         return new TrainSeatFragment();
@@ -54,6 +60,8 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
         super.onCreate(savedInstanceState);
         // TODO : assign passengers from soft book responses
         passengers = new ArrayList<>();
+        originPassengers = passengers;
+        expiredTime = "2019-02-20T17:35:00Z";
     }
 
     @Override
@@ -96,6 +104,12 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
         super.onViewCreated(view, savedInstanceState);
         presenter.attachView(this);
         presenter.getSeatMaps();
+        countdownTimeView.setListener(new CountdownTimeView.OnActionListener() {
+            @Override
+            public void onFinished() {
+                presenter.onRunningOutOfTime();
+            }
+        });
     }
 
     @Override
@@ -114,7 +128,7 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
         trainSeatHeader.renderWagon(trainWagonViewModels.get(0).getWagonCode());
         trainSeatHeader.renderPassenger(passengers);
 
-        TrainWagonsPagerAdapter adapter = new TrainWagonsPagerAdapter(getChildFragmentManager(), trainWagonViewModels, new TrainWagonFragment.OnFragmentInteraction() {
+        adapter = new TrainWagonsPagerAdapter(getChildFragmentManager(), trainWagonViewModels, new TrainWagonFragment.OnFragmentInteraction() {
             @Override
             public List<TrainSeatPassengerViewModel> getPassengers() {
                 return passengers;
@@ -122,9 +136,19 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
 
             @Override
             public void onPassengerSeatChange(TrainSeatPassengerViewModel passenger, TrainSeatViewModel seat) {
-                // TODO: hit api and refresh seats
+                for (TrainSeatPassengerViewModel passengerSeat : passengers) {
+                    if (passengerSeat.getName().equalsIgnoreCase(passenger.getName())) {
+                        passengerSeat.setSeatViewModel(passenger.getSeatViewModel());
+                        break;
+                    }
+                }
+                Object fragment = adapter.instantiateItem(wagonViewPager, wagonViewPager.getCurrentItem());
+                if (fragment != null && fragment instanceof TrainSeatListener) {
+                    ((TrainSeatListener) fragment).notifyPassengerUpdate();
+                }
             }
         });
+
         wagonViewPager.setOffscreenPageLimit(1);
         wagonViewPager.setAdapter(adapter);
     }
@@ -147,6 +171,21 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
                 presenter.getSeatMaps();
             }
         });
+    }
+
+    @Override
+    public String getExpireDate() {
+        return expiredTime;
+    }
+
+    @Override
+    public void renderExpireDateCountdown(Date expireDate) {
+        countdownTimeView.setExpiredDate(expireDate);
+    }
+
+    @Override
+    public void backToHomePage() {
+        getActivity().finish();
     }
 
     @Override

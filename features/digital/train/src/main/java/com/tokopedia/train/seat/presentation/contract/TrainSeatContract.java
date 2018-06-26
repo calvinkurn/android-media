@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.train.seat.presentation.viewmodel.TrainWagonViewModel;
 
+import java.util.Date;
 import java.util.List;
 
 public interface TrainSeatContract {
@@ -20,10 +21,18 @@ public interface TrainSeatContract {
         void showPage();
 
         void showErrorGetSeatMaps(String message);
+
+        String getExpireDate();
+
+        void renderExpireDateCountdown(Date expireDate);
+
+        void backToHomePage();
     }
 
     interface Presenter extends CustomerPresenter<View> {
 
         void getSeatMaps();
+
+        void onRunningOutOfTime();
     }
 }

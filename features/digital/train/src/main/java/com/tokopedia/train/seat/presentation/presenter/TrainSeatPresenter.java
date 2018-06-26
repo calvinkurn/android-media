@@ -1,6 +1,7 @@
 package com.tokopedia.train.seat.presentation.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.train.common.util.TrainDateUtil;
 import com.tokopedia.train.seat.domain.TrainGetSeatsUseCase;
 import com.tokopedia.train.seat.presentation.contract.TrainSeatContract;
 import com.tokopedia.train.seat.presentation.viewmodel.TrainWagonViewModel;
@@ -45,7 +46,13 @@ public class TrainSeatPresenter extends BaseDaggerPresenter<TrainSeatContract.Vi
                 getView().showPage();
                 getView().hideGetSeatMapLoading();
                 getView().renderWagon(trainWagonViewModels);
+                getView().renderExpireDateCountdown(TrainDateUtil.stringToDate(TrainDateUtil.FORMAT_DATE_API,getView().getExpireDate()));
             }
         });
+    }
+
+    @Override
+    public void onRunningOutOfTime() {
+        getView().backToHomePage();
     }
 }
