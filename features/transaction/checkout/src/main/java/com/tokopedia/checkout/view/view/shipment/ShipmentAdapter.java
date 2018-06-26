@@ -121,7 +121,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         } else if (viewType == ShipmentInsuranceTncViewHolder.ITEM_VIEW_INSURANCE_TNC) {
             return new ShipmentInsuranceTncViewHolder(view, shipmentAdapterActionListener);
         } else if (viewType == ShipmentCheckoutButtonViewHolder.ITEM_VIEW_CHECKOUT_BUTTON) {
-            return new ShipmentCheckoutButtonViewHolder(view, this);
+            return new ShipmentCheckoutButtonViewHolder(view, shipmentAdapterActionListener);
         }
         throw new RuntimeException("No view holder type found");
     }
@@ -371,7 +371,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public void checkDropshipperValidation() {
-        checkHasSelectAllCourier();
         boolean availableCheckout = true;
         int errorPosition = DEFAULT_ERROR_POSITION;
         ShipmentData selectedShipmentData = null;
@@ -381,7 +380,9 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 if (((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData() != null &&
                         ((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData().getUseDropshipper()) {
                     if (TextUtils.isEmpty(((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData().getDropshipperName()) ||
-                            TextUtils.isEmpty(((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData().getDropshipperPhone())) {
+                            TextUtils.isEmpty(((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData().getDropshipperPhone()) ||
+                            !((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData().isDropshipperNameValid() ||
+                            !((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData().isDropshipperPhoneValid()) {
                         availableCheckout = false;
                         errorPosition = i;
                         selectedShipmentData = shipmentData;
@@ -389,6 +390,11 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
             }
         }
+
+        if (availableCheckout) {
+            availableCheckout = checkHasSelectAllCourier();
+        }
+
         shipmentAdapterActionListener.onDropshipperValidationResult(availableCheckout, selectedShipmentData, errorPosition);
     }
 
@@ -412,7 +418,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         checkHasSelectAllCourier();
     }
 
-    public void checkHasSelectAllCourier() {
+    public boolean checkHasSelectAllCourier() {
         int cartItemCounter = 0;
         if (shipmentCartItemModelList != null) {
             for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
@@ -425,8 +431,10 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 RequestData requestData = getRequestData(null);
                 shipmentAdapterActionListener.onFinishChoosingShipment(requestData.getPromoRequestData(),
                         requestData.getCheckoutRequestData());
+                return true;
             }
         }
+        return false;
     }
 
     public void updateShipmentCostModel() {

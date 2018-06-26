@@ -47,4 +47,6 @@ public interface ShipmentAdapterActionListener extends CartAdapterActionListener
     void onDropshipCheckedForTrackingAnalytics();
 
     void onInsuranceCheckedForTrackingAnalytics();
+
+    void onChoosePaymentMethodButtonClicked(boolean ableToCheckout);
 }

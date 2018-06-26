@@ -236,16 +236,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     }
 
-    @NonNull
-    private View.OnClickListener getOnClickListenerButtonCheckout() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                shipmentAdapter.checkDropshipperValidation();
-            }
-        };
-    }
-
     @Override
     public void showLoading() {
         if (!progressDialogNormal.isProgress()) progressDialogNormal.showDialog();
@@ -711,16 +701,18 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onDropshipperValidationResult(boolean result, ShipmentData shipmentData, int errorPosition) {
-        if (!result) {
+        if (shipmentData == null && result) {
+            shipmentPresenter.processCheckShipmentPrepareCheckout();
+        } else if (shipmentData != null && !result) {
             if (errorPosition != ShipmentAdapter.DEFAULT_ERROR_POSITION) {
                 rvShipment.smoothScrollToPosition(errorPosition);
             }
-            showToastError(getActivity().getString(R.string.message_error_dropshipper));
+            showToastError(getActivity().getString(R.string.message_error_courier_not_selected_or_dropshipper_empty));
             onCartDataDisableToCheckout();
             ((ShipmentCartItemModel) shipmentData).setStateDropshipperHasError(true);
             shipmentAdapter.notifyItemChanged(errorPosition);
-        } else {
-            shipmentPresenter.processCheckShipmentPrepareCheckout();
+        } else if (shipmentData == null) {
+            showToastError(getActivity().getString(R.string.message_error_courier_not_selected_or_dropshipper_empty));
         }
     }
 
@@ -808,5 +800,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onInsuranceCheckedForTrackingAnalytics() {
         checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickAsuransiPengiriman();
+    }
+
+    @Override
+    public void onChoosePaymentMethodButtonClicked(boolean ableToCheckout) {
+        shipmentAdapter.checkDropshipperValidation();
     }
 }

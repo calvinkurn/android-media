@@ -601,6 +601,8 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     }
 
     private void showErrorLayout(String message) {
+        mIsMenuVisible = false;
+        getActivity().invalidateOptionsMenu();
         refreshHandler.finishRefresh();
         rlContent.setVisibility(View.GONE);
         llNetworkErrorView.setVisibility(View.VISIBLE);

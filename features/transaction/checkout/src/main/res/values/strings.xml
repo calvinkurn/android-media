@@ -91,7 +91,6 @@
     <string name="message_error_dropshipper_phone_empty">Mohon isi nomor telepon Anda</string>
     <string name="message_error_dropshipper_phone_invalid">Nomor telepon yang dimasukkan tidak sesuai</string>
     <string name="message_error_no_pinpoint">Anda belum menandai lokasi tujuan dalam peta</string>
-    <string name="message_error_dropshipper">Data dropshipper belum lengkap</string>
     <string name="label_main_address">Utama</string>
     <string name="show_case_finish">Mengerti</string>
     <string name="show_case_prev">Sebelumnya</string>
@@ -166,6 +165,6 @@
     <string name="checkout_module_subtitle_error_empty_address">Tidak ada alamat</string>
     <string name="checkout_module_label_button_retry_error_empty_address">Tambah Alamat</string>
     <string name="message_payment_success">Pembayaran Berhasil</string>
-    <string name="message_error_courier_not_selected">Pastikan Anda telah memilih kurir pengiriman untuk semua alamat</string>
+    <string name="message_error_courier_not_selected_or_dropshipper_empty">Pastikan Anda telah memilih kurir pengiriman untuk semua alamat dan melengkapi informasi tambahan.</string>
 
 </resources>
