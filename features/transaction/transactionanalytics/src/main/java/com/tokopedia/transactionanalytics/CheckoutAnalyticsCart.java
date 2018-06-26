@@ -22,7 +22,7 @@ public class CheckoutAnalyticsCart extends CheckoutAnalytics {
         super(analyticTracker);
     }
 
-    public void  eventClickCartClickKuponFromGunakanPromoAtauKupon() {
+    public void eventClickCartClickKuponFromGunakanPromoAtauKupon() {
         analyticTracker.sendEventTracking(EventName.CLICK_ATC,
                 EventCategory.CART,
                 EventAction.CLICK_KUPON_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON,
@@ -210,9 +210,9 @@ public class CheckoutAnalyticsCart extends CheckoutAnalytics {
     public void enhanceECommerceCartClickHapusFromClickHapus(Map<String, Object> cartMap) {
         analyticTracker.sendEnhancedEcommerce(
                 DataLayer.mapOf("event", EventName.REMOVE_FORM_CART,
-                        "eventCategory", "",
-                        "eventAction", EventCategory.CART,
-                        "eventLabel", ConstantTransactionAnalytics.EventLabel.CLICK_HAPUS_FROM_CLICK_HAPUS,
+                        "eventCategory", EventCategory.CART,
+                        "eventAction", ConstantTransactionAnalytics.EventAction.CLICK_HAPUS_FROM_CLICK_HAPUS,
+                        "eventLabel", "",
                         "ecommerce", cartMap)
         );
     }
@@ -220,9 +220,9 @@ public class CheckoutAnalyticsCart extends CheckoutAnalytics {
     public void enhanceECommerceCartClickHapusDanTambahWishlistFromClickHapus(Map<String, Object> cartMap) {
         analyticTracker.sendEnhancedEcommerce(
                 DataLayer.mapOf("event", EventName.REMOVE_FORM_CART,
-                        "eventCategory", "",
-                        "eventAction", EventCategory.CART,
-                        "eventLabel", ConstantTransactionAnalytics.EventLabel.CLICK_HAPUS_DAN_TAMBAH_WISHLIST_FROM_CLICK_HAPUS,
+                        "eventCategory", EventCategory.CART,
+                        "eventAction", ConstantTransactionAnalytics.EventAction.CLICK_HAPUS_DAN_TAMBAH_WISHLIST_FROM_CLICK_HAPUS,
+                        "eventLabel", "",
                         "ecommerce", cartMap)
         );
     }
@@ -230,9 +230,9 @@ public class CheckoutAnalyticsCart extends CheckoutAnalytics {
     public void enhancedECommerceRemoveCartAddWishList(Map<String, Object> cartMap) {
         analyticTracker.sendEnhancedEcommerce(
                 DataLayer.mapOf("event", EventName.REMOVE_FORM_CART,
-                        "eventCategory", "",
-                        "eventAction", EventCategory.CART,
-                        "eventLabel", ConstantTransactionAnalytics.EventLabel.CLICK_HAPUS_DAN_TAMBAH_WISHLIST_FROM_TRASH_BIN,
+                        "eventCategory", EventCategory.CART,
+                        "eventAction", ConstantTransactionAnalytics.EventAction.CLICK_HAPUS_DAN_TAMBAH_WISHLIST_FROM_TRASH_BIN,
+                        "eventLabel", "",
                         "ecommerce", cartMap)
         );
     }
@@ -240,9 +240,9 @@ public class CheckoutAnalyticsCart extends CheckoutAnalytics {
     public void enhancedECommerceRemoveCartNotWishList(Map<String, Object> cartMap) {
         analyticTracker.sendEnhancedEcommerce(
                 DataLayer.mapOf("event", EventName.REMOVE_FORM_CART,
-                        "eventCategory", "",
-                        "eventAction", EventCategory.CART,
-                        "eventLabel", ConstantTransactionAnalytics.EventLabel.CLICK_HAPUS_FROM_TRASH_BIN,
+                        "eventCategory", EventCategory.CART,
+                        "eventAction", ConstantTransactionAnalytics.EventAction.CLICK_HAPUS_FROM_TRASH_BIN,
+                        "eventLabel", "",
                         "ecommerce", cartMap)
         );
     }
@@ -250,9 +250,9 @@ public class CheckoutAnalyticsCart extends CheckoutAnalytics {
     public void enhancedECommerceCartHapusProdukBerkendala(Map<String, Object> cartMap) {
         analyticTracker.sendEnhancedEcommerce(
                 DataLayer.mapOf("event", EventName.REMOVE_FORM_CART,
-                        "eventCategory", "",
-                        "eventAction", EventCategory.CART,
-                        "eventLabel", ConstantTransactionAnalytics.EventLabel.CLICK_HAPUS_PRODUK_BERKENDALA,
+                        "eventCategory", EventCategory.CART,
+                        "eventAction", ConstantTransactionAnalytics.EventAction.CLICK_HAPUS_PRODUK_BERKENDALA,
+                        "eventLabel", "",
                         "ecommerce", cartMap)
         );
     }
@@ -260,9 +260,9 @@ public class CheckoutAnalyticsCart extends CheckoutAnalytics {
     public void enhancedECommerceCartHapusDanTambahWishlistFromHapusProdukBerkendala(Map<String, Object> cartMap) {
         analyticTracker.sendEnhancedEcommerce(
                 DataLayer.mapOf("event", EventName.REMOVE_FORM_CART,
-                        "eventCategory", "",
-                        "eventAction", EventCategory.CART,
-                        "eventLabel", ConstantTransactionAnalytics.EventLabel.CLICK_HAPUS_DAN_TAMBAH_WISHLIST_FrOM_HaPUS_PRODUK_BERKENDALA,
+                        "eventCategory", EventCategory.CART,
+                        "eventAction", ConstantTransactionAnalytics.EventAction.CLICK_HAPUS_DAN_TAMBAH_WISHLIST_FrOM_HaPUS_PRODUK_BERKENDALA,
+                        "eventLabel", "",
                         "ecommerce", cartMap)
         );
     }
@@ -270,9 +270,9 @@ public class CheckoutAnalyticsCart extends CheckoutAnalytics {
     public void enhancedECommerceCartHapusFromHapusProdukBerkendala(Map<String, Object> cartMap) {
         analyticTracker.sendEnhancedEcommerce(
                 DataLayer.mapOf("event", EventName.REMOVE_FORM_CART,
-                        "eventCategory", "",
-                        "eventAction", EventCategory.CART,
-                        "eventLabel", ConstantTransactionAnalytics.EventLabel.CLICK_HAPUS_FROM_HAPUS_PRODUK_BERKENDALA,
+                        "eventCategory", EventCategory.CART,
+                        "eventAction", ConstantTransactionAnalytics.EventAction.CLICK_HAPUS_FROM_HAPUS_PRODUK_BERKENDALA,
+                        "eventLabel", "",
                         "ecommerce", cartMap)
         );
     }
