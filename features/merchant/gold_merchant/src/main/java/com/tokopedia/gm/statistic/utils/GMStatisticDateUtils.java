@@ -11,7 +11,7 @@ import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
 import com.tokopedia.seller.common.datepicker.view.model.PeriodRangeModel;
 import com.tokopedia.gm.statistic.constant.GMStatConstant;
 import com.tokopedia.gm.statistic.view.activity.GMStatisticDatePickerActivity;
-import com.tokopedia.seller.common.williamchart.util.GoldMerchantDateUtils;
+import com.db.williamchart.util.GoldMerchantDateUtils;
 
 import java.text.DateFormat;
 import java.text.ParseException;

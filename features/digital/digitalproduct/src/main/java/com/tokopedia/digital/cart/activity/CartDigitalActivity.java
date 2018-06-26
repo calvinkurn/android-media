@@ -63,7 +63,7 @@ public class CartDigitalActivity extends BasePresenterActivity implements
     }
 
     @DeepLink({Constants.Applinks.DIGITAL_CART})
-    public static TaskStackBuilder getCallingApplinksTaskStask(Context context, Bundle extras) {
+    public static Intent getCallingApplinksTaskStask(Context context, Bundle extras) {
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
 
@@ -80,9 +80,8 @@ public class CartDigitalActivity extends BasePresenterActivity implements
                 .setData(uri.build())
                 .putExtras(extras);
         destination.putExtra(Constants.EXTRA_FROM_PUSH, true);
-        taskStackBuilder.addNextIntent(homeIntent);
         taskStackBuilder.addNextIntent(destination);
-        return taskStackBuilder;
+        return destination;
     }
 
     @Override

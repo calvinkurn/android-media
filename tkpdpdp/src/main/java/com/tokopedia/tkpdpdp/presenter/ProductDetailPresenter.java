@@ -1,5 +1,6 @@
 package com.tokopedia.tkpdpdp.presenter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -52,7 +53,7 @@ public interface ProductDetailPresenter {
 
     void processToLogin(@NonNull Context context, @NonNull Bundle bundle);
 
-    void processToCart(@NonNull Context context, @NonNull ProductCartPass data);
+    void processToCart(@NonNull Activity context, @NonNull ProductCartPass data);
 
     void sendAnalytics(@NonNull ProductDetailData successResult);
 
@@ -115,4 +116,10 @@ public interface ProductDetailPresenter {
     void onPromoAdsClicked(Context context, String shopId, int itemId, String userId);
 
     void updateRecentView(final @NonNull Context context, final int productId);
+
+    void openPromoteAds(Context context, String url);
+
+    void initTopAdsSourceTaggingUseCase(Context context);
+
+    void saveSource(String source);
 }

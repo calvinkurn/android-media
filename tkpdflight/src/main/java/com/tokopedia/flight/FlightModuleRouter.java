@@ -5,9 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationCameraPassData;
 import com.tokopedia.flight.contactus.model.FlightContactUsPassData;
 import com.tokopedia.flight.review.domain.FlightVoucherCodeWrapper;
 import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
+
+import java.io.File;
 
 import okhttp3.Interceptor;
 import rx.Observable;
@@ -48,6 +51,12 @@ public interface FlightModuleRouter {
 
     Interceptor getChuckInterceptor();
 
+    Intent getGalleryIntent(Activity activity);
+
+    String getGalleryExtraSelectionPathResultKey();
+
+    FlightCancellationCameraPassData startCaptureWithCamera(FragmentActivity activity);
+
     Intent getLoyaltyWithCoupon(Activity activity, String platform, String categoryId, String cartId);
 
     Intent getLoyaltyWithCouponTabSelected(Activity activity, String platform, String categoryId, String cartId);
@@ -57,4 +66,6 @@ public interface FlightModuleRouter {
     Intent getPromoListIntent(Activity activity);
 
     Intent getPromoDetailIntent(Context context, String slug);
+
+    File writeImage(String filePath, int qualityProcentage);
 }

@@ -3,7 +3,7 @@ package com.tokopedia.feedplus.view.listener;
 import android.app.Activity;
 import android.content.res.Resources;
 
-import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.SingleFeedDetailViewModel;

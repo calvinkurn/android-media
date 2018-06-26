@@ -15,9 +15,9 @@ import dagger.Provides;
 
 @Module
 public class KolProfileModule {
-    private final KolPostListener.View viewListener;
+    private final KolPostListener.View.ViewHolder viewListener;
 
-    public KolProfileModule(KolPostListener.View viewListener) {
+    public KolProfileModule(KolPostListener.View.ViewHolder viewListener) {
         this.viewListener = viewListener;
     }
 

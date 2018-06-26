@@ -2,6 +2,8 @@ package com.tokopedia.flight.review.view.presenter;
 
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.domain.FlightAddToCartUseCase;
+import com.tokopedia.flight.booking.view.viewmodel.FlightInsuranceViewModel;
+import com.tokopedia.flight.passenger.domain.FlightPassengerDeleteAllListUseCase;
 import com.tokopedia.flight.booking.view.presenter.FlightBaseBookingPresenter;
 import com.tokopedia.flight.booking.view.viewmodel.BaseCartData;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
@@ -21,13 +23,13 @@ import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
 import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
 import com.tokopedia.usecase.RequestParams;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -77,9 +79,16 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
     @Override
     public void verifyBooking(String promoCode, int price, int adult, String cartId,
                               List<FlightBookingPassengerViewModel> flightPassengerViewModels,
-                              String contactName, String country, String email, String phone) {
+                              String contactName, String country, String email, String phone,
+                              List<FlightInsuranceViewModel> insurances) {
         getView().showCheckoutLoading();
         flightAnalytics.eventReviewNextClick();
+        List<String> insuranceIds = new ArrayList<>();
+        for (FlightInsuranceViewModel insurance : insurances) {
+            insuranceIds.add(insurance.getId());
+        }
+
+
         flightBookingVerifyUseCase.createObservable(
                 flightBookingVerifyUseCase.createRequestParams(
                         promoCode,
@@ -89,7 +98,8 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
                         contactName,
                         country,
                         email,
-                        phone
+                        phone,
+                        insuranceIds
                 )
         ).flatMap(new Func1<DataResponseVerify, Observable<FlightCheckoutEntity>>() {
             @Override
@@ -234,6 +244,11 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
     @Override
     protected void onCountDownTimestampChanged(String timestamp) {
         getView().setTimeStamp(timestamp);
+    }
+
+    @Override
+    public List<FlightInsuranceViewModel> getInsurances() {
+        return getView().getCurrentBookingReviewModel().getInsuranceIds();
     }
 
     private void deleteListPassenger() {

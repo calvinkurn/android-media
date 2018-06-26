@@ -3,6 +3,7 @@ package com.tokopedia.digital.categorylist.view.fragment;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.IntentService;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,13 +19,15 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.apiservices.mojito.MojitoService;
-import com.tokopedia.core.network.apiservices.tokocash.TokoCashService;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.wallet.IWalletRouter;
@@ -48,7 +51,6 @@ import com.tokopedia.digital.categorylist.view.presenter.DigitalCategoryListPres
 import com.tokopedia.digital.categorylist.view.presenter.IDigitalCategoryListPresenter;
 import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
-import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashBalanceData;
 import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
 
 import java.util.ArrayList;
@@ -70,6 +72,7 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     public static final int NUMBER_OF_COLUMN_GRID_CATEGORY_LIST = 4;
     private static final String EXTRA_STATE_DIGITAL_CATEGORY_LIST_DATA =
             "EXTRA_STATE_DIGITAL_CATEGORY_LIST_DATA";
+    private static final String FIREBASE_DIGITAL_OMS_REMOTE_CONFIG_KEY = "app_enable_oms_native";
 
     @BindView(R2.id.rv_digital_category)
     RecyclerView rvDigitalCategoryList;
@@ -88,9 +91,11 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     private RefreshHandler refreshHandler;
     private GridLayoutManager gridLayoutManager;
     private LinearLayoutManager linearLayoutManager;
-    private TokoCashBalanceData tokoCashBalanceData;
+    private TokoCashData tokoCashBalanceData;
     private List<DigitalCategoryItemData> digitalCategoryListDataState;
     private boolean fromAppShortcut = false;
+
+    private RemoteConfig remoteConfig;
 
     public static DigitalCategoryListFragment newInstance() {
         return new DigitalCategoryListFragment();
@@ -148,15 +153,12 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
         if (compositeSubscription == null) compositeSubscription = new CompositeSubscription();
 
         SessionHandler sessionHandler = new SessionHandler(MainApplication.getAppContext());
-        TokoCashService tokoCashService = new TokoCashService(SessionHandler.getAccessToken(
-                MainApplication.getAppContext()
-        ));
         presenter = new DigitalCategoryListPresenter(
                 new DigitalCategoryListInteractor(
                         compositeSubscription,
                         new DigitalCategoryListRepository(
                                 mojitoService, new GlobalCacheManager(), mapperData,
-                                sessionHandler), tokoCashService), this);
+                                sessionHandler)), this);
     }
 
     @Override
@@ -235,8 +237,17 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
         linearLayoutManager = new LinearLayoutManager(getActivity());
         gridLayoutManager = new GridLayoutManager(getActivity(), NUMBER_OF_COLUMN_GRID_CATEGORY_LIST);
         adapter = new DigitalCategoryListAdapter(this, this, NUMBER_OF_COLUMN_GRID_CATEGORY_LIST);
+        initRemoteConfig();
     }
 
+    private void initRemoteConfig() {
+        remoteConfig = new FirebaseRemoteConfigImpl(context);
+    }
+
+    public boolean isDigitalOmsEnable() {
+        return remoteConfig.getBoolean(FIREBASE_DIGITAL_OMS_REMOTE_CONFIG_KEY,true);
+
+    }
     @Override
     protected void setActionVar() {
         presenter.processGetTokoCashData();
@@ -289,8 +300,13 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     }
 
     @Override
-    public void renderTokoCashData(TokoCashBalanceData tokoCashData) {
+    public void renderTokoCashData(TokoCashData tokoCashData) {
         this.tokoCashBalanceData = tokoCashData;
+    }
+
+    @Override
+    public Context getAppContext() {
+        return getActivity();
     }
 
     @Override
@@ -334,21 +350,6 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     }
 
     @Override
-    public void showDialog(Dialog dialog) {
-
-    }
-
-    @Override
-    public void dismissDialog(Dialog dialog) {
-
-    }
-
-    @Override
-    public void executeIntentService(Bundle bundle, Class<? extends IntentService> clazz) {
-
-    }
-
-    @Override
     public String getStringFromResource(@StringRes int resId) {
         return null;
     }
@@ -387,7 +388,7 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
                     getActivity().getApplication(),
                     this,
                     IWalletRouter.DEFAULT_WALLET_APPLINK_REQUEST_CODE,
-                    tokoCashBalanceData.getAction().getApplinks(),
+                    tokoCashBalanceData.getAction().getmAppLinks(),
                     tokoCashBalanceData.getAction().getRedirectUrl(),
                     new Bundle()
             );
@@ -439,6 +440,11 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     @Override
     public void onClickCategoryHeaderMenu(DigitalCategoryItemHeader data) {
         switch (data.getTypeMenu()) {
+            case TRANSACTION:
+                if(isDigitalOmsEnable()) {
+                    startActivity(((IDigitalModuleRouter) getActivity().getApplication()).getOrderListIntent(getActivity()));
+                    break;
+                }
             default:
                 startActivity(DigitalWebActivity.newInstance(getActivity(), data.getSiteUrl()));
                 break;
@@ -448,5 +454,4 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     public boolean isFromAppShortcut() {
         return fromAppShortcut;
     }
-
 }

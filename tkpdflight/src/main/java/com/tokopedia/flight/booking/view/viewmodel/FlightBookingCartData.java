@@ -21,10 +21,9 @@ public class FlightBookingCartData implements Parcelable {
     private List<FlightBookingAmenityMetaViewModel> luggageViewModels;
     private List<FlightBookingAmenityMetaViewModel> mealViewModels;
     private List<NewFarePrice> newFarePrices;
-    private FlightBookingVoucherViewModel voucherViewModel;
 
-    public FlightBookingCartData() {
-    }
+    private FlightBookingVoucherViewModel voucherViewModel;
+    private boolean isDomestic;
 
     protected FlightBookingCartData(Parcel in) {
         id = in.readString();
@@ -35,6 +34,8 @@ public class FlightBookingCartData implements Parcelable {
         luggageViewModels = in.createTypedArrayList(FlightBookingAmenityMetaViewModel.CREATOR);
         mealViewModels = in.createTypedArrayList(FlightBookingAmenityMetaViewModel.CREATOR);
         newFarePrices = in.createTypedArrayList(NewFarePrice.CREATOR);
+        isDomestic = in.readByte() != 0;
+        insurances = in.createTypedArrayList(FlightInsuranceViewModel.CREATOR);
         voucherViewModel = in.readParcelable(FlightBookingVoucherViewModel.class.getClassLoader());
     }
 
@@ -48,6 +49,8 @@ public class FlightBookingCartData implements Parcelable {
         dest.writeTypedList(luggageViewModels);
         dest.writeTypedList(mealViewModels);
         dest.writeTypedList(newFarePrices);
+        dest.writeByte((byte) (isDomestic ? 1 : 0));
+        dest.writeTypedList(insurances);
         dest.writeParcelable(voucherViewModel, flags);
     }
 
@@ -68,9 +71,21 @@ public class FlightBookingCartData implements Parcelable {
         }
     };
 
+    public List<FlightInsuranceViewModel> getInsurances() {
+        return insurances;
+    }
+
+    public void setInsurances(List<FlightInsuranceViewModel> insurances) {
+        this.insurances = insurances;
+    }
+
+    private List<FlightInsuranceViewModel> insurances;
+
+    public FlightBookingCartData() {
+    }
+
     public int getRefreshTime() {
         return refreshTime;
-//        return 15;
     }
 
     public void setRefreshTime(int refreshTime) {
@@ -137,7 +152,15 @@ public class FlightBookingCartData implements Parcelable {
         return voucherViewModel;
     }
 
+    public boolean isDomestic() {
+        return isDomestic;
+    }
+
     public void setVoucherViewModel(FlightBookingVoucherViewModel voucherViewModel) {
         this.voucherViewModel = voucherViewModel;
+    }
+
+    public void setDomestic(boolean domestic) {
+        isDomestic = domestic;
     }
 }

@@ -76,7 +76,8 @@ import javax.inject.Inject;
  * Created by zulfikarrahman on 11/9/17.
  */
 
-public class FlightBookingReviewFragment extends BaseDaggerFragment implements FlightBookingReviewContract.View, OnBackActionListener, VoucherCartHachikoView.ActionListener {
+public class FlightBookingReviewFragment extends BaseDaggerFragment implements
+        FlightBookingReviewContract.View, OnBackActionListener, VoucherCartHachikoView.ActionListener {
 
     public static final String HACHIKO_FLIGHT_KEY = "flight";
     public static final String EXTRA_NEED_TO_REFRESH = "EXTRA_NEED_TO_REFRESH";
@@ -196,9 +197,18 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
     }
 
     private void actionVerifyAndCheckoutBooking() {
-        flightBookingReviewPresenter.verifyBooking(voucherCartView.getVoucherCode(), flightBookingReviewModel.getTotalPriceNumeric(),
-                flightBookingReviewModel.getAdult(), flightBookingReviewModel.getId(), flightBookingReviewModel.getDetailPassengersData(), flightBookingReviewModel.getContactName(),
-                flightBookingReviewModel.getPhoneCodeViewModel().getCountryId(), flightBookingReviewModel.getContactEmail(), flightBookingReviewModel.getContactPhone());
+        flightBookingReviewPresenter.verifyBooking(
+                voucherCartView.getVoucherCode(),
+                flightBookingReviewModel.getTotalPriceNumeric(),
+                flightBookingReviewModel.getAdult(),
+                flightBookingReviewModel.getId(),
+                flightBookingReviewModel.getDetailPassengersData(),
+                flightBookingReviewModel.getContactName(),
+                flightBookingReviewModel.getPhoneCodeViewModel().getCountryId(),
+                flightBookingReviewModel.getContactEmail(),
+                flightBookingReviewModel.getContactPhone(),
+                flightBookingReviewModel.getInsuranceIds()
+        );
     }
 
     void initView() {
@@ -331,7 +341,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
         int totalFinal = 0;
         if (attributesVoucher != null && Math.round(attributesVoucher.getDiscountAmountPlain()) > 0) {
             discountAppliedLayout.setVisibility(View.VISIBLE);
-            reviewDiscountPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace((int) Math.round(attributesVoucher.getDiscountAmountPlain())));
+            reviewDiscountPrice.setText(getFormattedDiscountPrice(attributesVoucher.getDiscountAmountPlain()));
             reviewTotalPrice.setText(flightBookingReviewModel.getTotalPrice());
             totalFinal = (int) (currentBookingReviewModel.getTotalPriceNumeric() - attributesVoucher.getDiscountAmountPlain());
         } else {
@@ -339,6 +349,10 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
             totalFinal = currentBookingReviewModel.getTotalPriceNumeric();
         }
         reviewFinalTotalPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(totalFinal));
+    }
+
+    private String getFormattedDiscountPrice(double discountAmountPlain) {
+        return String.format(getString(R.string.flight_review_minus_discount_prefix), CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace((int) Math.round(discountAmountPlain)));
     }
 
     @Override
@@ -378,8 +392,8 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
     }
 
     @Override
-    public void disableVoucherDisount() {
-
+    public void disableVoucherDiscount() {
+        updateFinalTotal(null, getCurrentBookingReviewModel());
     }
 
     @Override
