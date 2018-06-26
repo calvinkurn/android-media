@@ -93,5 +93,7 @@ public interface FlightBookingReviewContract {
         void onPaymentFailed();
 
         void onPaymentCancelled();
+
+        void onCancelAppliedVoucher();
     }
 }

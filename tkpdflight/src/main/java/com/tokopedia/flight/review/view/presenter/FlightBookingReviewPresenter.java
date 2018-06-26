@@ -2,12 +2,11 @@ package com.tokopedia.flight.review.view.presenter;
 
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.domain.FlightAddToCartUseCase;
-import com.tokopedia.flight.booking.view.viewmodel.FlightInsuranceViewModel;
-import com.tokopedia.flight.passenger.domain.FlightPassengerDeleteAllListUseCase;
 import com.tokopedia.flight.booking.view.presenter.FlightBaseBookingPresenter;
 import com.tokopedia.flight.booking.view.viewmodel.BaseCartData;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingVoucherViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightInsuranceViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.mapper.FlightBookingCartDataMapper;
 import com.tokopedia.flight.common.data.model.FlightException;
 import com.tokopedia.flight.common.util.FlightAnalytics;
@@ -17,6 +16,7 @@ import com.tokopedia.flight.review.data.model.AttributesVoucher;
 import com.tokopedia.flight.review.data.model.FlightCheckoutEntity;
 import com.tokopedia.flight.review.domain.FlightBookingCheckoutUseCase;
 import com.tokopedia.flight.review.domain.FlightBookingVerifyUseCase;
+import com.tokopedia.flight.review.domain.FlightCancelVoucherUseCase;
 import com.tokopedia.flight.review.domain.verifybooking.model.response.CartItem;
 import com.tokopedia.flight.review.domain.verifybooking.model.response.DataResponseVerify;
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
@@ -43,6 +43,7 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
     private final FlightBookingCheckoutUseCase flightBookingCheckoutUseCase;
     private final FlightBookingVerifyUseCase flightBookingVerifyUseCase;
     private final FlightPassengerDeleteAllListUseCase flightPassengerDeleteAllListUseCase;
+    private final FlightCancelVoucherUseCase flightCancelVoucherUseCase;
     private FlightAnalytics flightAnalytics;
 
     @Inject
@@ -51,11 +52,13 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
                                         FlightBookingCartDataMapper flightBookingCartDataMapper,
                                         FlightBookingVerifyUseCase flightBookingVerifyUseCase,
                                         FlightPassengerDeleteAllListUseCase flightPassengerDeleteAllListUseCase,
+                                        FlightCancelVoucherUseCase flightCancelVoucherUseCase,
                                         FlightAnalytics flightAnalytics) {
         super(flightAddToCartUseCase, flightBookingCartDataMapper);
         this.flightBookingCheckoutUseCase = flightBookingCheckoutUseCase;
         this.flightBookingVerifyUseCase = flightBookingVerifyUseCase;
         this.flightPassengerDeleteAllListUseCase = flightPassengerDeleteAllListUseCase;
+        this.flightCancelVoucherUseCase = flightCancelVoucherUseCase;
         this.flightAnalytics = flightAnalytics;
     }
 
@@ -181,6 +184,29 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
         getView().setNeedToRefreshOnPassengerInfo();
         getView().showPaymentFailedErrorMessage(R.string.flight_review_cancel_checkout_message);
         flightAnalytics.eventPurchaseAttemptCancelled();
+    }
+
+    @Override
+    public void onCancelAppliedVoucher() {
+        this.flightCancelVoucherUseCase.execute(
+                this.flightCancelVoucherUseCase.createEmptyParams(),
+                new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+
+                    }
+
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+
+                    }
+                }
+        );
     }
 
     public Subscriber<FlightCheckoutEntity> getSubscriberSubmitData() {

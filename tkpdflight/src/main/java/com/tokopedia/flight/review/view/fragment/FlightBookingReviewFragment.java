@@ -393,6 +393,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
 
     @Override
     public void disableVoucherDiscount() {
+        flightBookingReviewPresenter.onCancelAppliedVoucher();
         updateFinalTotal(null, getCurrentBookingReviewModel());
     }
 
