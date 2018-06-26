@@ -1,8 +1,9 @@
 package com.tokopedia.flight.search.view.adapter.viewholder;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.LayoutRes;
-import android.support.graphics.drawable.VectorDrawableCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.text.TextUtils;
 import android.view.View;
@@ -13,7 +14,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder;
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.search.view.model.resultstatistics.AirlineStat;
 
@@ -44,7 +44,7 @@ public class FlightFilterAirlineViewHolder extends BaseCheckableViewHolder<Airli
     @Override
     public void bind(AirlineStat airlineStat) {
         super.bind(airlineStat);
-        loadImageWithPlaceholder(ivLogo, airlineStat.getAirlineDB().getLogo(), VectorDrawableCompat.create(itemView.getResources(), R.drawable.ic_airline_default, itemView.getContext().getTheme()));
+        loadImageWithPlaceholder(ivLogo, airlineStat.getAirlineDB().getLogo(), ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_airline_default));
         tvTitle.setText(airlineStat.getAirlineDB().getName());
         tvDesc.setText(getString(R.string.start_from_x, airlineStat.getMinPriceString()));
         itemView.setOnClickListener(this);
@@ -60,7 +60,7 @@ public class FlightFilterAirlineViewHolder extends BaseCheckableViewHolder<Airli
         toggle();
     }
 
-    private void loadImageWithPlaceholder(ImageView imageview, String url, VectorDrawableCompat resId) {
+    private void loadImageWithPlaceholder(ImageView imageview, String url, Drawable resId) {
         if (url != null && !TextUtils.isEmpty(url)) {
             Glide.with(imageview.getContext())
                     .load(url)
