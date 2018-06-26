@@ -46,10 +46,6 @@ public class YouTubeVideoPresenter extends BaseDaggerPresenter<YouTubeVideoPrese
 
         void onErrorGetVideoRecommendation(Throwable e);
 
-        void onSuccessGetVideoDetail(YoutubeVideoModel youtubeVideoModel);
-
-        void onErrorGetVideoDetail(Throwable e);
-
         void onSuccessGetVideoDetailList(ArrayList<YoutubeVideoModel> youtubeVideoModelArrayList);
 
         void onErrorGetVideoDetailList(Throwable e);
@@ -93,31 +89,6 @@ public class YouTubeVideoPresenter extends BaseDaggerPresenter<YouTubeVideoPrese
                 }
             }
         });
-    }
-
-    public void getVideoDetail(String youtubeVideoId) {
-        initYouTubeVideoDetailUseCase();
-        getYoutubeVideoDetailUseCase.execute(GetYoutubeVideoDetailUseCase.generateRequestParam(youtubeVideoId),
-                new Subscriber<Map<Type, RestResponse>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        if (isViewAttached()) {
-                            getView().onErrorGetVideoDetail(e);
-                        }
-                    }
-
-                    @Override
-                    public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
-                        if (isViewAttached()) {
-                            getView().onSuccessGetVideoDetail(convertToModel(typeRestResponseMap));
-                        }
-                    }
-                });
     }
 
     private void initYouTubeVideoDetailUseCase() {

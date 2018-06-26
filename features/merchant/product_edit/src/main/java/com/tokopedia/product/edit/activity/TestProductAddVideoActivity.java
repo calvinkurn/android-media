@@ -33,7 +33,6 @@ public class TestProductAddVideoActivity extends BaseSimpleActivity implements Y
         youTubeVideoPresenter.attachView(this);
 //        youTubeVideoPresenter.getVideoRecommendation("iphone", 3);
 
-        youTubeVideoPresenter.getVideoDetail("qifuYKVi23I");
         ArrayList<String> videoIdList = new ArrayList<>();
         videoIdList.add("ruUq2F72oao");
         videoIdList.add("qifuYKVi23I");
@@ -47,16 +46,6 @@ public class TestProductAddVideoActivity extends BaseSimpleActivity implements Y
 
     @Override
     public void onErrorGetVideoRecommendation(Throwable throwable) {
-        //TODO update UI
-    }
-
-    @Override
-    public void onSuccessGetVideoDetail(YoutubeVideoModel youtubeVideoModel) {
-        //TODO update UI
-    }
-
-    @Override
-    public void onErrorGetVideoDetail(Throwable e) {
         //TODO update UI
     }
 
