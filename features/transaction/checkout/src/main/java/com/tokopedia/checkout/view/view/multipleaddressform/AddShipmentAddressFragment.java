@@ -212,24 +212,6 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
                     getActivity().finish();
                     break;
             }
-        } else if (requestCode == ManageAddressConstant.REQUEST_CODE_PARAM_CREATE) {
-            RecipientAddressModel newRecipientAddressModel = null;
-            if (data != null && data.hasExtra(EXTRA_ADDRESS)) {
-                Destination newAddress = data.getParcelableExtra(EXTRA_ADDRESS);
-                newRecipientAddressModel = new RecipientAddressModel();
-                newRecipientAddressModel.setAddressName(newAddress.getAddressName());
-                newRecipientAddressModel.setDestinationDistrictId(newAddress.getDistrictId());
-                newRecipientAddressModel.setCityId(newAddress.getCityId());
-                newRecipientAddressModel.setProvinceId(newAddress.getProvinceId());
-                newRecipientAddressModel.setRecipientName(newAddress.getReceiverName());
-                newRecipientAddressModel.setRecipientPhoneNumber(newAddress.getReceiverPhone());
-                newRecipientAddressModel.setAddressStreet(newAddress.getAddressStreet());
-//                mCartAddressChoicePresenter.getAddressShortedList(getActivity(), newRecipientAddressModel, true);
-            } else {
-                newRecipientAddressModel = (RecipientAddressModel) getArguments().getParcelable(EXTRA_CURRENT_ADDRESS);
-//                mCartAddressChoicePresenter.getAddressShortedList(getActivity(), newRecipientAddressModel, false);
-            }
-
         }
     }
 
@@ -323,7 +305,7 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
             if (itemData.getMinQuantity() != 0) {
                 quantityField.setText(String.valueOf(itemData.getMinQuantity()));
             } else {
-                quantityField.setText("1");
+                quantityField.setText(itemData.getMinQuantity() != 0 ? String.valueOf(itemData.getMinQuantity()) : "1");
             }
         } else {
             quantityField.setText(itemData.getProductQty());
@@ -533,7 +515,7 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
             @Override
             public void afterTextChanged(Editable editable) {
                 if (TextUtils.isEmpty(editable)) {
-                    quantityField.setText("1");
+                    quantityField.setText(data.getMinQuantity() != 0 ? String.valueOf(data.getMinQuantity()) : "1");
                 } else {
                     int zeroCount = 0;
                     for (int i = 0; i < editable.length(); i++) {
@@ -542,13 +524,13 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
                         }
                     }
                     if (zeroCount == editable.length()) {
-                        quantityField.setText("1");
+                        quantityField.setText(data.getMinQuantity() != 0 ? String.valueOf(data.getMinQuantity()) : "1");
                     } else if (editable.charAt(0) == '0') {
                         quantityField.setText(editable.toString().substring(zeroCount, editable.length()));
-                        quantityField.setSelection(quantityField.length());
                     }
                     setQuantityButtonAvailability(editable, decreaseButton, increaseButton);
                     setEditButtonVisibility(editable, data);
+                    quantityField.setSelection(quantityField.length());
                 }
             }
         };

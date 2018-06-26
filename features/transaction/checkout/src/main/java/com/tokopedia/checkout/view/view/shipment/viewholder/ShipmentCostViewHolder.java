@@ -44,7 +44,7 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
     private TextView mTvSellerCostAdditionLabel;
     private TextView mTvSellerCostAdditionFee;
     private TextView mTvInsuranceFeeLabel;
-    private TextView mTvPromoLabel;
+    private TextView mTvPromoOrCouponLabel;
 
     private TextView mTvPromoMessage;
 
@@ -65,7 +65,7 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         mTvSellerCostAdditionLabel = itemView.findViewById(R.id.tv_seller_cost_addition);
         mTvSellerCostAdditionFee = itemView.findViewById(R.id.tv_seller_cost_addition_fee);
         mTvInsuranceFeeLabel = itemView.findViewById(R.id.tv_insurance_fee_label);
-        mTvPromoLabel = itemView.findViewById(R.id.tv_promo_label);
+        mTvPromoOrCouponLabel = itemView.findViewById(R.id.tv_promo_or_coupon_label);
 
         this.shipmentAdapterActionListener = shipmentAdapterActionListener;
     }
@@ -79,13 +79,17 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         mTvShippingFeeLabel.setText(mTvShippingFeeLabel.getContext().getString(R.string.label_shipment_fee));
         mTvShippingFee.setText(getPriceFormat(mTvShippingFeeLabel, mTvShippingFee, shipmentCost.getShippingFee()));
         mTvInsuranceFee.setText(getPriceFormat(mTvInsuranceFeeLabel, mTvInsuranceFee, shipmentCost.getInsuranceFee()));
-        mTvPromoDiscount.setText(getPriceFormat(mTvPromoLabel, mTvPromoDiscount, shipmentCost.getPromoPrice()));
+        mTvPromoDiscount.setText(getPriceFormat(mTvPromoOrCouponLabel, mTvPromoDiscount, shipmentCost.getPromoPrice()));
         mTvSellerCostAdditionFee.setText(getPriceFormat(mTvSellerCostAdditionLabel, mTvSellerCostAdditionFee, shipmentCost.getAdditionalFee()));
         if (!TextUtils.isEmpty(shipmentCost.getPromoMessage())) {
             formatPromoMessage(mTvPromoMessage, shipmentCost.getPromoMessage());
             mTvPromoMessage.setVisibility(View.VISIBLE);
-            if (promo != null && promo.getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_COUPON) {
-                mTvPromoLabel.setText("Kupon");
+            if (promo != null) {
+                if (promo.getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_COUPON) {
+                    mTvPromoOrCouponLabel.setText(mTvPromoOrCouponLabel.getContext().getString(R.string.label_coupon));
+                } else if (promo.getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_VOUCHER) {
+                    mTvPromoOrCouponLabel.setText(mTvPromoOrCouponLabel.getContext().getString(R.string.label_promo));
+                }
             }
         } else {
             mTvPromoMessage.setVisibility(View.GONE);

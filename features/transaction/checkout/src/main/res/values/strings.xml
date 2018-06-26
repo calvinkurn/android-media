@@ -21,6 +21,7 @@
     <string name="label_courier">Kurir Pengiriman</string>
     <string name="label_subtotal">Sub total</string>
     <string name="label_promo">Promo</string>
+    <string name="label_coupon">Kupon</string>
     <string name="label_payment_total">Total Tagihan</string>
     <string name="label_button_choose_payment_method">Pilih Metode Pembayaran</string>
     <string name="label_menu_cart_remove">Hapus</string>
@@ -165,5 +166,6 @@
     <string name="checkout_module_subtitle_error_empty_address">Tidak ada alamat</string>
     <string name="checkout_module_label_button_retry_error_empty_address">Tambah Alamat</string>
     <string name="message_payment_success">Pembayaran Berhasil</string>
+    <string name="message_error_courier_not_selected">Pastikan Anda telah memilih kurir pengiriman untuk semua alamat</string>
 
 </resources>

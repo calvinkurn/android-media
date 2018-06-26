@@ -131,8 +131,10 @@
         android:background="@color/white"
         android:gravity="center_vertical"
         android:orientation="horizontal"
+        android:paddingBottom="@dimen/dp_8"
         android:paddingLeft="@dimen/dp_16"
         android:paddingStart="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_8"
         android:visibility="visible"
         tools:visibility="gone">
 
@@ -179,7 +181,7 @@
             android:paddingLeft="@dimen/dp_16"
             android:paddingStart="@dimen/dp_16"
             android:paddingTop="@dimen/dp_8"
-            tools:visibility="visible">
+            tools:visibility="gone">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -305,7 +307,7 @@
             android:paddingLeft="@dimen/dp_16"
             android:paddingRight="@dimen/dp_16"
             android:paddingTop="@dimen/dp_4"
-            tools:visibility="gone">
+            tools:visibility="visible">
 
             <CheckBox
                 android:id="@+id/cb_dropshipper"
@@ -342,6 +344,7 @@
                 android:id="@+id/text_input_layout_shipper_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_8"
                 android:hint="@string/label_hint_cart_item_dropshipper_name">
 
                 <EditText
@@ -349,7 +352,7 @@
                     style="@style/TextMid"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_vs"
+                    android:layout_marginBottom="-4dp"
                     android:imeOptions="actionNext"
                     android:inputType="textCapWords" />
             </android.support.design.widget.TextInputLayout>
@@ -358,6 +361,7 @@
                 android:id="@+id/text_input_layout_shipper_phone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_8"
                 android:hint="@string/label_hint_cart_item_dropshipper_phone_number">
 
                 <EditText
@@ -365,7 +369,7 @@
                     style="@style/TextMid"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_vs"
+                    android:layout_marginBottom="-4dp"
                     android:imeOptions="actionDone"
                     android:inputType="phone" />
             </android.support.design.widget.TextInputLayout>

@@ -111,8 +111,6 @@ public class CartListPresenter implements ICartListPresenter {
     @Override
     public void processInitialGetCartData() {
         view.renderLoadGetCartData();
-        view.disableSwipeRefresh();
-
 
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(
@@ -399,7 +397,7 @@ public class CartListPresenter implements ICartListPresenter {
 
 
     @Override
-    public void processToShipmentForm() {
+    public void processToShipmentForm(boolean toAddressChoice) {
         view.showProgressLoading();
         TKPDMapParam<String, String> paramGetShipmentForm = new TKPDMapParam<>();
         paramGetShipmentForm.put("lang", "id");
@@ -413,7 +411,7 @@ public class CartListPresenter implements ICartListPresenter {
                         .subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
                         .unsubscribeOn(Schedulers.newThread())
-                        .subscribe(getSubscriberToShipmentForm())
+                        .subscribe(getSubscriberToShipmentForm(toAddressChoice))
         );
     }
 
@@ -421,7 +419,6 @@ public class CartListPresenter implements ICartListPresenter {
     @Override
     public void processResetAndRefreshCartData() {
         view.renderLoadGetCartData();
-        view.disableSwipeRefresh();
         view.showProgressLoading();
         TKPDMapParam<String, String> paramResetCart = new TKPDMapParam<>();
         paramResetCart.put("lang", "id");
@@ -575,9 +572,9 @@ public class CartListPresenter implements ICartListPresenter {
                 if (cartListData.getCartItemDataList().isEmpty()) {
                     view.renderEmptyCartData(cartListData);
                 } else {
+                    view.disableSwipeRefresh();
                     view.renderInitialGetCartListDataSuccess(cartListData);
                 }
-
             }
         };
     }
@@ -760,7 +757,7 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @NonNull
-    private Subscriber<CartShipmentAddressFormData> getSubscriberToShipmentForm() {
+    private Subscriber<CartShipmentAddressFormData> getSubscriberToShipmentForm(boolean toAddressChoice) {
         return new Subscriber<CartShipmentAddressFormData>() {
             @Override
             public void onCompleted() {
@@ -806,8 +803,11 @@ public class CartListPresenter implements ICartListPresenter {
                 if (cartShipmentAddressFormData.isError()) {
                     view.renderErrorToShipmentForm(cartShipmentAddressFormData.getErrorMessage());
                 } else {
-                    view.renderToAddressChoice(cartShipmentAddressFormData);
-//                    view.renderToShipmentFormSuccess(cartShipmentAddressFormData);
+                    if (toAddressChoice) {
+                        view.renderToAddressChoice(cartShipmentAddressFormData);
+                    } else {
+                        view.renderToShipmentFormSuccess(cartShipmentAddressFormData);
+                    }
                 }
             }
         };
@@ -862,6 +862,7 @@ public class CartListPresenter implements ICartListPresenter {
                 if (resetAndRefreshCartListData.getCartListData() == null) {
                     view.renderErrorInitialGetCartListData(resetAndRefreshCartListData.getResetCartData().getMessage());
                 } else {
+                    view.disableSwipeRefresh();
                     if (resetAndRefreshCartListData.getCartListData().getCartItemDataList().isEmpty()) {
                         view.renderEmptyCartData(resetAndRefreshCartListData.getCartListData());
                     } else {

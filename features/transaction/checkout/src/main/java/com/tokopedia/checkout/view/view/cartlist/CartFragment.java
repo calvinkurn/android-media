@@ -600,7 +600,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
         cartListAdapter.checkForShipmentForm();
     }
 
-    private void showError(String message) {
+    private void showErrorLayout(String message) {
         refreshHandler.finishRefresh();
         rlContent.setVisibility(View.GONE);
         llNetworkErrorView.setVisibility(View.VISIBLE);
@@ -610,31 +610,57 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
                     public void onRetryClicked() {
                         llNetworkErrorView.setVisibility(View.GONE);
                         rlContent.setVisibility(View.VISIBLE);
-                        refreshHandler.startRefresh();
+                        refreshHandler.setPullEnabled(true);
+                        refreshHandler.setRefreshing(true);
                         cartListAdapter.resetData();
                         dPresenter.processInitialGetCartData();
                     }
                 });
     }
 
+    private void showSnackbarRetry(String message) {
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), message, new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                dPresenter.processInitialGetCartData();
+            }
+        }).showRetrySnackbar();
+    }
+
     @Override
     public void renderErrorInitialGetCartListData(String message) {
-        showError(message);
+        if (cartListAdapter.getItemCount() > 0) {
+            showSnackbarRetry(message);
+        } else {
+            showErrorLayout(message);
+        }
     }
 
     @Override
     public void renderErrorHttpInitialGetCartListData(String message) {
-        showError(message);
+        if (cartListAdapter.getItemCount() > 0) {
+            showSnackbarRetry(message);
+        } else {
+            showErrorLayout(message);
+        }
     }
 
     @Override
     public void renderErrorNoConnectionInitialGetCartListData(String message) {
-        showError(message);
+        if (cartListAdapter.getItemCount() > 0) {
+            showSnackbarRetry(message);
+        } else {
+            showErrorLayout(message);
+        }
     }
 
     @Override
     public void renderErrorTimeoutConnectionInitialGetCartListData(String message) {
-        showError(message);
+        if (cartListAdapter.getItemCount() > 0) {
+            showSnackbarRetry(message);
+        } else {
+            showErrorLayout(message);
+        }
     }
 
     @Override
@@ -1002,9 +1028,10 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     }
 
     private void onResultFromRequestCodeMultipleAddressForm(int resultCode) {
-        if (resultCode == MultipleAddressFormActivity.RESULT_CODE_SUCCESS_SET_SHIPPING
-                || resultCode == MultipleAddressFormActivity.RESULT_CODE_FORCE_RESET_CART_ADDRESS_FORM) {
-            dPresenter.processToShipmentForm();
+        if (resultCode == MultipleAddressFormActivity.RESULT_CODE_SUCCESS_SET_SHIPPING) {
+            dPresenter.processToShipmentForm(false);
+        } else if (resultCode == MultipleAddressFormActivity.RESULT_CODE_FORCE_RESET_CART_ADDRESS_FORM) {
+            dPresenter.processToShipmentForm(true);
         }
     }
 
@@ -1085,7 +1112,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
 
     private void onResultFromRequestCodeAddressChoiceActivity(int resultCode) {
         if (resultCode == CartAddressChoiceActivity.RESULT_CODE_ACTION_ADD_DEFAULT_ADDRESS) {
-            dPresenter.processToShipmentForm();
+            dPresenter.processToShipmentForm(false);
         }
     }
 

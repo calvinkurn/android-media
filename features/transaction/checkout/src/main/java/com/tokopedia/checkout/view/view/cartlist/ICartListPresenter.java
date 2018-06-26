@@ -30,7 +30,7 @@ public interface ICartListPresenter {
 
     void processCheckPromoCodeFromSuggestedPromo(String promoCode);
 
-    void processToShipmentForm();
+    void processToShipmentForm(boolean toAddressChoice);
 
     void processResetAndRefreshCartData();
 
