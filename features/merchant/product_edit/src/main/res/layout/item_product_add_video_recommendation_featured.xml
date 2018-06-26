@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/dp_150"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:layout_margin="@dimen/dp_8"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/image_video"
+            android:layout_width="@dimen/dp_150"
+            android:layout_height="@dimen/dp_80"
+            android:background="@color/grey_300"/>
+
+        <ImageView
+            android:layout_width="@dimen/dp_30"
+            android:layout_height="@dimen/dp_30"
+            android:background="@color/grey_400"
+            android:layout_alignRight="@+id/image_video"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="21:07"
+            android:textSize="@dimen/sp_12"
+            android:layout_alignRight="@+id/image_video"
+            android:layout_alignBottom="@+id/image_video"
+            android:background="@drawable/rounded_grey"
+            android:paddingLeft="@dimen/dp_4"
+            android:paddingRight="@dimen/dp_4"
+            android:paddingTop="@dimen/dp_2"
+            android:paddingBottom="@dimen/dp_2"
+            android:textColor="@color/white"/>
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Test tstet et etet et e awa aw aw aw"
+        android:layout_marginTop="@dimen/dp_2"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Test tstet et etet et e "
+        android:textSize="@dimen/sp_12"
+        android:layout_marginTop="@dimen/dp_2"/>
+
+</LinearLayout>
