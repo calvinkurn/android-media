@@ -92,7 +92,7 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
     }
 
     private boolean isAudioShakeEnable() {
-        return true;
+        return false;
 
     }
 
