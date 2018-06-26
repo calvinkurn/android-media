@@ -153,7 +153,7 @@ import static com.tokopedia.tkpdpdp.VariantActivity.KEY_VARIANT_DATA;
  * Edited by alifa, rohmadi, henry for v2
  */
 @RuntimePermissions
-public class  ProductDetailFragment extends BasePresenterFragmentV4<ProductDetailPresenter>
+public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetailPresenter>
         implements ProductDetailView {
 
     private static final int FROM_COLLAPSED = 0;
