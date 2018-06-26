@@ -3,8 +3,8 @@ package com.tokopedia.feedplus.view.adapter.typefactory.feed;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.core.base.adapter.model.EmptyModel;
 import com.tokopedia.feedplus.view.adapter.viewholder.EmptyFeedBeforeLoginViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.blog.ImageBlogViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.blog.VideoBlogViewHolder;
