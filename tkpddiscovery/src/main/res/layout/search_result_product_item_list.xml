@@ -163,12 +163,12 @@
                     android:paddingRight="@dimen/padding_ms"
                     android:paddingTop="@dimen/padding_vvs"
                     android:paddingBottom="@dimen/padding_vvs"
+                    android:layout_marginRight="@dimen/dp_6"
                     android:background="@drawable/quick_filter_item_background_neutral"/>
 
                 <TextView
                     android:id="@+id/bottomLabel"
                     style="@style/TextView.Micro.Green"
-                    android:layout_marginLeft="@dimen/dp_6"
                     android:paddingLeft="@dimen/padding_ms"
                     android:paddingRight="@dimen/padding_ms"
                     android:paddingTop="@dimen/padding_vvs"
