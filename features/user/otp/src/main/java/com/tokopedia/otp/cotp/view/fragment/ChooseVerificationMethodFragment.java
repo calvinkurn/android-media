@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.design.component.Dialog;
 import com.tokopedia.otp.OtpModuleRouter;
 import com.tokopedia.otp.R;
 import com.tokopedia.otp.common.OTPAnalytics;
@@ -31,7 +32,6 @@ import com.tokopedia.otp.cotp.view.viewmodel.ListVerificationMethod;
 import com.tokopedia.otp.cotp.view.viewmodel.MethodItem;
 import com.tokopedia.otp.cotp.view.viewmodel.VerificationPassModel;
 import com.tokopedia.user.session.UserSession;
-import com.tokopedia.design.component.Dialog;
 
 import javax.inject.Inject;
 

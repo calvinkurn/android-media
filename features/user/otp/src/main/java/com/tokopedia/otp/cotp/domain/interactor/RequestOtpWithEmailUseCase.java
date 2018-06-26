@@ -5,8 +5,6 @@ import com.tokopedia.otp.cotp.domain.source.OtpSource;
 import com.tokopedia.otp.cotp.view.viewmodel.RequestOtpViewModel;
 import com.tokopedia.usecase.RequestParams;
 
-import java.util.Date;
-
 import javax.inject.Inject;
 
 import rx.Observable;

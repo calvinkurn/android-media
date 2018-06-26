@@ -11,8 +11,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.seller.shopsettings.address.activity.ManageShopAddress;
 import com.tokopedia.core.R;
+import com.tokopedia.seller.shopsettings.address.activity.ManageShopAddress;
 
 import java.util.ArrayList;
 import java.util.List;

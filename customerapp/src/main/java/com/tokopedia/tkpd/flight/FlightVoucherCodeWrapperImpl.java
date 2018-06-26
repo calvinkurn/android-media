@@ -2,7 +2,6 @@ package com.tokopedia.tkpd.flight;
 
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.flight.review.domain.FlightVoucherCodeWrapper;
-import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
 
 /**
  * @author  by alvarisi on 4/3/18.

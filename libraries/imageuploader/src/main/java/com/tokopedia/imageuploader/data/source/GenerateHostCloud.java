@@ -1,7 +1,5 @@
 package com.tokopedia.imageuploader.data.source;
 
-import android.content.Context;
-
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;

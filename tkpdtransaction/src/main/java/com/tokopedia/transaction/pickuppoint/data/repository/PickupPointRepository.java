@@ -1,10 +1,10 @@
 package com.tokopedia.transaction.pickuppoint.data.repository;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.transaction.common.data.pickuppoint.PickupPointResponse;
 import com.tokopedia.transaction.pickuppoint.data.datastore.PickupPointDataStore;
 import com.tokopedia.transaction.pickuppoint.data.entity.PickupPointResponseEntity;
 import com.tokopedia.transaction.pickuppoint.domain.mapper.PickupPointEntityMapper;
-import com.tokopedia.transaction.common.data.pickuppoint.PickupPointResponse;
 
 import javax.inject.Inject;
 

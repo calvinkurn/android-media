@@ -3,18 +3,9 @@ package com.tokopedia.session.activation.view.activity;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.PersistableBundle;
-import android.support.v4.content.ContextCompat;
-
-import android.support.v7.widget.Toolbar;
-import android.view.View;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.session.R;
