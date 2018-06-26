@@ -39,6 +39,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
 
@@ -65,6 +66,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
     private List<CategoriesModel> categoriesModels;
     private TouchViewPager mTouchViewPager;
     private RequestParams searchNextParams = RequestParams.create();
+    private Subscription subscription;
 
 
     @Inject
@@ -84,6 +86,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
         getAllBrandsUseCase.unsubscribe();
         getDealsListRequestUseCase.unsubscribe();
         getNextDealPageUseCase.unsubscribe();
+        subscription.unsubscribe();
     }
 
     @Override
@@ -96,7 +99,8 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
             e.printStackTrace();
             totalPages = viewPager.getChildCount();
         }
-        Observable.interval(5000, 5000, TimeUnit.MILLISECONDS)
+
+        subscription = Observable.interval(5000, 5000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Long>() {
                     @Override
@@ -119,6 +123,8 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
                         mTouchViewPager.setCurrentItem(currentPage, true);
                     }
                 });
+
+
     }
 
     @Override
@@ -352,5 +358,9 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
     void processSearchResponse(DealsDomain dealEntity) {
         categoryViewModels = Utils.getSingletonInstance()
                 .convertIntoCategoryListViewModel(dealEntity);
+    }
+
+    public void stopBannerSlide(){
+        subscription.unsubscribe();
     }
 }

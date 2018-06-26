@@ -183,7 +183,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
 
-        inflater.inflate(R.menu.menu_deal_details, menu);
+        inflater.inflate(R.menu.menu_category_detail, menu);
         mMenu = menu;
         onPrepareOptionsMenu(menu);
 
@@ -197,14 +197,14 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
 
     @Override
     public void hideSearchButton() {
-        MenuItem item = mMenu.findItem(R.id.action_search);
+        MenuItem item = mMenu.findItem(R.id.action_menu_search);
         item.setVisible(false);
         item.setEnabled(false);
     }
 
     @Override
     public void showSearchButton() {
-        MenuItem item = mMenu.findItem(R.id.action_search);
+        MenuItem item = mMenu.findItem(R.id.action_menu_search);
         item.setVisible(true);
         item.setEnabled(true);
     }
