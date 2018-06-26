@@ -4,12 +4,9 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.product.edit.adapter.ProductAddVideoAdapterTypeFactory
 import com.tokopedia.product.edit.adapter.ProductAddVideoRecommendationAdapterTypeFactory
 
-class VideoRecommendationViewModel : Visitable<ProductAddVideoRecommendationAdapterTypeFactory>{
+class SectionVideoRecommendationViewModel : Visitable<ProductAddVideoAdapterTypeFactory>, ProductAddVideoBaseViewModel{
 
-    var id: String? = null
-    var title: String? = null
-
-    override fun type(typeFactory: ProductAddVideoRecommendationAdapterTypeFactory): Int {
+    override fun type(typeFactory: ProductAddVideoAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }
 }

@@ -1,13 +1,25 @@
 package com.tokopedia.product.edit.adapter.viewholder
 
-import android.support.v7.widget.RecyclerView
+import android.support.annotation.LayoutRes
 import android.view.View
-import android.widget.LinearLayout
-import android.widget.TextView
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.edit.R
+import com.tokopedia.product.edit.viewmodel.VideoRecommendationViewModel
 
-class VideoRecommendationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class VideoRecommendationViewHolder(itemView: View) : AbstractViewHolder<VideoRecommendationViewModel>(itemView) {
 
-//    var mainContent: TextView = itemView.findViewById<View>(R.id.main_content) as LinearLayout
+    init {
+        findViews(itemView)
+    }
 
+    private fun findViews(view: View) {
+    }
+
+    override fun bind(videoRecommendationViewModel: VideoRecommendationViewModel) {
+    }
+
+    companion object {
+        @LayoutRes
+        val LAYOUT = R.layout.item_product_add_video_recommendation
+    }
 }

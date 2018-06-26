@@ -21,7 +21,6 @@ import java.util.List;
 public class TestProductAddVideoActivity extends BaseSimpleActivity implements YouTubeVideoPresenter.GetVideoRecommendationView {
 
     private YouTubeVideoPresenter youTubeVideoPresenter;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,8 +63,9 @@ public class TestProductAddVideoActivity extends BaseSimpleActivity implements Y
         return null;
     }
 
+    @NotNull
     @Override
-    public Context getContext() {
+    public Context getContextView() {
         return this;
     }
 
