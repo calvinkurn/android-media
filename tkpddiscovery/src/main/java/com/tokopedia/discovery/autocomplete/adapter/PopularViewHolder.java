@@ -18,6 +18,7 @@ import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.autocomplete.viewmodel.BaseItemAutoCompleteSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.PopularSearch;
 import com.tokopedia.discovery.search.view.adapter.ItemClickListener;
+import com.tokopedia.discovery.util.AutoCompleteTracking;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +73,7 @@ public class PopularViewHolder extends AbstractViewHolder<PopularSearch> {
         public PopularViewHolder.ItemAdapter.ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View itemView = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.layout_popular_item_autocomplete, parent, false);
-            return new PopularViewHolder.ItemAdapter.ItemViewHolder(itemView, listener);
+            return new PopularViewHolder.ItemAdapter.ItemViewHolder(itemView, clickListener);
         }
 
         @Override
@@ -101,7 +102,15 @@ public class PopularViewHolder extends AbstractViewHolder<PopularSearch> {
                 textView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        UnifyTracking.eventClickPopularSearch(item.getKeyword());
+                        AutoCompleteTracking.eventClickPopularSearch(
+                                itemView.getContext(),
+                                String.format(
+                                        "value: %s - po: %s - applink: %s",
+                                        item.getKeyword(),
+                                        String.valueOf(getAdapterPosition() + 1),
+                                        item.getApplink()
+                                )
+                        );
                         clickListener.onItemSearchClicked(
                                 item.getKeyword(),
                                 item.getCategoryId()

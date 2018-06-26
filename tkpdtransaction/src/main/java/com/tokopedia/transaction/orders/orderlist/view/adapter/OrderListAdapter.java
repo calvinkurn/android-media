@@ -26,7 +26,6 @@ import com.tokopedia.transaction.orders.orderlist.data.Color;
 import com.tokopedia.transaction.orders.orderlist.data.DotMenuList;
 import com.tokopedia.transaction.orders.orderlist.data.MetaData;
 import com.tokopedia.transaction.orders.orderlist.data.Order;
-import com.tokopedia.transaction.orders.orderlist.data.Popup;
 import com.tokopedia.transaction.orders.orderlist.view.presenter.ListAdapterContract;
 import com.tokopedia.transaction.orders.orderlist.view.presenter.ListAdapterPresenterImpl;
 
@@ -102,13 +101,12 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public void setButtonData(int leftVisibility, int rightVisibility, String leftText, String rightText,
                               final String leftButtonUri, final String rightButtonUri,
-                              Popup leftPopup, Popup rightPopup,
                               Color leftButtonColor, Color rightButtonColor) {
-        setButtonData(currentHolder.leftButton, leftText, leftVisibility, leftButtonUri, leftPopup, leftButtonColor);
-        setButtonData(currentHolder.rightButton, rightText, rightVisibility, rightButtonUri, rightPopup, rightButtonColor);
+        setButtonData(currentHolder.leftButton, leftText, leftVisibility, leftButtonUri, leftButtonColor);
+        setButtonData(currentHolder.rightButton, rightText, rightVisibility, rightButtonUri, rightButtonColor);
     }
 
-    private void setButtonData(TextView button, String text, int visibility, final String buttonUri, Popup popup, Color bgColor) {
+    private void setButtonData(TextView button, String text, int visibility, final String buttonUri, Color bgColor) {
         button.setVisibility(visibility);
         button.setText(text);
 
@@ -129,8 +127,6 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 }
             }
         });
-        if (popup != null) {
-        }
     }
 
     @Override
