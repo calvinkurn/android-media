@@ -28,21 +28,20 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
                                View view,
                                RecyclerView parent,
                                RecyclerView.State state) {
-        final int position = parent.getChildAdapterPosition(view);
-        if (!isProductItem(parent, position)) {
+        final int absolutePos = parent.getChildAdapterPosition(view);
+        if (!isProductItem(parent, absolutePos)) {
             return;
         }
+        int firstProductItemPos = absolutePos;
+        while(isProductItem(parent,firstProductItemPos - 1)) firstProductItemPos--;
+        int relativePos = absolutePos - firstProductItemPos;
 
         final int totalSpanCount = getTotalSpanCount(parent);
-        int spanSize = getItemSpanSize(parent, position);
-        if (totalSpanCount == spanSize) {
-            return;
-        }
 
-        outRect.top = isTopProductItem(parent, position, totalSpanCount) ? spacing : spacing / 2;
-        outRect.left = isFirstInRow(position, totalSpanCount) ? spacing : spacing / 2;
-        outRect.right = isLastInRow(position, totalSpanCount) ? spacing : spacing / 2;
-        outRect.bottom = isBottomProductItem(parent, position, totalSpanCount) ? spacing : spacing / 2;
+        outRect.top = isTopProductItem(parent, relativePos, totalSpanCount) ? spacing : spacing / 2;
+        outRect.left = isFirstInRow(relativePos, totalSpanCount) ? spacing : spacing / 2;
+        outRect.right = isLastInRow(relativePos, totalSpanCount) ? spacing : spacing / 2;
+        outRect.bottom = isBottomProductItem(parent, relativePos, totalSpanCount) ? spacing : spacing / 2;
     }
 
     private boolean isTopProductItem(RecyclerView parent, int position, int totalSpanCount) {
@@ -65,13 +64,6 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
         final RecyclerView.LayoutManager layoutManager = parent.getLayoutManager();
         return layoutManager instanceof GridLayoutManager
                 ? ((GridLayoutManager) layoutManager).getSpanCount()
-                : 1;
-    }
-
-    private int getItemSpanSize(RecyclerView parent, int position) {
-        final RecyclerView.LayoutManager layoutManager = parent.getLayoutManager();
-        return layoutManager instanceof GridLayoutManager
-                ? ((GridLayoutManager) layoutManager).getSpanSizeLookup().getSpanSize(position)
                 : 1;
     }
 
