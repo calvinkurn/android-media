@@ -1699,7 +1699,8 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         enhancedECommerceCartMapData.setCurrencyCode("IDR");
         enhancedECommerceCartMapData.setAction(EnhancedECommerceCartMapData.ADD_ACTION);
 
-        checkoutAnalyticsAddToCart.enhancedECommerceAddToCart(enhancedECommerceCartMapData.getCartMap());
+        checkoutAnalyticsAddToCart.enhancedECommerceAddToCart(
+                enhancedECommerceCartMapData.getCartMap(), productPass.getProductName());
     }
 
     private String generateCategoryStringLevel(List<ProductBreadcrumb> breadcrumb) {

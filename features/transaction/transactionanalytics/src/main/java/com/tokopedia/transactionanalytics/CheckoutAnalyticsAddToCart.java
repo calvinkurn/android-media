@@ -17,13 +17,13 @@ public class CheckoutAnalyticsAddToCart extends CheckoutAnalytics {
         super(analyticTracker);
     }
 
-    public void enhancedECommerceAddToCart(Map<String, Object> cartMap) {
+    public void enhancedECommerceAddToCart(Map<String, Object> cartMap, String eventLabel) {
         if (analyticTracker != null)
             analyticTracker.sendEnhancedEcommerce(
                     DataLayer.mapOf("event", "addToCart",
-                            "eventCategory", "",
-                            "eventAction", ConstantTransactionAnalytics.EventCategory.ADD_TO_CART,
-                            "eventLabel", ConstantTransactionAnalytics.EventLabel.CLICK_BELI,
+                            "eventCategory", ConstantTransactionAnalytics.EventCategory.ADD_TO_CART,
+                            "eventAction", ConstantTransactionAnalytics.EventLabel.CLICK_BELI,
+                            "eventLabel", eventLabel,
                             "ecommerce", cartMap)
             );
     }
