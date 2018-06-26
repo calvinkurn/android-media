@@ -36,7 +36,6 @@ public class YouTubeVideoPresenter extends BaseDaggerPresenter<YouTubeVideoPrese
     public static final String QUERY = "query";
     public static final String SIZE = "size";
     private final GraphqlUseCase graphqlUseCase;
-    private GetYoutubeVideoDetailUseCase getYoutubeVideoDetailUseCase;
     private GetYoutubeVideoListDetailUseCase getYoutubeVideoListDetailUseCase;
 
     public interface GetVideoRecommendationView extends CustomerView {
@@ -91,16 +90,9 @@ public class YouTubeVideoPresenter extends BaseDaggerPresenter<YouTubeVideoPrese
         });
     }
 
-    private void initYouTubeVideoDetailUseCase() {
-        if (getYoutubeVideoDetailUseCase == null) {
-            getYoutubeVideoDetailUseCase = new GetYoutubeVideoDetailUseCase(getView().getContext());
-        }
-    }
-
     private void initYouTubeVideoDetailListUseCase() {
         if (getYoutubeVideoListDetailUseCase == null) {
-            initYouTubeVideoDetailUseCase();
-            getYoutubeVideoListDetailUseCase = new GetYoutubeVideoListDetailUseCase(getYoutubeVideoDetailUseCase);
+            getYoutubeVideoListDetailUseCase = new GetYoutubeVideoListDetailUseCase(getView().getContext());
         }
     }
 
@@ -152,7 +144,6 @@ public class YouTubeVideoPresenter extends BaseDaggerPresenter<YouTubeVideoPrese
     @Override
     public void detachView() {
         super.detachView();
-        getYoutubeVideoDetailUseCase.unsubscribe();
         graphqlUseCase.unsubscribe();
         getYoutubeVideoListDetailUseCase.unsubscribe();
     }

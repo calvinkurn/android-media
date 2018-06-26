@@ -31,7 +31,7 @@ public class TestProductAddVideoActivity extends BaseSimpleActivity implements Y
 
         youTubeVideoPresenter = new YouTubeVideoPresenter();
         youTubeVideoPresenter.attachView(this);
-//        youTubeVideoPresenter.getVideoRecommendation("iphone", 3);
+        youTubeVideoPresenter.getVideoRecommendation("iphone", 3);
 
         ArrayList<String> videoIdList = new ArrayList<>();
         videoIdList.add("ruUq2F72oao");

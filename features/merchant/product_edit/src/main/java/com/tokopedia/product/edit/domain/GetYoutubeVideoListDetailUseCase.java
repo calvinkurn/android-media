@@ -30,8 +30,8 @@ public class GetYoutubeVideoListDetailUseCase extends UseCase<List<Map<Type, Res
 
     private GetYoutubeVideoDetailUseCase getYoutubeVideoDetailUseCase;
 
-    public GetYoutubeVideoListDetailUseCase(GetYoutubeVideoDetailUseCase getYoutubeVideoDetailUseCase) {
-        this.getYoutubeVideoDetailUseCase = getYoutubeVideoDetailUseCase;
+    public GetYoutubeVideoListDetailUseCase(Context context) {
+        this.getYoutubeVideoDetailUseCase = new GetYoutubeVideoDetailUseCase(context);
     }
 
     @Override
@@ -57,5 +57,11 @@ public class GetYoutubeVideoListDetailUseCase extends UseCase<List<Map<Type, Res
     @SuppressWarnings("unchecked")
     private static ArrayList<String> getVideoIdList(RequestParams requestParams){
         return (ArrayList<String>) requestParams.getObject(ID_LIST);
+    }
+
+    @Override
+    public void unsubscribe() {
+        super.unsubscribe();
+        getYoutubeVideoDetailUseCase.unsubscribe();
     }
 }
