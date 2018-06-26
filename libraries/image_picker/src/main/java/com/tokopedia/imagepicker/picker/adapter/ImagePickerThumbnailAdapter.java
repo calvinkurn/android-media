@@ -118,12 +118,12 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
 
     public class PlaceholderThumbnailViewHolder extends RecyclerView.ViewHolder {
         ImageView ivPlaceholder;
-        View vFrameImage;
+        ImageView vFrameImage;
 
         public PlaceholderThumbnailViewHolder(View itemView) {
             super(itemView);
             ivPlaceholder = itemView.findViewById(R.id.image_view_placeholder);
-            vFrameImage = itemView.findViewById(R.id.frame_image);
+            vFrameImage = itemView.findViewById(R.id.image_view);
         }
 
         public void bind(@DrawableRes int drawableRes, int backgroundColor) {
