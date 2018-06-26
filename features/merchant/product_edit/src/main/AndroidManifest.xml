@@ -4,7 +4,8 @@
 
     <application>
         <activity
-            android:name=".activity.ProductAddVideoActivity"/>
+            android:name=".activity.ProductAddVideoActivity"
+            android:label="@string/title_activity_video"/>
     </application>
 
 </manifest>

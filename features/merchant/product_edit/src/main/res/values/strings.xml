@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">product_edit</string>
+    <string name="title_activity_video">Video Produk</string>
+    <string name="product_from_to_video">%1$d dari %2$d Video</string>
+
+    <string name="product_add_title_video_recommendation">Rekomendasi Video Produk</string>
+    <string name="product_add_title_video_recommendation_show_more">Lihat Semua</string>
+    <string name="product_add_url_video">Tambah URL Video</string>
+    <string name="product_add_till_three_product_video">Tambah Hingga 3 Video Produk</string>
+    <string name="product_add_till_three_product_video_description">Untuk menjelaskan atau mendemokan produk ini</string>
 </resources>
