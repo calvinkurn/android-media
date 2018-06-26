@@ -31,10 +31,12 @@ public class ETollCardInfoView extends FrameLayout {
 
     private CardInfo cardInfo;
 
+    private TextView textLabelBalance;
     private TextView textRemainingBalance;
     private TextView textDate;
+    private TextView textLabelCardNumber;
     private TextView textCardNumber;
-    private ProgressBar progressBar;
+//    private ProgressBar progressBar;
     private LinearLayout viewRemainingBalance;
     private ImageView imageIssuer;
 
@@ -59,10 +61,12 @@ public class ETollCardInfoView extends FrameLayout {
     private void init() {
         View view = LayoutInflater.from(context).inflate(R.layout.view_etoll_card_info, this, true);
 
+        textLabelBalance = view.findViewById(R.id.text_label_balance);
         textRemainingBalance = view.findViewById(R.id.text_remaining_balance);
+        textLabelCardNumber = view.findViewById(R.id.text_label_card_number);
         textCardNumber = view.findViewById(R.id.text_card_number);
         textDate = view.findViewById(R.id.text_date);
-        progressBar = view.findViewById(R.id.progress_bar);
+//        progressBar = view.findViewById(R.id.progress_bar);
         viewRemainingBalance = view.findViewById(R.id.view_remaining_balance);
         imageIssuer = view.findViewById(R.id.image_issuer);
     }
@@ -70,11 +74,12 @@ public class ETollCardInfoView extends FrameLayout {
     public void showCardInfo(CardInfo cardInfo) {
         this.cardInfo = cardInfo;
         viewRemainingBalance.setVisibility(VISIBLE);
-        progressBar.setVisibility(GONE);
+//        progressBar.setVisibility(GONE);
         imageIssuer.setVisibility(VISIBLE);
         Glide.with(context)
                 .load(cardInfo.getIssuerImage())
                 .into(imageIssuer);
+        textLabelCardNumber.setText(getResources().getString(R.string.emoney_card_info_label_card_number));
         textCardNumber.setText(cardInfo.getFormattedCardNumber());
         textCardNumber.setTextColor(getResources().getColor(R.color.black));
         textCardNumber.setTypeface(textCardNumber.getTypeface(), Typeface.BOLD);
@@ -89,12 +94,16 @@ public class ETollCardInfoView extends FrameLayout {
 
     public void showLoading() {
         viewRemainingBalance.setVisibility(GONE);
-        progressBar.setVisibility(VISIBLE);
+//        progressBar.setVisibility(VISIBLE);
+        ((LoaderTextView) findViewById(R.id.text_label_balance)).resetLoader();
+        ((LoaderTextView) findViewById(R.id.text_remaining_balance)).resetLoader();
+        ((LoaderTextView) findViewById(R.id.text_label_card_number)).resetLoader();
+        ((LoaderTextView) findViewById(R.id.text_card_number)).resetLoader();
     }
 
     public void stopLoading() {
         viewRemainingBalance.setVisibility(VISIBLE);
-        progressBar.setVisibility(GONE);
+//        progressBar.setVisibility(GONE);
     }
 
     public String getCardNumber() {
@@ -105,6 +114,7 @@ public class ETollCardInfoView extends FrameLayout {
         textCardNumber.setText(getResources().getString(R.string.card_info_is_not_available_yet));
         textCardNumber.setTextColor(getResources().getColor(R.color.grey_300));
         textCardNumber.setTypeface(Typeface.DEFAULT);
+        textLabelBalance.setText(getResources().getString(R.string.emoney_card_info_label_your_balance));
         textRemainingBalance.setText(getResources().getString(R.string.card_info_is_not_available_yet));
         textRemainingBalance.setTextColor(getResources().getColor(R.color.grey_300));
         textDate.setText("");

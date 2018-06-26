@@ -19,7 +19,8 @@ public class ETollUpdateBalanceResultView extends LinearLayout {
 
     private ETollCardInfoView eTollCardInfoView;
     private Button buttonTopup;
-    private TextView textLabelProgress;
+    private TextView textLabelProgressTitle;
+    private TextView textLabelProgressMessage;
 
     private OnTopupETollClickListener listener;
 
@@ -51,7 +52,8 @@ public class ETollUpdateBalanceResultView extends LinearLayout {
 
         eTollCardInfoView = view.findViewById(R.id.view_etoll_card_info);
         buttonTopup = view.findViewById(R.id.button_topup);
-        textLabelProgress = view.findViewById(R.id.text_label_progress);
+        textLabelProgressTitle = view.findViewById(R.id.text_label_progress_title);
+        textLabelProgressMessage = view.findViewById(R.id.text_label_progress_message);
 
         buttonTopup.setOnClickListener(new OnClickListener() {
             @Override
@@ -62,7 +64,8 @@ public class ETollUpdateBalanceResultView extends LinearLayout {
     }
 
     public void showCardInfoFromApi(InquiryBalanceModel inquiryBalanceModel) {
-        textLabelProgress.setVisibility(GONE);
+        textLabelProgressTitle.setVisibility(GONE);
+        textLabelProgressMessage.setVisibility(GONE);
         buttonTopup.setVisibility(VISIBLE);
         buttonTopup.setText(inquiryBalanceModel.getButtonText());
         eTollCardInfoView.setVisibility(VISIBLE);
@@ -70,9 +73,12 @@ public class ETollUpdateBalanceResultView extends LinearLayout {
     }
 
     public void showError(String erroMessage) {
-        textLabelProgress.setVisibility(VISIBLE);
-        textLabelProgress.setText(erroMessage);
-        textLabelProgress.setTextColor(getResources().getColor(R.color.red_600));
+        textLabelProgressTitle.setVisibility(VISIBLE);
+        textLabelProgressTitle.setText(getResources().getString(R.string.update_card_balance_failed_title));
+        textLabelProgressTitle.setTextColor(getResources().getColor(R.color.red_600));
+        textLabelProgressMessage.setVisibility(VISIBLE);
+        textLabelProgressMessage.setText(erroMessage);
+        textLabelProgressMessage.setTextColor(getResources().getColor(R.color.grey));
         eTollCardInfoView.setVisibility(VISIBLE);
         eTollCardInfoView.stopLoading();
         eTollCardInfoView.removeCardInfo();
@@ -80,9 +86,12 @@ public class ETollUpdateBalanceResultView extends LinearLayout {
     }
 
     public void showLoading() {
-        textLabelProgress.setVisibility(VISIBLE);
-        textLabelProgress.setTextColor(getResources().getColor(R.color.grey));
-        textLabelProgress.setText(getResources().getString(R.string.update_card_balance_progress_label));
+        textLabelProgressTitle.setVisibility(VISIBLE);
+        textLabelProgressTitle.setTextColor(getResources().getColor(R.color.grey));
+        textLabelProgressTitle.setText(getResources().getString(R.string.update_card_balance_progress_label_title));
+        textLabelProgressMessage.setVisibility(VISIBLE);
+        textLabelProgressMessage.setTextColor(getResources().getColor(R.color.grey));
+        textLabelProgressMessage.setText(getResources().getString(R.string.update_card_balance_progress_label_message));
         eTollCardInfoView.setVisibility(VISIBLE);
         eTollCardInfoView.showLoading();
         buttonTopup.setVisibility(GONE);
@@ -91,7 +100,7 @@ public class ETollUpdateBalanceResultView extends LinearLayout {
     @Override
     public void setVisibility(int visibility) {
         if (visibility == GONE) {
-            textLabelProgress.setVisibility(GONE);
+            textLabelProgressMessage.setVisibility(GONE);
         }
 
         super.setVisibility(visibility);

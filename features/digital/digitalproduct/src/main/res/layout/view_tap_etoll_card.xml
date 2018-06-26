@@ -25,9 +25,19 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_20"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:id="@+id/text_title"
+        android:text="@string/emoney_tap_card_instruction_title"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:gravity="center"
         android:id="@+id/text_label"
         android:layout_marginTop="32dp"
-        android:text="@string/emoney_tap_card_instruction"/>
+        android:text="@string/emoney_tap_card_instruction_message"/>
 
 </LinearLayout>
