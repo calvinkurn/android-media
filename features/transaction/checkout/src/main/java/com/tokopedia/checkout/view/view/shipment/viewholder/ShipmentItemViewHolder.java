@@ -270,7 +270,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
             vSeparatorAboveCourier.setVisibility(View.GONE);
         }
 
-        setShowCase(llShipmentOptionViewLayout, showCaseObjectList);
+        if (showCaseObjectList.size() == 1) {
+            setShowCase(llShipmentOptionViewLayout, showCaseObjectList);
+        }
 
     }
 

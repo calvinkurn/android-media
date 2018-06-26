@@ -61,7 +61,7 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
         tvAddressName.setText(recipientAddress.getAddressName());
         tvRecipientName.setText(recipientAddress.getRecipientName());
         tvRecipientAddress.setText(getFullAddress(recipientAddress));
-        tvRecipientPhone.setText(recipientAddress.getRecipientPhoneNumber());
+        tvRecipientPhone.setVisibility(View.GONE);
 
         tvAddOrChangeAddress.setOnClickListener(addOrChangeAddressListener());
 
@@ -83,7 +83,8 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
         return recipientAddress.getAddressStreet() + ", "
                 + recipientAddress.getDestinationDistrictName() + ", "
                 + recipientAddress.getAddressCityName() + ", "
-                + recipientAddress.getAddressProvinceName();
+                + recipientAddress.getAddressProvinceName() + ", "
+                + recipientAddress.getRecipientPhoneNumber();
     }
 
     private void renderPickupPoint(PickupPointLayout pickupPointLayout,
