@@ -25,23 +25,27 @@ public class AddShipmentAddressActivity extends BaseCheckoutActivity {
     public static final String ADDRESS_DATA_EXTRAS = "ADDRESS_DATA_EXTRAS";
     public static final String MODE_EXTRA = "MODE_EXTRAS";
     public static final String ADDRESS_DATA_RESULT = "ADDRESxS_DATA_RESULT";
+    public static final String ITEM_ADAPTER_POSITION_EXTRA = "ITEM_ADAPTER_POSITION_EXTRA";
     public static final int ADD_MODE = 1;
     public static final int EDIT_MODE = 2;
 
     private AddShipmentAddressFragment fragment;
 
     private int formMode;
+    private int itemPosition;
     ArrayList<MultipleAddressAdapterData> dataList;
     MultipleAddressAdapterData multipleAddressAdapterData;
     MultipleAddressItemData multipleAddressItemData;
 
     public static Intent createIntent(Context context,
+                                      int itemPosition,
                                       ArrayList<MultipleAddressAdapterData> dataList,
                                       MultipleAddressAdapterData data,
                                       MultipleAddressItemData addressData,
                                       int mode) {
         Intent intent = new Intent(context, AddShipmentAddressActivity.class);
         Bundle bundle = new Bundle();
+        bundle.putInt(ITEM_ADAPTER_POSITION_EXTRA, itemPosition);
         bundle.putParcelableArrayList(PRODUCT_DATA_LIST_EXTRAS, dataList);
         bundle.putParcelable(PRODUCT_DATA_EXTRAS, data);
         bundle.putParcelable(ADDRESS_DATA_EXTRAS, addressData);
@@ -73,6 +77,7 @@ public class AddShipmentAddressActivity extends BaseCheckoutActivity {
         this.dataList = extras.getParcelableArrayList(PRODUCT_DATA_LIST_EXTRAS);
         this.multipleAddressAdapterData = extras.getParcelable(PRODUCT_DATA_EXTRAS);
         this.multipleAddressItemData = extras.getParcelable(ADDRESS_DATA_EXTRAS);
+        this.itemPosition = extras.getInt(ITEM_ADAPTER_POSITION_EXTRA);
     }
 
     @Override
@@ -101,9 +106,12 @@ public class AddShipmentAddressActivity extends BaseCheckoutActivity {
 
     @Override
     public void onBackPressed() {
-        fragment.onCloseButtonPressed();
+        if (fragment != null) {
+            fragment.onCloseButtonPressed();
+        }
         Intent intent = new Intent();
-        intent.putExtra(AddShipmentAddressActivity.PRODUCT_DATA_LIST_EXTRAS, dataList);
+        intent.putExtra(PRODUCT_DATA_LIST_EXTRAS, dataList);
+        intent.putExtra(ITEM_ADAPTER_POSITION_EXTRA, itemPosition);
         setResult(Activity.RESULT_OK, intent);
         finish();
     }
@@ -115,7 +123,7 @@ public class AddShipmentAddressActivity extends BaseCheckoutActivity {
 
     @Override
     protected Fragment getNewFragment() {
-        fragment = (AddShipmentAddressFragment) AddShipmentAddressFragment.newInstance(
+        fragment = (AddShipmentAddressFragment) AddShipmentAddressFragment.newInstance(itemPosition,
                 dataList, multipleAddressAdapterData, multipleAddressItemData, formMode);
         return fragment;
     }

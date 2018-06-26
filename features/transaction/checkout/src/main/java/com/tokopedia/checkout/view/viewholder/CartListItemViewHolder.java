@@ -407,10 +407,9 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
         if (data.getCartItemData().getOriginData().getInvenageValue() != 0 &&
                 qty > data.getCartItemData().getOriginData().getInvenageValue()) {
             String errorMessage = data.getCartItemData().getErrorData().getErrorProductMaxQuantity();
-            String maxValue;
             NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.US);
             String numberAsString = numberFormat.format(data.getCartItemData().getOriginData().getInvenageValue());
-            maxValue = numberAsString.replace(",", ".");
+            String maxValue = numberAsString.replace(",", ".");
             tvErrorFormValidation.setText(errorMessage.replace("{{value}}", maxValue));
             tvErrorFormValidation.setVisibility(View.VISIBLE);
         } else if (qty < data.getCartItemData().getOriginData().getMinimalQtyOrder()) {

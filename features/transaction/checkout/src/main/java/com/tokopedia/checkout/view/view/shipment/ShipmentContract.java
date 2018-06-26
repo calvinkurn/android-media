@@ -67,7 +67,7 @@ public interface ShipmentContract {
 
         void renderCancelAutoApplyCouponSuccess();
 
-        Activity getActivity();
+        Activity getActivityContext();
     }
 
     interface Presenter extends CustomerPresenter<View> {

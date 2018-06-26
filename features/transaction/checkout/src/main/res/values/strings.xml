@@ -6,7 +6,7 @@
     <string name="label_oops">Oopppsss..</string>
     <string name="message_address_not_found">Kami tidak dapat menemukan alamat yang Anda cari.</string>
     <string name="label_button_change_search">Ganti Pencarian</string>
-    <string name="label_seller">Penjual :</string>
+    <string name="label_seller">Penjual:</string>
     <string name="label_note_for_seller">Catatan untuk penjual (Opsional)</string>
     <string name="label_button_add_note">Tulis Catatan</string>
     <string name="label_delivery_hour">\u0020jam perjalanan</string>
@@ -21,10 +21,12 @@
     <string name="label_courier">Kurir Pengiriman</string>
     <string name="label_subtotal">Sub total</string>
     <string name="label_promo">Promo</string>
+    <string name="label_coupon">Kupon</string>
     <string name="label_payment_total">Total Tagihan</string>
     <string name="label_button_choose_payment_method">Pilih Metode Pembayaran</string>
     <string name="label_menu_cart_remove">Hapus</string>
     <string name="dialog_title_back_to_cart">Kembali Ke Keranjang?</string>
+    <string name="dialog_title_back_to_choose_address">Kembali Ke Pilih Alamat?</string>
     <string name="dialog_message_back_to_cart">Perubahan yang Anda lakukan di halaman ini tidak akan disimpan</string>
     <string name="label_dialog_back_to_cart_button_positive"><![CDATA[Kembali & Hapus Perubahan]]></string>
     <string name="label_dialog_back_to_cart_button_negative">Tetap di Halaman Ini</string>
@@ -80,12 +82,14 @@
     <string name="label_dropshipper_info">Anda dapat mengirimkan barang ke alamat lain dengan data Anda sebagai pengirim</string>
     <string name="label_not_yet_pinpoint">Belum Pinpoint</string>
     <string name="message_error_no_courier_selected">Pastikan Anda telah memilih kurir pengiriman</string>
-    <string name="message_error_dropshipper_data">Lengkapi informasi dropshipper Anda.</string>
-    <string name="message_error_dropshipper_name">Nama terlalu pendek.</string>
-    <string name="message_error_dropshipper_name_empty">Mohon isi nama pengirim Anda.</string>
-    <string name="message_error_dropshipper_phone">Nomor telepon terlalu pendek.</string>
-    <string name="message_error_dropshipper_phone_empty">Mohon isi nomor telepon Anda.</string>
-    <string name="message_error_dropshipper_phone_invalid">Nomor telepon yang dimasukkan tidak sesuai.</string>
+    <string name="message_error_dropshipper_data">Lengkapi informasi dropshipper Anda</string>
+    <string name="message_error_dropshipper_name_min_length">Nama terlalu pendek</string>
+    <string name="message_error_dropshipper_name_max_length">Nama terlalu panjang</string>
+    <string name="message_error_dropshipper_name_empty">Mohon isi nama pengirim Anda</string>
+    <string name="message_error_dropshipper_phone_min_length">Nomor telepon terlalu pendek</string>
+    <string name="message_error_dropshipper_phone_max_length">Nomor telepon terlalu panjang</string>
+    <string name="message_error_dropshipper_phone_empty">Mohon isi nomor telepon Anda</string>
+    <string name="message_error_dropshipper_phone_invalid">Nomor telepon yang dimasukkan tidak sesuai</string>
     <string name="message_error_no_pinpoint">Anda belum menandai lokasi tujuan dalam peta</string>
     <string name="message_error_dropshipper">Data dropshipper belum lengkap</string>
     <string name="label_main_address">Utama</string>
@@ -98,6 +102,7 @@
     <string name="label_hint_cart_item_dropshipper_phone_number">Nomor Telepon</string>
     <string name="label_delivery_price">Total Ongkos Kirim</string>
     <string name="label_additional_cost">Biaya Tambahan</string>
+    <string name="label_seller_additional_cost">Biaya Tambahan Penjual</string>
     <string name="label_dialog_title_cancel_pickup">Batalkan Pengiriman ke Gerai Pengambilan</string>
     <string name="label_dialog_message_cancel_pickup_booth">Apakah Anda yakin ingin membatalkan pengiriman ke Gerai Pengambilan</string>
     <string name="title_bottomsheet_insurance">Asuransi Pengiriman</string>
@@ -123,6 +128,7 @@
     <string name="checkout_module_title_activity_cart">Keranjang</string>
     <string name="checkout_module_title_activity_checkout">Checkout</string>
     <string name="checkout_module_title_shipping_dest">Tujuan Pengiriman</string>
+    <string name="checkout_module_title_shipping_dest_multiple_address">Alamat Pengiriman</string>
     <string name="checkout_module_title_activity_people_tx_details">Detil Transaksi</string>
     <string name="checkout_module_title_shipping_dest_add_new">Tambah Pengiriman Baru</string>
     <string name="checkout_module_title_change_address">Ganti Alamat</string>
@@ -160,5 +166,6 @@
     <string name="checkout_module_subtitle_error_empty_address">Tidak ada alamat</string>
     <string name="checkout_module_label_button_retry_error_empty_address">Tambah Alamat</string>
     <string name="message_payment_success">Pembayaran Berhasil</string>
+    <string name="message_error_courier_not_selected">Pastikan Anda telah memilih kurir pengiriman untuk semua alamat</string>
 
 </resources>

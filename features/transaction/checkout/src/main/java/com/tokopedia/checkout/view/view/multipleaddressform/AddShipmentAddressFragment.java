@@ -7,6 +7,9 @@ import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -24,12 +27,21 @@ import com.tokopedia.checkout.view.di.component.CartComponent;
 import com.tokopedia.checkout.view.di.component.DaggerAddShipmentAddressComponent;
 import com.tokopedia.checkout.view.di.module.AddShipmentAddressModule;
 import com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceActivity;
+import com.tokopedia.core.manage.people.address.ManageAddressConstant;
+import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
+import com.tokopedia.core.manage.people.address.model.Destination;
+import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsMultipleAddress;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceActivity.EXTRA_CURRENT_ADDRESS;
+import static com.tokopedia.core.manage.people.address.ManageAddressConstant.EXTRA_ADDRESS;
 
 /**
  * @author anggaprasetiyo on 20/04/18.
@@ -67,11 +79,13 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
     CheckoutAnalyticsMultipleAddress checkoutAnalyticsMultipleAddress;
 
     private int formMode;
+    private int itemPosition;
     ArrayList<MultipleAddressAdapterData> dataList;
     MultipleAddressAdapterData multipleAddressAdapterData;
     MultipleAddressItemData multipleAddressItemData;
 
     public static Fragment newInstance(
+            int itemPosition,
             ArrayList<MultipleAddressAdapterData> dataList,
             MultipleAddressAdapterData data,
             MultipleAddressItemData addressData,
@@ -83,6 +97,7 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
         bundle.putParcelable(AddShipmentAddressActivity.PRODUCT_DATA_EXTRAS, data);
         bundle.putParcelable(AddShipmentAddressActivity.ADDRESS_DATA_EXTRAS, addressData);
         bundle.putInt(AddShipmentAddressActivity.MODE_EXTRA, mode);
+        bundle.putInt(AddShipmentAddressActivity.ITEM_ADAPTER_POSITION_EXTRA, itemPosition);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -133,6 +148,7 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
         dataList = arguments.getParcelableArrayList(AddShipmentAddressActivity.PRODUCT_DATA_LIST_EXTRAS);
         multipleAddressAdapterData = arguments.getParcelable(AddShipmentAddressActivity.PRODUCT_DATA_EXTRAS);
         multipleAddressItemData = arguments.getParcelable(AddShipmentAddressActivity.ADDRESS_DATA_EXTRAS);
+        itemPosition = arguments.getInt(AddShipmentAddressActivity.ITEM_ADAPTER_POSITION_EXTRA);
     }
 
     @Override
@@ -222,7 +238,15 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
             if (charSequence.toString().isEmpty() || Integer.parseInt(charSequence.toString()) < 1) {
                 quantityField.setText("1");
             } else {
-                if (Integer.parseInt(charSequence.toString()) > MAX_QTY_DEFAULT) {
+                if (Integer.parseInt(charSequence.toString()) > data.getMaxQuantity()) {
+                    NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.US);
+                    String numberAsString = numberFormat.format(data.getMaxQuantity());
+                    String maxValue = numberAsString.replace(",", ".");
+                    saveChangesButton.setVisibility(View.GONE);
+                    quantityErrorLayout.setVisibility(View.VISIBLE);
+                    quantityErrorTextView.setText(data.getErrorProductMaxQuantity()
+                            .replace("{{value}}", maxValue));
+                } else if (Integer.parseInt(charSequence.toString()) > MAX_QTY_DEFAULT) {
                     saveChangesButton.setVisibility(View.GONE);
                     quantityErrorLayout.setVisibility(View.VISIBLE);
                     quantityErrorTextView.setText(data.getErrorProductMaxQuantity()
@@ -232,11 +256,6 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
                     quantityErrorLayout.setVisibility(View.VISIBLE);
                     quantityErrorTextView.setText(data.getErrorProductMinQuantity()
                             .replace("{{value}}", String.valueOf(data.getMinQuantity())));
-                } else if (Integer.parseInt(charSequence.toString()) > data.getMaxQuantity()) {
-                    saveChangesButton.setVisibility(View.GONE);
-                    quantityErrorLayout.setVisibility(View.VISIBLE);
-                    quantityErrorTextView.setText(data.getErrorProductMaxQuantity()
-                            .replace("{{value}}", String.valueOf(data.getMaxQuantity())));
                 } else if (Integer.parseInt(charSequence.toString()) < data.getMinQuantity()) {
                     saveChangesButton.setVisibility(View.GONE);
                     quantityErrorLayout.setVisibility(View.VISIBLE);
@@ -286,7 +305,7 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
             if (itemData.getMinQuantity() != 0) {
                 quantityField.setText(String.valueOf(itemData.getMinQuantity()));
             } else {
-                quantityField.setText("1");
+                quantityField.setText(itemData.getMinQuantity() != 0 ? String.valueOf(itemData.getMinQuantity()) : "1");
             }
         } else {
             quantityField.setText(itemData.getProductQty());
@@ -372,6 +391,7 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
         );
         intent.putExtra(AddShipmentAddressActivity.ADDRESS_DATA_RESULT, newItemData);
         intent.putExtra(AddShipmentAddressActivity.PRODUCT_DATA_LIST_EXTRAS, dataList);
+        intent.putExtra(AddShipmentAddressActivity.ITEM_ADAPTER_POSITION_EXTRA, itemPosition);
         getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
     }
@@ -384,6 +404,7 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
         );
         intent.putExtra(AddShipmentAddressActivity.ADDRESS_DATA_RESULT, editedItemData);
         intent.putExtra(AddShipmentAddressActivity.PRODUCT_DATA_LIST_EXTRAS, dataList);
+        intent.putExtra(AddShipmentAddressActivity.ITEM_ADAPTER_POSITION_EXTRA, itemPosition);
         getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
     }
@@ -494,7 +515,7 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
             @Override
             public void afterTextChanged(Editable editable) {
                 if (TextUtils.isEmpty(editable)) {
-                    quantityField.setText("1");
+                    quantityField.setText(data.getMinQuantity() != 0 ? String.valueOf(data.getMinQuantity()) : "1");
                 } else {
                     int zeroCount = 0;
                     for (int i = 0; i < editable.length(); i++) {
@@ -503,13 +524,13 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
                         }
                     }
                     if (zeroCount == editable.length()) {
-                        quantityField.setText("1");
+                        quantityField.setText(data.getMinQuantity() != 0 ? String.valueOf(data.getMinQuantity()) : "1");
                     } else if (editable.charAt(0) == '0') {
                         quantityField.setText(editable.toString().substring(zeroCount, editable.length()));
-                        quantityField.setSelection(quantityField.length());
                     }
                     setQuantityButtonAvailability(editable, decreaseButton, increaseButton);
                     setEditButtonVisibility(editable, data);
+                    quantityField.setSelection(quantityField.length());
                 }
             }
         };

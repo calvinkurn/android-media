@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 
@@ -35,10 +34,11 @@ import com.tokopedia.checkout.domain.usecase.GetCouponListCartMarketPlaceUseCase
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.di.component.CartComponentInjector;
 import com.tokopedia.checkout.view.view.cartlist.CartActivity;
-import com.tokopedia.contact_us.ContactUsModuleRouter;
-import com.tokopedia.contact_us.createticket.ContactUsConstant;
-import com.tokopedia.contact_us.createticket.activity.ContactUsActivity;
-import com.tokopedia.contact_us.createticket.activity.ContactUsCreateTicketActivity;
+import com.tokopedia.contactus.ContactUsModuleRouter;
+import com.tokopedia.contactus.createticket.ContactUsConstant;
+import com.tokopedia.contactus.createticket.activity.ContactUsActivity;
+import com.tokopedia.contactus.createticket.activity.ContactUsCreateTicketActivity;
+import com.tokopedia.contactus.home.view.ContactUsHomeActivity;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -1341,6 +1341,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Intent getWebviewActivityWithIntent(Context context, String url) {
+        return SimpleWebViewWithFilePickerActivity.getIntent(context,
+                url);
+    }
+
+    @Override
     public Intent getWebviewActivityWithIntent(Context context, String url, String title) {
         return SimpleWebViewWithFilePickerActivity.getIntentWithTitle(context, url, title);
     }
@@ -1639,6 +1645,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                         return new AddToCartResult.Builder()
                                 .message(stringBuilder.toString())
                                 .success(addToCartDataResponse.getSuccess() == 1)
+                                .cartId(addToCartDataResponse.getData() != null
+                                        ? String.valueOf(addToCartDataResponse.getData().getCartId())
+                                        : "")
                                 .build();
                     }
                 });
@@ -1775,7 +1784,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getContactUsIntent(Context context) {
-        return new Intent(context, ContactUsActivity.class);
+        return new Intent(context, ContactUsHomeActivity.class);
     }
 
     @Override
@@ -2230,6 +2239,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public UseCase<String> setCreditCardSingleAuthentication() {
         return new CreditCardFingerPrintUseCase();
     }
+
+    @Override
+    public Intent getHelpUsIntent(Context context) {
+        return new Intent(context, ContactUsActivity.class);
+    }
+
 
     @Override
     public Intent transactionOrderDetailRouterGetIntentUploadAwb(String urlUpload) {

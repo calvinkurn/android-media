@@ -29,6 +29,7 @@ import com.tokopedia.checkout.domain.usecase.ResetCartGetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.ResetCartGetShipmentFormUseCase;
 import com.tokopedia.checkout.domain.usecase.UpdateCartGetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.view.holderitemdata.CartItemHolderData;
+import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.transactionanalytics.EnhancedECommerceCartMapData;
@@ -110,8 +111,6 @@ public class CartListPresenter implements ICartListPresenter {
     @Override
     public void processInitialGetCartData() {
         view.renderLoadGetCartData();
-        view.disableSwipeRefresh();
-
 
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(
@@ -233,7 +232,7 @@ public class CartListPresenter implements ICartListPresenter {
 
     @SuppressWarnings("deprecation")
     @Override
-    public void processToShipmentMultipleAddress(final RecipientAddressModel selectedAddress) {
+    public void processToShipmentMultipleAddress(final RecipientAddressModel selectedAddress, Token token) {
         view.showProgressLoading();
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         param.put("lang", "id");
@@ -290,7 +289,7 @@ public class CartListPresenter implements ICartListPresenter {
                             public void onNext(CartListData cartListData) {
                                 view.hideProgressLoading();
                                 if (!cartListData.isError())
-                                    view.renderToShipmentMultipleAddressSuccess(cartListData, selectedAddress);
+                                    view.renderToShipmentMultipleAddressSuccess(cartListData, selectedAddress, token);
                                 else
                                     view.renderErrorToShipmentMultipleAddress(cartListData.getErrorMessage());
                             }
@@ -398,7 +397,7 @@ public class CartListPresenter implements ICartListPresenter {
 
 
     @Override
-    public void processToShipmentForm() {
+    public void processToShipmentForm(boolean toAddressChoice) {
         view.showProgressLoading();
         TKPDMapParam<String, String> paramGetShipmentForm = new TKPDMapParam<>();
         paramGetShipmentForm.put("lang", "id");
@@ -412,7 +411,7 @@ public class CartListPresenter implements ICartListPresenter {
                         .subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
                         .unsubscribeOn(Schedulers.newThread())
-                        .subscribe(getSubscriberToShipmentForm())
+                        .subscribe(getSubscriberToShipmentForm(toAddressChoice))
         );
     }
 
@@ -420,7 +419,6 @@ public class CartListPresenter implements ICartListPresenter {
     @Override
     public void processResetAndRefreshCartData() {
         view.renderLoadGetCartData();
-        view.disableSwipeRefresh();
         view.showProgressLoading();
         TKPDMapParam<String, String> paramResetCart = new TKPDMapParam<>();
         paramResetCart.put("lang", "id");
@@ -574,9 +572,9 @@ public class CartListPresenter implements ICartListPresenter {
                 if (cartListData.getCartItemDataList().isEmpty()) {
                     view.renderEmptyCartData(cartListData);
                 } else {
+                    view.disableSwipeRefresh();
                     view.renderInitialGetCartListDataSuccess(cartListData);
                 }
-
             }
         };
     }
@@ -759,7 +757,7 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @NonNull
-    private Subscriber<CartShipmentAddressFormData> getSubscriberToShipmentForm() {
+    private Subscriber<CartShipmentAddressFormData> getSubscriberToShipmentForm(boolean toAddressChoice) {
         return new Subscriber<CartShipmentAddressFormData>() {
             @Override
             public void onCompleted() {
@@ -805,7 +803,11 @@ public class CartListPresenter implements ICartListPresenter {
                 if (cartShipmentAddressFormData.isError()) {
                     view.renderErrorToShipmentForm(cartShipmentAddressFormData.getErrorMessage());
                 } else {
-                    view.renderToShipmentFormSuccess(cartShipmentAddressFormData);
+                    if (toAddressChoice) {
+                        view.renderToAddressChoice(cartShipmentAddressFormData);
+                    } else {
+                        view.renderToShipmentFormSuccess(cartShipmentAddressFormData);
+                    }
                 }
             }
         };
@@ -860,6 +862,7 @@ public class CartListPresenter implements ICartListPresenter {
                 if (resetAndRefreshCartListData.getCartListData() == null) {
                     view.renderErrorInitialGetCartListData(resetAndRefreshCartListData.getResetCartData().getMessage());
                 } else {
+                    view.disableSwipeRefresh();
                     if (resetAndRefreshCartListData.getCartListData().getCartItemDataList().isEmpty()) {
                         view.renderEmptyCartData(resetAndRefreshCartListData.getCartListData());
                     } else {

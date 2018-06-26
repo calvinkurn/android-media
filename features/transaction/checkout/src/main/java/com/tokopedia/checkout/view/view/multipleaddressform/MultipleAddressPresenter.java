@@ -16,6 +16,7 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.domain.datamodel.cartmultipleshipment.SetShippingAddressData;
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressUseCase;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
 import com.tokopedia.usecase.RequestParams;
@@ -77,7 +78,8 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
     @Override
     public List<MultipleAddressAdapterData> initiateMultipleAddressAdapterData(
             CartListData cartListData,
-            RecipientAddressModel recipientAddressModel) {
+            RecipientAddressModel recipientAddressModel,
+            Token token) {
         List<CartItemData> cartItemDataList = cartListData.getCartItemDataList();
         List<MultipleAddressAdapterData> adapterModels = new ArrayList<>();
         for (int i = 0; i < cartItemDataList.size(); i++) {
@@ -88,7 +90,8 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
                             recipientAddressModel,
                             cartItemDataList.get(i).getOriginData(),
                             cartItemDataList.get(i).getUpdatedData(),
-                            cartItemDataList.get(i).getErrorData())
+                            cartItemDataList.get(i).getErrorData(),
+                            token)
             );
             addressAdapterData.setProductImageUrl(
                     cartItemDataList.get(i).getOriginData().getProductImage()
@@ -114,7 +117,8 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
             RecipientAddressModel shipmentRecipientModel,
             CartItemData.OriginData originData,
             CartItemData.UpdatedData updatedData,
-            CartItemData.MessageErrorData messageErrorData) {
+            CartItemData.MessageErrorData messageErrorData,
+            Token token) {
 
         List<MultipleAddressItemData> initialItemData = new ArrayList<>();
         MultipleAddressItemData addressData = new MultipleAddressItemData();
@@ -147,6 +151,7 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
         addressData.setErrorProductMaxQuantity(messageErrorData.getErrorProductMaxQuantity());
         addressData.setErrorProductMinQuantity(messageErrorData.getErrorProductMinQuantity());
         addressData.setMaxRemark(updatedData.getMaxCharRemark());
+        addressData.setToken(token);
         initialItemData.add(addressData);
         return initialItemData;
     }

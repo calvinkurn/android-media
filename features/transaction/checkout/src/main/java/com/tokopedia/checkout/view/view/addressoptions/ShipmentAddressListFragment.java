@@ -8,6 +8,9 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -32,6 +35,7 @@ import com.tokopedia.checkout.view.view.multipleaddressform.MultipleAddressFormA
 import com.tokopedia.checkout.view.view.shipment.ShipmentActivity;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
+import com.tokopedia.core.manage.people.address.model.Destination;
 import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
@@ -43,6 +47,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import static com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceActivity.EXTRA_CURRENT_ADDRESS;
+import static com.tokopedia.core.manage.people.address.ManageAddressConstant.EXTRA_ADDRESS;
 
 /**
  * @author Aghny A. Putra on 25/01/18
@@ -71,6 +76,8 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     private ICartAddressChoiceActivityListener mCartAddressChoiceActivityListener;
     private int maxItemPosition;
     private boolean isLoading;
+
+    private ICartAddressChoiceActivityListener mCartAddressChoiceListener;
 
     @Inject
     ShipmentAddressListAdapter mShipmentAddressListAdapter;
@@ -112,6 +119,11 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     }
 
     @Override
+    public void setToken(Token token) {
+        this.token = token;
+    }
+
+    @Override
     protected String getScreenName() {
         return TAG;
     }
@@ -138,7 +150,26 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
     @Override
     protected boolean getOptionsMenuEnable() {
-        return false;
+        return true;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+        inflater.inflate(R.menu.menu_address_choice, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menu_add_address) {
+            checkoutAnalyticsChangeAddress.eventClickChangeAddressClickTambahAlamatBaruFromGantiAlamat();
+            startActivityForResult(AddAddressActivity.createInstance(getActivity(), token),
+                    ManageAddressConstant.REQUEST_CODE_PARAM_CREATE);
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -158,6 +189,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
     @Override
     protected void initView(View view) {
+        mCartAddressChoiceListener.setToolbarTitle(getActivity().getString(R.string.checkout_module_title_shipping_dest_multiple_address));
         checkoutAnalyticsChangeAddress.eventImpressionChangeAddressImpressionChangeAddress();
         mRvRecipientAddressList = view.findViewById(R.id.rv_address_list);
         mSvAddressSearchBox = view.findViewById(R.id.sv_address_search_box);
@@ -229,6 +261,11 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         mShipmentAddressListAdapter.setAddressList(recipientAddressModels);
         mShipmentAddressListAdapter.notifyDataSetChanged();
         mRvRecipientAddressList.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void navigateToCheckoutPage(RecipientAddressModel recipientAddressModel) {
+        onAddressContainerClicked(recipientAddressModel);
     }
 
     @Override
@@ -370,11 +407,39 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == ManageAddressConstant.REQUEST_CODE_PARAM_EDIT && resultCode == Activity.RESULT_OK) {
-            onSearchReset();
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case ManageAddressConstant.REQUEST_CODE_PARAM_CREATE:
+                    RecipientAddressModel newRecipientAddressModel = null;
+                    if (data != null && data.hasExtra(EXTRA_ADDRESS)) {
+                        Destination newAddress = data.getParcelableExtra(EXTRA_ADDRESS);
+                        newRecipientAddressModel = new RecipientAddressModel();
+                        newRecipientAddressModel.setAddressName(newAddress.getAddressName());
+                        newRecipientAddressModel.setDestinationDistrictId(newAddress.getDistrictId());
+                        newRecipientAddressModel.setCityId(newAddress.getCityId());
+                        newRecipientAddressModel.setProvinceId(newAddress.getProvinceId());
+                        newRecipientAddressModel.setRecipientName(newAddress.getReceiverName());
+                        newRecipientAddressModel.setRecipientPhoneNumber(newAddress.getReceiverPhone());
+                        newRecipientAddressModel.setAddressStreet(newAddress.getAddressStreet());
+                        newRecipientAddressModel.setAddressPostalCode(newAddress.getPostalCode());
+                        mShipmentAddressListPresenter.getAddressFromNewCreated(getActivity(), newRecipientAddressModel);
+                    }
+                    onSearchReset();
+                    break;
+                case ManageAddressConstant.REQUEST_CODE_PARAM_EDIT:
+                    onSearchReset();
+                    break;
+                default:
+                    break;
+            }
         }
+
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mCartAddressChoiceListener = (ICartAddressChoiceActivityListener) activity;
     }
 
 }

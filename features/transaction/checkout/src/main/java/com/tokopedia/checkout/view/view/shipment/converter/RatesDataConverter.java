@@ -208,7 +208,7 @@ public class RatesDataConverter {
                                                ShipmentItemData shipmentItemData) {
         CourierItemData courierItemData = new CourierItemData();
         courierItemData.setUsePinPoint(product.getIsShowMap() == 1);
-        courierItemData.setName(product.getShipperName() + " " + product.getShipperProductName());
+        courierItemData.setName(product.getShipperName());
         courierItemData.setShipperId(product.getShipperId());
         courierItemData.setShipperProductId(product.getShipperProductId());
         courierItemData.setInsuranceUsedInfo(product.getInsuranceUsedInfo());

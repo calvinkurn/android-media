@@ -31,6 +31,7 @@ public class CartItemViewHolder extends ShipmentItemViewHolder {
     private TextView mTvFreeReturnLabel;
     private TextView mTvPreOrder;
     private TextView mTvCashback;
+    private TextView mTvNoteToSellerLabel;
 
     public CartItemViewHolder(View itemView) {
         super(itemView);
@@ -48,6 +49,7 @@ public class CartItemViewHolder extends ShipmentItemViewHolder {
         mTvFreeReturnLabel = itemView.findViewById(R.id.tv_free_return_label);
         mTvPreOrder = itemView.findViewById(R.id.tv_pre_order);
         mTvCashback = itemView.findViewById(R.id.tv_cashback);
+        mTvNoteToSellerLabel = itemView.findViewById(R.id.tv_note_to_seller_label);
     }
 
     public void bindViewHolder(CartItemModel cartItem) {
@@ -71,6 +73,7 @@ public class CartItemViewHolder extends ShipmentItemViewHolder {
         mTvCashback.setVisibility(cartItem.isCashback() ? View.VISIBLE : View.GONE);
         String cashback = mTvCashback.getContext().getString(R.string.label_cashback) + " " + cartItem.getCashback();
         mTvCashback.setText(cashback);
+        mTvNoteToSellerLabel.setVisibility(View.GONE);
     }
 
 }

@@ -72,6 +72,7 @@ import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
+import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
 import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.core.util.AppIndexHandler;
 import com.tokopedia.core.util.GlobalConfig;
@@ -1703,7 +1704,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         enhancedECommerceProductCartMapData.setPrice(productData.getInfo().getProductPrice());
         enhancedECommerceProductCartMapData.setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
         String categoryLevelStr = generateCategoryStringLevel(productData.getBreadcrumb());
-
+        enhancedECommerceProductCartMapData.setCartId(addToCartResult.getCartId());
         enhancedECommerceProductCartMapData.setCategory(TextUtils.isEmpty(categoryLevelStr)
                 ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
                 : categoryLevelStr);
@@ -1739,7 +1740,8 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         enhancedECommerceCartMapData.setCurrencyCode("IDR");
         enhancedECommerceCartMapData.setAction(EnhancedECommerceCartMapData.ADD_ACTION);
 
-        checkoutAnalyticsAddToCart.enhancedECommerceAddToCart(enhancedECommerceCartMapData.getCartMap());
+        checkoutAnalyticsAddToCart.enhancedECommerceAddToCart(
+                enhancedECommerceCartMapData.getCartMap(), productPass.getProductName());
     }
 
     private String generateCategoryStringLevel(List<ProductBreadcrumb> breadcrumb) {

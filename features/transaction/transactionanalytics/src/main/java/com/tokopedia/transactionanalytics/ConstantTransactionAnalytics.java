@@ -10,6 +10,7 @@ public interface ConstantTransactionAnalytics {
         String CLICK_ATC = "clickATC";
         String VIEW_ATC = "viewATC";
         String REMOVE_FORM_CART = "removeFromCart";
+        String ADD_TO_CART = "addToCart";
     }
 
     interface EventCategory {
@@ -107,20 +108,24 @@ public interface ConstantTransactionAnalytics {
 
         String IMPRESSION_COURIER_SELECTION = "impression courier selection";
         String IMPRESSION_ON_POP_UP_KUPON = "impression on pop up kupon";
-    }
-
-    interface EventLabel {
-        String CLICK_BELI = "click beli";
-
-        String CLICK_HAPUS_FROM_TRASH_BIN = "click hapus from trash bin";
-        String CLICK_HAPUS_DAN_TAMBAH_WISHLIST_FROM_TRASH_BIN = "click hapus dan tambah wishlist from trash bin";
 
         String CLICK_HAPUS_FROM_CLICK_HAPUS = "click hapus from click hapus";
         String CLICK_HAPUS_DAN_TAMBAH_WISHLIST_FROM_CLICK_HAPUS = "click hapus dan tambah wishlist from click hapus";
+        String CLICK_HAPUS_DAN_TAMBAH_WISHLIST_FROM_TRASH_BIN = "click hapus dan tambah wishlist from trash bin";
 
+        String CLICK_HAPUS_FROM_TRASH_BIN = "click hapus from trash bin";
         String CLICK_HAPUS_PRODUK_BERKENDALA = "click hapus produk berkendala";
         String CLICK_HAPUS_DAN_TAMBAH_WISHLIST_FrOM_HaPUS_PRODUK_BERKENDALA = "click hapus dan tambah wishlist from hapus produk berkendala";
         String CLICK_HAPUS_FROM_HAPUS_PRODUK_BERKENDALA = "click hapus from hapus produk berkendala";
+        String CLICK_BELI = "click beli";
+    }
+
+    interface EventLabel {
+
+
+
+
+
 
 
         String SUCCESS = "success";

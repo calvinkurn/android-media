@@ -16,6 +16,7 @@ import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
+import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
 
 import java.util.List;
 
@@ -317,7 +318,7 @@ public interface ProductDetailView extends ViewListener {
 
     boolean isSellerApp();
 
-    void renderAddToCartSuccess(String message);
+    void renderAddToCartSuccess(AddToCartResult addToCartResult);
 
     void renderAddToCartSuccessOpenCart(String message);
 
