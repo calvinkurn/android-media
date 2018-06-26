@@ -35,7 +35,7 @@ public class TestProductAddVideoActivity extends BaseSimpleActivity implements G
     }
 
     @Override
-    public void onErrorGetVideoRecommendation() {
+    public void onErrorGetVideoRecommendation(Throwable throwable) {
         //TODO update UI
     }
 

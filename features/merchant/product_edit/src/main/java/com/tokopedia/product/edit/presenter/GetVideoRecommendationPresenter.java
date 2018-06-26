@@ -17,6 +17,7 @@ import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.product.edit.R;
 import com.tokopedia.product.edit.model.VideoRecommendationData;
 import com.tokopedia.product.edit.model.VideoRecommendationResult;
+import com.tokopedia.usecase.RequestParams;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
@@ -35,37 +36,37 @@ public class GetVideoRecommendationPresenter extends BaseDaggerPresenter<GetVide
     public static final String SIZE = "size";
     private final GraphqlUseCase graphqlUseCase;
 
-    public interface GetVideoRecommendationView extends CustomerView{
+    public interface GetVideoRecommendationView extends CustomerView {
         Context getContext();
+
         void onSuccessGetVideoRecommendation(List<VideoRecommendationData> videoRecommendationDataList);
-        void onErrorGetVideoRecommendation();
+
+        void onErrorGetVideoRecommendation(Throwable e);
     }
 
-    public GetVideoRecommendationPresenter(){
+    public GetVideoRecommendationPresenter() {
         graphqlUseCase = new GraphqlUseCase();
     }
 
-    public void getVideoRecommendation(String query, int size){
+    public void getVideoRecommendation(String query, int size) {
 
         Map<String, Object> variables = new HashMap<>();
         variables.put(QUERY, query);
         variables.put(SIZE, size);
 
-        Type type = new TypeToken<DataResponse<VideoRecommendationResult>>() {
-        }.getType();
         GraphqlRequest graphqlRequest = new
                 GraphqlRequest(GraphqlHelper.loadRawString(getView().getContext().getResources(),
-                R.raw.gql_video_recommendation), type, variables);
+                R.raw.gql_video_recommendation), VideoRecommendationResult.class, variables);
 
-//        GraphqlCacheStrategy graphqlCacheStrategy = new GraphqlCacheStrategy.Builder(CacheType.CACHE_ONLY)
-//                .setExpiryTime(GraphqlConstant.ExpiryTimes.HOUR.val())
-//                .setSessionIncluded(true)
-//                .build();
-//        graphqlUseCase.setCacheStrategy(graphqlCacheStrategy);
+        GraphqlCacheStrategy graphqlCacheStrategy = new GraphqlCacheStrategy.Builder(CacheType.CACHE_ONLY)
+                .setExpiryTime(GraphqlConstant.ExpiryTimes.HOUR.val())
+                .setSessionIncluded(true)
+                .build();
+        graphqlUseCase.setCacheStrategy(graphqlCacheStrategy);
 
         graphqlUseCase.setRequest(graphqlRequest);
 
-        graphqlUseCase.execute(new Subscriber<GraphqlResponse>() {
+        graphqlUseCase.execute(RequestParams.EMPTY, new Subscriber<GraphqlResponse>() {
             @Override
             public void onCompleted() {
 
@@ -74,24 +75,24 @@ public class GetVideoRecommendationPresenter extends BaseDaggerPresenter<GetVide
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                // TODO just for test, remove below
                 if (isViewAttached()) {
-                    getView().onSuccessGetVideoRecommendation(getMockUpData());
+                    getView().onErrorGetVideoRecommendation(e);
                 }
             }
 
             @Override
             public void onNext(GraphqlResponse objects) {
                 if (isViewAttached()) {
-                    //DataResponse<VideoRecommendationResult> data = objects.getData(DataResponse<VideoRecommendationResult>.class);
-                    // TODO just for test, change mockup to original
-                    getView().onSuccessGetVideoRecommendation(getMockUpData());
+                    VideoRecommendationResult data = objects.getData(VideoRecommendationResult.class);
+                    getView().onSuccessGetVideoRecommendation(data.getVideoSearch().getData());
                 }
             }
         });
     }
 
 
+    // TODO remove
+    // just for test
     private List<VideoRecommendationData> getMockUpData() {
         Type type = new TypeToken<VideoRecommendationResult>() {
         }.getType();
