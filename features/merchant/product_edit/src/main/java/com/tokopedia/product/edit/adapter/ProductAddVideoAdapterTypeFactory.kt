@@ -7,9 +7,10 @@ import com.tokopedia.product.edit.adapter.viewholder.EmptyVideoViewHolder
 import com.tokopedia.product.edit.adapter.viewholder.TitleVideoChoosenViewHolder
 import com.tokopedia.product.edit.adapter.viewholder.SectionVideoRecommendationViewHolder
 import com.tokopedia.product.edit.adapter.viewholder.VideoViewHolder
+import com.tokopedia.product.edit.listener.SectionVideoRecommendationListener
 import com.tokopedia.product.edit.viewmodel.*
 
-class ProductAddVideoAdapterTypeFactory : BaseAdapterTypeFactory() {
+class ProductAddVideoAdapterTypeFactory(var sectionVideoRecommendationListener: SectionVideoRecommendationListener) : BaseAdapterTypeFactory() {
 
     fun type(sectionVideoRecommendationViewModel: SectionVideoRecommendationViewModel): Int {
         return SectionVideoRecommendationViewHolder.LAYOUT
@@ -32,7 +33,7 @@ class ProductAddVideoAdapterTypeFactory : BaseAdapterTypeFactory() {
             TitleVideoChoosenViewHolder.LAYOUT -> TitleVideoChoosenViewHolder(parent)
             VideoViewHolder.LAYOUT -> VideoViewHolder(parent)
             EmptyVideoViewHolder.LAYOUT -> EmptyVideoViewHolder(parent)
-            SectionVideoRecommendationViewHolder.LAYOUT -> SectionVideoRecommendationViewHolder(parent)
+            SectionVideoRecommendationViewHolder.LAYOUT -> SectionVideoRecommendationViewHolder(parent, sectionVideoRecommendationListener)
             else -> super.createViewHolder(parent, type)
         }
     }

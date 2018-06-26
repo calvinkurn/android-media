@@ -7,16 +7,21 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.TypedValue
 import android.view.View
+import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.edit.R
 import com.tokopedia.product.edit.adapter.ProductAddVideoRecommendationFeaturedAdapter
+import com.tokopedia.product.edit.listener.ProductAddVideoListener
+import com.tokopedia.product.edit.listener.SectionVideoRecommendationListener
+import com.tokopedia.product.edit.model.VideoRecommendationData
 import com.tokopedia.product.edit.viewmodel.SectionVideoRecommendationViewModel
-import com.tokopedia.product.edit.viewmodel.VideoRecommendationViewModel
 
-class SectionVideoRecommendationViewHolder(itemView: View) : AbstractViewHolder<SectionVideoRecommendationViewModel>(itemView) {
+class SectionVideoRecommendationViewHolder(itemView: View,
+                                           var sectionVideoRecommendationListener: SectionVideoRecommendationListener) : AbstractViewHolder<SectionVideoRecommendationViewModel>(itemView), ProductAddVideoListener {
 
     private lateinit var productAddVideoRecommendationFeaturedAdapter: ProductAddVideoRecommendationFeaturedAdapter
     private lateinit var recyclerView: RecyclerView
+    private lateinit var textShowMore: TextView
     private lateinit var itemDecoration:RecyclerView.ItemDecoration
 
     init {
@@ -24,13 +29,15 @@ class SectionVideoRecommendationViewHolder(itemView: View) : AbstractViewHolder<
     }
 
     private fun findViews(view: View) {
-        recyclerView = view.findViewById(R.id.recycler_view)
-        var list : ArrayList<String> = ArrayList()
-        list.add("aw")
-        list.add("aw")
-        list.add("aw")
+        sectionVideoRecommendationListener.setProductAddVideoListener(this)
+        textShowMore = view.findViewById(R.id.text_video_recommendation_show_more)
+        textShowMore.setOnClickListener({
+            sectionVideoRecommendationListener.onShowMoreClicked()
+        })
 
-        productAddVideoRecommendationFeaturedAdapter = ProductAddVideoRecommendationFeaturedAdapter(list)
+        recyclerView = view.findViewById(R.id.recycler_view)
+
+        productAddVideoRecommendationFeaturedAdapter = ProductAddVideoRecommendationFeaturedAdapter(ArrayList())
         recyclerView.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
         recyclerView.adapter = productAddVideoRecommendationFeaturedAdapter
         recyclerView.setHasFixedSize(true)
@@ -57,6 +64,11 @@ class SectionVideoRecommendationViewHolder(itemView: View) : AbstractViewHolder<
     override fun bind(videoRecommendationViewModel: SectionVideoRecommendationViewModel) {
 
     }
+
+    override fun onSuccessGetVideoRecommendationFeatured(videoRecommendationDataList: List<VideoRecommendationData>) {
+        productAddVideoRecommendationFeaturedAdapter.replaceData(videoRecommendationDataList)
+    }
+
 
     companion object {
         @LayoutRes

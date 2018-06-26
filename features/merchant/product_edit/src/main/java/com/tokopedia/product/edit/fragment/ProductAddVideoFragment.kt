@@ -1,5 +1,6 @@
 package com.tokopedia.product.edit.fragment
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -8,20 +9,33 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.product.edit.R
 import com.tokopedia.product.edit.activity.ProductAddVideoRecommendationActivity
 import com.tokopedia.product.edit.adapter.ProductAddVideoAdapterTypeFactory
+import com.tokopedia.product.edit.listener.ProductAddVideoListener
+import com.tokopedia.product.edit.listener.ProductAddVideoView
+import com.tokopedia.product.edit.listener.SectionVideoRecommendationListener
 import com.tokopedia.product.edit.mapper.ProductAddVideoMapper
+import com.tokopedia.product.edit.model.VideoRecommendationData
+import com.tokopedia.product.edit.presenter.ProductAddVideoPresenter
 import com.tokopedia.product.edit.viewmodel.*
-import java.util.ArrayList
+import kotlin.collections.ArrayList
 
-class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, ProductAddVideoAdapterTypeFactory>() {
+class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, ProductAddVideoAdapterTypeFactory>(), SectionVideoRecommendationListener, ProductAddVideoView {
 
+    override val contextView: Context get() = activity
     private var videoIDs: ArrayList<String> = ArrayList()
+    private lateinit var productAddVideoPresenter : ProductAddVideoPresenter
+    private lateinit var productAddVideoListener : ProductAddVideoListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+
+        GraphqlClient.init(activity.applicationContext)
+        productAddVideoPresenter = ProductAddVideoPresenter()
+        productAddVideoPresenter.attachView(this)
 
         if(activity.intent != null){
             videoIDs = activity.intent.getStringArrayListExtra(EXTRA_VIDEOS_LINKS)
@@ -35,15 +49,13 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
         var btnTambah: Button = view.findViewById(R.id.button_tambah)
 
         btnTambah.setOnClickListener({
-            val intent = Intent(activity, ProductAddVideoRecommendationActivity::class.java)
-            startActivityForResult(intent, REQUEST_CODE_GET_VIDEO_RECOMMENDATION)
         })
 
         return view
     }
 
     override fun getAdapterTypeFactory(): ProductAddVideoAdapterTypeFactory {
-        return ProductAddVideoAdapterTypeFactory()
+        return ProductAddVideoAdapterTypeFactory(this)
     }
 
     override fun onItemClicked(t: ProductAddVideoBaseViewModel?) {
@@ -72,6 +84,28 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
         val sectionVideoRecommendationViewModel = SectionVideoRecommendationViewModel()
         productAddVideoBaseViewModels.add(0, sectionVideoRecommendationViewModel)
         renderList(productAddVideoBaseViewModels)
+        productAddVideoPresenter.getVideoRecommendationFeatured("iphone", MAX_VIDEO_RECOMMENDATION)
+    }
+
+    override fun onShowMoreClicked() {
+        val intent = Intent(activity, ProductAddVideoRecommendationActivity::class.java)
+        startActivityForResult(intent, REQUEST_CODE_GET_VIDEO_RECOMMENDATION)
+    }
+
+    override fun onVideoRecommendationFeaturedClicked(videoIDs: ArrayList<String>) {
+
+    }
+
+    override fun onErrorGetVideoRecommendation(e: Throwable) {
+
+    }
+
+    override fun onSuccessGetVideoRecommendation(videoRecommendationDataList: List<VideoRecommendationData>) {
+        productAddVideoListener.onSuccessGetVideoRecommendationFeatured(videoRecommendationDataList)
+    }
+
+    override fun setProductAddVideoListener(listener: ProductAddVideoListener) {
+        productAddVideoListener = listener
     }
 
     companion object {
