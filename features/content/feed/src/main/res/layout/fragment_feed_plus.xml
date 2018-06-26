@@ -58,15 +58,4 @@
             android:textColor="@color/medium_green"
             android:textSize="@dimen/fontvs" />
     </LinearLayout>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_add_post"
-        android:layout_width="@dimen/dp_50"
-        android:layout_height="@dimen/dp_50"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_margin="@dimen/dp_10"
-        app:backgroundTint="@color/tkpd_main_green"
-        />
-
 </RelativeLayout>

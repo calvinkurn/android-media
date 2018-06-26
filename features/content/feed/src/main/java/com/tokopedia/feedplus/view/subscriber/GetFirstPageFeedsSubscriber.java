@@ -22,6 +22,7 @@ import com.tokopedia.feedplus.domain.model.feed.KolRecommendationDomain;
 import com.tokopedia.feedplus.domain.model.feed.KolRecommendationItemDomain;
 import com.tokopedia.feedplus.domain.model.feed.ProductFeedDomain;
 import com.tokopedia.feedplus.domain.model.feed.PromotionFeedDomain;
+import com.tokopedia.feedplus.domain.model.feed.WhitelistDomain;
 import com.tokopedia.feedplus.domain.model.officialstore.BadgeDomain;
 import com.tokopedia.feedplus.domain.model.officialstore.LabelDomain;
 import com.tokopedia.feedplus.domain.model.officialstore.OfficialStoreDomain;
@@ -38,6 +39,7 @@ import com.tokopedia.feedplus.view.viewmodel.kol.ContentProductViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendItemViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollViewModel;
+import com.tokopedia.feedplus.view.viewmodel.kol.WhitelistViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreBrandsViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreCampaignProductViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreCampaignViewModel;
@@ -132,7 +134,9 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
 
         FeedDomain feedDomain = feedResult.getFeedDomain();
         ArrayList<Visitable> listFeedView = new ArrayList<>();
-
+        if (feedDomain.getWhitelist() != null) {
+            addWhitelistData(listFeedView, feedDomain.getWhitelist());
+        }
         if (hasRecentView(feedDomain) && hasFeed(feedDomain)) {
             addRecentViewData(listFeedView, feedDomain.getRecentProduct());
             addMainData(listFeedView, feedDomain, feedResult);
@@ -193,6 +197,11 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
     private void addRecentViewData(ArrayList<Visitable> listFeedView,
                                    List<RecentViewProductDomain> recentProduct) {
         listFeedView.add(new RecentViewViewModel(convertToRecentViewModelItem(recentProduct)));
+    }
+
+    private void addWhitelistData(ArrayList<Visitable> listFeedView,
+                                  WhitelistDomain whitelistDomain) {
+        listFeedView.add(new WhitelistViewModel(whitelistDomain));
     }
 
     private ArrayList<RecentViewProductViewModel> convertToRecentViewModelItem(

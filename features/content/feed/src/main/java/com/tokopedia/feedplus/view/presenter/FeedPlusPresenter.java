@@ -19,7 +19,6 @@ import com.tokopedia.feedplus.view.subscriber.FollowUnfollowKolRecommendationSub
 import com.tokopedia.feedplus.view.subscriber.FollowUnfollowKolSubscriber;
 import com.tokopedia.feedplus.view.subscriber.GetFeedsSubscriber;
 import com.tokopedia.feedplus.view.subscriber.GetFirstPageFeedsSubscriber;
-import com.tokopedia.feedplus.view.subscriber.GetWhitelistSubsciber;
 import com.tokopedia.feedplus.view.subscriber.LikeKolPostSubscriber;
 import com.tokopedia.feedplus.view.subscriber.SendVoteSubscriber;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollOptionViewModel;
@@ -106,8 +105,6 @@ public class FeedPlusPresenter
             getFirstPageFeedsUseCase.execute(
                     getFirstPageFeedsUseCase.getRefreshParam(userSession),
                     new GetFirstPageFeedsSubscriber(viewListener, pagingHandler.getPage()));
-
-            getWhitelist();
         } else {
             viewListener.onUserNotLogin();
         }
@@ -272,13 +269,6 @@ public class FeedPlusPresenter
 
     public String getUserId() {
         return userSession.getUserId();
-    }
-
-    @Override
-    public void getWhitelist() {
-        viewListener.showLoadingProgress();
-        getWhitelistUseCase.setRequest(getWhitelistUseCase.getRequest());
-        getWhitelistUseCase.execute(RequestParams.create(), new GetWhitelistSubsciber(viewListener));
     }
 
 }

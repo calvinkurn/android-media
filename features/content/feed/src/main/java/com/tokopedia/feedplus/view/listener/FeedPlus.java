@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.Resources;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollOptionViewModel;
@@ -214,9 +215,9 @@ public interface FeedPlus {
 
         int getAdapterListSize();
 
-        void onSuccessGetWhitelist(boolean isWhitelist);
+        void onWhitelistClicked(String url);
 
-        void onErrorGetWhitelist(String error);
+        UserSession getUserSession();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -244,7 +245,5 @@ public interface FeedPlus {
 
         void unfollowKolFromRecommendation(int id, int rowNumber, int position, View.Kol
                 kolListener);
-
-        void getWhitelist();
     }
 }

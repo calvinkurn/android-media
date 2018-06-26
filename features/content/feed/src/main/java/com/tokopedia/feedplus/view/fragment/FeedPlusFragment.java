@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -139,7 +138,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     RelativeLayout mainContent;
     View newFeed;
     Trace trace;
-    FloatingActionButton fabAddFeed;
     private ShareBottomDialog shareBottomDialog;
     private TkpdProgressDialog progressDialog;
     private RemoteConfig remoteConfig;
@@ -231,7 +229,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
         swipeToRefresh = (SwipeToRefresh) parentView.findViewById(R.id.swipe_refresh_layout);
         mainContent = (RelativeLayout) parentView.findViewById(R.id.main);
         newFeed = parentView.findViewById(R.id.layout_new_feed);
-        fabAddFeed = parentView.findViewById(R.id.fab_add_post);
 
         prepareView();
         presenter.attachView(this);
@@ -245,19 +242,12 @@ public class FeedPlusFragment extends BaseDaggerFragment
         recyclerView.setAdapter(adapter);
         swipeToRefresh.setOnRefreshListener(this);
         infoBottomSheet = TopAdsInfoBottomSheet.newInstance(getActivity());
-        fabAddFeed.hide();
         newFeed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 scrollToTop();
                 showRefresh();
                 onRefresh();
-            }
-        });
-        fabAddFeed.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivityForResult(CreatePostImagePickerActivity.getInstance(getActivity()), CREATE_POST);
             }
         });
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -773,6 +763,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
                     );
                 }
                 break;
+            case CREATE_POST:
+                break;
             case OPEN_KOL_PROFILE_FROM_RECOMMENDATION:
                 if (resultCode == Activity.RESULT_OK
                         && data.hasExtra(ARGS_ROW_NUMBER)
@@ -1257,17 +1249,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onSuccessGetWhitelist(boolean isWhitelist) {
-        if (isWhitelist)
-            fabAddFeed.show();
-        else
-            fabAddFeed.hide();
-
-    }
-
-    @Override
-    public void onErrorGetWhitelist(String error) {
-        NetworkErrorHelper.showSnackbar(getActivity(), error);
+    public void onWhitelistClicked(String url) {
+        startActivityForResult(CreatePostImagePickerActivity.getInstance(getActivity()), CREATE_POST);
     }
 
     @Override

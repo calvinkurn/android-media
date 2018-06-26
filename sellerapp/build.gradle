@@ -234,6 +234,8 @@ dependencies {
     implementation project(rootProject.ext.features.mitraToppers)
     implementation project(rootProject.ext.features.goldMerchant)
     implementation project(rootProject.ext.features.topAdsManagement)
+    implementation project(rootProject.ext.features.topAdsCommon)
+    implementation project(rootProject.ext.features.goldMerchantCommon)
     implementation project(rootProject.ext.features.seller)
     implementation project(rootProject.ext.features.session)
     implementation project(rootProject.ext.features.productDetail)
@@ -248,6 +250,7 @@ dependencies {
     implementation project(rootProject.ext.features.otp)
     implementation project(rootProject.ext.features.districtRecommendation)
     implementation project(rootProject.ext.libraries.imageuploader)
+    implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.features.logisticuploadawb)
     implementation project(rootProject.ext.features.tracking)
 

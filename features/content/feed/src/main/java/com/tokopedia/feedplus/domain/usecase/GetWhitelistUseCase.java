@@ -24,6 +24,6 @@ public class GetWhitelistUseCase extends GraphqlUseCase {
     }
 
     public GraphqlRequest getRequest() {
-        return new GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(),R.raw.query_whitelist), WhitelistQuery.class);
+        return new GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(), R.raw.query_whitelist), WhitelistQuery.class);
     }
 }

@@ -16,6 +16,15 @@ public class Whitelist {
     @SerializedName("error")
     private String error;
 
+    @SerializedName("title")
+    private String title;
+
+    @SerializedName("title_identifier")
+    private String titleIdentifier;
+
+    @SerializedName("description")
+    private String description;
+
     public boolean isWhitelist() {
         return isWhitelist;
     }
@@ -26,5 +35,17 @@ public class Whitelist {
 
     public String getError() {
         return error;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getTitleIdentifier() {
+        return titleIdentifier;
     }
 }
