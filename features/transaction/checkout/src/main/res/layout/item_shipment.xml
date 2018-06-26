@@ -374,6 +374,13 @@
                     android:inputType="phone" />
             </android.support.design.widget.TextInputLayout>
 
+            <EditText
+                style="@style/TextMid"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:imeOptions="actionDone"
+                android:inputType="phone" />
+
         </LinearLayout>
 
     </LinearLayout>
