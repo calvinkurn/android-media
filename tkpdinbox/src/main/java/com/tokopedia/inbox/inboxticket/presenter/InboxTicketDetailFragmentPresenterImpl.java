@@ -311,7 +311,7 @@ public class InboxTicketDetailFragmentPresenterImpl implements InboxTicketDetail
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == InboxTicketDetailFragment.REQUEST_CODE_INBOX_TICKET && resultCode == Activity.RESULT_OK && data!= null) {
+        if (requestCode == InboxTicketDetailFragment.REQUEST_CODE_INBOX_TICKET && resultCode == Activity.RESULT_OK && data != null) {
             int position = viewListener.getImageAdapter().getList().size();
             ImageUpload image = new ImageUpload();
             image.setPosition(position);

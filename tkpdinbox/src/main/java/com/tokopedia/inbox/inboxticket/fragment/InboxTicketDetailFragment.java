@@ -40,6 +40,7 @@ import com.tokopedia.inbox.inboxticket.model.inboxticketdetail.InboxTicketDetail
 import com.tokopedia.inbox.inboxticket.model.inboxticketdetail.TicketReplyDatum;
 import com.tokopedia.inbox.inboxticket.presenter.InboxTicketDetailFragmentPresenter;
 import com.tokopedia.inbox.inboxticket.presenter.InboxTicketDetailFragmentPresenterImpl;
+import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -338,7 +339,7 @@ public class InboxTicketDetailFragment extends BasePresenterFragment<InboxTicket
 
     private void openImagePicker() {
         ImagePickerBuilder builder = new ImagePickerBuilder(getString(R.string.choose_image),
-                new int[]{TYPE_GALLERY, TYPE_CAMERA}, com.tokopedia.imagepicker.picker.gallery.type.GalleryType.IMAGE_ONLY, DEFAULT_MAX_IMAGE_SIZE_IN_KB,
+                new int[]{TYPE_GALLERY, TYPE_CAMERA}, GalleryType.IMAGE_ONLY, DEFAULT_MAX_IMAGE_SIZE_IN_KB,
                 DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.ORIGINAL, true,
                 null
                 , null);
