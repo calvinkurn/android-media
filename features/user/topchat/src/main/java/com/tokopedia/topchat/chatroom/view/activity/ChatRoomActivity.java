@@ -18,9 +18,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.abstraction.constant.TkpdState;
 import com.tokopedia.abstraction.constant.TkpdState;
 import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.abstraction.constant.TkpdState;
 import com.tokopedia.contact_us.createticket.ContactUsConstant;
 import com.tokopedia.contact_us.createticket.activity.ContactUsActivity;
 import com.tokopedia.core.analytics.AppScreen;
