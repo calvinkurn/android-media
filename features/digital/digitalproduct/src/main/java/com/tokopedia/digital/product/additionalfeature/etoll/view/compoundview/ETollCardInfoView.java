@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -37,7 +36,6 @@ public class ETollCardInfoView extends FrameLayout {
     private TextView textDate;
     private TextView textLabelCardNumber;
     private TextView textCardNumber;
-    private LinearLayout viewRemainingBalance;
     private ImageView imageIssuer;
 
     public ETollCardInfoView(Context context) {
@@ -66,7 +64,6 @@ public class ETollCardInfoView extends FrameLayout {
         textLabelCardNumber = view.findViewById(R.id.text_label_card_number);
         textCardNumber = view.findViewById(R.id.text_card_number);
         textDate = view.findViewById(R.id.text_date);
-        viewRemainingBalance = view.findViewById(R.id.view_remaining_balance);
         imageIssuer = view.findViewById(R.id.image_issuer);
     }
 

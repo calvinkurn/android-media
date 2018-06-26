@@ -9,7 +9,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.product.view.model.CardInfo;
 import com.tokopedia.digital.product.additionalfeature.etoll.view.model.InquiryBalanceModel;
 
 /**
@@ -86,7 +85,7 @@ public class ETollUpdateBalanceResultView extends LinearLayout {
 
     public void showLoading() {
         textLabelProgressTitle.setVisibility(VISIBLE);
-        textLabelProgressTitle.setTextColor(getResources().getColor(R.color.grey));
+        textLabelProgressTitle.setTextColor(getResources().getColor(R.color.black));
         textLabelProgressTitle.setText(getResources().getString(R.string.update_card_balance_progress_label_title));
         textLabelProgressMessage.setVisibility(VISIBLE);
         textLabelProgressMessage.setTextColor(getResources().getColor(R.color.grey));
