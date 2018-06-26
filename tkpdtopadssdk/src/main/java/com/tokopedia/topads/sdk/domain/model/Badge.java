@@ -37,6 +37,10 @@ public class Badge {
         this.show = show;
     }
 
+    public Boolean isShow() {
+        return show;
+    }
+
     public String getTitle() {
         return title;
     }

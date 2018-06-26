@@ -1,9 +1,14 @@
 package com.tokopedia.topads.sdk.view.adapter.viewholder.discovery;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.LayoutRes;
 import android.text.Html;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.BulletSpan;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -37,7 +42,6 @@ public class ProductListViewHolder extends AbstractViewHolder<ProductListViewMod
     public FlowLayout labelContainer;
     public TextView productName;
     public TextView productPrice;
-    public TextView shopName;
     public TextView shopLocation;
     public ImageView productImage;
     private ImageLoader imageLoader;
@@ -54,7 +58,6 @@ public class ProductListViewHolder extends AbstractViewHolder<ProductListViewMod
         productImage = (ImageView) itemView.findViewById(R.id.product_image);
         productName = (TextView) itemView.findViewById(R.id.title);
         productPrice = (TextView) itemView.findViewById(R.id.price);
-        shopName = (TextView) itemView.findViewById(R.id.shop_name);
         shopLocation = (TextView) itemView.findViewById(R.id.location);
         rating = (ImageView) itemView.findViewById(R.id.rating);
         reviewCount = (TextView) itemView.findViewById(R.id.review_count);
@@ -76,9 +79,6 @@ public class ProductListViewHolder extends AbstractViewHolder<ProductListViewMod
             }
             productPrice.setText(product.getPriceFormat());
 
-            if (product.getLabels() != null) {
-                LabelLoader.initLabel(context, labelContainer, product.getLabels());
-            }
             if (data.getProduct().getProductRating() == 0) {
                 rating.setVisibility(View.GONE);
                 reviewCount.setVisibility(View.GONE);
@@ -90,18 +90,51 @@ public class ProductListViewHolder extends AbstractViewHolder<ProductListViewMod
                 );
                 reviewCount.setText("(" + data.getProduct().getCountReviewFormat() + ")");
             }
+
+            labelContainer.removeAllViews();
+            if (data.getProduct().getProductRating() == 0) {
+                rating.setVisibility(View.GONE);
+                reviewCount.setVisibility(View.GONE);
+                if (data.getProduct().isProductNewLabel()) {
+                    TextView label = (TextView) LayoutInflater.from(context).inflate(R.layout.layout_new_label,
+                            null, false);
+                    labelContainer.addView(label);
+                }
+            } else {
+                rating.setVisibility(View.VISIBLE);
+                reviewCount.setVisibility(View.VISIBLE);
+                rating.setImageResource(
+                        ImageLoader.getRatingDrawable(getStarCount(data.getProduct().getProductRating()))
+                );
+                reviewCount.setText("(" + data.getProduct().getCountReviewFormat() + ")");
+            }
+            if (product.getTopLabels() != null) {
+                for (String l : product.getTopLabels()) {
+                    TextView label = (TextView) LayoutInflater.from(context).inflate(R.layout.layout_top_label,
+                            null, false);
+                    label.setText(l);
+                    labelContainer.addView(label);
+                }
+            }
+            if (product.getBottomLabels() != null) {
+                for (String l : product.getBottomLabels()) {
+                    TextView label = (TextView) LayoutInflater.from(context).inflate(R.layout.layout_bottom_label,
+                            null, false);
+                    label.setText(l);
+                    labelContainer.addView(label);
+                }
+            }
         }
         Shop shop = data.getShop();
         if (shop != null) {
-            shopLocation.setText(shop.getLocation());
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                shopName.setText(Html.fromHtml(shop.getName(),
-                        Html.FROM_HTML_MODE_LEGACY));
-            } else {
-                shopName.setText(Html.fromHtml(shop.getName()));
-            }
             if (shop.getBadges() != null) {
                 imageLoader.loadBadge(badgeContainer, shop.getBadges());
+                SpannableString loc = new SpannableString(shop.getLocation());
+                loc.setSpan(new BulletSpan(10, Color.GRAY), 0,
+                        shop.getLocation().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                shopLocation.setText(loc);
+            } else {
+                shopLocation.setText(shop.getLocation());
             }
         }
     }

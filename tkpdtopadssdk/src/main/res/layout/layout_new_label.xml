@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/bottom_label"
+    android:id="@+id/top_label"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginRight="@dimen/dp_2"
-    android:background="@drawable/bg_cashback_label"
+    android:background="@drawable/bg_new_label"
+    android:textColor="#279ba4"
     android:fontFamily="sans-serif-medium"
     android:gravity="center"
-    android:textColor="#42b549"
-    android:textSize="@dimen/sp_11"
-    tools:text="Cashback 5%" />
+    android:layout_marginRight="@dimen/dp_2"
+    android:text="@string/baru"
+    android:textSize="@dimen/sp_11" />
