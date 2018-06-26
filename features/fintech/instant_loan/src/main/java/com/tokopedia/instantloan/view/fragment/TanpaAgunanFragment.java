@@ -38,21 +38,17 @@ import static com.tokopedia.instantloan.view.fragment.DanaInstantFragment.LOGIN_
 public class TanpaAgunanFragment extends BaseDaggerFragment implements InstantLoanContractor.View {
 
     private Spinner mSpinnerLoanAmount;
-
     private SessionHandler sessionHandler;
-    private GCMHandler gcmHandler;
-
 
     @Inject
     InstantLoanPresenter presenter;
 
-    private int mCurrentTab = 1;
+    private final int mCurrentTab = 1;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         sessionHandler = new SessionHandler(getContext());
-        gcmHandler = new GCMHandler(getContext());
         presenter.attachView(this);
     }
 
@@ -109,7 +105,7 @@ public class TanpaAgunanFragment extends BaseDaggerFragment implements InstantLo
 
             if (mSpinnerLoanAmount.getSelectedItem().toString().equalsIgnoreCase(getString(R.string.label_select_nominal))) {
                 TextView errorText = (TextView) mSpinnerLoanAmount.getSelectedView();
-                errorText.setError("Please select");
+//                errorText.setError("Please select");
                 errorText.setTextColor(Color.RED);
                 return;
             }
@@ -139,7 +135,6 @@ public class TanpaAgunanFragment extends BaseDaggerFragment implements InstantLo
         if (requestCode == LOGIN_REQUEST_CODE) {
             if (!SessionHandler.isV4Login(getContext())) {
                 showToastMessage("Please login to access instant loan features", Toast.LENGTH_SHORT);
-//                getActivity().finish();
             } else {
                 openWebView(WEB_LINK_NO_COLLATERAL + LOAN_AMOUNT_QUERY_PARAM + mSpinnerLoanAmount.getSelectedItem().toString().split(" ")[1]);
             }

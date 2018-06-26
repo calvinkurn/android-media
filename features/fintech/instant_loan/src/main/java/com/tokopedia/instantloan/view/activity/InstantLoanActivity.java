@@ -140,24 +140,8 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
         super.onDestroy();
         mBannerPresenter.detachView();
         tabLayout.removeOnTabSelectedListener(onTabSelectedListener);
-//        viewPager.removeOnPageChangeListener(onPageChangeListener);
     }
 
-    /*ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.OnPageChangeListener() {
-        @Override
-        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-        }
-
-        @Override
-        public void onPageSelected(int position) {
-        }
-
-        @Override
-        public void onPageScrollStateChanged(int state) {
-
-        }
-    };
-*/
     TabLayout.OnTabSelectedListener onTabSelectedListener = new TabLayout.OnTabSelectedListener() {
         @Override
         public void onTabSelected(TabLayout.Tab tab) {
@@ -191,7 +175,8 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
             mBannerPager = findViewById(R.id.view_pager_banner);
             mBannerPager.setOffscreenPageLimit(2);
             mBannerPager.setAdapter(new BannerPagerAdapter(this, banners, this));
-            mBannerPager.setPadding(getResources().getDimensionPixelOffset(R.dimen.il_margin_large), 0, getResources().getDimensionPixelOffset(R.dimen.il_margin_large), 0);
+            mBannerPager.setPadding(getResources().getDimensionPixelOffset(R.dimen.il_margin_banner),
+                    0, getResources().getDimensionPixelOffset(R.dimen.il_margin_banner), 0);
             mBannerPager.setClipToPadding(false);
             mBannerPager.setPageMargin(getResources().getDimensionPixelOffset(R.dimen.il_margin_medium));
             mBannerPager.addOnPageChangeListener(mBannerPageChangeListener);

@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,17 +48,13 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
 
     public static final int LOGIN_REQUEST_CODE = 1005;
 
-    public static final int TAB_INSTANT_FUND = 0;
-    public static final int TAB_NO_COLLATERAL = 1;
-    public static final int TAB_WITH_COLLATERAL = 2;
-
     private ProgressBar mProgressBar;
     private Dialog mDialogIntro;
 
     @Inject
     InstantLoanPresenter presenter;
 
-    private int mCurrentTab = 0;
+    private final int mCurrentTab = 0;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -89,13 +86,6 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
         super.onViewCreated(view, savedInstanceState);
         initView(view);
     }
-
-    /*private void setupLoanAmountSpinner() {
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
-                R.array.values_amount_array, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mSpinnerLoanAmount.setAdapter(adapter);
-    }*/
 
     private void initView(View view) {
 
@@ -141,17 +131,10 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
     public void onSuccessLoanProfileStatus(UserProfileLoanEntity data) {
 //TODO @lavekush check possible error cases from @OKA
 
-        startIntroSlider();
-        /*if (!data.getWhitelist()) {
-            // TODO: 6/5/18 open coming soon web view
-
+        if (!data.getWhitelist()) {
             if (!TextUtils.isEmpty(data.getWhiteListUrl())) {
-                // TODO: 6/6/18 open webview activity
-
-//                Toast.makeText(this, data.getWhiteListUrl(), Toast.LENGTH_SHORT).show();
                 com.tkpd.library.utils.CommonUtils.dumper(data.getWhiteListUrl());
                 openWebView(data.getWhiteListUrl());
-
             } else {
                 Toast.makeText(getContext(), "Instant Loan Coming Soon", Toast.LENGTH_SHORT).show();
             }
@@ -159,7 +142,6 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
                 (data.getDataCollection() && data.getDataCollected())) {
 
             if (!TextUtils.isEmpty(data.getRedirectUrl())) {
-                // TODO: 6/6/18 open webview activity
 
                 Toast.makeText(getContext(), data.getRedirectUrl(), Toast.LENGTH_SHORT).show();
                 com.tkpd.library.utils.CommonUtils.dumper(data.getWhiteListUrl());
@@ -171,19 +153,17 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
 
         } else {
             startIntroSlider();
-        }*/
+        }
     }
 
     @Override
     public void onErrorLoanProfileStatus(String onErrorLoanProfileStatus) {
         hideLoader();
         NetworkErrorHelper.showSnackbar(getActivity(), onErrorLoanProfileStatus);
-        //TODO @lavekush add retry method if require ask from Vishal
     }
 
     @Override
     public void onSuccessPhoneDataUploaded(PhoneDataViewModel data) {
-        //TODO @lavekush check possible error cases from @OKA
         hideLoaderIntroDialog();
 
         if (data.getMobileDeviceId() > 0) {
@@ -199,7 +179,6 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
     public void onErrorPhoneDataUploaded(String errorMessage) {
         hideLoaderIntroDialog();
         NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
-        //TODO @lavekush add retry method if require ask from Vishal
     }
 
     @Override
@@ -211,12 +190,10 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
 
     @Override
     public void startIntroSlider() {
-        // Pass null as the parent view because its going in the dialog layout
         View view = getLayoutInflater().inflate(R.layout.dialog_intro_instnat_loan, null);
         final ViewPager pager = view.findViewById(R.id.view_pager_il_intro);
         final CirclePageIndicator pageIndicator = view.findViewById(R.id.page_indicator_il_intro);
         final FloatingActionButton btnNext = view.findViewById(R.id.button_next);
-        // layouts of all intro sliders
         final int[] layouts = new int[]{
                 R.layout.intro_instant_loan_slide_1,
                 R.layout.intro_instant_loan_slide_2,
@@ -224,7 +201,6 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
         };
 
         pager.setAdapter(new InstantLoanIntroViewPagerAdapter(((InstantLoanActivity) getActivity()), layouts, presenter));
-        //adding bottom dots(Page Indicator)
         pageIndicator.setFillColor(ContextCompat.getColor(getContext(), R.color.tkpd_main_green));
         pageIndicator.setPageColor(ContextCompat.getColor(getContext(), R.color.black_38));
         pageIndicator.setViewPager(pager, 0);
@@ -288,13 +264,11 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
 
     @Override
     public void searchLoanOnline() {
-
         if (presenter.isUserLoggedIn()) {
             presenter.getLoanProfileStatus();
         } else {
             navigateToLoginPage();
         }
-//        startIntroSlider();
     }
 
     @Override
@@ -347,7 +321,6 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
         if (requestCode == LOGIN_REQUEST_CODE) {
             if (!SessionHandler.isV4Login(getContext())) {
                 showToastMessage("Please login to access instant loan features", Toast.LENGTH_SHORT);
-//                getActivity().finish();
             } else {
                 presenter.getLoanProfileStatus();
             }

@@ -27,7 +27,6 @@
 
 
     <ScrollView
-        android:layout_marginTop="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/toolbar">
@@ -66,7 +65,11 @@
                 <com.tokopedia.instantloan.view.ui.HeightWrappingViewPager
                     android:id="@+id/pager"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/il_margin_medium"
+                    android:layout_marginLeft="@dimen/il_margin_medium"
+                    android:layout_marginRight="@dimen/il_margin_medium"
+                    android:layout_marginTop="@dimen/il_margin_medium"/>
 
             </LinearLayout>
 

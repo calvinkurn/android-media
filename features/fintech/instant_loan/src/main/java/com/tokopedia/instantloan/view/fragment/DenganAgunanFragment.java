@@ -95,7 +95,7 @@ public class DenganAgunanFragment extends BaseDaggerFragment implements InstantL
 
             if (mSpinnerLoanAmount.getSelectedItem().toString().equalsIgnoreCase(getString(R.string.label_select_nominal))) {
                 TextView errorText = (TextView) mSpinnerLoanAmount.getSelectedView();
-                errorText.setError("Please select");
+//                errorText.setError("Please select");
                 errorText.setTextColor(Color.RED);
                 return;
             }
