@@ -1,0 +1,15 @@
+query tapactions($param: [TapActionsArgs]!) {
+  orderDetailTapAction(input: $param) {
+    label
+    weight
+    control
+    header
+    buttonType
+    body {
+     appURL
+     webURL
+     method
+     body
+    }
+  }
+}

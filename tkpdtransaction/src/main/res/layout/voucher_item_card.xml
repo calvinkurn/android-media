@@ -188,6 +188,23 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ll_valid" />
+
+        <TextView
+            android:id="@+id/langannan"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/redeem_button_height"
+            android:layout_marginBottom="2dp"
+            android:layout_marginLeft="1dp"
+            android:layout_marginRight="1dp"
+            android:layout_marginTop="@dimen/dp_16"
+            android:gravity="center"
+            android:lineSpacingExtra="10sp"
+            android:text="@string/top_btn_text"
+            android:textSize="@dimen/sp_14"
+            android:textStyle="normal"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_redeem_voucher" />
     </android.support.constraint.ConstraintLayout>
 
     <TextView

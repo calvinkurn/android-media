@@ -5,19 +5,19 @@ import com.google.gson.annotations.SerializedName;
 
 public class Body {
 
-    @SerializedName("Body")
+    @SerializedName("body")
     @Expose
     private String Body;
 
-    @SerializedName("WebURL")
+    @SerializedName("webURL")
     @Expose
     private String WebURL;
 
-    @SerializedName("Method")
+    @SerializedName("method")
     @Expose
     private String Method;
 
-    @SerializedName("AppURL")
+    @SerializedName("appURL")
     @Expose
     private String AppURL;
 
