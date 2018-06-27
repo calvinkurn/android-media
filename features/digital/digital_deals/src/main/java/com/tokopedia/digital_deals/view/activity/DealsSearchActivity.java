@@ -4,12 +4,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
@@ -149,7 +151,7 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
     }
 
     @Override
-    public void renderFromSearchResults(List<CategoryItemsViewModel> categoryItemsViewModels, String searchText,int count) {
+    public void renderFromSearchResults(List<CategoryItemsViewModel> categoryItemsViewModels, String searchText, int count) {
         LocationViewModel location = Utils.getSingletonInstance().getLocation(getActivity());
 
         if (categoryItemsViewModels != null && categoryItemsViewModels.size() != 0) {
@@ -161,14 +163,14 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
             llDeals.setVisibility(View.VISIBLE);
             noContent.setVisibility(View.GONE);
             tvTopDeals.setVisibility(View.GONE);
-            String text=String.format(getString(R.string.deals_search_location_result), searchText);
+            String text = String.format(getString(R.string.deals_search_location_result), searchText);
 
             int startIndexOfLink = text.length();
             if (categoryItemsViewModels.size() != 0) {
                 if (count == 0)
-                    count=categoryItemsViewModels.size();
+                    count = categoryItemsViewModels.size();
             }
-            text+=" "+String.format(getActivity().getResources().getString(R.string.number_of_items), count);
+            text += " " + String.format(getActivity().getResources().getString(R.string.number_of_items), count);
             SpannableString spannableString = new SpannableString(text);
 
 

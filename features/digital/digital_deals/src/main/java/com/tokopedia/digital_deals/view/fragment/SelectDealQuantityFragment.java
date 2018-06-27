@@ -133,7 +133,7 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
 
     void setButtons() {
 
-        if (CURRENT_QUANTITY > 0) {
+        if (CURRENT_QUANTITY > 1) {
             ivSubtract.setColorFilter(ContextCompat.getColor(getContext(), R.color.green_nob), android.graphics.PorterDuff.Mode.SRC_IN);
             ivSubtract.setClickable(true);
 
@@ -153,20 +153,15 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
 
 
     void setUpTotalAmount() {
-        if (CURRENT_QUANTITY > 0) {
-            tvTotalAmount.setVisibility(View.VISIBLE);
-            llContinue.setVisibility(View.VISIBLE);
+
             tvTotalAmount.setText(Utils.convertToCurrencyString(dealDetails.getSalesPrice() * CURRENT_QUANTITY));
-        } else {
-            tvTotalAmount.setVisibility(View.GONE);
-            llContinue.setVisibility(View.GONE);
-        }
+
     }
 
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.iv_subtract) {
-            if (CURRENT_QUANTITY > 0) {
+            if (CURRENT_QUANTITY > 1) {
                 CURRENT_QUANTITY--;
                 tvQuantity.setText(String.format(getContext().getResources().getString(R.string.quantity_of_deals), CURRENT_QUANTITY));
             }

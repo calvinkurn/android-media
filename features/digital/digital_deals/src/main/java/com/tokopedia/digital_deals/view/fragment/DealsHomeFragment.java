@@ -206,6 +206,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
                     }
 
                     tvLocationName.setText(location.getName());
+//                    mPresenter.stopBannerSlide();
                     mPresenter.getDealsList();
                     mPresenter.getBrandsList();
                 }
@@ -308,7 +309,6 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
 
             }
         });
-
         viewPager.setAdapter(adapter);
     }
 
