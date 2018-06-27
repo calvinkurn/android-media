@@ -1,6 +1,15 @@
 package com.tokopedia.checkout.view.view.shipment.viewholder;
 
+import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
+import android.support.v4.content.ContextCompat;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
@@ -23,6 +32,7 @@ import java.util.ArrayList;
 public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder {
 
     public static final int ITEM_VIEW_RECIPIENT_ADDRESS = R.layout.view_item_shipment_recipient_address;
+    private static final String FONT_FAMILY_SANS_SERIF_MEDIUM = "sans-serif-medium";
 
     private static final int PRIME_ADDRESS = 2;
 
@@ -58,8 +68,8 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
                                ArrayList<ShowCaseObject> showCaseObjectList) {
 
         tvAddressStatus.setVisibility(View.GONE);
-        tvAddressName.setText(recipientAddress.getAddressName());
-        tvRecipientName.setText(recipientAddress.getRecipientName());
+        tvAddressName.setVisibility(View.GONE);
+        formatAddressName(tvRecipientName, recipientAddress.getRecipientName(), recipientAddress.getAddressName());
         tvRecipientAddress.setText(getFullAddress(recipientAddress));
         tvRecipientPhone.setVisibility(View.GONE);
 
@@ -131,5 +141,19 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
             }
         };
     }
+
+    private void formatAddressName(TextView textView, String recipientName, String addressName) {
+        addressName = " (" + addressName + ")";
+        recipientName += addressName;
+        int startSpan = recipientName.indexOf(addressName);
+        int endSpan = recipientName.indexOf(addressName) + addressName.length();
+        Spannable formattedPromoMessage = new SpannableString(recipientName);
+        final int color = ContextCompat.getColor(textView.getContext(), R.color.black_38);
+        formattedPromoMessage.setSpan(new ForegroundColorSpan(color), startSpan, endSpan,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        textView.setTypeface(Typeface.create(FONT_FAMILY_SANS_SERIF_MEDIUM, Typeface.NORMAL));
+        textView.setText(formattedPromoMessage);
+    }
+
 
 }
