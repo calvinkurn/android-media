@@ -25,6 +25,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.transaction.R;
@@ -42,6 +43,7 @@ import com.tokopedia.transaction.orders.orderdetails.data.Status;
 import com.tokopedia.transaction.orders.orderdetails.data.Title;
 import com.tokopedia.transaction.orders.orderdetails.di.DaggerOrderDetailsComponent;
 import com.tokopedia.transaction.orders.orderdetails.di.OrderDetailsComponent;
+import com.tokopedia.transaction.orders.orderdetails.view.activity.OrderListDetailActivity;
 import com.tokopedia.transaction.orders.orderdetails.view.adapter.ItemsAdapter;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailContract;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailPresenter;
@@ -174,10 +176,14 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     @Override
     public void setInvoice(final Invoice invoice) {
         invoiceView.setText(invoice.invoiceRefNum());
+        if (invoice.invoiceUrl().equals("")) {
+            lihat.setVisibility(View.GONE);
+        }
         lihat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                TransactionPurchaseRouter.startWebViewActivity(getContext(), invoice.invoiceUrl());
+                ((TkpdCoreRouter) getActivity().getApplicationContext())
+                        .actionOpenGeneralWebView(getActivity(), invoice.invoiceUrl());
             }
         });
     }
@@ -194,7 +200,6 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
 
     @Override
     public void setAdditionInfoVisibility(int visibility) {
-
     }
 
     @Override
@@ -299,7 +304,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
 
     @Override
     public void setItems(List<Items> items) {
-        recyclerView.setAdapter(new ItemsAdapter(getContext(), items, false));
+        recyclerView.setAdapter(new ItemsAdapter(getContext(), items, false, presenter));
     }
 
     @Override

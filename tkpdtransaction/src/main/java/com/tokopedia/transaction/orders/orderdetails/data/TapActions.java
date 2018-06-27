@@ -14,23 +14,11 @@ public class TapActions {
 
     @SerializedName("weight")
     @Expose
-    private String weight;
-
-    @SerializedName("uriWeb")
-    @Expose
-    private String uriWeb;
-
-    @SerializedName("mappingUri")
-    @Expose
-    private String mappingUri;
+    private int weight;
 
     @SerializedName("label")
     @Expose
     private String label;
-
-    @SerializedName("uri")
-    @Expose
-    private String uri;
 
     @SerializedName("control")
     @Expose
@@ -72,28 +60,12 @@ public class TapActions {
         this.Value = Value;
     }
 
-    public String getWeight() {
+    public int getWeight() {
         return weight;
     }
 
-    public void setWeight(String weight) {
+    public void setWeight(int weight) {
         this.weight = weight;
-    }
-
-    public String getUriWeb() {
-        return uriWeb;
-    }
-
-    public void setUriWeb(String uriWeb) {
-        this.uriWeb = uriWeb;
-    }
-
-    public String getMappingUri() {
-        return mappingUri;
-    }
-
-    public void setMappingUri(String mappingUri) {
-        this.mappingUri = mappingUri;
     }
 
     public String getLabel() {
@@ -102,14 +74,6 @@ public class TapActions {
 
     public void setLabel(String label) {
         this.label = label;
-    }
-
-    public String getUri() {
-        return uri;
-    }
-
-    public void setUri(String uri) {
-        this.uri = uri;
     }
 
     public String getControl() {
@@ -162,6 +126,6 @@ public class TapActions {
 
     @Override
     public String toString() {
-        return "TapActions [Body = " + Body + ", Value = " + Value + ", weight = " + weight + ", uriWeb = " + uriWeb + ", mappingUri = " + mappingUri + ", label = " + label + ", uri = " + uri + ", Control = " + Control + ", Name = " + Name + ", buttonType = " + buttonType + ", Header = " + Header + ", method = " + method + ", key = " + key + "]";
+        return "TapActions [Body = " + Body + ", Value = " + Value + ", weight = " + weight + ", label = " + label + ", Control = " + Control + ", Name = " + Name + ", buttonType = " + buttonType + ", Header = " + Header + ", method = " + method + ", key = " + key + "]";
     }
 }

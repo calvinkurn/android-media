@@ -16,12 +16,12 @@ import com.tokopedia.transaction.orders.orderdetails.data.DetailsData;
 import com.tokopedia.transaction.orders.orderdetails.data.OrderDetails;
 import com.tokopedia.transaction.orders.orderdetails.data.PayMethod;
 import com.tokopedia.transaction.orders.orderdetails.data.Pricing;
+import com.tokopedia.transaction.orders.orderdetails.data.TapActionList;
+import com.tokopedia.transaction.orders.orderdetails.data.TapActions;
 import com.tokopedia.transaction.orders.orderdetails.data.Title;
-import com.tokopedia.transaction.orders.orderdetails.domain.OrderDetailsUseCase;
-import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
-import com.tokopedia.usecase.RequestParams;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -34,10 +34,13 @@ import rx.Subscriber;
 
 public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetailContract.View> implements OrderListDetailContract.Presenter {
     GraphqlUseCase orderDetailsUseCase;
+    List<TapActions> tapActionsList;
+    OrderListDetailContract.TapActionInterface view;
 
     @Inject
     public OrderListDetailPresenter(GraphqlUseCase orderDetailsUseCase) {
         this.orderDetailsUseCase = orderDetailsUseCase;
+
     }
 
     @Override
@@ -78,6 +81,52 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         });
     }
 
+    @Override
+    public void setTapActionButton(List<TapActions> tapActionButton, OrderListDetailContract.TapActionInterface view, int position) {
+        Map<String, Object> variables = new HashMap<>();
+        this.view = view;
+        variables.put("param", tapActionButton);
+
+        GraphqlRequest graphqlRequest = new
+                GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
+                R.raw.tapactions), TapActionList.class, variables);
+
+
+        orderDetailsUseCase.setRequest(graphqlRequest);
+        orderDetailsUseCase.execute(new Subscriber<GraphqlResponse>() {
+            @Override
+            public void onCompleted() {
+
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e("sandeep", "error = " + e);
+            }
+
+            @Override
+            public void onNext(GraphqlResponse response) {
+
+                if (response != null) {
+                    TapActionList data = response.getData(TapActionList.class);
+                    tapActionsList = data.getTapActionsList();
+                    if (tapActionsList.size() > 0) {
+                        view.tapActionLayoutVisible();
+                    }
+                    for (TapActions tapActions : tapActionsList) {
+                        view.setTapActionButton(position, tapActions);
+                    }
+                }
+            }
+        });
+    }
+
+    @Override
+    public List<TapActions> getTapActionList() {
+        return tapActionsList;
+    }
+
     private void setDetailsData(OrderDetails details) {
         getView().setStatus(details.status());
         if (details.conditionalInfo().text() != null && !details.conditionalInfo().text().equals("")) {
@@ -110,7 +159,6 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                 getView().setPricing(pricing);
         }
         getView().setPaymentData(details.paymentData());
-//        getView().setContactUs(details.contactUs());
 
         if (details.actionButtons().size() == 2) {
             ActionButton leftActionButton = details.actionButtons().get(0);
