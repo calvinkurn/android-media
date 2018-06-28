@@ -14,10 +14,15 @@ class ProductAddVideoRecommendationFeaturedAdapter(var videoRecommendationFeatur
                                                    var videoIDs: ArrayList<String>) : RecyclerView.Adapter<VideoRecommendationFeaturedViewHolder>(){
 
     override fun onBindViewHolder(holder: VideoRecommendationFeaturedViewHolder, position: Int) {
-        holder.textTitle.text = videoRecommendationFeatured.get(position).snippetTitle
-        holder.textChannel.text = videoRecommendationFeatured.get(position).snippetChannel
-        ImageHandler.loadImageThumbs(holder.imageThumbnail.context, holder.imageThumbnail, videoRecommendationFeatured.get(position).thumbnailUrl)
-        holder.currentVideoRecommendationViewModel = videoRecommendationFeatured.get(position)
+        holder.textTitle.text = videoRecommendationFeatured[position].snippetTitle
+        holder.textChannel.text = videoRecommendationFeatured[position].snippetChannel
+        ImageHandler.loadImageThumbs(holder.imageThumbnail.context, holder.imageThumbnail, videoRecommendationFeatured[position].thumbnailUrl)
+        if(videoRecommendationFeatured[position].choosen){
+            holder.imageChoosen.setImageResource(R.drawable.ic_check_video_featured)
+        } else {
+            holder.imageChoosen.setImageResource(R.drawable.ic_add_video_featured)
+        }
+        holder.currentVideoRecommendationViewModel = videoRecommendationFeatured[position]
     }
 
     override fun getItemCount(): Int {

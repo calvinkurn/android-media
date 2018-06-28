@@ -30,6 +30,7 @@ class VideoMapper {
         videoViewModel.thumbnailUrl = videoRecommendationViewModel.thumbnailUrl
         videoViewModel.snippetChannel = videoRecommendationViewModel.snippetChannel
         videoViewModel.duration = videoRecommendationViewModel.duration
+        videoViewModel.recommendation = true
         return videoViewModel
     }
 }

@@ -15,21 +15,27 @@ class VideoViewHolder(itemView: View) : AbstractViewHolder<VideoViewModel>(itemV
     var textTitle: TextView = itemView.findViewById(R.id.text_title)
     var textChannel: TextView = itemView.findViewById(R.id.text_channel)
     var imageDelete: ImageView = itemView.findViewById(R.id.image_video_delete)
+    var textTagRecommendation: TextView = itemView.findViewById(R.id.text_tag_recommendation)
 
     init {
         setViews()
     }
 
-    fun setViews(){
-        imageDelete.setOnClickListener(View.OnClickListener {
+    private fun setViews(){
+        imageDelete.setOnClickListener({
 
         })
     }
 
     override fun bind(videoViewModel: VideoViewModel) {
         textTitle.text = videoViewModel.snippetTitle
-        textChannel.text = videoViewModel.snippetDescription
+        textChannel.text = videoViewModel.snippetChannel
         ImageHandler.loadImageThumbs(imageThumbnail.context, imageThumbnail, videoViewModel.thumbnailUrl)
+        if(videoViewModel.recommendation!!){
+            textTagRecommendation.visibility = View.VISIBLE
+        } else {
+            textTagRecommendation.visibility = View.GONE
+        }
     }
 
     companion object {

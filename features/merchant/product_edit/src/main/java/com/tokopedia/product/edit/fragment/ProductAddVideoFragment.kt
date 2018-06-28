@@ -29,7 +29,8 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
 
     override val getVideoIDs: ArrayList<String> get() = videoIDs
     override val contextView: Context get() = activity
-    private var videoIDs: ArrayList<String> = ArrayList()
+
+    var videoIDs: ArrayList<String> = ArrayList()
     private lateinit var productAddVideoPresenter : ProductAddVideoPresenter
     private lateinit var productAddVideoListener : ProductAddVideoListener
     private val mapper = VideoMapper()
@@ -96,6 +97,7 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
         } else {
             videoIDs.add(videoRecommendationViewModel.videoID!!)
             adapter.addElement(mapper.transformVideoRecommendationViewModelToVideoViewModel(videoRecommendationViewModel))
+            (activity as AppCompatActivity).supportActionBar?.subtitle = getString(R.string.product_from_to_video, videoIDs.size, MAX_VIDEO)
         }
     }
 

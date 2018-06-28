@@ -13,6 +13,7 @@ class VideoViewModel : Visitable<ProductAddVideoAdapterTypeFactory>, ProductAddV
     var width: Int = 0
     var height: Int = 0
     var duration: String? = null
+    var recommendation: Boolean? = false
 
 
     override fun type(typeFactory: ProductAddVideoAdapterTypeFactory): Int {
