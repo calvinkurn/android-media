@@ -19,9 +19,7 @@ class ProductAddVideoActivity : BaseSimpleActivity() {
     override fun onBackPressed() {
         val intent = Intent()
         intent.putStringArrayListExtra(ProductAddVideoFragment.EXTRA_VIDEOS_LINKS, (fragment as ProductAddVideoFragment).videoIDs)
-        if (intent != null) {
-            setResult(Activity.RESULT_OK, intent)
-        }
+        setResult(Activity.RESULT_OK, intent)
         super.onBackPressed()
     }
 }

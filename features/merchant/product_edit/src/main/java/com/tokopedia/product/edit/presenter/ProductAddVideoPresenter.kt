@@ -1,5 +1,6 @@
 package com.tokopedia.product.edit.presenter
 
+import android.support.v7.app.AppCompatActivity
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -9,10 +10,16 @@ import com.tokopedia.networklib.data.model.RestResponse
 import com.tokopedia.product.edit.R
 import com.tokopedia.product.edit.domain.GetYoutubeVideoDetailUseCase
 import com.tokopedia.product.edit.domain.GetYoutubeVideoListDetailUseCase
+import com.tokopedia.product.edit.fragment.ProductAddVideoFragment
 import com.tokopedia.product.edit.listener.ProductAddVideoView
+import com.tokopedia.product.edit.mapper.VideoMapper
 import com.tokopedia.product.edit.model.videorecommendation.VideoRecommendationData
 import com.tokopedia.product.edit.model.videorecommendation.VideoRecommendationResult
 import com.tokopedia.product.edit.model.youtube.YoutubeVideoModel
+import com.tokopedia.product.edit.viewmodel.EmptyVideoViewModel
+import com.tokopedia.product.edit.viewmodel.ProductAddVideoBaseViewModel
+import com.tokopedia.product.edit.viewmodel.SectionVideoRecommendationViewModel
+import com.tokopedia.product.edit.viewmodel.TitleVideoChoosenViewModel
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 import java.lang.reflect.Type
@@ -23,6 +30,7 @@ class ProductAddVideoPresenter : BaseDaggerPresenter<ProductAddVideoView>() {
 
     private val graphqlUseCase: GraphqlUseCase = GraphqlUseCase()
     private val getYoutubeVideoListDetailUseCase: GetYoutubeVideoListDetailUseCase by lazy { GetYoutubeVideoListDetailUseCase(view.contextView) }
+    private val mapper = VideoMapper()
 
     fun getVideoRecommendationFeatured(query: String, size: Int) {
 
@@ -81,8 +89,21 @@ class ProductAddVideoPresenter : BaseDaggerPresenter<ProductAddVideoView>() {
                     for (map in maps) {
                         youtubeVideoModelArrayList.add(convertToModel(map))
                     }
-                    if(from == VIDEO_CHOOSEN)
+                    if(from == VIDEO_CHOOSEN) {
+                        val productAddVideoBaseViewModels : ArrayList<ProductAddVideoBaseViewModel> = ArrayList()
+                        if(!youtubeVideoModelArrayList.isEmpty()){
+                            productAddVideoBaseViewModels.addAll(mapper.transformDataToVideoViewModel(youtubeVideoModelArrayList))
+                            val titleVideoChoosenViewModel = TitleVideoChoosenViewModel()
+                            productAddVideoBaseViewModels.add(0, titleVideoChoosenViewModel)
+                        } else {
+                            val emptyVideoViewModel = EmptyVideoViewModel()
+                            productAddVideoBaseViewModels.add(0, emptyVideoViewModel)
+                        }
+                        val sectionVideoRecommendationViewModel = SectionVideoRecommendationViewModel()
+                        productAddVideoBaseViewModels.add(0, sectionVideoRecommendationViewModel)
+                        view.renderListData(productAddVideoBaseViewModels)
                         view.onSuccessGetYoutubeDataVideoChoosen(youtubeVideoModelArrayList)
+                    }
                     else
                         view.onSuccessGetYoutubeDataVideoRecommendationFeatured(youtubeVideoModelArrayList)
                 }

@@ -2,7 +2,7 @@ package com.tokopedia.product.edit.listener
 
 import com.tokopedia.product.edit.viewmodel.VideoRecommendationViewModel
 
-interface ProductAddVideoListener {
+interface GetVideoRecommendationListener {
 
     fun onSuccessGetVideoRecommendationFeatured(videoRecommendationFeaturedList : List<VideoRecommendationViewModel>)
 

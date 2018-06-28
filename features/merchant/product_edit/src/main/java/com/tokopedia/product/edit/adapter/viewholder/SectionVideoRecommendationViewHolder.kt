@@ -11,15 +11,13 @@ import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.edit.R
 import com.tokopedia.product.edit.adapter.ProductAddVideoRecommendationFeaturedAdapter
-import com.tokopedia.product.edit.listener.ProductAddVideoListener
+import com.tokopedia.product.edit.listener.GetVideoRecommendationListener
 import com.tokopedia.product.edit.listener.SectionVideoRecommendationListener
-import com.tokopedia.product.edit.model.videorecommendation.VideoRecommendationData
-import com.tokopedia.product.edit.model.youtube.YoutubeVideoModel
 import com.tokopedia.product.edit.viewmodel.SectionVideoRecommendationViewModel
 import com.tokopedia.product.edit.viewmodel.VideoRecommendationViewModel
 
 class SectionVideoRecommendationViewHolder(itemView: View,
-                                           var sectionVideoRecommendationListener: SectionVideoRecommendationListener) : AbstractViewHolder<SectionVideoRecommendationViewModel>(itemView), ProductAddVideoListener {
+                                           var sectionVideoRecommendationListener: SectionVideoRecommendationListener) : AbstractViewHolder<SectionVideoRecommendationViewModel>(itemView), GetVideoRecommendationListener {
 
     private lateinit var productAddVideoRecommendationFeaturedAdapter: ProductAddVideoRecommendationFeaturedAdapter
     private lateinit var recyclerView: RecyclerView
@@ -31,7 +29,7 @@ class SectionVideoRecommendationViewHolder(itemView: View,
     }
 
     private fun findViews(view: View) {
-        sectionVideoRecommendationListener.setProductAddVideoListener(this)
+        sectionVideoRecommendationListener.setGetVideoRecommendationListener(this)
         textShowMore = view.findViewById(R.id.text_video_recommendation_show_more)
         textShowMore.setOnClickListener({
             sectionVideoRecommendationListener.onShowMoreClicked()
