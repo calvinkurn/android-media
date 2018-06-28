@@ -299,24 +299,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 }
             }
         }
-//        shipmentPresenter.setShipmentCartItemModelList(newShipmentCartItemModelList);
-
-//        shipmentAdapter.clearData();
-
-//        CartItemPromoHolderData cartItemPromoHolderData =
-//                CartItemPromoHolderData.createInstanceFromAppliedPromo(shipmentPresenter.getPromoCodeAppliedData());
-//        cartItemPromoHolderData.setDefaultSelectedTabString(
-//                getArguments().getString(ARG_EXTRA_DEFAULT_SELECTED_TAB_PROMO, "")
-//        );
-//        shipmentAdapter.addPromoVoucherData(cartItemPromoHolderData);
-//
-//        if (shipmentPresenter.getCartPromoSuggestion() != null) {
-//            shipmentAdapter.addPromoSuggestionData(shipmentPresenter.getCartPromoSuggestion());
-//        }
-//        shipmentAdapter.addAddressShipmentData(shipmentPresenter.getRecipientAddressModel());
-//        shipmentAdapter.addCartItemDataList(shipmentPresenter.getShipmentCartItemModelList());
-//        shipmentAdapter.addShipmentCostData(shipmentPresenter.getShipmentCostModel());
-//        shipmentAdapter.addShipmentCheckoutButtonModel(shipmentPresenter.getShipmentCheckoutButtonModel());
 
         String errorMessage = null;
         if (!TextUtils.isEmpty(cartShipmentAddressFormData.getErrorMessage())) {

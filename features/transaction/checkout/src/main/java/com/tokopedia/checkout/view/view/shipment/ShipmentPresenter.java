@@ -15,6 +15,7 @@ import com.tokopedia.checkout.domain.datamodel.cartmultipleshipment.SetShippingA
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.GroupAddress;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.GroupShop;
+import com.tokopedia.checkout.domain.datamodel.cartshipmentform.Product;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.checkout.domain.datamodel.toppay.ThanksTopPayData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
@@ -183,16 +184,28 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     public void onNext(CartShipmentAddressFormData cartShipmentAddressFormData) {
                                         boolean isEnableCheckout = true;
                                         for (GroupAddress groupAddress : cartShipmentAddressFormData.getGroupAddress()) {
-                                            if (groupAddress.isError() || groupAddress.isWarning())
+                                            if (groupAddress.isError() || groupAddress.isWarning()) {
                                                 isEnableCheckout = false;
+                                                break;
+                                            }
                                             for (GroupShop groupShop : groupAddress.getGroupShop()) {
-                                                if (groupShop.isError() || groupShop.isWarning())
+                                                if (groupShop.isError() || groupShop.isWarning()) {
                                                     isEnableCheckout = false;
+                                                    break;
+                                                }
+                                                for (Product product : groupShop.getProducts()) {
+                                                    if (product.isError() || !TextUtils.isEmpty(product.getErrorMessage())) {
+                                                        isEnableCheckout = false;
+                                                        break;
+                                                    }
+                                                }
                                             }
                                         }
+
                                         if (isEnableCheckout) {
                                             getView().renderCheckShipmentPrepareCheckoutSuccess();
                                         } else {
+                                            getView().hideLoading();
                                             getView().renderErrorDataHasChangedCheckShipmentPrepareCheckout(
                                                     cartShipmentAddressFormData
                                             );
