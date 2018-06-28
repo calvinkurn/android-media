@@ -17,7 +17,7 @@ public interface InstantLoanUrl {
     String WEB_LINK_DASHBOARD = WEB_DOMAIN + "pinjaman-online/dashboard";
     String WEB_LINK_OTP = WEB_DOMAIN + "pinjaman-online/dana-instant/verify-phone";
     String WEB_LINK_LEARN_MORE = WEB_DOMAIN + "pinjaman-online/profil-kredit/";
-    String WEB_LINK_TNC = WEB_DOMAIN + "bantuan/syarat-dan-ketentuan-pinjaman-dana-tunai/";
+    String WEB_LINK_TNC = WEB_DOMAIN + "bantuan/syarat-dan-ketentuan-pinjaman-dana-online/";
     String LOAN_AMOUNT_QUERY_PARAM =  "?loan=";
 
 }
