@@ -193,6 +193,7 @@ public class Utils {
                     categoryItemsViewModel.setMaxEndDate(categoryEntity.getMaxEndDate());
                     categoryItemsViewModel.setLongRichDesc(categoryEntity.getLongRichDesc());
                     categoryItemsViewModel.setDisplayTags(categoryEntity.getDisplayTags());
+                    categoryItemsViewModel.setLiked(categoryEntity.isLiked());
 //                categoryItemsViewModel.setDisplayTags(categoryEntity.getDisplayTags());
 //                categoryItemsViewModel.setTnc(categoryEntity.getTnc());
 //                categoryItemsViewModel.setIsTop(categoryEntity.getIsTop());

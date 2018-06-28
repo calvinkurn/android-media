@@ -398,7 +398,13 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     @Override
     public void onDestroy() {
         mPresenter.onDestroy();
-        ((DealsCategoryAdapter) rvTrendingDeals.getAdapter()).unsubscribeUseCase();
+        try {
+            if (rvTrendingDeals.getAdapter() != null) {
+                ((DealsCategoryAdapter) rvTrendingDeals.getAdapter()).unsubscribeUseCase();
+            }
+        }catch(Exception e){
+
+        }
         super.onDestroy();
     }
 

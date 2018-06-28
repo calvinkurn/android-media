@@ -7,6 +7,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +33,7 @@ import com.tokopedia.transaction.orders.orderdetails.view.activity.OrderListDeta
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailContract;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailPresenter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements OrderListDetailContract.TapActionInterface {
@@ -43,6 +45,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private boolean isShortLayout;
     OrderListDetailPresenter presenter;
     ItemViewHolder viewHolder;
+    boolean isTapActionsLoaded = false;
 
     public ItemsAdapter(Context context, List<Items> itemsList, boolean isShortLayout, OrderListDetailPresenter presenter) {
         this.context = context;
@@ -106,23 +109,10 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     @Override
-    public void setTapActionButton(int position, TapActions tapActions) {
-        TextView tapActionTextView = new TextView(context);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        tapActionTextView.setPadding(24, 24, 24, 24);
-        tapActionTextView.setLayoutParams(params);
-        tapActionTextView.setTextColor(Color.WHITE);
-        tapActionTextView.setGravity(Gravity.CENTER_HORIZONTAL);
-        tapActionTextView.setText(tapActions.getLabel().toUpperCase());
-        GradientDrawable shape = new GradientDrawable();
-        shape.setShape(GradientDrawable.RECTANGLE);
-        shape.setColor(context.getResources().getColor(R.color.green_nob));
-        shape.setCornerRadius(4);
-        shape.setStroke(1, Color.BLACK);
-        tapActionTextView.setBackground(shape);
-        if (!tapActions.getBody().equals(""))
-            tapActionTextView.setOnClickListener(getActionButtonClickListener(tapActions.getBody().getAppURL()));
-        viewHolder.tapActionLayout.addView(tapActionTextView);
+    public void setTapActionButton(int position, List<TapActions> tapActions) {
+        itemsList.get(position).setTapActions(tapActions);
+        notifyItemChanged(position);
+        isTapActionsLoaded = true;
     }
 
     private View.OnClickListener getActionButtonClickListener(final String uri) {
@@ -130,7 +120,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             @Override
             public void onClick(View view) {
                 ((TkpdCoreRouter) context.getApplicationContext())
-                        .actionOpenGeneralWebView((OrderListDetailActivity)context, uri);
+                        .actionOpenGeneralWebView((OrderListDetailActivity) context, uri);
             }
         };
     }
@@ -194,29 +184,75 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     validDate.setText(String.format(context.getResources().getString(R.string.text_valid_till), metaDataInfo.getEndDate()));
                 }
                 EntityAddress entityAddress = metaDataInfo.getEntityAddress();
-                if (entityAddress != null) {
-                    cityName.setText(entityAddress.getAddress() + ", " + entityAddress.getCity() + ", " + entityAddress.getDistrict() + ", " + entityAddress.getState());
+                if(entityAddress!=null){
+                    if(entityAddress.getName()!=null){
+                        cityName.setText(entityAddress.getName());
+                    }
                 }
-            }
-            if (item.getActionButtons().size() > 0) {
-                actionLayout.setVisibility(View.VISIBLE);
-            }
-            for (ActionButton actionButton : item.getActionButtons()) {
-                TextView smsButton = new TextView(context);
-                smsButton.setText(actionButton.getLabel().toUpperCase());
-                smsButton.setGravity(Gravity.CENTER_HORIZONTAL);
-                smsButton.setPadding(24, 24, 24, 24);
-                GradientDrawable shape = new GradientDrawable();
-                shape.setShape(GradientDrawable.RECTANGLE);
-                shape.setCornerRadius(4);
-                shape.setStroke(1, Color.BLACK);
-                smsButton.setBackground(shape);
-                smsButton.setOnClickListener(getActionButtonClickListener(actionButton.getBody().getAppURL()));
-                actionLayout.addView(smsButton);
-            }
+//                if (entityAddress != null) {
+//                    List<String> list = new ArrayList<String>();
+//                    list.add(entityAddress.getAddress());
+//                    list.add(entityAddress.getDistrict());
+//                    list.add(entityAddress.getState());
+//                    String result = TextUtils.join(", ", list);
+//                    cityName.setText(result);
+//                }
 
-            if (item.getTapActions().size() > 0) {
+            }
+//            if (item.getActionButtons().size() > 0) {
+//                actionLayout.setVisibility(View.VISIBLE);
+//            }
+//            for (ActionButton actionButton : item.getActionButtons()) {
+//                TextView smsButton = new TextView(context);
+//                smsButton.setText(actionButton.getLabel().toUpperCase());
+//                smsButton.setGravity(Gravity.CENTER_HORIZONTAL);
+//                smsButton.setPadding(24, 24, 24, 24);
+//                GradientDrawable shape = new GradientDrawable();
+//                shape.setShape(GradientDrawable.RECTANGLE);
+//                shape.setCornerRadius(4);
+//                shape.setStroke(1, Color.BLACK);
+//                smsButton.setBackground(shape);
+//                smsButton.setOnClickListener(getActionButtonClickListener(actionButton.getBody().getAppURL()));
+//                actionLayout.addView(smsButton);
+//            }
+
+            if (item.getTapActions().size() > 0 && !isTapActionsLoaded) {
                 presenter.setTapActionButton(item.getTapActions(), ItemsAdapter.this, getIndex());
+            }
+            if (isTapActionsLoaded) {
+                for (int i = 0; i < item.getTapActions().size(); i++) {
+                    TapActions tapActions = item.getTapActions().get(i);
+
+                    TextView tapActionTextView = new TextView(context);
+                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                    if(i!=0){
+                        params.setMargins(0, (int) context.getResources().getDimension(R.dimen.dp_8), 0, 0);
+                    }
+                    tapActionTextView.setPadding(24, 24, 24, 24);
+                    tapActionTextView.setLayoutParams(params);
+                    tapActionTextView.setTextColor(Color.WHITE);
+                    tapActionTextView.setGravity(Gravity.CENTER_HORIZONTAL);
+                    tapActionTextView.setText(tapActions.getLabel().toUpperCase());
+                    GradientDrawable shape = new GradientDrawable();
+                    shape.setShape(GradientDrawable.RECTANGLE);
+                    shape.setColor(context.getResources().getColor(R.color.green_nob));
+
+
+                    if (i == item.getTapActions().size() - 1) {
+                        float radius = context.getResources().getDimension(R.dimen.dp_4);
+                        shape.setCornerRadii(new float[]{0, 0, 0, 0, radius, radius, radius, radius});
+
+                    } else {
+
+                        shape.setCornerRadius(4);
+                    }
+
+//                    shape.setStroke(1, Color.BLACK);
+                    tapActionTextView.setBackground(shape);
+                    if (!tapActions.getBody().equals(""))
+                        tapActionTextView.setOnClickListener(getActionButtonClickListener(tapActions.getBody().getAppURL()));
+                    tapActionLayout.addView(tapActionTextView);
+                }
             }
         }
 

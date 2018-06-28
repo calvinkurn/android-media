@@ -79,7 +79,11 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
             if (categoryViewModels.size() < size) {
                 size = categoryViewModels.size();
             }
-            searchIntent.putParcelableArrayListExtra("TOPDEALS", (ArrayList<? extends Parcelable>) categoryViewModels.subList(0, size - 1));
+            ArrayList<CategoryItemsViewModel> searchItems = new ArrayList<CategoryItemsViewModel>();
+            for (int i = 0; i < size; i++) {
+                searchItems.add(categoryViewModels.get(i));
+            }
+            searchIntent.putParcelableArrayListExtra("TOPDEALS", searchItems);
             getView().navigateToActivityRequest(searchIntent, DealsHomeActivity.REQUEST_CODE_DEALSSEARCHACTIVITY);
         } else if (id == R.id.action_promo) {
             getView().startGeneralWebView(PROMOURL);

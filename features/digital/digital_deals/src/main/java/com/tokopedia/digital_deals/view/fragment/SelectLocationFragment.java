@@ -21,6 +21,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DaggerDealsComponent;
 import com.tokopedia.digital_deals.di.DealsModule;
+import com.tokopedia.digital_deals.view.activity.DealsLocationActivity;
 import com.tokopedia.digital_deals.view.adapter.DealsLocationAdapter;
 import com.tokopedia.digital_deals.view.contractor.DealsLocationContract;
 import com.tokopedia.digital_deals.view.customview.SearchInputView;
@@ -179,9 +180,8 @@ public class SelectLocationFragment extends BaseDaggerFragment implements
     public void onLocationItemSelected(boolean locationUpdated) {
 
         getActivity().setResult(RESULT_OK, new Intent().putExtra(EXTRA_CALLBACK_LOCATION, locationUpdated));
-        if (locationUpdated)
-            getActivity().overridePendingTransition(R.anim.hold, R.anim.slide_out_up);
-        getActivity().finish();
+
+        ((DealsLocationActivity)getActivity()).finish();
 
     }
 

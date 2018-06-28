@@ -1,8 +1,11 @@
 package com.tokopedia.digital_deals.view.activity;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.transition.Fade;
+import android.transition.Transition;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
@@ -25,7 +28,17 @@ public class DealsLocationActivity extends BaseSimpleActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Transition fade = new Fade();
+            fade.excludeTarget(android.R.id.statusBarBackground, true);
+            fade.excludeTarget(android.R.id.navigationBarBackground, true);
+            getWindow().setExitTransition(fade);
+            getWindow().setEnterTransition(fade);
+        }
+
+
         location= Utils.getSingletonInstance().getLocation(this);
         if(location!=null) {
             toolbar.setNavigationIcon(ContextCompat.getDrawable(this, R.drawable.ic_close_deals));
@@ -42,7 +55,14 @@ public class DealsLocationActivity extends BaseSimpleActivity {
     public void onBackPressed() {
         super.onBackPressed();
         if(location!=null) {
+            overridePendingTransition(R.anim.hold, R.anim.slide_out_up);
+        }
+    }
 
+    @Override
+    public void finish() {
+        super.finish();
+        if(location!=null) {
             overridePendingTransition(R.anim.hold, R.anim.slide_out_up);
         }
 
