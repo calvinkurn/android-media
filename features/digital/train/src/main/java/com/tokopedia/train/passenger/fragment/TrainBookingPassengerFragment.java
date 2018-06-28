@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,6 +17,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.design.component.CardWithAction;
 import com.tokopedia.tkpdtrain.R;
+import com.tokopedia.train.common.TrainRouter;
 import com.tokopedia.train.common.di.utils.TrainComponentUtils;
 import com.tokopedia.train.common.util.TrainDateUtil;
 import com.tokopedia.train.passenger.activity.TrainBookingAddPassengerActivity;
@@ -26,6 +28,7 @@ import com.tokopedia.train.passenger.adapter.TrainBookingPassengerAdapterTypeFac
 import com.tokopedia.train.passenger.contract.TrainBookingPassengerContract;
 import com.tokopedia.train.passenger.di.DaggerTrainBookingPassengerComponent;
 import com.tokopedia.train.passenger.presenter.TrainBookingPassengerPresenter;
+import com.tokopedia.train.passenger.viewmodel.ProfileBuyerInfo;
 import com.tokopedia.train.passenger.viewmodel.TrainParamPassenger;
 import com.tokopedia.train.passenger.viewmodel.TrainPassengerViewModel;
 import com.tokopedia.train.search.presentation.model.TrainScheduleBookingPassData;
@@ -35,6 +38,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import rx.Observable;
 
 /**
  * Created by nabillasabbaha on 21/06/18.
@@ -49,6 +54,10 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
     private TrainBookingPassengerAdapter adapter;
     private RecyclerView recyclerViewPassenger;
     private TrainParamPassenger trainParamPassenger;
+    private AppCompatEditText contactNameBuyer;
+    private AppCompatEditText birthdateBuyer;
+    private AppCompatEditText phoneNumberBuyer;
+    private AppCompatEditText emailBuyer;
 
     @Inject
     TrainBookingPassengerPresenter presenter;
@@ -68,6 +77,10 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
         cardActionDeparture = view.findViewById(R.id.train_departure_info);
         cardActionReturn = view.findViewById(R.id.train_return_info);
         recyclerViewPassenger = view.findViewById(R.id.rv_passengers);
+        contactNameBuyer = view.findViewById(R.id.et_contact_name);
+        birthdateBuyer = view.findViewById(R.id.et_birthdate);
+        phoneNumberBuyer = view.findViewById(R.id.et_phone_number);
+        emailBuyer = view.findViewById(R.id.et_contact_email);
         return view;
     }
 
@@ -81,8 +94,13 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
             trainParamPassenger = new TrainParamPassenger();
         }
 
+        initializeBuyerInfo();
         initializeTripInfo();
-        initializedPassenger();
+        initializePassenger();
+    }
+
+    private void initializeBuyerInfo() {
+        presenter.getProfilBuyer();
     }
 
     @Override
@@ -115,7 +133,7 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
         });
     }
 
-    private void initializedPassenger() {
+    private void initializePassenger() {
         TrainBookingPassengerAdapterTypeFactory adapterTypeFactory = new TrainBookingPassengerAdapterTypeFactory(new TrainBookingPassengerAdapterListener() {
             @Override
             public void onChangePassengerData(TrainPassengerViewModel trainPassengerViewModel) {
@@ -198,6 +216,52 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
     @Override
     public void setCityRouteTripInfo(CardWithAction cardWithAction, String originCity, String destinationCity) {
         cardWithAction.setContent(originCity + " - " + destinationCity);
+    }
+
+    @Override
+    public Observable<ProfileBuyerInfo> getObservableProfileBuyerInfo() {
+        if (getActivity().getApplication() instanceof TrainRouter
+                && ((TrainRouter) getActivity().getApplication())
+                .getProfileInfo() != null) {
+            return ((TrainRouter) getActivity().getApplication())
+                    .getProfileInfo();
+        }
+        return Observable.empty();
+    }
+
+    @Override
+    public void setContactName(String contactName) {
+        contactNameBuyer.setText(contactName);
+    }
+
+    @Override
+    public void setBirthdate(String birthdate) {
+        birthdateBuyer.setText(birthdate);
+    }
+
+    @Override
+    public void setPhoneNumber(String phoneNumber) {
+        phoneNumberBuyer.setText(phoneNumber);
+    }
+
+    @Override
+    public void setEmail(String email) {
+        emailBuyer.setText(email);
+    }
+
+    @Override
+    public String getContactNameEt() {
+        return contactNameBuyer.getText().toString().trim();
+    }
+
+    @Override
+    public String getPhoneNumberEt() {
+        return phoneNumberBuyer.getText().toString().trim();
+    }
+
+    @Override
+    public String getEmailEt() {
+        return emailBuyer.getText().toString().trim();
     }
 
     @Override

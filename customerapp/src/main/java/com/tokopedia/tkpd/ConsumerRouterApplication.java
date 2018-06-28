@@ -260,6 +260,7 @@ import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
 import com.tokopedia.tkpd.tokocash.GetBalanceTokoCashWrapper;
 import com.tokopedia.tkpd.tokocash.datepicker.DatePickerUtil;
+import com.tokopedia.tkpd.train.TrainGetBuyerProfileInfoMapper;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
@@ -274,6 +275,8 @@ import com.tokopedia.tokocash.historytokocash.presentation.model.PeriodRangeMode
 import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 import com.tokopedia.tokocash.pendingcashback.receiver.TokocashPendingDataBroadcastReceiver;
 import com.tokopedia.topads.sourcetagging.util.TopAdsAppLinkUtil;
+import com.tokopedia.train.common.TrainRouter;
+import com.tokopedia.train.passenger.viewmodel.ProfileBuyerInfo;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.bcaoneklik.usecase.CreditCardFingerPrintUseCase;
 import com.tokopedia.transaction.insurance.view.InsuranceTnCActivity;
@@ -347,7 +350,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ImageUploaderRouter,
         ContactUsModuleRouter,
         ITransactionOrderDetailRouter,
-        ILogisticUploadAwbRouter {
+        ILogisticUploadAwbRouter,
+        TrainRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -789,6 +793,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 .newInstance(getFlightConsumerComponent())
                 .inject()
                 .getProfileInfoPrefillBooking();
+    }
+
+    @Override
+    public Observable<ProfileBuyerInfo> getProfileInfo() {
+        return getProfile().map(new TrainGetBuyerProfileInfoMapper());
     }
 
     @Override

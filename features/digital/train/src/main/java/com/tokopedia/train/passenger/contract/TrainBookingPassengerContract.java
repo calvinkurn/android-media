@@ -5,10 +5,13 @@ import android.support.annotation.StringRes;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.design.component.CardWithAction;
+import com.tokopedia.train.passenger.viewmodel.ProfileBuyerInfo;
 import com.tokopedia.train.passenger.viewmodel.TrainPassengerViewModel;
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
 
 import java.util.List;
+
+import rx.Observable;
 
 /**
  * Created by nabillasabbaha on 25/06/18.
@@ -42,9 +45,27 @@ public interface TrainBookingPassengerContract {
         String getDestinationCity();
 
         void setCityRouteTripInfo(CardWithAction cardWithAction, String originCity, String destinationCity);
+
+        Observable<ProfileBuyerInfo> getObservableProfileBuyerInfo();
+
+        String getContactNameEt();
+
+        String getPhoneNumberEt();
+
+        String getEmailEt();
+
+        void setContactName(String contactName);
+
+        void setBirthdate(String birthdate);
+
+        void setPhoneNumber(String phoneNumber);
+
+        void setEmail(String email);
     }
 
     interface Presenter extends CustomerPresenter<View> {
+
+        void getProfilBuyer();
 
         void getDetailSchedule(String idSchedule, CardWithAction cardWithAction);
 

@@ -3,8 +3,10 @@ package com.tokopedia.train.passenger.presenter;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.design.component.CardWithAction;
 import com.tokopedia.tkpdtrain.R;
+import com.tokopedia.train.common.util.TrainDateUtil;
 import com.tokopedia.train.passenger.contract.TrainBookingPassengerContract;
 import com.tokopedia.train.passenger.data.TrainBookingPassenger;
+import com.tokopedia.train.passenger.viewmodel.ProfileBuyerInfo;
 import com.tokopedia.train.passenger.viewmodel.TrainPassengerViewModel;
 import com.tokopedia.train.search.domain.GetDetailScheduleUseCase;
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
@@ -16,6 +18,9 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by nabillasabbaha on 25/06/18.
@@ -23,11 +28,54 @@ import rx.Subscriber;
 public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBookingPassengerContract.View>
         implements TrainBookingPassengerContract.Presenter {
 
+    private CompositeSubscription compositeSubscription;
     private GetDetailScheduleUseCase getDetailScheduleUseCase;
 
     @Inject
     public TrainBookingPassengerPresenter(GetDetailScheduleUseCase getDetailScheduleUseCase) {
         this.getDetailScheduleUseCase = getDetailScheduleUseCase;
+        compositeSubscription = new CompositeSubscription();
+    }
+
+    @Override
+    public void getProfilBuyer() {
+        compositeSubscription.add(getView().getObservableProfileBuyerInfo()
+                .onBackpressureDrop()
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<ProfileBuyerInfo>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        if (isViewAttached()) {
+
+                        }
+                    }
+
+                    @Override
+                    public void onNext(ProfileBuyerInfo profileBuyerInfo) {
+                        if (getView().getContactNameEt().length() == 0) {
+                            getView().setContactName(profileBuyerInfo.getFullname());
+                        }
+                        if (getView().getEmailEt().length() == 0) {
+                            getView().setEmail(profileBuyerInfo.getEmail());
+                        }
+                        if (getView().getPhoneNumberEt().length() == 0) {
+                            getView().setPhoneNumber(profileBuyerInfo.getPhoneNumber());
+                        }
+
+                        getView().setBirthdate(
+                                TrainDateUtil.dateToString(
+                                        TrainDateUtil.stringToDate(profileBuyerInfo.getBday()),
+                                        TrainDateUtil.DEFAULT_FORMAT));
+                    }
+                }));
     }
 
     @Override
