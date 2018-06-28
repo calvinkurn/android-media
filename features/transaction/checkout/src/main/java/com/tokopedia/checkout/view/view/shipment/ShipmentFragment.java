@@ -280,29 +280,32 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void renderErrorDataHasChangedCheckShipmentPrepareCheckout(
-            CartShipmentAddressFormData cartShipmentAddressFormData
+            CartShipmentAddressFormData cartShipmentAddressFormData, boolean needToRefreshItemList
     ) {
         List<ShipmentCartItemModel> newShipmentCartItemModelList = shipmentDataConverter.getShipmentItems(
                 cartShipmentAddressFormData
         );
         List<ShipmentCartItemModel> oldShipmentCartItemModelList = shipmentPresenter.getShipmentCartItemModelList();
-        for (int i = 0; i < newShipmentCartItemModelList.size(); i++) {
-            if (newShipmentCartItemModelList.get(i).isError()) {
-                oldShipmentCartItemModelList.get(i).setError(true);
-                oldShipmentCartItemModelList.get(i).setErrorMessage(newShipmentCartItemModelList.get(i).getErrorMessage());
-            }
-            for (int j = 0; j < newShipmentCartItemModelList.get(i).getCartItemModels().size(); j++) {
-                if (newShipmentCartItemModelList.get(i).isAllItemError()) {
-                    oldShipmentCartItemModelList.get(i).getCartItemModels().get(j).setError(true);
-                } else {
-                    if (newShipmentCartItemModelList.get(i).getCartItemModels().get(j).isError()) {
+        try {
+            for (int i = 0; i < newShipmentCartItemModelList.size(); i++) {
+                if (newShipmentCartItemModelList.get(i).isError()) {
+                    oldShipmentCartItemModelList.get(i).setError(true);
+                    oldShipmentCartItemModelList.get(i).setErrorMessage(newShipmentCartItemModelList.get(i).getErrorMessage());
+                }
+                for (int j = 0; j < newShipmentCartItemModelList.get(i).getCartItemModels().size(); j++) {
+                    if (newShipmentCartItemModelList.get(i).isAllItemError()) {
                         oldShipmentCartItemModelList.get(i).getCartItemModels().get(j).setError(true);
-                        oldShipmentCartItemModelList.get(i).getCartItemModels().get(j).setErrorMessage(
-                                newShipmentCartItemModelList.get(i).getCartItemModels().get(j).getErrorMessage());
+                    } else {
+                        if (newShipmentCartItemModelList.get(i).getCartItemModels().get(j).isError()) {
+                            oldShipmentCartItemModelList.get(i).getCartItemModels().get(j).setError(true);
+                            oldShipmentCartItemModelList.get(i).getCartItemModels().get(j).setErrorMessage(
+                                    newShipmentCartItemModelList.get(i).getCartItemModels().get(j).getErrorMessage());
+                        }
                     }
                 }
             }
-
+        } catch (IndexOutOfBoundsException e) {
+            e.printStackTrace();
         }
 
         String errorMessage = null;
@@ -318,9 +321,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (TextUtils.isEmpty(errorMessage)) {
             errorMessage = getActivity().getString(R.string.default_request_error_unknown_short);
         }
-        showToastError(errorMessage);
         shipmentAdapter.disableShipmentCheckoutButtonModel(errorMessage);
-        shipmentAdapter.notifyDataSetChanged();
+        if (needToRefreshItemList) {
+            showToastError(errorMessage);
+            shipmentAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override

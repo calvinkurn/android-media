@@ -39,7 +39,7 @@ public interface ShipmentContract {
         void renderCheckShipmentPrepareCheckoutSuccess();
 
         void renderErrorDataHasChangedCheckShipmentPrepareCheckout(
-                CartShipmentAddressFormData cartShipmentAddressFormData
+                CartShipmentAddressFormData cartShipmentAddressFormData, boolean needToRefreshItemList
         );
 
         void renderThanksTopPaySuccess(String message);

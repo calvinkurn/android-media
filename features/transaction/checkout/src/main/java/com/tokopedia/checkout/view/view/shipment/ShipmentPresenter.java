@@ -147,7 +147,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     @Override
                                     public void onNext(CartShipmentAddressFormData cartShipmentAddressFormData) {
                                         getView().hideLoading();
-                                        getView().renderErrorDataHasChangedCheckShipmentPrepareCheckout(cartShipmentAddressFormData);
+                                        getView().renderErrorDataHasChangedCheckShipmentPrepareCheckout(cartShipmentAddressFormData, true);
                                     }
                                 }
                         )
@@ -156,7 +156,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public void processCheckShipmentPrepareCheckout() {
-        if (isNeedToremoveErrorShopProduct()) {
+        boolean isNeedToRemoveErrorProduct = isNeedToremoveErrorShopProduct();
+        if (isNeedToRemoveErrorProduct) {
             processCheckout();
         }
 
@@ -214,7 +215,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                         } else {
                                             getView().hideLoading();
                                             getView().renderErrorDataHasChangedCheckShipmentPrepareCheckout(
-                                                    cartShipmentAddressFormData
+                                                    cartShipmentAddressFormData, !isNeedToRemoveErrorProduct
                                             );
                                         }
                                     }
@@ -267,10 +268,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         ArrayList<Integer> indexShopErrorList = new ArrayList<>();
         Map<Integer, ArrayList<Integer>> indexShopItemErrorMap = new HashMap<>();
         for (int i = 0; i < shipmentCartItemModelList.size(); i++) {
-            if (shipmentCartItemModelList.get(i).isError()) {
+            if (shipmentCartItemModelList.get(i).isAllItemError()) {
                 cartListHasError = true;
                 indexShopErrorList.add(i);
-            } else {
+            } else if (shipmentCartItemModelList.get(i).isError()) {
                 ArrayList<Integer> indexShopItemError = new ArrayList<>();
                 for (int j = 0; j < shipmentCartItemModelList.get(i).getCartItemModels().size(); j++) {
                     if (shipmentCartItemModelList.get(i).getCartItemModels().get(j).isError()) {
