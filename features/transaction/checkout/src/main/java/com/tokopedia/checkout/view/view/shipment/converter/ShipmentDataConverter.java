@@ -98,6 +98,9 @@ public class ShipmentDataConverter {
         }
 
         shipmentCartItemModel.setError(groupShop.isError());
+        if (shipmentCartItemModel.isError()) {
+            shipmentCartItemModel.setAllItemError(true);
+        }
         shipmentCartItemModel.setErrorMessage(groupShop.getErrorMessage());
         shipmentCartItemModel.setWarning(groupShop.isWarning());
         shipmentCartItemModel.setWarningMessage(groupShop.getWarningMessage());

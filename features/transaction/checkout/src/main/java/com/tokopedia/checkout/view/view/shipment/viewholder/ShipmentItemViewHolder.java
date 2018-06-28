@@ -749,8 +749,12 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void showShipmentWarning(String message) {
-        tvShippingWarning.setText(message);
-        llShippingWarningContainer.setVisibility(View.VISIBLE);
+        if (!TextUtils.isEmpty(message)) {
+            tvShippingWarning.setText(message);
+            llShippingWarningContainer.setVisibility(View.VISIBLE);
+        } else {
+            llShippingWarningContainer.setVisibility(View.GONE);
+        }
         disableItemView();
     }
 

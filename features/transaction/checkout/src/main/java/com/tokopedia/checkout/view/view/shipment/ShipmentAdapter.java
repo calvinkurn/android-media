@@ -35,6 +35,7 @@ import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
+import com.tokopedia.transactiondata.entity.request.CheckoutRequest;
 import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
 
@@ -440,7 +441,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
             }
             if (cartItemCounter == shipmentCartItemModelList.size()) {
-                RequestData requestData = getRequestData(null);
+                RequestData requestData = getRequestData(null, null);
                 shipmentAdapterActionListener.onFinishChoosingShipment(requestData.getPromoRequestData(),
                         requestData.getCheckoutRequestData());
                 return true;
@@ -604,14 +605,17 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return false;
     }
 
-    public RequestData getRequestData(RecipientAddressModel recipientAddressModel) {
+    public RequestData getRequestData(RecipientAddressModel recipientAddressModel, List<ShipmentCartItemModel> shipmentCartItemModelList) {
         RecipientAddressModel addressModel;
         if (recipientAddressModel != null) {
             addressModel = recipientAddressModel;
         } else {
             addressModel = this.recipientAddressModel;
         }
-        return shipmentDataRequestConverter.generateRequestData(shipmentCartItemModelList, addressModel);
+        if (shipmentCartItemModelList != null) {
+            this.shipmentCartItemModelList = shipmentCartItemModelList;
+        }
+        return shipmentDataRequestConverter.generateRequestData(this.shipmentCartItemModelList, addressModel);
     }
 
     public void clearData() {

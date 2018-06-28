@@ -93,8 +93,12 @@ public class CartItemViewHolder extends ShipmentItemViewHolder {
     }
 
     private void showShipmentWarning(String message) {
-        mTvShippingWarning.setText(message);
-        mLlShippingWarningContainer.setVisibility(View.VISIBLE);
+        if (!TextUtils.isEmpty(message)) {
+            mTvShippingWarning.setText(message);
+            mLlShippingWarningContainer.setVisibility(View.VISIBLE);
+        } else {
+            mLlShippingWarningContainer.setVisibility(View.GONE);
+        }
         disableItemView();
     }
 

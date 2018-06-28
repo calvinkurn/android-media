@@ -43,7 +43,10 @@ import com.tokopedia.usecase.RequestParams;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -153,6 +156,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public void processCheckShipmentPrepareCheckout() {
+        if (isNeedToremoveErrorShopProduct()) {
+            processCheckout();
+        }
+
         getView().showLoading();
         com.tokopedia.abstraction.common.utils.TKPDMapParam<String, String> paramGetShipmentForm = new com.tokopedia.abstraction.common.utils.TKPDMapParam<>();
         paramGetShipmentForm.put("lang", "id");
@@ -233,10 +240,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public void processCheckout() {
+
         CheckoutRequest checkoutRequest = generateCheckoutRequest(
                 promoCodeAppliedData != null && promoCodeAppliedData.getPromoCode() != null ?
                         promoCodeAppliedData.getPromoCode() : "", 0
         );
+
         if (checkoutRequest != null) {
             getView().showLoading();
             RequestParams requestParams = RequestParams.create();
@@ -251,6 +260,45 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         } else {
             getView().showToastError(getView().getActivityContext().getString(R.string.default_request_error_unknown));
         }
+    }
+
+    private boolean isNeedToremoveErrorShopProduct() {
+        boolean cartListHasError = false;
+        ArrayList<Integer> indexShopErrorList = new ArrayList<>();
+        Map<Integer, ArrayList<Integer>> indexShopItemErrorMap = new HashMap<>();
+        for (int i = 0; i < shipmentCartItemModelList.size(); i++) {
+            if (shipmentCartItemModelList.get(i).isError()) {
+                cartListHasError = true;
+                indexShopErrorList.add(i);
+            } else {
+                ArrayList<Integer> indexShopItemError = new ArrayList<>();
+                for (int j = 0; j < shipmentCartItemModelList.get(i).getCartItemModels().size(); j++) {
+                    if (shipmentCartItemModelList.get(i).getCartItemModels().get(j).isError()) {
+                        cartListHasError = true;
+                        indexShopItemError.add(j);
+                    }
+                }
+                indexShopItemErrorMap.put(i, indexShopItemError);
+            }
+        }
+
+        for (Map.Entry<Integer, ArrayList<Integer>> entry : indexShopItemErrorMap.entrySet()) {
+            Integer key = entry.getKey();
+            ArrayList<Integer> value = entry.getValue();
+            for (Integer index : value) {
+                shipmentCartItemModelList.get(key).getCartItemModels().remove((int) index);
+            }
+        }
+
+        for (Integer indexShopError : indexShopErrorList) {
+            shipmentCartItemModelList.remove((int) indexShopError);
+        }
+
+        if (cartListHasError) {
+            dataCheckoutRequestList = getView().generateNewCheckoutRequest(shipmentCartItemModelList);
+            return true;
+        }
+        return false;
     }
 
     @Override

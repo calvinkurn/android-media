@@ -15,6 +15,7 @@ import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartShipmentData
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCheckoutButtonModel;
 import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
+import com.tokopedia.transactiondata.entity.request.CheckoutRequest;
 import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
 
@@ -66,6 +67,8 @@ public interface ShipmentContract {
         void renderChangeAddressSuccess(RecipientAddressModel recipientAddressModel);
 
         void renderCancelAutoApplyCouponSuccess();
+
+        List<DataCheckoutRequest> generateNewCheckoutRequest(List<ShipmentCartItemModel> shipmentCartItemModelList);
 
         Activity getActivityContext();
     }

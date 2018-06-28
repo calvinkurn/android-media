@@ -290,7 +290,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             if (newShipmentCartItemModelList.get(i).isError()) {
                 oldShipmentCartItemModelList.get(i).setError(true);
                 oldShipmentCartItemModelList.get(i).setErrorMessage(newShipmentCartItemModelList.get(i).getErrorMessage());
-                for (int j = 0; j < newShipmentCartItemModelList.get(i).getCartItemModels().size(); j++) {
+            }
+            for (int j = 0; j < newShipmentCartItemModelList.get(i).getCartItemModels().size(); j++) {
+                if (newShipmentCartItemModelList.get(i).isAllItemError()) {
+                    oldShipmentCartItemModelList.get(i).getCartItemModels().get(j).setError(true);
+                } else {
                     if (newShipmentCartItemModelList.get(i).getCartItemModels().get(j).isError()) {
                         oldShipmentCartItemModelList.get(i).getCartItemModels().get(j).setError(true);
                         oldShipmentCartItemModelList.get(i).getCartItemModels().get(j).setErrorMessage(
@@ -298,6 +302,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     }
                 }
             }
+
         }
 
         String errorMessage = null;
@@ -431,11 +436,17 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         onCartDataDisableToCheckout();
     }
 
+    @Override
+    public List<DataCheckoutRequest> generateNewCheckoutRequest(List<ShipmentCartItemModel> shipmentCartItemModelList) {
+        ShipmentAdapter.RequestData requestData = shipmentAdapter.getRequestData(null, shipmentCartItemModelList);
+        return requestData.getCheckoutRequestData();
+    }
+
     private void updateAppliedPromo(CartItemPromoHolderData cartPromo) {
         shipmentAdapter.updateItemPromoVoucher(cartPromo);
         if (shipmentAdapter.hasSetAllCourier()) {
             ShipmentAdapter.RequestData requestData =
-                    shipmentAdapter.getRequestData(null);
+                    shipmentAdapter.getRequestData(null, null);
             shipmentPresenter.setPromoCodeCartShipmentRequestData(requestData.getPromoRequestData());
             shipmentPresenter.checkPromoShipment();
 
@@ -556,7 +567,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         !currentAddress.getDestinationDistrictId().equals(newAddress.getDestinationDistrictId()) ||
                         !currentAddress.getCityId().equals(newAddress.getCityId()) ||
                         !currentAddress.getProvinceId().equals(newAddress.getProvinceId())) {
-                    shipmentPresenter.setDataChangeAddressRequestList(shipmentAdapter.getRequestData(newAddress).getChangeAddressRequestData());
+                    shipmentPresenter.setDataChangeAddressRequestList(shipmentAdapter.getRequestData(newAddress, null).getChangeAddressRequestData());
                     shipmentPresenter.changeShippingAddress(newAddress);
                 }
                 break;
