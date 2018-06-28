@@ -390,14 +390,14 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     public void renderBannerListData(String title, List<BannerData> bannerDataList) {
         String formattedTitle = getResources().getString(R.string.promo_category, title);
         this.bannerDataListState = getBannerDataWithoutEmptyItem(bannerDataList);
-        promoPanduanPagerAdapter.setBannerDataList(title, bannerDataList);
+        promoPanduanPagerAdapter.setBannerDataList(formattedTitle, bannerDataList);
     }
 
     @Override
     public void renderOtherBannerListData(String title, List<BannerData> otherBannerDataList) {
         String formattedTitle = getResources().getString(R.string.promo_category, title);
         this.otherBannerDataListState = getBannerDataWithoutEmptyItem(otherBannerDataList);
-        promoPanduanPagerAdapter.setOtherBannerDataList(title, otherBannerDataList);
+        promoPanduanPagerAdapter.setOtherBannerDataList(formattedTitle, otherBannerDataList);
     }
 
     private List<BannerData> getBannerDataWithoutEmptyItem(List<BannerData> bannerDataList) {
