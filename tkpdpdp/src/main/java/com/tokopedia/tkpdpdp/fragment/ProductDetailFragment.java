@@ -1226,16 +1226,23 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                             selectedQuantity = data.getIntExtra(KEY_SELECTED_QUANTIY, 1);
                             selectedRemarkNotes = data.getStringExtra(KEY_REMARK_FOR_SELLER);
                         }
-                        switch (data.getIntExtra(KEY_STATE_RESULT_VARIANT, 0)) {
-                            case SELECTED_VARIANT_RESULT_SKIP_TO_CART:
-                                onProductBuySessionLogin(createProductCartPass(SOURCE_BUTTON_BUY_VARIANT));
-                                break;
-                            case SELECTED_VARIANT_RESULT_STAY_IN_PDP:
-                                onProductBuySessionLogin(createProductCartPass(SOURCE_BUTTON_CART_VARIANT));
-                                break;
-                            default:
-                                getActivity().finish();
-                                break;
+
+                        if (SessionHandler.isV4Login(getActivity())) {
+                            switch (data.getIntExtra(KEY_STATE_RESULT_VARIANT, 0)) {
+                                case SELECTED_VARIANT_RESULT_SKIP_TO_CART:
+                                    onProductBuySessionLogin(createProductCartPass(SOURCE_BUTTON_BUY_VARIANT));
+                                    break;
+                                case SELECTED_VARIANT_RESULT_STAY_IN_PDP:
+                                    onProductBuySessionLogin(createProductCartPass(SOURCE_BUTTON_CART_VARIANT));
+                                    break;
+                                default:
+                                    getActivity().finish();
+                                    break;
+                            }
+                        } else {
+                            Bundle bundle = new Bundle();
+                            bundle.putBoolean("login", true);
+                            onProductBuySessionNotLogin(bundle);
                         }
                     }
                 }
