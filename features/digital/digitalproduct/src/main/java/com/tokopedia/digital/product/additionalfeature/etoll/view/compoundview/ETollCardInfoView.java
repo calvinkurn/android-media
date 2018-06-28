@@ -80,7 +80,7 @@ public class ETollCardInfoView extends FrameLayout {
         textCardNumber.setTextColor(getResources().getColor(R.color.black));
         textCardNumber.setTypeface(textCardNumber.getTypeface(), Typeface.BOLD);
 
-        textLabelBalance.setText(getResources().getString(R.string.emoney_card_info_label_your_balance));
+        textLabelBalance.setText(getResources().getString(R.string.emoney_card_info_label_card_balance));
         textRemainingBalance.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(cardInfo.getLastBalance(), true));
         textRemainingBalance.setTextColor(getResources().getColor(R.color.green_400));
 
