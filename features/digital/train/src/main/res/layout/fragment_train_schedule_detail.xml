@@ -5,15 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:orientation="vertical"
-    android:paddingTop="@dimen/dp_8">
+    android:orientation="vertical">
 
     <include layout="@layout/include_header_detail_train" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="@dimen/dp_16"
         android:background="@color/black_twenty_percent" />
 
     <RelativeLayout

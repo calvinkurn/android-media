@@ -30,6 +30,7 @@ import javax.inject.Inject;
 public class TrainScheduleDetailActivity extends BaseTabActivity implements TrainScheduleContract.View {
 
     public static final String EXTRA_TRAIN_SCHEDULE_ID = "EXTRA_TRAIN_SCHEDULE_ID";
+    public static final String EXTRA_NUMBER_OF_ADULT_PASSENGER = "EXTRA_NUMBER_OF_ADULT_PASSENGER";
 
     @Inject
     TrainSchedulePresenter trainSchedulePresenter;
@@ -46,9 +47,10 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
 
     private TrainScheduleDetailViewModel trainScheduleDetailViewModel;
 
-    public static Intent createIntent(Context context, String scheduleId) {
+    public static Intent createIntent(Context context, String scheduleId, int numOfAdultPassenger) {
         Intent intent = new Intent(context, TrainScheduleDetailActivity.class);
         intent.putExtra(EXTRA_TRAIN_SCHEDULE_ID, scheduleId);
+        intent.putExtra(EXTRA_NUMBER_OF_ADULT_PASSENGER, numOfAdultPassenger);
         return intent;
     }
 
@@ -64,9 +66,10 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
         initInjector();
 
         String scheduleId = getIntent().getStringExtra(EXTRA_TRAIN_SCHEDULE_ID);
+        int numOfAdultPassenger = getIntent().getIntExtra(EXTRA_NUMBER_OF_ADULT_PASSENGER, 0);
 
         trainSchedulePresenter.attachView(this);
-        trainSchedulePresenter.getScheduleDetail(scheduleId);
+        trainSchedulePresenter.getScheduleDetail(scheduleId, numOfAdultPassenger);
     }
 
     @Override
@@ -135,7 +138,7 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
         }
         Fragment fragmentPrice = (Fragment) viewPager.getAdapter().instantiateItem(viewPager, 1);
         if (fragmentPrice instanceof TrainSchedulePriceDetailFragment) {
-//            ((TrainSchedulePriceDetailFragment) fragmentPrice).showPrice(shopInfo);
+            ((TrainSchedulePriceDetailFragment) fragmentPrice).showPrice(trainScheduleDetailViewModel);
         }
 //        }
     }
