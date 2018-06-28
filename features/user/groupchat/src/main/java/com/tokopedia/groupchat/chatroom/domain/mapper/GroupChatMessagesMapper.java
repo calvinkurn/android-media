@@ -138,20 +138,9 @@ public class GroupChatMessagesMapper {
                 return mapToPinnedMessage(message, message.getData());
             case AdsViewModel.TYPE:
                 return mapToAds(message, message.getData());
-            case GroupChatQuickReplyViewModel.TYPE:
-                return mapToQuickReply(message, message.getData());
             default:
                 return mapToUserChat(message);
         }
-    }
-
-    private Visitable mapToQuickReply(UserMessage message, String json) {
-        if(TextUtils.isEmpty(json)){
-            return new GroupChatQuickReplyViewModel();
-        }
-        Gson gson = new Gson();
-        GroupChatQuickReplyViewModel groupChatQuickReplyViewModel = gson.fromJson(json, GroupChatQuickReplyViewModel.class);
-        return groupChatQuickReplyViewModel;
     }
 
     private Visitable mapToAds(UserMessage message, String json) {

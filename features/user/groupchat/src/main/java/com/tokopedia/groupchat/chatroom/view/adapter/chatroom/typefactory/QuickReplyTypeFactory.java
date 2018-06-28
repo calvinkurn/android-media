@@ -14,7 +14,5 @@ public interface QuickReplyTypeFactory {
 
     AbstractViewHolder createViewHolder(View view, int viewType);
 
-    int type(GroupChatQuickReplyViewModel groupChatQuickReplyViewModel);
-
     int type(GroupChatQuickReplyItemViewModel groupChatQuickReplyViewModel);
 }

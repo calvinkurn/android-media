@@ -17,7 +17,7 @@ import java.util.List;
  */
 
 public class GroupChatQuickReplyViewModel implements Visitable<QuickReplyTypeFactory>, Parcelable {
-    public static final String TYPE = "group chat";
+    public static final String TYPE = "quick_reply";
     
     private List<Visitable> list;
 
@@ -31,7 +31,7 @@ public class GroupChatQuickReplyViewModel implements Visitable<QuickReplyTypeFac
 
     @Override
     public int type(QuickReplyTypeFactory typeFactory) {
-        return typeFactory.type(this);
+        return 0;
     }
 
 

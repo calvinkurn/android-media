@@ -13,6 +13,7 @@ import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.QuickR
 public class GroupChatQuickReplyItemViewModel implements Visitable<QuickReplyTypeFactory>, Parcelable {
     public static final String TYPE = "group chat";
 
+    private String id;
     private String text;
 
     public GroupChatQuickReplyItemViewModel(String id, String text) {

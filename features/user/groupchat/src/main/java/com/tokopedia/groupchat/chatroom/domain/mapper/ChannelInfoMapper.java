@@ -18,6 +18,7 @@ import com.tokopedia.groupchat.chatroom.domain.pojo.poll.StatisticOption;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.ChannelPartnerChildViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.ChannelPartnerViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatQuickReplyItemViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.PinnedMessageViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleProductViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
@@ -52,6 +53,7 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
     @Override
     public ChannelInfoViewModel call(Response<DataResponse<ChannelInfoPojo>> response) {
         ChannelInfoPojo pojo = response.body().getData();
+        List<GroupChatQuickReplyItemViewModel> temp = convertChannelQuickReply(pojo.getChannel());
         return new ChannelInfoViewModel(
                 pojo.getChannel().getTitle() != null ? pojo.getChannel().getTitle() : "",
                 pojo.getChannel().getChannelUrl() != null ? pojo.getChannel().getChannelUrl() : "",
@@ -72,11 +74,11 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
                 mapToVoteViewModel(pojo.getChannel().getActivePolls()),
                 mapToSprintSaleViewModel(pojo.getChannel().getFlashsale()),
                 pojo.getChannel().getBannedMessage() != null ? pojo.getChannel().getBannedMessage() : "",
-                pojo.getChannel().getKickedMessage() != null ? pojo.getChannel().getKickedMessage
-                        () : "",
+                pojo.getChannel().getKickedMessage() != null ? pojo.getChannel().getKickedMessage() : "",
                 pojo.getChannel().isIsFreeze(),
                 mapToPinnedMessageViewModel(pojo.getChannel().getPinnedMessage()),
-                pojo.getChannel().getExitMessage()
+                pojo.getChannel().getExitMessage(),
+                convertChannelQuickReply(pojo.getChannel())
         );
     }
 
@@ -234,6 +236,20 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
         }
 
         return channelPartnerViewModelList;
+    }
+
+    private List<GroupChatQuickReplyItemViewModel> convertChannelQuickReply(Channel channel) {
+        ArrayList<GroupChatQuickReplyItemViewModel> list = new ArrayList<>();
+
+        if (channel.getListQuickReply() != null) {
+            int id = 1;
+            for (String quickReply : channel.getListQuickReply()) {
+                GroupChatQuickReplyItemViewModel item = new GroupChatQuickReplyItemViewModel(String.valueOf(id), quickReply+" \uD83D\uDE0F");
+                list.add(item);
+                id++;
+            }
+        }
+        return list;
     }
 
     private List<ChannelPartnerChildViewModel> convertChannelPartnerChild(ListOfficial official) {

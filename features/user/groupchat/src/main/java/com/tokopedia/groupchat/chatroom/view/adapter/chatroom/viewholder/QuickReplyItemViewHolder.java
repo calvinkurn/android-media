@@ -8,6 +8,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.groupchat.R;
 import com.tokopedia.groupchat.chatroom.view.listener.ChatroomContract;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatQuickReplyItemViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatQuickReplyViewModel;
 
 
@@ -15,7 +16,7 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatQuickRe
  * Created by stevenfredian on 11/29/17.
  */
 
-public class QuickReplyItemViewHolder extends AbstractViewHolder<GroupChatQuickReplyViewModel> {
+public class QuickReplyItemViewHolder extends AbstractViewHolder<GroupChatQuickReplyItemViewModel> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.item_quick_reply;
@@ -30,7 +31,7 @@ public class QuickReplyItemViewHolder extends AbstractViewHolder<GroupChatQuickR
     }
 
     @Override
-    public void bind(final GroupChatQuickReplyViewModel element) {
+    public void bind(final GroupChatQuickReplyItemViewModel element) {
         textHolder.setText(Html.fromHtml(element.getText()));
 
         textHolder.setOnClickListener(new View.OnClickListener() {

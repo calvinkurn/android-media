@@ -14,7 +14,6 @@ import android.text.Editable;
 import android.text.Html;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,7 +47,6 @@ import com.tokopedia.groupchat.chatroom.view.listener.ChatroomContract;
 import com.tokopedia.groupchat.chatroom.view.listener.GroupChatContract;
 import com.tokopedia.groupchat.chatroom.view.presenter.ChatroomPresenter;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel;
-import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.AdsViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.ChatViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatPointsViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatQuickReplyItemViewModel;
@@ -61,7 +59,6 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleViewMo
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.UserActionViewModel;
 import com.tokopedia.groupchat.common.analytics.EEPromotion;
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics;
-import com.tokopedia.groupchat.common.data.GroupChatUrl;
 import com.tokopedia.groupchat.common.design.CloseableBottomSheetDialog;
 import com.tokopedia.groupchat.common.design.QuickReplyItemDecoration;
 import com.tokopedia.groupchat.common.design.SpaceItemDecoration;
@@ -196,20 +193,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         adapter = GroupChatAdapter.createInstance(groupChatTypeFactory);
         QuickReplyTypeFactory quickReplyTypeFactory = new QuickReplyTypeFactoryImpl(this);
         quickReplyAdapter = new QuickReplyAdapter(quickReplyTypeFactory);
-        List<Visitable> list = new ArrayList<>();
-        list.add(new GroupChatQuickReplyItemViewModel("1","Hello &#128522"));
-        list.add(new GroupChatQuickReplyItemViewModel("1","&#128512"));
-        list.add(new GroupChatQuickReplyItemViewModel("1","&#128532"));
-        list.add(new GroupChatQuickReplyItemViewModel("1","Hello &#128522"));
-        list.add(new GroupChatQuickReplyItemViewModel("1","&#128512"));
-        list.add(new GroupChatQuickReplyItemViewModel("1","&#128532"));
-        list.add(new GroupChatQuickReplyItemViewModel("1","Hello &#128522"));
-        list.add(new GroupChatQuickReplyItemViewModel("1","&#128512"));
-        list.add(new GroupChatQuickReplyItemViewModel("1","&#128532"));
-        list.add(new GroupChatQuickReplyItemViewModel("1","Hello &#128522"));
-        list.add(new GroupChatQuickReplyItemViewModel("1","&#128512"));
-        list.add(new GroupChatQuickReplyItemViewModel("1","&#128532"));
-        quickReplyAdapter.setList(list);
         layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setReverseLayout(true);
         layoutManager.setStackFromEnd(true);
@@ -374,13 +357,11 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         }
     }
 
-    private void setQuickReply(final GroupChatQuickReplyViewModel groupChatQuickReplyViewModel) {
+    private void setQuickReply(final List<GroupChatQuickReplyItemViewModel> list) {
         if (getView() != null) {
-            if (groupChatQuickReplyViewModel != null
-                    && groupChatQuickReplyViewModel.getList() != null
-                    && !groupChatQuickReplyViewModel.getList().isEmpty()){
+            if (list != null && !list.isEmpty()){
                 quickReplyRecyclerView.setVisibility(View.VISIBLE);
-                quickReplyAdapter.setList(groupChatQuickReplyViewModel.getList());
+                quickReplyAdapter.setList(list);
             } else {
                 quickReplyRecyclerView.setVisibility(View.GONE);
             }
@@ -616,6 +597,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
                 setSprintSaleIcon(((GroupChatContract.View) getActivity()).getSprintSaleViewModel());
                 setPinnedMessage(((GroupChatContract.View) getActivity()).getPinnedMessage());
+                setQuickReply(((GroupChatContract.View) getActivity()).getChannelInfoViewModel().getQuickRepliesViewModel());
             }
 
             if (getActivity() != null
@@ -726,10 +708,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
         if (messageItem instanceof PinnedMessageViewModel) {
             setPinnedMessage((PinnedMessageViewModel) messageItem);
-        }
-
-        if (messageItem instanceof GroupChatQuickReplyViewModel){
-            setQuickReply(messageItem);
         }
 
         if (!groupChatMessagesMapper.shouldHideMessage(messageItem)) {

@@ -5,9 +5,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.groupchat.R;
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.GroupChatTypeFactory;
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.QuickReplyTypeFactory;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatQuickReplyItemViewModel;
@@ -55,7 +57,7 @@ public class QuickReplyAdapter extends RecyclerView.Adapter<AbstractViewHolder> 
         return list;
     }
 
-    public void setList(List<Visitable> list) {
+    public void setList(List<GroupChatQuickReplyItemViewModel> list) {
         this.list.clear();
         this.list.addAll(list);
         notifyDataSetChanged();

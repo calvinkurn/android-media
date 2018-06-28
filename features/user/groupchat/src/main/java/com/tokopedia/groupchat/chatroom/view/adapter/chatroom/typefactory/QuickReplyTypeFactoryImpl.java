@@ -41,8 +41,4 @@ public class QuickReplyTypeFactoryImpl extends BaseAdapterTypeFactory implements
         return viewHolder;
     }
 
-    @Override
-    public int type(GroupChatQuickReplyViewModel groupChatQuickReplyViewModel) {
-        return QuickReplyItemViewHolder.LAYOUT;
-    }
 }
