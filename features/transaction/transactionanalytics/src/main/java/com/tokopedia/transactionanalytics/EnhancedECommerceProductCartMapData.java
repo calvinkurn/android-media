@@ -27,7 +27,7 @@ public class EnhancedECommerceProductCartMapData {
     public static final String KEY_DIMENSION_40 = "dimension40";
     public static final String KEY_ATTRIBUTION = "attribution";
 
-    public static final String DEFAULT_VALUE_NONE_OTHER = "none/other";
+    public static final String DEFAULT_VALUE_NONE_OTHER = "none / other";
 
     public EnhancedECommerceProductCartMapData() {
 

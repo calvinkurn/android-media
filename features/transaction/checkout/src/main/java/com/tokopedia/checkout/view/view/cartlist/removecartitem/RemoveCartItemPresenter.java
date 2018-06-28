@@ -162,7 +162,7 @@ public class RemoveCartItemPresenter extends BaseDaggerPresenter<RemoveCartItemC
             enhancedECommerceProductCartMapData.setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
             enhancedECommerceProductCartMapData.setQty(String.valueOf(cartItemData.getUpdatedData().getQuantity()));
             enhancedECommerceProductCartMapData.setShopId(cartItemData.getOriginData().getShopId());
-            //   product.setShopType(generateShopType(productData.getShopInfo()));
+            enhancedECommerceProductCartMapData.setShopType(cartItemData.getOriginData().getShopType());
             enhancedECommerceProductCartMapData.setShopName(cartItemData.getOriginData().getShopName());
             enhancedECommerceProductCartMapData.setCategoryId(cartItemData.getOriginData().getCategoryId());
             enhancedECommerceProductCartMapData.setDimension38(

@@ -15,6 +15,7 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.UpdateCartData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.WholesalePrice;
 import com.tokopedia.transactiondata.entity.response.cartlist.CartDataListResponse;
 import com.tokopedia.transactiondata.entity.response.cartlist.CartList;
+import com.tokopedia.transactiondata.entity.response.cartlist.Shop;
 import com.tokopedia.transactiondata.entity.response.deletecart.DeleteCartDataResponse;
 import com.tokopedia.transactiondata.entity.response.resetcart.ResetCartDataResponse;
 import com.tokopedia.transactiondata.entity.response.updatecart.UpdateCartDataResponse;
@@ -82,6 +83,7 @@ public class CartMapper implements ICartMapper {
             cartItemDataOrigin.setPriceFormatted(data.getProduct().getProductPriceFmt());
             cartItemDataOrigin.setPricePlan(data.getProduct().getProductPrice());
             cartItemDataOrigin.setPricePlanInt(data.getProduct().getProductPrice());
+            cartItemDataOrigin.setShopType(generateShopType(data.getShop()));
             cartItemDataOrigin.setPriceCurrency(data.getProduct().getProductPriceCurrency());
             cartItemDataOrigin.setPreOrder(data.getProduct().getIsPreorder() == 1);
             cartItemDataOrigin.setFavorite(false);
@@ -175,6 +177,14 @@ public class CartMapper implements ICartMapper {
         cartListData.setAutoApplyData(autoApplyData);
 
         return cartListData;
+    }
+
+    private String generateShopType(Shop shop) {
+        if (shop.getIsOfficial() == 1)
+            return "official_store";
+        else if (shop.getIsGold() == 1)
+            return "gold_merchant";
+        else return "reguler";
     }
 
     @Override
