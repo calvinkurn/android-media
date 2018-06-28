@@ -4,9 +4,14 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.edit.adapter.viewholder.*
+import com.tokopedia.product.edit.viewmodel.TitleVideoRecommendationViewModel
 import com.tokopedia.product.edit.viewmodel.VideoRecommendationViewModel
 
 class ProductAddVideoRecommendationAdapterTypeFactory : BaseAdapterTypeFactory() {
+
+    fun type(titleVideoRecommendationViewModel: TitleVideoRecommendationViewModel): Int {
+        return TitleVideoRecommendationViewHolder.LAYOUT
+    }
 
     fun type(videoRecommendationViewModel: VideoRecommendationViewModel): Int {
         return VideoRecommendationViewHolder.LAYOUT
@@ -14,6 +19,7 @@ class ProductAddVideoRecommendationAdapterTypeFactory : BaseAdapterTypeFactory()
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
+            TitleVideoRecommendationViewHolder.LAYOUT -> TitleVideoRecommendationViewHolder(parent)
             VideoRecommendationViewHolder.LAYOUT -> VideoRecommendationViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }

@@ -2,13 +2,17 @@ package com.tokopedia.product.edit.listener
 
 import android.content.Context
 import com.tokopedia.abstraction.base.view.listener.CustomerView
-import com.tokopedia.product.edit.model.VideoRecommendationData
+import com.tokopedia.product.edit.model.videorecommendation.VideoRecommendationData
+import com.tokopedia.product.edit.model.youtube.YoutubeVideoModel
+import java.util.ArrayList
 
 interface ProductAddVideoView : CustomerView {
 
     val contextView : Context
 
-    fun onSuccessGetVideoRecommendation(videoRecommendationDataList: List<VideoRecommendationData>)
+    fun onSuccessGetYoutubeDataVideoRecommendationFeatured(youtubeVideoModelArrayList: ArrayList<YoutubeVideoModel>)
 
-    fun onErrorGetVideoRecommendation(e: Throwable)
+    fun onSuccessGetYoutubeDataVideoChoosen(youtubeVideoModelArrayList: ArrayList<YoutubeVideoModel>)
+
+    fun onErrorGetVideoData(e: Throwable)
 }

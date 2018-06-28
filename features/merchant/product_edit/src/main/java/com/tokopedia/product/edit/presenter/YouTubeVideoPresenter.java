@@ -39,7 +39,7 @@ public class YouTubeVideoPresenter extends BaseDaggerPresenter<YouTubeVideoPrese
     private GetYoutubeVideoListDetailUseCase getYoutubeVideoListDetailUseCase;
 
     public interface GetVideoRecommendationView extends CustomerView {
-        Context getContext();
+        Context getContextView();
 
         void onSuccessGetVideoRecommendation(List<VideoRecommendationData> videoRecommendationDataList);
 
@@ -61,7 +61,7 @@ public class YouTubeVideoPresenter extends BaseDaggerPresenter<YouTubeVideoPrese
         variables.put(SIZE, size);
 
         GraphqlRequest graphqlRequest = new
-                GraphqlRequest(GraphqlHelper.loadRawString(getView().getContext().getResources(),
+                GraphqlRequest(GraphqlHelper.loadRawString(getView().getContextView().getResources(),
                 R.raw.gql_video_recommendation), VideoRecommendationResult.class, variables);
 
         graphqlUseCase.setRequest(graphqlRequest);
@@ -92,7 +92,7 @@ public class YouTubeVideoPresenter extends BaseDaggerPresenter<YouTubeVideoPrese
 
     private void initYouTubeVideoDetailListUseCase() {
         if (getYoutubeVideoListDetailUseCase == null) {
-            getYoutubeVideoListDetailUseCase = new GetYoutubeVideoListDetailUseCase(getView().getContext());
+            getYoutubeVideoListDetailUseCase = new GetYoutubeVideoListDetailUseCase(getView().getContextView());
         }
     }
 

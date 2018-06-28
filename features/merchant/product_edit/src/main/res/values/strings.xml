@@ -5,6 +5,7 @@
     <string name="product_from_to_video">%1$d dari %2$d Video</string>
     <string name="label_video_add">Tambah Video Produk</string>
 
+    <string name="product_add_information_video_recommendation">Pilih rekomendasi video untuk menjelaskan dan mendemokan produk Anda.</string>
     <string name="product_add_title_video_recommendation">Rekomendasi Video Produk</string>
     <string name="product_add_title_video_recommendation_show_more">Lihat Semua</string>
     <string name="product_add_url_video">Tambah URL Video</string>

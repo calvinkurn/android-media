@@ -37,13 +37,8 @@ public class GetYoutubeVideoListDetailUseCase extends UseCase<List<Map<Type, Res
     @Override
     public Observable<List<Map<Type, RestResponse>>> createObservable(RequestParams requestParams) {
         return Observable.from(getVideoIdList(requestParams))
-                .concatMap(new Func1<String, Observable<Map<Type, RestResponse>>>() {
-                    @Override
-                    public Observable<Map<Type, RestResponse>> call(String videoId) {
-                        return getYoutubeVideoDetailUseCase.createObservable(
-                                GetYoutubeVideoDetailUseCase.generateRequestParam(videoId));
-                    }
-                })
+                .concatMap((Func1<String, Observable<Map<Type, RestResponse>>>) videoId -> getYoutubeVideoDetailUseCase.createObservable(
+                        GetYoutubeVideoDetailUseCase.generateRequestParam(videoId)))
                 .toList();
     }
 

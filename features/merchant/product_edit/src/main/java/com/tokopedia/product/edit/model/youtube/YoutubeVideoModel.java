@@ -21,7 +21,7 @@ public class YoutubeVideoModel {
     private PageInfo pageInfo;
     @SerializedName("items")
     @Expose
-    private List<Item> items = null;
+    public List<Item> items = null;
 
     private Item item;
 
@@ -47,6 +47,10 @@ public class YoutubeVideoModel {
 
     public String getDescription(){
         return items.get(0).getSnippet().getDescription();
+    }
+
+    public String getChannel(){
+        return items.get(0).getSnippet().getChannelTitle();
     }
 
     public int getHeight(){

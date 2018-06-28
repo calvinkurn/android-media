@@ -3,37 +3,44 @@ package com.tokopedia.product.edit.fragment
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Toast
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.networklib.util.RestClient
 import com.tokopedia.product.edit.R
 import com.tokopedia.product.edit.activity.ProductAddVideoRecommendationActivity
 import com.tokopedia.product.edit.adapter.ProductAddVideoAdapterTypeFactory
 import com.tokopedia.product.edit.listener.ProductAddVideoListener
 import com.tokopedia.product.edit.listener.ProductAddVideoView
 import com.tokopedia.product.edit.listener.SectionVideoRecommendationListener
-import com.tokopedia.product.edit.mapper.ProductAddVideoMapper
-import com.tokopedia.product.edit.model.VideoRecommendationData
+import com.tokopedia.product.edit.mapper.VideoMapper
+import com.tokopedia.product.edit.mapper.VideoRecommendationMapper
+import com.tokopedia.product.edit.model.youtube.YoutubeVideoModel
 import com.tokopedia.product.edit.presenter.ProductAddVideoPresenter
 import com.tokopedia.product.edit.viewmodel.*
-import kotlin.collections.ArrayList
 
 class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, ProductAddVideoAdapterTypeFactory>(), SectionVideoRecommendationListener, ProductAddVideoView {
 
+    override val getVideoIDs: ArrayList<String> get() = videoIDs
     override val contextView: Context get() = activity
     private var videoIDs: ArrayList<String> = ArrayList()
     private lateinit var productAddVideoPresenter : ProductAddVideoPresenter
     private lateinit var productAddVideoListener : ProductAddVideoListener
+    private val mapper = VideoMapper()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
         GraphqlClient.init(activity.applicationContext)
+        RestClient.init(activity.applicationContext)
+
         productAddVideoPresenter = ProductAddVideoPresenter()
         productAddVideoPresenter.attachView(this)
 
@@ -69,11 +76,38 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
     override fun initInjector() {}
 
     override fun loadData(page: Int) {
-        val mapper = ProductAddVideoMapper()
-        val productAddVideoBaseViewModels : ArrayList<ProductAddVideoBaseViewModel> = ArrayList()
-
         if(!videoIDs.isEmpty()){
-            productAddVideoBaseViewModels.addAll(mapper.transformDataToVideoViewModel(videoIDs))
+            productAddVideoPresenter.getYoutubaDataVideoChoosen(videoIDs)
+        }
+    }
+
+    override fun setProductAddVideoListener(listener: ProductAddVideoListener) {
+        productAddVideoListener = listener
+    }
+
+    override fun onShowMoreClicked() {
+        val intent = Intent(activity, ProductAddVideoRecommendationActivity::class.java)
+        startActivityForResult(intent, REQUEST_CODE_GET_VIDEO_RECOMMENDATION)
+    }
+
+    override fun onVideoRecommendationFeaturedClicked(videoRecommendationViewModel : VideoRecommendationViewModel) {
+        if(videoIDs.contains(videoRecommendationViewModel.videoID)){
+           Toast.makeText(activity, "sudah ad", Toast.LENGTH_LONG).show()
+        } else {
+            videoIDs.add(videoRecommendationViewModel.videoID!!)
+            adapter.addElement(mapper.transformVideoRecommendationViewModelToVideoViewModel(videoRecommendationViewModel))
+        }
+    }
+
+    override fun onSuccessGetYoutubeDataVideoRecommendationFeatured(youtubeVideoModelArrayList: ArrayList<YoutubeVideoModel>) {
+        val mapper = VideoRecommendationMapper()
+        productAddVideoListener.onSuccessGetVideoRecommendationFeatured(mapper.transformDataToVideoViewModel(youtubeVideoModelArrayList))
+    }
+
+    override fun onSuccessGetYoutubeDataVideoChoosen(youtubeVideoModelArrayList: ArrayList<YoutubeVideoModel>) {
+        val productAddVideoBaseViewModels : ArrayList<ProductAddVideoBaseViewModel> = ArrayList()
+        if(!youtubeVideoModelArrayList.isEmpty()){
+            productAddVideoBaseViewModels.addAll(mapper.transformDataToVideoViewModel(youtubeVideoModelArrayList))
             val titleVideoChoosenViewModel = TitleVideoChoosenViewModel()
             productAddVideoBaseViewModels.add(0, titleVideoChoosenViewModel)
             (activity as AppCompatActivity).supportActionBar?.subtitle = getString(R.string.product_from_to_video, videoIDs.size, MAX_VIDEO)
@@ -84,39 +118,22 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
         val sectionVideoRecommendationViewModel = SectionVideoRecommendationViewModel()
         productAddVideoBaseViewModels.add(0, sectionVideoRecommendationViewModel)
         renderList(productAddVideoBaseViewModels)
-        productAddVideoPresenter.getVideoRecommendationFeatured("iphone", MAX_VIDEO_RECOMMENDATION)
+        productAddVideoPresenter.getVideoRecommendationFeatured("iphone", MAX_VIDEO_RECOMMENDATION_FEATURED)
     }
 
-    override fun onShowMoreClicked() {
-        val intent = Intent(activity, ProductAddVideoRecommendationActivity::class.java)
-        startActivityForResult(intent, REQUEST_CODE_GET_VIDEO_RECOMMENDATION)
-    }
+    override fun onErrorGetVideoData(e: Throwable) {
 
-    override fun onVideoRecommendationFeaturedClicked(videoIDs: ArrayList<String>) {
-
-    }
-
-    override fun onErrorGetVideoRecommendation(e: Throwable) {
-
-    }
-
-    override fun onSuccessGetVideoRecommendation(videoRecommendationDataList: List<VideoRecommendationData>) {
-        productAddVideoListener.onSuccessGetVideoRecommendationFeatured(videoRecommendationDataList)
-    }
-
-    override fun setProductAddVideoListener(listener: ProductAddVideoListener) {
-        productAddVideoListener = listener
     }
 
     companion object {
         const val EXTRA_VIDEOS_LINKS = "KEY_VIDEOS_LINK"
 
         const val MAX_VIDEO = 3
-        const val MAX_VIDEO_RECOMMENDATION = 3
+        const val MAX_VIDEO_RECOMMENDATION_FEATURED = 4
 
         const val REQUEST_CODE_GET_VIDEO_RECOMMENDATION = 1
 
-        fun createInstance(): android.support.v4.app.Fragment {
+        fun createInstance(): Fragment {
             return ProductAddVideoFragment()
         }
     }

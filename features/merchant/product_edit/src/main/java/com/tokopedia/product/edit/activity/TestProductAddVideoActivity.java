@@ -63,7 +63,6 @@ public class TestProductAddVideoActivity extends BaseSimpleActivity implements Y
         return null;
     }
 
-    @NotNull
     @Override
     public Context getContextView() {
         return this;

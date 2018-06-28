@@ -3,19 +3,13 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
-    android:layout_marginTop="@dimen/dp_16">
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"
-        android:background="@color/grey_250"/>
+    android:layout_marginTop="@dimen/dp_16"
+    android:layout_marginBottom="@dimen/dp_16">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/sp_16"
-        android:text="Video Produk Saya"
-        android:textStyle="bold"
+        android:text="@string/product_add_information_video_recommendation"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"/>
 

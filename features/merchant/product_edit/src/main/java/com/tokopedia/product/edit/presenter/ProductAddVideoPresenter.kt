@@ -1,22 +1,28 @@
 package com.tokopedia.product.edit.presenter
 
-import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.abstraction.common.utils.network.CacheUtil
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.networklib.data.model.RestResponse
 import com.tokopedia.product.edit.R
+import com.tokopedia.product.edit.domain.GetYoutubeVideoDetailUseCase
+import com.tokopedia.product.edit.domain.GetYoutubeVideoListDetailUseCase
 import com.tokopedia.product.edit.listener.ProductAddVideoView
-import com.tokopedia.product.edit.model.VideoRecommendationResult
+import com.tokopedia.product.edit.model.videorecommendation.VideoRecommendationData
+import com.tokopedia.product.edit.model.videorecommendation.VideoRecommendationResult
+import com.tokopedia.product.edit.model.youtube.YoutubeVideoModel
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
+import java.lang.reflect.Type
+import java.util.ArrayList
 import java.util.HashMap
 
 class ProductAddVideoPresenter : BaseDaggerPresenter<ProductAddVideoView>() {
 
     private val graphqlUseCase: GraphqlUseCase = GraphqlUseCase()
+    private val getYoutubeVideoListDetailUseCase: GetYoutubeVideoListDetailUseCase by lazy { GetYoutubeVideoListDetailUseCase(view.contextView) }
 
     fun getVideoRecommendationFeatured(query: String, size: Int) {
 
@@ -36,25 +42,65 @@ class ProductAddVideoPresenter : BaseDaggerPresenter<ProductAddVideoView>() {
             override fun onError(e: Throwable) {
                 e.printStackTrace()
                 if (isViewAttached) {
-                    view.onErrorGetVideoRecommendation(e)
+                    view.onErrorGetVideoData(e)
                 }
             }
 
             override fun onNext(objects: GraphqlResponse) {
                 if (isViewAttached) {
                     val data = objects.getData<VideoRecommendationResult>(VideoRecommendationResult::class.java)
-                    view.onSuccessGetVideoRecommendation(data.videoSearch?.data!!)
+                    val videoIDs : ArrayList<String> = ArrayList()
+                    for(videoRecommendationData : VideoRecommendationData in data.videoSearch?.data!!){
+                        videoIDs.add(videoRecommendationData.id!!)
+                    }
+                    getYoutubeVideoData(videoIDs, VIDEO_RECOMMENDATION_FEATURED)
                 }
             }
         })
     }
 
-    override fun detachView() {
-        super.detachView()
+    fun getYoutubaDataVideoChoosen(videoIDs: ArrayList<String>) {
+        getYoutubeVideoData(videoIDs, VIDEO_CHOOSEN)
     }
 
+    fun getYoutubeVideoData(youtubeVideoIdList: ArrayList<String>, from: Int) {
+        getYoutubeVideoListDetailUseCase.execute(GetYoutubeVideoListDetailUseCase.generateRequestParam(youtubeVideoIdList), object : Subscriber<List<Map<Type, RestResponse>>>() {
+            override fun onCompleted() {
+
+            }
+
+            override fun onError(e: Throwable) {
+                if (isViewAttached) {
+                    view.onErrorGetVideoData(e)
+                }
+            }
+
+            override fun onNext(maps: List<Map<Type, RestResponse>>) {
+                if (isViewAttached) {
+                    val youtubeVideoModelArrayList = ArrayList<YoutubeVideoModel>()
+                    for (map in maps) {
+                        youtubeVideoModelArrayList.add(convertToModel(map))
+                    }
+                    if(from == VIDEO_CHOOSEN)
+                        view.onSuccessGetYoutubeDataVideoChoosen(youtubeVideoModelArrayList)
+                    else
+                        view.onSuccessGetYoutubeDataVideoRecommendationFeatured(youtubeVideoModelArrayList)
+                }
+            }
+        })
+    }
+
+    private fun convertToModel(typeRestResponseMap: Map<Type, RestResponse>): YoutubeVideoModel {
+        val restResponse = typeRestResponseMap[YoutubeVideoModel::class.java]
+        return restResponse!!.getData()
+    }
+
+
     companion object {
-        val QUERY = "query"
-        val SIZE = "size"
+        const val QUERY = "query"
+        const val SIZE = "size"
+
+        const val VIDEO_CHOOSEN = 0
+        const val VIDEO_RECOMMENDATION_FEATURED = 1
     }
 }

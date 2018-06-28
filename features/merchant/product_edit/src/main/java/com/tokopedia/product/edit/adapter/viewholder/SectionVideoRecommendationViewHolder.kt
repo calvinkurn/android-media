@@ -13,8 +13,10 @@ import com.tokopedia.product.edit.R
 import com.tokopedia.product.edit.adapter.ProductAddVideoRecommendationFeaturedAdapter
 import com.tokopedia.product.edit.listener.ProductAddVideoListener
 import com.tokopedia.product.edit.listener.SectionVideoRecommendationListener
-import com.tokopedia.product.edit.model.VideoRecommendationData
+import com.tokopedia.product.edit.model.videorecommendation.VideoRecommendationData
+import com.tokopedia.product.edit.model.youtube.YoutubeVideoModel
 import com.tokopedia.product.edit.viewmodel.SectionVideoRecommendationViewModel
+import com.tokopedia.product.edit.viewmodel.VideoRecommendationViewModel
 
 class SectionVideoRecommendationViewHolder(itemView: View,
                                            var sectionVideoRecommendationListener: SectionVideoRecommendationListener) : AbstractViewHolder<SectionVideoRecommendationViewModel>(itemView), ProductAddVideoListener {
@@ -37,7 +39,13 @@ class SectionVideoRecommendationViewHolder(itemView: View,
 
         recyclerView = view.findViewById(R.id.recycler_view)
 
-        productAddVideoRecommendationFeaturedAdapter = ProductAddVideoRecommendationFeaturedAdapter(ArrayList())
+        val videoFeaturedClickListener: VideoFeaturedClickListener = object : VideoFeaturedClickListener{
+            override fun onVideoFeaturedClicked(videoRecommendationViewModel : VideoRecommendationViewModel) {
+                sectionVideoRecommendationListener.onVideoRecommendationFeaturedClicked(videoRecommendationViewModel)
+            }
+        }
+
+        productAddVideoRecommendationFeaturedAdapter = ProductAddVideoRecommendationFeaturedAdapter(ArrayList(), videoFeaturedClickListener, sectionVideoRecommendationListener.getVideoIDs)
         recyclerView.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
         recyclerView.adapter = productAddVideoRecommendationFeaturedAdapter
         recyclerView.setHasFixedSize(true)
@@ -48,6 +56,8 @@ class SectionVideoRecommendationViewHolder(itemView: View,
                 val position = parent.getChildAdapterPosition(view)
                 if (position == 0) {
                     outRect.left = dpToPx(itemView.context, 8).toInt()
+                }
+                if(position == productAddVideoRecommendationFeaturedAdapter.videoRecommendationFeatured.size - 1){
                     outRect.right = dpToPx(itemView.context, 8).toInt()
                 }
             }
@@ -65,10 +75,20 @@ class SectionVideoRecommendationViewHolder(itemView: View,
 
     }
 
-    override fun onSuccessGetVideoRecommendationFeatured(videoRecommendationDataList: List<VideoRecommendationData>) {
-        productAddVideoRecommendationFeaturedAdapter.replaceData(videoRecommendationDataList)
+    override fun onSuccessGetVideoRecommendationFeatured(videoRecommendationFeaturedList: List<VideoRecommendationViewModel>) {
+        for(videoID in sectionVideoRecommendationListener.getVideoIDs){
+            for(videoRecommendationFeatured in videoRecommendationFeaturedList){
+                if(videoRecommendationFeatured.videoID == videoID){
+                    videoRecommendationFeatured.choosen = true
+                }
+            }
+        }
+        productAddVideoRecommendationFeaturedAdapter.replaceData(videoRecommendationFeaturedList)
     }
 
+    interface VideoFeaturedClickListener {
+        fun onVideoFeaturedClicked(videoRecommendationViewModel : VideoRecommendationViewModel)
+    }
 
     companion object {
         @LayoutRes

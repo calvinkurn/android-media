@@ -8,9 +8,11 @@ class VideoViewModel : Visitable<ProductAddVideoAdapterTypeFactory>, ProductAddV
     var videoID: String? = null
     var snippetTitle: String? = null
     var snippetDescription: String? = null
+    var snippetChannel: String? = null
     var thumbnailUrl: String? = null
     var width: Int = 0
     var height: Int = 0
+    var duration: String? = null
 
 
     override fun type(typeFactory: ProductAddVideoAdapterTypeFactory): Int {

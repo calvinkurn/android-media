@@ -49,9 +49,7 @@ public class GetYoutubeVideoDetailUseCase extends UseCase<Map<Type, RestResponse
     }
 
     private List<RestRequest> getRequests(String videoId) {
-        List<RestRequest> mRequests = new ArrayList<>();
-        mRequests.addAll(buildRequest(videoId));
-        return mRequests;
+        return new ArrayList<>(buildRequest(videoId));
     }
 
     private List<RestRequest> buildRequest(String videoId) {
