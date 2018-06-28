@@ -185,8 +185,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     private boolean isInstantCheckoutChecked;
 
-    private BannerAdapter bannerAdapter;
-
     private String categoryId;
     private String operatorId;
     private String productId;
@@ -295,8 +293,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     protected void initialPresenter() {
-        bannerAdapter = new BannerAdapter(context, this);
-
         DigitalEndpointService digitalEndpointService = new DigitalEndpointService();
         DigitalGqlApiService digitalGqlEndpointService = new DigitalGqlApiService();
         CategoryDetailDataSource categoryDetailDataSource = new CategoryDetailDataSource(
@@ -399,8 +395,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     public void renderBannerListData(String title, List<BannerData> bannerDataList) {
         String formattedTitle = getResources().getString(R.string.promo_category, title);
         this.bannerDataListState = getBannerDataWithoutEmptyItem(bannerDataList);
-        bannerAdapter.addBannerDataListAndTitle(bannerDataList, formattedTitle);
-
         promoPanduanPagerAdapter.setBannerDataList(title, bannerDataList);
     }
 
@@ -408,8 +402,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     public void renderOtherBannerListData(String title, List<BannerData> otherBannerDataList) {
         String formattedTitle = getResources().getString(R.string.promo_category, title);
         this.otherBannerDataListState = getBannerDataWithoutEmptyItem(otherBannerDataList);
-        bannerAdapter.addBannerDataListAndTitle(otherBannerDataList, formattedTitle);
-
         promoPanduanPagerAdapter.setOtherBannerDataList(title, otherBannerDataList);
     }
 
