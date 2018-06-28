@@ -51,6 +51,7 @@ public class CustomTicketView extends View {
     private Paint mBackgroundPaint = new Paint();
     private Paint mBorderPaint = new Paint();
     private Path mPath = new Path();
+    private Path mPathBorder = new Path();
     private boolean mDirty = true;
 
     private RectF mRoundedCornerArc = new RectF();
@@ -95,7 +96,7 @@ public class CustomTicketView extends View {
         }
         canvas.drawPath(mPath, mBackgroundPaint);
         if (mShowBorder) {
-            canvas.drawPath(mPath, mBorderPaint);
+            canvas.drawPath(mPathBorder, mBorderPaint);
         }
     }
 
@@ -148,6 +149,7 @@ public class CustomTicketView extends View {
         mPath.lineTo(left + mCornerRadius, top);
         mPath.lineTo(right - mCornerRadius, top);
         mPath.arcTo(getTopRightCornerRoundedArc(top, right), -90.0f, 90.0f, false);
+        mPathBorder.addPath(mPath);
 
     }
 

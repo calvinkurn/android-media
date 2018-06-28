@@ -5,9 +5,12 @@ query tapactions($param: [TapActionsArgs]!) {
     control
     header
     buttonType
+    value
+    method
+    key
+    name
     body {
      appURL
-     webURL
      method
      body
     }

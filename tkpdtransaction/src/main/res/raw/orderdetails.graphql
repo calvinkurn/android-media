@@ -49,20 +49,16 @@ query OMSDETAILS($orderCategory: OrderCategory, $orderId: String, $detail: Int, 
       }
       tapActions {
         label
-        buttonType
-        uri
-        mappingUri
         weight
-        key
-        method
-        uriWeb
-        value
-        name
         control
         header
+        buttonType
+        value
+        method
+        key
+        name
         body {
           appURL
-          webURL
           method
           body
         }
