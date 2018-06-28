@@ -15,6 +15,8 @@ import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.session.R;
 import com.tokopedia.session.register.view.presenter.RegisterInitialPresenter;
 
+import java.util.regex.Pattern;
+
 import javax.inject.Inject;
 
 /**
@@ -28,6 +30,8 @@ public class PartialRegisterInputView extends BaseCustomView{
     TextView tvError;
     TextView btnRegister;
     TkpdHintTextInputLayout wrapper;
+
+    private static final Pattern pattern = Pattern.compile("^[\\d]{8,15}$");
 
     @Inject
     RegisterInitialPresenter presenter;
@@ -83,7 +87,13 @@ public class PartialRegisterInputView extends BaseCustomView{
         }
     }
 
+    private boolean isPhoneNumber(CharSequence s) {
+        return pattern.matcher(s).matches();
+    }
+
+
     private TextWatcher watcher(final TkpdHintTextInputLayout wrapper) {
+
         return new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -102,6 +112,12 @@ public class PartialRegisterInputView extends BaseCustomView{
                 if (s.length() == 0){
                     setWrapperError(wrapper,
                             getContext().getString(R.string.register_input_empty_error));
+                }
+
+                if (isPhoneNumber(s)){
+                    tvMessage.setVisibility(View.VISIBLE);
+                } else {
+                    tvMessage.setVisibility(View.GONE);
                 }
             }
         };
