@@ -2,20 +2,22 @@ package com.tokopedia.train.seat.data;
 
 import android.content.Context;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.train.common.constant.TrainApi;
-import com.tokopedia.train.common.specification.GqlNetworkSpecification;
 import com.tokopedia.train.common.specification.Specification;
 import com.tokopedia.train.seat.data.entity.TrainSeatMapEntity;
 import com.tokopedia.train.seat.data.entity.TrainSeatsEntity;
-import com.tokopedia.usecase.RequestParams;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Type;
 import java.util.List;
 
 import rx.Observable;
-import rx.functions.Func1;
 
 public class TrainSeatCloudDataStore {
     private static final String QUERY_GQL = "query";
@@ -30,6 +32,13 @@ public class TrainSeatCloudDataStore {
     }
 
     public Observable<List<TrainSeatMapEntity>> getData(Specification specification) {
+        Gson g = new Gson();
+        Type dataResponseType = new TypeToken<DataResponse<List<TrainSeatMapEntity>>>() {
+        }.getType();
+        DataResponse<TrainSeatsEntity> dataResponse = g.fromJson(loadJSONFromAsset(), dataResponseType);
+
+        return Observable.just(dataResponse.getData().getSeatMapEntities());
+        /*
         String jsonQuery = getRequestStationPayload(((GqlNetworkSpecification) specification).rawFileNameQuery());
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(QUERY_GQL, jsonQuery);
@@ -42,10 +51,26 @@ public class TrainSeatCloudDataStore {
             public List<TrainSeatMapEntity> call(DataResponse<TrainSeatsEntity> trainSeatEntityDataResponse) {
                 return trainSeatEntityDataResponse.getData().getSeatMapEntities();
             }
-        });
+        });*/
     }
 
     private String getRequestStationPayload(int rawFile) {
         return GraphqlHelper.loadRawString(context.getResources(), rawFile);
+    }
+
+    public String loadJSONFromAsset() {
+        String json = null;
+        try {
+            InputStream is = context.getAssets().open("train_seat_maps.json");
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            json = new String(buffer, "UTF-8");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+        return json;
     }
 }

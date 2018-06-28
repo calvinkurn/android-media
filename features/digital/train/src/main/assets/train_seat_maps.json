@@ -1,0 +1,3175 @@
+{
+  "data": {
+    "seatmaps": [
+      {
+        "id": "GMRBD2020180515",
+        "origin": "GMR",
+        "destination": "BD",
+        "trainNo": "20",
+        "departureTimestamp": "2018-05-15T17:35:00Z",
+        "wagons": [
+          {
+            "wagonCode": "EKO_AC-1",
+            "seatDetail": [
+              {
+                "column": "C",
+                "row": 1,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 1,
+                "status": 1,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 2,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 2,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 2,
+                "status": 1,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 2,
+                "status": 1,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 3,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 3,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 3,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 3,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 4,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 4,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 4,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 4,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 5,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 5,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 5,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 5,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 6,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 6,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 6,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 6,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 7,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 7,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 7,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 7,
+                "status": 1,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 8,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 8,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 8,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 8,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 9,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 9,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 9,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 9,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 10,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 10,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 10,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 10,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 11,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 11,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 11,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 11,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 12,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 12,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 12,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 12,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 13,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 13,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 13,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 13,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 14,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 14,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 14,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 14,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 15,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 15,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 15,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 15,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 16,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 16,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 16,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 16,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 17,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 17,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 17,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 17,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 18,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 18,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 18,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 18,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 19,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 19,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 19,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 19,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 20,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 20,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 20,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 20,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 21,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 21,
+                "status": 0,
+                "subclass": "C"
+              }
+            ]
+          },
+          {
+            "wagonCode": "EKO_AC-2",
+            "seatDetail": [
+              {
+                "column": "C",
+                "row": 1,
+                "status": 0,
+                "subclass": "F"
+              },
+              {
+                "column": "D",
+                "row": 1,
+                "status": 0,
+                "subclass": "F"
+              },
+              {
+                "column": "A",
+                "row": 2,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 2,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 2,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 2,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 3,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 3,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 3,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 3,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 4,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 4,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 4,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 4,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 5,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 5,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 5,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 5,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 6,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 6,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 6,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 6,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 7,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 7,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 7,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 7,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 8,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 8,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 8,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 8,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 9,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 9,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 9,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 9,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 10,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 10,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 10,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 10,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 11,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 11,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 11,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 11,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 12,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 12,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 12,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 12,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 13,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 13,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 13,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 13,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 14,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 14,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 14,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 14,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 15,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 15,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 15,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 15,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 16,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 16,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 16,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 16,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 17,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 17,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 17,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 17,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 18,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 18,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 18,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 18,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 19,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 19,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 19,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 19,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 20,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 20,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 20,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 20,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 21,
+                "status": 0,
+                "subclass": "F"
+              },
+              {
+                "column": "B",
+                "row": 21,
+                "status": 0,
+                "subclass": "F"
+              }
+            ]
+          },
+          {
+            "wagonCode": "EKO_AC-3",
+            "seatDetail": [
+              {
+                "column": "C",
+                "row": 1,
+                "status": 0,
+                "subclass": "F"
+              },
+              {
+                "column": "D",
+                "row": 1,
+                "status": 0,
+                "subclass": "F"
+              },
+              {
+                "column": "A",
+                "row": 2,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 2,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 2,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 2,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 3,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 3,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 3,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 3,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 4,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 4,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 4,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 4,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 5,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 5,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 5,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 5,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 6,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 6,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 6,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 6,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 7,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 7,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 7,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 7,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 8,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 8,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 8,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 8,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 9,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 9,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 9,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 9,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 10,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 10,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 10,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 10,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 11,
+                "status": 1,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 11,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 11,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 11,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 12,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 12,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 12,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 12,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 13,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 13,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 13,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 13,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 14,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 14,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 14,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 14,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 15,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 15,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 15,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 15,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 16,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 16,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 16,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 16,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 17,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 17,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 17,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 17,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 18,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 18,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 18,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 18,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 19,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 19,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 19,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 19,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 20,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 20,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 20,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 20,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 21,
+                "status": 0,
+                "subclass": "F"
+              },
+              {
+                "column": "B",
+                "row": 21,
+                "status": 0,
+                "subclass": "F"
+              }
+            ]
+          },
+          {
+            "wagonCode": "EKO_AC-4",
+            "seatDetail": [
+              {
+                "column": "C",
+                "row": 1,
+                "status": 0,
+                "subclass": "F"
+              },
+              {
+                "column": "D",
+                "row": 1,
+                "status": 0,
+                "subclass": "F"
+              },
+              {
+                "column": "A",
+                "row": 2,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 2,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 2,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 2,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 3,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 3,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 3,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 3,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 4,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 4,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 4,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 4,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 5,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 5,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 5,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 5,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 6,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 6,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 6,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 6,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 7,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 7,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 7,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 7,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 8,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 8,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 8,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 8,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 9,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 9,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 9,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 9,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 10,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 10,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 10,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 10,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 11,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 11,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 11,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 11,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 12,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 12,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 12,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 12,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 13,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 13,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 13,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 13,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 14,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 14,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 14,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 14,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 15,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 15,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 15,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 15,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 16,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 16,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 16,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 16,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 17,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 17,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 17,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 17,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 18,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 18,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 18,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 18,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 19,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 19,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 19,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 19,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 20,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 20,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "C",
+                "row": 20,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "D",
+                "row": 20,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "A",
+                "row": 21,
+                "status": 0,
+                "subclass": "C"
+              },
+              {
+                "column": "B",
+                "row": 21,
+                "status": 0,
+                "subclass": "C"
+              }
+            ]
+          },
+          {
+            "wagonCode": "EKS-1",
+            "seatDetail": [
+              {
+                "column": "A",
+                "row": 1,
+                "status": 1,
+                "subclass": "J"
+              },
+              {
+                "column": "B",
+                "row": 1,
+                "status": 1,
+                "subclass": "J"
+              },
+              {
+                "column": "C",
+                "row": 1,
+                "status": 0,
+                "subclass": "J"
+              },
+              {
+                "column": "A",
+                "row": 2,
+                "status": 1,
+                "subclass": "J"
+              },
+              {
+                "column": "B",
+                "row": 2,
+                "status": 1,
+                "subclass": "J"
+              },
+              {
+                "column": "C",
+                "row": 2,
+                "status": 1,
+                "subclass": "J"
+              },
+              {
+                "column": "D",
+                "row": 2,
+                "status": 1,
+                "subclass": "J"
+              },
+              {
+                "column": "A",
+                "row": 3,
+                "status": 1,
+                "subclass": "I"
+              },
+              {
+                "column": "B",
+                "row": 3,
+                "status": 1,
+                "subclass": "I"
+              },
+              {
+                "column": "C",
+                "row": 3,
+                "status": 1,
+                "subclass": "I"
+              },
+              {
+                "column": "D",
+                "row": 3,
+                "status": 1,
+                "subclass": "I"
+              },
+              {
+                "column": "A",
+                "row": 4,
+                "status": 0,
+                "subclass": "I"
+              },
+              {
+                "column": "B",
+                "row": 4,
+                "status": 0,
+                "subclass": "I"
+              },
+              {
+                "column": "C",
+                "row": 4,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "D",
+                "row": 4,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "A",
+                "row": 5,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "B",
+                "row": 5,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "C",
+                "row": 5,
+                "status": 1,
+                "subclass": "A"
+              },
+              {
+                "column": "D",
+                "row": 5,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "A",
+                "row": 6,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "B",
+                "row": 6,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "C",
+                "row": 6,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "D",
+                "row": 6,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "A",
+                "row": 7,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "B",
+                "row": 7,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "C",
+                "row": 7,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "D",
+                "row": 7,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "A",
+                "row": 8,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "B",
+                "row": 8,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "C",
+                "row": 8,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "D",
+                "row": 8,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "A",
+                "row": 9,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "B",
+                "row": 9,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "C",
+                "row": 9,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "D",
+                "row": 9,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "A",
+                "row": 10,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "B",
+                "row": 10,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "C",
+                "row": 10,
+                "status": 0,
+                "subclass": "I"
+              },
+              {
+                "column": "D",
+                "row": 10,
+                "status": 0,
+                "subclass": "I"
+              },
+              {
+                "column": "A",
+                "row": 11,
+                "status": 0,
+                "subclass": "I"
+              },
+              {
+                "column": "B",
+                "row": 11,
+                "status": 0,
+                "subclass": "I"
+              },
+              {
+                "column": "C",
+                "row": 11,
+                "status": 0,
+                "subclass": "I"
+              },
+              {
+                "column": "D",
+                "row": 11,
+                "status": 0,
+                "subclass": "I"
+              },
+              {
+                "column": "A",
+                "row": 12,
+                "status": 0,
+                "subclass": "I"
+              },
+              {
+                "column": "B",
+                "row": 12,
+                "status": 1,
+                "subclass": "J"
+              },
+              {
+                "column": "C",
+                "row": 12,
+                "status": 1,
+                "subclass": "J"
+              },
+              {
+                "column": "D",
+                "row": 12,
+                "status": 1,
+                "subclass": "J"
+              },
+              {
+                "column": "B",
+                "row": 13,
+                "status": 0,
+                "subclass": "J"
+              },
+              {
+                "column": "C",
+                "row": 13,
+                "status": 1,
+                "subclass": "J"
+              },
+              {
+                "column": "D",
+                "row": 13,
+                "status": 1,
+                "subclass": "J"
+              }
+            ]
+          },
+          {
+            "wagonCode": "EKS-2",
+            "seatDetail": [
+              {
+                "column": "A",
+                "row": 1,
+                "status": 0,
+                "subclass": "H"
+              },
+              {
+                "column": "B",
+                "row": 1,
+                "status": 0,
+                "subclass": "H"
+              },
+              {
+                "column": "C",
+                "row": 1,
+                "status": 0,
+                "subclass": "H"
+              },
+              {
+                "column": "A",
+                "row": 2,
+                "status": 0,
+                "subclass": "H"
+              },
+              {
+                "column": "B",
+                "row": 2,
+                "status": 0,
+                "subclass": "H"
+              },
+              {
+                "column": "C",
+                "row": 2,
+                "status": 0,
+                "subclass": "H"
+              },
+              {
+                "column": "D",
+                "row": 2,
+                "status": 0,
+                "subclass": "H"
+              },
+              {
+                "column": "A",
+                "row": 3,
+                "status": 0,
+                "subclass": "H"
+              },
+              {
+                "column": "B",
+                "row": 3,
+                "status": 0,
+                "subclass": "H"
+              },
+              {
+                "column": "C",
+                "row": 3,
+                "status": 0,
+                "subclass": "H"
+              },
+              {
+                "column": "D",
+                "row": 3,
+                "status": 0,
+                "subclass": "H"
+              },
+              {
+                "column": "A",
+                "row": 4,
+                "status": 0,
+                "subclass": "H"
+              },
+              {
+                "column": "B",
+                "row": 4,
+                "status": 0,
+                "subclass": "H"
+              },
+              {
+                "column": "C",
+                "row": 4,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "D",
+                "row": 4,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "A",
+                "row": 5,
+                "status": 0,
+                "subclass": "D"
+              },
+              {
+                "column": "B",
+                "row": 5,
+                "status": 0,
+                "subclass": "D"
+              },
+              {
+                "column": "C",
+                "row": 5,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "D",
+                "row": 5,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "A",
+                "row": 6,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "B",
+                "row": 6,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "C",
+                "row": 6,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "D",
+                "row": 6,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "A",
+                "row": 7,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "B",
+                "row": 7,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "C",
+                "row": 7,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "D",
+                "row": 7,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "A",
+                "row": 8,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "B",
+                "row": 8,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "C",
+                "row": 8,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "D",
+                "row": 8,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "A",
+                "row": 9,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "B",
+                "row": 9,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "C",
+                "row": 9,
+                "status": 0,
+                "subclass": "D"
+              },
+              {
+                "column": "D",
+                "row": 9,
+                "status": 0,
+                "subclass": "D"
+              },
+              {
+                "column": "A",
+                "row": 10,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "B",
+                "row": 10,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "C",
+                "row": 10,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "D",
+                "row": 10,
+                "status": 0,
+                "subclass": "H"
+              },
+              {
+                "column": "A",
+                "row": 11,
+                "status": 0,
+                "subclass": "H"
+              },
+              {
+                "column": "B",
+                "row": 11,
+                "status": 0,
+                "subclass": "H"
+              },
+              {
+                "column": "C",
+                "row": 11,
+                "status": 0,
+                "subclass": "H"
+              },
+              {
+                "column": "D",
+                "row": 11,
+                "status": 0,
+                "subclass": "H"
+              },
+              {
+                "column": "A",
+                "row": 12,
+                "status": 0,
+                "subclass": "H"
+              },
+              {
+                "column": "B",
+                "row": 12,
+                "status": 0,
+                "subclass": "H"
+              },
+              {
+                "column": "C",
+                "row": 12,
+                "status": 0,
+                "subclass": "H"
+              },
+              {
+                "column": "D",
+                "row": 12,
+                "status": 0,
+                "subclass": "H"
+              },
+              {
+                "column": "B",
+                "row": 13,
+                "status": 1,
+                "subclass": "H"
+              },
+              {
+                "column": "C",
+                "row": 13,
+                "status": 0,
+                "subclass": "H"
+              },
+              {
+                "column": "D",
+                "row": 13,
+                "status": 0,
+                "subclass": "H"
+              }
+            ]
+          },
+          {
+            "wagonCode": "EKS-3",
+            "seatDetail": [
+              {
+                "column": "A",
+                "row": 1,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "B",
+                "row": 1,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "C",
+                "row": 1,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "A",
+                "row": 2,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "B",
+                "row": 2,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "C",
+                "row": 2,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "D",
+                "row": 2,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "A",
+                "row": 3,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "B",
+                "row": 3,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "C",
+                "row": 3,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "D",
+                "row": 3,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "A",
+                "row": 4,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "B",
+                "row": 4,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "C",
+                "row": 4,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "D",
+                "row": 4,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "A",
+                "row": 5,
+                "status": 0,
+                "subclass": "D"
+              },
+              {
+                "column": "B",
+                "row": 5,
+                "status": 0,
+                "subclass": "D"
+              },
+              {
+                "column": "C",
+                "row": 5,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "D",
+                "row": 5,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "A",
+                "row": 6,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "B",
+                "row": 6,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "C",
+                "row": 6,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "D",
+                "row": 6,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "A",
+                "row": 7,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "B",
+                "row": 7,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "C",
+                "row": 7,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "D",
+                "row": 7,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "A",
+                "row": 8,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "B",
+                "row": 8,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "C",
+                "row": 8,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "D",
+                "row": 8,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "A",
+                "row": 9,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "B",
+                "row": 9,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "C",
+                "row": 9,
+                "status": 0,
+                "subclass": "D"
+              },
+              {
+                "column": "D",
+                "row": 9,
+                "status": 0,
+                "subclass": "D"
+              },
+              {
+                "column": "A",
+                "row": 10,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "B",
+                "row": 10,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "C",
+                "row": 10,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "D",
+                "row": 10,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "A",
+                "row": 11,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "B",
+                "row": 11,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "C",
+                "row": 11,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "D",
+                "row": 11,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "A",
+                "row": 12,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "B",
+                "row": 12,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "C",
+                "row": 12,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "D",
+                "row": 12,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "B",
+                "row": 13,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "C",
+                "row": 13,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "D",
+                "row": 13,
+                "status": 0,
+                "subclass": "A"
+              }
+            ]
+          },
+          {
+            "wagonCode": "EKS-4",
+            "seatDetail": [
+              {
+                "column": "A",
+                "row": 1,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "B",
+                "row": 1,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "C",
+                "row": 1,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "A",
+                "row": 2,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "B",
+                "row": 2,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "C",
+                "row": 2,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "D",
+                "row": 2,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "A",
+                "row": 3,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "B",
+                "row": 3,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "C",
+                "row": 3,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "D",
+                "row": 3,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "A",
+                "row": 4,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "B",
+                "row": 4,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "C",
+                "row": 4,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "D",
+                "row": 4,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "A",
+                "row": 5,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "B",
+                "row": 5,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "C",
+                "row": 5,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "D",
+                "row": 5,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "A",
+                "row": 6,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "B",
+                "row": 6,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "C",
+                "row": 6,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "D",
+                "row": 6,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "A",
+                "row": 7,
+                "status": 0,
+                "subclass": "D"
+              },
+              {
+                "column": "B",
+                "row": 7,
+                "status": 0,
+                "subclass": "D"
+              },
+              {
+                "column": "C",
+                "row": 7,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "D",
+                "row": 7,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "A",
+                "row": 8,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "B",
+                "row": 8,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "C",
+                "row": 8,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "D",
+                "row": 8,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "A",
+                "row": 9,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "B",
+                "row": 9,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "C",
+                "row": 9,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "D",
+                "row": 9,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "A",
+                "row": 10,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "B",
+                "row": 10,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "C",
+                "row": 10,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "D",
+                "row": 10,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "A",
+                "row": 11,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "B",
+                "row": 11,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "C",
+                "row": 11,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "D",
+                "row": 11,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "A",
+                "row": 12,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "B",
+                "row": 12,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "C",
+                "row": 12,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "D",
+                "row": 12,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "B",
+                "row": 13,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "C",
+                "row": 13,
+                "status": 0,
+                "subclass": "A"
+              },
+              {
+                "column": "D",
+                "row": 13,
+                "status": 0,
+                "subclass": "A"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
