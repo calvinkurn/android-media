@@ -139,7 +139,7 @@ public class ListProductViewHolder extends AbstractViewHolder<HotlistProductView
     }
 
     protected void renderProductImage(String imageUrl) {
-        ImageHandler.loadImageSourceSizeWithRoundedCorners(context, productImage, imageUrl);
+        ImageHandler.loadImageSourceSize(context, productImage, imageUrl);
     }
 
     protected void renderShopLocation(HotlistProductViewModel element) {

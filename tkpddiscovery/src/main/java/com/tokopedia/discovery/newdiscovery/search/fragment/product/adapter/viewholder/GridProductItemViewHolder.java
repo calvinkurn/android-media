@@ -94,7 +94,7 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
             location.setVisibility(View.INVISIBLE);
         }
 
-        ImageHandler.loadImageSourceSizeWithRoundedCorners(context, productImage, productItem.getImageUrl());
+        ImageHandler.loadImageSourceSize(context, productImage, productItem.getImageUrl());
 
         wishlistButtonContainer.setVisibility(View.VISIBLE);
         wishlistButton.setBackgroundResource(R.drawable.ic_wishlist);
