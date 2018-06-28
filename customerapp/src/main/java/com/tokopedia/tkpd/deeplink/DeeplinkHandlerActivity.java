@@ -50,6 +50,8 @@ import com.tokopedia.profile.applink.ProfileApplinkModule;
 import com.tokopedia.profile.applink.ProfileApplinkModuleLoader;
 import com.tokopedia.pushnotif.Constant;
 import com.tokopedia.pushnotif.HistoryNotification;
+import com.tokopedia.reksadana.di.ReksaDanaDeepLinkModule;
+import com.tokopedia.reksadana.di.ReksaDanaDeepLinkModuleLoader;
 import com.tokopedia.seller.applink.SellerApplinkModule;
 import com.tokopedia.seller.applink.SellerApplinkModuleLoader;
 import com.tokopedia.shop.applink.ShopAppLinkModule;
@@ -96,7 +98,8 @@ import io.branch.referral.BranchError;
         KolApplinkModule.class,
         TrackingAppLinkModule.class,
         CheckoutAppLinkModule.class,
-        CustomerCareApplinkModule.class
+        CustomerCareApplinkModule.class,
+        ReksaDanaDeepLinkModule.class
 })
 
 public class DeeplinkHandlerActivity extends AppCompatActivity {
@@ -126,7 +129,8 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new KolApplinkModuleLoader(),
                 new TrackingAppLinkModuleLoader(),
                 new CheckoutAppLinkModuleLoader(),
-                new CustomerCareApplinkModuleLoader()
+                new CustomerCareApplinkModuleLoader(),
+                new ReksaDanaDeepLinkModuleLoader()
         );
     }
 
