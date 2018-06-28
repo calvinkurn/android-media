@@ -747,10 +747,10 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     }
 
     @Override
-    public void renderToShipmentMultipleAddressSuccess(CartListData cartListData, RecipientAddressModel selectedAddress, Token token) {
+    public void renderToShipmentMultipleAddressSuccess(CartListData cartListData, RecipientAddressModel selectedAddress) {
         startActivityForResult(MultipleAddressFormActivity.createInstance(
-                getActivity(), cartListData, selectedAddress, token
-        ), MultipleAddressFormActivity.REQUEST_CODE);
+                getActivity(), cartListData, selectedAddress),
+                MultipleAddressFormActivity.REQUEST_CODE);
     }
 
     @Override
@@ -1042,8 +1042,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
             RecipientAddressModel selectedAddress = data.getParcelableExtra(
                     ShipmentActivity.EXTRA_SELECTED_ADDRESS_RECIPIENT_DATA
             );
-            Token token = data.getParcelableExtra(ShipmentActivity.EXTRA_DISTRICT_RECOMMENDATION_TOKEN);
-            dPresenter.processToShipmentMultipleAddress(selectedAddress, token);
+            dPresenter.processToShipmentMultipleAddress(selectedAddress);
         } else if (resultCode == ShipmentActivity.RESULT_CODE_FORCE_RESET_CART_FROM_SINGLE_SHIPMENT ||
                 resultCode == ShipmentActivity.RESULT_CODE_FORCE_RESET_CART_FROM_MULTIPLE_SHIPMENT) {
             dPresenter.processResetAndRefreshCartData();

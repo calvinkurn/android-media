@@ -27,18 +27,15 @@ public class MultipleAddressFormActivity extends BaseCheckoutActivity {
     public static final int RESULT_CODE_FORCE_RESET_CART_ADDRESS_FORM = 23;
 
     private CartListData cartListData;
-    private Token token;
     private RecipientAddressModel addressData;
     private MultipleAddressFragment fragment;
 
     public static Intent createInstance(Context context,
                                         CartListData cartListData,
-                                        RecipientAddressModel recipientAddressData,
-                                        Token token) {
+                                        RecipientAddressModel recipientAddressData) {
         Intent intent = new Intent(context, MultipleAddressFormActivity.class);
         intent.putExtra(EXTRA_CART_LIST_DATA, cartListData);
         intent.putExtra(EXTRA_RECIPIENT_ADDRESS_DATA, recipientAddressData);
-        intent.putExtra(EXTRA_DISTRICT_RECOMMENDATION_TOKEN, token);
         return intent;
     }
 
@@ -56,7 +53,6 @@ public class MultipleAddressFormActivity extends BaseCheckoutActivity {
     protected void setupBundlePass(Bundle extras) {
         this.cartListData = extras.getParcelable(EXTRA_CART_LIST_DATA);
         this.addressData = extras.getParcelable(EXTRA_RECIPIENT_ADDRESS_DATA);
-        this.token = extras.getParcelable(EXTRA_DISTRICT_RECOMMENDATION_TOKEN);
     }
 
     @Override
@@ -110,7 +106,7 @@ public class MultipleAddressFormActivity extends BaseCheckoutActivity {
 
     @Override
     protected android.support.v4.app.Fragment getNewFragment() {
-        fragment = MultipleAddressFragment.newInstance(cartListData, addressData, token);
+        fragment = MultipleAddressFragment.newInstance(cartListData, addressData);
         return fragment;
     }
 }

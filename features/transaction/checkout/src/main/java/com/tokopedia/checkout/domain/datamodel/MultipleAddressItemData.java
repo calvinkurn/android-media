@@ -49,7 +49,6 @@ public class MultipleAddressItemData implements Parcelable {
     private String errorProductMaxQuantity;
     private String errorProductMinQuantity;
     private int maxRemark;
-    private Token token;
 
     public MultipleAddressItemData() {
     }
@@ -350,14 +349,6 @@ public class MultipleAddressItemData implements Parcelable {
         this.provinceId = provinceId;
     }
 
-    public Token getToken() {
-        return token;
-    }
-
-    public void setToken(Token token) {
-        this.token = token;
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -402,7 +393,6 @@ public class MultipleAddressItemData implements Parcelable {
         dest.writeInt(this.maxRemark);
         dest.writeString(this.cityId);
         dest.writeString(this.provinceId);
-        dest.writeParcelable(this.token, flags);
     }
 
     protected MultipleAddressItemData(Parcel in) {
@@ -443,7 +433,6 @@ public class MultipleAddressItemData implements Parcelable {
         this.maxRemark = in.readInt();
         this.cityId = in.readString();
         this.provinceId = in.readString();
-        this.token = in.readParcelable(Token.class.getClassLoader());
     }
 
     public static final Creator<MultipleAddressItemData> CREATOR = new Creator<MultipleAddressItemData>() {

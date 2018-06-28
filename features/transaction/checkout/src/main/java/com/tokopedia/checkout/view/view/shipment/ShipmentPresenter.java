@@ -113,6 +113,44 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
+    public void processReloadCheckoutPageBecauseOfError() {
+        getView().showLoading();
+        com.tokopedia.abstraction.common.utils.TKPDMapParam<String, String> paramGetShipmentForm = new com.tokopedia.abstraction.common.utils.TKPDMapParam<>();
+        paramGetShipmentForm.put("lang", "id");
+
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putObject(GetShipmentAddressFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS,
+                getGeneratedAuthParamNetwork(paramGetShipmentForm));
+
+        compositeSubscription.add(
+                getShipmentAddressFormUseCase.createObservable(requestParams)
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .subscribe(
+                                new Subscriber<CartShipmentAddressFormData>() {
+                                    @Override
+                                    public void onCompleted() {
+
+                                    }
+
+                                    @Override
+                                    public void onError(Throwable e) {
+                                        e.printStackTrace();
+                                        getView().hideLoading();
+                                    }
+
+                                    @Override
+                                    public void onNext(CartShipmentAddressFormData cartShipmentAddressFormData) {
+                                        getView().hideLoading();
+                                        getView().renderErrorDataHasChangedCheckShipmentPrepareCheckout(cartShipmentAddressFormData);
+                                    }
+                                }
+                        )
+        );
+    }
+
+    @Override
     public void processCheckShipmentPrepareCheckout() {
         getView().showLoading();
         com.tokopedia.abstraction.common.utils.TKPDMapParam<String, String> paramGetShipmentForm = new com.tokopedia.abstraction.common.utils.TKPDMapParam<>();
@@ -143,7 +181,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
                                     @Override
                                     public void onNext(CartShipmentAddressFormData cartShipmentAddressFormData) {
-                                        getView().hideLoading();
                                         boolean isEnableCheckout = true;
                                         for (GroupAddress groupAddress : cartShipmentAddressFormData.getGroupAddress()) {
                                             if (groupAddress.isError() || groupAddress.isWarning())
@@ -303,9 +340,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                getView().hideLoading();
-                getView().showToastError(getView().getActivityContext().getString(R.string.default_request_error_unknown));
                 getView().sendAnalyticsChoosePaymentMethodFailed();
+                processReloadCheckoutPageBecauseOfError();
             }
 
             @Override
@@ -351,8 +387,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             }
 
                             @Override
-                            public void onNext(PromoCodeCartListData
-                                                       promoCodeCartListData) {
+                            public void onNext(PromoCodeCartListData promoCodeCartListData) {
                                 getView().hideLoading();
                                 if (!promoCodeCartListData.isError()) {
                                     getView().renderCheckPromoCodeFromSuggestedPromoSuccess(promoCodeCartListData);

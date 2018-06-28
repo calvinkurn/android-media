@@ -1,6 +1,8 @@
 package com.tokopedia.checkout.view.view.shipment.viewholder;
 
 import android.content.Context;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -275,6 +277,11 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void renderFirstCartItem(CartItemModel cartItemModel) {
+        if (cartItemModel.isError()) {
+            showShipmentWarning(cartItemModel.getErrorMessage());
+        } else {
+            hideShipmentWarning();
+        }
         ImageHandler.LoadImage(ivProductImage, cartItemModel.getImageUrl());
         tvProductName.setText(cartItemModel.getName());
         tvProductPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
@@ -739,5 +746,52 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                 ShowCaseContentPosition.UNDEFINED)
         );
     }
+
+    private void showShipmentWarning(String message) {
+        tvShippingWarning.setText(message);
+        llShippingWarningContainer.setVisibility(View.VISIBLE);
+        disableItemView();
+    }
+
+    private void hideShipmentWarning() {
+        llShippingWarningContainer.setVisibility(View.GONE);
+        enableItemView();
+    }
+
+    private void disableItemView() {
+        tvProductName.setTextColor(ContextCompat.getColor(tvProductName.getContext(), R.color.grey_nonactive_text));
+        tvProductPrice.setTextColor(ContextCompat.getColor(tvProductPrice.getContext(), R.color.grey_nonactive_text));
+        tvFreeReturnLabel.setTextColor(ContextCompat.getColor(tvFreeReturnLabel.getContext(), R.color.grey_nonactive_text));
+        tvPreOrder.setTextColor(ContextCompat.getColor(tvPreOrder.getContext(), R.color.grey_nonactive_text));
+        tvNoteToSellerLabel.setTextColor(ContextCompat.getColor(tvNoteToSellerLabel.getContext(), R.color.grey_nonactive_text));
+        tvOptionalNoteToSeller.setTextColor(ContextCompat.getColor(tvOptionalNoteToSeller.getContext(), R.color.grey_nonactive_text));
+        tvCashback.setBackgroundColor(ContextCompat.getColor(tvCashback.getContext(), R.color.grey_nonactive_text));
+        setImageFilterGrayScale();
+    }
+
+    private void setImageFilterGrayScale() {
+        ColorMatrix matrix = new ColorMatrix();
+        matrix.setSaturation(0);
+        ColorMatrixColorFilter cf = new ColorMatrixColorFilter(matrix);
+        ivProductImage.setColorFilter(cf);
+        ivProductImage.setImageAlpha(IMAGE_ALPHA_DISABLED);
+    }
+
+    private void enableItemView() {
+        tvProductName.setTextColor(ContextCompat.getColor(tvProductName.getContext(), R.color.black_70));
+        tvProductPrice.setTextColor(ContextCompat.getColor(tvProductPrice.getContext(), R.color.orange_red));
+        tvFreeReturnLabel.setTextColor(ContextCompat.getColor(tvFreeReturnLabel.getContext(), R.color.font_black_secondary_54));
+        tvPreOrder.setTextColor(ContextCompat.getColor(tvPreOrder.getContext(), R.color.font_black_secondary_54));
+        tvNoteToSellerLabel.setTextColor(ContextCompat.getColor(tvNoteToSellerLabel.getContext(), R.color.black_38));
+        tvOptionalNoteToSeller.setTextColor(ContextCompat.getColor(tvOptionalNoteToSeller.getContext(), R.color.black_70));
+        tvCashback.setBackground(ContextCompat.getDrawable(tvCashback.getContext(), R.drawable.bg_cashback));
+        setImageFilterNormal();
+    }
+
+    private void setImageFilterNormal() {
+        ivProductImage.setColorFilter(null);
+        ivProductImage.setImageAlpha(IMAGE_ALPHA_ENABLED);
+    }
+
 
 }

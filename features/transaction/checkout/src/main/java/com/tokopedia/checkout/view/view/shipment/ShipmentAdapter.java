@@ -231,6 +231,12 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         notifyDataSetChanged();
     }
 
+    public void disableShipmentCheckoutButtonModel(String errorMessage) {
+        if (shipmentCheckoutButtonModel != null) {
+            shipmentCheckoutButtonModel.setAbleToCheckout(false);
+        }
+    }
+
     public void updateCheckoutButtonData(boolean hasViewValidationError, String defaultTotal) {
         boolean availableCheckout = true;
         for (ShipmentData shipmentData : shipmentDataList) {

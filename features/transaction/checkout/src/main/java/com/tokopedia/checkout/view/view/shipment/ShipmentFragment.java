@@ -4,10 +4,10 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Toast;
 
@@ -282,27 +282,58 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void renderErrorDataHasChangedCheckShipmentPrepareCheckout(
             CartShipmentAddressFormData cartShipmentAddressFormData
     ) {
-        List<ShipmentCartItemModel> shipmentCartItemModelList = shipmentDataConverter.getShipmentItems(
+        List<ShipmentCartItemModel> newShipmentCartItemModelList = shipmentDataConverter.getShipmentItems(
                 cartShipmentAddressFormData
         );
-        shipmentPresenter.setShipmentCartItemModelList(shipmentCartItemModelList);
-
-        shipmentAdapter.clearData();
-
-        CartItemPromoHolderData cartItemPromoHolderData =
-                CartItemPromoHolderData.createInstanceFromAppliedPromo(shipmentPresenter.getPromoCodeAppliedData());
-        cartItemPromoHolderData.setDefaultSelectedTabString(
-                getArguments().getString(ARG_EXTRA_DEFAULT_SELECTED_TAB_PROMO, "")
-        );
-        shipmentAdapter.addPromoVoucherData(cartItemPromoHolderData);
-
-        if (shipmentPresenter.getCartPromoSuggestion() != null) {
-            shipmentAdapter.addPromoSuggestionData(shipmentPresenter.getCartPromoSuggestion());
+        List<ShipmentCartItemModel> oldShipmentCartItemModelList = shipmentPresenter.getShipmentCartItemModelList();
+        for (int i = 0; i < newShipmentCartItemModelList.size(); i++) {
+            if (newShipmentCartItemModelList.get(i).isError()) {
+                oldShipmentCartItemModelList.get(i).setError(true);
+                oldShipmentCartItemModelList.get(i).setErrorMessage(newShipmentCartItemModelList.get(i).getErrorMessage());
+                for (int j = 0; j < newShipmentCartItemModelList.get(i).getCartItemModels().size(); j++) {
+                    if (newShipmentCartItemModelList.get(i).getCartItemModels().get(j).isError()) {
+                        oldShipmentCartItemModelList.get(i).getCartItemModels().get(j).setError(true);
+                        oldShipmentCartItemModelList.get(i).getCartItemModels().get(j).setErrorMessage(
+                                newShipmentCartItemModelList.get(i).getCartItemModels().get(j).getErrorMessage());
+                    }
+                }
+            }
         }
-        shipmentAdapter.addAddressShipmentData(shipmentPresenter.getRecipientAddressModel());
-        shipmentAdapter.addCartItemDataList(shipmentPresenter.getShipmentCartItemModelList());
-        shipmentAdapter.addShipmentCostData(shipmentPresenter.getShipmentCostModel());
-        shipmentAdapter.addShipmentCheckoutButtonModel(shipmentPresenter.getShipmentCheckoutButtonModel());
+//        shipmentPresenter.setShipmentCartItemModelList(newShipmentCartItemModelList);
+
+//        shipmentAdapter.clearData();
+
+//        CartItemPromoHolderData cartItemPromoHolderData =
+//                CartItemPromoHolderData.createInstanceFromAppliedPromo(shipmentPresenter.getPromoCodeAppliedData());
+//        cartItemPromoHolderData.setDefaultSelectedTabString(
+//                getArguments().getString(ARG_EXTRA_DEFAULT_SELECTED_TAB_PROMO, "")
+//        );
+//        shipmentAdapter.addPromoVoucherData(cartItemPromoHolderData);
+//
+//        if (shipmentPresenter.getCartPromoSuggestion() != null) {
+//            shipmentAdapter.addPromoSuggestionData(shipmentPresenter.getCartPromoSuggestion());
+//        }
+//        shipmentAdapter.addAddressShipmentData(shipmentPresenter.getRecipientAddressModel());
+//        shipmentAdapter.addCartItemDataList(shipmentPresenter.getShipmentCartItemModelList());
+//        shipmentAdapter.addShipmentCostData(shipmentPresenter.getShipmentCostModel());
+//        shipmentAdapter.addShipmentCheckoutButtonModel(shipmentPresenter.getShipmentCheckoutButtonModel());
+
+        String errorMessage = null;
+        if (!TextUtils.isEmpty(cartShipmentAddressFormData.getErrorMessage())) {
+            errorMessage = cartShipmentAddressFormData.getErrorMessage();
+        } else {
+            for (ShipmentCartItemModel shipmentCartItemModel : newShipmentCartItemModelList) {
+                if (!TextUtils.isEmpty(shipmentCartItemModel.getErrorMessage())) {
+                    errorMessage = shipmentCartItemModel.getErrorMessage();
+                }
+            }
+        }
+        if (TextUtils.isEmpty(errorMessage)) {
+            errorMessage = getActivity().getString(R.string.default_request_error_unknown_short);
+        }
+        showToastError(errorMessage);
+        shipmentAdapter.disableShipmentCheckoutButtonModel(errorMessage);
+        shipmentAdapter.notifyDataSetChanged();
     }
 
     @Override

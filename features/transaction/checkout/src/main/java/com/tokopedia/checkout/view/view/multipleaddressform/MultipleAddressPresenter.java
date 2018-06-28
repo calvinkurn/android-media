@@ -78,8 +78,7 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
     @Override
     public List<MultipleAddressAdapterData> initiateMultipleAddressAdapterData(
             CartListData cartListData,
-            RecipientAddressModel recipientAddressModel,
-            Token token) {
+            RecipientAddressModel recipientAddressModel) {
         List<CartItemData> cartItemDataList = cartListData.getCartItemDataList();
         List<MultipleAddressAdapterData> adapterModels = new ArrayList<>();
         for (int i = 0; i < cartItemDataList.size(); i++) {
@@ -90,8 +89,7 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
                             recipientAddressModel,
                             cartItemDataList.get(i).getOriginData(),
                             cartItemDataList.get(i).getUpdatedData(),
-                            cartItemDataList.get(i).getErrorData(),
-                            token)
+                            cartItemDataList.get(i).getErrorData())
             );
             addressAdapterData.setProductImageUrl(
                     cartItemDataList.get(i).getOriginData().getProductImage()
@@ -117,8 +115,7 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
             RecipientAddressModel shipmentRecipientModel,
             CartItemData.OriginData originData,
             CartItemData.UpdatedData updatedData,
-            CartItemData.MessageErrorData messageErrorData,
-            Token token) {
+            CartItemData.MessageErrorData messageErrorData) {
 
         List<MultipleAddressItemData> initialItemData = new ArrayList<>();
         MultipleAddressItemData addressData = new MultipleAddressItemData();
@@ -151,7 +148,6 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
         addressData.setErrorProductMaxQuantity(messageErrorData.getErrorProductMaxQuantity());
         addressData.setErrorProductMinQuantity(messageErrorData.getErrorProductMinQuantity());
         addressData.setMaxRemark(updatedData.getMaxCharRemark());
-        addressData.setToken(token);
         initialItemData.add(addressData);
         return initialItemData;
     }

@@ -71,6 +71,9 @@ public interface ShipmentContract {
     }
 
     interface Presenter extends CustomerPresenter<View> {
+
+        void processReloadCheckoutPageBecauseOfError();
+
         void processCheckShipmentPrepareCheckout();
 
         void processCheckout();

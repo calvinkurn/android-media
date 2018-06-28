@@ -102,6 +102,19 @@ public class ShipmentDataConverter {
         shipmentCartItemModel.setWarning(groupShop.isWarning());
         shipmentCartItemModel.setWarningMessage(groupShop.getWarningMessage());
 
+        if (!shipmentCartItemModel.isError()) {
+            int productErrorCounter = 0;
+            for (Product product : groupShop.getProducts()) {
+                if (product.isError()) {
+                    productErrorCounter++;
+                }
+            }
+            if (productErrorCounter > 0) {
+                shipmentCartItemModel.setError(true);
+                shipmentCartItemModel.setErrorMessage("Terdapat kendala pada " + productErrorCounter + " produk");
+            }
+        }
+
         Shop shop = groupShop.getShop();
         shipmentCartItemModel.setShopId(shop.getShopId());
         shipmentCartItemModel.setShopName(shop.getShopName());
@@ -153,6 +166,8 @@ public class ShipmentDataConverter {
         cartItemModel.setFreeReturnLogo(product.getFreeReturnLogo());
         cartItemModel.setfInsurance(product.isProductFcancelPartial());
         cartItemModel.setfCancelPartial(product.isProductFinsurance());
+        cartItemModel.setError(product.isError());
+        cartItemModel.setErrorMessage(product.getErrorMessage());
 
         return cartItemModel;
     }
