@@ -46,6 +46,8 @@ import com.tokopedia.shop.common.constant.ShopCommonUrl;
 import com.tokopedia.shop.common.constant.ShopUrl;
 import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
 
+import rx.Observable;
+
 /**
  * Created by ricoharisin on 11/11/16.
  */
