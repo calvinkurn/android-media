@@ -1,7 +1,6 @@
 package com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatroom;
 
 import android.support.annotation.LayoutRes;
-import android.support.v7.widget.CardView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -23,32 +22,27 @@ public class ImageDualAnnouncementViewHolder extends BaseChatViewHolder<ImageDua
 
     private ImageView top;
     private ImageView bottom;
-    private CardView container;
 
     public ImageDualAnnouncementViewHolder(View itemView, ChatRoomContract.View viewListener) {
         super(itemView, viewListener);
         top = itemView.findViewById(R.id.dual_image_top);
         bottom = itemView.findViewById(R.id.dual_image_bottom);
-        container = itemView.findViewById(R.id.card_group_chat_message);
     }
 
     @Override
     public void bind(ImageDualAnnouncementViewModel viewModel) {
         super.bind(viewModel);
 
-//        view.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
-//        view.getLayoutParams().height = view.getLayoutParams().width / 2;
-
-        ImageHandler.LoadImage(top, viewModel.getImageUrlLeft());
+        ImageHandler.LoadImage(top, viewModel.getImageUrlTop());
         top.setOnClickListener((View v) -> {
-            if (!TextUtils.isEmpty(viewModel.getRedirectUrlLeft())) {
-                viewListener.onGoToWebView(viewModel.getRedirectUrlLeft(),
+            if (!TextUtils.isEmpty(viewModel.getRedirectUrlTop())) {
+                viewListener.onGoToWebView(viewModel.getRedirectUrlTop(),
                         viewModel.getAttachmentId());
             } });
-        ImageHandler.LoadImage(bottom, viewModel.getImageUrlRight());
+        ImageHandler.LoadImage(bottom, viewModel.getImageUrlBottom());
         bottom.setOnClickListener((View v) -> {
-            if (!TextUtils.isEmpty(viewModel.getRedirectUrlRight())) {
-                viewListener.onGoToWebView(viewModel.getRedirectUrlRight(),
+            if (!TextUtils.isEmpty(viewModel.getRedirectUrlBottom())) {
+                viewListener.onGoToWebView(viewModel.getRedirectUrlBottom(),
                         viewModel.getAttachmentId());
             } });
     }

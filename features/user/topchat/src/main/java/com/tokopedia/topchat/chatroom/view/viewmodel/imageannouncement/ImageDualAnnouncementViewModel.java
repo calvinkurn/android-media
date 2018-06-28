@@ -13,10 +13,10 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.BaseChatViewModel;
 public class ImageDualAnnouncementViewModel extends BaseChatViewModel implements
         Visitable<ChatRoomTypeFactory> {
 
-    private String imageUrlLeft;
-    private String redirectUrlLeft;
-    private String imageUrlRight;
-    private String redirectUrlRight;
+    private String imageUrlTop;
+    private String redirectUrlTop;
+    private String imageUrlBottom;
+    private String redirectUrlBottom;
 
     /**
      * Constructor for WebSocketResponse / API Response
@@ -31,20 +31,20 @@ public class ImageDualAnnouncementViewModel extends BaseChatViewModel implements
      * @param attachmentType attachment type. Please refer to
      *                       {@link WebSocketMapper} types
      * @param replyTime      replytime in unixtime
-     * @param imageUrlLeft  image url Left left image
-     * @param redirectUrlLeft redirect url in http for Left image click
-     * @param imageUrlRight  image url Right image
-     * @param redirectUrlRight redirect url in http for Right image click
+     * @param imageUrlTop  image url Top image
+     * @param redirectUrlTop redirect url in http for Top image click
+     * @param imageUrlBottom  image url Bottom image
+     * @param redirectUrlBottom redirect url in http for Bottom image click
      */
     public ImageDualAnnouncementViewModel(String messageId, String fromUid, String from, String
             fromRole, String attachmentId, String attachmentType, String replyTime, String
-            message, String imageUrlLeft, String redirectUrlLeft, String imageUrlRight, String
-            redirectUrlRight) {
+            message, String imageUrlTop, String redirectUrlTop, String imageUrlBottom, String
+                                                  redirectUrlBottom) {
         super(messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime, message);
-        this.imageUrlLeft = imageUrlLeft;
-        this.redirectUrlLeft = redirectUrlLeft;
-        this.imageUrlRight = imageUrlRight;
-        this.redirectUrlRight = redirectUrlRight;
+        this.imageUrlTop = imageUrlTop;
+        this.redirectUrlTop = redirectUrlTop;
+        this.imageUrlBottom = imageUrlBottom;
+        this.redirectUrlBottom = redirectUrlBottom;
     }
 
     @Override
@@ -52,35 +52,35 @@ public class ImageDualAnnouncementViewModel extends BaseChatViewModel implements
         return typeFactory.type(this);
     }
 
-    public String getImageUrlLeft() {
-        return imageUrlLeft;
+    public String getImageUrlTop() {
+        return imageUrlTop;
     }
 
-    public void setImageUrlLeft(String imageUrlLeft) {
-        this.imageUrlLeft = imageUrlLeft;
+    public void setImageUrlTop(String imageUrlTop) {
+        this.imageUrlTop = imageUrlTop;
     }
 
-    public String getRedirectUrlLeft() {
-        return redirectUrlLeft;
+    public String getRedirectUrlTop() {
+        return redirectUrlTop;
     }
 
-    public void setRedirectUrlLeft(String redirectUrlLeft) {
-        this.redirectUrlLeft = redirectUrlLeft;
+    public void setRedirectUrlTop(String redirectUrlTop) {
+        this.redirectUrlTop = redirectUrlTop;
     }
 
-    public String getImageUrlRight() {
-        return imageUrlRight;
+    public String getImageUrlBottom() {
+        return imageUrlBottom;
     }
 
-    public void setImageUrlRight(String imageUrlRight) {
-        this.imageUrlRight = imageUrlRight;
+    public void setImageUrlBottom(String imageUrlBottom) {
+        this.imageUrlBottom = imageUrlBottom;
     }
 
-    public String getRedirectUrlRight() {
-        return redirectUrlRight;
+    public String getRedirectUrlBottom() {
+        return redirectUrlBottom;
     }
 
-    public void setRedirectUrlRight(String redirectUrlRight) {
-        this.redirectUrlRight = redirectUrlRight;
+    public void setRedirectUrlBottom(String redirectUrlBottom) {
+        this.redirectUrlBottom = redirectUrlBottom;
     }
 }

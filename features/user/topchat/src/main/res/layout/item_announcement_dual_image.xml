@@ -16,7 +16,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="@dimen/dp_16"
         android:textAllCaps="true"
         android:textColor="@color/grey_500"
         android:textSize="@dimen/fontvs"
@@ -29,8 +29,8 @@
         android:layout_alignParentRight="true"
         android:layout_below="@id/date"
         app:cardBackgroundColor="@color/cardview_light_background"
-        app:cardCornerRadius="8dp"
-        app:cardElevation="0dp"
+        app:cardCornerRadius="@dimen/cardview_default_radius"
+        app:cardElevation="@dimen/dp_0"
         app:cardPreventCornerOverlap="false"
         app:cardUseCompatPadding="true">
         <LinearLayout
@@ -40,7 +40,7 @@
         <ImageView
             android:id="@+id/dual_image_top"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="@dimen/dp_0"
             android:layout_weight="0.5"
             android:adjustViewBounds="true"      
             tools:src="@drawable/drag_edit"
@@ -49,7 +49,7 @@
         <ImageView
             android:id="@+id/dual_image_bottom"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="@dimen/dp_0"
             android:layout_weight="0.5"
             android:adjustViewBounds="true"
             tools:src="@drawable/drag_edit"
