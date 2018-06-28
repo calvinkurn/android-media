@@ -331,11 +331,7 @@ ext {
             youtubeApi        : ":libraries:YouTubeAndroidPlayerApi",
             analytics         : ":libraries:analytics",
             graphql           : ":libraries:graphql",
-            userSession       : ":libraries:user_session",
-            imageuploader     : ":libraries:imageuploader",
-            youtubeApi        : ":libraries:YouTubeAndroidPlayerApi",
-            analytics         : ":libraries:analytics",
-            graphql           : ":libraries:graphql",
             networkLib        : ":libraries:networklib"
+            commonNetwork     : ":libraries:common_network"
     ]
 }
