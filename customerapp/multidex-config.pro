@@ -1,2 +1,4 @@
 -keep class com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData
 -keep class com.tokopedia.payment.model.PaymentPassData
+-keep class com.tokopedia.core.drawer2.data.viewmodel.PopUpNotif
+-keep class com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData

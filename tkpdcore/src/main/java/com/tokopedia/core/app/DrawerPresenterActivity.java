@@ -466,7 +466,7 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
                                 .getData().setTokoPointDrawerData(tokoPointDrawerData);
                     drawerHelper.getAdapter().getHeader().notifyDataSetChanged();
 
-                    if (tokoPointDrawerData.getHasNotif() == 1) {
+                    if (tokoPointDrawerData.getHasNotif() == 1 && tokoPointDrawerData.getPopUpNotif() != null) {
                         if (getApplication() instanceof ILoyaltyRouter) {
 
                             FragmentTransaction ft = getFragmentManager().beginTransaction();
