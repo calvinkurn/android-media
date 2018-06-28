@@ -25,7 +25,7 @@ public class ChatGlideImageRequestListener implements RequestListener<String, Gl
             targetImageView.layout(0,0,0,0);
             int width = glideDrawable.getIntrinsicWidth();
             int height = glideDrawable.getIntrinsicHeight();
-            if (width > height) {
+            if (width >= height) {
                 if (targetImageView.getLayoutParams().width != ViewGroup.LayoutParams.MATCH_PARENT) {
                     targetImageView.getLayoutParams().width = targetImageView.getMaxWidth();
                 }

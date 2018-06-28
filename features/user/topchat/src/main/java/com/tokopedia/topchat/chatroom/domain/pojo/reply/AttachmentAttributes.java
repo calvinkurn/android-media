@@ -11,13 +11,18 @@ public class AttachmentAttributes {
     @SerializedName("image_url")
     @Expose
     private String imageUrl;
+    @SerializedName("image_url_2")
+    @Expose
+    private String imageUrl2;
     @SerializedName("image_url_thumbnail")
     @Expose
     private String thumbnail;
     @SerializedName("url")
     @Expose
     private String url;
-
+    @SerializedName("url_2")
+    @Expose
+    private String url2;
     @SerializedName("product_id")
     @Expose
     private Integer productId;
@@ -84,5 +89,23 @@ public class AttachmentAttributes {
     public List<AttachmentInvoice> getInvoices() {
         return this.invoiceList.getInvoices();
     }
+
+
+    public String getImageUrl2() {
+        return imageUrl2;
+    }
+
+    public void setImageUrl2(String imageUrl2) {
+        this.imageUrl2 = imageUrl2;
+    }
+
+    public String getUrl2() {
+        return url2;
+    }
+
+    public void setUrl2(String url2) {
+        this.url2 = url2;
+    }
+
 
 }

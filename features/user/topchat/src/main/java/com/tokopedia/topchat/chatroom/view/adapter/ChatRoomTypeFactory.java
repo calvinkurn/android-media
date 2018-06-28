@@ -7,6 +7,8 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.TimeMachineChatModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.TypingChatModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.fallback.FallbackAttachmentViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.imageannouncement.ImageAnnouncementViewModel;
+import com.tokopedia.topchat.chatroom.view.viewmodel.imageannouncement
+        .ImageDualAnnouncementViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.imageupload.ImageUploadViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.invoiceattachment.AttachInvoiceSelectionViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.invoiceattachment.AttachInvoiceSentViewModel;
@@ -51,5 +53,6 @@ public interface ChatRoomTypeFactory {
 
     int type(TypingChatModel typingChatModel);
 
+    int type(ImageDualAnnouncementViewModel imageDualAnnouncementViewModel);
 
 }
