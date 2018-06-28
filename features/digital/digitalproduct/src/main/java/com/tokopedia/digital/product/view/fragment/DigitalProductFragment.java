@@ -123,8 +123,8 @@ import static com.tokopedia.digital.product.view.activity.DigitalSearchNumberAct
  */
 @RuntimePermissions
 public class DigitalProductFragment extends BasePresenterFragment<IProductDigitalPresenter>
-        implements IProductDigitalView, BannerAdapter.ActionListener,
-        BaseDigitalProductView.ActionListener, IUssdUpdateListener, CheckPulsaBalanceView.ActionListener {
+        implements IProductDigitalView, BaseDigitalProductView.ActionListener, IUssdUpdateListener,
+        CheckPulsaBalanceView.ActionListener {
 
     private static final String ARG_PARAM_EXTRA_CATEGORY_ID = "ARG_PARAM_EXTRA_CATEGORY_ID";
     private static final String ARG_PARAM_EXTRA_OPERATOR_ID = "ARG_PARAM_EXTRA_OPERATOR_ID";
@@ -777,55 +777,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     public void onProductSelected(String categoryName, String productDesc) {
         UnifyTracking.eventSelectProductOnNativePage(categoryName,
                 productDesc);
-    }
-
-    @Override
-    public void onButtonCopyBannerVoucherCodeClicked(String voucherCode) {
-        this.voucherCodeCopiedState = voucherCode;
-        ClipboardManager clipboard = (ClipboardManager)
-                getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-        ClipData clip = ClipData.newPlainText(
-                CLIP_DATA_LABEL_VOUCHER_CODE_DIGITAL, voucherCode
-        );
-        clipboard.setPrimaryClip(clip);
-        showToastMessage(getString(R.string.message_voucher_code_banner_copied));
-    }
-
-    @Override
-    public void onBannerItemClicked(BannerData bannerData) {
-        if (!TextUtils.isEmpty(bannerData.getLink())) {
-            int deeplinkType = DeepLinkChecker.getDeepLinkType(bannerData.getLink());
-            if (deeplinkType == DeepLinkChecker.PROMO) {
-                Uri uriData = Uri.parse(bannerData.getLink());
-                List<String> linkSegment = uriData.getPathSegments();
-                openPromo(bannerData.getLink(), linkSegment);
-            } else {
-                navigateToActivity(DigitalWebActivity.newInstance(
-                        getActivity(), bannerData.getLink())
-                );
-            }
-        }
-    }
-
-    private void openPromo(String url, List<String> linkSegment) {
-        IDigitalModuleRouter router = ((IDigitalModuleRouter) getActivity().getApplication());
-        if (linkSegment.size() == 2) {
-            Intent intent = router.getPromoDetailIntent(context, linkSegment.get(1));
-            startActivity(intent);
-        } else if (linkSegment.size() == 1) {
-            FirebaseRemoteConfigImpl remoteConfig = new FirebaseRemoteConfigImpl(context);
-            boolean remoteConfigEnable = remoteConfig.getBoolean(
-                    TkpdCache.RemoteConfigKey.MAINAPP_NATIVE_PROMO_LIST
-            );
-            if (remoteConfigEnable) {
-                Intent intent = router.getPromoListIntent(getActivity());
-                startActivity(intent);
-            } else {
-                navigateToActivity(DigitalWebActivity.newInstance(
-                        getActivity(), url)
-                );
-            }
-        }
     }
 
     @Override
