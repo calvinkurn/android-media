@@ -1,15 +1,21 @@
 package com.tokopedia.train.passenger.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.design.component.CardWithAction;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.passenger.contract.TrainBookingPassengerContract;
 import com.tokopedia.train.passenger.data.TrainBookingPassenger;
 import com.tokopedia.train.passenger.viewmodel.TrainPassengerViewModel;
+import com.tokopedia.train.search.domain.GetDetailScheduleUseCase;
+import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import rx.Subscriber;
 
 /**
  * Created by nabillasabbaha on 25/06/18.
@@ -17,8 +23,45 @@ import javax.inject.Inject;
 public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBookingPassengerContract.View>
         implements TrainBookingPassengerContract.Presenter {
 
+    private GetDetailScheduleUseCase getDetailScheduleUseCase;
+
     @Inject
-    public TrainBookingPassengerPresenter() {
+    public TrainBookingPassengerPresenter(GetDetailScheduleUseCase getDetailScheduleUseCase) {
+        this.getDetailScheduleUseCase = getDetailScheduleUseCase;
+    }
+
+    @Override
+    public void getDetailSchedule(String idSchedule, CardWithAction cardWithAction) {
+        getDetailScheduleUseCase.setIdSchedule(idSchedule);
+        getDetailScheduleUseCase.execute(RequestParams.EMPTY, new Subscriber<TrainScheduleViewModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+                getView().hideDetailSchedule();
+            }
+
+            @Override
+            public void onNext(TrainScheduleViewModel viewModel) {
+                if (viewModel != null) {
+                    if (viewModel.isReturnTrip()) {
+                        getView().setCityRouteTripInfo(cardWithAction,
+                                getView().getDestinationCity(), getView().getOriginCity());
+                        getView().showReturnTripInfo();
+                    } else {
+                        getView().showDepartureTripInfo();
+                        getView().setCityRouteTripInfo(cardWithAction,
+                                getView().getOriginCity(), getView().getDestinationCity());
+                        getView().hideReturnTripInfo();
+                    }
+                    getView().loadDetailSchedule(viewModel, cardWithAction);
+                }
+            }
+        });
     }
 
     @Override

@@ -361,11 +361,11 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
     @Override
     public void selectSchedule(TrainScheduleViewModel trainScheduleViewModel) {
         if (!trainSearchPassDataViewModel.isOneWay()) {
-            trainScheduleBookingPassData.setDepartureTrip(trainScheduleViewModel);
+            trainScheduleBookingPassData.setDepartureScheduleId(trainScheduleViewModel.getIdSchedule());
             startActivityForResult(TrainSearchReturnActivity.getCallingIntent(getActivity(),
                     trainSearchPassDataViewModel, trainScheduleBookingPassData, trainScheduleViewModel.getIdSchedule()), 11);
         } else {
-            trainScheduleBookingPassData.setDepartureTrip(trainScheduleViewModel);
+            trainScheduleBookingPassData.setDepartureScheduleId(trainScheduleViewModel.getIdSchedule());
             startActivity(TrainBookingPassengerActivity.callingIntent(getActivity(), trainScheduleBookingPassData));
         }
     }

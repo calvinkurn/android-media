@@ -1,6 +1,10 @@
 package com.tokopedia.train.passenger.di;
 
+import com.tokopedia.train.common.domain.TrainRepository;
+import com.tokopedia.train.search.domain.GetDetailScheduleUseCase;
+
 import dagger.Module;
+import dagger.Provides;
 
 /**
  * Created by nabillasabbaha on 26/06/18.
@@ -8,5 +12,9 @@ import dagger.Module;
 @Module
 public class TrainBookingPassengerModule {
 
+    @Provides
+    GetDetailScheduleUseCase provideGetDetailScheduleUseCase(TrainRepository trainRepository) {
+        return new GetDetailScheduleUseCase(trainRepository);
+    }
 
 }

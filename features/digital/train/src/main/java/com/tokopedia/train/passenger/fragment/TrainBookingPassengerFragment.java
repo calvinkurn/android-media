@@ -92,39 +92,9 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
     }
 
     private void initializeTripInfo() {
-        String timeDepartureString;
-        String timeArrivalString;
         trainScheduleBookingPassData = getArguments().getParcelable(TrainBookingPassengerActivity.TRAIN_SCHEDULE_BOOKING);
-
-        TrainScheduleViewModel departureSchedule = trainScheduleBookingPassData.getDepartureTrip();
-        cardActionDeparture.setVisibility(View.VISIBLE);
-        cardActionDeparture.setContent(trainScheduleBookingPassData.getOriginCity() + " - " +
-                trainScheduleBookingPassData.getDestinationCity());
-        cardActionDeparture.setContentInfo(TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
-                TrainDateUtil.DEFAULT_VIEW_FORMAT, departureSchedule.getDepartureTimestamp()));
-        cardActionDeparture.setSubContent(departureSchedule.getTrainName());
-        timeDepartureString = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
-                TrainDateUtil.FORMAT_TIME, departureSchedule.getDepartureTimestamp());
-        timeArrivalString = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
-                TrainDateUtil.FORMAT_TIME, departureSchedule.getArrivalTimestamp());
-        cardActionDeparture.setSubContentInfo(" | " + timeDepartureString + " - " + timeArrivalString);
-
-        if (trainScheduleBookingPassData.getReturnTrip() != null) {
-            TrainScheduleViewModel returnSchedule = trainScheduleBookingPassData.getReturnTrip();
-            cardActionReturn.setVisibility(View.VISIBLE);
-            cardActionReturn.setContent(trainScheduleBookingPassData.getDestinationCity() + " - " +
-                    trainScheduleBookingPassData.getOriginCity());
-            cardActionReturn.setContentInfo(TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
-                    TrainDateUtil.DEFAULT_VIEW_FORMAT, returnSchedule.getDepartureTimestamp()));
-            cardActionReturn.setSubContent(returnSchedule.getTrainName());
-            timeDepartureString = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
-                    TrainDateUtil.FORMAT_TIME, returnSchedule.getDepartureTimestamp());
-            timeArrivalString = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
-                    TrainDateUtil.FORMAT_TIME, returnSchedule.getArrivalTimestamp());
-            cardActionReturn.setSubContentInfo(" | " + timeDepartureString + " - " + timeArrivalString);
-        } else {
-            cardActionReturn.setVisibility(View.GONE);
-        }
+        presenter.getDetailSchedule(trainScheduleBookingPassData.getDepartureScheduleId(), cardActionDeparture);
+        presenter.getDetailSchedule(trainScheduleBookingPassData.getReturnScheduleId(), cardActionReturn);
 
         cardActionDeparture.setActionListener(new CardWithAction.ActionListener() {
             @Override
@@ -175,6 +145,59 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
     @Override
     public List<TrainPassengerViewModel> getCurrentPassengerList() {
         return trainParamPassenger.getTrainPassengerViewModelList();
+    }
+
+    @Override
+    public void loadDetailSchedule(TrainScheduleViewModel trainScheduleViewModel, CardWithAction cardWithAction) {
+        cardWithAction.setContentInfo(TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
+                TrainDateUtil.DEFAULT_VIEW_FORMAT, trainScheduleViewModel.getDepartureTimestamp()));
+        cardWithAction.setSubContent(trainScheduleViewModel.getTrainName());
+        String timeDepartureString = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
+                TrainDateUtil.FORMAT_TIME, trainScheduleViewModel.getDepartureTimestamp());
+        String timeArrivalString = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
+                TrainDateUtil.FORMAT_TIME, trainScheduleViewModel.getArrivalTimestamp());
+        cardWithAction.setSubContentInfo(" | " + timeDepartureString + " - " + timeArrivalString);
+    }
+
+    @Override
+    public void hideDetailSchedule() {
+        hideReturnTripInfo();
+        hideDepartureTripInfo();
+    }
+
+    @Override
+    public void showReturnTripInfo() {
+        cardActionReturn.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideReturnTripInfo() {
+        cardActionReturn.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void hideDepartureTripInfo() {
+        cardActionDeparture.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showDepartureTripInfo() {
+        cardActionDeparture.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public String getOriginCity() {
+        return trainScheduleBookingPassData.getOriginCity();
+    }
+
+    @Override
+    public String getDestinationCity() {
+        return trainScheduleBookingPassData.getDestinationCity();
+    }
+
+    @Override
+    public void setCityRouteTripInfo(CardWithAction cardWithAction, String originCity, String destinationCity) {
+        cardWithAction.setContent(originCity + " - " + destinationCity);
     }
 
     @Override

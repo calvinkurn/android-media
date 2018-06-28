@@ -10,36 +10,22 @@ public class TrainScheduleBookingPassData implements Parcelable {
 
     private int adultPassenger;
     private int infantPassenger;
-    private TrainScheduleViewModel departureTrip;
-    private TrainScheduleViewModel returnTrip;
+    private String departureScheduleId;
+    private String returnScheduleId;
     private String originCity;
     private String destinationCity;
 
     public TrainScheduleBookingPassData() {
     }
 
+
     protected TrainScheduleBookingPassData(Parcel in) {
         adultPassenger = in.readInt();
         infantPassenger = in.readInt();
-        departureTrip = in.readParcelable(TrainScheduleViewModel.class.getClassLoader());
-        returnTrip = in.readParcelable(TrainScheduleViewModel.class.getClassLoader());
+        departureScheduleId = in.readString();
+        returnScheduleId = in.readString();
         originCity = in.readString();
         destinationCity = in.readString();
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(adultPassenger);
-        dest.writeInt(infantPassenger);
-        dest.writeParcelable(departureTrip, flags);
-        dest.writeParcelable(returnTrip, flags);
-        dest.writeString(originCity);
-        dest.writeString(destinationCity);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
     }
 
     public static final Creator<TrainScheduleBookingPassData> CREATOR = new Creator<TrainScheduleBookingPassData>() {
@@ -54,20 +40,20 @@ public class TrainScheduleBookingPassData implements Parcelable {
         }
     };
 
-    public TrainScheduleViewModel getDepartureTrip() {
-        return departureTrip;
+    public String getDepartureScheduleId() {
+        return departureScheduleId;
     }
 
-    public void setDepartureTrip(TrainScheduleViewModel departureTrip) {
-        this.departureTrip = departureTrip;
+    public void setDepartureScheduleId(String departureScheduleId) {
+        this.departureScheduleId = departureScheduleId;
     }
 
-    public TrainScheduleViewModel getReturnTrip() {
-        return returnTrip;
+    public String getReturnScheduleId() {
+        return returnScheduleId;
     }
 
-    public void setReturnTrip(TrainScheduleViewModel returnTrip) {
-        this.returnTrip = returnTrip;
+    public void setReturnScheduleId(String returnScheduleId) {
+        this.returnScheduleId = returnScheduleId;
     }
 
     public String getOriginCity() {
@@ -100,5 +86,20 @@ public class TrainScheduleBookingPassData implements Parcelable {
 
     public void setInfantPassenger(int infantPassenger) {
         this.infantPassenger = infantPassenger;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(adultPassenger);
+        parcel.writeInt(infantPassenger);
+        parcel.writeString(departureScheduleId);
+        parcel.writeString(returnScheduleId);
+        parcel.writeString(originCity);
+        parcel.writeString(destinationCity);
     }
 }
