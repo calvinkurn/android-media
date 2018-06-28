@@ -123,6 +123,9 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
         trainScheduleBookingPassData = new TrainScheduleBookingPassData();
         trainScheduleBookingPassData.setOriginCity(originCity);
         trainScheduleBookingPassData.setDestinationCity(destinationCity);
+        trainScheduleBookingPassData.setAdultPassenger(adultPassenger);
+        trainScheduleBookingPassData.setInfantPassenger(infantPassenger);
+
         showLoading();
         presenter.getTrainSchedules(getScheduleVariant());
 

@@ -8,6 +8,8 @@ import android.os.Parcelable;
  */
 public class TrainScheduleBookingPassData implements Parcelable {
 
+    private int adultPassenger;
+    private int infantPassenger;
     private TrainScheduleViewModel departureTrip;
     private TrainScheduleViewModel returnTrip;
     private String originCity;
@@ -17,6 +19,8 @@ public class TrainScheduleBookingPassData implements Parcelable {
     }
 
     protected TrainScheduleBookingPassData(Parcel in) {
+        adultPassenger = in.readInt();
+        infantPassenger = in.readInt();
         departureTrip = in.readParcelable(TrainScheduleViewModel.class.getClassLoader());
         returnTrip = in.readParcelable(TrainScheduleViewModel.class.getClassLoader());
         originCity = in.readString();
@@ -25,6 +29,8 @@ public class TrainScheduleBookingPassData implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(adultPassenger);
+        dest.writeInt(infantPassenger);
         dest.writeParcelable(departureTrip, flags);
         dest.writeParcelable(returnTrip, flags);
         dest.writeString(originCity);
@@ -78,5 +84,21 @@ public class TrainScheduleBookingPassData implements Parcelable {
 
     public void setDestinationCity(String destinationCity) {
         this.destinationCity = destinationCity;
+    }
+
+    public int getAdultPassenger() {
+        return adultPassenger;
+    }
+
+    public void setAdultPassenger(int adultPassenger) {
+        this.adultPassenger = adultPassenger;
+    }
+
+    public int getInfantPassenger() {
+        return infantPassenger;
+    }
+
+    public void setInfantPassenger(int infantPassenger) {
+        this.infantPassenger = infantPassenger;
     }
 }
