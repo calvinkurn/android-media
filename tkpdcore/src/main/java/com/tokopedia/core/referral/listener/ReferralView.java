@@ -11,7 +11,7 @@ import com.tokopedia.core.referral.model.ShareApps;
 
 public interface ReferralView extends CustomerView {
 
-    void renderVoucherCode(String voucherCode);
+    void renderVoucherCodeData(String voucherCode, String friendsCount);
 
     Activity getActivity();
 

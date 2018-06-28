@@ -166,7 +166,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
                     localCacheHandler.putString(TkpdCache.Key.REFERRAL_CODE, referralCodeEntity.getPromoContent().getCode());
                     localCacheHandler.applyEditor();
                     contents = referralCodeEntity.getPromoContent().getContent();
-                    getView().renderVoucherCode(referralCodeEntity.getPromoContent().getCode());
+                    getView().renderVoucherCodeData(referralCodeEntity.getPromoContent().getCode(), referralCodeEntity.getPromoContent().getFriendCount());
                 } else {
                     getView().renderErrorGetVoucherCode(referralCodeEntity.getErorMessage());
                 }
@@ -276,19 +276,19 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
         ShareApps shareApps;
         ShareApps[] selectedApps = new ShareApps[4];
         if (appInstalledOrNot(TkpdState.PackageName.Whatsapp)) {
-            shareApps = new ShareApps(TkpdState.PackageName.Whatsapp, R.drawable.ic_whatsapp_share);
+            shareApps = new ShareApps(TkpdState.PackageName.Whatsapp, R.drawable.ic_btn_wa);
             selectedApps[index++] = shareApps;
         }
         if (appInstalledOrNot(TkpdState.PackageName.Line)) {
-            shareApps = new ShareApps(TkpdState.PackageName.Line, R.drawable.ic_line_share);
+            shareApps = new ShareApps(TkpdState.PackageName.Line, R.drawable.ic_btn_line);
             selectedApps[index++] = shareApps;
         }
         if (appInstalledOrNot(TkpdState.PackageName.Instagram)) {
-            shareApps = new ShareApps(TkpdState.PackageName.Instagram, R.drawable.ic_instagram_share);
+            shareApps = new ShareApps(TkpdState.PackageName.Instagram, R.drawable.ic_btn_instagram);
             selectedApps[index++] = shareApps;
         }
         if (appInstalledOrNot(TkpdState.PackageName.Facebook)) {
-            shareApps = new ShareApps(TkpdState.PackageName.Facebook, R.drawable.ic_facebook_share);
+            shareApps = new ShareApps(TkpdState.PackageName.Facebook, R.drawable.ic_btn_fb);
             selectedApps[index++] = shareApps;
         }
         if (index < 4 && appInstalledOrNot(TkpdState.PackageName.Gplus)) {

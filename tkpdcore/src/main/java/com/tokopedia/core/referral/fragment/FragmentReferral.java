@@ -72,6 +72,12 @@ public class FragmentReferral extends BasePresenterFragmentV4<IReferralPresenter
     NestedScrollView nestedScrollView;
     @BindView(R2.id.view_line)
     View viewLine;
+    @BindView(R2.id.referral_count)
+    TextView referralCount;
+    @BindView(R2.id.img_tick)
+    ImageView imgTick;
+    @BindView(R2.id.btn_copy_referral_code)
+    TextView btnCopyReferralCode;
 
     private ReferralGuidePagerAdapter referralGuidePagerAdapter;
 
@@ -144,7 +150,7 @@ public class FragmentReferral extends BasePresenterFragmentV4<IReferralPresenter
             referralCodeLayout.setVisibility(View.VISIBLE);
             TextViewHelpLink.setVisibility(View.VISIBLE);
            // TextViewHelpLink.setText(presenter.getHowItWorks());
-            renderVoucherCode(presenter.getVoucherCodeFromCache());
+            renderVoucherCodeData(presenter.getVoucherCodeFromCache(), "");
             TextViewHelpLink.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -186,6 +192,9 @@ public class FragmentReferral extends BasePresenterFragmentV4<IReferralPresenter
     @OnClick(R2.id.btn_copy_referral_code)
     public void clickOnCopyButton() {
         presenter.copyVoucherCode(referralCodeTextView.getText().toString());
+        btnCopyReferralCode.setText("Tersalin");
+        btnCopyReferralCode.setTextColor(getResources().getColor(R.color.green_250));
+        imgTick.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -220,8 +229,9 @@ public class FragmentReferral extends BasePresenterFragmentV4<IReferralPresenter
     }
 
     @Override
-    public void renderVoucherCode(String voucherCode) {
+    public void renderVoucherCodeData(String voucherCode, String friendsCount) {
         referralCodeTextView.setText(voucherCode);
+        referralCount.setText(friendsCount + "  teman diajak");
     }
 
     @Override

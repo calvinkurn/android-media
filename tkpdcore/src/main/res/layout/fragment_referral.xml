@@ -34,21 +34,19 @@
                     android:gravity="center_horizontal"
                     android:text="Ajak teman belanja di Tokopedia dan dapatkan hingga Rp80.000"
                     android:textColor="@color/black_70"
-                    android:textSize="@dimen/sp_20"
-                    android:textStyle="normal" />
+                    android:textSize="@dimen/sp_20" />
 
 
                 <TextView
                     android:id="@+id/tv_referral_desc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_sm"
+                    android:layout_marginTop="@dimen/margin_small"
                     android:fontFamily="sans-serif"
                     android:gravity="center_horizontal"
                     android:text="Teman Anda juga mendapat cashback hingga Rp100.000. Bagikan kode referral ini:"
                     android:textColor="@color/black_54"
-                    android:textSize="@dimen/sp_14"
-                    android:textStyle="normal" />
+                    android:textSize="@dimen/sp_14" />
 
                 <RelativeLayout
                     android:id="@+id/rl_referral_code"
@@ -57,56 +55,73 @@
                     android:layout_below="@+id/tv_referral_desc"
                     android:layout_marginTop="@dimen/margin_med">
 
-                    <TextView
-                        android:id="@+id/tv_referral_code"
+                    <RelativeLayout
+                        android:id="@+id/rl_referral_code_main"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginTop="@dimen/margin_sm"
                         android:background="@drawable/shape_copy_voucher_code_left_default"
-                        android:fontFamily="sans-serif"
-                        android:gravity="left"
-                        android:padding="@dimen/margin_sm"
-                        android:text=""
-                        android:textColor="@color/colorGreen"
-                        android:textSize="@dimen/font_medium"
-                        android:textStyle="normal" />
+                        android:padding="@dimen/dp_1">
 
-                    <TextView
-                        android:id="@+id/btn_copy_referral_code"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignBottom="@id/tv_referral_code"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignTop="@id/tv_referral_code"
-                        android:layout_marginBottom="@dimen/dp_1"
-                        android:layout_marginRight="@dimen/dp_1"
-                        android:layout_marginTop="@dimen/dp_1"
-                        android:background="@color/white"
-                        android:gravity="center_horizontal|center_vertical"
-                        android:paddingLeft="@dimen/padding_large"
-                        android:paddingRight="@dimen/padding_large"
-                        android:text="@string/menu_copy"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/font_medium"
-                        android:textStyle="bold" />
+                        <TextView
+                            android:id="@+id/tv_referral_code"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_toLeftOf="@+id/btn_copy_referral_code"
+                            android:fontFamily="sans-serif"
+                            android:gravity="center_horizontal"
+                            android:padding="@dimen/margin_sm"
+                            android:textColor="@color/deep_orange_500"
+                            android:textSize="@dimen/font_medium"
+                            android:textStyle="normal" />
+
+
+                        <TextView
+                            android:id="@+id/btn_copy_referral_code"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignBottom="@id/tv_referral_code"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignTop="@id/tv_referral_code"
+                            android:background="@color/white"
+                            android:gravity="center_horizontal|center_vertical"
+                            android:paddingLeft="@dimen/margin_large"
+                            android:paddingRight="@dimen/margin_large"
+                            android:text="@string/menu_copy"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/font_medium"
+                            android:textStyle="bold" />
+
+
+                        <ImageView
+                            android:id="@+id/img_tick"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginRight="5dp"
+                            android:visibility="gone"
+                            android:layout_marginLeft="@dimen/margin_vvvs"
+                            android:layout_marginBottom="@dimen/margin_small"
+                            android:src="@drawable/ic_tick"
+                            android:layout_alignLeft="@+id/btn_copy_referral_code"
+                            android:layout_alignBottom="@+id/btn_copy_referral_code"
+                            android:tint="@color/green_250" />
+                    </RelativeLayout>
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:layout_below="@+id/btn_copy_referral_code"
+                        android:layout_below="@+id/rl_referral_code_main"
                         android:layout_marginBottom="@dimen/margin_med"
-                        android:layout_marginTop="@dimen/margin_med"
+                        android:layout_marginTop="@dimen/margin_large"
                         android:background="@color/colorGray" />
 
                     <TextView
                         android:id="@+id/tv_Bagikan_ke"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/btn_copy_referral_code"
+                        android:layout_below="@+id/rl_referral_code_main"
                         android:layout_centerHorizontal="true"
-                        android:layout_marginTop="@dimen/margin_small"
-
+                        android:layout_marginTop="@dimen/margin_med"
                         android:background="@color/white"
                         android:gravity="center_horizontal|center_vertical"
                         android:paddingLeft="@dimen/padding_large"
@@ -120,52 +135,7 @@
                     android:id="@+id/ll_share_icons"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <!--<ImageButton-->
-                        <!--android:id="@+id/img_share_1"-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:layout_weight="1"-->
-                        <!--android:background="@null"-->
-                        <!--android:src="@drawable/ic_whatsapp_share" />-->
-
-                    <!--<ImageButton-->
-                        <!--android:id="@+id/img_share_2"-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:layout_weight="1"-->
-                        <!--android:background="@null"-->
-
-                        <!--android:src="@drawable/ic_line_share" />-->
-
-                    <!--<ImageButton-->
-                        <!--android:id="@+id/img_share_3"-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:layout_weight="1"-->
-                        <!--android:background="@null"-->
-
-                        <!--android:src="@drawable/ic_instagram_share" />-->
-
-                    <!--<ImageButton-->
-                        <!--android:id="@+id/img_share_4"-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:layout_weight="1"-->
-                        <!--android:background="@null"-->
-
-                        <!--android:src="@drawable/ic_facebook_share" />-->
-
-                    <!--<ImageButton-->
-                        <!--android:id="@+id/img_share_more"-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:layout_weight="1"-->
-                        <!--android:background="@null"-->
-
-                        <!--android:src="@drawable/ic_more_share" />-->
-                </LinearLayout>
+                    android:orientation="horizontal"></LinearLayout>
 
                 <TextView
                     android:id="@+id/tv_referral_help_link"
@@ -202,10 +172,10 @@
 
                 <ImageView
                     android:id="@+id/img_profile"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
                     android:layout_marginRight="@dimen/margin_sm"
-                    android:src="@drawable/ic_set_profile" />
+                    app:srcCompat="@drawable/ic_group_referral" />
 
                 <TextView
                     android:id="@+id/referral_count"
@@ -222,7 +192,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/img_profile"
                 android:layout_marginBottom="@dimen/margin_sm"
-
+                android:layout_marginTop="@dimen/margin_small"
                 android:text="Perolehan Referral:"
                 android:textColor="@color/black_38"
                 android:textSize="12sp" />
@@ -269,8 +239,6 @@
                 android:id="@+id/tab_referral_guide"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/padding_med"
-                android:paddingRight="@dimen/padding_med"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:tabIndicatorColor="@color/tkpd_main_green"
@@ -278,14 +246,18 @@
                 app:tabSelectedTextColor="@color/tkpd_main_green">
 
                 <android.support.design.widget.TabItem
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Cara Kerja" />
+                    android:layout_gravity="start"
+                    android:text="Cara Kerja"
+                    android:textAlignment="textStart" />
 
                 <android.support.design.widget.TabItem
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Ketentuan" />
+                    android:layout_gravity="start"
+                    android:text="Ketentuan"
+                    android:textAlignment="textStart" />
 
             </android.support.design.widget.TabLayout>
 
