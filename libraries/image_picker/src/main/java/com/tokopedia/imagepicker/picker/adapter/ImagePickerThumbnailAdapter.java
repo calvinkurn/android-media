@@ -2,8 +2,10 @@ package com.tokopedia.imagepicker.picker.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.StringRes;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.widget.RecyclerView;
@@ -36,6 +38,8 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
     private int maxSize;
     private @StringRes
     int primaryImageStringRes;
+    private int grayColor;
+    private int whiteColor;
 
     private OnImageEditThumbnailAdapterListener onImageEditThumbnailAdapterListener;
     private final float roundedSize;
@@ -54,6 +58,8 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
         this.onImageEditThumbnailAdapterListener = onImageEditThumbnailAdapterListener;
         roundedSize = context.getResources().getDimension(R.dimen.dp_6);
         thumbnailSize = context.getResources().getDimensionPixelOffset(R.dimen.dp_72);
+        grayColor = ContextCompat.getColor(context, R.color.grey_100);
+        whiteColor = ContextCompat.getColor(context, R.color.white);
     }
 
     public class ImagePickerThumbnailViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -112,12 +118,16 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
 
     public class PlaceholderThumbnailViewHolder extends RecyclerView.ViewHolder {
         ImageView ivPlaceholder;
+        ImageView vFrameImage;
+
         public PlaceholderThumbnailViewHolder(View itemView) {
             super(itemView);
             ivPlaceholder = itemView.findViewById(R.id.image_view_placeholder);
+            vFrameImage = itemView.findViewById(R.id.image_view);
         }
 
-        public void bind(@DrawableRes int drawableRes) {
+        public void bind(@DrawableRes int drawableRes, int backgroundColor) {
+            vFrameImage.setBackgroundColor(backgroundColor);
             ivPlaceholder.setImageResource(drawableRes);
         }
     }
@@ -180,11 +190,11 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
             ((ImagePickerThumbnailViewHolder) holder).bind(imagePath, position);
         } else {
             // else draw the empty preview
-            if (placeholderDrawableResList!= null && placeholderDrawableResList.size() > position) {
+            if (placeholderDrawableResList != null && placeholderDrawableResList.size() > position) {
                 int drawableRes = placeholderDrawableResList.get(position);
-                ((PlaceholderThumbnailViewHolder)holder).bind(drawableRes);
+                ((PlaceholderThumbnailViewHolder) holder).bind(drawableRes, grayColor);
             } else {
-                ((PlaceholderThumbnailViewHolder)holder).bind(R.drawable.ic_loading_toped_new);
+                ((PlaceholderThumbnailViewHolder) holder).bind(R.drawable.ic_plus, whiteColor);
             }
         }
     }

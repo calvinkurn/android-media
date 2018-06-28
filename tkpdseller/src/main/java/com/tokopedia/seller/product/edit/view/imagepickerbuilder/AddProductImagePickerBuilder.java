@@ -34,6 +34,12 @@ public class AddProductImagePickerBuilder {
     public static final int INSTAGRAM_IMAGE_LIMIT = 20;
 
     public static ImagePickerBuilder createPrimaryNewBuilder(Context context, ArrayList<String> imageList) {
+        ArrayList<Integer> placeholderDrawableRes = new ArrayList<>();
+        placeholderDrawableRes.add(R.drawable.ic_utama);
+        placeholderDrawableRes.add(R.drawable.ic_depan);
+        placeholderDrawableRes.add(R.drawable.ic_samping);
+        placeholderDrawableRes.add(R.drawable.ic_atas);
+        placeholderDrawableRes.add(R.drawable.ic_detail);
         return new ImagePickerBuilder(context.getString(R.string.choose_image),
                 new int[]{TYPE_GALLERY, TYPE_CAMERA, TYPE_INSTAGRAM}, GalleryType.IMAGE_ONLY, DEFAULT_MAX_IMAGE_SIZE_IN_KB,
                 DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.RATIO_1_1, true,
@@ -42,7 +48,7 @@ public class AddProductImagePickerBuilder {
                         null)
                 , new ImagePickerMultipleSelectionBuilder(
                 imageList,
-                null,
+                placeholderDrawableRes,
                 R.string.primary,
                 MAX_IMAGE_LIMIT));
     }
