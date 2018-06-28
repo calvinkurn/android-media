@@ -510,6 +510,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
 
             llDropshipper.setVisibility(View.VISIBLE);
         } else {
+            cbDropshipper.setChecked(false);
             etShipperName.setText("");
             etShipperPhone.setText("");
             llDropshipper.setVisibility(View.GONE);

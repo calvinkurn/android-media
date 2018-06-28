@@ -410,11 +410,17 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             if (((ShipmentCartItemModel) currentShipmentData).getSelectedShipmentDetailData() != null) {
                 ((ShipmentCartItemModel) currentShipmentData).getSelectedShipmentDetailData().setUseInsurance(null);
                 ((ShipmentCartItemModel) currentShipmentData).getSelectedShipmentDetailData().setSelectedCourier(courierItemData);
+                if (!courierItemData.isAllowDropshiper()) {
+                    ((ShipmentCartItemModel) currentShipmentData).getSelectedShipmentDetailData().setUseDropshipper(false);
+                }
             } else {
                 ShipmentDetailData shipmentDetailData = new ShipmentDetailData();
                 shipmentDetailData.setSelectedCourier(courierItemData);
                 shipmentDetailData.setShipmentCartData(((ShipmentCartItemModel) currentShipmentData).getShipmentCartData());
                 ((ShipmentCartItemModel) currentShipmentData).setSelectedShipmentDetailData(shipmentDetailData);
+                if (!courierItemData.isAllowDropshiper()) {
+                    ((ShipmentCartItemModel) currentShipmentData).getSelectedShipmentDetailData().setUseDropshipper(false);
+                }
             }
             updateShipmentCostModel();
             checkDataForCheckout();
