@@ -55,7 +55,7 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
     public static final String FIREBASE_DOUBLE_SHAKE_CONFIG_KEY = "app_double_shake_enabled";
     public static final String SHAKE_SHAKE_ERROR ="Oops! Kejutannya masih dibungkus. Yuk, shake lagi handphone-mu";
 
-    public final static int SHAKE_SHAKE_WAIT_TIME_SEC = 5;
+    public final static int SHAKE_SHAKE_WAIT_TIME_SEC = 6;
     Subscription subscription = null;
 
     @Inject
