@@ -13,16 +13,14 @@ import java.util.List;
 public class ProductItemDecoration extends RecyclerView.ItemDecoration {
 
     private final int spacing;
-    private boolean useRightMargin;
 
     private final List<Integer> allowedViewTypes = Arrays.asList(
             R.layout.search_result_product_item_big_grid,
             R.layout.search_result_product_item_grid,
             R.layout.search_result_product_item_list);
 
-    public ProductItemDecoration(int spacing, boolean useRightMargin) {
+    public ProductItemDecoration(int spacing) {
         this.spacing = spacing;
-        this.useRightMargin = useRightMargin;
     }
 
     @Override
@@ -42,11 +40,7 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
 
         outRect.top = isTopProductItem(parent, absolutePos, relativePos, totalSpanCount) ? spacing : spacing / 2;
         outRect.left = isFirstInRow(relativePos, totalSpanCount) ? spacing : spacing / 2;
-        if (useRightMargin) {
-            outRect.right = isLastInRow(relativePos, totalSpanCount) ? spacing : spacing / 2;
-        } else {
-            outRect.right = 0;
-        }
+        outRect.right = isLastInRow(relativePos, totalSpanCount) ? spacing : spacing / 2;
         outRect.bottom = isBottomProductItem(parent, absolutePos, relativePos, totalSpanCount) ? spacing : spacing / 2;
     }
 
