@@ -86,7 +86,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
         getAllBrandsUseCase.unsubscribe();
         getDealsListRequestUseCase.unsubscribe();
         getNextDealPageUseCase.unsubscribe();
-        subscription.unsubscribe();
+        stopBannerSlide();
     }
 
     @Override
@@ -100,6 +100,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
             totalPages = viewPager.getChildCount();
         }
 
+        stopBannerSlide();
         subscription = Observable.interval(5000, 5000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Long>() {
@@ -120,6 +121,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
                         else if (currentPage + 1 >= totalPages) {
                             currentPage = 0;
                         }
+                        CommonUtils.dumper("in slide on next , currentPage "+currentPage + " , total page" +totalPages);
                         mTouchViewPager.setCurrentItem(currentPage, true);
                     }
                 });
@@ -140,6 +142,8 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
             getView().navigateToActivityRequest(searchIntent, DealsHomeActivity.REQUEST_CODE_DEALSSEARCHACTIVITY);
         } else if (id == R.id.tv_location_name) {
             getView().navigateToActivityRequest(new Intent(getView().getActivity(), DealsLocationActivity.class), DealsHomeActivity.REQUEST_CODE_DEALSLOCATIONACTIVITY);
+            getView().getActivity().overridePendingTransition( R.anim.slide_in_up, R.anim.hold );
+
         } else if (id == R.id.action_menu_favourite) {
 
         } else if (id == R.id.action_promo) {
@@ -361,6 +365,8 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
     }
 
     public void stopBannerSlide(){
-        subscription.unsubscribe();
+        if(subscription != null) {
+            subscription.unsubscribe();
+        }
     }
 }

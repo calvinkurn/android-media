@@ -34,8 +34,8 @@ import javax.inject.Inject;
 
 import static android.app.Activity.RESULT_OK;
 
-public class SelectLocationFragment  extends BaseDaggerFragment implements
-        DealsLocationContract.View, SearchInputView.Listener, DealsLocationAdapter.ActionListener{
+public class SelectLocationFragment extends BaseDaggerFragment implements
+        DealsLocationContract.View, SearchInputView.Listener, DealsLocationAdapter.ActionListener {
 
     public static final String EXTRA_CALLBACK_LOCATION = "EXTRA_CALLBACK_LOCATION";
 
@@ -68,7 +68,6 @@ public class SelectLocationFragment  extends BaseDaggerFragment implements
         mPresenter.getLocations();
         return view;
     }
-
 
 
     private void setUpVariables(View view) {
@@ -180,7 +179,10 @@ public class SelectLocationFragment  extends BaseDaggerFragment implements
     public void onLocationItemSelected(boolean locationUpdated) {
 
         getActivity().setResult(RESULT_OK, new Intent().putExtra(EXTRA_CALLBACK_LOCATION, locationUpdated));
+        if (locationUpdated)
+            getActivity().overridePendingTransition(R.anim.hold, R.anim.slide_out_up);
         getActivity().finish();
+
     }
 
     @Override

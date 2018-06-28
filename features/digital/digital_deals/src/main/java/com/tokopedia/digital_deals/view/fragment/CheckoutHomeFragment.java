@@ -61,7 +61,6 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
     private TextView tvNumberVouchers;
     private TextView tvAmount;
     private EditText etEmailID;
-    private EditText etPhoneNumber;
     private FrameLayout progressParLayout;
     private DealFragmentCallbacks fragmentCallbacks;
     private ImageView ivRemovePromo;
@@ -116,7 +115,6 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
         tvDiscount = view.findViewById(R.id.amount_of_cashback);
         tvNumberVouchers = view.findViewById(R.id.tv_number_vouchers);
         etEmailID = view.findViewById(R.id.tv_email);
-        etPhoneNumber = view.findViewById(R.id.tv_phone);
         paymentMethod = view.findViewById(R.id.cl_btn_payment);
         tvPaymentMethod = view.findViewById(R.id.ll_select_payment_method);
         tvApplyPromo = view.findViewById(R.id.tv_promocode);
@@ -163,7 +161,13 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
         tvSalesPrice.setText(Utils.convertToCurrencyString(packageViewModel.getSalesPrice()));
         tvTotalQuantityPrice.setText(Utils.convertToCurrencyString(packageViewModel.getSalesPrice() *
                 packageViewModel.getSelectedQuantity()));
-        tvServiceFee.setText(Utils.convertToCurrencyString(packageViewModel.getCommission()));
+        if (packageViewModel.getCommission() == 0) {
+            getRootView().findViewById(R.id.tv_service_fee).setVisibility(View.GONE);
+            getRootView().findViewById(R.id.tv_service_fee_amount).setVisibility(View.GONE);
+        } else {
+            tvServiceFee.setText(Utils.convertToCurrencyString(packageViewModel.getCommission()));
+
+        }
 
         tvAmount.setText(Utils.convertToCurrencyString(packageViewModel.getSalesPrice() *
                 packageViewModel.getSelectedQuantity() +
@@ -197,6 +201,8 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
     @Override
     public void setEmailIDPhoneNumber(String emailID, String phoneNumber) {
         etEmailID.setText(emailID);
+        EditText etPhone = getRootView().findViewById(R.id.tv_phone);
+        etPhone.setText(phoneNumber);
     }
 
     @Override
@@ -269,7 +275,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
             switch (resultCode) {
                 case IRouterConstant.LoyaltyModule.ResultLoyaltyActivity.VOUCHER_RESULT_CODE:
                     mPresenter.updatePromoCode(data.getExtras().getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_CODE));
-                    showPromoSuccessMessage(data.getExtras().getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_CODE),  data.getExtras().getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_MESSAGE));
+                    showPromoSuccessMessage(data.getExtras().getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_CODE), data.getExtras().getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_MESSAGE));
                     break;
 //                case LoyaltyActivity.VOUCHER_RESULT_CODE:
 //                    mPresenter.updatePromoCode(data.getExtras().getString(LoyaltyActivity.VOUCHER_CODE));

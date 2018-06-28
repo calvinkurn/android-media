@@ -76,6 +76,7 @@ public class DealDetailsActivity extends BaseSimpleActivity implements DealFragm
     public void replaceFragment(List<OutletViewModel> outlets, int flag) {
         this.outlets = outlets;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(R.anim.slide_in_up, R.anim.slide_in_down, R.anim.slide_out_down, R.anim.slide_out_up);
         transaction.add(R.id.parent_view, DealDetailsAllRedeemLocationsFragment.createInstance());
         transaction.addToBackStack(null);
         transaction.commit();
