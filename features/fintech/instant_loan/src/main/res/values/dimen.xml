@@ -44,7 +44,7 @@
     <dimen name="width_fab_intro_sliders">44dp</dimen>
     <dimen name="height_fab_intro_sliders">44dp</dimen>
     <dimen name="height_dialog_intro_slider">450dp</dimen>
-    <dimen name="height_view_pager_banner">160dp</dimen>
+    <dimen name="height_view_pager_banner">150dp</dimen>
 
     <dimen name="line_separator_vertical">2dp</dimen>
     <dimen name="line_spacing_11">11sp</dimen>

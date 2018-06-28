@@ -2,20 +2,19 @@ package com.tokopedia.instantloan.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.TypedArray;
-import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.TextUtils;
-import android.text.style.ImageSpan;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
@@ -80,11 +79,7 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
         instantLoanPagerAdapter.setData(instantLoanItemList);
         viewPager.setAdapter(instantLoanPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
-
-        tabLayout.addOnTabSelectedListener(onTabSelectedListener);
         setActiveTab();
-
-//        viewPager.addOnPageChangeListener(onPageChangeListener);
     }
 
     private void setActiveTab() {
@@ -98,7 +93,7 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
     }
 
     private void populateThreeTabItem() {
-        instantLoanItemList.add(new InstantLoanItem(getEnabledPageTitle(0), getDanaInstantFragment()));
+        instantLoanItemList.add(new InstantLoanItem(getPageTitle(0), getDanaInstantFragment()));
         instantLoanItemList.add(new InstantLoanItem(getPageTitle(1), getTanpaAgunanFragment()));
         instantLoanItemList.add(new InstantLoanItem(getPageTitle(2), getDenganAngunanFragment()));
     }
@@ -139,25 +134,7 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
     protected void onDestroy() {
         super.onDestroy();
         mBannerPresenter.detachView();
-        tabLayout.removeOnTabSelectedListener(onTabSelectedListener);
     }
-
-    TabLayout.OnTabSelectedListener onTabSelectedListener = new TabLayout.OnTabSelectedListener() {
-        @Override
-        public void onTabSelected(TabLayout.Tab tab) {
-            tab.setText(getEnabledPageTitle(tab.getPosition()));
-        }
-
-        @Override
-        public void onTabUnselected(TabLayout.Tab tab) {
-            tab.setText(getPageTitle(tab.getPosition()));
-        }
-
-        @Override
-        public void onTabReselected(TabLayout.Tab tab) {
-
-        }
-    };
 
 
     @Override
@@ -243,6 +220,13 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
             getSupportActionBar().setTitle(this.getTitle());
             updateTitle("");
         }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(ContextCompat.getColor(this, R.color.white));
+            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        }
     }
 
     @Override
@@ -282,25 +266,7 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
     };
 
     private CharSequence getPageTitle(int position) {
-        TypedArray imgs = getResources().obtainTypedArray(R.array.values_drawable_disable);
-        Drawable image = getResources().getDrawable(imgs.getResourceId(position, -1));
-        image.setBounds(0, 0, image.getIntrinsicWidth(), image.getIntrinsicHeight());
-        SpannableString sb = new SpannableString(" " + "\n" + getResources().getStringArray(R.array.values_title)[position]);
-        ImageSpan imageSpan = new ImageSpan(image, ImageSpan.ALIGN_BASELINE);
-        sb.setSpan(imageSpan, 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        imgs.recycle();
-        return sb;
-    }
-
-    private CharSequence getEnabledPageTitle(int position) {
-        TypedArray imgs = getResources().obtainTypedArray(R.array.values_drawable_enable);
-        Drawable image = getResources().getDrawable(imgs.getResourceId(position, -1));
-        image.setBounds(0, 0, image.getIntrinsicWidth(), image.getIntrinsicHeight());
-        SpannableString sb = new SpannableString(" " + "\n" + getResources().getStringArray(R.array.values_title)[position]);
-        ImageSpan imageSpan = new ImageSpan(image, ImageSpan.ALIGN_BASELINE);
-        sb.setSpan(imageSpan, 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        imgs.recycle();
-        return sb;
+        return getResources().getStringArray(R.array.values_title)[position];
     }
 
     @Override
