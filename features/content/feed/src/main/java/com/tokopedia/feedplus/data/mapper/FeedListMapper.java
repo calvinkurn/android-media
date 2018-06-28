@@ -320,6 +320,9 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
             return new KolPostDomain(
                     kolpost.getId() == null ? 0 : kolpost.getId(),
                     content.getImageurl() == null ? "" : content.getImageurl(),
+                    content.getVideo() == null ? "" : content.getVideo(),
+                    content.getYoutube() == null ? "" : content.getYoutube(),
+                    content.getType() == null ? "" : content.getType(),
                     kolpost.getDescription() == null ? "" : kolpost.getDescription(),
                     kolpost.getCommentCount() == null ? 0 : kolpost.getCommentCount(),
                     kolpost.getLikeCount() == null ? 0 : kolpost.getLikeCount(),
@@ -352,6 +355,9 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
             return new KolPostDomain(
                     kolpost.getId() == null ? 0 : kolpost.getId(),
                     content.getImageurl() == null ? "" : content.getImageurl(),
+                    content.getVideo() == null ? "" : content.getVideo(),
+                    content.getYoutube() == null ? "" : content.getYoutube(),
+                    content.getType() == null ? "" : content.getType(),
                     kolpost.getDescription() == null ? "" : kolpost.getDescription(),
                     kolpost.getCommentCount() == null ? 0 : kolpost.getCommentCount(),
                     kolpost.getLikeCount() == null ? 0 : kolpost.getLikeCount(),

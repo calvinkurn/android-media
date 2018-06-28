@@ -28,6 +28,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.design)
 
+    implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
