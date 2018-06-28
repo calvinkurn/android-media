@@ -11,8 +11,6 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.core.customwidget.FlowLayout;
-import com.tokopedia.core.helper.IndicatorViewHelper;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.discovery.R;
@@ -98,7 +96,7 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
             location.setVisibility(View.INVISIBLE);
         }
 
-        ImageHandler.loadImageSourceSize(context, productImage, productItem.getImageUrl());
+        ImageHandler.loadImageSourceSizeWithRoundedCorners(context, productImage, productItem.getImageUrl());
 
         wishlistButtonContainer.setVisibility(View.VISIBLE);
         wishlistButton.setBackgroundResource(R.drawable.ic_wishlist);

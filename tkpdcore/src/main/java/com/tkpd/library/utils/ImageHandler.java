@@ -30,6 +30,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.core.R;
 import com.tokopedia.core.gcm.BuildAndShowNotification;
+import com.tokopedia.core.transformation.RoundedCornersTransformation;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -237,10 +238,12 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
     }
 
     /* This method specifically designed to display cached image from different size when offline */
-    public static void loadImageSourceSize(Context context, ImageView imageview, String url) {
+    public static void loadImageSourceSizeWithRoundedCorners(Context context, ImageView imageview, String url) {
         if (isContextValid(context)) {
+            int defaultRadius = context.getResources().getDimensionPixelSize(R.dimen.dp_4);
             Glide.with(context)
                     .load(url)
+                    .bitmapTransform(new RoundedCornersTransformation(context, defaultRadius, 0))
                     .dontAnimate()
                     .placeholder(R.drawable.loading_page)
                     .error(R.drawable.error_drawable)

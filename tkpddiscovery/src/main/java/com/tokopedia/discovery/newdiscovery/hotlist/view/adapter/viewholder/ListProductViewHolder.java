@@ -10,23 +10,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.analytics.HotlistPageTracking;
-import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.model.Hotlist;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.core.customwidget.FlowLayout;
-import com.tokopedia.core.helper.IndicatorViewHelper;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.ItemClickListener;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistProductViewModel;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.BadgeItem;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.tkpdpdp.customview.RatingView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -148,7 +139,7 @@ public class ListProductViewHolder extends AbstractViewHolder<HotlistProductView
     }
 
     protected void renderProductImage(String imageUrl) {
-        ImageHandler.loadImageSourceSize(context, productImage, imageUrl);
+        ImageHandler.loadImageSourceSizeWithRoundedCorners(context, productImage, imageUrl);
     }
 
     protected void renderShopLocation(HotlistProductViewModel element) {
