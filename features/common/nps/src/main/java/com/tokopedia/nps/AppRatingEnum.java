@@ -1,11 +1,8 @@
-package com.tokopedia.core.apprating;
+package com.tokopedia.nps;
 
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
-import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
-
-import com.tokopedia.core.R;
 
 /**
  * Created by okasurya on 1/10/18.

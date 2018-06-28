@@ -1,17 +1,11 @@
-package com.tokopedia.core.apprating;
+package com.tokopedia.nps;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 
-import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.apprating.nps.FeedbackActivity;
-import com.tokopedia.core.apprating.nps.FeedbackThankPageActivity;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdCache;
 

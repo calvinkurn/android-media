@@ -1,3 +1,4 @@
+include "features:common:nps"
 include "features:fintech:mitra_toppers"
 include "features:digital:flight_no_op"
 include "features:discovery:wishlist_common"

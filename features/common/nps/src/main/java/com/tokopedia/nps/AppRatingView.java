@@ -1,4 +1,4 @@
-package com.tokopedia.core.apprating;
+package com.tokopedia.nps;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -13,7 +13,6 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.R;
 
 /**
  * Created by okasurya on 1/10/18.

@@ -1,4 +1,4 @@
-package com.tokopedia.core.apprating.nps;
+package com.tokopedia.nps;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,7 +11,6 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.core.R;
 
 /**
  * Created by meta on 26/03/18.

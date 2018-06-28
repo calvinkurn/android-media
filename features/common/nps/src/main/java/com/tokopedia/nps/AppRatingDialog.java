@@ -1,4 +1,4 @@
-package com.tokopedia.core.apprating;
+package com.tokopedia.nps;
 
 import android.app.Activity;
 import android.content.Context;

@@ -1,4 +1,4 @@
-package com.tokopedia.core.apprating.nps;
+package com.tokopedia.nps;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,9 +9,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.core.R;
-import com.tokopedia.core.apprating.AdvancedAppRatingDialog;
-import com.tokopedia.core.apprating.AppRatingDialog;
 
 /**
  * Created by meta on 26/03/18.

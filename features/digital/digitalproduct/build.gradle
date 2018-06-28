@@ -36,6 +36,7 @@ dependencies {
     implementation project(rootProject.ext.features.payment)
     implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.features.otp)
+    implementation project(rootProject.ext.features.nps)
 
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.abstraction)
