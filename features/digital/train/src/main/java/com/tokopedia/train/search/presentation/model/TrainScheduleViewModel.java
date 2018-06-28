@@ -36,6 +36,7 @@ public class TrainScheduleViewModel implements Parcelable, Visitable<TrainSearch
     private boolean cheapestFlag;
     private boolean fastestFlag;
     private List<TrainScheduleRouteDetailViewModel> scheduleRouteList;
+    private boolean returnTrip;
 
     public TrainScheduleViewModel() {
     }
@@ -62,6 +63,7 @@ public class TrainScheduleViewModel implements Parcelable, Visitable<TrainSearch
         cheapestFlag = in.readByte() != 0;
         fastestFlag = in.readByte() != 0;
         scheduleRouteList = in.createTypedArrayList(TrainScheduleRouteDetailViewModel.CREATOR);
+        returnTrip = in.readByte() != 0;
     }
 
     public static final Creator<TrainScheduleViewModel> CREATOR = new Creator<TrainScheduleViewModel>() {
@@ -75,6 +77,14 @@ public class TrainScheduleViewModel implements Parcelable, Visitable<TrainSearch
             return new TrainScheduleViewModel[size];
         }
     };
+
+    public boolean isReturnTrip() {
+        return returnTrip;
+    }
+
+    public void setReturnTrip(boolean returnTrip) {
+        this.returnTrip = returnTrip;
+    }
 
     public String getIdSchedule() {
         return idSchedule;
@@ -249,6 +259,18 @@ public class TrainScheduleViewModel implements Parcelable, Visitable<TrainSearch
         return typeFactory.type(this);
     }
 
+
+    @Override
+    public String toString() {
+        return "Schedule ID: " + idSchedule + "\n" +
+                "Adult Fare: " + displayAdultFare + "\n" +
+                "Train Name: " + trainName + "\n" +
+                "Duration: " + duration + "\n" +
+                "Departure Timestamp: " + departureTimestamp + "\n" +
+                "Arrival Timestamp: " + arrivalTimestamp + "\n" +
+                "Availibility: " + availableSeat + "\n";
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -277,17 +299,6 @@ public class TrainScheduleViewModel implements Parcelable, Visitable<TrainSearch
         parcel.writeByte((byte) (cheapestFlag ? 1 : 0));
         parcel.writeByte((byte) (fastestFlag ? 1 : 0));
         parcel.writeTypedList(scheduleRouteList);
+        parcel.writeByte((byte) (returnTrip ? 1 : 0));
     }
-
-    @Override
-    public String toString() {
-        return "Schedule ID: " + idSchedule + "\n" +
-                "Adult Fare: " + displayAdultFare + "\n" +
-                "Train Name: " + trainName + "\n" +
-                "Duration: " + duration + "\n" +
-                "Departure Timestamp: " + departureTimestamp + "\n" +
-                "Arrival Timestamp: " + arrivalTimestamp + "\n" +
-                "Availibility: " + availableSeat + "\n";
-    }
-
 }

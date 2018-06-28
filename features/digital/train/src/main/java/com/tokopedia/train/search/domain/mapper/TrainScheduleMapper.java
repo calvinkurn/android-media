@@ -62,6 +62,7 @@ public class TrainScheduleMapper implements Func1<List<TrainScheduleDbTable>, Li
             trainScheduleViewModel.setAvailableSeat(trainScheduleDbTable.getAvailableSeat());
             trainScheduleViewModel.setCheapestFlag(trainScheduleDbTable.isCheapestFlag());
             trainScheduleViewModel.setFastestFlag(trainScheduleDbTable.isFastestFlag());
+            trainScheduleViewModel.setReturnTrip(trainScheduleDbTable.isReturnSchedule());
         }
         return trainScheduleViewModel;
     }

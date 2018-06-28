@@ -30,14 +30,17 @@ import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.di.utils.TrainComponentUtils;
 import com.tokopedia.train.homepage.presentation.model.TrainSearchPassDataViewModel;
+import com.tokopedia.train.passenger.activity.TrainBookingPassengerActivity;
 import com.tokopedia.train.search.constant.TrainSortOption;
 import com.tokopedia.train.search.di.DaggerTrainSearchComponent;
 import com.tokopedia.train.search.di.TrainSearchComponent;
 import com.tokopedia.train.search.domain.GetScheduleUseCase;
 import com.tokopedia.train.search.presentation.activity.TrainFilterSearchActivity;
+import com.tokopedia.train.search.presentation.activity.TrainSearchReturnActivity;
 import com.tokopedia.train.search.presentation.adapter.TrainSearchAdapterTypeFactory;
 import com.tokopedia.train.search.presentation.contract.TrainSearchContract;
 import com.tokopedia.train.search.presentation.model.FilterSearchData;
+import com.tokopedia.train.search.presentation.model.TrainScheduleBookingPassData;
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
 import com.tokopedia.train.search.presentation.presenter.TrainSearchPresenter;
 import com.tokopedia.usecase.RequestParams;
@@ -63,8 +66,8 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
 
     protected TrainSearchPassDataViewModel trainSearchPassDataViewModel;
     protected String dateDeparture;
-    protected int adultPassanger;
-    protected int infantPassanger;
+    protected int adultPassenger;
+    protected int infantPassenger;
     protected String originCode;
     protected String originCity;
     protected String destinationCode;
@@ -77,6 +80,7 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
     protected TrainSearchComponent trainSearchComponent;
     private int selectedSortOption;
     private FilterSearchData filterSearchData;
+    private TrainScheduleBookingPassData trainScheduleBookingPassData;
 
     private BottomActionView filterAndSortBottomAction;
 
@@ -115,6 +119,12 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
         } else {
             selectedSortOption = savedInstanceState.getInt(SELECTED_SORT);
         }
+
+        trainScheduleBookingPassData = new TrainScheduleBookingPassData();
+        trainScheduleBookingPassData.setOriginCity(originCity);
+        trainScheduleBookingPassData.setDestinationCity(destinationCity);
+        trainScheduleBookingPassData.setAdultPassenger(adultPassenger);
+        trainScheduleBookingPassData.setInfantPassenger(infantPassenger);
 
         showLoading();
         presenter.getTrainSchedules(getScheduleVariant());
@@ -249,8 +259,8 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
         requestParams.putString(GetScheduleUseCase.DEST_CITY, destinationCity);
 
         //TODO : not yet implemented in query gql staging
-        //requestParams.putInt(GetScheduleUseCase.TOTAL_ADULT, adultPassanger);
-        //requestParams.putInt(GetScheduleUseCase.TOTAL_INFANT, infantPassanger);
+        //requestParams.putInt(GetScheduleUseCase.TOTAL_ADULT, adultPassenger);
+        //requestParams.putInt(GetScheduleUseCase.TOTAL_INFANT, infantPassenger);
         return requestParams;
     }
 
@@ -341,6 +351,23 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
     public void onDetailClicked(TrainScheduleViewModel trainScheduleViewModel, int adapterPosition) {
         //TODO : detail clicked go to detail trip
         Toast.makeText(getActivity(), "detail " + trainScheduleViewModel.getTrainName(), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onItemClicked(TrainScheduleViewModel trainScheduleViewModel) {
+        selectSchedule(trainScheduleViewModel);
+    }
+
+    @Override
+    public void selectSchedule(TrainScheduleViewModel trainScheduleViewModel) {
+        if (!trainSearchPassDataViewModel.isOneWay()) {
+            trainScheduleBookingPassData.setDepartureScheduleId(trainScheduleViewModel.getIdSchedule());
+            startActivityForResult(TrainSearchReturnActivity.getCallingIntent(getActivity(),
+                    trainSearchPassDataViewModel, trainScheduleBookingPassData, trainScheduleViewModel.getIdSchedule()), 11);
+        } else {
+            trainScheduleBookingPassData.setDepartureScheduleId(trainScheduleViewModel.getIdSchedule());
+            startActivity(TrainBookingPassengerActivity.callingIntent(getActivity(), trainScheduleBookingPassData));
+        }
     }
 
     private void removePaddingSortAndFilterSearch() {
