@@ -1,6 +1,7 @@
 package com.tokopedia.transaction.orders.orderlist.view.fragment;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -55,11 +56,13 @@ public class OrderListFragment extends BasePresenterFragment<OrderListContract.P
     private ArrayList<Order> mOrderDataList;
     private String mOrderCategory;
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        initInjector();
-        presenter.attachView(this);
+    public static Fragment newInstance(int orderCategory) {
+        Fragment fragment = new OrderListFragment();
+        Bundle arg = new Bundle();
+        arg.putInt(ORDER_CATEGORY, orderCategory);
+        fragment.setArguments(arg);
+
+        return fragment;
     }
 
     @Override
@@ -90,8 +93,10 @@ public class OrderListFragment extends BasePresenterFragment<OrderListContract.P
 
     @Override
     protected void initialPresenter() {
+        presenter.attachView(this);
     }
 
+    @Override
     protected void initInjector() {
         orderListComponent = DaggerOrderListComponent.builder()
                 .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
@@ -292,8 +297,8 @@ public class OrderListFragment extends BasePresenterFragment<OrderListContract.P
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
+    public void onDestroy() {
+        super.onDestroy();
         presenter.detachView();
     }
 
@@ -303,4 +308,3 @@ public class OrderListFragment extends BasePresenterFragment<OrderListContract.P
             TransactionPurchaseRouter.startWebViewActivity(getActivity(), uri);
     }
 }
-
