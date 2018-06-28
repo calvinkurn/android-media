@@ -243,7 +243,7 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
             int defaultRadius = context.getResources().getDimensionPixelSize(R.dimen.dp_4);
             Glide.with(context)
                     .load(url)
-                    .bitmapTransform(new RoundedCornersTransformation(context, defaultRadius, 0))
+                    //.bitmapTransform(new RoundedCornersTransformation(context, defaultRadius, 0))
                     .dontAnimate()
                     .placeholder(R.drawable.loading_page)
                     .error(R.drawable.error_drawable)
