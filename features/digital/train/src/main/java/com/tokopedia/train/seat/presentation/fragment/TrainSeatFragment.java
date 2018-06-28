@@ -24,6 +24,7 @@ import com.tokopedia.train.seat.presentation.viewmodel.TrainSeatPassengerViewMod
 import com.tokopedia.train.seat.presentation.viewmodel.TrainSeatViewModel;
 import com.tokopedia.train.seat.presentation.viewmodel.TrainWagonViewModel;
 import com.tokopedia.train.seat.presentation.widget.CountdownTimeView;
+import com.tokopedia.train.seat.presentation.widget.TrainSeatPagerIndicator;
 import com.tokopedia.train.seat.presentation.widget.TrainSeatPassengerAndWagonView;
 
 import java.util.ArrayList;
@@ -43,6 +44,7 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
     private LinearLayout container;
     private ProgressBar progressBar;
     private Button submitButton;
+    private TrainSeatPagerIndicator pagerIndicator;
 
     private TrainWagonsPagerAdapter adapter;
 
@@ -89,12 +91,20 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
         container = (LinearLayout) view.findViewById(R.id.container);
         progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
         wagonViewPager = (ViewPager) view.findViewById(R.id.vp_wagon);
+        pagerIndicator = (TrainSeatPagerIndicator) view.findViewById(R.id.seat_pager_indicator);
+        pagerIndicator.setListener(new TrainSeatPagerIndicator.ActionListener() {
+            @Override
+            public void onIndicatorClicked(int position) {
+                trainSeatHeader.renderWagon(wagons.get(position).getWagonCode());
+                wagonViewPager.setCurrentItem(position);
+            }
+        });
         submitButton = (Button) view.findViewById(R.id.btn_submit);
 
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                presenter.onSubmitButtonClicked();
             }
         });
     }
@@ -113,18 +123,20 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
     }
 
     @Override
-    public void showGetSeatMapLoading() {
+    public void showLoading() {
         progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
-    public void hideGetSeatMapLoading() {
+    public void hideLoading() {
         progressBar.setVisibility(View.GONE);
     }
 
     @Override
     public void renderWagon(List<TrainWagonViewModel> trainWagonViewModels) {
         wagons = trainWagonViewModels;
+        pagerIndicator.renderView(trainWagonViewModels.size());
+        pagerIndicator.setCurrentIndicator(0);
         trainSeatHeader.renderWagon(trainWagonViewModels.get(0).getWagonCode());
         trainSeatHeader.renderPassenger(passengers);
 
@@ -189,7 +201,24 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
     }
 
     @Override
+    public List<TrainSeatPassengerViewModel> getPassengers() {
+        return passengers;
+    }
+
+    @Override
+    public List<TrainSeatPassengerViewModel> getOriginalPassenger() {
+        return originPassengers;
+    }
+
+    @Override
+    public void navigateToReview(List<TrainSeatPassengerViewModel> originalPassenger) {
+
+    }
+
+    @Override
     public void onWagonClicked() {
+        presenter.onWagonChooserClicked();
+
         Menus menus = new Menus(getActivity());
         String[] wagonsTitle = new String[wagons.size()];
         for (int i = 0; i < wagons.size(); i++) {
@@ -207,7 +236,9 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
         menus.setOnItemMenuClickListener(new Menus.OnItemMenuClickListener() {
             @Override
             public void onClick(Menus.ItemMenus itemMenus, int pos) {
+                trainSeatHeader.renderWagon(wagons.get(pos).getWagonCode());
                 wagonViewPager.setCurrentItem(pos);
+                pagerIndicator.setCurrentIndicator(pos);
                 menus.dismiss();
             }
         });
