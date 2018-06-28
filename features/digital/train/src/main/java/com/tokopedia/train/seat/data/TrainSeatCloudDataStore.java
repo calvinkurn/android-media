@@ -33,7 +33,7 @@ public class TrainSeatCloudDataStore {
 
     public Observable<List<TrainSeatMapEntity>> getData(Specification specification) {
         Gson g = new Gson();
-        Type dataResponseType = new TypeToken<DataResponse<List<TrainSeatMapEntity>>>() {
+        Type dataResponseType = new TypeToken<DataResponse<TrainSeatsEntity>>() {
         }.getType();
         DataResponse<TrainSeatsEntity> dataResponse = g.fromJson(loadJSONFromAsset(), dataResponseType);
 

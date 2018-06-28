@@ -40,6 +40,7 @@ import com.tokopedia.train.search.presentation.contract.TrainSearchContract;
 import com.tokopedia.train.search.presentation.model.FilterSearchData;
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
 import com.tokopedia.train.search.presentation.presenter.TrainSearchPresenter;
+import com.tokopedia.train.seat.presentation.activity.TrainSeatActivity;
 import com.tokopedia.usecase.RequestParams;
 
 import java.net.UnknownHostException;
@@ -341,6 +342,8 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
     public void onDetailClicked(TrainScheduleViewModel trainScheduleViewModel, int adapterPosition) {
         //TODO : detail clicked go to detail trip
         Toast.makeText(getActivity(), "detail " + trainScheduleViewModel.getTrainName(), Toast.LENGTH_SHORT).show();
+
+        startActivity(TrainSeatActivity.getCallingIntent(getActivity()));
     }
 
     private void removePaddingSortAndFilterSearch() {

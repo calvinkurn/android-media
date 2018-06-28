@@ -20,6 +20,7 @@ import com.tokopedia.train.seat.presentation.contract.TrainSeatContract;
 import com.tokopedia.train.seat.presentation.fragment.listener.TrainSeatListener;
 import com.tokopedia.train.seat.presentation.fragment.viewpager.TrainWagonsPagerAdapter;
 import com.tokopedia.train.seat.presentation.presenter.TrainSeatPresenter;
+import com.tokopedia.train.seat.presentation.viewmodel.TrainSeatPassengerSeatViewModel;
 import com.tokopedia.train.seat.presentation.viewmodel.TrainSeatPassengerViewModel;
 import com.tokopedia.train.seat.presentation.viewmodel.TrainSeatViewModel;
 import com.tokopedia.train.seat.presentation.viewmodel.TrainWagonViewModel;
@@ -61,9 +62,31 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // TODO : assign passengers from soft book responses
-        passengers = new ArrayList<>();
+        passengers = buildDummyPassenger();
         originPassengers = passengers;
         expiredTime = "2019-02-20T17:35:00Z";
+    }
+
+    private List<TrainSeatPassengerViewModel> buildDummyPassenger() {
+        List<TrainSeatPassengerViewModel> passengerViewModels = new ArrayList<>();
+        String[] seating = new String[]{"A", "B", "C", "D", "E"};
+        for (int i = 0; i < 5; i++) {
+            TrainSeatPassengerViewModel passengerViewModel = new TrainSeatPassengerViewModel();
+            passengerViewModel.setNumber(i + "");
+            passengerViewModel.setName("John " + i);
+            passengerViewModel.setBirthdate("09-29-1994");
+            passengerViewModel.setPaxType(1);
+            passengerViewModel.setPhone("08574722168");
+            passengerViewModel.setSalutationId(1);
+            TrainSeatPassengerSeatViewModel seatViewModel = new TrainSeatPassengerSeatViewModel();
+            seatViewModel.setColumn(seating[i % 5]);
+            seatViewModel.setRow(String.valueOf(i + 1));
+            seatViewModel.setWagonCode("EKO_AC-1");
+            seatViewModel.setClassSeat("C");
+            passengerViewModel.setSeatViewModel(seatViewModel);
+            passengerViewModels.add(passengerViewModel);
+        }
+        return passengerViewModels;
     }
 
     @Override
@@ -107,6 +130,7 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
                 presenter.onSubmitButtonClicked();
             }
         });
+        trainSeatHeader.setActionListener(this);
     }
 
     @Override
@@ -140,7 +164,7 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
         trainSeatHeader.renderWagon(trainWagonViewModels.get(0).getWagonCode());
         trainSeatHeader.renderPassenger(passengers);
 
-        adapter = new TrainWagonsPagerAdapter(getChildFragmentManager(), trainWagonViewModels, new TrainWagonFragment.OnFragmentInteraction() {
+        adapter = new TrainWagonsPagerAdapter(getFragmentManager(), trainWagonViewModels, new TrainWagonFragment.OnFragmentInteraction() {
             @Override
             public List<TrainSeatPassengerViewModel> getPassengers() {
                 return passengers;
@@ -160,9 +184,25 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
                 }
             }
         });
+        wagonViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
-        wagonViewPager.setOffscreenPageLimit(1);
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                int a = position;
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+        wagonViewPager.setOffscreenPageLimit(wagons.size());
         wagonViewPager.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -193,6 +233,7 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
     @Override
     public void renderExpireDateCountdown(Date expireDate) {
         countdownTimeView.setExpiredDate(expireDate);
+        countdownTimeView.start();
     }
 
     @Override

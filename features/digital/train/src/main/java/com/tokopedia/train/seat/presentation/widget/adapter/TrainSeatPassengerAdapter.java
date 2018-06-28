@@ -49,7 +49,7 @@ public class TrainSeatPassengerAdapter extends RecyclerView.Adapter<TrainSeatPas
         }
 
         public void bind(TrainSeatPassengerViewModel viewModel) {
-            passengerNumberTextView.setText(viewModel.getPassengerNumber());
+            passengerNumberTextView.setText("P" + viewModel.getPassengerNumber());
             nameTextView.setText(viewModel.getName());
             seatTextView.setText(String.format("%s - %s%s", viewModel.getSeatViewModel().getWagonCode(), viewModel.getSeatViewModel().getRow(), viewModel.getSeatViewModel().getColumn()));
         }

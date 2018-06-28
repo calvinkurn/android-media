@@ -113,6 +113,7 @@ public class TrainWagonFragment extends BaseDaggerFragment implements TrainSeatA
         adapter.setSelecteds(transformToSelectedSeat(interaction.getPassengers()));
         adapter.setListener(this);
         seatsRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), columnCount));
+//        seatsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         seatsRecyclerView.setAdapter(adapter);
     }
 

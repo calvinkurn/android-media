@@ -53,7 +53,7 @@ public class TrainSeatPresenter extends BaseDaggerPresenter<TrainSeatContract.Vi
                 getView().showPage();
                 getView().hideLoading();
                 getView().renderWagon(trainWagonViewModels);
-                getView().renderExpireDateCountdown(TrainDateUtil.stringToDate(TrainDateUtil.FORMAT_DATE_API, getView().getExpireDate()));
+                getView().renderExpireDateCountdown(TrainDateUtil.stringToDate(TrainDateUtil.FORMAT_DATE_API_DETAIL, getView().getExpireDate()));
             }
         });
     }
