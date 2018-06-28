@@ -50,7 +50,7 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
 
     public static final int SHAKE_SHAKE_END_TIME_MS = 800;
     public static final int SHAKE_SHAKE_WAIT_FOR_SECOND = 1000;
-    public static final int SHAKE_SHAKE_CONTINUE_LONG_TIME_SECOND = 3000;
+    public static final int SHAKE_SHAKE_CONTINUE_LONG_TIME_SECOND = 5000;
     private boolean  isShakeShakeEnable = true;
 
     public static String sTopActivity = null;
