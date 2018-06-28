@@ -81,6 +81,7 @@ public class CartMapper implements ICartMapper {
             cartItemDataOrigin.setProductId(String.valueOf(data.getProduct().getProductId()));
             cartItemDataOrigin.setPriceFormatted(data.getProduct().getProductPriceFmt());
             cartItemDataOrigin.setPricePlan(data.getProduct().getProductPrice());
+            cartItemDataOrigin.setPricePlanInt(data.getProduct().getProductPrice());
             cartItemDataOrigin.setPriceCurrency(data.getProduct().getProductPriceCurrency());
             cartItemDataOrigin.setPreOrder(data.getProduct().getIsPreorder() == 1);
             cartItemDataOrigin.setFavorite(false);

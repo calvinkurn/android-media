@@ -1661,7 +1661,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                 new EnhancedECommerceProductCartMapData();
         enhancedECommerceProductCartMapData.setProductName(productData.getInfo().getProductName());
         enhancedECommerceProductCartMapData.setProductID(String.valueOf(productData.getInfo().getProductId()));
-        enhancedECommerceProductCartMapData.setPrice(productData.getInfo().getProductPrice());
+        enhancedECommerceProductCartMapData.setPrice(String.valueOf(productData.getInfo().getProductPriceUnformatted()));
         enhancedECommerceProductCartMapData.setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
         String categoryLevelStr = generateCategoryStringLevel(productData.getBreadcrumb());
         enhancedECommerceProductCartMapData.setCartId(addToCartResult.getCartId());
