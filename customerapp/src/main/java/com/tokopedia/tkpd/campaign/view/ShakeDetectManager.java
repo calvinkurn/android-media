@@ -11,7 +11,9 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
+import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
@@ -48,7 +50,7 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
 
     public static final int SHAKE_SHAKE_END_TIME_MS = 800;
     public static final int SHAKE_SHAKE_WAIT_FOR_SECOND = 1000;
-    public static final int SHAKE_SHAKE_CONTINUE_LONG_TIME_SECOND = 2000;
+    public static final int SHAKE_SHAKE_CONTINUE_LONG_TIME_SECOND = 3000;
     private boolean  isShakeShakeEnable = true;
 
     public static String sTopActivity = null;
@@ -120,6 +122,7 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
 
     @Override
     public void hearShake() {
+        Log.e("shakeshake","hear Shake");
         sTopActivity = mOpenedActivity;
         /*if(mShakeEnabler.hasMessages(MESSAGE_ENABLE_SHAKE)) {
             mShakeEnabler.removeMessages(MESSAGE_ENABLE_SHAKE);
@@ -170,6 +173,7 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
                    }
                    break;
                case MESSAGE_SHAKE_SHAKE_CONTINUE_LONG:
+                   Log.e("shakeshake","Long Shake Detected");
                    startShake(true);
                    break;
 

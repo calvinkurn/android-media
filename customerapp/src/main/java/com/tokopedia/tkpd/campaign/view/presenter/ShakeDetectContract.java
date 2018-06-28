@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.campaign.view.presenter;
 
+import android.app.Activity;
 import android.content.Intent;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
@@ -35,6 +36,8 @@ public interface ShakeDetectContract {
         void showDisableShakeShakeVisible();
 
         public void setCancelButtonVisible();
+
+        public Activity getActivity();
     }
 
     public interface Presenter extends CustomerPresenter<View>{

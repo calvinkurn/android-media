@@ -6,6 +6,7 @@ import android.os.Vibrator;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseDataNullException;
 import com.tokopedia.core.network.exception.ServerErrorException;
@@ -55,7 +56,7 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
     public static final String FIREBASE_DOUBLE_SHAKE_CONFIG_KEY = "app_double_shake_enabled";
     public static final String SHAKE_SHAKE_ERROR ="Oops! Kejutannya masih dibungkus. Yuk, shake lagi handphone-mu";
 
-    public final static int SHAKE_SHAKE_WAIT_TIME_SEC = 6;
+    public final static int SHAKE_SHAKE_WAIT_TIME_SEC = 5;
     Subscription subscription = null;
 
     @Inject
@@ -80,14 +81,13 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
         if(getView().isLongShakeTriggered()) {
             getView().setInvisibleCounter();
             getView().showDisableShakeShakeVisible();
+            vibrate();
             return;
         }
         else if (!isFirstShake && isDoubleShakeShakeEnable()) {
             isFirstShake = true;
             waitForSecondShake();
-            Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-            // Vibrate for 500 milliseconds
-                v.vibrate(500);
+            vibrate();
 
         } else {
             if(shakeUseCase != null)
@@ -164,10 +164,10 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
                     Intent intent = new Intent(ShakeDetectManager.ACTION_SHAKE_SHAKE_SYNCED);
                     intent.putExtra("isSuccess", true);
                     intent.putExtra("data", s.getUrl());
-                    Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+
                     // Vibrate for 500 milliseconds
                     if (s.getVibrate() == 1)
-                        v.vibrate(500);
+                        vibrate();
                     getView().sendBroadcast(intent);
                     CampaignTracking.eventShakeShake("success", ShakeDetectManager.sTopActivity, "", s.getUrl());
 
@@ -227,7 +227,13 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
     public void onDisableShakeShake() {
         //disable the shake shake
         ShakeDetectManager.getShakeDetectManager().disableShakeShake();
+        getView().getActivity().startActivity(ManageGeneral.getCallingIntent(getView().getActivity(), ManageGeneral.TAB_POSITION_MANAGE_APP));
         getView().finish();
+    }
+
+    public void vibrate() {
+        Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+        v.vibrate(500);
     }
 
     @Override

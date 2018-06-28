@@ -51,6 +51,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="@dimen/dp_30"
+                android:layout_marginRight="@dimen/dp_30"
                 android:gravity="center"
                 android:text="Kejutannya masih dibungkus.
 Yuk, shake lagi handphone-mu."
@@ -115,6 +117,8 @@ Yuk, shake lagi handphone-mu."
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="@dimen/dp_30"
+                android:layout_marginRight="@dimen/dp_30"
                 android:gravity="center"
                 android:text="Sepertinya sistem Shake di hp-mu
 sedang lelah. Istirahat dulu yuk!"

@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.campaign.view.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -168,6 +169,7 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
     public void showErrorGetInfo(String message) {
         shakeShakeErrorMsg.setText(message);
         layoutshakeShakeErrorMsg.setVisibility(View.VISIBLE);
+        cancelButton.setVisibility(View.GONE);
        /* AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getString(R.string.title_dialog_wrong_scan));
         builder.setMessage(message);
@@ -246,6 +248,11 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
     @Override
     public void setCancelButtonVisible() {
         cancelButton.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public Activity getActivity() {
+        return this;
     }
 
     @Override
