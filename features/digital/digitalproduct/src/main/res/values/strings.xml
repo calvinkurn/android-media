@@ -98,7 +98,7 @@
     <string name="status_failed_label">Failed</string>
 
     <string name="emoney_card_info_label_card_number">Nomor Kartu:</string>
-    <string name="emoney_card_info_label_your_balance">Saldo Anda:</string>
+    <string name="emoney_card_info_label_card_balance">Saldo Kartu:</string>
     <string name="emoney_button_check_balance">CEK SALDO</string>
     <string name="emoney_tap_card_instruction_title">Tempelkan Kartu Anda</string>
     <string name="emoney_tap_card_instruction_message">Tempelkan Kartu pada bagian belakang Smartphone Anda.</string>

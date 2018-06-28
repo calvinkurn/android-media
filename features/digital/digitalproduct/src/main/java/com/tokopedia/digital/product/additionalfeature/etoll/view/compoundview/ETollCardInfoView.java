@@ -91,7 +91,7 @@ public class ETollCardInfoView extends FrameLayout {
     }
 
     public void showLoading() {
-        textLabelBalance.setText("Saldo Anda:");
+        getResources().getString(R.string.emoney_card_info_label_card_balance);
         textLabelBalance.measure(0, 0);
         ViewGroup.LayoutParams paramsTextLabelBalance = textLabelBalance.getLayoutParams();
         paramsTextLabelBalance.width = textLabelBalance.getMeasuredWidth();
@@ -116,19 +116,16 @@ public class ETollCardInfoView extends FrameLayout {
         ((LoaderTextView) findViewById(R.id.text_date)).resetLoader();
     }
 
-    public void stopLoading() {
-
-    }
-
     public String getCardNumber() {
         return cardInfo.getCardNumber();
     }
 
     public void removeCardInfo() {
+        textLabelCardNumber.setText(getResources().getString(R.string.emoney_card_info_label_card_number));
         textCardNumber.setText(getResources().getString(R.string.card_info_is_not_available_yet));
         textCardNumber.setTextColor(getResources().getColor(R.color.grey_300));
         textCardNumber.setTypeface(Typeface.DEFAULT);
-        textLabelBalance.setText(getResources().getString(R.string.emoney_card_info_label_your_balance));
+        textLabelBalance.setText(getResources().getString(R.string.emoney_card_info_label_card_balance));
         textRemainingBalance.setText(getResources().getString(R.string.card_info_is_not_available_yet));
         textRemainingBalance.setTextColor(getResources().getColor(R.color.grey_300));
         textDate.setText("");

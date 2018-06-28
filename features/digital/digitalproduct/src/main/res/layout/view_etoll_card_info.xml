@@ -96,7 +96,7 @@
                         app:height_weight="1"
                         app:corners="16"
                         android:layout_marginBottom="@dimen/dp_6"
-                        android:text="@string/emoney_card_info_label_your_balance"/>
+                        android:text="@string/emoney_card_info_label_card_balance"/>
 
                     <com.elyeproj.loaderviewlibrary.LoaderTextView
                         android:layout_width="wrap_content"
