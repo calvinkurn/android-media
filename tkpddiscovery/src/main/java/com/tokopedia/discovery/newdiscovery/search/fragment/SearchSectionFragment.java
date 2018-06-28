@@ -35,6 +35,7 @@ import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
 import com.tokopedia.discovery.newdiscovery.base.RedirectionListener;
 import com.tokopedia.discovery.newdiscovery.search.SearchActivity;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.ProductListFragment;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.itemdecoration.ProductItemDecoration;
 import com.tokopedia.discovery.newdynamicfilter.RevampedDynamicFilterActivity;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
@@ -74,6 +75,8 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     private RedirectionListener redirectionListener;
     private GridLayoutManager gridLayoutManager;
     private LinearLayoutManager linearLayoutManager;
+    protected ProductItemDecoration listItemDecoration;
+    protected ProductItemDecoration gridItemDecoration;
     private SwipeRefreshLayout refreshLayout;
     private boolean showBottomBar;
     public int spanCount;
@@ -154,6 +157,8 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         linearLayoutManager = new LinearLayoutManager(getActivity());
         gridLayoutManager = new GridLayoutManager(getActivity(), getSpanCount());
         gridLayoutManager.setSpanSizeLookup(onSpanSizeLookup());
+        listItemDecoration = new ProductItemDecoration(getContext().getResources().getDimensionPixelSize(R.dimen.dp_16), false);
+        gridItemDecoration = new ProductItemDecoration(getContext().getResources().getDimensionPixelSize(R.dimen.dp_16), true);
     }
 
     @Override

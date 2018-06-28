@@ -225,7 +225,7 @@ public class ProductFragment extends SearchSectionFragment
         topAdsRecyclerAdapter.setConfig(topAdsConfig);
         topAdsRecyclerAdapter.setSpanSizeLookup(onSpanSizeLookup());
         recyclerView.setAdapter(topAdsRecyclerAdapter);
-        recyclerView.addItemDecoration(new ProductItemDecoration(getContext().getResources().getDimensionPixelSize(R.dimen.dp_16)));
+        recyclerView.addItemDecoration(gridItemDecoration);
         recyclerView.setBackgroundColor(getContext().getResources().getColor(R.color.white));
         topAdsRecyclerAdapter.setLayoutManager(getGridLayoutManager());
         topAdsRecyclerAdapter.setOnLoadListener(new TopAdsRecyclerAdapter.OnLoadListener() {
@@ -656,16 +656,22 @@ public class ProductFragment extends SearchSectionFragment
     @Override
     public void onChangeList() {
         topAdsRecyclerAdapter.setLayoutManager(getLinearLayoutManager());
+        recyclerView.removeItemDecoration(gridItemDecoration);
+        recyclerView.addItemDecoration(listItemDecoration);
     }
 
     @Override
     public void onChangeDoubleGrid() {
         topAdsRecyclerAdapter.setLayoutManager(getGridLayoutManager());
+        recyclerView.removeItemDecoration(listItemDecoration);
+        recyclerView.addItemDecoration(gridItemDecoration);
     }
 
     @Override
     public void onChangeSingleGrid() {
         topAdsRecyclerAdapter.setLayoutManager(getGridLayoutManager());
+        recyclerView.removeItemDecoration(listItemDecoration);
+        recyclerView.addItemDecoration(gridItemDecoration);
     }
 
     @Override
