@@ -481,7 +481,8 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public boolean isDigitalSmartcardEnabled() {
-        return remoteConfig.getBoolean(DIGITAL_SMARTCARD, false);
+        return true;
+//        return remoteConfig.getBoolean(DIGITAL_SMARTCARD, false);
     }
 
     @Override
