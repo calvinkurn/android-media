@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
@@ -14,6 +15,9 @@ import android.text.TextPaint;
 import android.text.style.ClickableSpan;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -38,6 +42,7 @@ import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.customView.LoginTextView;
+import com.tokopedia.core.customView.TextDrawable;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.profile.model.GetUserInfoDomainData;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
@@ -164,8 +169,8 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle
             savedInstanceState) {
+        setHasOptionsMenu(true);
         View view = inflater.inflate(R.layout.fragment_register_initial, parent, false);
-
         optionTitle = (TextView) view.findViewById(R.id.register_option_title);
         partialRegisterInputView = (PartialRegisterInputView) view.findViewById(R.id.register_input_view);
         registerContainer = (LinearLayout) view.findViewById(R.id.register_container);
@@ -185,6 +190,38 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initData();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.add(Menu.NONE, R.id.action_register, 0, "");
+        MenuItem menuItem = menu.findItem(R.id.action_register);
+        menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        if (getDraw() != null){
+            menuItem.setIcon(getDraw());
+        }
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    private Drawable getDraw() {
+        TextDrawable drawable = null;
+        if (getActivity() != null) {
+            drawable = new TextDrawable(getActivity());
+            drawable.setText(getResources().getString(R.string.login));
+            drawable.setTextColor(getResources().getColor(R.color.colorGreen));
+            drawable.setTextSize(14);
+        }
+        return drawable;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_register) {
+            goToLoginPage();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void initData() {
@@ -266,10 +303,15 @@ public class RegisterInitialFragment extends BaseDaggerFragment
             @Override
             public void onClick(View v) {
                 getActivity().finish();
-                Intent intent = LoginActivity.getCallingIntent(getActivity());
-                startActivity(intent);
+                goToLoginPage();
             }
         });
+    }
+
+    @Override
+    public void goToLoginPage(){
+        Intent intent = LoginActivity.getCallingIntent(getActivity());
+        startActivity(intent);
     }
 
     @Override
@@ -594,7 +636,8 @@ public class RegisterInitialFragment extends BaseDaggerFragment
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                goToRegisterEmailPage();
+                startActivity(LoginActivity.getIntentLoginFromRegister(getActivity(), email));
+                getActivity().finish();
             }
         });
         dialog.setBtnCancel(getString(R.string.already_registered_no));

@@ -183,7 +183,9 @@ public class RegisterEmailFragment extends BaseDaggerFragment
     }
 
     private void prepareView(View view) {
-        email.setText(getArguments().getString(RegisterEmailActivity.EXTRA_PARAM_EMAIL, ""));
+        if (getArguments() != null) {
+            email.setText(getArguments().getString(RegisterEmailActivity.EXTRA_PARAM_EMAIL, ""));
+        }
 
         String joinString = getString(com.tokopedia.core.R.string.detail_term_and_privacy) +
                 "<br>" + getString(com.tokopedia.core.R.string.link_term_condition) +

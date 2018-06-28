@@ -55,6 +55,8 @@ public interface RegisterInitial {
 
         void goToRegisterEmailPage();
 
+        void goToLoginPage();
+
         void goToRegisterEmailPageWithEmail(String email);
 
         void goToVerificationPhoneRegister(String phone);
