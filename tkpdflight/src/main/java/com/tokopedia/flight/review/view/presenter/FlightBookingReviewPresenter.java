@@ -203,7 +203,8 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
 
                     @Override
                     public void onNext(Boolean aBoolean) {
-
+                        getView().getCurrentBookingReviewModel().getVoucherViewModel()
+                                .setAutoapplySuccess(false);
                     }
                 }
         );

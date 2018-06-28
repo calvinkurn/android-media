@@ -81,6 +81,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
 
     public static final String HACHIKO_FLIGHT_KEY = "flight";
     public static final String EXTRA_NEED_TO_REFRESH = "EXTRA_NEED_TO_REFRESH";
+    public static final String EXTRA_COUPON_CANCELLED = "EXTRA_COUPON_CANCELLED";
     public static final String EXTRA_DATA_REVIEW = "EXTRA_DATA_REVIEW";
     public static final int RESULT_ERROR_VERIFY = 874;
     public static final String RESULT_ERROR_CODE = "RESULT_ERROR_CODE";
@@ -113,6 +114,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
     private ProgressDialog progressDialog;
     private FlightSimpleAdapter flightBookingReviewPriceAdapter;
     private boolean isPassengerInfoPageNeedToRefresh = false;
+    private boolean cancelAppliedCoupon = false;
 
 
     public static FlightBookingReviewFragment createInstance(FlightBookingReviewModel flightBookingReviewModel) {
@@ -393,6 +395,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
 
     @Override
     public void disableVoucherDiscount() {
+        cancelAppliedCoupon = true;
         flightBookingReviewPresenter.onCancelAppliedVoucher();
         updateFinalTotal(null, getCurrentBookingReviewModel());
     }
@@ -695,10 +698,14 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
         if (isPassengerInfoPageNeedToRefresh) {
             Intent intent = getActivity().getIntent();
             intent.putExtra(EXTRA_NEED_TO_REFRESH, isPassengerInfoPageNeedToRefresh);
+            intent.putExtra(EXTRA_COUPON_CANCELLED, cancelAppliedCoupon);
             getActivity().setResult(Activity.RESULT_CANCELED, intent);
             getActivity().finish();
         } else {
-            getActivity().onBackPressed();
+            Intent intent = getActivity().getIntent();
+            intent.putExtra(EXTRA_COUPON_CANCELLED, cancelAppliedCoupon);
+            getActivity().setResult(Activity.RESULT_CANCELED, intent);
+            getActivity().finish();
         }
     }
 

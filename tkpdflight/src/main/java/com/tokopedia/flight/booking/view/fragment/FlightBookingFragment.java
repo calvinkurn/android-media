@@ -335,6 +335,9 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
                             presenter.onUpdateCart();
                         }
                     }
+
+                    flightBookingCartData.getVoucherViewModel().setAutoapplySuccess(!data
+                            .getBooleanExtra(FlightBookingReviewFragment.EXTRA_COUPON_CANCELLED, false));
                 }
                 if (!isCountdownRestarted) countdownFinishTransactionView.start();
                 break;
