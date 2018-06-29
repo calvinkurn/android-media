@@ -149,7 +149,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     @Override
                                     public void onNext(CartShipmentAddressFormData cartShipmentAddressFormData) {
                                         getView().hideLoading();
-                                        getView().renderErrorDataHasChangedCheckShipmentPrepareCheckout(cartShipmentAddressFormData, true);
+                                        getView().renderErrorDataHasChangedAfterCheckout(cartShipmentAddressFormData);
                                     }
                                 }
                         )
@@ -499,7 +499,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public void setShipmentCartItemModelList(List<ShipmentCartItemModel> recipientCartItemList) {
-        this.shipmentCartItemModelList = recipientCartItemList;
+        if (shipmentCartItemModelList != null) {
+            this.shipmentCartItemModelList.clear();
+            this.shipmentCartItemModelList.addAll(recipientCartItemList);
+        } else {
+            this.shipmentCartItemModelList = recipientCartItemList;
+        }
     }
 
     @Override

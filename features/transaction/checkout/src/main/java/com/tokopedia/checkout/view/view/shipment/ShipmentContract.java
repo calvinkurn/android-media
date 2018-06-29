@@ -42,6 +42,8 @@ public interface ShipmentContract {
                 CartShipmentAddressFormData cartShipmentAddressFormData, boolean needToRefreshItemList
         );
 
+        void renderErrorDataHasChangedAfterCheckout(CartShipmentAddressFormData cartShipmentAddressFormData);
+
         void renderThanksTopPaySuccess(String message);
 
         void renderCheckoutCartSuccess(CheckoutData checkoutData);

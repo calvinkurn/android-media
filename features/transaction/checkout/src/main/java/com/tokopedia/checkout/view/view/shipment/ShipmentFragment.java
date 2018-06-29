@@ -329,6 +329,41 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
+    public void renderErrorDataHasChangedAfterCheckout(CartShipmentAddressFormData cartShipmentAddressFormData) {
+        List<ShipmentCartItemModel> newShipmentCartItemModelList = shipmentDataConverter.getShipmentItems(
+                cartShipmentAddressFormData
+        );
+        List<ShipmentCartItemModel> oldShipmentCartItemModelList = shipmentPresenter.getShipmentCartItemModelList();
+        for (ShipmentCartItemModel oldShipmentCartItemModel : oldShipmentCartItemModelList) {
+            for (ShipmentCartItemModel newShipmentCartItemModel : newShipmentCartItemModelList) {
+                if (oldShipmentCartItemModel.getShopId() == newShipmentCartItemModel.getShopId()) {
+                    newShipmentCartItemModel.setSelectedShipmentDetailData(oldShipmentCartItemModel.getSelectedShipmentDetailData());
+                    newShipmentCartItemModel.setStateDropshipperHasError(oldShipmentCartItemModel.isStateDropshipperHasError());
+                    newShipmentCartItemModel.setStateDropshipperDetailExpanded(oldShipmentCartItemModel.isStateDropshipperDetailExpanded());
+                }
+            }
+        }
+        shipmentPresenter.setShipmentCartItemModelList(newShipmentCartItemModelList);
+
+        String errorMessage = null;
+        if (!TextUtils.isEmpty(cartShipmentAddressFormData.getErrorMessage())) {
+            errorMessage = cartShipmentAddressFormData.getErrorMessage();
+        } else {
+            for (ShipmentCartItemModel shipmentCartItemModel : newShipmentCartItemModelList) {
+                if (!TextUtils.isEmpty(shipmentCartItemModel.getErrorMessage())) {
+                    errorMessage = shipmentCartItemModel.getErrorMessage();
+                }
+            }
+        }
+        if (TextUtils.isEmpty(errorMessage)) {
+            errorMessage = getActivity().getString(R.string.default_request_error_unknown_short);
+        }
+        shipmentAdapter.disableShipmentCheckoutButtonModel(errorMessage);
+        showToastError(errorMessage);
+        shipmentAdapter.notifyDataSetChanged();
+    }
+
+    @Override
     public void renderThanksTopPaySuccess(String message) {
         showToastNormal(getString(R.string.message_payment_succeded_transaction_module));
         startActivity(TransactionPurchaseRouter.createIntentTxSummary(getActivity()));
