@@ -23,13 +23,14 @@ public class TrainScheduleDetailViewModel implements Parcelable {
     private String arrivalDate;
     private String departureTime;
     private String arrivalTime;
-    private boolean isReturnTrip;
+    private boolean isOneWay;
     private String displayAdultFare;
     private long adultFare;
     private double totalAdultFare;
     private String displayInfantFare;
     private long infantFare;
     private double totalInfantFare;
+    private double totalPrice;
     private int numOfAdultPassenger;
     private int numOfInfantPassenger;
 
@@ -49,13 +50,14 @@ public class TrainScheduleDetailViewModel implements Parcelable {
         this.arrivalDate = builder.arrivalDate;
         this.departureTime = builder.departureTime;
         this.arrivalTime = builder.arrivalTime;
-        this.isReturnTrip = builder.isReturnTrip;
+        this.isOneWay = builder.isOneWay;
         this.displayAdultFare = builder.displayAdultFare;
         this.adultFare = builder.adultFare;
         this.totalAdultFare = builder.totalAdultFare;
         this.displayInfantFare = builder.displayInfantFare;
         this.infantFare = builder.infantFare;
         this.totalInfantFare = builder.totalInfantFare;
+        this.totalPrice = builder.totalPrice;
         this.numOfAdultPassenger = builder.numOfAdultPassenger;
         this.numOfInfantPassenger = builder.numOfInfantPassenger;
     }
@@ -76,13 +78,14 @@ public class TrainScheduleDetailViewModel implements Parcelable {
         arrivalDate = in.readString();
         departureTime = in.readString();
         arrivalTime = in.readString();
-        isReturnTrip = in.readByte() != 0;
+        isOneWay = in.readByte() != 0;
         displayAdultFare = in.readString();
         adultFare = in.readLong();
         totalAdultFare = in.readDouble();
         displayInfantFare = in.readString();
         infantFare = in.readLong();
         totalInfantFare = in.readDouble();
+        totalPrice = in.readDouble();
         numOfAdultPassenger = in.readInt();
         numOfInfantPassenger = in.readInt();
     }
@@ -159,8 +162,8 @@ public class TrainScheduleDetailViewModel implements Parcelable {
         return arrivalTime;
     }
 
-    public boolean isReturnTrip() {
-        return isReturnTrip;
+    public boolean isOneWay() {
+        return isOneWay;
     }
 
     public String getDisplayAdultFare() {
@@ -185,6 +188,10 @@ public class TrainScheduleDetailViewModel implements Parcelable {
 
     public double getTotalInfantFare() {
         return totalInfantFare;
+    }
+
+    public double getTotalPrice() {
+        return totalPrice;
     }
 
     public int getNumOfAdultPassenger() {
@@ -217,13 +224,14 @@ public class TrainScheduleDetailViewModel implements Parcelable {
         dest.writeString(arrivalDate);
         dest.writeString(departureTime);
         dest.writeString(arrivalTime);
-        dest.writeByte((byte) (isReturnTrip ? 1 : 0));
+        dest.writeByte((byte) (isOneWay ? 1 : 0));
         dest.writeString(displayAdultFare);
         dest.writeLong(adultFare);
         dest.writeDouble(totalAdultFare);
         dest.writeString(displayInfantFare);
         dest.writeLong(infantFare);
         dest.writeDouble(totalInfantFare);
+        dest.writeDouble(totalPrice);
         dest.writeInt(numOfAdultPassenger);
         dest.writeInt(numOfInfantPassenger);
     }
@@ -244,13 +252,14 @@ public class TrainScheduleDetailViewModel implements Parcelable {
         private String arrivalDate;
         private String departureTime;
         private String arrivalTime;
-        private boolean isReturnTrip;
+        private boolean isOneWay;
         private String displayAdultFare;
         private long adultFare;
         private double totalAdultFare;
         private String displayInfantFare;
         private long infantFare;
         private double totalInfantFare;
+        private double totalPrice;
         private int numOfAdultPassenger;
         private int numOfInfantPassenger;
 
@@ -329,8 +338,8 @@ public class TrainScheduleDetailViewModel implements Parcelable {
             return this;
         }
 
-        public Builder isReturnTrip(boolean val) {
-            this.isReturnTrip = val;
+        public Builder isOneWay(boolean val) {
+            this.isOneWay = val;
             return this;
         }
 
@@ -364,6 +373,11 @@ public class TrainScheduleDetailViewModel implements Parcelable {
             return this;
         }
 
+        public Builder totalPrice(double val) {
+            this.totalPrice = val;
+            return this;
+        }
+
         public Builder numOfAdultPassenger(int val) {
             this.numOfAdultPassenger = val;
             return this;
@@ -377,6 +391,7 @@ public class TrainScheduleDetailViewModel implements Parcelable {
         public TrainScheduleDetailViewModel build() {
             return new TrainScheduleDetailViewModel(this);
         }
+
     }
 
 }

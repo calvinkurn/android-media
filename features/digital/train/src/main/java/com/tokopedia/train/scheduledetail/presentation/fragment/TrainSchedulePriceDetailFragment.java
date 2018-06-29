@@ -50,14 +50,14 @@ public class TrainSchedulePriceDetailFragment extends Fragment {
     }
 
     public void showPrice(TrainScheduleDetailViewModel trainScheduleDetailViewModel) {
-        if (!trainScheduleDetailViewModel.isReturnTrip()) {
+        if (trainScheduleDetailViewModel.isOneWay()) {
             textTrip.setText(getString(R.string.train_departure_trip,
-                    trainScheduleDetailViewModel.getOriginCityCode(),
-                    trainScheduleDetailViewModel.getDestinationCityCode()));
+                    trainScheduleDetailViewModel.getOriginStationCode(),
+                    trainScheduleDetailViewModel.getDestinationStationCode()));
         } else {
             textTrip.setText(getString(R.string.train_return_trip,
-                    trainScheduleDetailViewModel.getOriginCityCode(),
-                    trainScheduleDetailViewModel.getDestinationCityCode()));
+                    trainScheduleDetailViewModel.getOriginStationCode(),
+                    trainScheduleDetailViewModel.getDestinationStationCode()));
 
         }
         if (trainScheduleDetailViewModel.getNumOfAdultPassenger() > 0) {
@@ -80,6 +80,9 @@ public class TrainSchedulePriceDetailFragment extends Fragment {
         } else {
             containerInfantPrice.setVisibility(View.GONE);
         }
+        textTotalPrice.setText(getString(R.string.train_label_currency,
+                CurrencyFormatUtil.getThousandSeparatorString(trainScheduleDetailViewModel.getTotalPrice(),
+                        false, 0).getFormattedString()));
     }
 
 }

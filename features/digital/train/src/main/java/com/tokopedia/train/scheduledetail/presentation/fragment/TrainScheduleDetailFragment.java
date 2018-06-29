@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.tkpdtrain.R;
-import com.tokopedia.train.common.util.TrainDateUtil;
 import com.tokopedia.train.scheduledetail.presentation.model.TrainScheduleDetailViewModel;
 
 /**
@@ -70,7 +69,7 @@ public class TrainScheduleDetailFragment extends BaseDaggerFragment {
     }
 
     public void showScheduleDetail(TrainScheduleDetailViewModel trainScheduleDetailViewModel) {
-        trip.setText(trainScheduleDetailViewModel.isReturnTrip() ? "Perjalan Pulang" : "Perjalanan Pergi");
+        trip.setText(trainScheduleDetailViewModel.isOneWay() ? "Perjalan Pergi" : "Perjalanan Pulang");
         trainName.setText(trainScheduleDetailViewModel.getTrainName());
         trainClass.setText(trainScheduleDetailViewModel.getTrainClass());
         date.setText(trainScheduleDetailViewModel.getDepartureDate());
