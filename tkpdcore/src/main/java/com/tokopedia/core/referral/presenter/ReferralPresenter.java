@@ -292,11 +292,19 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
             selectedApps[index++] = shareApps;
         }
         if (index < 4 && appInstalledOrNot(TkpdState.PackageName.Gplus)) {
-            shareApps = new ShareApps(TkpdState.PackageName.Gplus, R.drawable.ic_google_share);
+            shareApps = new ShareApps(TkpdState.PackageName.Gplus, R.drawable.ic_btn_g);
             selectedApps[index++] = shareApps;
         }
         if (index < 4 && appInstalledOrNot(TkpdState.PackageName.Twitter)) {
-            shareApps = new ShareApps(TkpdState.PackageName.Twitter, R.drawable.ic_twitter_share);
+            shareApps = new ShareApps(TkpdState.PackageName.Twitter, R.drawable.ic_btn_twitter);
+            selectedApps[index++] = shareApps;
+        }
+        if (index < 4 && appInstalledOrNot(TkpdState.PackageName.Gmail)) {
+            shareApps = new ShareApps(TkpdState.PackageName.Gmail, R.drawable.ic_btn_gmail);
+            selectedApps[index++] = shareApps;
+        }
+        if (index < 4 && appInstalledOrNot(TkpdState.PackageName.Sms)) {
+            shareApps = new ShareApps(TkpdState.PackageName.Sms, R.drawable.ic_btn_sms);
             selectedApps[index++] = shareApps;
         }
         if (index < 4 && appInstalledOrNot(TkpdState.PackageName.Pinterest)) {
@@ -329,7 +337,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
                                     getView().renderSharableApps(shareApp, index++);
                                 }
                             }
-                            ShareApps shareApp = new ShareApps("", R.drawable.ic_more_share);
+                            ShareApps shareApp = new ShareApps("", R.drawable.ic_btn_share_more);
                             getView().renderSharableApps(shareApp, 4);
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -390,6 +398,12 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
 
         } else if (shareApp.getPackageNmae().equalsIgnoreCase(TkpdState.PackageName.Twitter)) {
             shareTwitter(shareData);
+
+        } else if (shareApp.getPackageNmae().equalsIgnoreCase(TkpdState.PackageName.Gmail)) {
+            shareGmail(shareData);
+
+        } else if (shareApp.getPackageNmae().equalsIgnoreCase(TkpdState.PackageName.Sms)) {
+            shareSms(shareData);
 
         } else if (shareApp.getPackageNmae().equalsIgnoreCase(TkpdState.PackageName.Pinterest)) {
             sharePinterest(shareData);
@@ -472,12 +486,6 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
 
     }
 
-
-    public void shareMore(ShareData data) {
-
-
-    }
-
     public void shareLine(ShareData data) {
         sendAnalyticsToGTM(data.getType(), AppEventTracking.SOCIAL_MEDIA.LINE);
         data.setSource(AppEventTracking.SOCIAL_MEDIA.LINE);
@@ -502,10 +510,28 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
 
     }
 
-    public void shareGPlus(ShareData data) {
+    public void shareGmail(ShareData data) {
 
         data.setSource(AppEventTracking.SOCIAL_MEDIA.GOOGLE_PLUS);
         ShareSocmedHandler.ShareSpecific(data, activity, TkpdState.PackageName.Gplus,
+                TkpdState.PackageName.TYPE_IMAGE,
+                null, null);
+
+    }
+
+    public void shareSms(ShareData data) {
+
+        data.setSource(AppEventTracking.SOCIAL_MEDIA.GMAIL);
+        ShareSocmedHandler.ShareSpecific(data, activity, TkpdState.PackageName.Gmail,
+                TkpdState.PackageName.TYPE_IMAGE,
+                null, null);
+
+    }
+
+    public void shareGPlus(ShareData data) {
+
+        data.setSource(AppEventTracking.SOCIAL_MEDIA.SMS);
+        ShareSocmedHandler.ShareSpecific(data, activity, TkpdState.PackageName.Sms,
                 TkpdState.PackageName.TYPE_IMAGE,
                 null, null);
 

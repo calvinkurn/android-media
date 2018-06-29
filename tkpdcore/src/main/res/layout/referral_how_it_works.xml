@@ -22,7 +22,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_sm"
+        android:layout_marginTop="@dimen/margin_large"
         android:orientation="horizontal">
 
         <ImageView
@@ -30,24 +30,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:srcCompat="@drawable/ic_group_share"
-            app:layout_constraintTop_toBottomOf="@+id/tv_howitworks_title" />
+            app:srcCompat="@drawable/ic_group_share" />
 
         <ImageView
             android:id="@+id/img_help_tell"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:srcCompat="@drawable/ic_group_refer"
-            app:layout_constraintLeft_toRightOf="@+id/img_help_share" />
+            app:srcCompat="@drawable/ic_group_refer" />
 
         <ImageView
             android:id="@+id/img_help_recieve"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:srcCompat="@drawable/ic_group_tokocash"
-            app:layout_constraintLeft_toRightOf="@+id/img_help_tell" />
+            app:srcCompat="@drawable/ic_group_tokocash" />
     </LinearLayout>
 
     <LinearLayout
@@ -64,8 +61,7 @@
             android:gravity="center_horizontal"
             android:text="Bagi kode referral-mu"
             android:textColor="@color/black_54"
-            android:textSize="@dimen/fontvs"
-            app:layout_constraintTop_toBottomOf="@+id/img_help_share" />
+            android:textSize="@dimen/fontvs" />
 
         <TextView
             android:id="@+id/tv_help_tell"
@@ -75,8 +71,7 @@
             android:gravity="center_horizontal"
             android:text="Minta teman untuk mendaftar bertransaksi"
             android:textColor="@color/black_54"
-            android:textSize="@dimen/fontvs"
-            app:layout_constraintLeft_toRightOf="@+id/tv_help_share" />
+            android:textSize="@dimen/fontvs" />
 
         <TextView
             android:id="@+id/tv_help_recieve"
@@ -86,8 +81,7 @@
             android:gravity="center_horizontal"
             android:text="Dapatkan cashback ke Tokocash"
             android:textColor="@color/black_54"
-            android:textSize="@dimen/fontvs"
-            app:layout_constraintLeft_toRightOf="@+id/tv_help_tell" />
+            android:textSize="@dimen/fontvs" />
     </LinearLayout>
 
     <TextView
@@ -95,25 +89,23 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/rl_referral_code"
-        android:layout_marginTop="@dimen/margin_sm"
+        android:layout_marginTop="@dimen/margin_large"
         android:background="@color/green_btn"
         android:gravity="center_horizontal|center_vertical"
         android:padding="@dimen/margin_sm"
         android:text="@string/app_share_btn_label"
         android:textColor="@color/white"
-        android:textSize="@dimen/fonts"
-        app:layout_constraintTop_toBottomOf="@+id/tv_help_share" />
+        android:textSize="@dimen/fonts" />
 
     <TextView
         android:id="@+id/tv_referral_help_link"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_large"
+        android:layout_marginTop="@dimen/margin_sm"
         android:gravity="center_horizontal"
         android:lineSpacingExtra="@dimen/font_medium"
         android:padding="@dimen/padding_med"
         android:text="Apa itu TokoCash?"
         android:textColor="@color/green_btn"
-        android:textSize="@dimen/fontvs"
-        app:layout_constraintTop_toBottomOf="@+id/btn_app_share" />
+        android:textSize="@dimen/fontvs" />
 </LinearLayout>

@@ -3,9 +3,12 @@ package com.tokopedia.core.referral.adapter;
 import android.content.Context;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.widget.TextView;
 
 import com.tokopedia.core.R;
 
@@ -19,8 +22,10 @@ public class ReferralGuidePagerAdapter extends PagerAdapter {
     private LayoutInflater mInflater;
     private final int HOW_TO_USE_POSITION = 0;
     private final int TERMS_POSITION = 1;
+    private Context context;
 
     public ReferralGuidePagerAdapter(Context context) {
+        this.context = context;
         mInflater = LayoutInflater.from(context);
     }
 
@@ -43,9 +48,11 @@ public class ReferralGuidePagerAdapter extends PagerAdapter {
     public Object instantiateItem(ViewGroup view, final int position) {
         View layout = mInflater.inflate(mLayouts[position], view, false);
         if (position == HOW_TO_USE_POSITION) {
+            TextView btnShare = layout.findViewById(R.id.btn_app_share);
 
         } else {
-
+            WebView tnc = layout.findViewById(R.id.webview_referral_terms);
+            tnc.loadDataWithBaseURL(null, context.getResources().getString(R.string.referral_tnc), "text/html", "utf-8", null);
         }
         view.addView(layout);
         return layout;

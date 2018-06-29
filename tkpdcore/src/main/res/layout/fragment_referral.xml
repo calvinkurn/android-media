@@ -84,8 +84,8 @@
                             android:layout_alignParentRight="true"
                             android:layout_alignTop="@id/tv_referral_code"
                             android:background="@color/white"
-                            android:gravity="center_horizontal|center_vertical"
-                            android:paddingLeft="@dimen/margin_large"
+                            android:gravity="center_vertical"
+                            android:paddingLeft="@dimen/margin_vl"
                             android:paddingRight="@dimen/margin_large"
                             android:text="@string/menu_copy"
                             android:textColor="@color/black"
@@ -97,12 +97,12 @@
                             android:id="@+id/img_tick"
                             android:layout_width="24dp"
                             android:layout_height="24dp"
-                            android:layout_marginRight="5dp"
+                            android:layout_marginRight="@dimen/margin_vs"
                             android:visibility="gone"
-                            android:layout_marginLeft="@dimen/margin_vvvs"
+                            android:layout_marginLeft="@dimen/margin_med"
                             android:layout_marginBottom="@dimen/margin_small"
+                            android:layout_toRightOf="@+id/tv_referral_code"
                             android:src="@drawable/ic_tick"
-                            android:layout_alignLeft="@+id/btn_copy_referral_code"
                             android:layout_alignBottom="@+id/btn_copy_referral_code"
                             android:tint="@color/green_250" />
                     </RelativeLayout>
@@ -175,7 +175,7 @@
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:layout_marginRight="@dimen/margin_sm"
-                    app:srcCompat="@drawable/ic_group_referral" />
+                    android:src="@drawable/ic_group_referral" />
 
                 <TextView
                     android:id="@+id/referral_count"
@@ -217,7 +217,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/progress_bar_referral"
                 android:layout_marginBottom="@dimen/margin_sm"
-                android:text="Rp80.000,-"
+                android:text="Rp80.000,- /  Rp1.000.000"
                 android:textColor="@color/black_38"
                 android:textSize="12sp" />
 
@@ -237,7 +237,7 @@
 
             <android.support.design.widget.TabLayout
                 android:id="@+id/tab_referral_guide"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"

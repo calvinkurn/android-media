@@ -8,23 +8,7 @@
     <WebView
         android:id="@+id/webview_referral_terms"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"></WebView>
+        android:layout_height="wrap_content"></WebView>
 
-    <TextView
-        android:id="@+id/textView"
-        android:padding="@dimen/padding_med"
-        android:fontFamily="sans-serif"
-        android:text="Toppers akan mendapatkan bonus TokoCash Rp20.000 setelah Teman berhasil melakukan transaksi pertama via Aplikasi Tokopedia dengan menggunakan kode referral.
-Untuk mendapatkan bonus TokoCash, transaksi Teman harus berhasil, tidak boleh dibatalkan atau dikembalikan.
-Anda akan menerima bonus TokoCash dalam waktu maksimum 2x24 jam , terhitung sejak transaksi pertama yang dilakukan teman Anda berhasil.
-Apabila Anda berpartisipasi sebagai Toppers, bonus TokoCash akan diberikan untuk setiap referral yang berhasil. Artinya, bonus tidak langsung bertambah sesuai dengan jumlah Teman yang membuat akun di Tokopedia, karena bonus baru akan diberikan apabila Teman berhasil melakukan transaksi.
-Perlu kami informasikan bahwa nama yang Anda gunakan untuk membuat akun Tokopedia dapat ditambahkan ke dalam kode referral Anda.
-Dengan berpartisipasi, Anda setuju untuk:
-Mengirim kode referral hanya pada orang-orang yang Anda kenal; dan
-Tidak terlibat dalam kegiatan apapun yang dapat dianggap sebagai penipuan, pelanggaran privasi, atau spamming."
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:textColor="@color/black_54"
-        android:textSize="@dimen/fontvs" />
+
 </LinearLayout>
