@@ -162,6 +162,7 @@ public class TrainWagonFragment extends BaseDaggerFragment implements TrainSeatA
         int y = top > height ? top - height : top;
         popupWindow.showAtLocation(getView(), Gravity.CENTER, x, y);
 
+
         // dismiss the popup window when touched
         popupView.setOnTouchListener(new View.OnTouchListener() {
             @Override
