@@ -25,6 +25,7 @@ public class CartActivity extends BasePresenterActivity {
     }
 
 
+/*
     @DeepLink(Constants.Applinks.CART)
     public static Intent getCallingIntent(Context context, Bundle extras) {
         Intent intent = new Intent(context, CartActivity.class).putExtras(extras);
@@ -35,6 +36,7 @@ public class CartActivity extends BasePresenterActivity {
         }
         return intent;
     }
+*/
 
     @Override
     protected void setupURIPass(Uri data) {
