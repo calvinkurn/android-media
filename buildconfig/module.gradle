@@ -10,8 +10,16 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
         testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
     }
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+        test.java.srcDirs += 'src/test/kotlin'
+        androidTest.java.srcDirs += 'src/androidTest/kotlin'
+    }
+
     buildTypes {
         debug{
             testCoverageEnabled true
@@ -24,6 +32,12 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
     }
 }
 
@@ -55,9 +69,14 @@ dependencies {
     implementation rootProject.ext.networkDependencies.loggingInterceptor
     implementation rootProject.ext.miscDependencies.gson
 
+    androidTestImplementation(rootProject.ext.testDependencies.androidTestRunner) {
+        exclude module: 'support-annotations'
+    }
     androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    androidTestImplementation rootProject.ext.testDependencies.mockitorCore,     { exclude group: 'net.bytebuddy' } // DexMaker has it"s own MockMaker
+    androidTestImplementation rootProject.ext.testDependencies.dexMakerMockito, { exclude group: 'net.bytebuddy' } // DexMaker has it"s own MockMaker
     testImplementation rootProject.ext.testDependencies.mockitorCore
     testImplementation rootProject.ext.testDependencies.junit
 }

@@ -1392,4 +1392,9 @@ public abstract class SellerRouterApplication extends MainApplication
     public Interceptor getAuthInterceptor() {
         return new TkpdAuthInterceptor();
     }
+
+    @Override
+    public Intent getOrderListIntent(Context context) {
+        return null;
+    }
 }

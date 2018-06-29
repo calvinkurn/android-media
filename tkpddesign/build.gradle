@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'kotlin-android'
 
 buildscript {
     repositories {
@@ -26,6 +27,10 @@ dependencies {
     }
 
     implementation rootProject.ext.networkDependencies.glide
+
+    testImplementation "org.robolectric:robolectric:3.8"
+    androidTestImplementation rootProject.ext.testDependencies.mockitorCore
+
 }
 
 apply from: '../publish_local.gradle'
