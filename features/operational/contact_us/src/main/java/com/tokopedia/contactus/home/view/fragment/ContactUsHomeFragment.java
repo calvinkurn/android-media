@@ -35,6 +35,7 @@ import com.tokopedia.contactus.home.view.customview.ArticleTextView;
 import com.tokopedia.contactus.home.view.presenter.ContactUsHomeContract;
 import com.tokopedia.contactus.home.view.presenter.ContactUsHomePresenter;
 import com.tokopedia.contactus.inboxticket.activity.InboxTicketActivity;
+import com.tokopedia.contactus.inboxticket2.view.activity.InboxListActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
 
@@ -112,7 +113,7 @@ public class ContactUsHomeFragment extends BaseDaggerFragment
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == R.id.action_inbox) {
-            startActivity(new Intent(getContext(), InboxTicketActivity.class));
+            startActivity(new Intent(getContext(), InboxListActivity.class));
             return true;
         }
         return super.onOptionsItemSelected(item);

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="filterarray">
+        <item>Semua</item>
+        <!--<item>Belum dibaca</item>-->
+        <!--<item>Belum dinilai</item>-->
+        <item>Dalam proses</item>
+        <!--<item>Sudah dibaca</item>-->
+        <item>Ditutup</item>
+    </string-array>
+</resources>

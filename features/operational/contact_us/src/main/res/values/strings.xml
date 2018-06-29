@@ -49,5 +49,9 @@
     <string name="more_items">+ %1$d barang lainnya</string>
     <string name="belum_ada_transaksi">Belum Ada Transaksi</string>
     <string name="segera_laporkan">Segera laporkan jika menemukan kendala seputar transaksi di Tokopedia</string>
+    <string name="type_here">Tulis pesan</string>
+    <string name="on_going">Dalam Proses</string>
+    <string name="closed">Ditutup</string>
+    <string name="need_rating">Beri Penilaian</string>
 
 </resources>

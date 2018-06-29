@@ -1,0 +1,275 @@
+package com.tokopedia.contactus.inboxticket2.view.presenter;
+
+import android.content.Intent;
+import android.support.design.widget.BottomSheetDialogFragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
+import android.view.MenuItem;
+import android.view.View;
+
+import com.google.gson.reflect.TypeToken;
+import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.common.network.data.model.RestResponse;
+import com.tokopedia.contactus.R;
+import com.tokopedia.contactus.inboxticket.activity.InboxTicketDetailActivity;
+import com.tokopedia.contactus.inboxticket2.domain.TicketListResponse;
+import com.tokopedia.contactus.inboxticket2.domain.TicketsItem;
+import com.tokopedia.contactus.inboxticket2.domain.usecase.GetTicketListUseCase;
+import com.tokopedia.contactus.inboxticket2.view.adapter.InboxFilterAdapter;
+import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract;
+import com.tokopedia.contactus.inboxticket2.view.contract.InboxListContract;
+import com.tokopedia.contactus.inboxticket2.view.customview.CustomEditText;
+import com.tokopedia.contactus.inboxticket2.view.fragment.FilterBottomFragment;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
+import rx.Subscriber;
+
+/**
+ * Created by pranaymohapatra on 19/06/18.
+ */
+
+public class InboxListPresenterImpl
+        implements InboxListContract.InboxListPresenter, CustomEditText.Listener {
+
+    private InboxListContract.InboxListView mView;
+    private GetTicketListUseCase mUseCase;
+    private List<String> filterList;
+    private List<TicketsItem> originalList;
+    private final int ALL = 0;
+    private final int UNREAD = 99;
+    private final int NOTRATED = 98;
+    private final int INPROCESS = 1;
+    private final int READ = 97;
+    private final int CLOSED = 2;
+    private boolean isLoading;
+    private boolean isLastPage;
+    private final int PAGE_SIZE = 10;
+    private InboxFilterAdapter filterAdapter;
+    private boolean fromFilter;
+    private String nextUrl;
+
+    public InboxListPresenterImpl(GetTicketListUseCase useCase) {
+        mUseCase = useCase;
+        originalList = new ArrayList<>();
+    }
+
+    @Override
+    public void attachView(InboxBaseContract.InboxBaseView view) {
+        mView = (InboxListContract.InboxListView) view;
+        filterList = new ArrayList<>(Arrays.asList(mView.getActivity().getResources().getStringArray(R.array.filterarray)));
+        getTicketList();
+    }
+
+    private void getTicketList() {
+        mView.showProgressBar();
+        mUseCase.setUrl("");
+        mUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.d("ONERROR", e.getLocalizedMessage());
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                Type token = new TypeToken<DataResponse<TicketListResponse>>() {
+                }.getType();
+                RestResponse res1 = typeRestResponseMap.get(token);
+                DataResponse ticketListResponse = res1.getData();
+                TicketListResponse ticketListResponse1 = (TicketListResponse) ticketListResponse.getData();
+                if (ticketListResponse1 != null && !ticketListResponse1.getTickets().isEmpty()) {
+                    mView.toggleEmptyLayout(View.GONE);
+                    originalList.clear();
+                    originalList.addAll(ticketListResponse1.getTickets());
+                    nextUrl = ticketListResponse1.getNextPage();
+                    isLastPage = !(nextUrl != null && !nextUrl.isEmpty() && nextUrl.length() > 0);
+                    mView.renderTicketList(originalList);
+                    mView.showFilter();
+                } else if (fromFilter) {
+                    originalList.clear();
+                    mView.toggleEmptyLayout(View.VISIBLE);
+                    mView.showFilter();
+                } else {
+                    mView.toggleEmptyLayout(View.VISIBLE);
+                    mView.hideFilter();
+                }
+                mView.hideProgressBar();
+            }
+        });
+    }
+
+    @Override
+    public void detachView() {
+
+    }
+
+    @Override
+    public void onClickFilter() {
+        mView.showBottomFragment();
+    }
+
+    @Override
+    public void setFilter(int position) {
+        fromFilter = true;
+        switch (position) {
+            case ALL:
+                mUseCase.setQueryMap(0, 0, 0);
+                getTicketList();
+                filterAdapter.setSelected(ALL);
+                break;
+            case UNREAD:
+                break;
+            case NOTRATED:
+                break;
+            case INPROCESS:
+                mUseCase.setQueryMap(0, 0, 1);
+                getTicketList();
+                break;
+            case READ:
+                break;
+            case CLOSED:
+                mUseCase.setQueryMap(0, 0, 2);
+                getTicketList();
+                break;
+        }
+        mView.hideBottomFragment();
+    }
+
+    @Override
+    public void onClickTicket(int index) {
+        Intent detailIntent = InboxTicketDetailActivity.getIntent(mView.getActivity(), originalList.get(index).getId());
+        mView.navigateToActivityRequest(detailIntent, 204);
+    }
+
+    @Override
+    public void deleteTicket() {
+
+    }
+
+    @Override
+    public void scrollList() {
+        mView.scrollRv();
+    }
+
+    @Override
+    public void onRecyclerViewScrolled(LinearLayoutManager layoutManager) {
+        checkIfToLoad(layoutManager);
+    }
+
+    @Override
+    public CustomEditText.Listener getSearchListener() {
+        return this;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+    }
+
+    @Override
+    public void onDestroy() {
+        mUseCase.unsubscribe();
+    }
+
+    @Override
+    public String getSCREEN_NAME() {
+        return mView.getActivity().getLocalClassName();
+    }
+
+    private InboxFilterAdapter getFilterAdapter() {
+        if (filterAdapter == null)
+            filterAdapter = new InboxFilterAdapter(filterList, mView.getActivity(), this);
+        return filterAdapter;
+    }
+
+    @Override
+    public BottomSheetDialogFragment getBottomFragment() {
+        FilterBottomFragment bottomFragment = new FilterBottomFragment();
+        bottomFragment.setAdapter(getFilterAdapter());
+        return bottomFragment;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_search) {
+            mView.toggleSearch(View.VISIBLE);
+            return true;
+        }
+        return false;
+    }
+
+    private void checkIfToLoad(LinearLayoutManager layoutManager) {
+        int visibleItemCount = layoutManager.getChildCount();
+        int totalItemCount = layoutManager.getItemCount();
+        int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
+
+        if (!isLoading && !isLastPage) {
+            if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
+                    && firstVisibleItemPosition >= 0
+                    && totalItemCount >= PAGE_SIZE) {
+                loadMoreItems();
+            } else {
+                mView.addFooter();
+            }
+        } else {
+            mView.removeFooter();
+        }
+    }
+
+    private void loadMoreItems() {
+        isLoading = true;
+        mUseCase.setUrl(nextUrl);
+        mUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                isLoading = false;
+            }
+
+            @Override
+            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                isLoading = false;
+                mView.removeFooter();
+                Type token = new TypeToken<DataResponse<TicketListResponse>>() {
+                }.getType();
+                RestResponse res1 = typeRestResponseMap.get(token);
+                DataResponse ticketListResponse = res1.getData();
+                TicketListResponse ticketListResponse1 = (TicketListResponse) ticketListResponse.getData();
+                if (ticketListResponse1 != null && !ticketListResponse1.getTickets().isEmpty()) {
+                    originalList.addAll(ticketListResponse1.getTickets());
+                    nextUrl = ticketListResponse1.getNextPage();
+                    isLastPage = !(nextUrl != null && !nextUrl.isEmpty() && nextUrl.length() > 0);
+                    mView.updateDataSet();
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onSearchSubmitted(String text) {
+
+    }
+
+    @Override
+    public void onSearchTextChanged(String text) {
+        if (text.length() > 0) {
+            mView.toggleSearch(View.VISIBLE);
+        }
+    }
+
+
+}
