@@ -1,4 +1,4 @@
-package com.tokopedia.flight.booking.widget;
+package com.tokopedia.design.component;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -10,14 +10,14 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+import com.tokopedia.design.R;
 import com.tokopedia.design.base.BaseCustomView;
-import com.tokopedia.flight.R;
 
 /**
  * Created by alvarisi on 11/6/17.
  */
 
-public class CardWithActionView extends BaseCustomView {
+public class CardWithAction extends BaseCustomView {
 
     private AppCompatTextView contentInfoAppCompatTextView;
     private AppCompatTextView contentAppCompatTextView;
@@ -32,18 +32,18 @@ public class CardWithActionView extends BaseCustomView {
         void actionClicked();
     }
 
-    public CardWithActionView(@NonNull Context context) {
+    public CardWithAction(@NonNull Context context) {
         super(context);
         init();
     }
 
 
-    public CardWithActionView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public CardWithAction(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init(attrs);
     }
 
-    public CardWithActionView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public CardWithAction(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(attrs);
     }

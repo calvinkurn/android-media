@@ -48,13 +48,40 @@
     <string name="train_search_fastest_label">TERCEPAT</string>
     <string name="train_search_seat_full_label">Penuh</string>
     <string name="train_search_remains_seat_label">Sisa %d kursi</string>
-    
+
     <!-- filter -->
     <string name="train_filter_time_departure">Waktu Berangkat</string>
     <string name="train_filter_train_name">Kereta</string>
     <string name="train_filter_class_name">Kelas</string>
     <string name="train_filter_menu_reset">Reset</string>
     <string name="train_filter_button_info">Terdapat %d perjalanan</string>
+
+    <!-- passenger info -->
+    <string name="train_booking_passenger_title">Isi Data Penumpang</string>
+    <string name="train_buyer_title">Data Pemesan</string>
+    <string name="train_buyer_full_name">Nama Lengkap</string>
+    <string name="train_buyer_full_name_hint">Isi Nama Lengkap</string>
+    <string name="train_buyer_birthdate">Tanggal Lahir</string>
+    <string name="train_buyer_birthdate_hint">Pilih Tanggal Lahir</string>
+    <string name="train_buyer_phone_number">Nomor Telepon/HP</string>
+    <string name="train_buyer_phone_number_hint">+6281234567890</string>
+    <string name="train_buyer_email">Alamat Email</string>
+    <string name="train_buyer_email_hint">Isi Alamat Email</string>
+    <string name="train_buyer_email_info">Tiket akan dikirimkan ke alamat ini.</string>
+    <string name="train_passenger_title">Data Penumpang</string>
+    <string name="train_passenger_same_with_buyer">Data penumpang sama dengan data pemesan.</string>
+    <string name="train_booking_passenger_btn_payment">Lanjut ke Pembayaran</string>
+    <string name="train_booking_passenger_btn_choose_seat">Pilih Kursi</string>
+    <string name="train_passenger_choose_salutation">Sapaan</string>
+    <string name="train_passenger_additional_info">Bila tidak ada, mohon masukkan tanggal lahir dalam format (DDMMYYYY)</string>
+    <string name="train_passenger_identity_number">Nomor Identitas (KTP/SIM/Paspor)</string>
+    <string name="train_passenger_identity_number_hint">Isi Nomor Identitas</string>
+    <string name="train_passenger_header_format">%s %d (%s)</string>
+    <string name="train_passenger_header_title">Penumpang</string>
+    <string name="train_passenger_error_contact_name">Nama Lengkap harus diisi</string>
+    <string name="train_passenger_error_phone_number">Nomor Telepon harus diisi</string>
+    <string name="train_passenger_error_identity_number">NomorIdentitas harus diisi</string>
+    <string name="train_passenger_label_identity_number">No ID : %s</string>
 
     <!-- sort -->
     <string name="train_sort_label_min_price">Harga Minimum</string>

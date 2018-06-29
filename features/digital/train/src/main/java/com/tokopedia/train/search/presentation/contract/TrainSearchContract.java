@@ -33,6 +33,8 @@ public interface TrainSearchContract {
         void showFilterAndSortButtonAction();
 
         void hideFilterAndSortButtonAction();
+
+        void selectSchedule(TrainScheduleViewModel trainScheduleViewModel);
     }
 
     interface Presenter extends CustomerPresenter<View> {

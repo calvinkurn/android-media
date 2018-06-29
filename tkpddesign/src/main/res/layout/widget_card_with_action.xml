@@ -82,7 +82,6 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="0.25"
-        android:background="@drawable/selectable_background_tokopedia"
         android:gravity="center">
 
         <android.support.v7.widget.AppCompatTextView
@@ -92,8 +91,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textAllCaps="true"
-
-            android:textColor="@color/widget_card_with_action_text_color"
+            android:textColor="@color/tkpd_main_green"
             tools:text="Detail" />
     </RelativeLayout>
 </LinearLayout>

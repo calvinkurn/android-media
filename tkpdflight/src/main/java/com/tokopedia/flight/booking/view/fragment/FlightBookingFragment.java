@@ -30,6 +30,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.design.component.CardWithAction;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
@@ -51,7 +52,6 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewMod
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightInsuranceViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
-import com.tokopedia.flight.booking.widget.CardWithActionView;
 import com.tokopedia.flight.booking.widget.CountdownTimeView;
 import com.tokopedia.flight.booking.widget.FlightInsuranceView;
 import com.tokopedia.flight.common.constant.FlightFlowConstant;
@@ -99,8 +99,8 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     private NestedScrollView fullPageLayout;
     private CountdownTimeView countdownFinishTransactionView;
     private AppCompatTextView priceTotalAppCompatTextView;
-    private CardWithActionView departureInfoView;
-    private CardWithActionView returnInfoView;
+    private CardWithAction departureInfoView;
+    private CardWithAction returnInfoView;
     private RecyclerView passengerRecyclerView;
     private AppCompatButton submitButton;
     private TkpdHintTextInputLayout tilContactName;
@@ -178,8 +178,8 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         View view = inflater.inflate(R.layout.fragment_flight_booking, container, false);
         countdownFinishTransactionView = (CountdownTimeView) view.findViewById(R.id.countdown_finish_transaction);
         priceTotalAppCompatTextView = (AppCompatTextView) view.findViewById(R.id.tv_total_price);
-        departureInfoView = (CardWithActionView) view.findViewById(R.id.cwa_departure_info);
-        returnInfoView = (CardWithActionView) view.findViewById(R.id.cwa_return_info);
+        departureInfoView = (CardWithAction) view.findViewById(R.id.cwa_departure_info);
+        returnInfoView = (CardWithAction) view.findViewById(R.id.cwa_return_info);
         passengerRecyclerView = (RecyclerView) view.findViewById(R.id.rv_passengers);
         passengerRecyclerView.addItemDecoration(new FullDividerItemDecoration(passengerRecyclerView.getContext()));
         submitButton = (AppCompatButton) view.findViewById(R.id.button_submit);
@@ -212,14 +212,14 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
             }
         });
 
-        departureInfoView.setActionListener(new CardWithActionView.ActionListener() {
+        departureInfoView.setActionListener(new CardWithAction.ActionListener() {
             @Override
             public void actionClicked() {
                 presenter.onDepartureInfoClicked();
             }
         });
 
-        returnInfoView.setActionListener(new CardWithActionView.ActionListener() {
+        returnInfoView.setActionListener(new CardWithAction.ActionListener() {
             @Override
             public void actionClicked() {
                 presenter.onReturnInfoClicked();
