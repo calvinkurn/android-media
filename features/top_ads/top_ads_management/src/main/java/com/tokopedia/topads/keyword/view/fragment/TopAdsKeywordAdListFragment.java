@@ -32,7 +32,6 @@ import com.tokopedia.topads.keyword.data.model.cloud.bulkkeyword.DataBulkKeyword
 import com.tokopedia.topads.keyword.di.component.DaggerTopAdsKeywordComponent;
 import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordFilterActivity;
 import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordNewChooseGroupActivity;
-import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordOldNewChooseGroupActivity;
 import com.tokopedia.topads.keyword.view.listener.TopAdsKeywordListView;
 import com.tokopedia.topads.keyword.view.model.KeywordAd;
 import com.tokopedia.topads.keyword.view.presenter.TopAdsKeywordListPresenter;

@@ -24,6 +24,7 @@
                 android:text="@string/top_ads_title_keyword_add_keyword"/>
 
             <TextView
+                android:id="@+id/totalKeyAdded"
                 style="@style/TextView.Micro.BlackSecondary"
                 android:text="@string/top_ads_keywords_total_current_and_max"/>
 
@@ -43,13 +44,13 @@
                     android:padding="@dimen/sp_8">
 
                     <com.tokopedia.design.text.TkpdHintTextInputLayout
-                        android:id="@+id/text_input_layout_description"
+                        android:id="@+id/textInputLayoutDescription"
                         style="@style/HintTextInputLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
                         <EditText
-                            android:id="@+id/edit_text_description"
+                            android:id="@+id/editTextDescription"
                             style="@style/EditText"
                             android:layout_width="match_parent"
                             android:gravity="top"
@@ -75,51 +76,99 @@
                 android:id="@+id/keywordRadioGroup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="horizontal"
                 style="@style/TopAdsCustomRadioGroup">
 
                 <RadioButton
-                    android:id="@+id/keywordPositiveRadioButton"
+                    android:id="@+id/keywordPhraseRadioButton"
                     style="@style/RadioButton"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:minHeight="@dimen/dp_64"
                     android:checked="true"
                     android:text="@string/top_ads_keyword_phrase_match_2"/>
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_1"
-                    android:background="@drawable/bg_line_separator"/>
-
                 <RadioButton
-                    android:id="@+id/keywordNegativeRadioButton"
+                    android:id="@+id/keywordExactRadioButton"
                     style="@style/RadioButton"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:minHeight="@dimen/dp_64"
                     android:text="@string/top_ads_keyword_exact_match_2"/>
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_1"
-                    android:background="@drawable/bg_line_separator"/>
-
             </RadioGroup>
 
-            <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/text_keyword_example"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="15sp"
-                android:paddingTop="@dimen/dp_5"
-                tools:text="@string/top_ads_keyword_phrase_match_example_2"
-                android:maxLines="4"
-                style="@style/TextView.Small.BlackSecondary"/>
+                android:orientation="horizontal">
 
+                <android.support.v7.widget.AppCompatTextView
+                    style="@style/TextView.Small.BlackSecondary"
+                    android:text="@string/topads_keyword_example" />
 
+                <android.support.v7.widget.AppCompatTextView
+                    style="@style/TextView.Small.BlackSecondary"
+                    android:text="@string/topads_keyword_example_value"
+                    android:textStyle="bold"/>
 
-            <com.tokopedia.topads.keyword.view.widget.KeywordRecyclerView
-                android:id="@+id/keywordRecyclerView"
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <android.support.v7.widget.AppCompatTextView
+                    style="@style/TextView.Small.BlackSecondary"
+                    android:text="@string/topads_keyword_search_example" />
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/textKeywordExample"
+                    style="@style/TextView.Small.BlackSecondary"
+                    tools:text="@string/topads_keyword_search_example_value_phrase"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginTop="@dimen/sp_12">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/seeDetailTextView"
+                    style="@style/TextView.Micro.Green"
+                    android:text="@string/lihat_detail"/>
+
+                <ImageView
+                    android:id="@+id/seeDetailToggleIcon"
+                    android:layout_width="@dimen/dp_12"
+                    android:layout_height="@dimen/dp_12"
+                    app:srcCompat="@drawable/arrow_drop_down"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/dp_4"
+                    android:layout_marginStart="@dimen/dp_4"
+                    tools:ignore="ContentDescription"/>
+
+            </LinearLayout>
+
+            <com.tkpd.library.ui.expandablelayout.ExpandableRelativeLayout
+                android:id="@+id/seeDetailToggleDesc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:ael_duration="400"
+                app:ael_expanded="true">
+
+                <TextView
+                    android:id="@+id/keywordTypeDesc"
+                    style="@style/TextView.Micro.BlackSecondary"
+                    android:text="@string/top_ads_see_detail_info_keyword_phrase"/>
+
+            </com.tkpd.library.ui.expandablelayout.ExpandableRelativeLayout>
+
         </LinearLayout>
 
 

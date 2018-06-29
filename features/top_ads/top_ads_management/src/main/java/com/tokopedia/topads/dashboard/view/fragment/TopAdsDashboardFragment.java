@@ -57,7 +57,7 @@ import com.tokopedia.topads.dashboard.view.activity.TopAdsAddingPromoOptionActiv
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDetailShopActivity;
 import com.tokopedia.topads.group.view.activity.TopAdsGroupAdListActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupNewPromoActivity;
-import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordOldNewChooseGroupActivity;
+import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordNewChooseGroupActivity;
 import com.tokopedia.topads.product.view.activity.TopAdsProductAdListActivity;
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsStatisticPagerAdapter;
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsTabAdapter;
@@ -543,7 +543,8 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
 
     private void gotoCreateKeyword() {
         topAdsDashboardPresenter.saveSourceTagging(TopAdsSourceOption.SA_MANAGE_KEYWORD_POSITIVE);
-        TopAdsKeywordOldNewChooseGroupActivity.start(this, getActivity(), REQUEST_CODE_AD_STATUS, true);
+        TopAdsKeywordNewChooseGroupActivity.Companion
+                .start(this, getActivity(), REQUEST_CODE_AD_STATUS, true, null);
     }
 
     private void handlingResultDateSelection(Intent data){

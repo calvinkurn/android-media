@@ -176,9 +176,9 @@ class TopAdsKeywordNewChooseGroupFragment : TopAdsNewBaseStepperFragment<TopAdsK
         }
 
         groupId?.run {
-            choose_group_auto_text.setText(groupId)
+            choose_group_auto_text.setText(this)
             choose_group_auto_text.lockView()
-            topAdsKeywordNewChooseGroupPresenter.searchGroupName("")
+            topAdsKeywordNewChooseGroupPresenter.searchGroupName(this)
         }
 
         adapterChooseGroup.setListenerGetData { groupNames }
@@ -238,7 +238,10 @@ class TopAdsKeywordNewChooseGroupFragment : TopAdsNewBaseStepperFragment<TopAdsK
             groupId?.run {
                 if (it.name == this){
                     chosenId = it.id
+                    findKeywordCount(it)
+                    checkButtonNextEnabled()
                 }
+                groupId = null
             }
             groupNames.add(it.name)
         }

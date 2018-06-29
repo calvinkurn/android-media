@@ -17,4 +17,5 @@
     <string name="topads_menu_seller_centre">Seller Center</string>
     <string name="label_top_ads_sold">Total Terjual</string>
     <string name="see_label">Lihat</string>
+    <string name="topads_keyword_example_value">&#160;Pakaian Wanita</string>
 </resources>

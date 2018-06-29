@@ -238,6 +238,8 @@
                                                             <![CDATA[Contoh pencarian&#x09;:]]> Pakaian Wanita <![CDATA[<i><b>Murah</b></i>]]></string>
     <string name="top_ads_keyword_exact_match_example"><![CDATA[<i>Contoh kata kunci:</i> <i><b>Pakaian Wanita</b></i> <br />]]>\n
                                                                  <![CDATA[<i>Contoh pencarian:</i>]]> Pakaian Wanita</string>
+    <string name="top_ads_keyword_exact_match_example_2"><![CDATA[Contoh kata kunci&#x09;: <b>Pakaian Wanita</b><br />]]>\n
+                                                                 <![CDATA[Contoh pencarian&#x09;:]]> Pakaian Wanita</string>
     <string name="top_ads_keyword_has_been_added">Kata Kunci berhasil ditambahkan</string>
     <string name="top_ads_keyword__all_group">Semua Grup</string>
     <string name="top_ads_keyword_delete">Hapus</string>
@@ -279,5 +281,11 @@
     <string name="top_ads_keyword_total_keyword_in_group_2">%1$d Kata Kunci</string>
     <string name="keyword_enter_product_description">Contoh Penulisan:\nPakaian Wanita\nSepatu Bola</string>
     <string name="top_ads_keywords_add_how_to">Masukkan atau tempel kata kunci, satu kata kunci per baris.</string>
-
+    <string name="lihat_detail">Lihat Detail</string>
+    <string name="top_ads_see_detail_info_keyword_phrase">Promo tetap tampil meski pembeli memasukkan kata sebelum atau setelah kata kunci utama</string>
+    <string name="top_ads_see_detail_info_keyword_match">Promo tetap tampil sesuai pembeli memasukkan kata kunci utama</string>
+    <string name="topads_keyword_example">Contoh kata kunci\t\t\t:</string>
+    <string name="topads_keyword_search_example">Contoh Pencarian\t\t\t:</string>
+    <string name="topads_keyword_search_example_value_phrase"><![CDATA[<i>&#160;Pakaian Wanita <b>Murah</b></i>]]></string>
+    <string name="topads_keyword_search_example_value_exact"><![CDATA[<i>&#160;Pakaian Wanita</i>]]></string>
 </resources>

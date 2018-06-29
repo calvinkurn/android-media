@@ -6,18 +6,22 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
+import android.view.MenuItem
 import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity
 import com.tokopedia.abstraction.base.view.model.StepperModel
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.topads.R
 import com.tokopedia.topads.TopAdsComponentInstance
+import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent
-import com.tokopedia.topads.keyword.view.fragment.TopAdsKeywordAddFragment
+import com.tokopedia.topads.keyword.domain.model.keywordadd.AddKeywordDomainModelDatum
 import com.tokopedia.topads.keyword.view.fragment.TopAdsKeywordNewAddFragment
 import com.tokopedia.topads.keyword.view.fragment.TopAdsKeywordNewChooseGroupFragment
 import com.tokopedia.topads.keyword.view.model.TopAdsKeywordNewStepperModel
 
-class TopAdsKeywordNewChooseGroupActivity : BaseStepperActivity(), HasComponent<TopAdsComponent> {
+class TopAdsKeywordNewChooseGroupActivity : BaseStepperActivity(), HasComponent<TopAdsComponent>,
+        TopAdsKeywordNewAddFragment.OnSuccessSaveKeywordListener {
+
     var fragmentList: MutableList<Fragment>? = null
 
     companion object {
@@ -89,11 +93,13 @@ class TopAdsKeywordNewChooseGroupActivity : BaseStepperActivity(), HasComponent<
 
     private fun exitConfirmation(): Boolean {
         val fragment = supportFragmentManager.findFragmentById(R.id.parent_view)
-        if (fragment != null && fragment is TopAdsKeywordAddFragment) {
-            if (fragment.isButtonSaveEnabled) {
+        if (fragment != null && fragment is TopAdsKeywordNewAddFragment) {
+            if (fragment.isButtonSaveEnabled()) {
                 val dialog = AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle)
                         .setMessage(getString(R.string.topads_keyword_add_cancel_dialog))
-                        .setPositiveButton(getString(R.string.yes)) { dialogInterface, i -> super@TopAdsKeywordNewChooseGroupActivity.onBackPressed() }
+                        .setPositiveButton(getString(R.string.yes)) { dialogInterface, i ->
+                            fragment.clearKeywords()
+                            super@TopAdsKeywordNewChooseGroupActivity.onBackPressed() }
                         .setNegativeButton(getString(R.string.No)) { arg0, arg1 -> }.create()
                 dialog.show()
                 return true
@@ -103,9 +109,26 @@ class TopAdsKeywordNewChooseGroupActivity : BaseStepperActivity(), HasComponent<
     }
 
     override fun onBackPressed() {
-        if (exitConfirmation()) {
+        if (!exitConfirmation()) {
             super.onBackPressed()
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val itemId = item.itemId
+        if (itemId == android.R.id.home) {
+            onBackPressed()
+            return false
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onSuccessSave(keywords: List<AddKeywordDomainModelDatum>) {
+        val intent = Intent()
+        intent.putParcelableArrayListExtra(RESULT_WORDS, ArrayList(keywords))
+        intent.putExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, true)
+        setResult(Activity.RESULT_OK, intent)
+        finish()
     }
 
 }
