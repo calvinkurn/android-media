@@ -93,10 +93,10 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
     }
 
     private void populateTwoTabItem() {
-        instantLoanItemList.add(new InstantLoanItem(getPageTitle(0),
-                getTanpaAgunanFragment(0)));
         instantLoanItemList.add(new InstantLoanItem(getPageTitle(1),
-                getDenganAngunanFragment(1)));
+                getTanpaAgunanFragment(1)));
+        instantLoanItemList.add(new InstantLoanItem(getPageTitle(2),
+                getDenganAngunanFragment(2)));
 
     }
 

@@ -266,7 +266,7 @@ public class TkpdCache extends com.tokopedia.abstraction.constant.TkpdCache {
         public static final String IMAGE_HOST = "image_host";
 
         public static final String ENABLE_BOTTOM_SHEET_FILTER = "mainapp_enable_bottom_sheet_filter";
-        public static final String SHOW_INSTANT_LOAN = "enable_instant_loan";
+        public static final String SHOW_INSTANT_LOAN = "app_enable_instant_loan";
     }
 
 }
