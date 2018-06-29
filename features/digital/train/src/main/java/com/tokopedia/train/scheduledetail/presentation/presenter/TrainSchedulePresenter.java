@@ -23,9 +23,9 @@ public class TrainSchedulePresenter extends BaseDaggerPresenter<TrainScheduleCon
     }
 
     @Override
-    public void getScheduleDetail(String scheduleId, int numOfAdultPassenger) {
+    public void getScheduleDetail(String scheduleId, int numOfAdultPassenger, int numOfInfantPassenger) {
         getScheduleDetailUseCase.execute(
-                getScheduleDetailUseCase.createRequestParams(scheduleId, numOfAdultPassenger),
+                getScheduleDetailUseCase.createRequestParams(scheduleId, numOfAdultPassenger, numOfInfantPassenger),
                 new Subscriber<TrainScheduleDetailViewModel>() {
                     @Override
                     public void onCompleted() {

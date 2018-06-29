@@ -45,7 +45,6 @@
         <activity
             android:name="com.tokopedia.train.scheduledetail.presentation.activity.TrainScheduleDetailActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name="com.tokopedia.train.seat.presentation.activity.TrainSeatActivity"

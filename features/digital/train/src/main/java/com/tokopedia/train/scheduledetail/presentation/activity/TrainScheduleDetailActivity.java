@@ -31,6 +31,7 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
 
     public static final String EXTRA_TRAIN_SCHEDULE_ID = "EXTRA_TRAIN_SCHEDULE_ID";
     public static final String EXTRA_NUMBER_OF_ADULT_PASSENGER = "EXTRA_NUMBER_OF_ADULT_PASSENGER";
+    public static final String EXTRA_NUMBER_OF_INFANT_PASSENGER = "EXTRA_NUMBER_OF_INFANT_PASSENGER";
 
     @Inject
     TrainSchedulePresenter trainSchedulePresenter;
@@ -47,10 +48,11 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
 
     private TrainScheduleDetailViewModel trainScheduleDetailViewModel;
 
-    public static Intent createIntent(Context context, String scheduleId, int numOfAdultPassenger) {
+    public static Intent createIntent(Context context, String scheduleId, int numOfAdultPassenger, int numOfInfantPassenger) {
         Intent intent = new Intent(context, TrainScheduleDetailActivity.class);
         intent.putExtra(EXTRA_TRAIN_SCHEDULE_ID, scheduleId);
         intent.putExtra(EXTRA_NUMBER_OF_ADULT_PASSENGER, numOfAdultPassenger);
+        intent.putExtra(EXTRA_NUMBER_OF_INFANT_PASSENGER, numOfInfantPassenger);
         return intent;
     }
 
@@ -67,14 +69,18 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
 
         String scheduleId = getIntent().getStringExtra(EXTRA_TRAIN_SCHEDULE_ID);
         int numOfAdultPassenger = getIntent().getIntExtra(EXTRA_NUMBER_OF_ADULT_PASSENGER, 0);
+        int numOfInfantPassenger = getIntent().getIntExtra(EXTRA_NUMBER_OF_INFANT_PASSENGER, 0);
 
         trainSchedulePresenter.attachView(this);
-        trainSchedulePresenter.getScheduleDetail(scheduleId, numOfAdultPassenger);
+        trainSchedulePresenter.getScheduleDetail(scheduleId, numOfAdultPassenger, numOfInfantPassenger);
     }
 
     @Override
     protected void setupLayout(Bundle savedInstanceState) {
         super.setupLayout(savedInstanceState);
+
+        collapsingToolbarLayout = findViewById(R.id.collapsing_toolbar);
+        collapsingToolbarLayout.setTitle(" ");
 
         buttonSubmit = findViewById(R.id.button_submit);
         collapsingToolbarLayout = findViewById(R.id.collapsing_toolbar);
@@ -130,8 +136,6 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
         destinationStationCode.setText(trainScheduleDetailViewModel.getDestinationStationCode());
         destinationStationName.setText(trainScheduleDetailViewModel.getDestinationStationName());
 
-//        if (viewPager.getAdapter() instanceof ShopInfoPagerAdapter) {
-//            ShopInfoPagerAdapter adapter = (ShopInfoPagerAdapter) viewPager.getAdapter();
         Fragment fragmentTrip = (Fragment) viewPager.getAdapter().instantiateItem(viewPager, 0);
         if (fragmentTrip instanceof TrainScheduleDetailFragment) {
             ((TrainScheduleDetailFragment) fragmentTrip).showScheduleDetail(trainScheduleDetailViewModel);
@@ -140,7 +144,6 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
         if (fragmentPrice instanceof TrainSchedulePriceDetailFragment) {
             ((TrainSchedulePriceDetailFragment) fragmentPrice).showPrice(trainScheduleDetailViewModel);
         }
-//        }
     }
 
     protected void initInjector() {

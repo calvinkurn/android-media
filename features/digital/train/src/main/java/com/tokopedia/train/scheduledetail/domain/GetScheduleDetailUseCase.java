@@ -23,6 +23,7 @@ public class GetScheduleDetailUseCase extends UseCase<TrainScheduleDetailViewMod
 
     private static final String PARAM_SCHEDULE_ID = "PARAM_SCHEDULE_ID";
     private static final String PARAM_NUMBER_OF_ADULT_PASSENGER = "PARAM_NUMBER_OF_ADULT_PASSENGER";
+    private static final String PARAM_NUMBER_OF_INFANT_PASSENGER = "PARAM_NUMBER_OF_INFANT_PASSENGER";
 
     private TrainRepository trainRepository;
 
@@ -35,6 +36,7 @@ public class GetScheduleDetailUseCase extends UseCase<TrainScheduleDetailViewMod
     public Observable<TrainScheduleDetailViewModel> createObservable(RequestParams requestParams) {
         String scheduleId = requestParams.getString(PARAM_SCHEDULE_ID, "");
         int numOfAdultPassenger = requestParams.getInt(PARAM_NUMBER_OF_ADULT_PASSENGER, 0);
+        int numOfInfantPassenger = requestParams.getInt(PARAM_NUMBER_OF_INFANT_PASSENGER, 0);
 
         return trainRepository.getDetailSchedule(scheduleId)
                 .flatMap((Func1<TrainScheduleViewModel, Observable<TrainScheduleDetailViewModel>>) trainScheduleViewModel -> Observable.zip(
@@ -60,15 +62,20 @@ public class GetScheduleDetailUseCase extends UseCase<TrainScheduleDetailViewMod
                                 .trainName(trainScheduleViewModel.getTrainName())
                                 .displayAdultFare(trainScheduleViewModel.getDisplayAdultFare())
                                 .adultFare(trainScheduleViewModel.getAdultFare())
+                                .totalAdultFare(numOfAdultPassenger * trainScheduleViewModel.getAdultFare())
                                 .displayInfantFare(trainScheduleViewModel.getDisplayInfantFare())
+                                .infantFare(trainScheduleViewModel.getInfantFare())
+                                .totalInfantFare(numOfInfantPassenger * trainScheduleViewModel.getInfantFare())
                                 .numOfAdultPassenger(numOfAdultPassenger)
+                                .numOfInfantPassenger(numOfInfantPassenger)
                                 .build()));
     }
 
-    public RequestParams createRequestParams(String scheduleId, int numOfAdultPassenger) {
+    public RequestParams createRequestParams(String scheduleId, int numOfAdultPassenger, int numOfInfantPassenger) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(PARAM_SCHEDULE_ID, scheduleId);
         requestParams.putInt(PARAM_NUMBER_OF_ADULT_PASSENGER, numOfAdultPassenger);
+        requestParams.putInt(PARAM_NUMBER_OF_INFANT_PASSENGER, numOfInfantPassenger);
         return requestParams;
     }
 }

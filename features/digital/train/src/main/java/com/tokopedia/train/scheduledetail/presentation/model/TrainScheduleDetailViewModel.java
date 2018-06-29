@@ -26,8 +26,12 @@ public class TrainScheduleDetailViewModel implements Parcelable {
     private boolean isReturnTrip;
     private String displayAdultFare;
     private long adultFare;
+    private double totalAdultFare;
     private String displayInfantFare;
+    private long infantFare;
+    private double totalInfantFare;
     private int numOfAdultPassenger;
+    private int numOfInfantPassenger;
 
     TrainScheduleDetailViewModel(Builder builder) {
         this.originCityCode = builder.originCityCode;
@@ -48,8 +52,12 @@ public class TrainScheduleDetailViewModel implements Parcelable {
         this.isReturnTrip = builder.isReturnTrip;
         this.displayAdultFare = builder.displayAdultFare;
         this.adultFare = builder.adultFare;
+        this.totalAdultFare = builder.totalAdultFare;
         this.displayInfantFare = builder.displayInfantFare;
+        this.infantFare = builder.infantFare;
+        this.totalInfantFare = builder.totalInfantFare;
         this.numOfAdultPassenger = builder.numOfAdultPassenger;
+        this.numOfInfantPassenger = builder.numOfInfantPassenger;
     }
 
     private TrainScheduleDetailViewModel(Parcel in) {
@@ -70,8 +78,13 @@ public class TrainScheduleDetailViewModel implements Parcelable {
         arrivalTime = in.readString();
         isReturnTrip = in.readByte() != 0;
         displayAdultFare = in.readString();
+        adultFare = in.readLong();
+        totalAdultFare = in.readDouble();
         displayInfantFare = in.readString();
+        infantFare = in.readLong();
+        totalInfantFare = in.readDouble();
         numOfAdultPassenger = in.readInt();
+        numOfInfantPassenger = in.readInt();
     }
 
     public static final Creator<TrainScheduleDetailViewModel> CREATOR = new Creator<TrainScheduleDetailViewModel>() {
@@ -158,12 +171,28 @@ public class TrainScheduleDetailViewModel implements Parcelable {
         return adultFare;
     }
 
+    public double getTotalAdultFare() {
+        return totalAdultFare;
+    }
+
     public String getDisplayInfantFare() {
         return displayInfantFare;
     }
 
+    public long getInfantFare() {
+        return infantFare;
+    }
+
+    public double getTotalInfantFare() {
+        return totalInfantFare;
+    }
+
     public int getNumOfAdultPassenger() {
         return numOfAdultPassenger;
+    }
+
+    public int getNumOfInfantPassenger() {
+        return numOfInfantPassenger;
     }
 
     @Override
@@ -190,7 +219,13 @@ public class TrainScheduleDetailViewModel implements Parcelable {
         dest.writeString(arrivalTime);
         dest.writeByte((byte) (isReturnTrip ? 1 : 0));
         dest.writeString(displayAdultFare);
+        dest.writeLong(adultFare);
+        dest.writeDouble(totalAdultFare);
+        dest.writeString(displayInfantFare);
+        dest.writeLong(infantFare);
+        dest.writeDouble(totalInfantFare);
         dest.writeInt(numOfAdultPassenger);
+        dest.writeInt(numOfInfantPassenger);
     }
 
     public static class Builder {
@@ -212,8 +247,12 @@ public class TrainScheduleDetailViewModel implements Parcelable {
         private boolean isReturnTrip;
         private String displayAdultFare;
         private long adultFare;
+        private double totalAdultFare;
         private String displayInfantFare;
+        private long infantFare;
+        private double totalInfantFare;
         private int numOfAdultPassenger;
+        private int numOfInfantPassenger;
 
         public Builder originCityCode(String val) {
             this.originCityCode = val;
@@ -305,13 +344,33 @@ public class TrainScheduleDetailViewModel implements Parcelable {
             return this;
         }
 
+        public Builder totalAdultFare(double val) {
+            this.totalAdultFare = val;
+            return this;
+        }
+
         public Builder displayInfantFare(String val) {
             this.displayInfantFare = val;
             return this;
         }
 
+        public Builder infantFare(long val) {
+            this.infantFare = val;
+            return this;
+        }
+
+        public Builder totalInfantFare(double val) {
+            this.totalInfantFare = val;
+            return this;
+        }
+
         public Builder numOfAdultPassenger(int val) {
             this.numOfAdultPassenger = val;
+            return this;
+        }
+
+        public Builder numOfInfantPassenger(int val) {
+            this.numOfInfantPassenger = val;
             return this;
         }
 

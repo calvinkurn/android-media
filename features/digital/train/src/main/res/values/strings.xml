@@ -82,6 +82,9 @@
     <string name="train_seat_header_passenger_label">Penumpang</string>
     <string name="train_seat_popup_choose_passenger">Pilih Penumpang</string>
 
-    <string name="train_label_adult">Tiket Dewasa x%1$d</string>
+    <string name="train_departure_trip">Perjalanan Pergi (%1$s -  %2$s)</string>
+    <string name="train_return_trip">Perjalanan Pulang (%1$s -  %2$s)</string>
+    <string name="train_label_adult">Tiket Dewasa (%1$d x %2$s)</string>
+    <string name="train_label_infant">Tiket Bayi (%1$d x %2$s)</string>
     <string name="train_label_currency">Rp%1$s</string>
 </resources>

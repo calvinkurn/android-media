@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.design.utils.CurrencyFormatUtil;
@@ -18,8 +19,10 @@ import com.tokopedia.train.scheduledetail.presentation.model.TrainScheduleDetail
 public class TrainSchedulePriceDetailFragment extends Fragment {
 
     private TextView textTrip;
-    private TextView textCountAdultPassenger;
+    private LinearLayout containerAdultPrice;
+    private TextView textAdultCountPassenger;
     private TextView textAdultPrice;
+    private LinearLayout containerInfantPrice;
     private TextView textInfantCountPassenger;
     private TextView textInfantPrice;
     private TextView textTotalPrice;
@@ -35,8 +38,10 @@ public class TrainSchedulePriceDetailFragment extends Fragment {
         View rootview = inflater.inflate(R.layout.fragment_train_schedule_price_detail, container, false);
 
         textTrip = rootview.findViewById(R.id.text_trip);
-        textCountAdultPassenger = rootview.findViewById(R.id.text_adult_count_passenger);
+        containerAdultPrice = rootview.findViewById(R.id.container_adult_price);
+        textAdultCountPassenger = rootview.findViewById(R.id.text_adult_count_passenger);
         textAdultPrice = rootview.findViewById(R.id.text_adult_price);
+        containerInfantPrice = rootview.findViewById(R.id.container_infant_price);
         textInfantCountPassenger = rootview.findViewById(R.id.text_infant_count_passenger);
         textInfantPrice = rootview.findViewById(R.id.text_infant_price);
         textTotalPrice = rootview.findViewById(R.id.text_total_price);
@@ -45,17 +50,35 @@ public class TrainSchedulePriceDetailFragment extends Fragment {
     }
 
     public void showPrice(TrainScheduleDetailViewModel trainScheduleDetailViewModel) {
+        if (!trainScheduleDetailViewModel.isReturnTrip()) {
+            textTrip.setText(getString(R.string.train_departure_trip,
+                    trainScheduleDetailViewModel.getOriginCityCode(),
+                    trainScheduleDetailViewModel.getDestinationCityCode()));
+        } else {
+            textTrip.setText(getString(R.string.train_return_trip,
+                    trainScheduleDetailViewModel.getOriginCityCode(),
+                    trainScheduleDetailViewModel.getDestinationCityCode()));
+
+        }
         if (trainScheduleDetailViewModel.getNumOfAdultPassenger() > 0) {
-            textCountAdultPassenger.setText(getString(R.string.train_label_adult, "(" +
-                    trainScheduleDetailViewModel.getNumOfAdultPassenger() + " x " + "Rp" +
-                    trainScheduleDetailViewModel.getDisplayAdultFare() + ")"));
-//            textCountAdultPassenger.setText("Tiket Dewasa (" + trainScheduleDetailViewModel.getNumOfAdultPassenger() + " x " +
-//                    trainScheduleDetailViewModel.getDisplayAdultFare() + ")");
-            double totalAdultPrice = trainScheduleDetailViewModel.getNumOfAdultPassenger() *
-                    trainScheduleDetailViewModel.getAdultFare();
+            textAdultCountPassenger.setText(getString(R.string.train_label_adult,
+                    trainScheduleDetailViewModel.getNumOfAdultPassenger(),
+                    trainScheduleDetailViewModel.getDisplayAdultFare()));
             textAdultPrice.setText(getString(R.string.train_label_currency,
-                    CurrencyFormatUtil.getThousandSeparatorString(totalAdultPrice,
+                    CurrencyFormatUtil.getThousandSeparatorString(trainScheduleDetailViewModel.getTotalAdultFare(),
                             false, 0).getFormattedString()));
+        } else {
+            containerAdultPrice.setVisibility(View.GONE);
+        }
+        if (trainScheduleDetailViewModel.getNumOfInfantPassenger() > 0) {
+            textInfantCountPassenger.setText(getString(R.string.train_label_infant,
+                    trainScheduleDetailViewModel.getNumOfInfantPassenger(),
+                    trainScheduleDetailViewModel.getDisplayInfantFare()));
+            textInfantPrice.setText(getString(R.string.train_label_currency,
+                    CurrencyFormatUtil.getThousandSeparatorString(trainScheduleDetailViewModel.getTotalInfantFare(),
+                            false, 0).getFormattedString()));
+        } else {
+            containerInfantPrice.setVisibility(View.GONE);
         }
     }
 
