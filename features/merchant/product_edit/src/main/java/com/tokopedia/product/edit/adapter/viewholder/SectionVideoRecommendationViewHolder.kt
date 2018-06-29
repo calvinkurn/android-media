@@ -11,18 +11,23 @@ import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.edit.R
 import com.tokopedia.product.edit.adapter.ProductAddVideoRecommendationFeaturedAdapter
-import com.tokopedia.product.edit.listener.GetVideoRecommendationListener
+import com.tokopedia.product.edit.fragment.ProductAddVideoFragment
 import com.tokopedia.product.edit.listener.SectionVideoRecommendationListener
 import com.tokopedia.product.edit.viewmodel.SectionVideoRecommendationViewModel
 import com.tokopedia.product.edit.viewmodel.VideoRecommendationViewModel
+import com.tokopedia.product.edit.viewmodel.VideoViewModel
 
 class SectionVideoRecommendationViewHolder(itemView: View,
-                                           var sectionVideoRecommendationListener: SectionVideoRecommendationListener) : AbstractViewHolder<SectionVideoRecommendationViewModel>(itemView), GetVideoRecommendationListener {
+                                           var sectionVideoRecommendationListener: SectionVideoRecommendationListener) : AbstractViewHolder<SectionVideoRecommendationViewModel>(itemView),
+        ProductAddVideoFragment.GetVideoRecommendationListener,
+            ProductAddVideoFragment.VideoChoosenDeletedListener{
 
     private lateinit var productAddVideoRecommendationFeaturedAdapter: ProductAddVideoRecommendationFeaturedAdapter
     private lateinit var recyclerView: RecyclerView
     private lateinit var textShowMore: TextView
     private lateinit var itemDecoration:RecyclerView.ItemDecoration
+
+    val videoRecommendationFeaturedList: ArrayList<VideoRecommendationViewModel> = ArrayList()
 
     init {
         setViews(itemView)
@@ -30,6 +35,7 @@ class SectionVideoRecommendationViewHolder(itemView: View,
 
     private fun setViews(view: View) {
         sectionVideoRecommendationListener.setGetVideoRecommendationListener(this)
+        sectionVideoRecommendationListener.setVideoChoosenDeletedListener(this)
         textShowMore = view.findViewById(R.id.text_video_recommendation_show_more)
         textShowMore.setOnClickListener({
             sectionVideoRecommendationListener.onShowMoreClicked()
@@ -74,7 +80,6 @@ class SectionVideoRecommendationViewHolder(itemView: View,
     }
 
     override fun onSuccessGetYoutubeDataVideoRecommendation(videoRecommendationViewModelList: List<VideoRecommendationViewModel>) {
-        val videoRecommendationFeaturedList: ArrayList<VideoRecommendationViewModel> = ArrayList()
         if(videoRecommendationViewModelList.size <= 3){
             textShowMore.visibility = View.GONE
             videoRecommendationFeaturedList.addAll(videoRecommendationViewModelList)
@@ -89,6 +94,15 @@ class SectionVideoRecommendationViewHolder(itemView: View,
                 if(videoRecommendationFeatured.videoID == videoID){
                     videoRecommendationFeatured.choosen = true
                 }
+            }
+        }
+        productAddVideoRecommendationFeaturedAdapter.replaceData(videoRecommendationFeaturedList)
+    }
+
+    override fun onVideoChoosenDeleted(videoViewModel : VideoViewModel) {
+        for(videoRecommendationFeatured in videoRecommendationFeaturedList){
+            if(videoRecommendationFeatured.videoID == videoViewModel.videoID){
+                videoRecommendationFeatured.choosen = false
             }
         }
         productAddVideoRecommendationFeaturedAdapter.replaceData(videoRecommendationFeaturedList)

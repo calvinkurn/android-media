@@ -7,9 +7,11 @@ import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.product.edit.R
+import com.tokopedia.product.edit.listener.VideoChoosenListener
 import com.tokopedia.product.edit.viewmodel.VideoViewModel
 
-class VideoViewHolder(itemView: View) : AbstractViewHolder<VideoViewModel>(itemView) {
+class VideoViewHolder(itemView: View,
+                      var videoChoosenListener: VideoChoosenListener) : AbstractViewHolder<VideoViewModel>(itemView){
 
     var imageThumbnail: ImageView = itemView.findViewById(R.id.image_thumbnail)
     var textTitle: TextView = itemView.findViewById(R.id.text_title)
@@ -23,7 +25,7 @@ class VideoViewHolder(itemView: View) : AbstractViewHolder<VideoViewModel>(itemV
 
     private fun setViews(){
         imageDelete.setOnClickListener({
-
+            videoChoosenListener.onVideoChoosenDeleted(adapterPosition)
         })
     }
 

@@ -8,13 +8,6 @@ import com.tokopedia.product.edit.viewmodel.EmptyVideoViewModel
 
 class EmptyVideoViewHolder(itemView: View) : AbstractViewHolder<EmptyVideoViewModel>(itemView) {
 
-    init {
-        findViews(itemView)
-    }
-
-    private fun findViews(view: View) {
-    }
-
     override fun bind(emptyVideoViewModel: EmptyVideoViewModel) {
     }
 

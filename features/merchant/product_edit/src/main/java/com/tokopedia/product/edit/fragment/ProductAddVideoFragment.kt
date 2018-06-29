@@ -17,7 +17,6 @@ import com.tokopedia.networklib.util.RestClient
 import com.tokopedia.product.edit.R
 import com.tokopedia.product.edit.activity.ProductAddVideoRecommendationActivity
 import com.tokopedia.product.edit.adapter.ProductAddVideoAdapterTypeFactory
-import com.tokopedia.product.edit.listener.GetVideoRecommendationListener
 import com.tokopedia.product.edit.listener.ProductAddVideoView
 import com.tokopedia.product.edit.listener.SectionVideoRecommendationListener
 import com.tokopedia.product.edit.listener.VideoChoosenListener
@@ -33,9 +32,10 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
     override val contextView: Context get() = activity
 
     var videoIDs: ArrayList<String> = ArrayList()
-    var youtubeVideoModelArrayList: ArrayList<YoutubeVideoModel> = ArrayList()
+    private var youtubeVideoRecommendationList: ArrayList<YoutubeVideoModel> = ArrayList()
     private lateinit var productAddVideoPresenter : ProductAddVideoPresenter
     private lateinit var getVideoRecommendationListener : GetVideoRecommendationListener
+    private lateinit var videoChoosenDeletedListener : VideoChoosenDeletedListener
     private val mapper = VideoMapper()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,7 +66,7 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
     }
 
     override fun getAdapterTypeFactory(): ProductAddVideoAdapterTypeFactory {
-        return ProductAddVideoAdapterTypeFactory(this)
+        return ProductAddVideoAdapterTypeFactory(this, this)
     }
 
     override fun onItemClicked(t: ProductAddVideoBaseViewModel?) {
@@ -101,7 +101,7 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
             adapter.addElement(productAddVideoBaseViewModel)
         } else {
             adapter.clearElement(productAddVideoBaseViewModel)
-            if(videoIDs.size == 1){
+            if(videoIDs.size == 0){
                 for (i in 0 until adapter.data.size) {
                     val productAddVideoBaseViewModels = adapter.data[i]
                     if (productAddVideoBaseViewModels is TitleVideoChoosenViewModel) {
@@ -116,7 +116,7 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
     }
 
     override fun onSuccessGetYoutubeDataVideoRecommendation(youtubeVideoModelArrayList: ArrayList<YoutubeVideoModel>) {
-        this.youtubeVideoModelArrayList = youtubeVideoModelArrayList
+        youtubeVideoRecommendationList = youtubeVideoModelArrayList
         val mapper = VideoRecommendationMapper()
         getVideoRecommendationListener.onSuccessGetYoutubeDataVideoRecommendation(mapper.transformDataToVideoViewModel(youtubeVideoModelArrayList))
     }
@@ -131,13 +131,13 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
     }
 
 
-    override fun setGetVideoRecommendationListener(listener: GetVideoRecommendationListener) {
+    override fun setGetVideoRecommendationListener(listener: ProductAddVideoFragment.GetVideoRecommendationListener) {
         getVideoRecommendationListener = listener
     }
 
     override fun onShowMoreClicked() {
         val intent = Intent(activity, ProductAddVideoRecommendationActivity::class.java)
-        intent.putParcelableArrayListExtra(EXTRA_VIDEO_RECOMMENDATION, youtubeVideoModelArrayList)
+        intent.putParcelableArrayListExtra(EXTRA_VIDEO_RECOMMENDATION, youtubeVideoRecommendationList)
         intent.putStringArrayListExtra(EXTRA_VIDEOS_LINKS, videoIDs)
         startActivityForResult(intent, REQUEST_CODE_GET_VIDEO_RECOMMENDATION)
     }
@@ -146,16 +146,33 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
         if(videoIDs.contains(videoRecommendationViewModel.videoID)){
            Toast.makeText(activity, "sudah ad", Toast.LENGTH_LONG).show()
         } else {
-            updateListData(mapper.transformVideoRecommendationViewModelToVideoViewModel(videoRecommendationViewModel), ADD_VIDEO_CHOOSEN)
             videoIDs.add(videoRecommendationViewModel.videoID!!)
+            updateListData(mapper.transformVideoRecommendationViewModelToVideoViewModel(videoRecommendationViewModel), ADD_VIDEO_CHOOSEN)
             (activity as AppCompatActivity).supportActionBar?.subtitle = getString(R.string.product_from_to_video, videoIDs.size, MAX_VIDEO)
         }
     }
 
-    override fun onVideoChoosenDeleted(videoViewModel: VideoViewModel) {
-
+    override fun onVideoChoosenDeleted(position : Int) {
+        videoChoosenDeletedListener.onVideoChoosenDeleted(adapter.data[position] as VideoViewModel)
+        videoIDs.remove((adapter.data[position] as VideoViewModel).videoID)
+        updateListData(adapter.data[position], DELETE_VIDEO_CHOOSEN)
+        (activity as AppCompatActivity).supportActionBar?.subtitle = getString(R.string.product_from_to_video, videoIDs.size, MAX_VIDEO)
     }
 
+
+    override fun setVideoChoosenDeletedListener(listener: VideoChoosenDeletedListener) {
+        videoChoosenDeletedListener = listener
+    }
+
+
+
+    interface GetVideoRecommendationListener {
+        fun onSuccessGetYoutubeDataVideoRecommendation(videoRecommendationViewModelList : List<VideoRecommendationViewModel>)
+    }
+
+    interface VideoChoosenDeletedListener {
+        fun onVideoChoosenDeleted(videoViewModel : VideoViewModel)
+    }
 
     companion object {
         const val EXTRA_VIDEOS_LINKS = "KEY_VIDEOS_LINK"

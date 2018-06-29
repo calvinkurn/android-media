@@ -8,13 +8,6 @@ import com.tokopedia.product.edit.viewmodel.TitleVideoRecommendationViewModel
 
 class TitleVideoRecommendationViewHolder(itemView: View) : AbstractViewHolder<TitleVideoRecommendationViewModel>(itemView) {
 
-    init {
-        findViews(itemView)
-    }
-
-    private fun findViews(view: View) {
-    }
-
     override fun bind(titleVideoRecommendationViewModel: TitleVideoRecommendationViewModel) {
     }
 
