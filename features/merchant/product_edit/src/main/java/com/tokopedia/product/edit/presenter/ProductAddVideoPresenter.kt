@@ -32,7 +32,7 @@ class ProductAddVideoPresenter : BaseDaggerPresenter<ProductAddVideoView>() {
     private val getYoutubeVideoListDetailUseCase: GetYoutubeVideoListDetailUseCase by lazy { GetYoutubeVideoListDetailUseCase(view.contextView) }
     private val mapper = VideoMapper()
 
-    fun getVideoRecommendationFeatured(query: String, size: Int) {
+    fun getVideoRecommendation(query: String, size: Int) {
 
         val variables = HashMap<String, Any>()
         variables[QUERY] = query
@@ -105,7 +105,7 @@ class ProductAddVideoPresenter : BaseDaggerPresenter<ProductAddVideoView>() {
                         view.onSuccessGetYoutubeDataVideoChoosen(youtubeVideoModelArrayList)
                     }
                     else
-                        view.onSuccessGetYoutubeDataVideoRecommendationFeatured(youtubeVideoModelArrayList)
+                        view.onSuccessGetYoutubeDataVideoRecommendation(youtubeVideoModelArrayList)
                 }
             }
         })

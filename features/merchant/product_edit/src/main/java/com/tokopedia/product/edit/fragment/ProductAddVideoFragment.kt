@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
+import java.util.ArrayList
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.networklib.util.RestClient
@@ -32,6 +33,7 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
     override val contextView: Context get() = activity
 
     var videoIDs: ArrayList<String> = ArrayList()
+    var youtubeVideoModelArrayList: ArrayList<YoutubeVideoModel> = ArrayList()
     private lateinit var productAddVideoPresenter : ProductAddVideoPresenter
     private lateinit var getVideoRecommendationListener : GetVideoRecommendationListener
     private val mapper = VideoMapper()
@@ -113,14 +115,15 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
         }
     }
 
-    override fun onSuccessGetYoutubeDataVideoRecommendationFeatured(youtubeVideoModelArrayList: ArrayList<YoutubeVideoModel>) {
+    override fun onSuccessGetYoutubeDataVideoRecommendation(youtubeVideoModelArrayList: ArrayList<YoutubeVideoModel>) {
+        this.youtubeVideoModelArrayList = youtubeVideoModelArrayList
         val mapper = VideoRecommendationMapper()
-        getVideoRecommendationListener.onSuccessGetVideoRecommendationFeatured(mapper.transformDataToVideoViewModel(youtubeVideoModelArrayList))
+        getVideoRecommendationListener.onSuccessGetYoutubeDataVideoRecommendation(mapper.transformDataToVideoViewModel(youtubeVideoModelArrayList))
     }
 
     override fun onSuccessGetYoutubeDataVideoChoosen(youtubeVideoModelArrayList: ArrayList<YoutubeVideoModel>) {
         (activity as AppCompatActivity).supportActionBar?.subtitle = getString(R.string.product_from_to_video, videoIDs.size, ProductAddVideoFragment.MAX_VIDEO)
-        productAddVideoPresenter.getVideoRecommendationFeatured("iphone", MAX_VIDEO_RECOMMENDATION_FEATURED)
+        productAddVideoPresenter.getVideoRecommendation("iphone", MAX_VIDEO_RECOMMENDATION)
     }
 
     override fun onErrorGetVideoData(e: Throwable) {
@@ -134,6 +137,8 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
 
     override fun onShowMoreClicked() {
         val intent = Intent(activity, ProductAddVideoRecommendationActivity::class.java)
+        intent.putParcelableArrayListExtra(EXTRA_VIDEO_RECOMMENDATION, youtubeVideoModelArrayList)
+        intent.putStringArrayListExtra(EXTRA_VIDEOS_LINKS, videoIDs)
         startActivityForResult(intent, REQUEST_CODE_GET_VIDEO_RECOMMENDATION)
     }
 
@@ -154,9 +159,10 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
 
     companion object {
         const val EXTRA_VIDEOS_LINKS = "KEY_VIDEOS_LINK"
+        const val EXTRA_VIDEO_RECOMMENDATION = "KEY_VIDEO_RECOMMENDATION"
 
         const val MAX_VIDEO = 3
-        const val MAX_VIDEO_RECOMMENDATION_FEATURED = 4
+        const val MAX_VIDEO_RECOMMENDATION = 10
 
         const val REQUEST_CODE_GET_VIDEO_RECOMMENDATION = 1
 

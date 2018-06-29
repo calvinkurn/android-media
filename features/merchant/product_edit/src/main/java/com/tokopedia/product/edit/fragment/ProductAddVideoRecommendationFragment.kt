@@ -23,6 +23,9 @@ class ProductAddVideoRecommendationFragment : BaseListFragment<ProductAddVideoRe
 
     override val contextView: Context get() = activity
 
+    var youtubeVideoModelArrayList: ArrayList<YoutubeVideoModel> = ArrayList()
+    var videoIDs: ArrayList<String> = ArrayList()
+
     private lateinit var productAddVideoRecommendationPresenter: ProductAddVideoRecommendationPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,6 +36,10 @@ class ProductAddVideoRecommendationFragment : BaseListFragment<ProductAddVideoRe
         productAddVideoRecommendationPresenter.attachView(this)
 
         (activity as AppCompatActivity).supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_close_default);
+        if(activity.intent != null){
+            youtubeVideoModelArrayList = activity.intent.getParcelableArrayListExtra<YoutubeVideoModel>(ProductAddVideoFragment.EXTRA_VIDEO_RECOMMENDATION)
+            videoIDs = activity.intent.getStringArrayListExtra(ProductAddVideoFragment.EXTRA_VIDEOS_LINKS)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -54,28 +61,27 @@ class ProductAddVideoRecommendationFragment : BaseListFragment<ProductAddVideoRe
     override fun initInjector() {}
 
     override fun loadData(page: Int) {
-        productAddVideoRecommendationPresenter.getYoutubeDataVideoRecommendation("iphone", MAX_VIDEO_RECOMMENDATION)
-    }
-
-    override fun onErrorGetVideoRecommendation(e: Throwable) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun onSuccessGetYoutubeDataVideoRecommendation(youtubeVideoModelArrayList: ArrayList<YoutubeVideoModel>) {
         val productAddVideoRecommendationBaseViewModel : ArrayList<ProductAddVideoRecommendationBaseViewModel> = ArrayList()
         val mapper = VideoRecommendationMapper()
 
         val videoRecommendationViewModelList: List<VideoRecommendationViewModel> = mapper.transformDataToVideoViewModel(youtubeVideoModelArrayList)
+        for(videoID in videoIDs){
+            for(videoRecommendationViewModel in videoRecommendationViewModelList){
+                if(videoRecommendationViewModel.videoID == videoID){
+                    videoRecommendationViewModel.choosen = true
+                }
+            }
+        }
+
         productAddVideoRecommendationBaseViewModel.addAll(videoRecommendationViewModelList)
 
         val titleVideoRecommendationViewModel = TitleVideoRecommendationViewModel()
         productAddVideoRecommendationBaseViewModel.add(0, titleVideoRecommendationViewModel)
 
-        renderList(videoRecommendationViewModelList)
+        renderList(productAddVideoRecommendationBaseViewModel)
     }
 
     companion object {
-        const val MAX_VIDEO_RECOMMENDATION = 20
 
         fun createInstance(): android.support.v4.app.Fragment {
             return ProductAddVideoRecommendationFragment()

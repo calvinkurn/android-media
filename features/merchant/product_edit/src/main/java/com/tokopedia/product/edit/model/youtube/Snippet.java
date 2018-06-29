@@ -1,11 +1,15 @@
 package com.tokopedia.product.edit.model.youtube;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class Snippet {
+public class Snippet implements Parcelable {
 
     @SerializedName("publishedAt")
     @Expose
@@ -140,5 +144,63 @@ public class Snippet {
         this.defaultAudioLanguage = defaultAudioLanguage;
     }
 
-}
 
+    protected Snippet(Parcel in) {
+        publishedAt = in.readString();
+        channelId = in.readString();
+        title = in.readString();
+        description = in.readString();
+        thumbnails = (Thumbnails) in.readValue(Thumbnails.class.getClassLoader());
+        channelTitle = in.readString();
+        if (in.readByte() == 0x01) {
+            tags = new ArrayList<String>();
+            in.readList(tags, String.class.getClassLoader());
+        } else {
+            tags = null;
+        }
+        categoryId = in.readString();
+        liveBroadcastContent = in.readString();
+        defaultLanguage = in.readString();
+        localized = (Localized) in.readValue(Localized.class.getClassLoader());
+        defaultAudioLanguage = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(publishedAt);
+        dest.writeString(channelId);
+        dest.writeString(title);
+        dest.writeString(description);
+        dest.writeValue(thumbnails);
+        dest.writeString(channelTitle);
+        if (tags == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(tags);
+        }
+        dest.writeString(categoryId);
+        dest.writeString(liveBroadcastContent);
+        dest.writeString(defaultLanguage);
+        dest.writeValue(localized);
+        dest.writeString(defaultAudioLanguage);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Snippet> CREATOR = new Parcelable.Creator<Snippet>() {
+        @Override
+        public Snippet createFromParcel(Parcel in) {
+            return new Snippet(in);
+        }
+
+        @Override
+        public Snippet[] newArray(int size) {
+            return new Snippet[size];
+        }
+    };
+}

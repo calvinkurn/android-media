@@ -12,15 +12,16 @@ import com.tokopedia.product.edit.viewmodel.VideoRecommendationViewModel
 
 class VideoRecommendationViewHolder(itemView: View) : AbstractViewHolder<VideoRecommendationViewModel>(itemView) {
 
-    var imageThumbnail: ImageView = itemView.findViewById(R.id.image_thumbnail)
-    var textTitle: TextView = itemView.findViewById(R.id.text_title)
-    var textChannel: TextView = itemView.findViewById(R.id.text_channel)
-    var checkboxChoosen: CheckBox = itemView.findViewById(R.id.checkbox_choosen)
+    private var imageThumbnail: ImageView = itemView.findViewById(R.id.image_thumbnail)
+    private var textTitle: TextView = itemView.findViewById(R.id.text_title)
+    private var textChannel: TextView = itemView.findViewById(R.id.text_channel)
+    private var checkboxChoosen: CheckBox = itemView.findViewById(R.id.checkbox_choosen)
 
     override fun bind(videoRecommendationViewModel: VideoRecommendationViewModel) {
         textTitle.text = videoRecommendationViewModel.snippetTitle
         textChannel.text = videoRecommendationViewModel.snippetChannel
         ImageHandler.loadImageThumbs(imageThumbnail.context, imageThumbnail, videoRecommendationViewModel.thumbnailUrl)
+        checkboxChoosen.isChecked = videoRecommendationViewModel.choosen
     }
 
     companion object {

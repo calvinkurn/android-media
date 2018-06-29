@@ -1,9 +1,12 @@
 package com.tokopedia.product.edit.model.youtube;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class PageInfo {
+public class PageInfo implements Parcelable {
 
     @SerializedName("totalResults")
     @Expose
@@ -28,4 +31,33 @@ public class PageInfo {
         this.resultsPerPage = resultsPerPage;
     }
 
+
+    protected PageInfo(Parcel in) {
+        totalResults = in.readInt();
+        resultsPerPage = in.readInt();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(totalResults);
+        dest.writeInt(resultsPerPage);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<PageInfo> CREATOR = new Parcelable.Creator<PageInfo>() {
+        @Override
+        public PageInfo createFromParcel(Parcel in) {
+            return new PageInfo(in);
+        }
+
+        @Override
+        public PageInfo[] newArray(int size) {
+            return new PageInfo[size];
+        }
+    };
 }

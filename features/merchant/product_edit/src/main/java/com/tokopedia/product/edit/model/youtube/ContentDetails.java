@@ -1,9 +1,12 @@
 package com.tokopedia.product.edit.model.youtube;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ContentDetails {
+public class ContentDetails implements Parcelable {
 
     @SerializedName("duration")
     @Expose
@@ -83,4 +86,43 @@ public class ContentDetails {
         this.projection = projection;
     }
 
+
+    protected ContentDetails(Parcel in) {
+        duration = in.readString();
+        dimension = in.readString();
+        definition = in.readString();
+        caption = in.readString();
+        licensedContent = in.readByte() != 0x00;
+        projection = in.readString();
+        contentRating = (ContentRating) in.readValue(ContentRating.class.getClassLoader());
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(duration);
+        dest.writeString(dimension);
+        dest.writeString(definition);
+        dest.writeString(caption);
+        dest.writeByte((byte) (licensedContent ? 0x01 : 0x00));
+        dest.writeString(projection);
+        dest.writeValue(contentRating);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<ContentDetails> CREATOR = new Parcelable.Creator<ContentDetails>() {
+        @Override
+        public ContentDetails createFromParcel(Parcel in) {
+            return new ContentDetails(in);
+        }
+
+        @Override
+        public ContentDetails[] newArray(int size) {
+            return new ContentDetails[size];
+        }
+    };
 }

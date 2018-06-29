@@ -9,7 +9,4 @@ interface ProductAddVideoRecommendationView : CustomerView {
 
     val contextView : Context
 
-    fun onSuccessGetYoutubeDataVideoRecommendation(youtubeVideoModelArrayList: ArrayList<YoutubeVideoModel>)
-
-    fun onErrorGetVideoRecommendation(e: Throwable)
 }

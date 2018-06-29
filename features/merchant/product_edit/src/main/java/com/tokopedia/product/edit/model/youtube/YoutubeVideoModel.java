@@ -1,12 +1,15 @@
 package com.tokopedia.product.edit.model.youtube;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class YoutubeVideoModel {
+public class YoutubeVideoModel implements Parcelable {
 
     private static final String YT_AGE_RESTRICTED = "ytAgeRestricted";
 
@@ -69,4 +72,49 @@ public class YoutubeVideoModel {
         return items.get(0).getContentDetails().getDuration();
     }
 
+
+    protected YoutubeVideoModel(Parcel in) {
+        kind = in.readString();
+        etag = in.readString();
+        pageInfo = (PageInfo) in.readValue(PageInfo.class.getClassLoader());
+        if (in.readByte() == 0x01) {
+            items = new ArrayList<>();
+            in.readList(items, Item.class.getClassLoader());
+        } else {
+            items = null;
+        }
+        item = (Item) in.readValue(Item.class.getClassLoader());
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(kind);
+        dest.writeString(etag);
+        dest.writeValue(pageInfo);
+        if (items == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(items);
+        }
+        dest.writeValue(item);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<YoutubeVideoModel> CREATOR = new Parcelable.Creator<YoutubeVideoModel>() {
+        @Override
+        public YoutubeVideoModel createFromParcel(Parcel in) {
+            return new YoutubeVideoModel(in);
+        }
+
+        @Override
+        public YoutubeVideoModel[] newArray(int size) {
+            return new YoutubeVideoModel[size];
+        }
+    };
 }

@@ -56,7 +56,7 @@ class ProductAddVideoRecommendationPresenter : BaseDaggerPresenter<ProductAddVid
             override fun onError(e: Throwable) {
                 e.printStackTrace()
                 if (isViewAttached) {
-                    view.onErrorGetVideoRecommendation(e)
+//                    view.onErrorGetVideoRecommendation(e)
                 }
             }
 
@@ -81,7 +81,7 @@ class ProductAddVideoRecommendationPresenter : BaseDaggerPresenter<ProductAddVid
 
             override fun onError(e: Throwable) {
                 if (isViewAttached) {
-                    view.onErrorGetVideoRecommendation(e)
+//                    view.onErrorGetVideoRecommendation(e)
                 }
             }
 
@@ -91,7 +91,7 @@ class ProductAddVideoRecommendationPresenter : BaseDaggerPresenter<ProductAddVid
                     for (map in maps) {
                         youtubeVideoModelArrayList.add(convertToModel(map))
                     }
-                    view.onSuccessGetYoutubeDataVideoRecommendation(youtubeVideoModelArrayList)
+//                    view.onSuccessGetYoutubeDataVideoRecommendation(youtubeVideoModelArrayList)
                 }
             }
         })

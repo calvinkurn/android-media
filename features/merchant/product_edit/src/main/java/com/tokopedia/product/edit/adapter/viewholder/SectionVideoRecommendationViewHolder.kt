@@ -25,10 +25,10 @@ class SectionVideoRecommendationViewHolder(itemView: View,
     private lateinit var itemDecoration:RecyclerView.ItemDecoration
 
     init {
-        findViews(itemView)
+        setViews(itemView)
     }
 
-    private fun findViews(view: View) {
+    private fun setViews(view: View) {
         sectionVideoRecommendationListener.setGetVideoRecommendationListener(this)
         textShowMore = view.findViewById(R.id.text_video_recommendation_show_more)
         textShowMore.setOnClickListener({
@@ -73,7 +73,17 @@ class SectionVideoRecommendationViewHolder(itemView: View,
 
     }
 
-    override fun onSuccessGetVideoRecommendationFeatured(videoRecommendationFeaturedList: List<VideoRecommendationViewModel>) {
+    override fun onSuccessGetYoutubeDataVideoRecommendation(videoRecommendationViewModelList: List<VideoRecommendationViewModel>) {
+        val videoRecommendationFeaturedList: ArrayList<VideoRecommendationViewModel> = ArrayList()
+        if(videoRecommendationViewModelList.size <= 3){
+            textShowMore.visibility = View.GONE
+            videoRecommendationFeaturedList.addAll(videoRecommendationViewModelList)
+        } else {
+            for (i in 0..2) {
+                videoRecommendationFeaturedList.add(videoRecommendationViewModelList[i])
+            }
+        }
+
         for(videoID in sectionVideoRecommendationListener.getVideoIDs){
             for(videoRecommendationFeatured in videoRecommendationFeaturedList){
                 if(videoRecommendationFeatured.videoID == videoID){

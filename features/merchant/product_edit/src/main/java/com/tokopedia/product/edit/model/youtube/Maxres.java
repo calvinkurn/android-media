@@ -1,9 +1,12 @@
 package com.tokopedia.product.edit.model.youtube;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Maxres {
+public class Maxres implements Parcelable {
 
     @SerializedName("url")
     @Expose
@@ -39,4 +42,35 @@ public class Maxres {
         this.height = height;
     }
 
+
+    protected Maxres(Parcel in) {
+        url = in.readString();
+        width = in.readInt();
+        height = in.readInt();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(url);
+        dest.writeInt(width);
+        dest.writeInt(height);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Maxres> CREATOR = new Parcelable.Creator<Maxres>() {
+        @Override
+        public Maxres createFromParcel(Parcel in) {
+            return new Maxres(in);
+        }
+
+        @Override
+        public Maxres[] newArray(int size) {
+            return new Maxres[size];
+        }
+    };
 }

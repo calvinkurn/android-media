@@ -1,9 +1,12 @@
 package com.tokopedia.product.edit.model.youtube;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Item {
+public class Item implements Parcelable {
 
     @SerializedName("kind")
     @Expose
@@ -61,4 +64,39 @@ public class Item {
         this.contentDetails = contentDetails;
     }
 
+
+    protected Item(Parcel in) {
+        kind = in.readString();
+        etag = in.readString();
+        id = in.readString();
+        snippet = (Snippet) in.readValue(Snippet.class.getClassLoader());
+        contentDetails = (ContentDetails) in.readValue(ContentDetails.class.getClassLoader());
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(kind);
+        dest.writeString(etag);
+        dest.writeString(id);
+        dest.writeValue(snippet);
+        dest.writeValue(contentDetails);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Item> CREATOR = new Parcelable.Creator<Item>() {
+        @Override
+        public Item createFromParcel(Parcel in) {
+            return new Item(in);
+        }
+
+        @Override
+        public Item[] newArray(int size) {
+            return new Item[size];
+        }
+    };
 }

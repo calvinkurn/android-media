@@ -20,6 +20,6 @@ class TitleVideoRecommendationViewHolder(itemView: View) : AbstractViewHolder<Ti
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_product_add_video_choosen_title
+        val LAYOUT = R.layout.item_product_add_video_recommendation_title
     }
 }
