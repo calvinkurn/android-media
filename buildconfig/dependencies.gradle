@@ -308,7 +308,7 @@ ext {
             transactionanalytics  : ":features:transaction:transactionanalytics",
             tracking              : ":features:logistic:tracking",
             logisticuploadawb     : ":features:logistic:logisticuploadawb",
-            reksaDana             : ":features:fintech:reksa_dana"
+            reksaDana             : ":features:fintech:reksa_dana",
             logisticuploadawb     : ":features:logistic:logisticuploadawb"
     ]
 
