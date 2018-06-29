@@ -270,17 +270,16 @@ public class TopEventsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVi
 
         private void setEventTitle(String title) {
             SpannableString spannableString = new SpannableString(title);
-            if (highLightText != null && !highLightText.isEmpty() && Utils.containsIgnoreCase(title, highLightText)) {
-                StyleSpan styleSpan = new StyleSpan(Typeface.BOLD);
-                int fromindex = title.indexOf(highLightText);
-                if (fromindex == -1) {
-                    fromindex = title.indexOf(lowerhighlight);
+            try {
+                if (!"".equalsIgnoreCase(highLightText)
+                        && Utils.containsIgnoreCase(title, highLightText)) {
+                    StyleSpan styleSpan = new StyleSpan(Typeface.BOLD);
+                    int fromindex = title.toLowerCase().indexOf(highLightText.toLowerCase());
+                    int toIndex = fromindex + highLightText.length();
+                    spannableString.setSpan(styleSpan, fromindex, toIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 }
-                if (fromindex == -1) {
-                    fromindex = title.indexOf(upperhighlight);
-                }
-                int toIndex = fromindex + highLightText.length();
-                spannableString.setSpan(styleSpan, fromindex, toIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
             eventTitle.setText(spannableString);
         }

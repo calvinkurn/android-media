@@ -253,7 +253,8 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
         setHolder(R.drawable.ic_placeholder, data.getCityName(), locationHolder);
         setHolder(R.drawable.ic_skyline, data.getAddress(), addressHolder);
         textViewTitle.setText(data.getTitle());
-        tvExpandableDescription.setText(Html.fromHtml(data.getLongRichDesc()));
+        if (data.getLongRichDesc() != null && !data.getLongRichDesc().isEmpty())
+            tvExpandableDescription.setText(Html.fromHtml(data.getLongRichDesc()));
 
         String tnc = data.getTnc();
         if (Utils.isNotNullOrEmpty(tnc)) {
