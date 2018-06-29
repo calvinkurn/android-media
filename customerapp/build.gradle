@@ -242,9 +242,6 @@ android {
         live {
             dimension "tier"
         }
-        staging {
-
-        }
     }
 }
 
