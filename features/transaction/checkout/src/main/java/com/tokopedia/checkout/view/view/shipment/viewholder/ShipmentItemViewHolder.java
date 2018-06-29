@@ -259,7 +259,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         renderCostDetail(shipmentCartItemModel);
 
         List<CartItemModel> cartItemModelList = new ArrayList<>(shipmentCartItemModel.getCartItemModels());
-        renderFirstCartItem(cartItemModelList.remove(FIRST_ELEMENT));
+        if (cartItemModelList.size() > 0) {
+            renderFirstCartItem(cartItemModelList.remove(FIRST_ELEMENT));
+        }
         if (shipmentCartItemModel.getCartItemModels() != null && shipmentCartItemModel.getCartItemModels().size() > 1) {
             rlExpandOtherProduct.setVisibility(View.VISIBLE);
             renderOtherCartItems(shipmentCartItemModel, cartItemModelList);

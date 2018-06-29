@@ -16,6 +16,7 @@ import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddr
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.GroupAddress;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.GroupShop;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.Product;
+import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.checkout.domain.datamodel.toppay.ThanksTopPayData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
@@ -83,6 +84,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private List<CheckPromoCodeCartShipmentRequest.Data> promoCodeCartShipmentRequestDataList;
     private List<DataChangeAddressRequest> changeAddressRequestList;
     private CheckoutData checkoutData;
+    private boolean partialCheckout;
 
     @Inject
     public ShipmentPresenter(CompositeSubscription compositeSubscription,
@@ -157,71 +159,71 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public void processCheckShipmentPrepareCheckout() {
         boolean isNeedToRemoveErrorProduct = isNeedToremoveErrorShopProduct();
-        if (isNeedToRemoveErrorProduct) {
+        if (partialCheckout || isNeedToRemoveErrorProduct) {
             processCheckout();
-        }
+        } else {
+            getView().showLoading();
+            com.tokopedia.abstraction.common.utils.TKPDMapParam<String, String> paramGetShipmentForm = new com.tokopedia.abstraction.common.utils.TKPDMapParam<>();
+            paramGetShipmentForm.put("lang", "id");
 
-        getView().showLoading();
-        com.tokopedia.abstraction.common.utils.TKPDMapParam<String, String> paramGetShipmentForm = new com.tokopedia.abstraction.common.utils.TKPDMapParam<>();
-        paramGetShipmentForm.put("lang", "id");
+            RequestParams requestParams = RequestParams.create();
+            requestParams.putObject(GetShipmentAddressFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS,
+                    getGeneratedAuthParamNetwork(paramGetShipmentForm));
 
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putObject(GetShipmentAddressFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS,
-                getGeneratedAuthParamNetwork(paramGetShipmentForm));
+            compositeSubscription.add(
+                    getShipmentAddressFormUseCase.createObservable(requestParams)
+                            .subscribeOn(Schedulers.newThread())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .unsubscribeOn(Schedulers.newThread())
+                            .subscribe(
+                                    new Subscriber<CartShipmentAddressFormData>() {
+                                        @Override
+                                        public void onCompleted() {
 
-        compositeSubscription.add(
-                getShipmentAddressFormUseCase.createObservable(requestParams)
-                        .subscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.newThread())
-                        .subscribe(
-                                new Subscriber<CartShipmentAddressFormData>() {
-                                    @Override
-                                    public void onCompleted() {
+                                        }
 
-                                    }
+                                        @Override
+                                        public void onError(Throwable e) {
+                                            e.printStackTrace();
+                                            getView().hideLoading();
+                                            getView().showToastError(getView().getActivityContext().getString(R.string.default_request_error_unknown_short));
+                                        }
 
-                                    @Override
-                                    public void onError(Throwable e) {
-                                        e.printStackTrace();
-                                        getView().hideLoading();
-                                        getView().showToastError(getView().getActivityContext().getString(R.string.default_request_error_unknown_short));
-                                    }
-
-                                    @Override
-                                    public void onNext(CartShipmentAddressFormData cartShipmentAddressFormData) {
-                                        boolean isEnableCheckout = true;
-                                        for (GroupAddress groupAddress : cartShipmentAddressFormData.getGroupAddress()) {
-                                            if (groupAddress.isError() || groupAddress.isWarning()) {
-                                                isEnableCheckout = false;
-                                                break;
-                                            }
-                                            for (GroupShop groupShop : groupAddress.getGroupShop()) {
-                                                if (groupShop.isError() || groupShop.isWarning()) {
+                                        @Override
+                                        public void onNext(CartShipmentAddressFormData cartShipmentAddressFormData) {
+                                            boolean isEnableCheckout = true;
+                                            for (GroupAddress groupAddress : cartShipmentAddressFormData.getGroupAddress()) {
+                                                if (groupAddress.isError() || groupAddress.isWarning()) {
                                                     isEnableCheckout = false;
                                                     break;
                                                 }
-                                                for (Product product : groupShop.getProducts()) {
-                                                    if (product.isError() || !TextUtils.isEmpty(product.getErrorMessage())) {
+                                                for (GroupShop groupShop : groupAddress.getGroupShop()) {
+                                                    if (groupShop.isError() || groupShop.isWarning()) {
                                                         isEnableCheckout = false;
                                                         break;
                                                     }
+                                                    for (Product product : groupShop.getProducts()) {
+                                                        if (product.isError() || !TextUtils.isEmpty(product.getErrorMessage())) {
+                                                            isEnableCheckout = false;
+                                                            break;
+                                                        }
+                                                    }
                                                 }
                                             }
-                                        }
 
-                                        if (isEnableCheckout) {
-                                            getView().renderCheckShipmentPrepareCheckoutSuccess();
-                                        } else {
-                                            getView().hideLoading();
-                                            getView().renderErrorDataHasChangedCheckShipmentPrepareCheckout(
-                                                    cartShipmentAddressFormData, !isNeedToRemoveErrorProduct
-                                            );
+                                            if (isEnableCheckout) {
+                                                getView().renderCheckShipmentPrepareCheckoutSuccess();
+                                            } else {
+                                                getView().hideLoading();
+                                                getView().renderErrorDataHasChangedCheckShipmentPrepareCheckout(
+                                                        cartShipmentAddressFormData, !isNeedToRemoveErrorProduct
+                                                );
+                                            }
                                         }
                                     }
-                                }
-                        )
-        );
+                            )
+            );
+        }
     }
 
     private TKPDMapParam<String, String> getGeneratedAuthParamNetwork(TKPDMapParam<String, String> originParams) {
@@ -265,38 +267,44 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     private boolean isNeedToremoveErrorShopProduct() {
         boolean cartListHasError = false;
-        ArrayList<Integer> indexShopErrorList = new ArrayList<>();
-        Map<Integer, ArrayList<Integer>> indexShopItemErrorMap = new HashMap<>();
+        ArrayList<ShipmentCartItemModel> indexShopErrorList = new ArrayList<>();
+        Map<ShipmentCartItemModel, List<CartItemModel>> indexShopItemErrorMap = new HashMap<>();
         for (int i = 0; i < shipmentCartItemModelList.size(); i++) {
             if (shipmentCartItemModelList.get(i).isAllItemError()) {
                 cartListHasError = true;
-                indexShopErrorList.add(i);
-            } else if (shipmentCartItemModelList.get(i).isError()) {
-                ArrayList<Integer> indexShopItemError = new ArrayList<>();
+                indexShopErrorList.add(shipmentCartItemModelList.get(i));
+            }
+            if (shipmentCartItemModelList.get(i).isError()) {
+                List<CartItemModel> deletedCartItemModels = new ArrayList<>();
                 for (int j = 0; j < shipmentCartItemModelList.get(i).getCartItemModels().size(); j++) {
                     if (shipmentCartItemModelList.get(i).getCartItemModels().get(j).isError()) {
                         cartListHasError = true;
-                        indexShopItemError.add(j);
+                        deletedCartItemModels.add(shipmentCartItemModelList.get(i).getCartItemModels().get(j));
                     }
                 }
-                indexShopItemErrorMap.put(i, indexShopItemError);
+                indexShopItemErrorMap.put(shipmentCartItemModelList.get(i), deletedCartItemModels);
+                if (deletedCartItemModels.size() == shipmentCartItemModelList.get(i).getCartItemModels().size()) {
+                    indexShopErrorList.add(shipmentCartItemModelList.get(i));
+                }
             }
-        }
-
-        for (Map.Entry<Integer, ArrayList<Integer>> entry : indexShopItemErrorMap.entrySet()) {
-            Integer key = entry.getKey();
-            ArrayList<Integer> value = entry.getValue();
-            for (Integer index : value) {
-                shipmentCartItemModelList.get(key).getCartItemModels().remove((int) index);
-            }
-        }
-
-        for (Integer indexShopError : indexShopErrorList) {
-            shipmentCartItemModelList.remove((int) indexShopError);
         }
 
         if (cartListHasError) {
+            for (Map.Entry<ShipmentCartItemModel, List<CartItemModel>> entry : indexShopItemErrorMap.entrySet()) {
+                ShipmentCartItemModel key = entry.getKey();
+                List<CartItemModel> value = entry.getValue();
+                for (CartItemModel cartItemModel : value) {
+                    int index = shipmentCartItemModelList.indexOf(key);
+                    shipmentCartItemModelList.get(index).getCartItemModels().remove(cartItemModel);
+                }
+            }
+
+            for (ShipmentCartItemModel indexShopError : indexShopErrorList) {
+                shipmentCartItemModelList.remove(indexShopError);
+            }
+
             dataCheckoutRequestList = getView().generateNewCheckoutRequest(shipmentCartItemModelList);
+            partialCheckout = true;
             return true;
         }
         return false;
