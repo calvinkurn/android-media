@@ -10,8 +10,7 @@ import com.tokopedia.product.edit.adapter.viewholder.VideoRecommendationFeatured
 import com.tokopedia.product.edit.viewmodel.VideoRecommendationViewModel
 
 class ProductAddVideoRecommendationFeaturedAdapter(var videoRecommendationFeatured: List<VideoRecommendationViewModel>,
-                                                   var videoFeaturedClickListener : SectionVideoRecommendationViewHolder.VideoFeaturedClickListener,
-                                                   var videoIDs: ArrayList<String>) : RecyclerView.Adapter<VideoRecommendationFeaturedViewHolder>(){
+                                                   var videoFeaturedClickListener : SectionVideoRecommendationViewHolder.VideoFeaturedClickListener) : RecyclerView.Adapter<VideoRecommendationFeaturedViewHolder>(){
 
     override fun onBindViewHolder(holder: VideoRecommendationFeaturedViewHolder, position: Int) {
         holder.textTitle.text = videoRecommendationFeatured[position].snippetTitle
@@ -33,7 +32,7 @@ class ProductAddVideoRecommendationFeaturedAdapter(var videoRecommendationFeatur
         val itemLayoutView = LayoutInflater.from(parent!!.context)
                 .inflate(R.layout.item_product_add_video_recommendation_featured, parent, false)
 
-        return VideoRecommendationFeaturedViewHolder(itemLayoutView, videoFeaturedClickListener, videoIDs)
+        return VideoRecommendationFeaturedViewHolder(itemLayoutView, videoFeaturedClickListener)
     }
 
     fun replaceData(videoRecommendationFeatured: List<VideoRecommendationViewModel>) {

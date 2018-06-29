@@ -9,8 +9,7 @@ import com.tokopedia.product.edit.R
 import com.tokopedia.product.edit.viewmodel.VideoRecommendationViewModel
 
 class VideoRecommendationFeaturedViewHolder(itemView: View,
-                                            var videoFeaturedClickListener : SectionVideoRecommendationViewHolder.VideoFeaturedClickListener,
-                                            var videoIDs: ArrayList<String>) : RecyclerView.ViewHolder(itemView) {
+                                            var videoFeaturedClickListener : SectionVideoRecommendationViewHolder.VideoFeaturedClickListener) : RecyclerView.ViewHolder(itemView) {
 
     var imageThumbnail: ImageView = itemView.findViewById(R.id.image_thumbnail)
     var textTitle: TextView = itemView.findViewById(R.id.text_title)
@@ -25,15 +24,6 @@ class VideoRecommendationFeaturedViewHolder(itemView: View,
 
     fun setView(){
         itemView.setOnClickListener({
-            if(!videoIDs.contains(currentVideoRecommendationViewModel.videoID)){
-                if(currentVideoRecommendationViewModel.choosen){
-                    imageChoosen.setImageResource(R.drawable.ic_add_video_featured)
-                    currentVideoRecommendationViewModel.choosen = false
-                } else {
-                    imageChoosen.setImageResource(R.drawable.ic_check_video_featured)
-                    currentVideoRecommendationViewModel.choosen = true
-                }
-            }
             videoFeaturedClickListener.onVideoFeaturedClicked(currentVideoRecommendationViewModel)
         })
     }

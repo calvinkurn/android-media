@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
@@ -28,14 +29,12 @@ import com.tokopedia.product.edit.viewmodel.*
 
 class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, ProductAddVideoAdapterTypeFactory>(), ProductAddVideoView, VideoChoosenListener, SectionVideoRecommendationListener {
 
-    override val getVideoIDs: ArrayList<String> get() = videoIDs
     override val contextView: Context get() = activity
 
     var videoIDs: ArrayList<String> = ArrayList()
     private var youtubeVideoRecommendationList: ArrayList<YoutubeVideoModel> = ArrayList()
     private lateinit var productAddVideoPresenter : ProductAddVideoPresenter
-    private lateinit var getVideoRecommendationListener : GetVideoRecommendationListener
-    private lateinit var videoChoosenDeletedListener : VideoChoosenDeletedListener
+    private lateinit var listener : Listener
     private val mapper = VideoMapper()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -118,7 +117,15 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
     override fun onSuccessGetYoutubeDataVideoRecommendation(youtubeVideoModelArrayList: ArrayList<YoutubeVideoModel>) {
         youtubeVideoRecommendationList = youtubeVideoModelArrayList
         val mapper = VideoRecommendationMapper()
-        getVideoRecommendationListener.onSuccessGetYoutubeDataVideoRecommendation(mapper.transformDataToVideoViewModel(youtubeVideoModelArrayList))
+        var videoRecommendationViewModelList = mapper.transformDataToVideoViewModel(youtubeVideoModelArrayList)
+        for(videoID in videoIDs){
+            for(videoRecommendationFeatured in videoRecommendationViewModelList){
+                if(videoRecommendationFeatured.videoID == videoID){
+                    videoRecommendationFeatured.choosen = true
+                }
+            }
+        }
+        listener.onSuccessGetYoutubeDataVideoRecommendation(videoRecommendationViewModelList)
     }
 
     override fun onSuccessGetYoutubeDataVideoChoosen(youtubeVideoModelArrayList: ArrayList<YoutubeVideoModel>) {
@@ -131,10 +138,6 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
     }
 
 
-    override fun setGetVideoRecommendationListener(listener: ProductAddVideoFragment.GetVideoRecommendationListener) {
-        getVideoRecommendationListener = listener
-    }
-
     override fun onShowMoreClicked() {
         val intent = Intent(activity, ProductAddVideoRecommendationActivity::class.java)
         intent.putParcelableArrayListExtra(EXTRA_VIDEO_RECOMMENDATION, youtubeVideoRecommendationList)
@@ -146,32 +149,50 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
         if(videoIDs.contains(videoRecommendationViewModel.videoID)){
            Toast.makeText(activity, "sudah ad", Toast.LENGTH_LONG).show()
         } else {
-            videoIDs.add(videoRecommendationViewModel.videoID!!)
-            updateListData(mapper.transformVideoRecommendationViewModelToVideoViewModel(videoRecommendationViewModel), ADD_VIDEO_CHOOSEN)
-            (activity as AppCompatActivity).supportActionBar?.subtitle = getString(R.string.product_from_to_video, videoIDs.size, MAX_VIDEO)
+            val builder = AlertDialog.Builder(activity)
+            builder.setTitle(R.string.product_add_title_dialog_add_video)
+            builder.setMessage(R.string.product_add_description_dialog_add_video)
+            builder.setCancelable(true)
+            builder.setPositiveButton(R.string.label_add, { dialog, id ->
+                videoIDs.add(videoRecommendationViewModel.videoID!!)
+                updateListData(mapper.transformVideoRecommendationViewModelToVideoViewModel(videoRecommendationViewModel), ADD_VIDEO_CHOOSEN)
+                (activity as AppCompatActivity).supportActionBar?.subtitle = getString(R.string.product_from_to_video, videoIDs.size, MAX_VIDEO)
+                listener.onVideoChoosenAdded(videoRecommendationViewModel)
+            })
+            builder.setNegativeButton(R.string.label_cancel, { dialog, id -> dialog.cancel() })
+
+            val alert = builder.create()
+            alert.show()
         }
     }
 
     override fun onVideoChoosenDeleted(position : Int) {
-        videoChoosenDeletedListener.onVideoChoosenDeleted(adapter.data[position] as VideoViewModel)
-        videoIDs.remove((adapter.data[position] as VideoViewModel).videoID)
-        updateListData(adapter.data[position], DELETE_VIDEO_CHOOSEN)
-        (activity as AppCompatActivity).supportActionBar?.subtitle = getString(R.string.product_from_to_video, videoIDs.size, MAX_VIDEO)
+        val builder = AlertDialog.Builder(activity)
+        builder.setTitle(R.string.product_add_title_dialog_delete_video)
+        builder.setMessage(R.string.product_add_description_dialog_delete_video)
+        builder.setCancelable(true)
+        builder.setPositiveButton(R.string.label_delete, { dialog, id ->
+            listener.onVideoChoosenDeleted(adapter.data[position] as VideoViewModel)
+            videoIDs.remove((adapter.data[position] as VideoViewModel).videoID)
+            updateListData(adapter.data[position], DELETE_VIDEO_CHOOSEN)
+            (activity as AppCompatActivity).supportActionBar?.subtitle = getString(R.string.product_from_to_video, videoIDs.size, MAX_VIDEO)
+        })
+        builder.setNegativeButton(R.string.label_cancel, { dialog, id -> dialog.cancel() })
+
+        val alert = builder.create()
+        alert.show()
     }
 
 
-    override fun setVideoChoosenDeletedListener(listener: VideoChoosenDeletedListener) {
-        videoChoosenDeletedListener = listener
+    override fun setProductAddVideoFragmentListener(listener: ProductAddVideoFragment.Listener) {
+        this.listener = listener
     }
 
 
-
-    interface GetVideoRecommendationListener {
+    interface Listener {
         fun onSuccessGetYoutubeDataVideoRecommendation(videoRecommendationViewModelList : List<VideoRecommendationViewModel>)
-    }
-
-    interface VideoChoosenDeletedListener {
         fun onVideoChoosenDeleted(videoViewModel : VideoViewModel)
+        fun onVideoChoosenAdded(videoRecommendationViewModel : VideoRecommendationViewModel)
     }
 
     companion object {

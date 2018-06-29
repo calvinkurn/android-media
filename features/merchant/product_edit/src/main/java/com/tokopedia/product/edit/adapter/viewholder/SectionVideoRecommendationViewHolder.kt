@@ -19,23 +19,21 @@ import com.tokopedia.product.edit.viewmodel.VideoViewModel
 
 class SectionVideoRecommendationViewHolder(itemView: View,
                                            var sectionVideoRecommendationListener: SectionVideoRecommendationListener) : AbstractViewHolder<SectionVideoRecommendationViewModel>(itemView),
-        ProductAddVideoFragment.GetVideoRecommendationListener,
-            ProductAddVideoFragment.VideoChoosenDeletedListener{
+        ProductAddVideoFragment.Listener{
 
     private lateinit var productAddVideoRecommendationFeaturedAdapter: ProductAddVideoRecommendationFeaturedAdapter
     private lateinit var recyclerView: RecyclerView
     private lateinit var textShowMore: TextView
     private lateinit var itemDecoration:RecyclerView.ItemDecoration
 
-    val videoRecommendationFeaturedList: ArrayList<VideoRecommendationViewModel> = ArrayList()
+    private val videoRecommendationFeaturedList: ArrayList<VideoRecommendationViewModel> = ArrayList()
 
     init {
         setViews(itemView)
     }
 
     private fun setViews(view: View) {
-        sectionVideoRecommendationListener.setGetVideoRecommendationListener(this)
-        sectionVideoRecommendationListener.setVideoChoosenDeletedListener(this)
+        sectionVideoRecommendationListener.setProductAddVideoFragmentListener(this)
         textShowMore = view.findViewById(R.id.text_video_recommendation_show_more)
         textShowMore.setOnClickListener({
             sectionVideoRecommendationListener.onShowMoreClicked()
@@ -49,7 +47,7 @@ class SectionVideoRecommendationViewHolder(itemView: View,
             }
         }
 
-        productAddVideoRecommendationFeaturedAdapter = ProductAddVideoRecommendationFeaturedAdapter(ArrayList(), videoFeaturedClickListener, sectionVideoRecommendationListener.getVideoIDs)
+        productAddVideoRecommendationFeaturedAdapter = ProductAddVideoRecommendationFeaturedAdapter(ArrayList(), videoFeaturedClickListener)
         recyclerView.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
         recyclerView.adapter = productAddVideoRecommendationFeaturedAdapter
         recyclerView.setHasFixedSize(true)
@@ -88,15 +86,16 @@ class SectionVideoRecommendationViewHolder(itemView: View,
                 videoRecommendationFeaturedList.add(videoRecommendationViewModelList[i])
             }
         }
+        productAddVideoRecommendationFeaturedAdapter.replaceData(videoRecommendationFeaturedList)
+    }
 
-        for(videoID in sectionVideoRecommendationListener.getVideoIDs){
-            for(videoRecommendationFeatured in videoRecommendationFeaturedList){
-                if(videoRecommendationFeatured.videoID == videoID){
-                    videoRecommendationFeatured.choosen = true
-                }
+    override fun onVideoChoosenAdded(videoRecommendationViewModel: VideoRecommendationViewModel) {
+        for(videoRecommendationFeatured in videoRecommendationFeaturedList){
+            if(videoRecommendationFeatured.videoID == videoRecommendationViewModel.videoID){
+                videoRecommendationFeatured.choosen = true
             }
         }
-        productAddVideoRecommendationFeaturedAdapter.replaceData(videoRecommendationFeaturedList)
+        productAddVideoRecommendationFeaturedAdapter.notifyDataSetChanged()
     }
 
     override fun onVideoChoosenDeleted(videoViewModel : VideoViewModel) {
@@ -105,7 +104,7 @@ class SectionVideoRecommendationViewHolder(itemView: View,
                 videoRecommendationFeatured.choosen = false
             }
         }
-        productAddVideoRecommendationFeaturedAdapter.replaceData(videoRecommendationFeaturedList)
+        productAddVideoRecommendationFeaturedAdapter.notifyDataSetChanged()
     }
 
     interface VideoFeaturedClickListener {

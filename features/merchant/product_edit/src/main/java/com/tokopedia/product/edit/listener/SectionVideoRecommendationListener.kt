@@ -9,9 +9,6 @@ interface SectionVideoRecommendationListener {
 
     fun onVideoRecommendationFeaturedClicked(videoRecommendationViewModel : VideoRecommendationViewModel)
 
-    fun setGetVideoRecommendationListener(listener: ProductAddVideoFragment.GetVideoRecommendationListener)
+    fun setProductAddVideoFragmentListener(listener: ProductAddVideoFragment.Listener)
 
-    fun setVideoChoosenDeletedListener(listener: ProductAddVideoFragment.VideoChoosenDeletedListener)
-
-    val getVideoIDs: ArrayList<String>
 }

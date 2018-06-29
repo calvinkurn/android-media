@@ -4,6 +4,9 @@
     <string name="title_activity_video_recommendation">Rekomendasi Video Produk</string>
     <string name="product_from_to_video">%1$d dari %2$d Video</string>
     <string name="label_video_add">Tambah Video Produk</string>
+    <string name="label_add">Tambah</string>
+    <string name="label_delete">Delete</string>
+    <string name="label_cancel">Batal</string>
 
     <string name="product_add_tag_video_recommendation">rekomendasi</string>
     <string name="product_add_information_video_recommendation">Pilih rekomendasi video untuk menjelaskan dan mendemokan produk Anda.</string>
@@ -12,4 +15,10 @@
     <string name="product_add_url_video">Tambah URL Video</string>
     <string name="product_add_till_three_product_video">Tambah Hingga 3 Video Produk</string>
     <string name="product_add_till_three_product_video_description">Untuk menjelaskan atau mendemokan produk ini</string>
+
+    <string name="product_add_title_dialog_add_video">Tambah Video</string>
+    <string name="product_add_description_dialog_add_video">Tambah video rekomendasi ini ke Video Produk Saya</string>
+
+    <string name="product_add_title_dialog_delete_video">Hapus Video</string>
+    <string name="product_add_description_dialog_delete_video">Hapus video ini dari Video Produk Saya</string>
 </resources>
