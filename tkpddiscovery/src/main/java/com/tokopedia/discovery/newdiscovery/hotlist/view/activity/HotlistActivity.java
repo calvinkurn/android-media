@@ -107,14 +107,12 @@ public class HotlistActivity extends DiscoveryActivity
                     case COLLAPSED:
                         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back_black_thin);
                         if(searchItem!=null)
-                            searchItem.setIcon(ContextCompat.getDrawable(HotlistActivity.this,
-                                    R.drawable.search_icon));
+                            searchItem.setIcon(R.drawable.search_icon);
                         break;
                     case EXPANDED:
                         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back_white);
                         if(searchItem!=null)
-                            searchItem.setIcon(ContextCompat.getDrawable(HotlistActivity.this,
-                                    R.drawable.ic_search_thin));
+                            searchItem.setIcon(R.drawable.ic_search_thin);
                         break;
                 }
             }
