@@ -41,7 +41,7 @@
             android:layout_below="@+id/input_layout"
             android:fontFamily="sans-serif"
             android:gravity="end"
-            android:text="@string/send_verif_code_regis"
+            android:text="@string/we_will_send_verification_code"
             android:textColor="@color/black_54"
             android:textSize="@dimen/text_size_small"
             android:textStyle="normal"

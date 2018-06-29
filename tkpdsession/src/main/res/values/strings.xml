@@ -104,13 +104,12 @@
     <string name="proceed_with_phone_number">Ya, Benar</string>
     <string name="already_registered_no">Ubah</string>
     <string name="register_input_empty_error">Masukkan nomor ponsel atau email untuk mendaftar</string>
-    <string name="send_verif_code_regis">Kami akan mengirimkan kode verifikasi melalui SMS</string>
     <string name="register_option_title">Atau daftar dengan:</string>
 
     <!-- LOGIN PHONE NUMBER -->
     <string name="login_with_phone_number">Masuk dengan Nomor Ponsel</string>
     <string name="phone_number">Nomor Ponsel</string>
-    <string name="we_will_send_verification_code">Kami akan mengirimkan SMS kode verifikasi</string>
+    <string name="we_will_send_verification_code">Kami akan mengirimkan kode verifikasi melalui SMS</string>
     <string name="title_verify">Verifikasi</string>
     <string name="verification_code_email_sent_to">Kode verifikasi telah dikirimkan melalui email ke</string>
     <string name="verification_code_sms_sent_to">Kode verifikasi telah dikirimkan melalui SMS ke</string>
