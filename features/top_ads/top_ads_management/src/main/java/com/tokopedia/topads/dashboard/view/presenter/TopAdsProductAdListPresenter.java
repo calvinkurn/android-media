@@ -11,4 +11,6 @@ import java.util.Date;
 public interface TopAdsProductAdListPresenter extends TopAdsAdListPresenter<ProductAd> {
 
     void searchAd(Date startDate, Date endDate, String keyword, int status, long groupId, int page, String sortId);
+
+    void saveSourceTagging(String source);
 }

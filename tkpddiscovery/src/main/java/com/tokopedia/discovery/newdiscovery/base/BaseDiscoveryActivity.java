@@ -1,5 +1,6 @@
 package com.tokopedia.discovery.newdiscovery.base;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.tkpd.library.utils.URLParser;
@@ -10,6 +11,7 @@ import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.home.BrandsWebViewActivity;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
+import com.tokopedia.discovery.imagesearch.search.ImageSearchActivity;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.activity.HotlistActivity;
 import com.tokopedia.discovery.newdiscovery.search.SearchActivity;
@@ -103,7 +105,14 @@ public class BaseDiscoveryActivity
     @Override
     public void onHandleResponseSearch(ProductViewModel productViewModel) {
         TrackingUtils.sendMoEngageSearchAttempt(productViewModel.getQuery(), !productViewModel.getProductList().isEmpty());
+        finish();
         SearchActivity.moveTo(this, productViewModel, isForceSwipeToShop());
+    }
+
+    @Override
+    public void onHandleImageResponseSearch(ProductViewModel productViewModel) {
+        TrackingUtils.sendMoEngageSearchAttempt(productViewModel.getQuery(), !productViewModel.getProductList().isEmpty());
+        ImageSearchActivity.moveTo(this, productViewModel);
         finish();
     }
 
@@ -143,6 +152,16 @@ public class BaseDiscoveryActivity
 
     @Override
     public void onHandleInvalidImageSearchResponse() {
+
+    }
+
+    @Override
+    public void showErrorNetwork(String message) {
+
+    }
+
+    @Override
+    public void showTimeoutErrorNetwork(String message) {
 
     }
 

@@ -15,4 +15,6 @@ public interface AttributeRepository {
     Observable<HotlistAttributeModel> getHotlistAttribute(TKPDMapParam<String, Object> param);
 
     Observable<DynamicFilterModel> getDynamicFilter(TKPDMapParam<String, Object> param);
+
+    Observable<DynamicFilterModel> getDynamicFilterV4(TKPDMapParam<String, Object> param);
 }

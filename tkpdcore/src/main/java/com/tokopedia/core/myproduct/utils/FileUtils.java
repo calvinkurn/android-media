@@ -25,7 +25,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -127,6 +126,10 @@ public class FileUtils {
         return writeImageToTkpdPath(convertLocalImagePathToBytes(galleryOrCameraPath, DEF_WIDTH_CMPR,
                 DEF_WIDTH_CMPR, DEF_QLTY_COMPRESS));
     }
+    public static File writeImageToTkpdPath(String galleryOrCameraPath,  int compressionQuality) {
+        return writeImageToTkpdPath(convertLocalImagePathToBytes(galleryOrCameraPath, DEF_WIDTH_CMPR,
+                DEF_WIDTH_CMPR, compressionQuality));
+    }
 
     /**
      * copy the inputstream to Tkpd Cache Directory
@@ -208,13 +211,6 @@ public class FileUtils {
         }
         if (uri.getAuthority() != null) {
             try {
-                String path = getPathFromMediaUri(context, uri);
-                if (TextUtils.isEmpty(path)) {
-                    path = getPath(context, uri);
-                }
-                if (TextUtils.isEmpty(path)) {
-                    return null;
-                }
                 Bitmap bmp = null;
                 int inSampleSize = 1;
                 boolean oomError;
@@ -236,13 +232,8 @@ public class FileUtils {
                         if (bmp == null) {
                             return null;
                         }
-                        bmp = ImageHandler.RotatedBitmap(bmp, path);
                         oomError = false;
                     } catch (OutOfMemoryError outOfMemoryError) {
-                        if (bmp != null) {
-                            bmp.recycle();
-                            bmp = null;
-                        }
                         inSampleSize *= 2;
                         oomError = true;
                         if (inSampleSize > 16) {

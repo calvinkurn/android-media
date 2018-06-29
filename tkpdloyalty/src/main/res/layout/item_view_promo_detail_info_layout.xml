@@ -71,6 +71,7 @@
                 tools:ignore="ContentDescription" />
 
             <TextView
+                android:id="@+id/tv_promo_detail_min_transaction_label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_4"

@@ -30,6 +30,8 @@ public class Product {
     private static final String KEY_PRODUCT_RATE = "product_rating";
     private static final String KEY_WHOLESALE_PRICE = "wholesale_price";
     private static final String KEY_LABELS = "labels";
+    private static final String KEY_APPLINKS = "applinks";
+    private static final String KEY_IMAGE_PRODUCT = "image_product";
 
     private String id;
     private String adRefKey;
@@ -48,8 +50,10 @@ public class Product {
     private boolean productCashback;
     private String productCashbackRate;
     private int productRating;
+    private String applinks;
     private List<WholesalePrice> wholesalePrice = new ArrayList<>();
     private List<Label> labels = new ArrayList<>();
+    private ImageProduct imageProduct;
 
     public Product() {
     }
@@ -94,11 +98,17 @@ public class Product {
         if(!object.isNull(KEY_PRODUCT_CASHBACK)){
             setProductCashback(object.getBoolean(KEY_PRODUCT_CASHBACK));
         }
+        if(!object.isNull(KEY_APPLINKS)){
+            setApplinks(object.getString(KEY_APPLINKS));
+        }
         if(!object.isNull(KEY_PRODUCT_CASHBACK_RATE)){
             setProductCashbackRate(object.getString(KEY_PRODUCT_CASHBACK_RATE));
         }
         if(!object.isNull(KEY_PRODUCT_RATE)){
             setProductRating(object.getInt(KEY_PRODUCT_RATE));
+        }
+        if(!object.isNull(KEY_IMAGE_PRODUCT)){
+            setImageProduct(new ImageProduct(object.getJSONObject(KEY_IMAGE_PRODUCT)));
         }
         if(!object.isNull(KEY_WHOLESALE_PRICE)){
             JSONArray wholesalePriceArray = object.getJSONArray(KEY_WHOLESALE_PRICE);
@@ -112,6 +122,14 @@ public class Product {
                 labels.add(new Label(labelArray.getJSONObject(i)));
             }
         }
+    }
+
+    public ImageProduct getImageProduct() {
+        return imageProduct;
+    }
+
+    public void setImageProduct(ImageProduct imageProduct) {
+        this.imageProduct = imageProduct;
     }
 
     public String getId() {
@@ -264,5 +282,13 @@ public class Product {
 
     public void setAdId(String adId) {
         this.adId = adId;
+    }
+
+    public String getApplinks() {
+        return applinks;
+    }
+
+    public void setApplinks(String applinks) {
+        this.applinks = applinks;
     }
 }

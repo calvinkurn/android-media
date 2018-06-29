@@ -209,7 +209,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             CommonUtils.dumper("FCM wvlogin deeplink type " + type);
             switch (type) {
                 case DeepLinkChecker.HOME:
-                    screenName = AppScreen.SCREEN_INDEX_HOME;
+                    screenName = AppScreen.UnifyScreenTracker.SCREEN_UNIFY_HOME_BERANDA;
                     sendCampaignGTM(uriData.toString(), screenName);
                     openHomepage();
                     break;
@@ -278,7 +278,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     }
                     break;
                 case DeepLinkChecker.PELUANG:
-                    screenName = AppScreen.SCREEN_INDEX_HOME;
+                    screenName = AppScreen.UnifyScreenTracker.SCREEN_UNIFY_HOME_BERANDA;
                     sendCampaignGTM(uriData.toString(), screenName);
                     openPeluangPage(uriData.getPathSegments(), uriData);
                     break;
@@ -521,6 +521,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 .setShopDomain(linkSegment.get(0))
                 .setProductUri(uriData.toString())
                 .build());
+        productInfoIntent.setData(uriData);
         viewListener.goToPage(productInfoIntent);
     }
 

@@ -48,6 +48,7 @@ import com.bumptech.glide.Glide;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.MainApplication;
@@ -64,7 +65,6 @@ import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.topads.sdk.base.Config;
@@ -93,14 +93,17 @@ import com.tokopedia.transaction.cart.model.cartdata.CartPromo;
 import com.tokopedia.transaction.cart.model.cartdata.CartShop;
 import com.tokopedia.transaction.cart.model.cartdata.GatewayList;
 import com.tokopedia.transaction.cart.model.paramcheckout.CheckoutData;
-import com.tokopedia.transaction.cart.model.thankstoppaydata.ThanksTopPayData;
 import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;
 import com.tokopedia.transaction.cart.presenter.CartPresenter;
 import com.tokopedia.transaction.cart.presenter.ICartPresenter;
 import com.tokopedia.transaction.cart.receivers.TopPayBroadcastReceiver;
 import com.tokopedia.transaction.insurance.view.InsuranceTnCActivity;
+import com.tokopedia.transaction.pickuppoint.domain.usecase.GetPickupPointsUseCase;
+import com.tokopedia.transaction.pickuppoint.view.activity.PickupPointActivity;
+import com.tokopedia.transaction.router.ICartCheckoutModuleRouter;
 import com.tokopedia.transaction.utils.LinearLayoutManagerNonScroll;
 import com.tokopedia.transaction.utils.ValueConverter;
+import com.tokopedia.transactiondata.entity.response.thankstoppaydata.ThanksTopPayData;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -110,14 +113,18 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.tokopedia.transaction.common.constant.CartConstant.TOPADS_CART_SRC;
+import static com.tokopedia.transaction.common.constant.PickupPointIntentConstant.INTENT_CART_ITEM;
 
 /**
  * @author anggaprasetiyo on 11/1/16.
  */
+@Deprecated
 public class CartFragment extends BasePresenterFragment<ICartPresenter> implements ICartView,
         PaymentGatewayFragment.ActionListener, CartItemAdapter.CartItemActionListener,
         TopPayBroadcastReceiver.ActionListener, TopAdsItemClickListener {
     private static final String ANALYTICS_GATEWAY_PAYMENT_FAILED = "payment failed";
+    private static final int REQUEST_CHOOSE_PICKUP_POINT = 9;
 
     @BindView(R2.id.pb_main_loading)
     ProgressBar pbMainLoading;
@@ -205,7 +212,6 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     private boolean hasLogisticInsurance;
     private boolean hasPromotion;
-    private final String TOPADS_CART_SRC = "empty_cart";
 
     public static Fragment newInstance() {
         return new CartFragment();
@@ -301,6 +307,11 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         getActivity().registerReceiver(topPayBroadcastReceiver, new IntentFilter(
                 TopPayBroadcastReceiver.ACTION_TOP_PAY
         ));
+    }
+
+    @Override
+    protected void initInjector() {
+
     }
 
     @Override
@@ -499,12 +510,10 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
             rootview.findViewById(com.tokopedia.core.R.id.main_retry).setVisibility(View.VISIBLE);
         } catch (NullPointerException e) {
             View emptyState = LayoutInflater.from(context).
-                    inflate(R.layout.layout_empty_shopping_chart, (ViewGroup) rootview);
+                    inflate(R.layout.layout_empty_shopping_cart, (ViewGroup) rootview);
             Button shop = emptyState.findViewById(R.id.shoping);
             final RelativeLayout autoApplyView = emptyState.findViewById(R.id.promo_result_empty_cart);
-            TextView labelPromoType = emptyState.findViewById(R.id.label_promo_type_empty_cart);
             TextView promoVoucherCode = emptyState.findViewById(R.id.voucher_code_empty_cart);
-            TextView voucherDescription = emptyState.findViewById(R.id.voucher_description_empty_cart);
             ImageView cancelPromoLayout = emptyState.findViewById(R.id.cancel_promo_layout_empty_cart);
 
             shop.setOnClickListener(getRetryEmptyCartClickListener());
@@ -531,13 +540,9 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
             if (autoApply != null && autoApply.isSuccess()) {
                 autoApplyView.setVisibility(View.VISIBLE);
                 if (autoApply.getIsCoupon() == 1) {
-                    labelPromoType.setText(String.format("%s : ", getString(R.string.title_coupon_code)));
                     promoVoucherCode.setText(autoApply.getTitleDescription());
-                    voucherDescription.setText(autoApply.getMessageSuccess());
                 } else {
-                    labelPromoType.setText(String.format("%s : ", getString(R.string.title_promo_code)));
-                    promoVoucherCode.setText(autoApply.getCode());
-                    voucherDescription.setText(autoApply.getMessageSuccess());
+                    promoVoucherCode.setText(autoApply.getTitleDescription());
                 }
 
                 cancelPromoLayout.setOnClickListener(new View.OnClickListener() {
@@ -704,7 +709,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
-    public void renderCandelPromoSuccess(){
+    public void renderCandelPromoSuccess() {
         promoResultLayout.setVisibility(View.GONE);
         promoCodeLayout.setVisibility(View.VISIBLE);
     }
@@ -824,7 +829,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
-    public void renderPromoView(final boolean isCouponActive) {
+    public void renderPromoView(final boolean isCouponActive, final String defaultPromoTab) {
         if (isCouponActive) promoActivationTitle.setText(R.string.title_use_promo_code_and_voucher);
         else promoActivationTitle.setText(R.string.title_use_promo_code);
 
@@ -832,14 +837,29 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
             @Override
             public void onClick(View view) {
 
-                Intent intent;
-                if (isCouponActive) {
-                    intent = LoyaltyActivity.newInstanceCouponActive(
-                            getActivity(), "marketplace", "marketplace"
-                    );
-                } else intent = LoyaltyActivity.newInstanceCouponNotActive(getActivity(),
-                        "marketplace", "marketplace");
-                startActivityForResult(intent, LoyaltyActivity.LOYALTY_REQUEST_CODE);
+                if (getActivity().getApplication() instanceof ICartCheckoutModuleRouter) {
+                    if (isCouponActive) {
+                        startActivityForResult(
+                                ((ICartCheckoutModuleRouter) getActivity().getApplication())
+                                        .tkpdCartCheckoutGetLoyaltyOldCheckoutCouponActiveIntent(
+                                                getActivity(),
+                                                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.MARKETPLACE_STRING,
+                                                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.MARKETPLACE_STRING,
+                                                defaultPromoTab
+                                        ), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE
+                        );
+                    } else {
+                        startActivityForResult(
+                                ((ICartCheckoutModuleRouter) getActivity().getApplication())
+                                        .tkpdCartCheckoutGetLoyaltyOldCheckoutCouponNotActiveIntent(
+                                                getActivity(),
+                                                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.MARKETPLACE_STRING,
+                                                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.MARKETPLACE_STRING
+                                        ), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE
+                        );
+                    }
+
+                }
             }
         });
     }
@@ -859,6 +879,11 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     @Override
     public void renderPartialOrder(boolean enableCancelPartial) {
         cartItemAdapter.setEnableCancelPartial(enableCancelPartial);
+    }
+
+    @Override
+    public Activity getActivityContext() {
+        return getActivity();
     }
 
     @Override
@@ -930,6 +955,44 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     @Override
     public void onDropShipperOptionChecked() {
         trackingCartDropShipperEvent();
+    }
+
+    @Override
+    public void onClearPickupPoint(final CartItem cartItem) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(R.string.label_dialog_title_cancel_pickup);
+        builder.setMessage(R.string.label_dialog_message_cancel_pickup_booth);
+        builder.setPositiveButton(R.string.title_yes, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+//                pickupPointLayout.unSetData(AddToCartActivity.this);
+//                spShippingAgency.setEnabled(true);
+//                spShippingAgency.setSelection(0);
+//                pickupBooth = null;
+
+                // TODO : Request ke API stich,
+                presenter.processRemovePickupPoint(cartItem.getCartString(), "1234");
+                // TODO : Jika result success, go to edit cart shipment, set first available logistic, jika failed show toast
+                // renderInitialLoadingCartInfo();
+                // renderVisibleMainCartContainer();
+//                navigateToActivityRequest(ShipmentCartActivity.createInstance(getActivity(), cartItem),
+//                        ShipmentCartActivity.INTENT_REQUEST_CODE);
+            }
+        });
+        builder.setNegativeButton(R.string.title_no, null);
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    @Override
+    public void onEditPickupPoint(CartItem cartData) {
+        navigateToActivityRequest(PickupPointActivity.createInstance(getActivity(),
+                cartData.getCartDestination().getAddressDistrict(),
+                GetPickupPointsUseCase.generateParams(cartData.getStore())),
+                REQUEST_CHOOSE_PICKUP_POINT);
+        // TODO : Open PickupPointActivity
+        // TODO : Request ke API stich,
+        // TODO : Jika success, ganti view dg pickup point baru, jika failed show toast
     }
 
     @Override
@@ -1056,28 +1119,31 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                     );
                     break;
             }
-        } else if (requestCode == LoyaltyActivity.LOYALTY_REQUEST_CODE) {
-            if (resultCode == LoyaltyActivity.VOUCHER_RESULT_CODE) {
+        } else if (requestCode == IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE) {
+            if (resultCode == IRouterConstant.LoyaltyModule.ResultLoyaltyActivity.VOUCHER_RESULT_CODE) {
                 Bundle bundle = data.getExtras();
-                setVoucherResultLayout(
-                        bundle.getString(LoyaltyActivity.VOUCHER_CODE, ""),
-                        bundle.getString(LoyaltyActivity.VOUCHER_AMOUNT, ""),
-                        bundle.getString(LoyaltyActivity.VOUCHER_MESSAGE, "")
-                );
-            } else if (resultCode == LoyaltyActivity.COUPON_RESULT_CODE) {
+                if (bundle != null)
+                    setVoucherResultLayout(
+                            bundle.getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_CODE, ""),
+                            bundle.getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_AMOUNT, ""),
+                            bundle.getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_MESSAGE, "")
+                    );
+                cancelPromoLayout.setOnClickListener(onPromoCancelled());
+            } else if (resultCode == IRouterConstant.LoyaltyModule.ResultLoyaltyActivity.COUPON_RESULT_CODE) {
                 Bundle bundle = data.getExtras();
-                //bundle.getString(LoyaltyActivity.COUPON_TITLE, "")
-                //bundle.getString(LoyaltyActivity.COUPON_MESSAGE, "")
-                //bundle.getString(LoyaltyActivity.COUPON_CODE)
-                setCouponResultLayout(
-                        bundle.getString(LoyaltyActivity.COUPON_CODE),
-                        bundle.getString(LoyaltyActivity.COUPON_TITLE, ""),
-                        bundle.getString(LoyaltyActivity.COUPON_MESSAGE, "")
-                );
-
+                if (bundle != null)
+                    setCouponResultLayout(
+                            bundle.getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_CODE, ""),
+                            bundle.getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_TITLE, ""),
+                            bundle.getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_MESSAGE, "")
+                    );
             }
+        } else if (requestCode == REQUEST_CHOOSE_PICKUP_POINT && resultCode == Activity.RESULT_OK) {
+            CartItem cartItem = data.getParcelableExtra(INTENT_CART_ITEM);
+            presenter.processUpdatePickupPoint(cartItem.getCartString(), "", "");
         }
     }
+
 
     private void setCouponResultLayout(String couponCode,
                                        String couponTitle,
@@ -1259,10 +1325,10 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     private void setDataDialog(final Dialog dialog, View view, CartDonation donation) {
-        TextView title = ButterKnife.findById(view, R.id.donasi_popup_title);
-        ImageView imgDonation = ButterKnife.findById(view, R.id.donasi_popup_img);
-        TextView content = ButterKnife.findById(view, R.id.donasi_popup_content);
-        ImageView closeDialog = ButterKnife.findById(view, R.id.close_popup_donasi);
+        TextView title = view.findViewById(R.id.donasi_popup_title);
+        ImageView imgDonation = view.findViewById(R.id.donasi_popup_img);
+        TextView content = view.findViewById(R.id.donasi_popup_content);
+        ImageView closeDialog = view.findViewById(R.id.close_popup_donasi);
 
         Glide.with(getActivity())
                 .load(donation.getDonationPopupImg())

@@ -41,8 +41,14 @@ import com.tokopedia.design.component.EditTextCompat;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
 import com.tokopedia.discovery.util.AnimationUtil;
+import com.tokopedia.showcase.ShowCaseBuilder;
+import com.tokopedia.showcase.ShowCaseContentPosition;
+import com.tokopedia.showcase.ShowCaseDialog;
+import com.tokopedia.showcase.ShowCaseObject;
+import com.tokopedia.showcase.ShowCasePreference;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -64,6 +70,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
     public static final int TAB_SHOP_SUGGESTION = 1;
     public static final int TAB_PRODUCT_SUGGESTION = 0;
     public static final int TAB_DEFAULT_SUGGESTION = TAB_PRODUCT_SUGGESTION;
+    private static final long IMAGE_SEARCH_SHOW_CASE_DIALOG_DELAY = 600;
     private MenuItem mMenuItem;
     private boolean mIsSearchOpen = false;
     private int mAnimationDuration;
@@ -102,6 +109,9 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
     private CompositeSubscription compositeSubscription;
     private Subscription querySubscription;
     private QueryListener queryListener;
+    private ShowCaseDialog showCaseDialog;
+    private RemoteConfig remoteConfig;
+    private boolean showShowCase = false;
 
     private interface QueryListener {
         void onQueryChanged(String query);
@@ -256,7 +266,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         mImageSearchButton.setOnClickListener(mOnClickListener);
         allowVoiceSearch = true;
 
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getContext());
+        remoteConfig = new FirebaseRemoteConfigImpl(getContext());
         setImageSearch(remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SHOW_IMAGE_SEARCH,
                 false));
 
@@ -266,6 +276,14 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         initSearchView();
         mSuggestionView.setVisibility(GONE);
         setAnimationDuration(AnimationUtil.ANIMATION_DURATION_MEDIUM);
+    }
+
+    public void hideShowCaseDialog(boolean b) {
+        showShowCase = true;
+    }
+
+    public boolean isShowShowCase() {
+        return showShowCase;
     }
 
     private void initSearchView() {
@@ -312,6 +330,68 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
                 }
             }
         });
+    }
+
+    private void startShowCase() {
+
+        if (isAllowImageSearch() &&
+                !isShowShowCase()) {
+
+
+            final String showCaseTag = "Image Search ShowCase";
+            if (ShowCasePreference.hasShown(mContext, showCaseTag)) {
+                return;
+            }
+            if (showCaseDialog != null) {
+                return;
+            }
+            showCaseDialog = createShowCase();
+            showCaseDialog.setShowCaseStepListener(new ShowCaseDialog.OnShowCaseStepListener() {
+                @Override
+                public boolean onShowCaseGoTo(int previousStep, int nextStep, ShowCaseObject showCaseObject) {
+                    return false;
+                }
+            });
+
+            if (remoteConfig == null) {
+                remoteConfig = new FirebaseRemoteConfigImpl(getContext());
+            }
+
+            mImageSearchButton.setWillNotCacheDrawing(false);
+            ArrayList<ShowCaseObject> showCaseObjectList = new ArrayList<>();
+            showCaseObjectList.add(new ShowCaseObject(
+                    mImageSearchButton,
+                    mContext.getResources().getString(R.string.on_board_title),
+                    remoteConfig.getString(TkpdCache.RemoteConfigKey.IMAGE_SEARCH_ONBOARD_DESC,
+                            mContext.getResources().getString(R.string.on_board_desc)),
+                    ShowCaseContentPosition.UNDEFINED,
+                    R.color.tkpd_main_green));
+            if(activity != null) {
+                showCaseDialog.show(activity, showCaseTag, showCaseObjectList);
+            }
+
+        }
+    }
+
+    private ShowCaseDialog createShowCase() {
+        return new ShowCaseBuilder()
+                .customView(R.layout.view_showcase)
+                .titleTextColorRes(R.color.white)
+                .spacingRes(R.dimen.spacing_show_case)
+                .arrowWidth(R.dimen.arrow_width_show_case)
+                .textColorRes(R.color.grey_400)
+                .shadowColorRes(R.color.shadow)
+                .backgroundContentColorRes(R.color.black)
+                .textSizeRes(R.dimen.fontvs)
+                .circleIndicatorBackgroundDrawableRes(R.drawable.selector_circle_green)
+                .prevStringRes(R.string.navigate_back)
+                .nextStringRes(R.string.next)
+                .finishStringRes(R.string.title_done)
+                .useCircleIndicator(true)
+                .clickable(true)
+                .useArrow(true)
+                .useSkipWord(false)
+                .build();
     }
 
     private final OnClickListener mOnClickListener = new OnClickListener() {
@@ -481,6 +561,10 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         allowImageSearch = imageSearch;
     }
 
+    public boolean isAllowImageSearch() {
+        return allowImageSearch;
+    }
+
     //Public Methods
 
     /**
@@ -569,6 +653,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
                 if (finishOnClose) {
                     setFinishOnClose(false);
                 }
+                initShowCase();
                 return true;
             }
         });
@@ -610,6 +695,16 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
             }, 500);
         }
         showSearch(animate);
+        initShowCase();
+    }
+
+    private void initShowCase() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                startShowCase();
+            }
+        }, IMAGE_SEARCH_SHOW_CASE_DIALOG_DELAY);
     }
 
     public boolean isFinishOnClose() {

@@ -77,7 +77,7 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
             location.setVisibility(View.INVISIBLE);
 
         shopName.setText(MethodChecker.fromHtml(productItem.getShopName()));
-        ImageHandler.loadImageThumbs(context, productImage, productItem.getImageUrl());
+        ImageHandler.loadImageSourceSize(context, productImage, productItem.getImageUrl());
 
         wishlistButtonContainer.setVisibility(View.VISIBLE);
         wishlistButton.setBackgroundResource(R.drawable.ic_wishlist);
@@ -106,11 +106,10 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
             }
         });
 
-        if (productItem.getRating() != null && !productItem.getRating().equals("0")) {
+        if (productItem.getRating() != 0) {
             ratingReviewContainer.setVisibility(View.VISIBLE);
-            float rateAmount = Float.parseFloat(productItem.getRating());
             rating.setImageResource(
-                    RatingView.getRatingDrawable(Math.round(rateAmount))
+                    RatingView.getRatingDrawable(productItem.getRating())
             );
             reviewCount.setText("(" + productItem.getCountReview() + ")");
         } else {

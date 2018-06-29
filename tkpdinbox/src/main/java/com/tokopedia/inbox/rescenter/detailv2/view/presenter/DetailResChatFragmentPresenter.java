@@ -113,12 +113,15 @@ public class DetailResChatFragmentPresenter
     @Override
     public void detachView() {
         getResChatUseCase.unsubscribe();
+        getResChatMoreUseCase.unsubscribe();
         sendDiscussionUseCase.unsubscribe();
         sendDiscussionV2UseCase.unsubscribe();
         acceptSolutionUseCase.unsubscribe();
         askHelpResolutionUseCase.unsubscribe();
         cancelResolutionUseCase.unsubscribe();
-        getResChatMoreUseCase.unsubscribe();
+        inputAddressUseCase.unsubscribe();
+        editAddressUseCase.unsubscribe();
+        finishResolutionUseCase.unsubscribe();
     }
 
     @Override

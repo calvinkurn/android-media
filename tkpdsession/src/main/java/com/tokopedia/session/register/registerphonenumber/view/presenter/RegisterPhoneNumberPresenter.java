@@ -5,11 +5,8 @@ import android.text.TextUtils;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.session.R;
 import com.tokopedia.session.register.registerphonenumber.domain.usecase.CheckMsisdnPhoneNumberUseCase;
-import com.tokopedia.session.register.registerphonenumber.domain.usecase.LoginRegisterPhoneNumberUseCase;
-import com.tokopedia.session.register.registerphonenumber.domain.usecase.RegisterPhoneNumberUseCase;
 import com.tokopedia.session.register.registerphonenumber.view.listener.RegisterPhoneNumber;
 import com.tokopedia.session.register.registerphonenumber.view.subscriber.CheckMsisdnRegisterPhoneNumberSubscriber;
-import com.tokopedia.session.register.registerphonenumber.view.subscriber.RegisterPhoneNumberSubscriber;
 
 import javax.inject.Inject;
 
@@ -20,21 +17,14 @@ import javax.inject.Inject;
 public class RegisterPhoneNumberPresenter extends BaseDaggerPresenter<RegisterPhoneNumber.View>
         implements RegisterPhoneNumber.Presenter {
 
-    private static final int STATUS_ACTIVE = 1;
-    private static final int STATUS_PENDING = -1;
-    private static final int STATUS_INACTIVE = 0;
-
     public static final int COUNT_MIN = 8;
     public static final int COUNT_MAX = 15;
 
     private final CheckMsisdnPhoneNumberUseCase checkMsisdnPhoneNumberUseCase;
-    private final LoginRegisterPhoneNumberUseCase loginRegisterPhoneNumberUseCase;
 
     @Inject
-    public RegisterPhoneNumberPresenter(CheckMsisdnPhoneNumberUseCase checkMsisdnPhoneNumberUseCase,
-                                        LoginRegisterPhoneNumberUseCase loginRegisterPhoneNumberUseCase) {
+    public RegisterPhoneNumberPresenter(CheckMsisdnPhoneNumberUseCase checkMsisdnPhoneNumberUseCase) {
         this.checkMsisdnPhoneNumberUseCase = checkMsisdnPhoneNumberUseCase;
-        this.loginRegisterPhoneNumberUseCase = loginRegisterPhoneNumberUseCase;
     }
 
     @Override
@@ -46,7 +36,6 @@ public class RegisterPhoneNumberPresenter extends BaseDaggerPresenter<RegisterPh
     public void detachView() {
         super.detachView();
         checkMsisdnPhoneNumberUseCase.unsubscribe();
-        loginRegisterPhoneNumberUseCase.unsubscribe();
     }
 
 
@@ -58,13 +47,7 @@ public class RegisterPhoneNumberPresenter extends BaseDaggerPresenter<RegisterPh
                     new CheckMsisdnRegisterPhoneNumberSubscriber(getView(), phoneNumber));
     }
 
-    @Override
-    public void registerPhoneNumber(String phoneNumber) {
-        getView().showLoading();
-        loginRegisterPhoneNumberUseCase.execute(RegisterPhoneNumberUseCase.getParams(phoneNumber),
-                new RegisterPhoneNumberSubscriber(getView()));
 
-    }
     private boolean isValid(String phoneNumber) {
         if (TextUtils.isEmpty(phoneNumber)) {
             getView().showErrorPhoneNumber(R.string.error_field_required_phone);

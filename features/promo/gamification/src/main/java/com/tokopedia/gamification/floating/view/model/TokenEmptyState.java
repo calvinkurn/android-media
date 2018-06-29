@@ -13,6 +13,9 @@ public class TokenEmptyState implements Parcelable {
     private String buttonText;
     private String buttonApplink;
     private String buttonURL;
+    private String backgroundImgUrl;
+    private String imageUrl;
+    private Integer version;
 
     public TokenEmptyState() {
     }
@@ -22,19 +25,13 @@ public class TokenEmptyState implements Parcelable {
         buttonText = in.readString();
         buttonApplink = in.readString();
         buttonURL = in.readString();
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(title);
-        dest.writeString(buttonText);
-        dest.writeString(buttonApplink);
-        dest.writeString(buttonURL);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
+        backgroundImgUrl = in.readString();
+        imageUrl = in.readString();
+        if (in.readByte() == 0) {
+            version = null;
+        } else {
+            version = in.readInt();
+        }
     }
 
     public static final Creator<TokenEmptyState> CREATOR = new Creator<TokenEmptyState>() {
@@ -49,35 +46,80 @@ public class TokenEmptyState implements Parcelable {
         }
     };
 
-    public String getTitle() {
-        return title;
-    }
-
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getButtonText() {
-        return buttonText;
     }
 
     public void setButtonText(String buttonText) {
         this.buttonText = buttonText;
     }
 
-    public String getButtonApplink() {
-        return buttonApplink;
-    }
-
     public void setButtonApplink(String buttonApplink) {
         this.buttonApplink = buttonApplink;
     }
 
-    public String getButtonURL() {
-        return buttonURL;
-    }
-
     public void setButtonURL(String buttonURL) {
         this.buttonURL = buttonURL;
+    }
+
+    public void setBackgroundImgUrl(String backgroundImgUrl) {
+        this.backgroundImgUrl = backgroundImgUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
+    }
+
+    public String getTitle() {
+        return this.title;
+    }
+
+    public String getButtonText() {
+        return this.buttonText;
+    }
+
+    public String getButtonApplink() {
+        return this.buttonApplink;
+    }
+
+    public String getButtonURL() {
+        return this.buttonURL;
+    }
+
+    public String getBackgroundImgUrl() {
+        return this.backgroundImgUrl;
+    }
+
+    public String getImageUrl() {
+        return this.imageUrl;
+    }
+
+    public Integer getVersion() {
+        return this.version;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(title);
+        parcel.writeString(buttonText);
+        parcel.writeString(buttonApplink);
+        parcel.writeString(buttonURL);
+        parcel.writeString(backgroundImgUrl);
+        parcel.writeString(imageUrl);
+        if (version == null) {
+            parcel.writeByte((byte) 0);
+        } else {
+            parcel.writeByte((byte) 1);
+            parcel.writeInt(version);
+        }
     }
 }

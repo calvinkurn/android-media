@@ -1,5 +1,6 @@
 package com.tokopedia.transaction.cart.listener;
 
+import android.content.Context;
 import android.app.Activity;
 import android.support.annotation.NonNull;
 
@@ -124,7 +125,7 @@ public interface ICartView extends IBaseView {
 
     void renderInstantPromo(CartPromo cartPromo);
 
-    void renderPromoView(boolean isCouponActive);
+    void renderPromoView(boolean isCouponActive, String defaultPromoTab);
 
     void renderAutoApplyPromoView(AutoApply autoApply);
 
@@ -133,6 +134,8 @@ public interface ICartView extends IBaseView {
     void setListnerCancelPromoLayoutOnAutoApplyCode();
 
     void renderPartialOrder(boolean useCancelPartial);
+
+    Activity getActivityContext();
 
     void renderCandelPromoSuccess();
 }

@@ -1,7 +1,7 @@
 package com.tokopedia.home.beranda.listener;
 
-import com.tokopedia.digital.tokocash.model.CashBackData;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CashBackData;
 
 /**
  * @author by errysuprayogi on 11/29/17.
@@ -15,7 +15,7 @@ public interface HomeCategoryListener {
 
     void onCloseTicker(int pos);
 
-    void onPromoClick(int position, BannerSlidesModel slidesModel);
+    void onPromoClick(int position, BannerSlidesModel slidesModel, String attribution);
 
     void openShop();
 

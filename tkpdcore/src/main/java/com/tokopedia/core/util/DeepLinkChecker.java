@@ -60,9 +60,7 @@ public class DeepLinkChecker {
     private static final String KEY_SALE = "sale";
     private static final String GROUPCHAT_SEGMENT = "groupchat";
 
-    public static int
-
-    getDeepLinkType(String url) {
+    public static int getDeepLinkType(String url) {
         Uri uriData = Uri.parse(url);
 
         List<String> linkSegment = uriData.getPathSegments();
@@ -314,16 +312,18 @@ public class DeepLinkChecker {
     }
 
     public static void openProduct(String url, Context context) {
-        Bundle bundle = new Bundle();
-        if (getLinkSegment(url).size() > 1) {
-            bundle.putString("shop_domain", getLinkSegment(url).get(0));
-            bundle.putString("product_key", getLinkSegment(url).get(1));
+        if (context != null) {
+            Bundle bundle = new Bundle();
+            if (getLinkSegment(url).size() > 1) {
+                bundle.putString("shop_domain", getLinkSegment(url).get(0));
+                bundle.putString("product_key", getLinkSegment(url).get(1));
+            }
+            bundle.putString("url", url);
+            Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(context);
+            intent.putExtras(bundle);
+            intent.setData(Uri.parse(url));
+            context.startActivity(intent);
         }
-        bundle.putString("url", url);
-        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(context);
-        intent.putExtras(bundle);
-        intent.setData(Uri.parse(url));
-        context.startActivity(intent);
     }
 
     public static void openShop(String url, Activity context) {

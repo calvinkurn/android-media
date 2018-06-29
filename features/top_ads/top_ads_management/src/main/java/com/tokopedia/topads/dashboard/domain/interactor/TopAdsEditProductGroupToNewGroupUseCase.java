@@ -10,6 +10,7 @@ import com.tokopedia.topads.dashboard.data.model.response.DataResponseCreateGrou
 import com.tokopedia.topads.dashboard.domain.TopAdsGroupAdsRepository;
 import com.tokopedia.topads.dashboard.domain.TopAdsShopAdsRepository;
 import com.tokopedia.topads.dashboard.domain.model.TopAdsDetailShopDomainModel;
+import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,7 +84,7 @@ public class TopAdsEditProductGroupToNewGroupUseCase extends UseCase<Boolean> {
         createGroupRequest.setGroupEndTime(topAdsDetailShopDomainModel.getAdEndTime());
         createGroupRequest.setStickerId(topAdsDetailShopDomainModel.getStickerId());
         createGroupRequest.setGroupTotal(GROUP_TOTAL);
-        createGroupRequest.setSource(SOURCE);
+        createGroupRequest.setSource(requestParams.getString(TopAdsSourceTaggingConstant.KEY_TAGGING_SOURCE, SOURCE));
         AdCreateGroupRequest adCreateGroupRequest = new AdCreateGroupRequest();
         adCreateGroupRequest.setAdId(topAdsDetailShopDomainModel.getAdId());
         adCreateGroupRequest.setItemId(topAdsDetailShopDomainModel.getItemId());
@@ -95,11 +96,12 @@ public class TopAdsEditProductGroupToNewGroupUseCase extends UseCase<Boolean> {
         return createGroupRequest;
     }
 
-    public static RequestParams createRequestParams(String adId, String groupName, String shopId){
+    public static RequestParams createRequestParams(String adId, String groupName, String shopId, String source){
         RequestParams params = RequestParams.create();
         params.putString(AD_ID, adId);
         params.putString(GROUP_NAME, groupName);
         params.putString(SHOP_ID, shopId);
+        params.putString(TopAdsSourceTaggingConstant.KEY_TAGGING_SOURCE, source);
         return params;
     }
 }

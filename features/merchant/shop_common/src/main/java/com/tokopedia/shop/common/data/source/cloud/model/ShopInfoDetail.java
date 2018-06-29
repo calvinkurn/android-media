@@ -175,7 +175,14 @@ public class ShopInfoDetail {
     }
 
     public String getShopDescription() {
-        return shopDescription;
+        if(shopDescription == null)
+            return "";
+        else{
+            if(shopDescription.equalsIgnoreCase("0"))
+                return "";
+            else
+                return shopDescription;
+        }
     }
 
     public void setShopDescription(String shopDescription) {
@@ -407,7 +414,14 @@ public class ShopInfoDetail {
     }
 
     public String getShopTagline() {
-        return shopTagline;
+        if(shopTagline == null)
+            return "";
+        else {
+            if (shopTagline.equalsIgnoreCase("0"))
+                return "";
+            else
+                return shopTagline;
+        }
     }
 
     public void setShopTagline(String shopTagline) {

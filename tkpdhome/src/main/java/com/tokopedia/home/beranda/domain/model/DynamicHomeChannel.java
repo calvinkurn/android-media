@@ -228,7 +228,8 @@ public class DynamicHomeChannel {
                                             )
                                     )
                             )
-                    )
+                    ),
+                    "attribution", getHomeAttribution(position + 1, getGrids()[position].getId())
             );
         }
 
@@ -251,7 +252,7 @@ public class DynamicHomeChannel {
                                     )
                             )
                     ),
-                    "attribution", getHomeAttribution(position + 1, "")
+                    "attribution", getHomeAttribution(position + 1, getGrids()[position].getId())
             );
         }
 
@@ -414,7 +415,9 @@ public class DynamicHomeChannel {
         }
 
         public String getHomeAttribution(int position, String creativeName) {
-            return homeAttribution.replace("$1", Integer.toString(position)).replace("$2", (creativeName != null) ? creativeName : "");
+            if (homeAttribution != null)
+                return homeAttribution.replace("$1", Integer.toString(position)).replace("$2", (creativeName != null) ? creativeName : "");
+            return "";
         }
 
         public void setHomeAttribution(String homeAttribution) {

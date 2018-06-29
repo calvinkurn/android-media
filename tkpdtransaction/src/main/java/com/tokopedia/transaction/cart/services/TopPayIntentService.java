@@ -2,24 +2,28 @@ package com.tokopedia.transaction.cart.services;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.os.Build;
 
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.container.GTMContainer;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.router.transactionmodule.TransactionRouter;
+import com.tokopedia.fingerprint.view.FingerPrintDialog;
 import com.tokopedia.transaction.cart.interactor.CartDataInteractor;
 import com.tokopedia.transaction.cart.interactor.ICartDataInteractor;
 import com.tokopedia.transaction.cart.model.paramcheckout.CheckoutData;
 import com.tokopedia.transaction.cart.model.paramcheckout.CheckoutDropShipperData;
-import com.tokopedia.transaction.cart.model.thankstoppaydata.ThanksTopPayData;
 import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;
 import com.tokopedia.transaction.cart.receivers.TopPayBroadcastReceiver;
 import com.tokopedia.transaction.exception.HttpErrorException;
 import com.tokopedia.transaction.exception.ResponseErrorException;
+import com.tokopedia.transactiondata.entity.response.thankstoppaydata.ThanksTopPayData;
 
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
+import java.security.PublicKey;
 
 import rx.Subscriber;
 import rx.schedulers.Schedulers;
@@ -37,6 +41,10 @@ public class TopPayIntentService extends IntentService {
     public static final int SERVICE_ACTION_NO_DEFINED = 0;
     public static final int SERVICE_ACTION_GET_PARAMETER_DATA = 1;
     public static final int SERVICE_ACTION_GET_THANKS_TOP_PAY = 2;
+    public static final String FINGERPRINT_PUBLICKEY = "fingerprint_publickey";
+    public static final String FINGERPRINT_SUPPORT = "fingerprint_support";
+    public static final String ANDROID_KEY_STORE = "AndroidKeyStore";
+    public static final String FINGERPRINT = "fingerprint";
 
     private ICartDataInteractor cartDataInteractor;
 
@@ -56,7 +64,6 @@ public class TopPayIntentService extends IntentService {
                 String paymentId = intent.getStringExtra(EXTRA_PAYMENT_ID);
                 getThanksTopPay(paymentId);
                 break;
-
         }
     }
 
@@ -153,7 +160,7 @@ public class TopPayIntentService extends IntentService {
     }
 
     private void getParameterDataTopPay(CheckoutData checkoutData) {
-        TKPDMapParam<String, String> params = new TKPDMapParam<>();
+        TKPDMapParam<String, Object> params = new TKPDMapParam<>();
         params.put("donation_amt", checkoutData.getDonationValue());
         params.put("gateway", checkoutData.getGateway());
         params.put("token_cart", checkoutData.getToken());
@@ -176,6 +183,7 @@ public class TopPayIntentService extends IntentService {
         }
         params.put(IS_THANKYOU_NATIVE, "1");
         params.put(IS_THANKYOU_NATIVE_NEW, "1");
+        params = createParamFingerprint(params);
 
         if (cartDataInteractor == null) cartDataInteractor = new CartDataInteractor();
         Intent intent = new Intent(TopPayBroadcastReceiver.ACTION_TOP_PAY);
@@ -184,8 +192,9 @@ public class TopPayIntentService extends IntentService {
         intent.putExtra(TopPayBroadcastReceiver.EXTRA_MESSAGE_TOP_PAY_ACTION,
                 "Melakukan proses checkout");
         sendBroadcast(intent);
+
         cartDataInteractor.getParameterTopPay(
-                AuthUtil.generateParamsNetwork(this, params), Schedulers.immediate(),
+                AuthUtil.generateParamsNetwork2(this, params), Schedulers.immediate(),
                 new Subscriber<TopPayParameterData>() {
                     @Override
                     public void onCompleted() {
@@ -241,5 +250,25 @@ public class TopPayIntentService extends IntentService {
                     }
                 }
         );
+    }
+
+    private TKPDMapParam<String, Object> createParamFingerprint(TKPDMapParam<String, Object> params) {
+        TransactionRouter transactionRouter = null;
+        if (getApplication() instanceof TransactionRouter) {
+            transactionRouter = (TransactionRouter) getApplication();
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && transactionRouter != null && transactionRouter.getEnableFingerprintPayment()) {
+            PublicKey publicKey = FingerPrintDialog.generatePublicKey(this);
+            if (publicKey != null) {
+                params.put(FINGERPRINT_PUBLICKEY, FingerPrintDialog.getPublicKey(publicKey));
+                params.put(FINGERPRINT_SUPPORT, true);
+            } else {
+                params.put(FINGERPRINT_SUPPORT, false);
+            }
+        } else {
+            params.put(FINGERPRINT_SUPPORT, false);
+        }
+        return params;
+
     }
 }

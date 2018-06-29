@@ -42,6 +42,7 @@ import static android.text.TextUtils.isEmpty;
  */
 public class ShopEditorPresenterImpl extends ShopEditorPresenter implements DownloadResultReceiver.Receiver {
 
+    private static final String DEFAULT_VALUE_0 = "0";
     private Context context;
     ShopEditorModel shopEditorModel = new ShopEditorModel();
     private DownloadResultReceiver mReceiver;
@@ -136,16 +137,6 @@ public class ShopEditorPresenterImpl extends ShopEditorPresenter implements Down
 
         if(isEmpty(shopEditorModel.getmShopName())) {
             view.setData(SHOP_NAME_ERROR, context.getString(R.string.error_field_required));
-            cancel = true;
-        }
-
-        if(isEmpty(shopEditorModel.getmShopSlogan())) {
-            view.setData(SHOP_SLOGAN_ERROR, context.getString(R.string.error_field_required));
-            cancel = true;
-        }
-
-        if(isEmpty(shopEditorModel.getmShopDesc())) {
-            view.setData(SHOP_DESC_ERROR, context.getString(R.string.error_field_required));
             cancel = true;
         }
 
@@ -376,8 +367,8 @@ public class ShopEditorPresenterImpl extends ShopEditorPresenter implements Down
             } else {
                 view.showButtonSend();
             }
-            view.setData(SHOP_SLOGAN, isEmpty(InfoObj.getShopTagline()) ? "" : InfoObj.getShopTagline());
-            view.setData(SHOP_DESC, isEmpty(InfoObj.getShopDescription()) ? "" : InfoObj.getShopDescription());
+            view.setData(SHOP_SLOGAN, isEmpty(InfoObj.getShopTagline()) || InfoObj.getShopTagline().equalsIgnoreCase(DEFAULT_VALUE_0) ? "" : InfoObj.getShopTagline());
+            view.setData(SHOP_DESC, isEmpty(InfoObj.getShopDescription()) || InfoObj.getShopDescription().equalsIgnoreCase(DEFAULT_VALUE_0) ? "" : InfoObj.getShopDescription());
             view.hideDialog();
 
             view.showShopEditor();

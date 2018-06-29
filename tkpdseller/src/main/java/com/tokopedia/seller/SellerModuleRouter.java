@@ -59,4 +59,7 @@ public interface SellerModuleRouter {
     Intent getTopProfileIntent(Context context, String userId);
 
     Intent getInboxMessageIntent(Context context);
+
+    void gotoTopAdsDashboard(Context context);
 }
+

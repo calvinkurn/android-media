@@ -254,6 +254,7 @@ public class ShopListFragment extends SearchSectionFragment
         if (adapter.isListEmpty()) {
             String message = String.format(getString(R.string.empty_search_content_template), query);
             adapter.showEmptyState(message);
+            SearchTracking.eventSearchNoResult(query, getScreenName(), getSelectedFilter());
         }
     }
 
@@ -295,6 +296,7 @@ public class ShopListFragment extends SearchSectionFragment
             public boolean onTabSelected(final int position, boolean wasSelected) {
                 switch (position) {
                     case 0:
+                        SearchTracking.eventSearchResultOpenFilterPageShop();
                         openFilterActivity();
                         return true;
                     case 1:
@@ -421,8 +423,8 @@ public class ShopListFragment extends SearchSectionFragment
     }
 
     @Override
-    protected void switchLayoutType(boolean isImageSearch) {
-        super.switchLayoutType(isImageSearch);
+    protected void switchLayoutType() {
+        super.switchLayoutType();
         
         if (!getUserVisibleHint()) {
             return;
@@ -441,7 +443,7 @@ public class ShopListFragment extends SearchSectionFragment
     }
 
     @Override
-    protected void reloadData() {
+    public void reloadData() {
         adapter.clearData();
         showBottomBarNavigation(false);
         loadShopFirstTime();

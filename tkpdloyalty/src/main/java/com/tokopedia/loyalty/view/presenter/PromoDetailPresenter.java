@@ -34,11 +34,14 @@ public class PromoDetailPresenter extends IBasePresenter<IPromoDetailView>
 
     @Override
     public void getPromoDetail(String slug) {
-
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         param.put(KEY_PARAM_SLUG, slug);
 
-        this.promoInteractor.getPromoList(param, new Subscriber<List<PromoData>>() {
+        this.promoInteractor.getPromoList(param, getSubscriber());
+    }
+
+    private Subscriber<List<PromoData>> getSubscriber() {
+        return new Subscriber<List<PromoData>>() {
             @Override
             public void onCompleted() {
 
@@ -46,24 +49,24 @@ public class PromoDetailPresenter extends IBasePresenter<IPromoDetailView>
 
             @Override
             public void onError(Throwable e) {
-                checkViewAttached();
-
-                if (e instanceof UnknownHostException) {
-                    // No internet connection
-                    getMvpView().renderErrorNoConnectionGetPromoDetail(
-                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
-                    );
-                } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
-                    // Timeout
-                    getMvpView().renderErrorTimeoutConnectionGetPromoDetail(
-                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-                    );
-                } else if (e instanceof HttpErrorException) {
-                    // Http errors such as 4xx, 5xx
-                    getMvpView().renderErrorHttpGetPromoDetail(e.getMessage());
-                } else {
-                    // Undefined errors
-                    getMvpView().renderErrorHttpGetPromoDetail(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                if (isViewAttached()) {
+                    if (e instanceof UnknownHostException) {
+                        // No internet connection
+                        getMvpView().renderErrorNoConnectionGetPromoDetail(
+                                ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
+                        );
+                    } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
+                        // Timeout
+                        getMvpView().renderErrorTimeoutConnectionGetPromoDetail(
+                                ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
+                        );
+                    } else if (e instanceof HttpErrorException) {
+                        // Http errors such as 4xx, 5xx
+                        getMvpView().renderErrorHttpGetPromoDetail(e.getMessage());
+                    } else {
+                        // Undefined errors
+                        getMvpView().renderErrorHttpGetPromoDetail(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                    }
                 }
 
                 e.printStackTrace();
@@ -71,15 +74,15 @@ public class PromoDetailPresenter extends IBasePresenter<IPromoDetailView>
 
             @Override
             public void onNext(List<PromoData> promoData) {
-                checkViewAttached();
-
-                if (promoData != null && !promoData.isEmpty()) {
-                    getMvpView().renderPromoDetail(promoData.get(0));
-                } else {
-                    getMvpView().renderErrorShowingPromoDetail(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                if (isViewAttached()) {
+                    if (promoData != null && !promoData.isEmpty()) {
+                        getMvpView().renderPromoDetail(promoData.get(0));
+                    } else {
+                        getMvpView().renderErrorShowingPromoDetail(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                    }
                 }
             }
-        });
+        };
     }
 
 }

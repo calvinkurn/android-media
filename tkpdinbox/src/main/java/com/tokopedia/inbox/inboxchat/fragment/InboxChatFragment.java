@@ -44,7 +44,8 @@ import com.tokopedia.inbox.inboxchat.adapter.NewInboxChatAdapter;
 import com.tokopedia.inbox.inboxchat.analytics.TopChatAnalytics;
 import com.tokopedia.inbox.inboxchat.di.DaggerInboxChatComponent;
 import com.tokopedia.inbox.inboxchat.domain.model.ReplyParcelableModel;
-import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
+import com.tokopedia.inbox.inboxchat.domain.model.websocket.BaseChatViewModel;
+import com.tokopedia.inbox.inboxchat.domain.model.reply.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.presenter.InboxChatContract;
 import com.tokopedia.inbox.inboxchat.presenter.InboxChatPresenter;
 import com.tokopedia.inbox.inboxchat.viewmodel.DeleteChatViewModel;
@@ -626,6 +627,11 @@ public class InboxChatFragment extends BaseDaggerFragment
         presenter.resetAttempt();
     }
 
+    @Override
+    public void onReceiveMessage(BaseChatViewModel message) {
+        //Ignore
+    }
+
 
     @Override
     public void notifyConnectionWebSocket() {
@@ -649,6 +655,7 @@ public class InboxChatFragment extends BaseDaggerFragment
     public void onDestroy() {
         super.onDestroy();
         presenter.closeWebsocket();
+        presenter.detachView();
     }
 
     @Override

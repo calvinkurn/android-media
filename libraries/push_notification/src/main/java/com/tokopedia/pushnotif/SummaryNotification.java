@@ -36,11 +36,11 @@ public class SummaryNotification {
     public static String generateSummaryText(int notificationType, int count) {
         switch (notificationType) {
             case Constant.NotificationId.TALK:
-                return count+" Diskusi";
+                return "Tokopedia - Diskusi";
             case Constant.NotificationId.CHAT:
-                return count+" Chat";
+                return "Tokopedia - Chat";
             default:
-                return count+" Notifikasi";
+                return "Tokopedia - Notifikasi";
         }
     }
 
