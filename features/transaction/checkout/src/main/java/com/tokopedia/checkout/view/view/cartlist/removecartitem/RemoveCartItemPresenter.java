@@ -153,16 +153,16 @@ public class RemoveCartItemPresenter extends BaseDaggerPresenter<RemoveCartItemC
             enhancedECommerceProductCartMapData.setCartId(String.valueOf(cartItemData.getOriginData().getCartId()));
             enhancedECommerceProductCartMapData.setProductName(cartItemData.getOriginData().getProductName());
             enhancedECommerceProductCartMapData.setProductID(String.valueOf(cartItemData.getOriginData().getProductId()));
-            enhancedECommerceProductCartMapData.setPrice(cartItemData.getOriginData().getPriceFormatted());
+            enhancedECommerceProductCartMapData.setPrice(String.valueOf(cartItemData.getOriginData().getPricePlanInt()));
             enhancedECommerceProductCartMapData.setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
 
             enhancedECommerceProductCartMapData.setCategory(TextUtils.isEmpty(cartItemData.getOriginData().getCategoryForAnalytics())
                     ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
                     : cartItemData.getOriginData().getCategoryForAnalytics());
             enhancedECommerceProductCartMapData.setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
-            enhancedECommerceProductCartMapData.setQty(cartItemData.getUpdatedData().getQuantity());
+            enhancedECommerceProductCartMapData.setQty(String.valueOf(cartItemData.getUpdatedData().getQuantity()));
             enhancedECommerceProductCartMapData.setShopId(cartItemData.getOriginData().getShopId());
-            //   product.setShopType(generateShopType(productData.getShopInfo()));
+            enhancedECommerceProductCartMapData.setShopType(cartItemData.getOriginData().getShopType());
             enhancedECommerceProductCartMapData.setShopName(cartItemData.getOriginData().getShopName());
             enhancedECommerceProductCartMapData.setCategoryId(cartItemData.getOriginData().getCategoryId());
             enhancedECommerceProductCartMapData.setDimension38(

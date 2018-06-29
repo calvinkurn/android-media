@@ -1,5 +1,7 @@
 package com.tokopedia.transactionanalytics;
 
+import android.util.Log;
+
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 
@@ -17,15 +19,17 @@ public class CheckoutAnalyticsAddToCart extends CheckoutAnalytics {
         super(analyticTracker);
     }
 
-    public void enhancedECommerceAddToCart(Map<String, Object> cartMap) {
-        if (analyticTracker != null)
-            analyticTracker.sendEnhancedEcommerce(
-                    DataLayer.mapOf("event", "addToCart",
-                            "eventCategory", "",
-                            "eventAction", ConstantTransactionAnalytics.EventCategory.ADD_TO_CART,
-                            "eventLabel", ConstantTransactionAnalytics.EventLabel.CLICK_BELI,
-                            "ecommerce", cartMap)
-            );
+    public void enhancedECommerceAddToCart(Map<String, Object> cartMap, String eventLabel) {
+        if (analyticTracker != null) {
+            Map<String, Object> dataLayer = DataLayer.mapOf("event", ConstantTransactionAnalytics.EventName.ADD_TO_CART,
+                    "eventCategory", ConstantTransactionAnalytics.EventCategory.ADD_TO_CART,
+                    "eventAction", ConstantTransactionAnalytics.EventAction.CLICK_BELI,
+                    "eventLabel", eventLabel,
+                    "ecommerce", cartMap);
+            Log.d("EE ATC", dataLayer.toString());
+            analyticTracker.sendEnhancedEcommerce(dataLayer);
+        }
+
     }
 
     public void eventClickAddToCartImpressionAtcSuccess() {
