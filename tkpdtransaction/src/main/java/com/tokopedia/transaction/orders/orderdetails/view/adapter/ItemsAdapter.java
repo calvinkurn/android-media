@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -88,19 +89,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         viewHolder = (ItemViewHolder) holder;
-        /*switch (getItemViewType(position)) {
-            case ITEM:*/
         ((ItemViewHolder) holder).setIndex(position);
         ((ItemViewHolder) holder).bindData(itemsList.get(position), isShortLayout);
-        // break;
-//            case ITEM2:
-//                ((ItemViewHolder) holder).setIndex(position);
-//                ((ItemViewHolder) holder).bindData(itemsList.get(position), isShortLayout);
-//                break;
-           /* default:
-                break;
-        }*/
-
     }
 
     @Override
@@ -138,11 +128,9 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         private TextView brandName;
         private TextView cityName;
         private TextView validDate;
-
-        //        private TextView redeemButton;
+        private ProgressBar progressBar;
         private LinearLayout tapActionLayout;
         private LinearLayout actionLayout;
-        //        private TextView voucherRedeemedDate;
         private View clCard;
         private int index;
 
@@ -155,14 +143,13 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             cityName = itemView.findViewById(R.id.tv_redeem_locations);
             if (!isShortLayout) {
                 validDate = itemView.findViewById(R.id.tv_valid_till_date);
-//                redeemButton = itemView.findViewById(R.id.tv_redeem_voucher);
                 tapActionLayout = itemView.findViewById(R.id.tapAction);
                 actionLayout = itemView.findViewById(R.id.actionButton);
-//                voucherRedeemedDate = itemView.findViewById(R.id.tv_voucher_redeemed);
                 clCard = itemView.findViewById(R.id.cl_card);
                 itemView.findViewById(R.id.divider1).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
             }
+            progressBar = itemView.findViewById(R.id.prog_bar);
 
         }
 
@@ -179,53 +166,30 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 dealsDetails.setText(metaDataInfo.getEntityProductName());
                 brandName.setText(metaDataInfo.getEntityBrandName());
                 if (!isShortLayout) {
-//                validDate.setText();
-//                    redeemButton.setOnClickListener(this);
                     validDate.setText(String.format(context.getResources().getString(R.string.text_valid_till), metaDataInfo.getEndDate()));
                 }
                 EntityAddress entityAddress = metaDataInfo.getEntityAddress();
-                if(entityAddress!=null){
-                    if(entityAddress.getName()!=null){
+                if (entityAddress != null) {
+                    if (entityAddress.getName() != null) {
                         cityName.setText(entityAddress.getName());
                     }
                 }
-//                if (entityAddress != null) {
-//                    List<String> list = new ArrayList<String>();
-//                    list.add(entityAddress.getAddress());
-//                    list.add(entityAddress.getDistrict());
-//                    list.add(entityAddress.getState());
-//                    String result = TextUtils.join(", ", list);
-//                    cityName.setText(result);
-//                }
-
             }
-//            if (item.getActionButtons().size() > 0) {
-//                actionLayout.setVisibility(View.VISIBLE);
-//            }
-//            for (ActionButton actionButton : item.getActionButtons()) {
-//                TextView smsButton = new TextView(context);
-//                smsButton.setText(actionButton.getLabel().toUpperCase());
-//                smsButton.setGravity(Gravity.CENTER_HORIZONTAL);
-//                smsButton.setPadding(24, 24, 24, 24);
-//                GradientDrawable shape = new GradientDrawable();
-//                shape.setShape(GradientDrawable.RECTANGLE);
-//                shape.setCornerRadius(4);
-//                shape.setStroke(1, Color.BLACK);
-//                smsButton.setBackground(shape);
-//                smsButton.setOnClickListener(getActionButtonClickListener(actionButton.getBody().getAppURL()));
-//                actionLayout.addView(smsButton);
-//            }
 
             if (item.getTapActions().size() > 0 && !isTapActionsLoaded) {
+                progressBar.setVisibility(View.VISIBLE);
+                tapActionLayout.setVisibility(View.GONE);
                 presenter.setTapActionButton(item.getTapActions(), ItemsAdapter.this, getIndex());
             }
             if (isTapActionsLoaded) {
+                progressBar.setVisibility(View.GONE);
+                tapActionLayout.setVisibility(View.VISIBLE);
                 for (int i = 0; i < item.getTapActions().size(); i++) {
                     TapActions tapActions = item.getTapActions().get(i);
 
                     TextView tapActionTextView = new TextView(context);
                     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                    if(i!=0){
+                    if (i != 0) {
                         params.setMargins(0, (int) context.getResources().getDimension(R.dimen.dp_8), 0, 0);
                     }
                     tapActionTextView.setPadding(24, 24, 24, 24);
@@ -247,7 +211,6 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         shape.setCornerRadius(4);
                     }
 
-//                    shape.setStroke(1, Color.BLACK);
                     tapActionTextView.setBackground(shape);
                     if (!tapActions.getBody().equals(""))
                         tapActionTextView.setOnClickListener(getActionButtonClickListener(tapActions.getBody().getAppURL()));

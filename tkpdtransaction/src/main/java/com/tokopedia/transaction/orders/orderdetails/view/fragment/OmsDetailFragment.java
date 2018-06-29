@@ -129,6 +129,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         recyclerView = view.findViewById(R.id.recycler_view);
         redeemInfo=view.findViewById(R.id.tv_redeem_info);
         paymentMethodInfo = view.findViewById(R.id.info_payment);
+        recyclerView.setNestedScrollingEnabled(false);
 
         initInjector();
         setMainViewVisible(View.GONE);
