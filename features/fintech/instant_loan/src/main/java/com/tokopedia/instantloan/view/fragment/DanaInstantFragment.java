@@ -47,6 +47,7 @@ import static com.tokopedia.instantloan.network.InstantLoanUrl.WEB_LINK_OTP;
 public class DanaInstantFragment extends BaseDaggerFragment implements InstantLoanContractor.View {
 
     public static final int LOGIN_REQUEST_CODE = 1005;
+    private static final String TAB_POSITION = "tab_position";
 
     private ProgressBar mProgressBar;
     private Dialog mDialogIntro;
@@ -54,12 +55,13 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
     @Inject
     InstantLoanPresenter presenter;
 
-    private final int mCurrentTab = 0;
+    private int mCurrentTab;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         presenter.attachView(this);
+        mCurrentTab = getArguments().getInt(TAB_POSITION);
     }
 
     @Override
@@ -129,7 +131,6 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
 
     @Override
     public void onSuccessLoanProfileStatus(UserProfileLoanEntity data) {
-//TODO @lavekush check possible error cases from @OKA
 
         if (!data.getWhitelist()) {
             if (!TextUtils.isEmpty(data.getWhiteListUrl())) {
@@ -338,8 +339,12 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
         return getScreenNameId();
     }
 
-    public static DanaInstantFragment createInstance() {
-        return new DanaInstantFragment();
+    public static DanaInstantFragment createInstance(int position) {
+        Bundle args = new Bundle();
+        args.putInt(TAB_POSITION, position);
+        DanaInstantFragment danaInstantFragment = new DanaInstantFragment();
+        danaInstantFragment.setArguments(args);
+        return danaInstantFragment;
     }
 
 }
