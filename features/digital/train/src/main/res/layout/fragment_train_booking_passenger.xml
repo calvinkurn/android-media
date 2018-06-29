@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <com.tokopedia.design.component.CardWithAction
+                    android:id="@+id/train_departure_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_card_with_action_main"
+                    android:visibility="visible"
+                    app:cmw_action="Detail"
+                    tools:visibility="visible" />
+
+                <com.tokopedia.design.component.CardWithAction
+                    android:id="@+id/train_return_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_card_with_action_main_no_top_border"
+                    android:visibility="gone"
+                    app:cmw_action="Detail"
+                    tools:visibility="gone" />
+
+            </LinearLayout>
+
+            <include layout="@layout/view_train_booking_buyer_info" />
+
+            <include layout="@layout/view_train_booking_passenger_info" />
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/button_submit"
+                style="@style/Button.Submit.Orange"
+                android:text="@string/train_booking_passenger_btn_payment" />
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/button_choose_seat"
+                style="@style/Button.Submit.White.Stroke"
+                android:text="@string/train_booking_passenger_btn_choose_seat" />
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+</LinearLayout>

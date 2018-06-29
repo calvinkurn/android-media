@@ -75,7 +75,7 @@
                         app:ctv_second_title="@string/flight_label_second" />
                 </LinearLayout>
 
-                <com.tokopedia.flight.booking.widget.CardWithActionView
+                <com.tokopedia.design.component.CardWithAction
                     android:id="@+id/cwa_departure_info"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -84,7 +84,7 @@
                     app:cmw_action="Detail"
                     tools:visibility="visible" />
 
-                <com.tokopedia.flight.booking.widget.CardWithActionView
+                <com.tokopedia.design.component.CardWithAction
                     android:id="@+id/cwa_return_info"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

@@ -3,8 +3,6 @@ package com.tokopedia.train.seat.presentation.fragment.viewpager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.tokopedia.train.seat.presentation.fragment.TrainWagonFragment;
 import com.tokopedia.train.seat.presentation.viewmodel.TrainWagonViewModel;
@@ -30,23 +28,9 @@ public class TrainWagonsPagerAdapter extends FragmentStatePagerAdapter {
         return wagons.size();
     }
 
-    @Override
-    public boolean isViewFromObject(View view, Object o) {
-        return o == view;
-    }
-
-    @Override
-    public CharSequence getPageTitle(int position) {
-        return "Item " + (position + 1);
-    }
 
     @Override
     public Fragment getItem(int position) {
         return TrainWagonFragment.newInstance(wagons.get(position), interactionListener);
-    }
-
-    @Override
-    public void destroyItem(ViewGroup container, int position, Object object) {
-        container.removeView((View) object);
     }
 }

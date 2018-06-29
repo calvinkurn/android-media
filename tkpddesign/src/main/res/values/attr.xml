@@ -225,4 +225,13 @@
         <attr name="layout" format="reference"/>
     </declare-styleable>
 
+    <declare-styleable name="CardWithActionView">
+        <attr name="cmv_title" format="string" />
+        <attr name="cmv_content" format="string" />
+        <attr name="cmv_content_info" format="string" />
+        <attr name="cmw_subcontent" format="string" />
+        <attr name="cmw_subcontent_info" format="string" />
+        <attr name="cmw_action" format="string" />
+    </declare-styleable>
+
 </resources>

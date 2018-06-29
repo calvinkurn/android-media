@@ -37,4 +37,12 @@ public class TrainSeatPassengerSeatViewModel {
     public void setColumn(String column) {
         this.column = column;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof TrainSeatPassengerSeatViewModel &&
+                ((TrainSeatPassengerSeatViewModel) obj).getWagonCode().equals(wagonCode) &&
+                ((TrainSeatPassengerSeatViewModel) obj).getColumn().equals(column) &&
+                ((TrainSeatPassengerSeatViewModel) obj).getRow().equals(row);
+    }
 }

@@ -4,8 +4,10 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.train.scheduledetail.presentation.model.TrainScheduleDetailViewModel;
+import com.tokopedia.train.scheduledetail.presentation.TrainScheduleRouteDetailViewModel;
 import com.tokopedia.train.search.presentation.adapter.TrainSearchAdapterTypeFactory;
+
+import java.util.List;
 
 /**
  * Created by nabilla on 3/9/18.
@@ -33,11 +35,13 @@ public class TrainScheduleViewModel implements Parcelable, Visitable<TrainSearch
     private int availableSeat;
     private boolean cheapestFlag;
     private boolean fastestFlag;
+    private List<TrainScheduleRouteDetailViewModel> scheduleRouteList;
+    private boolean returnTrip;
 
     public TrainScheduleViewModel() {
     }
 
-    public TrainScheduleViewModel(Parcel in) {
+    protected TrainScheduleViewModel(Parcel in) {
         idSchedule = in.readString();
         adultFare = in.readLong();
         displayAdultFare = in.readString();
@@ -58,6 +62,8 @@ public class TrainScheduleViewModel implements Parcelable, Visitable<TrainSearch
         availableSeat = in.readInt();
         cheapestFlag = in.readByte() != 0;
         fastestFlag = in.readByte() != 0;
+        scheduleRouteList = in.createTypedArrayList(TrainScheduleRouteDetailViewModel.CREATOR);
+        returnTrip = in.readByte() != 0;
     }
 
     public static final Creator<TrainScheduleViewModel> CREATOR = new Creator<TrainScheduleViewModel>() {
@@ -71,6 +77,14 @@ public class TrainScheduleViewModel implements Parcelable, Visitable<TrainSearch
             return new TrainScheduleViewModel[size];
         }
     };
+
+    public boolean isReturnTrip() {
+        return returnTrip;
+    }
+
+    public void setReturnTrip(boolean returnTrip) {
+        this.returnTrip = returnTrip;
+    }
 
     public String getIdSchedule() {
         return idSchedule;
@@ -232,9 +246,29 @@ public class TrainScheduleViewModel implements Parcelable, Visitable<TrainSearch
         this.fastestFlag = fastestFlag;
     }
 
+    public void setScheduleRouteList(List<TrainScheduleRouteDetailViewModel> scheduleRouteList) {
+        this.scheduleRouteList = scheduleRouteList;
+    }
+
+    public List<TrainScheduleRouteDetailViewModel> getScheduleRouteList() {
+        return scheduleRouteList;
+    }
+
     @Override
     public int type(TrainSearchAdapterTypeFactory typeFactory) {
         return typeFactory.type(this);
+    }
+
+
+    @Override
+    public String toString() {
+        return "Schedule ID: " + idSchedule + "\n" +
+                "Adult Fare: " + displayAdultFare + "\n" +
+                "Train Name: " + trainName + "\n" +
+                "Duration: " + duration + "\n" +
+                "Departure Timestamp: " + departureTimestamp + "\n" +
+                "Arrival Timestamp: " + arrivalTimestamp + "\n" +
+                "Availibility: " + availableSeat + "\n";
     }
 
     @Override
@@ -264,17 +298,7 @@ public class TrainScheduleViewModel implements Parcelable, Visitable<TrainSearch
         parcel.writeInt(availableSeat);
         parcel.writeByte((byte) (cheapestFlag ? 1 : 0));
         parcel.writeByte((byte) (fastestFlag ? 1 : 0));
+        parcel.writeTypedList(scheduleRouteList);
+        parcel.writeByte((byte) (returnTrip ? 1 : 0));
     }
-
-    @Override
-    public String toString() {
-        return "Schedule ID: " + idSchedule + "\n" +
-                "Adult Fare: " + displayAdultFare + "\n" +
-                "Train Name: " + trainName + "\n" +
-                "Duration: " + duration + "\n" +
-                "Departure Timestamp: " + departureTimestamp + "\n" +
-                "Arrival Timestamp: " + arrivalTimestamp + "\n" +
-                "Availibility: " + availableSeat + "\n";
-    }
-
 }

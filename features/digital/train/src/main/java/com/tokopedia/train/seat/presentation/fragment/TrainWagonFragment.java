@@ -2,7 +2,6 @@ package com.tokopedia.train.seat.presentation.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,6 +17,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.seat.presentation.fragment.adapter.TrainSeatAdapter;
 import com.tokopedia.train.seat.presentation.fragment.adapter.TrainSeatPopupAdapter;
+import com.tokopedia.train.seat.presentation.fragment.listener.TrainSeatListener;
 import com.tokopedia.train.seat.presentation.viewmodel.TrainSeatPassengerViewModel;
 import com.tokopedia.train.seat.presentation.viewmodel.TrainSeatViewModel;
 import com.tokopedia.train.seat.presentation.viewmodel.TrainWagonViewModel;
@@ -27,12 +27,14 @@ import java.util.List;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
-public class TrainWagonFragment extends BaseDaggerFragment implements TrainSeatAdapter.ActionListener, TrainSeatPopupAdapter.ActionListener {
+public class TrainWagonFragment extends BaseDaggerFragment implements TrainSeatAdapter.ActionListener, TrainSeatPopupAdapter.ActionListener, TrainSeatListener {
     private static final String EXTRA_WAGON = "EXTRA_WAGON";
     private TrainWagonViewModel trainWagonViewModel;
 
     private RecyclerView seatsRecyclerView;
     private PopupWindow popupWindow;
+
+    private TrainSeatAdapter adapter;
 
     public static TrainWagonFragment newInstance(TrainWagonViewModel trainWagonViewModel, OnFragmentInteraction interactionListener) {
         TrainWagonFragment fragment = new TrainWagonFragment();
@@ -65,6 +67,11 @@ public class TrainWagonFragment extends BaseDaggerFragment implements TrainSeatA
             interaction.onPassengerSeatChange(selectedPassenger, seat);
             popupWindow.dismiss();
         }
+    }
+
+    @Override
+    public void notifyPassengerUpdate() {
+        adapter.setSelecteds(transformToSelectedSeat(interaction.getPassengers()));
     }
 
     public interface OnFragmentInteraction {
@@ -101,11 +108,12 @@ public class TrainWagonFragment extends BaseDaggerFragment implements TrainSeatA
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         int columnCount = calculateColumn(trainWagonViewModel.getSeats());
-        TrainSeatAdapter adapter = new TrainSeatAdapter();
+        adapter = new TrainSeatAdapter();
         adapter.setSeats(trainWagonViewModel.getSeats());
         adapter.setSelecteds(transformToSelectedSeat(interaction.getPassengers()));
         adapter.setListener(this);
         seatsRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), columnCount));
+//        seatsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         seatsRecyclerView.setAdapter(adapter);
     }
 
