@@ -23,34 +23,22 @@ import rx.Observable;
  * @See {@link RestRequestUseCase} class for default interceptor
  */
 public abstract class RestRequestSupportInterceptorUseCase extends UseCase<Map<Type, RestResponse>> {
-    private List<RestRequest> mRequests;
     private List<Interceptor> mInterceptors;
     private Context mContext;
 
     public RestRequestSupportInterceptorUseCase(Interceptor interceptor, Context context) {
-        this.mRequests = new ArrayList<>();
         this.mInterceptors = Arrays.asList(interceptor);
         this.mContext = context;
     }
 
     public RestRequestSupportInterceptorUseCase(List<Interceptor> interceptors, Context context) {
-        this.mRequests = new ArrayList<>();
         this.mInterceptors = interceptors;
         this.mContext = context;
     }
 
     @Override
     public Observable<Map<Type, RestResponse>> createObservable(RequestParams requestParams) {
-        return ObservableFactory.create(getRequests(), mInterceptors, mContext);
-    }
-
-    private List<RestRequest> getRequests() {
-        if (!mRequests.isEmpty()) {
-            return mRequests;
-        }
-
-        mRequests.addAll(buildRequest());
-        return mRequests;
+        return ObservableFactory.create(buildRequest(), mInterceptors, mContext);
     }
 
     /**

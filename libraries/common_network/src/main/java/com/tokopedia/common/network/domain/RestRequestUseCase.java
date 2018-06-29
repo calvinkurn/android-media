@@ -19,24 +19,13 @@ import rx.Observable;
  * @See {@link RestRequestSupportInterceptorUseCase} class for add custom interceptor
  */
 public abstract class RestRequestUseCase extends UseCase<Map<Type, RestResponse>> {
-    private List<RestRequest> mRequests;
 
     public RestRequestUseCase() {
-        this.mRequests = new ArrayList<>();
     }
 
     @Override
     public Observable<Map<Type, RestResponse>> createObservable(RequestParams requestParams) {
         return ObservableFactory.create(buildRequest());
-    }
-
-    private List<RestRequest> getRequests() {
-        if (!mRequests.isEmpty()) {
-            return mRequests;
-        }
-
-        mRequests.addAll(buildRequest());
-        return mRequests;
     }
 
     /**
