@@ -5,6 +5,7 @@ import android.support.annotation.StringRes;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.design.component.CardWithAction;
+import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
 import com.tokopedia.train.passenger.viewmodel.ProfileBuyerInfo;
 import com.tokopedia.train.passenger.viewmodel.TrainPassengerViewModel;
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
@@ -61,6 +62,10 @@ public interface TrainBookingPassengerContract {
         void setPhoneNumber(String phoneNumber);
 
         void setEmail(String email);
+
+        void navigateToChooseSeat(TrainSoftbook trainSoftbook);
+
+        void navigateToReview(TrainSoftbook trainSoftbook);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -72,5 +77,9 @@ public interface TrainBookingPassengerContract {
         void processInitPassengers(int adultPassengers, int infantPassengers);
 
         void updateDataPassengers(TrainPassengerViewModel trainPassengerViewModel);
+
+        void onSubmitButtonClicked();
+
+        void onChooseSeatButtonClicked();
     }
 }

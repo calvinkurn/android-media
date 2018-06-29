@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -27,6 +28,7 @@ import com.tokopedia.train.passenger.adapter.TrainBookingPassengerAdapterListene
 import com.tokopedia.train.passenger.adapter.TrainBookingPassengerAdapterTypeFactory;
 import com.tokopedia.train.passenger.contract.TrainBookingPassengerContract;
 import com.tokopedia.train.passenger.di.DaggerTrainBookingPassengerComponent;
+import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
 import com.tokopedia.train.passenger.presenter.TrainBookingPassengerPresenter;
 import com.tokopedia.train.passenger.viewmodel.ProfileBuyerInfo;
 import com.tokopedia.train.passenger.viewmodel.TrainParamPassenger;
@@ -58,6 +60,7 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
     private AppCompatEditText birthdateBuyer;
     private AppCompatEditText phoneNumberBuyer;
     private AppCompatEditText emailBuyer;
+    private AppCompatButton submitButton, chooseSeatButton;
 
     @Inject
     TrainBookingPassengerPresenter presenter;
@@ -81,6 +84,8 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
         birthdateBuyer = view.findViewById(R.id.et_birthdate);
         phoneNumberBuyer = view.findViewById(R.id.et_phone_number);
         emailBuyer = view.findViewById(R.id.et_contact_email);
+        submitButton = view.findViewById(R.id.button_submit);
+        chooseSeatButton = view.findViewById(R.id.button_choose_seat);
         return view;
     }
 
@@ -97,6 +102,23 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
         initializeBuyerInfo();
         initializeTripInfo();
         initializePassenger();
+        initializeActionButton();
+    }
+
+    private void initializeActionButton() {
+        submitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                presenter.onSubmitButtonClicked();
+            }
+        });
+
+        chooseSeatButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                presenter.onChooseSeatButtonClicked();
+            }
+        });
     }
 
     private void initializeBuyerInfo() {
@@ -247,6 +269,16 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
     @Override
     public void setEmail(String email) {
         emailBuyer.setText(email);
+    }
+
+    @Override
+    public void navigateToChooseSeat(TrainSoftbook trainSoftbook) {
+
+    }
+
+    @Override
+    public void navigateToReview(TrainSoftbook trainSoftbook) {
+
     }
 
     @Override

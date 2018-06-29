@@ -7,6 +7,9 @@ public class TrainPaxPassengerEntity {
     @SerializedName("name")
     @Expose
     private String name;
+    @SerializedName("idNumber")
+    @Expose
+    private String idNumber;
     @SerializedName("paxType")
     @Expose
     private int paxType;
@@ -24,5 +27,9 @@ public class TrainPaxPassengerEntity {
 
     public TrainSeatEntity getSeat() {
         return seat;
+    }
+
+    public String getIdNumber() {
+        return idNumber;
     }
 }

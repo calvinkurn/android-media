@@ -6,6 +6,8 @@ import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.util.TrainDateUtil;
 import com.tokopedia.train.passenger.contract.TrainBookingPassengerContract;
 import com.tokopedia.train.passenger.data.TrainBookingPassenger;
+import com.tokopedia.train.passenger.domain.TrainSoftBookingUseCase;
+import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
 import com.tokopedia.train.passenger.viewmodel.ProfileBuyerInfo;
 import com.tokopedia.train.passenger.viewmodel.TrainPassengerViewModel;
 import com.tokopedia.train.search.domain.GetDetailScheduleUseCase;
@@ -30,10 +32,12 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
 
     private CompositeSubscription compositeSubscription;
     private GetDetailScheduleUseCase getDetailScheduleUseCase;
+    private TrainSoftBookingUseCase trainSoftBookingUseCase;
 
     @Inject
-    public TrainBookingPassengerPresenter(GetDetailScheduleUseCase getDetailScheduleUseCase) {
+    public TrainBookingPassengerPresenter(GetDetailScheduleUseCase getDetailScheduleUseCase, TrainSoftBookingUseCase trainSoftBookingUseCase) {
         this.getDetailScheduleUseCase = getDetailScheduleUseCase;
+        this.trainSoftBookingUseCase = trainSoftBookingUseCase;
         compositeSubscription = new CompositeSubscription();
     }
 
@@ -127,6 +131,46 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
             passengerViewModels.set(indexPassenger, trainPassengerViewModel);
         }
         getView().renderPassenger(passengerViewModels);
+    }
+
+    @Override
+    public void onSubmitButtonClicked() {
+        trainSoftBookingUseCase.execute(trainSoftBookingUseCase.create(), new Subscriber<TrainSoftbook>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(TrainSoftbook trainSoftbook) {
+                getView().navigateToReview(trainSoftbook);
+            }
+        });
+    }
+
+    @Override
+    public void onChooseSeatButtonClicked() {
+        trainSoftBookingUseCase.execute(trainSoftBookingUseCase.create(), new Subscriber<TrainSoftbook>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(TrainSoftbook trainSoftbook) {
+                getView().navigateToChooseSeat(trainSoftbook);
+            }
+        });
     }
 
     private List<TrainPassengerViewModel> initPassenger(int adultPassengers, int infantPassengers) {
