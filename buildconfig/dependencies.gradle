@@ -64,6 +64,7 @@ ext {
     tkpdDistrictRecommendationVersion = '2.22'
     tkpdAnalyticsVersion = '2.22'
     tkpdGraphqlVersion = '2.22'
+    tkpdContactUsVersion = '2.22'
 
     networkDependencies = [
             retrofit          : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
@@ -308,6 +309,7 @@ ext {
             tracking              : ":features:logistic:tracking",
             logisticuploadawb     : ":features:logistic:logisticuploadawb",
             reksaDana             : ":features:fintech:reksa_dana"
+            logisticuploadawb     : ":features:logistic:logisticuploadawb"
     ]
 
     libraries = [
