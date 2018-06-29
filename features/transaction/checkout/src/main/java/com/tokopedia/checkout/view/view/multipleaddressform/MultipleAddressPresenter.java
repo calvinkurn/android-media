@@ -64,9 +64,9 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
         RequestParams requestParam = RequestParams.create();
 
         TKPDMapParam<String, String> authParam = AuthUtil.generateParamsNetwork(
-                view.getActivity(), param,
-                SessionHandler.getLoginID(view.getActivity()),
-                GCMHandler.getRegistrationId(view.getActivity()));
+                view.getActivityContext(), param,
+                SessionHandler.getLoginID(view.getActivityContext()),
+                GCMHandler.getRegistrationId(view.getActivityContext()));
 
         requestParam.putAllString(authParam);
 
