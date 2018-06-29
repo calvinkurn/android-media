@@ -379,6 +379,10 @@ public class Utils {
         return String.format(RUPIAH_FORMAT, NumberFormat.getNumberInstance(locale).format(value.longValue()));
     }
 
+    public static String convertToCurrencyString(long value) {
+        return String.format(RUPIAH_FORMAT, NumberFormat.getNumberInstance(locale).format(value));
+    }
+
     public LocationViewModel getLocation(Context context) {
 
         if (location == null) {

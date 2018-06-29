@@ -3,10 +3,6 @@ package com.tokopedia.digital_deals.di;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.digital_deals.di.scope.DealsScope;
-import com.tokopedia.digital_deals.view.activity.BrandDetailsActivity;
-import com.tokopedia.digital_deals.view.activity.DealDetailsActivity;
-import com.tokopedia.digital_deals.view.activity.DealsHomeActivity;
-import com.tokopedia.digital_deals.view.activity.DealsLocationActivity;
 import com.tokopedia.digital_deals.view.activity.DealsSearchActivity;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
 import com.tokopedia.digital_deals.view.fragment.AllBrandsFragment;
@@ -18,7 +14,6 @@ import com.tokopedia.digital_deals.view.fragment.DealDetailsFragment;
 import com.tokopedia.digital_deals.view.fragment.DealsHomeFragment;
 import com.tokopedia.digital_deals.view.fragment.SelectDealQuantityFragment;
 import com.tokopedia.digital_deals.view.fragment.SelectLocationFragment;
-import com.tokopedia.digital_deals.view.fragment.VoucherListFragment;
 import com.tokopedia.oms.domain.postusecase.PostVerifyCartUseCase;
 
 import dagger.Component;
@@ -45,8 +40,6 @@ public interface DealsComponent {
     void inject(CheckoutHomeFragment fragment);
 
     void inject(DealsCategoryAdapter dealsCategoryAdapter);
-
-    void inject(VoucherListFragment fragment);
 
     void inject(SelectLocationFragment fragment);
 

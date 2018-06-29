@@ -236,6 +236,13 @@ public class CheckoutDealPresenter
         });
     }
 
+    public void updateAmount(long discountAmount){
+        getView().updateAmount(com.tokopedia.digital_deals.view.utils.Utils.convertToCurrencyString(packageViewModel.getSalesPrice() *
+                packageViewModel.getSelectedQuantity() +
+                packageViewModel.getCommission()-discountAmount));
+
+    }
+
     public List<OutletViewModel> getOutlets() {
         return dealDetail.getOutlets();
     }

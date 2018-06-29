@@ -7,7 +7,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,14 +25,12 @@ import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DaggerDealsComponent;
 import com.tokopedia.digital_deals.di.DealsModule;
 import com.tokopedia.digital_deals.view.activity.CheckoutActivity;
-import com.tokopedia.digital_deals.view.activity.DealDetailsActivity;
 import com.tokopedia.digital_deals.view.contractor.CheckoutDealContractor;
 import com.tokopedia.digital_deals.view.presenter.CheckoutDealPresenter;
 import com.tokopedia.digital_deals.view.utils.DealFragmentCallbacks;
 import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.digital_deals.view.viewmodel.DealsDetailsViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.PackageViewModel;
-import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
 import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;
@@ -43,6 +40,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
 
     private ConstraintLayout clPromoApplied;
     private ConstraintLayout baseMainContent;
+    private ConstraintLayout clPromoAmount;
     private ViewGroup mainContent;
     private TextView tvPaymentMethod;
     private View paymentMethod;
@@ -123,6 +121,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
         mainContent = view.findViewById(R.id.main_content);
         progressParLayout = view.findViewById(R.id.progress_bar_layout);
         ivRemovePromo = view.findViewById(R.id.iv_remove_promo);
+        clPromoAmount=view.findViewById(R.id.cl_promo);
         Drawable img = getResources().getDrawable(R.drawable.ic_promo_code);
         tvApplyPromo.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
 
@@ -217,11 +216,20 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
     }
 
     @Override
-    public void showPromoSuccessMessage(String text, String message) {
+    public void showPromoSuccessMessage(String text, String message, long discountAmount) {
         tvApplyPromo.setVisibility(View.GONE);
         clPromoApplied.setVisibility(View.VISIBLE);
         tvDiscount.setText(message);
         tvVoucherCode.setText(text);
+        if(discountAmount!=0){
+            clPromoAmount.setVisibility(View.VISIBLE);
+            TextView view=getRootView().findViewById(R.id.tv_promo_discount);
+            view.setText(Utils.convertToCurrencyString(discountAmount));
+        }else{
+            clPromoAmount.setVisibility(View.GONE);
+        }
+        mPresenter.updateAmount(discountAmount);
+
     }
 
     @Override
@@ -235,11 +243,15 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
     }
 
     @Override
+    public void updateAmount(String s) {
+        tvAmount.setText(s);
+    }
+
+    @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         fragmentCallbacks = (CheckoutActivity) activity;
     }
-
 
     @Override
     public void onClick(View v) {
@@ -253,6 +265,8 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
             mPresenter.updatePromoCode("");
             tvApplyPromo.setVisibility(View.VISIBLE);
             clPromoApplied.setVisibility(View.GONE);
+            clPromoAmount.setVisibility(View.GONE);
+            mPresenter.updateAmount(0);
         }
     }
 
@@ -275,7 +289,9 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
             switch (resultCode) {
                 case IRouterConstant.LoyaltyModule.ResultLoyaltyActivity.VOUCHER_RESULT_CODE:
                     mPresenter.updatePromoCode(data.getExtras().getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_CODE));
-                    showPromoSuccessMessage(data.getExtras().getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_CODE), data.getExtras().getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_MESSAGE));
+                    showPromoSuccessMessage(data.getExtras().getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_CODE)
+                            , data.getExtras().getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_MESSAGE)
+                            , data.getExtras().getLong(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_DISCOUNT_AMOUNT));
                     break;
 //                case LoyaltyActivity.VOUCHER_RESULT_CODE:
 //                    mPresenter.updatePromoCode(data.getExtras().getString(LoyaltyActivity.VOUCHER_CODE));

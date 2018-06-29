@@ -43,7 +43,7 @@ public class CategoryDetailActivity extends BaseSimpleActivity implements Catego
     public void replaceFragment(CategoriesModel categoriesModel) {
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.add(R.id.parent_view, AllBrandsFragment.newInstance(categoriesModel));
+        transaction.replace(R.id.parent_view, AllBrandsFragment.newInstance(categoriesModel));
         transaction.addToBackStack(BRAND_FRAGMENT);
         transaction.commit();
     }

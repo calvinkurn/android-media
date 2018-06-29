@@ -23,6 +23,7 @@ import com.tokopedia.digital_deals.DealsModuleRouter;
 import com.tokopedia.digital_deals.data.DealsDataStoreFactory;
 import com.tokopedia.digital_deals.data.DealsRepositoryData;
 import com.tokopedia.digital_deals.data.source.DealsApi;
+import com.tokopedia.digital_deals.data.source.DealsBaseURL;
 import com.tokopedia.digital_deals.di.scope.DealsScope;
 import com.tokopedia.digital_deals.domain.DealsRepository;
 import com.tokopedia.digital_deals.domain.getusecase.GetAllBrandsUseCase;
@@ -196,7 +197,7 @@ public class DealsModule {
     @DealsScope
     Retrofit provideDealsRetrofit(@DealsQualifier OkHttpClient okHttpClient,
                                   Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(TkpdBaseURL.DEALS_DOMAIN).client(okHttpClient).build();
+        return retrofitBuilder.baseUrl(DealsBaseURL.DEALS_DOMAIN).client(okHttpClient).build();
     }
 
     @DealsQualifier
