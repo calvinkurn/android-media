@@ -20,5 +20,5 @@ public interface IMultipleAddressView {
 
     void hideLoading();
 
-    Activity getActivity();
+    Activity getActivityContext();
 }

@@ -224,6 +224,11 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
     }
 
     @Override
+    public Activity getActivityContext() {
+        return getActivity();
+    }
+
+    @Override
     public void showError(String message) {
         if (getView() != null) {
             if (TextUtils.isEmpty(message)) {
