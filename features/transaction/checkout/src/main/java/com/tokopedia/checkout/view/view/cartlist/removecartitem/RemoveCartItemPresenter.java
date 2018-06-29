@@ -144,9 +144,6 @@ public class RemoveCartItemPresenter extends BaseDaggerPresenter<RemoveCartItemC
         }
         EnhancedECommerceCartMapData enhancedECommerceCartMapData = new EnhancedECommerceCartMapData();
 
-        enhancedECommerceCartMapData.setCurrencyCode("IDR");
-        enhancedECommerceCartMapData.setAction(enhancedECommerceAction);
-
         for (CartItemData cartItemData : cartItemDataList) {
             EnhancedECommerceProductCartMapData enhancedECommerceProductCartMapData =
                     new EnhancedECommerceProductCartMapData();
@@ -155,7 +152,6 @@ public class RemoveCartItemPresenter extends BaseDaggerPresenter<RemoveCartItemC
             enhancedECommerceProductCartMapData.setProductID(String.valueOf(cartItemData.getOriginData().getProductId()));
             enhancedECommerceProductCartMapData.setPrice(String.valueOf(cartItemData.getOriginData().getPricePlanInt()));
             enhancedECommerceProductCartMapData.setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
-
             enhancedECommerceProductCartMapData.setCategory(TextUtils.isEmpty(cartItemData.getOriginData().getCategoryForAnalytics())
                     ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
                     : cartItemData.getOriginData().getCategoryForAnalytics());
@@ -187,6 +183,10 @@ public class RemoveCartItemPresenter extends BaseDaggerPresenter<RemoveCartItemC
             );
             enhancedECommerceCartMapData.addProduct(enhancedECommerceProductCartMapData.getProduct());
         }
+
+        enhancedECommerceCartMapData.setCurrencyCode("IDR");
+        enhancedECommerceCartMapData.setAction(enhancedECommerceAction);
+
         return enhancedECommerceCartMapData.getCartMap();
 
     }
