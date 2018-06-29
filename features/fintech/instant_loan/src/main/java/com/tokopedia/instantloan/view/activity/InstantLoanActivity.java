@@ -21,6 +21,9 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.core.remoteconfig.RemoteConfig;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.instantloan.InstantLoanComponentInstance;
 import com.tokopedia.instantloan.R;
 import com.tokopedia.instantloan.ddcollector.DDCollectorManager;
@@ -74,16 +77,42 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
     List<InstantLoanItem> instantLoanItemList = new ArrayList<>();
 
     private void loadSection() {
-        populateThreeTabItem();
-        InstantLoanPagerAdapter instantLoanPagerAdapter = new InstantLoanPagerAdapter(getSupportFragmentManager());
+
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
+        if (remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SHOW_INSTANT_LOAN, true)) {
+            populateThreeTabItem();
+        } else {
+            populateTwoTabItem();
+        }
+        InstantLoanPagerAdapter instantLoanPagerAdapter =
+                new InstantLoanPagerAdapter(getSupportFragmentManager());
         instantLoanPagerAdapter.setData(instantLoanItemList);
         viewPager.setAdapter(instantLoanPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
         setActiveTab();
     }
 
+    private void populateTwoTabItem() {
+        instantLoanItemList.add(new InstantLoanItem(getPageTitle(0),
+                getTanpaAgunanFragment(0)));
+        instantLoanItemList.add(new InstantLoanItem(getPageTitle(1),
+                getDenganAngunanFragment(1)));
+
+    }
+
+    private void populateThreeTabItem() {
+        instantLoanItemList.add(new InstantLoanItem(getPageTitle(0),
+                getDanaInstantFragment(0)));
+        instantLoanItemList.add(new InstantLoanItem(getPageTitle(1),
+                getTanpaAgunanFragment(1)));
+        instantLoanItemList.add(new InstantLoanItem(getPageTitle(2),
+                getDenganAngunanFragment(2)));
+    }
+
+
     private void setActiveTab() {
-        viewPager.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        viewPager.getViewTreeObserver().addOnGlobalLayoutListener(
+                new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 viewPager.getViewTreeObserver().removeOnGlobalLayoutListener(this);
@@ -92,22 +121,16 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
         });
     }
 
-    private void populateThreeTabItem() {
-        instantLoanItemList.add(new InstantLoanItem(getPageTitle(0), getDanaInstantFragment()));
-        instantLoanItemList.add(new InstantLoanItem(getPageTitle(1), getTanpaAgunanFragment()));
-        instantLoanItemList.add(new InstantLoanItem(getPageTitle(2), getDenganAngunanFragment()));
+    private DanaInstantFragment getDanaInstantFragment(int position) {
+        return DanaInstantFragment.createInstance(position);
     }
 
-    private DanaInstantFragment getDanaInstantFragment() {
-        return DanaInstantFragment.createInstance();
+    private TanpaAgunanFragment getTanpaAgunanFragment(int position) {
+        return TanpaAgunanFragment.createInstance(position);
     }
 
-    private TanpaAgunanFragment getTanpaAgunanFragment() {
-        return TanpaAgunanFragment.createInstance();
-    }
-
-    private DenganAgunanFragment getDenganAngunanFragment() {
-        return DenganAgunanFragment.createInstance();
+    private DenganAgunanFragment getDenganAngunanFragment(int position) {
+        return DenganAgunanFragment.createInstance(position);
     }
 
     @Override

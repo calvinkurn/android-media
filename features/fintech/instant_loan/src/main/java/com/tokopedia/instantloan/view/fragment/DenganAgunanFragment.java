@@ -34,19 +34,21 @@ import static com.tokopedia.instantloan.view.fragment.DanaInstantFragment.LOGIN_
 
 public class DenganAgunanFragment extends BaseDaggerFragment implements InstantLoanContractor.View {
 
+    private static final String TAB_POSITION = "tab_position";
     private Spinner mSpinnerLoanAmount;
     private SessionHandler sessionHandler;
 
     @Inject
     InstantLoanPresenter presenter;
 
-    private int mCurrentTab = 2;
+    private int mCurrentTab;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         presenter.attachView(this);
         sessionHandler = new SessionHandler(getContext());
+        mCurrentTab = getArguments().getInt(TAB_POSITION);
     }
 
     @Override
@@ -218,7 +220,11 @@ public class DenganAgunanFragment extends BaseDaggerFragment implements InstantL
         return getScreenNameId();
     }
 
-    public static DenganAgunanFragment createInstance() {
-        return new DenganAgunanFragment();
+    public static DenganAgunanFragment createInstance(int position) {
+        Bundle bundle = new Bundle();
+        bundle.putInt(TAB_POSITION, position);
+        DenganAgunanFragment denganAgunanFragment = new DenganAgunanFragment();
+        denganAgunanFragment.setArguments(bundle);
+        return denganAgunanFragment;
     }
 }
