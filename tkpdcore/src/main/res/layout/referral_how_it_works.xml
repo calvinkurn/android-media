@@ -51,6 +51,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_sm"
+        android:layout_marginBottom="@dimen/margin_med"
         android:orientation="horizontal">
 
         <TextView
@@ -89,7 +90,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/rl_referral_code"
-        android:layout_marginTop="@dimen/margin_large"
+        android:layout_marginTop="@dimen/margin_xl"
         android:background="@color/green_btn"
         android:gravity="center_horizontal|center_vertical"
         android:padding="@dimen/margin_sm"
