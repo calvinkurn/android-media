@@ -590,6 +590,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
 
             final CourierItemData courierItemData = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier();
             if (courierItemData.getInsuranceType() == InsuranceConstant.INSURANCE_TYPE_MUST) {
+                llInsurance.setVisibility(View.VISIBLE);
                 cbInsurance.setVisibility(View.GONE);
                 cbInsuranceDisabled.setVisibility(View.VISIBLE);
                 cbInsuranceDisabled.setChecked(true);
@@ -601,6 +602,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                 llInsurance.setVisibility(View.GONE);
                 shipmentCartItemModel.getSelectedShipmentDetailData().setUseInsurance(false);
             } else if (courierItemData.getInsuranceType() == InsuranceConstant.INSURANCE_TYPE_OPTIONAL) {
+                llInsurance.setVisibility(View.VISIBLE);
                 cbInsuranceDisabled.setVisibility(View.GONE);
                 cbInsurance.setVisibility(View.VISIBLE);
                 llInsurance.setOnClickListener(getInsuranceClickListener());
