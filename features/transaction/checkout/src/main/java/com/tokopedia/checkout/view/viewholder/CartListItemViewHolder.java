@@ -227,6 +227,7 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
                 && !data.isEditableRemark()) {
             this.etRemark.setVisibility(View.GONE);
             this.tvLabelRemarkOption.setVisibility(View.VISIBLE);
+            this.etRemark.setText("");
         } else {
             this.etRemark.setVisibility(View.VISIBLE);
             this.tvLabelRemarkOption.setVisibility(View.GONE);
