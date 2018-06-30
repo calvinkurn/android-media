@@ -129,6 +129,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
     private TextView tvChangeCourier;
     private LinearLayout llInsurance;
     private CheckBox cbInsurance;
+    private CheckBox cbInsuranceDisabled;
     private ImageView imgInsuranceInfo;
     private LinearLayout llDropshipper;
     private CheckBox cbDropshipper;
@@ -216,6 +217,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         tvChangeCourier = itemView.findViewById(R.id.tv_change_courier);
         llInsurance = itemView.findViewById(R.id.ll_insurance);
         cbInsurance = itemView.findViewById(R.id.cb_insurance);
+        cbInsuranceDisabled = itemView.findViewById(R.id.cb_insurance_disabled);
         imgInsuranceInfo = itemView.findViewById(R.id.img_insurance_info);
         llDropshipper = itemView.findViewById(R.id.ll_dropshipper);
         cbDropshipper = itemView.findViewById(R.id.cb_dropshipper);
@@ -588,18 +590,19 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
 
             final CourierItemData courierItemData = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier();
             if (courierItemData.getInsuranceType() == InsuranceConstant.INSURANCE_TYPE_MUST) {
-                cbInsurance.setAlpha(CHECKBOX_DISABLED_ALPHA);
+                cbInsurance.setVisibility(View.GONE);
+                cbInsuranceDisabled.setVisibility(View.VISIBLE);
+                cbInsuranceDisabled.setChecked(true);
+                cbInsuranceDisabled.setClickable(false);
                 cbInsurance.setChecked(true);
-                cbInsurance.setClickable(false);
                 shipmentCartItemModel.getSelectedShipmentDetailData().setUseInsurance(true);
             } else if (courierItemData.getInsuranceType() == InsuranceConstant.INSURANCE_TYPE_NO) {
                 cbInsurance.setChecked(false);
-                cbInsurance.setClickable(false);
                 llInsurance.setVisibility(View.GONE);
                 shipmentCartItemModel.getSelectedShipmentDetailData().setUseInsurance(false);
             } else if (courierItemData.getInsuranceType() == InsuranceConstant.INSURANCE_TYPE_OPTIONAL) {
-                cbInsurance.setAlpha(1);
-                cbInsurance.setClickable(true);
+                cbInsuranceDisabled.setVisibility(View.GONE);
+                cbInsurance.setVisibility(View.VISIBLE);
                 llInsurance.setOnClickListener(getInsuranceClickListener());
                 if (useInsurance == null) {
                     if (courierItemData.getInsuranceUsedDefault() == InsuranceConstant.INSURANCE_USED_DEFAULT_YES) {

@@ -283,6 +283,12 @@
                 android:layout_height="wrap_content"
                 android:theme="@style/TransactionCheckbox" />
 
+            <CheckBox
+                android:id="@+id/cb_insurance_disabled"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:theme="@style/TransactionCheckboxDisabled" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

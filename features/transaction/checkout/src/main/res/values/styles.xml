@@ -18,6 +18,11 @@
         <item name="android:textColorSecondary">#bfbfbf</item>
     </style>
 
+    <style name="TransactionCheckboxDisabled" parent="Theme.AppCompat.Light">
+        <item name="colorAccent">#bfbfbf</item>
+        <item name="android:textColorSecondary">#bfbfbf</item>
+    </style>
+
     <style name="TextSmall">
         <item name="android:textSize">12sp</item>
     </style>
