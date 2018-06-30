@@ -824,22 +824,13 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
             View emptyState = LayoutInflater.from(getActivity()).
                     inflate(R.layout.layout_empty_shopping_cart_new, (ViewGroup) rootview);
             layoutUsedPromo = emptyState.findViewById(R.id.layout_used_promo);
-            TextView labelPromoCode = emptyState.findViewById(R.id.label_promo_code);
             TextView textviewPromoCode = emptyState.findViewById(R.id.textview_promo_code);
-            TextView textviewVoucherDetail = emptyState.findViewById(R.id.textview_voucher_detail);
             ImageView buttonCancel = emptyState.findViewById(R.id.button_cancel);
 
             if (cartListData != null && cartListData.getAutoApplyData() != null &&
                     cartListData.getAutoApplyData().isSuccess()) {
                 layoutUsedPromo.setVisibility(View.VISIBLE);
-                labelPromoCode.setText(getContext().getString(com.tokopedia.design.R.string.my_coupon));
                 textviewPromoCode.setText(cartListData.getAutoApplyData().getTitleDescription());
-                if (TextUtils.isEmpty(cartListData.getAutoApplyData().getMessageSuccess())) {
-                    textviewVoucherDetail.setVisibility(View.GONE);
-                } else {
-                    textviewVoucherDetail.setText(cartListData.getAutoApplyData().getMessageSuccess());
-                    textviewVoucherDetail.setVisibility(View.VISIBLE);
-                }
                 buttonCancel.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
