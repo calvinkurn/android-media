@@ -257,7 +257,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
         cartPageAnalytics.eventClickCartClickTrashBin();
         ArrayList<CartItemData> cartItemDatas =
                 new ArrayList<>(Collections.singletonList(cartItemHolderData.getCartItemData()));
-        final com.tokopedia.design.component.Dialog dialog = getDialogDeleteConfirmation();
+        final com.tokopedia.design.component.Dialog dialog = getDialogDeleteConfirmation(1);
         dialog.setOnOkClickListener(view -> {
             if (cartItemDatas.size() > 0) {
                 dPresenter.processDeleteAndRefreshCart(cartItemDatas, true);
@@ -414,7 +414,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
                 toBeDeletedCartItem.add(cartItemData);
             }
         }
-        final com.tokopedia.design.component.Dialog dialog = getDialogDeleteConfirmation();
+        final com.tokopedia.design.component.Dialog dialog = getDialogDeleteConfirmation(toBeDeletedCartItem.size());
         dialog.setOnOkClickListener(view -> {
             if (toBeDeletedCartItem.size() > 0) {
                 dPresenter.processDeleteAndRefreshCart(toBeDeletedCartItem, true);
@@ -953,12 +953,13 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     }
 
     @NonNull
-    private com.tokopedia.design.component.Dialog getDialogDeleteConfirmation() {
+    private com.tokopedia.design.component.Dialog getDialogDeleteConfirmation(int count) {
         final com.tokopedia.design.component.Dialog dialog =
                 new com.tokopedia.design.component.Dialog(getActivity(),
                         com.tokopedia.design.component.Dialog.Type.LONG_PROMINANCE);
         dialog.setTitle(getString(R.string.label_dialog_title_delete_item));
-        dialog.setDesc(getString(R.string.label_dialog_message_remove_cart_item));
+        dialog.setDesc(String.format(getString(R.string.label_dialog_message_remove_cart_multiple_item),
+                String.valueOf(count)));
         dialog.setBtnOk(getString(R.string.label_dialog_action_delete_and_add_to_wishlist));
         dialog.setBtnCancel(getString(R.string.label_dialog_action_delete));
         dialog.getAlertDialog().setCancelable(true);
