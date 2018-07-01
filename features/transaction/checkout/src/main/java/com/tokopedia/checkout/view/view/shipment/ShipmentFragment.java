@@ -365,7 +365,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             }
         }
         if (TextUtils.isEmpty(errorMessage)) {
-            errorMessage = getActivity().getString(R.string.default_request_error_unknown_short);
+            errorMessage = getActivity().getString(R.string.error_message_checkout_failed);
         }
         shipmentAdapter.disableShipmentCheckoutButtonModel(errorMessage);
         showToastError(errorMessage);
