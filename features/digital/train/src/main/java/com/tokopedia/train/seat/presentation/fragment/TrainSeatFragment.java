@@ -72,8 +72,9 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
         String[] seating = new String[]{"A", "B", "C", "D", "E"};
         for (int i = 0; i < 5; i++) {
             TrainSeatPassengerViewModel passengerViewModel = new TrainSeatPassengerViewModel();
+            passengerViewModel.setPassengerNumber(i + 1);
             passengerViewModel.setNumber(i + "");
-            passengerViewModel.setName("John " + i);
+            passengerViewModel.setName("John " + i + 1);
             passengerViewModel.setBirthdate("09-29-1994");
             passengerViewModel.setPaxType(1);
             passengerViewModel.setPhone("08574722168");

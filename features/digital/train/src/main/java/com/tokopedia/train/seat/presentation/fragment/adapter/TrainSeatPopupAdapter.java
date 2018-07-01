@@ -67,7 +67,7 @@ public class TrainSeatPopupAdapter extends RecyclerView.Adapter<TrainSeatPopupAd
 
         public void bind(TrainSeatPassengerViewModel viewModel) {
             element = viewModel;
-            tvPassengerNumber.setText(viewModel.getPassengerNumber());
+            tvPassengerNumber.setText("P" + viewModel.getPassengerNumber());
             tvName.setText(viewModel.getName());
             tvSeat.setText(String.format("%s - %s%s", viewModel.getSeatViewModel().getWagonCode(), viewModel.getSeatViewModel().getRow(), viewModel.getSeatViewModel().getColumn()));
             if (seat.getColumn().equalsIgnoreCase(viewModel.getSeatViewModel().getColumn()) && viewModel.getSeatViewModel().getRow().equalsIgnoreCase(String.valueOf(seat.getRow()))) {
