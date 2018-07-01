@@ -23,6 +23,8 @@ import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressMo
 import com.tokopedia.checkout.domain.datamodel.cartcheckout.CheckoutData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
+import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShipProd;
+import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
@@ -50,7 +52,6 @@ import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
-import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
@@ -346,14 +347,30 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         for (ShipmentCartItemModel oldShipmentCartItemModel : oldShipmentCartItemModelList) {
             for (ShipmentCartItemModel newShipmentCartItemModel : newShipmentCartItemModelList) {
                 if (oldShipmentCartItemModel.getShopId() == newShipmentCartItemModel.getShopId()) {
-                    newShipmentCartItemModel.setSelectedShipmentDetailData(oldShipmentCartItemModel.getSelectedShipmentDetailData());
-                    newShipmentCartItemModel.setStateDropshipperHasError(oldShipmentCartItemModel.isStateDropshipperHasError());
-                    newShipmentCartItemModel.setStateDropshipperDetailExpanded(oldShipmentCartItemModel.isStateDropshipperDetailExpanded());
+                    for (ShopShipment shopShipment : newShipmentCartItemModel.getShipmentCartData().getShopShipments()) {
+                        if (oldShipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperId() == shopShipment.getShipId()) {
+                            for (ShipProd shipProd : shopShipment.getShipProds()) {
+                                if (oldShipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperProductId() == shipProd.getShipProdId()) {
+                                    newShipmentCartItemModel.setSelectedShipmentDetailData(oldShipmentCartItemModel.getSelectedShipmentDetailData());
+                                    newShipmentCartItemModel.setStateDropshipperHasError(oldShipmentCartItemModel.isStateDropshipperHasError());
+                                    newShipmentCartItemModel.setStateDropshipperDetailExpanded(oldShipmentCartItemModel.isStateDropshipperDetailExpanded());
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
-        shipmentPresenter.setShipmentCartItemModelList(newShipmentCartItemModelList);
 
+        for (ShipmentCartItemModel oldShipmentCartItemModel : oldShipmentCartItemModelList) {
+            for (ShipmentCartItemModel newShipmentCartItemModel : newShipmentCartItemModelList) {
+                if (oldShipmentCartItemModel.getShopId() == newShipmentCartItemModel.getShopId() &&
+                        newShipmentCartItemModel.getSelectedShipmentDetailData() == null) {
+                    oldShipmentCartItemModel.setSelectedShipmentDetailData(null);
+                    oldShipmentCartItemModel.setShipmentCartData(newShipmentCartItemModel.getShipmentCartData());
+                }
+            }
+        }
         String errorMessage = null;
         if (!TextUtils.isEmpty(cartShipmentAddressFormData.getErrorMessage())) {
             errorMessage = cartShipmentAddressFormData.getErrorMessage();

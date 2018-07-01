@@ -476,8 +476,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
 
                 @Override
                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                    shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperName(charSequence.toString());
-                    validateDropshipperName(shipmentCartItemModel, charSequence, true);
+                    if (shipmentCartItemModel.getSelectedShipmentDetailData() != null) {
+                        shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperName(charSequence.toString());
+                        validateDropshipperName(shipmentCartItemModel, charSequence, true);
+                    }
                 }
 
                 @Override
@@ -502,8 +504,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
 
                 @Override
                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                    shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperPhone(charSequence.toString());
-                    validateDropshipperPhone(shipmentCartItemModel, charSequence, pattern, true);
+                    if (shipmentCartItemModel.getSelectedShipmentDetailData() != null) {
+                        shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperPhone(charSequence.toString());
+                        validateDropshipperPhone(shipmentCartItemModel, charSequence, pattern, true);
+                    }
                 }
 
                 @Override
