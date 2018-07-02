@@ -240,13 +240,9 @@ class TopAdsKeywordNewAddFragment : TopAdsNewBaseStepperFragment<TopAdsKeywordNe
         }
     }
 
-    fun clearKeywords(){
-        localKeywordAdapter.clear()
-    }
+    fun clearKeywords() = localKeywordAdapter.clear()
 
-    fun isButtonSaveEnabled(): Boolean{
-        return buttonSave.isEnabled
-    }
+    fun isButtonSaveEnabled() = buttonSave.isEnabled
 
     override fun onRemoved(position: Int) {
         setCurrentMaxKeyword()

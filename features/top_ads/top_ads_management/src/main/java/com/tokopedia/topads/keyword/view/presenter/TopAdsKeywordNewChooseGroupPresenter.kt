@@ -8,6 +8,7 @@ import com.tokopedia.topads.keyword.view.listener.TopAdsKeywordNewChooseGroupVie
 import rx.Subscriber
 import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
+import rx.functions.Action1
 import rx.subjects.BehaviorSubject
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -26,22 +27,9 @@ class TopAdsKeywordNewChooseGroupPresenter
     init {
         subscriptionSearchGroupName = searchGroupName.debounce(TIMEOUT, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(getSubscriberDebounceSearchGroupName())
-    }
-
-    private fun getSubscriberDebounceSearchGroupName(): Subscriber<String> {
-        return object : Subscriber<String>() {
-            override fun onNext(keyword: String?) {
-                topAdsSearchGroupAdUseCase.execute(TopAdsSearchGroupAdUseCase
-                        .createRequestParams(keyword, userSession.shopId), getSubscriberSearchGroupName())
-            }
-
-            override fun onCompleted() {
-            }
-
-            override fun onError(p0: Throwable?) {
-            }
-        }
+                .subscribe({  topAdsSearchGroupAdUseCase.execute(TopAdsSearchGroupAdUseCase
+                        .createRequestParams(it, userSession.shopId), getSubscriberSearchGroupName())
+                }, {}, {} )
     }
 
     private fun getSubscriberSearchGroupName(): Subscriber<List<GroupAd>> {
