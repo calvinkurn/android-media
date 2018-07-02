@@ -63,6 +63,11 @@ public class DealCategoryAdapterPresenter extends BaseDaggerPresenter<DealCatego
                         @Override
                         public void onNext(LikeUpdateResultDomain likeUpdateResultDomain) {
                             model.setLiked(likeUpdateResultDomain.isLiked());
+                            if (likeUpdateResultDomain.isLiked())
+                                model.setLikes(model.getLikes() + 1);
+                            else
+                                model.setLikes(model.getLikes() - 1);
+
                             getView().notifyDataSetChanged(position);
                         }
                     });

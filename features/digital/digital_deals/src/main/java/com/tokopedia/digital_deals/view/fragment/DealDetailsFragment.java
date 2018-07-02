@@ -45,11 +45,13 @@ import com.tokopedia.design.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DaggerDealsComponent;
 import com.tokopedia.digital_deals.di.DealsModule;
+import com.tokopedia.digital_deals.view.activity.BrandDetailsActivity;
 import com.tokopedia.digital_deals.view.activity.DealDetailsActivity;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
 import com.tokopedia.digital_deals.view.adapter.SlidingImageAdapterDealDetails;
 import com.tokopedia.digital_deals.view.contractor.DealCategoryAdapterContract;
 import com.tokopedia.digital_deals.view.contractor.DealDetailsContract;
+import com.tokopedia.digital_deals.view.presenter.BrandDetailsPresenter;
 import com.tokopedia.digital_deals.view.presenter.DealCategoryAdapterPresenter;
 import com.tokopedia.digital_deals.view.presenter.DealDetailsPresenter;
 import com.tokopedia.digital_deals.view.utils.DealFragmentCallbacks;
@@ -64,7 +66,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class DealDetailsFragment extends BaseDaggerFragment implements DealDetailsContract.View, View.OnClickListener, DealCategoryAdapterContract.View {
+public class DealDetailsFragment extends BaseDaggerFragment implements DealDetailsContract.View, View.OnClickListener, DealCategoryAdapterContract.View , DealDetailsActivity.BackCallback {
 
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private at.blogc.android.views.ExpandableTextView tvExpandableDesc;
@@ -153,10 +155,10 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         tvBrandVenue = view.findViewById(R.id.tv_brand_venue);
         tvBrandAddress = view.findViewById(R.id.tv_brand_address);
         tvViewMap = view.findViewById(R.id.tv_view_map);
-        tvRecommendedDeals=view.findViewById(R.id.tv_recommended_deals);
+        tvRecommendedDeals = view.findViewById(R.id.tv_recommended_deals);
         clHeader = view.findViewById(R.id.cl_header);
         toolbar = view.findViewById(R.id.toolbar);
-        tvDealDetails=view.findViewById(R.id.tv_deal_details);
+        tvDealDetails = view.findViewById(R.id.tv_deal_details);
         viewPager = view.findViewById(R.id.deals_images);
         circlePageIndicator = view.findViewById(R.id.pager_indicator);
         ((BaseSimpleActivity) getActivity()).setSupportActionBar(toolbar);
@@ -244,7 +246,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         tvSalesPrice.setText(Utils.convertToCurrencyString(detailsViewModel.getSalesPrice()));
         tvOff.setText(detailsViewModel.getSavingPercentage());
 
-        tvLikes.setText(String.valueOf(detailsViewModel.getLikes()));
+
         tvExpiryDate.setText(String.format(getString(R.string.valid_through), Utils.convertEpochToString(detailsViewModel.getSaleEndDate())));
 
 
@@ -261,6 +263,16 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
             tvNumberOfLocations.setText(String.format(getString(R.string.number_of_items), detailsViewModel.getOutlets().size()));
             tvBrandName.setText(detailsViewModel.getBrand().getTitle());
             ImageHandler.loadImage(getContext(), ivBrandLogo, dealDetail.getBrand().getFeaturedThumbnailImage(), R.color.grey_1100, R.color.grey_1100);
+            if (dealDetail.getBrand().getUrl() != null) {
+                ivBrandLogo.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent detailsIntent = new Intent(getContext(), BrandDetailsActivity.class);
+                        detailsIntent.putExtra(BrandDetailsPresenter.BRAND_DATA, dealDetail.getBrand());
+                        getActivity().startActivity(detailsIntent);
+                    }
+                });
+            }
 
         }
 
@@ -305,7 +317,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
             for (int i = 0; i < splitArray.length; i++) {
                 String line = splitArray[i];
                 tncBuffer.append((i + 1) + ". <i>").append(line).append("</i>");
-                if(i!=splitArray.length-1)
+                if (i != splitArray.length - 1)
                     tncBuffer.append("<br>");
 
             }
@@ -342,7 +354,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     @Override
     public void addDealsToCards(List<CategoryItemsViewModel> categoryItemsViewModels) {
         ((DealsCategoryAdapter) recyclerViewDeals.getAdapter()).addAll(categoryItemsViewModels);
-        if(((DealsCategoryAdapter) recyclerViewDeals.getAdapter()).getItemCount()==0)
+        if (((DealsCategoryAdapter) recyclerViewDeals.getAdapter()).getItemCount() == 0)
             tvRecommendedDeals.setVisibility(View.GONE);
     }
 
@@ -378,7 +390,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
             verticalOffset = Math.abs(verticalOffset);
             int difference = appBarLayout.getTotalScrollRange() - toolbar.getHeight();
             if (verticalOffset >= difference) {
-                if(tvDealDetails.getText()!=null) {
+                if (tvDealDetails.getText() != null) {
                     collapsingToolbarLayout.setTitle(tvDealDetails.getText());
                 }
                 DrawableCompat.setTint(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), R.color.tkpd_dark_gray_toolbar));
@@ -421,7 +433,6 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     @Override
     public RequestParams getParams() {
         String url = getArguments().getString(DealDetailsPresenter.HOME_DATA);
-
         RequestParams requestParams = RequestParams.create();
         Log.d("Myurllll", " " + url);
         requestParams.putString(DealDetailsPresenter.TAG, url);
@@ -435,6 +446,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         } else {
             ivFavourite.setBackgroundResource(R.drawable.ic_wishlist_unfilled);
         }
+        setLikes(dealDetail.getLikes());
     }
 
     @Override
@@ -463,7 +475,12 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
 
     @Override
     public void setLikes(int likes) {
-        tvLikes.setText(String.valueOf(likes));
+        if (likes == 0) {
+            tvLikes.setVisibility(View.GONE);
+        } else {
+            tvLikes.setVisibility(View.VISIBLE);
+            tvLikes.setText(String.valueOf(likes));
+        }
     }
 
     @Override
@@ -561,4 +578,9 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
             mPresenter.onRecyclerViewScrolled(mLayoutManager);
         }
     };
+
+    @Override
+    public boolean getIsLiked() {
+        return dealDetail.getIsLiked();
+    }
 }

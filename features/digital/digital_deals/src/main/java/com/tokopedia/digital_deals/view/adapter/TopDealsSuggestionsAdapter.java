@@ -174,12 +174,12 @@ public class TopDealsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVie
             SpannableString spannableString = new SpannableString(valueItem.getDisplayName());
             if (highLightText != null && !highLightText.isEmpty() && Utils.containsIgnoreCase(valueItem.getDisplayName(), highLightText)) {
                 StyleSpan styleSpan = new StyleSpan(Typeface.BOLD);
-                int fromindex = valueItem.getDisplayName().indexOf(highLightText);
+                int fromindex = valueItem.getDisplayName().toLowerCase().indexOf(highLightText.toLowerCase());
                 if (fromindex == -1) {
-                    fromindex = valueItem.getDisplayName().indexOf(lowerhighlight);
+                    fromindex = valueItem.getDisplayName().toLowerCase().indexOf(lowerhighlight.toLowerCase());
                 }
                 if (fromindex == -1) {
-                    fromindex = valueItem.getDisplayName().indexOf(upperhighlight);
+                    fromindex = valueItem.getDisplayName().toLowerCase().indexOf(upperhighlight.toLowerCase());
                 }
                 int toIndex = fromindex + highLightText.length();
                 spannableString.setSpan(styleSpan, fromindex, toIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);

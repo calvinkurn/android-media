@@ -182,6 +182,7 @@ public class Utils {
                         brandViewModel.setTitle(categoryEntity.getBrand().getTitle());
                         brandViewModel.setFeaturedImage(categoryEntity.getBrand().getFeaturedImage());
                         brandViewModel.setFeaturedThumbnailImage(categoryEntity.getBrand().getFeaturedThumbnailImage());
+                        brandViewModel.setUrl(categoryEntity.getBrand().getUrl());
 
                         categoryItemsViewModel.setBrand(brandViewModel);
                     } catch (Exception e) {
@@ -277,6 +278,7 @@ public class Utils {
         brandViewModel.setTitle(detailsDomain.getBrand().getTitle());
         brandViewModel.setFeaturedImage(detailsDomain.getBrand().getFeaturedImage());
         brandViewModel.setFeaturedThumbnailImage(detailsDomain.getBrand().getFeaturedThumbnailImage());
+        brandViewModel.setUrl(detailsDomain.getBrand().getUrl());
         viewModel.setBrand(brandViewModel);
         viewModel.setImageWeb(detailsDomain.getImageWeb());
         viewModel.setThumbnailWeb(detailsDomain.getThumbnailWeb());

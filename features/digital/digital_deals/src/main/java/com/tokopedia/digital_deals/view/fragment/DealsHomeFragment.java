@@ -60,6 +60,7 @@ import static android.app.Activity.RESULT_OK;
 
 public class DealsHomeFragment extends BaseDaggerFragment implements DealsContract.View, View.OnClickListener {
 
+
     private final int SPAN_COUNT_4 = 4;
     private Menu mMenu;
     @Inject
@@ -81,7 +82,8 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     private LinearLayoutManager layoutManager;
     private TextView tvSeeAllBrands;
     private TextView tvSeeAllPromo;
-
+    public final static String ADAPTER_POSITION="ADAPTER_POSITION";
+    public final static String FROM_HOME="FROM_HOME";
 
     public static Fragment createInstance() {
         Fragment fragment = new DealsHomeFragment();
@@ -213,6 +215,18 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
                 break;
 
             case DealsHomeActivity.REQUEST_CODE_DEALSSEARCHACTIVITY:
+                if (resultCode == RESULT_OK) {
+                    LocationViewModel location1 = Utils.getSingletonInstance().getLocation(getActivity());
+                    if(!tvLocationName.getText().equals(location1.getName())){
+                        tvLocationName.setText(location1.getName());
+                        mPresenter.getDealsList();
+                        mPresenter.getBrandsList();
+                    }
+
+
+                }
+                break;
+            case DealsHomeActivity.REQUEST_CODE_DEALDETAILACTIVITY:
                 if (resultCode == RESULT_OK) {
                     LocationViewModel location1 = Utils.getSingletonInstance().getLocation(getActivity());
                     if(!tvLocationName.getText().equals(location1.getName())){

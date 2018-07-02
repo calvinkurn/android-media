@@ -29,8 +29,9 @@ public class DealDetailsActivity extends BaseSimpleActivity implements DealFragm
 
     private List<OutletViewModel> outlets;
     private DealsDetailsViewModel dealDetail;
-
+    private BackCallback backCallback;
     @DeepLink({DIGITAL_DEALS_DETAILS})
+
     public static TaskStackBuilder getInstanceIntentAppLinkBackToHome(Context context, Bundle extras) {
         String deepLink = extras.getString(DeepLink.URI);
         Intent destination;
@@ -59,16 +60,15 @@ public class DealDetailsActivity extends BaseSimpleActivity implements DealFragm
 
     @Override
     protected Fragment getNewFragment() {
-        String seoUrl = getIntent().getStringExtra(DealDetailsPresenter.HOME_DATA);
-        Bundle bundle = new Bundle();
-        bundle.putString(DealDetailsPresenter.HOME_DATA, seoUrl);
-        return DealDetailsFragment.createInstance(bundle);
+
+        return DealDetailsFragment.createInstance(getIntent().getExtras());
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         toolbar.setVisibility(View.GONE);
+        backCallback= (BackCallback) this;
 
     }
 
@@ -99,5 +99,15 @@ public class DealDetailsActivity extends BaseSimpleActivity implements DealFragm
     @Override
     public DealsDetailsViewModel getDealDetails() {
         return dealDetail;
+    }
+
+//    @Override
+//    public void onBackPressed() {
+//        setResult(DealsHomeActivity.REQUEST_CODE_DEALDETAILACTIVITY, );
+//        super.onBackPressed();
+//    }
+
+    public interface BackCallback {
+        boolean getIsLiked();
     }
 }
