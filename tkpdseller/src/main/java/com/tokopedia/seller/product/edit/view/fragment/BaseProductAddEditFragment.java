@@ -41,7 +41,6 @@ import com.tokopedia.seller.product.edit.constant.StockTypeDef;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.catalogdata.Catalog;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddCatalogPickerActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddDescriptionPickerActivity;
-import com.tokopedia.seller.product.edit.view.activity.ProductAddVideoActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductScoringDetailActivity;
 import com.tokopedia.seller.product.edit.view.dialog.ProductAddImageDialogFragment;
 import com.tokopedia.seller.product.edit.view.dialog.ProductAddImageDescriptionDialog;
@@ -55,7 +54,6 @@ import com.tokopedia.seller.product.edit.view.holder.ProductManageViewHolder;
 import com.tokopedia.seller.product.edit.view.holder.ProductPriceViewHolder;
 import com.tokopedia.seller.product.edit.view.holder.ProductScoreViewHolder;
 import com.tokopedia.seller.product.edit.view.listener.ProductAddView;
-import com.tokopedia.seller.product.edit.view.listener.YoutubeAddVideoView;
 import com.tokopedia.seller.product.edit.view.mapper.AnalyticsMapper;
 import com.tokopedia.seller.product.edit.view.model.ImageSelectModel;
 import com.tokopedia.seller.product.edit.view.model.categoryrecomm.ProductCategoryPredictionViewModel;
@@ -430,11 +428,11 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
 
     @Override
     public final void startYoutubeVideoActivity(ArrayList<String> videoIds) {
-        Intent intent = new Intent(getActivity(), com.tokopedia.product.edit.activity.ProductAddVideoActivity.class);
+        Intent intent = new Intent(getActivity(), com.tokopedia.product.edit.view.activity.ProductAddVideoActivity.class);
         if (!CommonUtils.checkCollectionNotNull(videoIds)) {
             videoIds = new ArrayList<>();
         }
-        intent.putStringArrayListExtra(com.tokopedia.product.edit.fragment.ProductAddVideoFragment.EXTRA_VIDEOS_LINKS, videoIds);
+        intent.putStringArrayListExtra(com.tokopedia.product.edit.view.fragment.ProductAddVideoFragment.EXTRA_VIDEOS_LINKS, videoIds);
         startActivityForResult(intent, ProductDescriptionViewHolder.REQUEST_CODE_GET_VIDEO);
     }
 
