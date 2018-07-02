@@ -87,10 +87,7 @@ public class ProductGridViewHolder extends AbstractViewHolder<ProductGridViewMod
     private void bindShop(Shop shop) {
         if (shop.getBadges() != null) {
             imageLoader.loadBadge(badgeContainer, shop.getBadges());
-            SpannableString loc = new SpannableString(shop.getLocation());
-            loc.setSpan(new BulletSpan(10, Color.GRAY), 0,
-                    shop.getLocation().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            shopLocation.setText(loc);
+            shopLocation.setText(String.format(" \u2022 %s", shop.getLocation()));
         } else {
             shopLocation.setText(shop.getLocation());
         }
