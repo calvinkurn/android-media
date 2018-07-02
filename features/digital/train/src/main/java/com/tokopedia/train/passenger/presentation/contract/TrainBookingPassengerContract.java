@@ -23,7 +23,7 @@ public interface TrainBookingPassengerContract {
 
         String getString(@StringRes int resId);
 
-        void renderPassenger(List<TrainPassengerViewModel> trainPassengerViewModels);
+        void renderPassengers(List<TrainPassengerViewModel> trainPassengerViewModels);
 
         void setCurrentListPassenger(List<TrainPassengerViewModel> trainPassengerViewModels);
 
@@ -62,10 +62,12 @@ public interface TrainBookingPassengerContract {
         void setPhoneNumber(String phoneNumber);
 
         void setEmail(String email);
-
+        
         void navigateToChooseSeat(TrainSoftbook trainSoftbook);
 
         void navigateToReview(TrainSoftbook trainSoftbook);
+
+        void loadPassengerSameAsBuyer(TrainPassengerViewModel trainPassengerViewModel);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -81,5 +83,9 @@ public interface TrainBookingPassengerContract {
         void onSubmitButtonClicked();
 
         void onChooseSeatButtonClicked();
+
+        void wrapPassengerSameAsBuyer();
+
+        void removePassengerSameAsBuyer();
     }
 }

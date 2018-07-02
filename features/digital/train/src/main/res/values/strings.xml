@@ -78,6 +78,7 @@
     <string name="train_passenger_identity_number_hint">Isi Nomor Identitas</string>
     <string name="train_passenger_header_format">%s %d (%s)</string>
     <string name="train_passenger_header_title">Penumpang</string>
+    <string name="train_passenger_error_salutation">Sapaan harus dipilih</string>
     <string name="train_passenger_error_contact_name">Nama Lengkap harus diisi</string>
     <string name="train_passenger_error_phone_number">Nomor Telepon harus diisi</string>
     <string name="train_passenger_error_identity_number">NomorIdentitas harus diisi</string>

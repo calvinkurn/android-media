@@ -77,7 +77,7 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
                         getView().setBirthdate(
                                 TrainDateUtil.dateToString(
                                         TrainDateUtil.stringToDate(profileBuyerInfo.getBday()),
-                                        TrainDateUtil.DEFAULT_FORMAT));
+                                        TrainDateUtil.DEFAULT_VIEW_FORMAT));
                     }
                 }));
     }
@@ -120,7 +120,7 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
     public void processInitPassengers(int adultPassengers, int infantPassengers) {
         List<TrainPassengerViewModel> passengerViewModelList = initPassenger(adultPassengers, infantPassengers);
         getView().setCurrentListPassenger(passengerViewModelList);
-        getView().renderPassenger(passengerViewModelList);
+        getView().renderPassengers(passengerViewModelList);
     }
 
     @Override
@@ -130,7 +130,7 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
         if (indexPassenger != -1) {
             passengerViewModels.set(indexPassenger, trainPassengerViewModel);
         }
-        getView().renderPassenger(passengerViewModels);
+        getView().renderPassengers(passengerViewModels);
     }
 
     @Override
@@ -171,6 +171,30 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
                 getView().navigateToChooseSeat(trainSoftbook);
             }
         });
+    }
+
+    @Override
+    public void wrapPassengerSameAsBuyer() {
+        TrainPassengerViewModel trainPassengerViewModel = new TrainPassengerViewModel();
+        trainPassengerViewModel.setPassengerId(1);
+        trainPassengerViewModel.setName(getView().getContactNameEt());
+        trainPassengerViewModel.setPhone(getView().getPhoneNumberEt());
+        trainPassengerViewModel.setPaxType(TrainBookingPassenger.ADULT);
+        trainPassengerViewModel.setHeaderTitle(
+                formatPassengerHeader(getView().getString(R.string.train_passenger_header_title),
+                        1, getView().getString(R.string.train_select_passenger_adult_title)));
+        getView().loadPassengerSameAsBuyer(trainPassengerViewModel);
+    }
+
+    @Override
+    public void removePassengerSameAsBuyer() {
+        TrainPassengerViewModel trainPassengerViewModel = new TrainPassengerViewModel();
+        trainPassengerViewModel.setPassengerId(1);
+        trainPassengerViewModel.setPaxType(TrainBookingPassenger.ADULT);
+        trainPassengerViewModel.setHeaderTitle(
+                formatPassengerHeader(getView().getString(R.string.train_passenger_header_title),
+                        1, getView().getString(R.string.train_select_passenger_adult_title)));
+        updateDataPassengers(trainPassengerViewModel);
     }
 
     private List<TrainPassengerViewModel> initPassenger(int adultPassengers, int infantPassengers) {

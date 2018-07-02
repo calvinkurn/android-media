@@ -18,7 +18,7 @@ public class TrainGetBuyerProfileInfoMapper implements Func1<ProfileInfo, Profil
         ProfileBuyerInfo profileBuyerInfo = new ProfileBuyerInfo();
         profileBuyerInfo.setFullname(profileInfo.getFullname());
         profileBuyerInfo.setEmail(profileInfo.getEmail());
-        profileBuyerInfo.setBday(profileInfo.getEmail());
+        profileBuyerInfo.setBday(profileInfo.getBday());
         profileBuyerInfo.setGender(profileInfo.getGender());
         profileBuyerInfo.setPhoneNumber(profileInfo.getPhoneNumber());
         return profileBuyerInfo;

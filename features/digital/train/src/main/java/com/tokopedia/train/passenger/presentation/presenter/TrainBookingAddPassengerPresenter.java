@@ -37,7 +37,10 @@ public class TrainBookingAddPassengerPresenter extends BaseDaggerPresenter<Train
 
     private boolean isAllDataValid() {
         boolean allDataValid = true;
-        if (TextUtils.isEmpty(getView().getContactName())) {
+        if (TextUtils.isEmpty(getView().getSalutationTitle())) {
+            allDataValid = false;
+            getView().showMessageErrorInSnackBar(R.string.train_passenger_error_salutation);
+        } else if (TextUtils.isEmpty(getView().getContactName())) {
             allDataValid = false;
             getView().showMessageErrorInSnackBar(R.string.train_passenger_error_contact_name);
         } else if (TextUtils.isEmpty(getView().getPhoneNumber()) && getView().getPaxType() == TrainBookingPassenger.ADULT) {
