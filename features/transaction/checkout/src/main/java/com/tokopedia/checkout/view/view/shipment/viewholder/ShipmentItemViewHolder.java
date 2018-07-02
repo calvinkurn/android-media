@@ -270,6 +270,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
             vSeparatorAboveCourier.setVisibility(View.VISIBLE);
         } else {
             rlExpandOtherProduct.setVisibility(View.GONE);
+            rvCartItem.setVisibility(View.GONE);
             vSeparatorMultipleProductSameStore.setVisibility(View.GONE);
             vSeparatorAboveCourier.setVisibility(View.GONE);
         }
