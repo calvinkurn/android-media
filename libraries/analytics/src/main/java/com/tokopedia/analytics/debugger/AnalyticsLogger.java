@@ -1,6 +1,6 @@
 package com.tokopedia.analytics.debugger;
 
-import com.tokopedia.analytics.debugger.domain.model.AnalyticsLogData;
+import android.content.Context;
 
 import java.util.Map;
 
@@ -8,7 +8,13 @@ import java.util.Map;
  * @author okasurya on 5/16/18.
  */
 public interface AnalyticsLogger {
-    void save(String name, Map<String, Object> data);
+    void save(Context context, String name, Map<String, Object> data);
 
     void wipe();
+
+    void openActivity(Context context);
+
+    void enableNotification(Context context, boolean status);
+
+    boolean isNotificationEnabled(Context context);
 }

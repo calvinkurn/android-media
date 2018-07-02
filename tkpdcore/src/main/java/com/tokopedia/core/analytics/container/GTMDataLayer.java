@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.Log;
 import com.google.android.gms.tagmanager.TagManager;
 import com.tokopedia.analytics.debugger.GtmLogger;
-import com.tokopedia.analytics.debugger.domain.model.AnalyticsLogData;
 
 import java.util.Map;
 
@@ -26,7 +25,7 @@ public class GTMDataLayer {
         gtmBody.context = context;
         gtmBody.values = values;
 
-        log(gtmBody);
+        log(context, gtmBody);
 
         Observable.just(gtmBody)
                 .subscribeOn(Schedulers.newThread())
@@ -64,7 +63,7 @@ public class GTMDataLayer {
         gtmBody.values = values;
         gtmBody.eventName = eventName;
 
-        log(gtmBody);
+        log(context, gtmBody);
 
         Observable.just(gtmBody)
                 .subscribeOn(Schedulers.newThread())
@@ -95,9 +94,9 @@ public class GTMDataLayer {
 
     }
 
-    private static void log(GTMBody gtmBody) {
+    private static void log(Context context, GTMBody gtmBody) {
         String name = gtmBody.eventName == null ? (String) gtmBody.values.get("event") : gtmBody.eventName;
-        GtmLogger.getInstance().save(name, gtmBody.values);
+        GtmLogger.getInstance().save(context, name, gtmBody.values);
     }
 
     private static class GTMBody {

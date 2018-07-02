@@ -10,7 +10,7 @@ import android.widget.Toast;
 import com.readystatesoftware.chuck.Chuck;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.OneOnClick;
-import com.tokopedia.analytics.debugger.ui.activity.AnalyticsDebuggerActivity;
+import com.tokopedia.analytics.debugger.GtmLogger;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.onboarding.ConstantOnBoarding;
@@ -21,8 +21,6 @@ import com.tokopedia.core.util.SessionHandler;
 public class DeveloperOptions extends TActivity implements SessionHandler.onLogoutListener {
     public static final String CHUCK_ENABLED = "CHUCK_ENABLED";
     public static final String IS_CHUCK_ENABLED = "is_enable";
-    public static final String ANALYTICS_DEBUGGER = "ANALYTICS_DEBUGGER";
-    public static final String IS_ANALYTICS_DEBUGGER_NOTIF_ENABLED = "is_notif_enabled";
     //developer test
 
     private TextView vCustomIntent;
@@ -119,16 +117,14 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
         toggleAnalytics.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean state) {
-                LocalCacheHandler cache = new LocalCacheHandler(getApplicationContext(), ANALYTICS_DEBUGGER);
-                cache.putBoolean(IS_ANALYTICS_DEBUGGER_NOTIF_ENABLED, state);
-                cache.applyEditor();
+                GtmLogger.getInstance().enableNotification(DeveloperOptions.this, state);
             }
         });
 
         vGoToAnalytics.setOnClickListener(new OneOnClick() {
             @Override
             public void oneOnClick(View view) {
-                startActivity(AnalyticsDebuggerActivity.newInstance(DeveloperOptions.this));
+                GtmLogger.getInstance().openActivity(DeveloperOptions.this);
             }
         });
 
@@ -138,8 +134,7 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
         LocalCacheHandler cache = new LocalCacheHandler(getApplicationContext(), CHUCK_ENABLED);
         toggleChuck.setChecked(cache.getBoolean(IS_CHUCK_ENABLED, false));
 
-        LocalCacheHandler analyticsCache = new LocalCacheHandler(getApplicationContext(), ANALYTICS_DEBUGGER);
-        toggleChuck.setChecked(cache.getBoolean(IS_ANALYTICS_DEBUGGER_NOTIF_ENABLED, false));
+        toggleAnalytics.setChecked(GtmLogger.getInstance().isNotificationEnabled(this));
     }
 
     private void setMaintenance() {
