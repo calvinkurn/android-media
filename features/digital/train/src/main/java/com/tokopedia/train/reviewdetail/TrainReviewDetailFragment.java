@@ -15,10 +15,13 @@ import java.util.List;
  */
 public class TrainReviewDetailFragment extends BaseListFragment<TrainSeatPassengerViewModel, TrainPassengerAdapterTypeFactory> {
 
-    public TrainReviewDetailFragment newInstance(List<TrainSeatPassengerViewModel> trainSeatPassengerViewModels) {
+    private static final String ARGS_TRAIN_SEAT_PASSENGER_VIEW_MODEL = "ARGS_TRAIN_SEAT_PASSENGER_VIEW_MODEL";
+
+    public static TrainReviewDetailFragment newInstance(List<TrainSeatPassengerViewModel> trainSeatPassengerViewModels) {
         Fragment fragment = new Fragment();
         Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList((ArrayList<TrainSeatPassengerViewModel>) trainSeatPassengerViewModels);
+        bundle.putParcelableArrayList(ARGS_TRAIN_SEAT_PASSENGER_VIEW_MODEL,
+                (ArrayList<TrainSeatPassengerViewModel>) trainSeatPassengerViewModels);
         fragment.setArguments(bundle);
         return new TrainReviewDetailFragment();
     }
