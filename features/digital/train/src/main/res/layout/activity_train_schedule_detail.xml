@@ -87,6 +87,6 @@
         android:id="@+id/button_submit"
         style="@style/Button.Submit.Orange"
         android:layout_alignParentBottom="true"
-        android:text="Pilih" />
+        android:text="@string/label_choose" />
 
 </RelativeLayout>
