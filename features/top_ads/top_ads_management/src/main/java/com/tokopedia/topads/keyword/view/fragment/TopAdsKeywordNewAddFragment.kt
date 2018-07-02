@@ -5,18 +5,24 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import com.tkpd.library.ui.utilities.TkpdProgressDialog
 import com.tkpd.library.ui.view.LinearLayoutManager
 import com.tkpd.library.utils.CommonUtils
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.seller.product.edit.utils.ViewUtils
+import com.tokopedia.core.network.retrofit.response.TextErrorObject
 import com.tokopedia.topads.R
+import com.tokopedia.topads.common.data.exception.ResponseErrorException
+import com.tokopedia.topads.common.data.response.Error
 import com.tokopedia.topads.common.view.fragment.TopAdsNewBaseStepperFragment
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent
+import com.tokopedia.topads.dashboard.utils.ViewUtils
 import com.tokopedia.topads.keyword.di.component.DaggerTopAdsKeywordAddComponent
 import com.tokopedia.topads.keyword.di.module.TopAdsKeywordAddModule
 import com.tokopedia.topads.keyword.domain.model.keywordadd.AddKeywordDomainModelDatum
@@ -27,6 +33,7 @@ import com.tokopedia.topads.keyword.view.listener.TopAdsKeywordNewAddView
 import com.tokopedia.topads.keyword.view.model.TopAdsKeywordNewStepperModel
 import com.tokopedia.topads.keyword.view.presenter.TopAdsKeywordNewAddPresenter
 import kotlinx.android.synthetic.main.fragment_top_ads_keyword_new_add.*
+import kotlinx.android.synthetic.main.top_ads_empty_layout.*
 import javax.inject.Inject
 
 class TopAdsKeywordNewAddFragment : TopAdsNewBaseStepperFragment<TopAdsKeywordNewStepperModel>(),
@@ -36,6 +43,7 @@ class TopAdsKeywordNewAddFragment : TopAdsNewBaseStepperFragment<TopAdsKeywordNe
     private var serverCount = 0
     private var progressDialog: TkpdProgressDialog? = null
     private var onSuccessSaveKeywordListener: OnSuccessSaveKeywordListener? = null
+    private var errorList: List<String> = arrayListOf()
 
     @Inject lateinit var presenter: TopAdsKeywordNewAddPresenter
 
@@ -49,6 +57,8 @@ class TopAdsKeywordNewAddFragment : TopAdsNewBaseStepperFragment<TopAdsKeywordNe
         val TAG = TopAdsKeywordNewAddFragment::class.java.simpleName
         const val REQUEST_ADD_ITEM_CODE = 1
         private const val MAX_KEYWORD = 50
+        private const val EXTRA_ERROR_WORDS = "err_wrds"
+        private const val EXTRA_LOCAL_WORDS = "lcl_wrds"
 
         fun newInstance(): Fragment {
             return TopAdsKeywordNewAddFragment()
@@ -90,6 +100,11 @@ class TopAdsKeywordNewAddFragment : TopAdsNewBaseStepperFragment<TopAdsKeywordNe
             maxKeyword = maxWords
             this@TopAdsKeywordNewAddFragment.serverCount = serverCount
         }
+        if (savedInstanceState != null){
+            localKeywordAdapter.clear()
+            localKeywordAdapter.addBulk(savedInstanceState.getParcelableArrayList(EXTRA_LOCAL_WORDS))
+            errorList = savedInstanceState.getStringArrayList(EXTRA_ERROR_WORDS)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -99,11 +114,30 @@ class TopAdsKeywordNewAddFragment : TopAdsNewBaseStepperFragment<TopAdsKeywordNe
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         buttonSave.setOnClickListener { onButtonSaveClicked() }
+        initEmptyStateView()
         checkButtonEnabled()
         setCurrentGroup()
         setCurrentMaxKeyword()
         setServerKeyword()
         setRecyclerView()
+        needShowEmptyLayout()
+    }
+
+    private fun needShowEmptyLayout() {
+        if (localKeywordAdapter.itemCount > 0){
+            cardList.visibility = View.VISIBLE
+            emptyLayout.visibility = View.GONE
+        } else {
+            cardList.visibility = View.GONE
+            emptyLayout.visibility = View.VISIBLE
+        }
+    }
+
+    private fun initEmptyStateView() {
+        no_result_image.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.icon_empty_local_keyword))
+        text_view_empty_title_text.setText(R.string.topads_keyword_local_empty_title)
+        text_view_empty_content_text.visibility = View.GONE
+        button_add_promo.visibility = View.GONE
     }
 
     override fun onDestroy() {
@@ -131,7 +165,11 @@ class TopAdsKeywordNewAddFragment : TopAdsNewBaseStepperFragment<TopAdsKeywordNe
         keywordCurrentLabelView.run {
             title = getString(R.string.keyword_group_label_view,stepperModel?.groupName ?: "")
             setSubTitle(getString(R.string.top_ads_keyword_total_keyword_in_group_2, serverCount))
-            setOnClickListener { gotoKeywordCurrentList() }
+            if (serverCount > 0) {
+                setOnClickListener { gotoKeywordCurrentList() }
+            } else {
+                setContent(null)
+            }
         }
     }
 
@@ -144,7 +182,7 @@ class TopAdsKeywordNewAddFragment : TopAdsNewBaseStepperFragment<TopAdsKeywordNe
 
     private fun gotoAddKeywordItem(){
         TopAdsKeywordNewItemActivity.startForResult(activity, REQUEST_ADD_ITEM_CODE,
-                getLocalKeyWordSize(), maxKeyword, stepperModel, this)
+                localKeywordAdapter.localKeywords, maxKeyword, stepperModel, this)
     }
 
     private fun setCurrentMaxKeyword(){
@@ -195,6 +233,7 @@ class TopAdsKeywordNewAddFragment : TopAdsNewBaseStepperFragment<TopAdsKeywordNe
                     localKeywordAdapter.addBulk(localKeywords)
                     setCurrentMaxKeyword()
                     checkButtonEnabled()
+                    needShowEmptyLayout()
                 }
 
             }
@@ -212,6 +251,7 @@ class TopAdsKeywordNewAddFragment : TopAdsNewBaseStepperFragment<TopAdsKeywordNe
     override fun onRemoved(position: Int) {
         setCurrentMaxKeyword()
         checkButtonEnabled()
+        needShowEmptyLayout()
     }
 
     override fun onSuccessSaveKeyword() {
@@ -226,6 +266,25 @@ class TopAdsKeywordNewAddFragment : TopAdsNewBaseStepperFragment<TopAdsKeywordNe
         hideLoading()
         NetworkErrorHelper.showCloseSnackbar(activity,
                 ViewUtils.getErrorMessage(activity, e))
+        if (e is ResponseErrorException){
+            errorList = convertResponseErrorToErrorList(e.errorList).map { it.toLowerCase() }
+            localKeywordAdapter.settErrorList(errorList)
+        }
+    }
+
+    private fun convertResponseErrorToErrorList(errorList: List<Error>?): List<String> {
+        if (errorList == null){
+            return arrayListOf()
+        } else {
+            val tempList = arrayListOf<String>()
+            errorList.forEach {
+                val tmp = it.getObjectParse(TextErrorObject::class.java).textList;
+                if (tmp != null && tmp.size > 0){
+                    tempList.addAll(tmp)
+                }
+            }
+            return tempList
+        }
     }
 
     interface OnSuccessSaveKeywordListener{

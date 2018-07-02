@@ -44,48 +44,41 @@
                 android:text="@string/label_top_ads_choose_type"
                 android:layout_marginTop="@dimen/dp_40"/>
 
-            <RadioGroup
+            <com.tokopedia.topads.common.view.widget.TopAdsSubtitledRadioGroup
                 android:id="@+id/keywordRadioGroup"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 style="@style/TopAdsCustomRadioGroup">
 
-                <RadioButton
+                <com.tokopedia.topads.common.view.widget.TopAdsSubtitledRadioButton
+                    android:gravity="center_vertical"
                     android:id="@+id/keywordPositiveRadioButton"
-                    style="@style/RadioButton"
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:minHeight="@dimen/dp_64"
-                    android:checked="true"
-                    android:button="@null"
-                    android:padding="@dimen/dp_0"
-                    android:drawableEnd="@drawable/bg_radio_button"
-                    android:drawableRight="@drawable/bg_radio_button"
-                    android:drawablePadding="@dimen/dp_6"
-                    android:text="@string/top_ads_keyword_title"/>
+                    app:radio_id="@+id/keywordPositiveRadioButton"
+                    app:title_radio="@string/top_ads_keyword_title"
+                    app:subtitle_radio="@string/top_ads_keyword_subtitle"/>
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_1"
                     android:background="@drawable/bg_line_separator"/>
 
-                <RadioButton
+                <com.tokopedia.topads.common.view.widget.TopAdsSubtitledRadioButton
+                    android:gravity="center_vertical"
                     android:id="@+id/keywordNegativeRadioButton"
-                    style="@style/RadioButton"
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:minHeight="@dimen/dp_64"
-                    android:padding="@dimen/dp_0"
-                    android:button="@null"
-                    android:drawableEnd="@drawable/bg_radio_button"
-                    android:drawableRight="@drawable/bg_radio_button"
-                    android:drawablePadding="@dimen/dp_6"
-                    android:text="@string/top_ads_keyword_title_negative"/>
+                    app:radio_id="@+id/keywordNegativeRadioButton"
+                    app:title_radio="@string/top_ads_keyword_title_negative"
+                    app:subtitle_radio="@string/top_ads_keyword_subtitle_negative"/>
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_1"
                     android:background="@drawable/bg_line_separator"/>
 
-            </RadioGroup>
+            </com.tokopedia.topads.common.view.widget.TopAdsSubtitledRadioGroup>
 
         </android.support.v7.widget.LinearLayoutCompat>
 

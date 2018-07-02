@@ -5,6 +5,7 @@
     android:id="@+id/mainview"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <ScrollView
@@ -17,15 +18,18 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingTop="@dimen/dp_24"
             android:clickable="false">
 
             <TextView
-                style="@style/TextView.Small.Bold"
+                style="@style/TextView.Title.BlackPrimary"
+                android:textSize="@dimen/sp_18"
                 android:text="@string/top_ads_title_keyword_add_keyword"/>
 
             <TextView
                 android:id="@+id/totalKeyAdded"
-                style="@style/TextView.Micro.BlackSecondary"
+                style="@style/TextView.Micro.BlackDisabled"
+                android:layout_marginTop="@dimen/dp_4"
                 android:text="@string/top_ads_keywords_total_current_and_max"/>
 
             <android.support.v7.widget.CardView
@@ -33,7 +37,8 @@
                 android:layout_height="wrap_content"
                 app:cardBackgroundColor="@color/cardview_light_background"
                 android:layout_margin="@dimen/dp_2"
-                app:cardCornerRadius="@dimen/dp_8"
+                android:layout_marginTop="@dimen/dp_8"
+                app:cardCornerRadius="@dimen/dp_4"
                 app:cardElevation="@dimen/dp_3"
                 app:cardPreventCornerOverlap="false">
 
@@ -54,22 +59,26 @@
                             style="@style/EditText"
                             android:layout_width="match_parent"
                             android:gravity="top"
-                            android:textSize="@dimen/sp_14"
+                            android:textSize="@dimen/sp_12"
                             android:hint="@string/keyword_enter_product_description"
                             android:inputType="textMultiLine"
-                            android:lines="6"/>
+                            android:lineSpacingExtra="@dimen/sp_4"
+                            android:lines="8"/>
                     </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
                     <TextView
                         style="@style/TextView.Micro.BlackDisabled"
+                        android:layout_marginLeft="@dimen/dp_4"
+                        android:layout_marginStart="@dimen/dp_4"
                         android:text="@string/top_ads_keywords_add_how_to"/>
 
                 </LinearLayout>
             </android.support.v7.widget.CardView>
 
             <TextView
-                style="@style/TextView.Small.Bold"
-                android:layout_marginTop="@dimen/sp_16"
+                style="@style/TextView.Title.BlackPrimary"
+                android:textSize="@dimen/sp_18"
+                android:layout_marginTop="@dimen/dp_24"
                 android:text="@string/top_ads_title_keyword_add_keyword"/>
 
             <RadioGroup
@@ -77,23 +86,32 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:layout_marginTop="@dimen/dp_16"
                 style="@style/TopAdsCustomRadioGroup">
 
                 <RadioButton
                     android:id="@+id/keywordPhraseRadioButton"
-                    style="@style/RadioButton"
+                    style="@style/RadioButton.TopAds"
+                    android:button="@null"
+                    android:background="@drawable/radio_button_background"
                     android:layout_width="0dp"
                     android:layout_weight="1"
-                    android:minHeight="@dimen/dp_64"
                     android:checked="true"
+                    android:gravity="center_horizontal"
+                    android:layout_marginEnd="@dimen/dp_4"
+                    android:layout_marginRight="@dimen/dp_4"
                     android:text="@string/top_ads_keyword_phrase_match_2"/>
 
                 <RadioButton
                     android:id="@+id/keywordExactRadioButton"
-                    style="@style/RadioButton"
+                    style="@style/RadioButton.TopAds"
+                    android:button="@null"
+                    android:background="@drawable/radio_button_background"
                     android:layout_width="0dp"
                     android:layout_weight="1"
-                    android:minHeight="@dimen/dp_64"
+                    android:gravity="center_horizontal"
+                    android:layout_marginStart="@dimen/dp_4"
+                    android:layout_marginLeft="@dimen/dp_4"
                     android:text="@string/top_ads_keyword_exact_match_2"/>
 
             </RadioGroup>
@@ -101,14 +119,17 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_24"
                 android:orientation="horizontal">
 
                 <android.support.v7.widget.AppCompatTextView
                     style="@style/TextView.Small.BlackSecondary"
+                    android:lineSpacingExtra="@dimen/sp_2"
                     android:text="@string/topads_keyword_example" />
 
                 <android.support.v7.widget.AppCompatTextView
                     style="@style/TextView.Small.BlackSecondary"
+                    android:lineSpacingExtra="@dimen/sp_2"
                     android:text="@string/topads_keyword_example_value"
                     android:textStyle="bold"/>
 
@@ -117,15 +138,18 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_8"
                 android:orientation="horizontal">
 
                 <android.support.v7.widget.AppCompatTextView
                     style="@style/TextView.Small.BlackSecondary"
+                    android:lineSpacingExtra="@dimen/sp_2"
                     android:text="@string/topads_keyword_search_example" />
 
                 <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/textKeywordExample"
                     style="@style/TextView.Small.BlackSecondary"
+                    android:lineSpacingExtra="@dimen/sp_2"
                     tools:text="@string/topads_keyword_search_example_value_phrase"/>
 
             </LinearLayout>
@@ -135,11 +159,12 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center"
-                android:layout_marginTop="@dimen/sp_12">
+                android:layout_marginTop="@dimen/sp_16">
 
                 <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/seeDetailTextView"
-                    style="@style/TextView.Micro.Green"
+                    style="@style/TextView.Small.Green"
+                    android:lineSpacingExtra="@dimen/sp_2"
                     android:text="@string/lihat_detail"/>
 
                 <ImageView
@@ -159,12 +184,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
+                android:layout_marginTop="@dimen/dp_8"
                 app:ael_duration="400"
                 app:ael_expanded="true">
 
                 <TextView
                     android:id="@+id/keywordTypeDesc"
-                    style="@style/TextView.Micro.BlackSecondary"
+                    style="@style/TextView.Small"
+                    android:lineSpacingExtra="@dimen/sp_5"
                     android:text="@string/top_ads_see_detail_info_keyword_phrase"/>
 
             </com.tkpd.library.ui.expandablelayout.ExpandableRelativeLayout>

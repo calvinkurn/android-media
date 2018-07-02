@@ -131,7 +131,7 @@ class TopAdsKeywordNewChooseGroupFragment : TopAdsNewBaseStepperFragment<TopAdsK
 
         run {
             if (isPositive) keywordPositiveRadioButton else keywordNegativeRadioButton
-        }.isChecked = true
+        }.setChecked(true)
 
         view?.requestFocus()
 
@@ -223,7 +223,7 @@ class TopAdsKeywordNewChooseGroupFragment : TopAdsNewBaseStepperFragment<TopAdsK
     }
 
     private fun setRadioGroupListener(){
-        keywordRadioGroup.setOnCheckedChangeListener { radioGroup, checkedId ->
+        keywordRadioGroup.setOnCheckedChangeListener { radioGroup, isChecked, checkedId ->
             isPositive = checkedId == R.id.keywordPositiveRadioButton
             stepperModel?.apply {  isPositive = this@TopAdsKeywordNewChooseGroupFragment.isPositive }
             groupAd?.let { findKeywordCount(it) }

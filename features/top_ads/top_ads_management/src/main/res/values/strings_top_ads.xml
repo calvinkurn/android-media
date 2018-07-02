@@ -211,6 +211,8 @@
     <string name="top_ads_keyword_broad_match">Broad Match</string>
     <string name="top_ads_keyword_phrase_match">Phrase Match</string>
     <string name="top_ads_keyword_exact_match">Exact Match</string>
+    <string name="top_ads_keyword_phrase_match_3">Luas</string>
+    <string name="top_ads_keyword_exact_match_3">Spesifik</string>
     <string name="top_ads_keyword_phrase_match_2">Pencarian Luas</string>
     <string name="top_ads_keyword_exact_match_2">Pencarian Spesifik</string>
     <string name="top_ads_keyword_broad_match_positive_description">Kata Kunci dengan jangkauan pencarian luas</string>
@@ -279,13 +281,16 @@
     <string name="top_ads_title_keyword_add_keyword_desc">Biaya maksimum yang akan diterapkan adalah Rp 1.000 perklik.</string>
     <string name="keyword_group_label_view">Grup: %1s</string>
     <string name="top_ads_keyword_total_keyword_in_group_2">%1$d Kata Kunci</string>
-    <string name="keyword_enter_product_description">Contoh Penulisan:\nPakaian Wanita\nSepatu Bola</string>
-    <string name="top_ads_keywords_add_how_to">Masukkan atau tempel kata kunci, satu kata kunci per baris.</string>
+    <string name="keyword_enter_product_description"><i>Contoh Penulisan:\nPakaian Wanita\nSepatu Bola</i></string>
+    <string name="top_ads_keywords_add_how_to"><i>Masukkan atau tempel kata kunci, satu kata kunci per baris.</i></string>
     <string name="lihat_detail">Lihat Detail</string>
-    <string name="top_ads_see_detail_info_keyword_phrase">Promo tetap tampil meski pembeli memasukkan kata sebelum atau setelah kata kunci utama</string>
-    <string name="top_ads_see_detail_info_keyword_match">Promo tetap tampil sesuai pembeli memasukkan kata kunci utama</string>
+    <string name="top_ads_see_detail_info_keyword_phrase">Promo tetap tampil meski pembeli memasukkan kata sebelum atau setelah kata kunci utama.</string>
+    <string name="top_ads_see_detail_info_keyword_match">Promo tampil jika kata kunci dalam pencarian sama dengan yang Anda pasang.</string>
     <string name="topads_keyword_example">Contoh kata kunci\t\t\t:</string>
     <string name="topads_keyword_search_example">Contoh Pencarian\t\t\t:</string>
     <string name="topads_keyword_search_example_value_phrase"><![CDATA[<i>&#160;Pakaian Wanita <b>Murah</b></i>]]></string>
     <string name="topads_keyword_search_example_value_exact"><![CDATA[<i>&#160;Pakaian Wanita</i>]]></string>
+    <string name="top_ads_keyword_subtitle_negative">Memblokir kata kunci yang tidak diinginkan.</string>
+    <string name="top_ads_keyword_subtitle">Iklan tampil pada kata kunci yang sesuai.</string>
+    <string name="topads_keyword_local_empty_title">Tambah kata kunci yang akan dimasukkan ke grup promo.</string>
 </resources>

@@ -1,6 +1,7 @@
 package com.tokopedia.topads.keyword.view.fragment
 
 import android.animation.ObjectAnimator
+import android.animation.TimeInterpolator
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -24,9 +25,10 @@ import com.tokopedia.topads.keyword.helper.KeywordTypeMapper
 import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordNewItemActivity
 import com.tokopedia.topads.keyword.view.model.TopAdsKeywordNewStepperModel
 import kotlinx.android.synthetic.main.fragment_top_ads_keyword_new_item.*
+import java.util.*
 
 class TopAdsKeywordNewItemFragment: BaseDaggerFragment() {
-    var currentCount = 0
+    val localKeywords: MutableList<AddKeywordDomainModelDatum> = mutableListOf()
     var maxCount = 50
     lateinit var stepperModel: TopAdsKeywordNewStepperModel
     private var selectedType = 0
@@ -39,10 +41,11 @@ class TopAdsKeywordNewItemFragment: BaseDaggerFragment() {
         val ADDED_KEYWORDS_PARAM = "added_keywords"
         private const val MIN_WORDS = 5
 
-        fun newInstance(currentCount: Int, maxCount: Int, stepperModel: TopAdsKeywordNewStepperModel): Fragment {
+        fun newInstance(localKeywords:List<AddKeywordDomainModelDatum>, maxCount: Int,
+                        stepperModel: TopAdsKeywordNewStepperModel): Fragment {
             return TopAdsKeywordNewItemFragment().apply {
                 arguments = Bundle().apply {
-                    putInt(TopAdsKeywordNewItemActivity.CURRENT_COUNT_PARAM, currentCount)
+                    putParcelableArrayList(TopAdsKeywordNewItemActivity.LOCAL_KEYWORDS_PARAM, ArrayList(localKeywords))
                     putInt(TopAdsKeywordNewItemActivity.MAX_COUNT_PARAM, maxCount)
                     putParcelable(TopAdsKeywordNewItemActivity.STEPPERMODEL_PARAM, stepperModel)
                 }
@@ -61,7 +64,8 @@ class TopAdsKeywordNewItemFragment: BaseDaggerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (savedInstanceState == null && arguments != null){
-            currentCount = arguments.getInt(TopAdsKeywordNewItemActivity.CURRENT_COUNT_PARAM, 0)
+            localKeywords.clear()
+            localKeywords.addAll(arguments.getParcelableArrayList(TopAdsKeywordNewItemActivity.LOCAL_KEYWORDS_PARAM))
             maxCount = arguments.getInt(TopAdsKeywordNewItemActivity.MAX_COUNT_PARAM, 50)
             stepperModel = arguments.getParcelable(TopAdsKeywordNewItemActivity.STEPPERMODEL_PARAM)
         }
@@ -73,7 +77,7 @@ class TopAdsKeywordNewItemFragment: BaseDaggerFragment() {
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        totalKeyAdded.text = getString(R.string.top_ads_keywords_total_current_and_max, currentCount, maxCount)
+        totalKeyAdded.text = getString(R.string.top_ads_keywords_total_current_and_max, localKeywords.size, maxCount)
         textKeywordExample.text = MethodChecker.fromHtml(getString(R.string.topads_keyword_search_example_value_phrase))
         setupTextArea()
         setupToggleKeywordTypeDesc()
@@ -82,7 +86,7 @@ class TopAdsKeywordNewItemFragment: BaseDaggerFragment() {
 
         buttonSave.setOnClickListener {
             val keywordsString = editTextDescription.text.toString().split("\n")
-            if (keywordsString.size > maxCount){
+            if (keywordsString.size + localKeywords.size > maxCount){
                 textInputLayoutDescription.error = getString(R.string.top_ads_keyword_per_group_reach_limit)
                 return@setOnClickListener
             }
@@ -124,7 +128,7 @@ class TopAdsKeywordNewItemFragment: BaseDaggerFragment() {
                     textInputLayoutDescription.error = getString(R.string.top_ads_keyword_must_only_letter_or_digit)
                 }
 
-                currentCount = text.size
+                val currentCount = text.size + localKeywords.size
                 totalKeyAdded.text = getString(R.string.top_ads_keywords_total_current_and_max, currentCount, maxCount)
                 checkAddButtonEnabled()
             }
@@ -152,7 +156,12 @@ class TopAdsKeywordNewItemFragment: BaseDaggerFragment() {
     }
 
     private fun isDuplicateExists(keywords: List<String>): Boolean {
-        return keywords.size != keywords.toSet().size
+        val filteredLocal = localKeywords
+                .filter { it.keyWordTypeId ==  KeywordTypeMapper.mapToDef(stepperModel.isPositive, selectedType)}
+                .map { it.keywordTag }
+        val tmpSet = keywords.toSet()
+
+        return (keywords.size != tmpSet.size) || !Collections.disjoint(filteredLocal, tmpSet)
     }
 
     private fun hasInValidWordLength(keyword: String): Boolean {

@@ -19,16 +19,14 @@
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/title"
-            style="@style/TextView.Small.Bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            style="@style/TextView.Small"
             android:maxLines="1"
             android:ellipsize="end"
             tools:text="@string/app_android" />
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/type"
-            style="@style/TextView.Small.BlackSecondary"
+            style="@style/TextView.Micro.BlackDisabled"
             android:maxLines="1"
             android:ellipsize="end"
             tools:text="@string/app_android" />
@@ -36,11 +34,11 @@
 
     <ImageView
         android:id="@+id/delete"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/dp_16"
+        android:layout_height="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginStart="@dimen/dp_16"
-        app:srcCompat="@drawable/ic_delete_keyword"
+        app:srcCompat="@drawable/ic_close_default"
         tools:ignore="ContentDescription"/>
 
 </LinearLayout>

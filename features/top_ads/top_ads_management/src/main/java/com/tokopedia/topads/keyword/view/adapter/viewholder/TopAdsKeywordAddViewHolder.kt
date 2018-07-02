@@ -1,6 +1,5 @@
 package com.tokopedia.topads.keyword.view.adapter.viewholder
 
-import android.support.v7.widget.RecyclerView
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.topads.keyword.domain.model.keywordadd.AddKeywordDomainModelDatum

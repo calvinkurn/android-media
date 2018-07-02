@@ -1,5 +1,6 @@
 package com.tokopedia.topads.keyword.view.adapter
 
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import com.tokopedia.topads.R
@@ -11,6 +12,7 @@ import kotlinx.android.synthetic.main.item_top_ads_keyword_add_new.view.*
 class TopAdsKeywordAddAdapter: RecyclerView.Adapter<TopAdsKeywordAddViewHolder>() {
     val localKeywords: MutableList<AddKeywordDomainModelDatum> = mutableListOf()
     var listener: OnKeywordRemovedListener? = null
+    val errorList: MutableList<String> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int): TopAdsKeywordAddViewHolder {
         return TopAdsKeywordAddViewHolder(parent.inflateLayout(R.layout.item_top_ads_keyword_add_new))
@@ -21,11 +23,19 @@ class TopAdsKeywordAddAdapter: RecyclerView.Adapter<TopAdsKeywordAddViewHolder>(
     }
 
     override fun onBindViewHolder(holder: TopAdsKeywordAddViewHolder, pos: Int) {
-        holder.bind(localKeywords[pos])
+        val localKeyword = localKeywords[pos]
+        holder.bind(localKeyword)
         holder.itemView.delete.setOnClickListener {
             remove(pos)
             listener?.onRemoved(pos)
         }
+        val titleColor = if (localKeyword.keywordTag.toLowerCase() in errorList){
+            R.color.background_error
+        } else {
+            R.color.font_black_primary_70
+        }
+        holder.itemView.title.setTextColor(ContextCompat
+                .getColor(holder.itemView.context, titleColor))
     }
 
     private fun remove(position: Int){
@@ -40,6 +50,12 @@ class TopAdsKeywordAddAdapter: RecyclerView.Adapter<TopAdsKeywordAddViewHolder>(
 
     fun clear() {
         localKeywords.clear()
+        notifyDataSetChanged()
+    }
+
+    fun settErrorList(errorList: List<String>) {
+        this.errorList.clear()
+        this.errorList.addAll(errorList)
         notifyDataSetChanged()
     }
 

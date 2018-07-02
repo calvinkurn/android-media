@@ -4,20 +4,21 @@
     android:id="@+id/mainview"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:paddingTop="@dimen/dp_16"
-        android:paddingBottom="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_24"
         android:background="@color/white"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:clickable="false">
 
         <TextView
-            style="@style/TextView.Small.Bold"
+            style="@style/TextView.Title.BlackPrimary"
+            android:textSize="@dimen/sp_18"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginEnd="@dimen/dp_16"
@@ -25,7 +26,7 @@
             android:text="@string/top_ads_title_keyword_add_keyword"/>
 
         <TextView
-            style="@style/TextView.Micro.BlackSecondary"
+            style="@style/TextView.Micro.BlackDisabled"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginEnd="@dimen/dp_16"
@@ -59,10 +60,36 @@
             android:layout_height="@dimen/dp_1"
             android:background="@drawable/bg_list_separator"/>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/keywordRecyclerView"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent">
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/cardList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:cardBackgroundColor="@color/cardview_light_background"
+                android:layout_margin="@dimen/dp_16"
+                android:layout_marginBottom="@dimen/dp_2"
+                app:cardCornerRadius="@dimen/dp_4"
+                app:cardElevation="@dimen/dp_3"
+                app:cardPreventCornerOverlap="false">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/keywordRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </android.support.v7.widget.CardView>
+
+            <include
+                android:id="@+id/emptyLayout"
+                layout="@layout/top_ads_empty_layout"
+                android:visibility="gone" />
+
+        </FrameLayout>
+
+
     </LinearLayout>
 
     <LinearLayout style="@style/LabelLayout"
