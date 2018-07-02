@@ -1,4 +1,4 @@
-package com.tokopedia.train.passenger.contract;
+package com.tokopedia.train.passenger.presentation.contract;
 
 import android.support.annotation.StringRes;
 
@@ -6,8 +6,8 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.design.component.CardWithAction;
 import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
-import com.tokopedia.train.passenger.viewmodel.ProfileBuyerInfo;
-import com.tokopedia.train.passenger.viewmodel.TrainPassengerViewModel;
+import com.tokopedia.train.passenger.presentation.viewmodel.ProfileBuyerInfo;
+import com.tokopedia.train.passenger.presentation.viewmodel.TrainPassengerViewModel;
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
 
 import java.util.List;

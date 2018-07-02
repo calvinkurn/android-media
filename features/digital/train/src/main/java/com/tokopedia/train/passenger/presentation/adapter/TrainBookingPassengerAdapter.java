@@ -1,4 +1,4 @@
-package com.tokopedia.train.passenger.adapter;
+package com.tokopedia.train.passenger.presentation.adapter;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter;

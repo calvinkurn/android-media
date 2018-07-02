@@ -1,4 +1,4 @@
-package com.tokopedia.train.passenger.activity;
+package com.tokopedia.train.passenger.presentation.activity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -7,8 +7,8 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.train.common.presentation.TrainBaseActivity;
-import com.tokopedia.train.passenger.fragment.TrainBookingAddPassengerFragment;
-import com.tokopedia.train.passenger.viewmodel.TrainPassengerViewModel;
+import com.tokopedia.train.passenger.presentation.fragment.TrainBookingAddPassengerFragment;
+import com.tokopedia.train.passenger.presentation.viewmodel.TrainPassengerViewModel;
 
 /**
  * Created by nabillasabbaha on 21/06/18.

@@ -1,15 +1,15 @@
-package com.tokopedia.train.passenger.presenter;
+package com.tokopedia.train.passenger.presentation.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.design.component.CardWithAction;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.util.TrainDateUtil;
-import com.tokopedia.train.passenger.contract.TrainBookingPassengerContract;
+import com.tokopedia.train.passenger.presentation.contract.TrainBookingPassengerContract;
 import com.tokopedia.train.passenger.data.TrainBookingPassenger;
 import com.tokopedia.train.passenger.domain.TrainSoftBookingUseCase;
 import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
-import com.tokopedia.train.passenger.viewmodel.ProfileBuyerInfo;
-import com.tokopedia.train.passenger.viewmodel.TrainPassengerViewModel;
+import com.tokopedia.train.passenger.presentation.viewmodel.ProfileBuyerInfo;
+import com.tokopedia.train.passenger.presentation.viewmodel.TrainPassengerViewModel;
 import com.tokopedia.train.search.domain.GetDetailScheduleUseCase;
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
 import com.tokopedia.usecase.RequestParams;

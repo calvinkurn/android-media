@@ -1,4 +1,4 @@
-package com.tokopedia.train.passenger.fragment;
+package com.tokopedia.train.passenger.presentation.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -21,18 +21,18 @@ import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.TrainRouter;
 import com.tokopedia.train.common.di.utils.TrainComponentUtils;
 import com.tokopedia.train.common.util.TrainDateUtil;
-import com.tokopedia.train.passenger.activity.TrainBookingAddPassengerActivity;
-import com.tokopedia.train.passenger.activity.TrainBookingPassengerActivity;
-import com.tokopedia.train.passenger.adapter.TrainBookingPassengerAdapter;
-import com.tokopedia.train.passenger.adapter.TrainBookingPassengerAdapterListener;
-import com.tokopedia.train.passenger.adapter.TrainBookingPassengerAdapterTypeFactory;
-import com.tokopedia.train.passenger.contract.TrainBookingPassengerContract;
+import com.tokopedia.train.passenger.presentation.activity.TrainBookingAddPassengerActivity;
+import com.tokopedia.train.passenger.presentation.activity.TrainBookingPassengerActivity;
+import com.tokopedia.train.passenger.presentation.adapter.TrainBookingPassengerAdapter;
+import com.tokopedia.train.passenger.presentation.adapter.TrainBookingPassengerAdapterListener;
+import com.tokopedia.train.passenger.presentation.adapter.TrainBookingPassengerAdapterTypeFactory;
+import com.tokopedia.train.passenger.presentation.contract.TrainBookingPassengerContract;
 import com.tokopedia.train.passenger.di.DaggerTrainBookingPassengerComponent;
 import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
-import com.tokopedia.train.passenger.presenter.TrainBookingPassengerPresenter;
-import com.tokopedia.train.passenger.viewmodel.ProfileBuyerInfo;
-import com.tokopedia.train.passenger.viewmodel.TrainParamPassenger;
-import com.tokopedia.train.passenger.viewmodel.TrainPassengerViewModel;
+import com.tokopedia.train.passenger.presentation.presenter.TrainBookingPassengerPresenter;
+import com.tokopedia.train.passenger.presentation.viewmodel.ProfileBuyerInfo;
+import com.tokopedia.train.passenger.presentation.viewmodel.TrainParamPassenger;
+import com.tokopedia.train.passenger.presentation.viewmodel.TrainPassengerViewModel;
 import com.tokopedia.train.search.presentation.model.TrainScheduleBookingPassData;
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
 

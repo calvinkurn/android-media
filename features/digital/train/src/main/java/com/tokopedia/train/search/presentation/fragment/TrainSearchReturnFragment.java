@@ -10,7 +10,7 @@ import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.di.utils.TrainComponentUtils;
 import com.tokopedia.train.common.util.TrainDateUtil;
 import com.tokopedia.train.homepage.presentation.model.TrainSearchPassDataViewModel;
-import com.tokopedia.train.passenger.activity.TrainBookingPassengerActivity;
+import com.tokopedia.train.passenger.presentation.activity.TrainBookingPassengerActivity;
 import com.tokopedia.train.search.data.typedef.TrainScheduleTypeDef;
 import com.tokopedia.train.search.di.DaggerTrainSearchComponent;
 import com.tokopedia.train.search.presentation.activity.TrainSearchActivity;

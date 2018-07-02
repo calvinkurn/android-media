@@ -1,4 +1,4 @@
-package com.tokopedia.train.passenger.fragment;
+package com.tokopedia.train.passenger.presentation.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -18,12 +18,12 @@ import com.tokopedia.design.text.SpinnerTextView;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.di.utils.TrainComponentUtils;
-import com.tokopedia.train.passenger.activity.TrainBookingAddPassengerActivity;
-import com.tokopedia.train.passenger.contract.TrainBookingAddPassengerContract;
+import com.tokopedia.train.passenger.presentation.activity.TrainBookingAddPassengerActivity;
+import com.tokopedia.train.passenger.presentation.contract.TrainBookingAddPassengerContract;
 import com.tokopedia.train.passenger.data.TrainBookingPassenger;
 import com.tokopedia.train.passenger.di.DaggerTrainBookingPassengerComponent;
-import com.tokopedia.train.passenger.presenter.TrainBookingAddPassengerPresenter;
-import com.tokopedia.train.passenger.viewmodel.TrainPassengerViewModel;
+import com.tokopedia.train.passenger.presentation.presenter.TrainBookingAddPassengerPresenter;
+import com.tokopedia.train.passenger.presentation.viewmodel.TrainPassengerViewModel;
 
 import javax.inject.Inject;
 

@@ -1,10 +1,10 @@
-package com.tokopedia.train.passenger.viewmodel;
+package com.tokopedia.train.passenger.presentation.viewmodel;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.train.passenger.adapter.TrainBookingPassengerTypeFactory;
+import com.tokopedia.train.passenger.presentation.adapter.TrainBookingPassengerTypeFactory;
 
 public class TrainPassengerViewModel implements Parcelable, Visitable<TrainBookingPassengerTypeFactory> {
 

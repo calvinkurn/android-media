@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder;
 import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
@@ -30,7 +29,7 @@ import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.di.utils.TrainComponentUtils;
 import com.tokopedia.train.homepage.presentation.model.TrainSearchPassDataViewModel;
-import com.tokopedia.train.passenger.activity.TrainBookingPassengerActivity;
+import com.tokopedia.train.passenger.presentation.activity.TrainBookingPassengerActivity;
 import com.tokopedia.train.scheduledetail.presentation.activity.TrainScheduleDetailActivity;
 import com.tokopedia.train.search.constant.TrainSortOption;
 import com.tokopedia.train.search.di.DaggerTrainSearchComponent;
@@ -44,7 +43,6 @@ import com.tokopedia.train.search.presentation.model.FilterSearchData;
 import com.tokopedia.train.search.presentation.model.TrainScheduleBookingPassData;
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
 import com.tokopedia.train.search.presentation.presenter.TrainSearchPresenter;
-import com.tokopedia.train.seat.presentation.activity.TrainSeatActivity;
 import com.tokopedia.usecase.RequestParams;
 
 import java.net.UnknownHostException;

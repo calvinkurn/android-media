@@ -1,7 +1,7 @@
 package com.tokopedia.tkpd.train;
 
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
-import com.tokopedia.train.passenger.viewmodel.ProfileBuyerInfo;
+import com.tokopedia.train.passenger.presentation.viewmodel.ProfileBuyerInfo;
 
 import rx.functions.Func1;
 
