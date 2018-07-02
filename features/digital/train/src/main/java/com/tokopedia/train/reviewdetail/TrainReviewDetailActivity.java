@@ -19,7 +19,7 @@ public class TrainReviewDetailActivity extends TrainBaseActivity {
     private List<TrainSeatPassengerViewModel> trainSeatPassengerViewModelList;
 
     public static Intent createIntent(Context context,
-                                                         List<TrainSeatPassengerViewModel> trainSeatPassengerViewModelList) {
+                                      List<TrainSeatPassengerViewModel> trainSeatPassengerViewModelList) {
         Intent intent = new Intent(context, TrainReviewDetailActivity.class);
         intent.putParcelableArrayListExtra("", (ArrayList<TrainSeatPassengerViewModel>) trainSeatPassengerViewModelList);
         return intent;
