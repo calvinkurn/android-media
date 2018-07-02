@@ -43,5 +43,6 @@
 /libraries/applink/                     @tokopedia/core-team
 /libraries/push_notification/           @ricoharisin
 /libraries/user_session/                @tokopedia/minion-kevin
+/libraries/common_network/              @lavekush-t
 
 
