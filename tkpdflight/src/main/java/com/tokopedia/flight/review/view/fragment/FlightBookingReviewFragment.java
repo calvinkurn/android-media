@@ -140,7 +140,22 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        flightBookingReviewModel = getArguments().getParcelable(EXTRA_DATA_REVIEW);
+
+        if (savedInstanceState != null) {
+            isPassengerInfoPageNeedToRefresh = savedInstanceState.getBoolean(EXTRA_NEED_TO_REFRESH);
+            cancelAppliedCoupon = savedInstanceState.getBoolean(EXTRA_COUPON_CANCELLED);
+            flightBookingReviewModel = savedInstanceState.getParcelable(EXTRA_DATA_REVIEW);
+        } else {
+            flightBookingReviewModel = getArguments().getParcelable(EXTRA_DATA_REVIEW);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(EXTRA_NEED_TO_REFRESH, isPassengerInfoPageNeedToRefresh);
+        outState.putBoolean(EXTRA_COUPON_CANCELLED, cancelAppliedCoupon);
+        outState.putParcelable(EXTRA_DATA_REVIEW, flightBookingReviewModel);
     }
 
     @Nullable
