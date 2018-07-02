@@ -564,6 +564,10 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
             updateButton(child);
         }
         renderHeaderInfo();
+        List<String> joinVariant = productVariant.generateVariantValueIntoList(productDetailData.getInfo().getProductId());
+        etNotesSeller.setText(
+                String.format("Variant: %s", TextUtils.join(", ", joinVariant))
+        );
         if (productVariant.getVariant().get(level-1).getIdentifier().equals(IDENTIFIER_SIZE)) {
             UnifyTracking.eventSelectSizeVariant(option.getValue());
         } else if (productVariant.getVariant().get(level-1).getIdentifier().equals(IDENTIFIER_COLOUR)) {
