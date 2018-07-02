@@ -26,6 +26,7 @@ public class ProductItem implements Parcelable, Visitable<ProductListTypeFactory
     private int countReview;
     private int countCourier;
     private String price;
+    private String priceRange;
     private String shopID;
     private String shopName;
     private String shopCity;
@@ -38,6 +39,8 @@ public class ProductItem implements Parcelable, Visitable<ProductListTypeFactory
     private String originalPrice;
     private int discountPercentage;
     private boolean isOfficial;
+    private String topLabel;
+    private String bottomLabel;
 
     public void setProductID(String productID) {
         this.productID = productID;
@@ -77,6 +80,14 @@ public class ProductItem implements Parcelable, Visitable<ProductListTypeFactory
 
     public String getPrice() {
         return price;
+    }
+
+    public String getPriceRange() {
+        return priceRange;
+    }
+
+    public void setPriceRange(String priceRange) {
+        this.priceRange = priceRange;
     }
 
     public void setShopID(String shopID) {
@@ -203,6 +214,22 @@ public class ProductItem implements Parcelable, Visitable<ProductListTypeFactory
         isOfficial = official;
     }
 
+    public String getTopLabel() {
+        return topLabel;
+    }
+
+    public void setTopLabel(String topLabel) {
+        this.topLabel = topLabel;
+    }
+
+    public String getBottomLabel() {
+        return bottomLabel;
+    }
+
+    public void setBottomLabel(String bottomLabel) {
+        this.bottomLabel = bottomLabel;
+    }
+
     public ProductItem() {
     }
 
@@ -252,6 +279,7 @@ public class ProductItem implements Parcelable, Visitable<ProductListTypeFactory
         dest.writeInt(countReview);
         dest.writeInt(countCourier);
         dest.writeString(price);
+        dest.writeString(priceRange);
         dest.writeString(shopID);
         dest.writeString(shopName);
         dest.writeString(shopCity);
@@ -274,6 +302,8 @@ public class ProductItem implements Parcelable, Visitable<ProductListTypeFactory
         dest.writeString(originalPrice);
         dest.writeInt(discountPercentage);
         dest.writeByte((byte) (isOfficial ? 0x01 : 0x00));
+        dest.writeString(topLabel);
+        dest.writeString(bottomLabel);
     }
 
     protected ProductItem(Parcel in) {
@@ -285,6 +315,7 @@ public class ProductItem implements Parcelable, Visitable<ProductListTypeFactory
         countReview = in.readInt();
         countCourier = in.readInt();
         price = in.readString();
+        priceRange = in.readString();
         shopID = in.readString();
         shopName = in.readString();
         shopCity = in.readString();
@@ -307,6 +338,8 @@ public class ProductItem implements Parcelable, Visitable<ProductListTypeFactory
         originalPrice = in.readString();
         discountPercentage = in.readInt();
         isOfficial = in.readByte() != 0x00;
+        topLabel = in.readString();
+        bottomLabel = in.readString();
 
     }
 

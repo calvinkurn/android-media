@@ -51,6 +51,7 @@ import com.tokopedia.discovery.newdiscovery.hotlist.view.presenter.HotlistFragme
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragment;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionGeneralAdapter;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.itemdecoration.ProductItemDecoration;
 import com.tokopedia.discovery.newdiscovery.util.HotlistParameter;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
@@ -411,6 +412,8 @@ public class HotlistFragment extends SearchSectionFragment
         topAdsRecyclerAdapter.setHasHeader(true);
         topAdsRecyclerAdapter.setSpanSizeLookup(onSpanSizeLookup());
         recyclerView.setAdapter(topAdsRecyclerAdapter);
+        recyclerView.addItemDecoration(new ProductItemDecoration(getContext().getResources().getDimensionPixelSize(R.dimen.dp_16)));
+        recyclerView.setBackgroundColor(getContext().getResources().getColor(R.color.white));
         topAdsRecyclerAdapter.setLayoutManager(getGridLayoutManager());
     }
 

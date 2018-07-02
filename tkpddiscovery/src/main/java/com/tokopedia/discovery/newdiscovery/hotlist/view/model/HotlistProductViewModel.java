@@ -41,6 +41,9 @@ public class HotlistProductViewModel implements Visitable<HotlistAdapterTypeFact
     private String originalPrice;
     private int discountPercentage;
     private boolean isOfficial;
+    private String priceRange;
+    private String topLabel;
+    private String bottomLabel;
 
     public HotlistProductViewModel() {
         isWishlistButtonEnabled = true;
@@ -206,6 +209,30 @@ public class HotlistProductViewModel implements Visitable<HotlistAdapterTypeFact
         isOfficial = official;
     }
 
+    public String getPriceRange() {
+        return priceRange;
+    }
+
+    public void setPriceRange(String priceRange) {
+        this.priceRange = priceRange;
+    }
+
+    public String getTopLabel() {
+        return topLabel;
+    }
+
+    public void setTopLabel(String topLabel) {
+        this.topLabel = topLabel;
+    }
+
+    public String getBottomLabel() {
+        return bottomLabel;
+    }
+
+    public void setBottomLabel(String bottomLabel) {
+        this.bottomLabel = bottomLabel;
+    }
+
     public Map<String, Object> generateImpressionDataLayer() {
         return DataLayer.mapOf(
                 "name", getProductName(),
@@ -264,6 +291,7 @@ public class HotlistProductViewModel implements Visitable<HotlistAdapterTypeFact
     public static class BadgeModel implements Parcelable {
         private String imageUrl;
         private String title;
+        private boolean isShown;
 
         public void setImageUrl(String imageUrl) {
             this.imageUrl = imageUrl;
@@ -281,6 +309,14 @@ public class HotlistProductViewModel implements Visitable<HotlistAdapterTypeFact
             return title;
         }
 
+        public boolean isShown() {
+            return isShown;
+        }
+
+        public void setShown(boolean shown) {
+            isShown = shown;
+        }
+
         @Override
         public int describeContents() {
             return 0;
@@ -290,6 +326,7 @@ public class HotlistProductViewModel implements Visitable<HotlistAdapterTypeFact
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeString(this.imageUrl);
             dest.writeString(this.title);
+            dest.writeByte(this.isShown ? (byte) 1 : (byte) 0);
         }
 
         public BadgeModel() {
@@ -298,6 +335,7 @@ public class HotlistProductViewModel implements Visitable<HotlistAdapterTypeFact
         protected BadgeModel(Parcel in) {
             this.imageUrl = in.readString();
             this.title = in.readString();
+            this.isShown = in.readByte() != 0;
         }
 
         public static final Creator<BadgeModel> CREATOR = new Creator<BadgeModel>() {
@@ -402,6 +440,9 @@ public class HotlistProductViewModel implements Visitable<HotlistAdapterTypeFact
         dest.writeString(this.originalPrice);
         dest.writeInt(this.discountPercentage);
         dest.writeByte(this.isOfficial ? (byte) 1 : (byte) 0);
+        dest.writeString(this.priceRange);
+        dest.writeString(this.topLabel);
+        dest.writeString(this.bottomLabel);
     }
 
     protected HotlistProductViewModel(Parcel in) {
@@ -428,6 +469,9 @@ public class HotlistProductViewModel implements Visitable<HotlistAdapterTypeFact
         this.originalPrice = in.readString();
         this.discountPercentage = in.readInt();
         this.isOfficial = in.readByte() != 0;
+        this.priceRange = in.readString();
+        this.topLabel = in.readString();
+        this.bottomLabel = in.readString();
     }
 
     public static final Creator<HotlistProductViewModel> CREATOR = new Creator<HotlistProductViewModel>() {
