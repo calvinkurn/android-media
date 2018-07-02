@@ -106,8 +106,8 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
             @Override
             public CharSequence getPageTitle(int position) {
                 switch (position) {
-                    case 0 : return "Perjalanan";
-                    case 1 : return "Harga";
+                    case 0 : return getString(R.string.train_schedule_detail_title_trip);
+                    case 1 : return getString(R.string.train_schedule_detail_title_price);
                 }
                 return null;
             }

@@ -110,6 +110,9 @@
     <string name="train_seat_popup_choose_passenger">Pilih Penumpang</string>
     <string name="train_seat_choose_wagon_title">Pilih Gerbong</string>
 
+    <string name="train_schedule_detail_title_trip">Perjalanan</string>
+    <string name="train_schedule_detail_title_price">Harga</string>
+    <string name="train_schedule_detail"
     <string name="train_departure_trip">Perjalanan Pergi (%1$s -  %2$s)</string>
     <string name="train_return_trip">Perjalanan Pulang (%1$s -  %2$s)</string>
     <string name="train_label_adult">Tiket Dewasa (%1$d x %2$s)</string>
