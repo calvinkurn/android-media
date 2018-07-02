@@ -1227,30 +1227,38 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                             selectedRemarkNotes = data.getStringExtra(KEY_REMARK_FOR_SELLER);
                         }
 
-                        if (SessionHandler.isV4Login(getActivity())) {
-                            switch (data.getIntExtra(KEY_STATE_RESULT_VARIANT, 0)) {
-                                case SELECTED_VARIANT_RESULT_SKIP_TO_CART:
+                        switch (data.getIntExtra(KEY_STATE_RESULT_VARIANT, 0)) {
+                            case SELECTED_VARIANT_RESULT_SKIP_TO_CART:
+                                if (SessionHandler.isV4Login(getActivity())) {
                                     onProductBuySessionLogin(createProductCartPass(SOURCE_BUTTON_BUY_VARIANT));
-                                    break;
-                                case SELECTED_VARIANT_RESULT_STAY_IN_PDP:
+                                } else {
+                                    redirectLogin();
+                                }
+                                break;
+                            case SELECTED_VARIANT_RESULT_STAY_IN_PDP:
+                                if (SessionHandler.isV4Login(getActivity())) {
                                     onProductBuySessionLogin(createProductCartPass(SOURCE_BUTTON_CART_VARIANT));
-                                    break;
-                                case VariantActivity.KILL_PDP_BACKGROUND:
-                                    getActivity().finish();
-                                    break;
-                                default:
-                                    break;
-                            }
-                        } else {
-                            Bundle bundle = new Bundle();
-                            bundle.putBoolean("login", true);
-                            onProductBuySessionNotLogin(bundle);
+                                } else {
+                                    redirectLogin();
+                                }
+                                break;
+                            case VariantActivity.KILL_PDP_BACKGROUND:
+                                getActivity().finish();
+                                break;
+                            default:
+                                break;
                         }
                     }
                 }
             default:
                 break;
         }
+    }
+
+    private void redirectLogin() {
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("login", true);
+        onProductBuySessionNotLogin(bundle);
     }
 
     public String generateVariantString() {
