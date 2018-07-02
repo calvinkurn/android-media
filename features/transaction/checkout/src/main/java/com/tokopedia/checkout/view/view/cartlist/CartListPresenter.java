@@ -232,7 +232,7 @@ public class CartListPresenter implements ICartListPresenter {
 
     @SuppressWarnings("deprecation")
     @Override
-    public void processToShipmentMultipleAddress(final RecipientAddressModel selectedAddress, Token token) {
+    public void processToShipmentMultipleAddress(final RecipientAddressModel selectedAddress) {
         view.showProgressLoading();
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         param.put("lang", "id");
@@ -289,7 +289,7 @@ public class CartListPresenter implements ICartListPresenter {
                             public void onNext(CartListData cartListData) {
                                 view.hideProgressLoading();
                                 if (!cartListData.isError())
-                                    view.renderToShipmentMultipleAddressSuccess(cartListData, selectedAddress, token);
+                                    view.renderToShipmentMultipleAddressSuccess(cartListData, selectedAddress);
                                 else
                                     view.renderErrorToShipmentMultipleAddress(cartListData.getErrorMessage());
                             }

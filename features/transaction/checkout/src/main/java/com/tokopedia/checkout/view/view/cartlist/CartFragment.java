@@ -257,7 +257,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
         cartPageAnalytics.eventClickCartClickTrashBin();
         ArrayList<CartItemData> cartItemDatas =
                 new ArrayList<>(Collections.singletonList(cartItemHolderData.getCartItemData()));
-        final com.tokopedia.design.component.Dialog dialog = getDialogDeleteConfirmation();
+        final com.tokopedia.design.component.Dialog dialog = getDialogDeleteConfirmation(1);
         dialog.setOnOkClickListener(view -> {
             if (cartItemDatas.size() > 0) {
                 dPresenter.processDeleteAndRefreshCart(cartItemDatas, true);
@@ -414,7 +414,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
                 toBeDeletedCartItem.add(cartItemData);
             }
         }
-        final com.tokopedia.design.component.Dialog dialog = getDialogDeleteConfirmation();
+        final com.tokopedia.design.component.Dialog dialog = getDialogDeleteConfirmation(toBeDeletedCartItem.size());
         dialog.setOnOkClickListener(view -> {
             if (toBeDeletedCartItem.size() > 0) {
                 dPresenter.processDeleteAndRefreshCart(toBeDeletedCartItem, true);
@@ -601,6 +601,8 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     }
 
     private void showErrorLayout(String message) {
+        mIsMenuVisible = false;
+        getActivity().invalidateOptionsMenu();
         refreshHandler.finishRefresh();
         rlContent.setVisibility(View.GONE);
         llNetworkErrorView.setVisibility(View.VISIBLE);
@@ -745,10 +747,10 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     }
 
     @Override
-    public void renderToShipmentMultipleAddressSuccess(CartListData cartListData, RecipientAddressModel selectedAddress, Token token) {
+    public void renderToShipmentMultipleAddressSuccess(CartListData cartListData, RecipientAddressModel selectedAddress) {
         startActivityForResult(MultipleAddressFormActivity.createInstance(
-                getActivity(), cartListData, selectedAddress, token
-        ), MultipleAddressFormActivity.REQUEST_CODE);
+                getActivity(), cartListData, selectedAddress),
+                MultipleAddressFormActivity.REQUEST_CODE);
     }
 
     @Override
@@ -822,22 +824,13 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
             View emptyState = LayoutInflater.from(getActivity()).
                     inflate(R.layout.layout_empty_shopping_cart_new, (ViewGroup) rootview);
             layoutUsedPromo = emptyState.findViewById(R.id.layout_used_promo);
-            TextView labelPromoCode = emptyState.findViewById(R.id.label_promo_code);
             TextView textviewPromoCode = emptyState.findViewById(R.id.textview_promo_code);
-            TextView textviewVoucherDetail = emptyState.findViewById(R.id.textview_voucher_detail);
             ImageView buttonCancel = emptyState.findViewById(R.id.button_cancel);
 
             if (cartListData != null && cartListData.getAutoApplyData() != null &&
                     cartListData.getAutoApplyData().isSuccess()) {
                 layoutUsedPromo.setVisibility(View.VISIBLE);
-                labelPromoCode.setText(getContext().getString(com.tokopedia.design.R.string.my_coupon));
                 textviewPromoCode.setText(cartListData.getAutoApplyData().getTitleDescription());
-                if (TextUtils.isEmpty(cartListData.getAutoApplyData().getMessageSuccess())) {
-                    textviewVoucherDetail.setVisibility(View.GONE);
-                } else {
-                    textviewVoucherDetail.setText(cartListData.getAutoApplyData().getMessageSuccess());
-                    textviewVoucherDetail.setVisibility(View.VISIBLE);
-                }
                 buttonCancel.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -951,12 +944,13 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     }
 
     @NonNull
-    private com.tokopedia.design.component.Dialog getDialogDeleteConfirmation() {
+    private com.tokopedia.design.component.Dialog getDialogDeleteConfirmation(int count) {
         final com.tokopedia.design.component.Dialog dialog =
                 new com.tokopedia.design.component.Dialog(getActivity(),
                         com.tokopedia.design.component.Dialog.Type.LONG_PROMINANCE);
         dialog.setTitle(getString(R.string.label_dialog_title_delete_item));
-        dialog.setDesc(getString(R.string.label_dialog_message_remove_cart_item));
+        dialog.setDesc(String.format(getString(R.string.label_dialog_message_remove_cart_multiple_item),
+                String.valueOf(count)));
         dialog.setBtnOk(getString(R.string.label_dialog_action_delete_and_add_to_wishlist));
         dialog.setBtnCancel(getString(R.string.label_dialog_action_delete));
         dialog.getAlertDialog().setCancelable(true);
@@ -1040,8 +1034,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
             RecipientAddressModel selectedAddress = data.getParcelableExtra(
                     ShipmentActivity.EXTRA_SELECTED_ADDRESS_RECIPIENT_DATA
             );
-            Token token = data.getParcelableExtra(ShipmentActivity.EXTRA_DISTRICT_RECOMMENDATION_TOKEN);
-            dPresenter.processToShipmentMultipleAddress(selectedAddress, token);
+            dPresenter.processToShipmentMultipleAddress(selectedAddress);
         } else if (resultCode == ShipmentActivity.RESULT_CODE_FORCE_RESET_CART_FROM_SINGLE_SHIPMENT ||
                 resultCode == ShipmentActivity.RESULT_CODE_FORCE_RESET_CART_FROM_MULTIPLE_SHIPMENT) {
             dPresenter.processResetAndRefreshCartData();

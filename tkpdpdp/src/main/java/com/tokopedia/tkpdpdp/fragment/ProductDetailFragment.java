@@ -711,6 +711,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void onProductBuySessionLogin(@NonNull ProductCartPass data) {
+        buttonBuyView.changeToLoading();
         presenter.processToCart(getActivity(), data);
     }
 
@@ -992,6 +993,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void showToastMessage(String message) {
+        buttonBuyView.removeLoading();
         if (message == null) {
             message = getString(R.string.default_request_error_unknown_short);
         }
@@ -1630,6 +1632,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void renderAddToCartSuccess(AddToCartResult addToCartResult) {
+        buttonBuyView.removeLoading();
         checkoutAnalyticsAddToCart.eventClickAddToCartImpressionAtcSuccess();
         updateCartNotification();
         android.support.v4.app.FragmentTransaction ft = getFragmentManager().beginTransaction();

@@ -172,7 +172,6 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
             case TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST:
                 return ShipmentAddressListFragment.newInstance(
                         (RecipientAddressModel) getIntent().getParcelableExtra(EXTRA_CURRENT_ADDRESS));
-
         }
     }
 
@@ -182,8 +181,9 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
             ((CartAddressChoiceFragment) getCurrentFragment())
                     .checkoutAnalyticsChangeAddress.eventClickChangeAddressClickArrowBackFromGantiAlamat();
         }
-        setToolbarTitle(getString(R.string.checkout_module_title_shipping_dest));
+        if (getSupportFragmentManager() != null && getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            setToolbarTitle(getString(R.string.checkout_module_title_shipping_dest));
+        }
         super.onBackPressed();
-
     }
 }

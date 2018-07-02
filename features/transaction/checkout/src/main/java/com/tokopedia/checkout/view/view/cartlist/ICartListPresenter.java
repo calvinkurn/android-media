@@ -24,7 +24,7 @@ public interface ICartListPresenter {
 
     void processToShipmentSingleAddress();
 
-    void processToShipmentMultipleAddress(RecipientAddressModel selectedAddress, Token token);
+    void processToShipmentMultipleAddress(RecipientAddressModel selectedAddress);
 
     void reCalculateSubTotal(List<CartItemHolderData> dataList);
 

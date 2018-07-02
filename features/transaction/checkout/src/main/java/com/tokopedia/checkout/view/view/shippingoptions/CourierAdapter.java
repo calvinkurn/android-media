@@ -22,10 +22,6 @@ import java.util.List;
 
 public class CourierAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private static final int ITEM_VIEW_COURIER = R.layout.holder_item_courier;
-    private static final int ITEM_VIEW_SHIPMENT_TYPE = R.layout.item_shipment_category;
-    private static final int ITEM_VIEW_SHIPMENT_TICKER = R.layout.item_courier_ticker;
-
     private CourierAdapterActionListener actionListener;
     private List<ShipmentOptionData> shipmentDataList;
 
@@ -50,11 +46,11 @@ public class CourierAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         ShipmentOptionData shipmentData = shipmentDataList.get(position);
 
         if (shipmentData instanceof ShipmentTickerInfoData) {
-            return ITEM_VIEW_SHIPMENT_TICKER;
+            return CourierTickerViewHolder.ITEM_VIEW_SHIPMENT_TICKER;
         } else if (shipmentData instanceof CourierItemData) {
-            return ITEM_VIEW_COURIER;
+            return CourierViewHolder.ITEM_VIEW_COURIER;
         } else if (shipmentData instanceof ShipmentTypeData) {
-            return ITEM_VIEW_SHIPMENT_TYPE;
+            return CourierHeaderViewHolder.ITEM_VIEW_SHIPMENT_TYPE;
         }
 
         return super.getItemViewType(position);
@@ -64,11 +60,11 @@ public class CourierAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
 
-        if (viewType == ITEM_VIEW_SHIPMENT_TICKER) {
+        if (viewType == CourierTickerViewHolder.ITEM_VIEW_SHIPMENT_TICKER) {
             return new CourierTickerViewHolder(view);
-        } else if (viewType == ITEM_VIEW_COURIER) {
+        } else if (viewType == CourierViewHolder.ITEM_VIEW_COURIER) {
             return new CourierViewHolder(view);
-        } else if (viewType == ITEM_VIEW_SHIPMENT_TYPE) {
+        } else if (viewType == CourierHeaderViewHolder.ITEM_VIEW_SHIPMENT_TYPE) {
             return new CourierHeaderViewHolder(view);
         }
 
@@ -80,11 +76,11 @@ public class CourierAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         int viewType = getItemViewType(position);
         ShipmentOptionData shipmentData = shipmentDataList.get(position);
 
-        if (viewType == ITEM_VIEW_SHIPMENT_TICKER) {
+        if (viewType == CourierTickerViewHolder.ITEM_VIEW_SHIPMENT_TICKER) {
             ((CourierTickerViewHolder) holder).bindData((ShipmentTickerInfoData) shipmentData);
-        } else if (viewType == ITEM_VIEW_COURIER) {
+        } else if (viewType == CourierViewHolder.ITEM_VIEW_COURIER) {
             ((CourierViewHolder) holder).bindData(this, (CourierItemData) shipmentData);
-        } else if (viewType == ITEM_VIEW_SHIPMENT_TYPE) {
+        } else if (viewType == CourierHeaderViewHolder.ITEM_VIEW_SHIPMENT_TYPE) {
             ((CourierHeaderViewHolder) holder).bindData((ShipmentTypeData) shipmentData);
         }
 

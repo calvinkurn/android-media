@@ -336,7 +336,18 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
 
     @Override
     public void showAddToCartMessage(String message) {
-        SnackbarManager.make(getActivity(), message, Snackbar.LENGTH_SHORT).show();
+        if (getView() != null) {
+            if (TextUtils.isEmpty(message)) {
+                message = getString(R.string.default_request_error_unknown_short);
+            }
+            Snackbar snackbar = Snackbar.make(getView(),
+                    message.replace("\n", " "),
+                    Snackbar.LENGTH_LONG);
+            View snackbarView = snackbar.getView();
+            TextView tv = snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+            tv.setMaxLines(7);
+            snackbar.show();
+        }
     }
 
     @Override

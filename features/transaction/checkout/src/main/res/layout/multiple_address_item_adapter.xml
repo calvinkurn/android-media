@@ -111,7 +111,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_3"
-        android:text="@string/label_note_for_seller_optional" />
+        android:text="@string/label_note_for_seller" />
 
     <TextView
         android:id="@+id/notes_for_seller"
