@@ -316,6 +316,9 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
                         attributesVoucher.setMessage(voucherMessage);
                         attributesVoucher.setDiscountAmountPlain(voucherDiscountAmount);
                         updateFinalTotal(attributesVoucher, getCurrentBookingReviewModel());
+                        cancelAppliedCoupon = false;
+                        getCurrentBookingReviewModel().getVoucherViewModel()
+                                .setAutoapplySuccess(true);
                     }
                 } else if (resultCode == codeWrapper.couponResultCode()) {
                     Bundle bundle = data.getExtras();
@@ -331,6 +334,9 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
                         attributesVoucher.setDiscountAmountPlain(couponDiscountAmount);
                         updateFinalTotal(attributesVoucher, getCurrentBookingReviewModel());
                         voucherCartView.setCoupon(couponTitle, couponMessage, couponCode);
+                        cancelAppliedCoupon = false;
+                        getCurrentBookingReviewModel().getVoucherViewModel()
+                                .setAutoapplySuccess(true);
                     }
                 }
                 break;
