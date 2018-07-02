@@ -1279,6 +1279,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         setToolbarPlain();
         setChannelNotFoundView(View.VISIBLE);
         findViewById(R.id.tab).setVisibility(View.GONE);
+        findViewById(R.id.sponsor_layout).setVisibility(View.GONE);
         findViewById(R.id.shadow_layer).setVisibility(View.GONE);
 
     }
