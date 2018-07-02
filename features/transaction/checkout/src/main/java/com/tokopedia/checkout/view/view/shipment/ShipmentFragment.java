@@ -755,7 +755,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (getActivity().getApplication() instanceof ICheckoutModuleRouter) {
             startActivityForResult(
                     ((ICheckoutModuleRouter) getActivity().getApplication())
-                            .checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartListIntent(
+                            .checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartShipmentIntent(
                                     getActivity(), true, "",
                                     cartPromo.getDefaultSelectedTabString()
                             ), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE
