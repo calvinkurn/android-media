@@ -168,9 +168,7 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
         if (cartItemHolderData.getCartItemData().getOriginData().getInvenageValue() == 0) {
             cartItemHolderData.getCartItemData().getOriginData().setInvenageValue(QTY_MAX);
         }
-        this.tvShopName.setText(
-                Html.fromHtml(data.getCartItemData().getOriginData().getShopName())
-        );
+        this.tvShopName.setText(data.getCartItemData().getOriginData().getShopName());
         this.tvProductName.setText(
                 Html.fromHtml(data.getCartItemData().getOriginData().getProductName())
         );

@@ -2,6 +2,7 @@ package com.tokopedia.design.bottomsheet;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.support.annotation.NonNull;
 import android.support.annotation.StyleRes;
 import android.support.design.widget.BottomSheetDialog;
@@ -54,7 +55,11 @@ public class BottomSheetView extends BottomSheetDialog {
 
     protected void init(Context context) {
         this.context = context;
-        layoutInflater = ((Activity)((TintContextWrapper) context).getBaseContext()).getLayoutInflater();
+
+        if (context instanceof Activity) layoutInflater = ((Activity) context).getLayoutInflater();
+        else layoutInflater = ((Activity) ((ContextWrapper) context)
+                    .getBaseContext()).getLayoutInflater();
+
         bottomSheetView = layoutInflater.inflate(getLayout(), null);
         setContentView(bottomSheetView);
 
