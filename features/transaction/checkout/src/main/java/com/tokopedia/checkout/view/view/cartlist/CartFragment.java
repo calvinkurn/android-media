@@ -9,7 +9,6 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -316,6 +315,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
 
     @Override
     public void onCartItemProductClicked(CartItemHolderData cartItemHolderData, int position) {
+        cartPageAnalytics.eventClickCartClickProductName(cartItemHolderData.getCartItemData().getOriginData().getProductName());
         if (getActivity().getApplication() instanceof ICheckoutModuleRouter) {
             startActivity(((ICheckoutModuleRouter) getActivity().getApplication()).checkoutModuleRouterGetProductDetailIntent(
                     getActivity(),
@@ -331,6 +331,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
 
     @Override
     public void onCartItemShopNameClicked(CartItemHolderData cartItemHolderData, int position) {
+        cartPageAnalytics.eventClickCartClickShopName(cartItemHolderData.getCartItemData().getOriginData().getShopName());
         if (getActivity().getApplication() instanceof ICheckoutModuleRouter) {
             startActivity(((ICheckoutModuleRouter) getActivity().getApplication()).checkoutModuleRouterGetShopInfoIntent(
                     getActivity(),
@@ -964,7 +965,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
 
     @Override
     public void onProductItemClicked(int position, Product product) {
-        cartPageAnalytics.eventClickCartClickProductName(product.getName());
         ProductItem data = new ProductItem();
         data.setId(product.getId());
         data.setName(product.getName());
@@ -979,7 +979,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
 
     @Override
     public void onShopItemClicked(int position, Shop shop) {
-        cartPageAnalytics.eventClickCartClickShopName(shop.getName());
         Intent intent = ((TransactionRouter) getActivity().getApplication()).getShopPageIntent(
                 getActivity(), shop.getId());
         startActivity(intent);
