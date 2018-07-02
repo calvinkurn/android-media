@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">Payment Management System</string>
+    <string name="payment_label_view_detail">Lihat Detail</string>
+    <string name="payment_label_how_to_pay">Cara pembayaran</string>
+    <string name="payment_label_cancel_transaction">Batalkan Transaksi</string>
+    <string name="payment_label_change_bca_user_id">Ubah KlikBCA User ID</string>
+    <string name="payment_label_change_account_detail">Ubah Detail Rekening</string>
+    <string name="payment_label_upload_proof">Unggah Bukti</string>
+    <string name="payment_label_klikbcaid">KlikBCA ID</string>
+    <string name="payment_label_payment_code">Kode Pembayaran</string>
+    <string name="payment_label_virtual_account_number">Nomor Virtual Account</string>
 </resources>

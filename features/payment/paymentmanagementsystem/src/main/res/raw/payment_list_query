@@ -1,0 +1,32 @@
+{
+  paymentList(lang: "ID") {
+    payment_list {
+      transaction_id
+      transaction_date
+      transaction_expire
+      merchant_code
+      payment_amount
+      invoice_url
+      product_name
+      product_img
+      gateway_name
+      gateway_img
+      payment_code
+      is_va
+      bank_img
+      user_bank_account {
+        acc_no
+        acc_name
+      }
+      dest_bank_account {
+        acc_no
+        acc_name
+      }
+      show_upload_button
+      show_edit_transfer_button
+      show_edit_klikbca_button
+      show_cancel_button
+      show_expire_ticker
+    }
+  }
+}

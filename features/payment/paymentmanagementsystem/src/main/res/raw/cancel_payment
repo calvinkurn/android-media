@@ -1,0 +1,6 @@
+mutation {
+  cancelPayment($transactionID: String!, $merchantCode: String!) {
+    success
+    message
+  }
+}
