@@ -522,6 +522,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
         if (requestCode == TopPayActivity.REQUEST_CODE) {
             onResultFromPayment(resultCode);
         } else if ((requestCode == REQUEST_CHOOSE_PICKUP_POINT)
