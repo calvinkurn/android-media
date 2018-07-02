@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.StyleRes;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.TintContextWrapper;
 import android.text.Html;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -53,7 +54,7 @@ public class BottomSheetView extends BottomSheetDialog {
 
     protected void init(Context context) {
         this.context = context;
-        layoutInflater = ((Activity) context).getLayoutInflater();
+        layoutInflater = ((Activity)((TintContextWrapper) context).getBaseContext()).getLayoutInflater();
         bottomSheetView = layoutInflater.inflate(getLayout(), null);
         setContentView(bottomSheetView);
 
