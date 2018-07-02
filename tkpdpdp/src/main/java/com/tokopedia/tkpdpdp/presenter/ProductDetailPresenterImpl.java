@@ -193,6 +193,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                             .productId(Integer.parseInt(data.getProductId()))
                             .notes(data.getNotes())
                             .quantity(data.getMinOrder())
+                            .trackerAttribution(data.getTrackerAttribution())
+                            .trackerListName(data.getListName())
                             .shopId(Integer.parseInt(data.getShopId()))
                             .build()
             ).subscribeOn(Schedulers.newThread())

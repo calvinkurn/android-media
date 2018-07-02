@@ -49,7 +49,6 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
         if (currentAddress != null) {
             intent.putExtra(EXTRA_CURRENT_ADDRESS, currentAddress);
         }
-
         return intent;
     }
 
@@ -60,7 +59,6 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
         if (currentAddress != null) {
             intent.putExtra(EXTRA_CURRENT_ADDRESS, currentAddress);
         }
-
         return intent;
     }
 
