@@ -446,18 +446,24 @@ public class ImageUtils {
 
         boolean isPng = ImageUtils.isPng(imagePath);
 
-        Bitmap outputBitmap;
-        outputBitmap = Bitmap.createBitmap(expectedWidth, expectedHeight, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(outputBitmap);
-        canvas.drawBitmap(bitmapToEdit, new Rect(left, top, right, bottom),
-                new Rect(0, 0, expectedWidth, expectedHeight), null);
-        File file = ImageUtils.writeImageToTkpdPath(targetDirectory, outputBitmap, isPng);
-        bitmapToEdit.recycle();
-        outputBitmap.recycle();
+        Bitmap outputBitmap = null;
+        try {
+            outputBitmap = Bitmap.createBitmap(expectedWidth, expectedHeight, bitmapToEdit.getConfig());
+            Canvas canvas = new Canvas(outputBitmap);
+            canvas.drawBitmap(bitmapToEdit, new Rect(left, top, right, bottom),
+                    new Rect(0, 0, expectedWidth, expectedHeight), null);
+            File file = ImageUtils.writeImageToTkpdPath(targetDirectory, outputBitmap, isPng);
+            bitmapToEdit.recycle();
+            outputBitmap.recycle();
+            System.gc();
 
-        System.gc();
-
-        return file.getAbsolutePath();
+            return file.getAbsolutePath();
+        }catch (Exception e) {
+            if (outputBitmap!=null &&!outputBitmap.isRecycled()) {
+                outputBitmap.recycle();
+            }
+            return imagePath;
+        }
     }
 
     public static String resizeBitmap(String imagePath, int maxWidth, int maxHeight, boolean needCheckRotate,
