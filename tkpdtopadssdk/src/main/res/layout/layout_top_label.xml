@@ -9,4 +9,8 @@
     android:fontFamily="sans-serif-medium"
     android:gravity="center"
     android:textSize="@dimen/sp_11"
+    android:paddingLeft="@dimen/dp_8"
+    android:paddingRight="@dimen/dp_8"
+    android:paddingTop="@dimen/dp_3"
+    android:paddingBottom="@dimen/dp_3"
     tools:text="Preorder" />

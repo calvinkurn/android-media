@@ -10,4 +10,8 @@
     android:gravity="center"
     android:layout_marginRight="@dimen/dp_2"
     android:text="@string/baru"
+    android:paddingLeft="@dimen/dp_8"
+    android:paddingRight="@dimen/dp_8"
+    android:paddingTop="@dimen/dp_3"
+    android:paddingBottom="@dimen/dp_3"
     android:textSize="@dimen/sp_11" />
