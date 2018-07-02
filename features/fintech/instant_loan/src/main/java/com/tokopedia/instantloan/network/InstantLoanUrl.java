@@ -9,7 +9,7 @@ public interface InstantLoanUrl {
     }
 
     public static String PATH_USER_STATUS = "dana-instant/api/user/ismobiledevice";
-    String PATH_USER_PROFILE_STATUS = WEB_DOMAIN + "dana-instant/api/user/mobile/status";
+    String PATH_USER_PROFILE_STATUS = "dana-instant/api/user/mobile/status";
     String PATH_POST_PHONEDATA = "dana-instant/api/user/mobiledevice";
     String PATH_BANNER_OFFER = "microfinance/banner/personal-loan";
     String WEB_LINK_NO_COLLATERAL = WEB_DOMAIN + "pinjaman-online/criteria";

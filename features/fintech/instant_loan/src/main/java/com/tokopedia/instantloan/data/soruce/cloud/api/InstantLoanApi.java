@@ -25,7 +25,7 @@ public interface InstantLoanApi {
     @GET(PATH_USER_STATUS)
     Observable<Response<ResponseLoanProfileStatus>> getStatus();
 
-    @GET(PATH_POST_PHONEDATA)
+    @GET(PATH_USER_PROFILE_STATUS)
     Observable<Response<ResponseUserProfileStatus>> getUserProfileStatus();
 
     @POST(PATH_POST_PHONEDATA)
