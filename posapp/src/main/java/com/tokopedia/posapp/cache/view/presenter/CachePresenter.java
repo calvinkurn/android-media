@@ -1,6 +1,5 @@
 package com.tokopedia.posapp.cache.view.presenter;
 
-import com.tokopedia.posapp.bank.data.mapper.GetBankInstallmentMapper;
 import com.tokopedia.posapp.bank.domain.model.BankDomain;
 import com.tokopedia.posapp.bank.domain.model.BankInstallmentDomain;
 import com.tokopedia.posapp.bank.domain.model.BankSavedResult;
