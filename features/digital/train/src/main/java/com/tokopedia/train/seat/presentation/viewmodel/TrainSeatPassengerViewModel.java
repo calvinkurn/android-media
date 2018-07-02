@@ -1,6 +1,12 @@
 package com.tokopedia.train.seat.presentation.viewmodel;
 
-public class TrainSeatPassengerViewModel {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.train.reviewdetail.TrainPassengerAdapterTypeFactory;
+
+public class TrainSeatPassengerViewModel implements Parcelable, Visitable<TrainPassengerAdapterTypeFactory> {
     private int passengerNumber;
     private int salutationId;
     private int paxType;
@@ -72,5 +78,20 @@ public class TrainSeatPassengerViewModel {
 
     public void setPassengerNumber(int passengerNumber) {
         this.passengerNumber = passengerNumber;
+    }
+
+    @Override
+    public int type(TrainPassengerAdapterTypeFactory typeFactory) {
+        return typeFactory.type(this);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+
     }
 }
