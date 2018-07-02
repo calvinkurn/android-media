@@ -42,6 +42,7 @@ import com.tokopedia.gm.common.constant.GMCommonUrl;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlUrl;
 import com.tokopedia.groupchat.common.data.GroupChatUrl;
 import com.tokopedia.groupchat.common.data.SendbirdKey;
+import com.tokopedia.imageuploader.data.ImageUploaderUrl;
 import com.tokopedia.inbox.inboxchat.data.network.ChatBotUrl;
 import com.tokopedia.kol.common.network.KolUrl;
 import com.tokopedia.logisticdata.data.constant.LogisticDataConstantUrl;
@@ -215,6 +216,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         GMCommonUrl.BASE_URL = ConsumerAppBaseUrl.BASE_GOLD_MERCHANT_DOMAIN;
         CatalogConstant.URL_HADES = ConsumerAppBaseUrl.BASE_HADES_DOMAIN;
         GraphqlUrl.BASE_URL = ConsumerAppBaseUrl.GRAPHQL_DOMAIN;
+        ImageUploaderUrl.BASE_URL = ConsumerAppBaseUrl.BASE_DOMAIN;
 
         generateTransactionDataModuleBaseUrl();
         generateLogisticDataModuleBaseUrl();

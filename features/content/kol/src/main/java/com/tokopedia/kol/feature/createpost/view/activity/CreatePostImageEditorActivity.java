@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
@@ -15,8 +16,10 @@ import com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef;
 import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
 import com.tokopedia.imageuploader.domain.UploadImageUseCase;
 import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel;
+import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.common.di.DaggerKolComponent;
 import com.tokopedia.kol.common.di.KolComponent;
+import com.tokopedia.kol.feature.createpost.di.CreatePostModule;
 import com.tokopedia.kol.feature.createpost.di.DaggerCreatePostComponent;
 import com.tokopedia.kol.feature.createpost.view.viewmodel.AttachmentImageModel;
 import com.tokopedia.kol.feature.createpost.view.viewmodel.MediaUploadViewModel;
@@ -34,8 +37,10 @@ import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import rx.Observable;
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.functions.Func2;
+import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
@@ -52,11 +57,11 @@ public class CreatePostImageEditorActivity extends ImageEditorActivity {
     private static final String PARAM_RESOLUTION = "param_resolution";
     private static final String DEFAULT_UPLOAD_PATH = "/upload/attachment";
     private static final String DEFAULT_UPLOAD_TYPE = "fileToUpload\"; filename=\"image.jpg";
-    private ProgressDialog dialog;
     private CompositeSubscription compositeSubscription;
-    private UploadImageUseCase<AttachmentImageModel> uploadImageUseCase;
 
     @Inject
+    UploadImageUseCase<AttachmentImageModel> uploadImageUseCase;
+
     UserSession userSession;
 
     private static final int CREATE_FORM_REQUEST = 1234;
@@ -84,6 +89,8 @@ public class CreatePostImageEditorActivity extends ImageEditorActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.compositeSubscription = new CompositeSubscription();
+        userSession = ((AbstractionRouter)getApplication()).getSession();
         initInjector();
     }
 
@@ -92,6 +99,11 @@ public class CreatePostImageEditorActivity extends ImageEditorActivity {
                 ((BaseMainApplication)getApplicationContext()).getBaseAppComponent())
                 .build();
         DaggerCreatePostComponent.builder().kolComponent(kolComponent).build();
+        DaggerCreatePostComponent.builder()
+                .kolComponent(KolComponentInstance.getKolComponent(getApplication()))
+                .createPostModule(new CreatePostModule())
+                .build()
+                .inject(this);
     }
 
     @Override
@@ -112,7 +124,7 @@ public class CreatePostImageEditorActivity extends ImageEditorActivity {
     }
 
     private void uploadImage(ArrayList<String> imageUrlOrPathList) {
-        dialog.show();
+        progressDialog.show();
         List<MediaUploadViewModel> modelList = convertDataToModel(imageUrlOrPathList);
         compositeSubscription.add(Observable.from(modelList).flatMap(new Func1<MediaUploadViewModel, Observable<MediaUploadViewModel>>() {
             @Override
@@ -141,6 +153,9 @@ public class CreatePostImageEditorActivity extends ImageEditorActivity {
                     }
                 })
                 .toList()
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<List<MediaUploadViewModel>>() {
                     @Override
                     public void onCompleted() {
@@ -149,7 +164,7 @@ public class CreatePostImageEditorActivity extends ImageEditorActivity {
 
                     @Override
                     public void onError(Throwable e) {
-                        dialog.dismiss();
+                        progressDialog.dismiss();
                         NetworkErrorHelper.createSnackbarWithAction(CreatePostImageEditorActivity.this,
                                 ErrorHandler.getErrorMessage(CreatePostImageEditorActivity.this, e),
                                 new NetworkErrorHelper.RetryClickedListener() {
@@ -162,7 +177,7 @@ public class CreatePostImageEditorActivity extends ImageEditorActivity {
 
                     @Override
                     public void onNext(List<MediaUploadViewModel> mediaUploadViewModels) {
-                        dialog.dismiss();
+                        progressDialog.dismiss();
                         Intent intent = getFinishIntent(imageUrlOrPathList);
                         startActivityForResult(intent, CREATE_FORM_REQUEST);
                     }

@@ -115,7 +115,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
     private View layoutContrast;
     private View layoutCrop;
     private View layoutRotate;
-    private ProgressDialog progressDialog;
+    protected ProgressDialog progressDialog;
     private TwoLineSeekBar brightnessSeekbar;
     private TwoLineSeekBar contrastSeekbar;
     private TwoLineSeekBar rotateSeekbar;

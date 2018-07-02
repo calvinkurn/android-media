@@ -42,7 +42,7 @@ public class UploadUseCase extends UseCase<UploadDomain> {
     private static final String PARAM_TIMESTAMP = "device_time";
 
     protected static final String HTTP = "http://";
-    private static final String UPLOAD_ATTACHMENT = "/upload/attachment";
+    private static final String UPLOAD_ATTACHMENT = "/upload/attachment/";
 
     protected GenerateHostUploadRepository generateHostUploadRepository;
 
