@@ -163,7 +163,8 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
         textInputViewPassenger.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(TrainPassengerPickerActivity.getCallingIntent(getActivity(), getHomepageViewModel().getTrainPassengerViewModel()),
+                startActivityForResult(TrainPassengerPickerActivity.getCallingIntent(getActivity(),
+                        getHomepageViewModel().getTrainPassengerViewModel()),
                         PASSENGER_REQUEST_CODE);
             }
         });

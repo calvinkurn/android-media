@@ -23,6 +23,8 @@ public interface TrainRepository {
 
     Observable<List<TrainStation>> getStationsByKeyword(String keyword);
 
+    Observable<TrainStation> getStationByStationCode(String stationCode);
+
     Observable<List<TrainStation>> getStationCitiesByKeyword(String keyword);
 
     Observable<List<AvailabilityKeySchedule>> getSchedule(Map<String, Object> mapParam, int scheduleVariant);
