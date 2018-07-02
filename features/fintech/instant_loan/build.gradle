@@ -15,11 +15,14 @@ dependencies {
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.cacheApi)
+    implementation project(rootProject.ext.libraries.commonNetwork)
+
 
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.seller)
 
     implementation rootProject.ext.networkDependencies.glide
+
 
     implementation rootProject.ext.miscDependencies.rxJavaComputation
     implementation rootProject.ext.miscDependencies.multiDex

@@ -18,6 +18,7 @@ import android.view.WindowManager;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
@@ -79,11 +80,12 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
     private void loadSection() {
 
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
-        if (remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SHOW_INSTANT_LOAN, true)) {
+        /*if (remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SHOW_INSTANT_LOAN, true)) {
             populateThreeTabItem();
         } else {
             populateTwoTabItem();
-        }
+        }*/
+        populateThreeTabItem();
         InstantLoanPagerAdapter instantLoanPagerAdapter =
                 new InstantLoanPagerAdapter(getSupportFragmentManager());
         instantLoanPagerAdapter.setData(instantLoanItemList);
@@ -136,6 +138,7 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        NetworkClient.init(this);
     }
 
     @Override
