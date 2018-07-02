@@ -1285,6 +1285,16 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     private void setChannelNotFoundView(int visibility){
         findViewById(R.id.card_retry).setVisibility(visibility);
+        findViewById(R.id.card_retry).findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = ((GroupChatModuleRouter) getApplicationContext())
+                        .getHomeIntent(v.getContext());
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
+            }
+        });
     }
 
     private void setToolbarPlain() {
