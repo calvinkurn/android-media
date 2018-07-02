@@ -29,6 +29,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -359,6 +360,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     public void showLoading() {
         loading.setVisibility(View.VISIBLE);
         main.setVisibility(View.GONE);
+        setChannelNotFoundView(View.GONE);
     }
 
     public void hideLoading() {
@@ -917,6 +919,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
         setToolbarParticipantCount(TextFormatter.format(totalParticipant));
         setVisibilityHeader(View.VISIBLE);
+        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
 
     }
 
@@ -1208,6 +1211,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     @Override
     public void onErrorEnterChannel(String errorMessage) {
         hideLoading();
+        Log.d("tev", "onErrorEnterChannel: ");
         NetworkErrorHelper.showEmptyState(this, rootView, errorMessage, new NetworkErrorHelper
                 .RetryClickedListener() {
             @Override
@@ -1250,25 +1254,53 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     @Override
     public void onChannelNotFound(String errorMessage) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.channel_not_found);
-        builder.setMessage(errorMessage);
-        builder.setPositiveButton(R.string.title_ok, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-                Intent intent = new Intent();
-                if (viewModel != null) {
-                    intent.putExtra(TOTAL_VIEW, viewModel.getTotalView());
-                    intent.putExtra(EXTRA_POSITION, viewModel.getChannelPosition());
-                }
-                setResult(ChannelActivity.RESULT_ERROR_ENTER_CHANNEL, intent);
-                finish();
-            }
-        });
-        AlertDialog dialog = builder.create();
-        dialog.setCancelable(false);
-        dialog.show();
+        Log.d("tev", "onChannelNotFound: ");
+//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//        builder.setTitle(R.string.channel_not_found);
+//        builder.setMessage(errorMessage);
+//        builder.setPositiveButton(R.string.title_ok, new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialogInterface, int i) {
+//                dialogInterface.dismiss();
+//                Intent intent = new Intent();
+//                if (viewModel != null) {
+//                    intent.putExtra(TOTAL_VIEW, viewModel.getTotalView());
+//                    intent.putExtra(EXTRA_POSITION, viewModel.getChannelPosition());
+//                }
+//                setResult(ChannelActivity.RESULT_ERROR_ENTER_CHANNEL, intent);
+//                finish();
+//            }
+//        });
+//        AlertDialog dialog = builder.create();
+//        dialog.setCancelable(false);
+//        dialog.show();
+        hideLoading();
+        setVisibilityHeader(View.VISIBLE);
+        setToolbarPlain();
+        setChannelNotFoundView(View.VISIBLE);
+        findViewById(R.id.tab).setVisibility(View.GONE);
+        findViewById(R.id.shadow_layer).setVisibility(View.GONE);
+
+    }
+
+    private void setChannelNotFoundView(int visibility){
+        findViewById(R.id.card_retry).setVisibility(visibility);
+    }
+
+    private void setToolbarPlain() {
+        toolbar.setTitle("GroupChat");
+        getSupportActionBar().setSubtitle(null);
+        toolbar.setTitleTextColor(getResources().getColor(R.color.black_70));
+        toolbar.getMenu().findItem(R.id.action_share).setVisible(false);
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_webview_back_button);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            toolbar.setElevation(10);
+            toolbar.setBackgroundResource(R.color.white);
+        } else {
+            toolbar.setBackgroundResource(R.drawable.bg_white_toolbar_drop_shadow);
+        }
+        toolbar.requestLayout();
     }
 
 
@@ -1385,12 +1417,14 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     @Override
     public void onChannelDeleted() {
+        Log.d("tev", "onChannelDeleted: ");
         onChannelNotFound(getString(R.string.channel_has_been_deleted));
 
     }
 
     @Override
     public void onChannelFrozen() {
+        Log.d("tev", "onChannelFrozen: ");
         onChannelNotFound(getString(R.string.channel_deactivated));
     }
 

@@ -3,6 +3,7 @@ package com.tokopedia.groupchat.chatroom.domain.usecase;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.sendbird.android.OpenChannel;
 import com.sendbird.android.SendBird;
@@ -68,6 +69,7 @@ public class LoginGroupChatUseCase {
                             public void onResult(final OpenChannel openChannel, SendBirdException e) {
                                 if (e != null && e.getCode() == GroupChatErrorHandler
                                         .CHANNEL_NOT_FOUND) {
+                                    Log.d("tev", "onChannelSendbirdError: ");
                                     listener.onChannelNotFound(GroupChatErrorHandler
                                             .getSendBirdErrorMessage(context, e, false));
                                     return;
