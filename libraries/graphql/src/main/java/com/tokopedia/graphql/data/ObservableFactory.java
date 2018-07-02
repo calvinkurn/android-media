@@ -2,6 +2,7 @@ package com.tokopedia.graphql.data;
 
 import android.support.annotation.NonNull;
 
+import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.graphql.CommonUtils;
 import com.tokopedia.graphql.GraphqlConstant;
@@ -27,15 +28,18 @@ public class ObservableFactory {
                     Map<Type, List<GraphqlError>> errors = new HashMap<>();
                     for (int i = 0; i < response.getOriginalResponse().size(); i++) {
                         try {
-                            //Lookup for data
-                            results.put(requests.get(i).getTypeOfT(),
-                                    CommonUtils.fromJson(response.getOriginalResponse().get(i).getAsJsonObject().get(GraphqlConstant.GqlApiKeys.DATA).toString(),
-                                            requests.get(i).getTypeOfT()));
-                            //Lookup for error
-                            errors.put(requests.get(i).getTypeOfT(),
-                                    CommonUtils.fromJson(response.getOriginalResponse().get(i).getAsJsonObject().get(GraphqlConstant.GqlApiKeys.ERROR).toString(),
-                                            new TypeToken<List<GraphqlError>>() {
-                                            }.getType()));
+                            JsonElement data = response.getOriginalResponse().get(i).getAsJsonObject().get(GraphqlConstant.GqlApiKeys.DATA);
+                            if (data != null && !data.isJsonNull()) {
+                                //Lookup for data
+                                results.put(requests.get(i).getTypeOfT(), CommonUtils.fromJson(data.toString(), requests.get(i).getTypeOfT()));
+                            }
+
+                            JsonElement error = response.getOriginalResponse().get(i).getAsJsonObject().get(GraphqlConstant.GqlApiKeys.ERROR);
+                            if (error != null && !error.isJsonNull()) {
+                                //Lookup for error
+                                errors.put(requests.get(i).getTypeOfT(), CommonUtils.fromJson(error.toString(), new TypeToken<List<GraphqlError>>() {
+                                }.getType()));
+                            }
                         } catch (Exception e) {
                             e.printStackTrace();
                             //Just to avoid any accidental data loss
