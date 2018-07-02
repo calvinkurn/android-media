@@ -53,7 +53,8 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
     public static final int SELECTED_VARIANT_RESULT = 99;
     public static final int SELECTED_VARIANT_RESULT_SKIP_TO_CART = 98;
     public static final int SELECTED_VARIANT_RESULT_STAY_IN_PDP = 97;
-    public static final int KILL_PDP_BACKGROUND = 97;
+    public static final int SELECTED_VARIANT_RESULT_CANCEL = 95;
+    public static final int KILL_PDP_BACKGROUND = 96;
     private static final String CRASHLYTIC_VARIANT_TAG = "CRASHLYTIC VARIANT";
 
     public static final int STATE_BUTTON_BUY = 1123;
@@ -568,6 +569,24 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
         } else if (productVariant.getVariant().get(level-1).getIdentifier().equals(IDENTIFIER_COLOUR)) {
             UnifyTracking.eventSelectColorVariant(option.getValue());
         }
+    }
+
+    @Override
+    public void onBackPressed(){
+        Child childSelected = getProductDatumSelected();
+        Intent intent;
+        if (childSelected!=null && childSelected.isIsBuyable() && productDetailData.getShopInfo().getShopStatus()==1) {
+            intent = generateExtraSelectedIntent();
+            intent.putExtra(KEY_STATE_RESULT_VARIANT, VariantActivity.SELECTED_VARIANT_RESULT_CANCEL);
+        } else {
+            intent = new Intent();
+            intent.putExtra(KEY_PRODUCT_DETAIL_DATA, productDetailData);
+            intent.putExtra(KEY_VARIANT_DATA, productVariant);
+            intent.putExtra(KEY_STATE_RESULT_VARIANT, VariantActivity.SELECTED_VARIANT_RESULT_CANCEL);
+        }
+        setResult(RESULT_OK, intent);
+        finish();
+        VariantActivity.this.overridePendingTransition(0,com.tokopedia.core.R.anim.push_down);
     }
 
 }

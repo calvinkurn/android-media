@@ -1235,8 +1235,10 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                                 case SELECTED_VARIANT_RESULT_STAY_IN_PDP:
                                     onProductBuySessionLogin(createProductCartPass(SOURCE_BUTTON_CART_VARIANT));
                                     break;
-                                default:
+                                case VariantActivity.KILL_PDP_BACKGROUND:
                                     getActivity().finish();
+                                    break;
+                                default:
                                     break;
                             }
                         } else {
