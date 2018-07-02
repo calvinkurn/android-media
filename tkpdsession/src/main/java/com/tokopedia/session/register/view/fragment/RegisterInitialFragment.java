@@ -55,6 +55,7 @@ import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
+import com.tokopedia.otp.tokocashotp.view.viewmodel.MethodItem;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.session.R;
 import com.tokopedia.session.WebViewLoginFragment;
@@ -62,6 +63,9 @@ import com.tokopedia.session.data.viewmodel.SecurityDomain;
 import com.tokopedia.session.google.GoogleSignInActivity;
 import com.tokopedia.session.login.loginemail.view.activity.ForbiddenActivity;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
+import com.tokopedia.session.login.loginphonenumber.view.activity.ChooseTokocashAccountActivity;
+import com.tokopedia.session.login.loginphonenumber.view.activity.NotConnectedTokocashActivity;
+import com.tokopedia.session.login.loginphonenumber.view.viewmodel.ChooseTokoCashAccountViewModel;
 import com.tokopedia.session.register.registerphonenumber.view.activity.AddNameActivity;
 import com.tokopedia.session.register.registerphonenumber.view.activity.RegisterPhoneNumberActivity;
 import com.tokopedia.session.register.view.activity.CreatePasswordActivity;
@@ -96,11 +100,15 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     private static final int REQUEST_VERIFY_PHONE = 105;
     private static final int REQUEST_WELCOME_PAGE = 106;
     private static final int REQUEST_ADD_NAME = 107;
+    private static final int REQUEST_VERIFY_PHONE_TOKOCASH = 108;
+    private static final int REQUEST_CHOOSE_ACCOUNT = 109;
+    private static final int REQUEST_NO_TOKOCASH_ACCOUNT = 110;
 
     private static final String FACEBOOK = "facebook";
     private static final String GPLUS = "gplus";
     private static final String PHONE_NUMBER = "phonenumber";
-    private static final String REMOTE_CONFIG_SHOW_REGISTER_PHONE_NUMBER = "mainapp_show_register_phone_number";
+    private static final String REMOTE_CONFIG_SHOW_REGISTER_PHONE_NUMBER =
+            "mainapp_show_register_phone_number";
     private static final String COLOR_WHITE = "#FFFFFF";
 
     public static final int TYPE_SQ_PHONE = 1;
@@ -172,7 +180,8 @@ public class RegisterInitialFragment extends BaseDaggerFragment
         setHasOptionsMenu(true);
         View view = inflater.inflate(R.layout.fragment_register_initial, parent, false);
         optionTitle = (TextView) view.findViewById(R.id.register_option_title);
-        partialRegisterInputView = (PartialRegisterInputView) view.findViewById(R.id.register_input_view);
+        partialRegisterInputView = (PartialRegisterInputView) view.findViewById(R.id
+                .register_input_view);
         registerContainer = (LinearLayout) view.findViewById(R.id.register_container);
         registerButton = (LoginTextView) view.findViewById(R.id.register);
         registerPhoneNumberButton = (LoginTextView) view.findViewById(R.id.register_phone_number);
@@ -197,7 +206,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
         menu.add(Menu.NONE, R.id.action_register, 0, "");
         MenuItem menuItem = menu.findItem(R.id.action_register);
         menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        if (getDraw() != null){
+        if (getDraw() != null) {
             menuItem.setIcon(getDraw());
         }
         super.onCreateOptionsMenu(menu, inflater);
@@ -235,7 +244,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
         registerPhoneNumberButton.setVisibility(View.GONE);
         partialRegisterInputView.setVisibility(View.GONE);
 
-        if (!GlobalConfig.isSellerApp()){
+        if (!GlobalConfig.isSellerApp()) {
             optionTitle.setText(R.string.register_option_title);
             optionTitle.setTypeface(Typeface.DEFAULT);
             optionTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
@@ -255,13 +264,14 @@ public class RegisterInitialFragment extends BaseDaggerFragment
             }
         });
 
-        if (GlobalConfig.isSellerApp()){
+        if (GlobalConfig.isSellerApp()) {
             registerButton.setVisibility(View.VISIBLE);
         } else {
             partialRegisterInputView.setVisibility(View.VISIBLE);
         }
         registerPhoneNumberButton.setColor(Color.WHITE);
-        registerPhoneNumberButton.setBorderColor(MethodChecker.getColor(getActivity(), R.color.black_38));
+        registerPhoneNumberButton.setBorderColor(MethodChecker.getColor(getActivity(), R.color
+                .black_38));
         registerPhoneNumberButton.setRoundCorner(10);
         registerPhoneNumberButton.setImageResource(R.drawable.ic_phone);
         registerPhoneNumberButton.setOnClickListener(new View.OnClickListener() {
@@ -272,7 +282,8 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                 startActivityForResult(intent, REQUEST_REGISTER_PHONE_NUMBER);
             }
         });
-        String sourceString = getActivity().getResources().getString(R.string.span_already_have_tokopedia_account);
+        String sourceString = getActivity().getResources().getString(R.string
+                .span_already_have_tokopedia_account);
 
         Spannable spannable = new SpannableString(sourceString);
 
@@ -288,7 +299,8 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                                           getActivity(), R.color.tkpd_main_green
                                           )
                                   );
-                                  ds.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
+                                  ds.setTypeface(Typeface.create("sans-serif-medium", Typeface
+                                          .NORMAL));
                               }
                           }
                 , sourceString.indexOf("Masuk")
@@ -309,7 +321,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void goToLoginPage(){
+    public void goToLoginPage() {
         Intent intent = LoginActivity.getCallingIntent(getActivity());
         startActivity(intent);
     }
@@ -322,20 +334,20 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void goToRegisterEmailPageWithEmail(String email){
+    public void goToRegisterEmailPageWithEmail(String email) {
         showProgressBar();
         Intent intent = RegisterEmailActivity.getCallingIntentWithEmail(getActivity(), email);
         startActivityForResult(intent, REQUEST_REGISTER_EMAIL);
     }
 
     @Override
-    public void goToVerificationPhoneRegister(String phone){
+    public void goToVerificationPhoneRegister(String phone) {
         Intent intent = VerificationActivity.getCallingIntent(
                 getActivity(),
                 phone,
-                com.tokopedia.otp.domain.interactor.RequestOtpUseCase.OTP_TYPE_REGISTER_PHONE_NUMBER,
+                RequestOtpUseCase.OTP_TYPE_REGISTER_PHONE_NUMBER,
                 true,
-                com.tokopedia.otp.domain.interactor.RequestOtpUseCase.MODE_SMS
+                RequestOtpUseCase.MODE_SMS
         );
         startActivityForResult(intent, REQUEST_VERIFY_PHONE);
     }
@@ -352,14 +364,17 @@ public class RegisterInitialFragment extends BaseDaggerFragment
         } else if (requestCode == REQUEST_REGISTER_EMAIL && resultCode == Activity.RESULT_OK) {
             getActivity().setResult(Activity.RESULT_OK);
             getActivity().finish();
-        }  else if (requestCode == REQUEST_REGISTER_PHONE_NUMBER && resultCode == Activity.RESULT_OK) {
+        } else if (requestCode == REQUEST_REGISTER_PHONE_NUMBER && resultCode == Activity
+                .RESULT_OK) {
             getActivity().setResult(Activity.RESULT_OK);
             getActivity().finish();
-        } else if (requestCode == REQUEST_REGISTER_EMAIL && resultCode == Activity.RESULT_CANCELED) {
+        } else if (requestCode == REQUEST_REGISTER_EMAIL && resultCode == Activity
+                .RESULT_CANCELED) {
             dismissProgressBar();
             getActivity().setResult(Activity.RESULT_CANCELED);
             sessionHandler.clearToken();
-        } else if (requestCode == REQUEST_REGISTER_PHONE_NUMBER && resultCode == Activity.RESULT_CANCELED) {
+        } else if (requestCode == REQUEST_REGISTER_PHONE_NUMBER && resultCode == Activity
+                .RESULT_CANCELED) {
             dismissProgressBar();
             getActivity().setResult(Activity.RESULT_CANCELED);
         } else if (requestCode == REQUEST_CREATE_PASSWORD && resultCode == Activity.RESULT_OK) {
@@ -367,17 +382,20 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
             getActivity().setResult(Activity.RESULT_OK);
             getActivity().finish();
-        } else if (requestCode == REQUEST_CREATE_PASSWORD && resultCode == Activity.RESULT_CANCELED) {
+        } else if (requestCode == REQUEST_CREATE_PASSWORD && resultCode == Activity
+                .RESULT_CANCELED) {
             dismissProgressBar();
             getActivity().setResult(Activity.RESULT_CANCELED);
         } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_OK) {
             getActivity().setResult(Activity.RESULT_OK);
             getActivity().finish();
-        } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_CANCELED) {
+        } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity
+                .RESULT_CANCELED) {
             dismissProgressBar();
             getActivity().setResult(Activity.RESULT_CANCELED);
         } else if (requestCode == REQUEST_VERIFY_PHONE && resultCode == Activity.RESULT_OK) {
-            startActivityForResult(AddNameActivity.newInstance(getActivity(), phoneNumber), REQUEST_ADD_NAME);
+            startActivityForResult(AddNameActivity.newInstance(getActivity(), phoneNumber),
+                    REQUEST_ADD_NAME);
         } else if (requestCode == REQUEST_WELCOME_PAGE) {
             if (resultCode == Activity.RESULT_OK) {
                 goToProfileCompletionPage();
@@ -385,6 +403,20 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                 getActivity().setResult(Activity.RESULT_OK);
                 getActivity().finish();
             }
+        } else if (requestCode == REQUEST_VERIFY_PHONE_TOKOCASH && resultCode == Activity
+                .RESULT_OK) {
+            ChooseTokoCashAccountViewModel chooseTokoCashAccountViewModel = getChooseAccountData
+                    (data);
+            if (chooseTokoCashAccountViewModel != null && !chooseTokoCashAccountViewModel
+                    .getListAccount().isEmpty()) {
+                goToChooseAccountPage(chooseTokoCashAccountViewModel);
+            } else {
+                goToNoTokocashAccountPage(phoneNumber);
+            }
+        } else if (requestCode == REQUEST_CHOOSE_ACCOUNT
+                && resultCode == Activity.RESULT_OK) {
+            getActivity().setResult(Activity.RESULT_OK);
+            getActivity().finish();
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
@@ -400,7 +432,8 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
     private void goToProfileCompletionPage() {
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(getActivity());
-        Intent parentIntent = ((TkpdCoreRouter) getActivity().getApplicationContext()).getHomeIntent(getActivity());
+        Intent parentIntent = ((TkpdCoreRouter) getActivity().getApplicationContext())
+                .getHomeIntent(getActivity());
         parentIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         Intent childIntent = new Intent(getActivity(), ProfileCompletionActivity.class);
         stackBuilder.addNextIntent(parentIntent);
@@ -449,7 +482,8 @@ public class RegisterInitialFragment extends BaseDaggerFragment
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 getResources().getDimensionPixelSize(R.dimen.btn_login_height));
-        int topMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, getResources().getDisplayMetrics());
+        int topMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10,
+                getResources().getDisplayMetrics());
 
         layoutParams.setMargins(0, topMargin, 0, 0);
 
@@ -459,16 +493,19 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                 LoginTextView loginTextView = new LoginTextView(getActivity()
                         , MethodChecker.getColor(getActivity(), R.color.white));
                 loginTextView.setText(item.getName());
-                loginTextView.setBorderColor(MethodChecker.getColor(getActivity(), R.color.black_38));
+                loginTextView.setBorderColor(MethodChecker.getColor(getActivity(), R.color
+                        .black_38));
                 loginTextView.setImage(item.getImage());
                 loginTextView.setRoundCorner(10);
 
                 setDiscoverOnClickListener(item, loginTextView);
 
                 if (registerContainer != null) {
-                    registerContainer.addView(loginTextView, registerContainer.getChildCount(), layoutParams);
+                    registerContainer.addView(loginTextView, registerContainer.getChildCount(),
+                            layoutParams);
                 }
-            } else if (!GlobalConfig.isSellerApp() && remoteConfig.getBoolean(REMOTE_CONFIG_SHOW_REGISTER_PHONE_NUMBER)) {
+            } else if (!GlobalConfig.isSellerApp() && remoteConfig.getBoolean
+                    (REMOTE_CONFIG_SHOW_REGISTER_PHONE_NUMBER)) {
 //                registerPhoneNumberButton.setVisibility(View.VISIBLE);
 //                registerPhoneNumberButton.setImage(item.getImage());
             }
@@ -513,7 +550,8 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                 com.tokopedia.core.analytics.AppEventTracking.GTMCacheValue.FACEBOOK);
 
         presenter.getFacebookCredential(this, callbackManager);
-        SessionTrackingUtils.registerPageClickFacebook(com.tokopedia.core.analytics.AppEventTracking.GTMCacheValue.FACEBOOK);
+        SessionTrackingUtils.registerPageClickFacebook(com.tokopedia.core.analytics
+                .AppEventTracking.GTMCacheValue.FACEBOOK);
 
     }
 
@@ -609,7 +647,8 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToSecurityQuestion(SecurityDomain securityDomain, String fullName, String email, String phone) {
+    public void onGoToSecurityQuestion(SecurityDomain securityDomain, String fullName, String
+            email, String phone) {
 
         Intent intent = VerificationActivity.getShowChooseVerificationMethodIntent(
                 getActivity(), RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION, phone, email);
@@ -663,7 +702,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
             public void onClick(View v) {
                 dialog.dismiss();
                 phoneNumber = phone;
-                goToVerificationPhoneRegister(phoneNumber);
+                goToVerifyAccountPage(phoneNumber);
             }
         });
         dialog.setBtnCancel(getString(R.string.already_registered_no));
@@ -674,6 +713,48 @@ public class RegisterInitialFragment extends BaseDaggerFragment
             }
         });
         dialog.show();
+    }
+
+    private void goToVerifyAccountPage(String phoneNumber) {
+        startActivityForResult(com.tokopedia.otp.tokocashotp.view.activity.VerificationActivity
+                        .getLoginTokoCashVerificationIntent(
+                getActivity(),
+                phoneNumber,
+                getListVerificationMethod(phoneNumber)),
+                REQUEST_VERIFY_PHONE_TOKOCASH);
+    }
+
+    private ArrayList<MethodItem> getListVerificationMethod(String phoneNumber) {
+        ArrayList<MethodItem> list = new ArrayList<>();
+        list.add(new MethodItem(
+                com.tokopedia.otp.tokocashotp.view.activity.VerificationActivity.TYPE_SMS,
+                R.drawable.ic_verification_sms,
+                MethodItem.getSmsMethodText(phoneNumber)
+        ));
+        list.add(new MethodItem(
+                com.tokopedia.otp.tokocashotp.view.activity.VerificationActivity.TYPE_PHONE_CALL,
+                R.drawable.ic_verification_call,
+                MethodItem.getCallMethodText(phoneNumber)
+        ));
+        return list;
+    }
+
+    private void goToNoTokocashAccountPage(String phoneNumber) {
+        startActivityForResult(NotConnectedTokocashActivity.getNoTokocashAccountIntent(
+                getActivity(),
+                phoneNumber),
+                REQUEST_NO_TOKOCASH_ACCOUNT);
+    }
+
+    private void goToChooseAccountPage(ChooseTokoCashAccountViewModel data) {
+        startActivityForResult(ChooseTokocashAccountActivity.getCallingIntent(
+                getActivity(),
+                data),
+                REQUEST_CHOOSE_ACCOUNT);
+    }
+
+    private ChooseTokoCashAccountViewModel getChooseAccountData(Intent data) {
+        return data.getParcelableExtra(ChooseTokocashAccountActivity.ARGS_DATA);
     }
 
     @Override
@@ -705,7 +786,8 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     }
 
     @Override
-    public GetFacebookCredentialSubscriber.GetFacebookCredentialListener getFacebookCredentialListener() {
+    public GetFacebookCredentialSubscriber.GetFacebookCredentialListener
+    getFacebookCredentialListener() {
         return new GetFacebookCredentialSubscriber.GetFacebookCredentialListener() {
             @Override
             public void onErrorGetFacebookCredential(String errorMessage) {
