@@ -22,6 +22,17 @@ class VideoMapper {
         return videoViewModelList
     }
 
+    fun transformDataToVideoViewModel(youtubeVideoModel: YoutubeVideoModel): VideoViewModel {
+        val videoViewModel = VideoViewModel()
+        videoViewModel.videoID = youtubeVideoModel.id
+        videoViewModel.snippetTitle = youtubeVideoModel.title
+        videoViewModel.snippetDescription = youtubeVideoModel.description
+        videoViewModel.thumbnailUrl = youtubeVideoModel.thumbnailUrl
+        videoViewModel.snippetChannel = youtubeVideoModel.channel
+        videoViewModel.duration = youtubeVideoModel.duration
+        return videoViewModel
+    }
+
     fun transformVideoRecommendationViewModelToVideoViewModel(videoRecommendationViewModel : VideoRecommendationViewModel): VideoViewModel {
         val videoViewModel = VideoViewModel()
         videoViewModel.videoID = videoRecommendationViewModel.videoID

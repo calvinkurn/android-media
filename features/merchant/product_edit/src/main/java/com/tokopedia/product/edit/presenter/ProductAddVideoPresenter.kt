@@ -1,6 +1,5 @@
 package com.tokopedia.product.edit.presenter
 
-import android.support.v7.app.AppCompatActivity
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -10,7 +9,6 @@ import com.tokopedia.networklib.data.model.RestResponse
 import com.tokopedia.product.edit.R
 import com.tokopedia.product.edit.domain.GetYoutubeVideoDetailUseCase
 import com.tokopedia.product.edit.domain.GetYoutubeVideoListDetailUseCase
-import com.tokopedia.product.edit.fragment.ProductAddVideoFragment
 import com.tokopedia.product.edit.listener.ProductAddVideoView
 import com.tokopedia.product.edit.mapper.VideoMapper
 import com.tokopedia.product.edit.model.videorecommendation.VideoRecommendationData
@@ -19,7 +17,7 @@ import com.tokopedia.product.edit.model.youtube.YoutubeVideoModel
 import com.tokopedia.product.edit.viewmodel.EmptyVideoViewModel
 import com.tokopedia.product.edit.viewmodel.ProductAddVideoBaseViewModel
 import com.tokopedia.product.edit.viewmodel.SectionVideoRecommendationViewModel
-import com.tokopedia.product.edit.viewmodel.TitleVideoChoosenViewModel
+import com.tokopedia.product.edit.viewmodel.TitleVideoChosenViewModel
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 import java.lang.reflect.Type
@@ -29,6 +27,7 @@ import java.util.HashMap
 class ProductAddVideoPresenter : BaseDaggerPresenter<ProductAddVideoView>() {
 
     private val graphqlUseCase: GraphqlUseCase = GraphqlUseCase()
+    private val getYoutubeVideoDetailUseCase: GetYoutubeVideoDetailUseCase by lazy { GetYoutubeVideoDetailUseCase(view.contextView) }
     private val getYoutubeVideoListDetailUseCase: GetYoutubeVideoListDetailUseCase by lazy { GetYoutubeVideoListDetailUseCase(view.contextView) }
     private val mapper = VideoMapper()
 
@@ -67,8 +66,12 @@ class ProductAddVideoPresenter : BaseDaggerPresenter<ProductAddVideoView>() {
         })
     }
 
-    fun getYoutubaDataVideoChoosen(videoIDs: ArrayList<String>) {
-        getYoutubeVideoData(videoIDs, VIDEO_CHOOSEN)
+    fun getYoutubaDataVideoChosen(videoIDs: ArrayList<String>) {
+        getYoutubeVideoData(videoIDs, VIDEO_CHOSEN)
+    }
+
+    fun getYoutubaDataVideoUrl(videoID: String) {
+        getYoutubeVideoData(videoID)
     }
 
     fun getYoutubeVideoData(youtubeVideoIdList: ArrayList<String>, from: Int) {
@@ -89,12 +92,12 @@ class ProductAddVideoPresenter : BaseDaggerPresenter<ProductAddVideoView>() {
                     for (map in maps) {
                         youtubeVideoModelArrayList.add(convertToModel(map))
                     }
-                    if(from == VIDEO_CHOOSEN) {
+                    if(from == VIDEO_CHOSEN) {
                         val productAddVideoBaseViewModels : ArrayList<ProductAddVideoBaseViewModel> = ArrayList()
                         if(!youtubeVideoModelArrayList.isEmpty()){
                             productAddVideoBaseViewModels.addAll(mapper.transformDataToVideoViewModel(youtubeVideoModelArrayList))
-                            val titleVideoChoosenViewModel = TitleVideoChoosenViewModel()
-                            productAddVideoBaseViewModels.add(0, titleVideoChoosenViewModel)
+                            val titleVideoChosenViewModel = TitleVideoChosenViewModel()
+                            productAddVideoBaseViewModels.add(0, titleVideoChosenViewModel)
                         } else {
                             val emptyVideoViewModel = EmptyVideoViewModel()
                             productAddVideoBaseViewModels.add(0, emptyVideoViewModel)
@@ -102,10 +105,30 @@ class ProductAddVideoPresenter : BaseDaggerPresenter<ProductAddVideoView>() {
                         val sectionVideoRecommendationViewModel = SectionVideoRecommendationViewModel()
                         productAddVideoBaseViewModels.add(0, sectionVideoRecommendationViewModel)
                         view.renderListData(productAddVideoBaseViewModels)
-                        view.onSuccessGetYoutubeDataVideoChoosen(youtubeVideoModelArrayList)
+                        view.onSuccessGetYoutubeDataVideoChosen(youtubeVideoModelArrayList)
                     }
                     else
                         view.onSuccessGetYoutubeDataVideoRecommendation(youtubeVideoModelArrayList)
+                }
+            }
+        })
+    }
+
+    fun getYoutubeVideoData(youtubeVideoId: String) {
+        getYoutubeVideoDetailUseCase.execute(GetYoutubeVideoDetailUseCase.generateRequestParam(youtubeVideoId), object : Subscriber<Map<Type, RestResponse>>() {
+            override fun onCompleted() {
+
+            }
+
+            override fun onError(e: Throwable) {
+                if (isViewAttached) {
+                    view.onErrorGetVideoData(e)
+                }
+            }
+
+            override fun onNext(map: Map<Type, RestResponse>) {
+                if (isViewAttached) {
+                    view.onSuccessGetYoutubeDataVideoUrl(convertToModel(map))
                 }
             }
         })
@@ -121,7 +144,7 @@ class ProductAddVideoPresenter : BaseDaggerPresenter<ProductAddVideoView>() {
         const val QUERY = "query"
         const val SIZE = "size"
 
-        const val VIDEO_CHOOSEN = 0
+        const val VIDEO_CHOSEN = 0
         const val VIDEO_RECOMMENDATION_FEATURED = 1
     }
 }

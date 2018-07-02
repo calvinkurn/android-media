@@ -27,7 +27,7 @@
                 android:layout_height="@dimen/dp_25"
                 android:background="@drawable/rounded_grey_check" />
             <ImageView
-                android:id="@+id/image_choosen"
+                android:id="@+id/image_chosen"
                 android:layout_width="@dimen/dp_25"
                 android:layout_height="@dimen/dp_25"
                 app:srcCompat="@drawable/ic_add_video_featured"

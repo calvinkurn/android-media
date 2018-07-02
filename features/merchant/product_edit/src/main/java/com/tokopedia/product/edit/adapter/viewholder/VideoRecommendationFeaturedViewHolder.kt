@@ -14,7 +14,7 @@ class VideoRecommendationFeaturedViewHolder(itemView: View,
     var imageThumbnail: ImageView = itemView.findViewById(R.id.image_thumbnail)
     var textTitle: TextView = itemView.findViewById(R.id.text_title)
     var textChannel: TextView = itemView.findViewById(R.id.text_channel)
-    var imageChoosen: ImageView = itemView.findViewById(R.id.image_choosen)
+    var imageChosen: ImageView = itemView.findViewById(R.id.image_chosen)
 
     lateinit var currentVideoRecommendationViewModel : VideoRecommendationViewModel
 

@@ -4,11 +4,11 @@ import android.support.annotation.LayoutRes
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.edit.R
-import com.tokopedia.product.edit.viewmodel.TitleVideoChoosenViewModel
+import com.tokopedia.product.edit.viewmodel.TitleVideoChosenViewModel
 
-class TitleVideoChoosenViewHolder(itemView: View) : AbstractViewHolder<TitleVideoChoosenViewModel>(itemView) {
+class TitleVideoChosenViewHolder(itemView: View) : AbstractViewHolder<TitleVideoChosenViewModel>(itemView) {
 
-    override fun bind(titleVideoChoosenViewModel: TitleVideoChoosenViewModel) {
+    override fun bind(titleVideoChoosenViewModel: TitleVideoChosenViewModel) {
     }
 
     companion object {

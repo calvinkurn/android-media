@@ -89,19 +89,19 @@ class SectionVideoRecommendationViewHolder(itemView: View,
         productAddVideoRecommendationFeaturedAdapter.replaceData(videoRecommendationFeaturedList)
     }
 
-    override fun onVideoChoosenAdded(videoRecommendationViewModel: VideoRecommendationViewModel) {
+    override fun onVideoChosenAdded(videoRecommendationViewModel: VideoRecommendationViewModel) {
         for(videoRecommendationFeatured in videoRecommendationFeaturedList){
             if(videoRecommendationFeatured.videoID == videoRecommendationViewModel.videoID){
-                videoRecommendationFeatured.choosen = true
+                videoRecommendationFeatured.chosen = true
             }
         }
         productAddVideoRecommendationFeaturedAdapter.notifyDataSetChanged()
     }
 
-    override fun onVideoChoosenDeleted(videoViewModel : VideoViewModel) {
+    override fun onVideoChosenDeleted(videoViewModel : VideoViewModel) {
         for(videoRecommendationFeatured in videoRecommendationFeaturedList){
             if(videoRecommendationFeatured.videoID == videoViewModel.videoID){
-                videoRecommendationFeatured.choosen = false
+                videoRecommendationFeatured.chosen = false
             }
         }
         productAddVideoRecommendationFeaturedAdapter.notifyDataSetChanged()

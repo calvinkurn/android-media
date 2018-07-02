@@ -68,7 +68,7 @@ class ProductAddVideoRecommendationFragment : BaseListFragment<ProductAddVideoRe
         for(videoID in videoIDs){
             for(videoRecommendationViewModel in videoRecommendationViewModelList){
                 if(videoRecommendationViewModel.videoID == videoID){
-                    videoRecommendationViewModel.choosen = true
+                    videoRecommendationViewModel.chosen = true
                 }
             }
         }

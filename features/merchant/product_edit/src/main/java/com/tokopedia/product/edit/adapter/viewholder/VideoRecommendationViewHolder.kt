@@ -15,13 +15,13 @@ class VideoRecommendationViewHolder(itemView: View) : AbstractViewHolder<VideoRe
     private var imageThumbnail: ImageView = itemView.findViewById(R.id.image_thumbnail)
     private var textTitle: TextView = itemView.findViewById(R.id.text_title)
     private var textChannel: TextView = itemView.findViewById(R.id.text_channel)
-    private var checkboxChoosen: CheckBox = itemView.findViewById(R.id.checkbox_choosen)
+    private var checkboxChosen: CheckBox = itemView.findViewById(R.id.checkbox_chosen)
 
     override fun bind(videoRecommendationViewModel: VideoRecommendationViewModel) {
         textTitle.text = videoRecommendationViewModel.snippetTitle
         textChannel.text = videoRecommendationViewModel.snippetChannel
         ImageHandler.loadImageThumbs(imageThumbnail.context, imageThumbnail, videoRecommendationViewModel.thumbnailUrl)
-        checkboxChoosen.isChecked = videoRecommendationViewModel.choosen
+        checkboxChosen.isChecked = videoRecommendationViewModel.chosen
     }
 
     companion object {

@@ -14,7 +14,7 @@ class VideoRecommendationViewModel : Visitable<ProductAddVideoRecommendationAdap
     var width: Int = 0
     var height: Int = 0
     var duration: String? = null
-    var choosen: Boolean = false
+    var chosen: Boolean = false
 
     override fun type(typeFactory: ProductAddVideoRecommendationAdapterTypeFactory): Int {
         return typeFactory.type(this)

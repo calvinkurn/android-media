@@ -16,10 +16,10 @@ class ProductAddVideoRecommendationFeaturedAdapter(var videoRecommendationFeatur
         holder.textTitle.text = videoRecommendationFeatured[position].snippetTitle
         holder.textChannel.text = videoRecommendationFeatured[position].snippetChannel
         ImageHandler.loadImageThumbs(holder.imageThumbnail.context, holder.imageThumbnail, videoRecommendationFeatured[position].thumbnailUrl)
-        if(videoRecommendationFeatured[position].choosen){
-            holder.imageChoosen.setImageResource(R.drawable.ic_check_video_featured)
+        if(videoRecommendationFeatured[position].chosen){
+            holder.imageChosen.setImageResource(R.drawable.ic_check_video_featured)
         } else {
-            holder.imageChoosen.setImageResource(R.drawable.ic_add_video_featured)
+            holder.imageChosen.setImageResource(R.drawable.ic_add_video_featured)
         }
         holder.currentVideoRecommendationViewModel = videoRecommendationFeatured[position]
     }
