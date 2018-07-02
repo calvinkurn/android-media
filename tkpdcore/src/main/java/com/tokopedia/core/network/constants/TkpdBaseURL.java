@@ -735,13 +735,11 @@ public class TkpdBaseURL {
 
     public static class ContactUs {
         public static final String URL_BASE = BASE_DOMAIN + "contact-us/";
-        public static final String WEB_BASE = WEB_DOMAIN + "contact-us/";
         public static final String PATH_GET_SOLUTION = "ajax/solution/{id}";
         public static final String PATH_CREATE_STEP_1 = "ajax/create/step/1";
         public static final String PATH_CREATE_STEP_2 = "ajax/create/step/2";
         public static final String URL_HELP = MOBILE_DOMAIN + "bantuan/";
         public static final String PATH_COMMENT_RATING = "ws/contact-us/rating";
-        public static final String PATH_FEEDBACK = "ws/feedback";
     }
 
     public static class TokoCash {

@@ -1,8 +1,6 @@
 package com.tokopedia.nps.data.net;
 
-import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.network.data.model.response.DataResponse;
-import com.tokopedia.nps.data.model.FeedbackEntity;
+import com.tokopedia.network.constant.TkpdBaseURL;
 
 import retrofit2.Response;
 import retrofit2.http.Field;

@@ -2,9 +2,9 @@ package com.tokopedia.nps.data.net;
 
 import android.content.Context;
 
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.network.CommonNetwork;
 import com.tokopedia.network.NetworkRouter;
+import com.tokopedia.network.constant.TkpdBaseURL;
 import com.tokopedia.user.session.UserSession;
 
 import retrofit2.Retrofit;
