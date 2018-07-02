@@ -1,4 +1,4 @@
-package com.tokopedia.nps;
+package com.tokopedia.nps.presentation.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +9,9 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.nps.R;
+import com.tokopedia.nps.presentation.view.dialog.AdvancedAppRatingDialog;
+import com.tokopedia.nps.presentation.view.dialog.AppRatingDialog;
 
 /**
  * Created by meta on 26/03/18.
@@ -47,14 +50,11 @@ public class FeedbackThankPageActivity extends BaseSimpleActivity {
         tvDesc.setText(message);
         btnClose.setText(action);
 
-        btnClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (rating > AdvancedAppRatingDialog.MIN_RATING) {
-                    AppRatingDialog.openPlayStore(FeedbackThankPageActivity.this);
-                }
-                FeedbackThankPageActivity.this.finish();
+        btnClose.setOnClickListener(v -> {
+            if (rating > AdvancedAppRatingDialog.MIN_RATING) {
+                AppRatingDialog.openPlayStore(FeedbackThankPageActivity.this);
             }
+            FeedbackThankPageActivity.this.finish();
         });
     }
 

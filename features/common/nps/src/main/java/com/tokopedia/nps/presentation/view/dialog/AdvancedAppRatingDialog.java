@@ -1,4 +1,4 @@
-package com.tokopedia.nps;
+package com.tokopedia.nps.presentation.view.dialog;
 
 import android.app.Activity;
 import android.support.v7.app.AlertDialog;
@@ -8,6 +8,10 @@ import android.widget.Button;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.nps.R;
+import com.tokopedia.nps.presentation.widget.AppRatingView;
+import com.tokopedia.nps.presentation.view.activity.FeedbackActivity;
+import com.tokopedia.nps.presentation.view.activity.FeedbackThankPageActivity;
 
 import java.util.concurrent.TimeUnit;
 
@@ -67,7 +71,7 @@ public class AdvancedAppRatingDialog extends AppRatingDialog {
                 if(appRatingView.getRating() > MIN_RATING) {
                     FeedbackThankPageActivity.startActivity(activity, appRatingView.getRating());
                 } else {
-                    FeedbackActivity.startActivity(activity, appRatingView.getRating());
+                    FeedbackActivity.start(activity, appRatingView.getRating());
                 }
             }
         });
@@ -123,7 +127,7 @@ public class AdvancedAppRatingDialog extends AppRatingDialog {
                  return rating == null || rating <= MIN_RATING;
             }
         }
-        return false;
+        return true;
     }
 
     @Override

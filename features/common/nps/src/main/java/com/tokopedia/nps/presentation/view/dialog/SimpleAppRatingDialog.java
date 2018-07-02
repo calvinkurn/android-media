@@ -1,4 +1,4 @@
-package com.tokopedia.nps;
+package com.tokopedia.nps.presentation.view.dialog;
 
 import android.app.Activity;
 import android.content.DialogInterface;
@@ -8,6 +8,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.nps.R;
 
 import java.util.concurrent.TimeUnit;
 

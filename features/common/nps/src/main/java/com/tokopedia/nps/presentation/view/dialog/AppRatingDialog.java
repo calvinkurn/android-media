@@ -1,4 +1,4 @@
-package com.tokopedia.nps;
+package com.tokopedia.nps.presentation.view.dialog;
 
 import android.app.Activity;
 import android.content.Context;

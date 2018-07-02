@@ -17,7 +17,7 @@
         android:textColor="@color/black_87"
         android:layout_centerHorizontal="true"/>
 
-    <com.tokopedia.nps.AppRatingView
+    <com.tokopedia.nps.presentation.widget.AppRatingView
         android:id="@+id/view_app_rating"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
