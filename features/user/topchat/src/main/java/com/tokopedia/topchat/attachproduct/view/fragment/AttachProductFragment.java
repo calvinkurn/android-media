@@ -212,9 +212,15 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
     @Override
     protected Visitable getEmptyDataViewModel() {
         EmptyResultViewModel emptyResultViewModel = new EmptyResultViewModel();
-        emptyResultViewModel.setContent(getString(R.string.string_attach_product_empty_product));
-        emptyResultViewModel.setIconRes(R.drawable.bg_attach_product_empty_result);
-        if(activityContract.isSeller()) {
+        if(TextUtils.isEmpty(searchInputView.getSearchText())) {
+            emptyResultViewModel.setContent(getString(R.string.string_attach_product_empty_product));
+            emptyResultViewModel.setIconRes(R.drawable.bg_attach_product_empty_result);
+        }
+        else {
+            emptyResultViewModel.setContent(getString(R.string.string_attach_product_search_not_found));
+            emptyResultViewModel.setIconRes(R.drawable.ic_empty_search);
+        }
+        if (activityContract.isSeller()) {
             emptyResultViewModel.setButtonTitleRes(R.string.string_attach_product_add_product_now);
             emptyResultViewModel.setCallback(new EmptyResultViewHolder.Callback() {
                 @Override
@@ -226,6 +232,7 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
                 }
             });
         }
+
         return emptyResultViewModel;
     }
 
