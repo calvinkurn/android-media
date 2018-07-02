@@ -16,9 +16,9 @@ public class Shop implements Parcelable {
     @SerializedName("url")
     String Url;
     @SerializedName("gold_merchant")
-    Boolean IsGoldMerchant;
+    boolean IsGoldMerchant;
     @SerializedName("official_store")
-    Boolean isOfficial;
+    boolean isOfficial;
     @SerializedName("location")
     String Location;
     @SerializedName("status")
@@ -50,12 +50,20 @@ public class Shop implements Parcelable {
         Url = url;
     }
 
-    public Boolean getIsGoldMerchant() {
+    public boolean isGoldMerchant() {
         return IsGoldMerchant;
     }
 
-    public void setIsGoldMerchant(Boolean isGoldMerchant) {
-        IsGoldMerchant = isGoldMerchant;
+    public void setGoldMerchant(boolean goldMerchant) {
+        IsGoldMerchant = goldMerchant;
+    }
+
+    public boolean isOfficial() {
+        return isOfficial;
+    }
+
+    public void setOfficial(boolean official) {
+        isOfficial = official;
     }
 
     public String getLocation() {
@@ -82,12 +90,7 @@ public class Shop implements Parcelable {
         LuckyMerchant = luckyMerchant;
     }
 
-    public Boolean getOfficial() {
-        return isOfficial;
-    }
-
-    public void setOfficial(Boolean official) {
-        isOfficial = official;
+    public Shop() {
     }
 
     @Override
@@ -107,9 +110,6 @@ public class Shop implements Parcelable {
         dest.writeString(this.LuckyMerchant);
     }
 
-    public Shop() {
-    }
-
     protected Shop(Parcel in) {
         this.Id = in.readString();
         this.Name = in.readString();
@@ -121,7 +121,7 @@ public class Shop implements Parcelable {
         this.LuckyMerchant = in.readString();
     }
 
-    public static final Parcelable.Creator<Shop> CREATOR = new Parcelable.Creator<Shop>() {
+    public static final Creator<Shop> CREATOR = new Creator<Shop>() {
         @Override
         public Shop createFromParcel(Parcel source) {
             return new Shop(source);

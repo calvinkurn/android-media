@@ -24,6 +24,8 @@ import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.SnackbarManager;
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
@@ -31,8 +33,9 @@ import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.entity.wishlist.Wishlist;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
-import com.tokopedia.shop.page.view.activity.ShopPageActivity;
+import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.RecyclerViewItem;
@@ -48,6 +51,9 @@ import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsAddToCart;
+import com.tokopedia.transactionanalytics.EnhancedECommerceCartMapData;
+import com.tokopedia.transactionanalytics.EnhancedECommerceProductCartMapData;
 
 import java.util.List;
 
@@ -59,6 +65,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
         WishListProductAdapter.OnWishlistActionButtonClicked {
 
     public static final String FRAGMENT_TAG = "WishListFragment";
+    private CheckoutAnalyticsAddToCart checkoutAnalyticsAddToCart;
 
     public WishListFragment() {
     }
@@ -146,10 +153,18 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     }
 
     private void initView(View view) {
+        checkoutAnalyticsAddToCart = new CheckoutAnalyticsAddToCart(getAnalyticTracker());
         swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
         recyclerView = view.findViewById(R.id.recycler_view);
         progressBar = view.findViewById(R.id.progress_bar);
         searchEditText = view.findViewById(R.id.wishlist_search_edittext);
+    }
+
+    private AnalyticTracker getAnalyticTracker() {
+        if (getActivity().getApplication() instanceof AbstractionRouter) {
+            return ((AbstractionRouter) getActivity().getApplication()).getAnalyticTracker();
+        }
+        return null;
     }
 
     private void loadWishlistData() {
@@ -212,6 +227,42 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     public void clearSearchView() {
         searchEditText.setQuery("", false);
         searchEditText.clearFocus();
+    }
+
+    @Override
+    public void sendAddToCartAnalytics(Wishlist dataDetail, AddToCartResult addToCartResult) {
+        EnhancedECommerceProductCartMapData enhancedECommerceProductCartMapData =
+                new EnhancedECommerceProductCartMapData();
+        enhancedECommerceProductCartMapData.setProductName(dataDetail.getName());
+        enhancedECommerceProductCartMapData.setProductID(String.valueOf(dataDetail.getId()));
+        enhancedECommerceProductCartMapData.setPrice(String.valueOf(dataDetail.getPrice()));
+        enhancedECommerceProductCartMapData.setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
+        enhancedECommerceProductCartMapData.setCartId(addToCartResult.getCartId());
+        enhancedECommerceProductCartMapData.setCategory(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
+        enhancedECommerceProductCartMapData.setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
+        enhancedECommerceProductCartMapData.setQty(String.valueOf(dataDetail.getMinimumOrder()));
+        enhancedECommerceProductCartMapData.setShopId(dataDetail.getShop().getId());
+        enhancedECommerceProductCartMapData.setShopType(generateShopType(dataDetail.getShop()));
+        enhancedECommerceProductCartMapData.setShopName(dataDetail.getShop().getName());
+        enhancedECommerceProductCartMapData.setCategoryId(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
+        enhancedECommerceProductCartMapData.setDimension38(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
+        enhancedECommerceProductCartMapData.setAttribution(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
+        enhancedECommerceProductCartMapData.setDimension40(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
+        enhancedECommerceProductCartMapData.setListName(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
+        EnhancedECommerceCartMapData enhancedECommerceCartMapData = new EnhancedECommerceCartMapData();
+        enhancedECommerceCartMapData.addProduct(enhancedECommerceProductCartMapData.getProduct());
+        enhancedECommerceCartMapData.setCurrencyCode("IDR");
+        enhancedECommerceCartMapData.setAction(EnhancedECommerceCartMapData.ADD_ACTION);
+        checkoutAnalyticsAddToCart.enhancedECommerceAddToCart(
+                enhancedECommerceCartMapData.getCartMap(), dataDetail.getName());
+    }
+
+    private String generateShopType(com.tokopedia.core.network.entity.wishlist.Shop shop) {
+        if (shop.isOfficial())
+            return "official_store";
+        else if (shop.isGoldMerchant())
+            return "gold_merchant";
+        else return "reguler";
     }
 
     @Override

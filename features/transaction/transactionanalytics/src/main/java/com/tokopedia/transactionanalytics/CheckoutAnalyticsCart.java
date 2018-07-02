@@ -1,5 +1,7 @@
 package com.tokopedia.transactionanalytics;
 
+import android.util.Log;
+
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 
@@ -208,72 +210,72 @@ public class CheckoutAnalyticsCart extends CheckoutAnalytics {
     }
 
     public void enhanceECommerceCartClickHapusFromClickHapus(Map<String, Object> cartMap) {
-        analyticTracker.sendEnhancedEcommerce(
-                DataLayer.mapOf("event", EventName.REMOVE_FORM_CART,
-                        "eventCategory", EventCategory.CART,
-                        "eventAction", ConstantTransactionAnalytics.EventAction.CLICK_HAPUS_FROM_CLICK_HAPUS,
-                        "eventLabel", "",
-                        "ecommerce", cartMap)
-        );
+        Map<String, Object> dataLayer = DataLayer.mapOf("event", EventName.REMOVE_FORM_CART,
+                "eventCategory", EventCategory.CART,
+                "eventAction", ConstantTransactionAnalytics.EventAction.CLICK_HAPUS_FROM_CLICK_HAPUS,
+                "eventLabel", "",
+                "ecommerce", cartMap);
+        Log.d("EE remove cart", dataLayer.toString());
+        analyticTracker.sendEnhancedEcommerce(dataLayer);
     }
 
     public void enhanceECommerceCartClickHapusDanTambahWishlistFromClickHapus(Map<String, Object> cartMap) {
-        analyticTracker.sendEnhancedEcommerce(
-                DataLayer.mapOf("event", EventName.REMOVE_FORM_CART,
-                        "eventCategory", EventCategory.CART,
-                        "eventAction", ConstantTransactionAnalytics.EventAction.CLICK_HAPUS_DAN_TAMBAH_WISHLIST_FROM_CLICK_HAPUS,
-                        "eventLabel", "",
-                        "ecommerce", cartMap)
-        );
+        Map<String, Object> dataLayer = DataLayer.mapOf("event", EventName.REMOVE_FORM_CART,
+                "eventCategory", EventCategory.CART,
+                "eventAction", ConstantTransactionAnalytics.EventAction.CLICK_HAPUS_DAN_TAMBAH_WISHLIST_FROM_CLICK_HAPUS,
+                "eventLabel", "",
+                "ecommerce", cartMap);
+        Log.d("EE remove cart", dataLayer.toString());
+        analyticTracker.sendEnhancedEcommerce(dataLayer);
     }
 
     public void enhancedECommerceRemoveCartAddWishList(Map<String, Object> cartMap) {
-        analyticTracker.sendEnhancedEcommerce(
-                DataLayer.mapOf("event", EventName.REMOVE_FORM_CART,
-                        "eventCategory", EventCategory.CART,
-                        "eventAction", ConstantTransactionAnalytics.EventAction.CLICK_HAPUS_DAN_TAMBAH_WISHLIST_FROM_TRASH_BIN,
-                        "eventLabel", "",
-                        "ecommerce", cartMap)
-        );
+        Map<String, Object> dataLayer = DataLayer.mapOf("event", EventName.REMOVE_FORM_CART,
+                "eventCategory", EventCategory.CART,
+                "eventAction", ConstantTransactionAnalytics.EventAction.CLICK_HAPUS_DAN_TAMBAH_WISHLIST_FROM_TRASH_BIN,
+                "eventLabel", "",
+                "ecommerce", cartMap);
+        Log.d("EE remove cart", dataLayer.toString());
+        analyticTracker.sendEnhancedEcommerce(dataLayer);
     }
 
     public void enhancedECommerceRemoveCartNotWishList(Map<String, Object> cartMap) {
-        analyticTracker.sendEnhancedEcommerce(
-                DataLayer.mapOf("event", EventName.REMOVE_FORM_CART,
-                        "eventCategory", EventCategory.CART,
-                        "eventAction", ConstantTransactionAnalytics.EventAction.CLICK_HAPUS_FROM_TRASH_BIN,
-                        "eventLabel", "",
-                        "ecommerce", cartMap)
-        );
+        Map<String, Object> dataLayer = DataLayer.mapOf("event", EventName.REMOVE_FORM_CART,
+                "eventCategory", EventCategory.CART,
+                "eventAction", ConstantTransactionAnalytics.EventAction.CLICK_HAPUS_FROM_TRASH_BIN,
+                "eventLabel", "",
+                "ecommerce", cartMap);
+        Log.d("EE remove cart", dataLayer.toString());
+        analyticTracker.sendEnhancedEcommerce(dataLayer);
     }
 
     public void enhancedECommerceCartHapusProdukBerkendala(Map<String, Object> cartMap) {
-        analyticTracker.sendEnhancedEcommerce(
-                DataLayer.mapOf("event", EventName.REMOVE_FORM_CART,
-                        "eventCategory", EventCategory.CART,
-                        "eventAction", ConstantTransactionAnalytics.EventAction.CLICK_HAPUS_PRODUK_BERKENDALA,
-                        "eventLabel", "",
-                        "ecommerce", cartMap)
-        );
+        Map<String, Object> dataLayer = DataLayer.mapOf("event", EventName.REMOVE_FORM_CART,
+                "eventCategory", EventCategory.CART,
+                "eventAction", ConstantTransactionAnalytics.EventAction.CLICK_HAPUS_PRODUK_BERKENDALA,
+                "eventLabel", "",
+                "ecommerce", cartMap);
+        Log.d("EE remove cart", dataLayer.toString());
+        analyticTracker.sendEnhancedEcommerce(dataLayer);
     }
 
     public void enhancedECommerceCartHapusDanTambahWishlistFromHapusProdukBerkendala(Map<String, Object> cartMap) {
-        analyticTracker.sendEnhancedEcommerce(
-                DataLayer.mapOf("event", EventName.REMOVE_FORM_CART,
-                        "eventCategory", EventCategory.CART,
-                        "eventAction", ConstantTransactionAnalytics.EventAction.CLICK_HAPUS_DAN_TAMBAH_WISHLIST_FrOM_HaPUS_PRODUK_BERKENDALA,
-                        "eventLabel", "",
-                        "ecommerce", cartMap)
-        );
+        Map<String, Object> dataLayer = DataLayer.mapOf("event", EventName.REMOVE_FORM_CART,
+                "eventCategory", EventCategory.CART,
+                "eventAction", ConstantTransactionAnalytics.EventAction.CLICK_HAPUS_DAN_TAMBAH_WISHLIST_FrOM_HaPUS_PRODUK_BERKENDALA,
+                "eventLabel", "",
+                "ecommerce", cartMap);
+        Log.d("EE remove cart", dataLayer.toString());
+        analyticTracker.sendEnhancedEcommerce(dataLayer);
     }
 
     public void enhancedECommerceCartHapusFromHapusProdukBerkendala(Map<String, Object> cartMap) {
-        analyticTracker.sendEnhancedEcommerce(
-                DataLayer.mapOf("event", EventName.REMOVE_FORM_CART,
-                        "eventCategory", EventCategory.CART,
-                        "eventAction", ConstantTransactionAnalytics.EventAction.CLICK_HAPUS_FROM_HAPUS_PRODUK_BERKENDALA,
-                        "eventLabel", "",
-                        "ecommerce", cartMap)
-        );
+        Map<String, Object> dataLayer = DataLayer.mapOf("event", EventName.REMOVE_FORM_CART,
+                "eventCategory", EventCategory.CART,
+                "eventAction", ConstantTransactionAnalytics.EventAction.CLICK_HAPUS_FROM_HAPUS_PRODUK_BERKENDALA,
+                "eventLabel", "",
+                "ecommerce", cartMap);
+        Log.d("EE remove cart", dataLayer.toString());
+        analyticTracker.sendEnhancedEcommerce(dataLayer);
     }
 }
