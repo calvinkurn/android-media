@@ -15,13 +15,11 @@
         <activity
             android:name=".view.view.addressoptions.CartAddressChoiceActivity"
             android:label="@string/checkout_module_title_shipping_dest"
-            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
         <activity
             android:name=".view.view.multipleaddressform.MultipleAddressFormActivity"
             android:label="@string/checkout_module_title_shipping_dest"
-            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
         <activity
