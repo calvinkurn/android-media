@@ -7,9 +7,12 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 
+import com.facebook.login.LoginManager;
 import com.tkpd.library.utils.CommonUtils;
+import com.tkpd.library.utils.ConnectionDetector;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -32,6 +35,7 @@ import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.router.wallet.WalletRouterUtil;
 import com.tokopedia.core.share.ShareBottomSheet;
+import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.ShareSocmedHandler;
 import com.tokopedia.core.var.TkpdCache;
@@ -331,14 +335,18 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
                     @Override
                     public void onNext(ShareApps[] shareApps) {
                         try {
+                            int index = 0;
                             if (shareApps != null) {
-                                int index = 0;
                                 for (ShareApps shareApp : shareApps) {
-                                    getView().renderSharableApps(shareApp, index++);
+                                    if(shareApp != null) { //shareApps is an array so it will complete the loop till length
+                                        getView().renderSharableApps(shareApp, index++);
+                                    }else{
+                                        break;
+                                    }
                                 }
                             }
                             ShareApps shareApp = new ShareApps("", R.drawable.ic_btn_share_more);
-                            getView().renderSharableApps(shareApp, 4);
+                            getView().renderSharableApps(shareApp, index);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -433,7 +441,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
 //            BranchSdkUtils.generateBranchLink(data, activity, new BranchSdkUtils.GenerateShareContents() {
 //                @Override
 //                public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
-//                    view.showDialogShareFb(branchUrl);
+//                    //getView().showDialogShareFb(branchUrl);
 //                }
 //            });
 //

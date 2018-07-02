@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.widget.NestedScrollView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -149,7 +150,7 @@ public class FragmentReferral extends BasePresenterFragmentV4<IReferralPresenter
         if (presenter.isAppShowReferralButtonActivated()) {
             referralCodeLayout.setVisibility(View.VISIBLE);
             TextViewHelpLink.setVisibility(View.VISIBLE);
-           // TextViewHelpLink.setText(presenter.getHowItWorks());
+            // TextViewHelpLink.setText(presenter.getHowItWorks());
             renderVoucherCodeData(presenter.getVoucherCodeFromCache(), "");
             TextViewHelpLink.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -285,7 +286,7 @@ public class FragmentReferral extends BasePresenterFragmentV4<IReferralPresenter
 
     @Override
     public String getReferralCodeFromTextView() {
-         return referralCodeTextView.getText().toString();
+        return referralCodeTextView.getText().toString();
     }
 
     @Override
@@ -312,24 +313,25 @@ public class FragmentReferral extends BasePresenterFragmentV4<IReferralPresenter
 
     @Override
     public void renderErrorGetVoucherCode(String message) {
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(), message, new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                presenter.getReferralVoucherCode();
-            }
-        }).showRetrySnackbar();
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), message, () -> presenter.getReferralVoucherCode()).showRetrySnackbar();
     }
 
     @Override
     public void renderSharableApps(ShareApps shareApps, int index) {
-        if(index == 0){
+        if (index == 0) {
             llShareIcons.removeAllViews();
         }
-        ImageView imageView = new ImageView(getActivity());
+        ImageView imageView;
+
+        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(getActivity().LAYOUT_INFLATER_SERVICE);
+
+        imageView = (ImageView) inflater.inflate(R.layout.social_image_layout, llShareIcons, false);
+
+        //ImageView imageView = new ImageView(getActivity());
         imageView.setImageResource(shareApps.getIcon());
         imageView.setTag(shareApps);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.0f);
-        imageView.setLayoutParams(layoutParams);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1.0f);
+        //imageView.setLayoutParams(layoutParams);
         imageView.setOnClickListener(v -> {
             presenter.appShare(((ShareApps) v.getTag()), getChildFragmentManager());
         });
@@ -337,14 +339,11 @@ public class FragmentReferral extends BasePresenterFragmentV4<IReferralPresenter
 
     }
 
-    private final void focusOnView(){
-        nestedScrollView.post(new Runnable() {
-            @Override
-            public void run() {
-                nestedScrollView.fling(0);
-                nestedScrollView.smoothScrollTo(0, viewLine.getBottom());
-                //nestedScrollView.smoothScrollBy(0, tabGuide.getTop());
-            }
+    private final void focusOnView() {
+        nestedScrollView.post(() -> {
+            nestedScrollView.fling(0);
+            nestedScrollView.smoothScrollTo(0, viewLine.getBottom());
+            //nestedScrollView.smoothScrollBy(0, tabGuide.getTop());
         });
     }
 }
