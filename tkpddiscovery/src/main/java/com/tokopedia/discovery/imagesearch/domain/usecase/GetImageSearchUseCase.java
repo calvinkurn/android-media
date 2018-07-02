@@ -50,6 +50,8 @@ public class GetImageSearchUseCase<T> extends UseCase<SearchResultModel> {
     private final static String pageOffset = "0";
 
     private String imagePath;
+    private final int MIN_WIDTH = 200;
+    private final int MIN_HEIGHT = 200;
 
     public GetImageSearchUseCase(Context context, ThreadExecutor threadExecutor,
                                  PostExecutionThread postExecutionThread,
@@ -90,6 +92,11 @@ public class GetImageSearchUseCase<T> extends UseCase<SearchResultModel> {
                             }
 
                             myBitmap = ImageHandler.resizeImage(myBitmap, MAX_WIDTH, MAX_HEIGHT);
+
+                            if(myBitmap.getWidth() < MIN_WIDTH || myBitmap.getHeight() < MIN_HEIGHT){
+                                throw new ImageNotSupportedException();
+                            }
+
                             myBitmap = ImageHandler.RotatedBitmap(myBitmap, imagePath);
                         } catch (IOException exception) {
                             exception.printStackTrace();
@@ -186,6 +193,12 @@ public class GetImageSearchUseCase<T> extends UseCase<SearchResultModel> {
 
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
+    }
+
+    public static class ImageNotSupportedException extends RuntimeException{
+        ImageNotSupportedException(){
+
+        }
     }
 
 }
