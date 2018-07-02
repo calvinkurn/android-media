@@ -43,6 +43,6 @@ public class GtmLogger implements AnalyticsLogger {
 
     @Override
     public boolean isNotificationEnabled(Context context) {
-
+        return false;
     }
 }
