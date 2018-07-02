@@ -139,10 +139,8 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
 
                 Fragment fragment = CartAddressChoiceFragment.newInstance(selectedAddressResult);
                 fragment.setArguments(bundle);
-
-                getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 getSupportFragmentManager().beginTransaction()
-                        .add(R.id.container, fragment, fragment.getClass().getSimpleName())
+                        .replace(R.id.parent_view, fragment, fragment.getClass().getSimpleName())
                         .commit();
                 break;
 
