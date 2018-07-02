@@ -102,11 +102,13 @@ public class DenganAgunanFragment extends BaseDaggerFragment implements InstantL
                 return;
             }
 
-            if (sessionHandler.isV4Login()) {
+            /*if (sessionHandler.isV4Login()) {
                 openWebView(WEB_LINK_COLLATERAL_FUND + LOAN_AMOUNT_QUERY_PARAM + mSpinnerLoanAmount.getSelectedItem().toString().split(" ")[1]);
             } else {
                 navigateToLoginPage();
-            }
+            }*/
+            openWebView(WEB_LINK_COLLATERAL_FUND + LOAN_AMOUNT_QUERY_PARAM +
+                    mSpinnerLoanAmount.getSelectedItem().toString().split(" ")[1].replace(".", ""));
         });
     }
 

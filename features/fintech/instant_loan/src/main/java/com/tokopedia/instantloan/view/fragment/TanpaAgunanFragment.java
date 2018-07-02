@@ -16,7 +16,6 @@ import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.instantloan.InstantLoanComponentInstance;
@@ -112,12 +111,14 @@ public class TanpaAgunanFragment extends BaseDaggerFragment implements InstantLo
                 return;
             }
 
-            if (sessionHandler.isV4Login()) {
+            /*if (sessionHandler.isV4Login()) {
                 openWebView(WEB_LINK_NO_COLLATERAL + LOAN_AMOUNT_QUERY_PARAM +
                         mSpinnerLoanAmount.getSelectedItem().toString().split(" ")[1].replace(".", ""));
             } else {
                 navigateToLoginPage();
-            }
+            }*/
+            openWebView(WEB_LINK_NO_COLLATERAL + LOAN_AMOUNT_QUERY_PARAM +
+                    mSpinnerLoanAmount.getSelectedItem().toString().split(" ")[1].replace(".", ""));
         });
     }
 
