@@ -191,7 +191,7 @@ public class PromoDetailFragment extends BaseDaggerFragment implements
                 promoData.getId(),
                 String.valueOf(this.page),
                 String.valueOf(this.position + 1),
-                promoData.getThumbnailImage(),
+                promoData.getTitle(),
                 promoData.getThumbnailImage(),
                 parsePromoCodes(promoData)
         );
@@ -296,7 +296,7 @@ public class PromoDetailFragment extends BaseDaggerFragment implements
                         promoData.getId(),
                         String.valueOf(page),
                         String.valueOf(position + 1),
-                        promoData.getThumbnailImage(),
+                        promoData.getTitle(),
                         promoData.getThumbnailImage(),
                         parsePromoCodes(promoData)
                 );
