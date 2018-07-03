@@ -715,7 +715,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View view) {
                 cbDropshipper.setChecked(!cbDropshipper.isChecked());
-                mActionListener.onNeedUpdateViewItem(getAdapterPosition());
             }
         };
     }
