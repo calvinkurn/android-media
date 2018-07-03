@@ -22,12 +22,14 @@
     <string name="product_add_title_dialog_delete_video">Hapus Video</string>
     <string name="product_add_description_dialog_delete_video">Hapus video ini dari Video Produk Saya</string>
 
-    <string name="product_add_message_exist_video_choseen">Video sudah ditambahkan sebelumnya</string>
+    <string name="product_add_message_exist_video_chosen">Video sudah ditambahkan sebelumnya</string>
     <string name="product_add_message_success_add_video_recommendation">Video rekomendasi berhasil ditambahkan ke Video Produk Saya</string>
-    <string name="product_add_message_success_delete_video_choseen">Video berhasil dihapus</string>
-    <string name="product_add_message_success_add_video_choseen">Video berhasil ditambahkan</string>
+    <string name="product_add_message_success_delete_video_chosen">Video berhasil dihapus</string>
+    <string name="product_add_message_success_add_video_chosen">Video berhasil ditambahkan</string>
+    <string name="product_add_message_success_change_video_recommendation">Perubahan berasil disimpan</string>
 
-    <string name="product_add_message_slot_full_video_choseen">Slot video sudah penuh. Hapus sebagian video untuk menambahkan video lainnya</string>
+    <string name="product_add_message_slot_full_video_chosen">Slot video sudah penuh. Hapus sebagian video untuk menambahkan video lainnya</string>
+    <string name="product_add_message_remain_slot_video_chosen">Hanya %d slot video tersisa. Batalkan sebagian pilihan untuk menambahkan video</string>
 
     <string name="product_video_not_found">Video tidak ditemukan</string>
     <string name="product_invalid_video_url">URL video tidak benar</string>

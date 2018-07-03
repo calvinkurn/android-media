@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.product.edit.R
 import com.tokopedia.product.edit.view.adapter.ProductAddVideoRecommendationFeaturedAdapter
 import com.tokopedia.product.edit.view.fragment.ProductAddVideoFragment
+import com.tokopedia.product.edit.view.fragment.ProductAddVideoFragment.Companion.MAX_VIDEO
 import com.tokopedia.product.edit.view.listener.SectionVideoRecommendationListener
 import com.tokopedia.product.edit.view.viewmodel.SectionVideoRecommendationViewModel
 import com.tokopedia.product.edit.view.viewmodel.VideoRecommendationViewModel
@@ -26,7 +27,7 @@ class SectionVideoRecommendationViewHolder(itemView: View,
     private lateinit var textShowMore: TextView
     private lateinit var itemDecoration:RecyclerView.ItemDecoration
 
-    private val videoRecommendationFeaturedList: ArrayList<VideoRecommendationViewModel> = ArrayList()
+    private var videoRecommendationFeaturedList: ArrayList<VideoRecommendationViewModel> = ArrayList()
 
     init {
         setViews(itemView)
@@ -35,6 +36,7 @@ class SectionVideoRecommendationViewHolder(itemView: View,
     private fun setViews(view: View) {
         sectionVideoRecommendationListener.setProductAddVideoFragmentListener(this)
         textShowMore = view.findViewById(R.id.text_video_recommendation_show_more)
+        textShowMore.visibility = View.GONE
         textShowMore.setOnClickListener({
             sectionVideoRecommendationListener.onShowMoreClicked()
         })
@@ -78,11 +80,13 @@ class SectionVideoRecommendationViewHolder(itemView: View,
     }
 
     override fun onSuccessGetYoutubeDataVideoRecommendation(videoRecommendationViewModelList: List<VideoRecommendationViewModel>) {
-        if(videoRecommendationViewModelList.size <= 3){
+        videoRecommendationFeaturedList = ArrayList()
+        if(videoRecommendationViewModelList.size <= MAX_VIDEO){
             textShowMore.visibility = View.GONE
             videoRecommendationFeaturedList.addAll(videoRecommendationViewModelList)
         } else {
-            for (i in 0..2) {
+            textShowMore.visibility = View.VISIBLE
+            for (i in 0 until MAX_VIDEO) {
                 videoRecommendationFeaturedList.add(videoRecommendationViewModelList[i])
             }
         }

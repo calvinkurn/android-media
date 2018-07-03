@@ -7,4 +7,8 @@ interface ProductAddVideoRecommendationView : CustomerView {
 
     val contextView : Context
 
+    fun showSnackbarGreen(message: String)
+
+    fun showSnackbarRed(message: String)
+
 }
