@@ -10,7 +10,7 @@ class VideoRecommendationMapper {
         val videoRecommendationViewModelList = ArrayList<VideoRecommendationViewModel>()
         for (youtubeVideoModel in youtubeVideoModelList) {
             val videoRecommendationViewModel = VideoRecommendationViewModel()
-            if(!youtubeVideoModel.items.isEmpty()){
+            if(!youtubeVideoModel.items?.isEmpty()!!){
                 videoRecommendationViewModel.videoID = youtubeVideoModel.id
                 videoRecommendationViewModel.snippetTitle = youtubeVideoModel.title
                 videoRecommendationViewModel.snippetDescription = youtubeVideoModel.description
