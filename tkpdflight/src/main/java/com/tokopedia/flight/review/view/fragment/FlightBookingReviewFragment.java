@@ -331,9 +331,10 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
                         attributesVoucher.setMessage(voucherMessage);
                         attributesVoucher.setDiscountAmountPlain(voucherDiscountAmount);
                         updateFinalTotal(attributesVoucher, getCurrentBookingReviewModel());
-                        cancelAppliedCoupon = false;
                         getCurrentBookingReviewModel().getVoucherViewModel()
                                 .setAutoapplySuccess(true);
+                        setVoucherValue(attributesVoucher, 0, "");
+                        cancelAppliedCoupon = true;
                     }
                 } else if (resultCode == codeWrapper.couponResultCode()) {
                     Bundle bundle = data.getExtras();
@@ -349,9 +350,10 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
                         attributesVoucher.setDiscountAmountPlain(couponDiscountAmount);
                         updateFinalTotal(attributesVoucher, getCurrentBookingReviewModel());
                         voucherCartView.setCoupon(couponTitle, couponMessage, couponCode);
-                        cancelAppliedCoupon = false;
                         getCurrentBookingReviewModel().getVoucherViewModel()
                                 .setAutoapplySuccess(true);
+                        setVoucherValue(attributesVoucher, 1, couponTitle);
+                        cancelAppliedCoupon = true;
                     }
                 }
                 break;
@@ -738,5 +740,20 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
     @Override
     public void setNeedToRefreshOnPassengerInfo() {
         isPassengerInfoPageNeedToRefresh = true;
+    }
+
+    private void setVoucherValue(AttributesVoucher voucherValue, int isCoupon, String couponTitle) {
+        FlightBookingVoucherViewModel voucherViewModel = getCurrentBookingReviewModel().getVoucherViewModel();
+
+        voucherViewModel.setCode(voucherValue.getVoucherCode());
+        voucherViewModel.setIsCoupon(isCoupon);
+        voucherViewModel.setDiscountAmount(voucherValue.getDiscountAmountPlain());
+        voucherViewModel.setDiscountPrice(voucherValue.getDiscountAmount());
+        voucherViewModel.setDiscountedAmount(voucherValue.getDiscountedPricePlain());
+        voucherViewModel.setDiscountedPrice(voucherValue.getDiscountedPrice());
+        voucherViewModel.setTitleDescription(couponTitle);
+        voucherViewModel.setMessageSuccess(voucherValue.getMessage());
+
+        getCurrentBookingReviewModel().setVoucherViewModel(voucherViewModel);
     }
 }
