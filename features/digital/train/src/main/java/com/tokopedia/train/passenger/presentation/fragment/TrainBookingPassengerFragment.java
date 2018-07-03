@@ -52,6 +52,7 @@ import rx.Observable;
  */
 public class TrainBookingPassengerFragment extends BaseDaggerFragment implements TrainBookingPassengerContract.View {
 
+    public static final int ADD_PASSENGER_REQUEST_CODE = 1009;
     private static final String TRAIN_PARAM_PASSENGER = "train_param_passenger";
 
     private CardWithAction cardActionDeparture;
@@ -187,7 +188,7 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
         TrainBookingPassengerAdapterTypeFactory adapterTypeFactory = new TrainBookingPassengerAdapterTypeFactory(new TrainBookingPassengerAdapterListener() {
             @Override
             public void onChangePassengerData(TrainPassengerViewModel trainPassengerViewModel) {
-                startActivityForResult(TrainBookingAddPassengerActivity.callingIntent(getActivity(), trainPassengerViewModel), 1);
+                startActivityForResult(TrainBookingAddPassengerActivity.callingIntent(getActivity(), trainPassengerViewModel), ADD_PASSENGER_REQUEST_CODE);
             }
         });
         adapter = new TrainBookingPassengerAdapter(adapterTypeFactory, new ArrayList<Visitable>());
@@ -312,7 +313,7 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
     @Override
     public void loadPassengerSameAsBuyer(TrainPassengerViewModel trainPassengerViewModel) {
         buyerViewModel = trainPassengerViewModel;
-        startActivityForResult(TrainBookingAddPassengerActivity.callingIntent(getActivity(), trainPassengerViewModel), 1);
+        startActivityForResult(TrainBookingAddPassengerActivity.callingIntent(getActivity(), trainPassengerViewModel), ADD_PASSENGER_REQUEST_CODE);
     }
 
     @Override
@@ -347,7 +348,7 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK && requestCode == 1) {
+        if (resultCode == Activity.RESULT_OK && requestCode == ADD_PASSENGER_REQUEST_CODE) {
             TrainPassengerViewModel trainPassengerViewModel = data.getParcelableExtra(TrainBookingAddPassengerActivity.PASSENGER_DATA);
             presenter.updateDataPassengers(trainPassengerViewModel);
         }
