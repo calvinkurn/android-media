@@ -232,7 +232,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         notifyDataSetChanged();
     }
 
-    public void disableShipmentCheckoutButtonModel(String errorMessage) {
+    public void disableShipmentCheckoutButtonModel() {
         if (shipmentCheckoutButtonModel != null) {
             shipmentCheckoutButtonModel.setAbleToCheckout(false);
         }
