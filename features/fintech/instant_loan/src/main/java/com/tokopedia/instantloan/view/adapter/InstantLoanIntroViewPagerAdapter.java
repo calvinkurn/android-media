@@ -2,13 +2,11 @@ package com.tokopedia.instantloan.view.adapter;
 
 import android.content.Context;
 import android.support.v4.view.PagerAdapter;
-import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
-import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +29,7 @@ public class InstantLoanIntroViewPagerAdapter extends PagerAdapter {
     private int[] mLayouts;
     private InstantLoanPresenter mPresenter;
     private InstantLoanActivity mActivity;
+    private final String link = "syarat dan ketentuan";
 
     public InstantLoanIntroViewPagerAdapter(InstantLoanActivity activity, int[] layouts, InstantLoanPresenter presenter) {
         this.mLayoutInflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -74,14 +73,33 @@ public class InstantLoanIntroViewPagerAdapter extends PagerAdapter {
 
 
         } else if (position == mLayouts.length - 1) {
-            //TODO @lavekush make spanable textview for TnC
             TextView textTnC = view.findViewById(R.id.text_tnc);
-            String string = mActivity.getString(R.string.label_tnc, mActivity.getResources().getColor(R.color.tkpd_main_green));
-            textTnC.setText(Html.fromHtml(string));
+            int startIndexOfLink = textTnC.getText().toString().indexOf(link);
 
+            SpannableString spannableString = new SpannableString(textTnC.getText().toString());
+
+            ClickableSpan clickableSpan = new ClickableSpan() {
+
+                @Override
+                public void updateDrawState(TextPaint ds) {
+                    super.updateDrawState(ds);
+                    ds.setColor(mActivity.getResources().getColor(R.color.tkpd_green_header));
+                    ds.setUnderlineText(false);
+                }
+
+                @Override
+                public void onClick(View view) {
+                    mActivity.openWebView(WEB_LINK_TNC);
+                }
+            };
+
+            spannableString.setSpan(clickableSpan, startIndexOfLink,
+                    startIndexOfLink + link.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+            textTnC.setText(spannableString);
+            textTnC.setMovementMethod(LinkMovementMethod.getInstance());
             view.findViewById(R.id.button_connect_device).setOnClickListener(v -> mPresenter.startDataCollection());
 
-            textTnC.setOnClickListener(v -> mActivity.openWebView(WEB_LINK_TNC));
         }
         view.setTag(position);
         container.addView(view);

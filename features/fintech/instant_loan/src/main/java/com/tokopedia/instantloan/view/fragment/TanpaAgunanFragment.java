@@ -106,17 +106,10 @@ public class TanpaAgunanFragment extends BaseDaggerFragment implements InstantLo
 
             if (mSpinnerLoanAmount.getSelectedItem().toString().equalsIgnoreCase(getString(R.string.label_select_nominal))) {
                 TextView errorText = (TextView) mSpinnerLoanAmount.getSelectedView();
-//                errorText.setError("Please select");
                 errorText.setTextColor(Color.RED);
                 return;
             }
 
-            /*if (sessionHandler.isV4Login()) {
-                openWebView(WEB_LINK_NO_COLLATERAL + LOAN_AMOUNT_QUERY_PARAM +
-                        mSpinnerLoanAmount.getSelectedItem().toString().split(" ")[1].replace(".", ""));
-            } else {
-                navigateToLoginPage();
-            }*/
             openWebView(WEB_LINK_NO_COLLATERAL + LOAN_AMOUNT_QUERY_PARAM +
                     mSpinnerLoanAmount.getSelectedItem().toString().split(" ")[1].replace(".", ""));
         });
