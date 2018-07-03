@@ -31,6 +31,8 @@ class ProductAddVideoRecommendationFragment : BaseListFragment<ProductAddVideoRe
 
     private var videoRecommendationViewModelList: ArrayList<VideoRecommendationViewModel> = ArrayList()
     private var videoIDs: ArrayList<String> = ArrayList()
+    private var newVideoIDsRecommendation: ArrayList<String> = ArrayList()
+    private var remainSlot: Int = 0
 
     private lateinit var productAddVideoRecommendationPresenter: ProductAddVideoRecommendationPresenter
 
@@ -45,6 +47,7 @@ class ProductAddVideoRecommendationFragment : BaseListFragment<ProductAddVideoRe
         if(activity.intent != null){
             videoRecommendationViewModelList = activity.intent.getParcelableArrayListExtra<VideoRecommendationViewModel>(ProductAddVideoFragment.EXTRA_VIDEO_RECOMMENDATION)
             videoIDs = activity.intent.getStringArrayListExtra(ProductAddVideoFragment.EXTRA_VIDEOS_LINKS)
+            remainSlot = (MAX_VIDEO - videoIDs.size)
         }
     }
 
@@ -54,30 +57,19 @@ class ProductAddVideoRecommendationFragment : BaseListFragment<ProductAddVideoRe
         val btnSimpan: Button = view.findViewById(R.id.button_simpan)
 
         btnSimpan.setOnClickListener({
-
-            if(videoIDs.size <= MAX_VIDEO) {
-                val intent = Intent()
-                intent.putParcelableArrayListExtra(ProductAddVideoFragment.EXTRA_VIDEO_RECOMMENDATION, videoRecommendationViewModelList)
-                activity.setResult(Activity.RESULT_OK, intent)
-                activity.finish()
-            } else {
+            if(remainSlot == 0 && newVideoIDsRecommendation.size > 0) {
                 showSnackbarRed(getString(R.string.product_add_message_slot_full_video_chosen))
+            } else {
+                if(newVideoIDsRecommendation.size <= remainSlot){
+                    val intent = Intent()
+                    intent.putParcelableArrayListExtra(ProductAddVideoFragment.EXTRA_VIDEO_RECOMMENDATION, videoRecommendationViewModelList)
+                    activity.setResult(Activity.RESULT_OK, intent)
+                    activity.finish()
+                } else {
+                    showSnackbarRed(getString(R.string.product_add_message_remain_slot_video_chosen, remainSlot))
+                }
             }
 
-
-//            if((videoIDs.size - countOldVideoRecommendationChosen) + countNewVideoRecommendationChosen < MAX_VIDEO){
-//                val remainSlot = MAX_VIDEO - videoIDs.size
-//                if(remainSlot >= countNewVideoRecommendationChosen ){
-//                    val intent = Intent()
-//                    intent.putParcelableArrayListExtra(ProductAddVideoFragment.EXTRA_VIDEO_RECOMMENDATION, videoRecommendationViewModelList)
-//                    activity.setResult(Activity.RESULT_OK, intent)
-//                    activity.finish()
-//                } else {
-//                    showSnackbarRed(getString(R.string.product_add_message_remain_slot_video_chosen, remainSlot))
-//                }
-//            } else {
-//                showSnackbarRed(getString(R.string.product_add_message_slot_full_video_chosen))
-//            }
         })
 
         return view
@@ -109,11 +101,19 @@ class ProductAddVideoRecommendationFragment : BaseListFragment<ProductAddVideoRe
     override fun onCheckboxClicked(position: Int, isChecked: Boolean) {
         if(adapter.data[position] is VideoRecommendationViewModel){
             (adapter.data[position] as VideoRecommendationViewModel).chosen = isChecked
-            if( isChecked ) {
-                if(!videoIDs.contains((adapter.data[position] as VideoRecommendationViewModel).videoID))
-                    videoIDs.add((adapter.data[position] as VideoRecommendationViewModel).videoID!!)
+
+            if(!videoIDs.contains((adapter.data[position] as VideoRecommendationViewModel).videoID)){
+                if( isChecked ) {
+                    newVideoIDsRecommendation.add((adapter.data[position] as VideoRecommendationViewModel).videoID!!)
+                } else {
+                    newVideoIDsRecommendation.remove((adapter.data[position] as VideoRecommendationViewModel).videoID!!)
+                }
             } else {
-                videoIDs.remove((adapter.data[position] as VideoRecommendationViewModel).videoID!!)
+                if(isChecked){
+                    remainSlot--
+                } else {
+                    remainSlot++
+                }
             }
         }
     }

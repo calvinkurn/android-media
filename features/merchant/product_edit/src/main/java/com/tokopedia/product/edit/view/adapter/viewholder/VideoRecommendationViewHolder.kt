@@ -25,8 +25,8 @@ class VideoRecommendationViewHolder(itemView: View,
     }
 
     private fun setViews(){
-        checkboxChosen.setOnCheckedChangeListener({ _, isChecked ->
-            videoRecommendationListener.onCheckboxClicked(adapterPosition, isChecked)
+        checkboxChosen.setOnClickListener({
+            videoRecommendationListener.onCheckboxClicked(adapterPosition, checkboxChosen.isChecked)
         })
     }
 
