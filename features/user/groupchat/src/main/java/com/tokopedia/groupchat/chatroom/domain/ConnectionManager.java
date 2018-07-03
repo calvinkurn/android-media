@@ -1,5 +1,7 @@
 package com.tokopedia.groupchat.chatroom.domain;
 
+import android.util.Log;
+
 import com.sendbird.android.SendBird;
 import com.sendbird.android.SendBirdException;
 import com.sendbird.android.User;
@@ -55,6 +57,7 @@ public class ConnectionManager {
 
         if (SendBird.getConnectionState() == SendBird.ConnectionState.OPEN) {
             if (handler != null) {
+                Log.d("tevrefresh", "reconnect " +false);
                 handler.onConnected(false);
             }
         } else if (SendBird.getConnectionState() == SendBird.ConnectionState.CLOSED) { // push notification or system kill
@@ -66,6 +69,7 @@ public class ConnectionManager {
                     }
 
                     if (handler != null) {
+                        Log.d("tevrefresh", "reconnect " +false);
                         handler.onConnected(false);
                     }
                 }

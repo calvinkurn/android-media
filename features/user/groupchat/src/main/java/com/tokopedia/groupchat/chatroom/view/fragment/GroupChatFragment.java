@@ -943,7 +943,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_LOGIN) {
-            refreshChat();
+//            refreshChat();
             ((GroupChatContract.View) getActivity()).onSuccessLogin();
             userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
             setForLoginUser(userSession != null && userSession.isLoggedIn());

@@ -80,6 +80,8 @@ public interface GroupChatContract {
 
         void getChannelInfo(String channelUuid);
 
+        void getChannelInfo(String channelUuid, boolean reInit);
+
         void logoutChannel(OpenChannel mChannel);
 
         void enterChannel(String userId, String channelUrl, String userName, String userAvatar,
