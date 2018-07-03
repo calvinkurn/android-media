@@ -1,5 +1,7 @@
 package com.tokopedia.transaction.orders.orderdetails.data;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 import com.tokopedia.transaction.orders.orderlist.data.ConditionalInfo;
 import com.tokopedia.transaction.orders.orderlist.data.PaymentData;
 
@@ -10,16 +12,38 @@ import java.util.List;
  */
 
 public class OrderDetails {
+    @SerializedName("status")
+    @Expose
     private Status status;
+    @SerializedName("conditionalInfo")
+    @Expose
     private ConditionalInfo conditionalInfo;
+    @SerializedName("title")
+    @Expose
     private List<Title> title;
+    @SerializedName("invoice")
+    @Expose
     private Invoice invoice;
+    @SerializedName("orderToken")
+    @Expose
     private OrderToken orderToken;
+    @SerializedName("detail")
+    @Expose
     private List<Detail> detail;
+    @SerializedName("additionalInfo")
+    @Expose
     private List<AdditionalInfo> additionalInfo;
+    @SerializedName("pricing")
+    @Expose
     private List<Pricing> pricing;
+    @SerializedName("paymentData")
+    @Expose
     private PaymentData paymentData;
+    @SerializedName("contactUs")
+    @Expose
     private ContactUs contactUs;
+    @SerializedName("actionButtons")
+    @Expose
     private List<ActionButton> actionButtons;
 
     public OrderDetails(Status status, ConditionalInfo conditionalInfo, List<Title> title, Invoice invoice, OrderToken orderToken, List<Detail> detail, List<AdditionalInfo> additionalInfo, List<Pricing> pricing, PaymentData paymentData, ContactUs contactUs, List<ActionButton> actionButtons) {

@@ -297,6 +297,7 @@ public interface AppEventTracking {
         String ONBOARDING = "onboarding";
         String RESOLUTION_CENTER = "resolution center";
         String MANAGE_PROFILE = "pengaturan profile";
+        String PROFILE_PAGE = "profile page";
         String RESOLUTION_CENTER_CHAT = "resolution chat";
 
         String PROMO_MICROSITE_PROMO_LIST = "promo microsite - promo list";
@@ -337,6 +338,7 @@ public interface AppEventTracking {
         String REGISTER_SUCCESS = "Register Success";
         String REGISTER_ERROR = "Register Error";
         String NO_RESULT = "No Result";
+        String NO_SEARCH_RESULT = "no search result";
         String ABANDON = "Abandon";
         String DEEPLINK = "Deeplink";
         String RESET_SUCCESS = "Reset Success";

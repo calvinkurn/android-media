@@ -473,7 +473,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         getView().displayReplyField(replyData.getTextAreaReply() == 1);
         getView().setCanLoadMore(replyData.isHasNext());
 
-        if (!replyData.isHasNext()) {
+        if (!replyData.isHasNext() && !getView().isChatBot()) {
             getView().addTimeMachine();
         }
 
