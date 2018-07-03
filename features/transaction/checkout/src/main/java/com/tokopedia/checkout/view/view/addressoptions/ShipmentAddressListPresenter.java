@@ -155,6 +155,8 @@ public class ShipmentAddressListPresenter
                                                 getMvpView().updateList(peopleAddressModel.getRecipientAddressModelList());
                                             }
                                         }
+                                    } else {
+                                        getMvpView().showListEmpty();
                                     }
                                 } else {
                                     getMvpView().showListEmpty();

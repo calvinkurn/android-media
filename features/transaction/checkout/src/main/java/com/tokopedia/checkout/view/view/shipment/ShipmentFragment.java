@@ -340,22 +340,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             e.printStackTrace();
         }
 
-        String errorMessage = null;
-        if (!TextUtils.isEmpty(cartShipmentAddressFormData.getErrorMessage())) {
-            errorMessage = cartShipmentAddressFormData.getErrorMessage();
-        } else {
-            for (ShipmentCartItemModel shipmentCartItemModel : newShipmentCartItemModelList) {
-                if (!TextUtils.isEmpty(shipmentCartItemModel.getErrorMessage())) {
-                    errorMessage = shipmentCartItemModel.getErrorMessage();
-                }
-            }
-        }
-        if (TextUtils.isEmpty(errorMessage)) {
-            errorMessage = getActivity().getString(R.string.default_request_error_unknown_short);
-        }
-        shipmentAdapter.disableShipmentCheckoutButtonModel(errorMessage);
+        shipmentAdapter.disableShipmentCheckoutButtonModel();
         if (needToRefreshItemList) {
-            showToastError(errorMessage);
+            showToastError(getActivity().getString(R.string.error_message_checkout_failed));
             shipmentAdapter.notifyDataSetChanged();
         }
     }
@@ -393,21 +380,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 }
             }
         }
-        String errorMessage = null;
-        if (!TextUtils.isEmpty(cartShipmentAddressFormData.getErrorMessage())) {
-            errorMessage = cartShipmentAddressFormData.getErrorMessage();
-        } else {
-            for (ShipmentCartItemModel shipmentCartItemModel : newShipmentCartItemModelList) {
-                if (!TextUtils.isEmpty(shipmentCartItemModel.getErrorMessage())) {
-                    errorMessage = shipmentCartItemModel.getErrorMessage();
-                }
-            }
-        }
-        if (TextUtils.isEmpty(errorMessage)) {
-            errorMessage = getActivity().getString(R.string.error_message_checkout_failed);
-        }
-        shipmentAdapter.disableShipmentCheckoutButtonModel(errorMessage);
-        showToastError(errorMessage);
+        shipmentAdapter.disableShipmentCheckoutButtonModel();
+        showToastError(getActivity().getString(R.string.error_message_checkout_failed));
         shipmentAdapter.notifyDataSetChanged();
     }
 
@@ -710,7 +684,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     private void showCourierChoiceBottomSheet(ShipmentDetailData shipmentDetailData, int position) {
-        if (courierBottomsheet == null || position != courierBottomsheet.getLastCartItemPosition()) {
+        if (courierBottomsheet == null || position != courierBottomsheet.getLastCartItemPosition() ||
+                shipmentDetailData.getSelectedCourier() == null) {
             courierBottomsheet = new CourierBottomsheet(getActivity(), shipmentDetailData, position);
         }
         courierBottomsheet.setListener(this);
