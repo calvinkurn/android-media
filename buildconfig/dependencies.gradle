@@ -65,6 +65,7 @@ ext {
     tkpdAnalyticsVersion = '2.22'
     tkpdGraphqlVersion = '2.22'
     tkpdContactUsVersion = '2.22'
+    tkpdCommonNetworkVersion = '2.22'
 
     networkDependencies = [
             retrofit          : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
@@ -329,6 +330,7 @@ ext {
             imageuploader     : ":libraries:imageuploader",
             youtubeApi        : ":libraries:YouTubeAndroidPlayerApi",
             analytics         : ":libraries:analytics",
-            graphql           : ":libraries:graphql"
+            graphql           : ":libraries:graphql",
+            commonNetwork     : ":libraries:common_network"
     ]
 }

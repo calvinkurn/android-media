@@ -1,19 +1,13 @@
-package com.tokopedia.graphql;
+package com.tokopedia.common.network.util;
 
-public interface GraphqlConstant {
-    String LOG_TAG = "Graphql-Datalayer ";
+public interface RestConstant {
+    String BASE_URL = "http://tokopedia.com/";
+    int HTTP_SUCCESS = 200;
+    int INTERNAL_EXCEPTION = -1;
+    int RES_CODE_CACHE = 1;
     long MINUTE_MS = 1000 * 60;
     long HOUR_MS = MINUTE_MS * 60;
     long DAY_MS = 24 * HOUR_MS;
-
-    interface GqlApiKeys {
-        String GRAPHQL_HEADER = "{\"Content-Type: application/json\"}";
-        String QUERY = "query";
-        String VARIABLES = "variables";
-        String OPERATION_NAME = "operationName";
-        String DATA = "data";
-        String ERROR = "errors";
-    }
 
     enum ExpiryTimes {
         MINUTE_30(30 * MINUTE_MS),

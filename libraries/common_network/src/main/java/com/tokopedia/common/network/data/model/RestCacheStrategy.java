@@ -1,23 +1,23 @@
-package com.tokopedia.graphql.data.model;
+package com.tokopedia.common.network.data.model;
 
-import com.tokopedia.graphql.GraphqlConstant;
+import com.tokopedia.common.network.util.RestConstant;
 
 /**
  * Caching strategy
  */
-public class GraphqlCacheStrategy {
+public class RestCacheStrategy {
     // Mandatory param if you are going to use this caching strategy
     private CacheType type;
 
     // optional
-    private long expiryTime = GraphqlConstant.ExpiryTimes.HOUR.val();
+    private long expiryTime;
 
     // optional
     private boolean isSessionIncluded;
 
-    private GraphqlCacheStrategy(Builder builder) {
+    private RestCacheStrategy(Builder builder) {
         this.type = builder.type;
-        this.expiryTime = builder.expiryTime < 1L ? GraphqlConstant.ExpiryTimes.MINUTE_30.val() : builder.expiryTime;
+        this.expiryTime = builder.expiryTime < 1 ? RestConstant.ExpiryTimes.MINUTE_30.val() : builder.expiryTime;
         this.isSessionIncluded = builder.isSessionIncluded;
     }
 
@@ -56,15 +56,15 @@ public class GraphqlCacheStrategy {
             return this;
         }
 
-        public GraphqlCacheStrategy build() {
-            return new GraphqlCacheStrategy(this);
+        public RestCacheStrategy build() {
+            return new RestCacheStrategy(this);
         }
 
     }
 
     @Override
     public String toString() {
-        return "GraphqlCacheStrategy{" +
+        return "RestCacheStrategy{" +
                 "type=" + type +
                 ", expiryTime=" + expiryTime +
                 ", isSessionIncluded=" + isSessionIncluded +

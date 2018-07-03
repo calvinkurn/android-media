@@ -1,4 +1,6 @@
-package com.tokopedia.graphql;
+package com.tokopedia.common.network.util;
+
+import android.support.annotation.NonNull;
 
 import com.tokopedia.user.session.UserSession;
 
@@ -12,13 +14,13 @@ public class FingerprintManager {
 
     private UserSession mUserSession;
 
-    public FingerprintManager(UserSession userSession) {
+    public FingerprintManager(@NonNull UserSession userSession) {
         this.mUserSession = userSession;
     }
 
-    public String generateFingerPrint(String key, boolean isSessionIncluded) {
+    public String generateFingerPrint(@NonNull String key, boolean isSessionIncluded) {
         try {
-            MessageDigest digest = java.security.MessageDigest.getInstance("MD5");
+            MessageDigest digest = MessageDigest.getInstance("MD5");
 
             if (mUserSession != null && isSessionIncluded) {
                 digest.update((key + mUserSession.getUserId()).getBytes());
