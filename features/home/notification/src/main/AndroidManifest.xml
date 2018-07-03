@@ -1,0 +1,8 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.notification">
+
+    <application>
+        <activity android:name=".presentation.activity.NotificationActivity" />
+
+    </application>
+</manifest>
