@@ -114,7 +114,7 @@ class ProductAddVideoPresenter : BaseDaggerPresenter<ProductAddVideoView>() {
         })
     }
 
-    fun getYoutubeVideoData(youtubeVideoId: String) {
+    private fun getYoutubeVideoData(youtubeVideoId: String) {
         getYoutubeVideoDetailUseCase.execute(GetYoutubeVideoDetailUseCase.generateRequestParam(youtubeVideoId), object : Subscriber<Map<Type, RestResponse>>() {
             override fun onCompleted() {
 

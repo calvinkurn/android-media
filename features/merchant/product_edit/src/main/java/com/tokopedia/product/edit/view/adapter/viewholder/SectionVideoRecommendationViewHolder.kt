@@ -27,7 +27,7 @@ class SectionVideoRecommendationViewHolder(itemView: View,
     private lateinit var textShowMore: TextView
     private lateinit var itemDecoration:RecyclerView.ItemDecoration
 
-    private var videoRecommendationFeaturedList: ArrayList<VideoRecommendationViewModel> = ArrayList()
+    private var videoRecommendationFeaturedList: ArrayList<VideoRecommendationViewModel?> = ArrayList()
 
     init {
         setViews(itemView)
@@ -49,7 +49,8 @@ class SectionVideoRecommendationViewHolder(itemView: View,
             }
         }
 
-        productAddVideoRecommendationFeaturedAdapter = ProductAddVideoRecommendationFeaturedAdapter(ArrayList(), videoFeaturedClickListener)
+        videoRecommendationFeaturedList.add(null)
+        productAddVideoRecommendationFeaturedAdapter = ProductAddVideoRecommendationFeaturedAdapter(videoRecommendationFeaturedList, videoFeaturedClickListener)
         recyclerView.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
         recyclerView.adapter = productAddVideoRecommendationFeaturedAdapter
         recyclerView.setHasFixedSize(true)
@@ -80,6 +81,7 @@ class SectionVideoRecommendationViewHolder(itemView: View,
     }
 
     override fun onSuccessGetYoutubeDataVideoRecommendation(videoRecommendationViewModelList: List<VideoRecommendationViewModel>) {
+        videoRecommendationFeaturedList.remove(null)
         videoRecommendationFeaturedList = ArrayList()
         if(videoRecommendationViewModelList.size <= MAX_VIDEO){
             textShowMore.visibility = View.GONE
@@ -95,8 +97,8 @@ class SectionVideoRecommendationViewHolder(itemView: View,
 
     override fun onVideoChosenAdded(videoViewModel: VideoViewModel) {
         for(videoRecommendationFeatured in videoRecommendationFeaturedList){
-            if(videoRecommendationFeatured.videoID == videoViewModel.videoID){
-                videoRecommendationFeatured.chosen = true
+            if(videoRecommendationFeatured?.videoID == videoViewModel.videoID){
+                videoRecommendationFeatured?.chosen = true
             }
         }
         productAddVideoRecommendationFeaturedAdapter.notifyDataSetChanged()
@@ -104,8 +106,8 @@ class SectionVideoRecommendationViewHolder(itemView: View,
 
     override fun onVideoChosenDeleted(videoViewModel : VideoViewModel) {
         for(videoRecommendationFeatured in videoRecommendationFeaturedList){
-            if(videoRecommendationFeatured.videoID == videoViewModel.videoID){
-                videoRecommendationFeatured.chosen = false
+            if(videoRecommendationFeatured?.videoID == videoViewModel.videoID){
+                videoRecommendationFeatured?.chosen = false
             }
         }
         productAddVideoRecommendationFeaturedAdapter.notifyDataSetChanged()
