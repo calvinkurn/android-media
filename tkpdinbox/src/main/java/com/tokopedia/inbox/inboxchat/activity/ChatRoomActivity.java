@@ -19,8 +19,6 @@ import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.constant.TkpdState;
-import com.tokopedia.contact_us.createticket.ContactUsConstant;
-import com.tokopedia.contact_us.createticket.activity.ContactUsActivity;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.app.MainApplication;
