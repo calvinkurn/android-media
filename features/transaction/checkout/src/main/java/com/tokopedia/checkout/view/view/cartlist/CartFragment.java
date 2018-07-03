@@ -1003,7 +1003,8 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
             onResultFromRequestCodeLoyalty(resultCode, data);
         } else if (requestCode == ShipmentActivity.REQUEST_CODE) {
             onResultFromRequestCodeCartShipment(resultCode, data);
-        } else if (requestCode == MultipleAddressFormActivity.REQUEST_CODE) {
+        } else if (requestCode == MultipleAddressFormActivity.REQUEST_CODE
+                && resultCode == MultipleAddressFormActivity.RESULT_CODE_SUCCESS_SET_SHIPPING) {
             onResultFromRequestCodeMultipleAddressForm(resultCode);
         } else if (requestCode == CartAddressChoiceActivity.REQUEST_CODE) {
             onResultFromRequestCodeAddressChoiceActivity(resultCode);
