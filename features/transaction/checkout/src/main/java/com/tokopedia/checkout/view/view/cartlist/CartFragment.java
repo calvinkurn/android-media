@@ -1010,14 +1010,8 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
         }
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                cartPageAnalytics.eventClickCartClickArrowBack();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
+    public CheckoutAnalyticsCart getCartPageAnalytics() {
+        return cartPageAnalytics;
     }
 
     private void onResultFromRequestCodeMultipleAddressForm(int resultCode) {
