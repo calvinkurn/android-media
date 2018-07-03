@@ -101,7 +101,8 @@
                     android:id="@+id/tv_total"
                     style="@style/TextView.Micro.BlackSecondary"
                     android:layout_toRightOf="@id/image_payment"
-                    tools:text="8 Nov 2018" />
+                    android:text="@string/payment_label_total"
+                    />
 
                 <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/tv_value_total"
@@ -133,7 +134,7 @@
                     <android.support.v7.widget.AppCompatTextView
                         android:id="@+id/tv_payment_method"
                         style="@style/TextView.Micro.BlackSecondary"
-                        tools:text="Metode Pembayaran" />
+                        android:text="@string/payment_label_method_payment" />
 
                     <android.support.v7.widget.AppCompatTextView
                         android:id="@+id/tv_value_payment_method"

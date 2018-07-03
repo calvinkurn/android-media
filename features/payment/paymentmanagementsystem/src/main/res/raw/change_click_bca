@@ -1,0 +1,6 @@
+mutation{
+  editKlikbca($transactionID: String!, $merchantCode:String!, $newKlikbcaUserID: String!){
+    success
+    message
+  }
+}

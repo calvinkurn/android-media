@@ -3,7 +3,16 @@
     package="com.tokopedia.paymentmanagementsystem">
 
     <application>
-        <activity android:name=".paymentlist.view.activity.PaymentListActivity"></activity>
+        <activity
+            android:label="@string/payment_title_payment_status"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:name=".paymentlist.view.activity.PaymentListActivity"/>
+        <activity
+            android:label="@string/payment_title_activity_change_clik_bca"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:name=".changeclickbca.view.ChangeClickBcaActivity"/>
     </application>
 
 </manifest>

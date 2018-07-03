@@ -1,9 +1,9 @@
 package com.tokopedia.paymentmanagementsystem.paymentlist.view.presenter;
 
+import android.content.Context;
 import android.content.res.Resources;
 
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener;
-import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.paymentmanagementsystem.paymentlist.view.model.PaymentListModel;
 
@@ -14,7 +14,7 @@ import com.tokopedia.paymentmanagementsystem.paymentlist.view.model.PaymentListM
 public interface PaymentListContract {
     interface View extends BaseListViewListener<PaymentListModel>{
 
-        void showCancelationMessage(String refundMessage);
+        void showCancelationMessage(String refundMessage, String transactionID, String merchantCode);
 
         void onResultCancelPayment(boolean success);
 
@@ -25,10 +25,12 @@ public interface PaymentListContract {
 
     interface Presenter extends CustomerPresenter<View>{
 
-        void getPaymentList(Resources resources);
+        void getPaymentList(Resources resources, Context context);
 
         void getCancelDetail(Resources resources, String transactionID, String merchantCode);
 
         void cancelPayment(Resources resources, String transactionID, String merchantCode);
+
+        void getHowToPay();
     }
 }

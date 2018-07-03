@@ -12,6 +12,12 @@ import com.tokopedia.paymentmanagementsystem.paymentlist.view.model.PaymentListM
 
 public class PaymentListAdapterTypeFactory extends BaseAdapterTypeFactory{
 
+    private PaymentListViewHolder.ListenerPaymentList listenerPaymentList;
+
+    public PaymentListAdapterTypeFactory(PaymentListViewHolder.ListenerPaymentList listenerPaymentList) {
+        this.listenerPaymentList = listenerPaymentList;
+    }
+
     public int type(PaymentListModel paymentListModel) {
         return PaymentListViewHolder.LAYOUT;
     }
@@ -19,7 +25,7 @@ public class PaymentListAdapterTypeFactory extends BaseAdapterTypeFactory{
     @Override
     public AbstractViewHolder createViewHolder(View parent, int type) {
         if(type == PaymentListViewHolder.LAYOUT){
-            return new PaymentListViewHolder(parent);
+            return new PaymentListViewHolder(parent, listenerPaymentList);
         }
         return super.createViewHolder(parent, type);
     }

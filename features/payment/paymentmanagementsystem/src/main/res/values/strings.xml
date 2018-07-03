@@ -9,4 +9,14 @@
     <string name="payment_label_klikbcaid">KlikBCA ID</string>
     <string name="payment_label_payment_code">Kode Pembayaran</string>
     <string name="payment_label_virtual_account_number">Nomor Virtual Account</string>
+    <string name="payment_label_total">Total</string>
+    <string name="payment_label_method_payment">Metode Pembayaran</string>
+    <string name="payment_label_back">Kembali</string>
+    <string name="payment_title_yes">Ya</string>
+    <string name="payment_label_no">Tidak</string>
+    <string name="payment_title_payment_status">Status Pembayaran</string>
+    <string name="payment_label_helper_change_click_bca">User ID KlikBCA Anda saat ini adalah</string>
+    <string name="payment_label_hint_click_bca_user_id">klikbca User ID</string>
+    <string name="payment_label_use">Terapkan</string>
+    <string name="payment_title_activity_change_clik_bca">Ubah KlikBCA User ID</string>
 </resources>
