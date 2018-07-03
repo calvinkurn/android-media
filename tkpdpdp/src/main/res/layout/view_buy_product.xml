@@ -65,7 +65,12 @@
 
     <RelativeLayout
         android:id="@+id/container_new_checkout_flow"
-        android:padding="@dimen/dp_16"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
+        android:paddingEnd="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_8"
+        android:paddingBottom="@dimen/dp_8"
         android:background="@color/white"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
