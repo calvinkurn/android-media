@@ -33,6 +33,7 @@ import com.tokopedia.checkout.domain.usecase.GetThanksToppayUseCase;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCheckoutButtonModel;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.payment.utils.ErrorNetMessage;
 import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
@@ -575,7 +576,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void editAddressPinpoint(final String latitude, final String longitude, ShipmentCartItemModel shipmentCartItemModel) {
+    public void editAddressPinpoint(final String latitude, final String longitude,
+                                    ShipmentCartItemModel shipmentCartItemModel,
+                                    LocationPass locationPass) {
         RequestParams requestParams = generateEditAddressRequestParams(shipmentCartItemModel, latitude, longitude);
         compositeSubscription.add(
                 editAddressUseCase.createObservable(requestParams)
@@ -615,11 +618,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                 if (response != null && statusSuccess) {
                                     getView().renderEditAddressSuccess(latitude, longitude);
                                 } else {
-                                    if (!TextUtils.isEmpty(messageError)) {
-                                        getView().showToastError(messageError);
-                                    } else {
-                                        getView().showToastError(getView().getActivityContext().getString(R.string.default_request_error_unknown));
+                                    if (TextUtils.isEmpty(messageError)) {
+                                        messageError = getView().getActivityContext().getString(R.string.default_request_error_unknown);
                                     }
+                                    getView().navigateToSetPinpoint(messageError, locationPass);
                                 }
                             }
                         })

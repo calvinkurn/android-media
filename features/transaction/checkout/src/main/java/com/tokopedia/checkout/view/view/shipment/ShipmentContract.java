@@ -14,8 +14,8 @@ import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartShipmentData;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCheckoutButtonModel;
+import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
-import com.tokopedia.transactiondata.entity.request.CheckoutRequest;
 import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
 
@@ -69,6 +69,8 @@ public interface ShipmentContract {
         void renderChangeAddressSuccess(RecipientAddressModel recipientAddressModel);
 
         void renderCancelAutoApplyCouponSuccess();
+
+        void navigateToSetPinpoint(String message, LocationPass locationPass);
 
         List<DataCheckoutRequest> generateNewCheckoutRequest(List<ShipmentCartItemModel> shipmentCartItemModelList);
 
@@ -125,7 +127,7 @@ public interface ShipmentContract {
 
         void setShipmentCheckoutButtonModel(ShipmentCheckoutButtonModel shipmentCheckoutButtonModel);
 
-        void editAddressPinpoint(String latitude, String longitude, ShipmentCartItemModel shipmentCartItemModel);
+        void editAddressPinpoint(String latitude, String longitude, ShipmentCartItemModel shipmentCartItemModel, LocationPass locationPass);
 
         void cancelAutoApplyCoupon();
 

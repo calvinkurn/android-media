@@ -477,6 +477,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
+    public void navigateToSetPinpoint(String message, LocationPass locationPass) {
+        Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+        Intent intent = GeolocationActivity.createInstance(getActivity(), locationPass);
+        startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT);
+    }
+
+    @Override
     public Activity getActivityContext() {
         return getActivity();
     }
@@ -530,7 +537,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             LocationPass locationPass = data.getExtras().getParcelable(GeolocationActivity.EXTRA_EXISTING_LOCATION);
             if (locationPass != null) {
                 shipmentPresenter.editAddressPinpoint(locationPass.getLatitude(), locationPass.getLongitude(),
-                        shipmentAdapter.getShipmentCartItemModelByIndex(shipmentAdapter.getLastChooseCourierItemPosition()));
+                        shipmentAdapter.getShipmentCartItemModelByIndex(shipmentAdapter.getLastChooseCourierItemPosition()),
+                        locationPass);
             }
         }
     }
