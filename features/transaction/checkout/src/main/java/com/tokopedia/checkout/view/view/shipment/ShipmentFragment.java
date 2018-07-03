@@ -689,7 +689,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     private void showCourierChoiceBottomSheet(ShipmentDetailData shipmentDetailData, int position) {
-        if (courierBottomsheet == null || position != courierBottomsheet.getLastCartItemPosition()) {
+        if (courierBottomsheet == null || position != courierBottomsheet.getLastCartItemPosition() ||
+                shipmentDetailData.getSelectedCourier() == null) {
             courierBottomsheet = new CourierBottomsheet(getActivity(), shipmentDetailData, position);
         }
         courierBottomsheet.setListener(this);
