@@ -337,11 +337,12 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                 && shipmentDetailData.getSelectedCourier() != null;
 
         if (isCourierSelected) {
-            if (shipmentDetailData.getSelectedCourier().getShipmentItemData() != null) {
-                if (!TextUtils.isEmpty(shipmentDetailData.getSelectedCourier().getShipmentItemData().getType()) &&
-                        !TextUtils.isEmpty(shipmentDetailData.getSelectedCourier().getShipmentItemData().getDeliveryTimeRange())) {
+            if (!TextUtils.isEmpty(shipmentDetailData.getSelectedCourier().getShipmentItemDataEtd()) &&
+                    !TextUtils.isEmpty(shipmentDetailData.getSelectedCourier().getShipmentItemDataType())) {
+                if (!TextUtils.isEmpty(shipmentDetailData.getSelectedCourier().getShipmentItemDataType()) &&
+                        !TextUtils.isEmpty(shipmentDetailData.getSelectedCourier().getShipmentItemDataEtd())) {
                     String etd = "(" +
-                            shipmentDetailData.getSelectedCourier().getShipmentItemData().getDeliveryTimeRange() +
+                            shipmentDetailData.getSelectedCourier().getShipmentItemDataEtd() +
                             ")";
                     tvShippingEtd.setText(etd);
                     tvShippingEtd.setVisibility(View.VISIBLE);
@@ -353,7 +354,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                 } else {
                     tvShippingEtd.setVisibility(View.GONE);
                 }
-                tvShippingTypeName.setText(shipmentDetailData.getSelectedCourier().getShipmentItemData().getType());
+                tvShippingTypeName.setText(shipmentDetailData.getSelectedCourier().getShipmentItemDataType());
                 llShipmpingType.setVisibility(View.VISIBLE);
             } else {
                 llShipmpingType.setVisibility(View.GONE);

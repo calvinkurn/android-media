@@ -221,7 +221,8 @@ public class RatesDataConverter {
         courierItemData.setEstimatedTimeDelivery(product.getShipperEtd());
         courierItemData.setMinEtd(product.getMinEtd());
         courierItemData.setMaxEtd(product.getMaxEtd());
-        courierItemData.setShipmentItemData(shipmentItemData);
+        courierItemData.setShipmentItemDataEtd(shipmentItemData.getDeliveryTimeRange());
+        courierItemData.setShipmentItemDataType(shipmentItemData.getType());
 
         return courierItemData;
     }

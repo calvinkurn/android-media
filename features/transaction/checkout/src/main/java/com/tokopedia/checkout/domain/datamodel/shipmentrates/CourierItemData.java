@@ -10,7 +10,6 @@ import com.tokopedia.checkout.view.view.shippingoptions.viewmodel.ShipmentOption
  */
 
 public class CourierItemData implements Parcelable, ShipmentOptionData {
-    private ShipmentItemData shipmentItemData;
     private int shipperId;
     private int shipperProductId;
     private String name;
@@ -29,13 +28,14 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
     private boolean usePinPoint;
     private boolean allowDropshiper;
     private boolean selected;
+    private String shipmentItemDataEtd;
+    private String shipmentItemDataType;
 
     public CourierItemData() {
     }
 
 
     protected CourierItemData(Parcel in) {
-        shipmentItemData = in.readParcelable(ShipmentItemData.class.getClassLoader());
         shipperId = in.readInt();
         shipperProductId = in.readInt();
         name = in.readString();
@@ -54,11 +54,12 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         usePinPoint = in.readByte() != 0;
         allowDropshiper = in.readByte() != 0;
         selected = in.readByte() != 0;
+        shipmentItemDataEtd = in.readString();
+        shipmentItemDataType = in.readString();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(shipmentItemData, flags);
         dest.writeInt(shipperId);
         dest.writeInt(shipperProductId);
         dest.writeString(name);
@@ -240,12 +241,19 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         this.estimatedTimeDelivery = estimatedTimeDelivery;
     }
 
-    public ShipmentItemData getShipmentItemData() {
-        return shipmentItemData;
+    public String getShipmentItemDataEtd() {
+        return shipmentItemDataEtd;
     }
 
-    public void setShipmentItemData(ShipmentItemData shipmentItemData) {
-        this.shipmentItemData = shipmentItemData;
+    public void setShipmentItemDataEtd(String shipmentItemDataEtd) {
+        this.shipmentItemDataEtd = shipmentItemDataEtd;
     }
 
+    public String getShipmentItemDataType() {
+        return shipmentItemDataType;
+    }
+
+    public void setShipmentItemDataType(String shipmentItemDataType) {
+        this.shipmentItemDataType = shipmentItemDataType;
+    }
 }
