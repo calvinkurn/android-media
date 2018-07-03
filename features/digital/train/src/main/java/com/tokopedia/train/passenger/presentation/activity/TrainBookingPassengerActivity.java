@@ -1,11 +1,11 @@
-package com.tokopedia.train.passenger.activity;
+package com.tokopedia.train.passenger.presentation.activity;
 
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.train.common.presentation.TrainBaseActivity;
-import com.tokopedia.train.passenger.fragment.TrainBookingPassengerFragment;
+import com.tokopedia.train.passenger.presentation.fragment.TrainBookingPassengerFragment;
 import com.tokopedia.train.search.presentation.model.TrainScheduleBookingPassData;
 
 /**

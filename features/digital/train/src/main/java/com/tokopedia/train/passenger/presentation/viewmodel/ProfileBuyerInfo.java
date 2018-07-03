@@ -1,4 +1,4 @@
-package com.tokopedia.train.passenger.viewmodel;
+package com.tokopedia.train.passenger.presentation.viewmodel;
 
 import android.os.Parcel;
 import android.os.Parcelable;

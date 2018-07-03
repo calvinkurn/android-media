@@ -1,6 +1,6 @@
 package com.tokopedia.train.common;
 
-import com.tokopedia.train.passenger.viewmodel.ProfileBuyerInfo;
+import com.tokopedia.train.passenger.presentation.viewmodel.ProfileBuyerInfo;
 
 import rx.Observable;
 

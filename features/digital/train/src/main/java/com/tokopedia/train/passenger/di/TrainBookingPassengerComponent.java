@@ -1,8 +1,8 @@
 package com.tokopedia.train.passenger.di;
 
 import com.tokopedia.train.common.di.TrainComponent;
-import com.tokopedia.train.passenger.fragment.TrainBookingAddPassengerFragment;
-import com.tokopedia.train.passenger.fragment.TrainBookingPassengerFragment;
+import com.tokopedia.train.passenger.presentation.fragment.TrainBookingAddPassengerFragment;
+import com.tokopedia.train.passenger.presentation.fragment.TrainBookingPassengerFragment;
 
 import dagger.Component;
 

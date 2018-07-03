@@ -1,13 +1,13 @@
-package com.tokopedia.train.passenger.presenter;
+package com.tokopedia.train.passenger.presentation.presenter;
 
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.tkpdtrain.R;
-import com.tokopedia.train.passenger.contract.TrainBookingAddPassengerContract;
+import com.tokopedia.train.passenger.presentation.contract.TrainBookingAddPassengerContract;
 import com.tokopedia.train.passenger.data.TrainBookingPassenger;
 import com.tokopedia.train.passenger.data.TrainPassengerTitle;
-import com.tokopedia.train.passenger.viewmodel.TrainPassengerViewModel;
+import com.tokopedia.train.passenger.presentation.viewmodel.TrainPassengerViewModel;
 
 import javax.inject.Inject;
 
@@ -37,7 +37,10 @@ public class TrainBookingAddPassengerPresenter extends BaseDaggerPresenter<Train
 
     private boolean isAllDataValid() {
         boolean allDataValid = true;
-        if (TextUtils.isEmpty(getView().getContactName())) {
+        if (TextUtils.isEmpty(getView().getSalutationTitle())) {
+            allDataValid = false;
+            getView().showMessageErrorInSnackBar(R.string.train_passenger_error_salutation);
+        } else if (TextUtils.isEmpty(getView().getContactName())) {
             allDataValid = false;
             getView().showMessageErrorInSnackBar(R.string.train_passenger_error_contact_name);
         } else if (TextUtils.isEmpty(getView().getPhoneNumber()) && getView().getPaxType() == TrainBookingPassenger.ADULT) {

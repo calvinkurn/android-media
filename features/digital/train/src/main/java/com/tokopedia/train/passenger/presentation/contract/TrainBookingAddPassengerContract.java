@@ -1,8 +1,8 @@
-package com.tokopedia.train.passenger.contract;
+package com.tokopedia.train.passenger.presentation.contract;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.train.passenger.viewmodel.TrainPassengerViewModel;
+import com.tokopedia.train.passenger.presentation.viewmodel.TrainPassengerViewModel;
 
 /**
  * Created by nabillasabbaha on 25/06/18.

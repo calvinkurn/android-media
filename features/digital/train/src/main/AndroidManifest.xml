@@ -54,13 +54,13 @@
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name="com.tokopedia.train.passenger.activity.TrainBookingPassengerActivity"
+            android:name="com.tokopedia.train.passenger.presentation.activity.TrainBookingPassengerActivity"
             android:label="@string/train_booking_passenger_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name="com.tokopedia.train.passenger.activity.TrainBookingAddPassengerActivity"
+            android:name="com.tokopedia.train.passenger.presentation.activity.TrainBookingAddPassengerActivity"
             android:label="@string/train_booking_passenger_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
