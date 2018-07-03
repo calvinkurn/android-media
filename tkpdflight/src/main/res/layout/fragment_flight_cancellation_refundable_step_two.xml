@@ -60,7 +60,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingBottom="@dimen/padding_16"
-                    android:text="Harap unggah bukti identitas yang valid. Jika bukti identitas salah, pengembalian dana Anda tidak akan diproses" />
+                    android:text="@string/flight_cancellation_support_docs_description" />
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/rv_attachments"
