@@ -37,9 +37,7 @@ class TopAdsKeywordNewChooseGroupFragment : TopAdsNewBaseStepperFragment<TopAdsK
         private val SAVED_GROUP_NAME = "grp_nm"
         private val SAVED_KEYWORD_COUNT = "key_count"
 
-        fun newInstance(): Fragment {
-            return TopAdsKeywordNewChooseGroupFragment()
-        }
+        fun newInstance(): Fragment = TopAdsKeywordNewChooseGroupFragment()
     }
 
     private var chosenId = "";
@@ -78,12 +76,9 @@ class TopAdsKeywordNewChooseGroupFragment : TopAdsNewBaseStepperFragment<TopAdsK
         stepperListener?.goToNextPage(stepperModel)
     }
 
-    override fun populateView(stepperModel: TopAdsKeywordNewStepperModel) {
-    }
+    override fun populateView(stepperModel: TopAdsKeywordNewStepperModel) {}
 
-    override fun getScreenName(): String? {
-        return null
-    }
+    override fun getScreenName(): String? = null
 
     override fun initInjector() {
         DaggerTopAdsKeywordNewChooseGroupComponent.builder()
@@ -159,13 +154,11 @@ class TopAdsKeywordNewChooseGroupFragment : TopAdsNewBaseStepperFragment<TopAdsK
                 topAdsKeywordNewChooseGroupPresenter.searchGroupName(editable?.toString() ?: "")
             }
 
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
         })
-        choose_group_auto_text.setOnItemClickListener { adapterView, view, i, l ->
+        choose_group_auto_text.setOnItemClickListener { _, _, i, _ ->
             choose_group_auto_text.lockView()
             groupAd = groupAds[i]
             groupAd?.run {

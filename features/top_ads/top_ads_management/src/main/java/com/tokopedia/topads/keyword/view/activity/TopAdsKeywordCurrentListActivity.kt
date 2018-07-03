@@ -43,12 +43,8 @@ class TopAdsKeywordCurrentListActivity: BaseSimpleActivity(), HasComponent<TopAd
         super.onCreate(savedInstanceState)
     }
 
-    override fun getNewFragment(): Fragment {
-        return TopAdsKeywordCurrentListFragment.createInstance(isPositive, groupId)
-    }
+    override fun getNewFragment(): Fragment = TopAdsKeywordCurrentListFragment.createInstance(isPositive, groupId)
 
-    override fun getComponent(): TopAdsComponent {
-        return TopAdsComponentInstance.getComponent(application)
-    }
+    override fun getComponent() = TopAdsComponentInstance.getComponent(application)
 
 }

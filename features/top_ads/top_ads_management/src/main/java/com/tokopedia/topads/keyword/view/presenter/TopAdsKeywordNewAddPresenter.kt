@@ -37,13 +37,11 @@ class TopAdsKeywordNewAddPresenter @Inject constructor(val useCase: TopAdsKeywor
             override fun onCompleted() {}
 
             override fun onError(e: Throwable) {
-                if (isViewAttached) {
-                    view.onFailedSaveKeyword(e)
-                }
+                view?.onFailedSaveKeyword(e)
             }
 
             override fun onNext(addKeywordDomainModel: AddKeywordDomainModel) {
-                view.onSuccessSaveKeyword()
+                view?.onSuccessSaveKeyword()
             }
         }
     }

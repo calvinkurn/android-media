@@ -54,9 +54,8 @@ class TopAdsKeywordCurrentListFragment: BaseListFragment<KeywordAd, TopAdsKeywor
                 groupId, page, SortTopAdsOption.LATEST, isPositive)
     }
 
-    override fun getAdapterTypeFactory(): TopAdsKeywordCurrentAdapterTypeFactory {
-        return TopAdsKeywordCurrentAdapterTypeFactory()
-    }
+    override fun getAdapterTypeFactory() = TopAdsKeywordCurrentAdapterTypeFactory()
+
 
     override fun onItemClicked(t: KeywordAd?) {}
 
@@ -78,13 +77,11 @@ class TopAdsKeywordCurrentListFragment: BaseListFragment<KeywordAd, TopAdsKeywor
         presenter.attachView(this)
     }
 
-    override fun showListError(throwable: Throwable?) {
-        super.showGetListError(throwable)
-    }
+    override fun showListError(throwable: Throwable?) = super.showGetListError(throwable)
 
-    override fun onSearchLoaded(data: MutableList<KeywordAd>, hasNextData: Boolean) {
-        super.renderList(data, hasNextData)
-    }
+
+    override fun onSearchLoaded(data: MutableList<KeywordAd>, hasNextData: Boolean) = super.renderList(data, hasNextData)
+
 
     override fun onGetGroupAdListError() {}
 

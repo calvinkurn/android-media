@@ -60,9 +60,7 @@ class TopAdsKeywordNewAddFragment : TopAdsNewBaseStepperFragment<TopAdsKeywordNe
         private const val EXTRA_ERROR_WORDS = "err_wrds"
         private const val EXTRA_LOCAL_WORDS = "lcl_wrds"
 
-        fun newInstance(): Fragment {
-            return TopAdsKeywordNewAddFragment()
-        }
+        fun newInstance(): Fragment = TopAdsKeywordNewAddFragment()
     }
 
 
@@ -70,8 +68,7 @@ class TopAdsKeywordNewAddFragment : TopAdsNewBaseStepperFragment<TopAdsKeywordNe
         stepperModel = stepperModel ?: TopAdsKeywordNewStepperModel()
     }
 
-    override fun saveStepperModel(stepperModel: TopAdsKeywordNewStepperModel) {
-    }
+    override fun saveStepperModel(stepperModel: TopAdsKeywordNewStepperModel) {}
 
     override fun gotoNextPage() {
         trackingSaveKeyword()
@@ -81,9 +78,7 @@ class TopAdsKeywordNewAddFragment : TopAdsNewBaseStepperFragment<TopAdsKeywordNe
 
     override fun populateView(stepperModel: TopAdsKeywordNewStepperModel) {}
 
-    override fun getScreenName(): String? {
-        return null
-    }
+    override fun getScreenName(): String? = null
 
     override fun initInjector() {
         DaggerTopAdsKeywordAddComponent.builder()
@@ -113,7 +108,7 @@ class TopAdsKeywordNewAddFragment : TopAdsNewBaseStepperFragment<TopAdsKeywordNe
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        buttonSave.setOnClickListener { onButtonSaveClicked() }
+        buttonSave.setOnClickListener { gotoNextPage() }
         initEmptyStateView()
         checkButtonEnabled()
         setCurrentGroup()
@@ -157,10 +152,6 @@ class TopAdsKeywordNewAddFragment : TopAdsNewBaseStepperFragment<TopAdsKeywordNe
         onSuccessSaveKeywordListener = null
     }
 
-    private fun onButtonSaveClicked(){
-        gotoNextPage()
-    }
-
     private fun setCurrentGroup(){
         keywordCurrentLabelView.run {
             title = getString(R.string.keyword_group_label_view,stepperModel?.groupName ?: "")
@@ -191,13 +182,9 @@ class TopAdsKeywordNewAddFragment : TopAdsNewBaseStepperFragment<TopAdsKeywordNe
         keywordGroupLabelView.setOnClickListener { gotoAddKeywordItem() }
     }
 
-    private fun getLocalKeyWordSize(): Int {
-        return localKeywordAdapter.itemCount
-    }
+    private fun getLocalKeyWordSize() = localKeywordAdapter.itemCount
 
-    private fun setServerKeyword(){
-
-    }
+    private fun setServerKeyword(){}
 
     private fun checkButtonEnabled(){
         buttonSave.isEnabled = getLocalKeyWordSize() > 0
