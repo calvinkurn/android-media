@@ -26,8 +26,11 @@ import com.tokopedia.core.network.entity.variant.Variant;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.design.component.EditTextCompat;
 import com.tokopedia.design.component.NumberPickerWithCounterView;
+import com.tokopedia.design.utils.CurrencyFormatHelper;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.tkpdpdp.adapter.VariantOptionAdapter;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -200,13 +203,19 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
         productPrice.setText(productDetailData.getInfo().getProductPrice());
         widgetQty.setNumber(selectedQuantity);
         etNotesSeller.setText(selectedRemarkNotes);
+        widgetQty.setOnPickerActionListener(num -> {
+            if (isCampaign()) {
+                textCartPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(productDetailData.getCampaign().getDiscountedPrice() * num, true));
+            } else {
+                textCartPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(productDetailData.getInfo().getProductPriceUnformatted() * num, true));
+            }
+        });
         try {
             widgetQty.setMinValue(Integer.parseInt(productDetailData.getInfo().getProductMinOrder()));
         } catch (NumberFormatException e) {
             widgetQty.setMinValue(1);
         }
-        if(productDetailData.getCampaign() != null
-                && productDetailData.getCampaign().getActive()) {
+        if(isCampaign()) {
             textOriginalPrice.setText(productDetailData.getCampaign().getOriginalPriceFmt());
             textOriginalPrice.setPaintFlags(
                     textOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG
@@ -224,6 +233,11 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
             textOriginalPrice.setVisibility(View.GONE);
         }
 
+    }
+
+    private boolean isCampaign() {
+        return productDetailData.getCampaign() != null
+                && productDetailData.getCampaign().getActive();
     }
 
     private void openSizeChart() {
@@ -295,9 +309,9 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
     private String generateTextPriceCart() {
         if(productDetailData.getCampaign() != null
                 && productDetailData.getCampaign().getActive()) {
-            return productDetailData.getCampaign().getDiscountedPriceFmt();
+            return CurrencyFormatUtil.convertPriceValueToIdrFormat(productDetailData.getCampaign().getDiscountedPrice() * widgetQty.getValue(), true);
         } else {
-            return productDetailData.getInfo().getProductPrice();
+            return CurrencyFormatUtil.convertPriceValueToIdrFormat(productDetailData.getInfo().getProductPriceUnformatted() * widgetQty.getValue(), true);
         }
     }
 
