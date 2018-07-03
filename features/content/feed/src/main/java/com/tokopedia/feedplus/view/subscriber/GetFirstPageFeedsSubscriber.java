@@ -19,7 +19,6 @@ import com.tokopedia.feedplus.domain.model.feed.KolPostDomain;
 import com.tokopedia.feedplus.domain.model.feed.KolRecommendationDomain;
 import com.tokopedia.feedplus.domain.model.feed.KolRecommendationItemDomain;
 import com.tokopedia.feedplus.domain.model.feed.ProductFeedDomain;
-import com.tokopedia.feedplus.domain.model.feed.PromotionFeedDomain;
 import com.tokopedia.feedplus.domain.model.officialstore.BadgeDomain;
 import com.tokopedia.feedplus.domain.model.officialstore.LabelDomain;
 import com.tokopedia.feedplus.domain.model.officialstore.OfficialStoreDomain;
@@ -45,8 +44,6 @@ import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreViewMode
 import com.tokopedia.feedplus.view.viewmodel.product.ActivityCardViewModel;
 import com.tokopedia.feedplus.view.viewmodel.product.ProductCardHeaderViewModel;
 import com.tokopedia.feedplus.view.viewmodel.product.ProductFeedViewModel;
-import com.tokopedia.feedplus.view.viewmodel.promo.PromoCardViewModel;
-import com.tokopedia.feedplus.view.viewmodel.promo.PromoViewModel;
 import com.tokopedia.feedplus.view.viewmodel.recentview.BadgeViewModel;
 import com.tokopedia.feedplus.view.viewmodel.recentview.RecentViewProductViewModel;
 import com.tokopedia.feedplus.view.viewmodel.recentview.RecentViewViewModel;
@@ -73,7 +70,6 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
     private static final String TYPE_OS_CAMPAIGN = "official_store_campaign";
     private static final String TYPE_KOL_CTA = "kol_cta";
     private static final String TYPE_NEW_PRODUCT = "new_product";
-    private static final String TYPE_PROMOTION = "promotion";
     private static final String TYPE_INSPIRATION = "inspirasi";
     private static final String TYPE_TOPADS = "topads";
     private static final String TYPE_KOL = "kolpost";
@@ -288,11 +284,6 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                             TrackingUtils.eventTrackingEnhancedEcommerce(
                                     FeedEnhancedTracking.getImpressionTracking(list, loginIdInt));
                         }
-                        break;
-                    case TYPE_PROMOTION:
-                        PromoCardViewModel promo = convertToPromoViewModel(domain);
-                        if (promo.getListPromo() != null && !promo.getListPromo().isEmpty())
-                            listFeedView.add(promo);
                         break;
                     case TYPE_INSPIRATION:
                         InspirationViewModel inspirationViewModel = convertToInspirationViewModel(domain);
@@ -753,29 +744,6 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
         return listProduct;
     }
 
-    private PromoCardViewModel convertToPromoViewModel(DataFeedDomain domain) {
-        return new PromoCardViewModel(convertToPromoListViewModel(domain), page);
-    }
-
-    private ArrayList<PromoViewModel> convertToPromoListViewModel(DataFeedDomain dataFeedDomain) {
-        ArrayList<PromoViewModel> listPromo = new ArrayList<>();
-        for (PromotionFeedDomain domain : dataFeedDomain.getContent().getPromotions()) {
-            listPromo.add(
-                    new PromoViewModel(
-                            domain.getId(),
-                            domain.getDescription(),
-                            domain.getPeriode(),
-                            domain.getCode(),
-                            domain.getThumbnail(),
-                            domain.getUrl(),
-                            domain.getName(),
-                            page));
-        }
-        addSeeMorePromo(dataFeedDomain, listPromo);
-
-        return listPromo;
-    }
-
     private ContentProductViewModel convertContentProductViewModel(KolCtaDomain domain) {
         if (!TextUtils.isEmpty(domain.getImageUrl())
                 || !TextUtils.isEmpty(domain.getApplink())
@@ -793,12 +761,6 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
         }
 
         return null;
-    }
-
-    private void addSeeMorePromo(DataFeedDomain dataFeedDomain, ArrayList<PromoViewModel> listPromo) {
-        if (dataFeedDomain.getContent().getPromotions().size() > 1) {
-            listPromo.add(new PromoViewModel(page));
-        }
     }
 
     private int excludeProgressBarOnCurrentPosition(FeedPlus.View viewListener,

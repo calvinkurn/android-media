@@ -118,8 +118,6 @@ public interface FeedPlus {
 
         void onGoToShopDetail(int page, int rowNumber, Integer shopId, String url);
 
-        void onCopyClicked(int page, int rowNumber, String id, String s, String name);
-
         void onGoToBlogWebView(String url);
 
         void onOpenVideo(String videoUrl, String subtitle);

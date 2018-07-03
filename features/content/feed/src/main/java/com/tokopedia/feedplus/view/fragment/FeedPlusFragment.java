@@ -48,7 +48,6 @@ import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
-import com.tokopedia.core.util.ClipboardHandler;
 import com.tokopedia.feedplus.FeedModuleRouter;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.domain.usecase.FollowKolPostUseCase;
@@ -74,7 +73,6 @@ import com.tokopedia.feedplus.view.viewmodel.kol.PollOptionViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
 import com.tokopedia.feedplus.view.viewmodel.product.ProductFeedViewModel;
-import com.tokopedia.feedplus.view.viewmodel.promo.PromoCardViewModel;
 import com.tokopedia.feedplus.view.viewmodel.topads.FeedTopAdsViewModel;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
@@ -280,14 +278,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         if (isInspirationItem(item)) {
             UnifyTracking.eventR3(AppEventTracking.Action.IMPRESSION,
                     FeedTrackingEventLabel.Impression.FEED_RECOMMENDATION);
-        } else if (isPromoItem(item)) {
-            UnifyTracking.eventFeedClick(AppEventTracking.Action.IMPRESSION,
-                    FeedTrackingEventLabel.Impression.FEED_PROMOTION);
         }
-    }
-
-    private boolean isPromoItem(Visitable item) {
-        return item instanceof PromoCardViewModel;
     }
 
     private boolean isInspirationItem(Visitable item) {
@@ -475,18 +466,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
         Intent intent = ((FeedModuleRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), String.valueOf(shopId));
         startActivity(intent);
         UnifyTracking.eventFeedViewShop(String.valueOf(shopId), getFeedAnalyticsHeader(page, rowNumber) + FeedTrackingEventLabel.View.FEED_SHOP);
-    }
-
-    @SuppressLint("Range")
-    @Override
-    public void onCopyClicked(int page, int rowNumber, String id, String code, String name) {
-        ClipboardHandler.CopyToClipboard(getActivity(), code);
-        SnackbarManager.make(getActivity(), getResources().getString(R.string.copy_promo_success),
-                Snackbar.LENGTH_SHORT).show();
-        UnifyTracking.eventFeedClickPromo(id, AppEventTracking.Action.COPY_CODE,
-                getFeedAnalyticsHeader(page, rowNumber)
-                        + FeedTrackingEventLabel.Click.PROMO_COPY + name);
-
     }
 
     @Override

@@ -16,7 +16,6 @@ import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreBrandsVi
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreCampaignViewModel;
 import com.tokopedia.feedplus.view.viewmodel.product.ActivityCardViewModel;
 import com.tokopedia.feedplus.view.viewmodel.product.AddFeedModel;
-import com.tokopedia.feedplus.view.viewmodel.promo.PromoCardViewModel;
 import com.tokopedia.feedplus.view.viewmodel.promo.PromotedProductViewModel;
 import com.tokopedia.feedplus.view.viewmodel.promo.PromotedShopViewModel;
 import com.tokopedia.feedplus.view.viewmodel.recentview.RecentViewViewModel;
@@ -32,8 +31,6 @@ public interface FeedPlusTypeFactory {
     int type(ActivityCardViewModel viewModel);
 
     int type(PromotedShopViewModel viewModel);
-
-    int type(PromoCardViewModel promoCardViewModel);
 
     int type(OfficialStoreBrandsViewModel brandsViewModel);
 

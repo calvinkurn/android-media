@@ -39,7 +39,6 @@ import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreBrandsVi
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreCampaignViewModel;
 import com.tokopedia.feedplus.view.viewmodel.product.ActivityCardViewModel;
 import com.tokopedia.feedplus.view.viewmodel.product.AddFeedModel;
-import com.tokopedia.feedplus.view.viewmodel.promo.PromoCardViewModel;
 import com.tokopedia.feedplus.view.viewmodel.promo.PromotedProductViewModel;
 import com.tokopedia.feedplus.view.viewmodel.promo.PromotedShopViewModel;
 import com.tokopedia.feedplus.view.viewmodel.recentview.RecentViewViewModel;
@@ -87,11 +86,6 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
     @Override
     public int type(PromotedShopViewModel viewModel) {
         return PromotedShopViewHolder.LAYOUT;
-    }
-
-    @Override
-    public int type(PromoCardViewModel viewModel) {
-        return PromoViewHolder.LAYOUT;
     }
 
     @Override
@@ -207,8 +201,6 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
             viewHolder = new ActivityCardViewHolder(view, viewListener);
         else if (type == PromotedShopViewHolder.LAYOUT)
             viewHolder = new PromotedShopViewHolder(view, viewListener);
-        else if (type == PromoViewHolder.LAYOUT)
-            viewHolder = new PromoViewHolder(view, viewListener);
         else if (type == OfficialStoreCampaignViewHolder.LAYOUT)
             viewHolder = new OfficialStoreCampaignViewHolder(view, viewListener);
         else if (type == OfficialStoreBrandsViewHolder.LAYOUT)
