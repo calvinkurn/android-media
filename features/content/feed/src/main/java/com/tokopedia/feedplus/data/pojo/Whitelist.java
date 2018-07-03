@@ -25,6 +25,9 @@ public class Whitelist {
     @SerializedName("description")
     private String description;
 
+    @SerializedName("post_success")
+    private String postSuccessMessage;
+
     public boolean isWhitelist() {
         return isWhitelist;
     }
@@ -47,5 +50,9 @@ public class Whitelist {
 
     public String getTitleIdentifier() {
         return titleIdentifier;
+    }
+
+    public String getPostSuccessMessage() {
+        return postSuccessMessage;
     }
 }

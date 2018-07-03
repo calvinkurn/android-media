@@ -74,6 +74,7 @@ public class GetFirstPageFeedsCloudUseCase extends GetFeedsUseCase {
             domain.setTitle(query.getWhitelist().getTitle());
             domain.setDesc(query.getWhitelist().getDescription());
             domain.setTitleIdentifier(query.getWhitelist().getTitleIdentifier());
+            domain.setPostSuccessMessage(query.getWhitelist().getPostSuccessMessage());
             return domain;
         }
     }

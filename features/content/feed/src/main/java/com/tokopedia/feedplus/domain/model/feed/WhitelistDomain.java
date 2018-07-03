@@ -10,6 +10,7 @@ public class WhitelistDomain {
     private String url;
     private String title;
     private String titleIdentifier;
+    private String postSuccessMessage;
     private String desc;
     private String image;
 
@@ -43,6 +44,14 @@ public class WhitelistDomain {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getPostSuccessMessage() {
+        return postSuccessMessage;
+    }
+
+    public void setPostSuccessMessage(String postSuccessMessage) {
+        this.postSuccessMessage = postSuccessMessage;
     }
 
     public String getDesc() {
