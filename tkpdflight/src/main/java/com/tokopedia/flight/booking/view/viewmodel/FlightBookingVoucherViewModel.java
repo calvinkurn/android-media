@@ -13,9 +13,9 @@ public class FlightBookingVoucherViewModel implements Parcelable {
     private boolean autoapplySuccess;
     private String code;
     private int isCoupon;
-    private long discountAmount;
+    private double discountAmount;
     private String discountPrice;
-    private long discountedAmount;
+    private double discountedAmount;
     private String discountedPrice;
     private String titleDescription;
     private String messageSuccess;
@@ -31,9 +31,9 @@ public class FlightBookingVoucherViewModel implements Parcelable {
         autoapplySuccess = in.readByte() != 0;
         code = in.readString();
         isCoupon = in.readInt();
-        discountAmount = in.readLong();
+        discountAmount = in.readDouble();
         discountPrice = in.readString();
-        discountedAmount = in.readLong();
+        discountedAmount = in.readDouble();
         discountedPrice = in.readString();
         titleDescription = in.readString();
         messageSuccess = in.readString();
@@ -48,9 +48,9 @@ public class FlightBookingVoucherViewModel implements Parcelable {
         dest.writeByte((byte) (autoapplySuccess ? 1 : 0));
         dest.writeString(code);
         dest.writeInt(isCoupon);
-        dest.writeLong(discountAmount);
+        dest.writeDouble(discountAmount);
         dest.writeString(discountPrice);
-        dest.writeLong(discountedAmount);
+        dest.writeDouble(discountedAmount);
         dest.writeString(discountedPrice);
         dest.writeString(titleDescription);
         dest.writeString(messageSuccess);
@@ -115,11 +115,11 @@ public class FlightBookingVoucherViewModel implements Parcelable {
         this.isCoupon = isCoupon;
     }
 
-    public long getDiscountAmount() {
+    public double getDiscountAmount() {
         return discountAmount;
     }
 
-    public void setDiscountAmount(long discountAmount) {
+    public void setDiscountAmount(double discountAmount) {
         this.discountAmount = discountAmount;
     }
 
@@ -131,11 +131,11 @@ public class FlightBookingVoucherViewModel implements Parcelable {
         this.discountPrice = discountPrice;
     }
 
-    public long getDiscountedAmount() {
+    public double getDiscountedAmount() {
         return discountedAmount;
     }
 
-    public void setDiscountedAmount(long discountedAmount) {
+    public void setDiscountedAmount(double discountedAmount) {
         this.discountedAmount = discountedAmount;
     }
 
