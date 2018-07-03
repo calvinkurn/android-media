@@ -829,10 +829,12 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
             replyEditText.setVisibility(View.VISIBLE);
             sendButton.setVisibility(View.VISIBLE);
             login.setVisibility(View.GONE);
+            setQuickReply(((GroupChatContract.View) getActivity()).getChannelInfoViewModel().getQuickRepliesViewModel());
         } else {
             divider.setVisibility(View.GONE);
             replyEditText.setVisibility(View.GONE);
             sendButton.setVisibility(View.GONE);
+            quickReplyRecyclerView.setVisibility(View.GONE);
             login.setVisibility(View.VISIBLE);
         }
     }
