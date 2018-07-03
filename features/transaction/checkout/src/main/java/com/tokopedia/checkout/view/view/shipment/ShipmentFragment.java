@@ -334,16 +334,27 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         for (ShipmentCartItemModel oldShipmentCartItemModel : oldShipmentCartItemModelList) {
             for (ShipmentCartItemModel newShipmentCartItemModel : newShipmentCartItemModelList) {
                 if (oldShipmentCartItemModel.getShopId() == newShipmentCartItemModel.getShopId()) {
+                    boolean breakFromNewShipmentCartItemModelLoop = false;
                     for (ShopShipment shopShipment : newShipmentCartItemModel.getShipmentCartData().getShopShipments()) {
                         if (oldShipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperId() == shopShipment.getShipId()) {
+                            boolean breakFromShopShipmentLoop = false;
                             for (ShipProd shipProd : shopShipment.getShipProds()) {
                                 if (oldShipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperProductId() == shipProd.getShipProdId()) {
                                     newShipmentCartItemModel.setSelectedShipmentDetailData(oldShipmentCartItemModel.getSelectedShipmentDetailData());
                                     newShipmentCartItemModel.setStateDropshipperHasError(oldShipmentCartItemModel.isStateDropshipperHasError());
                                     newShipmentCartItemModel.setStateDropshipperDetailExpanded(oldShipmentCartItemModel.isStateDropshipperDetailExpanded());
+                                    breakFromShopShipmentLoop = true;
+                                    break;
                                 }
                             }
+                            if (breakFromShopShipmentLoop) {
+                                breakFromNewShipmentCartItemModelLoop = true;
+                                break;
+                            }
                         }
+                    }
+                    if (breakFromNewShipmentCartItemModelLoop) {
+                        break;
                     }
                 }
             }
@@ -352,7 +363,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         for (ShipmentCartItemModel oldShipmentCartItemModel : oldShipmentCartItemModelList) {
             for (ShipmentCartItemModel newShipmentCartItemModel : newShipmentCartItemModelList) {
                 if (oldShipmentCartItemModel.getShopId() == newShipmentCartItemModel.getShopId() &&
-                        newShipmentCartItemModel.getSelectedShipmentDetailData() == null) {
+                        newShipmentCartItemModel.getSelectedShipmentDetailData() == null &&
+                        oldShipmentCartItemModel.getCartItemModels().size() == newShipmentCartItemModel.getCartItemModels().size() &&
+                        oldShipmentCartItemModel.getCartItemModels().get(0).getProductId() == newShipmentCartItemModel.getCartItemModels().get(0).getProductId()) {
                     oldShipmentCartItemModel.setSelectedShipmentDetailData(null);
                     oldShipmentCartItemModel.setShipmentCartData(newShipmentCartItemModel.getShipmentCartData());
                 }
