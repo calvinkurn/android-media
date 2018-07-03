@@ -2,6 +2,7 @@ package com.tokopedia.instantloan.view.contractor;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.instantloan.data.model.response.BannerEntity;
 import com.tokopedia.instantloan.view.model.BannerViewModel;
 
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
 public interface BannerContractor {
 
     interface View extends CustomerView {
-        void renderUserList(List<BannerViewModel> banners);
+        void renderUserList(List<BannerEntity> banners);
         void nextBanner();
         void previousBanner();
     }

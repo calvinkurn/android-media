@@ -132,21 +132,21 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
     @Override
     public void onSuccessLoanProfileStatus(UserProfileLoanEntity data) {
 
-        if (!data.getWhitelist()) {
-            if (!TextUtils.isEmpty(data.getWhiteListUrl())) {
-                com.tkpd.library.utils.CommonUtils.dumper(data.getWhiteListUrl());
-                openWebView(data.getWhiteListUrl());
+        if (!data.getUserProfileLoanData().getWhitelist()) {
+            if (!TextUtils.isEmpty(data.getUserProfileLoanData().getWhiteListUrl())) {
+                com.tkpd.library.utils.CommonUtils.dumper(data.getUserProfileLoanData().getWhiteListUrl());
+                openWebView(data.getUserProfileLoanData().getWhiteListUrl());
             } else {
                 Toast.makeText(getContext(), "Instant Loan Coming Soon", Toast.LENGTH_SHORT).show();
             }
-        } else if (!data.getDataCollection() ||
-                (data.getDataCollection() && data.getDataCollected())) {
+        } else if (!data.getUserProfileLoanData().getDataCollection() ||
+                (data.getUserProfileLoanData().getDataCollection() && data.getUserProfileLoanData().getDataCollected())) {
 
-            if (!TextUtils.isEmpty(data.getRedirectUrl())) {
+            if (!TextUtils.isEmpty(data.getUserProfileLoanData().getRedirectUrl())) {
 
-                Toast.makeText(getContext(), data.getRedirectUrl(), Toast.LENGTH_SHORT).show();
-                com.tkpd.library.utils.CommonUtils.dumper(data.getWhiteListUrl());
-                openWebView(data.getRedirectUrl());
+                Toast.makeText(getContext(), data.getUserProfileLoanData().getRedirectUrl(), Toast.LENGTH_SHORT).show();
+                com.tkpd.library.utils.CommonUtils.dumper(data.getUserProfileLoanData().getWhiteListUrl());
+                openWebView(data.getUserProfileLoanData().getRedirectUrl());
 
             } else {
                 Toast.makeText(getContext(), "Check if fintech profile is build", Toast.LENGTH_SHORT).show();

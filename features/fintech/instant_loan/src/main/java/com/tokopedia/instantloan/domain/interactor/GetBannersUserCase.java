@@ -1,32 +1,47 @@
 package com.tokopedia.instantloan.domain.interactor;
 
-import com.tokopedia.instantloan.data.repository.InstantLoanDataRepository;
-import com.tokopedia.instantloan.domain.model.BannerModelDomain;
-import com.tokopedia.usecase.RequestParams;
-import com.tokopedia.usecase.UseCase;
+import android.content.Context;
 
+import com.google.gson.reflect.TypeToken;
+import com.tokopedia.common.network.data.model.CacheType;
+import com.tokopedia.common.network.data.model.RestCacheStrategy;
+import com.tokopedia.common.network.data.model.RestRequest;
+import com.tokopedia.common.network.domain.RestRequestSupportInterceptorUseCase;
+import com.tokopedia.instantloan.data.model.response.ResponseBannerOffer;
+import com.tokopedia.instantloan.network.InstantLoanUrl;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-
-import rx.Observable;
+import okhttp3.Interceptor;
 
 /**
  * Created by lavekush on 21/03/18.
  */
 
-public class GetBannersUserCase extends UseCase<List<BannerModelDomain>> {
+public class GetBannersUserCase extends RestRequestSupportInterceptorUseCase {
 
-    private final InstantLoanDataRepository mRepository;
 
-    @Inject
-    public GetBannersUserCase(InstantLoanDataRepository repository) {
-        this.mRepository = repository;
+    public GetBannersUserCase(Interceptor interceptor, Context context) {
+        super(interceptor, context);
     }
 
     @Override
-    public Observable<List<BannerModelDomain>> createObservable(RequestParams requestParams) {
-        return mRepository.getBanners();
+    protected List<RestRequest> buildRequest() {
+
+        List<RestRequest> restRequestList = new ArrayList<>();
+
+        Type typeOfT = new TypeToken<ResponseBannerOffer>() {
+        }.getType();
+
+        RestCacheStrategy restCacheStrategy = new RestCacheStrategy.Builder(CacheType.CACHE_FIRST).build();
+        RestRequest restRequest = new RestRequest.Builder(InstantLoanUrl.PATH_BANNER_OFFER, typeOfT)
+                .setCacheStrategy(restCacheStrategy)
+                .build();
+
+        restRequestList.add(restRequest);
+        return restRequestList;
 
     }
 }

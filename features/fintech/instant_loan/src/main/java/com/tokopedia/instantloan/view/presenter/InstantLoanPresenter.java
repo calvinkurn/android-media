@@ -8,6 +8,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.instantloan.constant.DeviceDataKeys;
 import com.tokopedia.instantloan.data.model.response.UserProfileLoanEntity;
@@ -24,11 +25,11 @@ import com.tokopedia.instantloan.domain.interactor.GetLoanProfileStatusUseCase;
 import com.tokopedia.instantloan.domain.interactor.PostPhoneDataUseCase;
 import com.tokopedia.instantloan.domain.model.PhoneDataModelDomain;
 import com.tokopedia.instantloan.view.contractor.InstantLoanContractor;
-import com.tokopedia.instantloan.view.mapper.LoanStatusMapper;
 import com.tokopedia.instantloan.view.mapper.PhoneDataMapper;
 import com.tokopedia.instantloan.view.model.PhoneDataViewModel;
 import com.tokopedia.usecase.RequestParams;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -48,14 +49,12 @@ import rx.schedulers.Schedulers;
 public class InstantLoanPresenter extends BaseDaggerPresenter<InstantLoanContractor.View>
         implements InstantLoanContractor.Presenter {
 
-    private LoanStatusMapper mMapper;
     private PhoneDataMapper mPhoneDataMapper;
     private GetLoanProfileStatusUseCase mGetLoanProfileStatusUseCase;
     private PostPhoneDataUseCase mPostPhoneDataUseCase;
 
     @Inject
-    public InstantLoanPresenter(GetLoanProfileStatusUseCase getLoanProfileStatusUseCase, PostPhoneDataUseCase mPostPhoneDataUseCase, LoanStatusMapper mapper, PhoneDataMapper phoneDataMapper) {
-        this.mMapper = mapper;
+    public InstantLoanPresenter(GetLoanProfileStatusUseCase getLoanProfileStatusUseCase, PostPhoneDataUseCase mPostPhoneDataUseCase, PhoneDataMapper phoneDataMapper) {
         this.mPhoneDataMapper = phoneDataMapper;
         this.mGetLoanProfileStatusUseCase = getLoanProfileStatusUseCase;
         this.mPostPhoneDataUseCase = mPostPhoneDataUseCase;
@@ -74,30 +73,26 @@ public class InstantLoanPresenter extends BaseDaggerPresenter<InstantLoanContrac
     @Override
     public void getLoanProfileStatus() {
         getView().showLoader();
-        mGetLoanProfileStatusUseCase.getExecuteObservable(RequestParams.EMPTY)/*.map(new Func1<LoanProfileStatusModelDomain, UserProfileLoanEntity>() {
+        mGetLoanProfileStatusUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
-            public UserProfileLoanEntity call(LoanProfileStatusModelDomain bannerDomains) {
-                return mMapper.transform(bannerDomains);
-
+            public void onCompleted() {
+                getView().hideLoader();
             }
-        })*/.subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<UserProfileLoanEntity>() {
-                    @Override
-                    public void onCompleted() {
-                        getView().hideLoader();
-                    }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        getView().onErrorLoanProfileStatus(ErrorHandler.getErrorMessage(getView().getActivityContext(), e));
-                    }
+            @Override
+            public void onError(Throwable e) {
+                getView().onErrorLoanProfileStatus(ErrorHandler.getErrorMessage(getView().getActivityContext(), e));
+            }
 
-                    @Override
-                    public void onNext(UserProfileLoanEntity viewModel) {
-                        getView().onSuccessLoanProfileStatus(viewModel);
-                    }
-                });
+            @Override
+            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+
+                RestResponse restResponse = typeRestResponseMap.get(UserProfileLoanEntity.class);
+
+                UserProfileLoanEntity userProfileLoanEntity = restResponse.getData();
+                getView().onSuccessLoanProfileStatus(userProfileLoanEntity);
+            }
+        });
     }
 
     @Override

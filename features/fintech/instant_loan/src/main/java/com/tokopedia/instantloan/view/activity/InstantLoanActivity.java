@@ -24,9 +24,9 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
-import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.instantloan.InstantLoanComponentInstance;
 import com.tokopedia.instantloan.R;
+import com.tokopedia.instantloan.data.model.response.BannerEntity;
 import com.tokopedia.instantloan.ddcollector.DDCollectorManager;
 import com.tokopedia.instantloan.di.component.InstantLoanComponent;
 import com.tokopedia.instantloan.view.adapter.BannerPagerAdapter;
@@ -35,7 +35,6 @@ import com.tokopedia.instantloan.view.contractor.BannerContractor;
 import com.tokopedia.instantloan.view.fragment.DanaInstantFragment;
 import com.tokopedia.instantloan.view.fragment.DenganAgunanFragment;
 import com.tokopedia.instantloan.view.fragment.TanpaAgunanFragment;
-import com.tokopedia.instantloan.view.model.BannerViewModel;
 import com.tokopedia.instantloan.view.presenter.BannerListPresenter;
 import com.tokopedia.instantloan.view.ui.HeightWrappingViewPager;
 import com.tokopedia.instantloan.view.ui.InstantLoanItem;
@@ -115,12 +114,12 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
     private void setActiveTab() {
         viewPager.getViewTreeObserver().addOnGlobalLayoutListener(
                 new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                viewPager.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                viewPager.setCurrentItem(0);
-            }
-        });
+                    @Override
+                    public void onGlobalLayout() {
+                        viewPager.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                        viewPager.setCurrentItem(0);
+                    }
+                });
     }
 
     private DanaInstantFragment getDanaInstantFragment(int position) {
@@ -137,8 +136,8 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         NetworkClient.init(this);
+        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -169,7 +168,7 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
     }
 
     @Override
-    public void renderUserList(List<BannerViewModel> banners) {
+    public void renderUserList(List<BannerEntity> banners) {
         if (!banners.isEmpty()) {
             if (banners.size() > 1) {
                 ((FloatingActionButton) findViewById(R.id.button_next)).show();

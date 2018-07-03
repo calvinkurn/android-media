@@ -8,20 +8,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.instantloan.R;
-import com.tokopedia.instantloan.view.model.BannerViewModel;
+import com.tokopedia.instantloan.data.model.response.BannerEntity;
 
 import java.util.List;
 
 public class BannerPagerAdapter extends PagerAdapter {
 
-    private List<BannerViewModel> banners;
+    private List<BannerEntity> banners;
     LayoutInflater mInflater;
     private BannerClick bannerClick;
 
-    public BannerPagerAdapter(Context context, List<BannerViewModel> images, BannerClick bannerClick) {
+    public BannerPagerAdapter(Context context, List<BannerEntity> images, BannerClick bannerClick) {
         this.banners = images;
         mInflater = LayoutInflater.from(context);
         this.bannerClick = bannerClick;
@@ -45,7 +44,7 @@ public class BannerPagerAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(ViewGroup view, final int position) {
         ImageView banner = (ImageView) mInflater.inflate(R.layout.item_pager_banner, view, false);
-        ImageHandler.LoadImage(banner,banners.get(position).getImage());
+        ImageHandler.LoadImage(banner, banners.get(position).getImage());
         view.addView(banner);
 
         banner.setTag(banners.get(position).getLink());
@@ -56,7 +55,7 @@ public class BannerPagerAdapter extends PagerAdapter {
         return banner;
     }
 
-    public interface BannerClick{
+    public interface BannerClick {
         public void onBannerClick(View view);
     }
 }

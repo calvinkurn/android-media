@@ -1,5 +1,6 @@
 package com.tokopedia.instantloan.data.model.response;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
 
 public class ResponseBannerOffer {
     @SerializedName("banner")
+    @Expose
     private java.util.List<BannerEntity> banners;
 
     public List<BannerEntity> getBanners() {
