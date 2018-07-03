@@ -83,6 +83,13 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
     }
 
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        unregisterShake();
+    }
+
+
     private void initView() {
         topBarTitle = findViewById(R.id.simple_top_bar_title);
         productName = findViewById(R.id.variant_product_name);

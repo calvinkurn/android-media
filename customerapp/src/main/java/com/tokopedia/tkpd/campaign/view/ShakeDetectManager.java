@@ -1,11 +1,11 @@
 package com.tokopedia.tkpd.campaign.view;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Handler;
@@ -13,7 +13,7 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.tokopedia.core.ManageGeneral;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
@@ -22,9 +22,9 @@ import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.tkpd.campaign.configuration.ShakeDetector;
 import com.tokopedia.tkpd.campaign.view.activity.ShakeDetectCampaignActivity;
 import com.tokopedia.tkpd.campaign.view.activity.ShakeShakeAudioCampaignActivity;
+import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 
 import static android.content.Context.SENSOR_SERVICE;
-import static com.raizlabs.android.dbflow.config.FlowManager.getContext;
 
 /**
  * Created by sandeepgoyal on 20/02/18.
@@ -55,6 +55,7 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
 
     public static String sTopActivity = null;
     private String mOpenedActivity = null;
+    private Activity activity;
 
     private ShakeDetectManager() {
 
@@ -64,9 +65,10 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
         return shakeDetectManager;
     }
 
-    public void registerShake(String screenName) {
+    public void registerShake(String screenName,Activity activity) {
         if (!screenName.equals(ShakeDetectCampaignActivity.SCREEN_NAME)) {
             mOpenedActivity = screenName;
+            this.activity = activity;
         }
         initSettingConfig();
         if (isShakeShakeEnable()) {
@@ -191,8 +193,9 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
         public void onReceive(final Context context, final Intent intent) {
             if(intent.getAction() == ACTION_SHAKE_SHAKE_SYNCED) {
                 if (intent.getBooleanExtra("isSuccess", false)) {
-                    final Intent intent1 = new Intent(Intent.ACTION_VIEW);
+                    final Intent intent1 = new Intent(context, DeepLinkActivity.class);;
                     if (intent.getStringExtra("data") != null) {
+
                         Uri uri = Uri.parse("" + intent.getStringExtra("data"));
                         intent1.setData(uri);
                         new Handler().postDelayed(new Runnable() {
@@ -200,7 +203,9 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
                             public void run() {
                                 intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 if(intent1.resolveActivity(context.getPackageManager()) != null)
-                                    context.startActivity(intent1);
+                                    RouteManager.route(activity,intent.getStringExtra("data"));
+                                    //context.startActivity(intent1);
+
                             }
                         }, 500);
                     }

@@ -310,7 +310,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
             if (screenName == null) {
                 screenName = this.getClass().getSimpleName();
             }
-            ((AbstractionRouter) getApplication()).registerShake(screenName);
+            ((AbstractionRouter) getApplication()).registerShake(screenName,this);
         }
     }
 

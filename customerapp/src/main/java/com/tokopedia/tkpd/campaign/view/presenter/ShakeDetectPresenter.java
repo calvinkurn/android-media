@@ -196,7 +196,7 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
                     finishShake();
                     return;
                 }
-                getView().updateTimer(SHAKE_SHAKE_WAIT_TIME_SEC -l);
+               // getView().updateTimer(SHAKE_SHAKE_WAIT_TIME_SEC -l);
 
 
 

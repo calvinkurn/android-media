@@ -131,6 +131,7 @@ public class DigitalProductActivity extends BasePresenterActivity
     protected void onResume() {
         super.onResume();
         invalidateTitleToolBar();
+        unregisterShake();
     }
 
     @Override
