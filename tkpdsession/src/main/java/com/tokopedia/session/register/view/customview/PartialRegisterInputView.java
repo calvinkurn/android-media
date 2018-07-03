@@ -123,6 +123,10 @@ public class PartialRegisterInputView extends BaseCustomView{
         };
     }
 
+    public String getTextValue() {
+        return tvInputRegister.getText().toString();
+    }
+
     private class ClickRegister implements OnClickListener{
 
         @Override

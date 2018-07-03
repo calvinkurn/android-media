@@ -62,6 +62,8 @@ public interface RegisterInitial {
         void goToVerificationPhoneRegister(String phone);
 
         void onErrorValidateRegister(String message);
+
+        void setTempPhoneNumber(String maskedPhoneNumber);
     }
 
     interface Presenter extends CustomerPresenter<View> {

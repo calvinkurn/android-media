@@ -783,6 +783,14 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     @Override
     public void onErrorValidateRegister(String message) {
         partialRegisterInputView.onErrorValidate(message);
+        phoneNumber = "";
+    }
+
+    @Override
+    public void setTempPhoneNumber(String maskedPhoneNumber) {
+        //use masked phone number form backend when needed
+        //we need unmasked phone number (without dash) to be provided to backend
+        this.phoneNumber = partialRegisterInputView.getTextValue();
     }
 
     @Override
