@@ -1,6 +1,7 @@
 package com.tokopedia.digital.common.data.mapper;
 
 import com.tokopedia.digital.common.data.entity.response.Field;
+import com.tokopedia.digital.common.data.entity.response.GuideEntity;
 import com.tokopedia.digital.common.data.entity.response.OperatorBannerEntity;
 import com.tokopedia.digital.common.data.entity.response.RechargeCategoryDetail;
 import com.tokopedia.digital.common.data.entity.response.RechargeFavoritNumber;
@@ -12,6 +13,7 @@ import com.tokopedia.digital.product.view.model.AdditionalFeature;
 import com.tokopedia.digital.product.view.model.BannerData;
 import com.tokopedia.digital.product.view.model.CategoryData;
 import com.tokopedia.digital.product.view.model.ClientNumber;
+import com.tokopedia.digital.product.view.model.GuideData;
 import com.tokopedia.digital.product.view.model.HistoryClientNumber;
 import com.tokopedia.digital.product.view.model.Operator;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
@@ -53,6 +55,7 @@ public class ProductDigitalMapper {
             categoryData.setOperatorList(transformOperators(categoryDetail));
             categoryData.setBannerDataListIncluded(transformBanners(categoryDetail.getBanners()));
             categoryData.setOtherBannerDataListIncluded(transformBanners(categoryDetail.getOtherBanners()));
+            categoryData.setGuideDataList(transformGuides(categoryDetail.getGuides()));
         }
 
         return new ProductDigitalData.Builder()
@@ -63,6 +66,7 @@ public class ProductDigitalMapper {
                 .categoryData(categoryData)
                 .bannerDataList(categoryData.getBannerDataListIncluded())
                 .otherBannerDataList(categoryData.getOtherBannerDataListIncluded())
+                .guideDataList(categoryData.getGuideDataList())
                 .build();
     }
 
@@ -277,5 +281,30 @@ public class ProductDigitalMapper {
         }
 
         return clientNumbers;
+    }
+
+    /**
+     * Helper function to transform guides list
+     *
+     * @param entityList
+     * @return
+     */
+    private List<GuideData> transformGuides(List<GuideEntity> entityList) {
+        List<GuideData> guideDataList = new ArrayList<>();
+
+        if (entityList != null) {
+            for (GuideEntity item : entityList) {
+                guideDataList.add(
+                        new GuideData.Builder()
+                                .id(item.getId())
+                                .type(item.getType())
+                                .title(item.getAttribute().getTitle())
+                                .sourceLink(item.getAttribute().getSourceLink())
+                                .build()
+                );
+            }
+        }
+
+        return guideDataList;
     }
 }
