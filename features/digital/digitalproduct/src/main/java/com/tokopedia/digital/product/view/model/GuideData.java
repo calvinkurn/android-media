@@ -11,19 +11,32 @@ public class GuideData implements Parcelable {
 
     private int id;
     private String type;
-    private GuideAttributeData attribute;
+    private String title;
+    private String sourceLink;
+
+    public GuideData() {
+    }
+
+    public GuideData(Builder builder) {
+        setId(builder.id);
+        setType(builder.type);
+        setTitle(builder.title);
+        setSourceLink(builder.sourceLink);
+    }
 
     protected GuideData(Parcel in) {
         id = in.readInt();
         type = in.readString();
-        attribute = in.readParcelable(GuideAttributeData.class.getClassLoader());
+        title = in.readString();
+        sourceLink = in.readString();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);
         dest.writeString(type);
-        dest.writeParcelable(attribute, flags);
+        dest.writeString(title);
+        dest.writeString(sourceLink);
     }
 
     @Override
@@ -42,4 +55,70 @@ public class GuideData implements Parcelable {
             return new GuideData[size];
         }
     };
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getSourceLink() {
+        return sourceLink;
+    }
+
+    public void setSourceLink(String sourceLink) {
+        this.sourceLink = sourceLink;
+    }
+
+    public static final class Builder {
+        private int id;
+        private String type;
+        private String title;
+        private String sourceLink;
+
+        public Builder() {
+        }
+
+        public Builder id(int val) {
+            id = val;
+            return this;
+        }
+
+        public Builder type(String val) {
+            type = val;
+            return this;
+        }
+
+        public Builder title(String val) {
+            title = val;
+            return this;
+        }
+
+        public Builder sourceLink(String val) {
+            sourceLink = val;
+            return this;
+        }
+
+        public GuideData build() {
+            return new GuideData(this);
+        }
+    }
 }
