@@ -34,68 +34,6 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
     }
 
 
-    protected CourierItemData(Parcel in) {
-        shipmentItemData = in.readParcelable(ShipmentItemData.class.getClassLoader());
-        shipperId = in.readInt();
-        shipperProductId = in.readInt();
-        name = in.readString();
-        deliverySchedule = in.readString();
-        estimatedTimeDelivery = in.readString();
-        minEtd = in.readInt();
-        maxEtd = in.readInt();
-        deliveryPrice = in.readInt();
-        insurancePrice = in.readInt();
-        additionalPrice = in.readInt();
-        courierInfo = in.readString();
-        insuranceType = in.readInt();
-        insuranceUsedType = in.readInt();
-        insuranceUsedInfo = in.readString();
-        insuranceUsedDefault = in.readInt();
-        usePinPoint = in.readByte() != 0;
-        allowDropshiper = in.readByte() != 0;
-        selected = in.readByte() != 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(shipmentItemData, flags);
-        dest.writeInt(shipperId);
-        dest.writeInt(shipperProductId);
-        dest.writeString(name);
-        dest.writeString(deliverySchedule);
-        dest.writeString(estimatedTimeDelivery);
-        dest.writeInt(minEtd);
-        dest.writeInt(maxEtd);
-        dest.writeInt(deliveryPrice);
-        dest.writeInt(insurancePrice);
-        dest.writeInt(additionalPrice);
-        dest.writeString(courierInfo);
-        dest.writeInt(insuranceType);
-        dest.writeInt(insuranceUsedType);
-        dest.writeString(insuranceUsedInfo);
-        dest.writeInt(insuranceUsedDefault);
-        dest.writeByte((byte) (usePinPoint ? 1 : 0));
-        dest.writeByte((byte) (allowDropshiper ? 1 : 0));
-        dest.writeByte((byte) (selected ? 1 : 0));
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<CourierItemData> CREATOR = new Creator<CourierItemData>() {
-        @Override
-        public CourierItemData createFromParcel(Parcel in) {
-            return new CourierItemData(in);
-        }
-
-        @Override
-        public CourierItemData[] newArray(int size) {
-            return new CourierItemData[size];
-        }
-    };
-
     public int getShipperId() {
         return shipperId;
     }
@@ -248,4 +186,65 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         this.shipmentItemData = shipmentItemData;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(this.shipmentItemData, flags);
+        dest.writeInt(this.shipperId);
+        dest.writeInt(this.shipperProductId);
+        dest.writeString(this.name);
+        dest.writeString(this.deliverySchedule);
+        dest.writeString(this.estimatedTimeDelivery);
+        dest.writeInt(this.minEtd);
+        dest.writeInt(this.maxEtd);
+        dest.writeInt(this.deliveryPrice);
+        dest.writeInt(this.insurancePrice);
+        dest.writeInt(this.additionalPrice);
+        dest.writeString(this.courierInfo);
+        dest.writeInt(this.insuranceType);
+        dest.writeInt(this.insuranceUsedType);
+        dest.writeString(this.insuranceUsedInfo);
+        dest.writeInt(this.insuranceUsedDefault);
+        dest.writeByte(this.usePinPoint ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.allowDropshiper ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.selected ? (byte) 1 : (byte) 0);
+    }
+
+    protected CourierItemData(Parcel in) {
+        this.shipmentItemData = in.readParcelable(ShipmentItemData.class.getClassLoader());
+        this.shipperId = in.readInt();
+        this.shipperProductId = in.readInt();
+        this.name = in.readString();
+        this.deliverySchedule = in.readString();
+        this.estimatedTimeDelivery = in.readString();
+        this.minEtd = in.readInt();
+        this.maxEtd = in.readInt();
+        this.deliveryPrice = in.readInt();
+        this.insurancePrice = in.readInt();
+        this.additionalPrice = in.readInt();
+        this.courierInfo = in.readString();
+        this.insuranceType = in.readInt();
+        this.insuranceUsedType = in.readInt();
+        this.insuranceUsedInfo = in.readString();
+        this.insuranceUsedDefault = in.readInt();
+        this.usePinPoint = in.readByte() != 0;
+        this.allowDropshiper = in.readByte() != 0;
+        this.selected = in.readByte() != 0;
+    }
+
+    public static final Creator<CourierItemData> CREATOR = new Creator<CourierItemData>() {
+        @Override
+        public CourierItemData createFromParcel(Parcel source) {
+            return new CourierItemData(source);
+        }
+
+        @Override
+        public CourierItemData[] newArray(int size) {
+            return new CourierItemData[size];
+        }
+    };
 }

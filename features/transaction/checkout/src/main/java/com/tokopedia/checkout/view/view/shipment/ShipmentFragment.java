@@ -59,6 +59,8 @@ import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -80,6 +82,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public static final String ARG_EXTRA_NAVIGATE_TO_ADDRESS_CHOICE = "ARG_EXTRA_NAVIGATE_TO_ADDRESS_CHOICE";
     private static final String NO_PINPOINT_ETD = "Belum Pinpoint";
     private static final int TOASTER_DURATION = 2500;
+    private static final String EXTRA_STATE_SHIPMENT_SELECTION = "EXTRA_STATE_SHIPMENT_SELECTION";
 
     private RecyclerView rvShipment;
     private TkpdProgressDialog progressDialogNormal;
@@ -97,6 +100,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     RatesDataConverter ratesDataConverter;
     @Inject
     CheckoutAnalyticsCourierSelection checkoutAnalyticsCourierSelection;
+
+    private HashSet<ShipmentSelectionStateData> shipmentSelectionStateDataHashSet = new HashSet<>();
 
     public static ShipmentFragment newInstance(CartShipmentAddressFormData cartShipmentAddressFormData,
                                                PromoCodeAppliedData promoCodeAppliedData,
@@ -149,12 +154,20 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onSaveState(Bundle state) {
-
+        if (!shipmentSelectionStateDataHashSet.isEmpty()) {
+            state.putParcelableArrayList(
+                    EXTRA_STATE_SHIPMENT_SELECTION, new ArrayList<>(shipmentSelectionStateDataHashSet
+                    ));
+        }
     }
 
     @Override
     public void onRestoreState(Bundle savedState) {
-
+        ArrayList<ShipmentSelectionStateData> shipmentSelectionStateData =
+                savedState.getParcelableArrayList(EXTRA_STATE_SHIPMENT_SELECTION);
+        if (shipmentSelectionStateData != null) {
+            shipmentSelectionStateDataHashSet = new HashSet<>(shipmentSelectionStateData);
+        }
     }
 
     @Override
@@ -229,6 +242,15 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         shipmentAdapter.addCartItemDataList(shipmentPresenter.getShipmentCartItemModelList());
         shipmentAdapter.addShipmentCostData(shipmentPresenter.getShipmentCostModel());
         shipmentAdapter.addShipmentCheckoutButtonModel(shipmentPresenter.getShipmentCheckoutButtonModel());
+        if (!shipmentSelectionStateDataHashSet.isEmpty()) {
+            for (ShipmentSelectionStateData shipmentSelectionStateData : shipmentSelectionStateDataHashSet) {
+                if (!shipmentSelectionStateData.getCourierItemData().getEstimatedTimeDelivery().equalsIgnoreCase(NO_PINPOINT_ETD)
+                        && shipmentSelectionStateData.getPosition() < shipmentAdapter.getItemCount()) {
+                    shipmentAdapter.setSelecteCourier(shipmentSelectionStateData.getPosition(),
+                            shipmentSelectionStateData.getCourierItemData());
+                }
+            }
+        }
     }
 
     @Override
@@ -523,7 +545,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if (requestCode == TopPayActivity.REQUEST_CODE) {
             onResultFromPayment(resultCode);
         } else if ((requestCode == REQUEST_CHOOSE_PICKUP_POINT)
@@ -815,6 +836,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onShipmentItemClick(CourierItemData courierItemData, int cartItemPosition) {
+        ShipmentSelectionStateData shipmentSelectionStateData = new ShipmentSelectionStateData();
+        shipmentSelectionStateData.setPosition(cartItemPosition);
+        shipmentSelectionStateData.setCourierItemData(courierItemData);
+        shipmentSelectionStateDataHashSet.add(shipmentSelectionStateData);
         if (courierItemData.getEstimatedTimeDelivery().equalsIgnoreCase(NO_PINPOINT_ETD)) {
             shipmentAdapter.setLastChooseCourierItemPosition(cartItemPosition);
             LocationPass locationPass = new LocationPass();
