@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.settingbank.R
+import com.tokopedia.settingbank.banklist.data.SettingBankUrl
 import com.tokopedia.settingbank.banklist.view.listener.EmptyBankAccountListener
 
 /**
@@ -25,9 +26,7 @@ class EmptyBankAccountViewHolder(val v: View, val listener: EmptyBankAccountList
     }
 
     override fun bind(element: EmptyModel?) {
-
-        //TODO : Change Image
-        ImageHandler.LoadImage(emptyIcon, "https://ecs7.tokopedia.net/img/gold-active-large.png")
+        ImageHandler.LoadImage(emptyIcon, SettingBankUrl.Companion.IMAGE_EMPTY_BANK_LIST)
         addAccountButton.setOnClickListener({ listener.addNewAccount() })
     }
 

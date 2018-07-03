@@ -42,7 +42,7 @@ class AddEditBankPresenter(private val userSession: UserSession,
                 when {
                     errorMessage.toLowerCase().contains(accountNumber) -> view.onErrorAccountNumber(errorMessage)
                     errorMessage.toLowerCase().contains(accountName) -> view.onErrorAccountName(errorMessage)
-                    else -> view.onErrorGeneral(ErrorHandler.getErrorMessage(view.getContext(), e))
+                    else -> view.onErrorGeneral(errorMessage)
                 }
             }
 

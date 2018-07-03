@@ -2,7 +2,7 @@ package com.tokopedia.settingbank.banklist.domain.usecase
 
 import com.tokopedia.abstraction.common.utils.network.AuthUtil
 import com.tokopedia.settingbank.banklist.data.SettingBankApi
-import com.tokopedia.settingbank.banklist.domain.mapper.GetBankListMapper
+import com.tokopedia.settingbank.banklist.domain.mapper.GetBankAccountListMapper
 import com.tokopedia.settingbank.banklist.view.viewmodel.BankAccountListViewModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
@@ -12,8 +12,8 @@ import java.util.*
 /**
  * @author by nisie on 6/8/18.
  */
-class GetBankListUseCase(val api: SettingBankApi,
-                         val mapper: GetBankListMapper) : UseCase<BankAccountListViewModel>() {
+class GetBankAccountListUseCase(val api: SettingBankApi,
+                                val mapper: GetBankAccountListMapper) : UseCase<BankAccountListViewModel>() {
 
     override fun createObservable(requestParams: RequestParams): Observable<BankAccountListViewModel> {
 

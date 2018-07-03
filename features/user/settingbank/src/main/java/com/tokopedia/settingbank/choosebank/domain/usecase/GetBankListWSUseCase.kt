@@ -1,0 +1,56 @@
+package com.tokopedia.settingbank.choosebank.domain.usecase
+
+import com.raizlabs.android.dbflow.config.FlowManager
+import com.tokopedia.core.database.DbFlowDatabase
+import com.tokopedia.core.database.model.Bank
+import com.tokopedia.settingbank.choosebank.data.BankListApi
+import com.tokopedia.settingbank.choosebank.domain.mapper.GetBankListWSMapper
+import com.tokopedia.settingbank.choosebank.view.viewmodel.BankListViewModel
+import com.tokopedia.settingbank.choosebank.view.viewmodel.BankViewModel
+import com.tokopedia.usecase.RequestParams
+import com.tokopedia.usecase.UseCase
+import rx.Observable
+import kotlin.collections.ArrayList
+
+/**
+ * @author by nisie on 7/2/18.
+ */
+class GetBankListWSUseCase(val api: BankListApi,
+                           val mapper: GetBankListWSMapper) : UseCase<BankListViewModel>() {
+
+    override fun createObservable(requestParams: RequestParams): Observable<BankListViewModel> {
+        return api.searchBankAccount(requestParams.parameters)
+                .map(mapper)
+                .map { t -> saveToDB(t, requestParams) }
+    }
+
+    private fun saveToDB(bankListViewModel: BankListViewModel, requestParams: RequestParams): BankListViewModel {
+
+        val database = FlowManager.getDatabase(DbFlowDatabase.NAME).writableDatabase
+        database.beginTransaction()
+        try {
+            val bankList = mapToDBModel(bankListViewModel.list!!)
+            for (bank in bankList) {
+                bank.setBankPage(requestParams.parameters[GetBankListUseCase.PARAM_PAGE] as Int)
+                bank.save()
+            }
+            database.setTransactionSuccessful()
+        } finally {
+            database.endTransaction()
+        }
+
+        return bankListViewModel
+    }
+
+    private fun mapToDBModel(list: ArrayList<BankViewModel>): List<Bank> {
+        val listBank = ArrayList<Bank>()
+
+        for (bankModel: BankViewModel in list) {
+            val bank = Bank()
+            bank.setBankId(bankModel.bankId)
+            bank.setBankName(bankModel.bankName)
+            listBank.add(bank)
+        }
+        return listBank
+    }
+}

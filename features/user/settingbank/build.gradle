@@ -29,7 +29,9 @@ dependencies {
 
     implementation project(rootProject.ext.libraries.userSession)
 
-    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
+    implementation rootProject.ext.dbDependencies.dbFlowCore
+    implementation rootProject.ext.dbDependencies.dbFlow
 
     implementation(rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'

@@ -1,4 +1,4 @@
-package com.tokopedia.settingbank.banklist.di
+package com.tokopedia.settingbank.choosebank.di
 
 import android.content.Context
 import com.google.gson.Gson
@@ -8,19 +8,22 @@ import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.common.network.interceptor.DebugInterceptor
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.core.network.retrofit.coverters.GeneratedHostConverter
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter
 import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor
+import com.tokopedia.core.router.home.HomeRouter
 import com.tokopedia.settingbank.banklist.data.SettingBankApi
 import com.tokopedia.settingbank.banklist.data.SettingBankUrl
-import com.tokopedia.settingbank.banklist.domain.mapper.DeleteBankAccountMapper
-import com.tokopedia.settingbank.banklist.domain.mapper.GetBankAccountListMapper
-import com.tokopedia.settingbank.banklist.domain.mapper.SetDefaultBankAccountMapper
-import com.tokopedia.settingbank.banklist.domain.usecase.DeleteBankAccountUseCase
-import com.tokopedia.settingbank.banklist.domain.usecase.GetBankAccountListUseCase
-import com.tokopedia.settingbank.banklist.domain.usecase.SetDefaultBankAccountUseCase
-import com.tokopedia.settingbank.banklist.view.presenter.SettingBankPresenter
+import com.tokopedia.settingbank.choosebank.data.BankListApi
+import com.tokopedia.settingbank.choosebank.data.BankListUrl
+import com.tokopedia.settingbank.choosebank.domain.mapper.GetBankListDBMapper
+import com.tokopedia.settingbank.choosebank.domain.mapper.GetBankListWSMapper
+import com.tokopedia.settingbank.choosebank.domain.usecase.GetBankListDBUseCase
+import com.tokopedia.settingbank.choosebank.domain.usecase.GetBankListUseCase
+import com.tokopedia.settingbank.choosebank.domain.usecase.GetBankListWSUseCase
+import com.tokopedia.settingbank.choosebank.view.presenter.ChooseBankPresenter
 import com.tokopedia.user.session.UserSession
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -29,13 +32,13 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
 /**
- * @author by nisie on 6/8/18.
+ * @author by nisie on 7/2/18.
  */
-class SettingBankDependencyInjector {
+class ChooseBankDependencyInjector {
 
     object Companion {
 
-        fun inject(context: Context): SettingBankPresenter {
+        fun inject(context : Context): ChooseBankPresenter {
 
             val session = UserSession(context)
 
@@ -89,26 +92,23 @@ class SettingBankDependencyInjector {
 
             val okHttpClient: OkHttpClient = builder.build()
 
-            val retrofit: Retrofit = retrofitBuilder.baseUrl(SettingBankUrl.BASE_URL)
+            val retrofit: Retrofit = retrofitBuilder.baseUrl(BankListUrl.BASE_URL)
                     .client(okHttpClient)
                     .build()
 
-            val settingBankApi: SettingBankApi = retrofit.create(SettingBankApi::class.java)
+            val bankListApi: BankListApi = retrofit.create(BankListApi::class.java)
 
-            val getBankListMapper = GetBankAccountListMapper()
+            val getBankListDBMapper = GetBankListDBMapper()
+            val getBankListDBUseCase = GetBankListDBUseCase(getBankListDBMapper)
 
-            val getBankListUseCase = GetBankAccountListUseCase(settingBankApi, getBankListMapper)
+            val getBankListWSMapper = GetBankListWSMapper()
+            val getBankListWSUseCase = GetBankListWSUseCase(bankListApi, getBankListWSMapper)
 
-            val setDefaultBankAccountMapper = SetDefaultBankAccountMapper()
+            val bankCache = LocalCacheHandler(context, HomeRouter.TAG_FETCH_BANK)
 
-            val setDefaultBankAccountUseCase = SetDefaultBankAccountUseCase(settingBankApi,
-                    setDefaultBankAccountMapper)
-
-            val deleteBankAccountMapper = DeleteBankAccountMapper()
-
-            val deleteBankAccountUseCase = DeleteBankAccountUseCase(settingBankApi, deleteBankAccountMapper)
-
-            return SettingBankPresenter(session, getBankListUseCase, setDefaultBankAccountUseCase, deleteBankAccountUseCase)
+            val getBankListUseCase = GetBankListUseCase(getBankListDBUseCase,
+                    getBankListWSUseCase, bankCache)
+            return ChooseBankPresenter(session , getBankListUseCase)
         }
     }
 }

@@ -13,7 +13,7 @@ import rx.functions.Func1
 /**
  * @author by nisie on 6/8/18.
  */
-class GetBankListMapper : Func1<Response<BankAccountListPojo>,
+class GetBankAccountListMapper : Func1<Response<BankAccountListPojo>,
         BankAccountListViewModel> {
 
 

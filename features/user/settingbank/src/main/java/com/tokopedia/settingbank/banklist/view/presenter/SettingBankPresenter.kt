@@ -3,7 +3,7 @@ package com.tokopedia.settingbank.banklist.view.presenter
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.settingbank.banklist.domain.usecase.DeleteBankAccountUseCase
-import com.tokopedia.settingbank.banklist.domain.usecase.GetBankListUseCase
+import com.tokopedia.settingbank.banklist.domain.usecase.GetBankAccountListUseCase
 import com.tokopedia.settingbank.banklist.domain.usecase.SetDefaultBankAccountUseCase
 import com.tokopedia.settingbank.banklist.view.listener.SettingBankContract
 import com.tokopedia.settingbank.banklist.view.viewmodel.BankAccountListViewModel
@@ -15,7 +15,7 @@ import rx.Subscriber
  * @author by nisie on 6/7/18.
  */
 class SettingBankPresenter(private val userSession: UserSession,
-                           private val getBankAccountUseCase: GetBankListUseCase,
+                           private val getBankAccountUseCase: GetBankAccountListUseCase,
                            private val setDefaultBankAccountUseCase: SetDefaultBankAccountUseCase,
                            private val deleteBankAccountUseCase: DeleteBankAccountUseCase) :
         SettingBankContract.Presenter,
@@ -25,7 +25,7 @@ class SettingBankPresenter(private val userSession: UserSession,
 
     override fun getBankListFirstTime() {
         view.showLoadingFull()
-        getBankAccountUseCase.execute(GetBankListUseCase.getParam(
+        getBankAccountUseCase.execute(GetBankAccountListUseCase.getParam(
                 userSession.userId,
                 page,
                 userSession.deviceId
@@ -53,7 +53,7 @@ class SettingBankPresenter(private val userSession: UserSession,
 
     override fun loadMore() {
         view.showLoadingList()
-        getBankAccountUseCase.execute(GetBankListUseCase.getParam(
+        getBankAccountUseCase.execute(GetBankAccountListUseCase.getParam(
                 userSession.userId,
                 page,
                 userSession.deviceId

@@ -21,6 +21,7 @@ import com.tokopedia.settingbank.addeditaccount.view.activity.AddEditBankActivit
 import com.tokopedia.settingbank.addeditaccount.view.listener.AddEditBankContract
 import com.tokopedia.settingbank.addeditaccount.view.presenter.AddEditBankPresenter
 import com.tokopedia.settingbank.addeditaccount.view.viewmodel.BankFormModel
+import com.tokopedia.settingbank.banklist.data.SettingBankUrl
 import com.tokopedia.settingbank.choosebank.view.activity.ChooseBankActivity
 import kotlinx.android.synthetic.main.fragment_add_edit_bank_form.*
 
@@ -97,8 +98,7 @@ class AddEditBankFormFragment : AddEditBankContract.View,
             bottomInfoDialog.setContentView(bottomLayout)
 
             val bankAccountImage: ImageView = bottomLayout.findViewById(R.id.bank_account_image)
-            //TODO : Change Image
-            ImageHandler.LoadImage(bankAccountImage, "https://i.pinimg.com/564x/f3/1c/05/f31c0579b58bac246e46da14bb1525cd.jpg")
+            ImageHandler.LoadImage(bankAccountImage, SettingBankUrl.Companion.IMAGE_BOTTOM_DIALOG_ADD_ACCOUNT)
 
             val closeButton: ImageView = bottomLayout.findViewById(R.id.close_button)
             closeButton.setOnClickListener({ bottomInfoDialog.dismiss() })
