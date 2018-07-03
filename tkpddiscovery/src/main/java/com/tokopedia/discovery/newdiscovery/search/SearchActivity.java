@@ -593,4 +593,10 @@ public class SearchActivity extends DiscoveryActivity
     public void launchFilterBottomSheet() {
         bottomSheetFilterView.launchFilterBottomSheet();
     }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        bottomSheetFilterView.onSaveInstanceState(outState);
+    }
 }

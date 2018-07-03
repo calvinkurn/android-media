@@ -48,7 +48,7 @@ public class DrawerInjector {
         PostExecutionThread uiThread = new UIThread();
 
         UserAttributesRepository userAttributesRepository = new UserAttributesRepositoryImpl(
-                new UserAttributesFactory(new DrawerService(), drawerCache)
+                new UserAttributesFactory(new DrawerService(context, userSession, networkRouter), drawerCache)
         );
 
         GetUserAttributesUseCase getUserAttributesUseCase = new GetUserAttributesUseCase(jobExecutor,
