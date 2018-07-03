@@ -52,7 +52,6 @@
             app:subtitleTextAppearance="@style/ToolbarSubtitleGroupChat"
             app:titleTextAppearance="@style/ToolbarGroupChat"
             tools:layout_height="?attr/actionBarSize"
-            tools:subtitle="subtitle"
             tools:title="title" />
 
         <LinearLayout

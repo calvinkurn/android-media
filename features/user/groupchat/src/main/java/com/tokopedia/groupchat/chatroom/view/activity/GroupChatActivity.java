@@ -1299,7 +1299,9 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     private void setToolbarPlain() {
-        toolbar.setTitle("GroupChat");
+        toolbar.removeAllViews();
+        toolbar.setTitle(getResources().getString(R.string.label_group_chat));
+        toolbar.setTitleMarginTop((int) getResources().getDimension(R.dimen.dp_10));
         getSupportActionBar().setSubtitle(null);
         toolbar.setTitleTextColor(getResources().getColor(R.color.black_70));
         toolbar.getMenu().findItem(R.id.action_share).setVisible(false);
@@ -1311,9 +1313,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         } else {
             toolbar.setBackgroundResource(R.drawable.bg_white_toolbar_drop_shadow);
         }
-        toolbar.requestLayout();
     }
-
 
     private boolean currentlyLoadingFragment() {
         return getSupportFragmentManager().findFragmentById(R.id.container) == null;
