@@ -21,7 +21,6 @@ import com.tokopedia.feedplus.view.viewmodel.promo.PromotedProductViewModel;
 import com.tokopedia.feedplus.view.viewmodel.promo.PromotedShopViewModel;
 import com.tokopedia.feedplus.view.viewmodel.recentview.RecentViewViewModel;
 import com.tokopedia.feedplus.view.viewmodel.topads.FeedTopAdsViewModel;
-import com.tokopedia.feedplus.view.viewmodel.toppicks.ToppicksViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 
 /**
@@ -49,8 +48,6 @@ public interface FeedPlusTypeFactory {
     int type(AddFeedModel addFeedModel);
 
     int type(RecentViewViewModel recentViewViewModel);
-
-    int type(ToppicksViewModel toppicksViewModel);
 
     int type(KolPostViewModel kolPostViewModel);
 

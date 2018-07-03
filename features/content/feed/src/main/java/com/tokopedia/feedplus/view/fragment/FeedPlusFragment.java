@@ -38,7 +38,6 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.BrandsWebViewActivity;
-import com.tokopedia.core.home.TopPicksWebView;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
@@ -50,7 +49,6 @@ import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.util.ClipboardHandler;
-import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.feedplus.FeedModuleRouter;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.domain.usecase.FollowKolPostUseCase;
@@ -109,7 +107,6 @@ import static com.tokopedia.profile.view.activity.TopProfileActivity.IS_FOLLOWIN
 
 public class FeedPlusFragment extends BaseDaggerFragment
         implements FeedPlus.View,
-        FeedPlus.View.Toppicks,
         FeedPlus.View.Kol,
         FeedPlus.View.Polling,
         SwipeRefreshLayout.OnRefreshListener,
@@ -961,37 +958,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onContentProductLinkClicked(String url) {
         ((FeedModuleRouter) getActivity().getApplication()).openRedirectUrl(getActivity(), url);
-    }
-
-    @Override
-    public void onToppicksClicked(int page, int rowNumber, String name, String url, int itemPosition) {
-        UnifyTracking.eventFeedClick(
-                getFeedAnalyticsHeader(page, rowNumber) +
-                        FeedTrackingEventLabel.Click.TOPPICKS + name);
-        switch ((DeepLinkChecker.getDeepLinkType(url))) {
-            case DeepLinkChecker.BROWSE:
-                DeepLinkChecker.openBrowse(url, getActivity());
-                break;
-            case DeepLinkChecker.HOT:
-                DeepLinkChecker.openHot(url, getActivity());
-                break;
-            case DeepLinkChecker.CATALOG:
-                DeepLinkChecker.openCatalog(url, getActivity());
-                break;
-            default:
-                if (!TextUtils.isEmpty(url)) {
-                    ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity()
-                            , url);
-                }
-        }
-    }
-
-    @Override
-    public void onSeeAllToppicks(int page, int rowNumber) {
-        startActivity(TopPicksWebView.newInstance(getActivity(), TkpdBaseURL.URL_TOPPICKS));
-        UnifyTracking.eventFeedClick(
-                getFeedAnalyticsHeader(page, rowNumber) +
-                        FeedTrackingEventLabel.Click.TOPPICKS_SEE_ALL);
     }
 
     @Override

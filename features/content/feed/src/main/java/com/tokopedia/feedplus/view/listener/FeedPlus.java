@@ -86,12 +86,6 @@ public interface FeedPlus {
 
         void setFirstCursor(String firstCursor);
 
-        interface Toppicks {
-            void onToppicksClicked(int page, int rowNumber, String name, String url, int itemPosition);
-
-            void onSeeAllToppicks(int page, int rowNumber);
-        }
-
         void onShareButtonClicked(String shareUrl,
                                   String title,
                                   String imgUrl,

@@ -10,7 +10,6 @@ import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.TimeConverter;
 import com.tokopedia.feedplus.domain.model.InspirationItemDomain;
-import com.tokopedia.feedplus.domain.model.TopPicksDomain;
 import com.tokopedia.feedplus.domain.model.feed.DataFeedDomain;
 import com.tokopedia.feedplus.domain.model.feed.FavoriteCtaDomain;
 import com.tokopedia.feedplus.domain.model.feed.FeedDomain;
@@ -52,8 +51,6 @@ import com.tokopedia.feedplus.view.viewmodel.recentview.BadgeViewModel;
 import com.tokopedia.feedplus.view.viewmodel.recentview.RecentViewProductViewModel;
 import com.tokopedia.feedplus.view.viewmodel.recentview.RecentViewViewModel;
 import com.tokopedia.feedplus.view.viewmodel.topads.FeedTopAdsViewModel;
-import com.tokopedia.feedplus.view.viewmodel.toppicks.ToppicksItemViewModel;
-import com.tokopedia.feedplus.view.viewmodel.toppicks.ToppicksViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 import com.tokopedia.topads.sdk.domain.model.Data;
 
@@ -77,7 +74,6 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
     private static final String TYPE_KOL_CTA = "kol_cta";
     private static final String TYPE_NEW_PRODUCT = "new_product";
     private static final String TYPE_PROMOTION = "promotion";
-    private static final String TYPE_TOPPICKS = "toppick";
     private static final String TYPE_INSPIRATION = "inspirasi";
     private static final String TYPE_TOPADS = "topads";
     private static final String TYPE_KOL = "kolpost";
@@ -297,11 +293,6 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                         PromoCardViewModel promo = convertToPromoViewModel(domain);
                         if (promo.getListPromo() != null && !promo.getListPromo().isEmpty())
                             listFeedView.add(promo);
-                        break;
-                    case TYPE_TOPPICKS:
-                        ToppicksViewModel toppicks = convertToToppicksViewModel(domain);
-                        if (toppicks.getList() != null && !toppicks.getList().isEmpty())
-                            listFeedView.add(toppicks);
                         break;
                     case TYPE_INSPIRATION:
                         InspirationViewModel inspirationViewModel = convertToInspirationViewModel(domain);
@@ -596,29 +587,6 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                 kolPostDomain.getCaption(),
                 kolPostDomain.getContentLink()
         );
-    }
-
-    private ToppicksViewModel convertToToppicksViewModel(DataFeedDomain domain) {
-        return new ToppicksViewModel(convertToListTopPicks(domain), page);
-    }
-
-    private ArrayList<ToppicksItemViewModel> convertToListTopPicks(DataFeedDomain domain) {
-        ArrayList<ToppicksItemViewModel> list = new ArrayList<>();
-        if (domain != null
-                && domain.getContent() != null
-                && domain.getContent().getTopPicksDomains() != null
-                && !domain.getContent().getTopPicksDomains().isEmpty())
-            for (TopPicksDomain topPicksDomain : domain.getContent().getTopPicksDomains()) {
-                list.add(convertToToppicksProduct(topPicksDomain));
-            }
-        return list;
-    }
-
-    private ToppicksItemViewModel convertToToppicksProduct(TopPicksDomain topPicksDomain) {
-        return new ToppicksItemViewModel(
-                topPicksDomain.getName(),
-                topPicksDomain.getImageUrl(),
-                topPicksDomain.getUrl());
     }
 
     private OfficialStoreCampaignViewModel convertToOfficialStoreCampaign(DataFeedDomain domain) {
