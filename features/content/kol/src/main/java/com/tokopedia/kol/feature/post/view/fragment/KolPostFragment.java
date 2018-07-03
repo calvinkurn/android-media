@@ -131,6 +131,8 @@ public class KolPostFragment extends BaseDaggerFragment implements
         }
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         kolRecyclerView.setLayoutManager(layoutManager);
+
+        adapter.clearData();
         kolRecyclerView.setAdapter(adapter);
     }
 

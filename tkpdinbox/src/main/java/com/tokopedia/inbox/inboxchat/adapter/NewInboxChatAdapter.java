@@ -116,7 +116,8 @@ public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
     }
 
     public void addChecked(int position) {
-        if (!list.isEmpty()
+        if (position != -1
+                && !list.isEmpty()
                 && list.size() > position
                 && listMove.size() + 1 <= MAX_MESSAGE_DELETE) {
             ChatListViewModel item = (ChatListViewModel) list.get(position);
@@ -131,7 +132,8 @@ public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
     }
 
     public void removeChecked(int position) {
-        if (!list.isEmpty()
+        if (position != -1
+                && !list.isEmpty()
                 && list.size() > position) {
             ChatListViewModel item = (ChatListViewModel) list.get(position);
             item.setChecked(false);
