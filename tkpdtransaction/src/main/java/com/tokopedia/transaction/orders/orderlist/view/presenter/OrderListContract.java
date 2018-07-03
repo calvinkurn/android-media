@@ -5,7 +5,6 @@ import android.content.Context;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.transaction.orders.orderlist.data.Order;
-import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
 
 import java.util.List;
 
@@ -13,9 +12,9 @@ import java.util.List;
  * Created by baghira on 07/05/18.
  */
 
-public class OrderListContract {
-    public interface View extends CustomerView {
-        void showProcessGetData(OrderCategory orderCategory);
+public interface OrderListContract {
+    interface View extends CustomerView {
+        void showProcessGetData(String orderCategory);
 
         void renderDataList(List<Order> orderDataList);
 
@@ -34,7 +33,7 @@ public class OrderListContract {
         void renderEmptyList(int typeRequest);
     }
 
-    public interface Presenter extends CustomerPresenter<View> {
-        void getAllOrderData(Context context, OrderCategory orderCategory, int typeRequest, int page);
+    interface Presenter extends CustomerPresenter<View> {
+        void getAllOrderData(Context context, String orderCategory, int typeRequest, int page);
     }
 }

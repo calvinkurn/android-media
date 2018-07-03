@@ -1,6 +1,6 @@
 package com.tokopedia.flight.booking.view.adapter;
 
-import android.support.graphics.drawable.VectorDrawableCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
@@ -51,7 +51,8 @@ public class FlightInsuranceBenefitAdapter extends RecyclerView.Adapter<FlightIn
 
         public void bind(FlightInsuranceBenefitViewModel benefitViewModel) {
             ImageHandler.loadImageWithoutPlaceholder(logoImageView, benefitViewModel.getIcon(),
-                    VectorDrawableCompat.create(itemView.getResources(), R.drawable.ic_airline_default, itemView.getContext().getTheme()));
+                    ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_airline_default)
+            );
             titleTextView.setText(benefitViewModel.getTitle());
             descriptionTextView.setText(benefitViewModel.getDescription());
         }
