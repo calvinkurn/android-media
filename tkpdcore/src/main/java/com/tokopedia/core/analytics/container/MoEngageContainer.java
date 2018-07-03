@@ -5,8 +5,9 @@ import android.text.TextUtils;
 
 import com.moe.pushlibrary.MoEHelper;
 import com.moe.pushlibrary.PayloadBuilder;
-import com.moengage.core.Logger;
+import com.moengage.core.MoEngage;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.model.CustomerWrapper;
 import com.tokopedia.core.app.MainApplication;
@@ -45,7 +46,7 @@ public class MoEngageContainer implements IMoengageContainer {
         executor(isExistingUser, new SingleSubscriber<Boolean>() {
             @Override
             public void onSuccess(Boolean value) {
-                CommonUtils.dumper("MoEngage check is existing user "+value);
+                CommonUtils.dumper("MoEngage check is existing user " + value);
                 MoEHelper.getInstance(context).setExistingUser(value);
             }
 
@@ -58,28 +59,13 @@ public class MoEngageContainer implements IMoengageContainer {
 
     @Override
     public void initialize() {
-        MoEHelper.getInstance(context).autoIntegrate(MainApplication.getInstance());
-        MoEHelper.getInstance(context).setLogLevel(Logger.VERBOSE);
-        /*Single<Void> initTask = Single.create(new Single.OnSubscribe<Void>() {
-            @Override
-            public void call(SingleSubscriber<? super Void> singleSubscriber) {
-                MoEHelper.getInstance(context).autoIntegrate(MainApplication.getInstance());
-                MoEHelper.getInstance(context).setLogLevel(Logger.VERBOSE);
-            }
-        });
 
-        executor(initTask, new SingleSubscriber<Void>() {
-                    @Override
-                    public void onSuccess(Void value) {
-                        CommonUtils.dumper("MoEngage Successs");
-                    }
+        MoEngage moEngage =
+                new MoEngage.Builder(MainApplication.getInstance(),
+                        context.getResources().getString(R.string.key_moengage))
+                        .build();
+        MoEngage.initialise(moEngage);
 
-                    @Override
-                    public void onError(Throwable error) {
-                        error.printStackTrace();
-                    }
-                }
-        );*/
     }
 
     @Override
@@ -90,7 +76,7 @@ public class MoEngageContainer implements IMoengageContainer {
             @Override
             public void onSuccess(CustomerWrapper value) {
 
-                CommonUtils.dumper("MoEngage check user "+value.getCustomerId());
+                CommonUtils.dumper("MoEngage check user " + value.getCustomerId());
 
                 MoEHelper helper = MoEHelper.getInstance(context);
                 helper.setFullName(value.getFullName());
@@ -128,20 +114,20 @@ public class MoEngageContainer implements IMoengageContainer {
         builder.putAttrString(AppEventTracking.MOENGAGE.MEDIUM, medium);
         sendEvent(
                 new PayloadBuilder()
-                    .putAttrString(AppEventTracking.MOENGAGE.MEDIUM, medium)
-                    .build()
+                        .putAttrString(AppEventTracking.MOENGAGE.MEDIUM, medium)
+                        .build()
                 , AppEventTracking.EventMoEngage.REG_START
         );
     }
 
     @Override
     public void sendRegisterEvent(String fullName, String mobileNo) {
-        CommonUtils.dumper("MoEngage check user "+fullName);
+        CommonUtils.dumper("MoEngage check user " + fullName);
         sendEvent(
                 new PayloadBuilder()
-                    .putAttrString(AppEventTracking.MOENGAGE.NAME, fullName)
-                    .putAttrString(AppEventTracking.MOENGAGE.MOBILE_NUM, mobileNo)
-                    .build()
+                        .putAttrString(AppEventTracking.MOENGAGE.NAME, fullName)
+                        .putAttrString(AppEventTracking.MOENGAGE.MOBILE_NUM, mobileNo)
+                        .build()
                 , AppEventTracking.EventMoEngage.REG_COMPL
         );
     }
@@ -153,83 +139,83 @@ public class MoEngageContainer implements IMoengageContainer {
         executor(isExistingUser, new SingleSubscriber<CustomerWrapper>() {
             @Override
             public void onSuccess(CustomerWrapper value) {
-                CommonUtils.dumper("MoEDispatcher "+value.toString()+" "+source);
+                CommonUtils.dumper("MoEDispatcher " + value.toString() + " " + source);
                 MoEHelper helper = MoEHelper.getInstance(context);
 
-                if(checkNull(value.getFullName()))
-                helper.setFullName(value.getFullName());
+                if (checkNull(value.getFullName()))
+                    helper.setFullName(value.getFullName());
 
-                if(checkNull(value.getFirstName()))
-                helper.setFirstName(value.getFirstName());
+                if (checkNull(value.getFirstName()))
+                    helper.setFirstName(value.getFirstName());
 
-                if(checkNull(value.getCustomerId()))
-                helper.setUniqueId(value.getCustomerId());
+                if (checkNull(value.getCustomerId()))
+                    helper.setUniqueId(value.getCustomerId());
 
-                if(checkNull(value.getEmailAddress()))
-                helper.setEmail(value.getEmailAddress());
+                if (checkNull(value.getEmailAddress()))
+                    helper.setEmail(value.getEmailAddress());
 
-                if(checkNull(value.getPhoneNumber()))
-                helper.setNumber(value.getPhoneNumber());
+                if (checkNull(value.getPhoneNumber()))
+                    helper.setNumber(value.getPhoneNumber());
 
-                if(!TextUtils.isEmpty(value.getDateOfBirth())) {
+                if (!TextUtils.isEmpty(value.getDateOfBirth())) {
                     helper.setBirthDate(value.getDateOfBirth());
                 }
 
-                if(checkNull(value.isGoldMerchant()))
-                helper.setUserAttribute(AppEventTracking.MOENGAGE.IS_GOLD_MERCHANT, String.valueOf(value.isGoldMerchant()));
+                if (checkNull(value.isGoldMerchant()))
+                    helper.setUserAttribute(AppEventTracking.MOENGAGE.IS_GOLD_MERCHANT, String.valueOf(value.isGoldMerchant()));
 
-                if(checkNull(value.isSeller()))
-                helper.setUserAttribute(AppEventTracking.MOENGAGE.IS_SELLER, String.valueOf(value.isSeller()));
+                if (checkNull(value.isSeller()))
+                    helper.setUserAttribute(AppEventTracking.MOENGAGE.IS_SELLER, String.valueOf(value.isSeller()));
 
-                if(checkNull(value.getShopId()))
-                helper.setUserAttribute(AppEventTracking.MOENGAGE.SHOP_ID, value.getShopId());
+                if (checkNull(value.getShopId()))
+                    helper.setUserAttribute(AppEventTracking.MOENGAGE.SHOP_ID, value.getShopId());
 
-                if(checkNull(value.getShopName()))
-                helper.setUserAttribute(AppEventTracking.MOENGAGE.SHOP_NAME, value.getShopName());
+                if (checkNull(value.getShopName()))
+                    helper.setUserAttribute(AppEventTracking.MOENGAGE.SHOP_NAME, value.getShopName());
 
-                if(checkNull(value.getTotalItemSold()))
-                helper.setUserAttribute(AppEventTracking.MOENGAGE.TOTAL_SOLD_ITEM, value.getTotalItemSold());
+                if (checkNull(value.getTotalItemSold()))
+                    helper.setUserAttribute(AppEventTracking.MOENGAGE.TOTAL_SOLD_ITEM, value.getTotalItemSold());
 
-                if(checkNull(value.getRegDate()))
-                helper.setUserAttribute(AppEventTracking.MOENGAGE.REG_DATE, value.getRegDate());
+                if (checkNull(value.getRegDate()))
+                    helper.setUserAttribute(AppEventTracking.MOENGAGE.REG_DATE, value.getRegDate());
 
-                if(checkNull(value.getDateShopCreated()))
-                helper.setUserAttribute(AppEventTracking.MOENGAGE.DATE_SHOP_CREATED, value.getDateShopCreated());
+                if (checkNull(value.getDateShopCreated()))
+                    helper.setUserAttribute(AppEventTracking.MOENGAGE.DATE_SHOP_CREATED, value.getDateShopCreated());
 
-                if(checkNull(value.getShopLocation()))
-                helper.setUserAttribute(AppEventTracking.MOENGAGE.SHOP_LOCATION, value.getShopLocation());
+                if (checkNull(value.getShopLocation()))
+                    helper.setUserAttribute(AppEventTracking.MOENGAGE.SHOP_LOCATION, value.getShopLocation());
 
-                if(checkNull(value.getTokocashAmt()))
-                helper.setUserAttribute(AppEventTracking.MOENGAGE.TOKOCASH_AMT, value.getTokocashAmt());
+                if (checkNull(value.getTokocashAmt()))
+                    helper.setUserAttribute(AppEventTracking.MOENGAGE.TOKOCASH_AMT, value.getTokocashAmt());
 
-                if(checkNull(value.getSaldoAmt()))
-                helper.setUserAttribute(AppEventTracking.MOENGAGE.SALDO_AMT, value.getSaldoAmt());
+                if (checkNull(value.getSaldoAmt()))
+                    helper.setUserAttribute(AppEventTracking.MOENGAGE.SALDO_AMT, value.getSaldoAmt());
 
-                if(checkNull(value.getTopAdsAmt()))
-                helper.setUserAttribute(AppEventTracking.MOENGAGE.TOPADS_AMT, value.getTopAdsAmt());
+                if (checkNull(value.getTopAdsAmt()))
+                    helper.setUserAttribute(AppEventTracking.MOENGAGE.TOPADS_AMT, value.getTopAdsAmt());
 
-                if(checkNull(value.isTopadsUser()))
-                helper.setUserAttribute(AppEventTracking.MOENGAGE.TOPADS_USER, value.isTopadsUser());
+                if (checkNull(value.isTopadsUser()))
+                    helper.setUserAttribute(AppEventTracking.MOENGAGE.TOPADS_USER, value.isTopadsUser());
 
-                if(checkNull(value.isHasPurchasedTiket()))
-                helper.setUserAttribute(AppEventTracking.MOENGAGE.HAS_PURCHASED_TICKET, value.isHasPurchasedTiket());
+                if (checkNull(value.isHasPurchasedTiket()))
+                    helper.setUserAttribute(AppEventTracking.MOENGAGE.HAS_PURCHASED_TICKET, value.isHasPurchasedTiket());
 
-                if(checkNull(value.isHasPurchasedMarketplace()))
-                helper.setUserAttribute(AppEventTracking.MOENGAGE.HAS_PURCHASED_MARKETPLACE, value.isHasPurchasedMarketplace());
+                if (checkNull(value.isHasPurchasedMarketplace()))
+                    helper.setUserAttribute(AppEventTracking.MOENGAGE.HAS_PURCHASED_MARKETPLACE, value.isHasPurchasedMarketplace());
 
-                if(checkNull(value.isHasPurchasedDigital()))
-                helper.setUserAttribute(AppEventTracking.MOENGAGE.HAS_PURCHASED_DIGITAL, value.isHasPurchasedDigital());
+                if (checkNull(value.isHasPurchasedDigital()))
+                    helper.setUserAttribute(AppEventTracking.MOENGAGE.HAS_PURCHASED_DIGITAL, value.isHasPurchasedDigital());
 
-                if(checkNull(value.getLastTransactionDate()))
-                helper.setUserAttribute(AppEventTracking.MOENGAGE.LAST_TRANSACT_DATE, value.getLastTransactionDate());
+                if (checkNull(value.getLastTransactionDate()))
+                    helper.setUserAttribute(AppEventTracking.MOENGAGE.LAST_TRANSACT_DATE, value.getLastTransactionDate());
 
-                if(checkNull(value.getTotalActiveProduct()))
-                helper.setUserAttribute(AppEventTracking.MOENGAGE.TOTAL_ACTIVE_PRODUCT, value.getTotalActiveProduct());
+                if (checkNull(value.getTotalActiveProduct()))
+                    helper.setUserAttribute(AppEventTracking.MOENGAGE.TOTAL_ACTIVE_PRODUCT, value.getTotalActiveProduct());
 
-                if(checkNull(value.getShopScore()))
-                helper.setUserAttribute(AppEventTracking.MOENGAGE.SHOP_SCORE, value.getShopScore());
+                if (checkNull(value.getShopScore()))
+                    helper.setUserAttribute(AppEventTracking.MOENGAGE.SHOP_SCORE, value.getShopScore());
 
-                if(checkNull(value.getGender()))
+                if (checkNull(value.getGender()))
                     helper.setGender(value.getGender().equals("1") ? "male" : "female");
             }
 
@@ -240,13 +226,13 @@ public class MoEngageContainer implements IMoengageContainer {
         });
     }
 
-    private boolean checkNull(Object o){
-        if( o instanceof String)
-            return !TextUtils.isEmpty((String)o);
+    private boolean checkNull(Object o) {
+        if (o instanceof String)
+            return !TextUtils.isEmpty((String) o);
         else if (o instanceof Boolean)
             return o != null;
         else
-            return o !=null;
+            return o != null;
     }
 
     @Override
