@@ -801,6 +801,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         } catch (NumberFormatException e) {
             this.selectedQuantity = 1;
         }
+        startShowCase();
     }
 
     @Override
@@ -1811,22 +1812,15 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             return;
         }
         showCaseDialog = createShowCase();
-        showCaseDialog.setShowCaseStepListener(new ShowCaseDialog.OnShowCaseStepListener() {
-            @Override
-            public boolean onShowCaseGoTo(int previousStep, int nextStep, ShowCaseObject showCaseObject) {
-                return false;
-            }
-        });
+        showCaseDialog.setShowCaseStepListener((previousStep, nextStep, showCaseObject) -> false);
 
-        Rect rectToShowCase = new Rect();
-        priceSimulationView.getGlobalVisibleRect(rectToShowCase);
         ArrayList<ShowCaseObject> showCaseObjectList = new ArrayList<>();
         showCaseObjectList.add(new ShowCaseObject(
-                priceSimulationView,
+                buttonBuyView.btnCart,
                 getResources().getString(R.string.product_variant),
                 getResources().getString(R.string.product_variant_onboarding),
-                ShowCaseContentPosition.TOP).withCustomTarget(new int[]{rectToShowCase.left + SHOWCASE_MARGIN,
-                rectToShowCase.top - 50, rectToShowCase.right - SHOWCASE_MARGIN, rectToShowCase.top + SHOWCASE_HEIGHT}));
+                ShowCaseContentPosition.TOP,
+                R.color.tkpd_main_green));
         showCaseDialog.show(getActivity(), showCaseTag, showCaseObjectList);
     }
 
