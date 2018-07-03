@@ -47,4 +47,6 @@
     <string name="title_buy_now">Beli Sekarang</string>
     <string name="title_add_to_cart">Tambah ke Keranjang</string>
     <string name="catatan_untuk_penjual_opsional">Catatan untuk Penjual (Opsional)</string>
+    <string name="title_show_case_pdp">Tambah ke Keranjang</string>
+    <string name="desc_show_case_pdp">Tambahkan produk ini ke keranjang dan lanjutkan pencarian produk lainnya</string>
 </resources>
