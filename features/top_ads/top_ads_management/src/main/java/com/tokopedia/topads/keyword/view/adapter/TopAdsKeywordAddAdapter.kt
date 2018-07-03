@@ -2,6 +2,7 @@ package com.tokopedia.topads.keyword.view.adapter
 
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.ViewGroup
 import com.tokopedia.topads.R
 import com.tokopedia.topads.common.util.inflateLayout
@@ -39,8 +40,10 @@ class TopAdsKeywordAddAdapter: RecyclerView.Adapter<TopAdsKeywordAddViewHolder>(
     }
 
     private fun remove(position: Int){
+        Log.e("tes remove", "$position")
         localKeywords.removeAt(position)
         notifyItemRemoved(position)
+        notifyItemRangeChanged(position, getItemCount())
     }
 
     fun addBulk(keywords: List<AddKeywordDomainModelDatum>){
