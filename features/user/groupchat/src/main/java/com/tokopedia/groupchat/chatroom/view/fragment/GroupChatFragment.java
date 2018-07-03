@@ -359,7 +359,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
     private void setQuickReply(final List<GroupChatQuickReplyItemViewModel> list) {
         if (getView() != null) {
-            if (list != null && !list.isEmpty()){
+            if (list != null && !list.isEmpty() && userSession.isLoggedIn()){
                 quickReplyRecyclerView.setVisibility(View.VISIBLE);
                 quickReplyAdapter.setList(list);
             } else {
