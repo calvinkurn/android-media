@@ -31,6 +31,11 @@ import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
+import com.tokopedia.contactus.ContactUsModuleRouter;
+import com.tokopedia.contactus.createticket.ContactUsConstant;
+import com.tokopedia.contactus.createticket.activity.ContactUsActivity;
+import com.tokopedia.contactus.createticket.activity.ContactUsCreateTicketActivity;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.checkout.domain.usecase.AddToCartUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartShipmentUseCase;
@@ -38,10 +43,10 @@ import com.tokopedia.checkout.domain.usecase.GetCouponListCartMarketPlaceUseCase
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.di.component.CartComponentInjector;
 import com.tokopedia.checkout.view.view.cartlist.CartActivity;
-import com.tokopedia.contact_us.ContactUsModuleRouter;
-import com.tokopedia.contact_us.createticket.ContactUsConstant;
-import com.tokopedia.contact_us.createticket.activity.ContactUsActivity;
-import com.tokopedia.contact_us.createticket.activity.ContactUsCreateTicketActivity;
+import com.tokopedia.contactus.ContactUsModuleRouter;
+import com.tokopedia.contactus.createticket.ContactUsConstant;
+import com.tokopedia.contactus.createticket.activity.ContactUsActivity;
+import com.tokopedia.contactus.createticket.activity.ContactUsCreateTicketActivity;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -53,6 +58,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
+import com.tokopedia.core.drawer2.data.viewmodel.PopUpNotif;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
@@ -100,7 +106,7 @@ import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartS
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
 import com.tokopedia.core.router.transactionmodule.sharedata.CouponListResult;
 import com.tokopedia.core.router.wallet.IWalletRouter;
-import com.tokopedia.core.share.ShareBottomSheet;
+import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.core.shopinfo.limited.fragment.ShopTalkLimitedFragment;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.BranchSdkUtils;
@@ -257,6 +263,9 @@ import com.tokopedia.tkpd.home.ReactNativeOfficialStoreActivity;
 import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
 import com.tokopedia.tkpd.react.ReactNativeComponent;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
+
+import com.tokopedia.contactus.home.view.ContactUsHomeActivity;
+
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
@@ -290,6 +299,8 @@ import com.tokopedia.usecase.UseCase;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -1347,6 +1358,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Intent getWebviewActivityWithIntent(Context context, String url) {
+            return SimpleWebViewWithFilePickerActivity.getIntent(context,
+                    url);
+    }
+
+    @Override
     public Intent getWebviewActivityWithIntent(Context context, String url, String title) {
         return SimpleWebViewWithFilePickerActivity.getIntentWithTitle(context, url, title);
     }
@@ -1537,7 +1554,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public DialogFragment getLoyaltyTokoPointNotificationDialogFragment(TokoPointDrawerData.PopUpNotif popUpNotif) {
+    public DialogFragment getLoyaltyTokoPointNotificationDialogFragment(PopUpNotif popUpNotif) {
         return LoyaltyNotifFragmentDialog.newInstance(popUpNotif);
     }
 
@@ -1724,7 +1741,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
         requestParams.putObject(CheckPromoCodeCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING_CHECK_PROMO,
                 com.tokopedia.abstraction.common.utils.network.AuthUtil.generateParamsNetwork(
-                        this, paramCheckPromo, userSession.getUserId(), userSession.getDeviceId()
+                        this, paramCheckPromo, getSession().getUserId(), getSession().getDeviceId()
                 ));
 
 
@@ -1822,7 +1839,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getContactUsIntent(Context context) {
-        return new Intent(context, ContactUsActivity.class);
+        return new Intent(context, ContactUsHomeActivity.class);
     }
 
     @Override
@@ -1859,7 +1876,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void goToShareShop(FragmentManager fragmentManager, String shopId, String shopUrl, String shareLabel) {
+    public void goToShareShop(Activity activity, String shopId, String shopUrl, String shareLabel) {
         ShareData shareData = ShareData.Builder.aShareData()
                 .setType(ShareData.SHOP_TYPE)
                 .setName(getString(R.string.message_share_shop))
@@ -1867,7 +1884,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 .setUri(shopUrl)
                 .setId(shopId)
                 .build();
-        ShareBottomSheet.show(fragmentManager, shareData);
+        new DefaultShare(activity, shareData).show();
     }
 
     @Override
@@ -2135,7 +2152,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
 
     @Override
-    public void shareGroupChat(FragmentManager fragmentManager, String channelId, String title, String contentMessage, String imgUrl,
+    public void shareGroupChat(Activity activity, String channelId, String title, String contentMessage, String imgUrl,
                                String shareUrl) {
         ShareData shareData = ShareData.Builder.aShareData()
                 .setId(channelId)
@@ -2146,8 +2163,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 .setUri(shareUrl)
                 .setType(ShareData.GROUPCHAT_TYPE)
                 .build();
-
-        ShareBottomSheet.show(fragmentManager, shareData);
+        new DefaultShare(activity, shareData).show();
     }
 
     @Override
@@ -2278,6 +2294,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public UseCase<String> setCreditCardSingleAuthentication() {
         return new CreditCardFingerPrintUseCase();
     }
+    @Override
+    public Intent getHelpUsIntent(Context context) {
+       return  new Intent(context,ContactUsActivity.class);
+    }
+
 
     @Override
     public Intent transactionOrderDetailRouterGetIntentUploadAwb(String urlUpload) {

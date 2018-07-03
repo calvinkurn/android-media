@@ -16,7 +16,7 @@ public class KolPostPresenter extends BaseDaggerPresenter<KolPostListener.View>
         implements KolPostListener.Presenter {
     private final GetKolPostUseCase getKolPostUseCase;
 
-    private String lastCursor = "";
+    private String lastCursor;
 
     @Inject
     public KolPostPresenter(GetKolPostUseCase getKolPostUseCase) {
@@ -25,6 +25,7 @@ public class KolPostPresenter extends BaseDaggerPresenter<KolPostListener.View>
 
     @Override
     public void initView(String userId) {
+        lastCursor = "";
         getKolPost(userId);
     }
 
