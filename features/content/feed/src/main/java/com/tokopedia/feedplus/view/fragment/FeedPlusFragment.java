@@ -36,7 +36,6 @@ import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.BrandsWebViewActivity;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.product.model.share.ShareData;
@@ -520,24 +519,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onViewMorePromoClicked(int page, int rowNumber) {
-        goToAllPromo();
-        UnifyTracking.eventFeedClick(
-                getFeedAnalyticsHeader(page, rowNumber) + FeedTrackingEventLabel.Click.PROMO_MORE);
-
-    }
-
-    private void goToAllPromo() {
-        Intent intent = new Intent(getContext(), BannerWebView.class);
-        intent.putExtra(BannerWebView.EXTRA_TITLE, getContext().getString(R.string.title_activity_promo));
-        intent.putExtra(BannerWebView.EXTRA_URL,
-                TkpdBaseURL.URL_PROMO + TkpdBaseURL.FLAG_APP
-        );
-        startActivity(intent);
-    }
-
-
-    @Override
     public void onSuccessGetFeedFirstPage(ArrayList<Visitable> listFeed) {
         adapter.setList(listFeed);
         adapter.notifyDataSetChanged();
@@ -580,15 +561,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onShowNewFeed(String totalData) {
         newFeed.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void onGoToPromoPageFromHeader(int page, int rowNumber) {
-        goToAllPromo();
-        UnifyTracking.eventFeedClick(
-                getFeedAnalyticsHeader(page, rowNumber)
-                        + FeedTrackingEventLabel.Click.PROMO_PAGE_HEADER);
-
     }
 
     @Override
@@ -675,15 +647,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void onSeeAllRecentView() {
         Intent intent = RecentViewActivity.getCallingIntent(getActivity());
         getActivity().startActivity(intent);
-    }
-
-
-    @Override
-    public void onSeePromo(int page, int rowNumber, String id, String link, String name) {
-        ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity(), link);
-        UnifyTracking.eventFeedClickPromo(id,
-                getFeedAnalyticsHeader(page, rowNumber)
-                        + FeedTrackingEventLabel.Click.PROMO_SPECIFIC + name);
     }
 
     @Override
@@ -862,11 +825,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
         UnifyTracking.eventFeedClickShop(shopId, FeedTrackingEventLabel.Click.
                 TOP_ADS_FAVORITE);
 
-    }
-
-    @Override
-    public void onEmptyOfficialStoreClicked() {
-        openWebViewBrandsURL(TkpdBaseURL.OfficialStore.URL_WEBVIEW);
     }
 
     @Override

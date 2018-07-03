@@ -138,8 +138,6 @@ public interface FeedPlus {
 
         void updateFavorite(int adapterPosition);
 
-        void onViewMorePromoClicked(int page, int rowNumber);
-
         void showRefresh();
 
         void finishLoading();
@@ -149,8 +147,6 @@ public interface FeedPlus {
         void onSuccessGetFeed(ArrayList<Visitable> visitables);
 
         void onSuccessGetFeedFirstPageWithAddFeed(ArrayList<Visitable> listFeedView);
-
-        void onSeePromo(int page, int rowNumber, String id, String link, String name);
 
         void onRetryClicked();
 
@@ -178,15 +174,11 @@ public interface FeedPlus {
 
         void onShowNewFeed(String totalData);
 
-        void onGoToPromoPageFromHeader(int page, int rowNumber);
-
         void onHideNewFeed();
 
         boolean hasFeed();
 
         void updateFavoriteFromEmpty(String shopId);
-
-        void onEmptyOfficialStoreClicked();
 
         void onBrandClicked(int page, int rowNumber, OfficialStoreViewModel officialStoreViewModel);
 
