@@ -98,13 +98,13 @@
             tools:text="Rp100.000" />
 
         <TextView
-            android:id="@+id/tv_promo_label"
+            android:id="@+id/tv_promo_or_coupon_label"
             style="@style/TextSmallNormalBlack70"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_seller_cost_addition"
             android:layout_marginBottom="@dimen/dp_16"
-            android:text="Promo"
+            android:text="@string/label_promo"
             tools:ignore="HardcodedText" />
 
         <TextView
@@ -124,7 +124,7 @@
             style="@style/TextSmallNormalBlack54"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_promo_label"
+            android:layout_below="@+id/tv_promo_or_coupon_label"
             android:layout_marginBottom="@dimen/dp_16"
             tools:text="Anda mendapat gratis ongkir Rp20.000" />
 
