@@ -84,7 +84,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         HockeyAppHelper.setHockeyappKey(HockeyAppHelper.KEY_MAINAPP);
         setVersionCode();
         GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
-        GlobalConfig.DEBUG = true;
+        GlobalConfig.DEBUG = BuildConfig.DEBUG;
         GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
         com.tokopedia.config.GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
         com.tokopedia.config.GlobalConfig.DEBUG = BuildConfig.DEBUG;
