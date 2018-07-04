@@ -1,5 +1,7 @@
 package com.tokopedia.paymentmanagementsystem.paymentlist.view.activity;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,5 +15,9 @@ public class PaymentListActivity extends BaseSimpleActivity {
     @Override
     protected Fragment getNewFragment() {
         return PaymentListFragment.createInstance();
+    }
+
+    public static Intent createIntent(Activity context) {
+        return new Intent(context, PaymentListActivity.class);
     }
 }

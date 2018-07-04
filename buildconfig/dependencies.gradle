@@ -66,6 +66,8 @@ ext {
     tkpdGraphqlVersion = '2.22'
     tkpdContactUsVersion = '2.22'
     tkpdCommonNetworkVersion = '2.22'
+    tkpdPaymentManagementSystem = '2.22'
+
 
     networkDependencies = [
             retrofit          : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
@@ -252,7 +254,8 @@ ext {
             mitraToppers          : "com.tokopedia.mitratoppers:mitra_toppers:${tkpdMitraToppersVersion}",
             goldMerchant          : "com.tokopedia.gm:gold_merchant:${tkpdGoldMerchantVersion}",
             topAdsManagement      : "com.tokopedia.topads:top_ads_management:${tkpdTopAdsSDKVersion}",
-            districtRecommendation: "com.tokopedia.district_recommendation:district_recommendation:${tkpdDistrictRecommendationVersion}"
+            districtRecommendation: "com.tokopedia.district_recommendation:district_recommendation:${tkpdDistrictRecommendationVersion}",
+            paymentManagementSystem: "com.tokopedia.payment_management_system:payment_management_system:${tkpdPaymentManagementSystem}",
     ]
 
     tkpdLibDependencies = [
