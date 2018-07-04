@@ -112,8 +112,6 @@ public class InboxListActivity extends InboxBaseActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        rvEmailList.addOnScrollListener(rvOnScrollListener);
-        editText.setListener(((InboxListContract.InboxListPresenter) mPresenter).getSearchListener());
     }
 
     @Override
@@ -123,7 +121,13 @@ public class InboxListActivity extends InboxBaseActivity
 
     @Override
     void initView() {
+        rvEmailList.addOnScrollListener(rvOnScrollListener);
+        editText.setListener(((InboxListContract.InboxListPresenter) mPresenter).getSearchListener());
+    }
 
+    @Override
+    int getMenuRes() {
+        return -1;
     }
 
     @OnClick(R2.id.btn_filter)

@@ -2,37 +2,51 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/app_bar"
-        android:layout_width="wrap_content"
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:elevation="@dimen/dp_4"
+        android:gravity="center_vertical"
+        android:theme="?toolbarTheme"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        app:contentInsetStartWithNavigation="0dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:subtitleTextAppearance="?subtitleTextAppearance"
+        app:titleTextAppearance="?titleTextAppearance" />
 
     <TextView
         android:id="@+id/tv_ticket_title"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
         android:fontFamily="sans-serif"
         android:lineSpacingExtra="5sp"
         android:textColor="@color/black_70"
         android:textSize="@dimen/sp_17"
         android:textStyle="normal"
+        app:layout_constraintEnd_toStartOf="@+id/tv_ticket_status"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/app_bar"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
         tools:text="Prifikasi dan
-dinilai" />
+dinilaiwbckwbvkbwvwkwbkjewvrrevervrevrvvvrvrrevrvrvevebvwv" />
 
     <TextView
         android:id="@+id/tv_ticket_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
@@ -43,16 +57,16 @@ dinilai" />
         android:paddingTop="@dimen/dp_4"
         android:textColor="#ca8600"
         android:textSize="@dimen/sp_11"
-        app:layout_constraintBaseline_toBaselineOf="@+id/tv_ticket_title"
-        app:layout_constraintStart_toEndOf="@+id/tv_ticket_title"
-        app:layout_constraintTop_toTopOf="parent"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
         tools:text="Dalam Proses" />
 
     <TextView
-        android:id="@+id/tv_ref_num"
+        android:id="@+id/tv_id_num"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_12"
         android:lineSpacingExtra="6sp"
         android:textColor="@color/black_38"
         android:textSize="@dimen/sp_12"
@@ -61,17 +75,18 @@ dinilai" />
         tools:text="ID: #00079468" />
 
     <TextView
+        android:id="@+id/tv_view_transaction"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="@dimen/dp_16"
         android:fontFamily="sans-serif"
         android:lineSpacingExtra="6sp"
+        android:text="Detail Transaksi"
         android:textColor="@color/green_nob"
         android:textSize="@dimen/sp_12"
         android:textStyle="normal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tv_ref_num"
-        tools:text="Detail Transaksi" />
+        app:layout_constraintTop_toTopOf="@id/tv_id_num" />
 
     <View
         android:id="@+id/top_divider"
@@ -79,22 +94,42 @@ dinilai" />
         android:layout_height="@dimen/dp_1"
         android:layout_marginTop="@dimen/dp_16"
         android:background="@color/grey_300"
-        app:layout_constraintTop_toBottomOf="@+id/tv_ref_num" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_id_num" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_message_list"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:listitem="@layout/layout_collapsed_msg"
-        app:layout_constraintTop_toBottomOf="@+id/top_divider" />
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/text_toolbar"
+        app:layout_constraintHeight_default="spread"
+        app:layout_constraintTop_toBottomOf="@+id/top_divider"
+        tools:listitem="@layout/layout_collapsed_msg" />
 
     <include
-        android:id="@+id/evveerbrb"
+        android:id="@+id/text_toolbar"
         layout="@layout/layout_bottom_text_toolbar"
         android:layout_width="0dp"
-        android:elevation="@dimen/dp_8"
         android:layout_height="wrap_content"
+        android:elevation="@dimen/dp_8"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <FrameLayout
+        android:id="@+id/progress_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black_12"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ProgressBar
+            android:id="@+id/prog_bar"
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="@dimen/dp_50"
+            android:layout_gravity="center" />
+    </FrameLayout>
 </android.support.constraint.ConstraintLayout>

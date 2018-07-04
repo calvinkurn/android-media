@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract;
+import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract;
 
 import javax.inject.Named;
 
@@ -18,6 +19,9 @@ public interface InboxComponent {
 
     @Named("InboxListPresenter")
     InboxBaseContract.InboxBasePresenter getTicketListPresenter();
+
+    @Named("InboxDetailPresenter")
+    InboxDetailContract.InboxDetailPresenter getInboxDetailPresenter();
 
     Context getContext();
 

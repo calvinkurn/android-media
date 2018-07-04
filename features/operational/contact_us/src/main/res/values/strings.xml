@@ -52,6 +52,7 @@
     <string name="type_here">Tulis pesan</string>
     <string name="on_going">Dalam Proses</string>
     <string name="closed">Ditutup</string>
+    <string name="invoice_id">ID: %1$s</string>
     <string name="need_rating">Beri Penilaian</string>
 
 </resources>

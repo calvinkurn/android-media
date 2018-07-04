@@ -1,5 +1,8 @@
 package com.tokopedia.contactus.inboxticket2.view.contract;
 
+import com.tokopedia.contactus.inboxticket2.domain.Tickets;
+import com.tokopedia.contactus.inboxticket2.view.customview.CustomEditText;
+
 /**
  * Created by pranaymohapatra on 22/06/18.
  */
@@ -10,10 +13,13 @@ public interface InboxDetailContract {
 
         void hideMessages();
 
-        void renderMessageList();
+        void renderMessageList(Tickets ticketDetail);
+
+        void toggleSearch(int visibility);
     }
 
-    interface InboxDetailPresenter extends InboxBaseContract.InboxBasePresenter{
+    interface InboxDetailPresenter extends InboxBaseContract.InboxBasePresenter {
+        CustomEditText.Listener getSearchListener();
 
     }
 }

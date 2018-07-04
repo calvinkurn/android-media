@@ -11,10 +11,10 @@ import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.contactus.R;
-import com.tokopedia.contactus.inboxticket.activity.InboxTicketDetailActivity;
 import com.tokopedia.contactus.inboxticket2.domain.TicketListResponse;
 import com.tokopedia.contactus.inboxticket2.domain.TicketsItem;
 import com.tokopedia.contactus.inboxticket2.domain.usecase.GetTicketListUseCase;
+import com.tokopedia.contactus.inboxticket2.view.activity.InboxDetailActivity;
 import com.tokopedia.contactus.inboxticket2.view.adapter.InboxFilterAdapter;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxListContract;
@@ -147,7 +147,10 @@ public class InboxListPresenterImpl
 
     @Override
     public void onClickTicket(int index) {
-        Intent detailIntent = InboxTicketDetailActivity.getIntent(mView.getActivity(), originalList.get(index).getId());
+
+        //InboxTicketDetailActivity.getIntent(mView.getActivity(), originalList.get(index).getId());
+        Intent detailIntent = new Intent(mView.getActivity(), InboxDetailActivity.class);
+        detailIntent.putExtra("TICKET_ID", originalList.get(index).getId());
         mView.navigateToActivityRequest(detailIntent, 204);
     }
 

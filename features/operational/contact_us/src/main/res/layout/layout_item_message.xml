@@ -2,8 +2,10 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_item_message"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:background="@color/white">
 
     <ImageView
         android:id="@+id/iv_profile"
@@ -34,8 +36,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_10"
+        android:ellipsize="end"
         android:fontFamily="sans-serif"
         android:lineSpacingExtra="6sp"
+        android:maxLines="1"
         android:textColor="#61000000"
         android:textSize="12sp"
         android:textStyle="normal"
@@ -56,6 +60,7 @@
         tools:text="29 Mar" />
 
     <TextView
+        android:id="@+id/tv_comment"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_16"
@@ -81,5 +86,13 @@ Kami harap pembayaran Anda segera diverifikasi agar pesanan dapat direspons penj
 
 Salam,
 Customer Care" />
+
+    <View
+        android:id="@+id/divider_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginTop="@dimen/dp_16"
+        android:background="@color/grey_300"
+        app:layout_constraintTop_toBottomOf="@+id/tv_comment" />
 
 </android.support.constraint.ConstraintLayout>

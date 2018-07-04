@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -33,6 +35,8 @@ public abstract class InboxBaseActivity extends BaseSimpleActivity implements In
     abstract Type getType();
 
     abstract void initView();
+
+    abstract int getMenuRes();
 
     private String BOTTOM_FRAGMENT = "Bottom_Sheet_Fragment";
 
@@ -99,10 +103,12 @@ public abstract class InboxBaseActivity extends BaseSimpleActivity implements In
         ButterKnife.bind(this);
         executeInjector();
         NetworkClient.init(this);
-        initView();
         if (getType() == InboxListActivity.class) {
             mPresenter = component.getTicketListPresenter();
+        } else if (getType() == InboxDetailActivity.class) {
+            mPresenter = component.getInboxDetailPresenter();
         }
+        initView();
         mPresenter.attachView(this);
     }
 
@@ -142,5 +148,18 @@ public abstract class InboxBaseActivity extends BaseSimpleActivity implements In
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         mPresenter.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (getMenuRes() != -1)
+            getMenuInflater().inflate(getMenuRes(), menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        mPresenter.onOptionsItemSelected(item);
+        return super.onOptionsItemSelected(item);
     }
 }

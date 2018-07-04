@@ -4,8 +4,11 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.tokopedia.contactus.inboxticket2.domain.usecase.GetTicketDetailUseCase;
 import com.tokopedia.contactus.inboxticket2.domain.usecase.GetTicketListUseCase;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract;
+import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract;
+import com.tokopedia.contactus.inboxticket2.view.presenter.InboxDetailPresenterImpl;
 import com.tokopedia.contactus.inboxticket2.view.presenter.InboxListPresenterImpl;
 
 import javax.inject.Named;
@@ -41,5 +44,11 @@ public class InboxModule {
     @Named("InboxListPresenter")
     InboxBaseContract.InboxBasePresenter provideTicketListPresenter(GetTicketListUseCase useCase) {
         return new InboxListPresenterImpl(useCase);
+    }
+
+    @Provides
+    @Named("InboxDetailPresenter")
+    InboxDetailContract.InboxDetailPresenter provideInboxListPresenter(GetTicketDetailUseCase useCase) {
+        return new InboxDetailPresenterImpl(useCase);
     }
 }

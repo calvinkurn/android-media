@@ -69,5 +69,10 @@
             android:exported="true"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
+        <activity
+            android:name=".inboxticket2.view.activity.InboxDetailActivity"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
     </application>
 </manifest>
