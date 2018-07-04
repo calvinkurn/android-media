@@ -31,5 +31,5 @@ public interface IDigitalCategoryListView extends IBaseView {
 
     void renderTokoCashData(TokoCashData tokoCashData);
 
-    Context getContext();
+    Context getAppContext();
 }

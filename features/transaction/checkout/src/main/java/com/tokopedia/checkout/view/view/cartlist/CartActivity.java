@@ -26,7 +26,7 @@ import java.util.List;
 public class CartActivity extends BaseCheckoutActivity implements CartFragment.ActionListener,
         HasComponent<CartComponent> {
 
-    @DeepLink(CheckoutAppLink.CART)
+    //@DeepLink(CheckoutAppLink.CART)
     public static Intent getCallingIntent(Context context, Bundle extras) {
         Intent intent = new Intent(context, CartActivity.class).putExtras(extras);
         intent.putExtras(extras);

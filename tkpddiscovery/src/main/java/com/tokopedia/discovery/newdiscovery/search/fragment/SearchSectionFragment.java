@@ -28,7 +28,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
-import com.tokopedia.core.share.ShareBottomSheet;
+import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.activity.SortProductActivity;
@@ -199,6 +199,10 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     }
 
     public void showBottomBarNavigation(boolean show) {
+        if (bottomNavigationListener == null) {
+            return;
+        }
+
         boolean isBottomSheetShown = bottomSheetListener != null
                 && bottomSheetListener.isBottomSheetShown();
 

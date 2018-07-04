@@ -30,10 +30,13 @@ import butterknife.Unbinder;
 public class SearchResultFragment extends TkpdBaseV4Fragment {
 
     private static final String TAG = SearchResultFragment.class.getSimpleName();
+    private static final String ARGS_INSTANCE_TYPE = "ARGS_INSTANCE_TYPE";
+    private static final String DEFAULT_INSTANCE_TPE = "unknown";
     private Unbinder unbinder;
     private SearchAdapter adapter;
     private LinearLayoutManager layoutManager;
     private ItemClickListener clickListener;
+    private String instanceType;
 
     @BindView(R2.id.list)
     RecyclerView recyclerView;
@@ -41,9 +44,10 @@ public class SearchResultFragment extends TkpdBaseV4Fragment {
     public SearchResultFragment() {
     }
 
-    public static SearchResultFragment newInstance(ItemClickListener clickListener) {
+    public static SearchResultFragment newInstance(String tabName, ItemClickListener clickListener) {
 
         Bundle args = new Bundle();
+        args.putString(ARGS_INSTANCE_TYPE, tabName);
 
         SearchResultFragment fragment = new SearchResultFragment();
         fragment.setCallBackListener(clickListener);
@@ -59,6 +63,7 @@ public class SearchResultFragment extends TkpdBaseV4Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+        instanceType = getArguments().getString(ARGS_INSTANCE_TYPE, DEFAULT_INSTANCE_TPE);
     }
 
     @Nullable
@@ -94,7 +99,7 @@ public class SearchResultFragment extends TkpdBaseV4Fragment {
     }
 
     private void prepareView(View view) {
-        SearchAdapterTypeFactory typeFactory = new SearchAdapterTypeFactory(clickListener);
+        SearchAdapterTypeFactory typeFactory = new SearchAdapterTypeFactory(instanceType, clickListener);
         layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         adapter = new SearchAdapter(typeFactory);
         recyclerView.setAdapter(adapter);
