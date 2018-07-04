@@ -48,7 +48,6 @@ public class InstantLoanModule {
                 .client(okHttpClient).build();
     }
 
-    //TODO add api cache interceptor (not from tkpdcore) to cache the response
     @InstantLoanQualifier
     @Provides
     public OkHttpClient provideOkHttpClient(@ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,

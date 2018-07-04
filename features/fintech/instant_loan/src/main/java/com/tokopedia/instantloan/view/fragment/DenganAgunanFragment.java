@@ -35,8 +35,8 @@ import static com.tokopedia.instantloan.view.fragment.DanaInstantFragment.LOGIN_
 public class DenganAgunanFragment extends BaseDaggerFragment implements InstantLoanContractor.View {
 
     private static final String TAB_POSITION = "tab_position";
+    private static final String PINJAMAN_TITLE = "Pinjaman Online";
     private Spinner mSpinnerLoanAmount;
-    private SessionHandler sessionHandler;
 
     @Inject
     InstantLoanPresenter presenter;
@@ -47,7 +47,6 @@ public class DenganAgunanFragment extends BaseDaggerFragment implements InstantL
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         presenter.attachView(this);
-        sessionHandler = new SessionHandler(getContext());
         mCurrentTab = getArguments().getInt(TAB_POSITION);
     }
 
@@ -97,16 +96,10 @@ public class DenganAgunanFragment extends BaseDaggerFragment implements InstantL
 
             if (mSpinnerLoanAmount.getSelectedItem().toString().equalsIgnoreCase(getString(R.string.label_select_nominal))) {
                 TextView errorText = (TextView) mSpinnerLoanAmount.getSelectedView();
-//                errorText.setError("Please select");
                 errorText.setTextColor(Color.RED);
                 return;
             }
 
-            /*if (sessionHandler.isV4Login()) {
-                openWebView(WEB_LINK_COLLATERAL_FUND + LOAN_AMOUNT_QUERY_PARAM + mSpinnerLoanAmount.getSelectedItem().toString().split(" ")[1]);
-            } else {
-                navigateToLoginPage();
-            }*/
             openWebView(WEB_LINK_COLLATERAL_FUND + LOAN_AMOUNT_QUERY_PARAM +
                     mSpinnerLoanAmount.getSelectedItem().toString().split(" ")[1].replace(".", ""));
         });
@@ -160,7 +153,7 @@ public class DenganAgunanFragment extends BaseDaggerFragment implements InstantL
 
     @Override
     public void openWebView(String url) {
-        Intent intent = SimpleWebViewWithFilePickerActivity.getIntentWithTitle(getContext(), url, "Pinjaman Online");
+        Intent intent = SimpleWebViewWithFilePickerActivity.getIntentWithTitle(getContext(), url, PINJAMAN_TITLE);
         startActivity(intent);
     }
 
@@ -170,8 +163,6 @@ public class DenganAgunanFragment extends BaseDaggerFragment implements InstantL
     }
 
     public void showLoader() {
-//        findViewById(R.id.progress_bar_status).setVisibility(View.VISIBLE);
-//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
     }
 
     @Override
@@ -195,7 +186,7 @@ public class DenganAgunanFragment extends BaseDaggerFragment implements InstantL
     }
 
     public String getScreenNameId() {
-        return "Dengan Agunan";
+        return "";
     }
 
     @Override
@@ -203,8 +194,7 @@ public class DenganAgunanFragment extends BaseDaggerFragment implements InstantL
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == LOGIN_REQUEST_CODE) {
             if (!SessionHandler.isV4Login(getContext())) {
-                showToastMessage("Please login to access instant loan features", Toast.LENGTH_SHORT);
-//                getActivity().finish();
+                showToastMessage(getResources().getString(R.string.login_to_proceed), Toast.LENGTH_SHORT);
             } else {
                 openWebView(WEB_LINK_COLLATERAL_FUND + LOAN_AMOUNT_QUERY_PARAM + mSpinnerLoanAmount.getSelectedItem().toString().split(" ")[1]);
             }

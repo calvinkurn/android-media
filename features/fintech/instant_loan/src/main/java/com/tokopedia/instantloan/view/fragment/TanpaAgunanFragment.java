@@ -37,8 +37,8 @@ import static com.tokopedia.instantloan.view.fragment.DanaInstantFragment.LOGIN_
 public class TanpaAgunanFragment extends BaseDaggerFragment implements InstantLoanContractor.View {
 
     private static final String TAB_POSITION = "tab_position";
+    private static final String PINJAMAN_TITLE = "Pinjaman Online";
     private Spinner mSpinnerLoanAmount;
-    private SessionHandler sessionHandler;
 
     @Inject
     InstantLoanPresenter presenter;
@@ -48,7 +48,6 @@ public class TanpaAgunanFragment extends BaseDaggerFragment implements InstantLo
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        sessionHandler = new SessionHandler(getContext());
         presenter.attachView(this);
         mCurrentTab = getArguments().getInt(TAB_POSITION);
     }
@@ -122,7 +121,7 @@ public class TanpaAgunanFragment extends BaseDaggerFragment implements InstantLo
     }
 
     public String getScreenNameId() {
-        return "Tanpa Agunan";
+        return "";
     }
 
     @Override
@@ -130,7 +129,7 @@ public class TanpaAgunanFragment extends BaseDaggerFragment implements InstantLo
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == LOGIN_REQUEST_CODE) {
             if (!SessionHandler.isV4Login(getContext())) {
-                showToastMessage("Please login to access instant loan features", Toast.LENGTH_SHORT);
+                showToastMessage(getResources().getString(R.string.login_to_proceed), Toast.LENGTH_SHORT);
             } else {
                 openWebView(WEB_LINK_NO_COLLATERAL + LOAN_AMOUNT_QUERY_PARAM + mSpinnerLoanAmount.getSelectedItem().toString().split(" ")[1]);
             }
@@ -204,7 +203,8 @@ public class TanpaAgunanFragment extends BaseDaggerFragment implements InstantLo
 
     @Override
     public void openWebView(String url) {
-        Intent intent = SimpleWebViewWithFilePickerActivity.getIntentWithTitle(getContext(), url, "Pinjaman Online");
+        Intent intent = SimpleWebViewWithFilePickerActivity.getIntentWithTitle(getContext(), url,
+                PINJAMAN_TITLE);
         startActivity(intent);
     }
 

@@ -24,6 +24,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.instantloan.InstantLoanComponentInstance;
 import com.tokopedia.instantloan.R;
 import com.tokopedia.instantloan.data.model.response.BannerEntity;
@@ -49,6 +50,7 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
         BannerPagerAdapter.BannerClick,
         View.OnClickListener {
 
+    private static final String PINJAMAN_TITLE = "Pinjaman Online";
     @Inject
     BannerListPresenter mBannerPresenter;
 
@@ -79,11 +81,11 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
     private void loadSection() {
 
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
-        /*if (remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SHOW_INSTANT_LOAN, true)) {
+        if (remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SHOW_INSTANT_LOAN, true)) {
             populateThreeTabItem();
         } else {
             populateTwoTabItem();
-        }*/
+        }
         populateThreeTabItem();
         InstantLoanPagerAdapter instantLoanPagerAdapter =
                 new InstantLoanPagerAdapter(getSupportFragmentManager());
@@ -303,7 +305,7 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
     }
 
     public void openWebView(String url) {
-        Intent intent = SimpleWebViewWithFilePickerActivity.getIntentWithTitle(this, url, "Pinjaman Online");
+        Intent intent = SimpleWebViewWithFilePickerActivity.getIntentWithTitle(this, url, PINJAMAN_TITLE);
         startActivity(intent);
     }
 }
