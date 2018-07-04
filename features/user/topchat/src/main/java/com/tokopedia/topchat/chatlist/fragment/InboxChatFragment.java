@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -51,6 +52,8 @@ import com.tokopedia.topchat.common.InboxChatConstant;
 import com.tokopedia.topchat.common.InboxMessageConstant;
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics;
 import com.tokopedia.topchat.common.di.DaggerInboxChatComponent;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -629,7 +632,15 @@ public class InboxChatFragment extends BaseDaggerFragment
 
     @Override
     public void onReceiveMessage(BaseChatViewModel message) {
-        //Ignore
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if(adapter != null && !TextUtils.isEmpty(message.getMessageId())) {
+                    adapter.moveToTop(message.getMessageId(),
+                            message.getMessage(), null, true);
+                }
+            }
+        });
     }
 
 
@@ -653,9 +664,9 @@ public class InboxChatFragment extends BaseDaggerFragment
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         presenter.closeWebsocket();
         presenter.detachView();
+        super.onDestroy();
     }
 
     @Override
