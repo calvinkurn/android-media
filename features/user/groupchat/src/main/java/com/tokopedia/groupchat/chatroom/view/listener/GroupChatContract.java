@@ -74,6 +74,8 @@ public interface GroupChatContract {
 
         @Nullable
         ExitMessage getExitMessage();
+
+        void logoutChannel(OpenChannel openChannel);
     }
 
     interface Presenter extends CustomerPresenter<GroupChatContract.View> {

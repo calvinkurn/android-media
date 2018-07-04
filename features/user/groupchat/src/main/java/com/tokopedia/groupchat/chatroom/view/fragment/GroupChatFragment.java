@@ -234,8 +234,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivityForResult(((GroupChatModuleRouter) getActivity().getApplicationContext())
-                        .getLoginIntent(getActivity()), REQUEST_LOGIN);
+                goToLogin();
             }
         });
 
@@ -272,6 +271,12 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         });
 
         setPinnedMessage(((GroupChatContract.View) getActivity()).getPinnedMessage());
+    }
+
+    private void goToLogin() {
+        ((GroupChatContract.View)getActivity()).logoutChannel(mChannel);
+        startActivityForResult(((GroupChatModuleRouter) getActivity().getApplicationContext())
+                .getLoginIntent(getActivity()), REQUEST_LOGIN);
     }
 
     private void setSendButtonEnabled(boolean isEnabled) {
@@ -943,7 +948,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_LOGIN) {
-//            refreshChat();
             ((GroupChatContract.View) getActivity()).onSuccessLogin();
             userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
             setForLoginUser(userSession != null && userSession.isLoggedIn());

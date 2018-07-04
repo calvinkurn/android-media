@@ -56,6 +56,8 @@ public class LoginGroupChatUseCase {
                     return;
                 }
 
+                //TODO CHECK WITH CACHE IF DATA ALREADY INVALID THEN UPDATE INSTEAD OF UPDATING
+                // ALL THE TIME
                 SendBird.updateCurrentUserInfo(userName, userAvatar, new SendBird.UserInfoUpdateHandler() {
                     @Override
                     public void onUpdated(SendBirdException e) {
