@@ -347,6 +347,19 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
     }
 
+    private boolean isSameCartObject(ShipmentCartItemModel oldShipmentCartItemModel,
+                                     ShipmentCartItemModel newShipmentCartItemModel) {
+
+        if (oldShipmentCartItemModel.getRecipientAddressModel() != null && newShipmentCartItemModel.getRecipientAddressModel() != null) {
+            if (!oldShipmentCartItemModel.getRecipientAddressModel().getId().equals(newShipmentCartItemModel.getRecipientAddressModel().getId())) {
+                return false;
+            }
+        }
+        return oldShipmentCartItemModel.getShopId() == newShipmentCartItemModel.getShopId() &&
+                oldShipmentCartItemModel.getCartItemModels().size() == newShipmentCartItemModel.getCartItemModels().size() &&
+                oldShipmentCartItemModel.getCartItemModels().get(0).getProductId() == newShipmentCartItemModel.getCartItemModels().get(0).getProductId();
+    }
+
     @Override
     public void renderErrorDataHasChangedAfterCheckout(CartShipmentAddressFormData cartShipmentAddressFormData) {
         List<ShipmentCartItemModel> newShipmentCartItemModelList = shipmentDataConverter.getShipmentItems(
@@ -355,7 +368,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         List<ShipmentCartItemModel> oldShipmentCartItemModelList = shipmentPresenter.getShipmentCartItemModelList();
         for (ShipmentCartItemModel oldShipmentCartItemModel : oldShipmentCartItemModelList) {
             for (ShipmentCartItemModel newShipmentCartItemModel : newShipmentCartItemModelList) {
-                if (oldShipmentCartItemModel.getShopId() == newShipmentCartItemModel.getShopId()) {
+                if (isSameCartObject(oldShipmentCartItemModel, newShipmentCartItemModel)) {
                     boolean breakFromNewShipmentCartItemModelLoop = false;
                     for (ShopShipment shopShipment : newShipmentCartItemModel.getShipmentCartData().getShopShipments()) {
                         if (oldShipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperId() == shopShipment.getShipId()) {
@@ -384,10 +397,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
         for (ShipmentCartItemModel oldShipmentCartItemModel : oldShipmentCartItemModelList) {
             for (ShipmentCartItemModel newShipmentCartItemModel : newShipmentCartItemModelList) {
-                if (oldShipmentCartItemModel.getShopId() == newShipmentCartItemModel.getShopId() &&
-                        newShipmentCartItemModel.getSelectedShipmentDetailData() == null &&
-                        oldShipmentCartItemModel.getCartItemModels().size() == newShipmentCartItemModel.getCartItemModels().size() &&
-                        oldShipmentCartItemModel.getCartItemModels().get(0).getProductId() == newShipmentCartItemModel.getCartItemModels().get(0).getProductId()) {
+                if (isSameCartObject(oldShipmentCartItemModel, newShipmentCartItemModel) && newShipmentCartItemModel.getSelectedShipmentDetailData() == null) {
                     oldShipmentCartItemModel.setSelectedShipmentDetailData(null);
                     oldShipmentCartItemModel.setShipmentCartData(newShipmentCartItemModel.getShipmentCartData());
                 }
