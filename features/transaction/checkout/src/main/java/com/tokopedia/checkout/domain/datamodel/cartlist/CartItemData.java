@@ -89,6 +89,7 @@ public class CartItemData implements Parcelable {
         private int minimalQtyOrder;
         private int invenageValue;
         private double pricePlan;
+        private int pricePlanInt;
         private int priceCurrency;
         private String priceFormatted;
         private String wholesalePriceFormatted;
@@ -111,6 +112,7 @@ public class CartItemData implements Parcelable {
         private List<WholesalePrice> wholesalePrice;
         private String trackerAttribution;
         private String trackerListName;
+        private String shopType;
 
         public String getTrackerAttribution() {
             return trackerAttribution;
@@ -118,6 +120,22 @@ public class CartItemData implements Parcelable {
 
         public void setTrackerAttribution(String trackerAttribution) {
             this.trackerAttribution = trackerAttribution;
+        }
+
+        public int getPricePlanInt() {
+            return pricePlanInt;
+        }
+
+        public String getShopType() {
+            return shopType;
+        }
+
+        public void setShopType(String shopType) {
+            this.shopType = shopType;
+        }
+
+        public void setPricePlanInt(int pricePlanInt) {
+            this.pricePlanInt = pricePlanInt;
         }
 
         public String getTrackerListName() {
@@ -361,6 +379,7 @@ public class CartItemData implements Parcelable {
             dest.writeInt(this.minimalQtyOrder);
             dest.writeInt(this.invenageValue);
             dest.writeDouble(this.pricePlan);
+            dest.writeInt(this.pricePlanInt);
             dest.writeInt(this.priceCurrency);
             dest.writeString(this.priceFormatted);
             dest.writeString(this.wholesalePriceFormatted);
@@ -383,6 +402,7 @@ public class CartItemData implements Parcelable {
             dest.writeTypedList(this.wholesalePrice);
             dest.writeString(this.trackerAttribution);
             dest.writeString(this.trackerListName);
+            dest.writeString(this.shopType);
         }
 
         protected OriginData(Parcel in) {
@@ -393,6 +413,7 @@ public class CartItemData implements Parcelable {
             this.minimalQtyOrder = in.readInt();
             this.invenageValue = in.readInt();
             this.pricePlan = in.readDouble();
+            this.pricePlanInt = in.readInt();
             this.priceCurrency = in.readInt();
             this.priceFormatted = in.readString();
             this.wholesalePriceFormatted = in.readString();
@@ -415,6 +436,7 @@ public class CartItemData implements Parcelable {
             this.wholesalePrice = in.createTypedArrayList(WholesalePrice.CREATOR);
             this.trackerAttribution = in.readString();
             this.trackerListName = in.readString();
+            this.shopType = in.readString();
         }
 
         public static final Creator<OriginData> CREATOR = new Creator<OriginData>() {

@@ -107,7 +107,7 @@
                 android:visibility="gone">
 
                 <AutoCompleteTextView
-                    android:id="@+id/postal_code"
+                    android:id="@+id/autocomplete_postal_code"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:completionThreshold="1"
