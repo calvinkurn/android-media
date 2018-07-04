@@ -596,6 +596,11 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
     }
 
     @Override
+    public void onPriceEditedFromTextInput(int minValue, int maxValue) {
+        applyFilter();
+    }
+
+    @Override
     public boolean isSelectedCategory(Option option) {
         return !TextUtils.isEmpty(selectedCategoryId)
                 &&  selectedCategoryId.equals(option.getValue());
@@ -748,13 +753,18 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         KeyboardHelper.setKeyboardVisibilityChangedListener(bottomSheetLayout, new KeyboardHelper.OnKeyboardVisibilityChangedListener() {
             @Override
             public void onKeyboardShown() {
-                buttonFinish.setVisibility(View.GONE);
+                if (bottomSheetBehavior != null
+                        && bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+                    buttonFinish.setVisibility(View.GONE);
+                }
             }
 
             @Override
             public void onKeyboardHide() {
-                buttonFinish.setVisibility(View.VISIBLE);
-                bottomSheetLayout.requestFocus();
+                if (bottomSheetBehavior != null
+                        && bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+                    buttonFinish.setVisibility(View.VISIBLE);
+                }
             }
         });
     }

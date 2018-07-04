@@ -1043,7 +1043,9 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-        presenter.prepareOptionMenu(menu, getActivity(), productData);
+        if (getActivity() != null) {
+            presenter.prepareOptionMenu(menu, getActivity(), productData);
+        }
     }
 
     @Override

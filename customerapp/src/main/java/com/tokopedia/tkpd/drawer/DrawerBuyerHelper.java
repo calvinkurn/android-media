@@ -144,7 +144,6 @@ public class DrawerBuyerHelper extends DrawerHelper
                     android.R.drawable.stat_sys_warning,
                     TkpdState.DrawerPosition.DEVELOPER_OPTIONS, true));
         }
-
     }
 
     private void createDataLogin(ArrayList<DrawerItem> data) {
@@ -526,7 +525,13 @@ public class DrawerBuyerHelper extends DrawerHelper
 
                     break;
                 case TkpdState.DrawerPosition.PEOPLE_DIGITAL_TRANSACTION_LIST:
-                    intent = TransactionPurchaseRouter.createIntentOrderListSummary(context);
+                    if(remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.FIREBASE_DIGITAL_OMS_REMOTE_CONFIG_KEY, true))
+                        intent = TransactionPurchaseRouter.createIntentOrderListSummary(context);
+                    else{
+                        intent = DigitalWebActivity.newInstance(context, TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
+                                + TkpdBaseURL.DigitalWebsite.PATH_TRANSACTION_LIST);
+                        sendGTMNavigationEvent(AppEventTracking.EventLabel.DIGITAL_TRANSACTION_LIST);
+                    }
                     context.startActivity(intent);
 
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.DIGITAL_TRANSACTION_LIST);
