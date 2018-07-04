@@ -174,7 +174,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
                     localCacheHandler.putString(TkpdCache.Key.REFERRAL_CODE, referralCodeEntity.getPromoContent().getCode());
                     localCacheHandler.applyEditor();
                     contents = referralCodeEntity.getPromoContent().getContent();
-                    getView().renderVoucherCodeData(referralCodeEntity.getPromoContent());
+                    getView().renderVoucherCodeData(referralCodeEntity);
                 } else {
                     getView().renderErrorGetVoucherCode(referralCodeEntity.getErorMessage());
                 }
@@ -402,10 +402,10 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
 
 
         } else if (shareApp.getPackageNmae().equalsIgnoreCase(TkpdState.PackageName.Instagram)) {
-            // actionShare(shareData,TkpdState.PackageName.Instagram,AppEventTracking.SOCIAL_MEDIA.INSTAGRAM);
+             actionShare(shareData,TkpdState.PackageName.Instagram,AppEventTracking.SOCIAL_MEDIA.INSTAGRAM);
            // Uri file = Uri.parse("android.resource://com.tokopedia.tkpd/" + R.drawable.filter_nostate);
-            shareData.setImgUri("android.resource://com.tokopedia.tkpd/" + R.drawable.filter_nostate);
-            shareInstagram(shareData);
+//            shareData.setImgUri("android.resource://com.tokopedia.tkpd/" + R.drawable.filter_nostate);
+//            shareInstagram(shareData);
         } else if (shareApp.getPackageNmae().equalsIgnoreCase(TkpdState.PackageName.Facebook)) {
             actionShare(shareData, TkpdState.PackageName.Facebook, AppEventTracking.SOCIAL_MEDIA.FACEBOOK);
 

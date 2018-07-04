@@ -51,7 +51,7 @@ import static com.facebook.FacebookSdk.getApplicationContext;
  * Created by ashwanityagi on 18/09/17.
  */
 
-public class FragmentReferral extends BasePresenterFragmentV4<IReferralPresenter> implements ReferralView , ReferralGuidePagerAdapter.ReferralGuidePagerListener{
+public class FragmentReferral extends BasePresenterFragmentV4<IReferralPresenter> implements ReferralView, ReferralGuidePagerAdapter.ReferralGuidePagerListener {
 
     @Inject
     ReferralPresenter presenter;
@@ -169,7 +169,7 @@ public class FragmentReferral extends BasePresenterFragmentV4<IReferralPresenter
             TextViewHelpLink.setVisibility(View.INVISIBLE);
         }
 
-        referralGuidePagerAdapter = new ReferralGuidePagerAdapter(getActivity(),this);
+        referralGuidePagerAdapter = new ReferralGuidePagerAdapter(getActivity(), this);
         pagerGuide.setAdapter(referralGuidePagerAdapter);
 
         pagerGuide.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabGuide));
@@ -233,13 +233,15 @@ public class FragmentReferral extends BasePresenterFragmentV4<IReferralPresenter
     }
 
     @Override
-    public void renderVoucherCodeData(PromoContent promoContent) {
-        referralCodeTextView.setText(promoContent.getCode());
-        referralCount.setText(promoContent.getFriendCount() + "  teman diajak");
-        progressBarReferral.setProgress(promoContent.getPromoBenefit().getCurrentBenefit() == 0 ?
-                promoContent.getPromoBenefit().getCurrentBenefit() : promoContent.getPromoBenefit().getMaxBenefit()
-                / promoContent.getPromoBenefit().getCurrentBenefit());
-        tvPercent.setText(promoContent.getPromoBenefit().getCurrentBenefit() + " / " + promoContent.getPromoBenefit().getMaxBenefit());
+    public void renderVoucherCodeData(ReferralCodeEntity referralData) {
+        referralCodeTextView.setText(referralData.getPromoContent().getCode());
+        referralCount.setText(referralData.getPromoContent().getFriendCount() + "  teman diajak");
+        if (referralData.getPromoBenefit() != null) {
+            progressBarReferral.setProgress(referralData.getPromoBenefit().getCurrentBenefit() == 0 ?
+                    referralData.getPromoBenefit().getCurrentBenefit() : referralData.getPromoBenefit().getMaxBenefit()
+                    / referralData.getPromoBenefit().getCurrentBenefit());
+            tvPercent.setText(referralData.getPromoBenefit().getCurrentBenefit() + " / " + referralData.getPromoBenefit().getMaxBenefit());
+        }
     }
 
     @Override

@@ -13,7 +13,7 @@ import com.tokopedia.core.referral.model.ShareApps;
 
 public interface ReferralView extends CustomerView {
 
-    void renderVoucherCodeData(PromoContent promoContent);
+    void renderVoucherCodeData(ReferralCodeEntity referralData);
 
     Activity getActivity();
 

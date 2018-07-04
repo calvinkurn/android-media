@@ -24,9 +24,7 @@ public class PromoContent {
     @Expose
     private String shareUrl;
 
-    @SerializedName("promo_benefit")
-    @Expose
-    private PromoBenefit promoBenefit;
+
 
     public String getCode() {
         return code;
@@ -58,13 +56,5 @@ public class PromoContent {
 
     public void setShareUrl(String shareUrl) {
         this.shareUrl = shareUrl;
-    }
-
-    public PromoBenefit getPromoBenefit() {
-        return promoBenefit;
-    }
-
-    public void setPromoBenefit(PromoBenefit promoBenefit) {
-        this.promoBenefit = promoBenefit;
     }
 }
