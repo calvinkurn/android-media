@@ -489,9 +489,11 @@ public class ChatRoomFragment extends BaseDaggerFragment
             Uri uri = Uri.parse(url);
             KeyboardHandler.DropKeyboard(getActivity(), getView());
             if (uri != null) {
-                boolean isTargetDomainTokopedia = uri.getHost().endsWith("tokopedia.com");
-                boolean isTargetTkpMeAndNotRedirect = (TextUtils.equals(uri.getHost(), BASE_DOMAIN_SHORTENED) &&
-                        !TextUtils.equals(uri.getEncodedPath(), "/r"));
+                boolean isTargetDomainTokopedia
+                        = uri.getHost() != null && uri.getHost().endsWith("tokopedia.com");
+                boolean isTargetTkpMeAndNotRedirect
+                        = (TextUtils.equals(uri.getHost(), BASE_DOMAIN_SHORTENED)
+                        && !TextUtils.equals(uri.getEncodedPath(), "/r"));
                 boolean isNeedAuthToken = (isTargetDomainTokopedia || isTargetTkpMeAndNotRedirect);
 
                 if (uri.getScheme().equals(APPLINK_SCHEME)) {
@@ -561,7 +563,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, true);
         layoutManager.setReverseLayout(true);
-        layoutManager.setStackFromEnd(true);
+        layoutManager.setStackFromEnd(false);
         LinearLayoutManager templateLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager
                 .HORIZONTAL, false);
 
@@ -574,7 +576,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 int index = layoutManager.findLastVisibleItemPosition();
-                if (adapter.checkLoadMore(index)) {
+                if (index != -1 && adapter.checkLoadMore(index)) {
                     presenter.onLoadMore();
                 }
             }
@@ -1474,7 +1476,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         replyColumn.setText("");
         showError(getActivity().getString(R.string.delete_error).concat("\n").concat(getString(R
                 .string.string_general_error)));
-        if (quickReplyAdapter.getItemCount() != 0) {
+        if (quickReplyAdapter!=null && quickReplyAdapter.getItemCount() != 0) {
             rvQuickReply.setVisibility(View.VISIBLE);
             templateRecyclerView.setVisibility(View.GONE);
         }

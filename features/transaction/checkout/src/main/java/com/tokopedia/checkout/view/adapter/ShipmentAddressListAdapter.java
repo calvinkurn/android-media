@@ -34,7 +34,12 @@ public class ShipmentAddressListAdapter
     }
 
     public void setAddressList(List<RecipientAddressModel> addressModelList) {
-        mAddressModelList = new ArrayList<>(addressModelList);
+        mAddressModelList.clear();
+        mAddressModelList.addAll(addressModelList);
+    }
+
+    public void updateAddressList(List<RecipientAddressModel> addressModelList) {
+        mAddressModelList.addAll(addressModelList);
     }
 
     @Override
