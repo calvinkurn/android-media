@@ -7,10 +7,6 @@ import android.support.v4.app.Fragment;
 
 import com.tokopedia.train.common.presentation.TrainBaseActivity;
 import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
-import com.tokopedia.train.seat.presentation.viewmodel.TrainSeatPassengerViewModel;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Rizky on 01/07/18.
@@ -30,9 +26,9 @@ public class TrainReviewDetailActivity extends TrainBaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        trainSoftbook = getIntent().getParcelableExtra(EXTRA_TRAIN_SOFTBOOK);
 
-        trainSoftbook = getIntent().getExtras().getParcelable(EXTRA_TRAIN_SOFTBOOK);
+        super.onCreate(savedInstanceState);
     }
 
     @Override

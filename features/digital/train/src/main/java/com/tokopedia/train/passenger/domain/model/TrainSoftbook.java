@@ -7,6 +7,7 @@ import android.os.Parcelable;
 import java.util.List;
 
 public class TrainSoftbook implements Parcelable {
+
     private String reservationId;
     private String tokpedBookCode;
     private String expiryTimestamp;
@@ -25,6 +26,8 @@ public class TrainSoftbook implements Parcelable {
         reservationId = in.readString();
         tokpedBookCode = in.readString();
         expiryTimestamp = in.readString();
+        departureTrips = in.createTypedArrayList(TrainTrip.CREATOR);
+        returnTrips = in.createTypedArrayList(TrainTrip.CREATOR);
     }
 
     public static final Creator<TrainSoftbook> CREATOR = new Creator<TrainSoftbook>() {
@@ -69,5 +72,8 @@ public class TrainSoftbook implements Parcelable {
         dest.writeString(reservationId);
         dest.writeString(tokpedBookCode);
         dest.writeString(expiryTimestamp);
+        dest.writeTypedList(departureTrips);
+        dest.writeTypedList(returnTrips);
     }
+
 }

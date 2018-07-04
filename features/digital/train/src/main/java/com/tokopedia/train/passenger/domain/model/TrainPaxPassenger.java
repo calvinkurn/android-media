@@ -1,6 +1,9 @@
 package com.tokopedia.train.passenger.domain.model;
 
-public class TrainPaxPassenger {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class TrainPaxPassenger implements Parcelable {
     private String name;
     private String idNumber;
     private int paxType;
@@ -12,6 +15,38 @@ public class TrainPaxPassenger {
         this.paxType = paxType;
         this.seat = seat;
     }
+
+    protected TrainPaxPassenger(Parcel in) {
+        name = in.readString();
+        idNumber = in.readString();
+        paxType = in.readInt();
+        seat = in.readParcelable(TrainSeat.class.getClassLoader());
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeString(idNumber);
+        dest.writeInt(paxType);
+        dest.writeParcelable(seat, flags);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<TrainPaxPassenger> CREATOR = new Creator<TrainPaxPassenger>() {
+        @Override
+        public TrainPaxPassenger createFromParcel(Parcel in) {
+            return new TrainPaxPassenger(in);
+        }
+
+        @Override
+        public TrainPaxPassenger[] newArray(int size) {
+            return new TrainPaxPassenger[size];
+        }
+    };
 
     public String getName() {
         return name;
@@ -28,4 +63,5 @@ public class TrainPaxPassenger {
     public String getIdNumber() {
         return idNumber;
     }
+
 }

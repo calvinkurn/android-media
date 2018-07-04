@@ -5,6 +5,7 @@ import com.tokopedia.train.passenger.domain.model.TrainPaxPassenger;
 import com.tokopedia.train.passenger.domain.model.TrainSeat;
 import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
 import com.tokopedia.train.passenger.domain.model.TrainTrip;
+import com.tokopedia.train.passenger.domain.model.TrainTripBuilder;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -23,11 +24,12 @@ public class TrainSoftBookingUseCase extends UseCase<TrainSoftbook> {
     @Override
     public Observable<TrainSoftbook> createObservable(RequestParams requestParams) {
         List<TrainTrip> departureTrainTrips = new ArrayList<>();
-        TrainTrip departureTrainTrip = new TrainTrip();
         List<TrainPaxPassenger> departurePaxPassengers = new ArrayList<>();
         TrainSeat departureTrainSeat = new TrainSeat("Ekonomi", "4", "4", "D");
         departurePaxPassengers.add(new TrainPaxPassenger("Rizky Fadillah", "1234", 1, departureTrainSeat));
-        departureTrainTrip.setPaxPassengers(departurePaxPassengers);
+        TrainTrip departureTrainTrip = new TrainTripBuilder()
+                .paxPassengers(departurePaxPassengers)
+                .createTrainTrip();
         departureTrainTrips.add(departureTrainTrip);
         TrainSoftbook trainSoftbook = new TrainSoftbook(null, null,  null,
                 departureTrainTrips, null);
