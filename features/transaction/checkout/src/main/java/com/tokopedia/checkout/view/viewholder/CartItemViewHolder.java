@@ -108,13 +108,14 @@ public class CartItemViewHolder extends ShipmentItemViewHolder {
     }
 
     private void disableItemView() {
-        mTvProductName.setTextColor(ContextCompat.getColor(mTvProductName.getContext(), R.color.grey_nonactive_text));
-        mTvProductPrice.setTextColor(ContextCompat.getColor(mTvProductPrice.getContext(), R.color.grey_nonactive_text));
-        mTvFreeReturnLabel.setTextColor(ContextCompat.getColor(mTvFreeReturnLabel.getContext(), R.color.grey_nonactive_text));
-        mTvPreOrder.setTextColor(ContextCompat.getColor(mTvPreOrder.getContext(), R.color.grey_nonactive_text));
-        mTvNoteToSellerLabel.setTextColor(ContextCompat.getColor(mTvNoteToSellerLabel.getContext(), R.color.grey_nonactive_text));
-        mTvOptionalNoteToSeller.setTextColor(ContextCompat.getColor(mTvOptionalNoteToSeller.getContext(), R.color.grey_nonactive_text));
-        mTvCashback.setBackgroundColor(ContextCompat.getColor(mTvCashback.getContext(), R.color.grey_nonactive_text));
+        int colorGreyNonActiveText = ContextCompat.getColor(mTvProductName.getContext(), R.color.grey_nonactive_text);
+        mTvProductName.setTextColor(colorGreyNonActiveText);
+        mTvProductPrice.setTextColor(colorGreyNonActiveText);
+        mTvFreeReturnLabel.setTextColor(colorGreyNonActiveText);
+        mTvPreOrder.setTextColor(colorGreyNonActiveText);
+        mTvNoteToSellerLabel.setTextColor(colorGreyNonActiveText);
+        mTvOptionalNoteToSeller.setTextColor(colorGreyNonActiveText);
+        mTvCashback.setBackgroundColor(colorGreyNonActiveText);
         setImageFilterGrayScale();
     }
 
