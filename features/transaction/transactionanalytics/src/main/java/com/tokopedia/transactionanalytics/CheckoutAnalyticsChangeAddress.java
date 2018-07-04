@@ -83,7 +83,7 @@ public class CheckoutAnalyticsChangeAddress extends CheckoutAnalytics {
         );
     }
 
-    public void eventImpressionChangeAddressImpressionChangeAddress() {
+    public void eventImpressionChangeAddress() {
         analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.VIEW_ATC,
                 ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.IMPRESSION_CHANGE_ADDRESS,
