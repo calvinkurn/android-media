@@ -36,16 +36,7 @@ public class QuickReplyItemViewHolder extends AbstractViewHolder<GroupChatQuickR
     @Override
     public void bind(final GroupChatQuickReplyItemViewModel element) {
 
-        String trimmed;
-
-        if (element.getText().length() > MAX_LENGTH) {
-            trimmed = element.getText().substring(0, MIN_LENGTH);
-            trimmed = String.format("%s%s", trimmed, "...");
-        } else {
-            trimmed = element.getText();
-        }
-
-        textHolder.setText(Html.fromHtml(trimmed));
+        textHolder.setText(Html.fromHtml(element.getText()));
 
         textHolder.setOnClickListener(new View.OnClickListener() {
             @Override
