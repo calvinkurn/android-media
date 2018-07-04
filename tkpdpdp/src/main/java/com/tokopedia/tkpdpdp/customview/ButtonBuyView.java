@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.tokopedia.core.analytics.ProductPageTracking;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.util.GlobalConfig;
@@ -124,13 +125,41 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
             btnNewBuy.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onBuyClick(ProductDetailView.SOURCE_BUTTON_BUY_PDP);
+                    if (SessionHandler.isV4Login(getContext())) {
+                        if (data.getInfo().getHasVariant()) {
+                            ProductPageTracking.eventClickBuyTriggerVariant(
+                                    getContext(),
+                                    String.valueOf(data.getInfo().getProductId())
+                            );
+                        }
+                        listener.onBuyClick(ProductDetailView.SOURCE_BUTTON_BUY_PDP);
+                    } else {
+                        ProductPageTracking.eventClickBuyNotLogin(
+                                getContext(),
+                                String.valueOf(data.getInfo().getProductId())
+                        );
+                        listener.openLoginPage();
+                    }
                 }
             });
             btnCart.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onBuyClick(ProductDetailView.SOURCE_BUTTON_CART_PDP);
+                    if (SessionHandler.isV4Login(getContext())) {
+                        if (data.getInfo().getHasVariant()) {
+                            ProductPageTracking.eventClickAtcTriggerVariant(
+                                    getContext(),
+                                    String.valueOf(data.getInfo().getProductId())
+                            );
+                        }
+                        listener.onBuyClick(ProductDetailView.SOURCE_BUTTON_CART_PDP);
+                    } else {
+                        ProductPageTracking.eventClickAtcNotLogin(
+                                getContext(),
+                                String.valueOf(data.getInfo().getProductId())
+                        );
+                        listener.openLoginPage();
+                    }
                 }
             });
         }
@@ -171,13 +200,41 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
             btnNewBuy.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onBuyClick(ProductDetailView.SOURCE_BUTTON_BUY_PDP);
+                    if (SessionHandler.isV4Login(getContext())) {
+                        if (data.getInfo().getHasVariant()) {
+                            ProductPageTracking.eventClickBuyTriggerVariant(
+                                    getContext(),
+                                    String.valueOf(data.getInfo().getProductId())
+                            );
+                        }
+                        listener.onBuyClick(ProductDetailView.SOURCE_BUTTON_BUY_PDP);
+                    } else {
+                        ProductPageTracking.eventClickBuyNotLogin(
+                                getContext(),
+                                String.valueOf(data.getInfo().getProductId())
+                        );
+                        listener.openLoginPage();
+                    }
                 }
             });
             btnCart.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onBuyClick(ProductDetailView.SOURCE_BUTTON_CART_PDP);
+                    if (SessionHandler.isV4Login(getContext())) {
+                        if (data.getInfo().getHasVariant()) {
+                            ProductPageTracking.eventClickAtcTriggerVariant(
+                                    getContext(),
+                                    String.valueOf(data.getInfo().getProductId())
+                            );
+                        }
+                        listener.onBuyClick(ProductDetailView.SOURCE_BUTTON_CART_PDP);
+                    } else {
+                        ProductPageTracking.eventClickAtcNotLogin(
+                                getContext(),
+                                String.valueOf(data.getInfo().getProductId())
+                        );
+                        listener.openLoginPage();
+                    }
                 }
             });
             setVisibility(VISIBLE);

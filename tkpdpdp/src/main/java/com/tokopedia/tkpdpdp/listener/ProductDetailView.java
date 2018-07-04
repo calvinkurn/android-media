@@ -322,6 +322,8 @@ public interface ProductDetailView extends ViewListener {
 
     void renderAddToCartSuccessOpenCart(AddToCartResult addToCartResult);
 
+    void openLoginPage();
+
     int generateStateVariant(String source);
 
     void updateButtonBuyListener();

@@ -508,24 +508,24 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void onBuyClick(String source) {
-        if (SessionHandler.isV4Login(getActivity())) {
-            if (productData.getInfo().getHasVariant()) {
-                if (!onClickBuyWhileRequestingVariant) {
-                    openVariantPage(generateStateVariant(source));
-                } else {
-                    onClickBuyWhileRequestingVariant = true;
-                    lastStateOnClickBuyWhileRequestVariant = source;
-                    buttonBuyView.changeToLoading();
-                }
+        if (productData.getInfo().getHasVariant()) {
+            if (!onClickBuyWhileRequestingVariant) {
+                openVariantPage(generateStateVariant(source));
             } else {
-                onProductBuySessionLogin(createProductCartPass(source));
+                onClickBuyWhileRequestingVariant = true;
+                lastStateOnClickBuyWhileRequestVariant = source;
+                buttonBuyView.changeToLoading();
             }
-
         } else {
-            Bundle bundle = new Bundle();
-            bundle.putBoolean("login", true);
-            onProductBuySessionNotLogin(bundle);
+            onProductBuySessionLogin(createProductCartPass(source));
         }
+    }
+
+    @Override
+    public void openLoginPage() {
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("login", true);
+        onProductBuySessionNotLogin(bundle);
     }
 
     private ProductCartPass createProductCartPass(String source) {
@@ -1233,14 +1233,22 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                                 if (SessionHandler.isV4Login(getActivity())) {
                                     onProductBuySessionLogin(createProductCartPass(SOURCE_BUTTON_BUY_VARIANT));
                                 } else {
-                                    redirectLogin();
+                                    ProductPageTracking.eventClickBuyInVariantNotLogin(
+                                            getActivity(),
+                                            String.valueOf(productData.getInfo().getProductId())
+                                    );
+                                    openLoginPage();
                                 }
                                 break;
                             case SELECTED_VARIANT_RESULT_STAY_IN_PDP:
                                 if (SessionHandler.isV4Login(getActivity())) {
                                     onProductBuySessionLogin(createProductCartPass(SOURCE_BUTTON_CART_VARIANT));
                                 } else {
-                                    redirectLogin();
+                                    ProductPageTracking.eventClickAtcInVariantNotLogin(
+                                            getActivity(),
+                                            String.valueOf(productData.getInfo().getProductId())
+                                    );
+                                    openLoginPage();
                                 }
                                 break;
                             case VariantActivity.KILL_PDP_BACKGROUND:
@@ -1254,12 +1262,6 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             default:
                 break;
         }
-    }
-
-    private void redirectLogin() {
-        Bundle bundle = new Bundle();
-        bundle.putBoolean("login", true);
-        onProductBuySessionNotLogin(bundle);
     }
 
     public String generateVariantString() {
