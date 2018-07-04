@@ -64,6 +64,10 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
         SearchView.OnQueryTextListener, TopAdsItemClickListener,
         WishListProductAdapter.OnWishlistActionButtonClicked {
 
+    private static final String SHOP_TYPE_OFFICIAL_STORE = "official_store";
+    private static final String SHOP_TYPE_GOLD_MERCHANT = "gold_merchant";
+    private static final String SHOP_TYPE_REGULER = "reguler";
+
     public static final String FRAGMENT_TAG = "WishListFragment";
     private CheckoutAnalyticsAddToCart checkoutAnalyticsAddToCart;
 
@@ -259,10 +263,10 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
 
     private String generateShopType(com.tokopedia.core.network.entity.wishlist.Shop shop) {
         if (shop.isOfficial())
-            return "official_store";
+            return SHOP_TYPE_OFFICIAL_STORE;
         else if (shop.isGoldMerchant())
-            return "gold_merchant";
-        else return "reguler";
+            return SHOP_TYPE_GOLD_MERCHANT;
+        else return SHOP_TYPE_REGULER;
     }
 
     @Override
