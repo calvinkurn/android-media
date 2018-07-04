@@ -12,6 +12,7 @@ import com.tokopedia.analytics.LoginAnalytics;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.network.ErrorCode;
 import com.tokopedia.network.ErrorHandler;
+import com.tokopedia.network.ErrorMessageException;
 import com.tokopedia.session.WebViewLoginFragment;
 import com.tokopedia.session.domain.interactor.DiscoverUseCase;
 import com.tokopedia.session.register.domain.interactor.RegisterValidationUseCase;
@@ -95,7 +96,10 @@ public class RegisterInitialPresenter extends BaseDaggerPresenter<RegisterInitia
 
             @Override
             public void onError(Throwable throwable) {
-                getView().onErrorValidateRegister(throwable.getMessage());
+                if (throwable instanceof ErrorMessageException) {
+                    getView().onErrorValidateRegister(throwable.getMessage());
+                } else
+                    getView().onErrorConnectionSnackbar(ErrorHandler.getErrorMessage(throwable));
             }
 
             @Override

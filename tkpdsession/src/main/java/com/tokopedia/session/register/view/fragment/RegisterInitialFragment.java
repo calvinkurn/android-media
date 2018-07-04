@@ -787,6 +787,11 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onErrorConnectionSnackbar(String message) {
+        NetworkErrorHelper.showSnackbar(getActivity(), message);
+    }
+
+    @Override
     public void setTempPhoneNumber(String maskedPhoneNumber) {
         //use masked phone number form backend when needed
         //we need unmasked phone number (without dash) to be provided to backend

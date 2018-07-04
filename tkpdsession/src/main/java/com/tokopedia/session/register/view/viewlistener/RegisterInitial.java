@@ -63,6 +63,8 @@ public interface RegisterInitial {
 
         void onErrorValidateRegister(String message);
 
+        void onErrorConnectionSnackbar(String message);
+
         void setTempPhoneNumber(String maskedPhoneNumber);
     }
 

@@ -81,9 +81,11 @@ public class PartialRegisterInputView extends BaseCustomView{
         if (s == null) {
             wrapper.setError(null);
             wrapper.setErrorEnabled(false);
+            showHintAndHideError();
         } else {
             wrapper.setErrorEnabled(true);
             wrapper.setError(s);
+            hideHintAndShowError();
         }
     }
 
@@ -109,11 +111,6 @@ public class PartialRegisterInputView extends BaseCustomView{
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (s.length() == 0){
-                    setWrapperError(wrapper,
-                            getContext().getString(R.string.register_input_empty_error));
-                }
-
                 if (isPhoneNumber(s)){
                     tvMessage.setVisibility(View.VISIBLE);
                 } else {
@@ -134,5 +131,15 @@ public class PartialRegisterInputView extends BaseCustomView{
             String id = tvInputRegister.getText().toString();
             presenter.validateRegister(id);
         }
+    }
+
+    private void showHintAndHideError() {
+        tvMessage.setVisibility(VISIBLE);
+        tvError.setVisibility(GONE);
+    }
+
+    private void hideHintAndShowError() {
+        tvMessage.setVisibility(GONE);
+        tvError.setVisibility(VISIBLE);
     }
 }

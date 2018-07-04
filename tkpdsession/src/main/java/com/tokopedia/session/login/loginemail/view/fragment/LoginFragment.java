@@ -212,7 +212,7 @@ public class LoginFragment extends BaseDaggerFragment
         if (getActivity() != null) {
             drawable = new TextDrawable(getActivity());
             drawable.setText(getResources().getString(R.string.register));
-            drawable.setTextColor(getResources().getColor(R.color.black_70b));
+            drawable.setTextColor(getResources().getColor(R.color.colorGreen));
         }
         return drawable;
     }
