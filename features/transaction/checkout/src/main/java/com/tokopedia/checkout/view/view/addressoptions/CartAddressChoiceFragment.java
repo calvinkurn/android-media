@@ -29,8 +29,8 @@ import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
 import com.tokopedia.core.manage.people.address.model.Destination;
 import com.tokopedia.core.manage.people.address.model.Token;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.design.component.TextViewCompat;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 
 import java.util.List;
 
