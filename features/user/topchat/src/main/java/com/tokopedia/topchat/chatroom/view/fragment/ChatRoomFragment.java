@@ -496,7 +496,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
             Uri uri = Uri.parse(url);
             KeyboardHandler.DropKeyboard(getActivity(), getView());
-            if (uri != null) {
+            if (uri != null && uri.getScheme() != null) {
                 boolean isTargetDomainTokopedia
                         = uri.getHost() != null && uri.getHost().endsWith("tokopedia.com");
                 boolean isTargetTkpMeAndNotRedirect
@@ -507,7 +507,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 if (uri.getScheme().equals(APPLINK_SCHEME)) {
                     ((TkpdInboxRouter) getActivity().getApplicationContext())
                             .actionNavigateByApplinksUrl(getActivity(), url, new Bundle());
-                } else if (uri.getPathSegments().contains(CONTACT_US_PATH_SEGMENT)) {
+                } else if (uri.getPathSegments() != null && uri.getPathSegments().contains
+                        (CONTACT_US_PATH_SEGMENT)) {
                     Intent intent = ((TopChatRouter) MainApplication
                             .getAppContext())
                             .getHelpPageActivity(getContext(), url, true);
