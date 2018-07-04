@@ -49,7 +49,7 @@ public class DrawerInjector {
         JobExecutor jobExecutor = new JobExecutor();
         PostExecutionThread uiThread = new UIThread();
 
-        NetworkRouter networkRouter =  (NetworkRouter) context.getApplicationContext();
+        NetworkRouter networkRouter = (NetworkRouter) context.getApplicationContext();
         UserSession userSession = new UserSession(context);
 
         UserAttributesRepository userAttributesRepository = new UserAttributesRepositoryImpl(

@@ -1,4 +1,4 @@
-package com.tokopedia.core.router.transactionmodule.sharedata;
+package com.tokopedia.transactiondata.entity.request;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

@@ -285,6 +285,7 @@ dependencies {
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.tracking)
     implementation project(rootProject.ext.features.logisticuploadawb)
+    implementation project(rootProject.ext.features.transactionanalytics)
 
 
     implementation project(rootProject.ext.libraries.pushNotif)
@@ -415,6 +416,7 @@ dependencies {
     //[END] test and androidTest dependencies
 
     implementation project(rootProject.ext.libraries.analytics)
+
 
 }
 
