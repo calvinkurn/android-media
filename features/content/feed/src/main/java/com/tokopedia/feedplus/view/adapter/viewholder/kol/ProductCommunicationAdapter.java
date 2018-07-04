@@ -45,17 +45,19 @@ public class ProductCommunicationAdapter
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        if (position == 0) {
-            RecyclerView.LayoutParams layoutParams = new RecyclerView.LayoutParams(
-                    RecyclerView.LayoutParams.WRAP_CONTENT,
-                    RecyclerView.LayoutParams.WRAP_CONTENT);
-
+        if (holder.parentView.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+            ViewGroup.MarginLayoutParams marginLayoutParams =
+                    (ViewGroup.MarginLayoutParams) holder.parentView.getLayoutParams();
             Resources resources = holder.parentView.getContext().getResources();
-            int marginStart = (int) resources.getDimension(R.dimen.dp_20);
-            int marginOthers = (int) resources.getDimension(R.dimen.dp_4);
-            layoutParams.setMargins(marginStart, marginOthers, marginOthers, marginOthers);
 
-            holder.parentView.setLayoutParams(layoutParams);
+            if (position == 0) {
+                marginLayoutParams.leftMargin = (int) resources.getDimension(R.dimen.dp_16);
+            } else if (position == getItemCount() - 1) {
+                marginLayoutParams.leftMargin = (int) resources.getDimension(R.dimen.dp_8);
+                marginLayoutParams.rightMargin = (int) resources.getDimension(R.dimen.dp_8);
+            } else {
+                marginLayoutParams.leftMargin = (int) resources.getDimension(R.dimen.dp_8);
+            }
         }
 
         ImageHandler.loadImage2(holder.image,
