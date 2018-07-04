@@ -186,7 +186,9 @@ class TopAdsKeywordNewItemFragment: BaseDaggerFragment() {
             setListener(object : ExpandableLayoutListener {
                 override fun onAnimationEnd() {}
 
-                override fun onOpened() {}
+                override fun onOpened() {
+                    scrollView.smoothScrollTo(0, scrollView.bottom)
+                }
 
                 override fun onAnimationStart() {}
 

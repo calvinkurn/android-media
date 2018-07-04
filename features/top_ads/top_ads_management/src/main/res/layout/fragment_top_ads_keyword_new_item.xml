@@ -9,6 +9,7 @@
     android:orientation="vertical">
 
     <ScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
@@ -79,7 +80,7 @@
                 style="@style/TextView.Title.BlackPrimary"
                 android:textSize="@dimen/sp_18"
                 android:layout_marginTop="@dimen/dp_24"
-                android:text="@string/top_ads_title_keyword_add_keyword"/>
+                android:text="@string/top_ads_choose_keyword_type"/>
 
             <RadioGroup
                 android:id="@+id/keywordRadioGroup"

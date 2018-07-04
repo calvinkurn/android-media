@@ -11,13 +11,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tkpd.library.utils.CommonUtils
-import com.tokopedia.seller.product.edit.utils.ViewUtils
 import com.tokopedia.topads.R
 import com.tokopedia.topads.common.view.fragment.TopAdsNewBaseStepperFragment
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsAutoCompleteAdapter
+import com.tokopedia.topads.dashboard.utils.ViewUtils
 import com.tokopedia.topads.keyword.di.component.DaggerTopAdsKeywordNewChooseGroupComponent
 import com.tokopedia.topads.keyword.di.module.TopAdsKeywordNewChooseGroupModule
 import com.tokopedia.topads.keyword.view.listener.TopAdsKeywordNewChooseGroupView

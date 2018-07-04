@@ -12,7 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:padding="@dimen/dp_16">
+        android:paddingTop="@dimen/dp_16"
+        android:paddingBottom="@dimen/dp_16">
 
         <android.support.v7.widget.LinearLayoutCompat
             android:layout_width="match_parent"
@@ -23,26 +24,48 @@
             <TextView
                 style="@style/TextView.Title.BlackPrimary"
                 android:textSize="@dimen/sp_18"
-                android:text="@string/label_top_ads_choose_group"/>
+                android:text="@string/label_top_ads_choose_group"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/dp_16"/>
 
             <TextView
                 style="@style/TextView.Micro.BlackDisabled"
                 android:text="@string/label_top_ads_choose_group_desc"
-                android:layout_marginBottom="@dimen/dp_24"/>
+                android:layout_marginBottom="@dimen/dp_24"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/dp_16"/>
 
-            <include layout="@layout/partial_top_ads_search_group" />
+            <include layout="@layout/partial_top_ads_search_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_12"
+                android:layout_marginStart="@dimen/dp_12"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/dp_16"/>
 
             <TextView
                 android:id="@+id/view_info"
                 style="@style/TextView.Micro.BlackSecondary"
                 android:lineSpacingExtra="@dimen/line_spacing_6"
-                android:text="@string/label_top_ads_choose_group_info"/>
+                android:text="@string/label_top_ads_choose_group_info"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/dp_16"/>
 
             <TextView
                 style="@style/TextView.Title.BlackPrimary"
                 android:textSize="@dimen/sp_18"
                 android:text="@string/label_top_ads_choose_type"
-                android:layout_marginTop="@dimen/dp_40"/>
+                android:layout_marginTop="@dimen/dp_40"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/dp_16"/>
 
             <com.tokopedia.topads.common.view.widget.TopAdsSubtitledRadioGroup
                 android:id="@+id/keywordRadioGroup"
@@ -56,12 +79,16 @@
                     android:minHeight="@dimen/dp_64"
                     app:radio_id="@+id/keywordPositiveRadioButton"
                     app:title_radio="@string/top_ads_keyword_title"
-                    app:subtitle_radio="@string/top_ads_keyword_subtitle"/>
+                    app:subtitle_radio="@string/top_ads_keyword_subtitle"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginStart="@dimen/dp_16"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:layout_marginEnd="@dimen/dp_16"/>
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_1"
-                    android:background="@drawable/bg_line_separator"/>
+                    android:background="@drawable/bg_list_separator"/>
 
                 <com.tokopedia.topads.common.view.widget.TopAdsSubtitledRadioButton
                     android:gravity="center_vertical"
@@ -71,12 +98,16 @@
                     android:minHeight="@dimen/dp_64"
                     app:radio_id="@+id/keywordNegativeRadioButton"
                     app:title_radio="@string/top_ads_keyword_title_negative"
-                    app:subtitle_radio="@string/top_ads_keyword_subtitle_negative"/>
+                    app:subtitle_radio="@string/top_ads_keyword_subtitle_negative"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginStart="@dimen/dp_16"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:layout_marginEnd="@dimen/dp_16"/>
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_1"
-                    android:background="@drawable/bg_line_separator"/>
+                    android:background="@drawable/bg_list_separator"/>
 
             </com.tokopedia.topads.common.view.widget.TopAdsSubtitledRadioGroup>
 
