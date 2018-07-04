@@ -704,8 +704,13 @@ public class ProductFragment extends SearchSectionFragment
     }
 
     @Override
-    public void onWishlished(int position, Data data) {
+    public void onAddWishList(int position, Data data) {
         //TODO: next implement wishlist action
+        ProductItem productItem = new ProductItem();
+        productItem.setWishlisted(data.isWislished());
+        productItem.setProductID(data.getProduct().getId());
+        presenter.handleWishlistButtonClicked(productItem, topAdsRecyclerAdapter.getOriginalPosition(position));
+
     }
 
     @Override

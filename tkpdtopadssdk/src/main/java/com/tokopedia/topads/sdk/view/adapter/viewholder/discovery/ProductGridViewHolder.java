@@ -54,13 +54,15 @@ public class ProductGridViewHolder extends AbstractViewHolder<ProductGridViewMod
     private LinearLayout topLabelContainer;
     private LinearLayout bottomLabelContainer;
     private ImageView btnWishList;
+    private int clickPosition;
 
 
-    public ProductGridViewHolder(View itemView, ImageLoader imageLoader, LocalAdsClickListener itemClickListener) {
+    public ProductGridViewHolder(View itemView, ImageLoader imageLoader, LocalAdsClickListener itemClickListener, int clickPosition) {
         super(itemView);
         itemView.findViewById(R.id.container).setOnClickListener(this);
         this.itemClickListener = itemClickListener;
         this.imageLoader = imageLoader;
+        this.clickPosition = clickPosition;
         context = itemView.getContext();
         badgeContainer = (LinearLayout) itemView.findViewById(R.id.badges_container);
         productImage = (ImageView) itemView.findViewById(R.id.product_image);
@@ -152,10 +154,10 @@ public class ProductGridViewHolder extends AbstractViewHolder<ProductGridViewMod
     public void onClick(View v) {
         if (itemClickListener != null) {
             if(v.getId() == R.id.container) {
-                itemClickListener.onProductItemClicked(getAdapterPosition(), data);
+                itemClickListener.onProductItemClicked(clickPosition, data);
             }
             if(v.getId() == R.id.wishlist_button){
-                itemClickListener.onAddWishLish(getAdapterPosition(), data);
+                itemClickListener.onAddWishLish(clickPosition, data);
                 data.setWislished(!data.isWislished());
                 renderWishlistButton(data.isWislished());
 

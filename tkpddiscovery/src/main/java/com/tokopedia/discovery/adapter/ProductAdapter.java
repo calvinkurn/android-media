@@ -279,7 +279,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
         }
 
         @Override
-        public void onWishlished(int position, com.tokopedia.topads.sdk.domain.model.Data data) {
+        public void onAddWishList(int position, com.tokopedia.topads.sdk.domain.model.Data data) {
             //TODO: next implement wishlist action
         }
     }

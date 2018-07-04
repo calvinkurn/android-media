@@ -241,7 +241,7 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
         }
 
         @Override
-        public void onWishlished(int position, Data data) {
+        public void onAddWishList(int position, Data data) {
             //TODO: next implement wishlist action
         }
     }

@@ -584,7 +584,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
-    public void onWishlished(int position, Data data) {
+    public void onAddWishList(int position, Data data) {
         //TODO: next implement wishlist action
     }
 

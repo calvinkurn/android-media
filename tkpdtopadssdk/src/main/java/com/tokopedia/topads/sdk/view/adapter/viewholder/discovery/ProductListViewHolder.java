@@ -47,11 +47,13 @@ public class ProductListViewHolder extends AbstractViewHolder<ProductListViewMod
     private ImageLoader imageLoader;
     private ImageView rating;
     private TextView reviewCount;
+    private int clickPosition;
 
-    public ProductListViewHolder(View itemView, ImageLoader imageLoader, LocalAdsClickListener itemClickListener) {
+    public ProductListViewHolder(View itemView, ImageLoader imageLoader, LocalAdsClickListener itemClickListener, int clickPosition) {
         super(itemView);
         this.itemClickListener = itemClickListener;
         this.imageLoader = imageLoader;
+        this.clickPosition = clickPosition;
         context = itemView.getContext();
         badgeContainer = (LinearLayout) itemView.findViewById(R.id.badges_container);
         labelContainer = (FlowLayout) itemView.findViewById(R.id.label_container);
@@ -143,7 +145,7 @@ public class ProductListViewHolder extends AbstractViewHolder<ProductListViewMod
     @Override
     public void onClick(View v) {
         if (itemClickListener != null && v.getId() == R.id.container) {
-            itemClickListener.onProductItemClicked(getAdapterPosition(), data);
+            itemClickListener.onProductItemClicked(clickPosition, data);
         }
     }
 }

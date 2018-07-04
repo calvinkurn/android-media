@@ -485,8 +485,8 @@ public class HotlistFragment extends SearchSectionFragment
     }
 
     @Override
-    public void onWishlished(int position, Data data) {
-        //TODO: next implement wishlist action
+    public void onAddWishList(int position, Data data) {
+        presenter.addWishlist(data.getProduct().getId());
     }
 
     @Override
