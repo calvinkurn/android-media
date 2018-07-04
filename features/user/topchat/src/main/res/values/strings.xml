@@ -18,6 +18,7 @@
     <string name="title_personal">Personal</string>
     <string name="title_community">Channel</string>
     <string name="chat_title">Chat ( %d )</string>
+    <string name="chat_title_without_notif">Chat</string>
     <string name="no_existing_chat"> Tidak Ada Chat</string>
     <string name="no_existing_chat_user"> Tidak ada pengguna atau chat
 yang ditemukan</string>

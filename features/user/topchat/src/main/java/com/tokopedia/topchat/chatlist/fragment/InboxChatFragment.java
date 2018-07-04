@@ -662,4 +662,11 @@ public class InboxChatFragment extends BaseDaggerFragment
     public void saveResult() {
         presenter.setCache(getAdapter().getList());
     }
+
+    @Override
+    public void reloadNotifDrawer() {
+        if(getActivity() instanceof InboxChatActivity){
+            ((InboxChatActivity)getActivity()).updateNotifDrawerData();
+        }
+    }
 }

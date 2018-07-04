@@ -98,6 +98,8 @@ public class InboxChatContract {
         void setMenuEnabled(boolean b);
 
         void saveResult();
+
+        void reloadNotifDrawer();
     }
 
     public interface Presenter extends CustomerPresenter<View>{
