@@ -48,4 +48,5 @@ public class ConsumerAppBaseUrl {
     public static final String GAMIFICATION_BASE_URL = "https://gql-staging.tokopedia.com/";
     public static final String ACCOUNTS_DOMAIN = "https://accounts-staging.tokopedia.com";
     public static final String TOP_PAY_DOMAIN = "https://pay-staging.tokopedia.id";
+    public static final String CHANGE_PHONE_DOMAIN = "https://13-feature-m-staging.tokopedia.com";
 }

@@ -26,7 +26,9 @@ import com.tokopedia.analytics.LoginPhoneNumberAnalytics;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.di.DaggerSessionComponent;
+import com.tokopedia.network.SessionUrl;
 import com.tokopedia.otp.tokocashotp.view.activity.VerificationActivity;
 import com.tokopedia.otp.tokocashotp.view.viewmodel.MethodItem;
 import com.tokopedia.session.R;
@@ -146,8 +148,12 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-                //TODO atin add webview
-                Toast.makeText(getContext(), "halo", Toast.LENGTH_SHORT).show();
+                Intent intent = SimpleWebViewWithFilePickerActivity.
+                        getIntentWithTitle(
+                                getContext(),
+                                SessionUrl.ChangePhone.PATH_WEBVIEW_CHANGE_PHONE_NUMBER,
+                                "Ubah Nomor Ponsel");
+                startActivity(intent);
             }
 
             @Override
