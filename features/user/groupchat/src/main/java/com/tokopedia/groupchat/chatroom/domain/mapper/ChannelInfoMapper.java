@@ -53,7 +53,6 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
     @Override
     public ChannelInfoViewModel call(Response<DataResponse<ChannelInfoPojo>> response) {
         ChannelInfoPojo pojo = response.body().getData();
-        List<GroupChatQuickReplyItemViewModel> temp = convertChannelQuickReply(pojo.getChannel());
         return new ChannelInfoViewModel(
                 pojo.getChannel().getTitle() != null ? pojo.getChannel().getTitle() : "",
                 pojo.getChannel().getChannelUrl() != null ? pojo.getChannel().getChannelUrl() : "",
@@ -244,7 +243,7 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
         if (channel.getListQuickReply() != null) {
             int id = 1;
             for (String quickReply : channel.getListQuickReply()) {
-                GroupChatQuickReplyItemViewModel item = new GroupChatQuickReplyItemViewModel(String.valueOf(id), quickReply+" \uD83D\uDE0F");
+                GroupChatQuickReplyItemViewModel item = new GroupChatQuickReplyItemViewModel(String.valueOf(id), quickReply);
                 list.add(item);
                 id++;
             }

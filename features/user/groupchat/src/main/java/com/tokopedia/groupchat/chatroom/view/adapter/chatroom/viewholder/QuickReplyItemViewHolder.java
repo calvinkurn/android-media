@@ -18,6 +18,9 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatQuickRe
 
 public class QuickReplyItemViewHolder extends AbstractViewHolder<GroupChatQuickReplyItemViewModel> {
 
+    private static int MAX_LENGTH = 8;
+    private static int MIN_LENGTH = 5;
+
     @LayoutRes
     public static final int LAYOUT = R.layout.item_quick_reply;
     private final ChatroomContract.View viewListener;
@@ -32,7 +35,17 @@ public class QuickReplyItemViewHolder extends AbstractViewHolder<GroupChatQuickR
 
     @Override
     public void bind(final GroupChatQuickReplyItemViewModel element) {
-        textHolder.setText(Html.fromHtml(element.getText()));
+
+        String trimmed;
+
+        if (element.getText().length() > MAX_LENGTH) {
+            trimmed = element.getText().substring(0, MIN_LENGTH);
+            trimmed = String.format("%s%s", trimmed, "...");
+        } else {
+            trimmed = element.getText();
+        }
+
+        textHolder.setText(Html.fromHtml(trimmed));
 
         textHolder.setOnClickListener(new View.OnClickListener() {
             @Override

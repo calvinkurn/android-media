@@ -19,13 +19,13 @@ import java.util.List;
 public class GroupChatQuickReplyViewModel implements Visitable<QuickReplyTypeFactory>, Parcelable {
     public static final String TYPE = "quick_reply";
     
-    private List<Visitable> list;
+    private List<GroupChatQuickReplyItemViewModel> list;
 
-    public List<Visitable> getList() {
+    public List<GroupChatQuickReplyItemViewModel> getList() {
         return list;
     }
 
-    public void setList(List<Visitable> list) {
+    public void setList(List<GroupChatQuickReplyItemViewModel> list) {
         this.list = list;
     }
 

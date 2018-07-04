@@ -710,6 +710,10 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
             setPinnedMessage((PinnedMessageViewModel) messageItem);
         }
 
+        if(messageItem instanceof GroupChatQuickReplyViewModel){
+            setQuickReply(((GroupChatQuickReplyViewModel)messageItem).getList());
+        }
+
         if (!groupChatMessagesMapper.shouldHideMessage(messageItem)) {
             addIncomingMessage(messageItem);
         }
