@@ -12,7 +12,6 @@ import com.sendbird.android.User;
 import com.tokopedia.groupchat.R;
 import com.tokopedia.groupchat.common.util.GroupChatErrorHandler;
 
-import java.util.Date;
 import java.util.UUID;
 
 import javax.inject.Inject;
@@ -43,7 +42,7 @@ public class LoginGroupChatUseCase {
     public void execute(final Context context, final String channelUrl,
                         String userId, final String userName, final String userAvatar,
                         final LoginGroupChatListener listener, String sendBirdToken) {
-        Log.d("tevrefresh", "enterChannel "+ channelUrl);
+        Log.d("tevrefresh", "enterChannel " + channelUrl);
         if (TextUtils.isEmpty(userId)) {
             userId = getAnonymousSendbirdUserId(context);
         }
@@ -58,55 +57,76 @@ public class LoginGroupChatUseCase {
 
                 //TODO CHECK WITH CACHE IF DATA ALREADY INVALID THEN UPDATE INSTEAD OF UPDATING
                 // ALL THE TIME
-                SendBird.updateCurrentUserInfo(userName, userAvatar, new SendBird.UserInfoUpdateHandler() {
+                if (shouldUpdateData(user, userName, userAvatar)) {
+                    updateUserInfo(context, channelUrl, userName, userAvatar, listener, sendBirdToken);
+                } else {
+                    connectChannel(context, channelUrl, listener);
+                }
+            }
+        });
+
+    }
+
+    private boolean shouldUpdateData(User user, String userName, String userAvatar) {
+        return TextUtils.isEmpty(user.getNickname()) ||
+                TextUtils.isEmpty(user.getProfileUrl()) ||
+                !userName.equals(user.getNickname()) ||
+                !userAvatar.equals(user.getProfileUrl());
+    }
+
+    private void updateUserInfo(Context context, String channelUrl, String userName,
+                                String userAvatar, LoginGroupChatListener listener,
+                                String sendBirdToken) {
+        SendBird.updateCurrentUserInfo(userName, userAvatar, new SendBird.UserInfoUpdateHandler() {
+            @Override
+            public void onUpdated(SendBirdException e) {
+                if (e != null) {
+                    listener.onErrorEnterChannel(GroupChatErrorHandler
+                            .getSendBirdErrorMessage(context, e, false));
+                    return;
+                }
+
+                connectChannel(context, channelUrl, listener);
+            }
+        });
+    }
+
+    private void connectChannel(Context context, String channelUrl, LoginGroupChatListener listener) {
+        OpenChannel.getChannel(channelUrl, new OpenChannel.OpenChannelGetHandler() {
+            @Override
+            public void onResult(final OpenChannel openChannel, SendBirdException e) {
+                if (e != null && e.getCode() == GroupChatErrorHandler
+                        .CHANNEL_NOT_FOUND) {
+                    listener.onChannelNotFound(GroupChatErrorHandler
+                            .getSendBirdErrorMessage(context, e, false));
+                    return;
+                } else if (e != null) {
+                    listener.onErrorEnterChannel(GroupChatErrorHandler
+                            .getSendBirdErrorMessage(context, e, false));
+                    return;
+                }
+
+                openChannel.enter(new OpenChannel.OpenChannelEnterHandler() {
+
                     @Override
-                    public void onUpdated(SendBirdException e) {
-                        if (e != null) {
+                    public void onResult(SendBirdException e) {
+                        if (e != null && e.getCode() == GroupChatErrorHandler
+                                .USER_IS_BANNED) {
+                            listener.onUserBanned(GroupChatErrorHandler
+                                    .getSendBirdErrorMessage(context, e, false));
+                            return;
+                        } else if (e != null) {
                             listener.onErrorEnterChannel(GroupChatErrorHandler
                                     .getSendBirdErrorMessage(context, e, false));
                             return;
                         }
 
-                        OpenChannel.getChannel(channelUrl, new OpenChannel.OpenChannelGetHandler() {
-                            @Override
-                            public void onResult(final OpenChannel openChannel, SendBirdException e) {
-                                if (e != null && e.getCode() == GroupChatErrorHandler
-                                        .CHANNEL_NOT_FOUND) {
-                                    listener.onChannelNotFound(GroupChatErrorHandler
-                                            .getSendBirdErrorMessage(context, e, false));
-                                    return;
-                                } else if (e != null) {
-                                    listener.onErrorEnterChannel(GroupChatErrorHandler
-                                            .getSendBirdErrorMessage(context, e, false));
-                                    return;
-                                }
+                        listener.onSuccessEnterChannel(openChannel);
 
-                                openChannel.enter(new OpenChannel.OpenChannelEnterHandler() {
-
-                                    @Override
-                                    public void onResult(SendBirdException e) {
-                                        if (e != null && e.getCode() == GroupChatErrorHandler
-                                                .USER_IS_BANNED) {
-                                            listener.onUserBanned(GroupChatErrorHandler
-                                                    .getSendBirdErrorMessage(context, e, false));
-                                            return;
-                                        } else if (e != null) {
-                                            listener.onErrorEnterChannel(GroupChatErrorHandler
-                                                    .getSendBirdErrorMessage(context, e, false));
-                                            return;
-                                        }
-
-                                        listener.onSuccessEnterChannel(openChannel);
-
-                                    }
-                                });
-                            }
-                        });
                     }
                 });
             }
         });
-
     }
 
     private String getAnonymousSendbirdUserId(Context context) {
