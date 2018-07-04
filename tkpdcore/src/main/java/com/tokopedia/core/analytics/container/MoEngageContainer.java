@@ -63,6 +63,7 @@ public class MoEngageContainer implements IMoengageContainer {
         MoEngage moEngage =
                 new MoEngage.Builder(MainApplication.getInstance(),
                         context.getResources().getString(R.string.key_moengage))
+                        .setNotificationSmallIcon(R.drawable.ic_status_bar_notif_customerapp)
                         .build();
         MoEngage.initialise(moEngage);
 
