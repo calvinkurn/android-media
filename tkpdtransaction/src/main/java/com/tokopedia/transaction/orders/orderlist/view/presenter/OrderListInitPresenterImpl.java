@@ -1,9 +1,6 @@
 package com.tokopedia.transaction.orders.orderlist.view.presenter;
 
-import android.content.Context;
-
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
@@ -18,35 +15,32 @@ import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.inject.Inject;
-
 import rx.Subscriber;
 
-public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContract.View> implements OrderListContract.Presenter {
-    GraphqlUseCase getOrderListUseCase;
-
-    @Inject
-    public OrderListPresenterImpl(GraphqlUseCase getOrderListUseCase) {
-        this.getOrderListUseCase = getOrderListUseCase;
-
+public class OrderListInitPresenterImpl implements OrderListInitContract.Presenter {
+    OrderListInitContract.View view;
+    GraphqlUseCase initUseCase;
+    public OrderListInitPresenterImpl(OrderListInitContract.View view, GraphqlUseCase initUseCase) {
+        this.view = view;
+        this.initUseCase = initUseCase;
     }
 
+
     @Override
-    public void getAllOrderData(Context context, String orderCategory, final int typeRequest, int page) {
-        getView().showProcessGetData(orderCategory);
+    public void getInitData(String orderCategory, int typeRequest, int page) {
         Map<String, Object> variables = new HashMap<>();
         variables.put("orderCategory", orderCategory);
         variables.put("Page", page);
         variables.put("PerPage", 10);
 
         GraphqlRequest graphqlRequest = new
-                GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
-                R.raw.orderlist), Data.class, variables);
+                GraphqlRequest(GraphqlHelper.loadRawString(view.getAppContext().getResources(),
+                R.raw.initorderlist), Data.class, variables);
 
 
-        getOrderListUseCase.setRequest(graphqlRequest);
+        initUseCase.setRequest(graphqlRequest);
 
-        getOrderListUseCase.execute(new Subscriber<GraphqlResponse>() {
+        initUseCase.execute(new Subscriber<GraphqlResponse>() {
             @Override
             public void onCompleted() {
             }
@@ -54,29 +48,26 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
             @Override
             public void onError(Throwable e) {
                 CommonUtils.dumper(e.toString());
-                getView().removeProgressBarView();
-                getView().unregisterScrollListener();
+                view.removeProgressBarView();
                 if (e instanceof UnknownHostException || e instanceof ConnectException) {
-                    getView().showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
+                    view.showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
                 } else if (e instanceof SocketTimeoutException) {
-                    getView().showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+                    view.showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
                 }
             }
 
             @Override
             public void onNext(GraphqlResponse response) {
-                getView().removeProgressBarView();
+                view.removeProgressBarView();
                 if (response != null) {
                     Data data = response.getData(Data.class);
-                    if (!data.orders().isEmpty()) {
-                        getView().renderDataList(data.orders());
+                    if (!data.orderLabelList().isEmpty()) {
+                        view.renderTabs(data.orderLabelList());
                     } else {
-                        getView().unregisterScrollListener();
-                        getView().renderEmptyList(typeRequest);
+                        //view.renderEmptyList(typeRequest);
                     }
                 } else {
-                    getView().unregisterScrollListener();
-                    getView().renderEmptyList(typeRequest);
+                   // view.renderEmptyList(typeRequest);
                 }
 
             }

@@ -40,17 +40,15 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private final Context context;
     private ListAdapterContract.Presenter orderListPresenter;
     OrderListViewHolder currentHolder;
-    ArrayList<Order> mOrderList;
-    String mOrderCategory;
+    List<Order> mOrderList;
 
     OnMenuItemListener menuListener;
     private boolean loading = false;
 
 
-    public OrderListAdapter(Context context, OnMenuItemListener listener, String orderCategory) {
+    public OrderListAdapter(Context context, OnMenuItemListener listener) {
         this.context = context;
         menuListener = listener;
-        this.mOrderCategory = orderCategory;
         orderListPresenter = new ListAdapterPresenterImpl();
 
     }
@@ -255,7 +253,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private void showPopup(View v, final Order order) {
         PopupMenu popup = new PopupMenu(context, v);
         addCancelReplacementMenu(order.dotMenuList(), popup);
-        popup.setOnMenuItemClickListener(new OnMenuPopupClicked(order.dotMenuList(), order.id()));
+        popup.setOnMenuItemClickListener(new OnMenuPopupClicked(order.dotMenuList(), order.id(), order.category()));
         popup.show();
     }
 
@@ -274,10 +272,12 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private class OnMenuPopupClicked implements PopupMenu.OnMenuItemClickListener {
         private final List<DotMenuList> orderData;
         private String orderId;
+        private String orderCategory;
 
-        OnMenuPopupClicked(List<DotMenuList> item, String id) {
+        OnMenuPopupClicked(List<DotMenuList> item, String id, String category) {
             this.orderData = item;
             this.orderId = id;
+            this.orderCategory = category;
         }
 
         @Override
@@ -289,7 +289,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 if(!orderData.get(1).uri().equals("")){
                     menuListener.startUri(orderData.get(1).uri());
                 } else{
-                    context.startActivity(OrderListDetailActivity.createInstance(context, orderId, mOrderCategory, false));
+                    context.startActivity(OrderListDetailActivity.createInstance(context, orderId, orderCategory, false));
                 }
                 return true;
             } else {
@@ -326,6 +326,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         View itemView;
         String orderId;
+        String orderCategory;
 
         public OrderListViewHolder(View itemView) {
             super(itemView);
@@ -350,12 +351,13 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         @Override
         public void onClick(View view) {
-            context.startActivity(OrderListDetailActivity.createInstance(context, orderId, mOrderCategory, false));
+            context.startActivity(OrderListDetailActivity.createInstance(context, orderId, orderCategory, false));
         }
 
         public void bindData(Order order, int position) {
             if (order != null) {
                 orderId = order.id();
+                orderCategory = order.category();
                 parentMetadataLayout.removeAllViews();
                 orderListPresenter.setViewData(order);
                 orderListPresenter.setActionButtonData(order.actionButtons());
