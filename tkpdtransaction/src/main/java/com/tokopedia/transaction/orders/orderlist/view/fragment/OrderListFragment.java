@@ -35,7 +35,7 @@ import javax.inject.Inject;
 public class OrderListFragment extends BasePresenterFragment<OrderListContract.Presenter> implements
         RefreshHandler.OnRefreshHandlerListener, OrderListContract.View, OrderListAdapter.OnMenuItemListener {
 
-    private static final java.lang.String ORDER_CATEGORY = "orderCategory";
+    private static final String ORDER_CATEGORY = "orderCategory";
     OrderListComponent orderListComponent;
     RecyclerView recyclerView;
     SwipeToRefresh swipeToRefresh;
@@ -102,15 +102,7 @@ public class OrderListFragment extends BasePresenterFragment<OrderListContract.P
 
     @Override
     protected void setupArguments(Bundle arguments) {
-        String  category = arguments.getString(ORDER_CATEGORY);
-        switch (category) {
-            case OrderCategory.DIGITAL:
-                mOrderCategory = OrderCategory.DIGITAL;
-                break;
-            case OrderCategory.DEALS:
-                mOrderCategory = OrderCategory.DEALS;
-                break;
-        }
+        mOrderCategory = arguments.getString(ORDER_CATEGORY);
     }
 
     @Override
@@ -227,7 +219,7 @@ public class OrderListFragment extends BasePresenterFragment<OrderListContract.P
 
     @Override
     protected void initialVar() {
-        orderListAdapter = new OrderListAdapter(getActivity(), this, mOrderCategory);
+        orderListAdapter = new OrderListAdapter(getActivity(), this);
     }
 
     @Override

@@ -13,7 +13,7 @@ import dagger.Component;
 
 
 @OrderListModuleScope
-@Component(modules = {OrderDetailsModule.class}, dependencies = {BaseAppComponent.class})
+@Component(dependencies = {BaseAppComponent.class})
 public interface  OrderDetailsComponent {
     void inject(OrderListDetailFragment orderListDetailFragment);
 

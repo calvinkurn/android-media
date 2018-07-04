@@ -1,29 +1,44 @@
 package com.tokopedia.transaction.orders.orderlist.view.activity;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tkpd.library.ui.widget.TouchViewPager;
 import com.tokopedia.core.app.DrawerPresenterActivity;
+import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.applink.TransactionAppLink;
 import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
-import com.tokopedia.transaction.orders.orderlist.view.fragment.OrderListFragment;
+import com.tokopedia.transaction.orders.orderlist.view.adapter.OrderTabAdapter;
+import com.tokopedia.transaction.orders.orderlist.view.presenter.OrderListInitContract;
+import com.tokopedia.transaction.orders.orderlist.view.presenter.OrderListInitPresenterImpl;
+
+import java.util.List;
 
 import static com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter.EXTRA_OMS_ORDER_CATEGORY;
 import static com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter.EXTRA_STATE_TAB_POSITION;
 
-public class OrderListActivity extends DrawerPresenterActivity {
-    private static final String ORDER_CATEGORY = "orderCategory";
+public class OrderListActivity extends DrawerPresenterActivity<OrderListInitContract.Presenter> implements OrderListInitContract.View, OrderTabAdapter.Listener{
     private int drawerPosition;
-    private String orderCategory;
-
+    private String orderCategory = "ALL";
+    private ProgressBar progressBar;
+    private TabLayout tabLayout;
+    private TouchViewPager viewPager;
+    private LinearLayout mainLayout;
+    private OrderTabAdapter adapter;
 
     @DeepLink(TransactionAppLink.ORDER_HISTORY)
     public static Intent getOrderListIntent(Context context, Bundle bundle){
@@ -42,16 +57,11 @@ public class OrderListActivity extends DrawerPresenterActivity {
     protected void setupBundlePass(Bundle extras) {
         drawerPosition = extras.getInt(EXTRA_STATE_TAB_POSITION,
                 TransactionPurchaseRouter.TAB_POSITION_PURCHASE_SUMMARY);
-        if (extras.getString(EXTRA_OMS_ORDER_CATEGORY).equals(OrderCategory.DEALS)) {
-            orderCategory = OrderCategory.DEALS;
-        } else {
-            orderCategory = OrderCategory.DIGITAL;
-        }
     }
 
     @Override
     protected void initialPresenter() {
-
+        presenter = new OrderListInitPresenterImpl(this,new GraphqlUseCase());
     }
 
     @Override
@@ -78,28 +88,16 @@ public class OrderListActivity extends DrawerPresenterActivity {
 
     @Override
     protected void initVar() {
-        Fragment fragment;
-        if (getFragmentManager().findFragmentByTag(OrderListFragment.class.getSimpleName()) == null) {
-            fragment = new OrderListFragment();
-        } else {
-            fragment = getFragmentManager().findFragmentByTag(OrderListFragment.class.getSimpleName());
-        }
-        Bundle arg = new Bundle();
-        if (orderCategory.equals(OrderCategory.DIGITAL)) {
-            arg.putString(ORDER_CATEGORY, OrderCategory.DIGITAL);
-        } else if (orderCategory.equals(OrderCategory.DEALS)){
-            arg.putString(ORDER_CATEGORY, OrderCategory.DEALS);
-        }
-        fragment.setArguments(arg);
-        getFragmentManager()
-                .beginTransaction()
-                .replace(R.id.order_list_main, fragment, OrderListFragment.class.getSimpleName())
-                .commit();
+        progressBar = findViewById(R.id.progress);
+        tabLayout = findViewById(R.id.tab_layout);
+        viewPager = findViewById(R.id.pager);
+        mainLayout = findViewById(R.id.main_content);
     }
 
     @Override
     protected void setActionVar() {
-
+        progressBar.setVisibility(View.VISIBLE);
+        mainLayout.setVisibility(View.GONE);
     }
 
     @Override
@@ -109,7 +107,10 @@ public class OrderListActivity extends DrawerPresenterActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        GraphqlClient.init(this);
         super.onCreate(savedInstanceState);
+        presenter.getInitData(orderCategory, 1, 10);
+
 //        toolbar.setBackgroundColor(getResources().getColor(R.color.white));
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 ////            toolbar.getNavigationIcon().setTint(getResources().getColor(R.color.black));
@@ -121,4 +122,56 @@ public class OrderListActivity extends DrawerPresenterActivity {
 //            toolbar.setTitle("Entertainment");
 //        }
     }
+
+    @Override
+    public Context getAppContext() {
+        return this.getApplicationContext();
+    }
+
+    @Override
+    public void removeProgressBarView() {
+
+        progressBar.setVisibility(View.GONE);
+        mainLayout.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showErrorNetwork(String message) {
+
+    }
+
+    @Override
+    public void renderTabs(List<String> orderLabelList) {
+        for(String tabContent: orderLabelList)
+            tabLayout.addTab(tabLayout.newTab().setText(tabContent));
+        adapter = new OrderTabAdapter(getFragmentManager(), orderLabelList,this);
+        viewPager.setAdapter(adapter);
+        viewPager.addOnPageChangeListener(new OnTabPageChangeListener(tabLayout));
+        tabLayout.setOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager));
+        viewPager.setCurrentItem(0);
+    }
+
+    @Override
+    public String getFilterCaseAllTransaction() {
+        return null;
+    }
+    private class OnTabPageChangeListener extends TabLayout.TabLayoutOnPageChangeListener {
+
+        OnTabPageChangeListener(TabLayout tabLayout) {
+            super(tabLayout);
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+            super.onPageSelected(position);
+            hideKeyboard();
+            drawerPosition = position;
+        }
+
+        private void hideKeyboard() {
+            ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
+                    .hideSoftInputFromWindow(viewPager.getWindowToken(), 0);
+        }
+    }
+
 }
