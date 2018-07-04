@@ -3,11 +3,10 @@ package com.tokopedia.train.passenger.presentation.presenter;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.design.component.CardWithAction;
 import com.tokopedia.tkpdtrain.R;
-import com.tokopedia.train.common.util.TrainDateUtil;
-import com.tokopedia.train.passenger.presentation.contract.TrainBookingPassengerContract;
 import com.tokopedia.train.passenger.data.TrainBookingPassenger;
 import com.tokopedia.train.passenger.domain.TrainSoftBookingUseCase;
 import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
+import com.tokopedia.train.passenger.presentation.contract.TrainBookingPassengerContract;
 import com.tokopedia.train.passenger.presentation.viewmodel.ProfileBuyerInfo;
 import com.tokopedia.train.passenger.presentation.viewmodel.TrainPassengerViewModel;
 import com.tokopedia.train.search.domain.GetDetailScheduleUseCase;
@@ -73,11 +72,6 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
                         if (getView().getPhoneNumberEt().length() == 0) {
                             getView().setPhoneNumber(profileBuyerInfo.getPhoneNumber());
                         }
-
-                        getView().setBirthdate(
-                                TrainDateUtil.dateToString(
-                                        TrainDateUtil.stringToDate(profileBuyerInfo.getBday()),
-                                        TrainDateUtil.DEFAULT_VIEW_FORMAT));
                     }
                 }));
     }

@@ -57,8 +57,6 @@ public interface TrainBookingPassengerContract {
 
         void setContactName(String contactName);
 
-        void setBirthdate(String birthdate);
-
         void setPhoneNumber(String phoneNumber);
 
         void setEmail(String email);

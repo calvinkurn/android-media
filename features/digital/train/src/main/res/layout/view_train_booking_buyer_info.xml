@@ -50,30 +50,6 @@
     </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
     <com.tokopedia.design.text.TkpdHintTextInputLayout
-        android:id="@+id/til_birthdate"
-        style="@style/HintTextInputLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_15"
-        android:layout_marginTop="@dimen/dp_5"
-        android:hint="@string/train_buyer_birthdate">
-
-        <android.support.v7.widget.AppCompatEditText
-            android:id="@+id/et_birthdate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/widget_card_with_action_separator"
-            android:hint="@string/train_buyer_birthdate_hint"
-            android:imeActionLabel="@string/label_next"
-            android:inputType="textEmailAddress"
-            android:lines="1"
-            android:nextFocusForward="@+id/et_phone_number"
-            android:singleLine="true"
-            android:textAppearance="@style/TextView.Title"
-            android:textColor="@color/font_black_secondary_54" />
-    </com.tokopedia.design.text.TkpdHintTextInputLayout>
-
-    <com.tokopedia.design.text.TkpdHintTextInputLayout
         android:id="@+id/til_phone_number"
         style="@style/HintTextInputLayout"
         android:layout_width="match_parent"

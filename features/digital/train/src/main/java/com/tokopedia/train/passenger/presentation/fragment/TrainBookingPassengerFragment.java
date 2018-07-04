@@ -62,7 +62,6 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
     private RecyclerView recyclerViewPassenger;
     private TrainParamPassenger trainParamPassenger;
     private AppCompatEditText contactNameBuyer;
-    private AppCompatEditText birthdateBuyer;
     private AppCompatEditText phoneNumberBuyer;
     private AppCompatEditText emailBuyer;
     private AppCompatButton submitButton, chooseSeatButton;
@@ -88,7 +87,6 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
         cardActionReturn = view.findViewById(R.id.train_return_info);
         recyclerViewPassenger = view.findViewById(R.id.rv_passengers);
         contactNameBuyer = view.findViewById(R.id.et_contact_name);
-        birthdateBuyer = view.findViewById(R.id.et_birthdate);
         phoneNumberBuyer = view.findViewById(R.id.et_phone_number);
         emailBuyer = view.findViewById(R.id.et_email);
         submitButton = view.findViewById(R.id.button_submit);
@@ -283,11 +281,6 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
     @Override
     public void setContactName(String contactName) {
         contactNameBuyer.setText(contactName);
-    }
-
-    @Override
-    public void setBirthdate(String birthdate) {
-        birthdateBuyer.setText(birthdate);
     }
 
     @Override
