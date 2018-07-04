@@ -189,16 +189,17 @@
         android:id="@+id/new_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/location_container"
-        android:layout_marginBottom="@dimen/product_grid_padding"
-        android:layout_marginLeft="@dimen/product_grid_padding"
-        android:layout_marginRight="@dimen/product_grid_padding"
         android:background="@drawable/bg_new_label"
+        android:textColor="#279ba4"
         android:fontFamily="sans-serif-medium"
         android:gravity="center"
+        android:layout_marginRight="@dimen/dp_2"
         android:text="@string/baru"
-        android:textColor="#279ba4"
-        android:textSize="@dimen/text_size_xsmall"
+        android:paddingLeft="@dimen/dp_8"
+        android:paddingRight="@dimen/dp_8"
+        android:paddingTop="@dimen/dp_3"
+        android:paddingBottom="@dimen/dp_3"
+        android:textSize="@dimen/sp_11"
         android:visibility="gone" />
 
 </RelativeLayout>

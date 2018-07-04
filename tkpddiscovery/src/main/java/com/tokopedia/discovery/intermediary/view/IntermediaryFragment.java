@@ -647,6 +647,11 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     }
 
     @Override
+    public void onWishlished(int position, Data data) {
+        //TODO: next implement wishlist action
+    }
+
+    @Override
     public void onCategoryRevampClick(ChildCategoryModel child) {
         CategoryActivity.moveToDestroyIntermediary(
                 getActivity(),

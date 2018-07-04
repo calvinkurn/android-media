@@ -121,6 +121,11 @@ public class TopAdsFeedWidgetView extends LinearLayout implements LocalAdsClickL
         itemClickListener.onAddFavorite(position, dataShop);
     }
 
+    @Override
+    public void onAddWishLish(int position, Data data) {
+
+    }
+
     public void setItemClickListener(TopAdsItemClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
     }

@@ -53,11 +53,12 @@ public class ProductGridViewHolder extends AbstractViewHolder<ProductGridViewMod
     private TextView reviewCount;
     private LinearLayout topLabelContainer;
     private LinearLayout bottomLabelContainer;
+    private ImageView btnWishList;
 
 
     public ProductGridViewHolder(View itemView, ImageLoader imageLoader, LocalAdsClickListener itemClickListener) {
         super(itemView);
-        itemView.setOnClickListener(this);
+        itemView.findViewById(R.id.container).setOnClickListener(this);
         this.itemClickListener = itemClickListener;
         this.imageLoader = imageLoader;
         context = itemView.getContext();
@@ -71,6 +72,8 @@ public class ProductGridViewHolder extends AbstractViewHolder<ProductGridViewMod
         newLabelTxt = itemView.findViewById(R.id.new_label);
         topLabelContainer = itemView.findViewById(R.id.top_label_container);
         bottomLabelContainer = itemView.findViewById(R.id.bottom_label_container);
+        btnWishList = itemView.findViewById(R.id.wishlist_button);
+        btnWishList.setOnClickListener(this);
     }
 
     @Override
@@ -85,7 +88,7 @@ public class ProductGridViewHolder extends AbstractViewHolder<ProductGridViewMod
     }
 
     private void bindShop(Shop shop) {
-        if (shop.getBadges() != null) {
+        if (shop.getBadges() != null && !shop.getLocation().isEmpty()) {
             imageLoader.loadBadge(badgeContainer, shop.getBadges());
             shopLocation.setText(String.format(" \u2022 %s", shop.getLocation()));
         } else {
@@ -148,9 +151,24 @@ public class ProductGridViewHolder extends AbstractViewHolder<ProductGridViewMod
     @Override
     public void onClick(View v) {
         if (itemClickListener != null) {
-            itemClickListener.onProductItemClicked(getAdapterPosition(), data);
+            if(v.getId() == R.id.container) {
+                itemClickListener.onProductItemClicked(getAdapterPosition(), data);
+            }
+            if(v.getId() == R.id.wishlist_button){
+                itemClickListener.onAddWishLish(getAdapterPosition(), data);
+                data.setWislished(!data.isWislished());
+                renderWishlistButton(data.isWislished());
+
+            }
         }
     }
 
+    protected void renderWishlistButton(boolean wishlist) {
+        if (wishlist) {
+            btnWishList.setBackgroundResource(R.drawable.ic_wishlist_red);
+        } else {
+            btnWishList.setBackgroundResource(R.drawable.ic_wishlist);
+        }
+    }
 
 }

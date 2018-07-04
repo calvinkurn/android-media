@@ -127,7 +127,7 @@ public class ProductListViewHolder extends AbstractViewHolder<ProductListViewMod
         }
         Shop shop = data.getShop();
         if (shop != null) {
-            if (shop.getBadges() != null) {
+            if (shop.getBadges() != null && !shop.getLocation().isEmpty()) {
                 imageLoader.loadBadge(badgeContainer, shop.getBadges());
                 shopLocation.setText(String.format(" \u2022 %s", shop.getLocation()));
             } else {

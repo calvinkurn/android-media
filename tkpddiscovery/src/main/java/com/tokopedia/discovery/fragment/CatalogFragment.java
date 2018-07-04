@@ -232,6 +232,11 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
     }
 
     @Override
+    public void onWishlished(int position, Data data) {
+        //TODO: next implement wishlist action
+    }
+
+    @Override
     public void setupRecyclerView() {
         if (list_catalog.getAdapter() != null) {
             return;

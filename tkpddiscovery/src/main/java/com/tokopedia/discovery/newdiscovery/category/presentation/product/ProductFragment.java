@@ -704,6 +704,11 @@ public class ProductFragment extends SearchSectionFragment
     }
 
     @Override
+    public void onWishlished(int position, Data data) {
+        //TODO: next implement wishlist action
+    }
+
+    @Override
     public void onCategoryClick(ChildCategoryModel child) {
         UnifyTracking.eventLevelCategory(productViewModel.getCategoryHeaderModel().getDepartementId()
                 , child.getCategoryId());

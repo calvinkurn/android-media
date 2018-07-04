@@ -137,6 +137,11 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
     }
 
     @Override
+    public void onWishlished(int position, Data data) {
+        //TODO: next implement wishlist action
+    }
+
+    @Override
     public void bind(EmptySearchModel model) {
 
         noResultImage.setImageResource(model.getImageRes());

@@ -780,6 +780,11 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     @Override
+    public void onWishlished(int position, Data data) {
+        //TODO: next implement wishlist action
+    }
+
+    @Override
     public SearchParameter getSearchParameter() {
         return searchParameter;
     }

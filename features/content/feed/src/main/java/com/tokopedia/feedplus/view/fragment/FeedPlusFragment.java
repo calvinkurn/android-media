@@ -832,6 +832,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     }
 
+    @Override
+    public void onWishlished(int position, Data data) {
+        //TODO: next implement wishlist action
+    }
+
     public void scrollToTop() {
         if (recyclerView != null) recyclerView.scrollToPosition(0);
     }
