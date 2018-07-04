@@ -161,12 +161,12 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     @Override
     protected android.support.v4.app.Fragment getNewFragment() {
         switch (typeRequest) {
-            default:
-                return CartAddressChoiceFragment.newInstance(
-                        getIntent().getParcelableExtra(EXTRA_CURRENT_ADDRESS));
             case TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST:
                 return ShipmentAddressListFragment.newInstance(
                         (RecipientAddressModel) getIntent().getParcelableExtra(EXTRA_CURRENT_ADDRESS));
+            default:
+                return CartAddressChoiceFragment.newInstance(
+                        getIntent().getParcelableExtra(EXTRA_CURRENT_ADDRESS));
         }
     }
 

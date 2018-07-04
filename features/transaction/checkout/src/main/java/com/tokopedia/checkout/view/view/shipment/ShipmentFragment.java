@@ -214,6 +214,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         rvShipment = view.findViewById(R.id.rv_shipment);
         progressDialogNormal = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         ((SimpleItemAnimator) rvShipment.getItemAnimator()).setSupportsChangeAnimations(false);
+        // Todo : Check apakah new init atau tidak
         if (getArguments().getBoolean(ARG_EXTRA_NAVIGATE_TO_ADDRESS_CHOICE, false)) {
             onAddOrChangeAddress();
         }
