@@ -103,9 +103,13 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         setHasOptionsMenu(true);
         setUpVariables(view);
 
-        checkLocationStatus();
-
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        checkLocationStatus();
     }
 
     private void checkLocationStatus() {
@@ -209,8 +213,8 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
 
                     tvLocationName.setText(location.getName());
 //                    mPresenter.stopBannerSlide();
-                    mPresenter.getDealsList();
-                    mPresenter.getBrandsList();
+//                    mPresenter.getDealsList();
+//                    mPresenter.getBrandsList();
                 }
                 break;
 
@@ -231,8 +235,8 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
                     LocationViewModel location1 = Utils.getSingletonInstance().getLocation(getActivity());
                     if(!tvLocationName.getText().equals(location1.getName())){
                         tvLocationName.setText(location1.getName());
-                        mPresenter.getDealsList();
-                        mPresenter.getBrandsList();
+//                        mPresenter.getDealsList();
+//                        mPresenter.getBrandsList();
                     }
 
 

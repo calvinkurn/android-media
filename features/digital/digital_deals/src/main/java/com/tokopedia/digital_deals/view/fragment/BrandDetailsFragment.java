@@ -1,6 +1,9 @@
 package com.tokopedia.digital_deals.view.fragment;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
@@ -23,6 +26,8 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
@@ -169,7 +174,11 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
         tvExpandableDesc.setText(brandViewModel.getDescription());
         tvCityName.setText(String.format(getResources().getString(R.string.deals_brand_detail_location), Utils.getSingletonInstance().getLocation(getActivity()).getName()));
 
-        ImageHandler.loadImage(getActivity(), ivHeader, brandViewModel.getFeaturedImage(), R.color.grey_1100, R.color.grey_1100);
+//        ImageHandler.loadImage(getActivity(), ivHeader, brandViewModel.getFeaturedImage(), R.color.grey_1100, R.color.grey_1100);
+        loadBrandImage(ivHeader, brandViewModel.getFeaturedImage());
+//        ImageHandler.loadImageChat(ivHeader, brandViewModel.getFeaturedImage(), new
+
+
         ImageHandler.loadImage(getActivity(), ivBrandLogo, brandViewModel.getFeaturedThumbnailImage(), R.color.grey_1100, R.color.grey_1100);
         for (CategoryItemsViewModel categoryItemsViewModel : categoryItemsViewModels) {
             categoryItemsViewModel.setBrand(brandViewModel);
@@ -195,6 +204,32 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
         baseMainContent.setVisibility(View.VISIBLE);
 
     }
+
+    private void loadBrandImage(ImageView imageView, String featuredImageUrl) {
+        ImageHandler.loadImageWithTarget(getContext(), featuredImageUrl, new SimpleTarget<Bitmap>() {
+            @Override
+            public void onLoadStarted(Drawable placeholder) {
+                super.onLoadStarted(placeholder);
+                imageView.setImageResource(R.color.grey_1100);
+            }
+
+            @Override
+            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                    imageView.setImageBitmap(Utils.getSingletonInstance().setBlur(resource,3.0f, getContext()));
+                }else{
+                    imageView.setImageBitmap(resource);
+                }
+            }
+
+            @Override
+            public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                super.onLoadFailed(e, errorDrawable);
+                imageView.setImageResource(R.color.grey_1100);
+            }
+        });
+    }
+
 
     @Override
     public void showProgressBar() {

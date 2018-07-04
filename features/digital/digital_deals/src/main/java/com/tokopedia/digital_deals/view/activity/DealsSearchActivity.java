@@ -65,7 +65,6 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
     private RecyclerView rvDeals;
     private TextView tvTopDeals;
     private ImageView back;
-    private TextView dealsInCity;
     private TextView tvCityName;
     private TextView tvChangeCity;
 
@@ -100,7 +99,6 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
         back = findViewById(R.id.imageViewBack);
         noContent = findViewById(R.id.no_content);
         llDeals = findViewById(R.id.ll_deals);
-        dealsInCity = findViewById(R.id.deals_in_city);
         tvCityName = findViewById(R.id.tv_location);
         tvChangeCity = findViewById(R.id.tv_change_city);
         baseMainContent = findViewById(R.id.base_main_content);
@@ -165,8 +163,6 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
 
         if (categoryItemsViewModels != null && categoryItemsViewModels.size() != 0) {
             DealsCategoryAdapter dealsCategoryAdapter = new DealsCategoryAdapter(getActivity(), categoryItemsViewModels, !IS_SHORT_LAYOUT);
-            dealsInCity.setVisibility(View.VISIBLE);
-
             rvDeals.addOnScrollListener(rvOnScrollListener);
             rvDeals.setAdapter(dealsCategoryAdapter);
             llDeals.setVisibility(View.VISIBLE);
@@ -195,7 +191,7 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
                     ds.setColor(getResources().getColor(R.color.black_38)); // specific color for this link
                 }
             }, startIndexOfLink, text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            dealsInCity.setText(spannableString);
+            dealsCategoryAdapter.addHeader(spannableString.toString());
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             if (imm != null) {
                 imm.hideSoftInputFromWindow(searchInputView.getSearchTextView().getWindowToken(), 0);
@@ -247,7 +243,6 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
             rvDeals.setAdapter(adapter);
             rvDeals.removeOnScrollListener(rvOnScrollListener);
             tvTopDeals.setVisibility(View.VISIBLE);
-            dealsInCity.setVisibility(View.GONE);
             noContent.setVisibility(View.GONE);
             clLocation.setVisibility(View.GONE);
 
@@ -272,7 +267,6 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
             rvDeals.setAdapter(adapter);
             rvDeals.addOnScrollListener(rvOnScrollListener);
             tvTopDeals.setVisibility(View.GONE);
-            dealsInCity.setVisibility(View.GONE);
             noContent.setVisibility(View.GONE);
             clLocation.setVisibility(View.GONE);
         } else {

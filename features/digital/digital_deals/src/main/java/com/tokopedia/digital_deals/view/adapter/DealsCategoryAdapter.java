@@ -39,6 +39,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import retrofit2.http.HEAD;
+
 public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements DealCategoryAdapterContract.View {
 
     private List<CategoryItemsViewModel> categoryItems;
@@ -46,11 +48,14 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     private final int ITEM = 1;
     private final int FOOTER = 2;
     private final int ITEM2 = 3;
+    private final int HEADER = 4;
     private boolean isFooterAdded = false;
+    private boolean isHeaderAdded = false;
     private boolean isShortLayout;
     private boolean brandPageCard = false;
     @Inject
     DealCategoryAdapterPresenter mPresenter;
+    private String headerText;
 
     public DealsCategoryAdapter(Context context, List<CategoryItemsViewModel> categoryItems, Boolean... layoutType) {
         this.context = context;
@@ -93,6 +98,10 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             case ITEM2:
                 v = inflater.inflate(R.layout.deal_item_card_short, parent, false);
                 holder = new ItemViewHolder2(v);
+                break;
+            case HEADER:
+                v = inflater.inflate(R.layout.header_layout, parent, false);
+                holder = new HeaderViewHolder(v);
             default:
                 break;
         }
@@ -119,6 +128,9 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 ((ItemViewHolder2) holder).setIndex(position);
                 ((ItemViewHolder2) holder).bindData(categoryItems.get(position));
                 break;
+            case HEADER:
+                ((HeaderViewHolder) holder).bindData(headerText);
+                break;
             default:
                 break;
         }
@@ -128,8 +140,8 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     @Override
     public int getItemViewType(int position) {
 
-        return isShortLayout ? (isLastPosition(position) && isFooterAdded) ? FOOTER : ITEM2
-                : (isLastPosition(position) && isFooterAdded) ? FOOTER : ITEM;
+        return (isShortLayout ? (isLastPosition(position) && isFooterAdded) ? FOOTER : (position == 0 && isHeaderAdded) ? HEADER : ITEM2
+                : (isLastPosition(position) && isFooterAdded) ? FOOTER : (position == 0 && isHeaderAdded) ? HEADER : ITEM);
     }
 
     private boolean isLastPosition(int position) {
@@ -140,6 +152,15 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         if (!isFooterAdded) {
             isFooterAdded = true;
             add(new CategoryItemsViewModel());
+        }
+    }
+
+    public void addHeader(String text) {
+        if (!isHeaderAdded) {
+            isHeaderAdded = true;
+            headerText = text;
+            categoryItems.add(0, new CategoryItemsViewModel());
+            notifyItemInserted(0);
         }
     }
 
@@ -301,8 +322,6 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             } else {
                 Intent detailsIntent = new Intent(context, DealDetailsActivity.class);
                 detailsIntent.putExtra(DealDetailsPresenter.HOME_DATA, categoryItems.get(getIndex()).getSeoUrl());
-                detailsIntent.putExtra(DealsHomeFragment.FROM_HOME, true);
-                detailsIntent.putExtra(DealsHomeFragment.ADAPTER_POSITION, getIndex());
                 getActivity().startActivityForResult(detailsIntent, DealsHomeActivity.REQUEST_CODE_DEALDETAILACTIVITY);
             }
         }
@@ -393,6 +412,20 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         private FooterViewHolder(View itemView) {
             super(itemView);
             loadingLayout = itemView.findViewById(R.id.loading_fl);
+        }
+    }
+
+    public class HeaderViewHolder extends RecyclerView.ViewHolder {
+
+        TextView dealsInCity;
+
+        private HeaderViewHolder(View itemView) {
+            super(itemView);
+            dealsInCity = itemView.findViewById(R.id.deals_in_city);
+        }
+
+        public void bindData(String headerText) {
+            dealsInCity.setText(headerText);
         }
     }
 
