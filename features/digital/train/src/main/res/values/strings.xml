@@ -59,6 +59,7 @@
     <!-- passenger info -->
     <string name="train_booking_passenger_title">Isi Data Penumpang</string>
     <string name="train_buyer_title">Data Pemesan</string>
+    <string name="train_review_detail_title">Review</string>
     <string name="train_buyer_full_name">Nama Lengkap</string>
     <string name="train_buyer_full_name_hint">Isi Nama Lengkap</string>
     <string name="train_buyer_birthdate">Tanggal Lahir</string>

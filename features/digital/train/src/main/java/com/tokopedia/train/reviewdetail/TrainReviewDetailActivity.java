@@ -2,10 +2,11 @@ package com.tokopedia.train.reviewdetail;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Parcelable;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.train.common.presentation.TrainBaseActivity;
+import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
 import com.tokopedia.train.seat.presentation.viewmodel.TrainSeatPassengerViewModel;
 
 import java.util.ArrayList;
@@ -16,18 +17,27 @@ import java.util.List;
  */
 public class TrainReviewDetailActivity extends TrainBaseActivity {
 
-    private List<TrainSeatPassengerViewModel> trainSeatPassengerViewModelList;
+    public static String EXTRA_TRAIN_SOFTBOOK = "EXTRA_TRAIN_SOFTBOOK";
+
+    private TrainSoftbook trainSoftbook;
 
     public static Intent createIntent(Context context,
-                                      List<TrainSeatPassengerViewModel> trainSeatPassengerViewModelList) {
+                                      TrainSoftbook trainSoftbook) {
         Intent intent = new Intent(context, TrainReviewDetailActivity.class);
-        intent.putParcelableArrayListExtra("", (ArrayList<TrainSeatPassengerViewModel>) trainSeatPassengerViewModelList);
+        intent.putExtra(EXTRA_TRAIN_SOFTBOOK, trainSoftbook);
         return intent;
     }
 
     @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        trainSoftbook = getIntent().getExtras().getParcelable(EXTRA_TRAIN_SOFTBOOK);
+    }
+
+    @Override
     protected Fragment getNewFragment() {
-        return TrainReviewDetailFragment.newInstance(trainSeatPassengerViewModelList);
+        return TrainReviewDetailFragment.newInstance(trainSoftbook);
     }
 
 }

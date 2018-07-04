@@ -16,6 +16,31 @@ public class TrainSeatPassengerViewModel implements Parcelable, Visitable<TrainP
     private String phone;
     private TrainSeatPassengerSeatViewModel seatViewModel;
 
+    public TrainSeatPassengerViewModel() {
+    }
+
+    protected TrainSeatPassengerViewModel(Parcel in) {
+        passengerNumber = in.readInt();
+        salutationId = in.readInt();
+        paxType = in.readInt();
+        name = in.readString();
+        number = in.readString();
+        birthdate = in.readString();
+        phone = in.readString();
+    }
+
+    public static final Creator<TrainSeatPassengerViewModel> CREATOR = new Creator<TrainSeatPassengerViewModel>() {
+        @Override
+        public TrainSeatPassengerViewModel createFromParcel(Parcel in) {
+            return new TrainSeatPassengerViewModel(in);
+        }
+
+        @Override
+        public TrainSeatPassengerViewModel[] newArray(int size) {
+            return new TrainSeatPassengerViewModel[size];
+        }
+    };
+
     public int getSalutationId() {
         return salutationId;
     }
@@ -92,6 +117,12 @@ public class TrainSeatPassengerViewModel implements Parcelable, Visitable<TrainP
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-
+        dest.writeInt(passengerNumber);
+        dest.writeInt(salutationId);
+        dest.writeInt(paxType);
+        dest.writeString(name);
+        dest.writeString(number);
+        dest.writeString(birthdate);
+        dest.writeString(phone);
     }
 }

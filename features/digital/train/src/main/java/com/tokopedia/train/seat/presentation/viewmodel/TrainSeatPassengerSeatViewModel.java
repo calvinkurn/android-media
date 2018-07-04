@@ -6,6 +6,16 @@ public class TrainSeatPassengerSeatViewModel {
     private String row;
     private String column;
 
+    public TrainSeatPassengerSeatViewModel() {
+    }
+
+    public TrainSeatPassengerSeatViewModel(String wagonCode, String classSeat, String row, String column) {
+        this.wagonCode = wagonCode;
+        this.classSeat = classSeat;
+        this.row = row;
+        this.column = column;
+    }
+
     public String getWagonCode() {
         return wagonCode;
     }

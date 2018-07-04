@@ -12,6 +12,7 @@ import com.tokopedia.train.seat.di.TrainSeatComponent;
 import com.tokopedia.train.seat.presentation.fragment.TrainSeatFragment;
 
 public class TrainSeatActivity extends TrainBaseActivity implements HasComponent<TrainSeatComponent> {
+
     private TrainSeatComponent trainSeatComponent;
 
     public static Intent getCallingIntent(Activity activity) {
@@ -30,4 +31,5 @@ public class TrainSeatActivity extends TrainBaseActivity implements HasComponent
                 .build();
         return trainSeatComponent;
     }
+
 }

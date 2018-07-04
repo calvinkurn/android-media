@@ -138,4 +138,8 @@ public class TrainTrip {
     public String getDisplayTotalPrice() {
         return displayTotalPrice;
     }
+
+    public void setPaxPassengers(List<TrainPaxPassenger> paxPassengers) {
+        this.paxPassengers = paxPassengers;
+    }
 }

@@ -10,7 +10,7 @@ import com.tokopedia.train.seat.presentation.viewmodel.TrainSeatPassengerViewMod
 /**
  * Created by Rizky on 02/07/18.
  */
-public class TrainPassengerSeatViewHolder extends AbstractViewHolder<TrainSeatPassengerViewModel> {
+public class TrainPassengerSeatViewHolder extends AbstractViewHolder<TrainReviewPassengerInfoViewModel> {
 
     public static final int LAYOUT = R.layout.item_train_passenger_info;
 
@@ -30,10 +30,10 @@ public class TrainPassengerSeatViewHolder extends AbstractViewHolder<TrainSeatPa
     }
 
     @Override
-    public void bind(TrainSeatPassengerViewModel element) {
-        textPassengerIndex.setText(element.getPassengerNumber());
+    public void bind(TrainReviewPassengerInfoViewModel element) {
+//        textPassengerIndex.setText(element.getPassengerNumber());
         textPassengerName.setText(element.getName());
-        textNumberID.setText(element.getNumber());
+        textNumberID.setText(element.getNoID());
     }
 
 }

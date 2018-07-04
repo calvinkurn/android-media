@@ -6,6 +6,13 @@ public class TrainPaxPassenger {
     private int paxType;
     private TrainSeat seat;
 
+    public TrainPaxPassenger(String name, String idNumber, int paxType, TrainSeat seat) {
+        this.name = name;
+        this.idNumber = idNumber;
+        this.paxType = paxType;
+        this.seat = seat;
+    }
+
     public String getName() {
         return name;
     }

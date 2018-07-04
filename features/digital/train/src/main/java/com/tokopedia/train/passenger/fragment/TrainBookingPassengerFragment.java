@@ -33,6 +33,7 @@ import com.tokopedia.train.passenger.presenter.TrainBookingPassengerPresenter;
 import com.tokopedia.train.passenger.viewmodel.ProfileBuyerInfo;
 import com.tokopedia.train.passenger.viewmodel.TrainParamPassenger;
 import com.tokopedia.train.passenger.viewmodel.TrainPassengerViewModel;
+import com.tokopedia.train.reviewdetail.TrainReviewDetailActivity;
 import com.tokopedia.train.search.presentation.model.TrainScheduleBookingPassData;
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
 
@@ -278,7 +279,7 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
 
     @Override
     public void navigateToReview(TrainSoftbook trainSoftbook) {
-
+        startActivity(TrainReviewDetailActivity.createIntent(getActivity(), trainSoftbook));
     }
 
     @Override
