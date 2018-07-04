@@ -98,8 +98,7 @@ public class RegisterInitialPresenter extends BaseDaggerPresenter<RegisterInitia
             public void onError(Throwable throwable) {
                 if (throwable instanceof ErrorMessageException) {
                     getView().onErrorValidateRegister(throwable.getMessage());
-                } else
-                    getView().onErrorConnectionSnackbar(ErrorHandler.getErrorMessage(throwable));
+                }
             }
 
             @Override
