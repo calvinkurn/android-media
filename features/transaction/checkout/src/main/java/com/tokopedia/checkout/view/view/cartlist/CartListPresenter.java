@@ -256,33 +256,7 @@ public class CartListPresenter implements ICartListPresenter {
                             public void onError(Throwable e) {
                                 view.hideProgressLoading();
                                 e.printStackTrace();
-                                if (e instanceof UnknownHostException) {
-                                    /* Ini kalau ga ada internet */
-                                    view.renderErrorNoConnectionToShipmentMultipleAddress(
-                                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
-                                    );
-                                } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
-                                    /* Ini kalau timeout */
-                                    view.renderErrorTimeoutConnectionToShipmentMultipleAddress(
-                                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-                                    );
-                                } else if (e instanceof ResponseErrorException) {
-                                    /* Ini kalau error dari API kasih message error */
-                                    view.renderErrorToShipmentMultipleAddress(e.getMessage());
-                                } else if (e instanceof ResponseDataNullException) {
-                                    /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
-                                    view.renderErrorToShipmentMultipleAddress(e.getMessage());
-                                } else if (e instanceof HttpErrorException) {
-                    /* Ini Http error, misal 403, 500, 404,
-                     code http errornya bisa diambil
-                     e.getErrorCode */
-                                    view.renderErrorHttpToShipmentMultipleAddress(e.getMessage());
-                                } else if (e instanceof ResponseCartApiErrorException) {
-                                    view.renderErrorToShipmentMultipleAddress(e.getMessage());
-                                } else {
-                                    /* Ini diluar dari segalanya hahahaha */
-                                    view.renderErrorHttpToShipmentMultipleAddress(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                                }
+                                handleErrorCheckoutToMultipleAddress(e);
                             }
 
                             @Override
@@ -295,6 +269,36 @@ public class CartListPresenter implements ICartListPresenter {
                             }
                         })
         );
+    }
+
+    private void handleErrorCheckoutToMultipleAddress(Throwable e) {
+        if (e instanceof UnknownHostException) {
+            /* Ini kalau ga ada internet */
+            view.renderErrorNoConnectionToShipmentMultipleAddress(
+                    ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
+            );
+        } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
+            /* Ini kalau timeout */
+            view.renderErrorTimeoutConnectionToShipmentMultipleAddress(
+                    ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
+            );
+        } else if (e instanceof ResponseErrorException) {
+            /* Ini kalau error dari API kasih message error */
+            view.renderErrorToShipmentMultipleAddress(e.getMessage());
+        } else if (e instanceof ResponseDataNullException) {
+            /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
+            view.renderErrorToShipmentMultipleAddress(e.getMessage());
+        } else if (e instanceof HttpErrorException) {
+            /* Ini Http error, misal 403, 500, 404,
+            code http errornya bisa diambil
+            e.getErrorCode */
+            view.renderErrorHttpToShipmentMultipleAddress(e.getMessage());
+        } else if (e instanceof ResponseCartApiErrorException) {
+            view.renderErrorToShipmentMultipleAddress(e.getMessage());
+        } else {
+            /* Ini diluar dari segalanya hahahaha */
+            view.renderErrorHttpToShipmentMultipleAddress(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+        }
     }
 
     @Override
