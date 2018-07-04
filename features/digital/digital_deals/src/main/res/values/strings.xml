@@ -84,5 +84,6 @@
     <string name="empty_deals_text">Deals belum tersedia di kota Anda</string>
     <string name="deals_brand_detail_location">Deals di %s\u0020</string>
     <string name="phone_number">Nomor Telepon</string>
+    <string name="text_discount_promo">Diskon Promo</string>
 
 </resources>

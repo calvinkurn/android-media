@@ -74,7 +74,7 @@ public interface OrderListDetailContract {
     }
 
     interface TapActionInterface {
-        void setTapActionButton(int position, TapActions tapActions);
+        void setTapActionButton(int position, List<TapActions> tapActions);
 
         void tapActionLayoutVisible();
     }

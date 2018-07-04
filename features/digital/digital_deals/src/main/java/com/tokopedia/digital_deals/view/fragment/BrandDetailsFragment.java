@@ -179,7 +179,7 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
                 tvDealsCount.setText(String.format(getResources().getString(R.string.number_of_items), categoryItemsViewModels.size()));
             else
                 tvDealsCount.setText(String.format(getResources().getString(R.string.number_of_items), count));
-            categoryAdapter = new DealsCategoryAdapter(getActivity(), categoryItemsViewModels, !isShortLayout);
+            categoryAdapter = new DealsCategoryAdapter(getActivity(), categoryItemsViewModels, !isShortLayout, true);
 
             recyclerViewDeals.setAdapter(categoryAdapter);
             recyclerViewDeals.setVisibility(View.VISIBLE);

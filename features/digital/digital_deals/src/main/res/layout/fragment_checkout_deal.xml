@@ -8,7 +8,6 @@
     android:orientation="vertical">
 
 
-
     <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
@@ -209,6 +208,7 @@
                         android:focusable="false"
                         android:focusableInTouchMode="false"
                         android:maxLines="1"
+                        android:paddingLeft="@dimen/dp_0"
                         android:textColor="@color/black_39"
                         android:textColorHint="@color/grey_300"
                         android:textSize="@dimen/sp_16"
@@ -259,6 +259,7 @@
                         android:focusable="false"
                         android:focusableInTouchMode="false"
                         android:maxLines="1"
+                        android:paddingLeft="@dimen/dp_0"
                         android:textColor="@color/black_39"
                         android:textColorHint="@color/grey_300"
                         android:textSize="@dimen/sp_16"
@@ -268,8 +269,6 @@
 
 
                 </android.support.constraint.ConstraintLayout>
-
-
 
 
                 <View
@@ -302,8 +301,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/dp_16"
-                    android:visibility="gone"
                     android:background="@drawable/background_lightgreen_voucher"
+                    android:visibility="gone"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_promocode">
@@ -459,6 +458,45 @@
                     app:layout_constraintTop_toTopOf="@+id/tv_mrp_per_quantity"
                     tools:text="Rp 800.000" />
 
+
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/cl_promo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_mrp_per_quantity">
+
+                    <TextView
+                        android:id="@+id/tv_promo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/sp_16"
+                        android:layout_marginTop="@dimen/dp_16"
+                        android:fontFamily="sans-serif"
+                        android:text="@string/text_discount_promo"
+                        android:textColor="@color/black_39"
+                        android:textSize="@dimen/sp_14"
+                        android:textStyle="normal"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent" />
+
+                    <TextView
+                        android:id="@+id/tv_promo_discount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/dp_16"
+                        android:fontFamily="sans-serif-medium"
+                        android:includeFontPadding="false"
+                        android:textColor="@color/black_39"
+                        android:textSize="@dimen/sp_14"
+                        android:textStyle="normal"
+
+                        app:layout_constraintBottom_toBottomOf="@+id/tv_promo"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/tv_promo"
+                        tools:text="Rp 1.000" />
+                </android.support.constraint.ConstraintLayout>
+
                 <TextView
                     android:id="@+id/tv_service_fee"
                     android:layout_width="wrap_content"
@@ -471,7 +509,7 @@
                     android:textSize="@dimen/sp_14"
                     android:textStyle="normal"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_mrp_per_quantity" />
+                    app:layout_constraintTop_toBottomOf="@+id/cl_promo" />
 
                 <TextView
                     android:id="@+id/tv_service_fee_amount"
@@ -560,6 +598,7 @@
 
 
     </android.support.design.widget.CoordinatorLayout>
+
     <FrameLayout
         android:id="@+id/progress_bar_layout"
         android:layout_width="match_parent"

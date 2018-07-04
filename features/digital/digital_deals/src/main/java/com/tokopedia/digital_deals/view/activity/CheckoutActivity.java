@@ -1,6 +1,7 @@
 package com.tokopedia.digital_deals.view.activity;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -24,17 +25,20 @@ public class CheckoutActivity extends BaseSimpleActivity implements DealFragment
     private List<OutletViewModel> outlets;
     private final String LOCATION_FRAGMENT = "LOCATION_FRAGMENT";
     private final String HOME_FRAGMENT = "HOME_FRAGMENT";
+    private Drawable drawable;
 
 
     @Override
     protected int getLayoutRes() {
-        return R.layout.activity_base_simple_deals;
+        return R.layout.activity_base_simple_deals_appbar;
     }
 
     @Override
     protected Fragment getNewFragment() {
-        getSupportFragmentManager().addOnBackStackChangedListener(getListener());
+        drawable=toolbar.getNavigationIcon();
         toolbar.setTitle(getResources().getString(R.string.activity_checkout_title));
+
+        getSupportFragmentManager().addOnBackStackChangedListener(getListener());
         return CheckoutHomeFragment.createInstance(getIntent().getExtras());
     }
 
@@ -61,6 +65,7 @@ public class CheckoutActivity extends BaseSimpleActivity implements DealFragment
     public void replaceFragment(List<OutletViewModel> outlets, int flag) {
         this.outlets = outlets;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(R.anim.slide_in_up, R.anim.slide_in_down, R.anim.slide_out_down, R.anim.slide_out_up);
         transaction.add(R.id.parent_view, DealDetailsAllRedeemLocationsFragment.createInstance());
         transaction.addToBackStack(LOCATION_FRAGMENT);
         transaction.commit();
@@ -89,12 +94,18 @@ public class CheckoutActivity extends BaseSimpleActivity implements DealFragment
                 if (manager != null) {
                     if (manager.getBackStackEntryCount() >= 1) {
                         String topOnStack = manager.getBackStackEntryAt(manager.getBackStackEntryCount() - 1).getName();
-                        if (topOnStack.equals(LOCATION_FRAGMENT))
+                        if (topOnStack.equals(LOCATION_FRAGMENT)) {
                             toolbar.setTitle(getResources().getString(R.string.redeem_locations));
-                        else
+                            toolbar.setNavigationIcon(R.drawable.ic_close_deals);
+
+                        } else {
                             toolbar.setTitle(getResources().getString(R.string.activity_checkout_title));
+                            toolbar.setNavigationIcon(drawable);
+                        }
                     } else {
                         toolbar.setTitle(getResources().getString(R.string.activity_checkout_title));
+                        toolbar.setNavigationIcon(drawable);
+
                     }
                 }
             }

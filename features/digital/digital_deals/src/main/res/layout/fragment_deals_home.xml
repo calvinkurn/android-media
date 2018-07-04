@@ -59,22 +59,18 @@
                     android:textSize="@dimen/sp_14"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toLeftOf="@+id/guideline"
+                    app:layout_constraintRight_toLeftOf="@+id/tv_location_name"
                     app:layout_constraintTop_toBottomOf="@+id/divider1" />
 
 
-                <android.support.constraint.Guideline
-                    android:id="@+id/guideline"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    app:layout_constraintGuide_percent="0.67" />
+
 
 
                 <TextView
                     android:id="@+id/tv_location_name"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:maxWidth="@dimen/dp_100"
                     android:layout_marginRight="@dimen/dp_16"
                     android:drawableLeft="@drawable/ic_location_2"
                     android:drawablePadding="@dimen/dp_8"
@@ -84,12 +80,12 @@
                     android:paddingBottom="@dimen/dp_8"
                     android:paddingTop="@dimen/dp_8"
                     android:text="Surabayhjhhhhhhhhhhjhjhjhhghgha"
+                    android:ellipsize="end"
                     android:textColor="@color/black_39"
                     android:textSize="@dimen/sp_14"
                     android:textStyle="normal"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintHorizontal_bias="1.0"
-                    app:layout_constraintLeft_toRightOf="@+id/guideline"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 

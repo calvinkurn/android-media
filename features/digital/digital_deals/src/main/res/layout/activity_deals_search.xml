@@ -163,7 +163,6 @@
                     android:padding="@dimen/dp_16"
                     android:text="@string/trending_deals"
                     android:textColor="@color/black_38"
-
                     android:textSize="@dimen/sp_12"
                     android:textStyle="normal" />
 

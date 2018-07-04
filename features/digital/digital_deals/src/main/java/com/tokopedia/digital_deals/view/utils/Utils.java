@@ -182,6 +182,7 @@ public class Utils {
                         brandViewModel.setTitle(categoryEntity.getBrand().getTitle());
                         brandViewModel.setFeaturedImage(categoryEntity.getBrand().getFeaturedImage());
                         brandViewModel.setFeaturedThumbnailImage(categoryEntity.getBrand().getFeaturedThumbnailImage());
+                        brandViewModel.setUrl(categoryEntity.getBrand().getUrl());
 
                         categoryItemsViewModel.setBrand(brandViewModel);
                     } catch (Exception e) {
@@ -193,6 +194,7 @@ public class Utils {
                     categoryItemsViewModel.setMaxEndDate(categoryEntity.getMaxEndDate());
                     categoryItemsViewModel.setLongRichDesc(categoryEntity.getLongRichDesc());
                     categoryItemsViewModel.setDisplayTags(categoryEntity.getDisplayTags());
+                    categoryItemsViewModel.setLiked(categoryEntity.isLiked());
 //                categoryItemsViewModel.setDisplayTags(categoryEntity.getDisplayTags());
 //                categoryItemsViewModel.setTnc(categoryEntity.getTnc());
 //                categoryItemsViewModel.setIsTop(categoryEntity.getIsTop());
@@ -276,6 +278,7 @@ public class Utils {
         brandViewModel.setTitle(detailsDomain.getBrand().getTitle());
         brandViewModel.setFeaturedImage(detailsDomain.getBrand().getFeaturedImage());
         brandViewModel.setFeaturedThumbnailImage(detailsDomain.getBrand().getFeaturedThumbnailImage());
+        brandViewModel.setUrl(detailsDomain.getBrand().getUrl());
         viewModel.setBrand(brandViewModel);
         viewModel.setImageWeb(detailsDomain.getImageWeb());
         viewModel.setThumbnailWeb(detailsDomain.getThumbnailWeb());
@@ -376,6 +379,10 @@ public class Utils {
 
     public static String convertToCurrencyString(Integer value) {
         return String.format(RUPIAH_FORMAT, NumberFormat.getNumberInstance(locale).format(value.longValue()));
+    }
+
+    public static String convertToCurrencyString(long value) {
+        return String.format(RUPIAH_FORMAT, NumberFormat.getNumberInstance(locale).format(value));
     }
 
     public LocationViewModel getLocation(Context context) {

@@ -2,31 +2,35 @@ package com.tokopedia.digital_deals.view.activity;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.ViewCompat;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.view.fragment.AllBrandsFragment;
 import com.tokopedia.digital_deals.view.fragment.CategoryDetailHomeFragment;
-import com.tokopedia.digital_deals.view.presenter.DealDetailsPresenter;
 import com.tokopedia.digital_deals.view.utils.CategoryDetailCallbacks;
 import com.tokopedia.digital_deals.view.viewmodel.CategoriesModel;
 
-public class CategoryDetailActivity extends BaseSimpleActivity implements CategoryDetailCallbacks{
+public class CategoryDetailActivity extends BaseSimpleActivity implements CategoryDetailCallbacks {
 
+    private final String BRAND_FRAGMENT = "BRAND_FRAGMENT";
+    public static final String CATEGORY_NAME = "CATEGORY_NAME";
+    public static final String CATEGORIES_DATA = "CATEGORIES_DATA";
+    private String categoryName;
 
     @Override
     protected int getLayoutRes() {
-        return R.layout.activity_category_detail;
+        return R.layout.activity_base_simple_deals_appbar;
     }
 
     @Override
     protected Fragment getNewFragment() {
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(DealDetailsPresenter.HOME_DATA, getIntent().getParcelableExtra(DealDetailsPresenter.HOME_DATA));
+        categoryName = getIntent().getStringExtra(CATEGORY_NAME);
+        toolbar.setTitle(categoryName);
+        getSupportFragmentManager().addOnBackStackChangedListener(getListener());
 
-        return CategoryDetailHomeFragment.createInstance(bundle);
+        return CategoryDetailHomeFragment.createInstance(getIntent().getExtras());
     }
 
     @Override
@@ -36,12 +40,36 @@ public class CategoryDetailActivity extends BaseSimpleActivity implements Catego
     }
 
     @Override
-    public void replaceFragment(CategoriesModel detailsViewModel) {
-        toolbar.setTitle(String.format(getResources().getString(R.string.brand_category),
-                        detailsViewModel.getTitle()));
+    public void replaceFragment(CategoriesModel categoriesModel) {
+
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.add(R.id.parent_view, AllBrandsFragment.newInstance(detailsViewModel));
-        transaction.addToBackStack(null);
+        transaction.replace(R.id.parent_view, AllBrandsFragment.newInstance(categoriesModel));
+        transaction.addToBackStack(BRAND_FRAGMENT);
         transaction.commit();
+    }
+
+    private FragmentManager.OnBackStackChangedListener getListener() {
+        FragmentManager.OnBackStackChangedListener result = new FragmentManager.OnBackStackChangedListener() {
+            public void onBackStackChanged() {
+                FragmentManager manager = getSupportFragmentManager();
+
+                if (manager != null) {
+                    if (manager.getBackStackEntryCount() >= 1) {
+                        String topOnStack = manager.getBackStackEntryAt(manager.getBackStackEntryCount() - 1).getName();
+                        if (topOnStack.equals(BRAND_FRAGMENT)) {
+                            toolbar.setTitle(String.format(getResources().getString(R.string.brand_category),
+                                    categoryName));
+
+                        } else {
+                            toolbar.setTitle(categoryName);
+                        }
+                    } else {
+                        toolbar.setTitle(categoryName);
+                    }
+                }
+            }
+        };
+
+        return result;
     }
 }

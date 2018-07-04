@@ -64,6 +64,8 @@ ext {
     tkpdDistrictRecommendationVersion = '2.22'
     tkpdAnalyticsVersion = '2.22'
     tkpdGraphqlVersion = '2.22'
+    tkpdContactUsVersion = '2.22'
+    tkpdCommonNetworkVersion = '2.22'
     tkpdDealsVersion = '2.22'
     tkpdOmsVersion = '2.22'
 
@@ -255,7 +257,6 @@ ext {
             districtRecommendation: "com.tokopedia.district_recommendation:district_recommendation:${tkpdDistrictRecommendationVersion}",
             digitalDeals          : "com.tokopedia.digital_deals:digital_deals:${tkpdDealsVersion}",
             omsApi                : "com.tokopedia.oms:oms:${tkpdOmsVersion}"
-
     ]
 
     tkpdLibDependencies = [
@@ -299,7 +300,6 @@ ext {
             mitraToppers          : ":features:fintech:mitra_toppers",
             event                 : ":features:digital:event",
             home                  : ":tkpdhome",
-            digitalDeals          : ":features:digital:digital_deals",
             content               : ":tkpdcontent",
             checkout              : ":features:transaction:checkout",
             kol                   : ":features:content:kol",
@@ -328,7 +328,6 @@ ext {
             config            : ":libraries:global_config",
             network           : ":libraries:network",
             useCase           : ":libraries:use_case",
-            reactNative       : ":libraries:react_native",
             williamchart      : ":libraries:williamchart",
             fingerprint       : ":libraries:fingerprint",
             bottomSheetBuilder: ":libraries:bottom_sheet_builder",
@@ -337,7 +336,7 @@ ext {
             youtubeApi        : ":libraries:YouTubeAndroidPlayerApi",
             analytics         : ":libraries:analytics",
             graphql           : ":libraries:graphql",
+            commonNetwork     : ":libraries:common_network",
             omsApi            : ":libraries:oms"
-
     ]
 }

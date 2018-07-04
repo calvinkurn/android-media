@@ -21,6 +21,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DaggerDealsComponent;
 import com.tokopedia.digital_deals.di.DealsModule;
+import com.tokopedia.digital_deals.view.activity.DealsLocationActivity;
 import com.tokopedia.digital_deals.view.adapter.DealsLocationAdapter;
 import com.tokopedia.digital_deals.view.contractor.DealsLocationContract;
 import com.tokopedia.digital_deals.view.customview.SearchInputView;
@@ -34,8 +35,8 @@ import javax.inject.Inject;
 
 import static android.app.Activity.RESULT_OK;
 
-public class SelectLocationFragment  extends BaseDaggerFragment implements
-        DealsLocationContract.View, SearchInputView.Listener, DealsLocationAdapter.ActionListener{
+public class SelectLocationFragment extends BaseDaggerFragment implements
+        DealsLocationContract.View, SearchInputView.Listener, DealsLocationAdapter.ActionListener {
 
     public static final String EXTRA_CALLBACK_LOCATION = "EXTRA_CALLBACK_LOCATION";
 
@@ -68,7 +69,6 @@ public class SelectLocationFragment  extends BaseDaggerFragment implements
         mPresenter.getLocations();
         return view;
     }
-
 
 
     private void setUpVariables(View view) {
@@ -180,7 +180,9 @@ public class SelectLocationFragment  extends BaseDaggerFragment implements
     public void onLocationItemSelected(boolean locationUpdated) {
 
         getActivity().setResult(RESULT_OK, new Intent().putExtra(EXTRA_CALLBACK_LOCATION, locationUpdated));
-        getActivity().finish();
+
+        ((DealsLocationActivity)getActivity()).finish();
+
     }
 
     @Override

@@ -116,7 +116,7 @@ public class DealsSearchPresenter
     public boolean onItemClick(int id) {
         if (id == R.id.tv_change_city) {
             getView().navigateToActivityRequest(new Intent(getView().getActivity(), DealsLocationActivity.class), DealsHomeActivity.REQUEST_CODE_DEALSLOCATIONACTIVITY);
-
+            getView().getActivity().overridePendingTransition( R.anim.slide_in_up, R.anim.hold );
         }else if (id == R.id.imageViewBack) {
             getView().goBack();
         }

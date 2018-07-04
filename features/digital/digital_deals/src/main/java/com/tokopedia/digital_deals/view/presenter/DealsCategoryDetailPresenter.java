@@ -1,6 +1,7 @@
 package com.tokopedia.digital_deals.view.presenter;
 
 import android.content.Intent;
+import android.os.Parcelable;
 import android.support.v7.widget.LinearLayoutManager;
 
 import com.tkpd.library.utils.CommonUtils;
@@ -55,7 +56,7 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
     public DealsCategoryDetailPresenter(GetCategoryDetailRequestUseCase getCategoryDetailRequestUseCase, GetNextCategoryPageUseCase getNextCategoryPageUseCase, GetAllBrandsUseCase getAllBrandsUseCase) {
         this.getCategoryDetailRequestUseCase = getCategoryDetailRequestUseCase;
         this.getNextCategoryPageUseCase = getNextCategoryPageUseCase;
-        this.getAllBrandsUseCase=getAllBrandsUseCase;
+        this.getAllBrandsUseCase = getAllBrandsUseCase;
     }
 
     @Override
@@ -72,9 +73,17 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
 
     @Override
     public boolean onOptionMenuClick(int id) {
-        if (id == R.id.search_input_view) {
+        if (id == R.id.action_menu_search) {
             Intent searchIntent = new Intent(getView().getActivity(), DealsSearchActivity.class);
-            searchIntent.putParcelableArrayListExtra("TOPDEALS", categoryViewModels);
+            int size = 5;
+            if (categoryViewModels.size() < size) {
+                size = categoryViewModels.size();
+            }
+            ArrayList<CategoryItemsViewModel> searchItems = new ArrayList<CategoryItemsViewModel>();
+            for (int i = 0; i < size; i++) {
+                searchItems.add(categoryViewModels.get(i));
+            }
+            searchIntent.putParcelableArrayListExtra("TOPDEALS", searchItems);
             getView().navigateToActivityRequest(searchIntent, DealsHomeActivity.REQUEST_CODE_DEALSSEARCHACTIVITY);
         } else if (id == R.id.action_promo) {
             getView().startGeneralWebView(PROMOURL);
@@ -150,7 +159,7 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
 
             @Override
             public void onNext(CategoryDetailsDomain dealEntity) {
-                isDealsLoaded=true;
+                isDealsLoaded = true;
                 categoryViewModels = Utils.getSingletonInstance()
                         .convertIntoCategoryListItemsViewModel(dealEntity.getDealItems());
                 pageViewModel = Utils.getSingletonInstance().convertIntoPageViewModel(dealEntity.getPage());
@@ -161,7 +170,6 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
             }
         });
     }
-
 
 
     private void loadMoreItems() {

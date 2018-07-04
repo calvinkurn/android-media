@@ -128,6 +128,8 @@ public class DealsCategoryItemDomain {
     @SerializedName("catalog")
     @Expose
     private Catalog catalog;
+    @SerializedName("is_liked")
+    private boolean isLiked;
 
 
     public String getDisplayName() {
@@ -453,6 +455,11 @@ public class DealsCategoryItemDomain {
         this.catalog = catalog;
     }
 
+    public boolean isLiked() {
+        return isLiked;
+    }
 
-
+    public void setLiked(boolean liked) {
+        isLiked = liked;
+    }
 }
