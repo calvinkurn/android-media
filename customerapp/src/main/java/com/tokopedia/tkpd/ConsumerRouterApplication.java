@@ -363,7 +363,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ITransactionOrderDetailRouter,
         ILogisticUploadAwbRouter,
         NetworkRouter,
-        ILogisticUploadAwbRouter,
         TopChatRouter{
 
     @Inject
