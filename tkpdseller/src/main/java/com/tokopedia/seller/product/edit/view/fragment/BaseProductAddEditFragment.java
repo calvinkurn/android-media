@@ -29,6 +29,8 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.RequestPermissionUtil;
+import com.tokopedia.product.edit.view.activity.ProductAddVideoActivity;
+import com.tokopedia.product.edit.view.fragment.ProductAddVideoFragment;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.imageeditor.GalleryCropWatermarkActivity;
@@ -428,11 +430,13 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
 
     @Override
     public final void startYoutubeVideoActivity(ArrayList<String> videoIds) {
-        Intent intent = new Intent(getActivity(), com.tokopedia.product.edit.view.activity.ProductAddVideoActivity.class);
+        collectDataFromView();
+        Intent intent = new Intent(getActivity(), ProductAddVideoActivity.class);
         if (!CommonUtils.checkCollectionNotNull(videoIds)) {
             videoIds = new ArrayList<>();
         }
-        intent.putStringArrayListExtra(com.tokopedia.product.edit.view.fragment.ProductAddVideoFragment.EXTRA_VIDEOS_LINKS, videoIds);
+        intent.putStringArrayListExtra(ProductAddVideoFragment.EXTRA_VIDEOS_LINKS, videoIds);
+        intent.putExtra(ProductAddVideoFragment.EXTRA_KEYWORD, currentProductViewModel.getProductName());
         startActivityForResult(intent, ProductDescriptionViewHolder.REQUEST_CODE_GET_VIDEO);
     }
 

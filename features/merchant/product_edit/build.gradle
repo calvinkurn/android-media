@@ -6,7 +6,7 @@ apply plugin: 'kotlin-android'
 project.ext {
     artifactId = 'product-edit'
     groupId = 'com.tokopedia.product'
-    versionName = "${tkpdShopVersion}"
+    versionName = "${tkpdProductVersion}"
     artifactName ="product_edit-release"
 }
 

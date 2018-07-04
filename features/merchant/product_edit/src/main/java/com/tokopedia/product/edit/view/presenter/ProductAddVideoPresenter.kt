@@ -30,6 +30,11 @@ class ProductAddVideoPresenter : BaseDaggerPresenter<ProductAddVideoView>() {
     private val getYoutubeVideoDetailUseCase: GetYoutubeVideoDetailUseCase by lazy { GetYoutubeVideoDetailUseCase(view.contextView) }
     private val getYoutubeVideoListDetailUseCase: GetYoutubeVideoListDetailUseCase by lazy { GetYoutubeVideoListDetailUseCase(view.contextView) }
     private val mapper = VideoMapper()
+    private lateinit var productName: String
+
+    fun setProductName(productName: String) {
+        this.productName = productName
+    }
 
     fun getVideoRecommendation(query: String, size: Int) {
 
@@ -102,8 +107,10 @@ class ProductAddVideoPresenter : BaseDaggerPresenter<ProductAddVideoView>() {
                             val emptyVideoViewModel = EmptyVideoViewModel()
                             productAddVideoBaseViewModels.add(0, emptyVideoViewModel)
                         }
-                        val sectionVideoRecommendationViewModel = SectionVideoRecommendationViewModel()
-                        productAddVideoBaseViewModels.add(0, sectionVideoRecommendationViewModel)
+                        if(!productName.isEmpty()){
+                            val sectionVideoRecommendationViewModel = SectionVideoRecommendationViewModel()
+                            productAddVideoBaseViewModels.add(0, sectionVideoRecommendationViewModel)
+                        }
                         view.renderListData(productAddVideoBaseViewModels)
                         view.onSuccessGetYoutubeDataVideoChosen(youtubeVideoModelArrayList)
                     }
