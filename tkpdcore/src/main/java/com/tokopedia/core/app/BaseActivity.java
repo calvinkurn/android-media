@@ -15,6 +15,7 @@ import android.view.View;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.core.ForceUpdate;
 import com.tokopedia.core.MaintenancePage;
 import com.tokopedia.core.R;
@@ -299,6 +300,10 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
 
     public AppComponent getApplicationComponent() {
         return ((MainApplication) getApplication()).getAppComponent();
+    }
+
+    public BaseAppComponent getBaseAppComponent() {
+        return ((MainApplication) getApplication()).getBaseAppComponent();
     }
 
     protected void setGoldMerchant(ShopModel shopModel) {

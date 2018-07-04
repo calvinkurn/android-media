@@ -7,6 +7,7 @@ package com.tokopedia.core.router.transactionmodule.sharedata;
 public class AddToCartResult {
     private boolean success;
     private String message;
+    private String cartId;
 
     public AddToCartResult() {
     }
@@ -14,10 +15,15 @@ public class AddToCartResult {
     private AddToCartResult(Builder builder) {
         setSuccess(builder.success);
         setMessage(builder.message);
+        setCartId(builder.cartId);
     }
 
     public boolean isSuccess() {
         return success;
+    }
+
+    public void setCartId(String cartId) {
+        this.cartId = cartId;
     }
 
     public void setSuccess(boolean success) {
@@ -32,10 +38,14 @@ public class AddToCartResult {
         this.message = message;
     }
 
+    public String getCartId() {
+        return cartId;
+    }
 
     public static final class Builder {
         private boolean success;
         private String message;
+        private String cartId;
 
         public Builder() {
         }
@@ -47,6 +57,11 @@ public class AddToCartResult {
 
         public Builder message(String val) {
             message = val;
+            return this;
+        }
+
+        public Builder cartId(String val) {
+            cartId = val;
             return this;
         }
 

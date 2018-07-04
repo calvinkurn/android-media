@@ -97,7 +97,7 @@ public class MultipleAddressViewHolder extends RecyclerView.ViewHolder {
         shippingDestinationList
                 .setLayoutManager(new LinearLayoutManager(context));
         shippingDestinationList.setAdapter(
-                new MultipleAddressItemAdapter(data, data.getItemListData(), listener)
+                new MultipleAddressItemAdapter(getAdapterPosition(), data, data.getItemListData(), listener)
         );
         btAddNewShipment.setOnClickListener(
                 onAddAddressClickedListener(
@@ -184,7 +184,7 @@ public class MultipleAddressViewHolder extends RecyclerView.ViewHolder {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                addressListener.onAddNewShipmentAddress(latestPositionToAdd, dataList, data, firstItemData);
+                addressListener.onAddNewShipmentAddress(getAdapterPosition(), latestPositionToAdd, dataList, data, firstItemData);
             }
         };
     }
