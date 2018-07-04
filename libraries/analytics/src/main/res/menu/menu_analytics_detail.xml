@@ -5,7 +5,14 @@
         android:id="@+id/action_menu_share"
         android:icon="@drawable/ic_share_white"
         android:orderInCategory="100"
-        android:title="Delete All"
+        android:title="Share"
         android:visible="true"
-        app:showAsAction="always" />
+        app:showAsAction="always">
+        <menu>
+            <item android:title="Copy to Clipboard"
+                android:id="@+id/action_copy_text"/>
+            <item android:title="Share"
+                android:id="@+id/action_share_text"/>
+        </menu>
+    </item>
 </menu>

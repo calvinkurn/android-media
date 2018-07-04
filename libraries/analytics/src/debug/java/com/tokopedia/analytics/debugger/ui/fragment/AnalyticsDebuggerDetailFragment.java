@@ -1,5 +1,8 @@
 package com.tokopedia.analytics.debugger.ui.fragment;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.analytics.R;
@@ -68,13 +72,19 @@ public class AnalyticsDebuggerDetailFragment extends TkpdBaseV4Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_menu_share && viewModel != null) {
-            Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-            sharingIntent.setType("text/plain");
-            sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, viewModel.getName());
-            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, viewModel.getData());
-            startActivity(Intent.createChooser(sharingIntent, "Share"));
-            return true;
+        if (viewModel != null) {
+            if(item.getItemId() == R.id.action_share_text) {
+                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                sharingIntent.setType("text/plain");
+                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, viewModel.getData());
+                startActivity(Intent.createChooser(sharingIntent, null));
+                return true;
+            } else if (item.getItemId() == R.id.action_copy_text) {
+                ClipboardManager clipboard = (ClipboardManager) getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("tokopedia_analytics_debugger", viewModel.getData());
+                clipboard.setPrimaryClip(clip);
+                Toast.makeText(getContext(), "Copied to clipboard", Toast.LENGTH_LONG).show();
+            }
         }
         return super.onOptionsItemSelected(item);
     }
