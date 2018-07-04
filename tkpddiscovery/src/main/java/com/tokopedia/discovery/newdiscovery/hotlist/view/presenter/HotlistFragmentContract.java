@@ -79,6 +79,7 @@ public interface HotlistFragmentContract {
         void clearLastProductTracker(boolean clear);
 
         void trackImpressionProduct(Map<String, Object> dataLayer);
+
     }
 
     interface Presenter extends SearchSectionFragmentPresenter<View> {
