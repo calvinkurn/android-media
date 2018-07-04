@@ -107,7 +107,6 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         formattedPromoMessage.setSpan(new StyleSpan(Typeface.BOLD), startSpan, endSpan,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        textView.setTypeface(Typeface.create(FONT_FAMILY_SANS_SERIF_MEDIUM, Typeface.NORMAL));
         formattedPromoMessage.setSpan(new ClickableSpan() {
             @Override
             public void updateDrawState(TextPaint textPaint) {

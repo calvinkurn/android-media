@@ -9,7 +9,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
-import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -510,7 +510,21 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void navigateToSetPinpoint(String message, LocationPass locationPass) {
-        Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+        if (getView() != null) {
+            LayoutInflater inflater = getLayoutInflater();
+            View layout = inflater.inflate(R.layout.toast_rectangle, getView().findViewById(R.id.toast_layout));
+
+            TextView tvMessage = layout.findViewById(R.id.tv_message);
+            tvMessage.setText(message);
+
+            Toast toast = new Toast(getActivity());
+//            toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+            toast.setDuration(Toast.LENGTH_LONG);
+            toast.setView(layout);
+            toast.show();
+        } else {
+            Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+        }
         Intent intent = GeolocationActivity.createInstance(getActivity(), locationPass);
         startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT);
     }
