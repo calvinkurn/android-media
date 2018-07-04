@@ -70,18 +70,16 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center_horizontal"
-            android:text="Minta teman untuk mendaftar bertransaksi"
+            android:text="@string/referral_help_tell"
             android:textColor="@color/black_54"
             android:textSize="@dimen/fontvs" />
 
         <TextView
-            android:id="@+id/tv_help_recieve"
+            android:id="@+id/tv_help_receive"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center_horizontal"
-            android:text="Dapatkan cashback ke Tokocash"
-            android:textColor="@color/black_54"
             android:textSize="@dimen/fontvs" />
     </LinearLayout>
 

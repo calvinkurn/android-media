@@ -3,6 +3,8 @@ package com.tokopedia.core.referral.listener;
 import android.app.Activity;
 
 import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.core.referral.data.PromoContent;
+import com.tokopedia.core.referral.data.ReferralCodeEntity;
 import com.tokopedia.core.referral.model.ShareApps;
 
 /**
@@ -11,7 +13,7 @@ import com.tokopedia.core.referral.model.ShareApps;
 
 public interface ReferralView extends CustomerView {
 
-    void renderVoucherCodeData(String voucherCode, String friendsCount);
+    void renderVoucherCodeData(PromoContent promoContent);
 
     Activity getActivity();
 

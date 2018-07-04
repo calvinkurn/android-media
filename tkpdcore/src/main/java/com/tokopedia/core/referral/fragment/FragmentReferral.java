@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,6 +27,8 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.referral.HeightWrappingViewPager;
 import com.tokopedia.core.referral.adapter.ReferralGuidePagerAdapter;
+import com.tokopedia.core.referral.data.PromoContent;
+import com.tokopedia.core.referral.data.ReferralCodeEntity;
 import com.tokopedia.core.referral.di.DaggerReferralComponent;
 import com.tokopedia.core.referral.di.ReferralComponent;
 import com.tokopedia.core.referral.di.ReferralModule;
@@ -35,6 +38,7 @@ import com.tokopedia.core.referral.presenter.IReferralPresenter;
 import com.tokopedia.core.referral.presenter.ReferralPresenter;
 import com.tokopedia.core.router.OtpRouter;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.util.ShareSocmedHandler;
 
 import javax.inject.Inject;
 
@@ -47,13 +51,12 @@ import static com.facebook.FacebookSdk.getApplicationContext;
  * Created by ashwanityagi on 18/09/17.
  */
 
-public class FragmentReferral extends BasePresenterFragmentV4<IReferralPresenter> implements ReferralView {
+public class FragmentReferral extends BasePresenterFragmentV4<IReferralPresenter> implements ReferralView , ReferralGuidePagerAdapter.ReferralGuidePagerListener{
 
     @Inject
     ReferralPresenter presenter;
-
-    //    @BindView(R2.id.btn_app_share)
-//    TextView appShareButton;
+    //@BindView(R2.id.btn_app_share)
+    //TextView appShareButton;
     @BindView(R2.id.tv_referral_code)
     TextView referralCodeTextView;
     @BindView(R2.id.tv_referral_desc)
@@ -62,7 +65,6 @@ public class FragmentReferral extends BasePresenterFragmentV4<IReferralPresenter
     TextView TextViewHelpLink;
     @BindView(R2.id.rl_referral_code)
     RelativeLayout referralCodeLayout;
-
     @BindView(R2.id.view_pager_referral_guide)
     HeightWrappingViewPager pagerGuide;
     @BindView(R2.id.tab_referral_guide)
@@ -79,6 +81,10 @@ public class FragmentReferral extends BasePresenterFragmentV4<IReferralPresenter
     ImageView imgTick;
     @BindView(R2.id.btn_copy_referral_code)
     TextView btnCopyReferralCode;
+    @BindView(R2.id.progress_bar_referral)
+    ProgressBar progressBarReferral;
+    @BindView(R2.id.tv_referral_percent)
+    TextView tvPercent;
 
     private ReferralGuidePagerAdapter referralGuidePagerAdapter;
 
@@ -150,23 +156,20 @@ public class FragmentReferral extends BasePresenterFragmentV4<IReferralPresenter
         if (presenter.isAppShowReferralButtonActivated()) {
             referralCodeLayout.setVisibility(View.VISIBLE);
             TextViewHelpLink.setVisibility(View.VISIBLE);
-            // TextViewHelpLink.setText(presenter.getHowItWorks());
-            renderVoucherCodeData(presenter.getVoucherCodeFromCache(), "");
-            TextViewHelpLink.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
+//            TextViewHelpLink.setText(presenter.getHowItWorks());
+//            renderVoucherCodeData(presenter.getVoucherCodeFromCache(), "");
+            TextViewHelpLink.setOnClickListener(view1 -> {
 //                    UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_HOW_IT_WORKS, "");
 //                    startActivity(ManageWebViewActivity.getCallingIntent(getActivity(), TkpdUrl.REFERRAL_URL, ((AppCompatActivity) getActivity()).getSupportActionBar().getTitle().toString()));
 
-                    focusOnView();
-                }
+                focusOnView();
             });
         } else {
             referralCodeLayout.setVisibility(View.INVISIBLE);
             TextViewHelpLink.setVisibility(View.INVISIBLE);
         }
 
-        referralGuidePagerAdapter = new ReferralGuidePagerAdapter(getActivity());
+        referralGuidePagerAdapter = new ReferralGuidePagerAdapter(getActivity(),this);
         pagerGuide.setAdapter(referralGuidePagerAdapter);
 
         pagerGuide.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabGuide));
@@ -230,9 +233,13 @@ public class FragmentReferral extends BasePresenterFragmentV4<IReferralPresenter
     }
 
     @Override
-    public void renderVoucherCodeData(String voucherCode, String friendsCount) {
-        referralCodeTextView.setText(voucherCode);
-        referralCount.setText(friendsCount + "  teman diajak");
+    public void renderVoucherCodeData(PromoContent promoContent) {
+        referralCodeTextView.setText(promoContent.getCode());
+        referralCount.setText(promoContent.getFriendCount() + "  teman diajak");
+        progressBarReferral.setProgress(promoContent.getPromoBenefit().getCurrentBenefit() == 0 ?
+                promoContent.getPromoBenefit().getCurrentBenefit() : promoContent.getPromoBenefit().getMaxBenefit()
+                / promoContent.getPromoBenefit().getCurrentBenefit());
+        tvPercent.setText(promoContent.getPromoBenefit().getCurrentBenefit() + " / " + promoContent.getPromoBenefit().getMaxBenefit());
     }
 
     @Override
@@ -321,17 +328,17 @@ public class FragmentReferral extends BasePresenterFragmentV4<IReferralPresenter
         if (index == 0) {
             llShareIcons.removeAllViews();
         }
-        ImageView imageView;
+//        ImageView imageView;
+//
+//        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(getActivity().LAYOUT_INFLATER_SERVICE);
+//
+//        imageView = (ImageView) inflater.inflate(R.layout.social_image_layout, llShareIcons, false);
 
-        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(getActivity().LAYOUT_INFLATER_SERVICE);
-
-        imageView = (ImageView) inflater.inflate(R.layout.social_image_layout, llShareIcons, false);
-
-        //ImageView imageView = new ImageView(getActivity());
+        ImageView imageView = new ImageView(getActivity());
         imageView.setImageResource(shareApps.getIcon());
         imageView.setTag(shareApps);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1.0f);
-        //imageView.setLayoutParams(layoutParams);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.0f);
+        imageView.setLayoutParams(layoutParams);
         imageView.setOnClickListener(v -> {
             presenter.appShare(((ShareApps) v.getTag()), getChildFragmentManager());
         });
@@ -343,7 +350,11 @@ public class FragmentReferral extends BasePresenterFragmentV4<IReferralPresenter
         nestedScrollView.post(() -> {
             nestedScrollView.fling(0);
             nestedScrollView.smoothScrollTo(0, viewLine.getBottom());
-            //nestedScrollView.smoothScrollBy(0, tabGuide.getTop());
         });
+    }
+
+    @Override
+    public void onShareClick() {
+        presenter.shareApp(getChildFragmentManager());
     }
 }

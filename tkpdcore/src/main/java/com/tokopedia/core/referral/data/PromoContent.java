@@ -20,6 +20,14 @@ public class PromoContent {
     @Expose
     private String friendCount;
 
+    @SerializedName("url")
+    @Expose
+    private String shareUrl;
+
+    @SerializedName("promo_benefit")
+    @Expose
+    private PromoBenefit promoBenefit;
+
     public String getCode() {
         return code;
     }
@@ -42,5 +50,21 @@ public class PromoContent {
 
     public void setFriendCount(String friendCount) {
         this.friendCount = friendCount;
+    }
+
+    public String getShareUrl() {
+        return shareUrl;
+    }
+
+    public void setShareUrl(String shareUrl) {
+        this.shareUrl = shareUrl;
+    }
+
+    public PromoBenefit getPromoBenefit() {
+        return promoBenefit;
+    }
+
+    public void setPromoBenefit(PromoBenefit promoBenefit) {
+        this.promoBenefit = promoBenefit;
     }
 }

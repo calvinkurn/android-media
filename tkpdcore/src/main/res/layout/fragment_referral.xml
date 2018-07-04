@@ -71,10 +71,10 @@
                             android:layout_toLeftOf="@+id/btn_copy_referral_code"
                             android:fontFamily="sans-serif"
                             android:gravity="center_horizontal"
+                            android:paddingBottom="@dimen/padding_small"
                             android:paddingLeft="@dimen/padding_small"
                             android:paddingRight="@dimen/padding_small"
                             android:paddingTop="@dimen/padding_small"
-                            android:paddingBottom="@dimen/padding_small"
                             android:textColor="@color/deep_orange_500"
                             android:textSize="@dimen/font_medium"
                             android:textStyle="normal" />
@@ -100,13 +100,13 @@
                             android:id="@+id/img_tick"
                             android:layout_width="20dp"
                             android:layout_height="20dp"
-                            android:visibility="gone"
-                            android:layout_marginLeft="@dimen/margin_sm"
-                            android:layout_marginBottom="@dimen/padding_ms"
-                            android:layout_toRightOf="@+id/tv_referral_code"
-                            android:src="@drawable/ic_tick"
                             android:layout_alignBottom="@+id/btn_copy_referral_code"
-                            android:tint="@color/green_250" />
+                            android:layout_marginBottom="@dimen/padding_small"
+                            android:layout_marginLeft="@dimen/margin_sm"
+                            android:layout_toRightOf="@+id/tv_referral_code"
+                            android:src="@drawable/checked_thin"
+                            android:tint="@color/green_250"
+                            android:visibility="gone" />
                     </RelativeLayout>
 
                     <View
@@ -115,7 +115,7 @@
                         android:layout_below="@+id/rl_referral_code_main"
                         android:layout_marginBottom="@dimen/margin_med"
                         android:layout_marginTop="@dimen/margin_large"
-                        android:background="@color/colorGray" />
+                        android:background="@color/grey_hint_full" />
 
                     <TextView
                         android:id="@+id/tv_Bagikan_ke"
@@ -129,7 +129,7 @@
                         android:paddingLeft="@dimen/padding_large"
                         android:paddingRight="@dimen/padding_large"
                         android:text="Bagikan ke"
-                        android:textColor="@color/colorGray"
+                        android:textColor="@color/black_54"
                         android:textSize="@dimen/fonts" />
                 </RelativeLayout>
 
@@ -137,13 +137,13 @@
                     android:id="@+id/ll_share_icons"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"/>
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:orientation="horizontal" />
 
                 <TextView
                     android:id="@+id/tv_referral_help_link"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_small"
                     android:gravity="center_horizontal"
                     android:lineSpacingExtra="@dimen/font_medium"
                     android:padding="@dimen/padding_med"
@@ -155,7 +155,7 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="5dp"
+            android:layout_height="@dimen/margin_small"
             android:background="@color/grey_300" />
 
 
@@ -224,13 +224,11 @@
 
         </LinearLayout>
 
-
         <View
             android:id="@+id/view_line"
             android:layout_width="match_parent"
-            android:layout_height="5dp"
+            android:layout_height="@dimen/margin_small"
             android:background="@color/grey_300" />
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -261,6 +259,11 @@
                     android:textAlignment="textStart" />
 
             </android.support.design.widget.TabLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/margin_vs"
+                android:background="@drawable/shadow_background" />
 
             <com.tokopedia.core.referral.HeightWrappingViewPager
                 android:id="@+id/view_pager_referral_guide"
