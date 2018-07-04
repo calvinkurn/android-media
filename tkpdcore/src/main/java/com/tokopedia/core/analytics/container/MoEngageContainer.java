@@ -60,6 +60,9 @@ public class MoEngageContainer implements IMoengageContainer {
     @Override
     public void initialize() {
 
+        /*
+          Mandatory to set small/Large notification icon while initialising sdk
+          */
         MoEngage moEngage =
                 new MoEngage.Builder(MainApplication.getInstance(),
                         context.getResources().getString(R.string.key_moengage))
