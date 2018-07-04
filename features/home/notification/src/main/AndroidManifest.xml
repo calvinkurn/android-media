@@ -3,6 +3,5 @@
 
     <application>
         <activity android:name=".presentation.activity.NotificationActivity" />
-
     </application>
 </manifest>
