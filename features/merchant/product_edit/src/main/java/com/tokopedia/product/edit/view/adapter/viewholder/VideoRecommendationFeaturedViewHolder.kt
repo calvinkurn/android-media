@@ -25,5 +25,8 @@ class VideoRecommendationFeaturedViewHolder(itemView: View,
         itemView.setOnClickListener({
             videoFeaturedClickListener.onVideoFeaturedClicked(currentVideoRecommendationViewModel)
         })
+        imageChosen.setOnClickListener({
+            videoFeaturedClickListener.onVideoPlusClicked(currentVideoRecommendationViewModel)
+        })
     }
 }

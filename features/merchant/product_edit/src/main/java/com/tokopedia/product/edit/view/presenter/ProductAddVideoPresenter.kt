@@ -71,7 +71,7 @@ class ProductAddVideoPresenter : BaseDaggerPresenter<ProductAddVideoView>() {
         })
     }
 
-    fun getYoutubaDataVideoChosen(videoIDs: ArrayList<String>) {
+    fun getYoutubeDataVideoChosen(videoIDs: ArrayList<String>) {
         getYoutubeVideoData(videoIDs, VIDEO_CHOSEN)
     }
 

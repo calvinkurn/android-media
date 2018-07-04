@@ -25,6 +25,7 @@ import com.tokopedia.product.edit.view.listener.VideoChosenListener
 import com.tokopedia.product.edit.domain.mapper.VideoMapper
 import com.tokopedia.product.edit.domain.mapper.VideoRecommendationMapper
 import com.tokopedia.product.edit.domain.model.youtube.YoutubeVideoModel
+import com.tokopedia.product.edit.util.YoutubeUtil
 import com.tokopedia.product.edit.view.presenter.ProductAddVideoPresenter
 import com.tokopedia.product.edit.view.viewmodel.*
 
@@ -113,7 +114,7 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
     override fun initInjector() {}
 
     override fun loadData(page: Int) {
-        productAddVideoPresenter.getYoutubaDataVideoChosen(videoIDs)
+        productAddVideoPresenter.getYoutubeDataVideoChosen(videoIDs)
         setButtonAddVideoUrl()
     }
 
@@ -218,8 +219,13 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
     }
 
     override fun onVideoRecommendationFeaturedClicked(videoRecommendationViewModel : VideoRecommendationViewModel) {
+        YoutubeUtil.playYoutubeVideo(context, videoRecommendationViewModel.videoID!!)
+
+    }
+
+    override fun onVideoRecommendationPlusClicked(videoRecommendationViewModel: VideoRecommendationViewModel) {
         if (videoIDs.contains(videoRecommendationViewModel.videoID)) {
-            for (i in 0 until adapter.dataSize - 1){
+            for (i in 0 until adapter.dataSize ){
                 if(adapter.data[i] is VideoViewModel && (adapter.data[i] as VideoViewModel).videoID == videoRecommendationViewModel.videoID){
                     showDialogDeleteVideoChosen(adapter.data[i] as VideoViewModel)
                     break
@@ -230,7 +236,11 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
                 showDialogAddVideoChosenFromFeatured(transformVideoRecommendationViewModelToVideoViewModel(videoRecommendationViewModel))
             }
         }
+    }
 
+    override fun onVideoClicked(position: Int) {
+        var videoID: String? = (adapter.data[position] as VideoViewModel).videoID;
+        YoutubeUtil.playYoutubeVideo(context, videoID!!)
     }
 
     override fun onVideoChosenDeleteClicked(position : Int) {

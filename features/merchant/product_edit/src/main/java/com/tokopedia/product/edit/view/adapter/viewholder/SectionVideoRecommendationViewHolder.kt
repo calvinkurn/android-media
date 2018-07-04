@@ -47,6 +47,9 @@ class SectionVideoRecommendationViewHolder(itemView: View,
             override fun onVideoFeaturedClicked(videoRecommendationViewModel : VideoRecommendationViewModel) {
                 sectionVideoRecommendationListener.onVideoRecommendationFeaturedClicked(videoRecommendationViewModel)
             }
+            override fun onVideoPlusClicked(videoRecommendationViewModel : VideoRecommendationViewModel) {
+                sectionVideoRecommendationListener.onVideoRecommendationPlusClicked(videoRecommendationViewModel)
+            }
         }
 
         videoRecommendationFeaturedList.add(null)
@@ -115,6 +118,7 @@ class SectionVideoRecommendationViewHolder(itemView: View,
 
     interface VideoFeaturedClickListener {
         fun onVideoFeaturedClicked(videoRecommendationViewModel : VideoRecommendationViewModel)
+        fun onVideoPlusClicked(videoRecommendationViewModel : VideoRecommendationViewModel)
     }
 
     companion object {

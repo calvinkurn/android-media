@@ -9,6 +9,8 @@ interface SectionVideoRecommendationListener {
 
     fun onVideoRecommendationFeaturedClicked(videoRecommendationViewModel : VideoRecommendationViewModel)
 
+    fun onVideoRecommendationPlusClicked(videoRecommendationViewModel : VideoRecommendationViewModel)
+
     fun setProductAddVideoFragmentListener(listener: ProductAddVideoFragment.Listener)
 
 }
