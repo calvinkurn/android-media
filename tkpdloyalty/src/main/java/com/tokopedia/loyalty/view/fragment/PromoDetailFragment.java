@@ -186,6 +186,7 @@ public class PromoDetailFragment extends BaseDaggerFragment implements
 
     @Override
     public void renderPromoDetail(PromoData promoData) {
+        // promo-detail impression analytic
         this.promoDetailAnalytics.userViewPromo(
                 promoData.getTitle(),
                 promoData.getId(),
@@ -291,6 +292,7 @@ public class PromoDetailFragment extends BaseDaggerFragment implements
         this.tvPromoDetailAction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // promo-detail cta analytic
                 promoDetailAnalytics.userClickCta(
                         promoData.getTitle(),
                         promoData.getId(),
