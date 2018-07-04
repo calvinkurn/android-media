@@ -1,7 +1,5 @@
 package com.tokopedia.train.search.presentation.presenter;
 
-import android.util.Log;
-
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.train.search.domain.FilterParam;
 import com.tokopedia.train.search.domain.GetAvailabilityScheduleUseCase;
@@ -12,6 +10,7 @@ import com.tokopedia.train.search.presentation.model.AvailabilityKeySchedule;
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
 import com.tokopedia.usecase.RequestParams;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -41,7 +40,7 @@ public class TrainSearchPresenter extends BaseDaggerPresenter<TrainSearchContrac
     }
 
     @Override
-    public void getTrainSchedules(final int scheduleVariant) {
+    public void getTrainSchedules(final int scheduleVariant, String arrivalTimeDepartureTripSelected) {
         getScheduleUseCase.setScheduleVariant(scheduleVariant);
         getScheduleUseCase.execute(getView().getRequestParam(),
                 new Subscriber<List<AvailabilityKeySchedule>>() {
@@ -62,19 +61,18 @@ public class TrainSearchPresenter extends BaseDaggerPresenter<TrainSearchContrac
                         if (availabilityKeySchedules.isEmpty()) {
                             getView().showEmptyResult();
                         } else {
-                            for (AvailabilityKeySchedule available : availabilityKeySchedules) {
-                                getAvailabilitySchedule(available.getIdTrain(), scheduleVariant);
-                            }
+                            getAvailabilitySchedule(availabilityKeySchedules, scheduleVariant, arrivalTimeDepartureTripSelected);
                         }
                     }
                 });
     }
 
-    private void getAvailabilitySchedule(final String idTrain, int scheduleVariant) {
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putObject(GetAvailabilityScheduleUseCase.TRAIN_ID_KEY, idTrain);
+    private void getAvailabilitySchedule(List<AvailabilityKeySchedule> availabilityKeySchedules, int scheduleVariant,
+                                         String arrivalTimeDepartureTripSelected) {
+        getAvailabilityScheduleUseCase.setAvailabilityKeySchedules(availabilityKeySchedules);
+        getAvailabilityScheduleUseCase.setArrivalTimeDepartureTripSelected(arrivalTimeDepartureTripSelected);
         getAvailabilityScheduleUseCase.setScheduleVariant(scheduleVariant);
-        getAvailabilityScheduleUseCase.execute(requestParams, new Subscriber<List<TrainScheduleViewModel>>() {
+        getAvailabilityScheduleUseCase.execute(RequestParams.EMPTY, new Subscriber<List<List<TrainScheduleViewModel>>>() {
             @Override
             public void onCompleted() {
 
@@ -88,13 +86,20 @@ public class TrainSearchPresenter extends BaseDaggerPresenter<TrainSearchContrac
             }
 
             @Override
-            public void onNext(List<TrainScheduleViewModel> trainScheduleViewModels) {
-                Log.d(TAG, idTrain);
+            public void onNext(List<List<TrainScheduleViewModel>> trainScheduleViewModels) {
                 if (trainScheduleViewModels != null) {
                     getView().showLayoutTripInfo();
                     getView().addPaddingSortAndFilterSearch();
                     getView().showFilterAndSortButtonAction();
-                    getView().renderList(trainScheduleViewModels);
+
+                    List<TrainScheduleViewModel> resultTrainSchedules = new ArrayList<>();
+                    for (List<TrainScheduleViewModel> trainScheduleModelList : trainScheduleViewModels) {
+                        for (TrainScheduleViewModel trainScheduleViewModel : trainScheduleModelList) {
+                            resultTrainSchedules.add(trainScheduleViewModel);
+                        }
+                    }
+                    getView().renderList(resultTrainSchedules);
+
                 }
             }
         });
