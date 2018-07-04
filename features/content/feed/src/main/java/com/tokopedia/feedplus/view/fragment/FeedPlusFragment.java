@@ -644,16 +644,18 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         callbackManager.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
+
+        if (data == null) {
+            return;
+        }
+
         switch (requestCode) {
             case OPEN_DETAIL:
                 if (resultCode == Activity.RESULT_OK)
                     showSnackbar(data.getStringExtra("message"));
                 break;
             case OPEN_KOL_COMMENT:
-                if (resultCode == Activity.RESULT_OK
-                        && data.hasExtra(KolCommentActivity.ARGS_POSITION)
-                        && data.hasExtra(KolCommentFragment.ARGS_TOTAL_COMMENT)) {
-
+                if (resultCode == Activity.RESULT_OK) {
                     onSuccessAddDeleteKolComment(
                             data.getIntExtra(KolCommentActivity.ARGS_POSITION, DEFAULT_VALUE),
                             data.getIntExtra(KolCommentFragment.ARGS_TOTAL_COMMENT, 0)
@@ -661,13 +663,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 }
                 break;
             case OPEN_KOL_PROFILE:
-                if (resultCode == Activity.RESULT_OK
-                        && data.hasExtra(ARGS_ROW_NUMBER)
-                        && data.hasExtra(TopProfileActivity.EXTRA_IS_FOLLOWING)
-                        && data.hasExtra(PARAM_IS_LIKED)
-                        && data.hasExtra(PARAM_TOTAL_LIKES)
-                        && data.hasExtra(PARAM_TOTAL_COMMENTS)) {
-
+                if (resultCode == Activity.RESULT_OK) {
                     onSuccessFollowUnfollowFromProfile(
                             data.getIntExtra(ARGS_ROW_NUMBER, DEFAULT_VALUE),
                             data.getIntExtra(TopProfileActivity.EXTRA_IS_FOLLOWING, DEFAULT_VALUE)
@@ -682,11 +678,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 }
                 break;
             case OPEN_KOL_PROFILE_FROM_RECOMMENDATION:
-                if (resultCode == Activity.RESULT_OK
-                        && data.hasExtra(ARGS_ROW_NUMBER)
-                        && data.hasExtra(ARGS_ITEM_ROW_NUMBER)
-                        && data.hasExtra(TopProfileActivity.EXTRA_IS_FOLLOWING)) {
-
+                if (resultCode == Activity.RESULT_OK) {
                     onSuccessFollowUnfollowFromProfileRecommendation(
                             data.getIntExtra(ARGS_ROW_NUMBER, DEFAULT_VALUE),
                             data.getIntExtra(ARGS_ITEM_ROW_NUMBER, DEFAULT_VALUE),
@@ -1021,7 +1013,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     private void onSuccessAddDeleteKolComment(int rowNumber, int totalNewComment) {
-        if (adapter.getlist().get(rowNumber) instanceof BaseKolViewModel) {
+        if (adapter.getlist().size() > rowNumber
+                && adapter.getlist().get(rowNumber) instanceof BaseKolViewModel) {
             BaseKolViewModel kolViewModel = (BaseKolViewModel) adapter.getlist().get(rowNumber);
             kolViewModel.setTotalComment((
                     (BaseKolViewModel)
@@ -1032,7 +1025,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     private void onSuccessFollowUnfollowFromProfile(int rowNumber, int isFollowing) {
-        if (rowNumber != DEFAULT_VALUE && adapter.getlist().get(rowNumber) instanceof KolPostViewModel) {
+        if (rowNumber != DEFAULT_VALUE
+                && adapter.getlist().size() > rowNumber
+                && adapter.getlist().get(rowNumber) instanceof KolPostViewModel) {
             KolPostViewModel kolViewModel = (KolPostViewModel) adapter.getlist().get(rowNumber);
 
             if (isFollowing != DEFAULT_VALUE) {
@@ -1044,7 +1039,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     private void updatePostState(int rowNumber, int isLiked, int totalLike, int totalComment) {
-        if (rowNumber != DEFAULT_VALUE && adapter.getlist().get(rowNumber) instanceof BaseKolViewModel) {
+        if (rowNumber != DEFAULT_VALUE
+                && adapter.getlist().size() > rowNumber
+                && adapter.getlist().get(rowNumber) instanceof BaseKolViewModel) {
             BaseKolViewModel kolViewModel = (BaseKolViewModel) adapter.getlist().get(rowNumber);
 
             if (isLiked != DEFAULT_VALUE) {
@@ -1067,6 +1064,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                                                                   int isFollowing) {
         if (rowNumber != DEFAULT_VALUE
                 && itemRowNumber != DEFAULT_VALUE
+                && adapter.getlist().size() > rowNumber
                 && adapter.getlist().get(rowNumber) instanceof KolRecommendationViewModel) {
             KolRecommendationViewModel recommendationViewModel =
                     (KolRecommendationViewModel) adapter.getlist().get(rowNumber);
@@ -1098,7 +1096,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onSuccessSendVote(int rowNumber, PollOptionViewModel selectedOption,
                                   VoteStatisticDomainModel voteStatisticDomainModel) {
-        if (adapter.getlist().get(rowNumber) instanceof PollViewModel) {
+        if (adapter.getlist().size() > rowNumber
+                && adapter.getlist().get(rowNumber) instanceof PollViewModel) {
             PollViewModel pollViewModel = (PollViewModel) adapter.getlist().get(rowNumber);
             pollViewModel.setVoted(true);
             pollViewModel.setTotalVoter(voteStatisticDomainModel.getTotalParticipants());
