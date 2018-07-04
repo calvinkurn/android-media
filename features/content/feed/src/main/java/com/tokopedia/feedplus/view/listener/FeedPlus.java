@@ -9,7 +9,6 @@ import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollOptionViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
-import com.tokopedia.feedplus.view.viewmodel.product.ProductFeedViewModel;
 import com.tokopedia.vote.domain.model.VoteStatisticDomainModel;
 
 import java.util.ArrayList;
@@ -121,8 +120,6 @@ public interface FeedPlus {
         void onGoToBlogWebView(String url);
 
         void onOpenVideo(String videoUrl, String subtitle);
-
-        void onGoToBuyProduct(ProductFeedViewModel productFeedViewModel);
 
         void onInfoClicked();
 

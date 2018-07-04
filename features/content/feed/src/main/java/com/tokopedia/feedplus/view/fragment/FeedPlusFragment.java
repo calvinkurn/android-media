@@ -45,8 +45,6 @@ import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
-import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.feedplus.FeedModuleRouter;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.domain.usecase.FollowKolPostUseCase;
@@ -71,7 +69,6 @@ import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollOptionViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
-import com.tokopedia.feedplus.view.viewmodel.product.ProductFeedViewModel;
 import com.tokopedia.feedplus.view.viewmodel.topads.FeedTopAdsViewModel;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
@@ -118,11 +115,12 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     private static final String ARGS_ROW_NUMBER = "row_number";
     private static final String ARGS_ITEM_ROW_NUMBER = "item_row_number";
-
     private static final String FIRST_CURSOR = "FIRST_CURSOR";
+
     public static final String KEY_EXPLORE_NATIVE_ENABLE = "mainapp_explore_native_enable";
     public static final String KEY_EXPLORE_URL = "mainapp_explore_url";
     public static final String DEFAULT_EXPLORE_URL = "tokopedia://webview?url=https%3A%2F%2Fm.tokopedia.com%2Fcontent%2Fexplore%3Fwebview%3Dtrue";
+
     RecyclerView recyclerView;
     SwipeToRefresh swipeToRefresh;
     RelativeLayout mainContent;
@@ -477,21 +475,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void onOpenVideo(String videoUrl, String subtitle) {
         Intent intent = TransparentVideoActivity.getIntent(getActivity(), videoUrl, subtitle);
         startActivity(intent);
-    }
-
-    @Override
-    public void onGoToBuyProduct(ProductFeedViewModel productFeedViewModel) {
-
-        ProductCartPass pass = ProductCartPass.Builder.aProductCartPass()
-                .setProductId(String.valueOf(productFeedViewModel.getProductId()))
-                .setPrice(productFeedViewModel.getPrice())
-                .setImageUri(productFeedViewModel.getImageSource())
-                .build();
-
-        Intent intent = TransactionAddToCartRouter
-                .createInstanceAddToCartActivity(getActivity(), pass);
-        startActivity(intent);
-
     }
 
     @Override
