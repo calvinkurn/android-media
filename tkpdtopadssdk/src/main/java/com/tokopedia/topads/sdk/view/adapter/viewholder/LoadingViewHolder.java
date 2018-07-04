@@ -14,7 +14,7 @@ import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.LoadingViewMode
 public class LoadingViewHolder extends AbstractViewHolder<LoadingViewModel> {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.layout_loading;
+    public static final int LAYOUT = R.layout.topads_layout_loading;
 
     public LoadingViewHolder(View itemView) {
         super(itemView);

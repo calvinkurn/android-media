@@ -65,6 +65,12 @@ public interface TkpdInboxRouter {
 
     void startAddProduct(Activity activity, String shopId);
 
+    Intent getHelpUsIntent(Context context);
+
+    Intent getWebviewActivityWithIntent(Context context, String url, String title);
+
+    Intent getWebviewActivityWithIntent(Context context, String url);
+
     boolean isEnabledGroupChat();
 
     void openImagePreviewFromChat(Context context, ArrayList<String> listImage, ArrayList<String>

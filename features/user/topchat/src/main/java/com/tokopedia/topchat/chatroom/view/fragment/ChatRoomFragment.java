@@ -182,6 +182,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
     private RemoteConfig remoteConfig;
     private boolean uploading;
     private boolean isChatBot;
+    private String PARAM_URL = "PARAM_URL";
+    private String IS_CHAT_BOT = "IS_CHAT_BOT";
 
     public static ChatRoomFragment createInstance(Bundle extras) {
         ChatRoomFragment fragment = new ChatRoomFragment();
