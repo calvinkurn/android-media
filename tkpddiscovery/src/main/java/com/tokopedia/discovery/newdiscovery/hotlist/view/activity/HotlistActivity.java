@@ -123,15 +123,17 @@ public class HotlistActivity extends DiscoveryActivity
     @Override
     public void onSearchViewShown() {
         super.onSearchViewShown();
-        appBarLayout.setExpanded(true, false);
-        appBarLayout.setActivated(false);
+        appBarLayout.setVisibility(View.GONE);
+//        appBarLayout.setExpanded(true, false);
+//        appBarLayout.setActivated(false);
         setSearchQuery(getToolbarTitle().toString());
     }
 
     @Override
     public void onSearchViewClosed() {
         super.onSearchViewClosed();
-        appBarLayout.setActivated(true);
+        appBarLayout.setVisibility(View.VISIBLE);
+//        appBarLayout.setActivated(true);
     }
 
     public void renderHotlistDescription(String txt){
