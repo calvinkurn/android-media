@@ -9,6 +9,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -187,6 +188,15 @@ public class PromoDetailFragment extends BaseDaggerFragment implements
     @Override
     public void renderPromoDetail(PromoData promoData) {
         // promo-detail impression analytic
+        Log.i("GAv4-impression-log",
+                "id:" + promoData.getId() +
+                ", name:" + "/promo - p" + page + " - promo list banner" +
+                ", position:" + position +
+                ", creative:" + promoData.getTitle() +
+                ", creative_url:" + promoData.getThumbnailImage() +
+                ", promo_code:" + parsePromoCodes(promoData)
+        );
+
         this.promoDetailAnalytics.userViewPromo(
                 promoData.getTitle(),
                 promoData.getId(),
@@ -293,6 +303,15 @@ public class PromoDetailFragment extends BaseDaggerFragment implements
             @Override
             public void onClick(View view) {
                 // promo-detail cta analytic
+                Log.i("GAv4-action-log",
+                        "id:" + promoData.getId() +
+                                ", name:" + "/promo - p" + page + " - promo list banner" +
+                                ", position:" + position +
+                                ", creative:" + promoData.getTitle() +
+                                ", creative_url:" + promoData.getThumbnailImage() +
+                                ", promo_code:" + parsePromoCodes(promoData)
+                );
+
                 promoDetailAnalytics.userClickCta(
                         promoData.getTitle(),
                         promoData.getId(),
