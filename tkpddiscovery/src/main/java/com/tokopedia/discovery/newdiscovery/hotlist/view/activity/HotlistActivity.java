@@ -45,6 +45,7 @@ public class HotlistActivity extends DiscoveryActivity
     private AppBarLayout appBarLayout;
     private TextView descriptionTxt;
     private DescriptionView descriptionView;
+    public FragmentListener fragmentListener;
 
     @Inject
     HotlistPresenter hotlistPresenter;
@@ -120,20 +121,25 @@ public class HotlistActivity extends DiscoveryActivity
 
     }
 
+    public void setFragmentListener(FragmentListener fragmentListener) {
+        this.fragmentListener = fragmentListener;
+    }
+
     @Override
     public void onSearchViewShown() {
         super.onSearchViewShown();
-        appBarLayout.setVisibility(View.GONE);
-//        appBarLayout.setExpanded(true, false);
-//        appBarLayout.setActivated(false);
+        if(fragmentListener!=null){
+            fragmentListener.stopScroll();
+        }
+        appBarLayout.setExpanded(true, false);
+        appBarLayout.setActivated(false);
         setSearchQuery(getToolbarTitle().toString());
     }
 
     @Override
     public void onSearchViewClosed() {
         super.onSearchViewClosed();
-        appBarLayout.setVisibility(View.VISIBLE);
-//        appBarLayout.setActivated(true);
+        appBarLayout.setActivated(true);
     }
 
     public void renderHotlistDescription(String txt){
@@ -191,4 +197,7 @@ public class HotlistActivity extends DiscoveryActivity
         super.onDestroy();
     }
 
+    public interface FragmentListener {
+        void stopScroll();
+    }
 }

@@ -55,6 +55,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmen
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionGeneralAdapter;
 import com.tokopedia.discovery.newdiscovery.util.HotlistParameter;
+import com.tokopedia.discovery.search.view.DiscoverySearchView;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
@@ -82,7 +83,8 @@ public class HotlistFragment extends SearchSectionFragment
         implements
         HotlistFragmentContract.View,
         RefreshHandler.OnRefreshHandlerListener, SearchSectionGeneralAdapter.OnItemChangeView,
-        ItemClickListener, TopAdsListener, TopAdsItemClickListener {
+        ItemClickListener, TopAdsListener, TopAdsItemClickListener,
+        HotlistActivity.FragmentListener {
 
     private static final String HOTLIST_DETAIL_ENHANCE_ANALYTIC = "HOTLIST_DETAIL_ENHANCE_ANALYTIC";
     private static final String LAST_POSITION_ENHANCE_PRODUCT = "LAST_POSITION_ENHANCE_PRODUCT";
@@ -241,6 +243,7 @@ public class HotlistFragment extends SearchSectionFragment
                 setHotlistAlias(generateAliasUsingURL(getArguments().getString(EXTRA_URL, "")));
             }
         }
+
     }
 
     @Override
@@ -455,6 +458,12 @@ public class HotlistFragment extends SearchSectionFragment
         bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
         intent.putExtras(bundle);
         startActivity(intent);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        ((HotlistActivity) getActivity()).setFragmentListener(this);
     }
 
     @Override
@@ -883,5 +892,10 @@ public class HotlistFragment extends SearchSectionFragment
     @Override
     protected String getScreenName() {
         return getScreenNameId();
+    }
+
+    @Override
+    public void stopScroll() {
+        recyclerView.stopScroll();
     }
 }
