@@ -399,7 +399,7 @@ public class ProductListFragment extends SearchSectionFragment
                         openSortActivity();
                         return true;
                     case 1:
-                        SearchTracking.eventSearchResultOpenFilterPageProduct();
+                        SearchTracking.eventSearchResultOpenFilterPageProduct(getContext());
                         openFilterActivity();
                         return true;
                     case 2:
@@ -669,7 +669,7 @@ public class ProductListFragment extends SearchSectionFragment
     public void setEmptyProduct() {
         topAdsRecyclerAdapter.shouldLoadAds(false);
         adapter.showEmpty(productViewModel.getQuery());
-        SearchTracking.eventSearchNoResult(productViewModel.getQuery(), getScreenName(), getSelectedFilter());
+        SearchTracking.eventSearchNoResult(getContext(), productViewModel.getQuery(), getScreenName(), getSelectedFilter());
     }
 
     @Override
@@ -810,6 +810,7 @@ public class ProductListFragment extends SearchSectionFragment
         String currentPage = String.valueOf(adapter.getStartFrom() / 12);
 
         SearchTracking.eventImpressionGuidedSearch(
+                getContext(),
                 currentKey,
                 currentPage
         );

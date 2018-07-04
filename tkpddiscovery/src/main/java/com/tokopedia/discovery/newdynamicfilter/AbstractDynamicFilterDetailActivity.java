@@ -150,7 +150,7 @@ public abstract class AbstractDynamicFilterDetailActivity<T extends RecyclerView
             @Override
             public void onClick(View v) {
                 if (isUsingTracking) {
-                    SearchTracking.eventSearchResultApplyFilterDetail(pageTitle);
+                    SearchTracking.eventSearchResultApplyFilterDetail(getApplicationContext(), pageTitle);
                 }
                 applyFilter();
             }
@@ -160,7 +160,7 @@ public abstract class AbstractDynamicFilterDetailActivity<T extends RecyclerView
     @Override
     public void onBackPressed() {
         if (isUsingTracking) {
-            SearchTracking.eventSearchResultBackFromFilterDetail(pageTitle);
+            SearchTracking.eventSearchResultBackFromFilterDetail(this, pageTitle);
         }
         super.onBackPressed();
     }
@@ -237,7 +237,7 @@ public abstract class AbstractDynamicFilterDetailActivity<T extends RecyclerView
         option.setInputState(Boolean.toString(isChecked));
         hideKeyboard();
         if (isUsingTracking) {
-            SearchTracking.eventSearchResultFilterJourney(pageTitle, option.getName(), true, isChecked);
+            SearchTracking.eventSearchResultFilterJourney(getApplicationContext(), pageTitle, option.getName(), true, isChecked);
         }
     }
 

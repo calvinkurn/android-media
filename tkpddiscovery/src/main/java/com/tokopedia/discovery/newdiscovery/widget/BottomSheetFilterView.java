@@ -180,7 +180,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
 
     @Override
     public void saveCheckedState(Option option, Boolean isChecked, String filterTitle) {
-        SearchTracking.eventSearchResultFilterJourney(filterTitle, option.getName(), false, isChecked);
+        SearchTracking.eventSearchResultFilterJourney(getContext(), filterTitle, option.getName(), false, isChecked);
         if (isChecked) {
             savedCheckedState.put(option.getUniqueId(), true);
         } else {
@@ -198,7 +198,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
 
     @Override
     public void removeSavedTextInput(String key) {
-        SearchTracking.eventSearchResultFilterJourney(key, "", false, false);
+        SearchTracking.eventSearchResultFilterJourney(getContext(), key, "", false, false);
         savedTextInput.remove(key);
         updateResetButtonVisibility();
     }
@@ -206,7 +206,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
     @Override
     public void saveTextInput(String key, String textInput) {
         savedTextInput.put(key, textInput);
-        SearchTracking.eventSearchResultFilterJourney(key, textInput, false, true);
+        SearchTracking.eventSearchResultFilterJourney(getContext(), key, textInput, false, true);
         updateResetButtonVisibility();
     }
 
@@ -293,7 +293,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
     @Override
     public void removeSelectedOption(Option option, String filterTitle) {
         if (KEY_CATEGORY.equals(option.getKey())) {
-            SearchTracking.eventSearchResultFilterJourney(filterTitle, option.getName(), false, false);
+            SearchTracking.eventSearchResultFilterJourney(getContext(), filterTitle, option.getName(), false, false);
             resetSelectedCategory();
             updateResetButtonVisibility();
             applyFilter();
@@ -608,7 +608,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
 
     @Override
     public void selectCategory(Option option, String filterTitle) {
-        SearchTracking.eventSearchResultFilterJourney(filterTitle, option.getName(), false, true);
+        SearchTracking.eventSearchResultFilterJourney(getContext(), filterTitle, option.getName(), false, true);
         FilterFlagSelectedModel filterFlagSelectedModel = new FilterFlagSelectedModel();
         FilterHelper.populateWithSelectedCategory(filterMainAdapter.getFilterList(), filterFlagSelectedModel, option.getValue());
         selectedCategoryId = filterFlagSelectedModel.getCategoryId();

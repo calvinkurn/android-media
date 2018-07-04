@@ -238,7 +238,7 @@ public class CatalogFragment extends SearchSectionFragment implements
 
     @Override
     public void setOnCatalogClicked(String catalogID, String catalogName) {
-        SearchTracking.eventSearchResultCatalogClick(query, catalogName);
+        SearchTracking.eventSearchResultCatalogClick(getContext(), query, catalogName);
         Intent intent = DetailProductRouter.getCatalogDetailActivity(getActivity(), catalogID);
         startActivityForResult(intent, REQUEST_CODE_GOTO_CATALOG_DETAIL);
     }
@@ -358,7 +358,7 @@ public class CatalogFragment extends SearchSectionFragment implements
             topAdsRecyclerAdapter.shouldLoadAds(false);
             String message = String.format(getString(R.string.empty_search_content_template), query);
             catalogAdapter.showEmptyState(message);
-            SearchTracking.eventSearchNoResult(query, getScreenName(), getSelectedFilter());
+            SearchTracking.eventSearchNoResult(getContext(), query, getScreenName(), getSelectedFilter());
         }
     }
 
@@ -458,7 +458,7 @@ public class CatalogFragment extends SearchSectionFragment implements
                         openSortActivity();
                         return true;
                     case 1:
-                        SearchTracking.eventSearchResultOpenFilterPageCatalog();
+                        SearchTracking.eventSearchResultOpenFilterPageCatalog(getContext());
                         openFilterActivity();
                         return true;
                     case 2:

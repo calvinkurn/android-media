@@ -1,7 +1,10 @@
 package com.tokopedia.core.analytics;
 
+import android.content.Context;
 import android.text.TextUtils;
 
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 
 import java.util.ArrayList;
@@ -34,14 +37,19 @@ public class SearchTracking extends TrackingUtils {
                 ));
     }
 
-    public static void trackEventClickImageSearchResultProduct(Object item, int position) {
+    public static void trackEventClickImageSearchResultProduct(Context context, Object item, int position) {
+        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+            return;
+        }
+        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+
         getGTMEngine().enhanceClickImageSearchResultProduct(item, String.format(imageClick, position));
-        sendGTMEvent(new EventTracking(
+        tracker.sendEventTracking(
                 AppEventTracking.Event.PRODUCT_CLICK,
                 AppEventTracking.Category.IMAGE_SEARCH_RESULT,
                 AppEventTracking.Action.CLICK_PRODUCT,
                 ""
-        ).getEvent());
+        );
     }
 
     public static void eventImpressionSearchResultProduct(List<Object> list, String eventLabel) {
@@ -52,41 +60,61 @@ public class SearchTracking extends TrackingUtils {
         getGTMEngine().enhanceImpressionImageSearchResultProduct(list);
     }
 
-    public static void eventClickGuidedSearch(String previousKey, String page, String nextKey) {
-        sendGTMEvent(new EventTracking(
+    public static void eventClickGuidedSearch(Context context, String previousKey, String page, String nextKey) {
+        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+            return;
+        }
+        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+
+        tracker.sendEventTracking(
                 "clickSearchResult",
                 "search result",
                 "click - guided search",
                 String.format("%s - %s - %s", previousKey, nextKey, page)
-        ).getEvent());
+        );
     }
 
-    public static void eventImpressionGuidedSearch(String currentKey, String page) {
-        sendGTMEvent(new EventTracking(
+    public static void eventImpressionGuidedSearch(Context context, String currentKey, String page) {
+        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+            return;
+        }
+        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+
+        tracker.sendEventTracking(
                 "viewSearchResult",
                 "search result",
                 "impression - guided search",
                 String.format("%s - %s", currentKey, page)
-        ).getEvent());
+        );
     }
 
-    public static void eventSearchResultShopItemClick(String keyword, String shopName,
+    public static void eventSearchResultShopItemClick(Context context, String keyword, String shopName,
                                                       int page, int position) {
-        sendGTMEvent(new EventTracking(
+        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+            return;
+        }
+        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+
+        tracker.sendEventTracking(
                 AppEventTracking.Event.SEARCH_RESULT,
                 AppEventTracking.Category.SEARCH_RESULT.toLowerCase(),
                 AppEventTracking.Action.CLICK_SHOP,
                 keyword + " - " + shopName + " - " + Integer.toString(page) + " - " + Integer.toString(position)
-        ).setUserId().getEvent());
+        );
     }
 
-    public static void eventSearchResultShare(String screenName) {
-        sendGTMEvent(new EventTracking(
+    public static void eventSearchResultShare(Context context, String screenName) {
+        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+            return;
+        }
+        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+
+        tracker.sendEventTracking(
                 AppEventTracking.Event.SEARCH_RESULT,
                 AppEventTracking.Category.SEARCH_SHARE,
                 AppEventTracking.Action.CLICK_BAR + screenName,
                 ""
-        ).setUserId().getEvent());
+        );
     }
 
     public static void eventImageSearchResultChangeGrid(String gridName) {
@@ -98,59 +126,91 @@ public class SearchTracking extends TrackingUtils {
         ).setUserId().getEvent());
     }
 
-    public static void eventSearchResultChangeGrid(String gridName, String screenName) {
-        sendGTMEvent(new EventTracking(
+    public static void eventSearchResultChangeGrid(Context context, String gridName, String screenName) {
+        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+            return;
+        }
+        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+
+        tracker.sendEventTracking(
                 AppEventTracking.Event.SEARCH_RESULT,
                 AppEventTracking.Category.GRID_MENU,
                 AppEventTracking.Action.CLICK_CHANGE_GRID + gridName,
                 screenName
-        ).setUserId().getEvent());
+        );
     }
 
-    public static void eventSearchResultFavoriteShopClick(String keyword, String shopName,
+    public static void eventSearchResultFavoriteShopClick(Context context, String keyword, String shopName,
                                                           int page, int position) {
-        sendGTMEvent(new EventTracking(
+        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+            return;
+        }
+        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+
+        tracker.sendEventTracking(
                 AppEventTracking.Event.SEARCH_RESULT,
                 AppEventTracking.Category.SEARCH_RESULT.toLowerCase(),
                 AppEventTracking.Action.FAVORITE_SHOP_CLICK,
                 keyword + " - " + shopName + " - " + Integer.toString(page) + " - " + Integer.toString(position)
-        ).setUserId().getEvent());
+        );
     }
 
-    public static void eventSearchResultCatalogClick(String keyword, String catalogName) {
-        sendGTMEvent(new EventTracking(
+    public static void eventSearchResultCatalogClick(Context context, String keyword, String catalogName) {
+        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+            return;
+        }
+        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+
+        tracker.sendEventTracking(
                 AppEventTracking.Event.SEARCH_RESULT,
                 AppEventTracking.Category.SEARCH_RESULT.toLowerCase(),
                 AppEventTracking.Action.CLICK_CATALOG,
                 keyword + " - " + catalogName
-        ).setUserId().getEvent());
+        );
     }
 
-    public static void eventSearchResultTabClick(String tabTitle) {
-        sendGTMEvent(new EventTracking(
+    public static void eventSearchResultTabClick(Context context, String tabTitle) {
+        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+            return;
+        }
+        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+
+        tracker.sendEventTracking(
                 AppEventTracking.Event.SEARCH_RESULT,
                 AppEventTracking.Category.SEARCH_TAB,
                 AppEventTracking.Action.CLICK_TAB,
                 tabTitle
-        ).setUserId().getEvent());
+        );
     }
 
-    public static void eventSearchResultFilter(String screenName, Map<String, String> selectedFilter) {
-        sendGTMEvent(new EventTracking(
+    public static void eventSearchResultFilter(Context context, String screenName, Map<String, String> selectedFilter) {
+        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+            return;
+        }
+        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+
+        tracker.sendEventTracking(
                 AppEventTracking.Event.SEARCH_RESULT,
                 AppEventTracking.Category.FILTER_PRODUCT,
                 AppEventTracking.Action.FILTER.toLowerCase() + " - " + screenName,
                 generateFilterEventLabel(selectedFilter)
-        ).setUserId().getEvent());
+        );
     }
 
-    public static void eventSearchResultCloseBottomSheetFilter(String screenName, Map<String, String> selectedFilter) {
-        sendGTMEvent(new EventTracking(
+    public static void eventSearchResultCloseBottomSheetFilter(Context context,
+                                                               String screenName,
+                                                               Map<String, String> selectedFilter) {
+        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+            return;
+        }
+        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+
+        tracker.sendEventTracking(
                 AppEventTracking.Event.SEARCH_RESULT,
                 AppEventTracking.Category.FILTER_PRODUCT,
                 AppEventTracking.Action.APPLY_FILTER.toLowerCase() + " - " + screenName,
                 generateFilterEventLabel(selectedFilter)
-        ).setUserId().getEvent());
+        );
     }
 
     private static String generateFilterEventLabel(Map<String, String> selectedFilter) {
@@ -183,74 +243,108 @@ public class SearchTracking extends TrackingUtils {
         }
     }
 
-    public static void eventSearchResultFilterJourney(String filterName,
+    public static void eventSearchResultFilterJourney(Context context,
+                                                      String filterName,
                                                       String filterValue,
                                                       boolean isInsideDetail, boolean isActive) {
-        sendGTMEvent(new EventTracking(
+
+        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+            return;
+        }
+        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+
+        tracker.sendEventTracking(
                 AppEventTracking.Event.SEARCH_RESULT,
                 AppEventTracking.Category.FILTER_JOURNEY,
                 AppEventTracking.Action.CLICK.toLowerCase() + " - "
                         + filterName + ": " + filterValue + " - "
                         + (isInsideDetail ? "inside lihat semua" : "outside lihat semua"),
                 Boolean.toString(isActive)
-        ).setUserId().getEvent());
+        );
     }
 
-    public static void eventSearchResultApplyFilterDetail(String filterName) {
-        sendGTMEvent(new EventTracking(
+    public static void eventSearchResultApplyFilterDetail(Context context, String filterName) {
+        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+            return;
+        }
+        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+
+        tracker.sendEventTracking(
                 AppEventTracking.Event.SEARCH_RESULT,
                 AppEventTracking.Category.FILTER_JOURNEY,
                 "click simpan on lihat semua " + filterName,
                 ""
-        ).setUserId().getEvent());
+        );
     }
 
-    public static void eventSearchResultBackFromFilterDetail(String filterName) {
-        sendGTMEvent(new EventTracking(
+    public static void eventSearchResultBackFromFilterDetail(Context context, String filterName) {
+        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+            return;
+        }
+        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+
+        tracker.sendEventTracking(
                 AppEventTracking.Event.SEARCH_RESULT,
                 AppEventTracking.Category.FILTER_JOURNEY,
                 "click back on lihat semua " + filterName,
                 ""
-        ).setUserId().getEvent());
+        );
     }
 
-    public static void eventSearchResultNavigateToFilterDetail(String filterName) {
-        sendGTMEvent(new EventTracking(
+    public static void eventSearchResultNavigateToFilterDetail(Context context, String filterName) {
+        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+            return;
+        }
+        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+
+        tracker.sendEventTracking(
                 AppEventTracking.Event.SEARCH_RESULT,
                 AppEventTracking.Category.FILTER_JOURNEY,
                 "click lihat semua " + filterName,
                 ""
-        ).setUserId().getEvent());
+        );
     }
 
-    public static void eventSearchResultOpenFilterPageProduct() {
-        eventSearchResultOpenFilterPage("product");
+    public static void eventSearchResultOpenFilterPageProduct(Context context) {
+        eventSearchResultOpenFilterPage(context, "product");
     }
 
-    public static void eventSearchResultOpenFilterPageCatalog() {
-        eventSearchResultOpenFilterPage("catalog");
+    public static void eventSearchResultOpenFilterPageCatalog(Context context) {
+        eventSearchResultOpenFilterPage(context,"catalog");
     }
 
-    public static void eventSearchResultOpenFilterPageShop() {
-        eventSearchResultOpenFilterPage("shop");
+    public static void eventSearchResultOpenFilterPageShop(Context context) {
+        eventSearchResultOpenFilterPage(context,"shop");
     }
 
-    private static void eventSearchResultOpenFilterPage(String tabName) {
-        sendGTMEvent(new EventTracking(
+    private static void eventSearchResultOpenFilterPage(Context context, String tabName) {
+        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+            return;
+        }
+        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+
+        tracker.sendEventTracking(
                 AppEventTracking.Event.SEARCH_RESULT,
                 AppEventTracking.Category.FILTER.toLowerCase() + " " + tabName,
                 AppEventTracking.Action.CLICK_FILTER,
                 ""
-        ).setUserId().getEvent());
+        );
     }
 
-    public static void eventSearchNoResult(String keyword, String screenName,
+    public static void eventSearchNoResult(Context context,
+                                           String keyword, String screenName,
                                            Map<String, String> selectedFilter) {
-        sendGTMEvent(new EventTracking(
+
+        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+            return;
+        }
+        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+
+        tracker.sendEventTracking(
                 AppEventTracking.Event.NO_RESULT,
                 AppEventTracking.Category.EVENT_TOP_NAV,
                 AppEventTracking.Action.NO_SEARCH_RESULT,
                 "keyword: " + keyword + " - tab: " + screenName + " - param: " + generateFilterEventLabel(selectedFilter)
-        ).getEvent());
+        );
     }
 }

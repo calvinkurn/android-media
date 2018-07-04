@@ -354,13 +354,13 @@ public class SearchActivity extends DiscoveryActivity
             public void onTabSelected(TabLayout.Tab tab) {
                 switch (tab.getPosition()) {
                     case TAB_PRODUCT:
-                        SearchTracking.eventSearchResultTabClick(productTabTitle);
+                        SearchTracking.eventSearchResultTabClick(getApplicationContext(), productTabTitle);
                         break;
                     case TAB_SECOND_POSITION:
-                        SearchTracking.eventSearchResultTabClick(catalogTabTitle);
+                        SearchTracking.eventSearchResultTabClick(getApplicationContext(), catalogTabTitle);
                         break;
                     case TAB_THIRD_POSITION:
-                        SearchTracking.eventSearchResultTabClick(shopTabTitle);
+                        SearchTracking.eventSearchResultTabClick(getApplicationContext(), shopTabTitle);
                         break;
                 }
             }
@@ -406,10 +406,10 @@ public class SearchActivity extends DiscoveryActivity
             public void onTabSelected(TabLayout.Tab tab) {
                 switch (tab.getPosition()) {
                     case TAB_PRODUCT:
-                        SearchTracking.eventSearchResultTabClick(productTabTitle);
+                        SearchTracking.eventSearchResultTabClick(getApplicationContext(), productTabTitle);
                         break;
                     case TAB_SECOND_POSITION:
-                        SearchTracking.eventSearchResultTabClick(shopTabTitle);
+                        SearchTracking.eventSearchResultTabClick(getApplicationContext(), shopTabTitle);
                         break;
                 }
             }
@@ -493,14 +493,14 @@ public class SearchActivity extends DiscoveryActivity
 
             @Override
             public void launchFilterCategoryPage(Filter filter, String selectedCategoryRootId, String selectedCategoryId) {
-                SearchTracking.eventSearchResultNavigateToFilterDetail(getResources().getString(R.string.title_category));
+                SearchTracking.eventSearchResultNavigateToFilterDetail(getApplicationContext(), getResources().getString(R.string.title_category));
                 FilterDetailActivityRouter.launchCategoryActivity(SearchActivity.this,
                         filter, selectedCategoryRootId, selectedCategoryId, true);
             }
 
             @Override
             public void launchFilterDetailPage(Filter filter) {
-                SearchTracking.eventSearchResultNavigateToFilterDetail(filter.getTitle());
+                SearchTracking.eventSearchResultNavigateToFilterDetail(getApplicationContext(), filter.getTitle());
                 FilterDetailActivityRouter.launchDetailActivity(SearchActivity.this, filter, true);
             }
         });

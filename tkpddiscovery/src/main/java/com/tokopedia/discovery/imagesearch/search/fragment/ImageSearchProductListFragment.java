@@ -604,7 +604,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
                 SessionHandler.getLoginID(getContext()) : "";
 
         SearchTracking.trackEventClickImageSearchResultProduct(
-                item.getProductAsObjectDataLayerForImageSearch(userId), (item.getPosition() + 1) / 2);
+                getContext(), item.getProductAsObjectDataLayerForImageSearch(userId), (item.getPosition() + 1) / 2);
     }
 
     @Override

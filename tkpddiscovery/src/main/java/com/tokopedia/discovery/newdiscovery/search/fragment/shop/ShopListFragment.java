@@ -1,6 +1,7 @@
 package com.tokopedia.discovery.newdiscovery.search.fragment.shop;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -254,7 +255,7 @@ public class ShopListFragment extends SearchSectionFragment
         if (adapter.isListEmpty()) {
             String message = String.format(getString(R.string.empty_search_content_template), query);
             adapter.showEmptyState(message);
-            SearchTracking.eventSearchNoResult(query, getScreenName(), getSelectedFilter());
+            SearchTracking.eventSearchNoResult(getContext(), query, getScreenName(), getSelectedFilter());
         }
     }
 
@@ -296,7 +297,7 @@ public class ShopListFragment extends SearchSectionFragment
             public boolean onTabSelected(final int position, boolean wasSelected) {
                 switch (position) {
                     case 0:
-                        SearchTracking.eventSearchResultOpenFilterPageShop();
+                        SearchTracking.eventSearchResultOpenFilterPageShop(getContext());
                         openFilterActivity();
                         return true;
                     case 1:
@@ -313,7 +314,7 @@ public class ShopListFragment extends SearchSectionFragment
     public void onItemClicked(ShopViewModel.ShopItem shopItem, int adapterPosition) {
         Intent intent = ((DiscoveryRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), shopItem.getShopId());
         lastSelectedItemPosition = adapterPosition;
-        SearchTracking.eventSearchResultShopItemClick(query, shopItem.getShopName(),
+        SearchTracking.eventSearchResultShopItemClick(getContext(), query, shopItem.getShopName(),
                 shopItem.getPage(), shopItem.getPosition());
         startActivityForResult(intent, REQUEST_CODE_GOTO_SHOP_DETAIL);
     }
@@ -321,7 +322,7 @@ public class ShopListFragment extends SearchSectionFragment
     @Override
     public void onFavoriteButtonClicked(ShopViewModel.ShopItem shopItem,
                                         int adapterPosition) {
-        SearchTracking.eventSearchResultFavoriteShopClick(query, shopItem.getShopName(),
+        SearchTracking.eventSearchResultFavoriteShopClick(getContext(), query, shopItem.getShopName(),
                 shopItem.getPage(), shopItem.getPosition());
         presenter.handleFavoriteButtonClicked(shopItem, adapterPosition);
     }

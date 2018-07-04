@@ -238,18 +238,18 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
                 setSpanCount(2);
                 gridLayoutManager.setSpanCount(spanCount);
                 getAdapter().changeDoubleGridView();
-                SearchTracking.eventSearchResultChangeGrid("grid 2", getScreenName());
+                SearchTracking.eventSearchResultChangeGrid(getContext(),"grid 2", getScreenName());
                 break;
             case GRID_2:
                 setSpanCount(1);
                 gridLayoutManager.setSpanCount(spanCount);
                 getAdapter().changeSingleGridView();
-                SearchTracking.eventSearchResultChangeGrid("grid 1", getScreenName());
+                SearchTracking.eventSearchResultChangeGrid(getContext(), "grid 1", getScreenName());
                 break;
             case GRID_3:
                 setSpanCount(1);
                 getAdapter().changeListView();
-                SearchTracking.eventSearchResultChangeGrid("list", getScreenName());
+                SearchTracking.eventSearchResultChangeGrid(getContext(),"list", getScreenName());
                 break;
         }
         refreshBottomBarGridIcon();
@@ -273,7 +273,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
             return;
         }
 
-        SearchTracking.eventSearchResultShare(getScreenName());
+        SearchTracking.eventSearchResultShare(getContext(), getScreenName());
 
         ShareData shareData = ShareData.Builder.aShareData()
                 .setType(ShareData.DISCOVERY_TYPE)
@@ -299,7 +299,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
             } else if (requestCode == getFilterRequestCode()) {
                 setFlagFilterHelper((FilterFlagSelectedModel) data.getParcelableExtra(RevampedDynamicFilterActivity.EXTRA_SELECTED_FLAG_FILTER));
                 setSelectedFilter((HashMap<String, String>) data.getSerializableExtra(RevampedDynamicFilterActivity.EXTRA_SELECTED_FILTERS));
-                SearchTracking.eventSearchResultFilter(getScreenName(), getSelectedFilter());
+                SearchTracking.eventSearchResultFilter(getContext(), getScreenName(), getSelectedFilter());
                 clearDataFilterSort();
                 showBottomBarNavigation(false);
                 updateDepartmentId(getFlagFilterHelper().getCategoryId());
@@ -555,7 +555,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     }
 
     public void onBottomSheetHide() {
-        SearchTracking.eventSearchResultCloseBottomSheetFilter(getScreenName(), getSelectedFilter());
+        SearchTracking.eventSearchResultCloseBottomSheetFilter(getContext(), getScreenName(), getSelectedFilter());
     }
 
     protected boolean isUsingBottomSheetFilter() {

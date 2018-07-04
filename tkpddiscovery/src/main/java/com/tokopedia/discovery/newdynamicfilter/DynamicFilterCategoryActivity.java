@@ -149,6 +149,7 @@ public class DynamicFilterCategoryActivity extends AppCompatActivity
         } else {
             if (isUsingTracking) {
                 SearchTracking.eventSearchResultFilterJourney(
+                        getApplicationContext(),
                         getResources().getString(R.string.title_category),
                         category.getName(), true, true);
             }

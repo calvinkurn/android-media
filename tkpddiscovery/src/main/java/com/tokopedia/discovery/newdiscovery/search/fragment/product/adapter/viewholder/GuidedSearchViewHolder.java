@@ -94,7 +94,7 @@ public class GuidedSearchViewHolder extends AbstractViewHolder<GuidedSearchViewM
                 public void onClick(View view) {
                     Uri uri = Uri.parse(item.getUrl());
                     String query = uri.getQueryParameter(BrowseApi.Q);
-                    SearchTracking.eventClickGuidedSearch(item.getPreviousKey(), item.getCurrentPage(), item.getKeyword());
+                    SearchTracking.eventClickGuidedSearch(textView.getContext(), item.getPreviousKey(), item.getCurrentPage(), item.getKeyword());
                     itemClickListener.onSearchGuideClicked(query);
                 }
             });
