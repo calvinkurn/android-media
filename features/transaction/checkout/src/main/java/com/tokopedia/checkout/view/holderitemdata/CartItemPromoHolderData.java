@@ -26,9 +26,8 @@ public class CartItemPromoHolderData implements ShipmentData {
     private long couponDiscountAmount;
 
     private String defaultSelectedTabString;
-
-
     private boolean fromAutoApply;
+    private boolean visible;
 
     public int getTypePromo() {
         return typePromo;
@@ -74,6 +73,14 @@ public class CartItemPromoHolderData implements ShipmentData {
         return fromAutoApply;
     }
 
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+    }
+
     public void setPromoVoucherType(
             String voucherCode, String voucherMessage, long voucherDiscountAmount
     ) {
@@ -81,6 +88,7 @@ public class CartItemPromoHolderData implements ShipmentData {
         this.voucherMessage = voucherMessage;
         this.voucherCode = voucherCode;
         this.voucherDiscountAmount = voucherDiscountAmount;
+        this.visible = true;
     }
 
     public void setPromoVoucherTypeFromAutoApply(
@@ -91,6 +99,7 @@ public class CartItemPromoHolderData implements ShipmentData {
         this.voucherCode = voucherCode;
         this.voucherDiscountAmount = voucherDiscountAmount;
         this.fromAutoApply = true;
+        this.visible = true;
     }
 
     public void setPromoCouponType(
@@ -101,6 +110,7 @@ public class CartItemPromoHolderData implements ShipmentData {
         this.couponCode = couponCode;
         this.couponDiscountAmount = couponDiscountAmount;
         this.couponTitle = couponTitle;
+        this.visible = true;
     }
 
     public void setPromoCouponTypeFromAutoApply(
@@ -112,6 +122,7 @@ public class CartItemPromoHolderData implements ShipmentData {
         this.couponDiscountAmount = couponDiscountAmount;
         this.couponTitle = couponTitle;
         this.fromAutoApply = true;
+        this.visible = true;
     }
 
     public void setPromoNotActive() {
@@ -124,6 +135,7 @@ public class CartItemPromoHolderData implements ShipmentData {
         this.couponDiscountAmount = 0;
         this.couponTitle = "";
         this.defaultSelectedTabString = "";
+        this.visible = true;
     }
 
     public static CartItemPromoHolderData createInstanceFromAppliedPromo(

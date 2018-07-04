@@ -17,6 +17,8 @@ import com.tokopedia.checkout.view.view.shippingoptions.viewmodel.ShipmentTicker
 
 public class CourierTickerViewHolder extends RecyclerView.ViewHolder {
 
+    public static final int ITEM_VIEW_SHIPMENT_TICKER = R.layout.item_courier_ticker;
+
     private static final String BOLD_TEXT = "pk 14:00";
 
     private TextView tvTickerInfo;
