@@ -22,8 +22,26 @@ public class ShipmentDetailData implements Parcelable {
     private boolean useDropshipper;
     private String dropshipperName;
     private String dropshipperPhone;
+    private boolean dropshipperNameValid;
+    private boolean dropshipperPhoneValid;
 
     public ShipmentDetailData() {
+    }
+
+    public boolean isDropshipperNameValid() {
+        return dropshipperNameValid;
+    }
+
+    public void setDropshipperNameValid(boolean dropshipperNameValid) {
+        this.dropshipperNameValid = dropshipperNameValid;
+    }
+
+    public boolean isDropshipperPhoneValid() {
+        return dropshipperPhoneValid;
+    }
+
+    public void setDropshipperPhoneValid(boolean dropshipperPhoneValid) {
+        this.dropshipperPhoneValid = dropshipperPhoneValid;
     }
 
     public List<ShipmentItemData> getShipmentItemData() {
@@ -130,6 +148,8 @@ public class ShipmentDetailData implements Parcelable {
         dest.writeByte(this.useInsurance ? (byte) 1 : (byte) 0);
         dest.writeByte(this.usePartialOrder ? (byte) 1 : (byte) 0);
         dest.writeByte(this.useDropshipper ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.dropshipperNameValid ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.dropshipperPhoneValid ? (byte) 1 : (byte) 0);
         dest.writeString(this.dropshipperName);
         dest.writeString(this.dropshipperPhone);
     }
@@ -144,6 +164,8 @@ public class ShipmentDetailData implements Parcelable {
         this.useInsurance = in.readByte() != 0;
         this.usePartialOrder = in.readByte() != 0;
         this.useDropshipper = in.readByte() != 0;
+        this.dropshipperNameValid = in.readByte() != 0;
+        this.dropshipperPhoneValid = in.readByte() != 0;
         this.dropshipperName = in.readString();
         this.dropshipperPhone = in.readString();
     }
