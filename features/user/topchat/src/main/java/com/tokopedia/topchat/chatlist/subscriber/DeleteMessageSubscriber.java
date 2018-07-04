@@ -40,6 +40,7 @@ public class DeleteMessageSubscriber extends Subscriber<DeleteChatListViewModel>
     public void onNext(DeleteChatListViewModel listViewModel) {
         List<DeleteChatViewModel> list = listViewModel.getList();
         view.removeList(originList, list);
+        view.reloadNotifDrawer();
     }
 
 }

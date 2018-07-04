@@ -221,6 +221,9 @@ public class InboxChatActivity extends DrawerPresenterActivity
         if (notifUnreads > 0) {
             TextView titleTextView = (TextView) toolbar.findViewById(R.id.actionbar_title);
             titleTextView.setText(String.format(getString(R.string.chat_title), notifUnreads));
+        } else {
+            TextView titleTextView = (TextView) toolbar.findViewById(R.id.actionbar_title);
+            titleTextView.setText(getString(R.string.chat_title_without_notif));
         }
 
         indicatorAdapter.setNotification(POSITION_TOP_CHAT, notifUnreads);
@@ -302,5 +305,9 @@ public class InboxChatActivity extends DrawerPresenterActivity
         if (!GlobalConfig.isSellerApp() && isEnabledGroupChat()) {
             indicatorLayout.setVisibility(View.VISIBLE);
         }
+    }
+
+    public void updateNotifDrawerData(){
+        updateDrawerData();
     }
 }
