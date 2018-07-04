@@ -58,8 +58,9 @@ public class ProductCommunicationAdapter
             holder.parentView.setLayoutParams(layoutParams);
         }
 
-        ImageHandler.LoadImage(holder.image,
-                itemViewModels.get(position).getImageUrl());
+        ImageHandler.loadImage2(holder.image,
+                itemViewModels.get(position).getImageUrl(),
+                R.drawable.ic_loading_image);
 
         holder.parentView.setOnClickListener(new View.OnClickListener() {
             @Override
