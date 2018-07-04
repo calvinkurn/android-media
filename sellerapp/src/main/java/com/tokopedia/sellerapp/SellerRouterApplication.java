@@ -45,6 +45,8 @@ import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
+import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartRequest;
+import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
 import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.district_recommendation.domain.model.Token;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
@@ -1381,6 +1383,46 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getDistrictRecommendationIntent(Activity activity, com.tokopedia.core.manage.people.address.model.Token token) {
         return DistrictRecommendationActivity.createInstance(activity, new TokenMapper().convertTokenModel(token));
+    }
+
+    @Override
+    public boolean isSupportApplink(String appLink) {
+        return false;
+    }
+
+    @Override
+    public Intent getHelpUsIntent(Context context) {
+        return null;
+    }
+
+    @Override
+    public Intent getWebviewActivityWithIntent(Context context, String url, String title) {
+        return null;
+    }
+
+    @Override
+    public Intent getWebviewActivityWithIntent(Context context, String url) {
+        return null;
+    }
+
+    @Override
+    public Intent getOrderListIntent(Context context) {
+        return null;
+    }
+
+    @Override
+    public Observable<AddToCartResult> addToCartProduct(AddToCartRequest addToCartRequest) {
+        return null;
+    }
+
+    @Override
+    public Intent getCartIntent(Activity activity) {
+        return null;
+    }
+
+    @Override
+    public void updateMarketplaceCartCounter(CartNotificationListener listener) {
+
     }
 
     @Override
