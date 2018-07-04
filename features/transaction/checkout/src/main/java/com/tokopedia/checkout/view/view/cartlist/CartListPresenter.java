@@ -29,7 +29,6 @@ import com.tokopedia.checkout.domain.usecase.ResetCartGetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.ResetCartGetShipmentFormUseCase;
 import com.tokopedia.checkout.domain.usecase.UpdateCartGetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.view.holderitemdata.CartItemHolderData;
-import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.transactionanalytics.EnhancedECommerceCartMapData;
@@ -63,6 +62,11 @@ import rx.subscriptions.CompositeSubscription;
  */
 
 public class CartListPresenter implements ICartListPresenter {
+    private static final String PARAM_PARAMS = "params";
+    private static final String PARAM_LANG = "lang";
+    private static final String PARAM_CARTS = "carts";
+    private static final String PARAM_IS_RESET = "isReset";
+    private static final String PARAM_STEP = "step";
     private final ICartListView view;
     private final GetCartListUseCase getCartListUseCase;
     private final CompositeSubscription compositeSubscription;
@@ -161,10 +165,10 @@ public class CartListPresenter implements ICartListPresenter {
                 .addWishlist(addWishList ? 1 : 0)
                 .build();
         TKPDMapParam<String, String> paramDelete = new TKPDMapParam<>();
-        paramDelete.put("params", new Gson().toJson(removeCartRequest));
+        paramDelete.put(PARAM_PARAMS, new Gson().toJson(removeCartRequest));
 
         TKPDMapParam<String, String> paramGetList = new TKPDMapParam<>();
-        paramGetList.put("lang", "id");
+        paramGetList.put(PARAM_LANG, "id");
 
         List<CartItemData> cartItemDataList = view.getCartDataList();
         List<UpdateCartRequest> updateCartRequestList = new ArrayList<>();
@@ -176,7 +180,7 @@ public class CartListPresenter implements ICartListPresenter {
                     .build());
         }
         TKPDMapParam<String, String> paramUpdate = new TKPDMapParam<>();
-        paramUpdate.put("carts", new Gson().toJson(updateCartRequestList));
+        paramUpdate.put(PARAM_CARTS, new Gson().toJson(updateCartRequestList));
 
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(DeleteCartGetCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING_DELETE_CART,
@@ -209,10 +213,10 @@ public class CartListPresenter implements ICartListPresenter {
                     .build());
         }
         TKPDMapParam<String, String> paramUpdate = new TKPDMapParam<>();
-        paramUpdate.put("carts", new Gson().toJson(updateCartRequestList));
+        paramUpdate.put(PARAM_CARTS, new Gson().toJson(updateCartRequestList));
 
         TKPDMapParam<String, String> paramGetShipmentForm = new TKPDMapParam<>();
-        paramGetShipmentForm.put("lang", "id");
+        paramGetShipmentForm.put(PARAM_LANG, "id");
 
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(UpdateCartGetShipmentAddressFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART,
@@ -235,8 +239,8 @@ public class CartListPresenter implements ICartListPresenter {
     public void processToShipmentMultipleAddress(final RecipientAddressModel selectedAddress) {
         view.showProgressLoading();
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
-        param.put("lang", "id");
-        param.put("isReset", "false");
+        param.put(PARAM_LANG, "id");
+        param.put(PARAM_IS_RESET, "false");
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(
                 GetCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING, view.getGeneratedAuthParamNetwork(param)
@@ -374,7 +378,7 @@ public class CartListPresenter implements ICartListPresenter {
     public void processToShipmentForm(boolean toAddressChoice) {
         view.showProgressLoading();
         TKPDMapParam<String, String> paramGetShipmentForm = new TKPDMapParam<>();
-        paramGetShipmentForm.put("lang", "id");
+        paramGetShipmentForm.put(PARAM_LANG, "id");
 
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(GetShipmentAddressFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS,
@@ -395,11 +399,11 @@ public class CartListPresenter implements ICartListPresenter {
         view.renderLoadGetCartData();
         view.showProgressLoading();
         TKPDMapParam<String, String> paramResetCart = new TKPDMapParam<>();
-        paramResetCart.put("lang", "id");
-        paramResetCart.put("step", "4");
+        paramResetCart.put(PARAM_LANG, "id");
+        paramResetCart.put(PARAM_STEP, "4");
 
         TKPDMapParam<String, String> paramGetCart = new TKPDMapParam<>();
-        paramGetCart.put("lang", "id");
+        paramGetCart.put(PARAM_LANG, "id");
 
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(ResetCartGetCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING_RESET_CART,
@@ -421,11 +425,11 @@ public class CartListPresenter implements ICartListPresenter {
     public void processResetThenToShipmentForm() {
         view.showProgressLoading();
         TKPDMapParam<String, String> paramResetCart = new TKPDMapParam<>();
-        paramResetCart.put("lang", "id");
-        paramResetCart.put("step", "4");
+        paramResetCart.put(PARAM_LANG, "id");
+        paramResetCart.put(PARAM_STEP, "4");
 
         TKPDMapParam<String, String> paramShipmentForm = new TKPDMapParam<>();
-        paramShipmentForm.put("lang", "id");
+        paramShipmentForm.put(PARAM_LANG, "id");
 
 
         RequestParams requestParams = RequestParams.create();
@@ -899,7 +903,7 @@ public class CartListPresenter implements ICartListPresenter {
             enhancedECommerceCartMapData.addProduct(enhancedECommerceProductCartMapData.getProduct());
         }
 
-        enhancedECommerceCartMapData.setCurrencyCode("IDR");
+        enhancedECommerceCartMapData.setCurrencyCode(EnhancedECommerceCartMapData.VALUE_CURRENCY_IDR);
         enhancedECommerceCartMapData.setAction(enhancedECommerceAction);
 
         return enhancedECommerceCartMapData.getCartMap();
