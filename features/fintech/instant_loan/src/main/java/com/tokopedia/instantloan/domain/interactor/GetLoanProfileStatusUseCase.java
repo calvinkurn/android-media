@@ -8,6 +8,7 @@ import com.tokopedia.common.network.data.model.RequestType;
 import com.tokopedia.common.network.data.model.RestCacheStrategy;
 import com.tokopedia.common.network.data.model.RestRequest;
 import com.tokopedia.common.network.domain.RestRequestSupportInterceptorUseCase;
+import com.tokopedia.instantloan.data.model.response.ResponseUserProfileStatus;
 import com.tokopedia.instantloan.data.model.response.UserProfileLoanEntity;
 import com.tokopedia.instantloan.network.InstantLoanAuthInterceptor;
 import com.tokopedia.instantloan.network.InstantLoanUrl;
@@ -31,7 +32,7 @@ public class GetLoanProfileStatusUseCase extends RestRequestSupportInterceptorUs
 
         List<RestRequest> restRequestList = new ArrayList<>();
 
-        Type typeOfT = new TypeToken<UserProfileLoanEntity>(){}.getType();
+        Type typeOfT = new TypeToken<ResponseUserProfileStatus>(){}.getType();
 
         RestCacheStrategy restCacheStrategy = new RestCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build();
         RestRequest restRequest = new RestRequest.Builder(InstantLoanUrl.PATH_USER_PROFILE_STATUS, typeOfT)

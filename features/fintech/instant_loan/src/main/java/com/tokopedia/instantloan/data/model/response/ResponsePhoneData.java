@@ -1,12 +1,24 @@
 package com.tokopedia.instantloan.data.model.response;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by lavekush on 20/03/18.
  */
 
 public class ResponsePhoneData {
+
+    @SerializedName("data")
+    @Expose
     private PhoneDataEntity data;
+
+    @SerializedName("code")
+    @Expose
     private int code;
+
+    @SerializedName("latency")
+    @Expose
     private String latency;
 
     public PhoneDataEntity getData() {

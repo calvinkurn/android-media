@@ -11,7 +11,8 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.instantloan.constant.DeviceDataKeys;
-import com.tokopedia.instantloan.data.model.response.UserProfileLoanEntity;
+import com.tokopedia.instantloan.data.model.response.ResponsePhoneData;
+import com.tokopedia.instantloan.data.model.response.ResponseUserProfileStatus;
 import com.tokopedia.instantloan.ddcollector.DDCollectorManager;
 import com.tokopedia.instantloan.ddcollector.OnDeviceDataReady;
 import com.tokopedia.instantloan.ddcollector.PermissionResultCallback;
@@ -23,11 +24,7 @@ import com.tokopedia.instantloan.ddcollector.contact.Contact;
 import com.tokopedia.instantloan.ddcollector.sms.Sms;
 import com.tokopedia.instantloan.domain.interactor.GetLoanProfileStatusUseCase;
 import com.tokopedia.instantloan.domain.interactor.PostPhoneDataUseCase;
-import com.tokopedia.instantloan.domain.model.PhoneDataModelDomain;
 import com.tokopedia.instantloan.view.contractor.InstantLoanContractor;
-import com.tokopedia.instantloan.view.mapper.PhoneDataMapper;
-import com.tokopedia.instantloan.view.model.PhoneDataViewModel;
-import com.tokopedia.usecase.RequestParams;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -38,24 +35,15 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
-
-/**
- * Created by lavekush on 19/03/18.
- */
 
 public class InstantLoanPresenter extends BaseDaggerPresenter<InstantLoanContractor.View>
         implements InstantLoanContractor.Presenter {
 
-    private PhoneDataMapper mPhoneDataMapper;
     private GetLoanProfileStatusUseCase mGetLoanProfileStatusUseCase;
     private PostPhoneDataUseCase mPostPhoneDataUseCase;
 
     @Inject
-    public InstantLoanPresenter(GetLoanProfileStatusUseCase getLoanProfileStatusUseCase, PostPhoneDataUseCase mPostPhoneDataUseCase, PhoneDataMapper phoneDataMapper) {
-        this.mPhoneDataMapper = phoneDataMapper;
+    public InstantLoanPresenter(GetLoanProfileStatusUseCase getLoanProfileStatusUseCase, PostPhoneDataUseCase mPostPhoneDataUseCase) {
         this.mGetLoanProfileStatusUseCase = getLoanProfileStatusUseCase;
         this.mPostPhoneDataUseCase = mPostPhoneDataUseCase;
     }
@@ -86,11 +74,9 @@ public class InstantLoanPresenter extends BaseDaggerPresenter<InstantLoanContrac
 
             @Override
             public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
-
-                RestResponse restResponse = typeRestResponseMap.get(UserProfileLoanEntity.class);
-
-                UserProfileLoanEntity userProfileLoanEntity = restResponse.getData();
-                getView().onSuccessLoanProfileStatus(userProfileLoanEntity);
+                RestResponse restResponse = typeRestResponseMap.get(ResponseUserProfileStatus.class);
+                ResponseUserProfileStatus responseUserProfileStatus = restResponse.getData();
+                getView().onSuccessLoanProfileStatus(responseUserProfileStatus.getUserProfileLoanEntity());
             }
         });
     }
@@ -109,35 +95,27 @@ public class InstantLoanPresenter extends BaseDaggerPresenter<InstantLoanContrac
     public void startDataCollection() {
         getView().showLoaderIntroDialog();
         DDCollectorManager.getsInstance().init(getView().getActivityContext(), mPermissionRequestCallback);
-        DDCollectorManager.getsInstance().process(new OnDeviceDataReady() {
-            @Override
-            public void callback(Map<String, Object> data) {
-                mPostPhoneDataUseCase.setBody(getPhoneDataPayload(data));
-                mPostPhoneDataUseCase.getExecuteObservable(RequestParams.EMPTY).map(new Func1<PhoneDataModelDomain, PhoneDataViewModel>() {
-                    @Override
-                    public PhoneDataViewModel call(PhoneDataModelDomain modelDomain) {
-                        return mPhoneDataMapper.transform(modelDomain);
+        DDCollectorManager.getsInstance().process(data -> {
 
-                    }
-                }).subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Subscriber<PhoneDataViewModel>() {
-                            @Override
-                            public void onCompleted() {
-                                getView().hideLoaderIntroDialog();
-                            }
+            mPostPhoneDataUseCase.setBody(getPhoneDataPayload(data));
+            mPostPhoneDataUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+                @Override
+                public void onCompleted() {
+                    getView().hideLoaderIntroDialog();
+                }
 
-                            @Override
-                            public void onError(Throwable e) {
-                                getView().onErrorPhoneDataUploaded(ErrorHandler.getErrorMessage(getView().getAppContext(), e));
-                            }
+                @Override
+                public void onError(Throwable e) {
+                    getView().onErrorPhoneDataUploaded(ErrorHandler.getErrorMessage(getView().getAppContext(), e));
+                }
 
-                            @Override
-                            public void onNext(PhoneDataViewModel viewModel) {
-                                getView().onSuccessPhoneDataUploaded(viewModel);
-                            }
-                        });
-            }
+                @Override
+                public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                    RestResponse restResponse = typeRestResponseMap.get(ResponsePhoneData.class);
+                    ResponsePhoneData responsePhoneData = restResponse.getData();
+                    getView().onSuccessPhoneDataUploaded(responsePhoneData.getData());
+                }
+            });
         });
     }
 

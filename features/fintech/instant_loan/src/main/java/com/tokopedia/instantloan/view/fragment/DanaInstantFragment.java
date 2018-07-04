@@ -27,22 +27,20 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.instantloan.InstantLoanComponentInstance;
 import com.tokopedia.instantloan.R;
+import com.tokopedia.instantloan.data.model.response.PhoneDataEntity;
 import com.tokopedia.instantloan.data.model.response.UserProfileLoanEntity;
 import com.tokopedia.instantloan.di.component.InstantLoanComponent;
 import com.tokopedia.instantloan.router.InstantLoanRouter;
 import com.tokopedia.instantloan.view.activity.InstantLoanActivity;
 import com.tokopedia.instantloan.view.adapter.InstantLoanIntroViewPagerAdapter;
 import com.tokopedia.instantloan.view.contractor.InstantLoanContractor;
-import com.tokopedia.instantloan.view.model.PhoneDataViewModel;
 import com.tokopedia.instantloan.view.presenter.InstantLoanPresenter;
 
 import javax.inject.Inject;
 
 import static com.tokopedia.instantloan.network.InstantLoanUrl.WEB_LINK_OTP;
+import static com.tokopedia.instantloan.view.activity.InstantLoanActivity.PINJAMAN_TITLE;
 
-/**
- * Created by sachinbansal on 6/12/18.
- */
 
 public class DanaInstantFragment extends BaseDaggerFragment implements InstantLoanContractor.View {
 
@@ -72,7 +70,8 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
 
     @Override
     protected void initInjector() {
-        InstantLoanComponent daggerInstantLoanComponent = InstantLoanComponentInstance.get(getActivity().getApplication());
+        InstantLoanComponent daggerInstantLoanComponent = InstantLoanComponentInstance
+                .get(getActivity().getApplication());
         daggerInstantLoanComponent.inject(this);
     }
 
@@ -104,12 +103,7 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
         mTextInterestRate.setText(getResources().getStringArray(R.array.values_interest_rate)[mCurrentTab]);
         mTextFormDescription.setText(getResources().getStringArray(R.array.values_description)[mCurrentTab]);
 
-        view.findViewById(R.id.button_search_pinjaman).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                searchLoanOnline();
-            }
-        });
+        view.findViewById(R.id.button_search_pinjaman).setOnClickListener(view1 -> searchLoanOnline());
     }
 
 
@@ -132,29 +126,32 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
     @Override
     public void onSuccessLoanProfileStatus(UserProfileLoanEntity data) {
 
-        if (!data.getUserProfileLoanData().getWhitelist()) {
-            if (!TextUtils.isEmpty(data.getUserProfileLoanData().getWhiteListUrl())) {
-                com.tkpd.library.utils.CommonUtils.dumper(data.getUserProfileLoanData().getWhiteListUrl());
-                openWebView(data.getUserProfileLoanData().getWhiteListUrl());
+        if (!data.getWhitelist()) {
+            if (!TextUtils.isEmpty(data.getWhiteListUrl())) {
+                com.tkpd.library.utils.CommonUtils.dumper(data.getWhiteListUrl());
+                openWebView(data.getWhiteListUrl());
             } else {
-                Toast.makeText(getContext(), "Instant Loan Coming Soon", Toast.LENGTH_SHORT).show();
+                com.tokopedia.core.network.NetworkErrorHelper.showSnackbar(getActivity(),
+                        getResources().getString(R.string.instant_loan_coming_soon));
             }
-        } else if (!data.getUserProfileLoanData().getDataCollection() ||
-                (data.getUserProfileLoanData().getDataCollection() && data.getUserProfileLoanData().getDataCollected())) {
+        } else if (!data.getDataCollection() ||
+                (data.getDataCollection() && data.getDataCollected())) {
 
-            if (!TextUtils.isEmpty(data.getUserProfileLoanData().getRedirectUrl())) {
+            if (!TextUtils.isEmpty(data.getRedirectUrl())) {
 
-                Toast.makeText(getContext(), data.getUserProfileLoanData().getRedirectUrl(), Toast.LENGTH_SHORT).show();
-                com.tkpd.library.utils.CommonUtils.dumper(data.getUserProfileLoanData().getWhiteListUrl());
-                openWebView(data.getUserProfileLoanData().getRedirectUrl());
+                Toast.makeText(getContext(), data.getRedirectUrl(), Toast.LENGTH_SHORT).show();
+                com.tkpd.library.utils.CommonUtils.dumper(data.getWhiteListUrl());
+                openWebView(data.getRedirectUrl());
 
             } else {
-                Toast.makeText(getContext(), "Check if fintech profile is build", Toast.LENGTH_SHORT).show();
+                NetworkErrorHelper.showSnackbar(getActivity(),
+                        getResources().getString(R.string.default_request_error_unknown));
             }
 
         } else {
             startIntroSlider();
         }
+
     }
 
     @Override
@@ -164,12 +161,11 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
     }
 
     @Override
-    public void onSuccessPhoneDataUploaded(PhoneDataViewModel data) {
+    public void onSuccessPhoneDataUploaded(PhoneDataEntity data) {
         hideLoaderIntroDialog();
 
         if (data.getMobileDeviceId() > 0) {
             openWebView(WEB_LINK_OTP);
-
             if (mDialogIntro != null && !getActivity().isFinishing()) {
                 mDialogIntro.dismiss();
             }
@@ -178,13 +174,15 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
 
     @Override
     public void onErrorPhoneDataUploaded(String errorMessage) {
+        hideIntroDialog();
         hideLoaderIntroDialog();
         NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
 
     @Override
     public void navigateToLoginPage() {
-        Intent intent = ((InstantLoanRouter) MainApplication.getAppContext()).getLoginIntent(getContext());
+        Intent intent = ((InstantLoanRouter) MainApplication.getAppContext())
+                .getLoginIntent(getContext());
         startActivityForResult(intent, LOGIN_REQUEST_CODE);
     }
 
@@ -201,7 +199,8 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
                 R.layout.intro_instant_loan_slide_3,
         };
 
-        pager.setAdapter(new InstantLoanIntroViewPagerAdapter(((InstantLoanActivity) getActivity()), layouts, presenter));
+        pager.setAdapter(new InstantLoanIntroViewPagerAdapter(((InstantLoanActivity) getActivity()),
+                layouts, presenter));
         pageIndicator.setFillColor(ContextCompat.getColor(getContext(), R.color.tkpd_main_green));
         pageIndicator.setPageColor(ContextCompat.getColor(getContext(), R.color.black_38));
         pageIndicator.setViewPager(pager, 0);
@@ -228,12 +227,9 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
             }
         });
 
-        btnNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (pager.getCurrentItem() != layouts.length) {
-                    pager.setCurrentItem(pager.getCurrentItem() + 1, true);
-                }
+        btnNext.setOnClickListener(v -> {
+            if (pager.getCurrentItem() != layouts.length) {
+                pager.setCurrentItem(pager.getCurrentItem() + 1, true);
             }
         });
 
@@ -241,7 +237,8 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
 
 
         mDialogIntro.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        mDialogIntro.setContentView(view, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        mDialogIntro.setContentView(view, new ViewGroup.LayoutParams
+                (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
         lp.copyFrom(mDialogIntro.getWindow().getAttributes());
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
@@ -259,7 +256,8 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
 
     @Override
     public void openWebView(String url) {
-        Intent intent = SimpleWebViewWithFilePickerActivity.getIntentWithTitle(getContext(), url, "Pinjaman Online");
+        Intent intent = SimpleWebViewWithFilePickerActivity.getIntentWithTitle(getContext(),
+                url, PINJAMAN_TITLE);
         startActivity(intent);
     }
 
@@ -275,7 +273,8 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
     @Override
     public void showLoader() {
         mProgressBar.setVisibility(View.VISIBLE);
-        getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
     }
 
     @Override
@@ -290,8 +289,10 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
             return;
         }
 
-        mDialogIntro.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-        mDialogIntro.findViewById(R.id.view_pager_il_intro).findViewWithTag(2).findViewById(R.id.progress_bar_status).setVisibility(View.VISIBLE);
+        mDialogIntro.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        mDialogIntro.findViewById(R.id.view_pager_il_intro).findViewWithTag(2)
+                .findViewById(R.id.progress_bar_status).setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -301,7 +302,8 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
         }
 
         mDialogIntro.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-        mDialogIntro.findViewById(R.id.view_pager_il_intro).findViewWithTag(2).findViewById(R.id.progress_bar_status).setVisibility(View.INVISIBLE);
+        mDialogIntro.findViewById(R.id.view_pager_il_intro).findViewWithTag(2)
+                .findViewById(R.id.progress_bar_status).setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -313,7 +315,7 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
     }
 
     public String getScreenNameId() {
-        return "Dana Instan";
+        return "";
     }
 
     @Override
@@ -321,7 +323,8 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == LOGIN_REQUEST_CODE) {
             if (!SessionHandler.isV4Login(getContext())) {
-                showToastMessage("Please login to access instant loan features", Toast.LENGTH_SHORT);
+                NetworkErrorHelper.showSnackbar(getActivity(),
+                        getResources().getString(R.string.login_to_proceed));
             } else {
                 presenter.getLoanProfileStatus();
             }

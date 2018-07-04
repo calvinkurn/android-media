@@ -5,12 +5,10 @@ import android.content.Context;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
-import com.tokopedia.instantloan.data.soruce.cloud.api.InstantLoanApi;
-import com.tokopedia.instantloan.di.ChuckQualifier;
-import com.tokopedia.instantloan.di.InstantLoanQualifier;
 import com.tokopedia.instantloan.di.scope.InstantLoanScope;
 import com.tokopedia.instantloan.domain.interactor.GetBannersUserCase;
 import com.tokopedia.instantloan.domain.interactor.GetLoanProfileStatusUseCase;
+import com.tokopedia.instantloan.domain.interactor.PostPhoneDataUseCase;
 import com.tokopedia.instantloan.network.InstantLoanAuthInterceptor;
 
 import dagger.Module;
@@ -31,13 +29,7 @@ import static com.tokopedia.instantloan.network.InstantLoanUrl.BaseUrl.WEB_DOMAI
 @Module
 public class InstantLoanModule {
 
-    @InstantLoanScope
-    @Provides
-    InstantLoanApi provideInstantLoanApi(@InstantLoanQualifier Retrofit retrofit) {
-        return retrofit.create(InstantLoanApi.class);
-    }
-
-    @InstantLoanQualifier
+    /*@InstantLoanQualifier
     @InstantLoanScope
     @Provides
     public Retrofit provideRetrofit(@InstantLoanQualifier OkHttpClient okHttpClient) {
@@ -74,16 +66,21 @@ public class InstantLoanModule {
     @ChuckQualifier
     public Interceptor provideChuckInterceptor(InstantLoanChuckRouter router) {
         return router.getChuckInterceptor();
+    }*/
+
+    @Provides
+    public GetLoanProfileStatusUseCase provideGetLoanProfileStatusUseCase(InstantLoanAuthInterceptor instantLoanAuthInterceptor, @ApplicationContext Context context) {
+        return new GetLoanProfileStatusUseCase(instantLoanAuthInterceptor, context);
     }
 
     @Provides
-    public GetLoanProfileStatusUseCase provideGetLoanProfileStatusUseCase(InstantLoanAuthInterceptor instantLoanAuthInterceptor,@ApplicationContext Context context){
-        return new GetLoanProfileStatusUseCase(instantLoanAuthInterceptor,context);
+    public GetBannersUserCase provideGetBannersUseCase(InstantLoanAuthInterceptor instantLoanAuthInterceptor, @ApplicationContext Context context) {
+        return new GetBannersUserCase(instantLoanAuthInterceptor, context);
     }
 
     @Provides
-    public GetBannersUserCase provideGetBannersUseCase(InstantLoanAuthInterceptor instantLoanAuthInterceptor, @ApplicationContext Context context){
-        return new GetBannersUserCase(instantLoanAuthInterceptor,context);
+    public PostPhoneDataUseCase providePostPhoneDataUseCase(InstantLoanAuthInterceptor instantLoanAuthInterceptor, @ApplicationContext Context context) {
+        return new PostPhoneDataUseCase(instantLoanAuthInterceptor, context);
     }
 }
 

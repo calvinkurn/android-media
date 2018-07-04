@@ -20,24 +20,24 @@ import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.instantloan.InstantLoanComponentInstance;
 import com.tokopedia.instantloan.R;
+import com.tokopedia.instantloan.data.model.response.PhoneDataEntity;
 import com.tokopedia.instantloan.data.model.response.UserProfileLoanEntity;
 import com.tokopedia.instantloan.di.component.InstantLoanComponent;
 import com.tokopedia.instantloan.router.InstantLoanRouter;
 import com.tokopedia.instantloan.view.contractor.InstantLoanContractor;
-import com.tokopedia.instantloan.view.model.PhoneDataViewModel;
 import com.tokopedia.instantloan.view.presenter.InstantLoanPresenter;
 
 import javax.inject.Inject;
 
 import static com.tokopedia.instantloan.network.InstantLoanUrl.LOAN_AMOUNT_QUERY_PARAM;
 import static com.tokopedia.instantloan.network.InstantLoanUrl.WEB_LINK_NO_COLLATERAL;
+import static com.tokopedia.instantloan.view.activity.InstantLoanActivity.PINJAMAN_TITLE;
 import static com.tokopedia.instantloan.view.fragment.DanaInstantFragment.LOGIN_REQUEST_CODE;
 
 
 public class TanpaAgunanFragment extends BaseDaggerFragment implements InstantLoanContractor.View {
 
     private static final String TAB_POSITION = "tab_position";
-    private static final String PINJAMAN_TITLE = "Pinjaman Online";
     private Spinner mSpinnerLoanAmount;
 
     @Inject
@@ -60,7 +60,8 @@ public class TanpaAgunanFragment extends BaseDaggerFragment implements InstantLo
 
     @Override
     protected void initInjector() {
-        InstantLoanComponent daggerInstantLoanComponent = InstantLoanComponentInstance.get(getActivity().getApplication());
+        InstantLoanComponent daggerInstantLoanComponent = InstantLoanComponentInstance
+                .get(getActivity().getApplication());
         daggerInstantLoanComponent.inject(this);
     }
 
@@ -103,14 +104,16 @@ public class TanpaAgunanFragment extends BaseDaggerFragment implements InstantLo
 
         view.findViewById(R.id.button_search_pinjaman).setOnClickListener(view1 -> {
 
-            if (mSpinnerLoanAmount.getSelectedItem().toString().equalsIgnoreCase(getString(R.string.label_select_nominal))) {
+            if (mSpinnerLoanAmount.getSelectedItem().toString()
+                    .equalsIgnoreCase(getString(R.string.label_select_nominal))) {
                 TextView errorText = (TextView) mSpinnerLoanAmount.getSelectedView();
                 errorText.setTextColor(Color.RED);
                 return;
             }
 
             openWebView(WEB_LINK_NO_COLLATERAL + LOAN_AMOUNT_QUERY_PARAM +
-                    mSpinnerLoanAmount.getSelectedItem().toString().split(" ")[1].replace(".", ""));
+                    mSpinnerLoanAmount.getSelectedItem().toString()
+                            .split(" ")[1].replace(".", ""));
         });
     }
 
@@ -131,7 +134,8 @@ public class TanpaAgunanFragment extends BaseDaggerFragment implements InstantLo
             if (!SessionHandler.isV4Login(getContext())) {
                 showToastMessage(getResources().getString(R.string.login_to_proceed), Toast.LENGTH_SHORT);
             } else {
-                openWebView(WEB_LINK_NO_COLLATERAL + LOAN_AMOUNT_QUERY_PARAM + mSpinnerLoanAmount.getSelectedItem().toString().split(" ")[1]);
+                openWebView(WEB_LINK_NO_COLLATERAL + LOAN_AMOUNT_QUERY_PARAM +
+                        mSpinnerLoanAmount.getSelectedItem().toString().split(" ")[1]);
             }
         }
     }
@@ -176,7 +180,7 @@ public class TanpaAgunanFragment extends BaseDaggerFragment implements InstantLo
     }
 
     @Override
-    public void onSuccessPhoneDataUploaded(PhoneDataViewModel data) {
+    public void onSuccessPhoneDataUploaded(PhoneDataEntity data) {
 
     }
 

@@ -19,23 +19,23 @@ import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.instantloan.InstantLoanComponentInstance;
 import com.tokopedia.instantloan.R;
+import com.tokopedia.instantloan.data.model.response.PhoneDataEntity;
 import com.tokopedia.instantloan.data.model.response.UserProfileLoanEntity;
 import com.tokopedia.instantloan.di.component.InstantLoanComponent;
 import com.tokopedia.instantloan.router.InstantLoanRouter;
 import com.tokopedia.instantloan.view.contractor.InstantLoanContractor;
-import com.tokopedia.instantloan.view.model.PhoneDataViewModel;
 import com.tokopedia.instantloan.view.presenter.InstantLoanPresenter;
 
 import javax.inject.Inject;
 
 import static com.tokopedia.instantloan.network.InstantLoanUrl.LOAN_AMOUNT_QUERY_PARAM;
 import static com.tokopedia.instantloan.network.InstantLoanUrl.WEB_LINK_COLLATERAL_FUND;
+import static com.tokopedia.instantloan.view.activity.InstantLoanActivity.PINJAMAN_TITLE;
 import static com.tokopedia.instantloan.view.fragment.DanaInstantFragment.LOGIN_REQUEST_CODE;
 
 public class DenganAgunanFragment extends BaseDaggerFragment implements InstantLoanContractor.View {
 
     private static final String TAB_POSITION = "tab_position";
-    private static final String PINJAMAN_TITLE = "Pinjaman Online";
     private Spinner mSpinnerLoanAmount;
 
     @Inject
@@ -126,7 +126,7 @@ public class DenganAgunanFragment extends BaseDaggerFragment implements InstantL
     }
 
     @Override
-    public void onSuccessPhoneDataUploaded(PhoneDataViewModel data) {
+    public void onSuccessPhoneDataUploaded(PhoneDataEntity data) {
 
     }
 
@@ -153,7 +153,8 @@ public class DenganAgunanFragment extends BaseDaggerFragment implements InstantL
 
     @Override
     public void openWebView(String url) {
-        Intent intent = SimpleWebViewWithFilePickerActivity.getIntentWithTitle(getContext(), url, PINJAMAN_TITLE);
+        Intent intent = SimpleWebViewWithFilePickerActivity.getIntentWithTitle(getContext(),
+                url, PINJAMAN_TITLE);
         startActivity(intent);
     }
 
@@ -196,7 +197,8 @@ public class DenganAgunanFragment extends BaseDaggerFragment implements InstantL
             if (!SessionHandler.isV4Login(getContext())) {
                 showToastMessage(getResources().getString(R.string.login_to_proceed), Toast.LENGTH_SHORT);
             } else {
-                openWebView(WEB_LINK_COLLATERAL_FUND + LOAN_AMOUNT_QUERY_PARAM + mSpinnerLoanAmount.getSelectedItem().toString().split(" ")[1]);
+                openWebView(WEB_LINK_COLLATERAL_FUND + LOAN_AMOUNT_QUERY_PARAM +
+                        mSpinnerLoanAmount.getSelectedItem().toString().split(" ")[1]);
             }
         }
     }

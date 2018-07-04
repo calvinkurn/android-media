@@ -50,7 +50,7 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
         BannerPagerAdapter.BannerClick,
         View.OnClickListener {
 
-    private static final String PINJAMAN_TITLE = "Pinjaman Online";
+    public static final String PINJAMAN_TITLE = "Pinjaman Online";
     @Inject
     BannerListPresenter mBannerPresenter;
 
@@ -86,7 +86,6 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
         } else {
             populateTwoTabItem();
         }
-        populateThreeTabItem();
         InstantLoanPagerAdapter instantLoanPagerAdapter =
                 new InstantLoanPagerAdapter(getSupportFragmentManager());
         instantLoanPagerAdapter.setData(instantLoanItemList);

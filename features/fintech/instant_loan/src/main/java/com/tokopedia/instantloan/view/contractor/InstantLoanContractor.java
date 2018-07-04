@@ -4,12 +4,8 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.instantloan.data.model.response.PhoneDataEntity;
 import com.tokopedia.instantloan.data.model.response.UserProfileLoanEntity;
-import com.tokopedia.instantloan.view.model.PhoneDataViewModel;
-
-/**
- * Created by lavekush on 21/03/18.
- */
 
 public interface InstantLoanContractor {
 
@@ -22,7 +18,7 @@ public interface InstantLoanContractor {
 
         void onErrorLoanProfileStatus(String onErrorLoanProfileStatus);
 
-        void onSuccessPhoneDataUploaded(PhoneDataViewModel data);
+        void onSuccessPhoneDataUploaded(PhoneDataEntity data);
 
         void onErrorPhoneDataUploaded(String errorMessage);
 

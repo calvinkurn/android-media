@@ -1,31 +1,48 @@
 package com.tokopedia.instantloan.domain.interactor;
 
+import android.content.Context;
+
 import com.google.gson.JsonObject;
-import com.tokopedia.instantloan.data.repository.InstantLoanDataRepository;
-import com.tokopedia.instantloan.domain.model.PhoneDataModelDomain;
-import com.tokopedia.usecase.RequestParams;
-import com.tokopedia.usecase.UseCase;
+import com.google.gson.reflect.TypeToken;
+import com.tokopedia.common.network.data.model.CacheType;
+import com.tokopedia.common.network.data.model.RequestType;
+import com.tokopedia.common.network.data.model.RestCacheStrategy;
+import com.tokopedia.common.network.data.model.RestRequest;
+import com.tokopedia.common.network.domain.RestRequestSupportInterceptorUseCase;
+import com.tokopedia.instantloan.data.model.response.PhoneDataEntity;
+import com.tokopedia.instantloan.data.model.response.ResponsePhoneData;
+import com.tokopedia.instantloan.network.InstantLoanUrl;
 
-import javax.inject.Inject;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
-import rx.Observable;
+import okhttp3.Interceptor;
 
-/**
- * Created by lavekush on 21/03/18.
- */
-
-public class PostPhoneDataUseCase extends UseCase<PhoneDataModelDomain> {
-    private final InstantLoanDataRepository mRepository;
+public class PostPhoneDataUseCase extends RestRequestSupportInterceptorUseCase{
     private JsonObject body;
 
-    @Inject
-    public PostPhoneDataUseCase(InstantLoanDataRepository repository) {
-        this.mRepository = repository;
+    public PostPhoneDataUseCase(Interceptor interceptor, Context context) {
+        super(interceptor, context);
     }
 
     @Override
-    public Observable<PhoneDataModelDomain> createObservable(RequestParams requestParams) {
-        return mRepository.postPhoneData(body);
+    protected List<RestRequest> buildRequest() {
+
+        List<RestRequest> restRequestList = new ArrayList<>();
+        Type typeOfT = new TypeToken<ResponsePhoneData>() {
+        }.getType();
+
+        RestCacheStrategy restCacheStrategy = new RestCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build();
+        RestRequest restRequest = new RestRequest.Builder(InstantLoanUrl.PATH_POST_PHONEDATA, typeOfT)
+                .setRequestType(RequestType.POST)
+                .setCacheStrategy(restCacheStrategy)
+                .setBody(this.body)
+                .build();
+
+        restRequestList.add(restRequest);
+        return restRequestList;
+
     }
 
     public void setBody(JsonObject body) {

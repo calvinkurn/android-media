@@ -39,7 +39,6 @@ public class BannerListPresenter extends BaseDaggerPresenter<BannerContractor.Vi
 
             @Override
             public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
-
                 RestResponse restResponse = typeRestResponseMap.get(ResponseBannerOffer.class);
                 ResponseBannerOffer responseBannerOffer = restResponse.getData();
                 getView().renderUserList(responseBannerOffer.getBanners());
