@@ -14,14 +14,6 @@ import rx.Observable;
 
 public interface ITkpdLoyaltyModuleRouter {
 
-//    Observable<CheckPromoCodeCartShipmentResult> tkpdLoyaltyGetCheckPromoCodeCartListResultObservable(
-//            String promoCode,
-//            String paramUpdateCart);
-//
-//    Observable<CheckPromoCodeCartShipmentResult> tkpdLoyaltyGetCheckPromoCodeCartShipmentResultObservable(
-//            CheckPromoCodeCartShipmentRequest checkPromoCodeCartShipmentRequest
-//    );
-
     Observable<CouponListResult> tkpdLoyaltyGetCouponListObservable(String page, String pageSize);
 
     ChuckInterceptor loyaltyModuleRouterGetCartCheckoutChuckInterceptor();
