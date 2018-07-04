@@ -178,7 +178,7 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
 
     override fun onSuccessGetYoutubeDataVideoRecommendation(youtubeVideoModelArrayList: ArrayList<YoutubeVideoModel>) {
         val mapper = VideoRecommendationMapper()
-        var videoRecommendationViewModelList = mapper.transformDataToVideoViewModel(youtubeVideoModelArrayList)
+        val videoRecommendationViewModelList = mapper.transformDataToVideoViewModel(youtubeVideoModelArrayList)
         val videoViewModelList = adapter.data
         for(videoViewModel in videoViewModelList){
             if(videoViewModel is VideoViewModel){
@@ -238,8 +238,8 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
         }
     }
 
-    override fun onVideoClicked(position: Int) {
-        var videoID: String? = (adapter.data[position] as VideoViewModel).videoID;
+    override fun onVideoChosenClicked(position: Int) {
+        val videoID = (adapter.data[position] as VideoViewModel).videoID
         YoutubeUtil.playYoutubeVideo(context, videoID!!)
     }
 

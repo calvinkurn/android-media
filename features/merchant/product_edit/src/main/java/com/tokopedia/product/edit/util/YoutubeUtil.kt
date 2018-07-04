@@ -15,23 +15,14 @@ class YoutubeUtil(val context: Context) {
     private var youtubeUrl: String? = null
 
     companion object {
-        @JvmStatic
         fun playYoutubeVideo(context:Context, youtubeID: String){
-
-            val appIntent = Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + youtubeID))
-            val webIntent = Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=" + youtubeID))
+            val appIntent = Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:$youtubeID"))
+            val webIntent = Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=$youtubeID"))
             try {
                 context.startActivity(appIntent)
             } catch (e: ActivityNotFoundException) {
                 context.startActivity(webIntent)
             }
-
-        }
-
-        @JvmStatic
-        fun playYoutubeVideoURL(context:Context, youtubeURL: String){
-            val webIntent = Intent(Intent.ACTION_VIEW, Uri.parse(youtubeURL))
-            context.startActivity(webIntent)
         }
     }
 

@@ -39,7 +39,7 @@ class VideoViewHolder(itemView: View,
             textTagRecommendation.visibility = View.GONE
         }
         itemView.setOnClickListener({
-            videoChoosenListener.onVideoClicked(adapterPosition)
+            videoChoosenListener.onVideoChosenClicked(adapterPosition)
         })
     }
 
