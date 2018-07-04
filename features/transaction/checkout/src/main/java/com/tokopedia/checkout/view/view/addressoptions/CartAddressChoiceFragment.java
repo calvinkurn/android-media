@@ -1,19 +1,16 @@
 package com.tokopedia.checkout.view.view.addressoptions;
 
 import android.app.Activity;
-import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -41,7 +38,6 @@ import javax.inject.Inject;
 
 import static com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceActivity.EXTRA_CURRENT_ADDRESS;
 import static com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceActivity.EXTRA_DEFAULT_SELECTED_ADDRESS;
-import static com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceActivity.EXTRA_NAVIGATION_FROM_ADDRESS_LIST;
 import static com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceActivity.EXTRA_SELECTED_ADDRESS_DATA;
 import static com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceActivity.RESULT_CODE_ACTION_SELECT_ADDRESS;
 import static com.tokopedia.core.manage.people.address.ManageAddressConstant.EXTRA_ADDRESS;
@@ -102,7 +98,7 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_add_address) {
-            checkoutAnalyticsChangeAddress.eventClickChangeAddressClickTambahAlamatBaruFromGantiAlamat();
+            checkoutAnalyticsChangeAddress.eventClickChangeAddressClickAddNewAddressFromChangeAddress();
             startActivityForResult(AddAddressActivity.createInstance(getActivity(), token),
                     ManageAddressConstant.REQUEST_CODE_PARAM_CREATE);
             return true;
@@ -307,11 +303,11 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
         getFragmentManager().beginTransaction()
                 .replace(R.id.parent_view, fragment, fragment.getClass().getSimpleName())
                 .commit();
-        checkoutAnalyticsChangeAddress.eventClickChangeAddressClickPilihAlamatLainyaFromGAntiAlamat();
+        checkoutAnalyticsChangeAddress.eventClickChangeAddressClickChooseOtherAddressFromChangeAddress();
     }
 
     private void onSendToMultipleAddress() {
-        checkoutAnalyticsChangeAddress.eventClickChangeAddressClickKirimKeBeberapaAlamatFromGantiAlamat();
+        checkoutAnalyticsChangeAddress.eventClickChangeAddressClickSendToMultipleAddressFromChangeAddress();
         mCartAddressChoiceListener.finishSendResultActionToMultipleAddressForm();
     }
 
@@ -328,7 +324,7 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
         } else {
             getActivity().finish();
         }
-        checkoutAnalyticsChangeAddress.eventClickChangeAddressClickKirimKeAlamatIniFromGantiAlamat();
+        checkoutAnalyticsChangeAddress.eventClickChangeAddressClickSendToThisAddressFromChangeAddress();
     }
 
     @Override
@@ -338,7 +334,7 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
 
     @Override
     public void onEditClick(RecipientAddressModel model) {
-        checkoutAnalyticsChangeAddress.eventClickChangeAddressClickUbahFromPilihAlamatLainnya();
+        checkoutAnalyticsChangeAddress.eventClickChangeAddressClickEditFromChooseOtherAddress();
         AddressModelMapper mapper = new AddressModelMapper();
 
         Intent intent = AddAddressActivity.createInstance(getActivity(), mapper.transform(model), token);

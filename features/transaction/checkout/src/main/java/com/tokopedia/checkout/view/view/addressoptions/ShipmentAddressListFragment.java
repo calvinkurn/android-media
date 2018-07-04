@@ -20,7 +20,6 @@ import android.widget.RelativeLayout;
 
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.data.mapper.AddressModelMapper;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
@@ -31,8 +30,6 @@ import com.tokopedia.checkout.view.di.component.DaggerShipmentAddressListCompone
 import com.tokopedia.checkout.view.di.component.ShipmentAddressListComponent;
 import com.tokopedia.checkout.view.di.module.ShipmentAddressListModule;
 import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule;
-import com.tokopedia.checkout.view.view.multipleaddressform.MultipleAddressFormActivity;
-import com.tokopedia.checkout.view.view.shipment.ShipmentActivity;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
 import com.tokopedia.core.manage.people.address.model.Destination;
@@ -163,7 +160,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_add_address) {
-            checkoutAnalyticsChangeAddress.eventClickChangeAddressClickTambahAlamatBaruFromGantiAlamat();
+            checkoutAnalyticsChangeAddress.eventClickChangeAddressClickAddNewAddressFromChangeAddress();
             startActivityForResult(AddAddressActivity.createInstance(getActivity(), token),
                     ManageAddressConstant.REQUEST_CODE_PARAM_CREATE);
             return true;
@@ -371,7 +368,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     }
 
     private void performSearch(String query, boolean resetPage) {
-        checkoutAnalyticsChangeAddress.eventClickChangeAddressSubmitSearchFromPilihAlamatLainnya();
+        checkoutAnalyticsChangeAddress.eventClickChangeAddressSubmitSearchFromChooseOtherAddress();
         if (!query.isEmpty()) {
             mShipmentAddressListPresenter.getAddressList(getActivity(), ORDER_ASC, query,
                     (RecipientAddressModel) getArguments().getParcelable(EXTRA_CURRENT_ADDRESS), true);
@@ -391,14 +388,14 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     @Override
     public void onAddressContainerClicked(RecipientAddressModel model) {
         if (mCartAddressChoiceActivityListener != null) {
-            checkoutAnalyticsChangeAddress.eventClickChangeAddressClickChecklistAlamatFromPilihAlamatLainnya();
+            checkoutAnalyticsChangeAddress.eventClickChangeAddressClickChecklistAddressFromChooseOtherAddress();
             mCartAddressChoiceActivityListener.finishSendResultActionSelectedAddress(model);
         }
     }
 
     @Override
     public void onEditClick(RecipientAddressModel model) {
-        checkoutAnalyticsChangeAddress.eventClickChangeAddressClickUbahFromPilihAlamatLainnya();
+        checkoutAnalyticsChangeAddress.eventClickChangeAddressClickEditFromChooseOtherAddress();
         AddressModelMapper mapper = new AddressModelMapper();
 
         Intent intent = AddAddressActivity.createInstance(getActivity(), mapper.transform(model), token);

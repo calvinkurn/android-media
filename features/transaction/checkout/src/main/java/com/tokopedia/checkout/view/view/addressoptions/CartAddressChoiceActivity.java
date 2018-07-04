@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
@@ -175,7 +174,7 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     public void onBackPressed() {
         if (getCurrentFragment() instanceof CartAddressChoiceFragment) {
             ((CartAddressChoiceFragment) getCurrentFragment())
-                    .checkoutAnalyticsChangeAddress.eventClickChangeAddressClickArrowBackFromGantiAlamat();
+                    .checkoutAnalyticsChangeAddress.eventClickChangeAddressClickArrowBackFromChangeAddress();
         }
         if (getSupportFragmentManager() != null && getSupportFragmentManager().getBackStackEntryCount() > 0) {
             setToolbarTitle(getString(R.string.checkout_module_title_shipping_dest));
