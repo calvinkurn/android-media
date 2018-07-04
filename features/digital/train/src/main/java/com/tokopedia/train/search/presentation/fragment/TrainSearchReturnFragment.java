@@ -39,12 +39,15 @@ public class TrainSearchReturnFragment extends TrainSearchFragment
     private TrainScheduleBookingPassData trainScheduleBookingPassData;
 
     public static TrainSearchReturnFragment newInstance(TrainSearchPassDataViewModel trainSearchPassDataViewModel,
-                                                        String idSchedule, TrainScheduleBookingPassData scheduleBookingPassData) {
+                                                        String idSchedule,
+                                                        TrainScheduleBookingPassData scheduleBookingPassData,
+                                                        String arrivalScheduleSelected) {
         TrainSearchReturnFragment fragment = new TrainSearchReturnFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(TrainSearchActivity.EXTRA_SEARCH_PASS_DATA, trainSearchPassDataViewModel);
         bundle.putString(TrainSearchReturnActivity.EXTRA_SEARCH_ID_SCHEDULE, idSchedule);
         bundle.putParcelable(TrainSearchReturnActivity.EXTRA_SCHEDULE_BOOKING, scheduleBookingPassData);
+        bundle.putString(TrainSearchReturnActivity.EXTRA_ARRIVAL_TIME_SCHEDULE_SELECTED, arrivalScheduleSelected);
         fragment.setArguments(bundle);
         return fragment;
     }

@@ -83,6 +83,9 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
     private TrainScheduleBookingPassData trainScheduleBookingPassData;
     private ActionListener listener;
 
+    //this is for save departure trip - arrival timestamp schedule
+    protected String arrivalScheduleSelected;
+
     private BottomActionView filterAndSortBottomAction;
 
     @Inject
@@ -113,6 +116,7 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getDataFromFragment();
+        arrivalScheduleSelected = getArguments().getString(TrainSearchReturnActivity.EXTRA_ARRIVAL_TIME_SCHEDULE_SELECTED);
 
         if (savedInstanceState == null) {
             filterSearchData = new FilterSearchData();
@@ -128,7 +132,7 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
         trainScheduleBookingPassData.setInfantPassenger(infantPassenger);
 
         showLoading();
-        presenter.getTrainSchedules(getScheduleVariant());
+        presenter.getTrainSchedules(getScheduleVariant(), arrivalScheduleSelected);
 
         setUpButtonActionView(view);
 
@@ -341,7 +345,7 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
     @Override
     public void onRetryClicked() {
         clearAdapterData();
-        presenter.getTrainSchedules(getScheduleVariant());
+        presenter.getTrainSchedules(getScheduleVariant(), arrivalScheduleSelected);
     }
 
     @Override
@@ -362,9 +366,12 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
     @Override
     public void selectSchedule(TrainScheduleViewModel trainScheduleViewModel) {
         if (!trainSearchPassDataViewModel.isOneWay()) {
+//            this.arrivalTimeDepartureTripSelected = trainScheduleViewModel.getArrivalTimestamp();
             trainScheduleBookingPassData.setDepartureScheduleId(trainScheduleViewModel.getIdSchedule());
             startActivityForResult(TrainSearchReturnActivity.getCallingIntent(getActivity(),
-                    trainSearchPassDataViewModel, trainScheduleBookingPassData, trainScheduleViewModel.getIdSchedule()), 11);
+                    trainSearchPassDataViewModel, trainScheduleBookingPassData,
+                    trainScheduleViewModel.getIdSchedule(), trainScheduleViewModel.getArrivalTimestamp()),
+                    11);
         } else {
             trainScheduleBookingPassData.setDepartureScheduleId(trainScheduleViewModel.getIdSchedule());
             startActivity(TrainBookingPassengerActivity.callingIntent(getActivity(), trainScheduleBookingPassData));

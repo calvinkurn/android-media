@@ -76,8 +76,8 @@ public class TrainRepositoryImpl implements TrainRepository {
     }
 
     @Override
-    public Observable<List<TrainScheduleViewModel>> getAvailabilitySchedule(Map<String, Object> mapParam, int scheduleVariant) {
-        return trainScheduleDataStoreFactory.getAvailabilitySchedule(new TrainAvailabilitySearchSpecification(mapParam), scheduleVariant);
+    public Observable<List<TrainScheduleViewModel>> getAvailabilitySchedule(Map<String, Object> mapParam, int scheduleVariant, String arrivalTimestampSelected) {
+        return trainScheduleDataStoreFactory.getAvailabilitySchedule(new TrainAvailabilitySearchSpecification(mapParam), scheduleVariant, arrivalTimestampSelected);
     }
 
     @Override

@@ -83,7 +83,8 @@ public class TrainScheduleDataStoreFactory {
                 });
     }
 
-    public Observable<List<TrainScheduleViewModel>> getAvailabilitySchedule(Specification specification, final int scheduleVariant) {
+    public Observable<List<TrainScheduleViewModel>> getAvailabilitySchedule(Specification specification, final int scheduleVariant,
+                                                                            String arrivalTimestampSelected) {
         return cloudDataStore.getDatasAvailability(specification)
                 .flatMap(new Func1<List<AvailabilityEntity>, Observable<List<TrainScheduleViewModel>>>() {
                     @Override
@@ -95,7 +96,7 @@ public class TrainScheduleDataStoreFactory {
                                         if (!isSuccessSavedData) {
                                             return Observable.empty();
                                         } else {
-                                            return dbDataStore.getDatas(new TrainAvailabilitySpecification(scheduleAvailabilityEntities, scheduleVariant));
+                                            return dbDataStore.getDatas(new TrainAvailabilitySpecification(scheduleAvailabilityEntities, scheduleVariant, arrivalTimestampSelected));
                                         }
                                     }
                                 });
