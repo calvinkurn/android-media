@@ -1,6 +1,7 @@
 package com.tokopedia.groupchat.chatroom.domain.usecase;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.sendbird.android.BaseMessage;
 import com.sendbird.android.OpenChannel;
@@ -39,12 +40,14 @@ public class RefreshMessageUseCase {
 
     public void execute(final Context context, OpenChannel mChannel, final RefreshMessagesListener listener) {
         final PreviousMessageListQuery mPrevMessageListQuery = mChannel.createPreviousMessageListQuery();
+        Log.d("tevrefresh", "refresh "+mChannel.getUrl());
         mPrevMessageListQuery.load(PARAM_LIMIT_MESSAGE, PARAM_IS_REVERSE, new PreviousMessageListQuery
                 .MessageListQueryResult() {
             @Override
             public void onResult(List<BaseMessage> list, SendBirdException e) {
                 if (e != null) {
                     // Error!
+                    Log.d("tevrefreshonResultError", e.toString());
                     e.printStackTrace();
                     listener.onErrorRefreshMessage(GroupChatErrorHandler.getSendBirdErrorMessage
                             (context, e, true));
@@ -53,7 +56,9 @@ public class RefreshMessageUseCase {
 
                 try {
                     listener.onSuccessRefreshMessage(mapper.map(list), mPrevMessageListQuery);
+                    Log.d("tevrefreshonResultSuccs", "");
                 } catch (NullPointerException npe) {
+                    Log.d("tevrefreshonResultError", npe.toString());
                     listener.onErrorRefreshMessage(GroupChatErrorHandler.getErrorMessage
                             (context, npe, true));
                 }

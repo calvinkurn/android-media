@@ -1,6 +1,7 @@
 package com.tokopedia.groupchat.chatroom.domain.usecase;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.sendbird.android.BaseChannel;
 import com.sendbird.android.OpenChannel;
@@ -34,6 +35,7 @@ public class SendGroupChatMessageUseCase {
 
     public void execute(final Context context, final PendingChatViewModel pendingChatViewModel, final OpenChannel mChannel,
                         final SendGroupChatMessageListener listener) {
+        Log.d("tevrefresh", "executeSend "+ mChannel.getUrl());
 
         mChannel.sendUserMessage(pendingChatViewModel.getMessage(), new BaseChannel.SendUserMessageHandler() {
             @Override
