@@ -57,8 +57,6 @@ public interface TrainBookingPassengerContract {
 
         void setContactName(String contactName);
 
-        void setBirthdate(String birthdate);
-
         void setPhoneNumber(String phoneNumber);
 
         void setEmail(String email);
@@ -68,6 +66,10 @@ public interface TrainBookingPassengerContract {
         void navigateToReview(TrainSoftbook trainSoftbook);
 
         void loadPassengerSameAsBuyer(TrainPassengerViewModel trainPassengerViewModel);
+
+        void toastValidityData();
+
+        void showMessageErrorInSnackBar(int resId);
     }
 
     interface Presenter extends CustomerPresenter<View> {

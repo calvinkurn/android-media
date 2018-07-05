@@ -38,7 +38,7 @@ public interface TrainSearchContract {
     }
 
     interface Presenter extends CustomerPresenter<View> {
-        void getTrainSchedules(int scheduleVariant);
+        void getTrainSchedules(int scheduleVariant, String arrivalTimeDepartureTripSelected);
 
         void getFilteredAndSortedSchedules(long minPrice, long maxPrice, List<String> trainClass,
                                            List<String> trains, List<String> departureTrains, int sortOptionId);

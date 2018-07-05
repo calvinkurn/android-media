@@ -29,7 +29,7 @@ public interface TrainRepository {
 
     Observable<List<AvailabilityKeySchedule>> getSchedule(Map<String, Object> mapParam, int scheduleVariant);
 
-    Observable<List<TrainScheduleViewModel>> getAvailabilitySchedule(Map<String, Object> mapParam, int scheduleVariant);
+    Observable<List<TrainScheduleViewModel>> getAvailabilitySchedule(Map<String, Object> mapParam, int scheduleVariant, String arrivalTimeDepartureTripSelected);
 
     Observable<List<TrainScheduleViewModel>> getFilteredAndSortedSchedule(FilterParam filterParam, int sortOptionId);
 
