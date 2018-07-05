@@ -7,6 +7,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -271,7 +272,7 @@ public class TopEventsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVi
         private void setEventTitle(String title) {
             SpannableString spannableString = new SpannableString(title);
             try {
-                if (!"".equalsIgnoreCase(highLightText)
+                if (!TextUtils.isEmpty(highLightText)
                         && Utils.containsIgnoreCase(title, highLightText)) {
                     StyleSpan styleSpan = new StyleSpan(Typeface.BOLD);
                     int fromindex = title.toLowerCase().indexOf(highLightText.toLowerCase());

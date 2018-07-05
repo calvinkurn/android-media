@@ -12,6 +12,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
@@ -253,7 +254,7 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
         setHolder(R.drawable.ic_placeholder, data.getCityName(), locationHolder);
         setHolder(R.drawable.ic_skyline, data.getAddress(), addressHolder);
         textViewTitle.setText(data.getTitle());
-        if (data.getLongRichDesc() != null && !data.getLongRichDesc().isEmpty())
+        if (data.getLongRichDesc() != null && !TextUtils.isEmpty(data.getLongRichDesc()))
             tvExpandableDescription.setText(Html.fromHtml(data.getLongRichDesc()));
 
         String tnc = data.getTnc();
