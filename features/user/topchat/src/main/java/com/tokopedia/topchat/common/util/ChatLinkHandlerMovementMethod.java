@@ -44,12 +44,15 @@ public class ChatLinkHandlerMovementMethod extends SelectableSpannedMovementMeth
             int off = layout.getOffsetForHorizontal(line, x);
 
             URLSpan[] link = buffer.getSpans(off, off, URLSpan.class);
-            if (link.length != 0) {
+            if (link.length != 0 && viewListener != null && viewListener.get() != null) {
                 if (action == MotionEvent.ACTION_UP) {
                     String clickedUrl = link[0].getURL();
                     if(viewListener.get()!=null && viewListener.get().shouldHandleUrlManually
                             (clickedUrl)) {
                         viewListener.get().onGoToWebView(clickedUrl, clickedUrl);
+                        return true;
+                    } else if(viewListener.get().isBranchIOLink(clickedUrl)){
+                        viewListener.get().handleBranchIOLinkClick(clickedUrl);
                         return true;
                     }
                     else {

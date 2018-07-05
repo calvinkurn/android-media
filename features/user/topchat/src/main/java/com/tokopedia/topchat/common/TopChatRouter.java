@@ -12,4 +12,6 @@ public interface TopChatRouter {
     Intent getHelpPageActivity(Context context, String url, boolean isFromChatBot);
 
     void openRedirectUrl(Activity activity, String url);
+
+    Intent getSplashScreenIntent(Context context);
 }
