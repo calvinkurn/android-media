@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.common;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
@@ -9,4 +10,6 @@ import android.content.Intent;
 public interface TopChatRouter {
 
     Intent getHelpPageActivity(Context context, String url, boolean isFromChatBot);
+
+    void openRedirectUrl(Activity activity, String url);
 }

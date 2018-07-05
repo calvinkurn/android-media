@@ -517,7 +517,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     startActivity(ChatMarketingThumbnailActivity.getCallingIntent(getActivity(),
                             URLGenerator.generateURLSessionLoginV4(url, getContext())));
                 } else {
-                    startActivity(ChatMarketingThumbnailActivity.getCallingIntent(getActivity(), url));
+                    ((TopChatRouter) getActivity().getApplication()).openRedirectUrl(getActivity
+                            (),url);
                 }
             }
         }

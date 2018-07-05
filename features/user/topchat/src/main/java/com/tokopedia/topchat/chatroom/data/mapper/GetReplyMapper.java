@@ -66,12 +66,10 @@ public class GetReplyMapper extends BaseChatAPICallMapper<ReplyData,ChatRoomView
             if (item.isShowRating() || item.getRatingStatus() != 0) {
                 mapToChatRating(list, item);
             } else if (item.getAttachment() != null
-                    && item.getAttachment().getType().equals(WebSocketMapper.TYPE_IMAGE_ANNOUNCEMENT)
-                    && item.getRole().contains(TOKOPEDIA)) {
+                    && item.getAttachment().getType().equals(WebSocketMapper.TYPE_IMAGE_ANNOUNCEMENT)) {
                 mapToImageAnnouncement(list, item);
             } else if(item.getAttachment() != null
-                    && item.getAttachment().getType().equals(WebSocketMapper.TYPE_IMAGE_DUAL_ANNOUNCEMENT)
-                    && item.getRole().contains(TOKOPEDIA)){
+                    && item.getAttachment().getType().equals(WebSocketMapper.TYPE_IMAGE_DUAL_ANNOUNCEMENT)){
                 mapToImageDualAnnouncement(list, item);
             }else if (item.getAttachment() != null
                     && item.getAttachment().getType().equals(WebSocketMapper.TYPE_IMAGE_UPLOAD)) {
