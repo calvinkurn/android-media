@@ -35,6 +35,5 @@ public class RegisterValidationSource {
             Log.e("error", e.toString());
             return null;
         }
-//        return accountsService.getApi().validateRegister(param).map(registerValidationMapper);
     }
 }

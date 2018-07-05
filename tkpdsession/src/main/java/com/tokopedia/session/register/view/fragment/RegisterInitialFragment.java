@@ -504,10 +504,6 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                     registerContainer.addView(loginTextView, registerContainer.getChildCount(),
                             layoutParams);
                 }
-            } else if (!GlobalConfig.isSellerApp() && remoteConfig.getBoolean
-                    (REMOTE_CONFIG_SHOW_REGISTER_PHONE_NUMBER)) {
-//                registerPhoneNumberButton.setVisibility(View.VISIBLE);
-//                registerPhoneNumberButton.setImage(item.getImage());
             }
         }
 

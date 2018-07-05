@@ -82,6 +82,7 @@ public class RegisterInitialPresenter extends BaseDaggerPresenter<RegisterInitia
         discoverUseCase.unsubscribe();
         loginSosmedUseCase.unsubscribe();
         registerWebviewUseCase.unsubscribe();
+        registerValidationUseCase.unsubscribe();
     }
 
     @Override

@@ -33,7 +33,7 @@ public class RegisterValidationMapper implements Func1<Response<TkpdResponse>,
     private RegisterValidationViewModel checkIfError(Response<TkpdResponse> response) {
         if (response.isSuccessful()) {
             if (response.body().isNullData()) {
-                throw new ErrorMessageException("Data not found");
+                throw new ErrorMessageException("");
             }
             else if (TextUtils.isEmpty(response.body().getErrorMessageJoined())){
                 RegisterValidationPojo pojo = response.body().
