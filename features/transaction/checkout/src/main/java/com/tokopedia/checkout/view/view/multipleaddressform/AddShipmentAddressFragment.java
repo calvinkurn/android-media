@@ -33,6 +33,7 @@ import com.tokopedia.core.manage.people.address.model.Destination;
 import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsMultipleAddress;
+import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -626,4 +627,14 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
         checkoutAnalyticsMultipleAddress.eventClickMultipleAddressClickXFromUbahFromKirimKeBeberapaAlamat();
     }
 
+    @Override
+    protected String getScreenName() {
+        return ConstantTransactionAnalytics.ScreenName.EDIT_MULTIPLE_ADDRESS_PAGE;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        checkoutAnalyticsChangeAddress.sendScreenName(getActivity(), getScreenName());
+    }
 }
