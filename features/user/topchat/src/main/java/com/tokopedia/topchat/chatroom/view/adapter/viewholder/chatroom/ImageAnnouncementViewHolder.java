@@ -37,9 +37,6 @@ public class ImageAnnouncementViewHolder extends BaseChatViewHolder<ImageAnnounc
     public void bind(final ImageAnnouncementViewModel viewModel) {
         super.bind(viewModel);
 
-        view.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
-        view.getLayoutParams().height = view.getLayoutParams().width;
-
         ImageHandler.loadImageChat(attachment, viewModel.getImageUrl(), new
                 ChatGlideImageRequestListener());
 
