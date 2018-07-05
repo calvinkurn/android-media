@@ -3,7 +3,6 @@ package com.tokopedia.tkpdpdp.customview;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
@@ -12,7 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.tokopedia.core.analytics.ProductPageTracking;
+import com.tokopedia.tkpdpdp.tracking.ProductPageTracking;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.util.GlobalConfig;
