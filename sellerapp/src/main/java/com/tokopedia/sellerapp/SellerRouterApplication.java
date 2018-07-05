@@ -1386,46 +1386,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public boolean isSupportApplink(String appLink) {
-        return false;
-    }
-
-    @Override
-    public Intent getHelpUsIntent(Context context) {
-        return null;
-    }
-
-    @Override
-    public Intent getWebviewActivityWithIntent(Context context, String url, String title) {
-        return null;
-    }
-
-    @Override
-    public Intent getWebviewActivityWithIntent(Context context, String url) {
-        return null;
-    }
-
-    @Override
-    public Intent getOrderListIntent(Context context) {
-        return null;
-    }
-
-    @Override
-    public Observable<AddToCartResult> addToCartProduct(AddToCartRequest addToCartRequest) {
-        return null;
-    }
-
-    @Override
-    public Intent getCartIntent(Activity activity) {
-        return null;
-    }
-
-    @Override
-    public void updateMarketplaceCartCounter(CartNotificationListener listener) {
-
-    }
-
-    @Override
     public Interceptor getAuthInterceptor() {
         return new TkpdAuthInterceptor();
     }

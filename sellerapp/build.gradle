@@ -72,8 +72,8 @@ buildscript {
 android {
 
     project.ext {
-        defaultVersionCode = 1200404;
-        defaultVersionName = "1.20.0";
+        defaultVersionCode = 1000404;
+        defaultVersionName = "1.0.4";
     }
 
     packagingOptions {
