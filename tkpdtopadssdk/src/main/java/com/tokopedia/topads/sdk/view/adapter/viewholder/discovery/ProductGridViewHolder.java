@@ -163,11 +163,10 @@ public class ProductGridViewHolder extends AbstractViewHolder<ProductGridViewMod
             if(v.getId() == R.id.container) {
                 itemClickListener.onProductItemClicked(clickPosition, data);
             }
-            if(v.getId() == R.id.wishlist_button){
+            if(v.getId() == R.id.wishlist_button_container){
                 itemClickListener.onAddWishLish(clickPosition, data);
                 data.setWislished(!data.isWislished());
                 renderWishlistButton(data.isWislished());
-
             }
         }
     }

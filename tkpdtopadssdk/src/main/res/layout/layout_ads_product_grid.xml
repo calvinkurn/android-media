@@ -147,7 +147,7 @@
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/location"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:gravity="center_vertical"
@@ -195,6 +195,8 @@
         android:fontFamily="sans-serif-medium"
         android:gravity="center"
         android:layout_marginRight="@dimen/dp_2"
+        android:layout_marginLeft="@dimen/product_grid_padding"
+        android:layout_marginBottom="@dimen/product_grid_padding"
         android:text="@string/baru"
         android:paddingLeft="@dimen/dp_8"
         android:paddingRight="@dimen/dp_8"
