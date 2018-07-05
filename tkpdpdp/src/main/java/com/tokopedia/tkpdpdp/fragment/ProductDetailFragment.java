@@ -1679,6 +1679,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             );
         }
         ProductPageTracking.eventEnhanceProductDetail(
+                getActivity(),
                 DataLayer.mapOf(
                         "event", "viewProduct",
                         "eventCategory", "product page",

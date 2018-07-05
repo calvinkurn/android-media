@@ -11,14 +11,17 @@ import java.util.Map;
  * Created by nakama on 4/2/18.
  */
 
-public class ProductPageTracking extends TrackingUtils {
+public class ProductPageTracking {
 
     public static final String CLICK_PDP = "clickPDP";
     public static final String PRODUCT_DETAIL_PAGE = "product detail page";
 
-    public static void eventEnhanceProductDetail(Map<String, Object> maps) {
-        getGTMEngine().clearEnhanceEcommerce();
-        getGTMEngine().eventTrackingEnhancedEcommerce(maps);
+    public static void eventEnhanceProductDetail(Context context, Map<String, Object> maps) {
+        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+            return;
+        }
+        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+        tracker.sendEnhancedEcommerce(maps);
     }
 
     public static void eventClickAtcNotLogin(Context context, String productId) {
