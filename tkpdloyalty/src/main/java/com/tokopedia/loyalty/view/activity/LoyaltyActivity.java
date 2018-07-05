@@ -400,7 +400,7 @@ public class LoyaltyActivity extends BasePresenterActivity
             switch (platformPageString) {
                 case PLATFORM_PAGE_MARKETPLACE_CART_LIST:
                     checkoutAnalyticsCart.sendScreenName(this,
-                            ConstantTransactionAnalytics.ScreenName.PROMO_PAGE_FROM_CHECKOUT_TAB_PROMO
+                            ConstantTransactionAnalytics.ScreenName.PROMO_PAGE_FROM_CART_TAB_PROMO
                     );
                     break;
                 case PLATFORM_PAGE_MARKETPLACE_CART_SHIPMENT:
