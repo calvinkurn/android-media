@@ -1,6 +1,7 @@
 package com.tokopedia.tokocash.historytokocash.presentation.fragment;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -126,6 +127,8 @@ public class ThankYouMoveToSaldoFragment extends BaseDaggerFragment {
                 stateWalletToDepositThanksPassData.getWalletToDepositThanksData().getTitleButtonNegative()
         );
 
+        tvSubTitle.setTypeface(Typeface.DEFAULT_BOLD);
+
         btnPositive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -164,6 +167,7 @@ public class ThankYouMoveToSaldoFragment extends BaseDaggerFragment {
         );
 
         tvAdditionalInfo.setText(getString(R.string.additional_info_move_to_saldo));
+        tvSubTitle.setTypeface(Typeface.DEFAULT_BOLD);
 
         btnPositive.setOnClickListener(new View.OnClickListener() {
             @Override
