@@ -89,10 +89,8 @@ public class GetImageSearchUseCase<T> extends UseCase<SearchResultModel> {
                     Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
                     try {
                         if (myBitmap == null) {
-                            myBitmap = ImageHandler.getBitmapFromUri(context, Uri.parse(imagePath), MAX_WIDTH, MAX_HEIGHT);
+                            myBitmap = ImageHandler.getBitmapFromUri(context, Uri.parse(imagePath));
                         }
-
-                        myBitmap = ImageHandler.resizeImage(myBitmap, MAX_WIDTH, MAX_HEIGHT);
 
                         if (myBitmap.getWidth() < MIN_WIDTH ||
                                 myBitmap.getHeight() < MIN_HEIGHT ||
@@ -100,6 +98,11 @@ public class GetImageSearchUseCase<T> extends UseCase<SearchResultModel> {
                                 myBitmap.getHeight() > MAX_HEIGHT) {
 
                             throw new ImageNotSupportedException();
+
+                        } else if (myBitmap.getWidth() > OPTIMUM_WIDTH ||
+                                myBitmap.getHeight() > OPTIMUM_HEIGHT) {
+                            myBitmap = ImageHandler.resizeImage(myBitmap, OPTIMUM_WIDTH, OPTIMUM_HEIGHT);
+
                         }
 
                         myBitmap = ImageHandler.RotatedBitmap(myBitmap, imagePath);
