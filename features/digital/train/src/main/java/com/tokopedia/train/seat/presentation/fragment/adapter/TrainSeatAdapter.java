@@ -89,7 +89,7 @@ public class TrainSeatAdapter extends RecyclerView.Adapter<TrainSeatAdapter.View
                 @Override
                 public void onClick(View view) {
                     int index = TrainSeatAdapter.this.selectedSeat.indexOf(item);
-                    if (index != -1 && item.isAvailable()) {
+                    if (index != -1 || item.isAvailable()) {
                         if (listener != null) {
                             listener.seatClicked(item, itemView.getTop(), itemView.getLeft(), itemView.getWidth(), itemView.getHeight());
                         }
