@@ -267,25 +267,31 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     private boolean isNeedToremoveErrorShopProduct() {
+        List<ShipmentCartItemModel> newShipmentCartItemModelList = new ArrayList<>();
+        for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
+            List<CartItemModel> cartItemModels = new ArrayList<>(shipmentCartItemModel.getCartItemModels());
+            newShipmentCartItemModelList.add(ShipmentCartItemModel.clone(shipmentCartItemModel, cartItemModels));
+        }
+
         boolean cartListHasError = false;
         ArrayList<ShipmentCartItemModel> indexShopErrorList = new ArrayList<>();
         Map<ShipmentCartItemModel, List<CartItemModel>> indexShopItemErrorMap = new HashMap<>();
-        for (int i = 0; i < shipmentCartItemModelList.size(); i++) {
-            if (shipmentCartItemModelList.get(i).isAllItemError()) {
+        for (int i = 0; i < newShipmentCartItemModelList.size(); i++) {
+            if (newShipmentCartItemModelList.get(i).isAllItemError()) {
                 cartListHasError = true;
-                indexShopErrorList.add(shipmentCartItemModelList.get(i));
+                indexShopErrorList.add(newShipmentCartItemModelList.get(i));
             }
-            if (shipmentCartItemModelList.get(i).isError()) {
+            if (newShipmentCartItemModelList.get(i).isError()) {
                 List<CartItemModel> deletedCartItemModels = new ArrayList<>();
-                for (int j = 0; j < shipmentCartItemModelList.get(i).getCartItemModels().size(); j++) {
-                    if (shipmentCartItemModelList.get(i).getCartItemModels().get(j).isError()) {
+                for (int j = 0; j < newShipmentCartItemModelList.get(i).getCartItemModels().size(); j++) {
+                    if (newShipmentCartItemModelList.get(i).getCartItemModels().get(j).isError()) {
                         cartListHasError = true;
-                        deletedCartItemModels.add(shipmentCartItemModelList.get(i).getCartItemModels().get(j));
+                        deletedCartItemModels.add(newShipmentCartItemModelList.get(i).getCartItemModels().get(j));
                     }
                 }
-                indexShopItemErrorMap.put(shipmentCartItemModelList.get(i), deletedCartItemModels);
-                if (deletedCartItemModels.size() == shipmentCartItemModelList.get(i).getCartItemModels().size()) {
-                    indexShopErrorList.add(shipmentCartItemModelList.get(i));
+                indexShopItemErrorMap.put(newShipmentCartItemModelList.get(i), deletedCartItemModels);
+                if (deletedCartItemModels.size() == newShipmentCartItemModelList.get(i).getCartItemModels().size()) {
+                    indexShopErrorList.add(newShipmentCartItemModelList.get(i));
                 }
             }
         }
@@ -295,16 +301,16 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 ShipmentCartItemModel key = entry.getKey();
                 List<CartItemModel> value = entry.getValue();
                 for (CartItemModel cartItemModel : value) {
-                    int index = shipmentCartItemModelList.indexOf(key);
-                    shipmentCartItemModelList.get(index).getCartItemModels().remove(cartItemModel);
+                    int index = newShipmentCartItemModelList.indexOf(key);
+                    newShipmentCartItemModelList.get(index).getCartItemModels().remove(cartItemModel);
                 }
             }
 
             for (ShipmentCartItemModel indexShopError : indexShopErrorList) {
-                shipmentCartItemModelList.remove(indexShopError);
+                newShipmentCartItemModelList.remove(indexShopError);
             }
 
-            dataCheckoutRequestList = getView().generateNewCheckoutRequest(shipmentCartItemModelList);
+            dataCheckoutRequestList = getView().generateNewCheckoutRequest(newShipmentCartItemModelList);
             partialCheckout = true;
             return true;
         }

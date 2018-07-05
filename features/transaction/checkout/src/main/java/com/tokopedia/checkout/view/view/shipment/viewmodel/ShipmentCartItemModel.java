@@ -53,6 +53,34 @@ public class ShipmentCartItemModel implements ShipmentData {
     public ShipmentCartItemModel() {
     }
 
+    public static ShipmentCartItemModel clone(ShipmentCartItemModel shipmentCartItemModel, List<CartItemModel> cartItemModels) {
+        ShipmentCartItemModel newShipmentCartItemModel = new ShipmentCartItemModel();
+        newShipmentCartItemModel.setCartItemModels(cartItemModels);
+        newShipmentCartItemModel.setAllItemError(shipmentCartItemModel.isAllItemError());
+        newShipmentCartItemModel.setErrorMessage(shipmentCartItemModel.getErrorMessage());
+        newShipmentCartItemModel.setError(shipmentCartItemModel.isError());
+        newShipmentCartItemModel.setWeightUnit(shipmentCartItemModel.getWeightUnit());
+        newShipmentCartItemModel.setWarningMessage(shipmentCartItemModel.getWarningMessage());
+        newShipmentCartItemModel.setWarning(shipmentCartItemModel.isWarning());
+        newShipmentCartItemModel.setUnixTime(shipmentCartItemModel.getUnixTime());
+        newShipmentCartItemModel.setTokenPickup(shipmentCartItemModel.getTokenPickup());
+        newShipmentCartItemModel.setStore(shipmentCartItemModel.getStore());
+        newShipmentCartItemModel.setStateDetailSubtotalViewExpanded(shipmentCartItemModel.isStateDetailSubtotalViewExpanded());
+        newShipmentCartItemModel.setStateAllItemViewExpanded(shipmentCartItemModel.isStateAllItemViewExpanded());
+        newShipmentCartItemModel.setStateDropshipperDetailExpanded(shipmentCartItemModel.isStateDropshipperDetailExpanded());
+        newShipmentCartItemModel.setStateDropshipperHasError(shipmentCartItemModel.isStateDropshipperHasError());
+        newShipmentCartItemModel.setShopName(shipmentCartItemModel.getShopName());
+        newShipmentCartItemModel.setShopId(shipmentCartItemModel.getShopId());
+        newShipmentCartItemModel.setProductIsPreorder(shipmentCartItemModel.isProductIsPreorder());
+        newShipmentCartItemModel.setProductFinsurance(shipmentCartItemModel.isProductFinsurance());
+        newShipmentCartItemModel.setProductFcancelPartial(shipmentCartItemModel.isProductFcancelPartial());
+        newShipmentCartItemModel.setDestinationDistrictName(shipmentCartItemModel.getDestinationDistrictName());
+        newShipmentCartItemModel.setDestinationDistrictId(shipmentCartItemModel.getDestinationDistrictId());
+        newShipmentCartItemModel.setRecipientAddressModel(shipmentCartItemModel.getRecipientAddressModel());
+
+        return newShipmentCartItemModel;
+    }
+
     public boolean isAllItemError() {
         return allItemError;
     }
