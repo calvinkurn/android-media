@@ -40,6 +40,7 @@ import com.tokopedia.train.passenger.presentation.viewmodel.TrainPassengerViewMo
 import com.tokopedia.train.scheduledetail.presentation.activity.TrainScheduleDetailActivity;
 import com.tokopedia.train.search.presentation.model.TrainScheduleBookingPassData;
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
+import com.tokopedia.train.seat.presentation.activity.TrainSeatActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -296,7 +297,7 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
 
     @Override
     public void navigateToChooseSeat(TrainSoftbook trainSoftbook) {
-
+        getActivity().startActivity(TrainSeatActivity.getCallingIntent(getActivity()));
     }
 
     @Override

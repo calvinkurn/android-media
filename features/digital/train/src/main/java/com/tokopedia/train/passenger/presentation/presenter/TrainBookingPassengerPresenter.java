@@ -158,26 +158,23 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
 
     @Override
     public void onChooseSeatButtonClicked() {
-        //TODO delete this after softbooking finish
-        if (isAllDataValid()) {
-            getView().toastValidityData();
-        }
-        trainSoftBookingUseCase.execute(trainSoftBookingUseCase.create(), new Subscriber<TrainSoftbook>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(TrainSoftbook trainSoftbook) {
-                getView().navigateToChooseSeat(trainSoftbook);
-            }
-        });
+        getView().navigateToChooseSeat(null);
+//        trainSoftBookingUseCase.execute(trainSoftBookingUseCase.create(), new Subscriber<TrainSoftbook>() {
+//            @Override
+//            public void onCompleted() {
+//
+//            }
+//
+//            @Override
+//            public void onError(Throwable e) {
+//
+//            }
+//
+//            @Override
+//            public void onNext(TrainSoftbook trainSoftbook) {
+//                getView().navigateToChooseSeat(trainSoftbook);
+//            }
+//        });
     }
 
     private boolean isAllDataValid() {

@@ -5,6 +5,7 @@ import android.content.Context;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
+import com.tokopedia.train.common.TrainRouter;
 import com.tokopedia.train.common.constant.TrainApi;
 import com.tokopedia.train.common.constant.TrainUrl;
 import com.tokopedia.train.common.data.TrainDataStoreFactory;
@@ -38,13 +39,14 @@ public class TrainModule {
     }
 
     @Provides
-    public OkHttpClient provideOkHttpClient(@ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor) {
+    public OkHttpClient provideOkHttpClient(@ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor, TrainRouter trainRouter) {
         OkHttpRetryPolicy retryPolicy = OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy();
         return new OkHttpClient.Builder()
                 .readTimeout(retryPolicy.readTimeout, TimeUnit.SECONDS)
                 .writeTimeout(retryPolicy.writeTimeout, TimeUnit.SECONDS)
                 .connectTimeout(retryPolicy.connectTimeout, TimeUnit.SECONDS)
                 .addInterceptor(httpLoggingInterceptor)
+                .addInterceptor(trainRouter.getChuckInterceptor())
                 .build();
 
     }
@@ -78,6 +80,15 @@ public class TrainModule {
     @Provides
     public TrainStationCloudDataStore provideTrainStationCloudDataStore(TrainApi trainApi, @ApplicationContext Context context) {
         return new TrainStationCloudDataStore(trainApi, context);
+    }
+
+    @TrainScope
+    @Provides
+    public TrainRouter provideTrainRouter(@ApplicationContext Context context) {
+        if (context instanceof TrainRouter) {
+            return ((TrainRouter) context);
+        }
+        throw new RuntimeException("Application must implement " + TrainRouter.class.getCanonicalName());
     }
 
     @TrainScope
