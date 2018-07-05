@@ -1,6 +1,27 @@
-<?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+
+<LinearLayout
+    android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/order_list_main"/>
+    android:orientation="vertical">
+
+    <include layout="@layout/layout_tab_indicator_main"
+        android:id="@+id/tab_layout"/>
+
+    <com.tkpd.library.ui.widget.TouchViewPager
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>
+    <ProgressBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/progress"
+        android:visibility="gone"
+        android:layout_gravity="center"/>
+</FrameLayout>

@@ -4,14 +4,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
@@ -20,6 +18,7 @@ import android.text.TextPaint;
 import android.text.style.ClickableSpan;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -66,7 +65,6 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
     private RecyclerView rvDeals;
     private TextView tvTopDeals;
     private ImageView back;
-    private TextView dealsInCity;
     private TextView tvCityName;
     private TextView tvChangeCity;
 
@@ -101,7 +99,6 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
         back = findViewById(R.id.imageViewBack);
         noContent = findViewById(R.id.no_content);
         llDeals = findViewById(R.id.ll_deals);
-        dealsInCity = findViewById(R.id.deals_in_city);
         tvCityName = findViewById(R.id.tv_location);
         tvChangeCity = findViewById(R.id.tv_change_city);
         baseMainContent = findViewById(R.id.base_main_content);
@@ -112,8 +109,18 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
         searchInputView.setSearchTextSize(getResources().getDimension(R.dimen.sp_14));
         searchInputView.setSearchImageViewDimens(getResources().getDimensionPixelSize(R.dimen.dp_18), getResources().getDimensionPixelSize(R.dimen.dp_18));
         searchInputView.setSearchImageView(getResources().getDrawable(R.drawable.ic_search_grey));
+        EditText etSearch=searchInputView.findViewById(R.id.edit_text_search);
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         rvDeals.setLayoutManager(layoutManager);
+        etSearch.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus){
+                    back.setImageResource(R.drawable.ic_close_deals);
+                    mPresenter.searchTextChanged(etSearch.getText().toString());
+                }
+            }
+        });
 
     }
 
@@ -156,8 +163,6 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
 
         if (categoryItemsViewModels != null && categoryItemsViewModels.size() != 0) {
             DealsCategoryAdapter dealsCategoryAdapter = new DealsCategoryAdapter(getActivity(), categoryItemsViewModels, !IS_SHORT_LAYOUT);
-            dealsInCity.setVisibility(View.VISIBLE);
-
             rvDeals.addOnScrollListener(rvOnScrollListener);
             rvDeals.setAdapter(dealsCategoryAdapter);
             llDeals.setVisibility(View.VISIBLE);
@@ -186,7 +191,7 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
                     ds.setColor(getResources().getColor(R.color.black_38)); // specific color for this link
                 }
             }, startIndexOfLink, text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            dealsInCity.setText(spannableString);
+            dealsCategoryAdapter.addHeader(spannableString.toString());
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             if (imm != null) {
                 imm.hideSoftInputFromWindow(searchInputView.getSearchTextView().getWindowToken(), 0);
@@ -238,7 +243,6 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
             rvDeals.setAdapter(adapter);
             rvDeals.removeOnScrollListener(rvOnScrollListener);
             tvTopDeals.setVisibility(View.VISIBLE);
-            dealsInCity.setVisibility(View.GONE);
             noContent.setVisibility(View.GONE);
             clLocation.setVisibility(View.GONE);
 
@@ -263,7 +267,6 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
             rvDeals.setAdapter(adapter);
             rvDeals.addOnScrollListener(rvOnScrollListener);
             tvTopDeals.setVisibility(View.GONE);
-            dealsInCity.setVisibility(View.GONE);
             noContent.setVisibility(View.GONE);
             clLocation.setVisibility(View.GONE);
         } else {

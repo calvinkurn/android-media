@@ -10,11 +10,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.orders.orderdetails.data.DetailsData;
 import com.tokopedia.transaction.orders.orderlist.data.Data;
-import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
-import com.tokopedia.transaction.orders.orderlist.domain.OrderListUseCase;
-import com.tokopedia.usecase.RequestParams;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
@@ -38,8 +34,6 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
     @Override
     public void getAllOrderData(Context context, String orderCategory, final int typeRequest, int page) {
         getView().showProcessGetData(orderCategory);
-//        RequestParams params = RequestParams.create();
-//        params.putInt(OrderListUseCase.PAGE_NUM, page);
         Map<String, Object> variables = new HashMap<>();
         variables.put("orderCategory", orderCategory);
         variables.put("Page", page);

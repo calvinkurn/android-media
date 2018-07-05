@@ -8,4 +8,10 @@
         android:layout_width="match_parent"
         android:scaleType="fitXY"
         android:layout_height="@dimen/dp_240" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:background="@drawable/background_blur_deal"
+        android:layout_height="@dimen/dp_240" />
+
 </FrameLayout>

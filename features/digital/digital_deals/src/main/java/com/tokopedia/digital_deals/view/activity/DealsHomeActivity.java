@@ -18,6 +18,8 @@ public class DealsHomeActivity extends BaseSimpleActivity {
 
     public static final int REQUEST_CODE_DEALSLOCATIONACTIVITY = 101;
     public static final int REQUEST_CODE_DEALSSEARCHACTIVITY = 102;
+    public final static int REQUEST_CODE_DEALDETAILACTIVITY=103;
+
     @DeepLink({DIGITAL_DEALS})
     public static Intent getCallingApplinksTaskStask(Context context, Bundle extras) {
         Intent destination;

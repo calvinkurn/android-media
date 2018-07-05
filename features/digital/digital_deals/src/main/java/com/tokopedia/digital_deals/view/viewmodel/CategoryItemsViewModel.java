@@ -80,8 +80,8 @@ public class CategoryItemsViewModel implements Parcelable {
         this.updatedAt = in.readString();
         this.dateRange = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
         this.cityName = in.readString();
-        this.rating = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.likes = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.rating = in.readInt();
+        this.likes = in.readInt();
         this.schedules = ((Object) in.readValue((Object.class.getClassLoader())));
         this.forms = ((Object) in.readValue((Object.class.getClassLoader())));
         this.media = ((Object) in.readValue((Object.class.getClassLoader())));
@@ -272,19 +272,19 @@ public class CategoryItemsViewModel implements Parcelable {
         this.cityName = cityName;
     }
 
-    public Integer getRating() {
+    public int getRating() {
         return rating;
     }
 
-    public void setRating(Integer rating) {
+    public void setRating(int rating) {
         this.rating = rating;
     }
 
-    public Integer getLikes() {
+    public int getLikes() {
         return likes;
     }
 
-    public void setLikes(Integer likes) {
+    public void setLikes(int likes) {
         this.likes = likes;
     }
 
@@ -386,8 +386,8 @@ public class CategoryItemsViewModel implements Parcelable {
         dest.writeString(updatedAt);
         dest.writeValue(dateRange);
         dest.writeString(cityName);
-        dest.writeValue(rating);
-        dest.writeValue(likes);
+        dest.writeInt(rating);
+        dest.writeInt(likes);
         dest.writeValue(schedules);
         dest.writeValue(forms);
         dest.writeValue(media);

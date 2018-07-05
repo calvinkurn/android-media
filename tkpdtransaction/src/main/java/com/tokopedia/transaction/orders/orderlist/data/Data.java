@@ -4,9 +4,11 @@ import java.util.List;
 
 public class Data {
         List<Order> orders;
+        List<String> orderLabelList;
 
-        public Data(List<Order> orders) {
+        public Data(List<Order> orders, List<String> orderLabelList) {
             this.orders = orders;
+            this.orderLabelList = orderLabelList;
         }
 
         @Override
@@ -17,4 +19,8 @@ public class Data {
         public List<Order> orders() {
             return orders;
         }
+
+    public List<String> orderLabelList() {
+        return orderLabelList;
     }
+}

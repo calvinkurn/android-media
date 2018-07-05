@@ -31,9 +31,14 @@
                 <ImageView
                     android:id="@+id/header_image"
                     android:layout_width="match_parent"
-                    android:layout_height="160dp"
+                    android:layout_height="@dimen/dp_160"
                     android:scaleType="centerCrop"
                     android:background="@color/grey_1100" />
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:background="@drawable/background_blur_deal"
+                    android:layout_height="@dimen/dp_160" />
 
 
                 <android.support.v7.widget.CardView

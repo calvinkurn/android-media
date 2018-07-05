@@ -73,6 +73,11 @@ public class DealCategoryAdapterPresenter extends BaseDaggerPresenter<DealCatego
                     DataResponse dataResponse = restResponse.getData();
                     LikeUpdateResultDomain likeUpdateResultDomain = (LikeUpdateResultDomain) dataResponse.getData();
                     model.setLiked(likeUpdateResultDomain.isLiked());
+                    if (likeUpdateResultDomain.isLiked())
+                        model.setLikes(model.getLikes() + 1);
+                    else
+                        model.setLikes(model.getLikes() - 1);
+
                     getView().notifyDataSetChanged(position);
                 }
             });

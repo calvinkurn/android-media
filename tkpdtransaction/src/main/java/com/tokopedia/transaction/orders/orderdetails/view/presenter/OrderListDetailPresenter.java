@@ -117,10 +117,8 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                     } else {
                         view.tapActionLayoutVisible(View.GONE);
                     }
-//                    for (TapActions tapActions : tapActionsList) {
                     if(tapActionsList!=null)
                         view.setTapActionButton(position, tapActionsList);
-//                    }
                 }
             }
         });
