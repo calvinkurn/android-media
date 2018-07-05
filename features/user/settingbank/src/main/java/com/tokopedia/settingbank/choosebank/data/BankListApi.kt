@@ -12,7 +12,7 @@ import rx.Observable
 interface BankListApi {
 
     @GET(BankListUrl.PATH_SEARCH_BANK_ACCOUNT)
-    fun searchBankAccount(@QueryMap params: HashMap<String, Any>):
+    fun getBankList(@QueryMap params: HashMap<String, Any>):
             Observable<Response<BankListPojo>>
 
 }

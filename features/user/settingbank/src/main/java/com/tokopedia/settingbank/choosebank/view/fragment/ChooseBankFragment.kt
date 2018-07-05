@@ -1,7 +1,6 @@
 package com.tokopedia.settingbank.choosebank.view.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +15,6 @@ import com.tokopedia.settingbank.choosebank.view.adapter.BankAdapter
 import com.tokopedia.settingbank.choosebank.view.adapter.BankTypeFactoryImpl
 import com.tokopedia.settingbank.choosebank.view.listener.BankListener
 import com.tokopedia.settingbank.choosebank.view.presenter.ChooseBankPresenter
-import com.tokopedia.settingbank.choosebank.view.viewmodel.BankListViewModel
 import com.tokopedia.settingbank.choosebank.view.viewmodel.BankViewModel
 import kotlinx.android.synthetic.main.fragment_choose_bank.*
 
@@ -90,7 +88,7 @@ class ChooseBankFragment : ChooseBankContract.View, BankListener, BaseDaggerFrag
 
     }
 
-    override fun onSuccessGetBankList(listBank: BankListViewModel) {
+    override fun onSuccessGetBankList(listBank: ArrayList<BankViewModel>) {
        adapter.addList(listBank)
     }
 }

@@ -40,8 +40,8 @@ class GetBankListWSMapper : Func1<Response<BankListPojo>,
     }
 
     private fun mapToViewModel(pojo: BankListPojo): BankListViewModel {
-        val listBank  = ArrayList<BankViewModel>()
-        for(data : BankAccount in pojo.data!!.list){
+        val listBank = ArrayList<BankViewModel>()
+        for (data: BankAccount in pojo.data!!.list) {
             listBank.add(BankViewModel(
                     data.bank_id,
                     data.bank_name,
@@ -49,7 +49,8 @@ class GetBankListWSMapper : Func1<Response<BankListPojo>,
             ))
         }
         return BankListViewModel(listBank,
-                pojo.data.paging!!.uri_next.isNullOrBlank())
+                !pojo.data.paging!!.uri_next.isNullOrBlank()
+                        && !pojo.data.paging.uri_next.equals("0"))
     }
 
 }

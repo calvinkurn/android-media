@@ -3,7 +3,7 @@ package com.tokopedia.settingbank.addeditaccount.view.listener
 import android.content.Context
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
-import com.tokopedia.settingbank.choosebank.view.viewmodel.BankListViewModel
+import com.tokopedia.settingbank.choosebank.view.viewmodel.BankViewModel
 
 /**
  * @author by nisie on 6/22/18.
@@ -20,7 +20,7 @@ interface ChooseBankContract {
 
         fun onErrorGetBankList(errorMessage: String?)
 
-        fun onSuccessGetBankList(listBank: BankListViewModel)
+        fun onSuccessGetBankList(listBank: ArrayList<BankViewModel>)
 
     }
 

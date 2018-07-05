@@ -3,7 +3,6 @@ package com.tokopedia.settingbank.choosebank.view.adapter
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
-import com.tokopedia.settingbank.choosebank.view.viewmodel.BankListViewModel
 import com.tokopedia.settingbank.choosebank.view.viewmodel.BankViewModel
 
 /**
@@ -25,10 +24,10 @@ class BankAdapter(adapterTypeFactory: BankTypeFactoryImpl,
         (this.visitables[adapterPosition] as BankViewModel).isSelected = true
     }
 
-    fun addList(listBank: BankListViewModel) {
+    fun addList(listBank: ArrayList<BankViewModel>) {
         val lastPosition = this.visitables.size
-        this.visitables.addAll(listBank.list!!)
-        this.notifyItemRangeInserted(lastPosition, listBank.list.size)
+        this.visitables.addAll(listBank)
+        this.notifyItemRangeInserted(lastPosition, listBank.size)
     }
 
 }

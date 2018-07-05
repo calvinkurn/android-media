@@ -19,9 +19,10 @@
 
         <activity
             android:name=".choosebank.view.activity.ChooseBankActivity"
-            android:screenOrientation="portrait"
             android:label="@string/title_choose_bank"
-            android:theme="@style/Theme.White"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"/>
 
     </application>
 </manifest>

@@ -14,14 +14,11 @@ import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter
 import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor
 import com.tokopedia.core.router.home.HomeRouter
-import com.tokopedia.settingbank.banklist.data.SettingBankApi
-import com.tokopedia.settingbank.banklist.data.SettingBankUrl
 import com.tokopedia.settingbank.choosebank.data.BankListApi
 import com.tokopedia.settingbank.choosebank.data.BankListUrl
 import com.tokopedia.settingbank.choosebank.domain.mapper.GetBankListDBMapper
 import com.tokopedia.settingbank.choosebank.domain.mapper.GetBankListWSMapper
 import com.tokopedia.settingbank.choosebank.domain.usecase.GetBankListDBUseCase
-import com.tokopedia.settingbank.choosebank.domain.usecase.GetBankListUseCase
 import com.tokopedia.settingbank.choosebank.domain.usecase.GetBankListWSUseCase
 import com.tokopedia.settingbank.choosebank.view.presenter.ChooseBankPresenter
 import com.tokopedia.user.session.UserSession
@@ -106,9 +103,7 @@ class ChooseBankDependencyInjector {
 
             val bankCache = LocalCacheHandler(context, HomeRouter.TAG_FETCH_BANK)
 
-            val getBankListUseCase = GetBankListUseCase(getBankListDBUseCase,
-                    getBankListWSUseCase, bankCache)
-            return ChooseBankPresenter(session , getBankListUseCase)
+            return ChooseBankPresenter(session , getBankListDBUseCase, getBankListWSUseCase, bankCache)
         }
     }
 }
