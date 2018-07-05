@@ -1,6 +1,5 @@
 package com.tokopedia.transaction.purchase.fragment;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
@@ -23,7 +22,6 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.RefreshHandler;
-import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerEditorBuilder;
@@ -46,12 +44,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnNeverAskAgain;
-import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.OnShowRationale;
-import permissions.dispatcher.PermissionRequest;
-import permissions.dispatcher.RuntimePermissions;
 
 import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_BRIGHTNESS;
 import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CONTRAST;
@@ -66,7 +58,6 @@ import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PIC
 /**
  * @author Angga.Prasetiyo on 24/05/2016.
  */
-@RuntimePermissions
 public class TxVerificationFragment extends BasePresenterFragment<TxVerificationPresenter>
         implements TxVerViewListener, AdapterView.OnItemClickListener,
         RefreshHandler.OnRefreshHandlerListener, LazyListView.LazyLoadListener,
@@ -460,16 +451,6 @@ public class TxVerificationFragment extends BasePresenterFragment<TxVerification
         presenter.processCancelTransaction(getActivity(), data);
     }
 
-    @SuppressLint("InlinedApi")
-    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    public void onActionCamera() {
-    }
-
-    @SuppressLint("InlinedApi")
-    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-    public void onActionImagePicker() {
-    }
-
     @SuppressWarnings("deprecation")
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -526,80 +507,5 @@ public class TxVerificationFragment extends BasePresenterFragment<TxVerification
     @Override
     public void forceRefreshListData() {
         resetData();
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        TxVerificationFragmentPermissionsDispatcher.onRequestPermissionsResult(
-                TxVerificationFragment.this, requestCode, grantResults
-        );
-
-    }
-
-    @SuppressLint("InlinedApi")
-    @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    void showRationaleForStorageAndCamera(final PermissionRequest request) {
-        List<String> listPermission = new ArrayList<>();
-        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        listPermission.add(Manifest.permission.CAMERA);
-        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-        RequestPermissionUtil.onShowRationale(getActivity(), request, listPermission);
-    }
-
-    @SuppressLint("InlinedApi")
-    @OnShowRationale(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showRationaleForStorage(final PermissionRequest request) {
-        RequestPermissionUtil.onShowRationale(
-                getActivity(), request, Manifest.permission.READ_EXTERNAL_STORAGE
-        );
-    }
-
-    @OnPermissionDenied(Manifest.permission.CAMERA)
-    void showDeniedForCamera() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.CAMERA);
-    }
-
-    @OnNeverAskAgain(Manifest.permission.CAMERA)
-    void showNeverAskForCamera() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.CAMERA);
-    }
-
-    @SuppressLint("InlinedApi")
-    @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showDeniedForStorage() {
-        RequestPermissionUtil.onPermissionDenied(
-                getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE
-        );
-    }
-
-    @SuppressLint("InlinedApi")
-    @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showNeverAskForStorage() {
-        RequestPermissionUtil.onNeverAskAgain(
-                getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE
-        );
-    }
-
-    @SuppressLint("InlinedApi")
-    @OnPermissionDenied({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    void showDeniedForStorageAndCamera() {
-        List<String> listPermission = new ArrayList<>();
-        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        listPermission.add(Manifest.permission.CAMERA);
-        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        RequestPermissionUtil.onPermissionDenied(getActivity(), listPermission);
-    }
-
-    @SuppressLint("InlinedApi")
-    @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    void showNeverAskForStorageAndCamera() {
-        List<String> listPermission = new ArrayList<>();
-        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        listPermission.add(Manifest.permission.CAMERA);
-        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        RequestPermissionUtil.onNeverAskAgain(getActivity(), listPermission);
     }
 }
