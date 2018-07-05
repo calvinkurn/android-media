@@ -51,6 +51,7 @@ ext {
     tkpdRideVersion = '1.+'
     tkpdProfileVersion = '2.22'
     tkpdShopVersion = '2.22'
+    tkpdProductVersion = '2.22'
     tkpdKolVersion = '2.22'
     tkpdPushNotifVersion = '2.22'
     tkpdGamificationVersion = '2.22'
@@ -245,6 +246,7 @@ ext {
             shopCommon        : "com.tokopedia.shop:shop-common:${tkpdShopVersion}",
             goldMerchantCommon: "com.tokopedia.gm:gold_merchant-common:${tkpdGoldMerchantVersion}",
             shopPage          : "com.tokopedia.shop:shop-page:${tkpdShopVersion}",
+            productEdit       : "com.tokopedia.product:product-edit:${tkpdProductVersion}",
             kol               : "com.tokopedia.kol:kol:${tkpdKolVersion}",
             pushNotif         : "com.tokopedia.pushnotif:push_notification:${tkpdPushNotifVersion}",
             gamification      : "com.tokopedia.gamification:gamification:${tkpdGamificationVersion}",
@@ -286,6 +288,7 @@ ext {
             reputation          : ":features:merchant:reputation",
             shopCommon          : ":features:merchant:shop_common",
             shopPage            : ":features:merchant:shop_page",
+            productEdit         : ":features:merchant:product_edit",
             topAdsManagement    : ":features:top_ads:top_ads_management",
             topAdsCommon    : ":features:top_ads:top_ads_management_common",
             topAdsSourceTagging: ":features:top_ads:top_ads_management_sourcetagging",
