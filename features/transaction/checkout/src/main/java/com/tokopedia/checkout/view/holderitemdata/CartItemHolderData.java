@@ -102,7 +102,7 @@ public class CartItemHolderData implements Parcelable {
         this.errorFormItemValidationType = in.readInt();
         this.errorFormItemValidationMessage = in.readString();
         this.editableRemark = in.readByte() != 0;
-        this.stateRemarkExpandedZ = in.readByte() != 0;
+        this.stateRemarkExpanded = in.readByte() != 0;
     }
 
     public static final Creator<CartItemHolderData> CREATOR = new Creator<CartItemHolderData>() {
