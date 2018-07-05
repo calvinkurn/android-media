@@ -56,16 +56,8 @@ import com.tokopedia.seller.shop.open.view.presenter.ShopOpenInfoPresenter;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
-
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnNeverAskAgain;
-import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.OnShowRationale;
-import permissions.dispatcher.PermissionRequest;
-import permissions.dispatcher.RuntimePermissions;
 
 import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_BRIGHTNESS;
 import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CONTRAST;
@@ -77,11 +69,11 @@ import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDe
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_GALLERY;
 import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
 
+
 /**
  * Created by Nathaniel on 3/16/2017.
  */
 
-@RuntimePermissions
 public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements ShopOpenInfoView {
 
     public static final int REQUEST_CODE_IMAGE_PICKER = 532;
@@ -263,19 +255,19 @@ public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-            switch (requestCode) {
-                case REQUEST_CODE_IMAGE_PICKER:
-                    if (resultCode == Activity.RESULT_OK && data != null) {
-                        ArrayList<String> imageUrlOrPathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS);
-                        if (imageUrlOrPathList != null && imageUrlOrPathList.size() > 0) {
-                            uriPathImage = imageUrlOrPathList.get(0);
-                            ImageHandler.loadImageFromFile(getActivity(), imagePicker, new File(uriPathImage));
-                        }
+        switch (requestCode) {
+            case REQUEST_CODE_IMAGE_PICKER:
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    ArrayList<String> imageUrlOrPathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS);
+                    if (imageUrlOrPathList != null && imageUrlOrPathList.size() > 0) {
+                        uriPathImage = imageUrlOrPathList.get(0);
+                        ImageHandler.loadImageFromFile(getActivity(), imagePicker, new File(uriPathImage));
                     }
-                    break;
-                default:
-                    break;
-            }
+                }
+                break;
+            default:
+                break;
+        }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -301,60 +293,6 @@ public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements
         onAttachListener(context);
     }
 
-    // Permission part
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        // NOTE: delegate the permission handling to generated method
-        ShopOpenMandatoryInfoFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
-    }
-
-    @TargetApi(16)
-    @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showDeniedForExternalStorage() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
-    }
-
-    @TargetApi(16)
-    @OnPermissionDenied(Manifest.permission.CAMERA)
-    void showDeniedForCamera() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.CAMERA);
-    }
-
-    @TargetApi(16)
-    @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showNeverAskForExternalStorage() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
-    }
-
-    @TargetApi(16)
-    @OnNeverAskAgain(Manifest.permission.CAMERA)
-    void showNeverAskForCamera() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.CAMERA);
-    }
-
-    @TargetApi(16)
-    @OnShowRationale({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    void showRationale(final PermissionRequest request) {
-        List<String> listPermission = new ArrayList<>();
-        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        listPermission.add(Manifest.permission.CAMERA);
-        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-        RequestPermissionUtil.onShowRationale(getActivity(), request, listPermission);
-    }
-
-    @TargetApi(16)
-    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-    public void goToGallery() {
-
-    }
-
-    @TargetApi(16)
-    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    public void goToCamera() {
-
-    }
 
     protected void onAttachListener(Context context) {
         onShopStepperListener = (StepperListener<ShopOpenStepperModel>) context;
