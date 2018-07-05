@@ -369,7 +369,9 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
 
     @Override
     public void onItemClicked(TrainScheduleViewModel trainScheduleViewModel) {
-        selectSchedule(trainScheduleViewModel);
+        if (trainScheduleViewModel.getAvailableSeat() > 0) {
+            selectSchedule(trainScheduleViewModel);
+        }
     }
 
     @Override
