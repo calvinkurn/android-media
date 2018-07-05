@@ -64,23 +64,20 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
         // TODO : assign passengers from soft book responses
         passengers = buildDummyPassenger();
         originPassengers = passengers;
-        expiredTime = "2019-02-20T17:35:00Z";
+        expiredTime = "2018-08-20T17:35:00Z";
     }
 
     private List<TrainSeatPassengerViewModel> buildDummyPassenger() {
         List<TrainSeatPassengerViewModel> passengerViewModels = new ArrayList<>();
         String[] seating = new String[]{"A", "B", "C", "D", "E"};
-        for (int i = 0; i < 5; i++) {
+        int column = 4;
+        for (int i = 0; i < column; i++) {
             TrainSeatPassengerViewModel passengerViewModel = new TrainSeatPassengerViewModel();
             passengerViewModel.setPassengerNumber(i + 1);
             passengerViewModel.setNumber(i + "");
             passengerViewModel.setName("John " + i + 1);
-            passengerViewModel.setBirthdate("09-29-1994");
-            passengerViewModel.setPaxType(1);
-            passengerViewModel.setPhone("08574722168");
-            passengerViewModel.setSalutationId(1);
             TrainSeatPassengerSeatViewModel seatViewModel = new TrainSeatPassengerSeatViewModel();
-            seatViewModel.setColumn(seating[i % 5]);
+            seatViewModel.setColumn(seating[i % column]);
             seatViewModel.setRow(String.valueOf(i + 1));
             seatViewModel.setWagonCode("EKO_AC-1");
             seatViewModel.setClassSeat("C");
@@ -164,12 +161,16 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
         pagerIndicator.setCurrentIndicator(0);
         trainSeatHeader.renderWagon(trainWagonViewModels.get(0).getWagonCode());
         trainSeatHeader.renderPassenger(passengers);
+        double height = trainWagonViewModels.get(0).getMaxRow() * getResources().getDimensionPixelOffset(R.dimen.train_seat_with_margin) * 1.5;
+        ViewGroup.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) height);
+        wagonViewPager.setLayoutParams(layoutParams);
 
         adapter = new TrainWagonsPagerAdapter(getFragmentManager(), trainWagonViewModels, new TrainWagonFragment.OnFragmentInteraction() {
             @Override
             public List<TrainSeatPassengerViewModel> getPassengers() {
                 return passengers;
             }
+
 
             @Override
             public void onPassengerSeatChange(TrainSeatPassengerViewModel passenger, TrainSeatViewModel seat, String wagonCode) {
@@ -279,7 +280,7 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
         }
 
         menus.setItemMenuList(wagonsTitle);
-        menus.setActionText(getString(R.string.train_seat_choose_wagon_title));
+        menus.setActionText(getString(R.string.train_seat_wagon_close_label));
         menus.setOnActionClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

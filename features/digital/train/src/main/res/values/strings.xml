@@ -119,4 +119,5 @@
     <string name="train_label_infant">Tiket Bayi (%1$d x %2$s)</string>
     <string name="train_label_currency">Rp%1$s</string>
     <string name="train_schedule_detail_price_label_your_payment">Pembayaran Anda</string>
+    <string name="train_seat_wagon_close_label">Tutup</string>
 </resources>

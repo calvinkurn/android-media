@@ -5,8 +5,10 @@ import android.os.Parcelable;
 
 import java.util.List;
 
-public class TrainWagonViewModel implements Parcelable {
+public class TrainWagonViewModel implements Parcelable{
     private String wagonCode;
+    private int maxRow;
+    private int maxColumn;
     private List<TrainSeatViewModel> seats;
 
     public TrainWagonViewModel() {
@@ -14,6 +16,8 @@ public class TrainWagonViewModel implements Parcelable {
 
     protected TrainWagonViewModel(Parcel in) {
         wagonCode = in.readString();
+        maxRow = in.readInt();
+        maxColumn = in.readInt();
         seats = in.createTypedArrayList(TrainSeatViewModel.CREATOR);
     }
 
@@ -45,6 +49,14 @@ public class TrainWagonViewModel implements Parcelable {
         this.seats = seats;
     }
 
+    public int getMaxColumn() {
+        return maxColumn;
+    }
+
+    public void setMaxColumn(int maxColumn) {
+        this.maxColumn = maxColumn;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -53,6 +65,16 @@ public class TrainWagonViewModel implements Parcelable {
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(wagonCode);
+        parcel.writeInt(maxRow);
+        parcel.writeInt(maxColumn);
         parcel.writeTypedList(seats);
+    }
+
+    public int getMaxRow() {
+        return maxRow;
+    }
+
+    public void setMaxRow(int maxRow) {
+        this.maxRow = maxRow;
     }
 }

@@ -137,8 +137,8 @@
 
             <android.support.v4.view.ViewPager
                 android:id="@+id/vp_wagon"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_500" />
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp_100" />
 
             <com.tokopedia.train.seat.presentation.widget.TrainSeatPagerIndicator
                 android:id="@+id/seat_pager_indicator"

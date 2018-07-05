@@ -3,10 +3,11 @@ package com.tokopedia.train.seat.presentation.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class TrainSeatViewModel implements Parcelable{
+public class TrainSeatViewModel implements Parcelable {
     private String column;
     private int row;
     private boolean available;
+    private boolean isEmpty;
 
     public TrainSeatViewModel() {
     }
@@ -15,6 +16,7 @@ public class TrainSeatViewModel implements Parcelable{
         column = in.readString();
         row = in.readInt();
         available = in.readByte() != 0;
+        isEmpty = in.readByte() != 0;
     }
 
     public static final Creator<TrainSeatViewModel> CREATOR = new Creator<TrainSeatViewModel>() {
@@ -58,6 +60,14 @@ public class TrainSeatViewModel implements Parcelable{
         return obj instanceof TrainSeatViewModel && ((TrainSeatViewModel) obj).getRow() == row && ((TrainSeatViewModel) obj).getColumn().equals(column);
     }
 
+    public boolean isEmpty() {
+        return isEmpty;
+    }
+
+    public void setEmpty(boolean empty) {
+        isEmpty = empty;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -68,5 +78,6 @@ public class TrainSeatViewModel implements Parcelable{
         parcel.writeString(column);
         parcel.writeInt(row);
         parcel.writeByte((byte) (available ? 1 : 0));
+        parcel.writeByte((byte) (isEmpty ? 1 : 0));
     }
 }

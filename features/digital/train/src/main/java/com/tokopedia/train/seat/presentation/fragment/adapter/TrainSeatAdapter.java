@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.tokopedia.train.seat.presentation.viewmodel.TrainSeatPassengerViewModel;
 import com.tokopedia.train.seat.presentation.viewmodel.TrainSeatViewModel;
 
 import java.util.ArrayList;
@@ -21,6 +22,8 @@ public class TrainSeatAdapter extends RecyclerView.Adapter<TrainSeatAdapter.View
     private ActionListener listener;
 
     public interface ActionListener {
+        List<TrainSeatPassengerViewModel> getPassengers();
+
         void seatClicked(TrainSeatViewModel viewModel, int top, int left, int width, int height);
     }
 
@@ -74,6 +77,9 @@ public class TrainSeatAdapter extends RecyclerView.Adapter<TrainSeatAdapter.View
             item = viewModel;
             int index = TrainSeatAdapter.this.selectedSeat.indexOf(viewModel);
             if (index != -1) {
+                if (listener != null) {
+                    labelTextView.setText("P" + listener.getPassengers().get(index).getPassengerNumber());
+                }
                 labelTextView.setTextColor(itemView.getResources().getColor(R.color.white));
                 container.setBackground(ContextCompat.getDrawable(itemView.getContext(), R.drawable.bg_train_your_choice));
             } else {
@@ -83,8 +89,9 @@ public class TrainSeatAdapter extends RecyclerView.Adapter<TrainSeatAdapter.View
                 } else {
                     container.setBackground(ContextCompat.getDrawable(itemView.getContext(), R.drawable.bg_train_filled));
                 }
+                labelTextView.setText(String.format("%d%s", viewModel.getRow(), viewModel.getColumn()));
             }
-            labelTextView.setText(String.format("%d%s", viewModel.getRow(), viewModel.getColumn()));
+
             container.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -96,6 +103,11 @@ public class TrainSeatAdapter extends RecyclerView.Adapter<TrainSeatAdapter.View
                     }
                 }
             });
+            if (viewModel.isEmpty()) {
+                container.setVisibility(View.GONE);
+            } else {
+                container.setVisibility(View.VISIBLE);
+            }
         }
     }
 }
