@@ -67,7 +67,7 @@ public class DealCategoryAdapterPresenter extends BaseDaggerPresenter<DealCatego
 
                 @Override
                 public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
-                    Type token = new TypeToken<LikeUpdateResultDomain>() {
+                    Type token = new TypeToken<DataResponse<LikeUpdateResultDomain>>() {
                     }.getType();
                     RestResponse restResponse = typeRestResponseMap.get(token);
                     DataResponse dataResponse = restResponse.getData();
@@ -115,7 +115,7 @@ public class DealCategoryAdapterPresenter extends BaseDaggerPresenter<DealCatego
 
                 @Override
                 public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
-                    Type token = new TypeToken<LikeUpdateResultDomain>() {
+                    Type token = new TypeToken<DataResponse<LikeUpdateResultDomain>>() {
                     }.getType();
                     RestResponse restResponse = typeRestResponseMap.get(token);
                     DataResponse dataResponse = restResponse.getData();

@@ -73,7 +73,7 @@ public class DealsSearchPresenter
 
             @Override
             public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
-                Type token = new TypeToken<SearchDomainModel>(){
+                Type token = new TypeToken<DataResponse<SearchDomainModel>>(){
                 }.getType();
                 RestResponse restResponse = typeRestResponseMap.get(token);
                 DataResponse dataResponse = restResponse.getData();

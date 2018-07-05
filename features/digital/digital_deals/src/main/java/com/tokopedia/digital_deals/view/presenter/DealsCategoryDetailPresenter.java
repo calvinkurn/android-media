@@ -147,28 +147,34 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
 
     public void getCategoryDetails() {
         getView().showProgressBar();
-        getCategoryDetailRequestUseCase.execute(getView().getCategoryParams(), new Subscriber<CategoryDetailsDomain>() {
-
+        getCategoryDetailRequestUseCase.setRequestParams(getView().getCategoryParams());
+        getCategoryDetailRequestUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
-                CommonUtils.dumper("enter onCompleted");
+
+                    CommonUtils.dumper("enter onCompleted");
             }
 
             @Override
             public void onError(Throwable e) {
-                CommonUtils.dumper("enter error");
-                e.printStackTrace();
-                getView().hideProgressBar();
-                NetworkErrorHelper.showEmptyState(getView().getActivity(), getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        getCategoryDetails();
-                    }
-                });
+                    CommonUtils.dumper("enter error");
+                    e.printStackTrace();
+                    getView().hideProgressBar();
+                    NetworkErrorHelper.showEmptyState(getView().getActivity(), getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
+                        @Override
+                        public void onRetryClicked() {
+                            getCategoryDetails();
+                        }
+                    });
             }
 
             @Override
-            public void onNext(CategoryDetailsDomain dealEntity) {
+            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                Type token = new TypeToken<DataResponse<CategoryDetailsDomain>>(){
+                }.getType();
+                RestResponse restResponse = typeRestResponseMap.get(token);
+                DataResponse dataResponse = restResponse.getData();
+                CategoryDetailsDomain dealEntity = (CategoryDetailsDomain) dataResponse.getData();
                 isDealsLoaded = true;
                 categoryViewModels = Utils.getSingletonInstance()
                         .convertIntoCategoryListItemsViewModel(dealEntity.getDealItems());
@@ -185,19 +191,25 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
     private void loadMoreItems() {
         isLoading = true;
 
-        getNextCategoryPageUseCase.execute(searchNextParams, new Subscriber<CategoryDetailsDomain>() {
+        getNextCategoryPageUseCase.setRequestParams(searchNextParams);
+        getNextCategoryPageUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
 
             }
 
             @Override
-            public void onError(Throwable throwable) {
+            public void onError(Throwable e) {
                 isLoading = false;
             }
 
             @Override
-            public void onNext(CategoryDetailsDomain categoryDetailsDomain) {
+            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                Type token = new TypeToken<DataResponse<CategoryDetailsDomain>>(){
+                }.getType();
+                RestResponse restResponse = typeRestResponseMap.get(token);
+                DataResponse dataResponse = restResponse.getData();
+                CategoryDetailsDomain categoryDetailsDomain = (CategoryDetailsDomain) dataResponse.getData();
                 isLoading = false;
                 ArrayList<CategoryItemsViewModel> categoryList = Utils.getSingletonInstance()
                         .convertIntoCategoryListItemsViewModel(categoryDetailsDomain.getDealItems());

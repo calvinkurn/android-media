@@ -70,7 +70,7 @@ public class DealsLocationPresenter extends BaseDaggerPresenter<DealsLocationCon
 
             @Override
             public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
-                Type token = new TypeToken<LocationDomainModel>(){
+                Type token = new TypeToken<DataResponse<LocationDomainModel>>(){
                     }.getType();
                 RestResponse restResponse = typeRestResponseMap.get(token);
                 DataResponse dataResponse = restResponse.getData();

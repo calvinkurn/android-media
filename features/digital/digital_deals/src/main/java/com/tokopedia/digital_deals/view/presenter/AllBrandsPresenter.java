@@ -132,7 +132,7 @@ public class AllBrandsPresenter extends BaseDaggerPresenter<AllBrandsContract.Vi
 
             @Override
             public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
-                Type token = new TypeToken<AllBrandsDomain>(){
+                Type token = new TypeToken<DataResponse<AllBrandsDomain>>(){
                     }.getType();
                 RestResponse restResponse = typeRestResponseMap.get(token);
                 DataResponse dataResponse = restResponse.getData();
