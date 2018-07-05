@@ -7,6 +7,7 @@ import com.tokopedia.digital.cart.listener.IBaseView;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.product.view.model.BannerData;
 import com.tokopedia.digital.product.view.model.CategoryData;
+import com.tokopedia.digital.product.view.model.GuideData;
 import com.tokopedia.digital.product.view.model.HistoryClientNumber;
 import com.tokopedia.digital.product.view.model.PulsaBalance;
 
@@ -21,6 +22,8 @@ public interface IProductDigitalView extends IBaseView {
     void renderBannerListData(String title, List<BannerData> bannerDataList);
 
     void renderOtherBannerListData(String title, List<BannerData> otherBannerDataList);
+
+    void renderGuideListData(List<GuideData> guideDataList);
 
     void renderStateSelectedAllData();
 
@@ -44,6 +47,8 @@ public interface IProductDigitalView extends IBaseView {
     List<BannerData> getBannerDataListState();
 
     List<BannerData> getOtherBannerDataListState();
+
+    List<GuideData> getGuideDataListState();
 
     HistoryClientNumber getHistoryClientNumberState();
 
@@ -77,6 +82,6 @@ public interface IProductDigitalView extends IBaseView {
 
     boolean isDigitalSmartcardEnabled();
 
-    void renderPromoPanduanTab();
+    void renderPromoPanduanTab(boolean shouldShowPanduan);
 
 }

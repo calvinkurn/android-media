@@ -38,11 +38,10 @@ public class DigitalPromoFragment extends Fragment implements BannerAdapter.Acti
     private static final String CLIP_DATA_LABEL_VOUCHER_CODE_DIGITAL =
             "CLIP_DATA_LABEL_VOUCHER_CODE_DIGITAL";
 
-    RecyclerView rvPromo;
+    private RecyclerView rvPromo;
 
-    BannerAdapter bannerAdapter;
-    Context context;
-    DigitalPromoConnector digitalPromoConnector;
+    private BannerAdapter bannerAdapter;
+    private DigitalPromoConnector digitalPromoConnector;
 
     private String voucherCodeCopiedState;
 
@@ -53,8 +52,6 @@ public class DigitalPromoFragment extends Fragment implements BannerAdapter.Acti
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        context = container.getContext();
-
         View view = inflater.inflate(R.layout.fragment_digital_promo, container, false);
         rvPromo = view.findViewById(R.id.rv_banner);
         return view;
@@ -73,7 +70,7 @@ public class DigitalPromoFragment extends Fragment implements BannerAdapter.Acti
     }
 
     private void initView() {
-        bannerAdapter = new BannerAdapter(context, this);
+        bannerAdapter = new BannerAdapter(getActivity(), this);
         rvPromo.setLayoutManager(new LinearLayoutManagerNonScroll(getActivity()));
         rvPromo.setAdapter(bannerAdapter);
     }
@@ -132,10 +129,10 @@ public class DigitalPromoFragment extends Fragment implements BannerAdapter.Acti
     private void openPromo(String url, List<String> linkSegment) {
         IDigitalModuleRouter router = ((IDigitalModuleRouter) getActivity().getApplication());
         if (linkSegment.size() == 2) {
-            Intent intent = router.getPromoDetailIntent(context, linkSegment.get(1));
+            Intent intent = router.getPromoDetailIntent(getActivity(), linkSegment.get(1));
             startActivity(intent);
         } else if (linkSegment.size() == 1) {
-            FirebaseRemoteConfigImpl remoteConfig = new FirebaseRemoteConfigImpl(context);
+            FirebaseRemoteConfigImpl remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
             boolean remoteConfigEnable = remoteConfig.getBoolean(
                     TkpdCache.RemoteConfigKey.MAINAPP_NATIVE_PROMO_LIST
             );

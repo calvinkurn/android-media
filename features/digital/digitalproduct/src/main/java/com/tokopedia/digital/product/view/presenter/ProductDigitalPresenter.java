@@ -36,6 +36,7 @@ import com.tokopedia.digital.product.service.USSDAccessibilityService;
 import com.tokopedia.digital.product.view.listener.IProductDigitalView;
 import com.tokopedia.digital.product.view.model.BannerData;
 import com.tokopedia.digital.product.view.model.CategoryData;
+import com.tokopedia.digital.product.view.model.GuideData;
 import com.tokopedia.digital.product.view.model.HistoryClientNumber;
 import com.tokopedia.digital.product.view.model.Operator;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
@@ -127,10 +128,11 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
         CategoryData categoryData = view.getCategoryDataState();
         List<BannerData> bannerDataList = view.getBannerDataListState();
         List<BannerData> otherBannerDataList = view.getOtherBannerDataListState();
+        List<GuideData> guideDataList = view.getGuideDataListState();
         HistoryClientNumber historyClientNumber = view.getHistoryClientNumberState();
         if (categoryData != null) {
             renderCategoryDataAndBannerToView(
-                    categoryData, bannerDataList, otherBannerDataList, historyClientNumber
+                    categoryData, bannerDataList, otherBannerDataList, guideDataList, historyClientNumber
             );
             view.renderStateSelectedAllData();
         }
@@ -183,6 +185,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
                 CategoryData categoryData = productDigitalData.getCategoryData();
                 List<BannerData> bannerDataList = productDigitalData.getBannerDataList();
                 List<BannerData> otherBannerDataList = productDigitalData.getOtherBannerDataList();
+                List<GuideData> guideDataList = productDigitalData.getGuideDataList();
                 HistoryClientNumber historyClientNumber =
                         productDigitalData.getHistoryClientNumber();
                 if (historyClientNumber.getLastOrderClientNumber() == null) {
@@ -207,7 +210,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
                 }
 
                 renderCategoryDataAndBannerToView(
-                        categoryData, bannerDataList, otherBannerDataList, historyClientNumber
+                        categoryData, bannerDataList, otherBannerDataList, guideDataList, historyClientNumber
                 );
             }
         };
@@ -221,6 +224,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
     private void renderCategoryDataAndBannerToView(CategoryData categoryData,
                                                    List<BannerData> bannerDataList,
                                                    List<BannerData> otherBannerDataList,
+                                                   List<GuideData> guideDataList,
                                                    HistoryClientNumber historyClientNumber) {
         this.categoryData = categoryData;
 
@@ -232,6 +236,8 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
             view.renderCategory(digitalProductView, categoryData, historyClientNumber);
 
             if (!GlobalConfig.isSellerApp()) {
+                view.renderPromoPanduanTab(guideDataList.size() > 0);
+
                 view.renderBannerListData(
                         categoryData.getName(),
                         bannerDataList != null ? bannerDataList : new ArrayList<BannerData>()
@@ -239,6 +245,9 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
                 view.renderOtherBannerListData(
                         view.getStringFromResource(R.string.other_promo),
                         otherBannerDataList != null ? otherBannerDataList : new ArrayList<BannerData>()
+                );
+                view.renderGuideListData(
+                        guideDataList != null ? guideDataList : new ArrayList<>()
                 );
             }
         } else {

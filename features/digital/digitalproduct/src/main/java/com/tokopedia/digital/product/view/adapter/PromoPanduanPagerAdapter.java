@@ -11,6 +11,7 @@ import com.tokopedia.digital.product.view.compoundview.DigitalWrapContentViewPag
 import com.tokopedia.digital.product.view.fragment.DigitalPanduanFragment;
 import com.tokopedia.digital.product.view.fragment.DigitalPromoFragment;
 import com.tokopedia.digital.product.view.model.BannerData;
+import com.tokopedia.digital.product.view.model.GuideData;
 
 import java.util.List;
 
@@ -19,20 +20,25 @@ import java.util.List;
  */
 
 public class PromoPanduanPagerAdapter extends FragmentStatePagerAdapter
-        implements DigitalPromoFragment.DigitalPromoConnector{
+        implements DigitalPromoFragment.DigitalPromoConnector, DigitalPanduanFragment.DigitalPanduanConnector{
 
     private Context context;
     private int currentPosition = -1;
+    private int tabCount = 2;
 
     private DigitalPromoFragment digitalPromoFragment;
+    private DigitalPanduanFragment digitalPanduanFragment;
+
     private String bannerDataTitle;
     private List<BannerData> bannerDataList;
     private String otherBannerDataTitle;
     private List<BannerData> otherBannerDataList;
+    private List<GuideData> guideDataList;
 
-    public PromoPanduanPagerAdapter(FragmentManager fm, Context context) {
+    public PromoPanduanPagerAdapter(FragmentManager fm, Context context, int tabCount) {
         super(fm);
         this.context = context;
+        this.tabCount = tabCount;
     }
 
     @Override
@@ -68,7 +74,9 @@ public class PromoPanduanPagerAdapter extends FragmentStatePagerAdapter
                 digitalPromoFragment.setDigitalPromoConnector(this);
                 return digitalPromoFragment;
             case 1 :
-                return DigitalPanduanFragment.createInstance();
+                digitalPanduanFragment = DigitalPanduanFragment.createInstance();
+                digitalPanduanFragment.setConnector(this);
+                return digitalPanduanFragment;
             default :
                 return null;
         }
@@ -76,7 +84,7 @@ public class PromoPanduanPagerAdapter extends FragmentStatePagerAdapter
 
     @Override
     public int getCount() {
-        return 2;
+        return tabCount;
     }
 
     public void setBannerDataList(String bannerDataTitle, List<BannerData> bannerDataList) {
@@ -87,6 +95,10 @@ public class PromoPanduanPagerAdapter extends FragmentStatePagerAdapter
     public void setOtherBannerDataList(String bannerDataTitle, List<BannerData> bannerDataList) {
         this.otherBannerDataTitle = bannerDataTitle;
         this.otherBannerDataList = bannerDataList;
+    }
+
+    public void setGuideDataList(List<GuideData> guideDataList) {
+        this.guideDataList = guideDataList;
     }
 
     @Override
@@ -107,5 +119,10 @@ public class PromoPanduanPagerAdapter extends FragmentStatePagerAdapter
     @Override
     public List<BannerData> getOtherBannerDataList() {
         return otherBannerDataList;
+    }
+
+    @Override
+    public List<GuideData> getGuideDataList() {
+        return guideDataList;
     }
 }

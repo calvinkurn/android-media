@@ -85,6 +85,7 @@ import com.tokopedia.digital.product.view.model.BannerData;
 import com.tokopedia.digital.product.view.model.CategoryData;
 import com.tokopedia.digital.product.view.model.ClientNumber;
 import com.tokopedia.digital.product.view.model.ContactData;
+import com.tokopedia.digital.product.view.model.GuideData;
 import com.tokopedia.digital.product.view.model.HistoryClientNumber;
 import com.tokopedia.digital.product.view.model.Operator;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
@@ -136,6 +137,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     private static final String EXTRA_STATE_CATEGORY_DATA = "EXTRA_STATE_CATEGORY_DATA";
     private static final String EXTRA_STATE_BANNER_LIST_DATA = "EXTRA_STATE_BANNER_LIST_DATA";
     private static final String EXTRA_STATE_OTHER_BANNER_LIST_DATA = "EXTRA_STATE_OTHER_BANNER_LIST_DATA";
+    private static final String EXTRA_STATE_GUIDE_LIST_DATA = "EXTRA_STATE_GUIDE_LIST_DATA";
     private static final String EXTRA_STATE_CHECKOUT_PASS_DATA = "EXTRA_STATE_CHECKOUT_PASS_DATA";
     private static final String EXTRA_STATE_INSTANT_CHECKOUT_CHECKED =
             "EXTRA_STATE_INSTANT_CHECKOUT_CHECKED";
@@ -173,6 +175,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     private CategoryData categoryDataState;
     private List<BannerData> bannerDataListState;
     private List<BannerData> otherBannerDataListState;
+    private List<GuideData> guideDataListState;
     private HistoryClientNumber historyClientNumberState;
     private String voucherCodeCopiedState;
     private DigitalCheckoutPassData digitalCheckoutPassDataState;
@@ -259,6 +262,9 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         state.putParcelableArrayList(
                 EXTRA_STATE_OTHER_BANNER_LIST_DATA, (ArrayList<? extends Parcelable>) otherBannerDataListState
         );
+        state.putParcelableArrayList(
+                EXTRA_STATE_GUIDE_LIST_DATA, (ArrayList<? extends Parcelable>) guideDataListState
+        );
         state.putParcelable(EXTRA_STATE_HISTORY_CLIENT_NUMBER, historyClientNumberState);
         state.putString(EXTRA_STATE_VOUCHER_CODE_COPIED, voucherCodeCopiedState);
         state.putParcelable(EXTRA_STATE_CHECKOUT_PASS_DATA, digitalCheckoutPassDataState);
@@ -274,6 +280,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         categoryDataState = savedState.getParcelable(EXTRA_STATE_CATEGORY_DATA);
         bannerDataListState = savedState.getParcelableArrayList(EXTRA_STATE_BANNER_LIST_DATA);
         otherBannerDataListState = savedState.getParcelableArrayList(EXTRA_STATE_OTHER_BANNER_LIST_DATA);
+        guideDataListState = savedState.getParcelableArrayList(EXTRA_STATE_GUIDE_LIST_DATA);
         historyClientNumberState = savedState.getParcelable(EXTRA_STATE_HISTORY_CLIENT_NUMBER);
         voucherCodeCopiedState = savedState.getString(EXTRA_STATE_VOUCHER_CODE_COPIED);
         digitalCheckoutPassDataState = savedState.getParcelable(EXTRA_STATE_CHECKOUT_PASS_DATA);
@@ -359,7 +366,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     protected void setViewListener() {
-        renderPromoPanduanTab();
         checkETollBalanceView.setListener(new CheckETollBalanceView.OnCheckBalanceClickListener() {
             @Override
             public void onClick() {
@@ -398,6 +404,12 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         String formattedTitle = getResources().getString(R.string.promo_category, title);
         this.otherBannerDataListState = getBannerDataWithoutEmptyItem(otherBannerDataList);
         promoPanduanPagerAdapter.setOtherBannerDataList(formattedTitle, otherBannerDataList);
+    }
+
+    @Override
+    public void renderGuideListData(List<GuideData> guideDataList) {
+        this.guideDataListState = guideDataList;
+        promoPanduanPagerAdapter.setGuideDataList(guideDataList);
     }
 
     private List<BannerData> getBannerDataWithoutEmptyItem(List<BannerData> bannerDataList) {
@@ -515,6 +527,11 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     @Override
     public List<BannerData> getOtherBannerDataListState() {
         return otherBannerDataListState;
+    }
+
+    @Override
+    public List<GuideData> getGuideDataListState() {
+        return guideDataListState;
     }
 
     @Override
@@ -1224,15 +1241,16 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     @Override
-    public void renderPromoPanduanTab() {
+    public void renderPromoPanduanTab(boolean shouldShowPanduan) {
         promoTabLayout.setupWithViewPager(promoViewPager);
         promoViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(promoTabLayout));
-        promoViewPager.setAdapter(getViewPagerAdapter());
+        promoViewPager.setAdapter(getViewPagerAdapter(shouldShowPanduan));
         promoViewPager.setCurrentItem(0);
     }
 
-    private PagerAdapter getViewPagerAdapter() {
-        promoPanduanPagerAdapter = new PromoPanduanPagerAdapter(getFragmentManager(), context);
+    private PagerAdapter getViewPagerAdapter(boolean shouldShowPanduan) {
+        promoPanduanPagerAdapter = new PromoPanduanPagerAdapter(getFragmentManager(), context,
+                shouldShowPanduan ? 2 : 1);
         return promoPanduanPagerAdapter;
     }
 
