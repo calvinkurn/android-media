@@ -737,6 +737,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         courierBottomsheet.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface dialogInterface) {
+                checkoutAnalyticsCourierSelection.sendScreenName(
+                        getActivity(), ConstantTransactionAnalytics.ScreenName.SELECT_COURIER
+                );
                 courierBottomsheet.updateHeight();
                 checkoutAnalyticsCourierSelection.eventImpressionCourierSelectionImpressionCourierSelection();
             }

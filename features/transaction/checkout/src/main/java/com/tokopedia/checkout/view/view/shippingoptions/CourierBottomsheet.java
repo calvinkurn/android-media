@@ -2,6 +2,7 @@ package com.tokopedia.checkout.view.view.shippingoptions;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
@@ -105,6 +106,7 @@ public class CourierBottomsheet extends BottomSheetDialog implements CourierCont
                 checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickXOnCourierOption();
             }
         });
+
     }
 
     public void updateHeight() {
@@ -236,11 +238,5 @@ public class CourierBottomsheet extends BottomSheetDialog implements CourierCont
         void onShipmentItemClick(CourierItemData courierItemData, int cartItemPosition);
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        checkoutAnalyticsCourierSelection.sendScreenName(
-                getOwnerActivity(), ConstantTransactionAnalytics.ScreenName.SELECT_COURIER
-        );
-    }
+
 }
