@@ -593,6 +593,7 @@ public class InboxChatFragment extends BaseDaggerFragment
                     public void run() {
                         adapter.moveToTop(String.valueOf(response.getData().getMsgId()),
                                 response.getData().getMessage().getCensoredReply(), response, true);
+                        reloadNotifDrawer();
                     }
                 });
                 break;
@@ -632,15 +633,7 @@ public class InboxChatFragment extends BaseDaggerFragment
 
     @Override
     public void onReceiveMessage(BaseChatViewModel message) {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if(adapter != null && !TextUtils.isEmpty(message.getMessageId())) {
-                    adapter.moveToTop(message.getMessageId(),
-                            message.getMessage(), null, true);
-                }
-            }
-        });
+        //IGNORE
     }
 
 
