@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import com.tkpd.library.ui.view.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.settingbank.R
 import com.tokopedia.settingbank.addeditaccount.analytics.AddEditBankAnalytics.Companion.SCREEN_NAME_CHOOSE_BANK
 import com.tokopedia.settingbank.addeditaccount.view.listener.ChooseBankContract
@@ -28,6 +29,7 @@ class ChooseBankFragment : ChooseBankContract.View, BankListener, BaseDaggerFrag
     lateinit var linearLayoutManager: LinearLayoutManager
     lateinit var presenter: ChooseBankPresenter
 
+    var query = ""
 
     override fun getScreenName(): String {
         return SCREEN_NAME_CHOOSE_BANK
@@ -57,16 +59,6 @@ class ChooseBankFragment : ChooseBankContract.View, BankListener, BaseDaggerFrag
 
         bank_list_rv.layoutManager = linearLayoutManager
         bank_list_rv.adapter = adapter
-
-//        bank_list_rv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-//            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
-//                super.onScrolled(recyclerView, dx, dy)
-//                val index = linearLayoutManager.findLastVisibleItemPosition()
-//                if (adapter.checkLoadMore(index)) {
-//                    //TODO : LOAD MORE
-//                }
-//            }
-//        })
     }
 
     override fun onBankSelected(adapterPosition: Int, element: BankViewModel?) {
@@ -77,18 +69,30 @@ class ChooseBankFragment : ChooseBankContract.View, BankListener, BaseDaggerFrag
 
 
     override fun showLoading() {
-
+        search_input_view.visibility = View.GONE
+        bank_list_rv.visibility = View.GONE
+        progress_bar.visibility = View.VISIBLE
     }
 
     override fun hideLoading() {
-
+        search_input_view.visibility = View.VISIBLE
+        bank_list_rv.visibility = View.VISIBLE
+        progress_bar.visibility = View.GONE
     }
 
     override fun onErrorGetBankList(errorMessage: String?) {
-
+        if(!errorMessage.isNullOrBlank()) {
+            NetworkErrorHelper.showEmptyState(context, view, errorMessage, {
+                presenter.getBankList("")
+            })
+        }else{
+            NetworkErrorHelper.showEmptyState(context, view, {
+                presenter.getBankList("")
+            })
+        }
     }
 
     override fun onSuccessGetBankList(listBank: ArrayList<BankViewModel>) {
-       adapter.addList(listBank)
+        adapter.addList(listBank)
     }
 }
