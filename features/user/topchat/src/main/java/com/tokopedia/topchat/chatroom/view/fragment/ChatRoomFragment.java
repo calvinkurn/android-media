@@ -519,7 +519,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 } else {
                     ((TopChatRouter) getActivity().getApplication()).openRedirectUrl(getActivity
                             (),url);
-//                    startActivity(ChatMarketingThumbnailActivity.getCallingIntent(getActivity(), url));
                 }
             }
         }
