@@ -930,7 +930,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToLink(String link) {
-        ((FeedModuleRouter) getActivity().getApplication()).openRedirectUrl(getActivity(), link);
+        if (!TextUtils.isEmpty(link)) {
+            ((FeedModuleRouter) getActivity().getApplication()).openRedirectUrl(getActivity(), link);
+        }
     }
 
     @Override
