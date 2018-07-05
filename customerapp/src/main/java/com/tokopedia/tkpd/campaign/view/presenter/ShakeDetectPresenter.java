@@ -13,6 +13,7 @@ import com.tokopedia.core.network.exception.ServerErrorException;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.campaign.analytics.CampaignTracking;
@@ -227,7 +228,12 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
     public void onDisableShakeShake() {
         //disable the shake shake
         ShakeDetectManager.getShakeDetectManager().disableShakeShake();
-        getView().getActivity().startActivity(ManageGeneral.getCallingIntent(getView().getActivity(), ManageGeneral.TAB_POSITION_MANAGE_APP));
+        if(SessionHandler.isV4Login(getView().getActivity())) {
+            getView().getActivity().startActivity(ManageGeneral.getCallingIntent(getView().getActivity(), ManageGeneral.TAB_POSITION_MANAGE_APP));
+
+        }else {
+            getView().showMessage("Anda bisa menghidupkan kembali fitur shake-shake di pengaturan aplikasi setelah masuk");
+        }
         getView().finish();
     }
 
