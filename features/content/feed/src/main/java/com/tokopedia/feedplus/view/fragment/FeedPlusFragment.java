@@ -113,6 +113,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private static final int OPEN_KOL_PROFILE_FROM_RECOMMENDATION = 83;
     private static final int DEFAULT_VALUE = -1;
 
+    private static final String TAG = FeedPlusFragment.class.getSimpleName();
     private static final String ARGS_ROW_NUMBER = "row_number";
     private static final String ARGS_ITEM_ROW_NUMBER = "item_row_number";
     private static final String FIRST_CURSOR = "FIRST_CURSOR";
@@ -130,6 +131,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private TkpdProgressDialog progressDialog;
     private RemoteConfig remoteConfig;
     private AbstractionRouter abstractionRouter;
+    private FeedModuleRouter feedModuleRouter;
 
     @Inject
     FeedPlusPresenter presenter;
@@ -138,8 +140,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private FeedPlusAdapter adapter;
     private CallbackManager callbackManager;
     private TopAdsInfoBottomSheet infoBottomSheet;
-    private static final String TOPADS_ITEM = "4,1";
-    private static final String TAG = FeedPlusFragment.class.getSimpleName();
     private String firstCursor = "";
     private int loginIdInt;
 
@@ -200,6 +200,13 @@ public class FeedPlusFragment extends BaseDaggerFragment
         } else {
             throw new IllegalStateException("Application must implement " +
                     AbstractionRouter.class.getSimpleName());
+        }
+
+        if (getActivity().getApplication() instanceof FeedModuleRouter) {
+            feedModuleRouter = (FeedModuleRouter) getActivity().getApplication();
+        } else {
+            throw new IllegalStateException("Application must implement " +
+                    FeedModuleRouter.class.getSimpleName());
         }
 
         String loginIdString = getUserSession().getUserId();
@@ -460,7 +467,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToShopDetail(int page, int rowNumber, Integer shopId, String url) {
-        Intent intent = ((FeedModuleRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), String.valueOf(shopId));
+        Intent intent = feedModuleRouter.getShopPageIntent(getActivity(), String.valueOf(shopId));
         startActivity(intent);
         UnifyTracking.eventFeedViewShop(String.valueOf(shopId), getFeedAnalyticsHeader(page, rowNumber) + FeedTrackingEventLabel.View.FEED_SHOP);
     }
@@ -718,7 +725,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onShopItemClicked(int position, Shop shop) {
-        Intent intent = ((FeedModuleRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), shop.getId());
+        Intent intent = feedModuleRouter.getShopPageIntent(getActivity(), shop.getId());
         startActivity(intent);
         UnifyTracking.eventFeedClickShop(shop.getId(), FeedTrackingEventLabel.Click.TOP_ADS_SHOP);
   
@@ -811,7 +818,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                                 .OFFICIAL_STORE_BRAND +
                         officialStoreViewModel.getShopName());
 
-        Intent intent = ((FeedModuleRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), String.valueOf(officialStoreViewModel.getShopId()));
+        Intent intent = feedModuleRouter.getShopPageIntent(getActivity(), String.valueOf(officialStoreViewModel.getShopId()));
         startActivity(intent);
     }
 
@@ -869,7 +876,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onContentProductLinkClicked(String url) {
-        ((FeedModuleRouter) getActivity().getApplication()).openRedirectUrl(getActivity(), url);
+        if (!TextUtils.isEmpty(url)) {
+            feedModuleRouter.openRedirectUrl(getActivity(), url);
+        }
     }
 
     @Override
@@ -890,7 +899,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToKolProfileUsingApplink(int rowNumber, String applink) {
-        ((FeedModuleRouter) getActivity().getApplication()).openRedirectUrl(getActivity(), applink);
+        feedModuleRouter.openRedirectUrl(getActivity(), applink);
     }
 
     @Override
@@ -921,17 +930,14 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToKolComment(int rowNumber, int id) {
-        if (getActivity().getApplication() instanceof FeedModuleRouter) {
-            FeedModuleRouter router = ((FeedModuleRouter) getActivity().getApplication());
-            Intent intent = router.getKolCommentActivity(getContext(), id, rowNumber);
-            startActivityForResult(intent, OPEN_KOL_COMMENT);
-        }
+        Intent intent = feedModuleRouter.getKolCommentActivity(getContext(), id, rowNumber);
+        startActivityForResult(intent, OPEN_KOL_COMMENT);
     }
 
     @Override
     public void onGoToLink(String link) {
         if (!TextUtils.isEmpty(link)) {
-            ((FeedModuleRouter) getActivity().getApplication()).openRedirectUrl(getActivity(), link);
+            feedModuleRouter.openRedirectUrl(getActivity(), link);
         }
     }
 
@@ -1091,7 +1097,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToLogin() {
-        Intent intent = ((FeedModuleRouter) getActivity().getApplication()).getLoginIntent(getContext());
+        Intent intent = feedModuleRouter.getLoginIntent(getContext());
         startActivity(intent);
     }
 
