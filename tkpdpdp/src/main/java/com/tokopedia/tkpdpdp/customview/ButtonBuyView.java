@@ -186,8 +186,6 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
 
     public void updateButtonForVariantProduct(boolean isBuyable, ProductDetailData data) {
         if (isBuyable && data.getShopInfo().getShopStatus() == 1) {
-            containerNewButtonBuy.setVisibility(VISIBLE);
-            containerButtonBuy.setVisibility(GONE);
             if (data.getPreOrder() != null && data.getPreOrder().getPreorderStatus().equals("1")
                     && !data.getPreOrder().getPreorderStatus().equals("0")
                     && !data.getPreOrder().getPreorderProcessTime().equals("0")
