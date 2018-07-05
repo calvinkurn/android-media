@@ -8,9 +8,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.thankyou.data.pojo.digital.DigitalDataWrapper;
 import com.tokopedia.tkpd.thankyou.data.pojo.digital.response.Product;
 import com.tokopedia.tkpd.thankyou.data.pojo.digital.response.PurchaseData;
-
 import java.util.HashMap;
-
 import retrofit2.Response;
 import rx.functions.Func1;
 
@@ -86,14 +84,12 @@ public class DigitalTrackerMapper implements Func1<Response<DigitalDataWrapper<P
 
     private BranchIOPayment getTrackignBranchIOData(PurchaseData data) {
         BranchIOPayment branchIOPayment = new BranchIOPayment();
-
         branchIOPayment.setPaymentId(String.valueOf(data.getPaymentId()));
         if (isActionFieldValid(data)) {
             branchIOPayment.setShipping(DEFAULT_DIGITAL_SHIPPING);
             branchIOPayment.setRevenue(String.valueOf(Integer.parseInt(data.getEcommerce().getPurchase().getActionField().getRevenue())));
             branchIOPayment.setOrderId(data.getEcommerce().getPurchase().getActionField().getId());
         }
-
         branchIOPayment.setProductType(BranchSdkUtils.PRODUCTTYPE_DIGITAL);
         if (isPurchaseValid(data) && data.getEcommerce().getPurchase().getProducts() != null) {
             for (Product product : data.getEcommerce().getPurchase().getProducts()) {

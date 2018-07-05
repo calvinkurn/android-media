@@ -163,14 +163,12 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
 
     private BranchIOPayment getTrackignBranchIOData(OrderData orderData) {
         BranchIOPayment branchIOPayment = new BranchIOPayment();
-
         branchIOPayment.setPaymentId(String.valueOf(paymentData.getPaymentId()));
         branchIOPayment.setOrderId(String.valueOf(orderData.getOrderId()));
         branchIOPayment.setShipping(String.valueOf((int)orderData.getShippingPrice()));
         branchIOPayment.setRevenue(String.valueOf((int)paymentData.getPaymentAmount()));
         branchIOPayment.setProductType(BranchSdkUtils.PRODUCTTYPE_MARKETPLACE);
         branchIOPayment.setItemPrice(String.valueOf(orderData.getItemPrice()));
-
         for (OrderDetail orderDetail : orderData.getOrderDetail()) {
             HashMap<String, String> product = new HashMap<>();
             product.put(BranchIOPayment.KEY_ID, String.valueOf(orderDetail.getProductId()));
@@ -179,7 +177,6 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
             product.put(BranchIOPayment.KEY_QTY, String.valueOf(orderDetail.getQuantity()));
             branchIOPayment.setProduct(product);
         }
-
         return branchIOPayment;
     }
 }
