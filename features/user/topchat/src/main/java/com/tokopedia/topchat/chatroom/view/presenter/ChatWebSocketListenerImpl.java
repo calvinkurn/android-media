@@ -19,10 +19,17 @@ public class ChatWebSocketListenerImpl extends WebSocketListener {
     private static final int NORMAL_CLOSURE_STATUS = 1000;
     private final WebSocketInterface listener;
     private WebSocketMapper webSocketMapper;
-
+    private boolean isChatList = false;
     public ChatWebSocketListenerImpl(WebSocketInterface webSocketInterface, WebSocketMapper webSocketMapper) {
         listener = webSocketInterface;
         this.webSocketMapper = webSocketMapper;
+    }
+
+    public ChatWebSocketListenerImpl(WebSocketInterface webSocketInterface, WebSocketMapper
+            webSocketMapper, boolean isChatList) {
+        listener = webSocketInterface;
+        this.webSocketMapper = webSocketMapper;
+        this.isChatList = isChatList;
     }
 
     @Override
@@ -34,7 +41,7 @@ public class ChatWebSocketListenerImpl extends WebSocketListener {
     public void onMessage(WebSocket webSocket, String text) {
 
         BaseChatViewModel message = webSocketMapper.map(text);
-        if (message != null ) {
+        if (message != null && !isChatList) {
             listener.onReceiveMessage(message);
         } else {
             WebSocketResponse response = process(text);
