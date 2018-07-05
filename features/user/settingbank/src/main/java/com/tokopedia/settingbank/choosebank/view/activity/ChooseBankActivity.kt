@@ -22,6 +22,8 @@ class ChooseBankActivity : BaseSimpleActivity() {
     }
 
     companion object {
+        val PARAM_RESULT_DATA: String? = "RESULT_DATA"
+
         fun createIntentChooseBank(context: Context): Intent {
             var intent = Intent(context, ChooseBankActivity::class.java)
             return intent

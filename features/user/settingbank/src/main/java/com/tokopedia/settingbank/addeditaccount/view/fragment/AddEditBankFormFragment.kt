@@ -23,6 +23,7 @@ import com.tokopedia.settingbank.addeditaccount.view.presenter.AddEditBankPresen
 import com.tokopedia.settingbank.addeditaccount.view.viewmodel.BankFormModel
 import com.tokopedia.settingbank.banklist.data.SettingBankUrl
 import com.tokopedia.settingbank.choosebank.view.activity.ChooseBankActivity
+import com.tokopedia.settingbank.choosebank.view.viewmodel.BankViewModel
 import kotlinx.android.synthetic.main.fragment_add_edit_bank_form.*
 
 /**
@@ -61,6 +62,7 @@ class AddEditBankFormFragment : AddEditBankContract.View,
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
         setMode()
+
         submit_button.setOnClickListener({
             setupBankFormModel()
             if (!bankFormModel.status.isBlank()) {
@@ -70,6 +72,7 @@ class AddEditBankFormFragment : AddEditBankContract.View,
                     presenter.editBank(bankFormModel)
             }
         })
+
         bank_name_edit_text.setOnClickListener({
             goToAddBank()
         })
@@ -118,12 +121,14 @@ class AddEditBankFormFragment : AddEditBankContract.View,
         if (activity.intent.getStringExtra(AddEditBankActivity.Companion.PARAM_ACTION) == BankFormModel.Companion.STATUS_ADD) {
             activity.title = getString(R.string.title_add_bank)
             bankFormModel.status = BankFormModel.Companion.STATUS_ADD
+            disableSubmitButton()
         } else {
             activity.title = getString(R.string.title_edit_bank)
             bankFormModel = activity.intent.getParcelableExtra(AddEditBankActivity.Companion.PARAM_DATA)
             account_name_edit_text.setText(bankFormModel.accountName)
             account_number_edit_text.setText(bankFormModel.accountNumber)
             bank_name_edit_text.setText(bankFormModel.bankName)
+            checkIsValidForm()
         }
     }
 
@@ -266,8 +271,22 @@ class AddEditBankFormFragment : AddEditBankContract.View,
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CHOOSE_BANK && resultCode == Activity.RESULT_OK) {
-            //TODO Add Bank Name to edit text
+        try {
+            if (requestCode == REQUEST_CHOOSE_BANK
+                    && resultCode == Activity.RESULT_OK
+                    && data != null
+                    && data.extras != null
+                    && data.extras.getParcelable<BankViewModel>(ChooseBankActivity.PARAM_RESULT_DATA) != null
+            ) {
+                val selectedModel = data.extras.getParcelable<BankViewModel>(ChooseBankActivity
+                        .PARAM_RESULT_DATA)
+                bankFormModel.bankId = selectedModel.bankId!!
+                bankFormModel.bankName = selectedModel.bankName!!
+                bank_name_edit_text.setText(selectedModel.bankName)
+                checkIsValidForm()
+            }
+        } catch (e: NullPointerException) {
+            e.printStackTrace()
         }
     }
 

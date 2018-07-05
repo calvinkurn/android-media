@@ -36,7 +36,6 @@
             android:id="@+id/bank_name_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="asd"
             android:clickable="false"
             android:focusable="false"
             android:singleLine="true"

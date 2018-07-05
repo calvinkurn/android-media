@@ -1,5 +1,7 @@
 package com.tokopedia.settingbank.choosebank.view.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +16,7 @@ import com.tokopedia.settingbank.R
 import com.tokopedia.settingbank.addeditaccount.analytics.AddEditBankAnalytics.Companion.SCREEN_NAME_CHOOSE_BANK
 import com.tokopedia.settingbank.addeditaccount.view.listener.ChooseBankContract
 import com.tokopedia.settingbank.choosebank.di.ChooseBankDependencyInjector
+import com.tokopedia.settingbank.choosebank.view.activity.ChooseBankActivity
 import com.tokopedia.settingbank.choosebank.view.adapter.BankAdapter
 import com.tokopedia.settingbank.choosebank.view.adapter.BankTypeFactoryImpl
 import com.tokopedia.settingbank.choosebank.view.listener.BankListener
@@ -68,8 +71,12 @@ class ChooseBankFragment : ChooseBankContract.View, BankListener, SearchInputVie
 
 
     override fun onBankSelected(adapterPosition: Int, element: BankViewModel?) {
-        //TODO SET RESULT
         adapter.setSelected(adapterPosition)
+        val intent = Intent()
+        val bundle = Bundle()
+        bundle.putParcelable(ChooseBankActivity.Companion.PARAM_RESULT_DATA, element)
+        intent.putExtras(bundle)
+        activity.setResult(Activity.RESULT_OK, intent)
         activity.finish()
     }
 
@@ -106,7 +113,7 @@ class ChooseBankFragment : ChooseBankContract.View, BankListener, SearchInputVie
     }
 
     override fun onSearchSubmitted(query: String) {
-        if(!query.isBlank()) {
+        if (!query.isBlank()) {
             KeyboardHandler.DropKeyboard(context, view)
             presenter.searchBank(query)
         }
@@ -127,5 +134,10 @@ class ChooseBankFragment : ChooseBankContract.View, BankListener, SearchInputVie
 
     override fun onEmptySearchBank() {
         adapter.showSearchNotFound()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        presenter.detachView()
     }
 }
