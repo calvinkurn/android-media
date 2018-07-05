@@ -40,8 +40,8 @@ public class TrainSearchPresenter extends BaseDaggerPresenter<TrainSearchContrac
     }
 
     @Override
-    public void getTrainSchedules(final int scheduleVariant, String arrivalTimeDepartureTripSelected) {
-        getScheduleUseCase.setScheduleVariant(scheduleVariant);
+    public void getTrainSchedules() {
+        getScheduleUseCase.setScheduleVariant(getView().getScheduleVariantSelected());
         getScheduleUseCase.execute(getView().getRequestParam(),
                 new Subscriber<List<AvailabilityKeySchedule>>() {
                     @Override
@@ -61,17 +61,16 @@ public class TrainSearchPresenter extends BaseDaggerPresenter<TrainSearchContrac
                         if (availabilityKeySchedules.isEmpty()) {
                             getView().showEmptyResult();
                         } else {
-                            getAvailabilitySchedule(availabilityKeySchedules, scheduleVariant, arrivalTimeDepartureTripSelected);
+                            getAvailabilitySchedule(availabilityKeySchedules);
                         }
                     }
                 });
     }
 
-    private void getAvailabilitySchedule(List<AvailabilityKeySchedule> availabilityKeySchedules, int scheduleVariant,
-                                         String arrivalTimeDepartureTripSelected) {
+    private void getAvailabilitySchedule(List<AvailabilityKeySchedule> availabilityKeySchedules) {
         getAvailabilityScheduleUseCase.setAvailabilityKeySchedules(availabilityKeySchedules);
-        getAvailabilityScheduleUseCase.setArrivalTimeDepartureTripSelected(arrivalTimeDepartureTripSelected);
-        getAvailabilityScheduleUseCase.setScheduleVariant(scheduleVariant);
+        getAvailabilityScheduleUseCase.setArrivalTimeDepartureTripSelected(getView().getArrivalTimeDepartureTripSelected());
+        getAvailabilityScheduleUseCase.setScheduleVariant(getView().getScheduleVariantSelected());
         getAvailabilityScheduleUseCase.execute(RequestParams.EMPTY, new Subscriber<List<List<TrainScheduleViewModel>>>() {
             @Override
             public void onCompleted() {
@@ -92,14 +91,8 @@ public class TrainSearchPresenter extends BaseDaggerPresenter<TrainSearchContrac
                     getView().addPaddingSortAndFilterSearch();
                     getView().showFilterAndSortButtonAction();
 
-                    List<TrainScheduleViewModel> resultTrainSchedules = new ArrayList<>();
-                    for (List<TrainScheduleViewModel> trainScheduleModelList : trainScheduleViewModels) {
-                        for (TrainScheduleViewModel trainScheduleViewModel : trainScheduleModelList) {
-                            resultTrainSchedules.add(trainScheduleViewModel);
-                        }
-                    }
-                    getView().renderList(resultTrainSchedules);
-
+                    getFilteredAndSortedSchedules(Integer.MIN_VALUE, Integer.MAX_VALUE,
+                            new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
                 }
             }
         });
@@ -107,7 +100,7 @@ public class TrainSearchPresenter extends BaseDaggerPresenter<TrainSearchContrac
 
     @Override
     public void getFilteredAndSortedSchedules(long minPrice, long maxPrice, List<String> trainClass,
-                                              List<String> trains, List<String> departureTrains, final int sortOptionId) {
+                                              List<String> trains, List<String> departureTrains) {
         FilterParam filterParam = new FilterParam.Builder()
                 .minPrice(minPrice)
                 .maxPrice(maxPrice)
@@ -115,7 +108,7 @@ public class TrainSearchPresenter extends BaseDaggerPresenter<TrainSearchContrac
                 .trainClass(trainClass)
                 .departureTimeList(departureTrains)
                 .build();
-        RequestParams requestParams = getFilteredAndSortedScheduleUseCase.createRequestParam(filterParam, sortOptionId);
+        RequestParams requestParams = getFilteredAndSortedScheduleUseCase.createRequestParam(filterParam, getView().getSortOptionSelected());
 
         getFilteredAndSortedScheduleUseCase.execute(requestParams, new Subscriber<List<TrainScheduleViewModel>>() {
             @Override
@@ -137,7 +130,7 @@ public class TrainSearchPresenter extends BaseDaggerPresenter<TrainSearchContrac
                     getView().showEmptyResult();
                     getView().showFilterAndSortButtonAction();
                 }
-                getView().setSortOptionId(sortOptionId);
+                getView().markSortOption();
             }
         });
     }
