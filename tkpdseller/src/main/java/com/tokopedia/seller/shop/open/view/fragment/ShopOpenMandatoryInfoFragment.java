@@ -35,6 +35,8 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerEditorBuilder;
+import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.listener.StepperListener;
@@ -65,6 +67,10 @@ import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
+import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_BRIGHTNESS;
+import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CONTRAST;
+import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CROP;
+import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_ROTATE;
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB;
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MIN_RESOLUTION;
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_CAMERA;
@@ -79,7 +85,6 @@ import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PIC
 public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements ShopOpenInfoView {
 
     public static final int REQUEST_CODE_IMAGE_PICKER = 532;
-    public static final int MAX_IMAGE_SIZE_IN_KB = 10240;
     private static final String INFO_TOKO = "Info Toko";
 
     @Inject
@@ -167,10 +172,14 @@ public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements
         containerImagePicker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ImagePickerBuilder builder = new ImagePickerBuilder(getString(R.string.choose_image),
-                        new int[]{TYPE_GALLERY, TYPE_CAMERA}, com.tokopedia.imagepicker.picker.gallery.type.GalleryType.IMAGE_ONLY, MAX_IMAGE_SIZE_IN_KB,
-                        DEFAULT_MIN_RESOLUTION, null, true,
-                        null,null);
+                ImagePickerBuilder builder = new ImagePickerBuilder(getString(R.string.choose_shop_picture),
+                        new int[]{TYPE_GALLERY, TYPE_CAMERA}, com.tokopedia.imagepicker.picker.gallery.type.GalleryType.IMAGE_ONLY, DEFAULT_MAX_IMAGE_SIZE_IN_KB,
+                        DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.RATIO_1_1, true,
+                        new ImagePickerEditorBuilder(
+                                new int[]{ACTION_BRIGHTNESS, ACTION_CONTRAST, ACTION_CROP, ACTION_ROTATE},
+                                false,
+                                null)
+                        ,null);
                 Intent intent = ImagePickerActivity.getIntent(getContext(), builder);
                 startActivityForResult(intent, REQUEST_CODE_IMAGE_PICKER);
             }
