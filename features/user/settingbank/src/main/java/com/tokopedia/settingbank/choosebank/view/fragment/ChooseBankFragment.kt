@@ -5,9 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tkpd.library.ui.view.LinearLayoutManager
+import com.tkpd.library.utils.KeyboardHandler
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.settingbank.R
 import com.tokopedia.settingbank.addeditaccount.analytics.AddEditBankAnalytics.Companion.SCREEN_NAME_CHOOSE_BANK
 import com.tokopedia.settingbank.addeditaccount.view.listener.ChooseBankContract
@@ -23,7 +25,8 @@ import kotlinx.android.synthetic.main.fragment_choose_bank.*
  * @author by nisie on 6/22/18.
  */
 
-class ChooseBankFragment : ChooseBankContract.View, BankListener, BaseDaggerFragment() {
+class ChooseBankFragment : ChooseBankContract.View, BankListener, SearchInputView.Listener,
+        BaseDaggerFragment() {
 
     lateinit var adapter: BankAdapter
     lateinit var linearLayoutManager: LinearLayoutManager
@@ -48,7 +51,7 @@ class ChooseBankFragment : ChooseBankContract.View, BankListener, BaseDaggerFrag
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView()
-        presenter.getBankList("")
+        presenter.getBankList()
     }
 
     private fun setupView() {
@@ -59,7 +62,10 @@ class ChooseBankFragment : ChooseBankContract.View, BankListener, BaseDaggerFrag
 
         bank_list_rv.layoutManager = linearLayoutManager
         bank_list_rv.adapter = adapter
+
+        search_input_view.setListener(this)
     }
+
 
     override fun onBankSelected(adapterPosition: Int, element: BankViewModel?) {
         //TODO SET RESULT
@@ -81,18 +87,45 @@ class ChooseBankFragment : ChooseBankContract.View, BankListener, BaseDaggerFrag
     }
 
     override fun onErrorGetBankList(errorMessage: String?) {
-        if(!errorMessage.isNullOrBlank()) {
+        search_input_view.visibility = View.GONE
+        adapter.hideSearchNotFound()
+        if (!errorMessage.isNullOrBlank()) {
             NetworkErrorHelper.showEmptyState(context, view, errorMessage, {
-                presenter.getBankList("")
+                presenter.getBankList()
             })
-        }else{
+        } else {
             NetworkErrorHelper.showEmptyState(context, view, {
-                presenter.getBankList("")
+                presenter.getBankList()
             })
         }
     }
 
     override fun onSuccessGetBankList(listBank: ArrayList<BankViewModel>) {
-        adapter.addList(listBank)
+        adapter.hideSearchNotFound()
+        adapter.setList(listBank)
+    }
+
+    override fun onSearchSubmitted(query: String) {
+        if(!query.isBlank()) {
+            KeyboardHandler.DropKeyboard(context, view)
+            presenter.searchBank(query)
+        }
+    }
+
+    override fun onSearchTextChanged(query: String) {
+        if (query.isEmpty()) {
+            KeyboardHandler.DropKeyboard(context, view)
+            presenter.getBankList()
+        }
+    }
+
+    override fun onSuccessSearchBank(list: ArrayList<BankViewModel>) {
+        adapter.hideSearchNotFound()
+        adapter.setList(list)
+
+    }
+
+    override fun onEmptySearchBank() {
+        adapter.showSearchNotFound()
     }
 }

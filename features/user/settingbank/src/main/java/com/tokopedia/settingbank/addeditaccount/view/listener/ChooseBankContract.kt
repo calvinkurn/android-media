@@ -22,10 +22,16 @@ interface ChooseBankContract {
 
         fun onSuccessGetBankList(listBank: ArrayList<BankViewModel>)
 
+        fun onSuccessSearchBank(list: ArrayList<BankViewModel>)
+
+        fun onEmptySearchBank()
+
     }
 
     interface Presenter : CustomerPresenter<ChooseBankContract.View> {
-        fun getBankList(query: String)
+        fun getBankList()
+
+        fun searchBank(query: String)
 
     }
 }

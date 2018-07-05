@@ -12,22 +12,25 @@ class BankAdapter(adapterTypeFactory: BankTypeFactoryImpl,
                   listBank: ArrayList<Visitable<*>>)
     : BaseAdapter<BankTypeFactoryImpl>(adapterTypeFactory, listBank) {
 
-
-    fun checkLoadMore(index: Int): Boolean {
-        return if (index == itemCount - 1) {
-            this.visitables[index] is LoadingMoreModel
-        } else false
-    }
-
     fun setSelected(adapterPosition: Int) {
         //TODO REMOVE LAST SELECTED ITEM
         (this.visitables[adapterPosition] as BankViewModel).isSelected = true
+        this.notifyItemChanged(adapterPosition)
     }
 
-    fun addList(listBank: ArrayList<BankViewModel>) {
-        val lastPosition = this.visitables.size
+    fun setList(listBank: ArrayList<BankViewModel>) {
+        this.visitables.clear()
         this.visitables.addAll(listBank)
-        this.notifyItemRangeInserted(lastPosition, listBank.size)
+        this.notifyDataSetChanged()
     }
+
+    fun showSearchNotFound() {
+        //TODO
+    }
+
+    fun hideSearchNotFound() {
+        //TODO
+    }
+
 
 }

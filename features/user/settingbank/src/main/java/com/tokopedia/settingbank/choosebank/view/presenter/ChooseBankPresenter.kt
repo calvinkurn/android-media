@@ -27,15 +27,15 @@ class ChooseBankPresenter(private val userSession: UserSession,
     var hasNextPage = true
     var listBank = ArrayList<BankViewModel>()
 
-    override fun getBankList(query: String) {
-
+    override fun getBankList() {
+        currentPage = 1
         view.showLoading()
-        getBankListFromDB(query)
+        getBankListFromDB()
 
     }
 
-    private fun getBankListFromDB(query: String) {
-        getBankListDBUseCase.execute(GetBankListDBUseCase.getParam(query),
+    private fun getBankListFromDB() {
+        getBankListDBUseCase.execute(GetBankListDBUseCase.getParam(""),
                 object : Subscriber<BankListViewModel>
                 () {
                     override fun onCompleted() {
@@ -56,7 +56,7 @@ class ChooseBankPresenter(private val userSession: UserSession,
                             view.hideLoading()
                             view.onSuccessGetBankList(listBankViewModel.list)
                         } else {
-                            getBankListFromWS(query)
+                            getBankListFromWS()
                         }
 
                     }
@@ -64,12 +64,11 @@ class ChooseBankPresenter(private val userSession: UserSession,
     }
 
 
-    private fun getBankListFromWS(query: String) {
-        getBankListWSUseCase.execute(GetBankListWSUseCase.getParam(query, currentPage,
+    private fun getBankListFromWS() {
+        getBankListWSUseCase.execute(GetBankListWSUseCase.getParam("", currentPage,
                 userSession.userId,
                 userSession.deviceId),
-                object : Subscriber<BankListViewModel>
-                () {
+                object : Subscriber<BankListViewModel>() {
                     override fun onCompleted() {
 
                     }
@@ -98,7 +97,7 @@ class ChooseBankPresenter(private val userSession: UserSession,
                                 view.hideLoading()
                                 view.onSuccessGetBankList(listBank)
                             } else {
-                                getBankListFromWS(query)
+                                getBankListFromWS()
                             }
                         } else {
                             view.hideLoading()
@@ -107,6 +106,33 @@ class ChooseBankPresenter(private val userSession: UserSession,
                     }
                 })
 
+    }
+
+    override fun searchBank(query: String) {
+        getBankListDBUseCase.execute(GetBankListDBUseCase.getParam(query),
+                object : Subscriber<BankListViewModel>
+                () {
+                    override fun onCompleted() {
+
+                    }
+
+                    override fun onError(e: Throwable) {
+                        view.hideLoading()
+                        val errorMessage: String = ErrorHandler.getErrorMessage(view.getContext(), e)
+                        view.onErrorGetBankList(errorMessage)
+                    }
+
+                    override fun onNext(listBankViewModel: BankListViewModel) {
+
+                        if (listBankViewModel.list != null
+                                && !listBankViewModel.list.isEmpty()) {
+                            view.onSuccessSearchBank(listBankViewModel.list)
+                        } else {
+                            view.onEmptySearchBank()
+                        }
+
+                    }
+                })
     }
 
     override fun detachView() {
