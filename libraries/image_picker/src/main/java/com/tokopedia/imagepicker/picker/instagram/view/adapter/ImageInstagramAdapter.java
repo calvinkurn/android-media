@@ -1,14 +1,9 @@
 package com.tokopedia.imagepicker.picker.instagram.view.adapter;
 
-import android.provider.MediaStore;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingShimmeringGridViewHolder;
-import com.tokopedia.imagepicker.picker.gallery.model.MediaItem;
 import com.tokopedia.imagepicker.picker.instagram.view.model.InstagramMediaModel;
 
 import java.util.ArrayList;
