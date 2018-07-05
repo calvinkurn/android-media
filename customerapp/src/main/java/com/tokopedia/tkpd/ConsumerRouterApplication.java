@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 
@@ -54,7 +53,6 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.data.viewmodel.PopUpNotif;
-import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gallery.GalleryActivity;
@@ -134,11 +132,6 @@ import com.tokopedia.feedplus.domain.model.FollowKolDomain;
 import com.tokopedia.feedplus.domain.usecase.FollowKolPostUseCase;
 import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.feedplus.view.di.FeedPlusComponent;
-import com.tokopedia.feedplus.FeedModuleRouter;
-import com.tokopedia.feedplus.domain.model.FollowKolDomain;
-import com.tokopedia.feedplus.domain.usecase.FollowKolPostUseCase;
-import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent;
-import com.tokopedia.feedplus.view.di.FeedPlusComponent;
 import com.tokopedia.fingerprint.util.FingerprintConstant;
 import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.FlightModuleRouter;
@@ -169,17 +162,10 @@ import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.KolRouter;
-import com.tokopedia.kol.common.di.KolComponent;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
 import com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListActivity;
 import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment;
-import com.tokopedia.kol.KolRouter;
-import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
-import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
-import com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListActivity;
-import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment;
-import com.tokopedia.kol.feature.post.view.subscriber.LikeKolPostSubscriber;
 import com.tokopedia.logisticuploadawb.ILogisticUploadAwbRouter;
 import com.tokopedia.logisticuploadawb.UploadAwbLogisticActivity;
 import com.tokopedia.loyalty.LoyaltyRouter;
@@ -315,8 +301,7 @@ import rx.schedulers.Schedulers;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FROM_DEEPLINK;
-import static com.tokopedia.core.router.productdetail.ProductDetailRouter
-        .ARG_PARAM_PRODUCT_PASS_DATA;
+import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PARAM_PRODUCT_PASS_DATA;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.SHARE_DATA;
 
 /**
@@ -588,6 +573,18 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         args.putBoolean(ARG_FROM_DEEPLINK, true);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void goToProductDetail(Context context, String productId, String imageSourceSingle,
+                                  String name, String price) {
+        ProductPass productPass = ProductPass.Builder.aProductPass()
+                .setProductId(productId)
+                .setProductImage(imageSourceSingle)
+                .setProductName(name)
+                .setProductPrice(price)
+                .build();
+        goToProductDetail(context, productPass);
     }
 
     @Override

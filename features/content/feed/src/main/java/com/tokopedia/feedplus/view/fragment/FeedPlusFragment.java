@@ -42,9 +42,6 @@ import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.router.productdetail.PdpRouter;
-import com.tokopedia.core.router.productdetail.ProductDetailRouter;
-import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.feedplus.FeedModuleRouter;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.domain.usecase.FollowKolPostUseCase;
@@ -177,17 +174,14 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private void initVar() {
         FeedPlusTypeFactory typeFactory = new FeedPlusTypeFactoryImpl(this);
         adapter = new FeedPlusAdapter(typeFactory);
-        adapter.setOnLoadListener(new FeedPlusAdapter.OnLoadListener() {
-            @Override
-            public void onLoad(int totalCount) {
-                int size = adapter.getlist().size();
-                int lastIndex = size - 1;
-                if (!(adapter.getlist().get(0) instanceof EmptyModel)
-                        && !(adapter.getlist().get(lastIndex) instanceof RetryModel)
-                        && !(adapter.getlist().get(lastIndex) instanceof AddFeedViewHolder)
-                        )
-                    presenter.fetchNextPage();
-            }
+        adapter.setOnLoadListener(totalCount -> {
+            int size = adapter.getlist().size();
+            int lastIndex = size - 1;
+            if (!(adapter.getlist().get(0) instanceof EmptyModel)
+                    && !(adapter.getlist().get(lastIndex) instanceof RetryModel)
+                    && !(adapter.getlist().get(lastIndex) instanceof AddFeedViewHolder)
+                    )
+                presenter.fetchNextPage();
         });
         layoutManager = new NpaLinearLayoutManager(getActivity(),
                 LinearLayoutManager.VERTICAL,
@@ -220,9 +214,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
                              @Nullable Bundle savedInstanceState) {
         setRetainInstance(true);
         View parentView = inflater.inflate(R.layout.fragment_feed_plus, container, false);
-        recyclerView = (RecyclerView) parentView.findViewById(R.id.recycler_view);
-        swipeToRefresh = (SwipeToRefresh) parentView.findViewById(R.id.swipe_refresh_layout);
-        mainContent = (RelativeLayout) parentView.findViewById(R.id.main);
+        recyclerView = parentView.findViewById(R.id.recycler_view);
+        swipeToRefresh = parentView.findViewById(R.id.swipe_refresh_layout);
+        mainContent = parentView.findViewById(R.id.main);
         newFeed = parentView.findViewById(R.id.layout_new_feed);
 
         prepareView();
@@ -237,13 +231,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
         recyclerView.setAdapter(adapter);
         swipeToRefresh.setOnRefreshListener(this);
         infoBottomSheet = TopAdsInfoBottomSheet.newInstance(getActivity());
-        newFeed.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                scrollToTop();
-                showRefresh();
-                onRefresh();
-            }
+        newFeed.setOnClickListener(v -> {
+            scrollToTop();
+            showRefresh();
+            onRefresh();
         });
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -254,7 +245,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                             && newState == RecyclerView.SCROLL_STATE_IDLE
                             && layoutManager != null) {
                         int position = 0;
-                        Visitable item = null;
+                        Visitable item;
                         if (itemIsFullScreen()) {
                             position = layoutManager.findLastVisibleItemPosition();
                         } else if (layoutManager.findFirstCompletelyVisibleItemPosition() != -1) {
@@ -266,7 +257,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                         item = adapter.getlist().get(position);
 
                         if (position != 0 && item != null && !isTopads(item)) {
-                            trackImpression(item, position);
+                            trackImpression(item);
                         }
                     }
                 } catch (IndexOutOfBoundsException e) {
@@ -278,7 +269,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         });
     }
 
-    private void trackImpression(Visitable item, int position) {
+    private void trackImpression(Visitable item) {
         if (isInspirationItem(item)) {
             UnifyTracking.eventR3(AppEventTracking.Action.IMPRESSION,
                     FeedTrackingEventLabel.Impression.FEED_RECOMMENDATION);
@@ -366,19 +357,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     }
 
-    private void goToProductDetail(String productId, String imageSourceSingle, String name, String price) {
-        if (getActivity().getApplication() instanceof PdpRouter) {
-            ((PdpRouter) getActivity().getApplication()).goToProductDetail(
-                    getActivity(),
-                    ProductPass.Builder.aProductPass()
-                            .setProductId(productId)
-                            .setProductImage(imageSourceSingle)
-                            .setProductName(name)
-                            .setProductPrice(price)
-
-                            .build()
-            );
-        }
+    private void goToProductDetail(String productId, String imageSourceSingle, String name,
+                                   String price) {
+        feedModuleRouter.goToProductDetail(getContext(), productId, imageSourceSingle, name, price);
     }
 
     @Override
@@ -568,12 +549,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         finishLoading();
         if (adapter.getItemCount() == 0) {
             NetworkErrorHelper.showEmptyState(getActivity(), mainContent, errorMessage,
-                    new NetworkErrorHelper.RetryClickedListener() {
-                        @Override
-                        public void onRetryClicked() {
-                            presenter.refreshPage();
-                        }
-                    });
+                    () -> presenter.refreshPage());
         } else {
             NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
         }
@@ -699,9 +675,12 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onProductItemClicked(int position, Product product) {
-        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity(),
-                product.getId());
-        getActivity().startActivity(intent);
+        goToProductDetail(product.getId(),
+                product.getImage().getS_ecs(),
+                product.getName(),
+                product.getPriceFormat()
+        );
+
         UnifyTracking.eventFeedClickProduct(product.getId(),
                 FeedTrackingEventLabel.Click.TOP_ADS_PRODUCT);
 
@@ -957,15 +936,12 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onErrorFollowKol(String errorMessage, final int id, final int status, final int rowNumber) {
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(), errorMessage, new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                if (status == FollowKolPostUseCase.PARAM_UNFOLLOW)
-                    presenter.unfollowKol(id, rowNumber, FeedPlusFragment.this);
-                else
-                    presenter.followKol(id, rowNumber, FeedPlusFragment.this);
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), errorMessage, () -> {
+            if (status == FollowKolPostUseCase.PARAM_UNFOLLOW)
+                presenter.unfollowKol(id, rowNumber, FeedPlusFragment.this);
+            else
+                presenter.followKol(id, rowNumber, FeedPlusFragment.this);
 
-            }
         }).showRetrySnackbar();
     }
 
