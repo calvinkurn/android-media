@@ -1255,47 +1255,35 @@ public class GroupChatActivity extends BaseSimpleActivity
     @Override
     public void onChannelNotFound(String errorMessage) {
         Log.d("tev", "onChannelNotFound: ");
-//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//        builder.setTitle(R.string.channel_not_found);
-//        builder.setMessage(errorMessage);
-//        builder.setPositiveButton(R.string.title_ok, new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialogInterface, int i) {
-//                dialogInterface.dismiss();
-//                Intent intent = new Intent();
-//                if (viewModel != null) {
-//                    intent.putExtra(TOTAL_VIEW, viewModel.getTotalView());
-//                    intent.putExtra(EXTRA_POSITION, viewModel.getChannelPosition());
-//                }
-//                setResult(ChannelActivity.RESULT_ERROR_ENTER_CHANNEL, intent);
-//                finish();
-//            }
-//        });
-//        AlertDialog dialog = builder.create();
-//        dialog.setCancelable(false);
-//        dialog.show();
         hideLoading();
         setVisibilityHeader(View.VISIBLE);
         setToolbarPlain();
         setChannelNotFoundView(View.VISIBLE);
-        findViewById(R.id.tab).setVisibility(View.GONE);
-        findViewById(R.id.sponsor_layout).setVisibility(View.GONE);
-        findViewById(R.id.shadow_layer).setVisibility(View.GONE);
-
+        if(findViewById(R.id.tab) != null) {
+            findViewById(R.id.tab).setVisibility(View.GONE);
+        }
+        if(findViewById(R.id.sponsor_layout) != null) {
+            findViewById(R.id.sponsor_layout).setVisibility(View.GONE);
+        }
+        if(findViewById(R.id.shadow_layer) != null) {
+            findViewById(R.id.shadow_layer).setVisibility(View.GONE);
+        }
     }
 
     private void setChannelNotFoundView(int visibility){
-        findViewById(R.id.card_retry).setVisibility(visibility);
-        findViewById(R.id.card_retry).findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = ((GroupChatModuleRouter) getApplicationContext())
-                        .getHomeIntent(v.getContext());
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-                finish();
-            }
-        });
+        if(findViewById(R.id.card_retry) != null){
+            findViewById(R.id.card_retry).setVisibility(visibility);
+            findViewById(R.id.card_retry).findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = ((GroupChatModuleRouter) getApplicationContext())
+                            .getHomeIntent(v.getContext());
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                    finish();
+                }
+            });
+        }
     }
 
     private void setToolbarPlain() {
