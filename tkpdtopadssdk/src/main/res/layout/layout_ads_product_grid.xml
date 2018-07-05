@@ -120,6 +120,7 @@
         android:layout_marginLeft="@dimen/product_grid_padding"
         android:layout_marginRight="@dimen/product_grid_padding"
         android:layout_marginTop="2dp"
+        android:layout_marginBottom="5dp"
         android:layout_weight="1"
         android:fontFamily="sans-serif-medium"
         android:gravity="center_vertical"
@@ -200,7 +201,7 @@
         android:text="@string/baru"
         android:paddingLeft="@dimen/dp_8"
         android:paddingRight="@dimen/dp_8"
-        android:paddingTop="@dimen/dp_3"
+        android:paddingTop="@dimen/dp_5"
         android:paddingBottom="@dimen/dp_3"
         android:textSize="@dimen/sp_11"
         android:visibility="gone" />
