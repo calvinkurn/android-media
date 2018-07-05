@@ -135,6 +135,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
     private static final String CONTACT_US_PATH_SEGMENT = "toped-contact-us";
     private static final String BASE_DOMAIN_SHORTENED = "tkp.me";
     private static final String APPLINK_SCHEME = "tokopedia";
+    private static final String BRANCH_IO_HOST = "tokopedia.link";
     private static final String CONTACT_US_URL_BASE_DOMAIN = TkpdBaseURL.BASE_CONTACT_US;
     private static final String ROLE_SHOP = "shop";
     private static final String ENABLE_TOPCHAT = "topchat_template";
@@ -516,11 +517,32 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 } else if (isChatBot && isNeedAuthToken) {
                     startActivity(ChatMarketingThumbnailActivity.getCallingIntent(getActivity(),
                             URLGenerator.generateURLSessionLoginV4(url, getContext())));
+                } else if(isBranchIOLink(url)){
+                    handleBranchIOLinkClick(url);
                 } else {
                     ((TopChatRouter) getActivity().getApplication()).openRedirectUrl(getActivity
                             (),url);
                 }
             }
+        }
+    }
+
+    @Override
+    public void handleBranchIOLinkClick(String url) {
+        Intent intent = ((TopChatRouter) getActivity().getApplication()).getSplashScreenIntent(getContext());
+        intent.putExtra("branch",url);
+        intent.putExtra("branch_force_new_session",true);
+        startActivity(intent);
+    }
+
+    @Override
+    public boolean isBranchIOLink(String url) {
+        if(url == null) return false;
+        Uri uri = Uri.parse(url);
+        if(uri.getHost() != null && uri.getHost().equals(BRANCH_IO_HOST)) {
+            return true;
+        } else {
+            return false;
         }
     }
 

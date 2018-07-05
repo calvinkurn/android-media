@@ -102,6 +102,10 @@ public class ChatRoomContract {
 
         void onGoToWebView(String attachment, String id);
 
+        void handleBranchIOLinkClick(String url);
+
+        boolean isBranchIOLink(String url);
+
         boolean needCreateWebSocket();
 
         void hideNotifier();
