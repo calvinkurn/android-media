@@ -13,7 +13,7 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/sp_16"
+            style="@style/TextView.Title.Bold"
             android:text="@string/product_add_title_video_recommendation"
             android:textStyle="bold"
             android:layout_marginTop="@dimen/dp_16"
