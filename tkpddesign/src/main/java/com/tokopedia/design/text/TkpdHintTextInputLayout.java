@@ -105,7 +105,7 @@ public class TkpdHintTextInputLayout extends LinearLayout {
 
     public TkpdHintTextInputLayout(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        apply(attrs, 0);
+        apply2(context, attrs, 0);
         init();
     }
 
@@ -120,6 +120,16 @@ public class TkpdHintTextInputLayout extends LinearLayout {
         super(context, attrs, defStyleAttr, defStyleRes);
         apply(attrs, defStyleAttr);
         init();
+    }
+
+    private void apply2(Context context, AttributeSet attrs, int defStyleAttr){
+        final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.TkpdHintTextInputLayout);
+        try {
+            mHintEnabled = a.getBoolean(R.styleable.TkpdHintTextInputLayout_hintEnabled, true);
+        } finally {
+            a.recycle();
+        }
+
     }
 
     @SuppressWarnings("ResourceType")
@@ -234,13 +244,18 @@ public class TkpdHintTextInputLayout extends LinearLayout {
     }
 
     private void init() {
-        View view = inflate(getContext(), R.layout.hint_text_input_layout, this);
-        mFrameLayout = (FrameLayout) view.findViewById(R.id.frame_content);
-        mTvLabel = (TextView) view.findViewById(R.id.tv_label);
-        mTvHelper = (TextView) view.findViewById(R.id.tv_helper);
-        mTvError = (TextView) view.findViewById(R.id.tv_error);
-        mTvSuccess = (TextView) view.findViewById(R.id.tv_success);
-        mTvCounter = (TextView) view.findViewById(R.id.tv_counter);
+        inflate(getContext(), R.layout.hint_text_input_layout, this);
+    }
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        mFrameLayout = findViewById(R.id.frame_content);
+        mTvLabel = findViewById(R.id.tv_label);
+        mTvHelper = findViewById(R.id.tv_helper);
+        mTvError = findViewById(R.id.tv_error);
+        mTvSuccess = findViewById(R.id.tv_success);
+        mTvCounter = findViewById(R.id.tv_counter);
 
         mPrefixLength = prefixString == null ? 0 : prefixString.length();
         if (mCounterEnabled && mPrefixLength > 0) {

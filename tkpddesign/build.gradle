@@ -29,7 +29,6 @@ dependencies {
     implementation rootProject.ext.networkDependencies.glide
 
     testImplementation "org.robolectric:robolectric:3.8"
-    androidTestImplementation rootProject.ext.testDependencies.mockitorCore
 
 }
 
