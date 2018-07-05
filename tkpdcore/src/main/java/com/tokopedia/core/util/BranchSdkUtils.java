@@ -212,9 +212,7 @@ public class BranchSdkUtils {
                             .setContentMetadata(
                                     new ContentMetadata()
                                             .setPrice(convertIDRtoDouble(product.get(BranchIOPayment.KEY_PRICE)), CurrencyType.IDR)
-                                            //.setProductBrand(product.get(BranchIOPayment.KEY_BRAND))
                                             .setProductName(product.get(BranchIOPayment.KEY_NAME))
-                                            //.setProductVariant(product.get(BranchIOPayment.KEY_VARIANT))
                                             .setQuantity(convertStringToDouble(product.get(BranchIOPayment.KEY_QTY)))
                                             .setSku(product.get(BranchIOPayment.KEY_ID))
                                             .setContentSchema(BranchContentSchema.COMMERCE_PRODUCT));
