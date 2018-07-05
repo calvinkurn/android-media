@@ -1245,7 +1245,13 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         promoTabLayout.setupWithViewPager(promoViewPager);
         promoViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(promoTabLayout));
         promoViewPager.setAdapter(getViewPagerAdapter(shouldShowPanduan));
-        promoViewPager.setCurrentItem(0);
+        promoViewPager.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                promoViewPager.setCurrentItem(0);
+                promoViewPager.measureCurrentView(promoViewPager.getChildAt(0));
+            }
+        }, 1000);
     }
 
     private PagerAdapter getViewPagerAdapter(boolean shouldShowPanduan) {
