@@ -1,3 +1,6 @@
-{
-  orderLabelList
+query{
+  orderLabelCategoryList{
+    label
+    orderCategory
+  }
 }

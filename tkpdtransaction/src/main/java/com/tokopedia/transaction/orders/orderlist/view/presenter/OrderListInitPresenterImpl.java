@@ -28,14 +28,9 @@ public class OrderListInitPresenterImpl implements OrderListInitContract.Present
 
     @Override
     public void getInitData(String orderCategory, int typeRequest, int page) {
-        Map<String, Object> variables = new HashMap<>();
-        variables.put("orderCategory", orderCategory);
-        variables.put("Page", page);
-        variables.put("PerPage", 10);
-
         GraphqlRequest graphqlRequest = new
                 GraphqlRequest(GraphqlHelper.loadRawString(view.getAppContext().getResources(),
-                R.raw.initorderlist), Data.class, variables);
+                R.raw.initorderlist), Data.class);
 
 
         initUseCase.setRequest(graphqlRequest);

@@ -47,7 +47,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     public void setOrderDetailsContent(String orderId, String orderCategory) {
 
         Map<String, Object> variables = new HashMap<>();
-        variables.put("orderCategory", orderCategory);
+        variables.put("orderCategoryStr", orderCategory);
         variables.put("orderId", orderId);
         variables.put("detail", 1);
         variables.put("action", 1);
@@ -114,10 +114,8 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                     if (tapActionsList.size() > 0) {
                         view.tapActionLayoutVisible();
                     }
-//                    for (TapActions tapActions : tapActionsList) {
                     if(tapActionsList!=null)
                         view.setTapActionButton(position, tapActionsList);
-//                    }
                 }
             }
         });
