@@ -212,6 +212,9 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
 
     private void showBudgetPerDay(boolean show) {
         containerBudgetPerDay.setVisibility(show ? View.VISIBLE : View.GONE);
+        if (show){
+            containerBudgetPerDay.getParent().requestChildFocus(containerBudgetPerDay, containerBudgetPerDay);
+        }
         if (!show && !budgetLifeTimeRadioButton.isChecked()) {
             budgetLifeTimeRadioButton.setChecked(true);
         }

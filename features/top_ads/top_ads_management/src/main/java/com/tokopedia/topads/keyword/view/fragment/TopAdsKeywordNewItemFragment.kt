@@ -186,11 +186,12 @@ class TopAdsKeywordNewItemFragment: BaseDaggerFragment() {
             setListener(object : ExpandableLayoutListener {
                 override fun onAnimationEnd() {}
 
-                override fun onOpened() {
-                    scrollView.smoothScrollTo(0, scrollView.bottom)
-                }
+                override fun onOpened() {}
 
-                override fun onAnimationStart() {}
+                override fun onAnimationStart() {
+                    ObjectAnimator.ofInt(scrollView, "scrollY", scrollView.bottom)
+                            .setDuration(400).start()
+                }
 
                 override fun onPreOpen() {
                     createRotateAnimator(seeDetailToggleIcon, 0f, 180f).start()
