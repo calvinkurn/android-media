@@ -15,7 +15,7 @@ import dagger.Provides;
  * @author Aghny A. Putra on 31/01/18.
  */
 
-@Module(includes = {PeopleAddressModule.class})
+@Module(includes = {PeopleAddressModule.class, TrackingAnalyticsModule.class})
 public class ShipmentAddressListModule {
 
     private final ShipmentAddressListAdapter.ActionListener actionListener;
@@ -26,7 +26,8 @@ public class ShipmentAddressListModule {
 
     @Provides
     @ShipmentAddressListScope
-    ShipmentAddressListPresenter provideCartAddressListPresenter(GetPeopleAddressUseCase getPeopleAddressUseCase, PagingHandler pagingHandler) {
+    ShipmentAddressListPresenter provideCartAddressListPresenter(
+            GetPeopleAddressUseCase getPeopleAddressUseCase, PagingHandler pagingHandler) {
         return new ShipmentAddressListPresenter(getPeopleAddressUseCase, pagingHandler);
     }
 
