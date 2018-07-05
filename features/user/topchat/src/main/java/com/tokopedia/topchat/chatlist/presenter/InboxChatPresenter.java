@@ -97,7 +97,7 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
                 "?os_type=1" +
                 "&device_id=" + GCMHandler.getRegistrationId(getView().getContext()) +
                 "&user_id=" + SessionHandler.getLoginID(getView().getContext());
-        listener = new ChatWebSocketListenerImpl(getView().getInterface(), webSocketMapper);
+        listener = new ChatWebSocketListenerImpl(getView().getInterface(), webSocketMapper,true);
 
         countDownTimer = new CountDownTimer(5000, 1000) {
             @Override
