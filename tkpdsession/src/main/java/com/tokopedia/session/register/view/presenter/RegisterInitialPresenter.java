@@ -118,7 +118,7 @@ public class RegisterInitialPresenter extends BaseDaggerPresenter<RegisterInitia
     private void onSuccessValidate(RegisterValidationViewModel model) {
         if (TextUtils.equals(model.getType(), PHONE_TYPE)){
             getView().setTempPhoneNumber(model.getView());
-            if (model.getExist()){
+            if (model.isExist()){
                 getView().showRegisteredPhoneDialog(model.getView());
             } else {
                 getView().showProceedWithPhoneDialog(model.getView());
@@ -126,7 +126,7 @@ public class RegisterInitialPresenter extends BaseDaggerPresenter<RegisterInitia
         }
 
         if (TextUtils.equals(model.getType(), EMAIL_TYPE)){
-            if (model.getExist()){
+            if (model.isExist()){
                 getView().showRegisteredEmailDialog(model.getView());
             }
             else {
