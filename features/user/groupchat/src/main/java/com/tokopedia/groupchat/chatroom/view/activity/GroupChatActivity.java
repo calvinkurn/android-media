@@ -1211,7 +1211,6 @@ public class GroupChatActivity extends BaseSimpleActivity
     @Override
     public void onErrorEnterChannel(String errorMessage) {
         hideLoading();
-        Log.d("tev", "onErrorEnterChannel: ");
         NetworkErrorHelper.showEmptyState(this, rootView, errorMessage, new NetworkErrorHelper
                 .RetryClickedListener() {
             @Override
@@ -1254,7 +1253,6 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     @Override
     public void onChannelNotFound(String errorMessage) {
-        Log.d("tev", "onChannelNotFound: ");
         hideLoading();
         setVisibilityHeader(View.VISIBLE);
         setToolbarPlain();
@@ -1417,14 +1415,12 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     @Override
     public void onChannelDeleted() {
-        Log.d("tev", "onChannelDeleted: ");
         onChannelNotFound(getString(R.string.channel_has_been_deleted));
 
     }
 
     @Override
     public void onChannelFrozen() {
-        Log.d("tev", "onChannelFrozen: ");
         onChannelNotFound(getString(R.string.channel_deactivated));
     }
 
