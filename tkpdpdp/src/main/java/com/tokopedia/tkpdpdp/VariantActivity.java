@@ -92,6 +92,7 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
     private EditTextCompat etNotesSeller;
     private View viewContainerQty;
     private View viewContainerRemark;
+    private View viewContainerButton;
 
     private VariantOptionAdapter variantOptionAdapterLevel2;
     private VariantOptionAdapter variantOptionAdapterLevel1;
@@ -157,6 +158,8 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
         etNotesSeller = findViewById(R.id.et_remark);
         viewContainerQty = findViewById(R.id.view_qty_product);
         viewContainerRemark = findViewById(R.id.view_remark_for_seller);
+        viewContainerButton = findViewById(R.id.all_kind_button_buy);
+
         ImageHandler.LoadImage(productImage, productDetailData.getProductImages().get(0).getImageSrc300());
         if (!TextUtils.isEmpty(productVariant.getSizechart()) &&
                 productVariant.getVariant().get(0).getIdentifier().equals(IDENTIFIER_SIZE)) {
@@ -253,10 +256,7 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
 
     private void initViewListener() {
         if (getIntent().getBooleanExtra(KEY_SELLER_MODE,false)) {
-            buttonSave.setVisibility(View.GONE);
-            viewNewCheckoutFlow.setVisibility(View.GONE);
-            viewContainerRemark.setVisibility(View.GONE);
-            viewContainerQty.setVisibility(View.GONE);
+            viewContainerButton.setVisibility(View.GONE);
         }
         findViewById(R.id.simple_top_bar_close_button)
                 .setOnClickListener(new View.OnClickListener() {
