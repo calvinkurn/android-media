@@ -39,14 +39,14 @@ public class FeedPlusPresenter
         implements FeedPlus.Presenter {
 
     private final UserSession userSession;
+    private final GetFeedsUseCase getFeedsUseCase;
+    private final GetFirstPageFeedsUseCase getFirstPageFeedsUseCase;
+    private final FavoriteShopUseCase doFavoriteShopUseCase;
+    private final GetFirstPageFeedsCloudUseCase getFirstPageFeedsCloudUseCase;
     private final CheckNewFeedUseCase checkNewFeedUseCase;
     private final LikeKolPostUseCase likeKolPostUseCase;
     private final FollowKolPostUseCase followKolPostUseCase;
-    private GetFeedsUseCase getFeedsUseCase;
-    private GetFirstPageFeedsUseCase getFirstPageFeedsUseCase;
-    private FavoriteShopUseCase doFavoriteShopUseCase;
-    private GetFirstPageFeedsCloudUseCase getFirstPageFeedsCloudUseCase;
-    private SendVoteUseCase sendVoteUseCase;
+    private final SendVoteUseCase sendVoteUseCase;
     private String currentCursor = "";
     private FeedPlus.View viewListener;
     private PagingHandler pagingHandler;
@@ -86,8 +86,10 @@ public class FeedPlusPresenter
         getFirstPageFeedsUseCase.unsubscribe();
         doFavoriteShopUseCase.unsubscribe();
         getFirstPageFeedsCloudUseCase.unsubscribe();
+        checkNewFeedUseCase.unsubscribe();
         likeKolPostUseCase.unsubscribe();
         followKolPostUseCase.unsubscribe();
+        sendVoteUseCase.unsubscribe();
     }
 
 
