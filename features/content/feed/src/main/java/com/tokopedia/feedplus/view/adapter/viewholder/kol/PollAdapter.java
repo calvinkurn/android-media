@@ -65,20 +65,16 @@ public class PollAdapter extends RecyclerView.Adapter<PollAdapter.ViewHolder> {
             holder.progressBar.setProgressDrawable(
                     MethodChecker.getDrawable(context, R.drawable.poll_option_image_default)
             );
-            //TODO milhamj
-//            holder.icon.setVisibility(View.GONE);
         } else {
             holder.shadowLayer.setVisibility(View.VISIBLE);
             holder.percent.setVisibility(View.VISIBLE);
             holder.percentLayout.setVisibility(View.VISIBLE);
             holder.progressBar.setProgress(element.getPercentageInteger());
             if (element.getSelected() == PollOptionViewModel.SELECTED) {
-//                holder.icon.setVisibility(View.VISIBLE);
                 holder.progressBar.setProgressDrawable(
                         MethodChecker.getDrawable(context, R.drawable.poll_option_image_selected)
                 );
             } else if (element.getSelected() == PollOptionViewModel.UNSELECTED) {
-//                holder.icon.setVisibility(View.GONE);
                 holder.progressBar.setProgressDrawable(
                         MethodChecker.getDrawable(context, R.drawable.poll_option_image_unselected)
                 );

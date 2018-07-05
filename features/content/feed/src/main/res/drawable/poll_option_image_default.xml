@@ -6,15 +6,15 @@
         </shape>
     </item>
     <item android:id="@android:id/progress">
-        <clip>
+        <scale android:scaleWidth="100%">
             <shape>
                 <corners
-                    android:bottomRightRadius="8dp"
-                    android:topRightRadius="8dp"/>
+                    android:bottomRightRadius="3dp"
+                    android:topRightRadius="3dp"/>
                 <gradient
                     android:endColor="@color/poll_second_green"
                     android:startColor="@color/poll_first_green"/>
             </shape>
-        </clip>
+        </scale>
     </item>
 </layer-list>

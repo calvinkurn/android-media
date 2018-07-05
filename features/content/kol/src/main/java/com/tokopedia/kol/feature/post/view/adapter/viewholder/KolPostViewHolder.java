@@ -242,10 +242,17 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
                 generateKolEventLabel(element.isFollowed(), element.getCardType())
         );
 
-        viewListener.onGoToKolProfile(getAdapterPosition(),
-                String.valueOf(element.getUserId()),
-                element.getKolId()
-        );
+        if (element.getUserId() > 0) {
+            viewListener.onGoToKolProfile(getAdapterPosition(),
+                    String.valueOf(element.getUserId()),
+                    element.getKolId()
+            );
+        } else {
+            viewListener.onGoToKolProfileUsingApplink(
+                    getAdapterPosition(),
+                    element.getKolProfileUrl()
+            );
+        }
     }
 
     private void tooltipAreaClicked(KolPostViewModel element) {

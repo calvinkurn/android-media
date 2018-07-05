@@ -233,6 +233,10 @@ public class KolPostFragment extends BaseDaggerFragment implements
     }
 
     @Override
+    public void onGoToKolProfileUsingApplink(int rowNumber, String applink) {
+    }
+
+    @Override
     public void onOpenKolTooltip(int rowNumber, String url) {
         ((KolRouter) getActivity().getApplication()).actionApplinkFromActivity(getActivity(), url);
     }

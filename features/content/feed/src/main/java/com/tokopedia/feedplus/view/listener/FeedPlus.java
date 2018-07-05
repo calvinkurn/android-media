@@ -9,7 +9,6 @@ import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollOptionViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
-import com.tokopedia.feedplus.view.viewmodel.product.ProductFeedViewModel;
 import com.tokopedia.vote.domain.model.VoteStatisticDomainModel;
 
 import java.util.ArrayList;
@@ -86,12 +85,6 @@ public interface FeedPlus {
 
         void setFirstCursor(String firstCursor);
 
-        interface Toppicks {
-            void onToppicksClicked(int page, int rowNumber, String name, String url, int itemPosition);
-
-            void onSeeAllToppicks(int page, int rowNumber);
-        }
-
         void onShareButtonClicked(String shareUrl,
                                   String title,
                                   String imgUrl,
@@ -124,13 +117,9 @@ public interface FeedPlus {
 
         void onGoToShopDetail(int page, int rowNumber, Integer shopId, String url);
 
-        void onCopyClicked(int page, int rowNumber, String id, String s, String name);
-
         void onGoToBlogWebView(String url);
 
         void onOpenVideo(String videoUrl, String subtitle);
-
-        void onGoToBuyProduct(ProductFeedViewModel productFeedViewModel);
 
         void onInfoClicked();
 
@@ -146,8 +135,6 @@ public interface FeedPlus {
 
         void updateFavorite(int adapterPosition);
 
-        void onViewMorePromoClicked(int page, int rowNumber);
-
         void showRefresh();
 
         void finishLoading();
@@ -157,8 +144,6 @@ public interface FeedPlus {
         void onSuccessGetFeed(ArrayList<Visitable> visitables);
 
         void onSuccessGetFeedFirstPageWithAddFeed(ArrayList<Visitable> listFeedView);
-
-        void onSeePromo(int page, int rowNumber, String id, String link, String name);
 
         void onRetryClicked();
 
@@ -186,15 +171,11 @@ public interface FeedPlus {
 
         void onShowNewFeed(String totalData);
 
-        void onGoToPromoPageFromHeader(int page, int rowNumber);
-
         void onHideNewFeed();
 
         boolean hasFeed();
 
         void updateFavoriteFromEmpty(String shopId);
-
-        void onEmptyOfficialStoreClicked();
 
         void onBrandClicked(int page, int rowNumber, OfficialStoreViewModel officialStoreViewModel);
 

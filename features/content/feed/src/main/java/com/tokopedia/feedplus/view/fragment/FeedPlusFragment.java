@@ -23,7 +23,12 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.FeedTracking;
@@ -31,14 +36,7 @@ import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.base.adapter.model.EmptyModel;
-import com.tokopedia.core.base.adapter.model.RetryModel;
-import com.tokopedia.core.base.presentation.BaseDaggerFragment;
-import com.tokopedia.core.customwidget.SwipeToRefresh;
-import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.BrandsWebViewActivity;
-import com.tokopedia.core.home.TopPicksWebView;
-import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
@@ -47,11 +45,6 @@ import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
-import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
-import com.tokopedia.core.util.ClipboardHandler;
-import com.tokopedia.core.util.DeepLinkChecker;
-import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.feedplus.FeedModuleRouter;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.domain.usecase.FollowKolPostUseCase;
@@ -70,13 +63,12 @@ import com.tokopedia.feedplus.view.listener.FeedPlus;
 import com.tokopedia.feedplus.view.presenter.FeedPlusPresenter;
 import com.tokopedia.feedplus.view.util.NpaLinearLayoutManager;
 import com.tokopedia.feedplus.view.util.ShareBottomDialog;
+import com.tokopedia.feedplus.view.viewmodel.RetryModel;
 import com.tokopedia.feedplus.view.viewmodel.inspiration.InspirationViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollOptionViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
-import com.tokopedia.feedplus.view.viewmodel.product.ProductFeedViewModel;
-import com.tokopedia.feedplus.view.viewmodel.promo.PromoCardViewModel;
 import com.tokopedia.feedplus.view.viewmodel.topads.FeedTopAdsViewModel;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
@@ -109,7 +101,6 @@ import static com.tokopedia.profile.view.activity.TopProfileActivity.IS_FOLLOWIN
 
 public class FeedPlusFragment extends BaseDaggerFragment
         implements FeedPlus.View,
-        FeedPlus.View.Toppicks,
         FeedPlus.View.Kol,
         FeedPlus.View.Polling,
         SwipeRefreshLayout.OnRefreshListener,
@@ -124,11 +115,12 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     private static final String ARGS_ROW_NUMBER = "row_number";
     private static final String ARGS_ITEM_ROW_NUMBER = "item_row_number";
-
     private static final String FIRST_CURSOR = "FIRST_CURSOR";
+
     public static final String KEY_EXPLORE_NATIVE_ENABLE = "mainapp_explore_native_enable";
     public static final String KEY_EXPLORE_URL = "mainapp_explore_url";
     public static final String DEFAULT_EXPLORE_URL = "tokopedia://webview?url=https%3A%2F%2Fm.tokopedia.com%2Fcontent%2Fexplore%3Fwebview%3Dtrue";
+
     RecyclerView recyclerView;
     SwipeToRefresh swipeToRefresh;
     RelativeLayout mainContent;
@@ -283,14 +275,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         if (isInspirationItem(item)) {
             UnifyTracking.eventR3(AppEventTracking.Action.IMPRESSION,
                     FeedTrackingEventLabel.Impression.FEED_RECOMMENDATION);
-        } else if (isPromoItem(item)) {
-            UnifyTracking.eventFeedClick(AppEventTracking.Action.IMPRESSION,
-                    FeedTrackingEventLabel.Impression.FEED_PROMOTION);
         }
-    }
-
-    private boolean isPromoItem(Visitable item) {
-        return item instanceof PromoCardViewModel;
     }
 
     private boolean isInspirationItem(Visitable item) {
@@ -480,18 +465,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
         UnifyTracking.eventFeedViewShop(String.valueOf(shopId), getFeedAnalyticsHeader(page, rowNumber) + FeedTrackingEventLabel.View.FEED_SHOP);
     }
 
-    @SuppressLint("Range")
-    @Override
-    public void onCopyClicked(int page, int rowNumber, String id, String code, String name) {
-        ClipboardHandler.CopyToClipboard(getActivity(), code);
-        SnackbarManager.make(getActivity(), getResources().getString(R.string.copy_promo_success),
-                Snackbar.LENGTH_SHORT).show();
-        UnifyTracking.eventFeedClickPromo(id, AppEventTracking.Action.COPY_CODE,
-                getFeedAnalyticsHeader(page, rowNumber)
-                        + FeedTrackingEventLabel.Click.PROMO_COPY + name);
-
-    }
-
     @Override
     public void onGoToBlogWebView(String url) {
         Intent intent = BlogWebViewActivity.getIntent(getActivity(), url);
@@ -502,21 +475,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void onOpenVideo(String videoUrl, String subtitle) {
         Intent intent = TransparentVideoActivity.getIntent(getActivity(), videoUrl, subtitle);
         startActivity(intent);
-    }
-
-    @Override
-    public void onGoToBuyProduct(ProductFeedViewModel productFeedViewModel) {
-
-        ProductCartPass pass = ProductCartPass.Builder.aProductCartPass()
-                .setProductId(String.valueOf(productFeedViewModel.getProductId()))
-                .setPrice(productFeedViewModel.getPrice())
-                .setImageUri(productFeedViewModel.getImageSource())
-                .build();
-
-        Intent intent = TransactionAddToCartRouter
-                .createInstanceAddToCartActivity(getActivity(), pass);
-        startActivity(intent);
-
     }
 
     @Override
@@ -542,24 +500,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
         data.setFavorit(!currentStatus);
         adapter.notifyItemChanged(adapterPosition);
     }
-
-    @Override
-    public void onViewMorePromoClicked(int page, int rowNumber) {
-        goToAllPromo();
-        UnifyTracking.eventFeedClick(
-                getFeedAnalyticsHeader(page, rowNumber) + FeedTrackingEventLabel.Click.PROMO_MORE);
-
-    }
-
-    private void goToAllPromo() {
-        Intent intent = new Intent(getContext(), BannerWebView.class);
-        intent.putExtra(BannerWebView.EXTRA_TITLE, getContext().getString(R.string.title_activity_promo));
-        intent.putExtra(BannerWebView.EXTRA_URL,
-                TkpdBaseURL.URL_PROMO + TkpdBaseURL.FLAG_APP
-        );
-        startActivity(intent);
-    }
-
 
     @Override
     public void onSuccessGetFeedFirstPage(ArrayList<Visitable> listFeed) {
@@ -604,15 +544,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onShowNewFeed(String totalData) {
         newFeed.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void onGoToPromoPageFromHeader(int page, int rowNumber) {
-        goToAllPromo();
-        UnifyTracking.eventFeedClick(
-                getFeedAnalyticsHeader(page, rowNumber)
-                        + FeedTrackingEventLabel.Click.PROMO_PAGE_HEADER);
-
     }
 
     @Override
@@ -699,15 +630,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void onSeeAllRecentView() {
         Intent intent = RecentViewActivity.getCallingIntent(getActivity());
         getActivity().startActivity(intent);
-    }
-
-
-    @Override
-    public void onSeePromo(int page, int rowNumber, String id, String link, String name) {
-        ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity(), link);
-        UnifyTracking.eventFeedClickPromo(id,
-                getFeedAnalyticsHeader(page, rowNumber)
-                        + FeedTrackingEventLabel.Click.PROMO_SPECIFIC + name);
     }
 
     @Override
@@ -889,11 +811,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onEmptyOfficialStoreClicked() {
-        openWebViewBrandsURL(TkpdBaseURL.OfficialStore.URL_WEBVIEW);
-    }
-
-    @Override
     public void onBrandClicked(int page, int rowNumber, OfficialStoreViewModel officialStoreViewModel) {
         UnifyTracking.eventFeedClickShop(
                 String.valueOf(officialStoreViewModel.getShopId()),
@@ -964,37 +881,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onToppicksClicked(int page, int rowNumber, String name, String url, int itemPosition) {
-        UnifyTracking.eventFeedClick(
-                getFeedAnalyticsHeader(page, rowNumber) +
-                        FeedTrackingEventLabel.Click.TOPPICKS + name);
-        switch ((DeepLinkChecker.getDeepLinkType(url))) {
-            case DeepLinkChecker.BROWSE:
-                DeepLinkChecker.openBrowse(url, getActivity());
-                break;
-            case DeepLinkChecker.HOT:
-                DeepLinkChecker.openHot(url, getActivity());
-                break;
-            case DeepLinkChecker.CATALOG:
-                DeepLinkChecker.openCatalog(url, getActivity());
-                break;
-            default:
-                if (!TextUtils.isEmpty(url)) {
-                    ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity()
-                            , url);
-                }
-        }
-    }
-
-    @Override
-    public void onSeeAllToppicks(int page, int rowNumber) {
-        startActivity(TopPicksWebView.newInstance(getActivity(), TkpdBaseURL.URL_TOPPICKS));
-        UnifyTracking.eventFeedClick(
-                getFeedAnalyticsHeader(page, rowNumber) +
-                        FeedTrackingEventLabel.Click.TOPPICKS_SEE_ALL);
-    }
-
-    @Override
     public void onGoToKolProfileFromRecommendation(int position, int itemPosition, String userId) {
         Intent profileIntent = TopProfileActivity.newInstance(getContext(), userId)
                 .putExtra(ARGS_ROW_NUMBER, position)
@@ -1008,6 +894,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
         Intent profileIntent = TopProfileActivity.newInstanceFromFeed(getContext(), userId, postId)
                 .putExtra(ARGS_ROW_NUMBER, rowNumber);
         startActivityForResult(profileIntent, OPEN_KOL_PROFILE);
+    }
+
+    @Override
+    public void onGoToKolProfileUsingApplink(int rowNumber, String applink) {
+        ((FeedModuleRouter) getActivity().getApplication()).openRedirectUrl(getActivity(), applink);
     }
 
     @Override

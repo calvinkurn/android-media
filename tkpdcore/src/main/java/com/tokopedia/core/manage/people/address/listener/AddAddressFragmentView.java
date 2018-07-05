@@ -57,6 +57,8 @@ public interface AddAddressFragmentView {
 
     void setCity(List<City> cities);
 
+    void changeProvince(List<City> cities);
+
     void showLoadingDistrict();
 
     void setDistrict(List<District> districts);
