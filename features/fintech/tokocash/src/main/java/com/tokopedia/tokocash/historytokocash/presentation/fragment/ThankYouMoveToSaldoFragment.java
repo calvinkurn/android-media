@@ -30,6 +30,7 @@ public class ThankYouMoveToSaldoFragment extends BaseDaggerFragment {
     private TextView tvDesc;
     private TextView btnNegative;
     private TextView btnPositive;
+    private TextView tvAdditionalInfo;
 
     private WalletToDepositThanksPassData stateWalletToDepositThanksPassData;
     private ActionListener actionListener;
@@ -51,6 +52,7 @@ public class ThankYouMoveToSaldoFragment extends BaseDaggerFragment {
         tvDesc = view.findViewById(R.id.tv_description);
         btnNegative = view.findViewById(R.id.btn_negative);
         btnPositive = view.findViewById(R.id.btn_positive);
+        tvAdditionalInfo = view.findViewById(R.id.tv_additional_info);
         return view;
     }
 
@@ -108,6 +110,7 @@ public class ThankYouMoveToSaldoFragment extends BaseDaggerFragment {
         btnPositive.setVisibility(View.VISIBLE);
         btnNegative.setVisibility(View.VISIBLE);
         ivIcon.setVisibility(View.VISIBLE);
+        tvAdditionalInfo.setVisibility(View.GONE);
 
         ivIcon.setImageResource(
                 stateWalletToDepositThanksPassData.getWalletToDepositThanksData().getIconResId()
@@ -144,6 +147,7 @@ public class ThankYouMoveToSaldoFragment extends BaseDaggerFragment {
         btnPositive.setVisibility(View.VISIBLE);
         btnNegative.setVisibility(View.GONE);
         ivIcon.setVisibility(View.VISIBLE);
+        tvAdditionalInfo.setVisibility(View.VISIBLE);
 
         ivIcon.setImageResource(
                 stateWalletToDepositThanksPassData.getWalletToDepositThanksData().getIconResId()
@@ -158,6 +162,8 @@ public class ThankYouMoveToSaldoFragment extends BaseDaggerFragment {
         btnPositive.setText(
                 stateWalletToDepositThanksPassData.getWalletToDepositThanksData().getTitleButtonPositive()
         );
+
+        tvAdditionalInfo.setText(getString(R.string.additional_info_move_to_saldo));
 
         btnPositive.setOnClickListener(new View.OnClickListener() {
             @Override
