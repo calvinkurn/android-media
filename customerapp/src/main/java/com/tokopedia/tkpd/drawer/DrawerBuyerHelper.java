@@ -304,7 +304,7 @@ public class DrawerBuyerHelper extends DrawerHelper
                 )
         );
         buyerMenu.add(new DrawerItem(
-                        context.getString(R.string.drawer_title_shopping_list),
+                        context.getString(R.string.drawer_title_payment_list),
                         TkpdState.DrawerPosition.PEOPLE_PAYMENT_LIST,
                         drawerCache.getBoolean(IS_PEOPLE_OPENED, false)
                 )

@@ -75,6 +75,17 @@ public class PaymentListInside {
     @SerializedName("ticker_message")
     @Expose
     private String tickerMessage;
+    @SerializedName("app_link")
+    @Expose
+    private String appLink;
+
+    public String getAppLink() {
+        return appLink;
+    }
+
+    public void setAppLink(String appLink) {
+        this.appLink = appLink;
+    }
 
     public String getTransactionId() {
         return transactionId;

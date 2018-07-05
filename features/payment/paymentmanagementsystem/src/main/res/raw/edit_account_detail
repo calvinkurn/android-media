@@ -1,0 +1,6 @@
+mutation{
+  editTransfer($transactionID:String!, $merchantCode:String!, $accName:String!, $accNo:String!, $bankID:Int!, $note:String!){
+    success
+    message
+  }
+}

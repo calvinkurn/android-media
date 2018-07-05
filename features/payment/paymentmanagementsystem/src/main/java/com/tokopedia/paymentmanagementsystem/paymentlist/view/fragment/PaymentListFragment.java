@@ -4,8 +4,11 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
@@ -13,6 +16,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.design.component.Menus;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.paymentmanagementsystem.R;
+import com.tokopedia.paymentmanagementsystem.changebankaccount.view.ChangeBankAccountActivity;
 import com.tokopedia.paymentmanagementsystem.changeclickbca.view.ChangeClickBcaActivity;
 import com.tokopedia.paymentmanagementsystem.paymentlist.di.PaymentListModule;
 import com.tokopedia.paymentmanagementsystem.paymentlist.view.adapter.PaymentListAdapterTypeFactory;
@@ -52,6 +56,13 @@ public class PaymentListFragment extends BaseListFragment<PaymentListModel, Paym
                 .build()
                 .inject(this);
         paymentListPresenter.attachView(this);
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_payment_list, container, false);
+        return view;
     }
 
     @Override
@@ -140,7 +151,8 @@ public class PaymentListFragment extends BaseListFragment<PaymentListModel, Paym
     }
 
     private void changeAccountDetail(PaymentListModel paymentListModel) {
-
+        Intent intent = ChangeBankAccountActivity.createIntent(getActivity(), paymentListModel);
+        startActivity(intent);
     }
 
     private void uploadProofPayment(PaymentListModel paymentListModel) {

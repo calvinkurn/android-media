@@ -35,6 +35,7 @@ public class PaymentListModel implements Visitable<PaymentListAdapterTypeFactory
     private String valueDynamicViewDetailPayment;
     private String paymentMethod;
     private String merchantCode;
+    private String appLink;
 
     @Override
     public int type(PaymentListAdapterTypeFactory typeFactory) {
@@ -51,6 +52,14 @@ public class PaymentListModel implements Visitable<PaymentListAdapterTypeFactory
 
     public void setShowTickerMessage(boolean showTickerMessage) {
         this.showTickerMessage = showTickerMessage;
+    }
+
+    public String getAppLink() {
+        return appLink;
+    }
+
+    public void setAppLink(String appLink) {
+        this.appLink = appLink;
     }
 
     public void setTickerMessage(String tickerMessage) {
@@ -217,6 +226,9 @@ public class PaymentListModel implements Visitable<PaymentListAdapterTypeFactory
         return merchantCode;
     }
 
+    public PaymentListModel() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -246,9 +258,7 @@ public class PaymentListModel implements Visitable<PaymentListAdapterTypeFactory
         dest.writeString(this.valueDynamicViewDetailPayment);
         dest.writeString(this.paymentMethod);
         dest.writeString(this.merchantCode);
-    }
-
-    public PaymentListModel() {
+        dest.writeString(this.appLink);
     }
 
     protected PaymentListModel(Parcel in) {
@@ -274,9 +284,10 @@ public class PaymentListModel implements Visitable<PaymentListAdapterTypeFactory
         this.valueDynamicViewDetailPayment = in.readString();
         this.paymentMethod = in.readString();
         this.merchantCode = in.readString();
+        this.appLink = in.readString();
     }
 
-    public static final Parcelable.Creator<PaymentListModel> CREATOR = new Parcelable.Creator<PaymentListModel>() {
+    public static final Creator<PaymentListModel> CREATOR = new Creator<PaymentListModel>() {
         @Override
         public PaymentListModel createFromParcel(Parcel source) {
             return new PaymentListModel(source);

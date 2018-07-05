@@ -29,7 +29,7 @@ public class PaymentListMapper {
             paymentListModel.setShowCancelTransaction(!paymentListInside.isShowHelpPage() && paymentListInside.isShowCancelButton() && getListOfAction(paymentListInside, context).size() <= 1);
             paymentListModel.setShowSeeDetail(!TextUtils.isEmpty(paymentListInside.getInvoiceUrl()));
             paymentListModel.setInvoiceUrl(paymentListInside.getInvoiceUrl());
-            paymentListModel.setPaymentImage(paymentListInside.getBankImg());
+            paymentListModel.setPaymentImage(paymentListInside.getGatewayImg());
             paymentListModel.setPaymentAmount(paymentListInside.getPaymentAmount());
             paymentListModel.setShowContainerDetailBankTransfer(isBankTransfer(paymentListInside));
             paymentListModel.setDestAccountNo(paymentListInside.getDestBankAccount().getAccNo());
@@ -41,6 +41,7 @@ public class PaymentListMapper {
             paymentListModel.setValueDynamicViewDetailPayment(paymentListInside.getPaymentCode());
             paymentListModel.setPaymentMethod(paymentListInside.getGatewayName());
             paymentListModel.setMerchantCode(paymentListInside.getMerchantCode());
+            paymentListModel.setAppLink(paymentListInside.getAppLink());
             paymentListModels.add(paymentListModel);
         }
         return paymentListModels;

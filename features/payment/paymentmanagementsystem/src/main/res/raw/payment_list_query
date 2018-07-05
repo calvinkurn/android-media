@@ -1,5 +1,5 @@
 {
-  paymentList(lang: "ID") {
+  paymentList(lang: "ID", page:1, perPage:10) {
     payment_list {
       transaction_id
       transaction_date
@@ -13,6 +13,7 @@
       gateway_img
       payment_code
       is_va
+      is_klikbca
       bank_img
       user_bank_account {
         acc_no
@@ -26,7 +27,9 @@
       show_edit_transfer_button
       show_edit_klikbca_button
       show_cancel_button
-      show_expire_ticker
+      show_help_page
+      ticker_message
+      app_link
     }
   }
 }

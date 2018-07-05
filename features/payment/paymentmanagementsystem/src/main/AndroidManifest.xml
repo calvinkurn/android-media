@@ -13,6 +13,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:name=".changeclickbca.view.ChangeClickBcaActivity"/>
+        <activity
+            android:label="@string/payment_title_activity_change_detail_account"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:name=".changebankaccount.view.ChangeBankAccountActivity"/>
     </application>
 
 </manifest>

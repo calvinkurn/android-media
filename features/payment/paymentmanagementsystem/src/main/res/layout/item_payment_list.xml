@@ -230,7 +230,7 @@
                 style="@style/Button.Submit.White.Border"
                 android:layout_width="match_parent"
                 android:layout_margin="0dp"
-                android:text="@string/payment_label_how_to_pay"
+                android:text="@string/payment_label_cancel_transaction"
                 android:visibility="gone" />
         </LinearLayout>
 

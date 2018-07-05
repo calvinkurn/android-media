@@ -13,6 +13,7 @@ import com.tokopedia.paymentmanagementsystem.R;
 import com.tokopedia.paymentmanagementsystem.common.Constant;
 import com.tokopedia.paymentmanagementsystem.paymentlist.data.model.CancelDetail;
 import com.tokopedia.paymentmanagementsystem.paymentlist.data.model.CancelPayment;
+import com.tokopedia.paymentmanagementsystem.paymentlist.data.model.DataPaymentList;
 import com.tokopedia.paymentmanagementsystem.paymentlist.data.model.PaymentList;
 import com.tokopedia.paymentmanagementsystem.paymentlist.view.mapper.PaymentListMapper;
 import com.tokopedia.usecase.RequestParams;
@@ -43,7 +44,7 @@ public class PaymentListPresenter extends BaseDaggerPresenter<PaymentListContrac
 
     public void getPaymentList(Resources resources, Context context) {
         GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(resources,
-                R.raw.payment_list_query), PaymentList.class);
+                R.raw.payment_list_query), DataPaymentList.class);
         getPaymentListUseCase.setRequest(graphqlRequest);
         getPaymentListUseCase.execute(RequestParams.create(), new Subscriber<GraphqlResponse>() {
             @Override
@@ -58,8 +59,8 @@ public class PaymentListPresenter extends BaseDaggerPresenter<PaymentListContrac
 
             @Override
             public void onNext(GraphqlResponse objects) {
-                PaymentList paymentList = objects.getData(PaymentList.class);
-                getView().renderList(paymentListMapper.map(paymentList.getPaymentList(), context));
+                DataPaymentList paymentList = objects.getData(DataPaymentList.class);
+                getView().renderList(paymentListMapper.map(paymentList.getPaymentList().getPaymentList(), context));
             }
         });
     }
@@ -79,7 +80,7 @@ public class PaymentListPresenter extends BaseDaggerPresenter<PaymentListContrac
         variables.put(Constant.MERCHANT_CODE, merchantCode);
 
         GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(resources,
-                R.raw.get_cancel_detail), PaymentList.class, variables);
+                R.raw.get_cancel_detail), CancelDetail.class, variables);
         getCancelDetailUseCase.setRequest(graphqlRequest);
         getCancelDetailUseCase.execute(RequestParams.create(), new Subscriber<GraphqlResponse>() {
             @Override

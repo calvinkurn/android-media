@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/button_use">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/payment_label_dest_bank">
+
+                <Spinner
+                    android:id="@+id/input_dest_bank_account"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </android.support.design.widget.TextInputLayout>
+
+            <com.tokopedia.design.text.TkpdHintTextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/payment_label_account_number"
+                app:helper="@string/payment_label_account_number_hint">
+
+                <EditText
+                    android:id="@+id/input_account_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number" />
+
+            </com.tokopedia.design.text.TkpdHintTextInputLayout>
+
+            <com.tokopedia.design.text.TkpdHintTextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/payment_label_account_name"
+                app:helper="@string/payment_label_account_name_hint">
+
+                <EditText
+                    android:id="@+id/input_account_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text" />
+
+            </com.tokopedia.design.text.TkpdHintTextInputLayout>
+
+            <com.tokopedia.design.text.TkpdHintTextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/payment_label_account_name"
+                app:counterMaxLength="@integer/payment_max_counter_notes_bank_account"
+                app:helper="@string/payment_label_notes_optional">
+
+                <EditText
+                    android:id="@+id/input_note_optional"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:maxLength="@integer/payment_max_counter_notes_bank_account" />
+
+            </com.tokopedia.design.text.TkpdHintTextInputLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/button_use"
+        style="@style/Button.Submit.Green"
+        android:layout_alignParentBottom="true"
+        android:text="@string/payment_label_use" />
+
+</RelativeLayout>
