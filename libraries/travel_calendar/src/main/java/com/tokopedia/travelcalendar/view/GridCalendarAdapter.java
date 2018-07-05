@@ -59,7 +59,8 @@ public class GridCalendarAdapter extends ArrayAdapter {
         dateCalMonth = dateCal.get(Calendar.MONTH);
 
         //current date
-        currentCalendar = Calendar.getInstance().getTime();
+        Calendar calendarCurrent = Calendar.getInstance();
+        currentCalendar = calendarCurrent.getTime();
 
         View view = convertView;
         ViewHolder viewHolder;
@@ -100,12 +101,14 @@ public class GridCalendarAdapter extends ArrayAdapter {
                 }
             }
 
+            calendarCurrent.add(Calendar.DATE, -1);
+
             viewHolder.container.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Date dateSelected = monthlyDates.get(position).getDate();
                     if (dateSelected.getMonth() == getDisplayMonthInt() &&
-                            DateCalendarUtil.getZeroTimeDate(dateSelected).compareTo(DateCalendarUtil.getZeroTimeDate(currentCalendar)) > 0)
+                            DateCalendarUtil.getZeroTimeDate(dateSelected).compareTo(DateCalendarUtil.getZeroTimeDate(calendarCurrent.getTime())) > 0)
                         actionListener.onClickDate(monthlyDates.get(position));
                 }
             });

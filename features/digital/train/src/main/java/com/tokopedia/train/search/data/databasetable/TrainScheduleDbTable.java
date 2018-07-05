@@ -37,6 +37,9 @@ public class TrainScheduleDbTable extends BaseModel {
     @Column(name = "departure_hour")
     private
     int departureHour;
+    @Column(name = "departure_time")
+    private
+    long departureTime;
     @Column(name = "train_class")
     private
     String classTrain;
@@ -254,5 +257,13 @@ public class TrainScheduleDbTable extends BaseModel {
 
     public void setDepartureHour(int departureHour) {
         this.departureHour = departureHour;
+    }
+
+    public long getDepartureTime() {
+        return departureTime;
+    }
+
+    public void setDepartureTime(long departureTime) {
+        this.departureTime = departureTime;
     }
 }
