@@ -1,0 +1,209 @@
+package com.tokopedia.tokopoints.view.model;
+
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
+import java.io.Serializable;
+
+public class CatalogsValueEntity implements Serializable {
+    @Expose
+    @SerializedName("base_code")
+    private String baseCode;
+
+    @Expose
+    @SerializedName("expired")
+    private String expired;
+
+    @Expose
+    @SerializedName("id")
+    private int id;
+
+    @Expose
+    @SerializedName("image_url")
+    private String imageUrl;
+
+    @Expose
+    @SerializedName("image_url_mobile")
+    private String imageUrlMobile;
+
+    @Expose
+    @SerializedName("isGift")
+    private int isGift;
+
+    @Expose
+    @SerializedName("points")
+    private String points;
+
+    @Expose
+    @SerializedName("points_str")
+    private String pointsStr;
+
+    @Expose
+    @SerializedName("promo_id")
+    private int promoId;
+
+    @Expose
+    @SerializedName("quota")
+    private String quota;
+
+    @Expose
+    @SerializedName("slug")
+    private String slug;
+
+    @Expose
+    @SerializedName("sub_title")
+    private String subTitle;
+
+    @Expose
+    @SerializedName("thumbnail_url")
+    private String thumbnailUrl;
+
+    @Expose
+    @SerializedName("thumbnail_url_mobile")
+    private String thumbnailUrlMobile;
+
+    @Expose
+    @SerializedName("title")
+    private String title;
+
+    public String getBaseCode() {
+        return baseCode;
+    }
+
+    public void setBaseCode(String baseCode) {
+        this.baseCode = baseCode;
+    }
+
+    public String getExpired() {
+        return expired;
+    }
+
+    public void setExpired(String expired) {
+        this.expired = expired;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public String getImageUrlMobile() {
+        return imageUrlMobile;
+    }
+
+    public void setImageUrlMobile(String imageUrlMobile) {
+        this.imageUrlMobile = imageUrlMobile;
+    }
+
+    public int getIsGift() {
+        return isGift;
+    }
+
+    public void setIsGift(int isGift) {
+        this.isGift = isGift;
+    }
+
+    public String getPoints() {
+        return points;
+    }
+
+    public void setPoints(String points) {
+        this.points = points;
+    }
+
+    public String getPointsStr() {
+        return pointsStr;
+    }
+
+    public void setPointsStr(String pointsStr) {
+        this.pointsStr = pointsStr;
+    }
+
+    public int getPromoId() {
+        return promoId;
+    }
+
+    public void setPromoId(int promoId) {
+        this.promoId = promoId;
+    }
+
+    public String getQuota() {
+        return quota;
+    }
+
+    public void setQuota(String quota) {
+        this.quota = quota;
+    }
+
+    public String getSlug() {
+        return slug;
+    }
+
+    public void setSlug(String slug) {
+        this.slug = slug;
+    }
+
+    public String getSubTitle() {
+        return subTitle;
+    }
+
+    public void setSubTitle(String subTitle) {
+        this.subTitle = subTitle;
+    }
+
+    public String getThumbnailUrl() {
+        return thumbnailUrl;
+    }
+
+    public void setThumbnailUrl(String thumbnailUrl) {
+        this.thumbnailUrl = thumbnailUrl;
+    }
+
+    public String getThumbnailUrlMobile() {
+        return thumbnailUrlMobile;
+    }
+
+    public void setThumbnailUrlMobile(String thumbnailUrlMobile) {
+        this.thumbnailUrlMobile = thumbnailUrlMobile;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    @Override
+    public String toString() {
+        return "CatalogsValueEntity{" +
+                "baseCode='" + baseCode + '\'' +
+                ", expired='" + expired + '\'' +
+                ", id=" + id +
+                ", imageUrl='" + imageUrl + '\'' +
+                ", imageUrlMobile='" + imageUrlMobile + '\'' +
+                ", isGift=" + isGift +
+                ", points='" + points + '\'' +
+                ", pointsStr='" + pointsStr + '\'' +
+                ", promoId=" + promoId +
+                ", quota='" + quota + '\'' +
+                ", slug='" + slug + '\'' +
+                ", subTitle='" + subTitle + '\'' +
+                ", thumbnailUrl='" + thumbnailUrl + '\'' +
+                ", thumbnailUrlMobile='" + thumbnailUrlMobile + '\'' +
+                ", title='" + title + '\'' +
+                '}';
+    }
+}

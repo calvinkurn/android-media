@@ -1,0 +1,29 @@
+<resources>
+    <string name="tp_title_tokopoints">Tokopoints</string>
+    <string name="tp_label_coupon">Kupon</string>
+    <string name="tp_mes_coupon_part_2">akan digunakan pada transaksi selanjutnya.</string>
+    <string name="tp_label_later">Nanti Saja</string>
+    <string name="tp_label_use">Gunakan</string>
+    <string name="tp_label_view_coupon">Lihat Kupon</string>
+    <string name="tp_label_successful_exchange">Penukaran Berhasil</string>
+    <string name="tp_label_shopping">Belanja</string>
+    <string name="tp_label_complete_profile">Lengkapi Profil</string>
+    <string name="tp_label_exchange">Tukar</string>
+    <string name="tp_label_betal">Batal</string>
+    <string name="tp_label_ok">OK</string>
+    <string name="tp_label_exchange_failed">Penukaran Gagal</string>
+    <string name="tp_label_use_coupon">Gunakan Kupon</string>
+    <string name="tp_label_check_storepoints">Cek TokoPoints</string>
+    <string name="tp_label_know_tokopoints">Apa itu TokoPoints?</string>
+    <string name="tp_label_my_membership">Membership saya</string>
+    <string name="tp_label_see_membership">Lihat status Membership</string>
+    <string name="tp_label_see_loyalty">Loyalty saya</string>
+    <string name="tp_label_see_point">Points saya</string>
+    <string name="tp_label_exchange_points">Penukaran Points</string>
+    <string name="tp_label_my_coupon">Kupon Milik Saya</string>
+    <string name="tp_label_see_all">Lihat Semua</string>
+    <string name="tp_label_help_with_storepoints">Bantuan TokoPoints</string>
+    <string name="tp_label_valid_for">Berlaku selama</string>
+    <string name="tp_message_tokopoints_on_boarding"><![CDATA[<strong>TokoPoints</strong> adalah program loyalitas konsumen yang memungkinkan Pengguna untuk mengumpulkan <strong>Loyalty</strong> dan <strong>Points</strong> dari transaksi yang dilakukan melalui Situs/Aplikasi.<br /><br />Kumpulkan dan tukarkan Points Anda untuk mendapatkan <strong>Kupon</strong> yang diinginkan.<br /><br />Gunakan <strong>Kupon</strong> untuk mendapatkan keuntungan lebih pada transaksi Anda berikutnya.]]></string>
+    <string name="message_ticker"><![CDATA[<strong>TokoPoints</strong> adalah program loyalitas konsumen yang memungkinkan Pengguna untuk mengumpulkan <strong>Loyalty</strong> dan ]]></string>
+</resources>

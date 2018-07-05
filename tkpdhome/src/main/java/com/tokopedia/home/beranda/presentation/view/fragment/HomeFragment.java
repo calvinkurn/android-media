@@ -77,6 +77,7 @@ import com.tokopedia.home.beranda.presentation.view.compoundview.CountDownView;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewModel;
 import com.tokopedia.home.widget.FloatingTextButton;
 import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
+import com.tokopedia.tokopoints.view.activity.TokoPointsHomeActivity;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -480,10 +481,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void actionTokoPointClicked(String tokoPointUrl, String pageTitle) {
-        if (TextUtils.isEmpty(pageTitle))
-            startActivity(TokoPointWebviewActivity.getIntent(getActivity(), tokoPointUrl));
-        else
-            startActivity(TokoPointWebviewActivity.getIntentWithTitle(getActivity(), tokoPointUrl, pageTitle));
+//        if (TextUtils.isEmpty(pageTitle))
+//            startActivity(TokoPointWebviewActivity.getIntent(getActivity(), tokoPointUrl));
+//        else
+//            startActivity(TokoPointWebviewActivity.getIntentWithTitle(getActivity(), tokoPointUrl, pageTitle));
+        startActivity(TokoPointsHomeActivity.getCallingIntent(getContext()));
     }
 
     @Override

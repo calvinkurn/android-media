@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    app:layout_scrollFlags="scroll"
+    android:layout_height="wrap_content"
+    android:animateLayoutChanges="true">
+
+    <ImageView
+        android:id="@+id/img_egg"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:layout_marginLeft="@dimen/tp_margin_medium"
+        android:layout_marginStart="@dimen/tp_margin_medium"
+        android:layout_marginTop="@dimen/tp_margin_medium"
+        android:background="@drawable/shadow_background"
+        android:contentDescription="@string/tp_label_see_loyalty"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/text_membership_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/tp_margin_regular"
+        android:layout_marginStart="@dimen/tp_margin_regular"
+        android:layout_marginTop="@dimen/tp_margin_regular"
+        android:text="@string/tp_label_my_membership"
+        android:textColor="@color/black_38"
+        android:textSize="@dimen/tp_text_size_xsmall"
+        app:layout_constraintStart_toEndOf="@+id/img_egg"
+        app:layout_constraintTop_toTopOf="@+id/img_egg" />
+
+    <TextView
+        android:id="@+id/text_membership_value"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/tp_margin_regular"
+        android:layout_marginStart="@dimen/tp_margin_regular"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:paddingRight="@dimen/tp_padding_regular"
+        android:textColor="@color/black_70"
+        android:textSize="@dimen/tp_text_size_large"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/img_egg"
+        app:layout_constraintTop_toBottomOf="@+id/text_membership_label" />
+
+    <TextView
+        android:id="@+id/text_see_membership_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/tp_margin_regular"
+        android:layout_marginStart="@dimen/tp_margin_regular"
+        android:layout_marginTop="@dimen/tp_margin_small"
+        android:text="@string/tp_label_see_membership"
+        android:textColor="@color/medium_green"
+        android:textSize="@dimen/tp_text_size_xsmall"
+        app:layout_constraintStart_toEndOf="@+id/img_egg"
+        app:layout_constraintTop_toBottomOf="@+id/text_membership_value" />
+
+    <View
+        android:id="@+id/line_separator_egg"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/tp_margin_medium"
+        android:background="@color/white_two"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/img_egg" />
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/img_points_stack"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginLeft="@dimen/tp_margin_medium"
+        android:layout_marginStart="@dimen/tp_margin_medium"
+        android:layout_marginTop="@dimen/tp_margin_regular"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/line_separator_egg"
+        app:srcCompat="@drawable/ic_tp_point_stack" />
+
+
+    <TextView
+        android:id="@+id/text_my_points_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/tp_margin_small"
+        android:layout_marginStart="@dimen/tp_margin_small"
+        android:text="@string/tp_label_see_point"
+        android:textColor="@color/black_38"
+        android:textSize="@dimen/tp_text_size_xsmall"
+        app:layout_constraintStart_toEndOf="@+id/img_points_stack"
+        app:layout_constraintTop_toTopOf="@+id/img_points_stack" />
+
+    <TextView
+        android:id="@+id/text_my_points_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/tp_margin_small"
+        android:layout_marginStart="@dimen/tp_margin_small"
+        android:text="54.334"
+        android:textColor="@color/medium_green"
+        android:textSize="@dimen/tp_text_size_regular"
+        app:layout_constraintStart_toEndOf="@+id/img_points_stack"
+        app:layout_constraintTop_toBottomOf="@+id/text_my_points_label" />
+
+    <View
+        android:id="@+id/line_separator_points_vertical"
+        android:layout_width="1dp"
+        android:layout_height="42dp"
+        android:background="@color/white_two"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/img_points_stack" />
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/img_loyalty_stack"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginLeft="@dimen/tp_margin_medium"
+        android:layout_marginStart="@dimen/tp_margin_medium"
+        android:layout_marginTop="@dimen/tp_margin_regular"
+        app:layout_constraintStart_toEndOf="@+id/line_separator_points_vertical"
+        app:layout_constraintTop_toBottomOf="@+id/line_separator_egg"
+        app:srcCompat="@drawable/ic_tp_loyalty_stack" />
+
+    <TextView
+        android:id="@+id/text_loyalty_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/tp_margin_small"
+        android:layout_marginStart="@dimen/tp_margin_small"
+        android:text="@string/tp_label_see_loyalty"
+        android:textColor="@color/black_38"
+        android:textSize="@dimen/tp_text_size_xsmall"
+        app:layout_constraintStart_toEndOf="@+id/img_loyalty_stack"
+        app:layout_constraintTop_toTopOf="@+id/img_loyalty_stack" />
+
+    <TextView
+        android:id="@+id/text_loyalty_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/tp_margin_small"
+        android:layout_marginStart="@dimen/tp_margin_small"
+        android:text="3.657"
+        android:textColor="@color/medium_green"
+        android:textSize="@dimen/tp_text_size_regular"
+        app:layout_constraintStart_toEndOf="@+id/img_loyalty_stack"
+        app:layout_constraintTop_toBottomOf="@+id/text_loyalty_label" />
+
+    <View
+        android:id="@+id/line_separator_points_horizontal"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/tp_margin_medium"
+        android:background="@color/white_two"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_my_points_value" />
+
+    <com.tokopedia.design.component.ticker.TickerView
+        android:id="@+id/ticker_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/tp_margin_medium"
+        android:layout_marginRight="@dimen/tp_margin_medium"
+        android:layout_marginTop="@dimen/tp_margin_medium"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/line_separator_points_horizontal"
+        app:tckv_indicator_off_color="@color/white_two"
+        app:tckv_indicator_on_color="@color/tkpd_main_green" />
+</android.support.constraint.ConstraintLayout>

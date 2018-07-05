@@ -1,0 +1,64 @@
+{
+  luckyegg: tokopointsToken {
+    resultStatus {
+      code
+      message
+    }
+    offFlag
+    sumToken
+    sumTokenStr
+    floating {
+      tokenId
+      tokenAsset {
+        name
+        version
+        floatingImgUrl
+        smallImgUrl
+        imageUrls
+        spriteUrl
+      }
+      tokenClaimCustomText
+      tokenClaimText
+      countingMessage
+      pageUrl
+      applink
+      timeRemainingSeconds
+      unixTimestamp
+      isShowTime
+    }
+  }
+  tokopoints {
+    resultStatus {
+      code
+      message
+      status
+    }
+    status {
+      tier {
+        id
+        name
+        nameDesc
+        imageURL
+        eggImageURL
+      }
+      points {
+        reward
+        rewardStr
+        loyalty
+        loyaltyStr
+        rewardExpiryInfo
+        loyaltyExpiryInfo
+      }
+    }
+    sheetHowToGet {
+      title
+      description
+      services {
+        icon
+        text
+        url
+        appLink
+      }
+    }
+  }
+}

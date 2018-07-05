@@ -55,6 +55,7 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.perfMon
     implementation rootProject.ext.playServicesDependencies.maps
     implementation project(rootProject.ext.features.digitalproduct)
+    implementation project(rootProject.ext.features.tokopoints)
 
     implementation (rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'

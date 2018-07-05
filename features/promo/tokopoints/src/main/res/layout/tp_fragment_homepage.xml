@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    android:background="@color/white">
+
+    <ViewFlipper
+        android:id="@+id/container_main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        android:measureAllChildren="false">
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/tp_margin_large" />
+
+        <android.support.design.widget.CoordinatorLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <android.support.design.widget.AppBarLayout
+                android:id="@+id/app_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white">
+
+                <include layout="@layout/tp_content_homepage" />
+
+                <include layout="@layout/tp_content_homepage_pager" />
+
+            </android.support.design.widget.AppBarLayout>
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/view_pager_promos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+        </android.support.design.widget.CoordinatorLayout>
+
+        <include layout="@layout/layout_tp_homepage_error" />
+
+    </ViewFlipper>
+
+    <fragment
+        android:id="@+id/floating_egg_fragment"
+        android:name="com.tokopedia.gamification.floating.view.fragment.FloatingEggButtonFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:tag="floating_egg"
+        app:draggable="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:margin_bottom="@dimen/new_margin_sm" />
+</FrameLayout>
