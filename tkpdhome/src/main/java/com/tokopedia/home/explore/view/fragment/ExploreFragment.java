@@ -45,6 +45,7 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
     public static final int TYPE_PESAN = 2;
     public static final int TYPE_AJUKAN = 3;
     public static final int TYPE_JUAL = 4;
+    private static final String NAME_PINJAMAN_ONLINE = "Pinjaman Online";
 
     private int TYPE_FRAGMENT;
 
@@ -143,7 +144,7 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
     @Override
     public void onGimickItemClicked(LayoutRows data) {
 
-        if (data.getName().equalsIgnoreCase("Pinjaman Online")) {
+        if (NAME_PINJAMAN_ONLINE.equalsIgnoreCase(data.getName())) {
             getActivity().startActivity(((IHomeRouter) getActivity().getApplication()).getInstantLoanIntent(getActivity()));
             return;
         }

@@ -29,45 +29,6 @@ import static com.tokopedia.instantloan.network.InstantLoanUrl.BaseUrl.WEB_DOMAI
 @Module
 public class InstantLoanModule {
 
-    /*@InstantLoanQualifier
-    @InstantLoanScope
-    @Provides
-    public Retrofit provideRetrofit(@InstantLoanQualifier OkHttpClient okHttpClient) {
-        Retrofit.Builder retrofitBuilder = new Retrofit.Builder();
-        return retrofitBuilder.baseUrl(WEB_DOMAIN)
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(okHttpClient).build();
-    }
-
-    @InstantLoanQualifier
-    @Provides
-    public OkHttpClient provideOkHttpClient(@ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
-                                            HeaderErrorResponseInterceptor errorResponseInterceptor,
-                                            @ChuckQualifier Interceptor chuckInterceptor,
-                                            InstantLoanAuthInterceptor authInterceptor) {
-        return new OkHttpClient.Builder()
-                .addInterceptor(authInterceptor)
-                .addInterceptor(errorResponseInterceptor)
-                .addInterceptor(httpLoggingInterceptor)
-                .addInterceptor(chuckInterceptor)
-                .build();
-    }
-
-    @Provides
-    public InstantLoanChuckRouter provideInstantLoanRouter(@ApplicationContext Context context) {
-        if (context instanceof InstantLoanChuckRouter) {
-            return ((InstantLoanChuckRouter) context);
-        }
-        throw new RuntimeException("App should implement " + InstantLoanChuckRouter.class.getSimpleName());
-    }
-
-    @Provides
-    @ChuckQualifier
-    public Interceptor provideChuckInterceptor(InstantLoanChuckRouter router) {
-        return router.getChuckInterceptor();
-    }*/
-
     @Provides
     public GetLoanProfileStatusUseCase provideGetLoanProfileStatusUseCase(InstantLoanAuthInterceptor instantLoanAuthInterceptor, @ApplicationContext Context context) {
         return new GetLoanProfileStatusUseCase(instantLoanAuthInterceptor, context);

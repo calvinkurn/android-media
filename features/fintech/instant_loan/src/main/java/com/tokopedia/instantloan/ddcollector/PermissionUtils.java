@@ -15,7 +15,7 @@ import java.util.Map;
 
 class PermissionUtils {
 
-    private Context mContext;
+    private Activity mContext;
     private PermissionResultCallback mCallback;
     static final int PERMISSION_REQUEST_CODE = 99;
     private List<String> mMissingPermissions = new ArrayList<>();
@@ -25,7 +25,7 @@ class PermissionUtils {
             throw new RuntimeException("'context' parameter must be type of Activity");
         }
 
-        this.mContext = context;
+        this.mContext = (Activity) context;
         this.mCallback = callback;
     }
 
