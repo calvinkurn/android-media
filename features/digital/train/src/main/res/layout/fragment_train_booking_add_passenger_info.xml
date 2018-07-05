@@ -63,7 +63,7 @@
                 android:backgroundTint="@color/widget_card_with_action_separator"
                 android:hint="@string/train_buyer_phone_number_hint"
                 android:imeActionLabel="@string/label_next"
-                android:inputType="textEmailAddress"
+                android:inputType="phone"
                 android:lines="1"
                 android:nextFocusForward="@+id/et_phone_number"
                 android:singleLine="true"

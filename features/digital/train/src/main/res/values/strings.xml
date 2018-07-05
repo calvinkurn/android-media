@@ -81,8 +81,17 @@
     <string name="train_passenger_error_salutation">Sapaan harus dipilih</string>
     <string name="train_passenger_error_contact_name">Nama Lengkap harus diisi</string>
     <string name="train_passenger_error_phone_number">Nomor Telepon harus diisi</string>
-    <string name="train_passenger_error_identity_number">NomorIdentitas harus diisi</string>
+    <string name="train_passenger_error_identity_number">Nomor Identitas harus diisi</string>
     <string name="train_passenger_label_identity_number">No ID : %s</string>
+    <string name="train_passenger_contact_name_empty_error">Nama kontak tidak boleh kosong</string>
+    <string name="train_passenger_contact_name_alpha_space_error">Nama harus terdiri alfabet dan space</string>
+    <string name="train_passenger_contact_email_empty_error">Email kontak tidak boleh kosong</string>
+    <string name="train_passenger_contact_email_invalid_error">Email kontak tidak valid</string>
+    <string name="train_passenger_contact_phone_empty_error">Telepon Kontak tidak boleh kosong</string>
+    <string name="train_passenger_contact_phone_invalid_error">Telepon Kontak tidak valid</string>
+    <string name="train_passenger_contact_phone_max_length_error">Telepon Kontak maksimal 13 digit</string>
+    <string name="train_passenger_contact_phone_min_length_error">Telepon Kontak minimal 9 digit</string>
+    <string name="train_passenger_passenger_not_fullfilled_error">Info penumpang tidak boleh ada yang kosong</string>
 
     <!-- sort -->
     <string name="train_sort_label_min_price">Harga Minimum</string>

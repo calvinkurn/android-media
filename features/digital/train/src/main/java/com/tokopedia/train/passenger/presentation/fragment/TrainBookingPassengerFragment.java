@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.component.CardWithAction;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.TrainRouter;
@@ -307,6 +308,18 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
     public void loadPassengerSameAsBuyer(TrainPassengerViewModel trainPassengerViewModel) {
         buyerViewModel = trainPassengerViewModel;
         startActivityForResult(TrainBookingAddPassengerActivity.callingIntent(getActivity(), trainPassengerViewModel), ADD_PASSENGER_REQUEST_CODE);
+    }
+
+    //TODO delete this after do softbooking finish
+    @Override
+    public void toastValidityData() {
+        Toast.makeText(getActivity(), "All data valid", Toast.LENGTH_SHORT).show();
+    }
+
+    @SuppressWarnings("Range")
+    @Override
+    public void showMessageErrorInSnackBar(int resId) {
+        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), getString(resId));
     }
 
     @Override

@@ -66,6 +66,10 @@ public interface TrainBookingPassengerContract {
         void navigateToReview(TrainSoftbook trainSoftbook);
 
         void loadPassengerSameAsBuyer(TrainPassengerViewModel trainPassengerViewModel);
+
+        void toastValidityData();
+
+        void showMessageErrorInSnackBar(int resId);
     }
 
     interface Presenter extends CustomerPresenter<View> {
