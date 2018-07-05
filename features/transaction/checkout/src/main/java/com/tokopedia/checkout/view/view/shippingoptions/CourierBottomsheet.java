@@ -28,6 +28,7 @@ import com.tokopedia.checkout.view.view.shippingoptions.di.CourierComponent;
 import com.tokopedia.checkout.view.view.shippingoptions.di.CourierModule;
 import com.tokopedia.checkout.view.view.shippingoptions.di.DaggerCourierComponent;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
+import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 
 import javax.inject.Inject;
 
@@ -233,5 +234,13 @@ public class CourierBottomsheet extends BottomSheetDialog implements CourierCont
 
     public interface ActionListener {
         void onShipmentItemClick(CourierItemData courierItemData, int cartItemPosition);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        checkoutAnalyticsCourierSelection.sendScreenName(
+                getOwnerActivity(), ConstantTransactionAnalytics.ScreenName.SELECT_COURIER
+        );
     }
 }
