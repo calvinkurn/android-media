@@ -1301,7 +1301,8 @@ public class GroupChatActivity extends BaseSimpleActivity
     private void setToolbarPlain() {
         toolbar.removeAllViews();
         toolbar.setTitle(getResources().getString(R.string.label_group_chat));
-        toolbar.setTitleMarginTop((int) getResources().getDimension(R.dimen.dp_14));
+        toolbar.setTitleMarginTop((int) getResources().getDimension(R.dimen.dp_16));
+        toolbar.setContentInsetStartWithNavigation(0);
         getSupportActionBar().setSubtitle(null);
         toolbar.setTitleTextColor(getResources().getColor(R.color.black_70));
         toolbar.getMenu().findItem(R.id.action_share).setVisible(false);
