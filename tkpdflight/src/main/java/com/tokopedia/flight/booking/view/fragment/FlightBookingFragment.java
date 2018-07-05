@@ -334,10 +334,13 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
                             isCountdownRestarted = true;
                             presenter.onUpdateCart();
                         }
+
+                        if (data.getParcelableExtra(FlightBookingReviewFragment.EXTRA_COUPON_CHANGED) != null) {
+                            flightBookingCartData.setVoucherViewModel(data.getParcelableExtra(
+                                    FlightBookingReviewFragment.EXTRA_COUPON_CHANGED));
+                        }
                     }
 
-                    flightBookingCartData.getVoucherViewModel().setAutoapplySuccess(!data
-                            .getBooleanExtra(FlightBookingReviewFragment.EXTRA_COUPON_CANCELLED, false));
                 }
                 if (!isCountdownRestarted) countdownFinishTransactionView.start();
                 break;
