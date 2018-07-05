@@ -66,7 +66,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class DealDetailsFragment extends BaseDaggerFragment implements DealDetailsContract.View, View.OnClickListener, DealCategoryAdapterContract.View , DealDetailsActivity.BackCallback {
+public class DealDetailsFragment extends BaseDaggerFragment implements DealDetailsContract.View, View.OnClickListener, DealCategoryAdapterContract.View {
 
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private at.blogc.android.views.ExpandableTextView tvExpandableDesc;
@@ -578,9 +578,4 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
             mPresenter.onRecyclerViewScrolled(mLayoutManager);
         }
     };
-
-    @Override
-    public boolean getIsLiked() {
-        return dealDetail.getIsLiked();
-    }
 }

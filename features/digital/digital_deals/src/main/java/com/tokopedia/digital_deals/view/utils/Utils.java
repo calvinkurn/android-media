@@ -3,7 +3,15 @@ package com.tokopedia.digital_deals.view.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.os.Build;
+import android.renderscript.Allocation;
+import android.renderscript.Element;
+import android.renderscript.RenderScript;
+import android.renderscript.ScriptIntrinsicBlur;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -61,6 +69,9 @@ public class Utils {
     public static String BRAND_QUERY_PARAM_CHILD_CATEGORY_ID = "child_category_ids";
     public static String BRAND_QUERY_PARAM_CITY_ID = "cities";
     public static String BRAND_QUERY_PARAM_LOCATION_ID= "location_id";
+    private float defaultBitmapScale = 0.1f;
+    private static final float MAX_RADIUS = 25.0f;
+    private static final float MIN_RADIUS = 0.0f;
 
     synchronized public static Utils getSingletonInstance() {
         if (singleInstance == null)
@@ -461,6 +472,35 @@ public class Utils {
             }
         });
     }
+
+
+
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+    public Bitmap setBlur(Bitmap smallBitmap, float radius, Context context) {
+        if (radius > MIN_RADIUS && radius <= MAX_RADIUS) {
+
+//            int width = Math.round(smallBitmap.getWidth() * defaultBitmapScale);
+//            int height = Math.round(smallBitmap.getHeight() * defaultBitmapScale);
+
+            Bitmap inputBitmap = Bitmap.createScaledBitmap(smallBitmap, smallBitmap.getWidth(), smallBitmap.getHeight(), false);
+            Bitmap outputBitmap = Bitmap.createBitmap(inputBitmap);
+
+            RenderScript renderScript = RenderScript.create(context);
+            ScriptIntrinsicBlur theIntrinsic = ScriptIntrinsicBlur.create(renderScript, Element.U8_4(renderScript));
+            Allocation tmpIn = Allocation.createFromBitmap(renderScript, inputBitmap);
+            Allocation tmpOut = Allocation.createFromBitmap(renderScript, outputBitmap);
+            theIntrinsic.setRadius(radius);
+            theIntrinsic.setInput(tmpIn);
+            theIntrinsic.forEach(tmpOut);
+            tmpOut.copyTo(outputBitmap);
+
+            return outputBitmap;
+        }else{
+            return smallBitmap;
+        }
+    }
+
 
     public static class Constants {
 
