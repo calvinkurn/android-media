@@ -61,4 +61,11 @@ public class ReksaDanaHomeActivity extends BaseSimpleActivity {
         toolbar.setTitleTextAppearance(this, R.style.ToolbarText_SansSerifMedium);
 
     }
+
+    public void moveToDashboard() {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.parent_view, SimpleWebViewWithFilePickerFragment.createInstance(Constants.DASHBOARD_URL), ReksaDanaHomeFragment.class.getSimpleName())
+                .commit();
+    }
 }

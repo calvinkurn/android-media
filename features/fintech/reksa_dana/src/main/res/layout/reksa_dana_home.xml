@@ -73,7 +73,11 @@
                     android:layout_gravity="start"
                     android:gravity="start"
                     android:paddingLeft="@dimen/dp_0"
-                    style="@style/Widget.AppCompat.Spinner.Underlined" />
+                    android:background="@drawable/spinner_dropdown_icon"/>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/black"/>
 
                 <TextView
                     android:id="@+id/occupation_error"
@@ -97,9 +101,12 @@
                     android:layout_gravity="start"
                     android:gravity="start"
                     android:paddingLeft="@dimen/dp_0"
-                    style="@style/Widget.AppCompat.Spinner.Underlined"
+                    android:background="@drawable/spinner_dropdown_icon"
                     android:paddingStart="@dimen/dp_0" />
-
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/black"/>
                 <TextView
                     android:id="@+id/education_error"
                     android:layout_width="match_parent"
@@ -122,8 +129,11 @@
                     android:layout_gravity="start"
                     android:gravity="start"
                     android:paddingLeft="@dimen/dp_0"
-                    style="@style/Widget.AppCompat.Spinner.Underlined" />
-
+                    android:background="@drawable/spinner_dropdown_icon"/>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/black"/>
                 <TextView
                     android:id="@+id/income_source_error"
                     android:layout_width="match_parent"
@@ -146,8 +156,11 @@
                     android:layout_gravity="start"
                     android:gravity="start"
                     android:paddingLeft="@dimen/dp_0"
-                    style="@style/Widget.AppCompat.Spinner.Underlined" />
-
+                    android:background="@drawable/spinner_dropdown_icon"/>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/black"/>
                 <TextView
                     android:id="@+id/income_error"
                     android:layout_width="match_parent"
@@ -169,8 +182,11 @@
                     android:layout_gravity="start"
                     android:gravity="start"
                     android:paddingLeft="@dimen/dp_0"
-                    style="@style/Widget.AppCompat.Spinner.Underlined" />
-
+                    android:background="@drawable/spinner_dropdown_icon"/>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/black"/>
                 <TextView
                     android:id="@+id/investment_error"
                     android:layout_width="match_parent"

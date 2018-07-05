@@ -106,7 +106,7 @@ public class ReksaDanaPresenter extends BaseDaggerPresenter<ReksaDanaContract.Vi
             @Override
             public void onError(Throwable e) {
                 getView().disableProgressVisibility();
-                Log.e("sandeep", "error in email validation =" + e.toString());
+                CommonUtils.dumper("error in email validation =" + e.toString());
             }
 
             @Override
@@ -115,16 +115,15 @@ public class ReksaDanaPresenter extends BaseDaggerPresenter<ReksaDanaContract.Vi
                 if (data.mf_get_sign_url().result().success()) {
                     if (data.mf_get_sign_url().valid()) {
                         getView().setProgressText(UPLOADING_IMAGE);
-                        Log.e("sandeep", "response = " + data);
                         getSignImageUrl(imageDetails);
 
                     } else {
                         getView().disableProgressVisibility();
-                        Log.e("sandeep", "invalid email entered");
+                        CommonUtils.dumper("invalid email entered");
                     }
                 } else {
                     getView().disableProgressVisibility();
-                    Log.e("sandeep", "failed due to : " + data.mf_get_sign_url().message());
+                    CommonUtils.dumper("result().success() = false");
                 }
 
             }
@@ -153,12 +152,6 @@ public class ReksaDanaPresenter extends BaseDaggerPresenter<ReksaDanaContract.Vi
             public void onNext(GraphqlResponse graphqlResponse) {
                 com.tokopedia.reksadana.view.data.signimageurl.Data data = graphqlResponse.getData(com.tokopedia.reksadana.view.data.signimageurl.Data.class);
                 GetSignUrl getSignUrl = data.mf_get_sign_url();
-                Log.e("sandeep", getSignUrl.publicURL());
-                try {
-                    Log.e("sandeep", URLDecoder.decode(getSignUrl.signedURL(), "UTF-8"));
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
 
                 mSignedUrl = getSignUrl.signedURL();
                 mPublicUrl = getSignUrl.publicURL();
@@ -174,12 +167,11 @@ public class ReksaDanaPresenter extends BaseDaggerPresenter<ReksaDanaContract.Vi
                     @Override
                     public void onError(Throwable e) {
                         getView().disableProgressVisibility();
-                        Log.e("sandeep", "erro r = " + e.toString());
+                        CommonUtils.dumper("error :"+e.getMessage());
                     }
 
                     @Override
                     public void onNext(ResponseBody responseBody) {
-                        Log.e("sandeep","response of upload ="+responseBody.toString());
                         getView().setProgressText(UPLOADING_DATA);
                         if (responseBody != null) {
                             CommonUtils.dumper(responseBody.toString());
@@ -188,7 +180,6 @@ public class ReksaDanaPresenter extends BaseDaggerPresenter<ReksaDanaContract.Vi
                         getView().saveSignature();
                         UserDetails details = getView().getRegistrationData(mPublicUrl);
                         variables.put(USER_DETAILS, details);
-                        Log.e("sandeep", details.toString());
                         GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
                                 R.raw.submit_registration_data), com.tokopedia.reksadana.view.data.submit.Data.class, variables);
                         submitUseCase.setRequest(graphqlRequest);
@@ -201,13 +192,13 @@ public class ReksaDanaPresenter extends BaseDaggerPresenter<ReksaDanaContract.Vi
                             @Override
                             public void onError(Throwable e) {
                                 getView().disableProgressVisibility();
-                                Log.e("sandeep", "error in submit =" + e.toString());
+                                CommonUtils.dumper("error :"+e.getMessage());
                             }
 
                             @Override
                             public void onNext(GraphqlResponse graphqlResponse) {
                                 getView().disableProgressVisibility();
-                                Log.e("sandeep", "response = " + graphqlResponse.toString());
+                                getView().onRegistrationComplete();
                             }
                         });
                     }

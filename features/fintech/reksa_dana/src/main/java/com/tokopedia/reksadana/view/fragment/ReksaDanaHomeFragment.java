@@ -48,6 +48,7 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.reksadana.R;
+import com.tokopedia.reksadana.view.activities.ReksaDanaHomeActivity;
 import com.tokopedia.reksadana.view.data.initdata.DropdownValues;
 import com.tokopedia.reksadana.view.data.initdata.FieldData;
 import com.tokopedia.reksadana.view.data.signimageurl.ImageDetails;
@@ -439,6 +440,11 @@ public class ReksaDanaHomeFragment extends BaseDaggerFragment implements ReksaDa
     @Override
     public String getEmail() {
         return email.getText().toString();
+    }
+
+    @Override
+    public void onRegistrationComplete() {
+        ((ReksaDanaHomeActivity)getActivity()).moveToDashboard();
     }
 
     @Override

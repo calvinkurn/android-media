@@ -41,5 +41,7 @@ public interface ReksaDanaContract {
         String getFileLoc();
 
         String getEmail();
+
+        void onRegistrationComplete();
     }
 }
