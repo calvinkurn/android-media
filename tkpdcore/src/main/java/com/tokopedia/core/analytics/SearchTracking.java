@@ -3,6 +3,7 @@ package com.tokopedia.core.analytics;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
@@ -24,17 +25,34 @@ public class SearchTracking extends TrackingUtils {
         return ACTION_FIELD.replace("$1", Integer.toString(pageNumber));
     }
 
-    public static void trackEventClickSearchResultProduct(Object item,
+    public static void trackEventClickSearchResultProduct(Context context,
+                                                          Object item,
                                                           int pageNumber,
                                                           String eventLabel,
                                                           Map<String, String> selectedFilter,
                                                           Map<String, String> selectedSort) {
-        getGTMEngine().enhanceClickSearchResultProduct(item,
-                eventLabel, getActionFieldString(pageNumber),
-                concatFilterAndSortEventLabel(
-                        generateFilterEventLabel(selectedFilter),
-                        generateSortEventLabel(selectedSort)
-                ));
+        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+            return;
+        }
+        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+
+        tracker.sendEnhancedEcommerce(
+                DataLayer.mapOf("event", "productClick",
+                        "eventCategory", "search result",
+                        "eventAction", "click - product",
+                        "eventLabel", eventLabel,
+                        "ecommerce", DataLayer.mapOf("click",
+                                DataLayer.mapOf("actionField",
+                                        DataLayer.mapOf("list", getActionFieldString(pageNumber)),
+                                        "products", DataLayer.listOf(item)
+                                )
+                        ),
+                        "searchFilter", concatFilterAndSortEventLabel(
+                                generateFilterEventLabel(selectedFilter),
+                                generateSortEventLabel(selectedSort)
+                        )
+                )
+        );
     }
 
     public static void trackEventClickImageSearchResultProduct(Context context, Object item, int position) {
@@ -43,7 +61,20 @@ public class SearchTracking extends TrackingUtils {
         }
         AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
 
-        getGTMEngine().enhanceClickImageSearchResultProduct(item, String.format(imageClick, position));
+        tracker.sendEnhancedEcommerce(
+                DataLayer.mapOf("event", "productClick",
+                        "eventCategory", "search result",
+                        "eventAction", "click - product",
+                        "eventLabel", "",
+                        "ecommerce", DataLayer.mapOf("click",
+                                DataLayer.mapOf("actionField",
+                                        DataLayer.mapOf("list", String.format(imageClick, position)),
+                                        "products", DataLayer.listOf(item)
+                                )
+                        )
+                )
+        );
+
         tracker.sendEventTracking(
                 AppEventTracking.Event.PRODUCT_CLICK,
                 AppEventTracking.Category.IMAGE_SEARCH_RESULT,
@@ -52,12 +83,44 @@ public class SearchTracking extends TrackingUtils {
         );
     }
 
-    public static void eventImpressionSearchResultProduct(List<Object> list, String eventLabel) {
-        getGTMEngine().enhanceImpressionSearchResultProduct(list, eventLabel);
+    public static void eventImpressionSearchResultProduct(Context context, List<Object> list, String eventLabel) {
+        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+            return;
+        }
+        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+
+        tracker.sendEnhancedEcommerce(
+                DataLayer.mapOf("event", "productView",
+                        "eventCategory", "search result",
+                        "eventAction", "impression - product",
+                        "eventLabel", eventLabel,
+                        "ecommerce", DataLayer.mapOf(
+                                "currencyCode", "IDR",
+                                "impressions", DataLayer.listOf(
+                                        list.toArray(new Object[list.size()])
+                                ))
+                )
+        );
     }
 
-    public static void eventImpressionImageSearchResultProduct(List<Object> list) {
-        getGTMEngine().enhanceImpressionImageSearchResultProduct(list);
+    public static void eventImpressionImageSearchResultProduct(Context context, List<Object> list) {
+        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+            return;
+        }
+        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+
+        tracker.sendEnhancedEcommerce(
+                DataLayer.mapOf("event", "productView",
+                        "eventCategory", AppEventTracking.Category.IMAGE_SEARCH_RESULT,
+                        "eventAction", "impression - product",
+                        "eventLabel", "",
+                        "ecommerce", DataLayer.mapOf(
+                                "currencyCode", "IDR",
+                                "impressions", DataLayer.listOf(
+                                        list.toArray(new Object[list.size()])
+                                ))
+                )
+        );
     }
 
     public static void eventClickGuidedSearch(Context context, String previousKey, String page, String nextKey) {
@@ -115,15 +178,6 @@ public class SearchTracking extends TrackingUtils {
                 AppEventTracking.Action.CLICK_BAR + screenName,
                 ""
         );
-    }
-
-    public static void eventImageSearchResultChangeGrid(String gridName) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.IMAGE_SEARCH_CLICK,
-                AppEventTracking.Category.IMAGE_SEARCH,
-                AppEventTracking.Action.CLICK_CHANGE_GRID,
-                gridName
-        ).setUserId().getEvent());
     }
 
     public static void eventSearchResultChangeGrid(Context context, String gridName, String screenName) {

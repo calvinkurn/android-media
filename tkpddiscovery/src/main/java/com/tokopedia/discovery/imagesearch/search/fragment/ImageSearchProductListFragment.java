@@ -386,7 +386,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
                     }
                     j++;
                 }
-                SearchTracking.eventImpressionImageSearchResultProduct(dataLayerList);
+                SearchTracking.eventImpressionImageSearchResultProduct(getContext(), dataLayerList);
             }
         }
     }

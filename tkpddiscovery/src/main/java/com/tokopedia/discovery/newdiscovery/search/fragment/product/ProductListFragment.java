@@ -307,7 +307,7 @@ public class ProductListFragment extends SearchSectionFragment
                 dataLayerList.add(((ProductItem) object).getProductAsObjectDataLayer(userId));
             }
         }
-        SearchTracking.eventImpressionSearchResultProduct(dataLayerList, getQueryKey());
+        SearchTracking.eventImpressionSearchResultProduct(getContext(), dataLayerList, getQueryKey());
     }
 
     @Override
@@ -529,6 +529,7 @@ public class ProductListFragment extends SearchSectionFragment
                 SessionHandler.getLoginID(getContext()) : "";
 
         SearchTracking.trackEventClickSearchResultProduct(
+                getContext(),
                 item.getProductAsObjectDataLayer(userId),
                 item.getPageNumber(),
                 productViewModel.getQuery(),
