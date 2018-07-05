@@ -326,6 +326,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         View itemView;
         String orderId;
+        String appLink;
 
         public OrderListViewHolder(View itemView) {
             super(itemView);
@@ -350,12 +351,14 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         @Override
         public void onClick(View view) {
-            context.startActivity(OrderListDetailActivity.createInstance(context, orderId, mOrderCategory, false));
+            RouteManager.route(context, appLink);
+//            context.startActivity(OrderListDetailActivity.createInstance(context, orderId, mOrderCategory, false));
         }
 
         public void bindData(Order order, int position) {
             if (order != null) {
                 orderId = order.id();
+                appLink = order.getAppLink();
                 parentMetadataLayout.removeAllViews();
                 orderListPresenter.setViewData(order);
                 orderListPresenter.setActionButtonData(order.actionButtons());

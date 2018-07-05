@@ -1,7 +1,11 @@
 package com.tokopedia.digital_deals.view.presenter;
 
+import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.common.network.data.model.RestRequest;
+import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.digital_deals.domain.getusecase.GetLocationListRequestUseCase;
 import com.tokopedia.digital_deals.domain.model.locationdomainmodel.LocationDomainModel;
@@ -9,8 +13,10 @@ import com.tokopedia.digital_deals.view.contractor.DealsLocationContract;
 import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.digital_deals.view.viewmodel.LocationViewModel;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -42,7 +48,8 @@ public class DealsLocationPresenter extends BaseDaggerPresenter<DealsLocationCon
 
     public void getLocations() {
         getView().showProgressBar();
-        getSearchLocationListRequestUseCase.execute(getView().getParams(), new Subscriber<LocationDomainModel>() {
+        getSearchLocationListRequestUseCase.setRequestParams(getView().getParams());
+        getSearchLocationListRequestUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
                 CommonUtils.dumper("enter onCompleted");
@@ -62,7 +69,12 @@ public class DealsLocationPresenter extends BaseDaggerPresenter<DealsLocationCon
             }
 
             @Override
-            public void onNext(LocationDomainModel locationDomainModel) {
+            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                Type token = new TypeToken<LocationDomainModel>(){
+                    }.getType();
+                RestResponse restResponse = typeRestResponseMap.get(token);
+                DataResponse dataResponse = restResponse.getData();
+                LocationDomainModel locationDomainModel = (LocationDomainModel) dataResponse.getData();
                 mTopLocations = Utils.getSingletonInstance()
                         .convertIntoLocationListItemsViewModel(locationDomainModel.getLocations());
                 mAllLocations = Utils.getSingletonInstance()
@@ -71,10 +83,8 @@ public class DealsLocationPresenter extends BaseDaggerPresenter<DealsLocationCon
                 getView().renderFromSearchResults(mTopLocations, isTopLocations);
                 getView().showViews();
                 getView().hideProgressBar();
-
             }
         });
-
     }
 
 

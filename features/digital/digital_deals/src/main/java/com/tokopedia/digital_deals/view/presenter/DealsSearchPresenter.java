@@ -4,8 +4,11 @@ package com.tokopedia.digital_deals.view.presenter;
 import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 
+import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.domain.getusecase.GetSearchDealsListRequestUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetSearchNextUseCase;
@@ -19,7 +22,9 @@ import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.LocationViewModel;
 import com.tokopedia.usecase.RequestParams;
 
+import java.lang.reflect.Type;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -53,7 +58,8 @@ public class DealsSearchPresenter
         highlight = searchText;
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(getSearchDealsListRequestUseCase.TAG, searchText);
-        getSearchDealsListRequestUseCase.execute(requestParams, new Subscriber<SearchDomainModel>() {
+        getSearchDealsListRequestUseCase.setRequestParams(requestParams);
+        getSearchDealsListRequestUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
                 CommonUtils.dumper("enter onCompleted");
@@ -66,7 +72,12 @@ public class DealsSearchPresenter
             }
 
             @Override
-            public void onNext(SearchDomainModel searchDomainModel) {
+            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                Type token = new TypeToken<SearchDomainModel>(){
+                }.getType();
+                RestResponse restResponse = typeRestResponseMap.get(token);
+                DataResponse dataResponse = restResponse.getData();
+                SearchDomainModel searchDomainModel = (SearchDomainModel) dataResponse.getData();
                 if (SEARCH_SUBMITTED)
                     getView().renderFromSearchResults(processSearchResponse(searchDomainModel), searchText, searchDomainModel.getCount());
                 else
@@ -139,19 +150,25 @@ public class DealsSearchPresenter
     private void loadMoreItems() {
         isLoading = true;
 
-        getSearchNextUseCase.execute(searchNextParams, new Subscriber<SearchDomainModel>() {
+        getSearchNextUseCase.setRequestParams(searchNextParams);
+        getSearchNextUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
 
             }
 
             @Override
-            public void onError(Throwable throwable) {
+            public void onError(Throwable e) {
                 isLoading = false;
             }
 
             @Override
-            public void onNext(SearchDomainModel searchDomainModel) {
+            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                Type token = new TypeToken<DataResponse<SearchDomainModel>>() {
+                }.getType();
+                RestResponse restResponse = typeRestResponseMap.get(token);
+                DataResponse dataResponse = restResponse.getData();
+                SearchDomainModel searchDomainModel = (SearchDomainModel) dataResponse.getData();
                 isLoading = false;
                 getView().removeFooter(SEARCH_SUBMITTED);
                 if (SEARCH_SUBMITTED)

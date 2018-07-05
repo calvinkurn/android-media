@@ -47,10 +47,11 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     public void setOrderDetailsContent(String orderId, String orderCategory) {
 
         Map<String, Object> variables = new HashMap<>();
-        variables.put("orderCategory", orderCategory);
+        variables.put("orderCategoryStr", orderCategory);
         variables.put("orderId", orderId);
         variables.put("detail", 1);
         variables.put("action", 1);
+        variables.put("upstream", "");
 
         GraphqlRequest graphqlRequest = new
                 GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
@@ -112,7 +113,9 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                     TapActionList data = response.getData(TapActionList.class);
                     tapActionsList = data.getTapActionsList();
                     if (tapActionsList.size() > 0) {
-                        view.tapActionLayoutVisible();
+                        view.tapActionLayoutVisible(View.VISIBLE);
+                    } else {
+                        view.tapActionLayoutVisible(View.GONE);
                     }
 //                    for (TapActions tapActions : tapActionsList) {
                     if(tapActionsList!=null)

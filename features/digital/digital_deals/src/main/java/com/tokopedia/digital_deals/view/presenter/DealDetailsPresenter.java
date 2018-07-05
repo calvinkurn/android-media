@@ -4,11 +4,15 @@ package com.tokopedia.digital_deals.view.presenter;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 
+import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
+import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.digital_deals.R;
+import com.tokopedia.digital_deals.data.entity.response.homeresponse.DealsResponse;
 import com.tokopedia.digital_deals.domain.getusecase.GetDealDetailsUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetDealLikesUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetSearchNextUseCase;
@@ -22,7 +26,9 @@ import com.tokopedia.digital_deals.view.viewmodel.DealsDetailsViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.OutletViewModel;
 import com.tokopedia.usecase.RequestParams;
 
+import java.lang.reflect.Type;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -71,8 +77,8 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
 
         getView().showProgressBar();
         getView().hideCollapsingHeader();
-        getDealDetailsUseCase.execute(getView().getParams(), new Subscriber<DealsDetailsDomain>() {
-
+        getDealDetailsUseCase.setRequestParams(getView().getParams());
+        getDealDetailsUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
                 CommonUtils.dumper("enter onCompleted");
@@ -93,7 +99,12 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
             }
 
             @Override
-            public void onNext(DealsDetailsDomain dealEntity) {
+            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                Type token = new TypeToken<DataResponse<DealsDetailsDomain>>() {
+                }.getType();
+                RestResponse restResponse = typeRestResponseMap.get(token);
+                DataResponse data = restResponse.getData();
+                DealsDetailsDomain dealEntity = (DealsDetailsDomain) data.getData();
                 getView().hideProgressBar();
                 getView().showShareButton();
                 getView().showCollapsingHeader();
@@ -106,12 +117,48 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
                 getLikes();
             }
         });
+//        getDealDetailsUseCase.execute(getView().getParams(), new Subscriber<DealsDetailsDomain>() {
+//
+//            @Override
+//            public void onCompleted() {
+//                CommonUtils.dumper("enter onCompleted");
+//            }
+//
+//            @Override
+//            public void onError(Throwable e) {
+//                CommonUtils.dumper("enter error");
+//                e.printStackTrace();
+//                getView().hideProgressBar();
+//                getView().hideCollapsingHeader();
+//                NetworkErrorHelper.showEmptyState(getView().getActivity(), getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
+//                    @Override
+//                    public void onRetryClicked() {
+//                        getDealDetails();
+//                    }
+//                });
+//            }
+//
+//            @Override
+//            public void onNext(DealsDetailsDomain dealEntity) {
+//                getView().hideProgressBar();
+//                getView().showShareButton();
+//                getView().showCollapsingHeader();
+//                dealsDetailsViewModel = Utils.getSingletonInstance()
+//                        .convertIntoDealDetailsViewModel(dealEntity);
+//                getView().renderDealDetails(dealsDetailsViewModel);
+//                searchNextParams.putString("nexturl", dealsDetailsViewModel.getRecommendationUrl());
+//                getRecommendedDeals();
+//                CommonUtils.dumper("enter onNext");
+//                getLikes();
+//            }
+//        });
     }
 
     private void getLikes() {
         RequestParams requestParams = RequestParams.create();
         requestParams.putString("deal_id", String.valueOf(dealsDetailsViewModel.getId()));
-        getDealLikesUseCase.execute(requestParams, new Subscriber<GetLikesDomain>() {
+        getDealLikesUseCase.setRequestParams(requestParams);
+        getDealLikesUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
 
@@ -123,7 +170,12 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
             }
 
             @Override
-            public void onNext(GetLikesDomain getLikesDomain) {
+            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                Type token = new TypeToken<DataResponse<GetLikesDomain>>(){
+                    }.getType();
+                RestResponse restResponse = typeRestResponseMap.get(token);
+                DataResponse dataResponse = restResponse.getData();
+                GetLikesDomain getLikesDomain = (GetLikesDomain) dataResponse.getData();
                 getView().setLikes(getLikesDomain.getTotalLikes());
 
             }
@@ -133,20 +185,27 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
     private void getRecommendedDeals() {
 
         isLoading = true;
-        getSearchNextUseCase.execute(searchNextParams, new Subscriber<SearchDomainModel>() {
+        getSearchNextUseCase.setRequestParams(searchNextParams);
+        getSearchNextUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
 
             }
 
             @Override
-            public void onError(Throwable throwable) {
-                Log.d("inOnErrrror", throwable.getMessage());
+            public void onError(Throwable e) {
+                Log.d("inOnErrrror", e.getMessage());
             }
 
             @Override
-            public void onNext(SearchDomainModel searchDomainModel) {
+            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
                 Log.d("inOnNext", "ds");
+
+                Type token = new TypeToken<DataResponse<SearchDomainModel>>() {
+                }.getType();
+                RestResponse restResponse = typeRestResponseMap.get(token);
+                DataResponse data = restResponse.getData();
+                SearchDomainModel searchDomainModel = (SearchDomainModel) data.getData();
 
                 isLoading = false;
                 getView().removeFooter();
@@ -154,7 +213,6 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
                 getView().addDealsToCards(processSearchResponse(searchDomainModel));
 
                 checkIfToLoad(getView().getLayoutManager());
-
             }
         });
     }
@@ -237,7 +295,7 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
         checkIfToLoad(layoutManager);
     }
 
-    private void checkIfToLoad(LinearLayoutManager layoutManager) {
+        private void checkIfToLoad(LinearLayoutManager layoutManager) {
         int visibleItemCount = layoutManager.getChildCount();
         int totalItemCount = layoutManager.getItemCount();
         int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();

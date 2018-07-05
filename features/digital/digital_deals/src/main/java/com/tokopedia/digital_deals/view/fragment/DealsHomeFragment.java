@@ -33,6 +33,7 @@ import android.widget.Toast;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
+import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.design.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.digital_deals.R;
@@ -113,7 +114,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         if (location != null) {
             tvLocationName.setText(location.getName());
             mPresenter.getDealsList();
-            mPresenter.getBrandsList();
+//            mPresenter.getBrandsList();
 
         } else {
             navigateToActivityRequest(new Intent(getActivity(), DealsLocationActivity.class), DealsHomeActivity.REQUEST_CODE_DEALSLOCATIONACTIVITY);
@@ -165,6 +166,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
 
     @Override
     protected void initInjector() {
+        NetworkClient.init(getActivity());
         DaggerDealsComponent.builder()
                 .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
                 .dealsModule(new DealsModule(getContext()))
@@ -208,7 +210,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
                     tvLocationName.setText(location.getName());
 //                    mPresenter.stopBannerSlide();
                     mPresenter.getDealsList();
-                    mPresenter.getBrandsList();
+//                    mPresenter.getBrandsList();
                 }
                 break;
 
@@ -218,7 +220,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
                     if(!tvLocationName.getText().equals(location1.getName())){
                         tvLocationName.setText(location1.getName());
                         mPresenter.getDealsList();
-                        mPresenter.getBrandsList();
+//                        mPresenter.getBrandsList();
                     }
 
 
@@ -324,7 +326,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     public RequestParams getParams() {
         LocationViewModel location = Utils.getSingletonInstance().getLocation(getActivity());
         RequestParams requestParams = RequestParams.create();
-        requestParams.putString(mPresenter.TAG, location.getSearchName());
+        requestParams.putString(DealsHomePresenter.TAG, location.getSearchName());
         return requestParams;
     }
 

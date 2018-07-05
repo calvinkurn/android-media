@@ -116,8 +116,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     @Override
-    public void tapActionLayoutVisible() {
-        viewHolder.tapActionLayout.setVisibility(View.VISIBLE);
+    public void tapActionLayoutVisible(int visibility) {
+        viewHolder.tapActionLayout.setVisibility(visibility);
     }
 
 

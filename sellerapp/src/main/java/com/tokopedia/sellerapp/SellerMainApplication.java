@@ -257,11 +257,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
     }
 
     @Override
-    public Intent getOrderListDetailActivity(Context context, String type, String orderId) {
-        return null
-    }
-
-    @Override
     public Intent getHelpUsIntent(Context context) {
         return null;
     }

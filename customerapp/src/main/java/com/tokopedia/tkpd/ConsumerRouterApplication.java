@@ -2352,11 +2352,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return DistrictRecommendationActivity.createInstance(activity, new TokenMapper().convertTokenModel(token));
     }
 
-    @Override
-    public Intent getOrderListDetailActivity(Context context, String orderId, String orderCategory, boolean fromPayment) {
-        return new OrderListDetailActivity().createInstance(context, orderId, orderCategory, fromPayment);
-    }
-
 
     public FingerprintModel getFingerprintModel() {
         return FingerprintModelGenerator.generateFingerprintModel(this);

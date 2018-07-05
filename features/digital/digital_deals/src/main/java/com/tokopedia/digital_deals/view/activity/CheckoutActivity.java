@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.view.fragment.CheckoutHomeFragment;
@@ -19,6 +20,8 @@ import com.tokopedia.digital_deals.view.viewmodel.OutletViewModel;
 import com.tokopedia.oms.scrooge.ScroogePGUtil;
 
 import java.util.List;
+
+import okhttp3.Route;
 
 public class CheckoutActivity extends BaseSimpleActivity implements DealFragmentCallbacks {
 
@@ -52,9 +55,10 @@ public class CheckoutActivity extends BaseSimpleActivity implements DealFragment
         if (data != null) {
             if (requestCode == ScroogePGUtil.REQUEST_CODE_OPEN_SCROOGE_PAGE) {
                 String orderId = Utils.fetchOrderId(data.getStringExtra(ScroogePGUtil.SUCCESS_MSG_URL));
-                Intent intent = ((TkpdCoreRouter) getApplication())
-                        .getOrderListDetailActivity(this, orderId, "DEALS", true);
-                this.startActivity(intent);
+                RouteManager.route(this, data.getStringExtra(ScroogePGUtil.SUCCESS_MSG_URL));
+//                Intent intent = ((TkpdCoreRouter) getApplication())
+//                        .getOrderListDetailActivity(this, orderId, "DEALS", true);
+//                this.startActivity(intent);
                 this.finish();
             }
         }

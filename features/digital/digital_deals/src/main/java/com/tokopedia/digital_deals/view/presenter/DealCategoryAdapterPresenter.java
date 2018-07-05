@@ -1,6 +1,9 @@
 package com.tokopedia.digital_deals.view.presenter;
 
+import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital_deals.domain.postusecase.PostUpdateDealLikesUseCase;
 import com.tokopedia.digital_deals.domain.model.LikeUpdateResultDomain;
@@ -9,6 +12,9 @@ import com.tokopedia.digital_deals.domain.model.request.likes.Rating;
 import com.tokopedia.digital_deals.view.contractor.DealCategoryAdapterContract;
 import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.DealsDetailsViewModel;
+
+import java.lang.reflect.Type;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -47,25 +53,29 @@ public class DealCategoryAdapterPresenter extends BaseDaggerPresenter<DealCatego
             requestModel.setRating(rating);
             com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
             requestParams.putObject("request_body", requestModel);
-            postUpdateDealLikesUseCase.createObservable(requestParams).subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Subscriber<LikeUpdateResultDomain>() {
-                        @Override
-                        public void onCompleted() {
+            postUpdateDealLikesUseCase.setRequestParams(requestParams);
+            postUpdateDealLikesUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+                @Override
+                public void onCompleted() {
 
-                        }
+                }
 
-                        @Override
-                        public void onError(Throwable e) {
-                            e.printStackTrace();
-                        }
+                @Override
+                public void onError(Throwable e) {
 
-                        @Override
-                        public void onNext(LikeUpdateResultDomain likeUpdateResultDomain) {
-                            model.setLiked(likeUpdateResultDomain.isLiked());
-                            getView().notifyDataSetChanged(position);
-                        }
-                    });
+                }
+
+                @Override
+                public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                    Type token = new TypeToken<LikeUpdateResultDomain>() {
+                    }.getType();
+                    RestResponse restResponse = typeRestResponseMap.get(token);
+                    DataResponse dataResponse = restResponse.getData();
+                    LikeUpdateResultDomain likeUpdateResultDomain = (LikeUpdateResultDomain) dataResponse.getData();
+                    model.setLiked(likeUpdateResultDomain.isLiked());
+                    getView().notifyDataSetChanged(position);
+                }
+            });
         } else {
             getView().showLoginSnackbar("Please Login to like or share deals");
         }
@@ -86,25 +96,30 @@ public class DealCategoryAdapterPresenter extends BaseDaggerPresenter<DealCatego
             requestModel.setRating(rating);
             com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
             requestParams.putObject("request_body", requestModel);
-            postUpdateDealLikesUseCase.createObservable(requestParams).subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Subscriber<LikeUpdateResultDomain>() {
-                        @Override
-                        public void onCompleted() {
+            postUpdateDealLikesUseCase.setRequestParams(requestParams);
+            postUpdateDealLikesUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+                @Override
+                public void onCompleted() {
 
-                        }
+                }
 
-                        @Override
-                        public void onError(Throwable e) {
-                            e.printStackTrace();
-                        }
+                @Override
+                public void onError(Throwable e) {
 
-                        @Override
-                        public void onNext(LikeUpdateResultDomain likeUpdateResultDomain) {
-                            model.setIsLiked(likeUpdateResultDomain.isLiked());
-                            getView().notifyDataSetChanged(position);
-                        }
-                    });
+                }
+
+                @Override
+                public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                    Type token = new TypeToken<LikeUpdateResultDomain>() {
+                    }.getType();
+                    RestResponse restResponse = typeRestResponseMap.get(token);
+                    DataResponse dataResponse = restResponse.getData();
+                    LikeUpdateResultDomain likeUpdateResultDomain = (LikeUpdateResultDomain) dataResponse.getData();
+                    model.setIsLiked(likeUpdateResultDomain.isLiked());
+                    getView().notifyDataSetChanged(position);
+                    getView().notifyDataSetChanged(position);
+                }
+            });
         } else {
             getView().showLoginSnackbar("Please Login to like or share deals");
         }
