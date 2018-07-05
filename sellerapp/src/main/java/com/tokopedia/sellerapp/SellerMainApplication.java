@@ -1,5 +1,4 @@
 package com.tokopedia.sellerapp;
-package com.tokopedia.sellerapp;
 
 import android.app.Activity;
 import android.content.Context;
