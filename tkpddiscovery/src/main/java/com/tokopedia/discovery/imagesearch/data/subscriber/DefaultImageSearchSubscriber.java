@@ -7,7 +7,7 @@ import com.tokopedia.core.network.retrofit.exception.ServerErrorMaintenanceExcep
 import com.tokopedia.core.network.retrofit.exception.ServerErrorTimeZoneException;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
-import com.tokopedia.discovery.imagesearch.domain.usecase.GetImageSearchUseCase;
+import com.tokopedia.discovery.imagesearch.search.exception.ImageNotSupportedException;
 import com.tokopedia.discovery.newdiscovery.base.BaseDiscoveryContract;
 import com.tokopedia.discovery.newdiscovery.base.DefaultSearchSubscriber;
 import com.tokopedia.discovery.newdiscovery.domain.model.SearchResultModel;
@@ -42,7 +42,7 @@ public class DefaultImageSearchSubscriber<D2 extends BaseDiscoveryContract.View>
     @Override
     public void onError(Throwable e) {
 
-        if (e instanceof GetImageSearchUseCase.ImageNotSupportedException) {
+        if (e instanceof ImageNotSupportedException) {
             discoveryView.showImageNotSupportedError();
         } else if (e instanceof UnknownHostException || e instanceof ConnectException) {
             discoveryView.showTimeoutErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);

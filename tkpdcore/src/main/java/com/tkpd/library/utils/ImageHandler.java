@@ -24,7 +24,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.FutureTarget;
 import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.core.R;
@@ -106,22 +105,14 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
         return image;
     }
 
-    public static Bitmap getBitmapFromUri(Context context, Uri uri) {
-        final Bitmap[] bitmap = {null};
+    public static Bitmap getBitmapFromUri(Context context, Uri uri, int width, int height) {
+        Bitmap bitmap = null;
         try {
-            Glide.with(context)
-                    .load(uri)
-                    .asBitmap()
-                    .into(new SimpleTarget<Bitmap>() {
-                        @Override
-                        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                            bitmap[0] = resource;
-                        }
-                    });
+            bitmap = Glide.with(context).load(uri).asBitmap().into(width, height).get();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return bitmap[0];
+        return bitmap;
     }
 
     public static void loadImageWithId(ImageView imageview, int resId) {

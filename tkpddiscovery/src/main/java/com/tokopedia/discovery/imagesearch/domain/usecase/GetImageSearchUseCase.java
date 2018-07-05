@@ -20,6 +20,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.imagesearch.data.mapper.ImageProductMapper;
 import com.tokopedia.discovery.imagesearch.network.apiservice.ImageSearchService;
+import com.tokopedia.discovery.imagesearch.search.exception.ImageNotSupportedException;
 import com.tokopedia.discovery.newdiscovery.domain.model.ProductModel;
 import com.tokopedia.discovery.newdiscovery.domain.model.SearchResultModel;
 
@@ -89,7 +90,8 @@ public class GetImageSearchUseCase<T> extends UseCase<SearchResultModel> {
                     Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
                     try {
                         if (myBitmap == null) {
-                            myBitmap = ImageHandler.getBitmapFromUri(context, Uri.parse(imagePath));
+                            myBitmap = ImageHandler.getBitmapFromUri(context, Uri.parse(imagePath),
+                                    OPTIMUM_WIDTH, OPTIMUM_HEIGHT);
                         }
 
                         if (myBitmap.getWidth() < MIN_WIDTH ||
@@ -191,12 +193,6 @@ public class GetImageSearchUseCase<T> extends UseCase<SearchResultModel> {
 
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
-    }
-
-    public static class ImageNotSupportedException extends RuntimeException {
-        ImageNotSupportedException() {
-
-        }
     }
 
 }
