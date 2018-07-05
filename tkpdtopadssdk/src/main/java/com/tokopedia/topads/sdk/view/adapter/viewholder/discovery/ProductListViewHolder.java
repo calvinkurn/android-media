@@ -146,6 +146,7 @@ public class ProductListViewHolder extends AbstractViewHolder<ProductListViewMod
                 shopLocation.setText(shop.getLocation());
             }
         }
+        renderWishlistButton(data.isWislished());
     }
 
     private int getStarCount(int rating) {

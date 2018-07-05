@@ -61,7 +61,8 @@ public class TopAdsUseCase extends UseCase<TopAdsParams, AdsView> {
 
             @Override
             protected TopAdsModel doInBackground(TopAdsParams... params) {
-                return dataSource.getTopAds(params[0].getParam(), params[0].getAdsPosition());
+                TopAdsModel adsModel = dataSource.getTopAds(params[0].getParam(), params[0].getAdsPosition());
+                return dataSource.checkWishlist(adsModel);
             }
 
             @Override

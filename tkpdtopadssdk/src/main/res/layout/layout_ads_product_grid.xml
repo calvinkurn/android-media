@@ -195,15 +195,16 @@
         android:textColor="#279ba4"
         android:fontFamily="sans-serif-medium"
         android:gravity="center"
+        android:layout_marginTop="@dimen/dp_5"
         android:layout_marginRight="@dimen/dp_2"
         android:layout_marginLeft="@dimen/product_grid_padding"
         android:layout_marginBottom="@dimen/product_grid_padding"
         android:text="@string/baru"
         android:paddingLeft="@dimen/dp_8"
         android:paddingRight="@dimen/dp_8"
-        android:paddingTop="@dimen/dp_5"
+        android:paddingTop="@dimen/dp_3"
         android:paddingBottom="@dimen/dp_3"
         android:textSize="@dimen/sp_11"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
 </RelativeLayout>
