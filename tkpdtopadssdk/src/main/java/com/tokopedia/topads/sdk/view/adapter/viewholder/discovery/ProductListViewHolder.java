@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
+import com.tokopedia.topads.sdk.domain.model.Badge;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
@@ -24,6 +25,8 @@ import com.tokopedia.topads.sdk.utils.ImageLoader;
 import com.tokopedia.topads.sdk.utils.LabelLoader;
 import com.tokopedia.topads.sdk.view.FlowLayout;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductListViewModel;
+
+import java.util.List;
 
 /**
  * Created by errysuprayogi on 3/27/17.
@@ -48,6 +51,7 @@ public class ProductListViewHolder extends AbstractViewHolder<ProductListViewMod
     private ImageView rating;
     private TextView reviewCount;
     private int clickPosition;
+    private ImageView btnWishList;
 
     public ProductListViewHolder(View itemView, ImageLoader imageLoader, LocalAdsClickListener itemClickListener, int clickPosition) {
         super(itemView);
@@ -63,7 +67,9 @@ public class ProductListViewHolder extends AbstractViewHolder<ProductListViewMod
         shopLocation = (TextView) itemView.findViewById(R.id.location);
         rating = (ImageView) itemView.findViewById(R.id.rating);
         reviewCount = (TextView) itemView.findViewById(R.id.review_count);
+        btnWishList = itemView.findViewById(R.id.wishlist_button);
         ((LinearLayout) itemView.findViewById(R.id.container)).setOnClickListener(this);
+        itemView.findViewById(R.id.wishlist_button_container).setOnClickListener(this);
     }
 
     @Override
@@ -131,7 +137,11 @@ public class ProductListViewHolder extends AbstractViewHolder<ProductListViewMod
         if (shop != null) {
             if (shop.getBadges() != null && !shop.getLocation().isEmpty()) {
                 imageLoader.loadBadge(badgeContainer, shop.getBadges());
-                shopLocation.setText(String.format(" \u2022 %s", shop.getLocation()));
+                if(isBadgesExist(shop.getBadges())) {
+                    shopLocation.setText(String.format(" \u2022 %s", shop.getLocation()));
+                } else {
+                    shopLocation.setText(shop.getLocation());
+                }
             } else {
                 shopLocation.setText(shop.getLocation());
             }
@@ -144,8 +154,36 @@ public class ProductListViewHolder extends AbstractViewHolder<ProductListViewMod
 
     @Override
     public void onClick(View v) {
-        if (itemClickListener != null && v.getId() == R.id.container) {
-            itemClickListener.onProductItemClicked(clickPosition, data);
+        if (itemClickListener != null) {
+            if(v.getId() == R.id.container) {
+                itemClickListener.onProductItemClicked(clickPosition, data);
+            }
+            if(v.getId() == R.id.wishlist_button){
+                itemClickListener.onAddWishLish(clickPosition, data);
+                data.setWislished(!data.isWislished());
+                renderWishlistButton(data.isWislished());
+            }
         }
+    }
+
+    protected void renderWishlistButton(boolean wishlist) {
+        if (wishlist) {
+            btnWishList.setBackgroundResource(R.drawable.ic_wishlist_red);
+        } else {
+            btnWishList.setBackgroundResource(R.drawable.ic_wishlist);
+        }
+    }
+
+    private boolean isBadgesExist(List<Badge> badges) {
+        if (badges == null || badges.isEmpty()) {
+            return false;
+        }
+
+        for (Badge badgeItem : badges) {
+            if (badgeItem.isShow()) {
+                return true;
+            }
+        }
+        return false;
     }
 }

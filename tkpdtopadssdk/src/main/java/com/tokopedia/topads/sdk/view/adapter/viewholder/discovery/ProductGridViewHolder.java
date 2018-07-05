@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
+import com.tokopedia.topads.sdk.domain.model.Badge;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
@@ -27,6 +28,8 @@ import com.tokopedia.topads.sdk.view.FlowLayout;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductGridViewModel;
 
 import org.w3c.dom.Text;
+
+import java.util.List;
 
 /**
  * Created by errysuprayogi on 3/27/17.
@@ -60,6 +63,7 @@ public class ProductGridViewHolder extends AbstractViewHolder<ProductGridViewMod
     public ProductGridViewHolder(View itemView, ImageLoader imageLoader, LocalAdsClickListener itemClickListener, int clickPosition) {
         super(itemView);
         itemView.findViewById(R.id.container).setOnClickListener(this);
+        itemView.findViewById(R.id.wishlist_button_container).setOnClickListener(this);
         this.itemClickListener = itemClickListener;
         this.imageLoader = imageLoader;
         this.clickPosition = clickPosition;
@@ -75,7 +79,6 @@ public class ProductGridViewHolder extends AbstractViewHolder<ProductGridViewMod
         topLabelContainer = itemView.findViewById(R.id.top_label_container);
         bottomLabelContainer = itemView.findViewById(R.id.bottom_label_container);
         btnWishList = itemView.findViewById(R.id.wishlist_button);
-        btnWishList.setOnClickListener(this);
     }
 
     @Override
@@ -92,7 +95,11 @@ public class ProductGridViewHolder extends AbstractViewHolder<ProductGridViewMod
     private void bindShop(Shop shop) {
         if (shop.getBadges() != null && !shop.getLocation().isEmpty()) {
             imageLoader.loadBadge(badgeContainer, shop.getBadges());
-            shopLocation.setText(String.format(" \u2022 %s", shop.getLocation()));
+            if(isBadgesExist(shop.getBadges())) {
+                shopLocation.setText(String.format(" \u2022 %s", shop.getLocation()));
+            } else {
+                shopLocation.setText(shop.getLocation());
+            }
         } else {
             shopLocation.setText(shop.getLocation());
         }
@@ -171,6 +178,19 @@ public class ProductGridViewHolder extends AbstractViewHolder<ProductGridViewMod
         } else {
             btnWishList.setBackgroundResource(R.drawable.ic_wishlist);
         }
+    }
+
+    private boolean isBadgesExist(List<Badge> badges) {
+        if (badges == null || badges.isEmpty()) {
+            return false;
+        }
+
+        for (Badge badgeItem : badges) {
+            if (badgeItem.isShow()) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

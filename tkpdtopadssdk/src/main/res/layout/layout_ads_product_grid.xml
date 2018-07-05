@@ -147,15 +147,15 @@
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/location"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:gravity="center_vertical"
             android:maxLines="2"
-            android:minHeight="25dp"
-            android:textColor="@color/black_70"
-            android:textSize="@dimen/text_size_xsmall"
-            tools:text="Jakarta" />
+            android:textColor="@color/black_38"
+            android:textSize="@dimen/sp_12"
+            android:fontFamily="sans-serif"
+            android:textStyle="normal"/>
     </LinearLayout>
 
     <LinearLayout
@@ -189,6 +189,7 @@
         android:id="@+id/new_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/location_container"
         android:background="@drawable/bg_new_label"
         android:textColor="#279ba4"
         android:fontFamily="sans-serif-medium"
