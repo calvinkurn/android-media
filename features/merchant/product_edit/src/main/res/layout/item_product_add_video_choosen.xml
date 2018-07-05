@@ -62,8 +62,7 @@
                             android:ellipsize="end"
                             android:maxLines="2"
                             android:gravity="center|start"
-                            android:textColor="@color/font_black_secondary_54"
-                            android:textSize="@dimen/text_add_video_url_title_textSize"
+                            style="@style/TextView.Small.BlackSecondary"
                             tools:text="Beruang Teddy\n makanya harus makan nasi banyak2 " />
 
                         <TextView
@@ -73,8 +72,7 @@
                             android:ellipsize="end"
                             android:gravity="center|start"
                             android:lines="1"
-                            android:textColor="@color/font_black_disabled_38"
-                            android:textSize="@dimen/text_add_video_url_description_text_size"
+                            style="@style/TextView.Micro.BlackDisabled"
                             tools:text="Review produk baru keluaran toko souvenir dan makan nasi" />
 
                 </LinearLayout>

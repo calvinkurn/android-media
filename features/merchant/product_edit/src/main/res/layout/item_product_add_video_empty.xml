@@ -28,9 +28,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="@string/product_add_till_three_product_video"
-        android:textColor="#60000000"
-        android:textSize="14sp"
-        android:textStyle="bold" />
+        style="@style/TextView.Small.Bold.BlackSecondary" />
 
     <TextView
         android:id="@+id/text_view_empty_content_text"
@@ -40,7 +38,6 @@
         android:gravity="center"
         android:maxLines="3"
         android:text="@string/product_add_till_three_product_video_description"
-        android:textColor="#60000000"
-        android:textSize="12sp" />
+        style="@style/TextView.Micro.BlackSecondary" />
 
 </LinearLayout>

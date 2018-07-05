@@ -38,7 +38,6 @@
             android:id="@+id/text_duration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/sp_12"
             android:layout_alignRight="@+id/image_thumbnail"
             android:layout_alignBottom="@+id/image_thumbnail"
             android:background="@drawable/rounded_grey"
@@ -47,7 +46,8 @@
             android:paddingTop="@dimen/dp_2"
             android:paddingBottom="@dimen/dp_2"
             android:textColor="@color/white"
-            android:layout_margin="@dimen/dp_4"/>
+            android:layout_margin="@dimen/dp_4"
+            style="@style/TextView.Micro"/>
 
     </RelativeLayout>
 
@@ -58,17 +58,16 @@
         android:layout_marginTop="@dimen/dp_2"
         android:ellipsize="end"
         android:maxLines="2"
-        android:textSize="@dimen/sp_14"
-        android:textColor="@color/font_black_secondary_54"/>
+        android:textColor="@color/font_black_secondary_54"
+        style="@style/TextView.Small.BlackSecondary"/>
 
     <TextView
         android:id="@+id/text_channel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/sp_12"
         android:layout_marginTop="@dimen/dp_2"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textColor="@color/font_black_disabled_38"/>
+        style="@style/TextView.Micro.BlackDisabled"/>
 
 </LinearLayout>
