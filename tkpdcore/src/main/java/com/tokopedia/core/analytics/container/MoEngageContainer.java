@@ -1,5 +1,6 @@
 package com.tokopedia.core.analytics.container;
 
+import android.app.Application;
 import android.content.Context;
 import android.text.TextUtils;
 
@@ -64,7 +65,7 @@ public class MoEngageContainer implements IMoengageContainer {
           Mandatory to set small/Large notification icon while initialising sdk
           */
         MoEngage moEngage =
-                new MoEngage.Builder(context.getApplicationContext(),
+                new MoEngage.Builder((Application)context.getApplicationContext(),
                         context.getResources().getString(R.string.key_moengage))
                         .setNotificationSmallIcon(R.drawable.ic_status_bar_notif_customerapp)
                         .setNotificationLargeIcon(R.drawable.ic_big_notif_customerapp)
