@@ -17,8 +17,7 @@ public interface TrainScheduleContract {
 
     interface Presenter extends CustomerPresenter<View> {
 
-        void getScheduleDetail(String scheduleId, int numOfAdultPassenger, int numOfInfantPassenger,
-                               boolean isOneWay);
+        void getScheduleDetail(String scheduleId, int numOfAdultPassenger, int numOfInfantPassenger);
 
     }
 

@@ -47,7 +47,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
                 android:layout_weight="1"
-                tools:text="No ID: "/>
+                android:text="No ID: "/>
 
             <TextView
                 android:layout_width="0dp"
@@ -68,6 +68,7 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:id="@+id/text_departure_trip"
                 android:textColor="@color/black"
                 android:layout_weight="1"
                 tools:text="Kursi (GMR - LPN): "/>

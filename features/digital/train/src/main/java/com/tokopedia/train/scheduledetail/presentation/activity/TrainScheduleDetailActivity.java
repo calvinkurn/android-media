@@ -32,7 +32,6 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
     public static final String EXTRA_TRAIN_SCHEDULE_ID = "EXTRA_TRAIN_SCHEDULE_ID";
     public static final String EXTRA_NUMBER_OF_ADULT_PASSENGER = "EXTRA_NUMBER_OF_ADULT_PASSENGER";
     public static final String EXTRA_NUMBER_OF_INFANT_PASSENGER = "EXTRA_NUMBER_OF_INFANT_PASSENGER";
-    public static final String EXTRA_IS_RETURN_TRIP = "EXTRA_IS_RETURN_TRIP";
 
     @Inject
     TrainSchedulePresenter trainSchedulePresenter;
@@ -50,12 +49,11 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
     private TrainScheduleDetailViewModel trainScheduleDetailViewModel;
 
     public static Intent createIntent(Context context, String scheduleId, int numOfAdultPassenger,
-                                      int numOfInfantPassenger, boolean isOneWay) {
+                                      int numOfInfantPassenger) {
         Intent intent = new Intent(context, TrainScheduleDetailActivity.class);
         intent.putExtra(EXTRA_TRAIN_SCHEDULE_ID, scheduleId);
         intent.putExtra(EXTRA_NUMBER_OF_ADULT_PASSENGER, numOfAdultPassenger);
         intent.putExtra(EXTRA_NUMBER_OF_INFANT_PASSENGER, numOfInfantPassenger);
-        intent.putExtra(EXTRA_IS_RETURN_TRIP, isOneWay);
         return intent;
     }
 
@@ -73,11 +71,9 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
         String scheduleId = getIntent().getStringExtra(EXTRA_TRAIN_SCHEDULE_ID);
         int numOfAdultPassenger = getIntent().getIntExtra(EXTRA_NUMBER_OF_ADULT_PASSENGER, 0);
         int numOfInfantPassenger = getIntent().getIntExtra(EXTRA_NUMBER_OF_INFANT_PASSENGER, 0);
-        boolean isOneWay = getIntent().getBooleanExtra(EXTRA_IS_RETURN_TRIP, false);
 
         trainSchedulePresenter.attachView(this);
-        trainSchedulePresenter.getScheduleDetail(scheduleId, numOfAdultPassenger, numOfInfantPassenger,
-                isOneWay);
+        trainSchedulePresenter.getScheduleDetail(scheduleId, numOfAdultPassenger, numOfInfantPassenger);
     }
 
     @Override

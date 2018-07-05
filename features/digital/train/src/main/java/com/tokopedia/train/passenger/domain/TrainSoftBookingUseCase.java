@@ -15,6 +15,7 @@ import java.util.List;
 import rx.Observable;
 
 public class TrainSoftBookingUseCase extends UseCase<TrainSoftbook> {
+
     private TrainRepository trainRepository;
 
     public TrainSoftBookingUseCase(TrainRepository trainRepository) {
@@ -25,18 +26,29 @@ public class TrainSoftBookingUseCase extends UseCase<TrainSoftbook> {
     public Observable<TrainSoftbook> createObservable(RequestParams requestParams) {
         List<TrainTrip> departureTrainTrips = new ArrayList<>();
         List<TrainPaxPassenger> departurePaxPassengers = new ArrayList<>();
+
         TrainSeat departureTrainSeat = new TrainSeat("Ekonomi", "4", "4", "D");
-        departurePaxPassengers.add(new TrainPaxPassenger("Rizky Fadillah", "1234", 1, departureTrainSeat));
+        departurePaxPassengers.add(new TrainPaxPassenger("Rizky Fadillah", "03910920", 1, departureTrainSeat));
         TrainTrip departureTrainTrip = new TrainTripBuilder()
                 .paxPassengers(departurePaxPassengers)
                 .createTrainTrip();
         departureTrainTrips.add(departureTrainTrip);
+
+        TrainSeat departureTrainSeat2 = new TrainSeat("Ekonomi", "4", "4", "E");
+        departurePaxPassengers.add(new TrainPaxPassenger("Sarah Nurlaila", "23456263", 1, departureTrainSeat2));
+        TrainTrip departureTrainTrip2 = new TrainTripBuilder()
+                .paxPassengers(departurePaxPassengers)
+                .createTrainTrip();
+        departureTrainTrips.add(departureTrainTrip2);
+
         TrainSoftbook trainSoftbook = new TrainSoftbook(null, null,  null,
                 departureTrainTrips, null);
+
         return Observable.just(trainSoftbook);
     }
 
     public RequestParams create() {
         return RequestParams.create();
     }
+
 }

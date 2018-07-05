@@ -279,7 +279,7 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
 
     @Override
     public void navigateToReview(TrainSoftbook trainSoftbook) {
-        startActivity(TrainReviewDetailActivity.createIntent(getActivity(), trainSoftbook));
+        startActivity(TrainReviewDetailActivity.createIntent(getActivity(), trainSoftbook, trainScheduleBookingPassData));
     }
 
     @Override

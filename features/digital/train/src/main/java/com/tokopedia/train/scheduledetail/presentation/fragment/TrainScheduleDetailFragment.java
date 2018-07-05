@@ -69,7 +69,7 @@ public class TrainScheduleDetailFragment extends BaseDaggerFragment {
     }
 
     public void showScheduleDetail(TrainScheduleDetailViewModel trainScheduleDetailViewModel) {
-        trip.setText(trainScheduleDetailViewModel.isOneWay() ? "Perjalan Pergi" : "Perjalanan Pulang");
+        trip.setText(trainScheduleDetailViewModel.isReturnTrip() ? "Perjalan Pulang" : "Perjalanan Pergi");
         trainName.setText(trainScheduleDetailViewModel.getTrainName());
         trainClass.setText(trainScheduleDetailViewModel.getTrainClass());
         date.setText(trainScheduleDetailViewModel.getDepartureDate());

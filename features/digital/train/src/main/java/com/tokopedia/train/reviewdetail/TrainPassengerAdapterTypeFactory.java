@@ -12,14 +12,22 @@ import com.tokopedia.train.seat.presentation.viewmodel.TrainSeatPassengerViewMod
  */
 public class TrainPassengerAdapterTypeFactory extends BaseAdapterTypeFactory implements AdapterTypeFactory {
 
-    public int type(TrainSeatPassengerViewModel viewModel) {
+    private String originCity;
+    private String destinationCity;
+
+    public TrainPassengerAdapterTypeFactory(String originCity, String destinationCity) {
+        this.originCity = originCity;
+        this.destinationCity = destinationCity;
+    }
+
+    public int type(TrainReviewPassengerInfoViewModel viewModel) {
         return TrainPassengerSeatViewHolder.LAYOUT;
     }
 
     @Override
     public AbstractViewHolder createViewHolder(View parent, int type) {
         if (type == TrainPassengerSeatViewHolder.LAYOUT) {
-            return new TrainPassengerSeatViewHolder(parent);
+            return new TrainPassengerSeatViewHolder(parent, originCity, destinationCity);
         } else {
             return super.createViewHolder(parent, type);
         }

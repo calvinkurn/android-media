@@ -34,7 +34,6 @@ public class GetScheduleDetailUseCase extends UseCase<TrainScheduleDetailViewMod
         String scheduleId = requestParams.getString(PARAM_SCHEDULE_ID, "");
         int numOfAdultPassenger = requestParams.getInt(PARAM_NUMBER_OF_ADULT_PASSENGER, 0);
         int numOfInfantPassenger = requestParams.getInt(PARAM_NUMBER_OF_INFANT_PASSENGER, 0);
-        boolean isOneWay = requestParams.getBoolean(PARAM_IS_ONE_WAY, false);
 
         return trainRepository.getDetailSchedule(scheduleId)
                 .flatMap((Func1<TrainScheduleViewModel, Observable<TrainScheduleDetailViewModel>>) trainScheduleViewModel -> {
@@ -71,18 +70,16 @@ public class GetScheduleDetailUseCase extends UseCase<TrainScheduleDetailViewMod
                                     .totalPrice(totalPrice)
                                     .numOfAdultPassenger(numOfAdultPassenger)
                                     .numOfInfantPassenger(numOfInfantPassenger)
-                                    .isOneWay(isOneWay)
+                                    .isReturnTrip(trainScheduleViewModel.isReturnTrip())
                                     .build());
                 });
     }
 
-    public RequestParams createRequestParams(String scheduleId, int numOfAdultPassenger, int numOfInfantPassenger,
-                                             boolean isOneWay) {
+    public RequestParams createRequestParams(String scheduleId, int numOfAdultPassenger, int numOfInfantPassenger) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(PARAM_SCHEDULE_ID, scheduleId);
         requestParams.putInt(PARAM_NUMBER_OF_ADULT_PASSENGER, numOfAdultPassenger);
         requestParams.putInt(PARAM_NUMBER_OF_INFANT_PASSENGER, numOfInfantPassenger);
-        requestParams.putBoolean(PARAM_IS_ONE_WAY, isOneWay);
         return requestParams;
     }
 }

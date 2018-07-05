@@ -50,7 +50,7 @@ public class TrainSchedulePriceDetailFragment extends Fragment {
     }
 
     public void showPrice(TrainScheduleDetailViewModel trainScheduleDetailViewModel) {
-        if (trainScheduleDetailViewModel.isOneWay()) {
+        if (trainScheduleDetailViewModel.isReturnTrip()) {
             textTrip.setText(getString(R.string.train_departure_trip,
                     trainScheduleDetailViewModel.getOriginStationCode(),
                     trainScheduleDetailViewModel.getDestinationStationCode()));

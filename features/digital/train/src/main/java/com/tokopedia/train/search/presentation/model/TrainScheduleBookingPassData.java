@@ -18,7 +18,6 @@ public class TrainScheduleBookingPassData implements Parcelable {
     public TrainScheduleBookingPassData() {
     }
 
-
     protected TrainScheduleBookingPassData(Parcel in) {
         adultPassenger = in.readInt();
         infantPassenger = in.readInt();
@@ -102,4 +101,5 @@ public class TrainScheduleBookingPassData implements Parcelable {
         parcel.writeString(originCity);
         parcel.writeString(destinationCity);
     }
+
 }

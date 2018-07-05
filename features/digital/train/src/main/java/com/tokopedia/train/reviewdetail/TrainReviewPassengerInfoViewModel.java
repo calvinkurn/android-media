@@ -9,15 +9,21 @@ public class TrainReviewPassengerInfoViewModel implements Visitable<TrainPasseng
     private String name;
     private String noID;
     private String departureTripClass;
+    private String originStation;
+    private String destinationStation;
     private String returnTripClass;
     private String departureSeat;
     private String returnSeat;
 
-    public TrainReviewPassengerInfoViewModel(String name, String noID, String departureTripClass, String returnTripClass, String departureSeat, String returnSeat) {
+    public TrainReviewPassengerInfoViewModel(String name, String noID, String departureTripClass,
+                                             String originStation, String destinationStation,
+                                             String returnTripClass, String departureSeat, String returnSeat) {
         this.name = name;
         this.noID = noID;
         this.departureTripClass = departureTripClass;
         this.returnTripClass = returnTripClass;
+        this.originStation = originStation;
+        this.destinationStation = destinationStation;
         this.departureSeat = departureSeat;
         this.returnSeat = returnSeat;
     }
@@ -34,6 +40,14 @@ public class TrainReviewPassengerInfoViewModel implements Visitable<TrainPasseng
         return departureTripClass;
     }
 
+    public String getOriginStation() {
+        return originStation;
+    }
+
+    public String getDestinationStation() {
+        return destinationStation;
+    }
+
     public String getReturnTripClass() {
         return returnTripClass;
     }
@@ -48,7 +62,7 @@ public class TrainReviewPassengerInfoViewModel implements Visitable<TrainPasseng
 
     @Override
     public int type(TrainPassengerAdapterTypeFactory typeFactory) {
-        return 0;
+        return typeFactory.type(this);
     }
 
 }

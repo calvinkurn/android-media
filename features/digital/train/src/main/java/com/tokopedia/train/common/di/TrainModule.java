@@ -14,6 +14,7 @@ import com.tokopedia.train.search.data.TrainScheduleCacheDataStore;
 import com.tokopedia.train.search.data.TrainScheduleCloudDataStore;
 import com.tokopedia.train.search.data.TrainScheduleDataStoreFactory;
 import com.tokopedia.train.search.data.TrainScheduleDbDataStore;
+import com.tokopedia.train.search.domain.GetDetailScheduleUseCase;
 import com.tokopedia.train.seat.data.TrainSeatCloudDataStore;
 import com.tokopedia.train.station.data.TrainStationCacheDataStore;
 import com.tokopedia.train.station.data.TrainStationCloudDataStore;
@@ -46,7 +47,6 @@ public class TrainModule {
                 .connectTimeout(retryPolicy.connectTimeout, TimeUnit.SECONDS)
                 .addInterceptor(httpLoggingInterceptor)
                 .build();
-
     }
 
     @TrainScope
@@ -134,4 +134,11 @@ public class TrainModule {
                                                                               TrainScheduleCacheDataStore trainScheduleCacheDataStore) {
         return new TrainScheduleDataStoreFactory(trainScheduleDbDataStore, trainScheduleCacheDataStore, trainScheduleCloudDataStore);
     }
+
+    @TrainScope
+    @Provides
+    GetDetailScheduleUseCase provideGetDetailScheduleUseCase(TrainRepository trainRepository) {
+        return new GetDetailScheduleUseCase(trainRepository);
+    }
+
 }

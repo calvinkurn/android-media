@@ -354,8 +354,7 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
         Intent intent = TrainScheduleDetailActivity.createIntent(getActivity(),
                 trainScheduleViewModel.getIdSchedule(),
                 trainSearchPassDataViewModel.getAdult(),
-                trainSearchPassDataViewModel.getInfant(),
-                trainSearchPassDataViewModel.isOneWay());
+                trainSearchPassDataViewModel.getInfant());
         getActivity().startActivity(intent);
     }
 

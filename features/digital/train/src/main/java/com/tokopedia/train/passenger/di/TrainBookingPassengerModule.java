@@ -14,11 +14,6 @@ import dagger.Provides;
 public class TrainBookingPassengerModule {
 
     @Provides
-    GetDetailScheduleUseCase provideGetDetailScheduleUseCase(TrainRepository trainRepository) {
-        return new GetDetailScheduleUseCase(trainRepository);
-    }
-
-    @Provides
     TrainSoftBookingUseCase provideTrainSoftBookingUseCase(TrainRepository trainRepository) {
         return new TrainSoftBookingUseCase(trainRepository);
     }

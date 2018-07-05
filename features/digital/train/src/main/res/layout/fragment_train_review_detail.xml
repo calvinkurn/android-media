@@ -15,8 +15,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_card_with_action_main"
-            android:layout_marginBottom="@dimen/dp_16"
             android:visibility="visible"
+            app:cmw_action="Detail"
+            tools:visibility="visible" />
+
+        <com.tokopedia.design.component.CardWithAction
+            android:id="@+id/train_return_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_card_with_action_main"
+            android:visibility="visible"
+            android:layout_marginBottom="@dimen/dp_16"
             app:cmw_action="Detail"
             tools:visibility="visible" />
 

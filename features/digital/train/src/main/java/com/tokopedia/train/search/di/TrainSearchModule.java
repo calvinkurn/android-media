@@ -33,11 +33,6 @@ public class TrainSearchModule {
     }
 
     @Provides
-    GetDetailScheduleUseCase provideGetDetailScheduleUseCase(TrainRepository trainRepository) {
-        return new GetDetailScheduleUseCase(trainRepository);
-    }
-
-    @Provides
     GetTotalScheduleUseCase provideGetTotalScheduleUseCase(TrainRepository trainRepository) {
         return new GetTotalScheduleUseCase(trainRepository);
     }
@@ -46,4 +41,5 @@ public class TrainSearchModule {
     GetFilterSearchParamDataUseCase provideGetFilterSearchParamDataUseCase(TrainRepository trainRepository) {
         return new GetFilterSearchParamDataUseCase(trainRepository);
     }
+
 }
