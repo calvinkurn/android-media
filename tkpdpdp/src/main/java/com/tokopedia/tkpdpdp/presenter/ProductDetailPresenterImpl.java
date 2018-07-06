@@ -174,12 +174,12 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     @Override
     public void processToCart(@NonNull Activity context, @NonNull ProductCartPass data) {
         sendAppsFlyerCheckout(context, data);
-        routeToNewCheckout(context, data, data.isSkipToCart() ? getBuySubscriber() : getCartSubscriber());
+        routeToNewCheckout(context, data, data.isSkipToCart() ? getBuySubscriber(data.getSourceAtc()) : getCartSubscriber(data.getSourceAtc()));
         /*routeToOldCheckout(context, data);*/
         UnifyTracking.eventPDPCart();
     }
 
-    private Subscriber getCartSubscriber() {
+    private Subscriber getCartSubscriber(String sourceAtc) {
         return new Subscriber<AddToCartResult>() {
             @Override
             public void onCompleted() {
@@ -194,10 +194,12 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
             @Override
             public void onNext(AddToCartResult addToCartResult) {
                 viewListener.hideProgressLoading();
-                if (addToCartResult.isSuccess())
+                if (addToCartResult.isSuccess()) {
+                    addToCartResult.setSource(sourceAtc);
                     viewListener.renderAddToCartSuccess(addToCartResult);
-                else
+                } else {
                     viewListener.showToastMessage(addToCartResult.getMessage());
+                }
             }
         };
     }
@@ -228,7 +230,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         }
     }
 
-    private Subscriber getBuySubscriber() {
+    private Subscriber getBuySubscriber(String sourceAtc) {
         return new Subscriber<AddToCartResult>() {
             @Override
             public void onCompleted() {
@@ -243,10 +245,12 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
             @Override
             public void onNext(AddToCartResult addToCartResult) {
                 viewListener.hideProgressLoading();
-                if (addToCartResult.isSuccess())
+                if (addToCartResult.isSuccess()) {
+                    addToCartResult.setSource(sourceAtc);
                     viewListener.renderAddToCartSuccessOpenCart(addToCartResult);
-                else
+                } else {
                     viewListener.showToastMessage(addToCartResult.getMessage());
+                }
             }
         };
     }

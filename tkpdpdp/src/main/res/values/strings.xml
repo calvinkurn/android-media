@@ -50,4 +50,8 @@
     <string name="title_show_case_pdp">Tambah ke Keranjang</string>
     <string name="desc_show_case_pdp">Tambahkan produk ini ke keranjang dan lanjutkan pencarian produk lainnya</string>
     <string name="title_total_price">Total Harga</string>
+    <string name="event_action_click_beli">click - beli</string>
+    <string name="event_action_click_keranjang">click - tambah ke keranjang</string>
+    <string name="event_action_click_beli_in_variants_page">click - beli on variants page</string>
+    <string name="event_action_click_keranjang_in_variants_page">click - tambah ke keranjang on variants page</string>
 </resources>

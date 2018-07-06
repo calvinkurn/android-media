@@ -552,6 +552,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                 .setNotes(selectedRemarkNotes)
                 .setOrderQuantity(selectedQuantity)
                 .setSkipToCart(source.equals(SOURCE_BUTTON_BUY_VARIANT) || source.equals(SOURCE_BUTTON_BUY_PDP))
+                .setSourceAtc(source)
                 .build();
 
         if (!productData.getBreadcrumb().isEmpty()) {
@@ -565,16 +566,6 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             );
         }
 
-        /*if (!TextUtils.isEmpty(source) && source.equals(SOURCE_BUTTON_BUY_PDP) && productData.getInfo().getHasVariant() && variantLevel1 != null) {
-            UnifyTracking.eventBuyPDPVariant(generateVariantString());
-        } else if (!TextUtils.isEmpty(source) && source.equals(SOURCE_BUTTON_BUY_PDP) && productData.getInfo().getHasVariant()) {
-            UnifyTracking.eventBuyPDPVariant("");
-        } else if (!TextUtils.isEmpty(source) && source.equals(SOURCE_BUTTON_BUY_PDP) && !productData.getInfo().getHasVariant()) {
-            UnifyTracking.eventBuyPDPVariant(NON_VARIANT);
-        } else if (!TextUtils.isEmpty(source) && source.equals(SOURCE_BUTTON_BUY_VARIANT) && productData.getInfo().getHasVariant()) {
-            Long timestamp = System.currentTimeMillis() / 1000;
-            UnifyTracking.eventBuyPageVariant(timestamp.toString() + "-" + generateVariantString());
-        }*/
         return pass;
     }
 
@@ -1773,8 +1764,29 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         enhancedECommerceCartMapData.setCurrencyCode("IDR");
         enhancedECommerceCartMapData.setAction(EnhancedECommerceCartMapData.ADD_ACTION);
 
+        String eventAction;
+        switch (addToCartResult.getSource()) {
+            case SOURCE_BUTTON_BUY_PDP:
+                eventAction = getString(R.string.event_action_click_beli);
+                break;
+            case SOURCE_BUTTON_CART_PDP:
+                eventAction = getString(R.string.event_action_click_keranjang);
+                break;
+            case SOURCE_BUTTON_BUY_VARIANT:
+                eventAction = getString(R.string.event_action_click_beli_in_variants_page);
+                break;
+            case SOURCE_BUTTON_CART_VARIANT:
+                eventAction = getString(R.string.event_action_click_keranjang_in_variants_page);
+                break;
+            default:
+                eventAction = productPass.getProductName();
+                break;
+        }
         checkoutAnalyticsAddToCart.enhancedECommerceAddToCart(
-                enhancedECommerceCartMapData.getCartMap(), productPass.getProductName());
+                enhancedECommerceCartMapData.getCartMap(),
+                (productData.getInfo().getHasVariant() ? productVariant.generateVariantValue(productData.getInfo().getProductId()): "non variant"),
+                eventAction
+        );
     }
 
     private String generateCategoryStringLevel(List<ProductBreadcrumb> breadcrumb) {

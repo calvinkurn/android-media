@@ -26,6 +26,7 @@ public class ProductCartPass implements Parcelable {
     private String listName;
     private int orderQuantity;
     private boolean skipToCart;
+    private String sourceAtc;
 
     public ProductCartPass() {
     }
@@ -167,6 +168,7 @@ public class ProductCartPass implements Parcelable {
         trackerAttribution = in.readString();
         listName = in.readString();
         orderQuantity = in.readInt();
+        sourceAtc = in.readString();
     }
 
 
@@ -193,6 +195,7 @@ public class ProductCartPass implements Parcelable {
         dest.writeString(trackerAttribution);
         dest.writeString(listName);
         dest.writeInt(orderQuantity);
+        dest.writeString(sourceAtc);
     }
 
     @SuppressWarnings("unused")
@@ -225,6 +228,14 @@ public class ProductCartPass implements Parcelable {
         this.skipToCart = skipToCart;
     }
 
+    public void setSourceAtc(String sourceAtc) {
+        this.sourceAtc = sourceAtc;
+    }
+
+    public String getSourceAtc() {
+        return sourceAtc;
+    }
+
     public static class Builder {
         private String productId;
         private String productName;
@@ -243,6 +254,7 @@ public class ProductCartPass implements Parcelable {
         private String listName;
         private int orderQuantity;
         private boolean isSkipToCart;
+        private String sourceAtc;
 
         private Builder() {
         }
@@ -336,6 +348,11 @@ public class ProductCartPass implements Parcelable {
             return this;
         }
 
+        public Builder setSourceAtc(String sourceAtc) {
+            this.sourceAtc = sourceAtc;
+            return this;
+        }
+
         public Builder but() {
             return aProductCartPass()
                     .setProductId(productId)
@@ -377,6 +394,7 @@ public class ProductCartPass implements Parcelable {
             productCartPass.setListName(listName);
             productCartPass.setOrderQuantity(orderQuantity);
             productCartPass.setSkipToCart(isSkipToCart);
+            productCartPass.setSourceAtc(sourceAtc);
             return productCartPass;
         }
     }
