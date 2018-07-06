@@ -2,7 +2,7 @@ package com.tokopedia.product.edit.domain.interactor;
 
 import android.content.Context;
 
-import com.tokopedia.networklib.data.model.RestResponse;
+import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 

@@ -2,10 +2,10 @@ package com.tokopedia.product.edit.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.networklib.data.model.RestResponse
 import com.tokopedia.product.edit.R
 import com.tokopedia.product.edit.domain.interactor.GetYoutubeVideoListDetailUseCase
 import com.tokopedia.product.edit.view.listener.ProductAddVideoRecommendationView
@@ -38,7 +38,7 @@ class ProductAddVideoRecommendationPresenter : BaseDaggerPresenter<ProductAddVid
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(view.contextView.resources,
                 R.raw.gql_video_recommendation), VideoRecommendationResult::class.java, variables)
 
-        graphqlUseCase.setRequest(graphqlRequest)
+        graphqlUseCase.addRequest(graphqlRequest)
 
         graphqlUseCase.execute(RequestParams.EMPTY, object : Subscriber<GraphqlResponse>() {
             override fun onCompleted() {
@@ -66,7 +66,8 @@ class ProductAddVideoRecommendationPresenter : BaseDaggerPresenter<ProductAddVid
     }
 
     fun getYoutubeVideoData(youtubeVideoIdList: ArrayList<String>) {
-        getYoutubeVideoListDetailUseCase.execute(GetYoutubeVideoListDetailUseCase.generateRequestParam(youtubeVideoIdList), object : Subscriber<List<Map<Type, RestResponse>>>() {
+        getYoutubeVideoListDetailUseCase.execute(GetYoutubeVideoListDetailUseCase.generateRequestParam(youtubeVideoIdList),
+                object : Subscriber<List<Map<Type, RestResponse>>>() {
             override fun onCompleted() {
 
             }

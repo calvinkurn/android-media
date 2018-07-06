@@ -13,10 +13,10 @@ import com.tokopedia.product.edit.util.YoutubeUtil
 class ProductAddVideoDialogFragment : BaseTextPickerDialogFragment() {
 
     private var isErrorReturn: Boolean = false
-    private val youtubeUtil : YoutubeUtil by lazy { YoutubeUtil(activity) }
+    private val youtubeUtil : YoutubeUtil by lazy { YoutubeUtil(context!!) }
     private var videoID : String? = null
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = super.onCreateView(inflater, container, savedInstanceState)
         textInput.maxLines = 1
         textInput.setSingleLine(true)
