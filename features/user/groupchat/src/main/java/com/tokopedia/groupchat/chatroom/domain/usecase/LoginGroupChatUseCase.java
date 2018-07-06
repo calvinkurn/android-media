@@ -69,7 +69,6 @@ public class LoginGroupChatUseCase {
                             public void onResult(final OpenChannel openChannel, SendBirdException e) {
                                 if (e != null && e.getCode() == GroupChatErrorHandler
                                         .CHANNEL_NOT_FOUND) {
-                                    Log.d("tev", "onChannelSendbirdError: ");
                                     listener.onChannelNotFound(GroupChatErrorHandler
                                             .getSendBirdErrorMessage(context, e, false));
                                     return;
