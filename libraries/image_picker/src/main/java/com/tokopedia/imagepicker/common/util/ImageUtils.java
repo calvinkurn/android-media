@@ -100,6 +100,9 @@ public class ImageUtils {
         File directory = getTokopediaPublicDirectory(directoryString);
         if (directory.exists()) {
             File[] files = directory.listFiles();
+            if (files == null) {
+                return;
+            }
             for (int i = 0; i < files.length; i++) {
                 if (!files[i].isDirectory()) {
                     files[i].delete();
@@ -169,7 +172,7 @@ public class ImageUtils {
         try {
             file = getTokopediaPhotoPath(directoryDef, galleryOrCameraPath);
             copyFile(galleryOrCameraPath, file.getAbsolutePath());
-        } catch (IOException e) {
+        } catch (Throwable e) {
             return null;
         }
         if (file.exists()) {
@@ -241,7 +244,7 @@ public class ImageUtils {
             bitmap.compress(isPng ? Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG, 100, out);
             out.flush();
             out.close();
-        } catch (Exception e) {
+        } catch (Throwable e) {
             e.printStackTrace();
         }
         return file;
@@ -273,7 +276,7 @@ public class ImageUtils {
                 return null;
             }
             return attach.getAbsolutePath();
-        } catch (Exception e) {
+        } catch (Throwable e) {
             return null;
         }
     }
@@ -327,7 +330,7 @@ public class ImageUtils {
                 } else {
                     return null;
                 }
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 e.printStackTrace();
             } finally {
                 try {
@@ -446,18 +449,24 @@ public class ImageUtils {
 
         boolean isPng = ImageUtils.isPng(imagePath);
 
-        Bitmap outputBitmap;
-        outputBitmap = Bitmap.createBitmap(expectedWidth, expectedHeight, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(outputBitmap);
-        canvas.drawBitmap(bitmapToEdit, new Rect(left, top, right, bottom),
-                new Rect(0, 0, expectedWidth, expectedHeight), null);
-        File file = ImageUtils.writeImageToTkpdPath(targetDirectory, outputBitmap, isPng);
-        bitmapToEdit.recycle();
-        outputBitmap.recycle();
+        Bitmap outputBitmap = null;
+        try {
+            outputBitmap = Bitmap.createBitmap(expectedWidth, expectedHeight, bitmapToEdit.getConfig());
+            Canvas canvas = new Canvas(outputBitmap);
+            canvas.drawBitmap(bitmapToEdit, new Rect(left, top, right, bottom),
+                    new Rect(0, 0, expectedWidth, expectedHeight), null);
+            File file = ImageUtils.writeImageToTkpdPath(targetDirectory, outputBitmap, isPng);
+            bitmapToEdit.recycle();
+            outputBitmap.recycle();
+            System.gc();
 
-        System.gc();
-
-        return file.getAbsolutePath();
+            return file.getAbsolutePath();
+        }catch (Throwable e) {
+            if (outputBitmap!=null &&!outputBitmap.isRecycled()) {
+                outputBitmap.recycle();
+            }
+            return imagePath;
+        }
     }
 
     public static String resizeBitmap(String imagePath, int maxWidth, int maxHeight, boolean needCheckRotate,
@@ -626,7 +635,7 @@ public class ImageUtils {
             fos.write(buffer);
             fos.close();
             return true;
-        } catch (java.io.IOException e) {
+        } catch (Throwable e) {
             return false;
         }
 
@@ -647,7 +656,7 @@ public class ImageUtils {
             source.close();
             outStream.close();
             return true;
-        } catch (java.io.IOException e) {
+        } catch (Throwable e) {
             return false;
         }
     }
@@ -676,7 +685,7 @@ public class ImageUtils {
             if (tempPic != null) {
                 try {
                     return rotate(tempPic, imagePath);
-                } catch (IOException e1) {
+                } catch (Throwable e1) {
                     return tempPic;
                 }
             }
@@ -713,7 +722,7 @@ public class ImageUtils {
             if (orientation == ExifInterface.ORIENTATION_NORMAL) {
                 return bitmap;
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
 
         } finally {
             if (inputStream != null) {
@@ -735,8 +744,12 @@ public class ImageUtils {
     }
 
     public static int getOrientation(String path) throws IOException {
-        ExifInterface exif = new ExifInterface(path);
-        return exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+        try {
+            ExifInterface exif = new ExifInterface(path);
+            return exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+        } catch (Throwable e) {
+            return ExifInterface.ORIENTATION_NORMAL;
+        }
     }
 
     public static int getOrientation(ExifInterface exif) {
@@ -826,13 +839,17 @@ public class ImageUtils {
         Paint paint = new Paint();
         paint.setColorFilter(colorFilter);
 
-        Bitmap resultBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
-        Canvas canvas = new Canvas(resultBitmap);
-        canvas.drawBitmap(resultBitmap, 0, 0, paint);
+        try {
+            Bitmap resultBitmap = bitmap.copy(bitmap.getConfig(), true);
+            Canvas canvas = new Canvas(resultBitmap);
+            canvas.drawBitmap(resultBitmap, 0, 0, paint);
 
-        bitmap.recycle();
+            bitmap.recycle();
 
-        return resultBitmap;
+            return resultBitmap;
+        } catch (OutOfMemoryError error) {
+            return bitmap;
+        }
     }
 
     public static Bitmap contrastBitmap(Bitmap bitmap, float contrast) {
@@ -850,13 +867,17 @@ public class ImageUtils {
         Paint paint = new Paint();
         paint.setColorFilter(colorFilter);
 
-        Bitmap resultBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
-        Canvas canvas = new Canvas(resultBitmap);
-        canvas.drawBitmap(resultBitmap, 0, 0, paint);
+        try {
+            Bitmap resultBitmap = bitmap.copy(bitmap.getConfig(), true);
+            Canvas canvas = new Canvas(resultBitmap);
+            canvas.drawBitmap(resultBitmap, 0, 0, paint);
 
-        bitmap.recycle();
+            bitmap.recycle();
+            return resultBitmap;
+        } catch (OutOfMemoryError outOfMemoryError) {
+            return bitmap;
+        }
 
-        return resultBitmap;
     }
 
     public static Bitmap convertToMutable(Bitmap imgIn) throws Exception {
