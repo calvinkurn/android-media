@@ -69,6 +69,7 @@
     <color name="yellow_100">#ca8600</color>
     <color name="red_150">#d43000</color>
     <color name="red_30">#ffccae</color>
+    <color name="blue_30">#fafbfc</color>
 
 
 </resources>

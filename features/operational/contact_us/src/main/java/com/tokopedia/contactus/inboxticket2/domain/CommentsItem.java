@@ -1,96 +1,99 @@
 package com.tokopedia.contactus.inboxticket2.domain;
 
-import javax.annotation.Generated;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
+import javax.annotation.Generated;
+
 @Generated("com.robohorse.robopojogenerator")
-public class CommentsItem{
+public class CommentsItem {
 
-	@SerializedName("note")
-	private String note;
+    @SerializedName("note")
+    private String note;
 
-	@SerializedName("create_time")
-	private String createTime;
+    @SerializedName("create_time")
+    private String createTime;
 
-	@SerializedName("attachment")
-	private Object attachment;
+    @SerializedName("attachment")
+    private List<AttachmentItem> attachment;
 
-	@SerializedName("message_plaintext")
-	private String messagePlaintext;
+    @SerializedName("message_plaintext")
+    private String messagePlaintext;
 
-	@SerializedName("rating")
-	private String rating;
+    @SerializedName("rating")
+    private String rating;
 
-	@SerializedName("id")
-	private String id;
+    @SerializedName("id")
+    private String id;
 
-	@SerializedName("message")
-	private String message;
+    @SerializedName("message")
+    private String message;
 
-	@SerializedName("created_by")
-	private CreatedBy createdBy;
+    @SerializedName("created_by")
+    private CreatedBy createdBy;
 
-	public void setNote(String note){
-		this.note = note;
-	}
+    public void setNote(String note) {
+        this.note = note;
+    }
 
-	public String getNote(){
-		return note;
-	}
+    public String getNote() {
+        return note;
+    }
 
-	public void setCreateTime(String createTime){
-		this.createTime = createTime;
-	}
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
+    }
 
-	public String getCreateTime(){
-		return createTime;
-	}
+    public String getCreateTime() {
+        return createTime;
+    }
 
-	public void setAttachment(Object attachment){
-		this.attachment = attachment;
-	}
+    public void setAttachment(List<AttachmentItem> attachment) {
+        this.attachment = attachment;
+    }
 
-	public Object getAttachment(){
-		return attachment;
-	}
+    public List<AttachmentItem> getAttachment() {
+        return attachment;
+    }
 
-	public void setMessagePlaintext(String messagePlaintext){
-		this.messagePlaintext = messagePlaintext;
-	}
+    public void setMessagePlaintext(String messagePlaintext) {
+        this.messagePlaintext = messagePlaintext;
+    }
 
-	public String getMessagePlaintext(){
-		return messagePlaintext;
-	}
+    public String getMessagePlaintext() {
+        return messagePlaintext;
+    }
 
-	public void setRating(String rating){
-		this.rating = rating;
-	}
+    public void setRating(String rating) {
+        this.rating = rating;
+    }
 
-	public String getRating(){
-		return rating;
-	}
+    public String getRating() {
+        return rating;
+    }
 
-	public void setId(String id){
-		this.id = id;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	public String getId(){
-		return id;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public void setMessage(String message){
-		this.message = message;
-	}
+    public void setMessage(String message) {
+        this.message = message;
+    }
 
-	public String getMessage(){
-		return message;
-	}
+    public String getMessage() {
+        return message;
+    }
 
-	public void setCreatedBy(CreatedBy createdBy){
-		this.createdBy = createdBy;
-	}
+    public void setCreatedBy(CreatedBy createdBy) {
+        this.createdBy = createdBy;
+    }
 
-	public CreatedBy getCreatedBy(){
-		return createdBy;
-	}
+    public CreatedBy getCreatedBy() {
+        return createdBy;
+    }
 }

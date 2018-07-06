@@ -74,6 +74,51 @@ dinilaiwbckwbvkbwvwkwbkjewvrrevervrevrvvvrvrrevrvrvevebvwv" />
         app:layout_constraintTop_toBottomOf="@+id/tv_ticket_title"
         tools:text="ID: #00079468" />
 
+    <ImageView
+        android:id="@+id/iv_profile"
+        android:layout_width="@dimen/dp_40"
+        android:layout_height="@dimen/dp_40"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_12"
+        android:scaleType="centerCrop"
+        android:visibility="gone"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_id_num" />
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_profile"
+        app:layout_constraintStart_toEndOf="@+id/iv_profile"
+        app:layout_constraintTop_toTopOf="@+id/iv_profile" />
+
+
+    <TextView
+        android:id="@+id/tv_message_time"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_12"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_profile" />
+
+    <TextView
+        android:id="@+id/tv_message"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_12"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_message_time" />
+
     <TextView
         android:id="@+id/tv_view_transaction"
         android:layout_width="wrap_content"
@@ -86,7 +131,22 @@ dinilaiwbckwbvkbwvwkwbkjewvrrevervrevrvvvrvrrevrvrvevebvwv" />
         android:textSize="@dimen/sp_12"
         android:textStyle="normal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tv_id_num" />
+        app:layout_constraintTop_toTopOf="@id/tv_id_num"
+        app:layout_goneMarginTop="@dimen/dp_12" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_attached_image"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_12"
+        android:background="@color/blue_30"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_message"
+        app:layout_constraintWidth_default="wrap" />
 
     <View
         android:id="@+id/top_divider"
@@ -94,7 +154,8 @@ dinilaiwbckwbvkbwvwkwbkjewvrrevervrevrvvvrvrrevrvrvevebvwv" />
         android:layout_height="@dimen/dp_1"
         android:layout_marginTop="@dimen/dp_16"
         android:background="@color/grey_300"
-        app:layout_constraintTop_toBottomOf="@+id/tv_id_num" />
+        app:layout_constraintTop_toBottomOf="@+id/rv_attached_image"
+        app:layout_goneMarginTop="@dimen/dp_16" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_message_list"

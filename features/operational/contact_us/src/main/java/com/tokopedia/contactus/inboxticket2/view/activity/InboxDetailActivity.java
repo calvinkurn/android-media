@@ -3,13 +3,16 @@ package com.tokopedia.contactus.inboxticket2.view.activity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.R2;
 import com.tokopedia.contactus.inboxticket2.domain.Tickets;
+import com.tokopedia.contactus.inboxticket2.view.adapter.AttachmentAdapter;
 import com.tokopedia.contactus.inboxticket2.view.adapter.InboxDetailAdapter;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract;
 
@@ -41,6 +44,17 @@ public class InboxDetailActivity extends InboxBaseActivity
     ImageView ivSendButton;
     @BindView(R2.id.tv_view_transaction)
     TextView viewTransaction;
+    @BindView(R2.id.tv_message)
+    TextView tvMessage;
+    @BindView(R2.id.iv_profile)
+    ImageView ivProfile;
+    @BindView(R2.id.tv_message_time)
+    TextView tvMsgTime;
+    @BindView(R2.id.tv_name)
+    TextView tvName;
+    @BindView(R2.id.rv_attached_image)
+    RecyclerView rvAttachment;
+
 
     @Override
     public void showCollapsedMessages() {
@@ -56,7 +70,7 @@ public class InboxDetailActivity extends InboxBaseActivity
     public void renderMessageList(Tickets ticketDetail) {
         tvTicketTitle.setText(ticketDetail.getSubject());
 
-        if (ticketDetail.getStatus().equalsIgnoreCase("dalam proses")) {
+        if (ticketDetail.getStatus().equalsIgnoreCase("solved")) {
             tvTicketStatus.setBackgroundResource(R.drawable.rounded_rect_yellow);
             tvTicketStatus.setText(R.string.on_going);
             tvTicketStatus.setTextColor(getResources().getColor(R.color.black_38));
@@ -70,11 +84,37 @@ public class InboxDetailActivity extends InboxBaseActivity
             tvTicketStatus.setTextColor(getResources().getColor(R.color.red_150));
             tvTicketStatus.setText(R.string.need_rating);
         }
+        if (!TextUtils.isEmpty(ticketDetail.getInvoice())) {
+            tvIdNum.setText(String.format(getString(R.string.invoice_id), ticketDetail.getInvoice()));
+            tvIdNum.setVisibility(View.VISIBLE);
+        } else
+            tvIdNum.setVisibility(View.GONE);
 
-        tvIdNum.setText(String.format(getString(R.string.invoice_id), ticketDetail.getInvoice()));
-        InboxDetailAdapter detailAdapter = new InboxDetailAdapter(this, ticketDetail.getComments(),
-                (InboxDetailContract.InboxDetailPresenter) mPresenter);
-        rvMessageList.setAdapter(detailAdapter);
+        tvMsgTime.setText(ticketDetail.getCreateTime());
+        tvMsgTime.setVisibility(View.VISIBLE);
+        tvMessage.setText(ticketDetail.getMessage());
+        tvMessage.setVisibility(View.VISIBLE);
+        tvName.setText(ticketDetail.getCreatedBy().getName());
+        tvName.setVisibility(View.VISIBLE);
+        ImageHandler imageHandler = new ImageHandler(this);
+        ivProfile.setVisibility(View.VISIBLE);
+        imageHandler.loadImage(ivProfile, ticketDetail.getCreatedBy().getPicture());
+
+        if (ticketDetail.getAttachment() != null && ticketDetail.getAttachment().size() > 0) {
+            AttachmentAdapter attachmentAdapter = new AttachmentAdapter(this, ticketDetail.getAttachment());
+            rvAttachment.setAdapter(attachmentAdapter);
+            rvAttachment.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+            rvAttachment.setVisibility(View.VISIBLE);
+        }
+
+        if (ticketDetail.getComments() != null && ticketDetail.getComments().size() > 0) {
+            InboxDetailAdapter detailAdapter = new InboxDetailAdapter(this, ticketDetail.getComments(),
+                    (InboxDetailContract.InboxDetailPresenter) mPresenter);
+            rvMessageList.setAdapter(detailAdapter);
+            rvMessageList.setVisibility(View.VISIBLE);
+        } else {
+            rvMessageList.setVisibility(View.GONE);
+        }
     }
 
     @Override
