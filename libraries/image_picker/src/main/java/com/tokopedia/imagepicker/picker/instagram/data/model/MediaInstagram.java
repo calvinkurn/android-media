@@ -12,7 +12,7 @@ public class MediaInstagram {
     private Comments comments;
     @SerializedName("caption")
     @Expose
-    private Object caption;
+    private Caption caption;
     @SerializedName("likes")
     @Expose
     private Likes likes;
@@ -58,12 +58,8 @@ public class MediaInstagram {
         this.comments = comments;
     }
 
-    public Object getCaption() {
+    public Caption getCaption() {
         return caption;
-    }
-
-    public void setCaption(Object caption) {
-        this.caption = caption;
     }
 
     public Likes getLikes() {

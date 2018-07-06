@@ -2,12 +2,18 @@ package com.tokopedia.imagepicker.picker.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.support.annotation.ColorRes;
+import android.support.annotation.DrawableRes;
+import android.support.annotation.StringRes;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -28,7 +34,12 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
     private final int thumbnailSize;
     private Context context;
     private ArrayList<String> imagePathList;
+    private ArrayList<Integer> placeholderDrawableResList;
     private int maxSize;
+    private @StringRes
+    int primaryImageStringRes;
+    private int grayColor;
+    private int whiteColor;
 
     private OnImageEditThumbnailAdapterListener onImageEditThumbnailAdapterListener;
     private final float roundedSize;
@@ -36,27 +47,32 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
     public interface OnImageEditThumbnailAdapterListener {
         void onPickerThumbnailItemClicked(String imagePath, int position);
 
-        void onThumbnailRemoved(String imagePath);
+        void onThumbnailRemoved(int index);
     }
 
-    public ImagePickerThumbnailAdapter(Context context, ArrayList<String> imagePathList,
+    public ImagePickerThumbnailAdapter(Context context, ArrayList<String> imagePathList, ArrayList<Integer> placeholderDrawableResList,
                                        OnImageEditThumbnailAdapterListener onImageEditThumbnailAdapterListener) {
         this.context = context;
         this.imagePathList = imagePathList;
+        this.placeholderDrawableResList = placeholderDrawableResList;
         this.onImageEditThumbnailAdapterListener = onImageEditThumbnailAdapterListener;
         roundedSize = context.getResources().getDimension(R.dimen.dp_6);
         thumbnailSize = context.getResources().getDimensionPixelOffset(R.dimen.dp_72);
+        grayColor = ContextCompat.getColor(context, R.color.grey_100);
+        whiteColor = ContextCompat.getColor(context, R.color.white);
     }
 
     public class ImagePickerThumbnailViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private ImageView imageView;
         private TextView tvCounter;
+        private TextView tvCounterPrimary;
         private ImageView ivDelete;
 
         public ImagePickerThumbnailViewHolder(View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.image_view);
             tvCounter = itemView.findViewById(R.id.tv_counter);
+            tvCounterPrimary = itemView.findViewById(R.id.tv_counter_primary);
             ivDelete = itemView.findViewById(R.id.iv_delete);
             itemView.setOnClickListener(this);
             ivDelete.setOnClickListener(this);
@@ -69,7 +85,6 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
                 removeData(position);
             } else {
                 // TODO drag and drop (long clicked?)
-                // click on item
             }
         }
 
@@ -88,28 +103,40 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
                             imageView.setImageDrawable(circularBitmapDrawable);
                         }
                     });
-            String positionString = String.valueOf(position + 1);
-            tvCounter.setText(positionString);
+            if (position == 0 && primaryImageStringRes > 0) {
+                tvCounterPrimary.setText(primaryImageStringRes);
+                tvCounterPrimary.setVisibility(View.VISIBLE);
+                tvCounter.setVisibility(View.GONE);
+            } else {
+                String positionString = String.valueOf(position + 1);
+                tvCounter.setText(positionString);
+                tvCounterPrimary.setVisibility(View.GONE);
+                tvCounter.setVisibility(View.VISIBLE);
+            }
         }
     }
 
-    public class PlaceholderThumbnailViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class PlaceholderThumbnailViewHolder extends RecyclerView.ViewHolder {
+        ImageView ivPlaceholder;
+        ImageView vFrameImage;
 
         public PlaceholderThumbnailViewHolder(View itemView) {
             super(itemView);
-            itemView.setOnClickListener(this);
+            ivPlaceholder = itemView.findViewById(R.id.image_view_placeholder);
+            vFrameImage = itemView.findViewById(R.id.image_view);
         }
 
-        @Override
-        public void onClick(View v) {
-            int position = getAdapterPosition();
-            //TODO onclick
-
+        public void bind(@DrawableRes int drawableRes, int backgroundColor) {
+            vFrameImage.setBackgroundColor(backgroundColor);
+            ivPlaceholder.setImageResource(drawableRes);
         }
     }
 
-    public void setData(ArrayList<String> imagePathList) {
+    public void setData(ArrayList<String> imagePathList, @StringRes int primaryImageStringRes,
+                        ArrayList<Integer> placeholderDrawableList) {
         this.imagePathList = imagePathList;
+        this.primaryImageStringRes = primaryImageStringRes;
+        this.placeholderDrawableResList = placeholderDrawableList;
         notifyDataSetChanged();
     }
 
@@ -117,21 +144,28 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
         if (imagePathList == null) {
             imagePathList = new ArrayList<>();
         }
-        this.imagePathList.add(imagePath);
-        notifyItemChanged(imagePathList.size() - 1);
+        if (!imagePathList.contains(imagePath)) {
+            this.imagePathList.add(imagePath);
+            notifyItemChanged(imagePathList.size() - 1);
+        }
     }
 
-    public void removeData(String imagePath) {
+    public int removeData(String imagePath) {
         int index = this.imagePathList.indexOf(imagePath);
         removeData(index);
+        return index;
     }
 
     public void removeData(int index) {
         if (index > -1) {
-            String imagePath = this.imagePathList.remove(index);
-            onImageEditThumbnailAdapterListener.onThumbnailRemoved(imagePath);
+            this.imagePathList.remove(index);
+            onImageEditThumbnailAdapterListener.onThumbnailRemoved(index);
             notifyDataSetChanged();
         }
+    }
+
+    public ArrayList<String> getImagePathList() {
+        return imagePathList;
     }
 
     @Override
@@ -155,7 +189,13 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
             String imagePath = imagePathList.get(position);
             ((ImagePickerThumbnailViewHolder) holder).bind(imagePath, position);
         } else {
-            // draw the empty preview
+            // else draw the empty preview
+            if (placeholderDrawableResList != null && placeholderDrawableResList.size() > position) {
+                int drawableRes = placeholderDrawableResList.get(position);
+                ((PlaceholderThumbnailViewHolder) holder).bind(drawableRes, grayColor);
+            } else {
+                ((PlaceholderThumbnailViewHolder) holder).bind(R.drawable.ic_plus, whiteColor);
+            }
         }
     }
 
@@ -185,5 +225,6 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
     public void setMaxData(int size) {
         this.maxSize = size;
     }
+
 
 }

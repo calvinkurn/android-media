@@ -79,18 +79,6 @@ public class AlbumMediaAdapter extends RecyclerViewCursorAdapter<AlbumMediaAdapt
         }
     }
 
-    public void removeImageFromSelection(String imagePath) {
-        if (getCursor() == null || getCursor().getCount() == 0) {
-            return;
-        }
-
-        if (!supportMultipleSelection) {
-            return;
-        }
-        selectionImagePathList.remove(imagePath);
-        notifyDataSetChanged();
-    }
-
     class MediaViewHolder extends RecyclerView.ViewHolder {
 
         private MediaGrid mMediaGrid;
