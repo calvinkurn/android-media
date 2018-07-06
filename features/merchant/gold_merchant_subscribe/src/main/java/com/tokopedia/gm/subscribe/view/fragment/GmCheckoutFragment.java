@@ -54,6 +54,7 @@ public class GmCheckoutFragment
         Fragment fragment = new GmCheckoutFragment();
         Bundle args = new Bundle();
         args.putInt(SELECTED_PRODUCT, selectedFragment);
+        args.putInt(AUTO_EXTEND_SELECTED, selectedFragment);
         fragment.setArguments(args);
         return fragment;
     }
@@ -106,6 +107,7 @@ public class GmCheckoutFragment
     @Override
     protected void setupArguments(Bundle bundle) {
         selectedProduct = bundle.getInt(SELECTED_PRODUCT);
+        autoExtendSelectedProduct = bundle.getInt(AUTO_EXTEND_SELECTED);
     }
 
     @Override

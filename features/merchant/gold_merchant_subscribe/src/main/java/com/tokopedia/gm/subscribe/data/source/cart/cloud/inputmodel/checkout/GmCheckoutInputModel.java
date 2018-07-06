@@ -1,5 +1,7 @@
 package com.tokopedia.gm.subscribe.data.source.cart.cloud.inputmodel.checkout;
 
+import android.text.TextUtils;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -22,6 +24,8 @@ public class GmCheckoutInputModel {
     private String promocode;
     @SerializedName("device_id")
     private String deviceId;
+    @SerializedName("ref_tkpd")
+    private String refTkpd;
 
     public static GmCheckoutInputModel getBodyModel(Integer selectedProduct, Integer autoExtendSelectedProduct, String voucherCode) {
         GmCheckoutInputModel inputModel = new GmCheckoutInputModel();
@@ -40,6 +44,15 @@ public class GmCheckoutInputModel {
             inputModel.setPromocode(voucherCode);
         }
         inputModel.setDeviceId(ANDROID_DEVICE_TYPE);
+        return inputModel;
+    }
+
+    public static GmCheckoutInputModel getBodyModel(Integer selectedProduct, Integer autoExtendSelectedProduct,
+                                                    String voucherCode, String sourceApp) {
+        GmCheckoutInputModel inputModel = getBodyModel(selectedProduct, autoExtendSelectedProduct, voucherCode);
+        if (!TextUtils.isEmpty(sourceApp)){
+            inputModel.setRefTkpd(sourceApp);
+        }
         return inputModel;
     }
 
@@ -65,5 +78,13 @@ public class GmCheckoutInputModel {
 
     public void setDeviceId(String deviceId) {
         this.deviceId = deviceId;
+    }
+
+    public String getRefTkpd() {
+        return refTkpd;
+    }
+
+    public void setRefTkpd(String refTkpd) {
+        this.refTkpd = refTkpd;
     }
 }
