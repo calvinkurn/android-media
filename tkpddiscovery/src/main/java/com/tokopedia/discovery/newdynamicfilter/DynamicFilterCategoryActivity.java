@@ -21,12 +21,15 @@ import org.parceler.Parcels;
 
 import java.util.List;
 
+
 /**
  * Created by henrypriyono on 8/24/17.
  */
 
 public class DynamicFilterCategoryActivity extends AppCompatActivity
         implements CategoryParentAdapter.OnItemClickListener, CategoryChildAdapter.OnItemClickListener {
+
+
 
     public static final int REQUEST_CODE = 221;
     public static final String EXTRA_SELECTED_CATEGORY_ID = "EXTRA_SELECTED_CATEGORY_ID";

@@ -2,6 +2,7 @@ package com.tokopedia.design.component;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.os.Build;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
@@ -70,6 +71,13 @@ public class Tabs extends TabLayout {
         this.setSelectedTabIndicatorColor(white);
         this.setTabTextColors(white, white);
         this.setTabMode(MODE_FIXED);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            this.setElevation(10);
+            this.setBackgroundResource(R.color.tkpd_main_green);
+        } else {
+            this.setBackgroundResource(R.drawable.bg_green_toolbar_drop_shadow);
+        }
     }
 
     private void secondaryStyle() {
@@ -79,6 +87,13 @@ public class Tabs extends TabLayout {
         this.setSelectedTabIndicatorColor(green);
         this.setTabTextColors(gray, green);
         this.setTabMode(MODE_SCROLLABLE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            this.setElevation(10);
+            this.setBackgroundResource(R.color.white);
+        } else {
+            this.setBackgroundResource(R.drawable.bg_white_toolbar_drop_shadow);
+        }
     }
 
 }

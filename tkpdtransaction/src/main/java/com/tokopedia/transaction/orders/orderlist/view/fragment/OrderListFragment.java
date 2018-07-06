@@ -1,6 +1,8 @@
 package com.tokopedia.transaction.orders.orderlist.view.fragment;
 
 import android.app.Activity;
+import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,11 +18,11 @@ import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.orderlist.data.Order;
 import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
+import com.tokopedia.transaction.orders.orderlist.di.DaggerOrderListComponent;
 import com.tokopedia.transaction.orders.orderlist.di.OrderListComponent;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.OrderListAdapter;
 import com.tokopedia.transaction.orders.orderlist.view.presenter.OrderListContract;
 import com.tokopedia.transaction.orders.orderlist.view.presenter.OrderListPresenterImpl;
-import com.tokopedia.transaction.orders.orderlist.di.DaggerOrderListComponent;
 import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractor;
 
 import java.util.ArrayList;
@@ -52,7 +54,16 @@ public class OrderListFragment extends BasePresenterFragment<OrderListContract.P
     private boolean hasRecyclerListener = false;
 
     private ArrayList<Order> mOrderDataList;
-    private OrderCategory mOrderCategory;
+    private String mOrderCategory;
+
+    public static Fragment newInstance(int orderCategory) {
+        Fragment fragment = new OrderListFragment();
+        Bundle arg = new Bundle();
+        arg.putInt(ORDER_CATEGORY, orderCategory);
+        fragment.setArguments(arg);
+
+        return fragment;
+    }
 
     @Override
     protected boolean isRetainInstance() {
@@ -82,10 +93,10 @@ public class OrderListFragment extends BasePresenterFragment<OrderListContract.P
 
     @Override
     protected void initialPresenter() {
-        initInjector();
         presenter.attachView(this);
     }
 
+    @Override
     protected void initInjector() {
         orderListComponent = DaggerOrderListComponent.builder()
                 .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
@@ -101,20 +112,8 @@ public class OrderListFragment extends BasePresenterFragment<OrderListContract.P
     protected void setupArguments(Bundle arguments) {
         int category = arguments.getInt(ORDER_CATEGORY);
         switch (category) {
-            case 0:
-                mOrderCategory = OrderCategory.ALL;
-                break;
-            case 1:
-                mOrderCategory = OrderCategory.GOLD;
-                break;
             case 2:
                 mOrderCategory = OrderCategory.DIGITAL;
-                break;
-            case 3:
-                mOrderCategory = OrderCategory.MARKETPLACE;
-                break;
-            case 4:
-                mOrderCategory = OrderCategory.RIDE;
                 break;
         }
     }
@@ -245,17 +244,9 @@ public class OrderListFragment extends BasePresenterFragment<OrderListContract.P
     }
 
     @Override
-    public void showProcessGetData(OrderCategory orderCategory) {
+    public void showProcessGetData(String orderCategory) {
         switch (orderCategory) {
-            case DIGITAL:
-                if (!refreshHandler.isRefreshing()) {
-                    refreshHandler.setRefreshing(true);
-                    refreshHandler.setPullEnabled(false);
-                }
-                break;
-            case ALL:
-                break;
-            case MARKETPLACE:
+            case OrderCategory.DIGITAL:
                 if (!refreshHandler.isRefreshing()) {
                     refreshHandler.setRefreshing(true);
                     refreshHandler.setPullEnabled(false);
@@ -305,6 +296,11 @@ public class OrderListFragment extends BasePresenterFragment<OrderListContract.P
 
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
+    }
 
     @Override
     public void startUri(String uri) {
@@ -312,4 +308,3 @@ public class OrderListFragment extends BasePresenterFragment<OrderListContract.P
             TransactionPurchaseRouter.startWebViewActivity(getActivity(), uri);
     }
 }
-

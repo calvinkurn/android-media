@@ -7,9 +7,9 @@
 
     <com.tokopedia.design.component.Tabs
         android:id="@+id/tabLayout"
-        app:tabType="secondary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:tabType="secondary"
         app:tabTextAppearance="@style/Tabs.Secondary"/>
 
     <com.tkpd.library.ui.widget.TouchViewPager

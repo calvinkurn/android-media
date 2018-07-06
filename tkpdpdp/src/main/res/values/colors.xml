@@ -96,4 +96,10 @@
     <color name="red_snackbar">#fffdebec</color>
     <color name="red_snackbar_border">#f05f68</color>
 
+    <color name="shadow_color_1">#00CCCCCC</color>
+    <color name="shadow_color_2">#10CCCCCC</color>
+    <color name="shadow_color_3">#15CCCCCC</color>
+    <color name="shadow_color_4">#20CCCCCC</color>
+    <color name="shadow_color_5">#25CCCCCC</color>
+
 </resources>

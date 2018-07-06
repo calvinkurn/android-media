@@ -60,7 +60,7 @@
                     android:singleLine="true"
                     android:text="@string/flightbooking_price_adult_label"
                     android:textColor="@color/font_black_disabled_38"
-                    app:drawableRightCompat="@drawable/ic_arrow_down_grey" />
+                    app:drawableRightCompat="@drawable/ic_arrow_down_grey"/>
             </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
             <com.tokopedia.design.text.SpinnerTextView

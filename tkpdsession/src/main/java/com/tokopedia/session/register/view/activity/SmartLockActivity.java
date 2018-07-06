@@ -23,9 +23,11 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.session.R;
 
+
 public class SmartLockActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
+
 
     private static final String TAG = "SmartLock";
     public static final int RC_SAVE = 1;
@@ -46,7 +48,6 @@ public class SmartLockActivity extends AppCompatActivity implements
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setTheme(R.style.AppTheme_Dialog);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_smartlock);
 

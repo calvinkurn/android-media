@@ -1,6 +1,5 @@
 package com.tokopedia.core.analytics;
 
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.appsflyer.AFInAppEventType;
@@ -18,7 +17,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static com.tokopedia.core.util.DateFormatUtils.DEFAULT_LOCALE;
@@ -1723,60 +1721,6 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventClickPopularSearch(String label) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.EVENT_CLICK_TOP_NAV,
-                AppEventTracking.Category.EVENT_TOP_NAV,
-                AppEventTracking.Action.SEARCH_POPULAR,
-                label
-        ).getEvent());
-    }
-
-    public static void eventClickRecentSearch(String label) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.EVENT_CLICK_TOP_NAV,
-                AppEventTracking.Category.EVENT_TOP_NAV,
-                AppEventTracking.Action.SEARCH_RECENT,
-                label
-        ).getEvent());
-    }
-
-    public static void eventClickHotListSearch(String label) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.EVENT_CLICK_TOP_NAV,
-                AppEventTracking.Category.EVENT_TOP_NAV,
-                AppEventTracking.Action.SEARCH_HOTLIST,
-                label
-        ).getEvent());
-    }
-
-    public static void eventClickAutoCompleteSearch(String label) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.EVENT_CLICK_TOP_NAV,
-                AppEventTracking.Category.EVENT_TOP_NAV,
-                AppEventTracking.Action.SEARCH_AUTOCOMPLETE,
-                label
-        ).getEvent());
-    }
-
-    public static void eventClickAutoCompleteShopSearch(String label) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.EVENT_CLICK_TOP_NAV,
-                AppEventTracking.Category.EVENT_TOP_NAV,
-                AppEventTracking.Action.SEARCH_AUTOCOMPLETE_SHOP,
-                label
-        ).getEvent());
-    }
-
-    public static void eventClickAutoCompleteCategory(String catName, String catId, String label) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.EVENT_CLICK_TOP_NAV,
-                AppEventTracking.Category.EVENT_TOP_NAV,
-                AppEventTracking.Action.SEARCH_PRODUCT_SUGGESTION,
-                label + " | " + label + " | " + catName + " | " + catId
-        ).getEvent());
-    }
-
     public static void eventClickGMSwitcher(String label) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.TOP_SELLER,
@@ -3120,7 +3064,7 @@ public class UnifyTracking extends TrackingUtils {
     public static void eventClickChangePhoneNumber() {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.EVENT_CLICK_USER_PROFILE,
-                AppEventTracking.Category.MANAGE_PROFILE,
+                AppEventTracking.Category.PROFILE_PAGE,
                 AppEventTracking.Action.CLICK_CHANGE_PHONE_NUMBER,
                 ""
         ).getEvent());

@@ -436,7 +436,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     @Override
     public void getReply(int mode) {
         RequestParams requestParam;
-        if(TextUtils.isEmpty(getView().getArguments().getString(PARAM_MESSAGE_ID))){
+        if (TextUtils.isEmpty(getView().getArguments().getString(PARAM_MESSAGE_ID))) {
             return;
         }
         if (mode == GET_CHAT_MODE) {
@@ -473,7 +473,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         getView().displayReplyField(replyData.getTextAreaReply() == 1);
         getView().setCanLoadMore(replyData.isHasNext());
 
-        if (!replyData.isHasNext()) {
+        if (!replyData.isHasNext() && !getView().isChatBot()) {
             getView().addTimeMachine();
         }
 
