@@ -711,14 +711,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     @Override
     public void onErrorGetChannelInfo(String errorMessage) {
-        NetworkErrorHelper.showEmptyState(this, rootView, errorMessage, new NetworkErrorHelper
-                .RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                initData();
-            }
-        });
-        setVisibilityHeader(View.GONE);
+        onChannelNotFound(errorMessage);
     }
 
     void setVisibilityHeader(int visible) {
