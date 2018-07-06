@@ -269,6 +269,8 @@ public class TkpdCache extends com.tokopedia.abstraction.constant.TkpdCache {
         public static final String IMAGE_HOST = "image_host";
 
         public static final String ENABLE_BOTTOM_SHEET_FILTER = "mainapp_enable_bottom_sheet_filter";
+
+        public static final String FIREBASE_DIGITAL_OMS_REMOTE_CONFIG_KEY = "app_enable_oms_native";
     }
 
 }

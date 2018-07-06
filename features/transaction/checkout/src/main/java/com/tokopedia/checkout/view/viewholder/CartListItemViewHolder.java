@@ -11,6 +11,7 @@ import android.text.Html;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.FrameLayout;
@@ -22,6 +23,8 @@ import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.view.adapter.CartListAdapter;
 import com.tokopedia.checkout.view.holderitemdata.CartItemHolderData;
 import com.tokopedia.design.component.TextViewCompat;
+
+import org.apache.commons.lang3.StringUtils;
 
 import java.text.NumberFormat;
 import java.util.Locale;
@@ -98,6 +101,21 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
         this.layoutWarning = itemView.findViewById(R.id.layout_warning);
         this.tvWarning = itemView.findViewById(R.id.tv_warning);
 
+        etRemark.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
+                if (view.getId() == R.id.et_remark) {
+                    view.getParent().requestDisallowInterceptTouchEvent(true);
+                    switch (event.getAction() & MotionEvent.ACTION_MASK) {
+                        case MotionEvent.ACTION_UP:
+                            view.getParent().requestDisallowInterceptTouchEvent(false);
+                            break;
+                    }
+                }
+                return false;
+            }
+        });
+
         initTextwatcherDebouncer(cadapterCmpositeSubscription);
     }
 
@@ -168,9 +186,7 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
         if (cartItemHolderData.getCartItemData().getOriginData().getInvenageValue() == 0) {
             cartItemHolderData.getCartItemData().getOriginData().setInvenageValue(QTY_MAX);
         }
-        this.tvShopName.setText(
-                Html.fromHtml(data.getCartItemData().getOriginData().getShopName())
-        );
+        this.tvShopName.setText(data.getCartItemData().getOriginData().getShopName());
         this.tvProductName.setText(
                 Html.fromHtml(data.getCartItemData().getOriginData().getProductName())
         );
@@ -185,6 +201,17 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
         if (quantity.length() > 0) {
             this.etQty.setSelection(quantity.length());
         }
+        this.etQty.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((AppCompatEditText) v).selectAll();
+                String qtyStr = ((AppCompatEditText) v).getText().toString();
+                actionListener.onCartItemQuantityInputFormClicked(
+                        !TextUtils.isEmpty(qtyStr) ? qtyStr : ""
+                );
+            }
+        });
+
         ImageHandler.loadImageRounded2(
                 this.itemView.getContext(), this.ivProductImage,
                 data.getCartItemData().getOriginData().getProductImage()
@@ -206,15 +233,17 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
         this.tvLabelRemarkOption.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                actionListener.onCartItemLabelInputRemarkClicked();
                 etRemark.setVisibility(View.VISIBLE);
                 tvLabelRemarkOption.setVisibility(View.GONE);
             }
         });
 
-        if (TextUtils.isEmpty(data.getCartItemData().getUpdatedData().getRemark())
+        if (StringUtils.isBlank(data.getCartItemData().getUpdatedData().getRemark())
                 && !data.isEditableRemark()) {
             this.etRemark.setVisibility(View.GONE);
             this.tvLabelRemarkOption.setVisibility(View.VISIBLE);
+            this.etRemark.setText("");
         } else {
             this.etRemark.setVisibility(View.VISIBLE);
             this.tvLabelRemarkOption.setVisibility(View.GONE);
@@ -365,7 +394,14 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void checkQtyMustDisabled(CartItemHolderData cartItemHolderData, int qty) {
-        if (qty <= QTY_MIN || qty <= cartItemHolderData.getCartItemData().getOriginData().getMinimalQtyOrder()) {
+        if ((qty <= QTY_MIN || qty <= cartItemHolderData.getCartItemData().getOriginData().getMinimalQtyOrder()) &&
+                (qty >= QTY_MAX || (cartItemHolderData.getCartItemData().getOriginData().getInvenageValue() != 0 &&
+                        qty >= cartItemHolderData.getCartItemData().getOriginData().getInvenageValue()))) {
+            btnQtyMinus.setEnabled(false);
+            btnQtyPlus.setEnabled(false);
+            btnQtyMinus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.bg_button_counter_minus_disabled));
+            btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.bg_button_counter_plus_disabled));
+        } else if (qty <= QTY_MIN || qty <= cartItemHolderData.getCartItemData().getOriginData().getMinimalQtyOrder()) {
             btnQtyMinus.setEnabled(false);
             btnQtyPlus.setEnabled(true);
             btnQtyMinus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.bg_button_counter_minus_disabled));
@@ -388,10 +424,9 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
         if (data.getCartItemData().getOriginData().getInvenageValue() != 0 &&
                 qty > data.getCartItemData().getOriginData().getInvenageValue()) {
             String errorMessage = data.getCartItemData().getErrorData().getErrorProductMaxQuantity();
-            String maxValue;
             NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.US);
             String numberAsString = numberFormat.format(data.getCartItemData().getOriginData().getInvenageValue());
-            maxValue = numberAsString.replace(",", ".");
+            String maxValue = numberAsString.replace(",", ".");
             tvErrorFormValidation.setText(errorMessage.replace("{{value}}", maxValue));
             tvErrorFormValidation.setVisibility(View.VISIBLE);
         } else if (qty < data.getCartItemData().getOriginData().getMinimalQtyOrder()) {
@@ -470,6 +505,8 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
             for (int i = 0; i < quantity.editable.length(); i++) {
                 if (quantity.editable.charAt(i) == '0') {
                     zeroCount++;
+                } else {
+                    break;
                 }
             }
             if (zeroCount == quantity.editable.length()) {

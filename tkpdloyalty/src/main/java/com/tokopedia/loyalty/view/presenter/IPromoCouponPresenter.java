@@ -1,5 +1,7 @@
 package com.tokopedia.loyalty.view.presenter;
 
+import android.app.Activity;
+
 import com.google.gson.JsonObject;
 import com.tokopedia.loyalty.view.data.CouponData;
 
@@ -17,19 +19,8 @@ public interface IPromoCouponPresenter {
 
     void processGetEventCouponList(int categoryId, int productId);
 
-    void processPostCouponValidateRedeem();
-
-    void processPostCouponRedeem();
-
-    void processGetPointRecentHistory();
-
-    void processGetCatalogList();
-
-    void processGetCatalogDetail();
-
-    void processGetCatalogFilterCategory();
-
-    void submitVoucher(CouponData couponData);
+    void processCheckMarketPlaceCartListPromoCode(Activity activity, CouponData couponData,
+                                                  String paramUpdateCart);
 
     void submitDigitalVoucher(CouponData couponData, String categoryId);
 

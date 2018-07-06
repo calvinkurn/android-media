@@ -56,7 +56,6 @@ import com.tokopedia.seller.seller.info.view.activity.SellerInfoActivity;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.ParentIndexHome;
-import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
 
 import java.util.ArrayList;
 
@@ -323,13 +322,6 @@ public class DrawerBuyerHelper extends DrawerHelper
                         drawerCache.getBoolean(IS_PEOPLE_OPENED, false)
                 )
         );
-
-        buyerMenu.add(new DrawerItem(
-                        context.getString(R.string.drawer_title_oms_transaction_list),
-                        TkpdState.DrawerPosition.PEOPLE_OMS_TRANSACTION_LIST,
-                        drawerCache.getBoolean(IS_PEOPLE_OPENED, false)
-                )
-        );
         return buyerMenu;
     }
 
@@ -533,16 +525,18 @@ public class DrawerBuyerHelper extends DrawerHelper
 
                     break;
                 case TkpdState.DrawerPosition.PEOPLE_DIGITAL_TRANSACTION_LIST:
-                    intent = TransactionPurchaseRouter.createIntentOrderListSummary(context, OrderCategory.DIGITAL);
+                    if(remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.FIREBASE_DIGITAL_OMS_REMOTE_CONFIG_KEY, true))
+                        intent = TransactionPurchaseRouter.createIntentOrderListSummary(context);
+                    else{
+                        intent = DigitalWebActivity.newInstance(context, TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
+                                + TkpdBaseURL.DigitalWebsite.PATH_TRANSACTION_LIST);
+                        sendGTMNavigationEvent(AppEventTracking.EventLabel.DIGITAL_TRANSACTION_LIST);
+                    }
                     context.startActivity(intent);
+
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.DIGITAL_TRANSACTION_LIST);
                     AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(),AppEventTracking.EventLabel.DIGITAL_TRANSACTION_LIST, AppEventTracking.EventLabel.PURCHASE);
-                    break;
-                case TkpdState.DrawerPosition.PEOPLE_OMS_TRANSACTION_LIST:
-                    intent = TransactionPurchaseRouter.createIntentOrderListSummary(context, OrderCategory.DEALS);
-                    context.startActivity(intent);
-                    sendGTMNavigationEvent(AppEventTracking.EventLabel.DIGITAL_TRANSACTION_LIST);
-                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(),AppEventTracking.EventLabel.DIGITAL_TRANSACTION_LIST, AppEventTracking.EventLabel.PURCHASE);
+
                     break;
                 case TkpdState.DrawerPosition.PEOPLE_FLIGHT_TRANSACTION_LIST:
                     intent = FlightOrderListActivity.getCallingIntent(context);

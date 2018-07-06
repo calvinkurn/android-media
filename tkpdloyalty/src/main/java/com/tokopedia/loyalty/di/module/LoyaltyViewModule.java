@@ -10,8 +10,8 @@ import com.tokopedia.loyalty.view.adapter.LoyaltyPagerAdapter;
 import com.tokopedia.loyalty.view.data.LoyaltyPagerItem;
 import com.tokopedia.loyalty.view.fragment.PromoCodeFragment;
 import com.tokopedia.loyalty.view.fragment.PromoCouponFragment;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsCartPage;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsCartShipmentPage;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -97,6 +97,7 @@ public class LoyaltyViewModule {
                             .fragment(PromoCouponFragment.newInstance(
                                     activity.getPlatformString(),
                                     activity.getPlatformPageString(),
+                                    activity.getAdditionalDataString(),
                                     activity.getCategoryString(),
                                     activity.getCartIdString(),
                                     activity.getCategoryId(),
@@ -130,21 +131,21 @@ public class LoyaltyViewModule {
     }
 
     @Provides
-    CheckoutAnalyticsCartPage provideCheckoutAnalyticsCartPage() {
+    CheckoutAnalyticsCart provideCheckoutAnalyticsCartPage() {
         AnalyticTracker analyticTracker = null;
         if (activity.getApplication() instanceof AbstractionRouter) {
             analyticTracker = ((AbstractionRouter) activity.getApplication()).getAnalyticTracker();
         }
-        return new CheckoutAnalyticsCartPage(analyticTracker);
+        return new CheckoutAnalyticsCart(analyticTracker);
     }
 
     @Provides
-    CheckoutAnalyticsCartShipmentPage provideCheckoutAnalyticsCartShipmentPage() {
+    CheckoutAnalyticsCourierSelection provideCheckoutAnalyticsCourierSelection() {
         AnalyticTracker analyticTracker = null;
         if (activity.getApplication() instanceof AbstractionRouter) {
             analyticTracker = ((AbstractionRouter) activity.getApplication()).getAnalyticTracker();
         }
-        return new CheckoutAnalyticsCartShipmentPage(analyticTracker);
+        return new CheckoutAnalyticsCourierSelection(analyticTracker);
     }
 
 }

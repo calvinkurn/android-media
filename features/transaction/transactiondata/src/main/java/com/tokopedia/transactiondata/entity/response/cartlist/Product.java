@@ -103,7 +103,7 @@ public class Product {
     private String productWeightUnitText;
     @SerializedName("last_update_price")
     @Expose
-    private int lastUpdatePrice;
+    private long lastUpdatePrice;
     @SerializedName("is_update_price")
     @Expose
     private boolean isUpdatePrice;
@@ -237,7 +237,7 @@ public class Product {
         return productWeightUnitText;
     }
 
-    public int getLastUpdatePrice() {
+    public long getLastUpdatePrice() {
         return lastUpdatePrice;
     }
 
