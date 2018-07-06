@@ -9,7 +9,6 @@ import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
 import java.util.HashMap;
-import java.util.List;
 
 import rx.Observable;
 

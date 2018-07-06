@@ -27,6 +27,12 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
     }
 
     @Override
+    public void detachView() {
+        super.detachView();
+        getOrderListUseCase.unsubscribe();
+    }
+
+    @Override
     public void getAllOrderData(Context context, String orderCategory, final int typeRequest, int page) {
         if(isViewAttached()) {
             getView().showProcessGetData(orderCategory);

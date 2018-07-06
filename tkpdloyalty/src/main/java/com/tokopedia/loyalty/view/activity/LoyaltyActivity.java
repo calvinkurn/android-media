@@ -13,10 +13,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.loyalty.R;
@@ -34,8 +34,8 @@ import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsCartPage;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsCartShipmentPage;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +53,7 @@ import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.E
  */
 
 public class LoyaltyActivity extends BasePresenterActivity
-        implements HasComponent<AppComponent>,
+        implements HasComponent<BaseAppComponent>,
         PromoCodeFragment.ManualInsertCodeListener,
         PromoCouponFragment.ChooseCouponListener {
 
@@ -72,9 +72,9 @@ public class LoyaltyActivity extends BasePresenterActivity
     @Named("coupon_not_active")
     List<LoyaltyPagerItem> loyaltyPagerItemListCouponNotActive;
     @Inject
-    CheckoutAnalyticsCartPage checkoutAnalyticsCartPage;
+    CheckoutAnalyticsCart checkoutAnalyticsCart;
     @Inject
-    CheckoutAnalyticsCartShipmentPage checkoutAnalyticsCartShipmentPage;
+    CheckoutAnalyticsCourierSelection checkoutAnalyticsCourierSelection;
 
     private boolean isCouponActive;
     private String platformString;
@@ -270,9 +270,10 @@ public class LoyaltyActivity extends BasePresenterActivity
 
 
     @Override
-    public AppComponent getComponent() {
-        return getApplicationComponent();
+    public BaseAppComponent getComponent() {
+        return getBaseAppComponent();
     }
+
 
     @Override
     public void onCodeSuccess(String voucherCode, String voucherMessage, String voucherAmount) {
@@ -310,7 +311,7 @@ public class LoyaltyActivity extends BasePresenterActivity
 
     @Override
     public void onUsePromoCodeClicked() {
-        checkoutAnalyticsCartPage.eventClickCartClickGunakanKodeFormGunakanKodePromoAtauKupon();
+        checkoutAnalyticsCart.eventClickCartClickGunakanKodeFormGunakanKodePromoAtauKupon();
     }
 
 
@@ -351,8 +352,23 @@ public class LoyaltyActivity extends BasePresenterActivity
     }
 
     @Override
-    public void onCouponItemClicked() {
-        checkoutAnalyticsCartPage.eventClickCartClickKuponFromGunakanPromoAtauKupon();
+    public void sendAnalyticsOnCouponItemClickedCartListPage() {
+        checkoutAnalyticsCart.eventClickCartClickKuponFromGunakanPromoAtauKupon();
+    }
+
+    @Override
+    public void sendAnalyticsOnCouponItemClickedCartShipmentPage() {
+        checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickKuponFromGunakanKodePromoAtauKupon();
+    }
+
+    @Override
+    public void sendAnalyticsImpressionCouponEmptyCartListPage() {
+        checkoutAnalyticsCart.eventImpressionCartImpressionOnPopUpKupon();
+    }
+
+    @Override
+    public void sendAnalyticsImpressionCouponEmptyShipmentPage() {
+        checkoutAnalyticsCourierSelection.eventImpressionCourierSelectionImpressionOnPopUpKupon();
     }
 
     public static Intent newInstanceCouponActive(Activity activity, String platform, String categoryId, String cartId) {
@@ -543,19 +559,19 @@ public class LoyaltyActivity extends BasePresenterActivity
                 if (tab.getPosition() == 1) {
                     switch (platformPageString) {
                         case PLATFORM_PAGE_MARKETPLACE_CART_LIST:
-                            checkoutAnalyticsCartPage.eventClickCartClickKuponSayaFromGunakanPromoAtauKupon();
+                            checkoutAnalyticsCart.eventClickCartClickKuponSayaFromGunakanPromoAtauKupon();
                             break;
                         case PLATFORM_PAGE_MARKETPLACE_CART_SHIPMENT:
-                            checkoutAnalyticsCartShipmentPage.eventClickShipmentClickKuponSayaFromGunakanKodePromoAtauKupon();
+                            checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickKuponSayaFromGunakanKodePromoAtauKupon();
                             break;
                     }
                 } else {
                     switch (platformPageString) {
                         case PLATFORM_PAGE_MARKETPLACE_CART_LIST:
-                            checkoutAnalyticsCartPage.eventClickCartClickKodePromoFromGunakanPromoAtauKupon();
+                            checkoutAnalyticsCart.eventClickCartClickKodePromoFromGunakanPromoAtauKupon();
                             break;
                         case PLATFORM_PAGE_MARKETPLACE_CART_SHIPMENT:
-                            checkoutAnalyticsCartShipmentPage.eventClickShipmentClickKodePromoFromGunakanKodePromoAtauKupon();
+                            checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickKodePromoFromGunakanKodePromoAtauKupon();
                             break;
                     }
                 }
@@ -563,10 +579,10 @@ public class LoyaltyActivity extends BasePresenterActivity
                 if (tab.getPosition() == 0) {
                     switch (platformPageString) {
                         case PLATFORM_PAGE_MARKETPLACE_CART_LIST:
-                            checkoutAnalyticsCartPage.eventClickCartClickKodePromoFromGunakanPromoAtauKupon();
+                            checkoutAnalyticsCart.eventClickCartClickKodePromoFromGunakanPromoAtauKupon();
                             break;
                         case PLATFORM_PAGE_MARKETPLACE_CART_SHIPMENT:
-                            checkoutAnalyticsCartShipmentPage.eventClickShipmentClickKodePromoFromGunakanKodePromoAtauKupon();
+                            checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickKodePromoFromGunakanKodePromoAtauKupon();
                             break;
                     }
                 }

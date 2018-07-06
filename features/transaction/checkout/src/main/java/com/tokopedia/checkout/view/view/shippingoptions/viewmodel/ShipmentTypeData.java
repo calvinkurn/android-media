@@ -7,6 +7,15 @@ package com.tokopedia.checkout.view.view.shippingoptions.viewmodel;
 public class ShipmentTypeData implements ShipmentOptionData {
 
     private String shipmentType;
+    private String etd;
+
+    public String getEtd() {
+        return etd;
+    }
+
+    public void setEtd(String etd) {
+        this.etd = etd;
+    }
 
     public String getShipmentType() {
         return shipmentType;

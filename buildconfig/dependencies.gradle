@@ -8,7 +8,7 @@ ext {
     jacocoVersion = "0.7.9"
     kotlinVersion = "1.2.40"
 
-    supportLibraryVersion = '26.0.2'
+    supportLibraryVersion = '27.1.1'
     playServiceVersion = '11.0.4'
     butterKnifeVersion = '9.0.0-SNAPSHOT'
     dbFlowVersion = '3.0.1'
@@ -22,6 +22,7 @@ ext {
     rulesVersion = "0.5"
     apolloVersion = '0.3.0'
     lottieVersion = '2.0.0-rc1'
+    cardioVersion = '5.5.1'
     reactNativeVersion = '0.52.1'
     alibabaCoreLibVersion = '3.2.8'
 
@@ -63,6 +64,9 @@ ext {
     tkpdMitraToppersVersion = '2.22'
     tkpdDistrictRecommendationVersion = '2.22'
     tkpdAnalyticsVersion = '2.22'
+    tkpdGraphqlVersion = '2.22'
+    tkpdContactUsVersion = '2.22'
+    tkpdCommonNetworkVersion = '2.22'
 
     networkDependencies = [
             retrofit          : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
@@ -93,20 +97,20 @@ ext {
     ]
 
     playServicesDependencies = [
-            plus                : "com.google.android.gms:play-services-plus:${playServiceVersion}",
-            base                : "com.google.android.gms:play-services-base:${playServiceVersion}",
-            appIndexing         : "com.google.firebase:firebase-appindexing:${playServiceVersion}",
-            analytics           : "com.google.android.gms:play-services-analytics:${playServiceVersion}",
-            firebase            : "com.google.firebase:firebase-messaging:${playServiceVersion}",
-            location            : "com.google.android.gms:play-services-location:${playServiceVersion}",
-            maps                : "com.google.android.gms:play-services-maps:${playServiceVersion}",
-            auth                : "com.google.android.gms:play-services-auth:${playServiceVersion}",
-            places              : "com.google.android.gms:play-services-places:${playServiceVersion}",
-            mapsUtils           : "com.google.maps.android:android-maps-utils:0.4",
-            remoteConfig        : "com.google.firebase:firebase-config:${playServiceVersion}",
-            perfMon             : "com.google.firebase:firebase-perf:${playServiceVersion}",
-            ads                 : "com.google.android.gms:play-services-ads:${playServiceVersion}",
-            firebaseAnalytics   :  "com.google.firebase:firebase-core:${playServiceVersion}",
+            plus             : "com.google.android.gms:play-services-plus:${playServiceVersion}",
+            base             : "com.google.android.gms:play-services-base:${playServiceVersion}",
+            appIndexing      : "com.google.firebase:firebase-appindexing:${playServiceVersion}",
+            analytics        : "com.google.android.gms:play-services-analytics:${playServiceVersion}",
+            firebase         : "com.google.firebase:firebase-messaging:${playServiceVersion}",
+            location         : "com.google.android.gms:play-services-location:${playServiceVersion}",
+            maps             : "com.google.android.gms:play-services-maps:${playServiceVersion}",
+            auth             : "com.google.android.gms:play-services-auth:${playServiceVersion}",
+            places           : "com.google.android.gms:play-services-places:${playServiceVersion}",
+            mapsUtils        : "com.google.maps.android:android-maps-utils:0.4",
+            remoteConfig     : "com.google.firebase:firebase-config:${playServiceVersion}",
+            perfMon          : "com.google.firebase:firebase-perf:${playServiceVersion}",
+            ads              : "com.google.android.gms:play-services-ads:${playServiceVersion}",
+            firebaseAnalytics: "com.google.firebase:firebase-core:${playServiceVersion}",
     ]
 
     butterKnifeDependencies = [
@@ -174,6 +178,7 @@ ext {
             roundCornerProgressBar: 'com.akexorcist:RoundCornerProgressBar:2.0.3',
             slidinguppanel        : "com.sothree.slidinguppanel:library:3.3.1",
             lottie                : "com.airbnb.android:lottie:$lottieVersion",
+            cardio                : "io.card:android-sdk:$cardioVersion",
             loaderviewlibrary     : "com.elyeproj.libraries:loaderviewlibrary:1.4.1",
             imagecropper          : "com.theartofdev.edmodo:android-image-cropper:2.5.1",
             reactNative           : "com.facebook.react:react-native:$reactNativeVersion",
@@ -264,20 +269,20 @@ ext {
     ]
 
     features = [
-            loyalty             : ":tkpdloyalty",
-            feed                : ":features:content:feed",
-            digitalproduct      : ":features:digital:digitalproduct",
-            core                : ":tkpdcore",
-            inbox               : ":tkpdinbox",
-            discovery           : ":tkpddiscovery",
-            transaction         : ":tkpdtransaction",
-            transactioncommon   : ":tkpdtransaction-common",
-            session             : ":tkpdsession",
-            topAdsSdk           : ":tkpdtopadssdk",
-            productDetail       : ":tkpdpdp",
-            seller              : ":tkpdseller",
-            payment             : ":features:payment:payment",
-            wishlistCommon      : ":features:discovery:wishlist_common",
+            loyalty               : ":tkpdloyalty",
+            feed                  : ":features:content:feed",
+            digitalproduct        : ":features:digital:digitalproduct",
+            core                  : ":tkpdcore",
+            inbox                 : ":tkpdinbox",
+            discovery             : ":tkpddiscovery",
+            transaction           : ":tkpdtransaction",
+            transactioncommon     : ":tkpdtransaction-common",
+            session               : ":tkpdsession",
+            topAdsSdk             : ":tkpdtopadssdk",
+            productDetail         : ":tkpdpdp",
+            seller                : ":tkpdseller",
+            payment               : ":features:payment:payment",
+            wishlistCommon        : ":features:discovery:wishlist_common",
             districtRecommendation: ":features:logistic:district_recommendation",
             goldMerchantCommon  : ":features:merchant:gold_merchant_common",
             goldMerchant        : ":features:merchant:gold_merchant",
@@ -311,19 +316,25 @@ ext {
     ]
 
     libraries = [
-            design       : ":tkpddesign",
-            abstraction  : ":tkpdabstraction",
-            reactNative  : ":libraries:react_native",
-            pushNotif    : ":libraries:push_notification",
-            applink      : ":libraries:applink",
-            cacheApi     : ":libraries:cache_api",
-            useCase      : ":libraries:use_case",
-            williamchart    : ":libraries:williamchart",
-            fingerprint  : ":libraries:fingerprint",
+            design            : ":tkpddesign",
+            abstraction       : ":tkpdabstraction",
+            reactNative       : ":libraries:react_native",
+            pushNotif         : ":libraries:push_notification",
+            applink           : ":libraries:applink",
+            cacheApi          : ":libraries:cache_api",
+            useCase           : ":libraries:use_case",
+            userSession       : ":libraries:user_session",
+            config            : ":libraries:global_config",
+            network           : ":libraries:network",
+            useCase           : ":libraries:use_case",
+            williamchart      : ":libraries:williamchart",
+            fingerprint       : ":libraries:fingerprint",
             bottomSheetBuilder: ":libraries:bottom_sheet_builder",
-            userSession     : ":libraries:user_session",
-            imageuploader   : ":libraries:imageuploader",
-            youtubeApi      : ":libraries:YouTubeAndroidPlayerApi",
-            analytics       : ":libraries:analytics"
+            userSession       : ":libraries:user_session",
+            imageuploader     : ":libraries:imageuploader",
+            youtubeApi        : ":libraries:YouTubeAndroidPlayerApi",
+            analytics         : ":libraries:analytics",
+            graphql           : ":libraries:graphql",
+            commonNetwork     : ":libraries:common_network"
     ]
 }
