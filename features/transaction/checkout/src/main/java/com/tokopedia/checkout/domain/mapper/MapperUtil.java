@@ -25,7 +25,7 @@ public class MapperUtil implements IMapperUtil {
             int length = stringList.size();
             for (int i = 0; i < length; i++) {
                 String s = stringList.get(i);
-                stringBuilder.append(s).append(". ");
+                stringBuilder.append(s).append(" ");
             }
             return stringBuilder.toString();
         }

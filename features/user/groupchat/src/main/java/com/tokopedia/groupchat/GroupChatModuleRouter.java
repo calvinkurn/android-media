@@ -39,6 +39,6 @@ public interface GroupChatModuleRouter {
         void onGenerateLink(String shareContents, String shareUri);
     }
 
-    void shareGroupChat(FragmentManager fragmentManager, String channelId, String title, String contentMessage, String imgUrl,
+    void shareGroupChat(Activity activity, String channelId, String title, String contentMessage, String imgUrl,
                         String shareUrl);
 }

@@ -72,6 +72,7 @@
             android:layout_gravity="center"
             android:paddingBottom="@dimen/dp_16"
             android:paddingLeft="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16"
             tools:text="Potensi mendapatkan potongan ongkos kirim Rp. 40.000" />
 
         <ImageView

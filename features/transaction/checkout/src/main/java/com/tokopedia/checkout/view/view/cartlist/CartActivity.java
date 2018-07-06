@@ -7,14 +7,11 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.applink.CheckoutAppLink;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.base.BaseCheckoutActivity;
-import com.tokopedia.checkout.view.di.component.CartComponent;
-import com.tokopedia.checkout.view.di.component.CartComponentInjector;
 import com.tokopedia.checkout.view.view.cartlist.removecartitem.RemoveCartItemFragment;
 
 import java.util.List;
@@ -23,8 +20,7 @@ import java.util.List;
  * @author anggaprasetiyo on 18/01/18.
  */
 
-public class CartActivity extends BaseCheckoutActivity implements CartFragment.ActionListener,
-        HasComponent<CartComponent> {
+public class CartActivity extends BaseCheckoutActivity implements CartFragment.ActionListener {
 
     @DeepLink(CheckoutAppLink.CART)
     public static Intent getCallingIntent(Context context, Bundle extras) {
@@ -65,6 +61,14 @@ public class CartActivity extends BaseCheckoutActivity implements CartFragment.A
 
     @Override
     public void onBackPressed() {
+        Fragment currentFragment = getCurrentFragment();
+        if (currentFragment instanceof RemoveCartItemFragment) {
+            ((RemoveCartItemFragment) currentFragment)
+                    .getCheckoutAnalyticsCart().eventClickCartClickArrowBackFromHapus();
+        } else if (currentFragment instanceof CartFragment) {
+            ((CartFragment) currentFragment)
+                    .getCartPageAnalytics().eventClickCartClickArrowBack();
+        }
         if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
             getSupportFragmentManager().popBackStack();
         } else {
@@ -93,8 +97,8 @@ public class CartActivity extends BaseCheckoutActivity implements CartFragment.A
 
     @Override
     public void onRemoveAllCartMenuClicked(List<CartItemData> cartItemData) {
-        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.container);
-        if (fragment == null || !(fragment instanceof CartRemoveProductFragment)) {
+        Fragment fragment = getCurrentFragment();
+        if (fragment == null || !(fragment instanceof RemoveCartItemFragment)) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.parent_view, RemoveCartItemFragment.newInstance(cartItemData))
                     .addToBackStack(null)
@@ -107,8 +111,5 @@ public class CartActivity extends BaseCheckoutActivity implements CartFragment.A
         return CartFragment.newInstance();
     }
 
-    @Override
-    public CartComponent getComponent() {
-        return CartComponentInjector.newInstance(getApplication()).getCartApiServiceComponent();
-    }
+
 }

@@ -95,6 +95,7 @@ public class CourierPresenter extends BaseDaggerPresenter<CourierContract.View>
                     for (ShipmentItemData shipmentItemData : shipmentItemDataList) {
                         ShipmentTypeData shipmentTypeData = new ShipmentTypeData();
                         shipmentTypeData.setShipmentType(shipmentItemData.getType());
+                        shipmentTypeData.setEtd(shipmentItemData.getDeliveryTimeRange());
                         shipmentDataList.add(shipmentTypeData);
                         if (!hasInstantShippingService &&
                                 (shipmentItemData.getServiceId() == CourierConstant.SERVICE_ID_INSTANT ||
