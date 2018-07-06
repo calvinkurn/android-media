@@ -32,6 +32,7 @@ import com.tokopedia.network.SessionUrl;
 import com.tokopedia.otp.tokocashotp.view.activity.VerificationActivity;
 import com.tokopedia.otp.tokocashotp.view.viewmodel.MethodItem;
 import com.tokopedia.session.R;
+import com.tokopedia.session.inactivephonenumber.ChangeInactivePhoneNumberWebView;
 import com.tokopedia.session.login.loginemail.view.activity.ForbiddenActivity;
 import com.tokopedia.session.login.loginphonenumber.view.activity.ChooseTokocashAccountActivity;
 import com.tokopedia.session.login.loginphonenumber.view.activity.LoginPhoneNumberActivity;
@@ -148,11 +149,11 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-                Intent intent = SimpleWebViewWithFilePickerActivity.
+                Intent intent = ChangeInactivePhoneNumberWebView.
                         getIntentWithTitle(
                                 getContext(),
                                 SessionUrl.ChangePhone.PATH_WEBVIEW_CHANGE_PHONE_NUMBER,
-                                "Ubah Nomor Ponsel");
+                                getString(R.string.title_change_inactive_phone_number));
                 startActivity(intent);
             }
 
