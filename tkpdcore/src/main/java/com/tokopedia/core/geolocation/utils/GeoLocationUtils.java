@@ -11,12 +11,85 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import java.util.List;
 import java.util.Locale;
 
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+
 /**
  * Created on 2/3/16.
  */
 public class GeoLocationUtils {
 
     private static final String TAG = GeoLocationUtils.class.getSimpleName();
+
+    private static void getReverseGeoCodeParallel(Context context,
+                                                 double latitude,
+                                                 double longitude,
+                                                 GeoLocationListener listener) {
+
+        Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+        try {
+            Observable.just(geocoder.getFromLocation(latitude, longitude, 1))
+                    .subscribeOn(Schedulers.newThread())
+                    .unsubscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Subscriber<List<Address>>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            listener.getGeoCode(
+                                    String.valueOf(latitude) + ", "
+                                            + String.valueOf(longitude)
+                            );
+                        }
+
+                        @Override
+                        public void onNext(List<Address> listAddresses) {
+                            String responseAddress = "";
+                            if (listAddresses.get(0).getMaxAddressLineIndex() == 0 &&
+                                    listAddresses.get(0).getAddressLine(0) != null) {
+                                responseAddress = listAddresses.get(0).getAddressLine(0);
+                            }
+
+                            for (int j = 0; j < listAddresses.get(0).getMaxAddressLineIndex(); j++) {
+                                if (j == 0) {
+                                    Address address = listAddresses.get(0);
+                                    responseAddress = address.getThoroughfare();
+                                    Log.d(TAG, "reverseGeoCode: 1." + address.getAddressLine(0));
+                                    Log.d(TAG, "reverseGeoCode: 2." + address.getLocality());
+                                    Log.d(TAG, "reverseGeoCode: 3." + address.getSubLocality());
+                                    Log.d(TAG, "reverseGeoCode: 4." + address.getAdminArea());
+                                    Log.d(TAG, "reverseGeoCode: 5." + address.getSubAdminArea());
+                                    Log.d(TAG, "reverseGeoCode: 6." + address.getPremises());
+                                    Log.d(TAG, "reverseGeoCode: 7." + address.getThoroughfare());
+                                    Log.d(TAG, "reverseGeoCode: 8." + address.getSubThoroughfare());
+                                } else {
+                                    if (responseAddress.equals("Unnamed Rd")) {
+                                        responseAddress = listAddresses.get(0).getAddressLine(j);
+                                    } else {
+                                        responseAddress = responseAddress
+                                                + " "
+                                                + listAddresses.get(0).getAddressLine(j);
+                                    }
+
+                                }
+                            }
+                            listener.getGeoCode(responseAddress);
+                        }
+                    });
+        } catch (Exception e) {
+            listener.getGeoCode(
+                    String.valueOf(latitude) + ", " + String.valueOf(longitude)
+            );
+            e.printStackTrace();
+        }
+
+    }
 
     public static String reverseGeoCode(Context context, double latitude, double longitude) {
         String reseponseAddress = "";
@@ -60,6 +133,22 @@ public class GeoLocationUtils {
         return reseponseAddress;
     }
 
+    public static void reverseGeoCodeParallel(Context context,
+                                              String latitude,
+                                              String longitude,
+                                              GeoLocationListener listener) {
+        if (latitude == null || longitude == null) {
+            listener.getGeoCode("");
+        } else if (latitude.isEmpty() || longitude.isEmpty()) {
+            listener.getGeoCode("");
+        } else {
+            getReverseGeoCodeParallel(context,
+                    Double.parseDouble(latitude),
+                    Double.parseDouble(longitude),
+                    listener);
+        }
+    }
+
     public static String reverseGeoCode(Context context, String latitude, String longitude) {
         if (latitude == null || longitude == null) {
             return "";
@@ -94,5 +183,9 @@ public class GeoLocationUtils {
 
     public static LatLngBounds generateBoundary(String latitude, String longitude) {
         return generateBoundary(Double.parseDouble(latitude), Double.parseDouble(longitude));
+    }
+
+    public interface GeoLocationListener {
+        void getGeoCode(String resultAddress);
     }
 }
