@@ -31,8 +31,10 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.R2;
+import com.tokopedia.contactus.inboxticket.activity.InboxTicketActivity;
 import com.tokopedia.contactus.orderquery.data.ImageUpload;
 import com.tokopedia.contactus.orderquery.data.SubmitTicketInvoiceData;
+import com.tokopedia.contactus.orderquery.di.DaggerOrderQueryComponent;
 import com.tokopedia.contactus.orderquery.di.OrderQueryComponent;
 import com.tokopedia.contactus.orderquery.view.adapter.ImageUploadAdapter;
 import com.tokopedia.contactus.orderquery.view.presenter.SubmitTicketContract;
@@ -41,7 +43,6 @@ import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.RequestPermissionUtil;
-import com.tokopedia.contactus.orderquery.di.DaggerOrderQueryComponent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -206,21 +207,24 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
     public void showMessage(String message) {
         Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
     }
+
     ProgressDialog progress;
+
     @Override
     public void showProgress(String message) {
-        if(progress == null) {
+        if (progress == null) {
             progress = new ProgressDialog(getContext());
         }
-        if(!progress.isShowing()) {
+        if (!progress.isShowing()) {
             progress.setMessage(message);
             progress.setIndeterminate(true);
             progress.show();
         }
     }
+
     @Override
     public void hideProgress() {
-        if(progress != null && progress.isShowing()) {
+        if (progress != null && progress.isShowing()) {
             progress.dismiss();
             progress = null;
         }
@@ -411,26 +415,30 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
     }
 
     @OnClick(R2.id.btn_tutup)
-    public void ontutupClick(){
+    public void ontutupClick() {
         toolTipLayout.setVisibility(View.GONE);
     }
+
     @Override
     public void showToolTip() {
         toolTipLayout.setVisibility(View.VISIBLE);
     }
 
     @OnClick(R2.id.btn_ok)
-    public void onOkClick(){
+    public void onOkClick() {
         submitSuccess.setVisibility(View.GONE);
+        Intent intent = new Intent(getActivity(), InboxTicketActivity.class);
+        getActivity().startActivity(new Intent(getActivity(), InboxTicketActivity.class));
         getActivity().finish();
     }
+
     @Override
     public void showSuccessDialog() {
         submitSuccess.setVisibility(View.VISIBLE);
     }
 
     public boolean onBackPressed() {
-        if(imageUploadAdapter.getItemCount()>0) {
+        if (imageUploadAdapter.getItemCount() > 0) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
             builder.setTitle(getString(R.string.title_dialog_wrong_scan));
             builder.setMessage("Pesan Anda akan hilang jika menutup halaman ini, Anda yakin?");
@@ -450,7 +458,7 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
                         }
                     }).create().show();
             return true;
-        }else {
+        } else {
             return false;
         }
     }
