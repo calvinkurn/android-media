@@ -105,7 +105,7 @@
                     tools:text="Gambir (GMR)"/>
 
                 <TextView
-                    android:id="@+id/origin_city_name"
+                    android:id="@+id/header_origin_city_name"
                     style="@style/TextView.Micro.BlackSecondary"
                     tools:text="Jakarta"/>
 
@@ -159,7 +159,7 @@
                     tools:text="Lempuyangan (LPN)"/>
 
                 <TextView
-                    android:id="@+id/destination_city_name"
+                    android:id="@+id/header_destination_city_name"
                     style="@style/TextView.Micro.BlackSecondary"
                     tools:text="Yogyakarta"/>
 

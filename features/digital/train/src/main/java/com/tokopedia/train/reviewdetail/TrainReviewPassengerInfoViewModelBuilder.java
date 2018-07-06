@@ -1,6 +1,7 @@
 package com.tokopedia.train.reviewdetail;
 
 public class TrainReviewPassengerInfoViewModelBuilder {
+
     private String name;
     private String noID;
     private String departureTripClass;
@@ -53,4 +54,5 @@ public class TrainReviewPassengerInfoViewModelBuilder {
     public TrainReviewPassengerInfoViewModel createTrainReviewPassengerInfoViewModel() {
         return new TrainReviewPassengerInfoViewModel(name, noID, departureTripClass, originStation, destinationStation, returnTripClass, departureSeat, returnSeat);
     }
+
 }

@@ -16,7 +16,6 @@ import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.di.utils.TrainComponentUtils;
 import com.tokopedia.train.common.util.TrainDateUtil;
 import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
-import com.tokopedia.train.scheduledetail.di.DaggerTrainScheduleDetailComponent;
 import com.tokopedia.train.scheduledetail.presentation.activity.TrainScheduleDetailActivity;
 import com.tokopedia.train.search.presentation.model.TrainScheduleBookingPassData;
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
@@ -54,13 +53,18 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        trainSoftbook = getArguments().getParcelable(ARGS_TRAIN_SOFTBOOK);
+        trainScheduleBookingPassData = getArguments().getParcelable(ARGS_TRAIN_SCHEDULE_BOOKING);
+
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         trainReviewDetailPresenter.attachView(this);
-
-        trainSoftbook = getArguments().getParcelable(ARGS_TRAIN_SOFTBOOK);
-        trainScheduleBookingPassData = getArguments().getParcelable(ARGS_TRAIN_SCHEDULE_BOOKING);
 
         trainReviewDetailPresenter.getPassengers(trainSoftbook);
         trainReviewDetailPresenter.getScheduleDetail(trainScheduleBookingPassData.getDepartureScheduleId(),
@@ -75,15 +79,12 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
         cardDepartureTrip = rootview.findViewById(R.id.train_departure_info);
         cardReturnTrip = rootview.findViewById(R.id.train_return_info);
 
-        cardDepartureTrip.setActionListener(new CardWithAction.ActionListener() {
-            @Override
-            public void actionClicked() {
-                Intent intent = TrainScheduleDetailActivity.createIntent(getActivity(),
-                        trainScheduleBookingPassData.getDepartureScheduleId(),
-                        trainScheduleBookingPassData.getAdultPassenger(),
-                        trainScheduleBookingPassData.getInfantPassenger());
-                startActivity(intent);
-            }
+        cardDepartureTrip.setActionListener(() -> {
+            Intent intent = TrainScheduleDetailActivity.createIntent(getActivity(),
+                    trainScheduleBookingPassData.getDepartureScheduleId(),
+                    trainScheduleBookingPassData.getAdultPassenger(),
+                    trainScheduleBookingPassData.getInfantPassenger());
+            startActivity(intent);
         });
 
         return rootview;
@@ -102,7 +103,8 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
 
     @Override
     protected TrainPassengerAdapterTypeFactory getAdapterTypeFactory() {
-        return new TrainPassengerAdapterTypeFactory("GMR", "BD");
+        return new TrainPassengerAdapterTypeFactory(trainScheduleBookingPassData.getOriginCity(),
+                trainScheduleBookingPassData.getDestinationCity());
     }
 
     @Override

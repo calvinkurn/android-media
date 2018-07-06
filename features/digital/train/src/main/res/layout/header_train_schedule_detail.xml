@@ -24,13 +24,13 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/departure_station_code"
+            android:id="@+id/header_origin_station_code"
             style="@style/TextView.TitleBig.Bold"
             android:gravity="center"
             tools:text="CGK" />
 
         <TextView
-            android:id="@+id/departure_station_name"
+            android:id="@+id/header_origin_city_name"
             style="@style/TextView.Micro.BlackSecondary"
             android:gravity="center"
             tools:text="Jakarta"
@@ -54,12 +54,12 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/arrival_station_code"
+            android:id="@+id/header_destination_station_code"
             style="@style/TextView.TitleBig.Bold"
             tools:text="DPS" />
 
         <TextView
-            android:id="@+id/arrival_station_name"
+            android:id="@+id/header_destination_city_name"
             style="@style/TextView.Micro.BlackSecondary"
             android:gravity="center"
             tools:text="Denpasar"

@@ -42,9 +42,9 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private AppBarLayout appBarLayout;
     private TextView originStationCode;
-    private TextView originStationName;
+    private TextView originCityName;
     private TextView destinationStationCode;
-    private TextView destinationStationName;
+    private TextView destinationCityName;
 
     private TrainScheduleDetailViewModel trainScheduleDetailViewModel;
 
@@ -87,10 +87,10 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
         collapsingToolbarLayout = findViewById(R.id.collapsing_toolbar);
         collapsingToolbarLayout.setTitle("");
         appBarLayout = findViewById(R.id.app_bar_layout);
-        originStationCode = findViewById(R.id.departure_station_code);
-        originStationName = findViewById(R.id.departure_station_name);
-        destinationStationCode = findViewById(R.id.arrival_station_code);
-        destinationStationName = findViewById(R.id.arrival_station_name);
+        originStationCode = findViewById(R.id.header_origin_station_code);
+        originCityName = findViewById(R.id.header_origin_city_name);
+        destinationStationCode = findViewById(R.id.header_destination_station_code);
+        destinationCityName = findViewById(R.id.header_destination_city_name);
 
         appBarLayout.addOnOffsetChangedListener(onAppbarOffsetChange());
         tabLayout.setupWithViewPager(viewPager);
@@ -133,9 +133,9 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
     public void showScheduleDetail(TrainScheduleDetailViewModel trainScheduleDetailViewModel) {
         this.trainScheduleDetailViewModel = trainScheduleDetailViewModel;
         originStationCode.setText(trainScheduleDetailViewModel.getOriginStationCode());
-        originStationName.setText(trainScheduleDetailViewModel.getOriginStationName());
+        originCityName.setText(trainScheduleDetailViewModel.getOriginCityName());
         destinationStationCode.setText(trainScheduleDetailViewModel.getDestinationStationCode());
-        destinationStationName.setText(trainScheduleDetailViewModel.getDestinationStationName());
+        destinationCityName.setText(trainScheduleDetailViewModel.getDestinationCityName());
 
         Fragment fragmentTrip = (Fragment) viewPager.getAdapter().instantiateItem(viewPager, 0);
         if (fragmentTrip instanceof TrainScheduleDetailFragment) {

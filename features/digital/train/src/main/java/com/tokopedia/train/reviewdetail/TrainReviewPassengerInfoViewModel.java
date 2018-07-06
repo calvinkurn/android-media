@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
  * Created by Rizky on 03/07/18.
  */
 public class TrainReviewPassengerInfoViewModel implements Visitable<TrainPassengerAdapterTypeFactory> {
+
     private String name;
     private String noID;
     private String departureTripClass;

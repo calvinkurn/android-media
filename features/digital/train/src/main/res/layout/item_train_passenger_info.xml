@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:padding="@dimen/dp_16"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <TextView
         android:layout_width="wrap_content"
@@ -30,6 +30,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/view_passenger_info"
         android:layout_alignLeft="@id/text_passenger_name"
         android:layout_alignStart="@id/text_passenger_name"
         android:layout_below="@id/text_passenger_name"
@@ -85,6 +86,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:id="@+id/layout_text_return_trip"
             android:layout_marginBottom="@dimen/dp_8"
             android:weightSum="2"
             android:orientation="horizontal">
@@ -92,6 +94,7 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:id="@+id/text_returnure_trip"
                 android:textColor="@color/black"
                 android:layout_weight="1"
                 tools:text="Kursi (LPN - GMR): "/>
@@ -106,5 +109,12 @@
         </LinearLayout>
 
     </LinearLayout>
+
+    <View
+        android:layout_below="@+id/view_passenger_info"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:background="@color/grey_300" />
 
 </RelativeLayout>
