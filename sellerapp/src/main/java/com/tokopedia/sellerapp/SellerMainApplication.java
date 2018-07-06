@@ -44,6 +44,8 @@ import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.utils.CacheApiWhiteList;
+import com.tokopedia.settingbank.banklist.data.SettingBankUrl;
+import com.tokopedia.settingbank.choosebank.data.BankListUrl;
 import com.tokopedia.shop.common.constant.ShopCommonUrl;
 import com.tokopedia.shop.common.constant.ShopUrl;
 
@@ -200,6 +202,9 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         TkpdBaseURL.HOME_DATA_BASE_URL = SellerAppBaseUrl.HOME_DATA_BASE_URL;
         CotpUrl.BASE_URL = SellerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
         SQLoginUrl.BASE_URL = SellerAppBaseUrl.BASE_DOMAIN;
+
+        SettingBankUrl.Companion.setBASE_URL(SellerAppBaseUrl.ACCOUNTS_DOMAIN);
+        BankListUrl.Companion.setBASE_URL(SellerAppBaseUrl.ACCOUNTS_DOMAIN);
 
     }
 

@@ -22,7 +22,7 @@ class DeleteBankAccountUseCase(val api: SettingBankApi,
 
     companion object {
 
-        private val PARAM_ACCOUNT_ID: String = "account_id"
+        private val PARAM_ACCOUNT_ID: String = "acc_id"
 
         private val PARAM_USER_ID: String = "user_id"
         private val PARAM_DEVICE_ID: String = "device_id"

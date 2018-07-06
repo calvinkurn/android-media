@@ -6,9 +6,7 @@ import com.tokopedia.settingbank.banklist.domain.pojo.BankAccountListPojo
 import com.tokopedia.settingbank.banklist.domain.pojo.DeleteBankAccountPojo
 import com.tokopedia.settingbank.banklist.domain.pojo.SetDefaultBankAccountPojo
 import retrofit2.Response
-import retrofit2.http.FieldMap
-import retrofit2.http.FormUrlEncoded
-import retrofit2.http.POST
+import retrofit2.http.*
 import rx.Observable
 
 /**
@@ -16,9 +14,8 @@ import rx.Observable
  */
 interface SettingBankApi {
 
-    @FormUrlEncoded
-    @POST(SettingBankUrl.PATH_GET_BANK_ACCOUNT)
-    fun getBankAccountList(@FieldMap params: HashMap<String, Any>):
+    @GET(SettingBankUrl.PATH_GET_BANK_ACCOUNT)
+    fun getBankAccountList(@QueryMap params: HashMap<String, Any>):
             Observable<Response<BankAccountListPojo>>
 
     @FormUrlEncoded
