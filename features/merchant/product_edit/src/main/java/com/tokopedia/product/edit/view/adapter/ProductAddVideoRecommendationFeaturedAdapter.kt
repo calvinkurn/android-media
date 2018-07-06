@@ -33,15 +33,15 @@ class ProductAddVideoRecommendationFeaturedAdapter(var videoRecommendationFeatur
         return videoRecommendationFeatured.size
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         lateinit var vh: RecyclerView.ViewHolder
 
         if(viewType == 1){
-            val itemLayoutView = LayoutInflater.from(parent!!.context)
+            val itemLayoutView = LayoutInflater.from(parent.context)
                     .inflate(R.layout.item_product_add_video_recommendation_featured, parent, false)
             vh = VideoRecommendationFeaturedViewHolder(itemLayoutView, videoFeaturedClickListener)
         } else {
-            val itemLayoutView = LayoutInflater.from(parent!!.context)
+            val itemLayoutView = LayoutInflater.from(parent.context)
                     .inflate(R.layout.item_shimmering_video_reccomendation, parent, false)
             vh = LoadingViewHolder(itemLayoutView)
         }

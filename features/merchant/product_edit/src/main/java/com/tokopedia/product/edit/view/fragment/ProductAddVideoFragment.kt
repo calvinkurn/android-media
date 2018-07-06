@@ -14,8 +14,8 @@ import android.widget.Button
 import java.util.ArrayList
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.common.network.util.NetworkClient
 import com.tokopedia.graphql.data.GraphqlClient
-import com.tokopedia.networklib.util.RestClient
 import com.tokopedia.product.edit.R
 import com.tokopedia.product.edit.view.activity.ProductAddVideoRecommendationActivity
 import com.tokopedia.product.edit.view.adapter.ProductAddVideoAdapterTypeFactory
@@ -31,7 +31,7 @@ import com.tokopedia.product.edit.view.viewmodel.*
 
 class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, ProductAddVideoAdapterTypeFactory>(), ProductAddVideoView, VideoChosenListener, SectionVideoRecommendationListener {
 
-    override val contextView: Context get() = activity
+    override val contextView: Context get() = activity!!
 
     var videoIDs: ArrayList<String> = ArrayList()
     lateinit var productName: String
@@ -45,15 +45,15 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
-        GraphqlClient.init(activity.applicationContext)
-        RestClient.init(activity.applicationContext)
+        GraphqlClient.init(activity!!.applicationContext)
+        NetworkClient.init(activity!!.applicationContext)
 
         productAddVideoPresenter = ProductAddVideoPresenter()
         productAddVideoPresenter.attachView(this)
 
-        if(activity.intent != null){
-            videoIDs = activity.intent.getStringArrayListExtra(EXTRA_VIDEOS_LINKS)
-            productName = activity.intent.getStringExtra(EXTRA_KEYWORD)
+        if(activity!!.intent != null){
+            videoIDs = activity!!.intent.getStringArrayListExtra(EXTRA_VIDEOS_LINKS)
+            productName = activity!!.intent.getStringExtra(EXTRA_KEYWORD)
             productAddVideoPresenter.setProductName(productName)
         }
         (activity as AppCompatActivity).supportActionBar?.subtitle = getString(R.string.product_from_to_video, videoIDs.size, MAX_VIDEO)
@@ -219,7 +219,7 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
     }
 
     override fun onVideoRecommendationFeaturedClicked(videoRecommendationViewModel : VideoRecommendationViewModel) {
-        YoutubeUtil.playYoutubeVideo(context, videoRecommendationViewModel.videoID!!)
+        YoutubeUtil.playYoutubeVideo(context!!, videoRecommendationViewModel.videoID!!)
 
     }
 
@@ -240,7 +240,7 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
 
     override fun onVideoChosenClicked(position: Int) {
         val videoID = (adapter.data[position] as VideoViewModel).videoID
-        YoutubeUtil.playYoutubeVideo(context, videoID!!)
+        YoutubeUtil.playYoutubeVideo(context!!, videoID!!)
     }
 
     override fun onVideoChosenDeleteClicked(position : Int) {
@@ -265,7 +265,7 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
     }
 
     private fun showDialogAddVideoChosenFromFeatured(videoViewModel: VideoViewModel) {
-        val builder = AlertDialog.Builder(activity)
+        val builder = AlertDialog.Builder(activity!!)
         builder.setTitle(R.string.product_add_title_dialog_add_video)
         builder.setMessage(R.string.product_add_description_dialog_add_video)
         builder.setCancelable(true)
@@ -281,7 +281,7 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
     }
 
     private fun showDialogDeleteVideoChosen(videoViewModel: VideoViewModel) {
-        val builder = AlertDialog.Builder(activity)
+        val builder = AlertDialog.Builder(activity!!)
         builder.setTitle(R.string.product_add_title_dialog_delete_video)
         builder.setMessage(R.string.product_add_description_dialog_delete_video)
         builder.setCancelable(true)
