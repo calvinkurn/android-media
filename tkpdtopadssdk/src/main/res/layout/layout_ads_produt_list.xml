@@ -29,8 +29,8 @@
 
             <com.tokopedia.topads.sdk.view.SquareImageView
                 android:id="@id/product_image"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="@dimen/product_image_size"
+                android:layout_height="@dimen/product_image_size"
                 android:adjustViewBounds="true"
                 android:gravity="center"
                 app:srcCompat="@drawable/loading_page" />
@@ -83,6 +83,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
+                android:gravity="center_vertical"
                 android:orientation="horizontal">
 
                 <LinearLayout
@@ -107,6 +108,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
+                android:layout_marginBottom="@dimen/dp_3"
                 android:orientation="horizontal">
 
                 <ImageView
