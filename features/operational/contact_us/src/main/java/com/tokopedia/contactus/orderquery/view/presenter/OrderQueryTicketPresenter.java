@@ -36,7 +36,6 @@ public class OrderQueryTicketPresenter extends BaseDaggerPresenter<OrderQueryTic
     private RequestParams createRequestParam(BuyerPurchaseList purchaseList) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putString("order", String.valueOf(buyerPurchaseList.getDetail().getId()));
-        requestParams.putString("inv", String.valueOf(buyerPurchaseList.getDetail().getCode()));
         requestParams.putString("order_type", String.valueOf(buyerPurchaseList.getDetail().getTypeId()));
         requestParams.putString("product_type_id", String.valueOf(buyerPurchaseList.getDetail().getProductTypeId()));
 
