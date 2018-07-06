@@ -10,7 +10,6 @@ import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import java.util.ArrayList
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -28,6 +27,7 @@ import com.tokopedia.product.edit.domain.model.youtube.YoutubeVideoModel
 import com.tokopedia.product.edit.util.YoutubeUtil
 import com.tokopedia.product.edit.view.presenter.ProductAddVideoPresenter
 import com.tokopedia.product.edit.view.viewmodel.*
+import kotlinx.android.synthetic.main.fragment_product_add_video.*
 
 class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, ProductAddVideoAdapterTypeFactory>(), ProductAddVideoView, VideoChosenListener, SectionVideoRecommendationListener {
 
@@ -39,7 +39,6 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
     private lateinit var productAddVideoPresenter : ProductAddVideoPresenter
     private var listener : Listener? = null
     private val mapper = VideoMapper()
-    private lateinit var btnTambah: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -88,15 +87,15 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        val view: View = inflater.inflate(R.layout.fragment_product_add_video, container, false)
+        return inflater.inflate(R.layout.fragment_product_add_video, container, false)
+    }
 
-        btnTambah = view.findViewById(R.id.button_tambah)
+    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         btnTambah.setOnClickListener({
             showDialogAddVideoChosenFromUrl()
         })
-
-        return view
     }
 
     override fun getAdapterTypeFactory(): ProductAddVideoAdapterTypeFactory {

@@ -8,21 +8,18 @@ import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.product.edit.R
 import com.tokopedia.product.edit.view.adapter.ProductAddVideoRecommendationAdapterTypeFactory
 import com.tokopedia.product.edit.view.listener.ProductAddVideoRecommendationView
-import com.tokopedia.product.edit.domain.mapper.VideoRecommendationMapper
-import com.tokopedia.product.edit.domain.model.youtube.YoutubeVideoModel
 import com.tokopedia.product.edit.view.fragment.ProductAddVideoFragment.Companion.MAX_VIDEO
 import com.tokopedia.product.edit.view.listener.VideoRecommendationListener
-import com.tokopedia.product.edit.view.presenter.ProductAddVideoRecommendationPresenter
 import com.tokopedia.product.edit.view.viewmodel.ProductAddVideoRecommendationBaseViewModel
 import com.tokopedia.product.edit.view.viewmodel.TitleVideoRecommendationViewModel
 import com.tokopedia.product.edit.view.viewmodel.VideoRecommendationViewModel
+import kotlinx.android.synthetic.main.fragment_product_add_video_recommendation.*
 import java.util.ArrayList
 
 class ProductAddVideoRecommendationFragment : BaseListFragment<ProductAddVideoRecommendationBaseViewModel, ProductAddVideoRecommendationAdapterTypeFactory>(), ProductAddVideoRecommendationView, VideoRecommendationListener {
@@ -34,14 +31,10 @@ class ProductAddVideoRecommendationFragment : BaseListFragment<ProductAddVideoRe
     private var newVideoIDsRecommendation: ArrayList<String> = ArrayList()
     private var remainSlot: Int = 0
 
-    private lateinit var productAddVideoRecommendationPresenter: ProductAddVideoRecommendationPresenter
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
         GraphqlClient.init(activity.applicationContext)
-        productAddVideoRecommendationPresenter = ProductAddVideoRecommendationPresenter()
-        productAddVideoRecommendationPresenter.attachView(this)
 
         (activity as AppCompatActivity).supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_close_default);
         if(activity.intent != null){
@@ -52,10 +45,11 @@ class ProductAddVideoRecommendationFragment : BaseListFragment<ProductAddVideoRe
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view: View = inflater.inflate(R.layout.fragment_product_add_video_recommendation, container, false)
+        return inflater.inflate(R.layout.fragment_product_add_video_recommendation, container, false)
+    }
 
-        val btnSimpan: Button = view.findViewById(R.id.button_simpan)
-
+    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         btnSimpan.setOnClickListener({
             if(remainSlot == 0 && newVideoIDsRecommendation.size > 0) {
                 showSnackbarRed(getString(R.string.product_add_message_slot_full_video_chosen))
@@ -71,8 +65,6 @@ class ProductAddVideoRecommendationFragment : BaseListFragment<ProductAddVideoRe
             }
 
         })
-
-        return view
     }
 
     override fun getAdapterTypeFactory(): ProductAddVideoRecommendationAdapterTypeFactory {

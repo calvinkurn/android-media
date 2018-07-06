@@ -39,29 +39,29 @@ class ProductAddVideoDialogFragment : BaseTextPickerDialogFragment() {
     }
 
     fun validateUrl(s: CharSequence) {
-        try {
-            youtubeUtil.setYoutubeUrl(s.toString())
-        } catch (iae: IllegalArgumentException) {
-            textInputLayout.isErrorEnabled = true
-            textInputLayout.error = iae.message
-
-            isErrorReturn = true
+        if (s.isEmpty()) {
+            setErrorTextInputLayout(getString(R.string.product_error_no_video_url_name))
             return
         }
 
-        try {
-            videoID = youtubeUtil.saveVideoID()
-        } catch (iae: IllegalArgumentException) {
-            textInputLayout.isErrorEnabled = true
-            textInputLayout.error = iae.message
-
-            isErrorReturn = true
+        if(youtubeUtil.isValidYoutubeUrl(s.toString())){
+            videoID = youtubeUtil.getVideoID()
+        } else {
+            setErrorTextInputLayout(getString(R.string.product_invalid_video_url))
             return
         }
 
         textInputLayout.isErrorEnabled = false
         textInputLayout.error = null
         isErrorReturn = false
+    }
+
+
+    private fun setErrorTextInputLayout(text: String){
+        textInputLayout.isErrorEnabled = true
+        textInputLayout.error = text
+
+        isErrorReturn = true
     }
 
     override fun onTextSubmitted(text: String) {

@@ -19,7 +19,7 @@
         android:showDividers="beginning"
         android:background="@color/white">
         <Button
-            android:id="@+id/button_tambah"
+            android:id="@+id/btnTambah"
             style="@style/Button.Submit.Green"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"

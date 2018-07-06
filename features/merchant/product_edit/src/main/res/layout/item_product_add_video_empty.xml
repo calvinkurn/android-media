@@ -14,8 +14,8 @@
 
     <ImageView
         android:id="@+id/no_result_image"
-        android:layout_width="175dp"
-        android:layout_height="120dp"
+        android:layout_width="@dimen/image_empty_video_width"
+        android:layout_height="@dimen/image_empty_video_height"
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="@dimen/dp_20"
         android:layout_marginTop="@dimen/dp_20"
