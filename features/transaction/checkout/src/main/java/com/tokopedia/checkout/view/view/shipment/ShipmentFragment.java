@@ -338,32 +338,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void renderErrorDataHasChangedCheckShipmentPrepareCheckout(
             CartShipmentAddressFormData cartShipmentAddressFormData, boolean needToRefreshItemList
     ) {
-        List<ShipmentCartItemModel> newShipmentCartItemModelList = shipmentDataConverter.getShipmentItems(
-                cartShipmentAddressFormData
-        );
-        List<ShipmentCartItemModel> oldShipmentCartItemModelList = shipmentPresenter.getShipmentCartItemModelList();
-        try {
-            for (int i = 0; i < newShipmentCartItemModelList.size(); i++) {
-                if (newShipmentCartItemModelList.get(i).isError()) {
-                    oldShipmentCartItemModelList.get(i).setError(true);
-                    oldShipmentCartItemModelList.get(i).setErrorMessage(newShipmentCartItemModelList.get(i).getErrorMessage());
-                }
-                for (int j = 0; j < newShipmentCartItemModelList.get(i).getCartItemModels().size(); j++) {
-                    if (newShipmentCartItemModelList.get(i).isAllItemError()) {
-                        oldShipmentCartItemModelList.get(i).getCartItemModels().get(j).setError(true);
-                    } else {
-                        if (newShipmentCartItemModelList.get(i).getCartItemModels().get(j).isError()) {
-                            oldShipmentCartItemModelList.get(i).getCartItemModels().get(j).setError(true);
-                            oldShipmentCartItemModelList.get(i).getCartItemModels().get(j).setErrorMessage(
-                                    newShipmentCartItemModelList.get(i).getCartItemModels().get(j).getErrorMessage());
-                        }
-                    }
-                }
-            }
-        } catch (IndexOutOfBoundsException e) {
-            e.printStackTrace();
-        }
-
         shipmentAdapter.disableShipmentCheckoutButtonModel();
         if (needToRefreshItemList) {
             showToastError(getActivity().getString(R.string.error_message_checkout_failed));
@@ -371,79 +345,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
     }
 
-    private boolean isSameCartObject(ShipmentCartItemModel oldShipmentCartItemModel,
-                                     ShipmentCartItemModel newShipmentCartItemModel) {
-
-        if (oldShipmentCartItemModel.getRecipientAddressModel() != null && newShipmentCartItemModel.getRecipientAddressModel() != null) {
-            if (!oldShipmentCartItemModel.getRecipientAddressModel().getId().equals(newShipmentCartItemModel.getRecipientAddressModel().getId())) {
-                return false;
-            }
-        }
-        return oldShipmentCartItemModel.getShopId() == newShipmentCartItemModel.getShopId() &&
-                oldShipmentCartItemModel.getCartItemModels().size() == newShipmentCartItemModel.getCartItemModels().size() &&
-                oldShipmentCartItemModel.getCartItemModels().get(0).getProductId() == newShipmentCartItemModel.getCartItemModels().get(0).getProductId();
-    }
-
     @Override
-    public void renderErrorDataHasChangedAfterCheckout(CartShipmentAddressFormData cartShipmentAddressFormData) {
-        List<ShipmentCartItemModel> newShipmentCartItemModelList = shipmentDataConverter.getShipmentItems(
-                cartShipmentAddressFormData
-        );
-        List<ShipmentCartItemModel> oldShipmentCartItemModelList = shipmentPresenter.getShipmentCartItemModelList();
-        for (ShipmentCartItemModel oldShipmentCartItemModel : oldShipmentCartItemModelList) {
-            for (ShipmentCartItemModel newShipmentCartItemModel : newShipmentCartItemModelList) {
-                if (isSameCartObject(oldShipmentCartItemModel, newShipmentCartItemModel)) {
-                    oldShipmentCartItemModel.setError(newShipmentCartItemModel.isError());
-                    oldShipmentCartItemModel.setAllItemError(newShipmentCartItemModel.isAllItemError());
-                    oldShipmentCartItemModel.setErrorMessage(newShipmentCartItemModel.getErrorMessage());
-                    for (CartItemModel newCartItemModel : newShipmentCartItemModel.getCartItemModels()) {
-                        for (CartItemModel oldCartItemModel : oldShipmentCartItemModel.getCartItemModels()) {
-                            if (newCartItemModel.getProductId() == oldCartItemModel.getProductId()) {
-                                oldCartItemModel.setError(newCartItemModel.isError());
-                                oldCartItemModel.setErrorMessage(newCartItemModel.getErrorMessage());
-                                if (oldShipmentCartItemModel.isAllItemError()) {
-                                    oldCartItemModel.setError(oldShipmentCartItemModel.isError());
-                                }
-                            }
-                        }
-                    }
-                    boolean breakFromNewShipmentCartItemModelLoop = false;
-                    for (ShopShipment shopShipment : newShipmentCartItemModel.getShipmentCartData().getShopShipments()) {
-                        if (oldShipmentCartItemModel.getSelectedShipmentDetailData() != null &&
-                                oldShipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperId() == shopShipment.getShipId()) {
-                            boolean breakFromShopShipmentLoop = false;
-                            for (ShipProd shipProd : shopShipment.getShipProds()) {
-                                if (oldShipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperProductId() == shipProd.getShipProdId()) {
-                                    newShipmentCartItemModel.setSelectedShipmentDetailData(oldShipmentCartItemModel.getSelectedShipmentDetailData());
-                                    newShipmentCartItemModel.setStateDropshipperHasError(oldShipmentCartItemModel.isStateDropshipperHasError());
-                                    newShipmentCartItemModel.setStateDropshipperDetailExpanded(oldShipmentCartItemModel.isStateDropshipperDetailExpanded());
-                                    breakFromShopShipmentLoop = true;
-                                    break;
-                                }
-                            }
-                            if (breakFromShopShipmentLoop) {
-                                breakFromNewShipmentCartItemModelLoop = true;
-                                break;
-                            }
-                        }
-                    }
-                    if (breakFromNewShipmentCartItemModelLoop) {
-                        break;
-                    }
-                }
-            }
-        }
-
-        for (ShipmentCartItemModel oldShipmentCartItemModel : oldShipmentCartItemModelList) {
-            for (ShipmentCartItemModel newShipmentCartItemModel : newShipmentCartItemModelList) {
-                if (isSameCartObject(oldShipmentCartItemModel, newShipmentCartItemModel) && newShipmentCartItemModel.getSelectedShipmentDetailData() == null) {
-                    oldShipmentCartItemModel.setSelectedShipmentDetailData(null);
-                    oldShipmentCartItemModel.setShipmentCartData(newShipmentCartItemModel.getShipmentCartData());
-                }
-            }
-        }
+    public void renderErrorDataHasChangedAfterCheckout(List<ShipmentCartItemModel> oldShipmentCartItemModelList) {
         showToastError(getActivity().getString(R.string.error_message_checkout_failed));
-
         initRecyclerViewData(shipmentPresenter.getPromoCodeAppliedData(),
                 shipmentPresenter.getCartPromoSuggestion(),
                 shipmentPresenter.getRecipientAddressModel(),
@@ -593,6 +497,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             (List<ShipmentCartItemModel> shipmentCartItemModelList) {
         ShipmentAdapter.RequestData requestData = shipmentAdapter.getRequestData(null, shipmentCartItemModelList);
         return requestData.getCheckoutRequestData();
+    }
+
+    @Override
+    public ShipmentDataConverter getShipmentDataConverter() {
+        return shipmentDataConverter;
     }
 
     private void updateAppliedPromo(CartItemPromoHolderData cartPromo) {
