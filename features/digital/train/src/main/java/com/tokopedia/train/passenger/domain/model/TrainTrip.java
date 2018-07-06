@@ -1,8 +1,11 @@
 package com.tokopedia.train.passenger.domain.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.List;
 
-public class TrainTrip {
+public class TrainTrip implements Parcelable {
     private int errCode;
     private String org;
     private String des;
@@ -30,6 +33,51 @@ public class TrainTrip {
     private int totalPrice;
     private String displayTotalPrice;
     private List<TrainPaxPassenger> paxPassengers;
+
+    protected TrainTrip(Parcel in) {
+        errCode = in.readInt();
+        org = in.readString();
+        des = in.readString();
+        departureTimestamp = in.readString();
+        arrivalTimestamp = in.readString();
+        trainNo = in.readString();
+        bookCode = in.readString();
+        numCode = in.readString();
+        normalSales = in.readString();
+        displayNormalSales = in.readString();
+        extraFee = in.readInt();
+        displayExtraFee = in.readString();
+        bookBalance = in.readInt();
+        displayBookBalance = in.readString();
+        discount = in.readInt();
+        displayDiscount = in.readString();
+        adultPrice = in.readInt();
+        displayAdultPrice = in.readString();
+        infantPrice = in.readInt();
+        displayInfantPrice = in.readString();
+        totalPriceAdult = in.readInt();
+        displayTotalPriceAdult = in.readString();
+        totalPriceInfant = in.readInt();
+        displayTotalPriceInfant = in.readString();
+        totalPrice = in.readInt();
+        displayTotalPrice = in.readString();
+        paxPassengers = in.createTypedArrayList(TrainPaxPassenger.CREATOR);
+    }
+
+    public static final Creator<TrainTrip> CREATOR = new Creator<TrainTrip>() {
+        @Override
+        public TrainTrip createFromParcel(Parcel in) {
+            return new TrainTrip(in);
+        }
+
+        @Override
+        public TrainTrip[] newArray(int size) {
+            return new TrainTrip[size];
+        }
+    };
+
+    public TrainTrip() {
+    }
 
     public int getErrCode() {
         return errCode;
@@ -137,5 +185,149 @@ public class TrainTrip {
 
     public String getDisplayTotalPrice() {
         return displayTotalPrice;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(errCode);
+        parcel.writeString(org);
+        parcel.writeString(des);
+        parcel.writeString(departureTimestamp);
+        parcel.writeString(arrivalTimestamp);
+        parcel.writeString(trainNo);
+        parcel.writeString(bookCode);
+        parcel.writeString(numCode);
+        parcel.writeString(normalSales);
+        parcel.writeString(displayNormalSales);
+        parcel.writeInt(extraFee);
+        parcel.writeString(displayExtraFee);
+        parcel.writeInt(bookBalance);
+        parcel.writeString(displayBookBalance);
+        parcel.writeInt(discount);
+        parcel.writeString(displayDiscount);
+        parcel.writeInt(adultPrice);
+        parcel.writeString(displayAdultPrice);
+        parcel.writeInt(infantPrice);
+        parcel.writeString(displayInfantPrice);
+        parcel.writeInt(totalPriceAdult);
+        parcel.writeString(displayTotalPriceAdult);
+        parcel.writeInt(totalPriceInfant);
+        parcel.writeString(displayTotalPriceInfant);
+        parcel.writeInt(totalPrice);
+        parcel.writeString(displayTotalPrice);
+        parcel.writeTypedList(paxPassengers);
+    }
+
+    public void setErrCode(int errCode) {
+        this.errCode = errCode;
+    }
+
+    public void setOrg(String org) {
+        this.org = org;
+    }
+
+    public void setDes(String des) {
+        this.des = des;
+    }
+
+    public void setDepartureTimestamp(String departureTimestamp) {
+        this.departureTimestamp = departureTimestamp;
+    }
+
+    public void setArrivalTimestamp(String arrivalTimestamp) {
+        this.arrivalTimestamp = arrivalTimestamp;
+    }
+
+    public void setTrainNo(String trainNo) {
+        this.trainNo = trainNo;
+    }
+
+    public void setBookCode(String bookCode) {
+        this.bookCode = bookCode;
+    }
+
+    public void setNumCode(String numCode) {
+        this.numCode = numCode;
+    }
+
+    public void setNormalSales(String normalSales) {
+        this.normalSales = normalSales;
+    }
+
+    public void setDisplayNormalSales(String displayNormalSales) {
+        this.displayNormalSales = displayNormalSales;
+    }
+
+    public void setExtraFee(int extraFee) {
+        this.extraFee = extraFee;
+    }
+
+    public void setDisplayExtraFee(String displayExtraFee) {
+        this.displayExtraFee = displayExtraFee;
+    }
+
+    public void setBookBalance(int bookBalance) {
+        this.bookBalance = bookBalance;
+    }
+
+    public void setDisplayBookBalance(String displayBookBalance) {
+        this.displayBookBalance = displayBookBalance;
+    }
+
+    public void setDiscount(int discount) {
+        this.discount = discount;
+    }
+
+    public void setDisplayDiscount(String displayDiscount) {
+        this.displayDiscount = displayDiscount;
+    }
+
+    public void setAdultPrice(int adultPrice) {
+        this.adultPrice = adultPrice;
+    }
+
+    public void setDisplayAdultPrice(String displayAdultPrice) {
+        this.displayAdultPrice = displayAdultPrice;
+    }
+
+    public void setInfantPrice(int infantPrice) {
+        this.infantPrice = infantPrice;
+    }
+
+    public void setDisplayInfantPrice(String displayInfantPrice) {
+        this.displayInfantPrice = displayInfantPrice;
+    }
+
+    public void setTotalPriceAdult(int totalPriceAdult) {
+        this.totalPriceAdult = totalPriceAdult;
+    }
+
+    public void setDisplayTotalPriceAdult(String displayTotalPriceAdult) {
+        this.displayTotalPriceAdult = displayTotalPriceAdult;
+    }
+
+    public void setTotalPriceInfant(int totalPriceInfant) {
+        this.totalPriceInfant = totalPriceInfant;
+    }
+
+    public void setDisplayTotalPriceInfant(String displayTotalPriceInfant) {
+        this.displayTotalPriceInfant = displayTotalPriceInfant;
+    }
+
+    public void setTotalPrice(int totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
+    public void setDisplayTotalPrice(String displayTotalPrice) {
+        this.displayTotalPrice = displayTotalPrice;
+    }
+
+    public void setPaxPassengers(List<TrainPaxPassenger> paxPassengers) {
+        this.paxPassengers = paxPassengers;
     }
 }

@@ -20,6 +20,7 @@ public class TrainSeatAdapter extends RecyclerView.Adapter<TrainSeatAdapter.View
     private List<TrainSeatViewModel> seatMaps;
     private List<TrainSeatViewModel> selectedSeat;
     private ActionListener listener;
+    private int maxColumn;
 
     public interface ActionListener {
         List<TrainSeatPassengerViewModel> getPassengers();
@@ -27,7 +28,8 @@ public class TrainSeatAdapter extends RecyclerView.Adapter<TrainSeatAdapter.View
         void seatClicked(TrainSeatViewModel viewModel, int top, int left, int width, int height);
     }
 
-    public TrainSeatAdapter() {
+    public TrainSeatAdapter(int maxColumn) {
+        this.maxColumn = maxColumn;
         seatMaps = new ArrayList<>();
         selectedSeat = new ArrayList<>();
     }
@@ -40,7 +42,7 @@ public class TrainSeatAdapter extends RecyclerView.Adapter<TrainSeatAdapter.View
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.bind(seatMaps.get(position));
+        holder.bind(seatMaps.get(position), position);
     }
 
 
@@ -63,17 +65,32 @@ public class TrainSeatAdapter extends RecyclerView.Adapter<TrainSeatAdapter.View
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
+        private LinearLayout.LayoutParams normalLayoutParams;
+        private LinearLayout.LayoutParams withDividerLayoutParams;
         private LinearLayout container;
         private AppCompatTextView labelTextView;
         private TrainSeatViewModel item;
 
         public ViewHolder(View itemView) {
             super(itemView);
+            int dp40 = itemView.getResources().getDimensionPixelOffset(R.dimen.dp_40);
+            normalLayoutParams = new LinearLayout.LayoutParams(dp40, dp40);
+            int dp4 = itemView.getResources().getDimensionPixelOffset(R.dimen.dp_4);
+            normalLayoutParams.setMargins(dp4, dp4, dp4, dp4);
+            withDividerLayoutParams = new LinearLayout.LayoutParams(dp40, dp40);
+            int dp10 = itemView.getResources().getDimensionPixelOffset(R.dimen.dp_30);
+            withDividerLayoutParams.setMargins(dp4, dp4, dp4, dp4);
+
             container = itemView.findViewById(R.id.container);
             labelTextView = itemView.findViewById(R.id.tv_label);
         }
 
-        public void bind(TrainSeatViewModel viewModel) {
+        public void bind(TrainSeatViewModel viewModel, int position) {
+            if ((position + 1) % maxColumn == 2) {
+                container.setLayoutParams(withDividerLayoutParams);
+            } else {
+                container.setLayoutParams(normalLayoutParams);
+            }
             item = viewModel;
             int index = TrainSeatAdapter.this.selectedSeat.indexOf(viewModel);
             if (index != -1) {

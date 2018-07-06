@@ -1,14 +1,41 @@
 package com.tokopedia.train.passenger.domain.model;
 
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.util.ArrayList;
 import java.util.List;
 
-public class TrainSoftbook {
+public class TrainSoftbook implements Parcelable {
     private String reservationId;
     private String tokpedBookCode;
     private String expiryTimestamp;
     private List<TrainTrip> departureTrips;
     private List<TrainTrip> returnTrips;
+
+    protected TrainSoftbook(Parcel in) {
+        reservationId = in.readString();
+        tokpedBookCode = in.readString();
+        expiryTimestamp = in.readString();
+        departureTrips = in.createTypedArrayList(TrainTrip.CREATOR);
+        returnTrips = in.createTypedArrayList(TrainTrip.CREATOR);
+    }
+
+    public static final Creator<TrainSoftbook> CREATOR = new Creator<TrainSoftbook>() {
+        @Override
+        public TrainSoftbook createFromParcel(Parcel in) {
+            return new TrainSoftbook(in);
+        }
+
+        @Override
+        public TrainSoftbook[] newArray(int size) {
+            return new TrainSoftbook[size];
+        }
+    };
+
+    public TrainSoftbook() {
+    }
 
     public String getReservationId() {
         return reservationId;
@@ -28,5 +55,115 @@ public class TrainSoftbook {
 
     public List<TrainTrip> getReturnTrips() {
         return returnTrips;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(reservationId);
+        parcel.writeString(tokpedBookCode);
+        parcel.writeString(expiryTimestamp);
+        parcel.writeTypedList(departureTrips);
+        parcel.writeTypedList(returnTrips);
+    }
+
+
+    public void setReservationId(String reservationId) {
+        this.reservationId = reservationId;
+    }
+
+    public void setTokpedBookCode(String tokpedBookCode) {
+        this.tokpedBookCode = tokpedBookCode;
+    }
+
+    public void setExpiryTimestamp(String expiryTimestamp) {
+        this.expiryTimestamp = expiryTimestamp;
+    }
+
+    public void setDepartureTrips(List<TrainTrip> departureTrips) {
+        this.departureTrips = departureTrips;
+    }
+
+    public void setReturnTrips(List<TrainTrip> returnTrips) {
+        this.returnTrips = returnTrips;
+    }
+
+    public static TrainSoftbook dummy() {
+        TrainSoftbook softbook = new TrainSoftbook();
+        softbook.setReservationId("12345");
+        softbook.setTokpedBookCode("TKP12345");
+        softbook.setExpiryTimestamp("2019-02-20T17:35:00Z");
+        List<TrainTrip> trainTrips = new ArrayList<>();
+        TrainTrip trainTrip = new TrainTrip();
+        trainTrip.setAdultPrice(100000);
+        trainTrip.setDisplayAdultPrice("Rp.100000");
+        trainTrip.setTotalPriceAdult(100000);
+        trainTrip.setDisplayTotalPriceAdult("Rp.100000");
+        trainTrip.setBookBalance(1);
+        trainTrip.setBookCode("QWERTY");
+        trainTrip.setBookBalance(100000);
+        trainTrip.setDes("GMR");
+        trainTrip.setOrg("BD");
+        trainTrip.setDiscount(1000);
+        trainTrip.setExtraFee(1000);
+        trainTrip.setNormalSales("100000");
+        trainTrip.setDisplayNormalSales("Rp.1000000");
+        trainTrip.setTrainNo("123");
+        trainTrip.setArrivalTimestamp("2019-02-20T17:35:00Z");
+        trainTrip.setDepartureTimestamp("2019-02-20T17:35:00Z");
+        List<TrainPaxPassenger> trainPaxPassengers = new ArrayList<>();
+        TrainPaxPassenger trainPaxPassenger1 = new TrainPaxPassenger();
+        trainPaxPassenger1.setIdNumber("1");
+        trainPaxPassenger1.setName("John 1");
+        trainPaxPassenger1.setPaxType(1);
+        TrainSeat seat1 = new TrainSeat();
+        seat1.setColumn("A");
+        seat1.setRow("10");
+        seat1.setWagonNo("EKO_AC-1");
+        seat1.setKlass("C");
+        trainPaxPassenger1.setSeat(seat1);
+        trainPaxPassengers.add(trainPaxPassenger1);
+        TrainPaxPassenger trainPaxPassenger2 = new TrainPaxPassenger();
+        trainPaxPassenger2.setIdNumber("ID2");
+        trainPaxPassenger2.setName("John 2");
+        trainPaxPassenger2.setPaxType(1);
+        TrainSeat seat2 = new TrainSeat();
+        seat2.setColumn("B");
+        seat2.setRow("11");
+        seat2.setWagonNo("EKO_AC-1");
+        seat2.setKlass("C");
+        trainPaxPassenger2.setSeat(seat2);
+        trainPaxPassengers.add(trainPaxPassenger2);
+        TrainPaxPassenger trainPaxPassenger3 = new TrainPaxPassenger();
+        trainPaxPassenger3.setIdNumber("ID3");
+        trainPaxPassenger3.setName("John 3");
+        trainPaxPassenger3.setPaxType(1);
+        TrainSeat seat3 = new TrainSeat();
+        seat3.setColumn("C");
+        seat3.setRow("11");
+        seat3.setWagonNo("EKO_AC-1");
+        seat3.setKlass("C");
+        trainPaxPassenger3.setSeat(seat3);
+        trainPaxPassengers.add(trainPaxPassenger3);
+        TrainPaxPassenger trainPaxPassenger4 = new TrainPaxPassenger();
+        trainPaxPassenger4.setIdNumber("ID4");
+        trainPaxPassenger4.setName("John 4");
+        trainPaxPassenger4.setPaxType(1);
+        TrainSeat seat4 = new TrainSeat();
+        seat4.setColumn("D");
+        seat4.setRow("11");
+        seat4.setWagonNo("EKO_AC-1");
+        seat4.setKlass("C");
+        trainPaxPassenger4.setSeat(seat4);
+        trainPaxPassengers.add(trainPaxPassenger4);
+        trainTrip.setPaxPassengers(trainPaxPassengers);
+        trainTrips.add(trainTrip);
+        softbook.setDepartureTrips(trainTrips);
+        softbook.setReturnTrips(trainTrips);
+        return softbook;
     }
 }

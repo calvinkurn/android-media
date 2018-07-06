@@ -109,12 +109,23 @@ public class TrainWagonFragment extends BaseDaggerFragment implements TrainSeatA
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        adapter = new TrainSeatAdapter();
+        adapter = new TrainSeatAdapter(trainWagonViewModel.getMaxColumn());
         adapter.setSeats(trainWagonViewModel.getSeats());
         adapter.setSelecteds(transformToSelectedSeat(interaction.getPassengers()));
         adapter.setListener(this);
         seatsRecyclerView.setNestedScrollingEnabled(false);
-        seatsRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), trainWagonViewModel.getMaxColumn()));
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), trainWagonViewModel.getMaxColumn() + 1);
+        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                if ((position + 1) % trainWagonViewModel.getMaxColumn() == 2)
+                    return 2;
+                else
+                    return 1;
+            }
+        });
+        seatsRecyclerView.setLayoutManager(gridLayoutManager);
+
 //        seatsRecyclerView.addItemDecoration(new TrainSeatItemDivider(columnCount));
         seatsRecyclerView.setAdapter(adapter);
     }
