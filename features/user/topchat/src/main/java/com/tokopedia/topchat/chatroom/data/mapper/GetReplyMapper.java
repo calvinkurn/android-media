@@ -3,12 +3,7 @@ package com.tokopedia.topchat.chatroom.data.mapper;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.ErrorMessageException;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chatroom.domain.pojo.reply.Attachment;
 import com.tokopedia.topchat.chatroom.domain.pojo.reply.AttachmentInvoice;
 import com.tokopedia.topchat.chatroom.domain.pojo.reply.AttachmentInvoiceAttributes;
@@ -35,9 +30,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import retrofit2.Response;
-import rx.functions.Func1;
-
 import static com.tokopedia.topchat.chatroom.data.mapper.WebSocketMapper.TYPE_CHAT_RATING;
 
 /**
@@ -47,6 +39,9 @@ import static com.tokopedia.topchat.chatroom.data.mapper.WebSocketMapper.TYPE_CH
 public class GetReplyMapper extends BaseChatAPICallMapper<ReplyData,ChatRoomViewModel>{
 
     private static final String SHOP_ADMIN_ROLE = "Shop Admin";
+    private static final String SHOP_OWNER_ROLE = "Shop Owner";
+    private static final String USER_ROLE = "User";
+    private static final String TOKOPEDIA_ADMIN_ROLE = "Tokopedia Administrator";
     private static final String TOKOPEDIA = "Tokopedia";
     private final SessionHandler sessionHandler;
 
@@ -288,10 +283,18 @@ public class GetReplyMapper extends BaseChatAPICallMapper<ReplyData,ChatRoomView
 
     private void setOpponentViewModel(ChatRoomViewModel chatRoomViewModel, List<Contact>
             contacts) {
+
         for (Contact contact : contacts) {
+            boolean isShopOwner = String.valueOf(contact.getShopId()).equals(sessionHandler
+                    .getShopID());
+            String allowedOpponentRole = "";
+            if(isShopOwner) allowedOpponentRole = USER_ROLE;
+            else if(contact.getRole().equals(TOKOPEDIA_ADMIN_ROLE)) allowedOpponentRole = TOKOPEDIA_ADMIN_ROLE;
+            else allowedOpponentRole = SHOP_OWNER_ROLE;
+
             if (contact.getUserId() != 0
                     && !String.valueOf(contact.getUserId()).equals(sessionHandler.getLoginID())
-                    && !TextUtils.equals(contact.getRole(), SHOP_ADMIN_ROLE)) {
+                    && contact.getRole().equals(allowedOpponentRole)) {
 
                 if (!TextUtils.isEmpty(contact.getAttributes().getName())) {
                     chatRoomViewModel.setNameHeader(contact.getAttributes().getName());
