@@ -144,6 +144,7 @@ public class HomepagePresenter extends BaseDaggerPresenter<HomepageContract.View
 
             @Override
             public void onError(Throwable e) {
+                //NA
             }
 
             @Override
@@ -218,7 +219,7 @@ public class HomepagePresenter extends BaseDaggerPresenter<HomepageContract.View
 
             @Override
             public void onError(Throwable e) {
-                //Need to check for error scenarios
+                //NA
             }
 
             @Override

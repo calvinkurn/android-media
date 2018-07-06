@@ -107,6 +107,7 @@ public class CatalogListItemPresenter extends BaseDaggerPresenter<CatalogListIte
 
             @Override
             public void onError(Throwable e) {
+                //NA
             }
 
             @Override
@@ -181,7 +182,7 @@ public class CatalogListItemPresenter extends BaseDaggerPresenter<CatalogListIte
 
             @Override
             public void onError(Throwable e) {
-                //Need to check for error scenarios
+                //NA
             }
 
             @Override

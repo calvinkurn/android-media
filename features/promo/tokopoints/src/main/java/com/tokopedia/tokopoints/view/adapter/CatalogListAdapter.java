@@ -36,8 +36,7 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
             imgLabel = view.findViewById(R.id.img_label);
         }
     }
-
-
+    
     public CatalogListAdapter(CatalogPurchaseRedemptionPresenter presenter, List<CatalogsValueEntity> items) {
         this.mPresenter = presenter;
         this.mItems = items;

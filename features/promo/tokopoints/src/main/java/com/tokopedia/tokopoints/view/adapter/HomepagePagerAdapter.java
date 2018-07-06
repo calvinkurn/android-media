@@ -74,7 +74,7 @@ public class HomepagePagerAdapter extends PagerAdapter {
 
     @Override
     public int getCount() {
-        return 2;
+        return CommonConstant.HOMEPAGE_TAB_COUNT;
     }
 
     @Override
