@@ -34,6 +34,9 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
+import static com.tokopedia.flight.review.view.fragment.FlightBookingReviewFragment.DEFAULT_IS_COUPON_ONE;
+import static com.tokopedia.flight.review.view.fragment.FlightBookingReviewFragment.DEFAULT_IS_COUPON_ZERO;
+
 /**
  * Created by zulfikarrahman on 11/10/17.
  */
@@ -70,8 +73,8 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
             getView().showVoucherContainer();
 
             if (reviewModel.getVoucherViewModel().isAutoapplySuccess()) {
-                if (!(reviewModel.getVoucherViewModel().getIsCouponActive() == 0 &&
-                        reviewModel.getVoucherViewModel().getIsCoupon() == 1)) {
+                if (!(reviewModel.getVoucherViewModel().getIsCouponActive() == DEFAULT_IS_COUPON_ZERO &&
+                        reviewModel.getVoucherViewModel().getIsCoupon() == DEFAULT_IS_COUPON_ONE)) {
                     renderCouponAndVoucher();
                 }
             }
@@ -304,7 +307,7 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
 
     private void renderCouponAndVoucher() {
         FlightBookingVoucherViewModel voucherViewModel = getView().getCurrentBookingReviewModel().getVoucherViewModel();
-        if (voucherViewModel.getIsCoupon() == 1) {
+        if (voucherViewModel.getIsCoupon() == DEFAULT_IS_COUPON_ONE) {
             getView().renderCouponInfoData();
         } else {
             getView().renderVoucherInfoData();

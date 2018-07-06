@@ -8,6 +8,9 @@ import android.os.Parcelable;
  */
 
 public class FlightBookingVoucherViewModel implements Parcelable {
+
+    public static final String COUPON = "coupon";
+
     private boolean enableVoucher;
     private int isCouponActive;
     private boolean autoapplySuccess;

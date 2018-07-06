@@ -89,6 +89,8 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
     private static final int REQUEST_CODE_NEW_PRICE_DIALOG = 3;
     private static final int REQUEST_CODE_TOPPAY = 100;
     private static final int REQUEST_CODE_LOYALTY = 200;
+    public static final int DEFAULT_IS_COUPON_ZERO = 0;
+    public static final int DEFAULT_IS_COUPON_ONE = 1;
     @Inject
     FlightBookingReviewPresenter flightBookingReviewPresenter;
     @Inject
@@ -333,7 +335,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
                         updateFinalTotal(attributesVoucher, getCurrentBookingReviewModel());
                         getCurrentBookingReviewModel().getVoucherViewModel()
                                 .setAutoapplySuccess(true);
-                        setVoucherValue(attributesVoucher, 0, "");
+                        setVoucherValue(attributesVoucher, DEFAULT_IS_COUPON_ZERO, "");
                         isCouponVoucherChanged = true;
                     }
                 } else if (resultCode == codeWrapper.couponResultCode()) {
@@ -352,7 +354,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
                         voucherCartView.setCoupon(couponTitle, couponMessage, couponCode);
                         getCurrentBookingReviewModel().getVoucherViewModel()
                                 .setAutoapplySuccess(true);
-                        setVoucherValue(attributesVoucher, 1, couponTitle);
+                        setVoucherValue(attributesVoucher, DEFAULT_IS_COUPON_ONE, couponTitle);
                         isCouponVoucherChanged = true;
                     }
                 }
@@ -407,7 +409,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
         if (getActivity() != null && getActivity().getApplication() instanceof FlightModuleRouter) {
             Intent intent;
 
-            if (getCurrentBookingReviewModel().getVoucherViewModel().getDefaultPromoTab().equals("coupon")) {
+            if (getCurrentBookingReviewModel().getVoucherViewModel().getDefaultPromoTab().equals(FlightBookingVoucherViewModel.COUPON)) {
                 intent = ((FlightModuleRouter) getActivity().getApplication()).getLoyaltyWithCouponTabSelected(getActivity(), HACHIKO_FLIGHT_KEY, FlightUrl.CATEGORY_ID, getCurrentCartData().getId());
             } else {
                 intent = ((FlightModuleRouter) getActivity().getApplication()).getLoyaltyWithCoupon(getActivity(), HACHIKO_FLIGHT_KEY, FlightUrl.CATEGORY_ID, getCurrentCartData().getId());
