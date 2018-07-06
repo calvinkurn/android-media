@@ -6,7 +6,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,6 +47,7 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
     protected TextView topAdsMaxPriceInstruction;
     protected ProgressDialog progressDialog;
     protected TextInputLayout textInputLayoutCostPerClick;
+    protected TextInputLayout textInputLayoutKeyword;
     protected Button submitButton;
 
     @Inject
@@ -141,6 +144,37 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
 
     private void settingTopAdsKeyword(View view) {
         topAdsKeyword = ((EditText) view.findViewById(R.id.edit_text_top_ads_keyword));
+        textInputLayoutKeyword = (TextInputLayout) view.findViewById(R.id.text_input_layout_top_ads_keyword);
+        topAdsKeyword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String text = editable.toString();
+                if (TextUtils.isEmpty(text)){
+                    textInputLayoutKeyword.setError(getString(R.string.top_ads_keyword_must_be_filled));
+                } else {
+                    textInputLayoutKeyword.setError(null);
+                }
+                checkButtonNeedEnable();
+            }
+        });
+    }
+
+    private void checkButtonNeedEnable() {
+        if (submitButton.isEnabled() && TextUtils.isEmpty(topAdsKeyword.getText().toString())){
+            submitButton.setEnabled(false);
+        } else if (!submitButton.isEnabled() && !TextUtils.isEmpty(topAdsKeyword.getText().toString())){
+            submitButton.setEnabled(true);
+        }
     }
 
     protected void settingTopAdsKeywordType(View view) {
