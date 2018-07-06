@@ -195,7 +195,7 @@
         <View
             android:id="@+id/view"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="@dimen/dp_1"
             android:background="@color/grey_300"
             app:layout_constraintStart_toStartOf="@id/quick_reply"
             app:layout_constraintTop_toTopOf="@id/quick_reply"
@@ -207,7 +207,7 @@
             android:id="@+id/pinned_message"
             layout="@layout/pinned_message_view_holder"
             android:layout_width="match_parent"
-            android:layout_height="46dp"
+            android:layout_height="wrap_content"
             android:paddingBottom="@dimen/dp_12"
             android:paddingLeft="@dimen/dp_16"
             android:paddingRight="@dimen/dp_8"

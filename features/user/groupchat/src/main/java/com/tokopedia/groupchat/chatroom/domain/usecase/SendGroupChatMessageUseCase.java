@@ -35,7 +35,6 @@ public class SendGroupChatMessageUseCase {
 
     public void execute(final Context context, final PendingChatViewModel pendingChatViewModel, final OpenChannel mChannel,
                         final SendGroupChatMessageListener listener) {
-        Log.d("tevrefresh", "executeSend "+ mChannel.getUrl());
 
         mChannel.sendUserMessage(pendingChatViewModel.getMessage(), new BaseChannel.SendUserMessageHandler() {
             @Override
