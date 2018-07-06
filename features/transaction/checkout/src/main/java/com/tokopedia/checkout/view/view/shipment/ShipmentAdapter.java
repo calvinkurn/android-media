@@ -35,7 +35,6 @@ import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
-import com.tokopedia.transactiondata.entity.request.CheckoutRequest;
 import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
 
@@ -264,9 +263,9 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
             }
             if (cartItemCounter == shipmentCartItemModelList.size()) {
-                String priceTotal = shipmentCostModel.getTotalPrice() == 0 ? "-" :
-                        CurrencyFormatUtil.convertPriceValueToIdrFormat((int) shipmentCostModel.getTotalPrice(), true);
-                shipmentCheckoutButtonModel.setTotalPayment(priceTotal);
+                double priceTotal = shipmentCostModel.getTotalPrice() <= 0 ? 0 : shipmentCostModel.getTotalPrice();
+                String priceTotalFormatted = CurrencyFormatUtil.convertPriceValueToIdrFormat((int) priceTotal, true);
+                shipmentCheckoutButtonModel.setTotalPayment(priceTotalFormatted);
             } else {
                 shipmentCheckoutButtonModel.setTotalPayment("-");
             }
@@ -378,34 +377,35 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public void checkDropshipperValidation() {
-        boolean availableCheckout = true;
-        int errorPosition = DEFAULT_ERROR_POSITION;
-        ShipmentData selectedShipmentData = null;
-        for (int i = 0; i < shipmentDataList.size(); i++) {
-            ShipmentData shipmentData = shipmentDataList.get(i);
-            if (shipmentData instanceof ShipmentCartItemModel) {
-                if (((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData() != null &&
-                        ((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData().getUseDropshipper()) {
-                    if (TextUtils.isEmpty(((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData().getDropshipperName()) ||
-                            TextUtils.isEmpty(((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData().getDropshipperPhone()) ||
-                            !((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData().isDropshipperNameValid() ||
-                            !((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData().isDropshipperPhoneValid()) {
-                        availableCheckout = false;
-                        errorPosition = i;
-                        selectedShipmentData = shipmentData;
+        boolean hasSelectAllCourier = checkHasSelectAllCourier();
+        if (hasSelectAllCourier) {
+            boolean availableCheckout = true;
+            int errorPosition = DEFAULT_ERROR_POSITION;
+            ShipmentData selectedShipmentData = null;
+            for (int i = 0; i < shipmentDataList.size(); i++) {
+                ShipmentData shipmentData = shipmentDataList.get(i);
+                if (shipmentData instanceof ShipmentCartItemModel) {
+                    if (((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData() != null &&
+                            ((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData().getUseDropshipper()) {
+                        if (TextUtils.isEmpty(((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData().getDropshipperName()) ||
+                                TextUtils.isEmpty(((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData().getDropshipperPhone()) ||
+                                !((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData().isDropshipperNameValid() ||
+                                !((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData().isDropshipperPhoneValid()) {
+                            availableCheckout = false;
+                            errorPosition = i;
+                            selectedShipmentData = shipmentData;
+                        }
                     }
                 }
             }
-        }
 
-        if (availableCheckout) {
-            availableCheckout = checkHasSelectAllCourier();
+            shipmentAdapterActionListener.onDropshipperValidationResult(availableCheckout, selectedShipmentData, errorPosition);
+        } else {
+            shipmentAdapterActionListener.onDropshipperValidationResult(false, null, 0);
         }
-
-        shipmentAdapterActionListener.onDropshipperValidationResult(availableCheckout, selectedShipmentData, errorPosition);
     }
 
-    public void setSelecteCourier(int position, CourierItemData courierItemData) {
+    public void setSelectedCourier(int position, CourierItemData courierItemData) {
         ShipmentData currentShipmentData = shipmentDataList.get(position);
         if (currentShipmentData instanceof ShipmentCartItemModel) {
             if (((ShipmentCartItemModel) currentShipmentData).getSelectedShipmentDetailData() != null) {
