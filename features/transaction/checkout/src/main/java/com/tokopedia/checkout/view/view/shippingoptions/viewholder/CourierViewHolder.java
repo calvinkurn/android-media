@@ -21,6 +21,8 @@ import java.util.List;
 
 public class CourierViewHolder extends RecyclerView.ViewHolder {
 
+    public static final int ITEM_VIEW_COURIER = R.layout.holder_item_courier;
+
     private TextView tvCourierName;
     private TextView tvPrice;
     private TextView tvDeliveryTimeRange;

@@ -10,11 +10,12 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
+import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
+import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartShipmentData;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCheckoutButtonModel;
-import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartListResult;
-import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
-import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
+import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
+import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
 
@@ -38,8 +39,10 @@ public interface ShipmentContract {
         void renderCheckShipmentPrepareCheckoutSuccess();
 
         void renderErrorDataHasChangedCheckShipmentPrepareCheckout(
-                CartShipmentAddressFormData cartShipmentAddressFormData
+                CartShipmentAddressFormData cartShipmentAddressFormData, boolean needToRefreshItemList
         );
+
+        void renderErrorDataHasChangedAfterCheckout(CartShipmentAddressFormData cartShipmentAddressFormData);
 
         void renderThanksTopPaySuccess(String message);
 
@@ -47,13 +50,19 @@ public interface ShipmentContract {
 
         void renderCheckoutCartError(String message);
 
-        void renderCheckPromoCodeFromSuggestedPromoSuccess(CheckPromoCodeCartListResult promoCodeCartListData);
+        void sendAnalyticsChoosePaymentMethodSuccess();
+
+        void sendAnalyticsChoosePaymentMethodFailed();
+
+        void sendAnalyticsChoosePaymentMethodCourierNotComplete();
+
+        void renderCheckPromoCodeFromSuggestedPromoSuccess(PromoCodeCartListData promoCodeCartListData);
 
         void renderErrorCheckPromoCodeFromSuggestedPromo(String message);
 
         void renderErrorCheckPromoShipmentData(String message);
 
-        void renderCheckPromoShipmentDataSuccess(CheckPromoCodeCartShipmentResult checkPromoCodeCartShipmentResult);
+        void renderCheckPromoShipmentDataSuccess(PromoCodeCartShipmentData checkPromoCodeCartShipmentResult);
 
         void renderEditAddressSuccess(String latitude, String longitude);
 
@@ -61,10 +70,17 @@ public interface ShipmentContract {
 
         void renderCancelAutoApplyCouponSuccess();
 
-        Activity getActivity();
+        void navigateToSetPinpoint(String message, LocationPass locationPass);
+
+        List<DataCheckoutRequest> generateNewCheckoutRequest(List<ShipmentCartItemModel> shipmentCartItemModelList);
+
+        Activity getActivityContext();
     }
 
     interface Presenter extends CustomerPresenter<View> {
+
+        void processReloadCheckoutPageBecauseOfError();
+
         void processCheckShipmentPrepareCheckout();
 
         void processCheckout();
@@ -111,7 +127,7 @@ public interface ShipmentContract {
 
         void setShipmentCheckoutButtonModel(ShipmentCheckoutButtonModel shipmentCheckoutButtonModel);
 
-        void editAddressPinpoint(String latitude, String longitude, ShipmentCartItemModel shipmentCartItemModel);
+        void editAddressPinpoint(String latitude, String longitude, ShipmentCartItemModel shipmentCartItemModel, LocationPass locationPass);
 
         void cancelAutoApplyCoupon();
 

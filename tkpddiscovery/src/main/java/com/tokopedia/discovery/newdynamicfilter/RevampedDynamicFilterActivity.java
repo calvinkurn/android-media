@@ -409,6 +409,11 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
 
     }
 
+    @Override
+    public void onPriceEditedFromTextInput(int minValue, int maxValue) {
+
+    }
+
     private void applyFilter() {
         renderFilterResult();
         finish();

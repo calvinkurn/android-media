@@ -170,6 +170,9 @@ public class KolRecommendationAdapter extends RecyclerView.Adapter<KolRecommenda
                 marginLayoutParams.leftMargin = (int) resources.getDimension(R.dimen.dp_16);
             } else if (position == getItemCount() - 1) {
                 marginLayoutParams.rightMargin = (int) resources.getDimension(R.dimen.dp_16);
+            } else {
+                marginLayoutParams.leftMargin = 0;
+                marginLayoutParams.rightMargin = (int) resources.getDimension(R.dimen.dp_10);
             }
         }
     }

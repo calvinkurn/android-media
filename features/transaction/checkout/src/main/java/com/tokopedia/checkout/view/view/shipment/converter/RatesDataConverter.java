@@ -208,7 +208,7 @@ public class RatesDataConverter {
                                                ShipmentItemData shipmentItemData) {
         CourierItemData courierItemData = new CourierItemData();
         courierItemData.setUsePinPoint(product.getIsShowMap() == 1);
-        courierItemData.setName(product.getShipperName() + " " + product.getShipperProductName());
+        courierItemData.setName(product.getShipperName());
         courierItemData.setShipperId(product.getShipperId());
         courierItemData.setShipperProductId(product.getShipperProductId());
         courierItemData.setInsuranceUsedInfo(product.getInsuranceUsedInfo());
@@ -221,7 +221,8 @@ public class RatesDataConverter {
         courierItemData.setEstimatedTimeDelivery(product.getShipperEtd());
         courierItemData.setMinEtd(product.getMinEtd());
         courierItemData.setMaxEtd(product.getMaxEtd());
-        courierItemData.setShipmentItemData(shipmentItemData);
+        courierItemData.setShipmentItemDataEtd(shipmentItemData.getDeliveryTimeRange());
+        courierItemData.setShipmentItemDataType(shipmentItemData.getType());
 
         return courierItemData;
     }
