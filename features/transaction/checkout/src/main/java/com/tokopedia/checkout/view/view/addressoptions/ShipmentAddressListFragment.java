@@ -20,6 +20,7 @@ import android.widget.RelativeLayout;
 
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.data.mapper.AddressModelMapper;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
@@ -402,6 +403,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     @Override
     public void onAddressContainerClicked(RecipientAddressModel model) {
         if (mCartAddressChoiceActivityListener != null) {
+            KeyboardHandler.hideSoftKeyboard(getActivity());
             checkoutAnalyticsChangeAddress.eventClickChangeAddressClickChecklistAddressFromChooseOtherAddress();
             mCartAddressChoiceActivityListener.finishSendResultActionSelectedAddress(model);
         }
