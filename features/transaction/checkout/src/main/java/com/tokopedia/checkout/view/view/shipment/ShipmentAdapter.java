@@ -263,9 +263,9 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
             }
             if (cartItemCounter == shipmentCartItemModelList.size()) {
-                String priceTotal = shipmentCostModel.getTotalPrice() == 0 ? "-" :
-                        CurrencyFormatUtil.convertPriceValueToIdrFormat((int) shipmentCostModel.getTotalPrice(), true);
-                shipmentCheckoutButtonModel.setTotalPayment(priceTotal);
+                double priceTotal = shipmentCostModel.getTotalPrice() <= 0 ? 0 : shipmentCostModel.getTotalPrice();
+                String priceTotalFormatted = CurrencyFormatUtil.convertPriceValueToIdrFormat((int) priceTotal, true);
+                shipmentCheckoutButtonModel.setTotalPayment(priceTotalFormatted);
             } else {
                 shipmentCheckoutButtonModel.setTotalPayment("-");
             }
