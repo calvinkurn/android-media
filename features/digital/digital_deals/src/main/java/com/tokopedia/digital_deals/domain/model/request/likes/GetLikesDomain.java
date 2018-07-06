@@ -14,6 +14,9 @@ public class GetLikesDomain {
     @SerializedName("total_likes")
     @Expose
     private int totalLikes;
+    @SerializedName("is_liked")
+    @Expose
+    private boolean isLiked;
 
     public int getProductId() {
         return productId;
@@ -39,4 +42,11 @@ public class GetLikesDomain {
         this.totalLikes = totalLikes;
     }
 
+    public boolean isLiked() {
+        return isLiked;
+    }
+
+    public void setLiked(boolean liked) {
+        isLiked = liked;
+    }
 }

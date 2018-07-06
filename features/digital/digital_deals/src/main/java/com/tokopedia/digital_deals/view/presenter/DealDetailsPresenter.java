@@ -27,6 +27,7 @@ import com.tokopedia.digital_deals.view.viewmodel.OutletViewModel;
 import com.tokopedia.usecase.RequestParams;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -52,7 +53,7 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
     private boolean isLoading;
     private boolean isLastPage;
     private final int PAGE_SIZE = 20;
-    private RequestParams searchNextParams=RequestParams.create();
+    private RequestParams searchNextParams = RequestParams.create();
 
 
     @Inject
@@ -171,12 +172,15 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
 
             @Override
             public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
-                Type token = new TypeToken<DataResponse<GetLikesDomain>>(){
-                    }.getType();
+                Type token = new TypeToken<DataResponse<ArrayList<GetLikesDomain>>>() {
+                }.getType();
                 RestResponse restResponse = typeRestResponseMap.get(token);
                 DataResponse dataResponse = restResponse.getData();
-                GetLikesDomain getLikesDomain = (GetLikesDomain) dataResponse.getData();
-                getView().setLikes(getLikesDomain.getTotalLikes());
+
+                ArrayList<GetLikesDomain> getLikesDomain = (ArrayList<GetLikesDomain>) dataResponse.getData();
+                if (getLikesDomain != null && getLikesDomain.size() > 0) {
+                    getView().setLikes(getLikesDomain.get(0).getTotalLikes(), getLikesDomain.get(0).isLiked());
+                }
 
             }
         });
@@ -295,7 +299,7 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
         checkIfToLoad(layoutManager);
     }
 
-        private void checkIfToLoad(LinearLayoutManager layoutManager) {
+    private void checkIfToLoad(LinearLayoutManager layoutManager) {
         int visibleItemCount = layoutManager.getChildCount();
         int totalItemCount = layoutManager.getItemCount();
         int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
@@ -309,7 +313,6 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
             }
         }
     }
-
 
 
 }

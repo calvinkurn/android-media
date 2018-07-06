@@ -43,7 +43,7 @@ public class DealDetailsContract {
 
         void showCollapsingHeader();
 
-        void setLikes(int likes);
+        void setLikes(int likes, boolean isLiked);
 
         LinearLayoutManager getLayoutManager();
 
