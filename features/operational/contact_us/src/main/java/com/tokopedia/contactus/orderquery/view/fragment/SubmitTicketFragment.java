@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -29,6 +30,7 @@ import android.widget.Toast;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.R2;
 import com.tokopedia.contactus.inboxticket.activity.InboxTicketActivity;
@@ -429,7 +431,8 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
         submitSuccess.setVisibility(View.GONE);
         Intent intent = new Intent(getActivity(), InboxTicketActivity.class);
         getActivity().startActivity(new Intent(getActivity(), InboxTicketActivity.class));
-        getActivity().finish();
+        LocalBroadcastManager manager = LocalBroadcastManager.getInstance(getActivity());
+        manager.sendBroadcast(new Intent(ContactUsModuleRouter.ACTION_CLOSE_ACTIVITY));
     }
 
     @Override
