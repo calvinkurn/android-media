@@ -161,7 +161,7 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
             return getArguments().getInt(ARGS_SORT_TYPE);
         }
 
-        return 1; // default sort id
+        return CommonConstant.DEFAULT_SORT_TYPE; // default sort id
     }
 
     @Override
@@ -170,7 +170,7 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
             return getArguments().getInt(ARGS_CATEGORY_ID);
         }
 
-        return 0; // default category id
+        return CommonConstant.DEFAULT_CATEGORY_TYPE; // default category id
     }
 
     public void showRedeemCouponDialog(String cta, String code, String title) {

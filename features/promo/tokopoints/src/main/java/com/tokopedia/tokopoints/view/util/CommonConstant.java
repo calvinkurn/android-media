@@ -12,6 +12,8 @@ public interface CommonConstant {
     int HOMEPAGE_PAGE_SIZE = 5;
     int TAB_SETUP_DELAY_MS = 150;
     int HOMEPAGE_TAB_COUNT = 2;
+    int DEFAULT_SORT_TYPE = 1;
+    int DEFAULT_CATEGORY_TYPE = 0;
 
     interface CouponRedemptionCode {
         int LOW_POINT = 42020;

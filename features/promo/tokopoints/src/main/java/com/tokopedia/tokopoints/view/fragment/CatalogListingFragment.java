@@ -49,7 +49,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
     private TextView mTextPoints;
     private CatalogChipAdapter mChipAdapter;
     private CatalogSortTypePagerAdapter mViewPagerAdapter;
-    private int mSelectedCategory = 0;
+    private int mSelectedCategory = CommonConstant.DEFAULT_CATEGORY_TYPE;
     private TextView mTextFailedAction;
 
     @Inject
