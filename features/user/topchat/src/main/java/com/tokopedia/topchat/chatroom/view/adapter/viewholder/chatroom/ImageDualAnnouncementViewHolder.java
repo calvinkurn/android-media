@@ -12,6 +12,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.BaseChatVie
 import com.tokopedia.topchat.chatroom.view.listener.ChatRoomContract;
 import com.tokopedia.topchat.chatroom.view.viewmodel.imageannouncement
         .ImageDualAnnouncementViewModel;
+import com.tokopedia.topchat.common.util.ChatGlideImageRequestListener;
 
 /**
  * Created by Hendri on 22/06/18.
@@ -33,13 +34,13 @@ public class ImageDualAnnouncementViewHolder extends BaseChatViewHolder<ImageDua
     public void bind(ImageDualAnnouncementViewModel viewModel) {
         super.bind(viewModel);
 
-        ImageHandler.LoadImage(top, viewModel.getImageUrlTop());
+        ImageHandler.loadImageChat(top, viewModel.getImageUrlTop(),new ChatGlideImageRequestListener());
         top.setOnClickListener((View v) -> {
             if (!TextUtils.isEmpty(viewModel.getRedirectUrlTop())) {
                 viewListener.onGoToWebView(viewModel.getRedirectUrlTop(),
                         viewModel.getAttachmentId());
             } });
-        ImageHandler.LoadImage(bottom, viewModel.getImageUrlBottom());
+        ImageHandler.loadImageChat(bottom, viewModel.getImageUrlBottom(), new ChatGlideImageRequestListener());
         bottom.setOnClickListener((View v) -> {
             if (!TextUtils.isEmpty(viewModel.getRedirectUrlBottom())) {
                 viewListener.onGoToWebView(viewModel.getRedirectUrlBottom(),
