@@ -29,7 +29,7 @@ import rx.functions.Func1;
  */
 public class GraphqlUseCase extends UseCase<GraphqlResponse> {
 
-    private List<GraphqlRequest> mRequests;
+    private volatile  List<GraphqlRequest> mRequests;
     private GraphqlRepositoryImpl mGraphqlRepository;
     private GraphqlCacheStrategy mCacheStrategy;
     private Gson mGson;
@@ -40,7 +40,7 @@ public class GraphqlUseCase extends UseCase<GraphqlResponse> {
         this.mGson = gson;
         this.mRequests = new ArrayList<>();
     }
-    
+
     public GraphqlUseCase() {
         this.mGraphqlRepository = new GraphqlRepositoryImpl(new GraphqlCloudDataStore(), new GraphqlCacheDataStore());
         this.mGson = new Gson();
@@ -53,6 +53,11 @@ public class GraphqlUseCase extends UseCase<GraphqlResponse> {
 
     public void setRequest(GraphqlRequest requestObject) {
         this.mRequests.add(requestObject);
+    }
+
+    public void clearRequest() {
+        if (this.mRequests != null)
+            this.mRequests.clear();
     }
 
     public void setCacheStrategy(GraphqlCacheStrategy cacheStrategy) {

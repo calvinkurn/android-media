@@ -15,6 +15,7 @@ public class GetLikesDomain {
     @Expose
     private int totalLikes;
 
+
     public int getProductId() {
         return productId;
     }

@@ -30,7 +30,7 @@ public class OrderListDetailActivity extends BaseSimpleActivity {
     private String orderId;
 
 
-    @DeepLink(TransactionAppLink.ORDER_DETAIL)
+    @DeepLink({TransactionAppLink.ORDER_DETAIL, TransactionAppLink.ORDER_OMS_DETAIL})
     public static Intent getOrderDetailIntent(Context context, Bundle bundle) {
         Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, OrderListDetailActivity.class)
@@ -38,13 +38,13 @@ public class OrderListDetailActivity extends BaseSimpleActivity {
                 .putExtras(bundle);
     }
 
-    @DeepLink(TransactionAppLink.ORDER_OMS_DETAIL)
-    public static Intent getOrderOMSDetailIntent(Context context, Bundle bundle) {
-        Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, OrderListDetailActivity.class)
-                .setData(uri.build())
-                .putExtras(bundle);
-    }
+//    @DeepLink(TransactionAppLink.ORDER_OMS_DETAIL)
+//    public static Intent getOrderOMSDetailIntent(Context context, Bundle bundle) {
+//        Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
+//        return new Intent(context, OrderListDetailActivity.class)
+//                .setData(uri.build())
+//                .putExtras(bundle);
+//    }
 
     public static Intent createInstance(Context context, String orderId, String orderCategory, boolean fromPayment) {
         Intent intent = new Intent(context, OrderListDetailActivity.class);
@@ -56,15 +56,20 @@ public class OrderListDetailActivity extends BaseSimpleActivity {
 
     @Override
     protected Fragment getNewFragment() {
-        if (orderCategory != null) {
-            if (orderCategory.equals("")) {
-                return OmsDetailFragment.getInstance(orderId, "");
-            } else {
-                return OrderListDetailFragment.getInstance(orderId, orderCategory);
+        String category = getIntent().getStringExtra((DeepLink.URI));
+        if (category != null) {
+            category = category.toUpperCase();
+
+            if (category.contains("DIGITAL")) {
+                return OrderListDetailFragment.getInstance(orderId, OrderCategory.DIGITAL);
+            } else if (category.contains("")) {
+                return OmsDetailFragment.getInstance(orderId, "", fromPayment);
             }
-        } else {
-            return OmsDetailFragment.getInstance(orderId, "");
         }
+        finish();
+        return null;
+
+
     }
 
     @Override
@@ -72,6 +77,7 @@ public class OrderListDetailActivity extends BaseSimpleActivity {
         if (getIntent().getExtras() != null) {
             orderCategory = getIntent().getStringExtra("order_category");
             orderId = getIntent().getStringExtra("order_id");
+//            fromPayment = getIntent().getBooleanExtra("from_payment",false);
         }
         super.onCreate(arg);
         toolbar.setBackgroundColor(getResources().getColor(R.color.white));
@@ -79,7 +85,7 @@ public class OrderListDetailActivity extends BaseSimpleActivity {
             toolbar.getNavigationIcon().setTint(getResources().getColor(R.color.black));
         }
         toolbar.setTitleTextAppearance(this, R.style.ToolbarText_SansSerifMedium);
-        if (getIntent().getBooleanExtra("fromPayment", false)) {
+        if (fromPayment) {
             toolbar.setTitle("Thank You");
         }
 
