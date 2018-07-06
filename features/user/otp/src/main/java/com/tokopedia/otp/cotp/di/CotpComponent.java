@@ -10,6 +10,8 @@ import com.tokopedia.otp.cotp.view.fragment.ChooseVerificationMethodFragment;
 import com.tokopedia.otp.cotp.view.fragment.VerificationFragment;
 
 import dagger.Component;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Retrofit;
 
 /**
  * @author by nisie on 4/24/18.
