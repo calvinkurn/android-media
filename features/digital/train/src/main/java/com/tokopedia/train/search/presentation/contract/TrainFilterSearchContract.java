@@ -23,11 +23,15 @@ public interface TrainFilterSearchContract {
 
         FilterSearchData getFilterSearchDataFromIntent();
 
+        String getArrivalTimestampSelected();
+
+        int getScheduleVariant();
+
     }
 
     interface Presenter extends CustomerPresenter<View> {
         void getCountScheduleAvailable(FilterSearchData filterSearchData);
 
-        void getFilterSearchData(Map<String, Object> mapParam, int scheduleVariant);
+        void getFilterSearchData();
     }
 }

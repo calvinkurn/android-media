@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.ContentLoadingProgressBar;
 import android.util.TypedValue;
 import android.view.Gravity;
 
@@ -49,6 +50,7 @@ public class TravelCalendarActivity extends BaseSimpleActivity implements Travel
     private PagerTabStrip pagerTabStrip;
     private TravelCalendarComponent travelCalendarComponent;
     private Calendar currentCalendar = Calendar.getInstance();
+    private ContentLoadingProgressBar progressBar;
 
     @Inject
     TravelCalendarPresenter presenter;
@@ -90,6 +92,7 @@ public class TravelCalendarActivity extends BaseSimpleActivity implements Travel
     private void bindView() {
         viewPager = findViewById(R.id.pager);
         pagerTabStrip = findViewById(R.id.tab_strip);
+        progressBar = findViewById(R.id.loading_progress_bar);
 
         pagerTabStrip.setTabIndicatorColor(getResources().getColor(R.color.tkpd_main_green));
         pagerTabStrip.setTextColor(getResources().getColor(R.color.tkpd_main_green));
