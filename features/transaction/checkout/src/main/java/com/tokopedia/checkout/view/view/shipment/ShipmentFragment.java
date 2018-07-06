@@ -401,7 +401,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                             if (newCartItemModel.getProductId() == oldCartItemModel.getProductId()) {
                                 oldCartItemModel.setError(newCartItemModel.isError());
                                 oldCartItemModel.setErrorMessage(newCartItemModel.getErrorMessage());
-                                if (!oldCartItemModel.isError()) {
+                                if (oldShipmentCartItemModel.isAllItemError()) {
                                     oldCartItemModel.setError(oldShipmentCartItemModel.isError());
                                 }
                             }

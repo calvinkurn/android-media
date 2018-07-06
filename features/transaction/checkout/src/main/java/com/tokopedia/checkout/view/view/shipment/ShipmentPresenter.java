@@ -297,6 +297,14 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
 
         if (cartListHasError) {
+            for (ShipmentCartItemModel oldShipmentCartItemModel : shipmentCartItemModelList) {
+                for (ShipmentCartItemModel newShipmentCartItemModel : newShipmentCartItemModelList) {
+                    if (isSameCartObject(oldShipmentCartItemModel, newShipmentCartItemModel)) {
+                        newShipmentCartItemModel.setSelectedShipmentDetailData(oldShipmentCartItemModel.getSelectedShipmentDetailData());
+                    }
+                }
+            }
+
             for (Map.Entry<ShipmentCartItemModel, List<CartItemModel>> entry : indexShopItemErrorMap.entrySet()) {
                 ShipmentCartItemModel key = entry.getKey();
                 List<CartItemModel> value = entry.getValue();
@@ -315,6 +323,19 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             return true;
         }
         return false;
+    }
+
+    private boolean isSameCartObject(ShipmentCartItemModel oldShipmentCartItemModel,
+                                     ShipmentCartItemModel newShipmentCartItemModel) {
+
+        if (oldShipmentCartItemModel.getRecipientAddressModel() != null && newShipmentCartItemModel.getRecipientAddressModel() != null) {
+            if (!oldShipmentCartItemModel.getRecipientAddressModel().getId().equals(newShipmentCartItemModel.getRecipientAddressModel().getId())) {
+                return false;
+            }
+        }
+        return oldShipmentCartItemModel.getShopId() == newShipmentCartItemModel.getShopId() &&
+                oldShipmentCartItemModel.getCartItemModels().size() == newShipmentCartItemModel.getCartItemModels().size() &&
+                oldShipmentCartItemModel.getCartItemModels().get(0).getProductId() == newShipmentCartItemModel.getCartItemModels().get(0).getProductId();
     }
 
     @Override
