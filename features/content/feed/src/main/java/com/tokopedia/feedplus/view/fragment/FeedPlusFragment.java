@@ -558,7 +558,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onSearchShopButtonClicked() {
-        Intent intent = HomeRouter.getHomeActivity(getActivity());
+        Intent intent = feedModuleRouter.getHomeIntent(getContext());
         intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_FAVORITE);
         startActivity(intent);
     }
