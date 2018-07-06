@@ -20,8 +20,9 @@
             android:layout_height="wrap_content"
             app:cardCornerRadius="@dimen/dp_4"
             app:cardPreventCornerOverlap="false"
-            app:cardUseCompatPadding="true"
-            app:cardElevation="0dp">
+            android:layout_margin="5dp"
+            app:cardElevation="0dp"
+            app:cardUseCompatPadding="true">
 
             <com.tokopedia.topads.sdk.view.SquareImageView
                 android:id="@id/product_image"
