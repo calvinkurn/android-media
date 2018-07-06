@@ -8,6 +8,7 @@ import com.tokopedia.topads.dashboard.domain.interactor.TopAdsSearchGroupAdsName
 import com.tokopedia.topads.dashboard.utils.ViewUtils;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsGroupEditPromoView;
 import com.tokopedia.topads.sourcetagging.data.TopAdsSourceTaggingModel;
+import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
 import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsGetSourceTaggingUseCase;
 
 import rx.Subscriber;

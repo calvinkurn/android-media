@@ -6,10 +6,10 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
+import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.fragment.BaseWebViewFragment;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 
 /**
  * Created by normansyahputa on 12/5/17.

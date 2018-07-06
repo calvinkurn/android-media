@@ -1,7 +1,7 @@
 package com.tokopedia.discovery.newdiscovery.category.presentation.product.helper;
 
-import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.BadgeItem;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategoryHeaderModel;
+import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.BadgeItem;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.LabelItem;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ProductViewModel;

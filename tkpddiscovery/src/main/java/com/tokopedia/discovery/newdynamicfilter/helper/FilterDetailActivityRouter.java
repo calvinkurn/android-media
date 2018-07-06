@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.discovery.newdynamicfilter.DynamicFilterCategoryActivity;
 import com.tokopedia.discovery.newdynamicfilter.DynamicFilterColorActivity;
+import com.tokopedia.discovery.newdynamicfilter.AbstractDynamicFilterDetailActivity;
 import com.tokopedia.discovery.newdynamicfilter.DynamicFilterDetailBrandActivity;
 import com.tokopedia.discovery.newdynamicfilter.DynamicFilterDetailGeneralActivity;
 import com.tokopedia.discovery.newdynamicfilter.DynamicFilterLocationActivity;

@@ -3,6 +3,7 @@ package com.tokopedia.transaction.orders.orderlist.source;
 
 import android.content.Context;
 
+import com.google.gson.Gson;
 import com.tokopedia.transaction.orders.orderlist.source.api.OrderListDataApi;
 
 import javax.inject.Inject;

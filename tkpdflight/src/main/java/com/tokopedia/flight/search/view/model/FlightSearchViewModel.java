@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
+import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.search.data.cloud.model.response.Fare;
 import com.tokopedia.flight.search.data.cloud.model.response.Route;
 import com.tokopedia.flight.search.data.db.model.FlightSearchReturnRouteDB;
@@ -16,6 +17,8 @@ import com.tokopedia.flight.search.view.model.filter.RefundableEnum;
 
 import java.lang.reflect.Type;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by User on 10/30/2017.
