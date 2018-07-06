@@ -1,5 +1,5 @@
 query hachikoCatalogQuery($device: Int) {
-  mItems: slides(device: $device) {
+  banners: slides(device: $device) {
     slides {
       id
       title

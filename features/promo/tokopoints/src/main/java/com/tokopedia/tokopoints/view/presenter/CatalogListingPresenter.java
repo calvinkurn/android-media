@@ -49,7 +49,7 @@ public class CatalogListingPresenter extends BaseDaggerPresenter<CatalogListingC
         //Adding banner query
         Map<String, Object> variablesBanner = new HashMap<>();
         variablesBanner.put(CommonConstant.GraphqlVariableKeys.DEVICE, CommonConstant.DEVICE_ID_BANNER);
-        GraphqlRequest graphqlRequestBanners = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.tp_gql_catalog_banners_and_filters),
+        GraphqlRequest graphqlRequestBanners = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.tp_gql_catalog_banners),
                 CatalogBannerOuter.class,
                 variablesBanner);
         mGetHomePageData.addRequest(graphqlRequestBanners);
@@ -62,12 +62,11 @@ public class CatalogListingPresenter extends BaseDaggerPresenter<CatalogListingC
         mGetHomePageData.execute(new Subscriber<GraphqlResponse>() {
             @Override
             public void onCompleted() {
-
             }
 
             @Override
             public void onError(Throwable e) {
-                //TODO handling for null data
+                getView().onErrorFilter("null");
             }
 
             @Override
@@ -75,8 +74,7 @@ public class CatalogListingPresenter extends BaseDaggerPresenter<CatalogListingC
                 //Handling the banner
                 CatalogBannerOuter outer = graphqlResponse.getData(CatalogBannerOuter.class);
                 if (outer == null || outer.getBannerData() == null || outer.getBannerData().getBanners() == null) {
-                    getView().onErrorBanners("NO_DATA");
-                    //TODO handling for null data
+                    getView().onErrorBanners(null);
                 } else {
                     getView().onSuccessBanners(outer.getBannerData().getBanners());
                 }
@@ -84,9 +82,8 @@ public class CatalogListingPresenter extends BaseDaggerPresenter<CatalogListingC
                 //handling the catalog listing and tabs
                 CatalogFilterOuter catalogFilterOuter = graphqlResponse.getData(CatalogFilterOuter.class);
                 if (catalogFilterOuter == null || catalogFilterOuter.getFilter() == null) {
-                    getView().onErrorFilter("NO_DATA");
+                    getView().onErrorFilter(null);
                 } else {
-                    //TODO handling for null data
                     getView().onSuccessFilter(catalogFilterOuter.getFilter());
                 }
             }
@@ -121,8 +118,7 @@ public class CatalogListingPresenter extends BaseDaggerPresenter<CatalogListingC
                         || pointDetailEntity.getTokoPoints().getResultStatus() == null
                         || pointDetailEntity.getTokoPoints().getStatus() == null
                         || pointDetailEntity.getTokoPoints().getStatus().getPoints() == null) {
-                    getView().onErrorBanners("NO_DATA");
-                    //TODO handling for null data
+                    getView().onErrorPoint(null);
                 } else {
                     if (pointDetailEntity.getTokoPoints().getResultStatus().getCode() == CommonConstant.CouponRedemptionCode.SUCCESS) {
                         getView().onSuccessPoints(pointDetailEntity.getTokoPoints().getStatus().getPoints().getRewardStr());

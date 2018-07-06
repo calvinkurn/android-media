@@ -41,10 +41,12 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
     private static final int CONTAINER_LOADER = 0;
     private static final int CONTAINER_DATA = 1;
     private static final int CONTAINER_ERROR = 2;
+    private static final int CONTAINER_EMPTY = 3;
     private ViewFlipper mContainer;
     private RecyclerView mRecyclerViewCatalog;
     private CatalogListAdapter mAdapter;
     private TextView mTextFailedAction;
+    private TextView mTextEmptyAction;
 
     @Inject
     public CatalogListItemPresenter mPresenter;
@@ -68,6 +70,7 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
         mRecyclerViewCatalog = rootView.findViewById(R.id.list_catalog_item);
         mContainer = rootView.findViewById(R.id.container);
         mTextFailedAction = rootView.findViewById(R.id.text_failed_action);
+        mTextFailedAction = rootView.findViewById(R.id.text_empty_action);
         return rootView;
     }
 
@@ -76,12 +79,15 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
         super.onViewCreated(view, savedInstanceState);
         mPresenter.attachView(this);
         view.findViewById(R.id.text_failed_action).setOnClickListener(this);
+        view.findViewById(R.id.text_empty_action).setOnClickListener(this);
     }
 
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.text_failed_action) {
             mPresenter.getCatalog(getCurrentCategoryId(), getCurrentSortType());
+        } else if (view.getId() == R.id.text_empty_action) {
+            openWebView(CommonConstant.WebLink.INFO);
         }
     }
 
@@ -106,6 +112,11 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
     }
 
     @Override
+    public void onEmptyCatalog() {
+        mContainer.setDisplayedChild(CONTAINER_EMPTY);
+    }
+
+    @Override
     public void openWebView(String url) {
         Intent intent = SimpleWebViewWithFilePickerActivity.getIntent(getActivityContext(), url);
         startActivity(intent);
@@ -118,6 +129,11 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
 
     @Override
     public void populateCatalog(List<CatalogsValueEntity> items) {
+        if (items == null || items.isEmpty()) {
+            onEmptyCatalog();
+            return;
+        }
+
         hideLoader();
         if (mAdapter != null) {
             mAdapter.updateItems(items);

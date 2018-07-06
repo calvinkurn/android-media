@@ -24,6 +24,9 @@
     <string name="tp_label_see_all">Lihat Semua</string>
     <string name="tp_label_help_with_storepoints">Bantuan TokoPoints</string>
     <string name="tp_label_valid_for">Berlaku selama</string>
+    <string name="tp_label_prepare_catalog">Sedang Menyiapkan Katalog</string>
+    <string name="tp_label_go_shopping">Silakan lanjut berbelanja</string>
+    <string name="tp_label_try_again">Silakan coba kembali</string>
+    <string name="tp_label_server_error">Terjadi Kendala Pada Server</string>
     <string name="tp_message_tokopoints_on_boarding"><![CDATA[<strong>TokoPoints</strong> adalah program loyalitas konsumen yang memungkinkan Pengguna untuk mengumpulkan <strong>Loyalty</strong> dan <strong>Points</strong> dari transaksi yang dilakukan melalui Situs/Aplikasi.<br /><br />Kumpulkan dan tukarkan Points Anda untuk mendapatkan <strong>Kupon</strong> yang diinginkan.<br /><br />Gunakan <strong>Kupon</strong> untuk mendapatkan keuntungan lebih pada transaksi Anda berikutnya.]]></string>
-    <string name="message_ticker"><![CDATA[<strong>TokoPoints</strong> adalah program loyalitas konsumen yang memungkinkan Pengguna untuk mengumpulkan <strong>Loyalty</strong> dan ]]></string>
 </resources>

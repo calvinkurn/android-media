@@ -12,18 +12,12 @@
         android:layout_gravity="center"
         android:layout_margin="@dimen/tp_margin_large" />
 
-    <LinearLayout
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view_coupons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_view_coupons"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
-    </LinearLayout>
-
-    <include layout="@layout/layout_tp_homepage_error" />
+    <include layout="@layout/layout_tp_network_error_large" />
 
 </ViewFlipper>

@@ -178,7 +178,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
                 || source.getId() == R.id.text_loyalty_label
                 || source.getId() == R.id.text_loyalty_value) {
             openWebView(CommonConstant.WebLink.HISTORY);
-        }else if (source.getId() == R.id.text_failed_action) {
+        } else if (source.getId() == R.id.text_failed_action) {
             mPresenter.getTokoPointDetail();
         }
     }
@@ -415,50 +415,17 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
         if (tickers == null || tickers.isEmpty()) {
             return;
         }
+
         tickerView.setVisibility(View.VISIBLE);
         ArrayList<String> messages = new ArrayList<>();
-        final ArrayList<String> backgrounds = new ArrayList<>();
         for (CouponExtraInfoEntity ticker : tickers) {
             if (ticker == null) {
                 continue;
             }
-            messages.add(getString(R.string.message_ticker));
-//            messages.add(ticker.getInfoHtml());
-//            backgrounds.add(ticker.ge;
+            messages.add(ticker.getInfoHtml());
         }
 
-//        messages.add(getString(R.string.message_ticker));
-//        messages.add(getString(R.string.message_ticker));
-//        messages.add(getString(R.string.message_ticker));
-//        messages.add(getString(R.string.message_ticker));
-
-
         tickerView.setListMessage(messages);
-//        tickerView.setHighLightColor(ContextCompat.getColor(getContext(), R.color.tkpd_yellow_status));
-//        tickerView.setOnPartialTextClickListener(new TickerView.OnPartialTextClickListener() {
-//            @Override
-//            public void onClick(View view, String messageClick) {
-//                Intent intent = new Intent(getActivity(), BannerWebView.class);
-//                intent.putExtra("url", messageClick);
-//                startActivity(intent);
-//            }
-//        });
-//        tickerView.setOnPageChangeListener(new TickerView.OnPageChangeListener() {
-//            @Override
-//            public void onScrolled(int position, float positionOffset, int positionOffsetPixels) {
-//
-//            }
-//
-//            @Override
-//            public void onSelected(int position) {
-//                tickerView.setHighLightColor(Color.parseColor(backgrounds.get(position)));
-//            }
-//
-//            @Override
-//            public void onScrollStateChanged(int state) {
-//
-//            }
-//        });
         tickerView.buildView();
     }
 }

@@ -22,7 +22,7 @@ public class CatalogBannerPagerAdapter extends PagerAdapter {
     private CatalogListingPresenter mPresenter;
 
     public CatalogBannerPagerAdapter(Context context, List<CatalogBanner> items, CatalogListingPresenter presenter) {
-        this.mItems = mItems;
+        this.mItems = items;
         mInflater = LayoutInflater.from(context);
         mPresenter = presenter;
     }

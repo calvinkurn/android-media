@@ -20,6 +20,8 @@ public interface CatalogListItemContract {
 
         void showError();
 
+        void onEmptyCatalog();
+
         void openWebView(String url);
 
         void hideLoader();

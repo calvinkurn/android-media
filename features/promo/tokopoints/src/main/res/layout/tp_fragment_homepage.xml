@@ -28,23 +28,37 @@
                 android:id="@+id/app_bar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white">
+                android:background="@color/white"
+                app:elevation="0dp">
 
                 <include layout="@layout/tp_content_homepage" />
 
-                <include layout="@layout/tp_content_homepage_pager" />
-
             </android.support.design.widget.AppBarLayout>
 
-            <android.support.v4.view.ViewPager
-                android:id="@+id/view_pager_promos"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+                android:orientation="vertical"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+                <android.support.design.widget.AppBarLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white">
+
+                    <include layout="@layout/tp_content_homepage_pager" />
+
+                </android.support.design.widget.AppBarLayout>
+
+                <android.support.v4.view.ViewPager
+                    android:id="@+id/view_pager_promos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
 
         </android.support.design.widget.CoordinatorLayout>
 
-        <include layout="@layout/layout_tp_homepage_error" />
+        <include layout="@layout/layout_tp_network_error_large" />
 
     </ViewFlipper>
 

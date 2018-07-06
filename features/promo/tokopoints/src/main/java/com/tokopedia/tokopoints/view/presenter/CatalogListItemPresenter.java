@@ -74,7 +74,6 @@ public class CatalogListItemPresenter extends BaseDaggerPresenter<CatalogListIte
 
             @Override
             public void onError(Throwable e) {
-                //TODO handling for null data
                 getView().showError();
             }
 
@@ -85,7 +84,6 @@ public class CatalogListItemPresenter extends BaseDaggerPresenter<CatalogListIte
                 if (catalogListingOuter != null) {
                     getView().populateCatalog(catalogListingOuter.getCatalog().getCatalogs());
                 } else {
-                    //TODO handling for null data
                     getView().showError();
                 }
             }

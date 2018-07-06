@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ViewFlipper;
 
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
@@ -36,12 +37,22 @@ public class HomepagePagerAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
         View view = mLayoutInflater.inflate(R.layout.tp_layout_promos_list_container, container, false);
+        ViewFlipper containerInner = view.findViewById(R.id.container);
 
         if (position == 0) {
-            if (mCatalogs != null) {
+            if (mCatalogs != null && !mCatalogs.isEmpty()) {
+                containerInner.setDisplayedChild(0);
                 RecyclerView recyclerView = view.findViewById(R.id.recycler_view_promos);
                 recyclerView.addItemDecoration(new SpacesItemDecoration(recyclerView.getResources().getDimensionPixelOffset(R.dimen.tp_padding_small)));
                 recyclerView.setAdapter(mCatalogsAdapter);
+            } else {
+                containerInner.setDisplayedChild(1);
+                view.findViewById(R.id.text_empty_action).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mPresenter.getView().openWebView(CommonConstant.WebLink.INFO);
+                    }
+                });
             }
 
             view.findViewById(R.id.text_link_first).setOnClickListener(new View.OnClickListener() {
@@ -59,6 +70,7 @@ public class HomepagePagerAdapter extends PagerAdapter {
             });
         } else {
             if (mCoupons != null) {
+                containerInner.setDisplayedChild(0);
                 RecyclerView recyclerView = view.findViewById(R.id.recycler_view_promos);
                 recyclerView.addItemDecoration(new SpacesItemDecoration(recyclerView.getResources().getDimensionPixelOffset(R.dimen.tp_padding_small)));
                 recyclerView.setAdapter(mCouponsAdapter);

@@ -127,7 +127,6 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
 
     @Override
     public void onErrorBanners(String errorMessage) {
-        Log.d("Catalog", errorMessage);
     }
 
     @Override
@@ -140,12 +139,12 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
 
         ViewPager pager = getView().findViewById(R.id.view_pager_banner);
         pager.setAdapter(new CatalogBannerPagerAdapter(getContext(), banners, mPresenter));
-
         //adding bottom dots(Page Indicator)
         final CirclePageIndicator pageIndicator = getView().findViewById(R.id.page_indicator);
         pageIndicator.setFillColor(ContextCompat.getColor(getContext(), R.color.tkpd_main_green));
         pageIndicator.setPageColor(ContextCompat.getColor(getContext(), R.color.white_two));
         pageIndicator.setViewPager(pager, 0);
+        getView().findViewById(R.id.container_pager).setVisibility(View.VISIBLE);
 
     }
 
@@ -232,7 +231,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         mPagerSortType = view.findViewById(R.id.view_pager_sort_type);
         mTabSortType = view.findViewById(R.id.tabs_sort_type);
         mTextPoints = view.findViewById(R.id.text_point_value);
-        mTextPoints = view.findViewById(R.id.text_failed_action);
+        mTextFailedAction = view.findViewById(R.id.text_failed_action);
     }
 
     private void initListener() {
