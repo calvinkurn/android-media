@@ -5,10 +5,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.tokopoints.ApplinkConstant;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.di.DaggerTokoPointComponent;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
@@ -35,6 +37,7 @@ public class TokoPointsHomeActivity extends BaseSimpleActivity implements HasCom
         return tokoPointComponent;
     }
 
+    @DeepLink(ApplinkConstant.HOMEPAGE)
     public static Intent getCallingIntent(Context context) {
         return new Intent(context, TokoPointsHomeActivity.class);
     }

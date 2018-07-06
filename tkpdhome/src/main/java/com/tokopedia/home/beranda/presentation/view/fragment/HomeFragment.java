@@ -53,6 +53,7 @@ import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.router.wallet.WalletRouterUtil;
+import com.tokopedia.core.util.RouterUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
@@ -77,6 +78,7 @@ import com.tokopedia.home.beranda.presentation.view.compoundview.CountDownView;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewModel;
 import com.tokopedia.home.widget.FloatingTextButton;
 import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
+import com.tokopedia.tokopoints.ApplinkConstant;
 import com.tokopedia.tokopoints.view.activity.TokoPointsHomeActivity;
 
 import java.io.UnsupportedEncodingException;
@@ -87,6 +89,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import static com.tokopedia.core.constants.HomeFragmentBroadcastReceiverConstant.EXTRA_ACTION_RECEIVER;
+import static com.tokopedia.tokopoints.ApplinkConstant.HOMEPAGE;
 
 /**
  * @author by errysuprayogi on 11/27/17.
@@ -481,11 +484,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void actionTokoPointClicked(String tokoPointUrl, String pageTitle) {
-//        if (TextUtils.isEmpty(pageTitle))
-//            startActivity(TokoPointWebviewActivity.getIntent(getActivity(), tokoPointUrl));
-//        else
-//            startActivity(TokoPointWebviewActivity.getIntentWithTitle(getActivity(), tokoPointUrl, pageTitle));
-        startActivity(TokoPointsHomeActivity.getCallingIntent(getContext()));
+        RouterUtils.getDefaultRouter().actionAppLink(getContext(), ApplinkConstant.HOMEPAGE);
     }
 
     @Override
