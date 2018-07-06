@@ -31,7 +31,7 @@ class ProductAddVideoRecommendationFeaturedAdapter(var videoRecommendationFeatur
 
     override fun getItemCount() = videoRecommendationFeatured.size
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when(viewType){
             1 -> {
                 val itemLayoutView = LayoutInflater.from(parent!!.context)
