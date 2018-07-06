@@ -250,7 +250,13 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
     @NonNull
     @Override
     protected ShopProductLimitedAdapterTypeFactory getAdapterTypeFactory() {
-        return new ShopProductLimitedAdapterTypeFactory(this, this, this, promoWebViewListener, this);
+        return new ShopProductLimitedAdapterTypeFactory(this, this, this, promoWebViewListener, this,
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        startActivity(ShopProductListActivity.createIntent(getActivity(), shopInfo.getInfo().getShopId(), "", "", attribution));
+                    }
+                });
     }
 
     @NonNull

@@ -20,6 +20,7 @@ import com.tokopedia.design.text.SpinnerTextView;
 import com.tokopedia.design.text.TkpdTextInputLayout;
 import com.tokopedia.seller.product.edit.utils.ViewUtils;
 import com.tokopedia.topads.R;
+import com.tokopedia.topads.TopAdsComponentInstance;
 import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.common.view.fragment.TopAdsBaseStepperFragment;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
@@ -301,7 +302,7 @@ public class TopAdsKeywordNewChooseGroupFragment extends TopAdsBaseStepperFragme
     protected void initInjector() {
         DaggerTopAdsKeywordNewChooseGroupComponent.builder()
                 .topAdsKeywordNewChooseGroupModule(new TopAdsKeywordNewChooseGroupModule())
-                .topAdsComponent(TopAdsComponentUtils.getTopAdsComponent(this))
+                .topAdsComponent(TopAdsComponentInstance.getComponent(getActivity().getApplication()))
                 .build()
                 .inject(this);
         topAdsKeywordNewChooseGroupPresenter.attachView(this);
