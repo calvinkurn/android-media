@@ -470,6 +470,10 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
             );
         }
 
+        boolean isLiked = polling.getRelation() != null
+                && polling.getRelation().getIsLiked() != null
+                && polling.getRelation().getIsLiked();
+
         return new PollViewModel(
                 polling.getUserId() == null ? 0 : polling.getUserId(),
                 cardType,
@@ -480,7 +484,7 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
                 polling.getUserUrl() == null ? "" : polling.getUserUrl(),
                 true,
                 polling.getQuestion() == null ? "" : polling.getQuestion(),
-                polling.getLiked() == null ? false : polling.getLiked(),
+                isLiked,
                 polling.getLikeCount() == null ? 0 : polling.getLikeCount(),
                 polling.getCommentCount() == null ? 0 : polling.getCommentCount(),
                 0,

@@ -222,41 +222,46 @@ query FeedQuery($userID: Int!, $limit: Int!, $cursor: String, $source: String) {
           applinks
         }
         polling {
-            poll_id
-            title
-            description
-            question
-            commentcount
-            likecount
-            create_time
-            liked
-            followed
-            show_comment
-            total_voter
-            is_answered
-            options {
-                option_id
-                option
-                weblink
-                applink
-                image_option
-                voter
-                percentage
-                is_selected
-                __typename
-            }
-            userName
-            userPhoto
-            userUrl
-            userInfo
+          poll_id
+          title
+          description
+          question
+          commentCount
+          likeCount
+          createTime
+          liked
+          followed
+          showComment
+          showLike
+          totalVoter
+          isAnswered
+          options {
+            option_id
+            option
+            weblink
+            applink
+            image_option
+            voter
+            percentage
+            is_selected
             __typename
+          }
+          userName
+          userPhoto
+          userUrl
+          userInfo
+          relation {
+            isFollowed
+            isLiked
+          }
+          __typename
         }
-        banner {
+        banner{
             img_url
             click_url
             click_applink
             width_to_height_ratio
-            __typename
+          __typename
         }
       }
     }
