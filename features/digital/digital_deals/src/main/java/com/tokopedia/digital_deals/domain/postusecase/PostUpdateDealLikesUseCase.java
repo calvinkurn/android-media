@@ -6,36 +6,28 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.common.network.data.model.RequestType;
 import com.tokopedia.common.network.data.model.RestRequest;
 import com.tokopedia.common.network.domain.RestRequestUseCase;
 import com.tokopedia.digital_deals.data.source.DealsBaseURL;
 import com.tokopedia.digital_deals.data.source.DealsUrl;
-import com.tokopedia.digital_deals.domain.DealsRepository;
 import com.tokopedia.digital_deals.domain.model.LikeUpdateResultDomain;
-import com.tokopedia.digital_deals.domain.model.allbrandsdomainmodel.AllBrandsDomain;
 import com.tokopedia.digital_deals.domain.model.request.likes.LikeUpdateModel;
 import com.tokopedia.usecase.RequestParams;
-import com.tokopedia.usecase.UseCase;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
 
-import rx.Observable;
-
 
 public class PostUpdateDealLikesUseCase extends RestRequestUseCase {
 
-    DealsRepository mRepository;
     private RequestParams params;
 
     @Inject
-    public PostUpdateDealLikesUseCase(DealsRepository eventRepository) {
-        this.mRepository = eventRepository;
-    }
+    public PostUpdateDealLikesUseCase() { }
 
     public void setRequestParams(RequestParams params) {
         this.params = params;
@@ -53,6 +45,7 @@ public class PostUpdateDealLikesUseCase extends RestRequestUseCase {
         }.getType();
 
         RestRequest restRequest1 = new RestRequest.Builder(url, token)
+                .setRequestType(RequestType.POST)
                 .setBody(requestBody)
                 .build();
         tempRequest.add(restRequest1);

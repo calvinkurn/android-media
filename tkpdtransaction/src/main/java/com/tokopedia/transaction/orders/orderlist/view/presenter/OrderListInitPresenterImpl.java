@@ -8,6 +8,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.orderlist.data.Data;
+import com.tokopedia.transaction.orders.orderlist.data.TabData;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
@@ -30,7 +31,7 @@ public class OrderListInitPresenterImpl implements OrderListInitContract.Present
     public void getInitData(String orderCategory, int typeRequest, int page) {
         GraphqlRequest graphqlRequest = new
                 GraphqlRequest(GraphqlHelper.loadRawString(view.getAppContext().getResources(),
-                R.raw.initorderlist), Data.class);
+                R.raw.initorderlist), TabData.class);
 
 
         initUseCase.setRequest(graphqlRequest);
@@ -55,9 +56,9 @@ public class OrderListInitPresenterImpl implements OrderListInitContract.Present
             public void onNext(GraphqlResponse response) {
                 view.removeProgressBarView();
                 if (response != null) {
-                    Data data = response.getData(Data.class);
-                    if (!data.orderLabelList().isEmpty()) {
-                        view.renderTabs(data.orderLabelList());
+                    TabData data = response.getData(TabData.class);
+                    if (!data.getOrderLabelList().isEmpty()) {
+                        view.renderTabs(data.getOrderLabelList());
                     } else {
                         //view.renderEmptyList(typeRequest);
                     }

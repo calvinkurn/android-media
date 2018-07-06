@@ -1,11 +1,14 @@
 package com.tokopedia.transaction.orders.orderlist.view.adapter;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.os.Bundle;
-import android.support.v13.app.FragmentStatePagerAdapter;
-import android.util.Log;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.view.View;
 
+import com.tokopedia.flight.orderlist.view.FlightOrderListFragment;
+import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
+import com.tokopedia.transaction.orders.orderlist.data.OrderLabelList;
 import com.tokopedia.transaction.orders.orderlist.view.fragment.OrderListFragment;
 
 import java.util.List;
@@ -13,12 +16,14 @@ import java.util.List;
 public class OrderTabAdapter extends FragmentStatePagerAdapter {
     private static final String ORDER_CATEGORY = "orderCategory";
     Listener listener;
-    List<String> adapterItems;
+    List<OrderLabelList> adapterItems;
+    private String orderCategory;
 
-    public OrderTabAdapter(FragmentManager fragmentManager, List<String> adapterItems, Listener listener) {
+    public OrderTabAdapter(FragmentManager fragmentManager, List<OrderLabelList> adapterItems, Listener listener, String orderCategory) {
         super(fragmentManager);
         this.listener = listener;
         this.adapterItems = adapterItems;
+        this.orderCategory = orderCategory;
     }
 
     @Override
@@ -27,11 +32,18 @@ public class OrderTabAdapter extends FragmentStatePagerAdapter {
     }
 
     @Override
+    public boolean isViewFromObject(View view, Object object) {
+        return false;
+    }
+
+    @Override
     public Fragment getItem(int position) {
         Bundle arg = new Bundle();
-        arg.putString(ORDER_CATEGORY, adapterItems.get(position));
         Fragment fragment = new OrderListFragment();
-        Log.e("sandeep","fragment created");
+        arg.putString(ORDER_CATEGORY, adapterItems.get(position).getOrderCategory());
+        if(orderCategory.equals(OrderCategory.FLIGHTS)) {
+           fragment = FlightOrderListFragment.createInstance();
+        }
         fragment.setArguments(arg);
         return fragment;
 

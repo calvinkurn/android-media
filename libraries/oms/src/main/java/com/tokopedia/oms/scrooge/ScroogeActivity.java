@@ -24,7 +24,7 @@ public class ScroogeActivity extends AppCompatActivity {
     private static String ADD_CC_FAIL_CALLBACK = "tokopedia://action_add_cc_fail";
     private static String DELETE_CC_SUCESS_CALLBACK = "tokopedia://action_delete_cc_success";
     private static String DELETE_CC_FAIL_CALLBACK = "tokopedia://action_delete_cc_fail";
-    private static String SUCCESS_CALLBACK = "tokopedia://orderId";
+    private static String SUCCESS_CALLBACK = "tokopedia://order/";
 
     private static final String EXTRA_KEY_POST_PARAMS = "EXTRA_KEY_POST_PARAMS";
     private static final String EXTRA_KEY_URL = "URL";
@@ -159,7 +159,7 @@ public class ScroogeActivity extends AppCompatActivity {
                     responseIntent.putExtra(ScroogePGUtil.RESULT_EXTRA_MSG, "FAIL");
                     setResult(ScroogePGUtil.RESULT_CODE_DELETE_CC_SUCCESS, responseIntent);
                     finish();
-                } else if (url.startsWith(SUCCESS_CALLBACK)) {
+                } else if (url.startsWith(SUCCESS_CALLBACK) && url.substring(0, url.lastIndexOf("/")).endsWith("order")) {
                     responseIntent.putExtra(ScroogePGUtil.RESULT_EXTRA_MSG, "Success");
                     responseIntent.putExtra(ScroogePGUtil.SUCCESS_MSG_URL, url);
                     setResult(ScroogePGUtil.RESULT_CODE_SUCCESS, responseIntent);

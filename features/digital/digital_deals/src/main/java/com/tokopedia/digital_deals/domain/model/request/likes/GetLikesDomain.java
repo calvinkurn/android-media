@@ -18,6 +18,7 @@ public class GetLikesDomain {
     @Expose
     private boolean isLiked;
 
+
     public int getProductId() {
         return productId;
     }

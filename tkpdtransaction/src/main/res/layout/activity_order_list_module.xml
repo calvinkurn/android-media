@@ -12,7 +12,7 @@
     <include layout="@layout/layout_tab_indicator_main"
         android:id="@+id/tab_layout"/>
 
-    <com.tkpd.library.ui.widget.TouchViewPager
+    <com.tokopedia.abstraction.base.view.widget.TouchViewPager
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

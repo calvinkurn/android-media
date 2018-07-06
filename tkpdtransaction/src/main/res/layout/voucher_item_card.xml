@@ -163,13 +163,13 @@
                 android:textStyle="bold" />
         </LinearLayout>
 
-        <FrameLayout
+        <LinearLayout
             android:id="@+id/progress_bar_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clickable="true"
             android:focusable="true"
-            android:layout_marginTop="@dimen/dp_8"
+            android:orientation="vertical"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ll_valid">
@@ -179,6 +179,7 @@
                 android:layout_width="@dimen/dp_40"
                 android:layout_height="@dimen/dp_40"
                 android:layout_gravity="center"
+                android:layout_marginTop="@dimen/dp_8"
                 android:visibility="gone"/>
 
             <LinearLayout
@@ -195,17 +196,18 @@
                 android:id="@+id/actionButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="18dp"
-                android:layout_marginRight="18dp"
-                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginLeft="@dimen/dp_1"
+                android:layout_marginRight="@dimen/dp_1"
                 android:background="@color/white"
                 android:orientation="vertical"
-                android:visibility="gone"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tapAction" />
 
-        </FrameLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="8dp"/>
+        </LinearLayout>
 
     </android.support.constraint.ConstraintLayout>
 

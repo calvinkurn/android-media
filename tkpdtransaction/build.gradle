@@ -73,6 +73,7 @@ dependencies {
     implementation project(path: ':libraries:applink')
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
+    implementation project(path: ':tkpdflight')
 }
 
 apply from: '../publish_local.gradle'
