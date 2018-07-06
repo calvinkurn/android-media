@@ -25,10 +25,7 @@ public class TrainPassengerSeatViewHolder extends AbstractViewHolder<TrainReview
 
     private LinearLayout layoutTextReturnTrip;
 
-    private String originStation;
-    private String destinationStation;
-
-    public TrainPassengerSeatViewHolder(View itemView, String originCity, String destinationCity) {
+    public TrainPassengerSeatViewHolder(View itemView) {
         super(itemView);
         textPassengerIndex = itemView.findViewById(R.id.text_passenger_index);
         textPassengerName = itemView.findViewById(R.id.text_passenger_name);
@@ -38,8 +35,6 @@ public class TrainPassengerSeatViewHolder extends AbstractViewHolder<TrainReview
         textReturnTrip = itemView.findViewById(R.id.text_returnure_trip);
         textReturnSeat = itemView.findViewById(R.id.text_return_seat);
         layoutTextReturnTrip = itemView.findViewById(R.id.layout_text_return_trip);
-        this.originStation = originCity;
-        this.destinationStation = destinationCity;
     }
 
     @Override
@@ -49,12 +44,12 @@ public class TrainPassengerSeatViewHolder extends AbstractViewHolder<TrainReview
         textNumberID.setText(element.getNoID());
         textDepartureSeat.setText(String.format(element.getDepartureTripClass(), " ", element.getDepartureSeat()));
         textDepartureTrip.setText(itemView.getContext().getString(R.string.train_item_passenger_info_seat,
-                originStation, destinationStation));
+                element.getOriginStationCode(), element.getDestinationStationCode()));
         if (!TextUtils.isEmpty(element.getReturnTripClass()) && !TextUtils.isEmpty(element.getReturnSeat())) {
             layoutTextReturnTrip.setVisibility(View.VISIBLE);
             textReturnSeat.setText(String.format(element.getReturnTripClass(), " ", element.getReturnSeat()));
             textReturnTrip.setText(itemView.getContext().getString(R.string.train_item_passenger_info_seat,
-                    destinationStation, originStation));
+                    element.getDestinationStationCode(), element.getOriginStationCode()));
         } else {
             layoutTextReturnTrip.setVisibility(View.GONE);
         }

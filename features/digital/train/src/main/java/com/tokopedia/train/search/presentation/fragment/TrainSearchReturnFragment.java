@@ -79,8 +79,8 @@ public class TrainSearchReturnFragment extends TrainSearchFragment
     }
 
     @Override
-    public void selectSchedule(TrainScheduleViewModel trainScheduleViewModel) {
-        trainScheduleBookingPassData.setReturnScheduleId(trainScheduleViewModel.getIdSchedule());
+    public void selectSchedule(String scheduleId) {
+        trainScheduleBookingPassData.setReturnScheduleId(scheduleId);
         startActivity(TrainBookingPassengerActivity.callingIntent(getActivity(), trainScheduleBookingPassData));
     }
 

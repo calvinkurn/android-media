@@ -5,8 +5,8 @@ public class TrainReviewPassengerInfoViewModelBuilder {
     private String name;
     private String noID;
     private String departureTripClass;
-    private String originStation;
-    private String destinationStation;
+    private String originStationCode;
+    private String destinationStationCode;
     private String returnTripClass;
     private String departureSeat;
     private String returnSeat;
@@ -26,13 +26,13 @@ public class TrainReviewPassengerInfoViewModelBuilder {
         return this;
     }
 
-    public TrainReviewPassengerInfoViewModelBuilder originStation(String originStation) {
-        this.originStation = originStation;
+    public TrainReviewPassengerInfoViewModelBuilder originStationCode(String originStation) {
+        this.originStationCode = originStation;
         return this;
     }
 
-    public TrainReviewPassengerInfoViewModelBuilder destinationStation(String destinationStation) {
-        this.destinationStation = destinationStation;
+    public TrainReviewPassengerInfoViewModelBuilder destinationStationCode(String destinationStation) {
+        this.destinationStationCode = destinationStation;
         return this;
     }
 
@@ -52,7 +52,8 @@ public class TrainReviewPassengerInfoViewModelBuilder {
     }
 
     public TrainReviewPassengerInfoViewModel createTrainReviewPassengerInfoViewModel() {
-        return new TrainReviewPassengerInfoViewModel(name, noID, departureTripClass, originStation, destinationStation, returnTripClass, departureSeat, returnSeat);
+        return new TrainReviewPassengerInfoViewModel(name, noID, departureTripClass, originStationCode,
+                destinationStationCode, returnTripClass, departureSeat, returnSeat);
     }
 
 }

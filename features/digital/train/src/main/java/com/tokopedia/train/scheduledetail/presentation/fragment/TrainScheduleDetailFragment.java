@@ -17,6 +17,8 @@ import com.tokopedia.train.scheduledetail.presentation.model.TrainScheduleDetail
  */
 public class TrainScheduleDetailFragment extends BaseDaggerFragment {
 
+    private static final String ARGS_SHOW_SUBMIT_BUTTON = "ARGS_SHOW_SUBMIT_BUTTON";
+
     private TextView trip;
     private TextView trainName;
     private TextView trainClass;

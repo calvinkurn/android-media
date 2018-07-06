@@ -8,6 +8,7 @@ import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.presentation.TrainBaseActivity;
 import com.tokopedia.train.common.util.TrainDateUtil;
 import com.tokopedia.train.homepage.presentation.model.TrainSearchPassDataViewModel;
+import com.tokopedia.train.search.presentation.fragment.TrainSearchFragment;
 
 /**
  * @author by alvarisi on 3/8/18.
@@ -53,4 +54,5 @@ public abstract class TrainSearchActivity extends TrainBaseActivity {
     protected abstract String getTitleTrainToolbar();
 
     protected abstract String getDepartureDate();
+
 }

@@ -11,14 +11,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
  */
 public class TrainPassengerAdapterTypeFactory extends BaseAdapterTypeFactory implements AdapterTypeFactory {
 
-    private String originCity;
-    private String destinationCity;
-
-    public TrainPassengerAdapterTypeFactory(String originCity, String destinationCity) {
-        this.originCity = originCity;
-        this.destinationCity = destinationCity;
-    }
-
     public int type(TrainReviewPassengerInfoViewModel viewModel) {
         return TrainPassengerSeatViewHolder.LAYOUT;
     }
@@ -26,7 +18,7 @@ public class TrainPassengerAdapterTypeFactory extends BaseAdapterTypeFactory imp
     @Override
     public AbstractViewHolder createViewHolder(View parent, int type) {
         if (type == TrainPassengerSeatViewHolder.LAYOUT) {
-            return new TrainPassengerSeatViewHolder(parent, originCity, destinationCity);
+            return new TrainPassengerSeatViewHolder(parent);
         } else {
             return super.createViewHolder(parent, type);
         }

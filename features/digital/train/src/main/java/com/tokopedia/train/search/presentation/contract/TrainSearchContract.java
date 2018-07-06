@@ -34,7 +34,7 @@ public interface TrainSearchContract {
 
         void hideFilterAndSortButtonAction();
 
-        void selectSchedule(TrainScheduleViewModel trainScheduleViewModel);
+        void selectSchedule(String scheduleId);
     }
 
     interface Presenter extends CustomerPresenter<View> {

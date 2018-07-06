@@ -20,6 +20,8 @@ import com.tokopedia.train.scheduledetail.presentation.activity.TrainScheduleDet
 import com.tokopedia.train.search.presentation.model.TrainScheduleBookingPassData;
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 /**
@@ -66,7 +68,6 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
 
         trainReviewDetailPresenter.attachView(this);
 
-        trainReviewDetailPresenter.getPassengers(trainSoftbook);
         trainReviewDetailPresenter.getScheduleDetail(trainScheduleBookingPassData.getDepartureScheduleId(),
                 trainScheduleBookingPassData.getReturnScheduleId());
     }
@@ -83,7 +84,17 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
             Intent intent = TrainScheduleDetailActivity.createIntent(getActivity(),
                     trainScheduleBookingPassData.getDepartureScheduleId(),
                     trainScheduleBookingPassData.getAdultPassenger(),
-                    trainScheduleBookingPassData.getInfantPassenger());
+                    trainScheduleBookingPassData.getInfantPassenger(),
+                    false);
+            startActivity(intent);
+        });
+
+        cardReturnTrip.setActionListener(() -> {
+            Intent intent = TrainScheduleDetailActivity.createIntent(getActivity(),
+                    trainScheduleBookingPassData.getReturnScheduleId(),
+                    trainScheduleBookingPassData.getAdultPassenger(),
+                    trainScheduleBookingPassData.getInfantPassenger(),
+                    false);
             startActivity(intent);
         });
 
@@ -103,8 +114,7 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
 
     @Override
     protected TrainPassengerAdapterTypeFactory getAdapterTypeFactory() {
-        return new TrainPassengerAdapterTypeFactory(trainScheduleBookingPassData.getOriginCity(),
-                trainScheduleBookingPassData.getDestinationCity());
+        return new TrainPassengerAdapterTypeFactory();
     }
 
     @Override
@@ -151,6 +161,9 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
         } else {
             cardReturnTrip.setVisibility(View.GONE);
         }
+
+        trainReviewDetailPresenter.getPassengers(trainSoftbook, departureTrip.getOrigin(),
+                departureTrip.getDestination());
     }
 
 }

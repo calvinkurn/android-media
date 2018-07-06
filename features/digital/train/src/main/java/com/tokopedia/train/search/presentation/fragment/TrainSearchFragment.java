@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -61,10 +62,14 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
         TrainSearchAdapterTypeFactory.OnTrainSearchListener {
 
     private static final String TAG = TrainSearchFragment.class.getSimpleName();
+
     private static final String SELECTED_SORT = "selected_sort";
     private static final int EMPTY_MARGIN = 0;
     private static final float DEFAULT_DIMENS_MULTIPLIER = 0.5f;
     private static final int PADDING_SEARCH_LIST = 60;
+
+    private static final int REQUEST_CODE_SEARCH_FILTER = 0;
+    private static final int REQUEST_CODE_OPEN_TRAIN_SCHEDULE_DETAIL = 1;
 
     protected TrainSearchPassDataViewModel trainSearchPassDataViewModel;
     protected String dateDeparture;
@@ -168,7 +173,8 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
             @Override
             public void onClick(View view) {
                 startActivityForResult(TrainFilterSearchActivity.getCallingIntent(getActivity(),
-                        getRequestParam().getParameters(), getScheduleVariant(), filterSearchData), 133);
+                        getRequestParam().getParameters(), getScheduleVariant(), filterSearchData),
+                        REQUEST_CODE_SEARCH_FILTER);
             }
         });
         filterAndSortBottomAction.setButton2OnClickListener(new View.OnClickListener() {
@@ -354,23 +360,24 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
         Intent intent = TrainScheduleDetailActivity.createIntent(getActivity(),
                 trainScheduleViewModel.getIdSchedule(),
                 trainSearchPassDataViewModel.getAdult(),
-                trainSearchPassDataViewModel.getInfant());
-        getActivity().startActivity(intent);
+                trainSearchPassDataViewModel.getInfant(),
+                true);
+        startActivityForResult(intent, REQUEST_CODE_OPEN_TRAIN_SCHEDULE_DETAIL);
     }
 
     @Override
     public void onItemClicked(TrainScheduleViewModel trainScheduleViewModel) {
-        selectSchedule(trainScheduleViewModel);
+        selectSchedule(trainScheduleViewModel.getIdSchedule());
     }
 
     @Override
-    public void selectSchedule(TrainScheduleViewModel trainScheduleViewModel) {
+    public void selectSchedule(String scheduleId) {
         if (!trainSearchPassDataViewModel.isOneWay()) {
-            trainScheduleBookingPassData.setDepartureScheduleId(trainScheduleViewModel.getIdSchedule());
+            trainScheduleBookingPassData.setDepartureScheduleId(scheduleId);
             startActivityForResult(TrainSearchReturnActivity.getCallingIntent(getActivity(),
-                    trainSearchPassDataViewModel, trainScheduleBookingPassData, trainScheduleViewModel.getIdSchedule()), 11);
+                    trainSearchPassDataViewModel, trainScheduleBookingPassData, scheduleId), 11);
         } else {
-            trainScheduleBookingPassData.setDepartureScheduleId(trainScheduleViewModel.getIdSchedule());
+            trainScheduleBookingPassData.setDepartureScheduleId(scheduleId);
             startActivity(TrainBookingPassengerActivity.callingIntent(getActivity(), trainScheduleBookingPassData));
         }
     }
@@ -447,19 +454,32 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK && requestCode == 133) {
-            filterSearchData = data.getExtras().getParcelable(TrainFilterSearchActivity.MODEL_SEARCH_FILTER);
-            long minPrice = filterSearchData.getSelectedMinPrice() == 0 ? filterSearchData.getMinPrice() : filterSearchData.getSelectedMinPrice();
-            long maxPrice = filterSearchData.getSelectedMaxPrice() == 0 ? filterSearchData.getMaxPrice() : filterSearchData.getSelectedMaxPrice();
-            List<String> trains = filterSearchData.getSelectedTrains() != null && !filterSearchData.getSelectedTrains().isEmpty() ?
-                    filterSearchData.getSelectedTrains() : filterSearchData.getTrains();
-            List<String> trainsClass = filterSearchData.getSelectedTrainClass() != null && !filterSearchData.getSelectedTrainClass().isEmpty() ?
-                    filterSearchData.getSelectedTrainClass() : filterSearchData.getTrainClass();
-            List<String> departureHours = filterSearchData.getSelectedDepartureTimeList() != null && !filterSearchData.getSelectedDepartureTimeList().isEmpty() ?
-                    filterSearchData.getSelectedDepartureTimeList() : filterSearchData.getDepartureTimeList();
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case REQUEST_CODE_SEARCH_FILTER :
+                    filterSearchData = data.getExtras().getParcelable(TrainFilterSearchActivity.MODEL_SEARCH_FILTER);
+                    long minPrice = filterSearchData.getSelectedMinPrice() == 0 ? filterSearchData.getMinPrice() : filterSearchData.getSelectedMinPrice();
+                    long maxPrice = filterSearchData.getSelectedMaxPrice() == 0 ? filterSearchData.getMaxPrice() : filterSearchData.getSelectedMaxPrice();
+                    List<String> trains = filterSearchData.getSelectedTrains() != null && !filterSearchData.getSelectedTrains().isEmpty() ?
+                            filterSearchData.getSelectedTrains() : filterSearchData.getTrains();
+                    List<String> trainsClass = filterSearchData.getSelectedTrainClass() != null && !filterSearchData.getSelectedTrainClass().isEmpty() ?
+                            filterSearchData.getSelectedTrainClass() : filterSearchData.getTrainClass();
+                    List<String> departureHours = filterSearchData.getSelectedDepartureTimeList() != null && !filterSearchData.getSelectedDepartureTimeList().isEmpty() ?
+                            filterSearchData.getSelectedDepartureTimeList() : filterSearchData.getDepartureTimeList();
 
-            presenter.getFilteredAndSortedSchedules(minPrice, maxPrice, trainsClass, trains,
-                    departureHours, selectedSortOption);
+                    presenter.getFilteredAndSortedSchedules(minPrice, maxPrice, trainsClass, trains,
+                            departureHours, selectedSortOption);
+                    break;
+                case REQUEST_CODE_OPEN_TRAIN_SCHEDULE_DETAIL :
+                    if (data != null && data.hasExtra(TrainScheduleDetailActivity.EXTRA_TRAIN_SELECTED)) {
+                        String selectedId = data.getStringExtra(TrainScheduleDetailActivity.EXTRA_TRAIN_SELECTED);
+                        if (!TextUtils.isEmpty(selectedId)) {
+                            selectSchedule(selectedId);
+                        }
+                    }
+                    break;
+            }
         }
     }
+
 }

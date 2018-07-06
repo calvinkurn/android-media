@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.homepage.presentation.model.TrainSearchPassDataViewModel;
 import com.tokopedia.train.search.presentation.fragment.TrainSearchDepartureFragment;
+import com.tokopedia.train.search.presentation.fragment.TrainSearchFragment;
 
 /**
  * Created by nabillasabbaha on 3/19/18.
@@ -34,4 +35,5 @@ public class TrainSearchDepartureActivity extends TrainSearchActivity {
     protected String getDepartureDate() {
         return trainSearchPassDataViewModel.getDepartureDate();
     }
+
 }

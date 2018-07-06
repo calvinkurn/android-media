@@ -1,6 +1,5 @@
 package com.tokopedia.train.reviewdetail;
 
-import android.text.TextUtils;
 import android.util.Pair;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
@@ -18,7 +17,6 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
-import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
 /**
@@ -35,7 +33,8 @@ public class TrainReviewDetailPresenter extends BaseDaggerPresenter<TrainReviewD
     }
 
     @Override
-    public void getPassengers(TrainSoftbook trainSoftbook) {
+    public void getPassengers(TrainSoftbook trainSoftbook, String originStationCode,
+                              String destinationStationCode) {
         Observable<TrainPaxPassenger> departureTrainPaxPassengerObservable =
                 Observable.just(trainSoftbook.getDepartureTrips().get(0).getPaxPassengers())
                         .flatMapIterable((Func1<List<TrainPaxPassenger>, Iterable<TrainPaxPassenger>>)
@@ -59,6 +58,8 @@ public class TrainReviewDetailPresenter extends BaseDaggerPresenter<TrainReviewD
                             .noID(departureTrainPaxPassenger.getIdNumber())
                             .departureTripClass(departureTrainPaxPassenger.getSeat().getKlass())
                             .returnTripClass(returnTrainPaxPassenger.getSeat().getKlass())
+                            .originStationCode(originStationCode)
+                            .destinationStationCode(destinationStationCode)
                             .departureSeat(departureTrainPaxPassenger.getSeat().getWagonNo() + "/"
                                     + departureTrainPaxPassenger.getSeat().getRow()
                                     + departureTrainPaxPassenger.getSeat().getColumn())
@@ -74,6 +75,8 @@ public class TrainReviewDetailPresenter extends BaseDaggerPresenter<TrainReviewD
                             .noID(departureTrainPaxPassenger.getIdNumber())
                             .departureTripClass(departureTrainPaxPassenger.getSeat().getKlass())
                             .returnTripClass(null)
+                            .originStationCode(originStationCode)
+                            .destinationStationCode(destinationStationCode)
                             .departureSeat(departureTrainPaxPassenger.getSeat().getWagonNo() + "/"
                                     + departureTrainPaxPassenger.getSeat().getRow()
                                     + departureTrainPaxPassenger.getSeat().getColumn())

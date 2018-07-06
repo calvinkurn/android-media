@@ -1,9 +1,10 @@
 package com.tokopedia.train.reviewdetail;
 
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener;
-import com.tokopedia.train.passenger.domain.model.TrainPaxPassenger;
 import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
+
+import java.util.List;
 
 /**
  * Created by Rizky on 02/07/18.
@@ -18,7 +19,7 @@ public class TrainReviewDetailContract {
 
     public interface Presenter {
 
-        void getPassengers(TrainSoftbook trainSoftbook);
+        void getPassengers(TrainSoftbook trainSoftbook, String origin, String destination);
 
         void getScheduleDetail(String departureScheduleId, String returnScheduleId);
 

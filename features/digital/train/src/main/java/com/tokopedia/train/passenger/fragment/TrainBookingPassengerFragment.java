@@ -34,6 +34,7 @@ import com.tokopedia.train.passenger.viewmodel.ProfileBuyerInfo;
 import com.tokopedia.train.passenger.viewmodel.TrainParamPassenger;
 import com.tokopedia.train.passenger.viewmodel.TrainPassengerViewModel;
 import com.tokopedia.train.reviewdetail.TrainReviewDetailActivity;
+import com.tokopedia.train.scheduledetail.presentation.activity.TrainScheduleDetailActivity;
 import com.tokopedia.train.search.presentation.model.TrainScheduleBookingPassData;
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
 
@@ -137,22 +138,22 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
         presenter.getDetailSchedule(trainScheduleBookingPassData.getDepartureScheduleId(), cardActionDeparture);
         presenter.getDetailSchedule(trainScheduleBookingPassData.getReturnScheduleId(), cardActionReturn);
 
-        cardActionDeparture.setActionListener(new CardWithAction.ActionListener() {
-            @Override
-            public void actionClicked() {
-                //TODO : detail info trip departure
-                Toast.makeText(getActivity(), trainScheduleBookingPassData.getOriginCity() + " - " +
-                        trainScheduleBookingPassData.getDestinationCity(), Toast.LENGTH_SHORT).show();
-            }
+        cardActionDeparture.setActionListener(() -> {
+            Intent intent = TrainScheduleDetailActivity.createIntent(getActivity(),
+                    trainScheduleBookingPassData.getDepartureScheduleId(),
+                    trainScheduleBookingPassData.getAdultPassenger(),
+                    trainScheduleBookingPassData.getInfantPassenger(),
+                    false);
+            startActivity(intent);
         });
 
-        cardActionReturn.setActionListener(new CardWithAction.ActionListener() {
-            @Override
-            public void actionClicked() {
-                //TODO : detail info trip return
-                Toast.makeText(getActivity(), trainScheduleBookingPassData.getDestinationCity() + " - " +
-                        trainScheduleBookingPassData.getOriginCity(), Toast.LENGTH_SHORT).show();
-            }
+        cardActionReturn.setActionListener(() -> {
+            Intent intent = TrainScheduleDetailActivity.createIntent(getActivity(),
+                    trainScheduleBookingPassData.getReturnScheduleId(),
+                    trainScheduleBookingPassData.getAdultPassenger(),
+                    trainScheduleBookingPassData.getInfantPassenger(),
+                    false);
+            startActivity(intent);
         });
     }
 

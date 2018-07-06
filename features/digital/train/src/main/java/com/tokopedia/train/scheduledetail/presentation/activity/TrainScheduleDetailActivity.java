@@ -8,6 +8,7 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -32,6 +33,9 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
     public static final String EXTRA_TRAIN_SCHEDULE_ID = "EXTRA_TRAIN_SCHEDULE_ID";
     public static final String EXTRA_NUMBER_OF_ADULT_PASSENGER = "EXTRA_NUMBER_OF_ADULT_PASSENGER";
     public static final String EXTRA_NUMBER_OF_INFANT_PASSENGER = "EXTRA_NUMBER_OF_INFANT_PASSENGER";
+    public static final String EXTRA_SHOW_SUBMIT_BUTTON = "EXTRA_SHOW_SUBMIT_BUTTON";
+
+    public static final String EXTRA_TRAIN_SELECTED = "EXTRA_TRAIN_SELECTED";
 
     @Inject
     TrainSchedulePresenter trainSchedulePresenter;
@@ -48,12 +52,16 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
 
     private TrainScheduleDetailViewModel trainScheduleDetailViewModel;
 
+    private String scheduleId;
+    private boolean showSubmitButton;
+
     public static Intent createIntent(Context context, String scheduleId, int numOfAdultPassenger,
-                                      int numOfInfantPassenger) {
+                                      int numOfInfantPassenger, boolean showSubmitButton) {
         Intent intent = new Intent(context, TrainScheduleDetailActivity.class);
         intent.putExtra(EXTRA_TRAIN_SCHEDULE_ID, scheduleId);
         intent.putExtra(EXTRA_NUMBER_OF_ADULT_PASSENGER, numOfAdultPassenger);
         intent.putExtra(EXTRA_NUMBER_OF_INFANT_PASSENGER, numOfInfantPassenger);
+        intent.putExtra(EXTRA_SHOW_SUBMIT_BUTTON, showSubmitButton);
         return intent;
     }
 
@@ -64,11 +72,13 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        showSubmitButton = getIntent().getBooleanExtra(EXTRA_SHOW_SUBMIT_BUTTON, false);
+
         super.onCreate(savedInstanceState);
 
         initInjector();
 
-        String scheduleId = getIntent().getStringExtra(EXTRA_TRAIN_SCHEDULE_ID);
+        scheduleId = getIntent().getStringExtra(EXTRA_TRAIN_SCHEDULE_ID);
         int numOfAdultPassenger = getIntent().getIntExtra(EXTRA_NUMBER_OF_ADULT_PASSENGER, 0);
         int numOfInfantPassenger = getIntent().getIntExtra(EXTRA_NUMBER_OF_INFANT_PASSENGER, 0);
 
@@ -94,6 +104,17 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
 
         appBarLayout.addOnOffsetChangedListener(onAppbarOffsetChange());
         tabLayout.setupWithViewPager(viewPager);
+
+        if (!showSubmitButton) {
+            buttonSubmit.setVisibility(View.GONE);
+        }
+
+        buttonSubmit.setOnClickListener(v -> {
+            Intent intent = new Intent();
+            intent.putExtra(EXTRA_TRAIN_SELECTED, scheduleId);
+            setResult(RESULT_OK, intent);
+            finish();
+        });
     }
 
     @Override
