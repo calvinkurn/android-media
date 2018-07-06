@@ -7,7 +7,7 @@ import com.tokopedia.product.edit.view.fragment.ProductAddVideoRecommendationFra
 
 class ProductAddVideoRecommendationActivity : BaseSimpleActivity() {
 
-    override fun getNewFragment(): Fragment? {
+    override fun getNewFragment(): Fragment{
         return ProductAddVideoRecommendationFragment.createInstance()
     }
 }

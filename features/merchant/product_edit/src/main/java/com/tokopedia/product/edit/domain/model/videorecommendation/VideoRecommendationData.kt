@@ -7,13 +7,9 @@ package com.tokopedia.product.edit.domain.model.videorecommendation
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-class VideoRecommendationData {
-
-    @SerializedName("id")
-    @Expose
-    var id: String? = null
-    @SerializedName("title")
-    @Expose
-    var title: String? = null
-
-}
+data class VideoRecommendationData ( @SerializedName("id")
+                                @Expose
+                                var id: String? = null,
+                                @SerializedName("title")
+                                @Expose
+                                var title: String? = null)

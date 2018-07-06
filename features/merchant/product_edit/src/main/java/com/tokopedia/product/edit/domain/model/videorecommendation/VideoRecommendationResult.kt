@@ -7,10 +7,6 @@ import com.google.gson.annotations.SerializedName
  * Created by hendry on 25/06/18.
  */
 
-class VideoRecommendationResult {
-
-    @SerializedName("videosearch")
-    @Expose
-    var videoSearch: VideoSearch? = null
-
-}
+data class VideoRecommendationResult ( @SerializedName("videosearch")
+                                       @Expose
+                                       var videoSearch: VideoSearch? = null)

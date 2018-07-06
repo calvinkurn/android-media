@@ -20,7 +20,7 @@
             android:layout_marginLeft="@dimen/dp_16">
 
             <ImageView
-                android:id="@+id/image_thumbnail"
+                android:id="@+id/imageThumbnail"
                 android:layout_width="@dimen/dp_80"
                 android:layout_height="@dimen/dp_72"
                 tools:background="@color/grey_300"
@@ -38,7 +38,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/text_title"
+                android:id="@+id/textTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
@@ -48,7 +48,7 @@
                 tools:text="Beruang Teddy\n makanya harus makan nasi banyak2 " />
 
             <TextView
-                android:id="@+id/text_channel"
+                android:id="@+id/textChannel"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/text_add_video_url_description_height"
                 android:ellipsize="end"
@@ -67,7 +67,7 @@
             android:orientation="horizontal">
 
             <CheckBox
-                android:id="@+id/checkbox_chosen"
+                android:id="@+id/checkboxChosen"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:theme="@style/GreenCheckbox"/>
