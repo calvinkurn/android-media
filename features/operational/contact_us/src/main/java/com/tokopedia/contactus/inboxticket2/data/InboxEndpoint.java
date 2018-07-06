@@ -5,8 +5,9 @@ package com.tokopedia.contactus.inboxticket2.data;
  */
 
 public interface InboxEndpoint {
-    static String LIST_TICKET = "/ws/contact-us/v2/inbox";
-    static String DETAIL_TICKET = "/ws/contact-us/v2/inbox/";
+    String LIST_TICKET = "/ws/contact-us/v2/inbox";
+    String DETAIL_TICKET = "/ws/contact-us/v2/inbox/";
+    String SEND_MESSAGE = "/ws/contact-us/v2/reply/step/1";
 
 
 }
