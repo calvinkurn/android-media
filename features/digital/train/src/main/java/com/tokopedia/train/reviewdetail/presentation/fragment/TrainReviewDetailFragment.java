@@ -212,14 +212,14 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
                 CurrencyFormatUtil.getThousandSeparatorString(departureTrip.getTotalPrice(),
                         false, 0).getFormattedString()));
         textDepartureTripPassengerCount.setText(getString(R.string.train_review_trip_passenger_count,
-                departureTrip.getOriginStationCode(), departureTrip.getDestinationCityCode(), departureTrip.getNumOfAdultPassenger()));
+                departureTrip.getOriginStationCode(), departureTrip.getDestinationStationCode(), departureTrip.getNumOfAdultPassenger()));
         textDepartureTripPrice.setText(getString(R.string.train_label_currency,
                 CurrencyFormatUtil.getThousandSeparatorString(departureTrip.getTotalAdultFare(),
                         false, 0).getFormattedString()));
 
         if (returnTrip != null) {
             textReturnTripPassengerCount.setText(getString(R.string.train_review_trip_passenger_count,
-                    returnTrip.getOriginStationCode(), returnTrip.getDestinationCityCode(), returnTrip.getNumOfAdultPassenger()));
+                    returnTrip.getOriginStationCode(), returnTrip.getDestinationStationCode(), returnTrip.getNumOfAdultPassenger()));
             textReturnTripPrice.setText(getString(R.string.train_label_currency,
                     CurrencyFormatUtil.getThousandSeparatorString(returnTrip.getTotalAdultFare(),
                             false, 0).getFormattedString()));
