@@ -30,6 +30,10 @@ public class FeedKolType {
   @Expose
   private Boolean showComment;
 
+  @SerializedName("showLike")
+  @Expose
+  private Boolean showLike;
+
   @SerializedName("isLiked")
   @Expose
   private Boolean isLiked;
@@ -90,6 +94,10 @@ public class FeedKolType {
     this.showComment = showComment;
   }
 
+  public void setShowLike(Boolean showLike) {
+    this.showLike = showLike;
+  }
+
   public void setIsLiked(Boolean isLiked) {
     this.isLiked = isLiked;
   }
@@ -148,6 +156,10 @@ public class FeedKolType {
 
   public Boolean getShowComment() {
     return this.showComment;
+  }
+
+  public Boolean getShowLike() {
+    return showLike;
   }
 
   public Boolean getIsLiked() {

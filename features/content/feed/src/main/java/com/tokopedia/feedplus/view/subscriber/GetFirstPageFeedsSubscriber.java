@@ -571,6 +571,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                 kolPostDomain.getId(),
                 TimeConverter.generateTime(kolPostDomain.getCreateTime()),
                 kolPostDomain.isShowComment(),
+                kolPostDomain.isShowLike(),
                 kolPostDomain.getImageUrl(),
                 kolPostDomain.getItemId(),
                 "",

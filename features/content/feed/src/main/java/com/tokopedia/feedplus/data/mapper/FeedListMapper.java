@@ -338,7 +338,8 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
                     kolpost.getHeaderTitle() == null ? "" : kolpost.getHeaderTitle(),
                     kolpost.getUserUrl() == null ? "" : kolpost.getUserUrl(),
                     kolpost.getUserId() == null ? 0 : kolpost.getUserId(),
-                    kolpost.getShowComment(),
+                    kolpost.getShowComment() == null ? true : kolpost.getShowComment(),
+                    kolpost.getShowLike() == null ? true : kolpost.getShowLike(),
                     datum.getContent().getType() == null ? "" : datum.getContent().getType()
             );
 
@@ -370,7 +371,8 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
                     "",
                     kolpost.getUserUrl() == null ? "" : kolpost.getUserUrl(),
                     kolpost.getUserId() == null ? 0 : kolpost.getUserId(),
-                    kolpost.getShowComment(),
+                    kolpost.getShowComment() == null ? true : kolpost.getShowComment(),
+                    kolpost.getShowLike() == null ? true : kolpost.getShowLike(),
                     datum.getContent().getType() == null ? "" : datum.getContent().getType());
         } else {
             return null;
@@ -445,17 +447,25 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
 
         List<PollOptionViewModel> optionViewModels = new ArrayList<>();
         for (PollingOption option: polling.getOptions()) {
+            String weblink = option.getWeblink() == null ? "" : option.getWeblink();
             String redirectLink = !TextUtils.isEmpty(option.getApplink()) ?
-                    option.getApplink() : option.getWeblink();
+                    option.getApplink() : weblink;
 
             optionViewModels.add(
                     new PollOptionViewModel(
-                            String.valueOf(option.getOptionId()),
-                            option.getOption(),
-                            option.getImageOption(),
+                            String.valueOf(
+                                    option.getOptionId() == null ? "" : option.getOptionId()
+                            ),
+                            option.getOption() == null ? "" : option.getOption(),
+                            option.getImageOption() == null ? "" : option.getImageOption(),
                             redirectLink,
-                            String.valueOf(option.getPercentage()),
-                            checkIfSelected(voted, option.getIsSelected())
+                            String.valueOf(
+                                    option.getPercentage() == null ? 0 : option.getPercentage()
+                            ),
+                            checkIfSelected(
+                                    voted,
+                                    option.getIsSelected() == null ? false : option.getIsSelected()
+                            )
                     )
             );
         }
@@ -463,22 +473,25 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
         return new PollViewModel(
                 polling.getUserId() == null ? 0 : polling.getUserId(),
                 cardType,
-                polling.getTitle(),
-                polling.getUserName(),
-                polling.getUserPhoto(),
-                polling.getUserInfo(),
-                polling.getUserUrl(),
+                polling.getTitle() == null ? "" : polling.getTitle(),
+                polling.getUserName() == null ? "" : polling.getUserName(),
+                polling.getUserPhoto() == null ? "" : polling.getUserPhoto(),
+                polling.getUserInfo() == null ? "" : polling.getUserInfo(),
+                polling.getUserUrl() == null ? "" : polling.getUserUrl(),
                 true,
-                polling.getQuestion(),
-                polling.getLiked(),
-                polling.getLikeCount(),
-                polling.getCommentCount(),
+                polling.getQuestion() == null ? "" : polling.getQuestion(),
+                polling.getLiked() == null ? false : polling.getLiked(),
+                polling.getLikeCount() == null ? 0 : polling.getLikeCount(),
+                polling.getCommentCount() == null ? 0 : polling.getCommentCount(),
                 0,
-                polling.getPollId(),
-                TimeConverter.generateTime(polling.getCreateTime()),
-                polling.getShowComment(),
-                String.valueOf(polling.getPollId()),
-                String.valueOf(polling.getTotalVoter()),
+                polling.getPollId() == null ? 0 : polling.getPollId(),
+                TimeConverter.generateTime(
+                        polling.getCreateTime() == null ? "" : polling.getCreateTime()
+                ),
+                polling.getShowComment() == null ? true : polling.getShowComment(),
+                polling.getShowLike() == null ? true : polling.getShowLike(),
+                String.valueOf(polling.getPollId() == null ? 0 : polling.getPollId()),
+                String.valueOf(polling.getTotalVoter() == null ? 0 : polling.getTotalVoter()),
                 voted,
                 optionViewModels
         );

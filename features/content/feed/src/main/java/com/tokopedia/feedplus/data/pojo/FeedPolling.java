@@ -46,6 +46,10 @@ public class FeedPolling {
   @Expose
   private Boolean showComment;
 
+  @SerializedName("showLike")
+  @Expose
+  private Boolean showLike;
+
   @SerializedName("total_voter")
   @Expose
   private Integer totalVoter;
@@ -118,6 +122,10 @@ public class FeedPolling {
     this.showComment = showComment;
   }
 
+  public void setShowLike(Boolean showLike) {
+    this.showLike = showLike;
+  }
+
   public void setTotalVoter(Integer totalVoter) {
     this.totalVoter = totalVoter;
   }
@@ -188,6 +196,10 @@ public class FeedPolling {
 
   public Boolean getShowComment() {
     return this.showComment;
+  }
+
+  public Boolean getShowLike() {
+    return showLike;
   }
 
   public Integer getTotalVoter() {

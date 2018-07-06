@@ -146,56 +146,29 @@ public class BaseKolView extends BaseCustomView {
         }
 
         commentButton.setVisibility(element.isShowComment() ? View.VISIBLE : View.GONE);
+        likeButton.setVisibility(element.isShowLike() ? View.VISIBLE : View.GONE);
     }
 
     public void setViewListener(final BaseKolListener viewListener, final BaseKolViewModel element) {
-        avatar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewListener.onAvatarClickListener(element);
+        avatar.setOnClickListener(v -> viewListener.onAvatarClickListener(element));
+
+        name.setOnClickListener(v -> viewListener.onNameClickListener(element));
+
+        followButton.setOnClickListener(v -> viewListener.onFollowButtonClickListener(element));
+
+        kolText.setOnClickListener(v -> {
+            if (kolText.getText().toString().endsWith(
+                    kolText.getContext().getString(R.string.read_more_english))) {
+                UrlUtil.setTextWithClickableTokopediaUrl(kolText, element.getReview());
+                element.setReviewExpanded(true);
+
+                viewListener.onDescriptionClickListener(element);
             }
         });
 
-        name.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewListener.onNameClickListener(element);
-            }
-        });
+        likeButton.setOnClickListener(v -> viewListener.onLikeButtonClickListener(element));
 
-        followButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewListener.onFollowButtonClickListener(element);
-            }
-        });
-
-        kolText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (kolText.getText().toString().endsWith(
-                        kolText.getContext().getString(R.string.read_more_english))) {
-                    UrlUtil.setTextWithClickableTokopediaUrl(kolText, element.getReview());
-                    element.setReviewExpanded(true);
-
-                    viewListener.onDescriptionClickListener(element);
-                }
-            }
-        });
-
-        likeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewListener.onLikeButtonClickListener(element);
-            }
-        });
-
-        commentButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewListener.onCommentClickListener(element);
-            }
-        });
+        commentButton.setOnClickListener(v -> viewListener.onCommentClickListener(element));
     }
 
     public void onViewRecycled() {
