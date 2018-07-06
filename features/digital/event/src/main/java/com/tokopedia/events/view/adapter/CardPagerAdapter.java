@@ -32,6 +32,7 @@ public class CardPagerAdapter extends PagerAdapter implements CardAdapter, Event
     private EventHomePresenter mPresenter;
     private int currentDataIndex;
     private ViewGroup parent;
+    private int MAX_TOP = 5;
 
     public CardPagerAdapter(EventHomePresenter presenter) {
         mData = new ArrayList<>();
@@ -42,7 +43,7 @@ public class CardPagerAdapter extends PagerAdapter implements CardAdapter, Event
     }
 
     public void addData(List<CategoryItemsViewModel> items) {
-        int max = items.size() > 5 ? 5 : items.size();
+        int max = items.size() > MAX_TOP ? MAX_TOP : items.size();
         for (int i = 0; i < max; i++) {
             mData.add(items.get(i));
             mViews.add(null);

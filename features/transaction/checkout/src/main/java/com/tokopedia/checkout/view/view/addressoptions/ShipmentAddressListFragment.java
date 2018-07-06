@@ -36,6 +36,7 @@ import com.tokopedia.core.manage.people.address.model.Destination;
 import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
+import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -122,7 +123,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
     @Override
     protected String getScreenName() {
-        return TAG;
+        return ConstantTransactionAnalytics.ScreenName.ADDRESS_LIST_PAGE;
     }
 
     @Override
@@ -439,4 +440,9 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         mCartAddressChoiceListener = (ICartAddressChoiceActivityListener) activity;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        checkoutAnalyticsChangeAddress.sendScreenName(getActivity(), getScreenName());
+    }
 }

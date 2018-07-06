@@ -9,7 +9,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
-import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -56,6 +56,7 @@ import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
+import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
 
@@ -347,6 +348,19 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
     }
 
+    private boolean isSameCartObject(ShipmentCartItemModel oldShipmentCartItemModel,
+                                     ShipmentCartItemModel newShipmentCartItemModel) {
+
+        if (oldShipmentCartItemModel.getRecipientAddressModel() != null && newShipmentCartItemModel.getRecipientAddressModel() != null) {
+            if (!oldShipmentCartItemModel.getRecipientAddressModel().getId().equals(newShipmentCartItemModel.getRecipientAddressModel().getId())) {
+                return false;
+            }
+        }
+        return oldShipmentCartItemModel.getShopId() == newShipmentCartItemModel.getShopId() &&
+                oldShipmentCartItemModel.getCartItemModels().size() == newShipmentCartItemModel.getCartItemModels().size() &&
+                oldShipmentCartItemModel.getCartItemModels().get(0).getProductId() == newShipmentCartItemModel.getCartItemModels().get(0).getProductId();
+    }
+
     @Override
     public void renderErrorDataHasChangedAfterCheckout(CartShipmentAddressFormData cartShipmentAddressFormData) {
         List<ShipmentCartItemModel> newShipmentCartItemModelList = shipmentDataConverter.getShipmentItems(
@@ -355,7 +369,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         List<ShipmentCartItemModel> oldShipmentCartItemModelList = shipmentPresenter.getShipmentCartItemModelList();
         for (ShipmentCartItemModel oldShipmentCartItemModel : oldShipmentCartItemModelList) {
             for (ShipmentCartItemModel newShipmentCartItemModel : newShipmentCartItemModelList) {
-                if (oldShipmentCartItemModel.getShopId() == newShipmentCartItemModel.getShopId()) {
+                if (isSameCartObject(oldShipmentCartItemModel, newShipmentCartItemModel)) {
                     boolean breakFromNewShipmentCartItemModelLoop = false;
                     for (ShopShipment shopShipment : newShipmentCartItemModel.getShipmentCartData().getShopShipments()) {
                         if (oldShipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperId() == shopShipment.getShipId()) {
@@ -384,10 +398,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
         for (ShipmentCartItemModel oldShipmentCartItemModel : oldShipmentCartItemModelList) {
             for (ShipmentCartItemModel newShipmentCartItemModel : newShipmentCartItemModelList) {
-                if (oldShipmentCartItemModel.getShopId() == newShipmentCartItemModel.getShopId() &&
-                        newShipmentCartItemModel.getSelectedShipmentDetailData() == null &&
-                        oldShipmentCartItemModel.getCartItemModels().size() == newShipmentCartItemModel.getCartItemModels().size() &&
-                        oldShipmentCartItemModel.getCartItemModels().get(0).getProductId() == newShipmentCartItemModel.getCartItemModels().get(0).getProductId()) {
+                if (isSameCartObject(oldShipmentCartItemModel, newShipmentCartItemModel) && newShipmentCartItemModel.getSelectedShipmentDetailData() == null) {
                     oldShipmentCartItemModel.setSelectedShipmentDetailData(null);
                     oldShipmentCartItemModel.setShipmentCartData(newShipmentCartItemModel.getShipmentCartData());
                 }
@@ -500,7 +511,20 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void navigateToSetPinpoint(String message, LocationPass locationPass) {
-        Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+        if (getView() != null) {
+            LayoutInflater inflater = getLayoutInflater();
+            View layout = inflater.inflate(R.layout.toast_rectangle, getView().findViewById(R.id.toast_layout));
+
+            TextView tvMessage = layout.findViewById(R.id.tv_message);
+            tvMessage.setText(message);
+
+            Toast toast = new Toast(getActivity());
+            toast.setDuration(Toast.LENGTH_LONG);
+            toast.setView(layout);
+            toast.show();
+        } else {
+            Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+        }
         Intent intent = GeolocationActivity.createInstance(getActivity(), locationPass);
         startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT);
     }
@@ -713,6 +737,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         courierBottomsheet.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface dialogInterface) {
+                checkoutAnalyticsCourierSelection.sendScreenName(
+                        getActivity(), ConstantTransactionAnalytics.ScreenName.SELECT_COURIER
+                );
                 courierBottomsheet.updateHeight();
                 checkoutAnalyticsCourierSelection.eventImpressionCourierSelectionImpressionCourierSelection();
             }
@@ -918,5 +945,16 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onChoosePaymentMethodButtonClicked(boolean ableToCheckout) {
         shipmentAdapter.checkDropshipperValidation();
+    }
+
+    @Override
+    protected String getScreenName() {
+        return ConstantTransactionAnalytics.ScreenName.CHECKOUT;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        checkoutAnalyticsCourierSelection.sendScreenName(getActivity(), getScreenName());
     }
 }
