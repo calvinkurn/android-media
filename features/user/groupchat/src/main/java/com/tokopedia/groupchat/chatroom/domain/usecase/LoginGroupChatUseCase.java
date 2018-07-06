@@ -42,7 +42,6 @@ public class LoginGroupChatUseCase {
     public void execute(final Context context, final String channelUrl,
                         String userId, final String userName, final String userAvatar,
                         final LoginGroupChatListener listener, String sendBirdToken) {
-        Log.d("tevrefresh", "enterChannel " + channelUrl);
         if (TextUtils.isEmpty(userId)) {
             userId = getAnonymousSendbirdUserId(context);
         }
