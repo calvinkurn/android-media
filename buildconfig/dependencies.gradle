@@ -257,6 +257,7 @@ ext {
             williamchart    : ":libraries:williamchart",
             fingerprint     : ":libraries:fingerprint",
             bottomSheetBuilder: ":libraries:bottom_sheet_builder",
+            cameraView      : ":libraries:camera_view",
             imagePicker     : ":libraries:image_picker"
     ]
 
