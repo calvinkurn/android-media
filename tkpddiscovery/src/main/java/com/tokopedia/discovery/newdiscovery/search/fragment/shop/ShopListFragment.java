@@ -1,7 +1,6 @@
 package com.tokopedia.discovery.newdiscovery.search.fragment.shop;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,8 +13,7 @@ import android.view.ViewGroup;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.analytics.SearchTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
@@ -255,7 +253,7 @@ public class ShopListFragment extends SearchSectionFragment
         if (adapter.isListEmpty()) {
             String message = String.format(getString(R.string.empty_search_content_template), query);
             adapter.showEmptyState(message);
-            SearchTracking.eventSearchNoResult(getContext(), query, getScreenName(), getSelectedFilter());
+            SearchTracking.eventSearchNoResult(getActivity(), query, getScreenName(), getSelectedFilter());
         }
     }
 
@@ -297,7 +295,7 @@ public class ShopListFragment extends SearchSectionFragment
             public boolean onTabSelected(final int position, boolean wasSelected) {
                 switch (position) {
                     case 0:
-                        SearchTracking.eventSearchResultOpenFilterPageShop(getContext());
+                        SearchTracking.eventSearchResultOpenFilterPageShop(getActivity());
                         openFilterActivity();
                         return true;
                     case 1:
@@ -314,7 +312,7 @@ public class ShopListFragment extends SearchSectionFragment
     public void onItemClicked(ShopViewModel.ShopItem shopItem, int adapterPosition) {
         Intent intent = ((DiscoveryRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), shopItem.getShopId());
         lastSelectedItemPosition = adapterPosition;
-        SearchTracking.eventSearchResultShopItemClick(getContext(), query, shopItem.getShopName(),
+        SearchTracking.eventSearchResultShopItemClick(getActivity(), query, shopItem.getShopName(),
                 shopItem.getPage(), shopItem.getPosition());
         startActivityForResult(intent, REQUEST_CODE_GOTO_SHOP_DETAIL);
     }
@@ -322,7 +320,7 @@ public class ShopListFragment extends SearchSectionFragment
     @Override
     public void onFavoriteButtonClicked(ShopViewModel.ShopItem shopItem,
                                         int adapterPosition) {
-        SearchTracking.eventSearchResultFavoriteShopClick(getContext(), query, shopItem.getShopName(),
+        SearchTracking.eventSearchResultFavoriteShopClick(getActivity(), query, shopItem.getShopName(),
                 shopItem.getPage(), shopItem.getPosition());
         presenter.handleFavoriteButtonClicked(shopItem, adapterPosition);
     }

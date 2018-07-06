@@ -1,4 +1,4 @@
-package com.tokopedia.core.analytics;
+package com.tokopedia.discovery.newdiscovery.analytics;
 
 import android.content.Context;
 import android.text.TextUtils;
@@ -6,7 +6,7 @@ import android.text.TextUtils;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-import com.tokopedia.core.analytics.nishikino.model.EventTracking;
+import com.tokopedia.core.analytics.AppEventTracking;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +16,7 @@ import java.util.Map;
  * Created by henrypriyono on 1/5/18.
  */
 
-public class SearchTracking extends TrackingUtils {
+public class SearchTracking {
 
     private static final String ACTION_FIELD = "/searchproduct - p$1 - product";
     public static String imageClick = "/imagesearch - p%s";
