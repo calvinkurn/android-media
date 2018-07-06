@@ -187,7 +187,9 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
 
     @Override
     public void onAddWishLish(int position, Data data) {
-
+        if (adsItemClickListener != null) {
+            adsItemClickListener.onAddWishList(position, data);
+        }
     }
 
     @Override
