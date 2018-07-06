@@ -24,20 +24,8 @@ public class GetAvailabilityScheduleUseCase extends UseCase<List<List<TrainSched
 
     private List<AvailabilityKeySchedule> availabilityKeySchedules;
 
-    private int scheduleVariant;
-
-    private String arrivalTimestampSelected;
-
     public GetAvailabilityScheduleUseCase(TrainRepository trainRepository) {
         this.trainRepository = trainRepository;
-    }
-
-    public void setScheduleVariant(int scheduleVariant) {
-        this.scheduleVariant = scheduleVariant;
-    }
-
-    public void setArrivalTimeDepartureTripSelected(String arrivalTimestampSelected) {
-        this.arrivalTimestampSelected = arrivalTimestampSelected;
     }
 
     public void setAvailabilityKeySchedules(List<AvailabilityKeySchedule> availabilityKeySchedules) {
@@ -53,7 +41,7 @@ public class GetAvailabilityScheduleUseCase extends UseCase<List<List<TrainSched
                         RequestParams requestParams = RequestParams.create();
                         requestParams.putObject(TRAIN_ID_KEY, availabilityKeySchedule.getIdTrain());
                         return Observable.zip(Observable.just(availabilityKeySchedule),
-                                trainRepository.getAvailabilitySchedule(requestParams.getParameters(), scheduleVariant, arrivalTimestampSelected),
+                                trainRepository.getAvailabilitySchedule(requestParams.getParameters()),
                                 new Func2<AvailabilityKeySchedule, List<TrainScheduleViewModel>, List<TrainScheduleViewModel>>() {
                                     @Override
                                     public List<TrainScheduleViewModel> call(AvailabilityKeySchedule availabilityKeySchedule, List<TrainScheduleViewModel> trainScheduleViewModels) {

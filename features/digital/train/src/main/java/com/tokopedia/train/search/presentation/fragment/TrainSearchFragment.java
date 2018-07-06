@@ -34,7 +34,6 @@ import com.tokopedia.train.scheduledetail.presentation.activity.TrainScheduleDet
 import com.tokopedia.train.search.constant.TrainSortOption;
 import com.tokopedia.train.search.di.DaggerTrainSearchComponent;
 import com.tokopedia.train.search.di.TrainSearchComponent;
-import com.tokopedia.train.search.domain.FilterParam;
 import com.tokopedia.train.search.domain.GetScheduleUseCase;
 import com.tokopedia.train.search.presentation.activity.TrainFilterSearchActivity;
 import com.tokopedia.train.search.presentation.activity.TrainSearchReturnActivity;
@@ -182,7 +181,7 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
             @Override
             public void onClick(View view) {
                 startActivityForResult(TrainFilterSearchActivity.getCallingIntent(getActivity(),
-                        getRequestParam().getParameters(), getScheduleVariant(), filterSearchData), FILTER_SEARCH_REQUEST_CODE);
+                        arrivalScheduleSelected, getScheduleVariant(), filterSearchData), FILTER_SEARCH_REQUEST_CODE);
             }
         });
         filterAndSortBottomAction.setButton2OnClickListener(new View.OnClickListener() {

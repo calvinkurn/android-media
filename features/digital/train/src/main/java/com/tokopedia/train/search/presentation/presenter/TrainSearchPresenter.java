@@ -69,8 +69,6 @@ public class TrainSearchPresenter extends BaseDaggerPresenter<TrainSearchContrac
 
     private void getAvailabilitySchedule(List<AvailabilityKeySchedule> availabilityKeySchedules) {
         getAvailabilityScheduleUseCase.setAvailabilityKeySchedules(availabilityKeySchedules);
-        getAvailabilityScheduleUseCase.setArrivalTimeDepartureTripSelected(getView().getArrivalTimeDepartureTripSelected());
-        getAvailabilityScheduleUseCase.setScheduleVariant(getView().getScheduleVariantSelected());
         getAvailabilityScheduleUseCase.execute(RequestParams.EMPTY, new Subscriber<List<List<TrainScheduleViewModel>>>() {
             @Override
             public void onCompleted() {
@@ -107,6 +105,8 @@ public class TrainSearchPresenter extends BaseDaggerPresenter<TrainSearchContrac
                 .trains(trains)
                 .trainClass(trainClass)
                 .departureTimeList(departureTrains)
+                .scheduleVariant(getView().getScheduleVariantSelected())
+                .arrivalTimestampSelected(getView().getArrivalTimeDepartureTripSelected())
                 .build();
         RequestParams requestParams = getFilteredAndSortedScheduleUseCase.createRequestParam(filterParam, getView().getSortOptionSelected());
 
