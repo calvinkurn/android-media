@@ -113,6 +113,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     private static final String TOKOPEDIA_APPLINK = "tokopedia://";
     Dialog exitDialog;
+    private static final float ELEVATION = 10;
 
     @DeepLink(ApplinkConstant.GROUPCHAT_ROOM)
     public static TaskStackBuilder getCallingTaskStack(Context context, Bundle extras) {
@@ -1289,13 +1290,14 @@ public class GroupChatActivity extends BaseSimpleActivity
         toolbar.setTitle(getResources().getString(R.string.label_group_chat));
         toolbar.setTitleMarginTop((int) getResources().getDimension(R.dimen.dp_16));
         toolbar.setContentInsetStartWithNavigation(0);
-        getSupportActionBar().setSubtitle(null);
         toolbar.setTitleTextColor(getResources().getColor(R.color.black_70));
         toolbar.getMenu().findItem(R.id.action_share).setVisible(false);
-        if (getSupportActionBar() != null)
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setSubtitle(null);
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_webview_back_button);
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            toolbar.setElevation(10);
+            toolbar.setElevation(ELEVATION);
             toolbar.setBackgroundResource(R.color.white);
         } else {
             toolbar.setBackgroundResource(R.drawable.bg_white_toolbar_drop_shadow);

@@ -3,7 +3,6 @@ package com.tokopedia.groupchat.chatroom.domain.usecase;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.sendbird.android.OpenChannel;
 import com.sendbird.android.SendBird;
@@ -12,7 +11,6 @@ import com.sendbird.android.User;
 import com.tokopedia.groupchat.R;
 import com.tokopedia.groupchat.common.util.GroupChatErrorHandler;
 
-import java.util.Date;
 import java.util.UUID;
 
 import javax.inject.Inject;
