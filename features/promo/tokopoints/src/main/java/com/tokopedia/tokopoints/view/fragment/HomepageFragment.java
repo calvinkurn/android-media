@@ -1,7 +1,6 @@
 package com.tokopedia.tokopoints.view.fragment;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -61,7 +60,6 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
     private AppBarLayout onEggScrollListener;
     private FloatingEggButtonFragment floatingEggButtonFragment;
     private TickerView tickerView;
-    private TextView mTextFailedAction;
     @Inject
     public HomepagePresenter mPresenter;
 
@@ -193,10 +191,13 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
         mPagerPromos = view.findViewById(R.id.view_pager_promos);
         onEggScrollListener = view.findViewById(R.id.app_bar);
         tickerView = view.findViewById(R.id.ticker_view);
-        mTextFailedAction = view.findViewById(R.id.text_failed_action);
     }
 
     private void initListener() {
+        if (getView() == null) {
+            return;
+        }
+
         getView().findViewById(R.id.text_see_membership_status).setOnClickListener(this);
         getView().findViewById(R.id.text_my_points_label).setOnClickListener(this);
         getView().findViewById(R.id.img_points_stack).setOnClickListener(this);
@@ -242,18 +243,12 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
                 .append(" ")
                 .append(getString(R.string.tp_mes_coupon_part_2));
         adb.setMessage(MethodChecker.fromHtml(messageBuilder.toString()));
-        adb.setPositiveButton(R.string.tp_label_use, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                //Call api to validate the coupon
-                mPresenter.redeemCoupon(code, cta);
-            }
+        adb.setPositiveButton(R.string.tp_label_use, (dialogInterface, i) -> {
+            //Call api to validate the coupon
+            mPresenter.redeemCoupon(code, cta);
         });
-        adb.setNegativeButton(R.string.tp_label_later, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
+        adb.setNegativeButton(R.string.tp_label_later, (dialogInterface, i) -> {
 
-            }
         });
         AlertDialog dialog = adb.create();
         dialog.show();
@@ -263,19 +258,11 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
     @Override
     public void showConfirmRedeemDialog(String cta, String code, String title) {
         AlertDialog.Builder adb = new AlertDialog.Builder(getActivityContext());
-        adb.setNegativeButton(R.string.tp_label_use, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                showRedeemCouponDialog(cta, code, title);
-            }
-        });
+        adb.setNegativeButton(R.string.tp_label_use, (dialogInterface, i) -> showRedeemCouponDialog(cta, code, title));
 
-        adb.setPositiveButton(R.string.tp_label_view_coupon, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                //Open webview with lihat kupon
-                openWebView(CommonConstant.WebLink.SEE_COUPON);
-            }
+        adb.setPositiveButton(R.string.tp_label_view_coupon, (dialogInterface, i) -> {
+            //Open webview with lihat kupon
+            openWebView(CommonConstant.WebLink.SEE_COUPON);
         });
 
         adb.setTitle(R.string.tp_label_successful_exchange);
@@ -320,34 +307,28 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
         adb.setMessage(MethodChecker.fromHtml(message));
 
         if (labelNegative != null && !labelNegative.isEmpty()) {
-            adb.setNegativeButton(labelNegative, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
+            adb.setNegativeButton(labelNegative, (dialogInterface, i) -> {
 
-                }
             });
         }
 
-        adb.setPositiveButton(labelPositive, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                switch (resCode) {
-                    case CommonConstant.CouponRedemptionCode.LOW_POINT:
-                        getAppContext().startActivity(HomeRouter.getHomeActivityInterfaceRouter(
-                                getAppContext()));
-                        break;
-                    case CommonConstant.CouponRedemptionCode.QUOTA_LIMIT_REACHED:
-                        dialogInterface.cancel();
-                        break;
-                    case CommonConstant.CouponRedemptionCode.PROFILE_INCOMPLETE:
-                        startActivity(new Intent(getAppContext(), ProfileCompletionActivity.class));
-                        break;
-                    case CommonConstant.CouponRedemptionCode.SUCCESS:
-                        mPresenter.startSaveCoupon(item);
-                        break;
-                    default:
-                        dialogInterface.cancel();
-                }
+        adb.setPositiveButton(labelPositive, (dialogInterface, i) -> {
+            switch (resCode) {
+                case CommonConstant.CouponRedemptionCode.LOW_POINT:
+                    getAppContext().startActivity(HomeRouter.getHomeActivityInterfaceRouter(
+                            getAppContext()));
+                    break;
+                case CommonConstant.CouponRedemptionCode.QUOTA_LIMIT_REACHED:
+                    dialogInterface.cancel();
+                    break;
+                case CommonConstant.CouponRedemptionCode.PROFILE_INCOMPLETE:
+                    startActivity(new Intent(getAppContext(), ProfileCompletionActivity.class));
+                    break;
+                case CommonConstant.CouponRedemptionCode.SUCCESS:
+                    mPresenter.startSaveCoupon(item);
+                    break;
+                default:
+                    dialogInterface.cancel();
             }
         });
 
@@ -397,16 +378,13 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
     }
 
     private void initEggTokenScrollListener() {
-        onEggScrollListener.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (verticalOffset == 0) {
-                    return;
-                }
-                FloatingEggButtonFragment floatingEggButtonFragment = getFloatingEggButtonFragment();
-                if (floatingEggButtonFragment != null) {
-                    floatingEggButtonFragment.hideOnScrolling();
-                }
+        onEggScrollListener.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
+            if (verticalOffset == 0) {
+                return;
+            }
+            FloatingEggButtonFragment floatingEggButtonFragment = getFloatingEggButtonFragment();
+            if (floatingEggButtonFragment != null) {
+                floatingEggButtonFragment.hideOnScrolling();
             }
         });
     }

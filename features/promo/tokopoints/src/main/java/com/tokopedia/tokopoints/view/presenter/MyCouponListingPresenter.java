@@ -61,7 +61,6 @@ public class MyCouponListingPresenter extends BaseDaggerPresenter<MyCouponListin
 
             @Override
             public void onError(Throwable e) {
-                //TODO handling for null data
                 getView().showError(e.getLocalizedMessage());
             }
 
@@ -72,8 +71,7 @@ public class MyCouponListingPresenter extends BaseDaggerPresenter<MyCouponListin
                 if (catalogListingOuter != null) {
                     getView().populateCoupons(catalogListingOuter.getCoupon().getCoupons());
                 } else {
-                    //TODO handling for null data
-                    getView().showError("NO_DATA");
+                    getView().showError(null);
                 }
             }
         });

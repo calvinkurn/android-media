@@ -57,24 +57,16 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
         holder.title.setText(item.getTitle());
         holder.pointValue.setVisibility(View.VISIBLE);
         holder.pointValue.setText(item.getPointsStr());
-        holder.btnContinue.setText("Tukar");
+        holder.btnContinue.setText(R.string.tp_label_exchange);
         ImageHandler.loadImageFit2(holder.imgBanner.getContext(), holder.imgBanner, item.getImageUrlMobile());
         holder.imgLabel.setImageResource(R.drawable.ic_tp_point_stack);
 
-        holder.btnContinue.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //call validate api the show dialog
-                mPresenter.startValidateCoupon(item);
-            }
+        holder.btnContinue.setOnClickListener(v -> {
+            //call validate api the show dialog
+            mPresenter.startValidateCoupon(item);
         });
 
-        holder.imgBanner.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mPresenter.navigateToWebView(CommonConstant.WebLink.COUPON_DETAIL + mItems.get(position).getSlug());
-            }
-        });
+        holder.imgBanner.setOnClickListener(v -> mPresenter.navigateToWebView(CommonConstant.WebLink.COUPON_DETAIL + mItems.get(position).getSlug()));
     }
 
     @Override

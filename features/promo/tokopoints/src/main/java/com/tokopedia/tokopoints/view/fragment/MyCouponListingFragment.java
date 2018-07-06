@@ -1,7 +1,6 @@
 package com.tokopedia.tokopoints.view.fragment;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -38,7 +37,6 @@ public class MyCouponListingFragment extends BaseDaggerFragment implements MyCou
     private ViewFlipper mContainerMain;
     private RecyclerView mRecyclerView;
     private CouponListAdapter mAdapter;
-    private TextView mTextFailedAction;
 
     @Inject
     public MyCouponListingPresenter mPresenter;
@@ -129,10 +127,13 @@ public class MyCouponListingFragment extends BaseDaggerFragment implements MyCou
     private void initViews(@NonNull View view) {
         mContainerMain = view.findViewById(R.id.container);
         mRecyclerView = view.findViewById(R.id.recycler_view_coupons);
-        mTextFailedAction = view.findViewById(R.id.text_failed_action);
     }
 
     private void initListener() {
+        if (getView() == null) {
+            return;
+        }
+
         getView().findViewById(R.id.text_failed_action).setOnClickListener(this);
     }
 
@@ -167,18 +168,12 @@ public class MyCouponListingFragment extends BaseDaggerFragment implements MyCou
                 .append(" ")
                 .append(getString(R.string.tp_mes_coupon_part_2));
         adb.setMessage(MethodChecker.fromHtml(messageBuilder.toString()));
-        adb.setPositiveButton(R.string.tp_label_use, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                //Call api to validate the coupon
-                mPresenter.redeemCoupon(code, cta);
-            }
+        adb.setPositiveButton(R.string.tp_label_use, (dialogInterface, i) -> {
+            //Call api to validate the coupon
+            mPresenter.redeemCoupon(code, cta);
         });
-        adb.setNegativeButton(R.string.tp_label_later, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
+        adb.setNegativeButton(R.string.tp_label_later, (dialogInterface, i) -> {
 
-            }
         });
         AlertDialog dialog = adb.create();
         dialog.show();

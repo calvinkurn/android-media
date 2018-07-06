@@ -157,12 +157,20 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
 
     @Override
     public int getCurrentSortType() {
-        return getArguments().getInt(ARGS_SORT_TYPE);
+        if (getArguments() != null) {
+            return getArguments().getInt(ARGS_SORT_TYPE);
+        }
+
+        return 1; // default sort id
     }
 
     @Override
     public int getCurrentCategoryId() {
-        return getArguments().getInt(ARGS_CATEGORY_ID);
+        if (getArguments() != null) {
+            return getArguments().getInt(ARGS_CATEGORY_ID);
+        }
+
+        return 0; // default category id
     }
 
     public void showRedeemCouponDialog(String cta, String code, String title) {
@@ -177,18 +185,12 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
                 .append(" ")
                 .append(getString(R.string.tp_mes_coupon_part_2));
         adb.setMessage(MethodChecker.fromHtml(messageBuilder.toString()));
-        adb.setPositiveButton(R.string.tp_label_use, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                //Call api to validate the coupon
-                mPresenter.redeemCoupon(code, cta);
-            }
+        AlertDialog.Builder builder = adb.setPositiveButton(R.string.tp_label_use, (dialogInterface, i) -> {
+            //Call api to validate the coupon
+            mPresenter.redeemCoupon(code, cta);
         });
-        adb.setNegativeButton(R.string.tp_label_later, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
+        adb.setNegativeButton(R.string.tp_label_later, (dialogInterface, i) -> {
 
-            }
         });
         AlertDialog dialog = adb.create();
         dialog.show();
@@ -197,19 +199,11 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
 
     public void showConfirmRedeemDialog(String cta, String code, String title) {
         AlertDialog.Builder adb = new AlertDialog.Builder(getActivityContext());
-        adb.setNegativeButton(R.string.tp_label_use, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                showRedeemCouponDialog(cta, code, title);
-            }
-        });
+        adb.setNegativeButton(R.string.tp_label_use, (dialogInterface, i) -> showRedeemCouponDialog(cta, code, title));
 
-        adb.setPositiveButton(R.string.tp_label_view_coupon, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                //Open webview with lihat kupon
-                openWebView(CommonConstant.WebLink.SEE_COUPON);
-            }
+        adb.setPositiveButton(R.string.tp_label_view_coupon, (dialogInterface, i) -> {
+            //Open webview with lihat kupon
+            openWebView(CommonConstant.WebLink.SEE_COUPON);
         });
 
         adb.setTitle(R.string.tp_label_successful_exchange);
@@ -253,34 +247,28 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
         adb.setMessage(MethodChecker.fromHtml(message));
 
         if (labelNegative != null && !labelNegative.isEmpty()) {
-            adb.setNegativeButton(labelNegative, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
+            adb.setNegativeButton(labelNegative, (dialogInterface, i) -> {
 
-                }
             });
         }
 
-        adb.setPositiveButton(labelPositive, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                switch (resCode) {
-                    case CommonConstant.CouponRedemptionCode.LOW_POINT:
-                        getAppContext().startActivity(HomeRouter.getHomeActivityInterfaceRouter(
-                                getAppContext()));
-                        break;
-                    case CommonConstant.CouponRedemptionCode.QUOTA_LIMIT_REACHED:
-                        dialogInterface.cancel();
-                        break;
-                    case CommonConstant.CouponRedemptionCode.PROFILE_INCOMPLETE:
-                        startActivity(new Intent(getAppContext(), ProfileCompletionActivity.class));
-                        break;
-                    case CommonConstant.CouponRedemptionCode.SUCCESS:
-                        mPresenter.startSaveCoupon(item);
-                        break;
-                    default:
-                        dialogInterface.cancel();
-                }
+        adb.setPositiveButton(labelPositive, (dialogInterface, i) -> {
+            switch (resCode) {
+                case CommonConstant.CouponRedemptionCode.LOW_POINT:
+                    getAppContext().startActivity(HomeRouter.getHomeActivityInterfaceRouter(
+                            getAppContext()));
+                    break;
+                case CommonConstant.CouponRedemptionCode.QUOTA_LIMIT_REACHED:
+                    dialogInterface.cancel();
+                    break;
+                case CommonConstant.CouponRedemptionCode.PROFILE_INCOMPLETE:
+                    startActivity(new Intent(getAppContext(), ProfileCompletionActivity.class));
+                    break;
+                case CommonConstant.CouponRedemptionCode.SUCCESS:
+                    mPresenter.startSaveCoupon(item);
+                    break;
+                default:
+                    dialogInterface.cancel();
             }
         });
 

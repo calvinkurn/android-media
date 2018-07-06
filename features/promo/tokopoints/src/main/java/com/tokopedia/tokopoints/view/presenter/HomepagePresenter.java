@@ -85,9 +85,7 @@ public class HomepagePresenter extends BaseDaggerPresenter<HomepageContract.View
 
             @Override
             public void onError(Throwable e) {
-                e.printStackTrace();
                 getView().onError(e.getLocalizedMessage());
-                //TODO handle error case
             }
 
             @Override
@@ -119,9 +117,7 @@ public class HomepagePresenter extends BaseDaggerPresenter<HomepageContract.View
 
             @Override
             public void onError(Throwable e) {
-                e.printStackTrace();
                 getView().onErrorPromos(e.getLocalizedMessage());
-                //TODO handle error case
             }
 
             @Override
@@ -148,7 +144,6 @@ public class HomepagePresenter extends BaseDaggerPresenter<HomepageContract.View
 
             @Override
             public void onError(Throwable e) {
-                //TODO handle error case
             }
 
             @Override
@@ -224,7 +219,6 @@ public class HomepagePresenter extends BaseDaggerPresenter<HomepageContract.View
             @Override
             public void onError(Throwable e) {
                 //Need to check for error scenarios
-                //TODO handle error case
             }
 
             @Override

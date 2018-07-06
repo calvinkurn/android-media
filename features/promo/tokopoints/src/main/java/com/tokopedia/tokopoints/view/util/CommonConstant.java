@@ -10,6 +10,7 @@ public interface CommonConstant {
     int DEVICE_ID_BANNER = 256;
     int PAGE_SIZE = 100;
     int HOMEPAGE_PAGE_SIZE = 5;
+    int TAB_SETUP_DELAY_MS = 150;
 
     interface CouponRedemptionCode {
         int LOW_POINT = 42020;

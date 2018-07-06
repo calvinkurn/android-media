@@ -35,7 +35,6 @@ public class CouponListAdapter extends RecyclerView.Adapter<CouponListAdapter.Vi
         }
     }
 
-
     public CouponListAdapter(CatalogPurchaseRedemptionPresenter presenter, List<CouponValueEntity> items) {
         this.mItems = items;
         this.mPresenter = presenter;
@@ -66,19 +65,9 @@ public class CouponListAdapter extends RecyclerView.Adapter<CouponListAdapter.Vi
 
         ImageHandler.loadImageFit2(holder.imgBanner.getContext(), holder.imgBanner, item.getImageUrlMobile());
 
-        holder.btnContinue.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mPresenter.showRedeemCouponDialog(item.getCta(), item.getCode(), item.getTitle());
-            }
-        });
+        holder.btnContinue.setOnClickListener(v -> mPresenter.showRedeemCouponDialog(item.getCta(), item.getCode(), item.getTitle()));
 
-        holder.imgBanner.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mPresenter.navigateToWebView(CommonConstant.WebLink.SEE_COUPON + mItems.get(position).getCode());
-            }
-        });
+        holder.imgBanner.setOnClickListener(v -> mPresenter.navigateToWebView(CommonConstant.WebLink.SEE_COUPON + mItems.get(position).getCode()));
     }
 
     @Override

@@ -173,12 +173,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         mRecyclerViewChips.setAdapter(mChipAdapter);
 
         //To ensure get data loaded for very first time for first fragment(Providing a small to ensure fragment get displayed).
-        mPagerSortType.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                refreshTab(getSelectedCategoryId());
-            }
-        }, 150);
+        mPagerSortType.postDelayed(() -> refreshTab(getSelectedCategoryId()), CommonConstant.TAB_SETUP_DELAY_MS);
     }
 
 

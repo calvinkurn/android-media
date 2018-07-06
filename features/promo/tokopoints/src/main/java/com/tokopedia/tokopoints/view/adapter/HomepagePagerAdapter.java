@@ -47,27 +47,12 @@ public class HomepagePagerAdapter extends PagerAdapter {
                 recyclerView.setAdapter(mCatalogsAdapter);
             } else {
                 containerInner.setDisplayedChild(1);
-                view.findViewById(R.id.text_empty_action).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        mPresenter.getView().openWebView(CommonConstant.WebLink.INFO);
-                    }
-                });
+                view.findViewById(R.id.text_empty_action).setOnClickListener(view1 -> mPresenter.getView().openWebView(CommonConstant.WebLink.INFO));
             }
 
-            view.findViewById(R.id.text_link_first).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mPresenter.getView().gotoCatalog();
-                }
-            });
+            view.findViewById(R.id.text_link_first).setOnClickListener(v -> mPresenter.getView().gotoCatalog());
 
-            view.findViewById(R.id.text_link_second).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mPresenter.getView().openWebView(CommonConstant.WebLink.INFO);
-                }
-            });
+            view.findViewById(R.id.text_link_second).setOnClickListener(v -> mPresenter.getView().openWebView(CommonConstant.WebLink.INFO));
         } else {
             if (mCoupons != null) {
                 containerInner.setDisplayedChild(0);
@@ -76,19 +61,9 @@ public class HomepagePagerAdapter extends PagerAdapter {
                 recyclerView.setAdapter(mCouponsAdapter);
             }
 
-            view.findViewById(R.id.text_link_first).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mPresenter.getView().gotoCoupons();
-                }
-            });
+            view.findViewById(R.id.text_link_first).setOnClickListener(v -> mPresenter.getView().gotoCoupons());
 
-            view.findViewById(R.id.text_link_second).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mPresenter.getView().openWebView(CommonConstant.WebLink.INFO);
-                }
-            });
+            view.findViewById(R.id.text_link_second).setOnClickListener(v -> mPresenter.getView().openWebView(CommonConstant.WebLink.INFO));
         }
 
         view.setTag(position);
