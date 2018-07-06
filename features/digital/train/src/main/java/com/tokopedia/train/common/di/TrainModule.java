@@ -10,6 +10,7 @@ import com.tokopedia.train.common.constant.TrainUrl;
 import com.tokopedia.train.common.data.TrainDataStoreFactory;
 import com.tokopedia.train.common.data.TrainRepositoryImpl;
 import com.tokopedia.train.common.domain.TrainRepository;
+import com.tokopedia.train.scheduledetail.domain.GetScheduleDetailUseCase;
 import com.tokopedia.train.search.data.TrainScheduleCacheDataStore;
 import com.tokopedia.train.search.data.TrainScheduleCloudDataStore;
 import com.tokopedia.train.search.data.TrainScheduleDataStoreFactory;
@@ -139,6 +140,12 @@ public class TrainModule {
     @Provides
     GetDetailScheduleUseCase provideGetDetailScheduleUseCase(TrainRepository trainRepository) {
         return new GetDetailScheduleUseCase(trainRepository);
+    }
+
+    @TrainScope
+    @Provides
+    GetScheduleDetailUseCase provideGetScheduleDetailUseCase(TrainRepository trainRepository) {
+        return new GetScheduleDetailUseCase(trainRepository);
     }
 
 }

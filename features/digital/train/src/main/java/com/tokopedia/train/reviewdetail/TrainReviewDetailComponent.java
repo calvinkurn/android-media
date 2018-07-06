@@ -1,6 +1,7 @@
 package com.tokopedia.train.reviewdetail;
 
 import com.tokopedia.train.common.di.TrainComponent;
+import com.tokopedia.train.reviewdetail.presentation.fragment.TrainReviewDetailFragment;
 
 import dagger.Component;
 

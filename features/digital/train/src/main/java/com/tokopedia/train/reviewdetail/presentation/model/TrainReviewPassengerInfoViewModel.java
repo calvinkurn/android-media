@@ -1,6 +1,7 @@
-package com.tokopedia.train.reviewdetail;
+package com.tokopedia.train.reviewdetail.presentation.model;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.train.reviewdetail.presentation.adapter.TrainPassengerAdapterTypeFactory;
 
 /**
  * Created by Rizky on 03/07/18.

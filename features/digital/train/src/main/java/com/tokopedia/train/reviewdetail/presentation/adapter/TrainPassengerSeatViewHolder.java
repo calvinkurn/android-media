@@ -1,4 +1,4 @@
-package com.tokopedia.train.reviewdetail;
+package com.tokopedia.train.reviewdetail.presentation.adapter;
 
 import android.text.TextUtils;
 import android.view.View;
@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpdtrain.R;
+import com.tokopedia.train.reviewdetail.presentation.model.TrainReviewPassengerInfoViewModel;
 
 /**
  * Created by Rizky on 02/07/18.

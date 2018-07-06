@@ -19,6 +19,7 @@ import rx.Observable;
  */
 
 public interface TrainRepository {
+
     Observable<List<TrainStation>> getPopularStations();
 
     Observable<List<TrainStation>> getStationsByKeyword(String keyword);
@@ -42,4 +43,5 @@ public interface TrainRepository {
     Observable<List<TrainSeatMapEntity>> getSeat(HashMap<String, Object> parameters);
 
     Observable<List<TrainStation>> getAllStations();
+
 }

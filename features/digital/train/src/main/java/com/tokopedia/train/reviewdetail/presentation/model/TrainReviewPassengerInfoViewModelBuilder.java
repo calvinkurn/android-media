@@ -1,4 +1,4 @@
-package com.tokopedia.train.reviewdetail;
+package com.tokopedia.train.reviewdetail.presentation.model;
 
 public class TrainReviewPassengerInfoViewModelBuilder {
 

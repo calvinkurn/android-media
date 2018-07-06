@@ -28,8 +28,7 @@ public class TrainSchedulePriceDetailFragment extends Fragment {
     private TextView textTotalPrice;
 
     public static Fragment createInstance() {
-        TrainSchedulePriceDetailFragment fragment = new TrainSchedulePriceDetailFragment();
-        return fragment;
+        return new TrainSchedulePriceDetailFragment();
     }
 
     @Nullable

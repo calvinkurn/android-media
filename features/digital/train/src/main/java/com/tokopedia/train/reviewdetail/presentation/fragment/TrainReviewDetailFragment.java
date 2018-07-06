@@ -1,4 +1,4 @@
-package com.tokopedia.train.reviewdetail;
+package com.tokopedia.train.reviewdetail.presentation.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,15 +8,25 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.design.component.CardWithAction;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.di.utils.TrainComponentUtils;
 import com.tokopedia.train.common.util.TrainDateUtil;
 import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
+import com.tokopedia.train.reviewdetail.DaggerTrainReviewDetailComponent;
+import com.tokopedia.train.reviewdetail.presentation.adapter.TrainPassengerAdapterTypeFactory;
+import com.tokopedia.train.reviewdetail.TrainReviewDetailComponent;
+import com.tokopedia.train.reviewdetail.presentation.model.TrainReviewPassengerInfoViewModel;
+import com.tokopedia.train.reviewdetail.presentation.contract.TrainReviewDetailContract;
+import com.tokopedia.train.reviewdetail.presentation.presenter.TrainReviewDetailPresenter;
 import com.tokopedia.train.scheduledetail.presentation.activity.TrainScheduleDetailActivity;
+import com.tokopedia.train.scheduledetail.presentation.model.TrainScheduleDetailViewModel;
 import com.tokopedia.train.search.presentation.model.TrainScheduleBookingPassData;
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
 
@@ -33,6 +43,13 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
 
     private CardWithAction cardDepartureTrip;
     private CardWithAction cardReturnTrip;
+    private LinearLayout viewTrainReviewTotalPrice;
+    private TextView textTrainReviewTotalPrice;
+    private LinearLayout containerTrainReviewPriceDetail;
+    private TextView textDepartureTripPassengerCount;
+    private TextView textDepartureTripPrice;
+    private TextView textReturnTripPassengerCount;
+    private TextView textReturnTripPrice;
 
     private static final String ARGS_TRAIN_SOFTBOOK = "ARGS_TRAIN_SOFTBOOK";
     private static final String ARGS_TRAIN_SCHEDULE_BOOKING = "ARGS_TRAIN_SCHEDULE_BOOKING";
@@ -66,8 +83,14 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
 
         trainReviewDetailPresenter.attachView(this);
 
-        trainReviewDetailPresenter.getScheduleDetail(trainScheduleBookingPassData.getDepartureScheduleId(),
+        trainReviewDetailPresenter.getScheduleTrips(trainScheduleBookingPassData.getDepartureScheduleId(),
                 trainScheduleBookingPassData.getReturnScheduleId());
+
+        trainReviewDetailPresenter.getScheduleTripsPrice(
+                trainScheduleBookingPassData.getDepartureScheduleId(),
+                trainScheduleBookingPassData.getReturnScheduleId(),
+                trainScheduleBookingPassData.getAdultPassenger(),
+                trainScheduleBookingPassData.getInfantPassenger());
     }
 
     @Nullable
@@ -77,6 +100,13 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
 
         cardDepartureTrip = rootview.findViewById(R.id.train_departure_info);
         cardReturnTrip = rootview.findViewById(R.id.train_return_info);
+        viewTrainReviewTotalPrice = rootview.findViewById(R.id.view_train_review_total_price);
+        textTrainReviewTotalPrice = rootview.findViewById(R.id.text_train_review_total_price);
+        containerTrainReviewPriceDetail = rootview.findViewById(R.id.container_train_review_price_detail);
+        textDepartureTripPassengerCount = rootview.findViewById(R.id.text_departure_trip_passenger_count);
+        textDepartureTripPrice = rootview.findViewById(R.id.text_departure_trip_price);
+        textReturnTripPassengerCount = rootview.findViewById(R.id.text_return_trip_passenger_count);
+        textReturnTripPrice = rootview.findViewById(R.id.text_return_trip_price);
 
         cardDepartureTrip.setActionListener(() -> {
             Intent intent = TrainScheduleDetailActivity.createIntent(getActivity(),
@@ -94,6 +124,10 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
                     trainScheduleBookingPassData.getInfantPassenger(),
                     false);
             startActivity(intent);
+        });
+
+        viewTrainReviewTotalPrice.setOnClickListener(v -> {
+            containerTrainReviewPriceDetail.setVisibility(View.VISIBLE);
         });
 
         return rootview;
@@ -162,6 +196,26 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
 
         trainReviewDetailPresenter.getPassengers(trainSoftbook, departureTrip.getOrigin(),
                 departureTrip.getDestination());
+    }
+
+    @Override
+    public void showScheduleTripsPrice(TrainScheduleDetailViewModel departureTrip, TrainScheduleDetailViewModel returnTrip) {
+        textTrainReviewTotalPrice.setText(getString(R.string.train_label_currency,
+                CurrencyFormatUtil.getThousandSeparatorString(departureTrip.getTotalPrice(),
+                        false, 0).getFormattedString()));
+        textDepartureTripPassengerCount.setText(getString(R.string.train_review_trip_passenger_count,
+                departureTrip.getOriginStationCode(), departureTrip.getDestinationCityCode(), departureTrip.getNumOfAdultPassenger()));
+        textDepartureTripPrice.setText(getString(R.string.train_label_currency,
+                CurrencyFormatUtil.getThousandSeparatorString(departureTrip.getTotalAdultFare(),
+                        false, 0).getFormattedString()));
+
+        if (returnTrip != null) {
+            textReturnTripPassengerCount.setText(getString(R.string.train_review_trip_passenger_count,
+                    returnTrip.getOriginStationCode(), returnTrip.getDestinationCityCode(), returnTrip.getNumOfAdultPassenger()));
+            textReturnTripPrice.setText(getString(R.string.train_label_currency,
+                    CurrencyFormatUtil.getThousandSeparatorString(returnTrip.getTotalAdultFare(),
+                            false, 0).getFormattedString()));
+        }
     }
 
 }

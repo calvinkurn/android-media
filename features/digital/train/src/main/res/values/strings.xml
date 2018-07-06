@@ -122,4 +122,5 @@
     <string name="train_review_item_passenger_index">%1$d. </string>
     <string name="train_review_item_passenger_seat">%1$s %2$s</string>
     <string name="train_review_item_passenger_info_seat">Kursi (%1$s -  %2$s)</string>
+    <string name="train_review_trip_passenger_count">%1$s - %2$s (Dewasa) x %3$d</string>
 </resources>

@@ -12,7 +12,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -33,7 +32,7 @@ import com.tokopedia.train.passenger.presenter.TrainBookingPassengerPresenter;
 import com.tokopedia.train.passenger.viewmodel.ProfileBuyerInfo;
 import com.tokopedia.train.passenger.viewmodel.TrainParamPassenger;
 import com.tokopedia.train.passenger.viewmodel.TrainPassengerViewModel;
-import com.tokopedia.train.reviewdetail.TrainReviewDetailActivity;
+import com.tokopedia.train.reviewdetail.presentation.activity.TrainReviewDetailActivity;
 import com.tokopedia.train.scheduledetail.presentation.activity.TrainScheduleDetailActivity;
 import com.tokopedia.train.search.presentation.model.TrainScheduleBookingPassData;
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;

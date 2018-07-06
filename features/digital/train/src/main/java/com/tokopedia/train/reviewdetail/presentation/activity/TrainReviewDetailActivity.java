@@ -1,4 +1,4 @@
-package com.tokopedia.train.reviewdetail;
+package com.tokopedia.train.reviewdetail.presentation.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 
 import com.tokopedia.train.common.presentation.TrainBaseActivity;
 import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
+import com.tokopedia.train.reviewdetail.presentation.fragment.TrainReviewDetailFragment;
 import com.tokopedia.train.search.presentation.model.TrainScheduleBookingPassData;
 
 /**
