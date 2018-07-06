@@ -343,12 +343,6 @@ public class GroupChatActivity extends BaseSimpleActivity
         showLoading();
     }
 
-    private void reInitData() {
-        isFirstTime = true;
-        presenter.getChannelInfo(viewModel.getChannelUuid(), true);
-        showLoading();
-    }
-
     private void initPreference() {
         if (userSession != null
                 && !TextUtils.isEmpty(userSession.getUserId())
@@ -1076,7 +1070,9 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     @Override
     public void onSuccessLogin() {
-        reInitData();
+        isFirstTime = true;
+        presenter.getChannelInfo(viewModel.getChannelUuid(), true);
+        showLoading();
     }
 
     private void showPushNotif(GroupChatPointsViewModel model) {

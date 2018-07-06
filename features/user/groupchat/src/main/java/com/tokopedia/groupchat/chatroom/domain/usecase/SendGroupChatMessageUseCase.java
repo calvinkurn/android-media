@@ -1,7 +1,6 @@
 package com.tokopedia.groupchat.chatroom.domain.usecase;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.sendbird.android.BaseChannel;
 import com.sendbird.android.OpenChannel;

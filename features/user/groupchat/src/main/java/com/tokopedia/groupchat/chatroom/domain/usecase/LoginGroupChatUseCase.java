@@ -53,8 +53,6 @@ public class LoginGroupChatUseCase {
                     return;
                 }
 
-                //TODO CHECK WITH CACHE IF DATA ALREADY INVALID THEN UPDATE INSTEAD OF UPDATING
-                // ALL THE TIME
                 if (shouldUpdateData(user, userName, userAvatar)) {
                     updateUserInfo(context, channelUrl, userName, userAvatar, listener, sendBirdToken);
                 } else {
