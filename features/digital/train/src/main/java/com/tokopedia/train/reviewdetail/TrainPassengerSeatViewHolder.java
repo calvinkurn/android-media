@@ -39,16 +39,19 @@ public class TrainPassengerSeatViewHolder extends AbstractViewHolder<TrainReview
 
     @Override
     public void bind(TrainReviewPassengerInfoViewModel element) {
-        textPassengerIndex.setText(String.format(String.valueOf(getAdapterPosition()+1), ". "));
+        textPassengerIndex.setText(itemView.getContext()
+                .getString(R.string.train_review_item_passenger_index, getAdapterPosition()+1));
         textPassengerName.setText(element.getName());
         textNumberID.setText(element.getNoID());
-        textDepartureSeat.setText(String.format(element.getDepartureTripClass(), " ", element.getDepartureSeat()));
-        textDepartureTrip.setText(itemView.getContext().getString(R.string.train_item_passenger_info_seat,
+        textDepartureSeat.setText(itemView.getContext().getString(R.string.train_review_item_passenger_seat,
+                element.getDepartureTripClass(), element.getDepartureSeat()));
+        textDepartureTrip.setText(itemView.getContext().getString(R.string.train_review_item_passenger_info_seat,
                 element.getOriginStationCode(), element.getDestinationStationCode()));
         if (!TextUtils.isEmpty(element.getReturnTripClass()) && !TextUtils.isEmpty(element.getReturnSeat())) {
             layoutTextReturnTrip.setVisibility(View.VISIBLE);
-            textReturnSeat.setText(String.format(element.getReturnTripClass(), " ", element.getReturnSeat()));
-            textReturnTrip.setText(itemView.getContext().getString(R.string.train_item_passenger_info_seat,
+            textReturnSeat.setText(itemView.getContext().getString(R.string.train_review_item_passenger_seat,
+                    element.getReturnTripClass(), element.getReturnSeat()));
+            textReturnTrip.setText(itemView.getContext().getString(R.string.train_review_item_passenger_info_seat,
                     element.getDestinationStationCode(), element.getOriginStationCode()));
         } else {
             layoutTextReturnTrip.setVisibility(View.GONE);
