@@ -12,7 +12,7 @@ class ProductAddVideoActivity : BaseSimpleActivity(), BaseTextPickerDialogFragme
 
     private lateinit var productAddVideoFragment: Fragment
 
-    override fun getNewFragment(): Fragment? {
+    override fun getNewFragment(): Fragment{
         productAddVideoFragment = ProductAddVideoFragment.createInstance()
         return productAddVideoFragment
     }

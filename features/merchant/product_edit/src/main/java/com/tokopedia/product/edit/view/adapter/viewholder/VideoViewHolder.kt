@@ -2,42 +2,31 @@ package com.tokopedia.product.edit.view.adapter.viewholder
 
 import android.support.annotation.LayoutRes
 import android.view.View
-import android.widget.ImageView
-import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.product.edit.R
 import com.tokopedia.product.edit.view.listener.VideoChosenListener
 import com.tokopedia.product.edit.view.viewmodel.VideoViewModel
+import kotlinx.android.synthetic.main.item_product_add_video_choosen.view.*
 
 class VideoViewHolder(itemView: View,
                       var videoChoosenListener: VideoChosenListener) : AbstractViewHolder<VideoViewModel>(itemView){
-
-    var imageThumbnail: ImageView = itemView.findViewById(R.id.image_thumbnail)
-    var textTitle: TextView = itemView.findViewById(R.id.text_title)
-    var textChannel: TextView = itemView.findViewById(R.id.text_channel)
-    var imageDelete: ImageView = itemView.findViewById(R.id.image_video_delete)
-    var textTagRecommendation: TextView = itemView.findViewById(R.id.text_tag_recommendation)
 
     init {
         setViews()
     }
 
     private fun setViews(){
-        imageDelete.setOnClickListener({
+        itemView.imageDelete.setOnClickListener({
             videoChoosenListener.onVideoChosenDeleteClicked(adapterPosition)
         })
     }
 
     override fun bind(videoViewModel: VideoViewModel) {
-        textTitle.text = videoViewModel.snippetTitle
-        textChannel.text = videoViewModel.snippetChannel
-        ImageHandler.loadImageThumbs(imageThumbnail.context, imageThumbnail, videoViewModel.thumbnailUrl)
-        if(videoViewModel.recommendation!!){
-            textTagRecommendation.visibility = View.VISIBLE
-        } else {
-            textTagRecommendation.visibility = View.GONE
-        }
+        itemView.textTitle.text = videoViewModel.snippetTitle
+        itemView.textChannel.text = videoViewModel.snippetChannel
+        ImageHandler.loadImageThumbs(itemView.imageThumbnail.context, itemView.imageThumbnail, videoViewModel.thumbnailUrl)
+
         itemView.setOnClickListener({
             videoChoosenListener.onVideoChosenClicked(adapterPosition)
         })

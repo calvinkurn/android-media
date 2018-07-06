@@ -7,7 +7,6 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.TypedValue
 import android.view.View
-import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.edit.R
 import com.tokopedia.product.edit.view.adapter.ProductAddVideoRecommendationFeaturedAdapter
@@ -17,14 +16,13 @@ import com.tokopedia.product.edit.view.listener.SectionVideoRecommendationListen
 import com.tokopedia.product.edit.view.viewmodel.SectionVideoRecommendationViewModel
 import com.tokopedia.product.edit.view.viewmodel.VideoRecommendationViewModel
 import com.tokopedia.product.edit.view.viewmodel.VideoViewModel
+import kotlinx.android.synthetic.main.item_product_add_section_video_recommendation.view.*
 
 class SectionVideoRecommendationViewHolder(itemView: View,
                                            var sectionVideoRecommendationListener: SectionVideoRecommendationListener) : AbstractViewHolder<SectionVideoRecommendationViewModel>(itemView),
         ProductAddVideoFragment.Listener{
 
     private lateinit var productAddVideoRecommendationFeaturedAdapter: ProductAddVideoRecommendationFeaturedAdapter
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var textShowMore: TextView
     private lateinit var itemDecoration:RecyclerView.ItemDecoration
 
     private var videoRecommendationFeaturedList: ArrayList<VideoRecommendationViewModel?> = ArrayList()
@@ -35,13 +33,10 @@ class SectionVideoRecommendationViewHolder(itemView: View,
 
     private fun setViews(view: View) {
         sectionVideoRecommendationListener.setProductAddVideoFragmentListener(this)
-        textShowMore = view.findViewById(R.id.text_video_recommendation_show_more)
-        textShowMore.visibility = View.GONE
-        textShowMore.setOnClickListener({
+        itemView.textShowMore.visibility = View.GONE
+        itemView.textShowMore.setOnClickListener({
             sectionVideoRecommendationListener.onShowMoreClicked()
         })
-
-        recyclerView = view.findViewById(R.id.recycler_view)
 
         val videoFeaturedClickListener: VideoFeaturedClickListener = object : VideoFeaturedClickListener{
             override fun onVideoFeaturedClicked(videoRecommendationViewModel : VideoRecommendationViewModel) {
@@ -54,9 +49,9 @@ class SectionVideoRecommendationViewHolder(itemView: View,
 
         videoRecommendationFeaturedList.add(null)
         productAddVideoRecommendationFeaturedAdapter = ProductAddVideoRecommendationFeaturedAdapter(videoRecommendationFeaturedList, videoFeaturedClickListener)
-        recyclerView.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
-        recyclerView.adapter = productAddVideoRecommendationFeaturedAdapter
-        recyclerView.setHasFixedSize(true)
+        itemView.recyclerView.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+        itemView.recyclerView.adapter = productAddVideoRecommendationFeaturedAdapter
+        itemView.recyclerView.setHasFixedSize(true)
 
         itemDecoration = object : RecyclerView.ItemDecoration() {
             override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State?) {
@@ -71,7 +66,7 @@ class SectionVideoRecommendationViewHolder(itemView: View,
             }
         }
 
-        recyclerView.addItemDecoration(itemDecoration)
+        itemView.recyclerView.addItemDecoration(itemDecoration)
     }
 
     fun dpToPx(context: Context, valueInDp: Int): Float {
@@ -87,10 +82,10 @@ class SectionVideoRecommendationViewHolder(itemView: View,
         videoRecommendationFeaturedList.remove(null)
         videoRecommendationFeaturedList = ArrayList()
         if(videoRecommendationViewModelList.size <= MAX_VIDEO){
-            textShowMore.visibility = View.GONE
+            itemView.textShowMore.visibility = View.GONE
             videoRecommendationFeaturedList.addAll(videoRecommendationViewModelList)
         } else {
-            textShowMore.visibility = View.VISIBLE
+            itemView.textShowMore.visibility = View.VISIBLE
             for (i in 0 until MAX_VIDEO) {
                 videoRecommendationFeaturedList.add(videoRecommendationViewModelList[i])
             }

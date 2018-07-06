@@ -8,4 +8,7 @@
     <dimen name="item_add_video_ll_2_height">84dp</dimen>
     <dimen name="image_add_video_url_remove_margin">7dp</dimen>
 
+    <dimen name="image_empty_video_height">120dp</dimen>
+    <dimen name="image_empty_video_width">175dp</dimen>
+
 </resources>

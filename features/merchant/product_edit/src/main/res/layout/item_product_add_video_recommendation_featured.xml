@@ -12,7 +12,7 @@
         android:layout_height="wrap_content">
 
         <ImageView
-            android:id="@+id/image_thumbnail"
+            android:id="@+id/imageThumbnail"
             android:layout_width="@dimen/dp_145"
             android:layout_height="@dimen/dp_80"
             android:scaleType="centerCrop"/>
@@ -20,14 +20,14 @@
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignRight="@+id/image_thumbnail"
+            android:layout_alignRight="@+id/imageThumbnail"
             android:layout_margin="@dimen/dp_4">
             <ImageView
                 android:layout_width="@dimen/dp_25"
                 android:layout_height="@dimen/dp_25"
                 android:background="@drawable/rounded_grey_check" />
             <ImageView
-                android:id="@+id/image_chosen"
+                android:id="@+id/imageChosen"
                 android:layout_width="@dimen/dp_25"
                 android:layout_height="@dimen/dp_25"
                 app:srcCompat="@drawable/ic_add_video_featured"
@@ -35,11 +35,11 @@
         </RelativeLayout>
 
         <TextView
-            android:id="@+id/text_duration"
+            android:id="@+id/textDuration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignRight="@+id/image_thumbnail"
-            android:layout_alignBottom="@+id/image_thumbnail"
+            android:layout_alignRight="@+id/imageThumbnail"
+            android:layout_alignBottom="@+id/imageThumbnail"
             android:background="@drawable/rounded_grey"
             android:paddingLeft="@dimen/dp_6"
             android:paddingRight="@dimen/dp_6"
@@ -52,7 +52,7 @@
     </RelativeLayout>
 
     <TextView
-        android:id="@+id/text_title"
+        android:id="@+id/textTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_2"
@@ -62,7 +62,7 @@
         style="@style/TextView.Small.BlackSecondary"/>
 
     <TextView
-        android:id="@+id/text_channel"
+        android:id="@+id/textChannel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_2"
