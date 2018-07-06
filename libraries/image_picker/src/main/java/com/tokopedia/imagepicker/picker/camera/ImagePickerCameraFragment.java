@@ -289,7 +289,7 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
                     onSuccessImageTakenFromCamera(cameraResultFile);
                 }
             });
-        } catch (OutOfMemoryError error) {
+        } catch (Throwable error) {
             File cameraResultFile = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA, imageByte, false);
             onSuccessImageTakenFromCamera(cameraResultFile);
         }
@@ -337,7 +337,7 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
                     previewImageView.setImageBitmap(myBitmap);
                 }
                 showPreviewView();
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 onImagePickerCameraFragmentListener.onImageTaken(imagePath);
             }
         } else {
@@ -419,7 +419,8 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
     @Override
     public void onPause() {
         super.onPause();
-        stopCamera();
+        // https://github.com/natario1/CameraView/issues/122
+        destroyCamera();
     }
 
     @Override
@@ -432,7 +433,7 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
         try {
             showCameraView();
             cameraView.start();
-        } catch (Exception e) {
+        } catch (Throwable e) {
             // no-op
         }
     }
@@ -440,7 +441,7 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
     private void stopCamera() {
         try {
             cameraView.stop();
-        } catch (Exception e) {
+        } catch (Throwable e) {
             // no-op
         }
     }
@@ -448,7 +449,7 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
     private void destroyCamera() {
         try {
             cameraView.destroy();
-        } catch (Exception e) {
+        } catch (Throwable e) {
             // no-op
         }
     }
