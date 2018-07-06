@@ -82,6 +82,6 @@ public interface IProductDigitalView extends IBaseView {
 
     boolean isDigitalSmartcardEnabled();
 
-    void renderPromoPanduanTab(boolean shouldShowPanduan);
+    void renderPromoPanduanTab(int tabCount, String firstTab);
 
 }

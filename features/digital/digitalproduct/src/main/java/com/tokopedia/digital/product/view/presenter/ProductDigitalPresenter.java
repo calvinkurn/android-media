@@ -54,12 +54,18 @@ import java.util.List;
 
 import rx.Subscriber;
 
+import static com.tokopedia.digital.product.view.adapter.PromoPanduanPagerAdapter.PANDUAN_TAB;
+import static com.tokopedia.digital.product.view.adapter.PromoPanduanPagerAdapter.PROMO_TAB;
+
 /**
  * @author anggaprasetiyo on 4/26/17.
  */
 
 public class ProductDigitalPresenter extends BaseDigitalPresenter
         implements IProductDigitalPresenter {
+
+    public static final int TAB_COUNT_ONE = 1;
+    public static final int TAB_COUNT_TWO = 2;
 
     private static final String PULSA_CATEGORY_ID = "1";
     private static final String PAKET_DATA_CATEGORY_ID = "2";
@@ -236,19 +242,27 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
             view.renderCategory(digitalProductView, categoryData, historyClientNumber);
 
             if (!GlobalConfig.isSellerApp()) {
-                view.renderPromoPanduanTab(guideDataList.size() > 0);
+                if (bannerDataList.size() > 0 && guideDataList.size() > 0) {
+                    view.renderPromoPanduanTab(TAB_COUNT_TWO, PROMO_TAB);
+                } else if (bannerDataList.size() > 0 && guideDataList.size() == 0) {
+                    view.renderPromoPanduanTab(TAB_COUNT_ONE, PROMO_TAB);
+                } else if (bannerDataList.size() == 0 && guideDataList.size() > 0) {
+                    view.renderPromoPanduanTab(TAB_COUNT_ONE, PANDUAN_TAB);
+                }
 
-                view.renderBannerListData(
-                        categoryData.getName(),
-                        bannerDataList != null ? bannerDataList : new ArrayList<BannerData>()
-                );
-                view.renderOtherBannerListData(
-                        view.getStringFromResource(R.string.other_promo),
-                        otherBannerDataList != null ? otherBannerDataList : new ArrayList<BannerData>()
-                );
-                view.renderGuideListData(
-                        guideDataList != null ? guideDataList : new ArrayList<>()
-                );
+                if (bannerDataList.size() > 0 || guideDataList.size() > 0) {
+                    view.renderBannerListData(
+                            categoryData.getName(),
+                            bannerDataList != null ? bannerDataList : new ArrayList<BannerData>()
+                    );
+                    view.renderOtherBannerListData(
+                            view.getStringFromResource(R.string.other_promo),
+                            otherBannerDataList != null ? otherBannerDataList : new ArrayList<BannerData>()
+                    );
+                    view.renderGuideListData(
+                            guideDataList != null ? guideDataList : new ArrayList<>()
+                    );
+                }
             }
         } else {
             view.renderErrorStyleNotSupportedProductDigitalData(

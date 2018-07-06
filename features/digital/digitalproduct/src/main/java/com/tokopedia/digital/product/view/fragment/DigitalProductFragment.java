@@ -1239,10 +1239,10 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     @Override
-    public void renderPromoPanduanTab(boolean shouldShowPanduan) {
+    public void renderPromoPanduanTab(int tabCount, String firstTab) {
         promoTabLayout.setupWithViewPager(promoViewPager);
         promoViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(promoTabLayout));
-        promoViewPager.setAdapter(getViewPagerAdapter(shouldShowPanduan));
+        promoViewPager.setAdapter(getViewPagerAdapter(tabCount, firstTab));
         promoViewPager.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -1252,9 +1252,9 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         }, 1000);
     }
 
-    private PagerAdapter getViewPagerAdapter(boolean shouldShowPanduan) {
+    private PagerAdapter getViewPagerAdapter(int tabCount, String firstTab) {
         promoPanduanPagerAdapter = new PromoPanduanPagerAdapter(getFragmentManager(), context,
-                shouldShowPanduan ? 2 : 1);
+                tabCount, firstTab);
         return promoPanduanPagerAdapter;
     }
 
