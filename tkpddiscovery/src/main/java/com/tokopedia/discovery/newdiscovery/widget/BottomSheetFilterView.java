@@ -596,6 +596,11 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
     }
 
     @Override
+    public void onPriceEditedFromTextInput(int minValue, int maxValue) {
+        applyFilter();
+    }
+
+    @Override
     public boolean isSelectedCategory(Option option) {
         return !TextUtils.isEmpty(selectedCategoryId)
                 &&  selectedCategoryId.equals(option.getValue());
