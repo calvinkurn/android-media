@@ -54,6 +54,7 @@
         <com.tokopedia.design.voucher.VoucherCartHachikoView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:id="@+id/voucher_cart_hachiko_view"
             android:layout_marginTop="@dimen/dp_20"
             android:layout_marginBottom="@dimen/dp_20"/>
 

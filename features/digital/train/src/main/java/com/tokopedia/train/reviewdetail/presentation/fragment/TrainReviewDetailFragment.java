@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.design.component.CardWithAction;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.design.voucher.VoucherCartHachikoView;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.di.utils.TrainComponentUtils;
 import com.tokopedia.train.common.util.TrainDateUtil;
@@ -36,7 +37,7 @@ import javax.inject.Inject;
  * Created by Rizky on 02/07/18.
  */
 public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPassengerInfoViewModel, TrainPassengerAdapterTypeFactory>
-        implements TrainReviewDetailContract.View {
+        implements TrainReviewDetailContract.View, VoucherCartHachikoView.ActionListener {
 
     @Inject
     TrainReviewDetailPresenter trainReviewDetailPresenter;
@@ -50,6 +51,8 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
     private TextView textDepartureTripPrice;
     private TextView textReturnTripPassengerCount;
     private TextView textReturnTripPrice;
+    private LinearLayout viewTotalPriceReturnTrip;
+    private VoucherCartHachikoView voucherCartHachikoView;
 
     private static final String ARGS_TRAIN_SOFTBOOK = "ARGS_TRAIN_SOFTBOOK";
     private static final String ARGS_TRAIN_SCHEDULE_BOOKING = "ARGS_TRAIN_SCHEDULE_BOOKING";
@@ -107,6 +110,10 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
         textDepartureTripPrice = rootview.findViewById(R.id.text_departure_trip_price);
         textReturnTripPassengerCount = rootview.findViewById(R.id.text_return_trip_passenger_count);
         textReturnTripPrice = rootview.findViewById(R.id.text_return_trip_price);
+        viewTotalPriceReturnTrip = rootview.findViewById(R.id.view_total_price_return_trip);
+        voucherCartHachikoView = rootview.findViewById(R.id.voucher_cart_hachiko_view);
+
+        voucherCartHachikoView.setActionListener(this);
 
         cardDepartureTrip.setActionListener(() -> {
             Intent intent = TrainScheduleDetailActivity.createIntent(getActivity(),
@@ -218,12 +225,35 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
                         false, 0).getFormattedString()));
 
         if (returnTrip != null) {
+            viewTotalPriceReturnTrip.setVisibility(View.VISIBLE);
             textReturnTripPassengerCount.setText(getString(R.string.train_review_trip_passenger_count,
                     returnTrip.getOriginStationCode(), returnTrip.getDestinationStationCode(), returnTrip.getNumOfAdultPassenger()));
             textReturnTripPrice.setText(getString(R.string.train_label_currency,
                     CurrencyFormatUtil.getThousandSeparatorString(returnTrip.getTotalAdultFare(),
                             false, 0).getFormattedString()));
+        } else {
+            viewTotalPriceReturnTrip.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void onClickUseVoucher() {
+
+    }
+
+    @Override
+    public void disableVoucherDiscount() {
+
+    }
+
+    @Override
+    public void trackingSuccessVoucher(String voucherName) {
+
+    }
+
+    @Override
+    public void trackingCancelledVoucher() {
+
     }
 
 }
