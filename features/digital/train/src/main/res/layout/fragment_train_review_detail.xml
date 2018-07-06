@@ -71,6 +71,7 @@
             <TextView
                 android:text="Total Pembayaran"
                 android:textColor="@color/black"
+                android:layout_gravity="center"
                 android:layout_weight="1"
                 android:textStyle="bold"
                 android:layout_width="0dp"
@@ -86,6 +87,8 @@
                     tools:text="Rp1.920.000"
                     android:id="@+id/text_train_review_total_price"
                     android:textColor="@color/orange_900"
+                    android:layout_marginBottom="@dimen/dp_8"
+                    android:textSize="@dimen/sp_18"
                     android:textStyle="bold"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />

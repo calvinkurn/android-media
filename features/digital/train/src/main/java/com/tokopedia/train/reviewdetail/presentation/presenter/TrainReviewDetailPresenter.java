@@ -1,5 +1,8 @@
 package com.tokopedia.train.reviewdetail.presentation.presenter;
 
+import android.annotation.SuppressLint;
+import android.text.TextUtils;
+import android.util.Log;
 import android.util.Pair;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
@@ -147,9 +150,12 @@ public class TrainReviewDetailPresenter extends BaseDaggerPresenter<TrainReviewD
                 getScheduleDetailUseCase.createRequestParams(departureScheduleId, numOfAdultPassenger, numOfInfantPassenger)
         );
 
-        Observable<TrainScheduleDetailViewModel> returnSchedule = getScheduleDetailUseCase.createObservable(
-                getScheduleDetailUseCase.createRequestParams(returnScheduleId, numOfAdultPassenger, numOfInfantPassenger)
-        );
+        Observable<TrainScheduleDetailViewModel> returnSchedule = null;
+        if (!TextUtils.isEmpty(returnScheduleId)) {
+            returnSchedule = getScheduleDetailUseCase.createObservable(
+                    getScheduleDetailUseCase.createRequestParams(returnScheduleId, numOfAdultPassenger, numOfInfantPassenger)
+            );
+        }
 
         Observable<Pair<TrainScheduleDetailViewModel, TrainScheduleDetailViewModel>> finalObservable;
 
@@ -170,7 +176,7 @@ public class TrainReviewDetailPresenter extends BaseDaggerPresenter<TrainReviewD
 
                     @Override
                     public void onError(Throwable e) {
-
+                        Log.d("TrainReviewDetailPresenter", e.getMessage());
                     }
 
                     @Override

@@ -20,10 +20,10 @@ import com.tokopedia.train.common.di.utils.TrainComponentUtils;
 import com.tokopedia.train.common.util.TrainDateUtil;
 import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
 import com.tokopedia.train.reviewdetail.DaggerTrainReviewDetailComponent;
-import com.tokopedia.train.reviewdetail.presentation.adapter.TrainPassengerAdapterTypeFactory;
 import com.tokopedia.train.reviewdetail.TrainReviewDetailComponent;
-import com.tokopedia.train.reviewdetail.presentation.model.TrainReviewPassengerInfoViewModel;
+import com.tokopedia.train.reviewdetail.presentation.adapter.TrainPassengerAdapterTypeFactory;
 import com.tokopedia.train.reviewdetail.presentation.contract.TrainReviewDetailContract;
+import com.tokopedia.train.reviewdetail.presentation.model.TrainReviewPassengerInfoViewModel;
 import com.tokopedia.train.reviewdetail.presentation.presenter.TrainReviewDetailPresenter;
 import com.tokopedia.train.scheduledetail.presentation.activity.TrainScheduleDetailActivity;
 import com.tokopedia.train.scheduledetail.presentation.model.TrainScheduleDetailViewModel;
@@ -126,8 +126,16 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
             startActivity(intent);
         });
 
+        final boolean [] isPriceDetailOpened = {false};
+
         viewTrainReviewTotalPrice.setOnClickListener(v -> {
-            containerTrainReviewPriceDetail.setVisibility(View.VISIBLE);
+            if (!isPriceDetailOpened[0]) {
+                isPriceDetailOpened[0] = true;
+                containerTrainReviewPriceDetail.setVisibility(View.VISIBLE);
+            } else {
+                isPriceDetailOpened[0] = false;
+                containerTrainReviewPriceDetail.setVisibility(View.GONE);
+            }
         });
 
         return rootview;
