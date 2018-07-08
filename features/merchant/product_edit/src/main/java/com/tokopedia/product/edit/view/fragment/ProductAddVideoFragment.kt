@@ -35,6 +35,7 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
 
     var videoIDs: ArrayList<String> = ArrayList()
     lateinit var productName: String
+    private var videoViewModelList: ArrayList<VideoViewModel> = ArrayList()
     private var videoRecommendationViewModelList: ArrayList<VideoRecommendationViewModel> = ArrayList()
     private lateinit var productAddVideoPresenter : ProductAddVideoPresenter
     private var listener : Listener? = null
@@ -53,8 +54,13 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
         if(activity!!.intent != null){
             videoIDs = activity!!.intent.getStringArrayListExtra(EXTRA_VIDEOS_LINKS)
             productName = activity!!.intent.getStringExtra(EXTRA_KEYWORD)
-            productAddVideoPresenter.setProductName(productName)
         }
+        if (savedInstanceState != null) {
+            videoIDs = savedInstanceState.getStringArrayList(EXTRA_VIDEOS_LINKS)
+            videoViewModelList = savedInstanceState.getParcelableArrayList<VideoViewModel>(EXTRA_VIDEO_CHOSEN)
+            videoRecommendationViewModelList = savedInstanceState.getParcelableArrayList<VideoRecommendationViewModel>(EXTRA_VIDEO_RECOMMENDATION)
+        }
+
         (activity as AppCompatActivity).supportActionBar?.subtitle = getString(R.string.product_from_to_video, videoIDs.size, MAX_VIDEO)
     }
 
@@ -65,12 +71,8 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
                     videoRecommendationViewModelList = data!!.getParcelableArrayListExtra<VideoRecommendationViewModel>(ProductAddVideoFragment.EXTRA_VIDEO_RECOMMENDATION)
                     val videoViewModelList = adapter.data
                     for(videoViewModel in videoViewModelList){
-                        if(videoViewModel is VideoViewModel){
-                            for(videoRecommendationViewModel in videoRecommendationViewModelList){
-                                if(videoRecommendationViewModel.videoID == videoViewModel.videoID){
-                                    deleteVideoChosenFromList(videoViewModel)
-                                }
-                            }
+                        if(videoViewModel is VideoViewModel && videoViewModel.recommendation == true){
+                            deleteVideoChosenFromList(videoViewModel)
                         }
                     }
                     for(videoRecommendationViewModel in videoRecommendationViewModelList){
@@ -113,11 +115,29 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
     override fun initInjector() {}
 
     override fun loadData(page: Int) {
-        productAddVideoPresenter.getYoutubeDataVideoChosen(videoIDs)
+        if(videoViewModelList.isEmpty())
+            productAddVideoPresenter.getYoutubeDataVideoChosen(videoIDs)
+        else {
+            renderListData(videoViewModelList)
+        }
+
         setButtonAddVideoUrl()
     }
 
-    override fun renderListData(productAddVideoBaseViewModelList: List<ProductAddVideoBaseViewModel>) {
+    private fun renderListData(VideoViewModelList: List<VideoViewModel>) {
+        val productAddVideoBaseViewModelList : ArrayList<ProductAddVideoBaseViewModel> = ArrayList()
+        if(!VideoViewModelList.isEmpty()){
+            productAddVideoBaseViewModelList.addAll(VideoViewModelList)
+            val titleVideoChosenViewModel = TitleVideoChosenViewModel()
+            productAddVideoBaseViewModelList.add(0, titleVideoChosenViewModel)
+        } else {
+            val emptyVideoViewModel = EmptyVideoViewModel()
+            productAddVideoBaseViewModelList.add(0, emptyVideoViewModel)
+        }
+        if(!productName.isEmpty()){
+            val sectionVideoRecommendationViewModel = SectionVideoRecommendationViewModel()
+            productAddVideoBaseViewModelList.add(0, sectionVideoRecommendationViewModel)
+        }
         renderList(productAddVideoBaseViewModelList)
     }
 
@@ -194,6 +214,8 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
     }
 
     override fun onSuccessGetYoutubeDataVideoChosen(youtubeVideoModelArrayList: ArrayList<YoutubeVideoModel>) {
+        videoViewModelList = mapper.transformDataToVideoViewModel(youtubeVideoModelArrayList) as ArrayList<VideoViewModel>
+        renderListData(videoViewModelList)
         (activity as AppCompatActivity).supportActionBar?.subtitle = getString(R.string.product_from_to_video, videoIDs.size, ProductAddVideoFragment.MAX_VIDEO)
         if(!productName.isEmpty())
             productAddVideoPresenter.getVideoRecommendation(productName, MAX_VIDEO_RECOMMENDATION)
@@ -257,6 +279,8 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
 
     override fun setProductAddVideoFragmentListener(listener: ProductAddVideoFragment.Listener) {
         this.listener = listener
+        if(!videoRecommendationViewModelList.isEmpty())
+            listener.onSuccessGetYoutubeDataVideoRecommendation(videoRecommendationViewModelList)
     }
 
     private fun showDialogAddVideoChosenFromUrl() {
@@ -308,12 +332,15 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
 
     private fun addVideoChosenToList(videoViewModel: VideoViewModel) {
         videoIDs.add(videoViewModel.videoID!!)
+        videoViewModelList.add(videoViewModel)
+        videoViewModel
         updateListData(videoViewModel, ADD_VIDEO_CHOSEN)
         (activity as AppCompatActivity).supportActionBar?.subtitle = getString(R.string.product_from_to_video, videoIDs.size, MAX_VIDEO)
     }
 
     private fun deleteVideoChosenFromList(videoViewModel: VideoViewModel) {
         videoIDs.remove(videoViewModel.videoID)
+        videoViewModelList.remove(videoViewModel)
         updateListData(videoViewModel, DELETE_VIDEO_CHOSEN)
         (activity as AppCompatActivity).supportActionBar?.subtitle = getString(R.string.product_from_to_video, videoIDs.size, MAX_VIDEO)
     }
@@ -330,6 +357,13 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
         return videoViewModel
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putStringArrayList(EXTRA_VIDEOS_LINKS, videoIDs)
+        outState.putParcelableArrayList(EXTRA_VIDEO_CHOSEN, videoViewModelList)
+        outState.putParcelableArrayList(EXTRA_VIDEO_RECOMMENDATION, videoRecommendationViewModelList)
+    }
+
     interface Listener {
         fun onSuccessGetYoutubeDataVideoRecommendation(videoRecommendationViewModelList : List<VideoRecommendationViewModel>)
         fun notifyVideoChanged()
@@ -338,6 +372,7 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
     companion object {
         const val EXTRA_VIDEOS_LINKS = "KEY_VIDEOS_LINK"
         const val EXTRA_KEYWORD = "KEY_KEYWORD"
+        const val EXTRA_VIDEO_CHOSEN = "KEY_VIDEO_CHOSEN"
         const val EXTRA_VIDEO_RECOMMENDATION = "KEY_VIDEO_RECOMMENDATION"
 
         const val MAX_VIDEO = 3

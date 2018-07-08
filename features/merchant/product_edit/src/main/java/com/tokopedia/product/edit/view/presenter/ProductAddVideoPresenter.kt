@@ -29,15 +29,8 @@ class ProductAddVideoPresenter : BaseDaggerPresenter<ProductAddVideoView>() {
     private val graphqlUseCase: GraphqlUseCase = GraphqlUseCase()
     private val getYoutubeVideoDetailUseCase: GetYoutubeVideoDetailUseCase by lazy { GetYoutubeVideoDetailUseCase(view.contextView) }
     private val getYoutubeVideoListDetailUseCase: GetYoutubeVideoListDetailUseCase by lazy { GetYoutubeVideoListDetailUseCase(view.contextView) }
-    private val mapper = VideoMapper()
-    private lateinit var productName: String
-
-    fun setProductName(productName: String) {
-        this.productName = productName
-    }
 
     fun getVideoRecommendation(query: String, size: Int) {
-
         val variables = HashMap<String, Any>()
         variables[QUERY] = query
         variables[SIZE] = size
@@ -99,20 +92,6 @@ class ProductAddVideoPresenter : BaseDaggerPresenter<ProductAddVideoView>() {
                         youtubeVideoModelArrayList.add(convertToModel(map))
                     }
                     if(from == VIDEO_CHOSEN) {
-                        val productAddVideoBaseViewModels : ArrayList<ProductAddVideoBaseViewModel> = ArrayList()
-                        if(!youtubeVideoModelArrayList.isEmpty()){
-                            productAddVideoBaseViewModels.addAll(mapper.transformDataToVideoViewModel(youtubeVideoModelArrayList))
-                            val titleVideoChosenViewModel = TitleVideoChosenViewModel()
-                            productAddVideoBaseViewModels.add(0, titleVideoChosenViewModel)
-                        } else {
-                            val emptyVideoViewModel = EmptyVideoViewModel()
-                            productAddVideoBaseViewModels.add(0, emptyVideoViewModel)
-                        }
-                        if(!productName.isEmpty()){
-                            val sectionVideoRecommendationViewModel = SectionVideoRecommendationViewModel()
-                            productAddVideoBaseViewModels.add(0, sectionVideoRecommendationViewModel)
-                        }
-                        view.renderListData(productAddVideoBaseViewModels)
                         view.onSuccessGetYoutubeDataVideoChosen(youtubeVideoModelArrayList)
                     }
                     else

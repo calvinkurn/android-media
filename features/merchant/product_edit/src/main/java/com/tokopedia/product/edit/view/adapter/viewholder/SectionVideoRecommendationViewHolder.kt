@@ -15,7 +15,6 @@ import com.tokopedia.product.edit.view.fragment.ProductAddVideoFragment.Companio
 import com.tokopedia.product.edit.view.listener.SectionVideoRecommendationListener
 import com.tokopedia.product.edit.view.viewmodel.SectionVideoRecommendationViewModel
 import com.tokopedia.product.edit.view.viewmodel.VideoRecommendationViewModel
-import com.tokopedia.product.edit.view.viewmodel.VideoViewModel
 import kotlinx.android.synthetic.main.item_product_add_section_video_recommendation.view.*
 
 class SectionVideoRecommendationViewHolder(itemView: View,
@@ -28,11 +27,11 @@ class SectionVideoRecommendationViewHolder(itemView: View,
     private var videoRecommendationFeaturedList: ArrayList<VideoRecommendationViewModel?> = ArrayList()
 
     init {
-        setViews(itemView)
+        setViews()
+        sectionVideoRecommendationListener.setProductAddVideoFragmentListener(this)
     }
 
-    private fun setViews(view: View) {
-        sectionVideoRecommendationListener.setProductAddVideoFragmentListener(this)
+    private fun setViews() {
         itemView.textShowMore.visibility = View.GONE
         itemView.textShowMore.setOnClickListener({
             sectionVideoRecommendationListener.onShowMoreClicked()

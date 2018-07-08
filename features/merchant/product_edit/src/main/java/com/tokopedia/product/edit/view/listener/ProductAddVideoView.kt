@@ -23,6 +23,4 @@ interface ProductAddVideoView : CustomerView {
     fun showSnackbarGreen(message: String)
 
     fun showSnackbarRed(message: String)
-
-    fun renderListData(productAddVideoBaseViewModelList : List<ProductAddVideoBaseViewModel>)
 }
