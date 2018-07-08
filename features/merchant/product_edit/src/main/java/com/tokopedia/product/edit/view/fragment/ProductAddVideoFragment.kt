@@ -177,7 +177,7 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
 
     override fun onSuccessGetYoutubeDataVideoRecommendation(youtubeVideoModelArrayList: ArrayList<YoutubeVideoModel>) {
         val mapper = VideoRecommendationMapper()
-        val videoRecommendationViewModelList = mapper.transformDataToVideoViewModel(youtubeVideoModelArrayList)
+        videoRecommendationViewModelList = mapper.transformDataToVideoViewModel(youtubeVideoModelArrayList) as ArrayList<VideoRecommendationViewModel>
         val videoViewModelList = adapter.data
         for(videoViewModel in videoViewModelList){
             if(videoViewModel is VideoViewModel){
@@ -190,7 +190,6 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
             }
         }
         adapter.notifyDataSetChanged()
-        this.videoRecommendationViewModelList = videoRecommendationViewModelList as ArrayList<VideoRecommendationViewModel>
         listener?.onSuccessGetYoutubeDataVideoRecommendation(videoRecommendationViewModelList)
     }
 
@@ -206,7 +205,9 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
     }
 
     override fun onErrorGetVideoData(e: Throwable) {
+        NetworkErrorHelper.createSnackbarWithAction(activity) {
 
+        }.showRetrySnackbar()
     }
 
 
@@ -269,7 +270,8 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
         builder.setMessage(R.string.product_add_description_dialog_add_video)
         builder.setCancelable(true)
         builder.setPositiveButton(R.string.label_add, { dialog, id ->
-            listener?.onVideoChosenAdded(videoViewModel)
+            setVideoRecommendationChosen(videoViewModel.videoID, true)
+            listener?.notifyVideoChanged()
             addVideoChosenToList(videoViewModel)
             showSnackbarGreen(getString(R.string.product_add_message_success_add_video_recommendation))
         })
@@ -285,14 +287,23 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
         builder.setMessage(R.string.product_add_description_dialog_delete_video)
         builder.setCancelable(true)
         builder.setPositiveButton(R.string.label_delete, { dialog, id ->
+            setVideoRecommendationChosen(videoViewModel.videoID, false)
             deleteVideoChosenFromList(videoViewModel)
-            listener?.onVideoChosenDeleted(videoViewModel)
+            listener?.notifyVideoChanged()
             showSnackbarGreen(getString(R.string.product_add_message_success_delete_video_chosen))
         })
         builder.setNegativeButton(R.string.label_cancel, { dialog, id -> dialog.cancel() })
 
         val alert = builder.create()
         alert.show()
+    }
+
+    private fun setVideoRecommendationChosen(videoId: String?, isChoosen: Boolean){
+        for(videoRecommendationViewModel in videoRecommendationViewModelList){
+            if(videoRecommendationViewModel.videoID == videoId){
+                videoRecommendationViewModel.chosen = isChoosen
+            }
+        }
     }
 
     private fun addVideoChosenToList(videoViewModel: VideoViewModel) {
@@ -321,8 +332,7 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
 
     interface Listener {
         fun onSuccessGetYoutubeDataVideoRecommendation(videoRecommendationViewModelList : List<VideoRecommendationViewModel>)
-        fun onVideoChosenDeleted(videoViewModel : VideoViewModel)
-        fun onVideoChosenAdded(videoViewModel: VideoViewModel)
+        fun notifyVideoChanged()
     }
 
     companion object {

@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.product.edit.R
+import com.tokopedia.product.edit.util.YoutubeUtil
 import com.tokopedia.product.edit.view.adapter.viewholder.SectionVideoRecommendationViewHolder
 import com.tokopedia.product.edit.view.adapter.viewholder.VideoRecommendationFeaturedViewHolder
 import com.tokopedia.product.edit.view.viewmodel.VideoRecommendationViewModel
@@ -19,7 +20,8 @@ class ProductAddVideoRecommendationFeaturedAdapter(var videoRecommendationFeatur
         if (holder is VideoRecommendationFeaturedViewHolder) {
             holder.itemView.textTitle.text = videoRecommendationFeatured[position]?.snippetTitle
             holder.itemView.textChannel.text = videoRecommendationFeatured[position]?.snippetChannel
-            ImageHandler.loadImageThumbs(holder.itemView.imageThumbnail.context, holder.itemView.imageThumbnail, videoRecommendationFeatured[position]?.thumbnailUrl)
+            holder.itemView.textDuration.text = YoutubeUtil.convertYoutubeTimeFormattoHHMMSS(videoRecommendationFeatured[position]?.duration)
+            ImageHandler.loadImageRounded2(holder.itemView.imageThumbnail.context, holder.itemView.imageThumbnail, videoRecommendationFeatured[position]?.thumbnailUrl)
             if(videoRecommendationFeatured[position]!!.chosen){
                 holder.itemView.imageChosen.setImageResource(R.drawable.ic_check_video_featured)
             } else {

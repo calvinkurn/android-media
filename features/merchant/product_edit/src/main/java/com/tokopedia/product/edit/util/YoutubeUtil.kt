@@ -4,11 +4,10 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import com.tokopedia.product.edit.R
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
-class YoutubeUtil(val context: Context) {
+class YoutubeUtil {
 
     val VIDEO_ID_INDEX = 1
     private val YOUTUBE_REGEX = "^(?:https?:\\/\\/)?(?:[0-9A-Z-]+\\.)?(?:youtu\\.be\\/|youtube\\.com\\S*[^\\w\\-\\s])([\\w\\-]{11})(?=[^\\w\\-]|$)(?![?=&+%\\w]*(?:['\"][^<>]*>|<\\/a>))[?=&+%\\w]*"
@@ -25,6 +24,31 @@ class YoutubeUtil(val context: Context) {
             } catch (e: ActivityNotFoundException) {
                 context.startActivity(webIntent)
             }
+        }
+
+        fun convertYoutubeTimeFormattoHHMMSS(youtubetime: String?): String {
+
+            val pattern = "^PT(?:(\\d+)H)?(?:(\\d+)M)?(?:(\\d+))S?$"
+
+            val r = Pattern.compile(pattern)
+            var result: String
+
+            val m = r.matcher(youtubetime)
+            if (m.find()) {
+                val hh = m.group(1)
+                var mm: String? = m.group(2)
+                var ss: String? = m.group(3)
+                mm = if (mm != null) mm else "0"
+                ss = if (ss != null) ss else "0"
+                result = String.format("%02d:%02d", Integer.parseInt(mm), Integer.parseInt(ss))
+
+                if (hh != null) {
+                    result = "$hh:$result"
+                }
+            } else {
+                result = "00:00"
+            }
+            return result
         }
     }
 

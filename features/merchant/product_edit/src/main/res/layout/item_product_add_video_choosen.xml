@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/item_add_video_ll_2_height"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
     android:orientation="vertical">
@@ -16,16 +16,37 @@
 
                 <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/dp_72"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="@dimen/dp_16">
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:layout_marginBottom="@dimen/dp_8">
 
-                        <ImageView
-                            android:id="@+id/imageThumbnail"
-                            android:layout_width="@dimen/dp_80"
-                            android:layout_height="@dimen/dp_72"
-                            tools:background="@color/grey_300"
-                            android:scaleType="centerCrop"/>
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+
+                                <ImageView
+                                    android:id="@+id/imageThumbnail"
+                                    android:layout_width="@dimen/image_video_width"
+                                    android:layout_height="@dimen/image_video_height" />
+
+                                <TextView
+                                    android:id="@+id/textDuration"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignRight="@+id/imageThumbnail"
+                                    android:layout_alignBottom="@+id/imageThumbnail"
+                                    android:background="@drawable/rounded_grey"
+                                    android:paddingLeft="@dimen/dp_6"
+                                    android:paddingRight="@dimen/dp_6"
+                                    android:paddingTop="@dimen/dp_2"
+                                    android:paddingBottom="@dimen/dp_2"
+                                    android:textColor="@color/white"
+                                    android:layout_margin="@dimen/dp_4"
+                                    style="@style/TextView.Micro"/>
+
+                        </RelativeLayout>
 
                 </LinearLayout>
 
