@@ -226,9 +226,16 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
         showSnackbarGreen(getString(R.string.product_add_message_success_add_video_chosen))
     }
 
+    override fun onEmptyGetVideoRecommendation() {
+        if(adapter.data[0] is SectionVideoRecommendationViewModel){
+            adapter.clearElement(adapter.data[0])
+        }
+        showSnackbarGreen(getString(R.string.product_add_message_empty_video_recommendation))
+    }
+
     override fun onErrorGetVideoData(e: Throwable) {
         NetworkErrorHelper.createSnackbarWithAction(activity) {
-
+            loadData(0)
         }.showRetrySnackbar()
     }
 

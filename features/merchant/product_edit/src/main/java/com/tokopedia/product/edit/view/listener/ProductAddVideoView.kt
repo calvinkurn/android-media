@@ -20,6 +20,8 @@ interface ProductAddVideoView : CustomerView {
 
     fun onErrorGetVideoData(e: Throwable)
 
+    fun onEmptyGetVideoRecommendation()
+
     fun showSnackbarGreen(message: String)
 
     fun showSnackbarRed(message: String)

@@ -47,6 +47,7 @@ class ProductAddVideoPresenter : BaseDaggerPresenter<ProductAddVideoView>() {
             override fun onError(e: Throwable) {
                 e.printStackTrace()
                 if (isViewAttached) {
+                    view.onEmptyGetVideoRecommendation()
                     view.onErrorGetVideoData(e)
                 }
             }
@@ -55,8 +56,12 @@ class ProductAddVideoPresenter : BaseDaggerPresenter<ProductAddVideoView>() {
                 if (isViewAttached) {
                     val data = objects.getData<VideoRecommendationResult>(VideoRecommendationResult::class.java)
                     val videoIDs : ArrayList<String> = ArrayList()
-                    for(videoRecommendationData : VideoRecommendationData in data.videoSearch?.data!!){
-                        videoIDs.add(videoRecommendationData.id!!)
+                    if(data.videoSearch?.data!=null){
+                        for(videoRecommendationData : VideoRecommendationData in data.videoSearch?.data!!){
+                            videoIDs.add(videoRecommendationData.id!!)
+                        }
+                    } else {
+                        view.onEmptyGetVideoRecommendation()
                     }
                     getYoutubeVideoData(videoIDs, VIDEO_RECOMMENDATION_FEATURED)
                 }
