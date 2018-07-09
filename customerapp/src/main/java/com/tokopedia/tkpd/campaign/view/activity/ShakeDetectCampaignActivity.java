@@ -207,13 +207,13 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
     static int TOAST_LENGTH = 3000;
 
     @Override
-    public void setSnackBarErrorMessage(String msg) {
+    public void setSnackBarErrorMessage() {
 
         ToasterNormal
                 .make(parent,
-                        msg,
+                        getResources().getString(R.string.shake_login_error),
                         TOAST_LENGTH)
-                .setAction(getString(R.string.masuk_sekarang),
+                .setAction(getResources().getString(R.string.masuk_sekarang),
                         new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {

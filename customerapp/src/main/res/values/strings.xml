@@ -105,5 +105,6 @@
     <string name="disable_shake_shake">“Sepertinya sistem Shake di hp-mu sedang lelah. Istirahat dulu yuk main Shake Shake-nya.” OK
 </string>
     <string name="yes">Ya</string>
-    <string name="masuk_sekarang">Masuk Sekarang</string>
+    <string name="masuk_sekarang">Ok</string>
+    <string name="shake_login_error">Login sekarang untuk menghidupkan kembali fitur shake-shake!</string>
 </resources>

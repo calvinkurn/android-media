@@ -39,7 +39,7 @@ public interface ShakeDetectContract {
 
         public Activity getActivity();
 
-        public void setSnackBarErrorMessage(String msg);
+        public void setSnackBarErrorMessage();
 
         }
 

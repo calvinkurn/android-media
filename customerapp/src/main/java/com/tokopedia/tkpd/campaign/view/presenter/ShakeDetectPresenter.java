@@ -233,7 +233,7 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
             getView().finish();
         }else {
             getView().makeInvisibleShakeShakeDisableView();
-            getView().setSnackBarErrorMessage("Anda bisa menghidupkan kembali fitur shake-shake di pengaturan aplikasi setelah masuk");
+            getView().setSnackBarErrorMessage();
         }
 
     }
