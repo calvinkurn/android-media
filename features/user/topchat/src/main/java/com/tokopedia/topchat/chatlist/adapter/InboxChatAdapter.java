@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.topchat.chatlist.presenter.InboxChatPresenter;
@@ -36,7 +37,7 @@ public class InboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     private List<Visitable> listSearch;
     private List<Pair> listMove;
     private EmptyModel emptyModel;
-    private LoadingModel loadingModel;
+    private LoadingMoreModel loadingModel;
     private InboxChatPresenter presenter;
     private TimeMachineListViewModel timeMachineChatModel;
     private EmptyChatModel emptyChatModel;
@@ -49,7 +50,7 @@ public class InboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         this.emptyModel = new EmptyModel();
         this.emptyChatModel = new EmptyChatModel();
         this.emptySearchModel = new EmptyChatModel(EmptyChatModel.SEARCH);
-        this.loadingModel = new LoadingModel();
+        this.loadingModel = new LoadingMoreModel();
         this.presenter = presenter;
         this.listMove = new ArrayList<>();
         this.timeMachineChatModel = new TimeMachineListViewModel("");
@@ -217,7 +218,7 @@ public class InboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     public boolean checkLoadMore(int index) {
         if (index >= 0) {
-            return (list.get(index) instanceof LoadingModel);
+            return (list.get(index) instanceof LoadingMoreModel);
         }
         return false;
     }
