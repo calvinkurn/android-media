@@ -330,12 +330,6 @@ public class FragmentReferral extends BasePresenterFragmentV4<IReferralPresenter
         if (index == 0) {
             llShareIcons.removeAllViews();
         }
-//        ImageView imageView;
-//
-//        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(getActivity().LAYOUT_INFLATER_SERVICE);
-//
-//        imageView = (ImageView) inflater.inflate(R.layout.social_image_layout, llShareIcons, false);
-
         ImageView imageView = new ImageView(getActivity());
         imageView.setImageResource(shareApps.getIcon());
         imageView.setTag(shareApps);

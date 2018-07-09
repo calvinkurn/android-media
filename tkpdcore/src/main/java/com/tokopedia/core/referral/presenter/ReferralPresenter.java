@@ -70,6 +70,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
     private GetReferralDataUseCase getReferralDataUseCase;
     private TokoCashUseCase tokoCashUseCase;
     private SessionHandler sessionHandler;
+    private int max_apps = 4;
 
     @Inject
     public ReferralPresenter(GetReferralDataUseCase getReferralDataUseCase, TokoCashUseCase tokoCashUseCase, SessionHandler sessionHandler) {
@@ -90,7 +91,6 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
                 } else {
                     getView().showVerificationPhoneNumberPage();
                     TrackingUtils.sendMoEngageReferralScreenOpen(activity.getString(R.string.referral_phone_number_verify_screen_name));
-
                 }
             }
         } else {
@@ -278,40 +278,40 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
     public ShareApps[] checkInstalledApps() {
         int index = 0;
         ShareApps shareApps;
-        ShareApps[] selectedApps = new ShareApps[4];
-        if (appInstalledOrNot(TkpdState.PackageName.Whatsapp)) {
+        ShareApps[] selectedApps = new ShareApps[max_apps];
+        if (index < max_apps && appInstalledOrNot(TkpdState.PackageName.Whatsapp)) {
             shareApps = new ShareApps(TkpdState.PackageName.Whatsapp, R.drawable.ic_btn_wa);
             selectedApps[index++] = shareApps;
         }
-        if (appInstalledOrNot(TkpdState.PackageName.Line)) {
+        if (index < max_apps && appInstalledOrNot(TkpdState.PackageName.Line)) {
             shareApps = new ShareApps(TkpdState.PackageName.Line, R.drawable.ic_btn_line);
             selectedApps[index++] = shareApps;
         }
-        if (appInstalledOrNot(TkpdState.PackageName.Instagram)) {
+        if (index < max_apps && appInstalledOrNot(TkpdState.PackageName.Instagram)) {
             shareApps = new ShareApps(TkpdState.PackageName.Instagram, R.drawable.ic_btn_instagram);
             selectedApps[index++] = shareApps;
         }
-        if (appInstalledOrNot(TkpdState.PackageName.Facebook)) {
+        if (index < max_apps && appInstalledOrNot(TkpdState.PackageName.Facebook)) {
             shareApps = new ShareApps(TkpdState.PackageName.Facebook, R.drawable.ic_btn_fb);
             selectedApps[index++] = shareApps;
         }
-        if (index < 4 && appInstalledOrNot(TkpdState.PackageName.Gplus)) {
+        if (index < max_apps && appInstalledOrNot(TkpdState.PackageName.Gplus)) {
             shareApps = new ShareApps(TkpdState.PackageName.Gplus, R.drawable.ic_btn_g);
             selectedApps[index++] = shareApps;
         }
-        if (index < 4 && appInstalledOrNot(TkpdState.PackageName.Twitter)) {
+        if (index < max_apps && appInstalledOrNot(TkpdState.PackageName.Twitter)) {
             shareApps = new ShareApps(TkpdState.PackageName.Twitter, R.drawable.ic_btn_twitter);
             selectedApps[index++] = shareApps;
         }
-        if (index < 4 && appInstalledOrNot(TkpdState.PackageName.Gmail)) {
+        if (index < max_apps && appInstalledOrNot(TkpdState.PackageName.Gmail)) {
             shareApps = new ShareApps(TkpdState.PackageName.Gmail, R.drawable.ic_btn_gmail);
             selectedApps[index++] = shareApps;
         }
-        if (index < 4 && appInstalledOrNot(TkpdState.PackageName.Sms)) {
+        if (index < max_apps && appInstalledOrNot(TkpdState.PackageName.Sms)) {
             shareApps = new ShareApps(TkpdState.PackageName.Sms, R.drawable.ic_btn_sms);
             selectedApps[index++] = shareApps;
         }
-        if (index < 4 && appInstalledOrNot(TkpdState.PackageName.Pinterest)) {
+        if (index < max_apps && appInstalledOrNot(TkpdState.PackageName.Pinterest)) {
             shareApps = new ShareApps(TkpdState.PackageName.Pinterest, R.drawable.ic_pinterest_share);
             selectedApps[index++] = shareApps;
         }
@@ -392,41 +392,22 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
 
         if (shareApp.getPackageNmae().equalsIgnoreCase(TkpdState.PackageName.Whatsapp)) {
             actionShare(shareData, TkpdState.PackageName.Whatsapp, AppEventTracking.SOCIAL_MEDIA.WHATSHAPP);
-            //shareWhatsApp(shareData);
         } else if (shareApp.getPackageNmae().equalsIgnoreCase(TkpdState.PackageName.Line)) {
             actionShare(shareData, TkpdState.PackageName.Line, AppEventTracking.SOCIAL_MEDIA.LINE);
-
-
         } else if (shareApp.getPackageNmae().equalsIgnoreCase(TkpdState.PackageName.Instagram)) {
-             actionShare(shareData,TkpdState.PackageName.Instagram,AppEventTracking.SOCIAL_MEDIA.INSTAGRAM);
-           // Uri file = Uri.parse("android.resource://com.tokopedia.tkpd/" + R.drawable.filter_nostate);
-//            shareData.setImgUri("android.resource://com.tokopedia.tkpd/" + R.drawable.filter_nostate);
-//            shareInstagram(shareData);
+            actionShare(shareData, TkpdState.PackageName.Instagram, AppEventTracking.SOCIAL_MEDIA.INSTAGRAM);
         } else if (shareApp.getPackageNmae().equalsIgnoreCase(TkpdState.PackageName.Facebook)) {
             actionShare(shareData, TkpdState.PackageName.Facebook, AppEventTracking.SOCIAL_MEDIA.FACEBOOK);
-
-
         } else if (shareApp.getPackageNmae().equalsIgnoreCase(TkpdState.PackageName.Gplus)) {
             actionShare(shareData, TkpdState.PackageName.Gplus, AppEventTracking.SOCIAL_MEDIA.GOOGLE_PLUS);
-
-
         } else if (shareApp.getPackageNmae().equalsIgnoreCase(TkpdState.PackageName.Twitter)) {
-            //   shareTwitter(shareData);
             actionShare(shareData, TkpdState.PackageName.Twitter, AppEventTracking.SOCIAL_MEDIA.TWITTER);
-
-
         } else if (shareApp.getPackageNmae().equalsIgnoreCase(TkpdState.PackageName.Gmail)) {
             actionShare(shareData, TkpdState.PackageName.Gmail, AppEventTracking.SOCIAL_MEDIA.GMAIL);
-
-
         } else if (shareApp.getPackageNmae().equalsIgnoreCase(TkpdState.PackageName.Sms)) {
             actionShare(shareData, TkpdState.PackageName.Sms, AppEventTracking.SOCIAL_MEDIA.SMS);
-
-
         } else if (shareApp.getPackageNmae().equalsIgnoreCase(TkpdState.PackageName.Pinterest)) {
             actionShare(shareData, TkpdState.PackageName.Pinterest, AppEventTracking.SOCIAL_MEDIA.PINTEREST);
-
-
         } else {
             shareApp(fragmentManager);
             if (isAppShowReferralButtonActivated()) {
@@ -442,143 +423,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
         ShareSocmedHandler.ShareSpecificUri(data, activity, TkpdState.PackageName.Facebook,
                 TkpdState.PackageName.TYPE_TEXT,
                 data.getImgUri(), null);
-
-//        sendAnalyticsToGTM(data.getType(),AppEventTracking.SOCIAL_MEDIA.FACEBOOK);
-//        data.setSource(AppEventTracking.SOCIAL_MEDIA.FACEBOOK);
-//        ConnectionDetector detector = new ConnectionDetector(this.activity);
-//        boolean expired = facebookCache.isExpired();
-//
-//        if (detector.isConnectingToInternet()) {
-//            if (expired) {
-//                LoginManager.getInstance().logOut();
-//            }
-//            BranchSdkUtils.generateBranchLink(data, activity, new BranchSdkUtils.GenerateShareContents() {
-//                @Override
-//                public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
-//                    //getView().showDialogShareFb(branchUrl);
-//                }
-//            });
-//
-//        } else {
-//            NetworkErrorHelper.showSnackbar(this.activity);
-//        }
-
     }
-
-
-    public void shareTwitter(ShareData data) {
-
-        sendAnalyticsToGTM(data.getType(), AppEventTracking.SOCIAL_MEDIA.TWITTER);
-
-        data.setSource(AppEventTracking.SOCIAL_MEDIA.TWITTER);
-        if (data.getImgUri() != null) {
-            ShareSocmedHandler.ShareSpecificUri(data, activity, TkpdState.PackageName.Twitter,
-                    TkpdState.PackageName.TYPE_IMAGE, data.getImgUri(), TkpdState.PackageName
-                            .TWITTER_DEFAULT + "url=" + data.getUri() + "&text=" + data.getName());
-        } else {
-            ShareSocmedHandler.ShareSpecific(data, activity, TkpdState.PackageName.Twitter,
-                    TkpdState.PackageName.TYPE_TEXT, null, null);
-        }
-
-    }
-
-    public void shareWhatsApp(ShareData data) {
-
-        sendAnalyticsToGTM(data.getType(), AppEventTracking.SOCIAL_MEDIA.WHATSHAPP);
-
-        data.setSource(AppEventTracking.SOCIAL_MEDIA.WHATSHAPP);
-        ShareSocmedHandler.ShareSpecific(data, activity, TkpdState.PackageName.Whatsapp,
-                TkpdState.PackageName.TYPE_TEXT, null, null);
-
-    }
-
-
-    public void sharePinterest(ShareData data) {
-
-        sendAnalyticsToGTM(data.getType(), AppEventTracking.SOCIAL_MEDIA.PINTEREST);
-
-        data.setSource(AppEventTracking.SOCIAL_MEDIA.PINTEREST);
-        if (data.getImgUri() != null) {
-            ShareSocmedHandler.ShareSpecificUri(data, activity, TkpdState.PackageName.Pinterest,
-                    TkpdState.PackageName.TYPE_TEXT, data.getImgUri(), null);
-        } else {
-            ShareSocmedHandler.ShareSpecific(data, activity, TkpdState.PackageName.Pinterest,
-                    TkpdState.PackageName.TYPE_TEXT, null, null);
-        }
-
-    }
-
-    public void shareLine(ShareData data) {
-        sendAnalyticsToGTM(data.getType(), AppEventTracking.SOCIAL_MEDIA.LINE);
-        data.setSource(AppEventTracking.SOCIAL_MEDIA.LINE);
-        ShareSocmedHandler.ShareSpecific(data, activity, TkpdState.PackageName.Line,
-                TkpdState.PackageName.TYPE_TEXT, null, null);
-
-    }
-
-    public void shareInstagram(ShareData data) {
-
-        sendAnalyticsToGTM(data.getType(), AppEventTracking.SOCIAL_MEDIA.INSTAGRAM);
-
-        data.setSource(AppEventTracking.SOCIAL_MEDIA.INSTAGRAM);
-//        if (data.getImgUri() != null) {
-//            ShareSocmedHandler.ShareSpecificUri(data, activity, TkpdState.PackageName.Instagram,
-//                    TkpdState.PackageName.TYPE_IMAGE,
-//                    data.getImgUri(), null);
-//        } else {
-//            ShareSocmedHandler.ShareSpecific(data, activity, TkpdState.PackageName.Instagram,
-//                    TkpdState.PackageName.TYPE_TEXT, null, null);
-//        }
-
-        Uri file = Uri.parse("android.resource://com.tokopedia.tkpd/" + R.drawable.filter_nostate);
-        Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
-        shareIntent.setType("text/plain");
-        //shareIntent.putExtra(Intent.EXTRA_STREAM,file);
-        shareIntent.putExtra(Intent.EXTRA_TITLE, contents);
-        shareIntent.setPackage("com.instagram.android");
-        getView().getActivity().startActivity(shareIntent);
-    }
-
-    public void shareGmail(ShareData data) {
-
-        data.setSource(AppEventTracking.SOCIAL_MEDIA.GMAIL);
-        ShareSocmedHandler.ShareSpecific(data, activity, TkpdState.PackageName.Gmail,
-                TkpdState.PackageName.TYPE_IMAGE,
-                null, null);
-
-    }
-
-    public void shareSms(ShareData data) {
-
-        data.setSource(AppEventTracking.SOCIAL_MEDIA.SMS);
-        ShareSocmedHandler.ShareSpecific(data, activity, TkpdState.PackageName.Sms,
-                TkpdState.PackageName.TYPE_IMAGE,
-                null, null);
-
-    }
-
-    public void shareGPlus(ShareData data) {
-
-        data.setSource(AppEventTracking.SOCIAL_MEDIA.GOOGLE_PLUS);
-        ShareSocmedHandler.ShareSpecific(data, activity, TkpdState.PackageName.Gplus,
-                TkpdState.PackageName.TYPE_IMAGE,
-                null, null);
-
-    }
-
-
-//    private void actionCopy(ShareData data) {
-//        data.setSource(AppEventTracking.Action.COPY);
-//        BranchSdkUtils.generateBranchLink(data, getView().getActivity(), new BranchSdkUtils.GenerateShareContents() {
-//            @Override
-//            public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
-//                ClipboardHandler.CopyToClipboard( getView().getActivity(), shareUri);
-//            }
-//        });
-//
-//        Toast.makeText( getView().getActivity(),  getView().getActivity().getString(R.string.msg_copy), Toast.LENGTH_SHORT).show();
-//        sendAnalyticsToGTM(data.getType(), AppEventTracking.Action.COPY);
-//    }
 
     private void actionShare(ShareData data, String packageName, String media) {
         data.setSource(media);
