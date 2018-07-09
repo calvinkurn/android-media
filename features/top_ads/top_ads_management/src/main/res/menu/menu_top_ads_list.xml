@@ -4,21 +4,21 @@
 
     <item
         android:id="@+id/menu_add"
-        android:icon="@drawable/ic_add_topads"
+        android:icon="@drawable/ic_add_topads_2"
         android:title="@string/title_action_add_note"
         android:visible="true"
         app:showAsAction="always|collapseActionView" />
 
     <item
         android:id="@+id/menu_multi_select"
-        android:icon="@drawable/ic_multi_select"
+        android:icon="@drawable/ic_multi_select_topads_2"
         android:title="@string/title_multiple_select"
         app:iconTint="@color/black_70"
         app:showAsAction="always"/>
 
     <item
         android:id="@+id/menu_help"
-        android:icon="@drawable/ic_help_topads"
+        android:icon="@drawable/ic_help_topads_2"
         android:title="@string/topads_menu_help"
         app:iconTint="@color/black_70"
         app:showAsAction="always"/>
