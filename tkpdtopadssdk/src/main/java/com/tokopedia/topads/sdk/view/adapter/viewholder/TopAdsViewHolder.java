@@ -104,7 +104,9 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
     }
 
     @Override
-    public void onDisplayChange(int spanCount) {
+    public void onDisplayChange(DisplayMode mode, int spanCount) {
+        this.displayMode = mode;
+        adapter.switchDisplayMode(displayMode);
         gridLayoutManager.setSpanCount(spanCount);
     }
 }

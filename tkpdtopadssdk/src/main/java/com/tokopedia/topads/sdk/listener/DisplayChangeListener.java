@@ -8,5 +8,5 @@ import com.tokopedia.topads.sdk.view.DisplayMode;
 
 public interface DisplayChangeListener {
 
-    void onDisplayChange(int spanCount);
+    void onDisplayChange(DisplayMode mode, int spanCount);
 }

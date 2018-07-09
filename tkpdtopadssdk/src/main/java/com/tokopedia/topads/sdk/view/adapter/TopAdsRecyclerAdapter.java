@@ -299,7 +299,9 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             }
             this.recyclerView.setLayoutManager(gridLayoutManager);
             if(displayChangeListener!=null) {
-                this.displayChangeListener.onDisplayChange(gridLayoutManager.getSpanCount());
+                this.displayChangeListener.onDisplayChange(
+                        placer.getDisplayMode(),
+                        gridLayoutManager.getSpanCount());
             }
         } else if (layoutManager instanceof LinearLayoutManager) {
             if (getConfig().getDisplayMode() == DisplayMode.FEED) {
