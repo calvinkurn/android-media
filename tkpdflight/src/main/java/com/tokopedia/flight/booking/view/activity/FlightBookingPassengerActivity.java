@@ -24,6 +24,8 @@ import javax.inject.Inject;
 
 import rx.Subscriber;
 
+import static com.tokopedia.flight.booking.view.fragment.FlightBookingPassengerFragment.EXTRA_IS_DOMESTIC;
+
 public class FlightBookingPassengerActivity extends BaseSimpleActivity implements HasComponent<FlightBookingComponent>, FlightBookingPassengerFragment.OnFragmentInteractionListener {
     public static final String EXTRA_PASSENGER = "EXTRA_PASSENGER";
     public static final String EXTRA_LUGGAGES = "EXTRA_LUGGAGES";
@@ -49,7 +51,8 @@ public class FlightBookingPassengerActivity extends BaseSimpleActivity implement
                                           List<FlightBookingAmenityMetaViewModel> mealViewModels,
                                           boolean isAirAsiaAirlines,
                                           String departureDate,
-                                          String requestId) {
+                                          String requestId,
+                                          boolean isDomestic) {
         Intent intent = new Intent(activity, FlightBookingPassengerActivity.class);
         intent.putExtra(EXTRA_DEPARTURE, departureId);
         intent.putExtra(EXTRA_RETURN, returnId);
@@ -60,6 +63,7 @@ public class FlightBookingPassengerActivity extends BaseSimpleActivity implement
         intent.putExtra(EXTRA_IS_AIRASIA, isAirAsiaAirlines);
         intent.putExtra(EXTRA_REQUEST_ID, requestId);
         intent.putExtra(EXTRA_SELECTED_PASSENGER_ID, viewModel.getPassengerId());
+        intent.putExtra(EXTRA_IS_DOMESTIC, isDomestic);
         return intent;
     }
 
@@ -68,7 +72,8 @@ public class FlightBookingPassengerActivity extends BaseSimpleActivity implement
                                           FlightBookingPassengerViewModel viewModel,
                                           List<FlightBookingAmenityMetaViewModel> luggageViewModels,
                                           List<FlightBookingAmenityMetaViewModel> mealViewModels,
-                                          String requestId) {
+                                          String requestId,
+                                          boolean isDomestic) {
         Intent intent = new Intent(activity, FlightBookingPassengerActivity.class);
         intent.putExtra(EXTRA_DEPARTURE, departureId);
         intent.putExtra(EXTRA_PASSENGER, viewModel);
@@ -76,6 +81,7 @@ public class FlightBookingPassengerActivity extends BaseSimpleActivity implement
         intent.putParcelableArrayListExtra(EXTRA_MEALS, (ArrayList<? extends Parcelable>) mealViewModels);
         intent.putExtra(EXTRA_REQUEST_ID, requestId);
         intent.putExtra(EXTRA_SELECTED_PASSENGER_ID, viewModel.getPassengerId());
+        intent.putExtra(EXTRA_IS_DOMESTIC, isDomestic);
         return intent;
     }
 
@@ -108,7 +114,8 @@ public class FlightBookingPassengerActivity extends BaseSimpleActivity implement
                     viewModel, luggageViewModels, mealViewModels,
                     getIntent().getBooleanExtra(EXTRA_IS_AIRASIA, false),
                     getIntent().getStringExtra(EXTRA_DEPARTURE_DATE),
-                    getIntent().getStringExtra(EXTRA_REQUEST_ID)
+                    getIntent().getStringExtra(EXTRA_REQUEST_ID),
+                    getIntent().getBooleanExtra(EXTRA_IS_DOMESTIC, false)
             );
         } else {
             flightBookingPassengerFragment =  FlightBookingPassengerFragment.newInstance(
@@ -118,7 +125,8 @@ public class FlightBookingPassengerActivity extends BaseSimpleActivity implement
                     mealViewModels,
                     getIntent().getBooleanExtra(EXTRA_IS_AIRASIA, false),
                     getIntent().getStringExtra(EXTRA_DEPARTURE_DATE),
-                    getIntent().getStringExtra(EXTRA_REQUEST_ID)
+                    getIntent().getStringExtra(EXTRA_REQUEST_ID),
+                    getIntent().getBooleanExtra(EXTRA_IS_DOMESTIC, false)
             );
         }
         return flightBookingPassengerFragment;

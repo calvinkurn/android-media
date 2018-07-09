@@ -21,12 +21,12 @@ public class TopProfilePresenter extends BaseDaggerPresenter<TopProfileActivityL
 
     @Override
     public void initView(String userId) {
+        getView().showLoading();
         getTopProfileData(userId);
     }
 
     @Override
     public void getTopProfileData(String userId) {
-        getView().showLoading();
         getTopProfileDataUseCase.execute(
                 GetTopProfileDataUseCase.getParams(userId),
                 new GetTopProfileSubscriber(getView())

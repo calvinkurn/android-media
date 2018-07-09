@@ -17,6 +17,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AnalyticsEventTrackingHelper;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerData;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerDeposit;
@@ -275,6 +276,7 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
             @Override
             public void onClick(View v) {
                 listener.onGoToDeposit();
+
             }
         });
         holder.topPointsLayout.setOnClickListener(new View.OnClickListener() {
@@ -294,15 +296,20 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
                                 data.getDrawerTokoCash().getDrawerWalletAction().getRedirectUrlBalance(),
                                 data.getDrawerTokoCash().getDrawerWalletAction().getAppLinkBalance()
                         );
+                        AnalyticsEventTrackingHelper.homepageTokocashClick(data.getDrawerTokoCash().getDrawerWalletAction().getRedirectUrlBalance());
+
                     } else {
                         listener.onWalletActionButtonClicked(
                                 data.getDrawerTokoCash().getDrawerWalletAction().getRedirectUrlActionButton(),
                                 data.getDrawerTokoCash().getDrawerWalletAction().getAppLinkActionButton()
                         );
+                        AnalyticsEventTrackingHelper.hamburgerTokocashActivateClick();
+
                     }
                 } else {
                     tokoCashListener.onRetryTokoCash();
                 }
+
             }
         });
         holder.name.setOnClickListener(new View.OnClickListener() {

@@ -179,7 +179,6 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         if ("GET".equalsIgnoreCase(originRequest.method())) contentTypeHeader = "";
         switch (originRequest.method()) {
             case "PATCH":
-            case "DELETE":
             case "POST":
             case "PUT":
                 //add dirty validation here, because for now, only wsv4 support new hmac key
@@ -202,6 +201,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
                     );
                 }
                 break;
+            case "DELETE":
             case "GET":
                 if (originRequest.url().host().equals("ws.tokopedia.com")) {
                     authHeaders = getHeaderMapNew(

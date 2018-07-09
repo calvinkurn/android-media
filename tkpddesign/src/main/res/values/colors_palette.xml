@@ -2,6 +2,7 @@
 <resources>
 
     <color name="grey_100">#f5f5f5</color>
+    <color name="grey_250">#f6f6f6</color>
     <color name="grey_default_background">#f3f3f3</color>
     <color name="grey_200">#f1f1f1</color>
     <color name="grey_300">#e0e0e0</color>
@@ -60,6 +61,7 @@
 
     <color name="grey_background">#f8f8f8</color>
     <color name="white_65">#A6ffffff</color>
+    <color name="white_95">#f2ffffff</color>
     <color name="grey_button">#e6e6e6</color>
     <color name="preview_bg">#d3f0d4</color>
     <color name="grey_150">#4a4a4a</color>

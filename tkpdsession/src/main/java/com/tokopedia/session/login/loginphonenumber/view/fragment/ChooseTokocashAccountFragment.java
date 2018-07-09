@@ -17,7 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -28,15 +27,12 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.customView.TextDrawable;
-import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.di.DaggerSessionComponent;
+import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
-import com.tokopedia.otp.cotp.view.viewmodel.InterruptVerificationViewModel;
-import com.tokopedia.otp.cotp.view.viewmodel.VerificationPassModel;
-import com.tokopedia.otp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.tokocashotp.view.viewmodel.LoginTokoCashViewModel;
 import com.tokopedia.session.R;
 import com.tokopedia.session.login.loginemail.view.activity.ForbiddenActivity;
@@ -216,37 +212,17 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public void goToSecurityQuestion(AccountTokocash accountTokocash, LoginTokoCashViewModel
-            loginTokoCashViewModel) {
+    public void goToSecurityQuestion(AccountTokocash accountTokocash,
+                                     LoginTokoCashViewModel loginTokoCashViewModel) {
 
-        InterruptVerificationViewModel interruptVerificationViewModel;
-        if (loginTokoCashViewModel.getMakeLoginDomain().getSecurityDomain()
-                .getUserCheckSecurity2() == TYPE_SQ_PHONE) {
-            interruptVerificationViewModel = InterruptVerificationViewModel
-                    .createDefaultSmsInterruptPage(loginTokoCashViewModel.getUserInfoDomain()
-                            .getGetUserInfoDomainData().getPhone());
-        } else {
-            interruptVerificationViewModel = InterruptVerificationViewModel
-                    .createDefaultEmailInterruptPage(loginTokoCashViewModel.getUserInfoDomain()
-                            .getGetUserInfoDomainData().getEmail());
-        }
-
-        VerificationPassModel passModel = new VerificationPassModel(
-                loginTokoCashViewModel.getUserInfoDomain().getGetUserInfoDomainData().getPhone(),
-                accountTokocash.getEmail(),
+        Intent intent = VerificationActivity.getShowChooseVerificationMethodIntent(
+                getActivity(),
                 RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION,
-                interruptVerificationViewModel,
-                loginTokoCashViewModel.getMakeLoginDomain().getSecurityDomain()
-                        .getUserCheckSecurity2() == TYPE_SQ_PHONE);
-        cacheManager.setKey(VerificationActivity.PASS_MODEL);
-        cacheManager.setValue(CacheUtil.convertModelToString(passModel,
-                new TypeToken<VerificationPassModel>() {
-                }.getType()));
-        cacheManager.store();
-
-
-        Intent intent = VerificationActivity.getSecurityQuestionVerificationIntent(getActivity(),
-                loginTokoCashViewModel.getMakeLoginDomain().getSecurityDomain().getUserCheckSecurity2());
+                loginTokoCashViewModel.getUserInfoDomain()
+                        .getGetUserInfoDomainData().getEmail(),
+                loginTokoCashViewModel.getUserInfoDomain()
+                        .getGetUserInfoDomainData().getPhone());
+        startActivityForResult(intent, REQUEST_SECURITY_QUESTION);
         intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
         startActivity(intent);
         getActivity().finish();

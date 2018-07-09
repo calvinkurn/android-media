@@ -24,11 +24,11 @@ import android.widget.TextView;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
-import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.LoginAnalytics;
+import com.tokopedia.analytics.SessionTrackingUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -36,7 +36,6 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.customView.LoginTextView;
-import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.profile.model.GetUserInfoDomainData;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
@@ -45,10 +44,8 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.di.DaggerSessionComponent;
+import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
-import com.tokopedia.otp.cotp.view.viewmodel.InterruptVerificationViewModel;
-import com.tokopedia.otp.cotp.view.viewmodel.VerificationPassModel;
-import com.tokopedia.otp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.session.R;
 import com.tokopedia.session.WebViewLoginFragment;
@@ -207,7 +204,6 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                 showProgressBar();
                 Intent intent = RegisterPhoneNumberActivity.getCallingIntent(getActivity());
                 startActivityForResult(intent, REQUEST_REGISTER_PHONE_NUMBER);
-
             }
         });
         String sourceString = getActivity().getResources().getString(R.string.span_already_have_tokopedia_account);
@@ -399,7 +395,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                 com.tokopedia.core.analytics.AppEventTracking.GTMCacheValue.FACEBOOK);
 
         presenter.getFacebookCredential(this, callbackManager);
-
+        SessionTrackingUtils.registerPageClickFacebook(com.tokopedia.core.analytics.AppEventTracking.GTMCacheValue.FACEBOOK);
 
     }
 
@@ -410,6 +406,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
         Intent intent = new Intent(getActivity(), GoogleSignInActivity.class);
         startActivityForResult(intent, RC_SIGN_IN_GOOGLE);
+        SessionTrackingUtils.registerPageClickGoogle(GoogleSignInActivity.class.getName());
 
     }
 
@@ -496,28 +493,8 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     @Override
     public void onGoToSecurityQuestion(SecurityDomain securityDomain, String fullName, String email, String phone) {
 
-        InterruptVerificationViewModel interruptVerificationViewModel;
-        if (securityDomain.getUserCheckSecurity2() == TYPE_SQ_PHONE) {
-            interruptVerificationViewModel = InterruptVerificationViewModel
-                    .createDefaultSmsInterruptPage(phone);
-        } else {
-            interruptVerificationViewModel = InterruptVerificationViewModel
-                    .createDefaultEmailInterruptPage(email);
-        }
-
-        VerificationPassModel passModel = new VerificationPassModel(phone, email,
-                RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION,
-                interruptVerificationViewModel,
-                securityDomain.getUserCheckSecurity2() == TYPE_SQ_PHONE);
-        cacheManager.setKey(VerificationActivity.PASS_MODEL);
-        cacheManager.setValue(CacheUtil.convertModelToString(passModel,
-                new TypeToken<VerificationPassModel>() {
-                }.getType()));
-        cacheManager.store();
-
-
-        Intent intent = VerificationActivity.getSecurityQuestionVerificationIntent(getActivity(),
-                securityDomain.getUserCheckSecurity2());
+        Intent intent = VerificationActivity.getShowChooseVerificationMethodIntent(
+                getActivity(), RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION, phone, email);
         startActivityForResult(intent, REQUEST_SECURITY_QUESTION);
     }
 
