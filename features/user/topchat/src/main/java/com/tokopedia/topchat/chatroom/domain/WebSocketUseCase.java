@@ -87,6 +87,7 @@ public class WebSocketUseCase {
 
     public JsonObject getParamSendInvoiceAttachment(String messageId, InvoiceLinkPojo invoice, String
             startTime) {
+        int attachmentTypeInvoice = 7;
         JsonObject json = new JsonObject();
         json.addProperty("code", ChatWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE);
 
@@ -95,7 +96,7 @@ public class WebSocketUseCase {
         data.addProperty("message_id", Integer.parseInt(messageId));
         data.addProperty("message", invoiceAttribute.getCode());
         data.addProperty("start_time", startTime);
-        data.addProperty("attachment_type", 7);
+        data.addProperty("attachment_type", attachmentTypeInvoice);
 
         JsonElement payload = new GsonBuilder().create().toJsonTree(invoice,InvoiceLinkPojo.class);
         data.add("payload", payload);
@@ -105,13 +106,14 @@ public class WebSocketUseCase {
 
     public JsonObject getParamSendProductAttachment(String messageId, ResultProduct product, String startTime) {
         JsonObject json = new JsonObject();
+        int attachmentTypeProduct = 3;
         json.addProperty("code", ChatWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE);
         JsonObject data = new JsonObject();
         data.addProperty("message_id", Integer.valueOf(messageId));
         data.addProperty("message", product.getProductUrl());
 
         data.addProperty("start_time", startTime);
-        data.addProperty("attachment_type", 3);
+        data.addProperty("attachment_type", attachmentTypeProduct);
         data.addProperty("product_id", product.getProductId());
 
         JsonObject productProfile = new JsonObject();
@@ -136,6 +138,7 @@ public class WebSocketUseCase {
     }
 
     public JsonObject getParamSendImage(String messageId, String path, String startTime) {
+        int attachmentTypeImageUpload = 2;
         JsonObject json = new JsonObject();
         json.addProperty("code", ChatWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE);
         JsonObject data = new JsonObject();
@@ -143,7 +146,7 @@ public class WebSocketUseCase {
         data.addProperty("message", InboxChatConstant.UPLOADING);
         data.addProperty("start_time", startTime);
         data.addProperty("file_path", path);
-        data.addProperty("attachment_type", 2);
+        data.addProperty("attachment_type", attachmentTypeImageUpload);
         json.add("data", data);
         return json;
     }
