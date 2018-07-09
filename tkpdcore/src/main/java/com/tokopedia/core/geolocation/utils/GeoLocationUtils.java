@@ -7,13 +7,17 @@ import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.tokopedia.core.manage.people.address.model.Destination;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
 import rx.Observable;
+import rx.Scheduler;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -24,15 +28,24 @@ public class GeoLocationUtils {
     private static final String TAG = GeoLocationUtils.class.getSimpleName();
 
     private static void getReverseGeoCodeParallel(Context context,
-                                                 double latitude,
-                                                 double longitude,
-                                                 GeoLocationListener listener) {
+                                                  double latitude,
+                                                  double longitude,
+                                                  GeoLocationListener listener) {
 
-        Geocoder geocoder = new Geocoder(context, Locale.getDefault());
-        try {
-            Observable.just(geocoder.getFromLocation(latitude, longitude, 1))
-                    .subscribeOn(Schedulers.newThread())
-                    .unsubscribeOn(Schedulers.newThread())
+            Destination destination = new Destination();
+            destination.setLatitude(String.valueOf(latitude));
+            destination.setLongitude(String.valueOf(longitude));
+            Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+            Observable.just(destination).map(new Func1<Destination, List<Address>>() {
+                @Override
+                public List<Address> call(Destination destination) {
+                    try {
+                        return geocoder.getFromLocation(latitude, longitude, 1);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }).subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Subscriber<List<Address>>() {
                         @Override
@@ -82,12 +95,6 @@ public class GeoLocationUtils {
                             listener.getGeoCode(responseAddress);
                         }
                     });
-        } catch (Exception e) {
-            listener.getGeoCode(
-                    String.valueOf(latitude) + ", " + String.valueOf(longitude)
-            );
-            e.printStackTrace();
-        }
 
     }
 
