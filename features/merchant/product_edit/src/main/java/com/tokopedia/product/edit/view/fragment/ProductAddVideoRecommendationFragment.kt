@@ -24,7 +24,7 @@ import java.util.ArrayList
 
 class ProductAddVideoRecommendationFragment : BaseListFragment<ProductAddVideoRecommendationBaseViewModel, ProductAddVideoRecommendationAdapterTypeFactory>(), ProductAddVideoRecommendationView, VideoRecommendationListener {
 
-    override val contextView: Context get() = activity
+    override val contextView: Context get() = activity!!
 
     private var videoRecommendationViewModelList: ArrayList<VideoRecommendationViewModel> = ArrayList()
     private var videoIDs: ArrayList<String> = ArrayList()
@@ -34,12 +34,12 @@ class ProductAddVideoRecommendationFragment : BaseListFragment<ProductAddVideoRe
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        GraphqlClient.init(activity.applicationContext)
+        GraphqlClient.init(activity!!.applicationContext)
 
-        (activity as AppCompatActivity).supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_close_default);
-        if(activity.intent != null){
-            videoRecommendationViewModelList = activity.intent.getParcelableArrayListExtra<VideoRecommendationViewModel>(ProductAddVideoFragment.EXTRA_VIDEO_RECOMMENDATION)
-            videoIDs = activity.intent.getStringArrayListExtra(ProductAddVideoFragment.EXTRA_VIDEOS_LINKS)
+        (activity as AppCompatActivity).supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_close_default)
+        if(activity!!.intent != null){
+            videoRecommendationViewModelList = activity!!.intent.getParcelableArrayListExtra<VideoRecommendationViewModel>(ProductAddVideoFragment.EXTRA_VIDEO_RECOMMENDATION)
+            videoIDs = activity!!.intent.getStringArrayListExtra(ProductAddVideoFragment.EXTRA_VIDEOS_LINKS)
             remainSlot = (MAX_VIDEO - videoIDs.size)
         }
     }
@@ -48,7 +48,7 @@ class ProductAddVideoRecommendationFragment : BaseListFragment<ProductAddVideoRe
         return inflater.inflate(R.layout.fragment_product_add_video_recommendation, container, false)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         btnSimpan.setOnClickListener({
             if(remainSlot == 0 && newVideoIDsRecommendation.size > 0) {
@@ -57,8 +57,8 @@ class ProductAddVideoRecommendationFragment : BaseListFragment<ProductAddVideoRe
                 if(newVideoIDsRecommendation.size <= remainSlot){
                     val intent = Intent()
                     intent.putParcelableArrayListExtra(ProductAddVideoFragment.EXTRA_VIDEO_RECOMMENDATION, videoRecommendationViewModelList)
-                    activity.setResult(Activity.RESULT_OK, intent)
-                    activity.finish()
+                    activity!!.setResult(Activity.RESULT_OK, intent)
+                    activity!!.finish()
                 } else {
                     showSnackbarRed(getString(R.string.product_add_message_remain_slot_video_chosen, remainSlot))
                 }

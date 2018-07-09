@@ -32,6 +32,7 @@
 
     <string name="product_add_message_slot_full_video_chosen">Slot video sudah penuh. Hapus sebagian video untuk menambahkan video lainnya</string>
     <string name="product_add_message_remain_slot_video_chosen">Hanya %d slot video tersisa. Batalkan sebagian pilihan untuk menambahkan video</string>
+    <string name="product_add_message_empty_video_recommendation">Video rekomendasi tidak ditemukan untuk produk ini</string>
 
     <string name="product_video_not_found">Video tidak ditemukan</string>
     <string name="product_invalid_video_url">URL video tidak benar</string>
