@@ -24,7 +24,6 @@ import com.tokopedia.tokocash.historytokocash.presentation.activity.MoveToSaldoA
 import com.tokopedia.tokocash.historytokocash.presentation.model.ActionHistory;
 import com.tokopedia.tokocash.historytokocash.presentation.model.ItemHistory;
 import com.tokopedia.tokocash.historytokocash.presentation.model.WalletToDepositPassData;
-import com.tokopedia.tokocash.network.api.WalletUrl;
 
 /**
  * Created by nabillasabbaha on 2/12/18.
@@ -36,6 +35,7 @@ public class DetailTransactionFragment extends BaseDaggerFragment {
     public static final String KEY_BUTTON_ACTION = "button";
     public static final String VALUE_BUTTON_ACTION = "movetosaldo";
     private static final int REQUEST_MOVE_TO_SALDO = 110;
+    private static final int REQUEST_HELP_NATIVE = 111;
 
     private ImageView iconItem;
     private TextView priceItem;
@@ -167,11 +167,17 @@ public class DetailTransactionFragment extends BaseDaggerFragment {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Application application = getActivity().getApplication();
-                if (application != null && application instanceof TokoCashRouter) {
-                    Intent intent = ((TokoCashRouter) application).getWebviewActivityWithIntent(getActivity(),
-                            itemHistory.getHelpRedirect(), getString(R.string.title_help_history));
-                    startActivity(intent);
+                if (!TextUtils.isEmpty(itemHistory.getHelpRedirect())) {
+                    Application application = getActivity().getApplication();
+                    if (application != null && application instanceof TokoCashRouter) {
+                        Intent intent = ((TokoCashRouter) application).getWebviewActivityWithIntent(getActivity(),
+                                itemHistory.getHelpRedirect(), getString(R.string.title_help_history));
+                        startActivity(intent);
+                    }
+                } else {
+                    Intent helpIntent = HelpHistoryDetailActivity.newInstance(getActivity());
+                    helpIntent.putExtra(HelpHistoryDetailActivity.TRANSACTION_ID, String.valueOf(itemHistory.getTransactionId()));
+                    startActivityForResult(helpIntent, REQUEST_HELP_NATIVE);
                 }
             }
         };

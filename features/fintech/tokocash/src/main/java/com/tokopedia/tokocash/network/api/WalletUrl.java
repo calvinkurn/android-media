@@ -33,7 +33,7 @@ public interface WalletUrl {
         public static final String GET_QR_INFO = "api/v1/qr/{identifier}";
         public static final String POST_QR_PAYMENT = "api/v1/paymentqr";
         public static final String GET_BALANCE = "api/v1/wallet/balance";
-        public static final String WEBVIEW_HELP_CENTER = "contact-us?pid=53&pdtype=4&ivtype=5";
+        public static final String WEBVIEW_HELP_CENTER = "contact-us?pid=53&pdtype=4&ivtype=5&utm_source=android&flag_app=1";
     }
 
     public interface AutoSweep {

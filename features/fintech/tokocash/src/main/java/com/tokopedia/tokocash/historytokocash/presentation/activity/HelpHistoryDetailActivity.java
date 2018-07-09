@@ -13,7 +13,6 @@ import com.tokopedia.tokocash.historytokocash.presentation.fragment.HelpHistoryD
 /**
  * Created by nabillasabbaha on 2/19/18.
  */
-@Deprecated
 public class HelpHistoryDetailActivity extends BaseSimpleActivity implements
         HelpHistoryDetailFragment.ActionListener {
 
