@@ -50,9 +50,9 @@ public class ProductCommunicationAdapter
                     (ViewGroup.MarginLayoutParams) holder.parentView.getLayoutParams();
             Resources resources = holder.parentView.getContext().getResources();
 
-            if (position == 0) {
+            if (holder.getAdapterPosition() == 0) {
                 marginLayoutParams.leftMargin = (int) resources.getDimension(R.dimen.dp_16);
-            } else if (position == getItemCount() - 1) {
+            } else if (holder.getAdapterPosition() == getItemCount() - 1) {
                 marginLayoutParams.leftMargin = (int) resources.getDimension(R.dimen.dp_8);
                 marginLayoutParams.rightMargin = (int) resources.getDimension(R.dimen.dp_8);
             } else {
