@@ -35,8 +35,6 @@ public class FeedbackEntityMapper implements Func1<Response<String>, FeedbackEnt
                     String entity = jsonObject.getString("data");
                     final Type type = new TypeToken<FeedbackEntity>() {}.getType();
                     return gson.fromJson(entity, type);
-                } catch (JsonSyntaxException e) {
-                    e.printStackTrace();
                 } catch (JSONException exeption) {
                     exeption.printStackTrace();
                 }
