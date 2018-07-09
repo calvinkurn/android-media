@@ -448,4 +448,6 @@
     <string name="flight_order_detail_insurance_description">Untuk melihat polis asuransi, cek email Anda.</string>
     <string name="flight_order_prefix_insurance_price_label" formatted="false">Asuransi %dx</string>
     <string name="flight_insurance_webview_toolbar_title">Asuransi Perjalanan</string>
+    <string name="flight_detail_facility_label">Fasilitas</string>
+    <string name="flight_detail_facility_separator">:</string>
 </resources>
