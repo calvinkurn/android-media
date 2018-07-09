@@ -68,7 +68,6 @@ import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.seller.common.imageeditor.GalleryCropActivity;
 import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.sellerapp.onboarding.activity.OnboardingSellerActivity;
-import com.tokopedia.sellerapp.truecaller.TruecallerActivity;
 import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
@@ -122,7 +121,6 @@ import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.TkpdSeller;
 import com.tokopedia.seller.common.cashback.DataCashbackModel;
 import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
-import com.tokopedia.seller.common.imageeditor.GalleryCropActivity;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
 import com.tokopedia.seller.instoped.InstopedActivity;
@@ -139,7 +137,6 @@ import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.seller.shop.common.di.module.ShopModule;
-import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.seller.shopsettings.edit.presenter.ShopSettingView;
 import com.tokopedia.seller.shopsettings.edit.view.ShopEditorActivity;
 import com.tokopedia.seller.shopsettings.notes.activity.ManageShopNotesActivity;
@@ -148,20 +145,17 @@ import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
-import com.tokopedia.sellerapp.onboarding.activity.OnboardingSellerActivity;
 import com.tokopedia.sellerapp.welcome.WelcomeActivity;
 import com.tokopedia.session.addchangeemail.view.activity.AddEmailActivity;
 import com.tokopedia.session.addchangepassword.view.activity.AddPasswordActivity;
 import com.tokopedia.session.changename.view.activity.ChangeNameActivity;
 import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberRequestActivity;
-import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.session.register.view.activity.RegisterInitialActivity;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
-import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
@@ -175,6 +169,7 @@ import com.tokopedia.topads.dashboard.view.activity.TopAdsCheckProductPromoActiv
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
 import com.tokopedia.topchat.common.TopChatRouter;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
+import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 
@@ -1400,4 +1395,9 @@ public abstract class SellerRouterApplication extends MainApplication
         return ChatRoomActivity.getChatBotIntent(context, messageId);
     }
 
+
+    @Override
+    public Intent getOrderListIntent(Context context) {
+        return OrderListActivity.getInstance(context);
+    }
 }
