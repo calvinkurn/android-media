@@ -9,7 +9,6 @@
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
         android:paddingBottom="@dimen/tp_padding_regular">
 
         <ImageView
@@ -17,6 +16,22 @@
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:scaleType="center" />
+
+        <TextView
+            android:id="@+id/text_quota_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/tp_margin_small"
+            android:background="@drawable/bg_tp_remaining_exchange"
+            android:paddingBottom="@dimen/tp_padding_xxsmall"
+            android:paddingLeft="@dimen/tp_margin_small"
+            android:paddingRight="@dimen/tp_margin_small"
+            android:paddingTop="@dimen/tp_padding_xxsmall"
+            android:textColor="@color/black_54"
+            android:textSize="@dimen/tp_text_size_xxsmall"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/text_description"

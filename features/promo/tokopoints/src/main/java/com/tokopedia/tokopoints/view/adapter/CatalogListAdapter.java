@@ -1,6 +1,11 @@
 package com.tokopedia.tokopoints.view.adapter;
 
+import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +26,7 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
     private CatalogPurchaseRedemptionPresenter mPresenter;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView title, label, value, btnContinue, pointValue;
+        public TextView title, label, value, btnContinue, pointValue, quota;
         ImageView imgBanner, imgLabel;
 
         public ViewHolder(View view) {
@@ -34,9 +39,10 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
             btnContinue = view.findViewById(R.id.button_continue);
             imgBanner = view.findViewById(R.id.img_banner);
             imgLabel = view.findViewById(R.id.img_label);
+            quota = view.findViewById(R.id.text_quota_count);
         }
     }
-    
+
     public CatalogListAdapter(CatalogPurchaseRedemptionPresenter presenter, List<CatalogsValueEntity> items) {
         this.mPresenter = presenter;
         this.mItems = items;
@@ -59,6 +65,19 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
         holder.btnContinue.setText(R.string.tp_label_exchange);
         ImageHandler.loadImageFit2(holder.imgBanner.getContext(), holder.imgBanner, item.getImageUrlMobile());
         holder.imgLabel.setImageResource(R.drawable.ic_tp_point_stack);
+
+        if (item.getQuota() != null && item.getQuota() > 0) {
+            String firstSpan = holder.quota.getResources().getString(R.string.tp_label_remaining_exchange);
+            String secondSpan = " " + item.getQuota() + "x";
+            Spannable wordtoSpan = new SpannableString(firstSpan + secondSpan);
+            wordtoSpan.setSpan(new ForegroundColorSpan(ContextCompat.getColor(holder.quota.getContext(), R.color.orange_red)), firstSpan.length() - 1, wordtoSpan.length() ,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            holder.quota.setText(wordtoSpan);
+            holder.quota.setVisibility(View.VISIBLE);
+
+        } else {
+            holder.quota.setVisibility(View.GONE);
+        }
 
         holder.btnContinue.setOnClickListener(v -> {
             //call validate api the show dialog
