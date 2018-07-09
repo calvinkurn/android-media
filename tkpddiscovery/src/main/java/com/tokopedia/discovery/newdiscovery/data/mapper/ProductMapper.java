@@ -44,7 +44,7 @@ public class ProductMapper implements Func1<Response<String>, SearchResultModel>
         }
     }
 
-    private SearchResultModel mappingPojoIntoDomain(SearchProductResponse searchProductResponse) {
+    public SearchResultModel mappingPojoIntoDomain(SearchProductResponse searchProductResponse) {
         SearchResultModel model = new SearchResultModel();
         model.setTotalData(searchProductResponse.getHeader().getTotalData());
         model.setTotalDataText(searchProductResponse.getHeader().getTotalDataText());

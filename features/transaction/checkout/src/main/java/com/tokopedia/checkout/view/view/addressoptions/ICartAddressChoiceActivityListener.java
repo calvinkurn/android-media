@@ -11,4 +11,6 @@ public interface ICartAddressChoiceActivityListener {
     void finishSendResultActionSelectedAddress(RecipientAddressModel selectedAddressResult);
 
     void finishSendResultActionToMultipleAddressForm();
+
+    void setToolbarTitle(String title);
 }

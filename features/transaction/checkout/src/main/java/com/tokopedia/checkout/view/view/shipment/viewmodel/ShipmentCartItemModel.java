@@ -16,6 +16,7 @@ import java.util.List;
 
 public class ShipmentCartItemModel implements ShipmentData {
 
+    private boolean allItemError;
     private boolean isError;
     private String errorMessage;
     private boolean isWarning;
@@ -50,6 +51,14 @@ public class ShipmentCartItemModel implements ShipmentData {
     private List<CartItemModel> cartItemModels = new ArrayList<>();
 
     public ShipmentCartItemModel() {
+    }
+
+    public boolean isAllItemError() {
+        return allItemError;
+    }
+
+    public void setAllItemError(boolean allItemError) {
+        this.allItemError = allItemError;
     }
 
     public boolean isError() {

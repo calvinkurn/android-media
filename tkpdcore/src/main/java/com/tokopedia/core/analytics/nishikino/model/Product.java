@@ -26,6 +26,7 @@ public class Product extends BaseGTMModel {
     public static final String KEY_LIST = "list";
     public static final String KEY_DIMENSION_38 = "dimension38";
     public static final String KEY_DIMENSION_40 = "dimension40";
+    public static final String KEY_ATTRIBUTION = "attribution";
 
     public static final String DEFAULT_VALUE_NONE_OTHER = "none/other";
 
@@ -57,8 +58,16 @@ public class Product extends BaseGTMModel {
         Product.put(KEY_DIMENSION_38, data);
     }
 
+    public void setAttribution(Object data){
+        Product.put(KEY_ATTRIBUTION, data);
+    }
+
     public void setDimension40(Object data) {
         Product.put(KEY_DIMENSION_40, data);
+    }
+
+    public void setListName(Object data) {
+        Product.put(KEY_LIST, data);
     }
 
     public void setPosition(Object position) {

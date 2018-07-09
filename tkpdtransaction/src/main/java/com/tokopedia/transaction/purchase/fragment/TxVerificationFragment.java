@@ -514,7 +514,9 @@ public class TxVerificationFragment extends BasePresenterFragment<TxVerification
     }
 
     public void confirmCancelPayment(String paymentId) {
-        presenter.confirmCancelTransaction(getActivity(), paymentId);
+        if(presenter != null && getActivity() != null) {
+            presenter.confirmCancelTransaction(getActivity(), paymentId);
+        }
     }
 
     @Override

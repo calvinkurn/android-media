@@ -4,7 +4,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.support.annotation.LayoutRes;
-import android.support.graphics.drawable.VectorDrawableCompat;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -93,7 +93,8 @@ public class FlightDetailViewHolder extends AbstractViewHolder<FlightDetailRoute
         transitInfo.setText(itemView.getContext().getString(R.string.flight_label_transit, route.getArrivalAirportCity(), route.getLayover()));
         setPNR(route.getPnr());
         ImageHandler.loadImageWithoutPlaceholder(imageAirline, route.getAirlineLogo(),
-                VectorDrawableCompat.create(itemView.getResources(), R.drawable.ic_airline_default, itemView.getContext().getTheme()));
+                ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_airline_default)
+        );
         if (onFlightDetailListener != null) {
             bindLastPosition(onFlightDetailListener.getItemCount() == getAdapterPosition());
             bindTransitInfo(onFlightDetailListener.getItemCount());

@@ -189,7 +189,7 @@ public class ShareBottomSheet extends BottomSheets implements ShareAdapter.OnIte
             @Override
             public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
                 Intent intent = getIntent(shareContents);
-                startActivity(Intent.createChooser(intent, getString(R.string.fb_cat_etc)));
+                startActivity(Intent.createChooser(intent, getString(R.string.other)));
 
                 sendTracker(packageName);
             }
@@ -232,8 +232,7 @@ public class ShareBottomSheet extends BottomSheets implements ShareAdapter.OnIte
             public void onReceive(Context context, Intent intent) {
                 Bundle bundle = intent.getExtras();
                 if (bundle != null) {
-                    int status = bundle.getInt(TkpdState.ProductService.STATUS_FLAG,
-                            TkpdState.ProductService.STATUS_ERROR);
+                    int status = bundle.getInt(TkpdState.ProductService.STATUS_FLAG, TkpdState.ProductService.STATUS_ERROR);
                     switch (status) {
                         case TkpdState.ProductService.STATUS_DONE:
                             setData(bundle);

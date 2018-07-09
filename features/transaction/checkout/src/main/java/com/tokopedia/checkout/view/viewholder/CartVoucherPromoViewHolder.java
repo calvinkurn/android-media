@@ -16,7 +16,6 @@ public class CartVoucherPromoViewHolder extends RecyclerView.ViewHolder {
     public static final int TYPE_VIEW_PROMO = R.layout.holder_item_cart_promo;
     private final CartAdapterActionListener actionListener;
     private VoucherPromoView voucherCartHachikoView;
-    private CartItemPromoHolderData cartItemPromoHolderData;
 
     public CartVoucherPromoViewHolder(View itemView, CartAdapterActionListener actionListener) {
         super(itemView);
@@ -25,45 +24,46 @@ public class CartVoucherPromoViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bindData(final CartItemPromoHolderData data, final int position) {
-        cartItemPromoHolderData = data;
-        this.voucherCartHachikoView.setActionListener(new VoucherCartHachikoView.ActionListener() {
-            @Override
-            public void onClickUseVoucher() {
-                actionListener.onCartPromoUseVoucherPromoClicked(data, position);
-            }
+        if (data.isVisible()) {
+            this.voucherCartHachikoView.setActionListener(new VoucherCartHachikoView.ActionListener() {
+                @Override
+                public void onClickUseVoucher() {
+                    actionListener.onCartPromoUseVoucherPromoClicked(data, position);
+                }
 
-            @Override
-            public void disableVoucherDiscount() {
-                actionListener.onCartPromoCancelVoucherPromoClicked(data, position);
-            }
+                @Override
+                public void disableVoucherDiscount() {
+                    actionListener.onCartPromoCancelVoucherPromoClicked(data, position);
+                }
 
-            @Override
-            public void trackingSuccessVoucher(String voucherName) {
-                actionListener.onCartPromoTrackingSuccess(data, position);
-            }
+                @Override
+                public void trackingSuccessVoucher(String voucherName) {
+                    actionListener.onCartPromoTrackingSuccess(data, position);
+                }
 
-            @Override
-            public void trackingCancelledVoucher() {
-                actionListener.onCartPromoTrackingCancelled(data, position);
-            }
-        });
+                @Override
+                public void trackingCancelledVoucher() {
+                    actionListener.onCartPromoTrackingCancelled(data, position);
+                }
+            });
 
-        if (data.getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_COUPON) {
-            voucherCartHachikoView.setCoupon(data.getCouponTitle(),
-                    data.getCouponMessage(),
-                    data.getCouponCode()
-            );
-        } else if (data.getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_VOUCHER) {
-            voucherCartHachikoView.setVoucher(data.getVoucherCode(),
-                    data.getVoucherMessage()
-            );
+            if (data.getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_COUPON) {
+                voucherCartHachikoView.setCoupon(data.getCouponTitle(),
+                        data.getCouponMessage(),
+                        data.getCouponCode()
+                );
+            } else if (data.getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_VOUCHER) {
+                voucherCartHachikoView.setVoucher(data.getVoucherCode(),
+                        data.getVoucherMessage()
+                );
+            } else {
+                voucherCartHachikoView.setPromoAndCouponLabel();
+                voucherCartHachikoView.resetView();
+            }
+            voucherCartHachikoView.setVisibility(View.VISIBLE);
         } else {
-            voucherCartHachikoView.setPromoAndCouponLabel();
-            voucherCartHachikoView.resetView();
+            voucherCartHachikoView.setVisibility(View.GONE);
         }
     }
 
-    public CartItemPromoHolderData getCartItemPromoHolderData() {
-        return cartItemPromoHolderData;
-    }
 }

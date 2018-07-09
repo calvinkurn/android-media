@@ -17,7 +17,7 @@ public class GraphqlCacheStrategy {
 
     private GraphqlCacheStrategy(Builder builder) {
         this.type = builder.type;
-        this.expiryTime = builder.expiryTime;
+        this.expiryTime = builder.expiryTime < 1L ? GraphqlConstant.ExpiryTimes.MINUTE_30.val() : builder.expiryTime;
         this.isSessionIncluded = builder.isSessionIncluded;
     }
 

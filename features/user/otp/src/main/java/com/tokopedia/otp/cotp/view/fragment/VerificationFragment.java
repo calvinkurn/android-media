@@ -345,9 +345,8 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     }
 
     @Override
-    public void onSuccessGetOTP() {
-        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string
-                .verification_code_sent));
+    public void onSuccessGetOTP(String message) {
+        NetworkErrorHelper.showSnackbar(getActivity(), message);
         startTimer();
     }
 
