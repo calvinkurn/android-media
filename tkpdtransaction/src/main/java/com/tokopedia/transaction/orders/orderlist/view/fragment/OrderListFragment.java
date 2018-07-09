@@ -5,11 +5,13 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
@@ -32,7 +34,7 @@ import javax.inject.Inject;
 
 
 
-public class OrderListFragment extends BasePresenterFragment<OrderListContract.Presenter> implements
+public class OrderListFragment extends BaseDaggerFragment implements
         RefreshHandler.OnRefreshHandlerListener, OrderListContract.View, OrderListAdapter.OnMenuItemListener {
 
     private static final String ORDER_CATEGORY = "orderCategory";
@@ -47,6 +49,7 @@ public class OrderListFragment extends BasePresenterFragment<OrderListContract.P
     int totalItemCount;
     private int visibleThreshold = 2;
     private int lastVisibleItem;
+    private Bundle savedState;
 
     @Inject
     OrderListPresenterImpl presenter;
@@ -57,32 +60,119 @@ public class OrderListFragment extends BasePresenterFragment<OrderListContract.P
     private String mOrderCategory;
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(isRetainInstance());
+        if (getArguments() != null) {
+            setupArguments(getArguments());
+        }
+        initialPresenter();
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        return inflater.inflate(getFragmentLayout(), container, false);
+    }
+
+    protected int getFragmentLayout() {
+        return R.layout.fragment_transaction_list_order_module;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initView(view);
+        initialVar();
+        setViewListener();
+        setActionVar();
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        setHasOptionsMenu(getOptionsMenuEnable());
+        initialListener(activity);
+    }
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (!restoreStateFromArguments()) {
+            onFirstTimeLaunched();
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        saveStateToArguments();
+    }
+
+    private void saveStateToArguments() {
+        if (getView() != null)
+            savedState = saveState();
+        if (savedState != null) {
+            Bundle b = getArguments();
+            if (b == null) b = new Bundle();
+            b.putBundle("internalSavedViewState8954201239547", savedState);
+        }
+    }
+
+    private Bundle saveState() {
+        Bundle state = new Bundle();
+        onSaveState(state);
+        return state;
+    }
+
+    private boolean restoreStateFromArguments() {
+        Bundle b = getArguments();
+        if (b == null) b = new Bundle();
+        savedState = b.getBundle("internalSavedViewState8954201239547");
+        if (savedState != null) {
+            restoreState();
+            return true;
+        }
+        return false;
+    }
+
+    private void restoreState() {
+        if (savedState != null) {
+            // For Example
+            //tv1.setText(savedState.getString("text"));
+            onRestoreState(savedState);
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        saveStateToArguments();
+    }
+
     protected boolean isRetainInstance() {
         return false;
     }
 
-    @Override
+
     protected void onFirstTimeLaunched() {
 
     }
 
-    @Override
+
     public void onSaveState(Bundle state) {
 
     }
 
-    @Override
+
     public void onRestoreState(Bundle savedState) {
 
     }
 
-
-    @Override
     protected boolean getOptionsMenuEnable() {
         return false;
     }
 
-    @Override
+
     protected void initialPresenter() {
         initInjector();
         presenter.attachView(this);
@@ -96,28 +186,23 @@ public class OrderListFragment extends BasePresenterFragment<OrderListContract.P
         orderListComponent.inject(this);
     }
 
-    @Override
+
     protected void initialListener(Activity activity) {
     }
 
-    @Override
+
     protected void setupArguments(Bundle arguments) {
         mOrderCategory = arguments.getString(ORDER_CATEGORY);
     }
 
-    @Override
-    protected int getFragmentLayout() {
-        return R.layout.fragment_transaction_list_order_module;
-    }
 
-    @Override
     protected void initView(View view) {
         recyclerView = view.findViewById(R.id.order_list_rv);
         swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
         emptyLayout = view.findViewById(R.id.empty_view);
     }
 
-    @Override
+
     protected void setViewListener() {
         refreshHandler = new RefreshHandler(getActivity(), getView(), this);
         refreshHandler.setPullEnabled(true);
@@ -217,12 +302,12 @@ public class OrderListFragment extends BasePresenterFragment<OrderListContract.P
         };
     }
 
-    @Override
+
     protected void initialVar() {
         orderListAdapter = new OrderListAdapter(getActivity(), this);
     }
 
-    @Override
+
     protected void setActionVar() {
         initialData();
     }
@@ -293,6 +378,11 @@ public class OrderListFragment extends BasePresenterFragment<OrderListContract.P
     public void startUri(String uri) {
         if (!uri.equals(""))
             TransactionPurchaseRouter.startWebViewActivity(getActivity(), uri);
+    }
+
+    @Override
+    protected String getScreenName() {
+        return null;
     }
 }
 

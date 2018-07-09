@@ -12,7 +12,8 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tkpd.library.ui.widget.TouchViewPager;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
@@ -22,21 +23,23 @@ import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.applink.TransactionAppLink;
 import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
+import com.tokopedia.transaction.orders.orderlist.data.OrderLabelList;
+import com.tokopedia.transaction.orders.orderlist.di.DaggerOrderListComponent;
+import com.tokopedia.transaction.orders.orderlist.di.OrderListComponent;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.OrderTabAdapter;
 import com.tokopedia.transaction.orders.orderlist.view.presenter.OrderListInitContract;
 import com.tokopedia.transaction.orders.orderlist.view.presenter.OrderListInitPresenterImpl;
 
 import java.util.List;
 
-import static com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter.EXTRA_OMS_ORDER_CATEGORY;
 import static com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter.EXTRA_STATE_TAB_POSITION;
 
-public class OrderListActivity extends DrawerPresenterActivity<OrderListInitContract.Presenter> implements OrderListInitContract.View, OrderTabAdapter.Listener{
+public class OrderListActivity extends DrawerPresenterActivity<OrderListInitContract.Presenter> implements HasComponent<OrderListComponent>, OrderListInitContract.View, OrderTabAdapter.Listener{
     private int drawerPosition;
     private String orderCategory = "ALL";
     private ProgressBar progressBar;
     private TabLayout tabLayout;
-    private TouchViewPager viewPager;
+    private ViewPager viewPager;
     private LinearLayout mainLayout;
     private OrderTabAdapter adapter;
 
@@ -89,7 +92,7 @@ public class OrderListActivity extends DrawerPresenterActivity<OrderListInitCont
     @Override
     protected void initVar() {
         progressBar = findViewById(R.id.progress);
-        tabLayout = findViewById(R.id.tab_layout);
+        tabLayout = findViewById(R.id.indicator);
         viewPager = findViewById(R.id.pager);
         mainLayout = findViewById(R.id.main_content);
     }
@@ -141,13 +144,13 @@ public class OrderListActivity extends DrawerPresenterActivity<OrderListInitCont
     }
 
     @Override
-    public void renderTabs(List<String> orderLabelList) {
-        for(String tabContent: orderLabelList)
-            tabLayout.addTab(tabLayout.newTab().setText(tabContent));
-        adapter = new OrderTabAdapter(getFragmentManager(), orderLabelList,this);
+    public void renderTabs(List<OrderLabelList> orderLabelList) {
+        for(OrderLabelList tabContent: orderLabelList)
+            tabLayout.addTab(tabLayout.newTab().setText(tabContent.getLabel()));
+        adapter = new OrderTabAdapter(getSupportFragmentManager(), orderLabelList,this);
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new OnTabPageChangeListener(tabLayout));
-        tabLayout.setOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager));
+        tabLayout.addOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager));
         viewPager.setCurrentItem(0);
     }
 
@@ -155,6 +158,14 @@ public class OrderListActivity extends DrawerPresenterActivity<OrderListInitCont
     public String getFilterCaseAllTransaction() {
         return null;
     }
+
+    @Override
+    public OrderListComponent getComponent() {
+        return DaggerOrderListComponent.builder()
+                .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
+                .build();
+    }
+
     private class OnTabPageChangeListener extends TabLayout.TabLayoutOnPageChangeListener {
 
         OnTabPageChangeListener(TabLayout tabLayout) {
