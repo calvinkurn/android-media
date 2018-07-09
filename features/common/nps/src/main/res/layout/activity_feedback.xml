@@ -19,6 +19,7 @@
         app:titleTextAppearance="?titleTextAppearance" />
 
     <ScrollView
+        android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -79,5 +80,7 @@
         </LinearLayout>
 
     </ScrollView>
+
+    <include layout="@layout/view_loading" />
 
 </LinearLayout>

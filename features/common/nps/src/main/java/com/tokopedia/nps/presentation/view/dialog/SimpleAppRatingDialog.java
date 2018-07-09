@@ -1,19 +1,14 @@
-package com.tokopedia.core.apprating;
+package com.tokopedia.nps.presentation.view.dialog;
 
 import android.app.Activity;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.net.Uri;
 import android.support.v7.app.AlertDialog;
 
-import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.nps.R;
 
 import java.util.concurrent.TimeUnit;
 
