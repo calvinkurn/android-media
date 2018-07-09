@@ -198,7 +198,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     public static final int TYPE_BUTTON_BUY_CART = 10;
     public static final int TYPE_BUTTON_BUY_BELI = 20;
     public static final int TYPE_BUTTON_OPEN_VARIANT = 30;
-    private static final int TOASTER_DURATION = 3000;
+    private static final int TOASTER_DURATION = 2000;
 
     private CoordinatorLayout coordinatorLayout;
     private HeaderInfoView headerInfoView;
@@ -1723,7 +1723,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     }
 
     private void showSnackbarSuccessAtc(String message) {
-        ToasterNormal.make(getView(), message, Snackbar.LENGTH_SHORT).show();
+        ToasterNormal.make(getView(), message, TOASTER_DURATION).show();
     }
 
     private void enhanceEcommerceAtc(AddToCartResult addToCartResult) {
