@@ -105,8 +105,9 @@ public class TkpdHintTextInputLayout extends LinearLayout {
 
     public TkpdHintTextInputLayout(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        apply2(context, attrs, 0);
-        init();
+//        apply2(context, attrs, 0);
+        apply3(attrs, 0);
+        init(context);
     }
 
     public TkpdHintTextInputLayout(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
@@ -123,13 +124,19 @@ public class TkpdHintTextInputLayout extends LinearLayout {
     }
 
     private void apply2(Context context, AttributeSet attrs, int defStyleAttr){
-        final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.TkpdHintTextInputLayout);
+        final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.TkpdHintTextInputLayout,
+                defStyleAttr, android.support.design.R.style.Widget_Design_TextInputLayout);
         try {
             mHintEnabled = a.getBoolean(R.styleable.TkpdHintTextInputLayout_hintEnabled, true);
         } finally {
             a.recycle();
         }
+    }
 
+    @SuppressWarnings("ResourceType")
+    private void apply3(AttributeSet attrs, int defStyleAttr){
+        final TintTypedArray a = TintTypedArray.obtainStyledAttributes(getContext(), attrs,
+                R.styleable.TkpdHintTextInputLayout, defStyleAttr, android.support.design.R.style.Widget_Design_TextInputLayout);
     }
 
     @SuppressWarnings("ResourceType")
@@ -245,6 +252,12 @@ public class TkpdHintTextInputLayout extends LinearLayout {
 
     private void init() {
         inflate(getContext(), R.layout.hint_text_input_layout, this);
+    }
+
+    private void init(Context context) {
+        final LayoutInflater inflater =
+                (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater.inflate(R.layout.hint_text_input_layout, this);
     }
 
     @Override
