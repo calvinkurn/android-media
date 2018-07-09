@@ -339,7 +339,7 @@ public class CartListPresenter implements ICartListPresenter {
         }
 
         view.renderDetailInfoSubTotal(String.valueOf(totalAllCartItemQty),
-                CurrencyFormatUtil.convertPriceValueToIdrFormat(((int) subtotalPrice), true));
+                CurrencyFormatUtil.convertPriceValueToIdrFormat(((long) subtotalPrice), true));
     }
 
     @Override
