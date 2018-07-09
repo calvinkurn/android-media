@@ -33,7 +33,6 @@ public class InputPriceHolderView extends LinearLayout {
     private long priceInput = 0;
     private ActionListener actionListener;
 
-
     public InputPriceHolderView(Context context) {
         super(context);
         init(context);
