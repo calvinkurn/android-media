@@ -32,6 +32,7 @@
     <dimen name="dp_48">48dp</dimen>
     <dimen name="dp_50">50dp</dimen> <!-- not recommended -->
     <dimen name="dp_56">56dp</dimen> <!-- not recommended -->
+    <dimen name="dp_60">60dp</dimen>
     <dimen name="dp_72">72dp</dimen>
     <dimen name="dp_75">75dp</dimen>
     <dimen name="dp_78">78dp</dimen> <!-- not recommended -->
@@ -41,6 +42,7 @@
     <dimen name="dp_96">96dp</dimen>
     <dimen name="dp_100">100dp</dimen> <!-- not recommended -->
     <dimen name="dp_112">112dp</dimen> <!-- not recommended -->
+    <dimen name="dp_120">120dp</dimen>
     <dimen name="dp_128">128dp</dimen> <!-- not recommended -->
     <dimen name="dp_145">145dp</dimen> <!-- not recommended -->
     <dimen name="dp_150">150dp</dimen> <!-- not recommended -->
@@ -52,6 +54,7 @@
     <dimen name="dp_350">350dp</dimen> <!-- not recommended -->
     <dimen name="dp_500">500dp</dimen> <!-- not recommended -->
 
+    <dimen name="sp_5">5sp</dimen> <!-- not recommended -->
     <dimen name="sp_8">8sp</dimen> <!-- not recommended -->
     <dimen name="sp_10">10sp</dimen> <!-- not recommended -->
     <dimen name="sp_11">11sp</dimen>
@@ -64,6 +67,7 @@
     <dimen name="sp_20">20sp</dimen>
     <dimen name="sp_22">22sp</dimen>
     <dimen name="sp_24">24sp</dimen>
+    <dimen name="sp_32">32sp</dimen>
     <dimen name="sp_34">34sp</dimen> <!-- not recommended -->
     <dimen name="sp_45">45sp</dimen> <!-- not recommended -->
     <dimen name="sp_56">56sp</dimen>

@@ -29,6 +29,6 @@ public class FlightDetailRecyclerView extends VerticalRecyclerView {
 
     @Override
     protected ItemDecoration getItemDecoration() {
-        return new DividerItemDecoration(getContext(), ContextCompat.getDrawable(getContext(), R.drawable.line_divider_flight_detail));
+        return new DividerItemDecoration(getContext(), ContextCompat.getDrawable(getContext(), R.drawable.line_divider_flight_search));
     }
 }

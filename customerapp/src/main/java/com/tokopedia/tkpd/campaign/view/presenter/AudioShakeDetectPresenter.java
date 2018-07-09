@@ -82,7 +82,7 @@ public class AudioShakeDetectPresenter extends ShakeDetectPresenter implements W
         getView().showErrorNetwork("Record Complete");
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(IS_AUDIO, "true");
-        requestParams.putString(SCREEN_NAME,ShakeDetectManager.sTopActivity);
+        requestParams.putString(SCREEN_NAME, ShakeDetectManager.sTopActivity);
         requestParams.putString(AUDIO_PATH, WavRecorder.getFilePath());
         postShakeDetectUseCase.execute(requestParams, new Subscriber<CampaignResponseEntity>() {
             @Override

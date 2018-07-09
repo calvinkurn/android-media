@@ -39,10 +39,13 @@ import com.tokopedia.core.network.retrofit.response.ResponseStatus;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
@@ -189,13 +192,16 @@ public class CommonUtils {
     }
 
     public static void addImageToGallery(final String filePath, final Context context) {
-        ContentValues values = new ContentValues();
+        try {
+            ContentValues values = new ContentValues();
 
-        values.put(Images.Media.DATE_TAKEN, System.currentTimeMillis());
-        values.put(Images.Media.MIME_TYPE, "image/jpeg");
-        values.put(MediaStore.MediaColumns.DATA, filePath);
+            values.put(Images.Media.DATE_TAKEN, System.currentTimeMillis());
+            values.put(Images.Media.MIME_TYPE, "image/jpeg");
+            values.put(MediaStore.MediaColumns.DATA, filePath);
 
-        context.getContentResolver().insert(Images.Media.EXTERNAL_CONTENT_URI, values);
+            context.getContentResolver().insert(Images.Media.EXTERNAL_CONTENT_URI, values);
+        } catch (Exception ex) {
+        }
     }
 
     private static File getOutputMediaFile(Activity context, String PicName) {
@@ -574,6 +580,29 @@ public class CommonUtils {
         BigDecimal bd = new BigDecimal(value);
         bd = bd.setScale(places, RoundingMode.HALF_UP);
         return bd.doubleValue();
+    }
+
+    public static String loadRawString(Resources resources, int resId) {
+        InputStream rawResource = resources.openRawResource(resId);
+        String content = streamToString(rawResource);
+        try {
+            rawResource.close();
+        } catch (IOException e) {
+        }
+        return content;
+    }
+
+    public static String streamToString(InputStream in) {
+        String temp;
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
+        StringBuilder stringBuilder = new StringBuilder();
+        try {
+            while ((temp = bufferedReader.readLine()) != null) {
+                stringBuilder.append(temp + "\n");
+            }
+        } catch (IOException e) {
+        }
+        return stringBuilder.toString();
     }
 
 

@@ -14,6 +14,7 @@ import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
 import com.tokopedia.discovery.newdiscovery.domain.model.SearchResultModel;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.AddWishlistActionUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetDynamicFilterUseCase;
+import com.tokopedia.discovery.newdiscovery.domain.usecase.GetDynamicFilterV4UseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetSearchGuideUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.RemoveWishlistActionUseCase;
@@ -55,8 +56,11 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
     RemoveWishlistActionUseCase removeWishlistActionUseCase;
     @Inject
     GetDynamicFilterUseCase getDynamicFilterUseCase;
+    @Inject
+    GetDynamicFilterV4UseCase getDynamicFilterV4UseCase;
     private WishlistActionListener wishlistActionListener;
     private Context context;
+    private boolean isUsingFilterV4;
 
     public ProductListPresenterImpl(Context context) {
         this.context = context;
@@ -75,7 +79,11 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
 
     @Override
     protected void getFilterFromNetwork(RequestParams requestParams) {
-        getDynamicFilterUseCase.execute(requestParams, new GetDynamicFilterSubscriber(getView()));
+        if (isUsingFilterV4) {
+            getDynamicFilterV4UseCase.execute(requestParams, new GetDynamicFilterSubscriber(getView()));
+        } else {
+            getDynamicFilterUseCase.execute(requestParams, new GetDynamicFilterSubscriber(getView()));
+        }
     }
 
     @Override
@@ -201,6 +209,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                     @Override
                     public void onStart() {
                         getView().setTopAdsEndlessListener();
+                        getView().showRefreshLayout();
                         getView().incrementStart();
                     }
 
@@ -227,6 +236,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                             List<Visitable> list = new ArrayList<Visitable>();
                             if (productViewModel.getProductList().isEmpty()) {
                                 getView().setEmptyProduct();
+                                getView().setTotalSearchResultCount("0");
                                 getView().showBottomBarNavigation(false);
                             } else {
                                 HeaderViewModel headerViewModel = new HeaderViewModel();
@@ -234,6 +244,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                                 list.add(headerViewModel);
                                 list.addAll(productViewModel.getProductList());
                                 getView().setProductList(list);
+                                getView().setTotalSearchResultCount(productViewModel.getSuggestionModel().getFormattedResultCount());
                                 getView().showBottomBarNavigation(true);
                                 if (getView().getStartFrom() > searchResultModel.getTotalData()) {
                                     getView().unSetTopAdsEndlessListener();
@@ -275,6 +286,11 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
         getDynamicFilterUseCase.execute(params, new GetQuickFilterSubscriber(getView()));
     }
 
+    @Override
+    public void setIsUsingFilterV4(boolean isUsingFilterV4) {
+        this.isUsingFilterV4 = isUsingFilterV4;
+    }
+
     private RequestParams getQuickFilterRequestParams() {
         RequestParams requestParams = RequestParams.create();
         requestParams.putAll(AuthUtil.generateParamsNetwork2(context, requestParams.getParameters()));
@@ -302,5 +318,6 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
         addWishlistActionUseCase.unsubscribe();
         removeWishlistActionUseCase.unsubscribe();
         getDynamicFilterUseCase.unsubscribe();
+        getDynamicFilterV4UseCase.unsubscribe();
     }
 }

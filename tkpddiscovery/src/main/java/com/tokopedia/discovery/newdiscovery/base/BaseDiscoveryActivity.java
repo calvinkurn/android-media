@@ -1,5 +1,6 @@
 package com.tokopedia.discovery.newdiscovery.base;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.tkpd.library.utils.URLParser;
@@ -104,8 +105,8 @@ public class BaseDiscoveryActivity
     @Override
     public void onHandleResponseSearch(ProductViewModel productViewModel) {
         TrackingUtils.sendMoEngageSearchAttempt(productViewModel.getQuery(), !productViewModel.getProductList().isEmpty());
-        SearchActivity.moveTo(this, productViewModel, isForceSwipeToShop());
         finish();
+        SearchActivity.moveTo(this, productViewModel, isForceSwipeToShop());
     }
 
     @Override
@@ -151,6 +152,16 @@ public class BaseDiscoveryActivity
 
     @Override
     public void onHandleInvalidImageSearchResponse() {
+
+    }
+
+    @Override
+    public void showErrorNetwork(String message) {
+
+    }
+
+    @Override
+    public void showTimeoutErrorNetwork(String message) {
 
     }
 

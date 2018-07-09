@@ -10,6 +10,9 @@ import java.util.List;
  */
 
 public class JourneyEntity {
+    @SerializedName("id")
+    @Expose
+    private long id;
     @SerializedName("status")
     @Expose
     private int status;
@@ -92,5 +95,9 @@ public class JourneyEntity {
 
     public String getAddDayArrival() {
         return addDayArrival;
+    }
+
+    public long getId() {
+        return id;
     }
 }
