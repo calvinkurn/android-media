@@ -2,11 +2,11 @@ package com.tokopedia.checkout.domain.usecase;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
+import com.tokopedia.checkout.domain.datamodel.cartcheckout.CheckoutData;
+import com.tokopedia.checkout.domain.mapper.ICheckoutMapper;
 import com.tokopedia.transactiondata.entity.request.CheckoutRequest;
 import com.tokopedia.transactiondata.entity.response.checkout.CheckoutDataResponse;
 import com.tokopedia.transactiondata.repository.ICartRepository;
-import com.tokopedia.checkout.domain.datamodel.cartcheckout.CheckoutData;
-import com.tokopedia.checkout.domain.mapper.ICheckoutMapper;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 

@@ -35,6 +35,9 @@ public class CartItemModel implements Parcelable {
     private boolean fInsurance;
     private boolean fCancelPartial;
 
+    private boolean isError;
+    private String errorMessage;
+
     public long getCartId() {
         return cartId;
     }
@@ -195,6 +198,22 @@ public class CartItemModel implements Parcelable {
         this.fCancelPartial = fCancelPartial;
     }
 
+    public boolean isError() {
+        return isError;
+    }
+
+    public void setError(boolean error) {
+        isError = error;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -222,6 +241,8 @@ public class CartItemModel implements Parcelable {
         dest.writeByte(this.isFreeReturn ? (byte) 1 : (byte) 0);
         dest.writeByte(this.fInsurance ? (byte) 1 : (byte) 0);
         dest.writeByte(this.fCancelPartial ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isError ? (byte) 1 : (byte) 0);
+        dest.writeString(this.errorMessage);
     }
 
     public CartItemModel() {
@@ -248,6 +269,8 @@ public class CartItemModel implements Parcelable {
         this.isFreeReturn = in.readByte() != 0;
         this.fInsurance = in.readByte() != 0;
         this.fCancelPartial = in.readByte() != 0;
+        this.isError = in.readByte() != 0;
+        this.errorMessage = in.readString();
     }
 
     public static final Creator<CartItemModel> CREATOR = new Creator<CartItemModel>() {
