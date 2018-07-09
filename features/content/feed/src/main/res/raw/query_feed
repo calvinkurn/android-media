@@ -107,6 +107,9 @@ query FeedQuery($userID: Int!, $limit: Int!, $cursor: String, $source: String) {
           content {
             __typename
             imageurl
+            video
+            youtube
+            type
             tags {
               __typename
               id
