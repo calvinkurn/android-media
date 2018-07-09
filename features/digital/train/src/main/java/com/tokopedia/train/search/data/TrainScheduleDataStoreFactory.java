@@ -119,8 +119,7 @@ public class TrainScheduleDataStoreFactory {
         specification = new AndDbFlowSpecification(specification,
                 new TrainSearchScheduleSpecification(filterParam.getScheduleVariant(), filterParam.getArrivalTimestampSelected()));
 
-        specification = new AndDbFlowSpecification(specification,
-                new TrainScheduleSortSpecification(sortOptionId));
+        specification = new AndDbFlowSpecification(specification, new TrainScheduleSortSpecification(sortOptionId));
         return dbDataStore.getDatas(specification);
     }
 
