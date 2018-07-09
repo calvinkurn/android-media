@@ -360,7 +360,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
             }
             tvCourierName.setText(shipmentDetailData.getSelectedCourier().getName());
             String courierPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                    shipmentDetailData.getSelectedCourier().getDeliveryPrice(), true);
+                    shipmentDetailData.getSelectedCourier().getShipperPrice(), true);
             tvCourierPrice.setText(courierPrice);
             llShipmentOptionViewLayout.setVisibility(View.GONE);
             llSelectedCourier.setVisibility(View.VISIBLE);
@@ -404,7 +404,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         if (shipmentCartItemModel.getSelectedShipmentDetailData() != null &&
                 shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
             shippingPrice = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier()
-                    .getDeliveryPrice();
+                    .getShipperPrice();
             Boolean useInsurance = shipmentCartItemModel.getSelectedShipmentDetailData().getUseInsurance();
             if (useInsurance != null && useInsurance) {
                 insurancePrice = shipmentCartItemModel.getSelectedShipmentDetailData()

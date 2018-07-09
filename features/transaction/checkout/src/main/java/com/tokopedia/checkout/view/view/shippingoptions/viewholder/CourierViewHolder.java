@@ -42,9 +42,14 @@ public class CourierViewHolder extends RecyclerView.ViewHolder {
 
     public void bindData(CourierAdapter courierAdapter, CourierItemData courierItemData) {
         tvCourierName.setText(courierItemData.getName());
-        tvPrice.setText(tvPrice.getContext().getResources().getString(
-                R.string.label_shipment_type_format, CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                        courierItemData.getDeliveryPrice(), true)));
+        if (courierItemData.getShipperPrice() != 0) {
+            tvPrice.setText(tvPrice.getContext().getResources().getString(
+                    R.string.label_shipment_type_format, CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                            courierItemData.getShipperPrice(), true)));
+        } else {
+            tvPrice.setText(tvPrice.getContext().getResources().getString(
+                    R.string.label_shipment_type_format, courierItemData.getShipperFormattedPrice()));
+        }
 
         if (courierItemData.getDeliverySchedule() != null) {
             tvDeliverySchedule.setText(courierItemData.getDeliverySchedule());
