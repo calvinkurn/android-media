@@ -117,6 +117,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private LinearLayoutManager layoutManager;
     private FloatingTextButton floatingTextButton;
     private boolean showRecomendation;
+    private boolean mShowTokopointNative;
     private RecyclerView.OnScrollListener onEggScrollListener;
     private FloatingEggButtonFragment floatingEggButtonFragment;
 
@@ -158,6 +159,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private void fetchRemoteConfig() {
         firebaseRemoteConfig = new FirebaseRemoteConfigImpl(getActivity());
         showRecomendation = firebaseRemoteConfig.getBoolean(TkpdCache.RemoteConfigKey.APP_SHOW_RECOMENDATION_BUTTON, false);
+        mShowTokopointNative = firebaseRemoteConfig.getBoolean(TkpdCache.RemoteConfigKey.APP_SHOW_TOKOPOINT_NATIVE, true);
     }
 
     @Override
@@ -484,7 +486,14 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void actionTokoPointClicked(String tokoPointUrl, String pageTitle) {
-        RouterUtils.getDefaultRouter().actionAppLink(getContext(), ApplinkConstant.HOMEPAGE);
+        if (mShowTokopointNative) {
+            RouterUtils.getDefaultRouter().actionAppLink(getContext(), ApplinkConstant.HOMEPAGE);
+        } else {
+            if (TextUtils.isEmpty(pageTitle))
+                startActivity(TokoPointWebviewActivity.getIntent(getActivity(), tokoPointUrl));
+            else
+                startActivity(TokoPointWebviewActivity.getIntentWithTitle(getActivity(), tokoPointUrl, pageTitle));
+        }
     }
 
     @Override
