@@ -269,6 +269,7 @@ ext {
 
     features = [
             loyalty               : ":tkpdloyalty",
+            nps                   : ":features:common:nps",
             feed                  : ":features:content:feed",
             digitalproduct        : ":features:digital:digitalproduct",
             core                  : ":tkpdcore",

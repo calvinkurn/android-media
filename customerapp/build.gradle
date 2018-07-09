@@ -195,7 +195,7 @@ android {
             include "mdpi", "hdpi", "xhdpi", "xxhdpi"
             compatibleScreens 'small', 'normal', 'large', 'xlarge'
         }
-
+       
     }
 
     defaultConfig {
@@ -286,6 +286,7 @@ dependencies {
     implementation project(rootProject.ext.features.tracking)
     implementation project(rootProject.ext.features.logisticuploadawb)
     implementation project(rootProject.ext.features.topchat)
+    implementation project(rootProject.ext.features.nps)
     implementation project(rootProject.ext.features.transactionanalytics)
 
 
@@ -417,7 +418,6 @@ dependencies {
     //[END] test and androidTest dependencies
 
     implementation project(rootProject.ext.libraries.analytics)
-
 
 }
 
