@@ -2,12 +2,12 @@ package com.tokopedia.feedplus.view.adapter.typefactory.recentview;
 
 import android.view.View;
 
-import com.tokopedia.core.base.adapter.BaseAdapterTypeFactory;
-import com.tokopedia.core.base.adapter.model.EmptyModel;
-import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.feedplus.view.listener.RecentView;
+import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.feeddetail.EmptyFeedDetailViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.recentview.RecentViewDetailProductViewHolder;
+import com.tokopedia.feedplus.view.listener.RecentView;
 import com.tokopedia.feedplus.view.viewmodel.recentview.RecentViewDetailProductViewModel;
 
 /**

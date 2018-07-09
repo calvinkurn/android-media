@@ -54,11 +54,15 @@ public class CategoryModelHelper {
         productItem.setImageUrl700(productModel.getImageUrl700());
         productItem.setRating(productModel.getRating());
         productItem.setCountReview(productModel.getCountReview());
+        productItem.setCountCourier(productModel.getCountCourier());
+        productItem.setOriginalPrice(productModel.getOriginalPrice());
+        productItem.setDiscountPercentage(productModel.getDiscountPercentage());
         productItem.setPrice(productModel.getPrice());
         productItem.setShopID(productModel.getShopID());
         productItem.setShopName(productModel.getShopName());
         productItem.setShopCity(productModel.getShopCity());
         productItem.setGoldMerchant(productModel.isGoldMerchant());
+        productItem.setOfficial(productModel.isOfficial());
         productItem.setWishlisted(productModel.isWishlisted());
         productItem.setBadgesList(convertToBadgesItemList(productModel.getBadgesList()));
         productItem.setLabelList(convertToLabelsItemList(productModel.getLabelList()));

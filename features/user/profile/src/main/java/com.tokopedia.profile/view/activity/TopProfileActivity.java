@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -22,14 +23,17 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.ManagePeople;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.peoplefave.activity.PeopleFavoritedShop;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.component.Tabs;
+import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.profile.ProfileComponentInstance;
 import com.tokopedia.profile.ProfileModuleRouter;
 import com.tokopedia.profile.R;
@@ -49,8 +53,11 @@ import java.util.List;
 import javax.inject.Inject;
 
 import static com.tokopedia.profile.analytics.TopProfileAnalytics.Action.CLICK_ON_MANAGE_ACCOUNT;
+import static com.tokopedia.profile.analytics.TopProfileAnalytics.Action.CLICK_PROMPT;
+import static com.tokopedia.profile.analytics.TopProfileAnalytics.Category.KOL_TOP_PROFILE;
 import static com.tokopedia.profile.analytics.TopProfileAnalytics.Category.TOP_PROFILE;
 import static com.tokopedia.profile.analytics.TopProfileAnalytics.Event.EVENT_CLICK_TOP_PROFILE;
+import static com.tokopedia.profile.analytics.TopProfileAnalytics.Label.GO_TO_FEED_FORMAT;
 
 /**
  * @author by milhamj on 08/02/18.
@@ -70,9 +77,12 @@ public class TopProfileActivity extends BaseSimpleActivity
     private static final String ZERO = "0";
     private static final int MANAGE_PEOPLE_CODE = 13;
     private static final int LOGIN_REQUEST_CODE = 23;
+    private static final int TOAST_LENGTH = 3000;
+
     @Inject
     TopProfileActivityListener.Presenter presenter;
     private AppBarLayout appBarLayout;
+    private SwipeToRefresh swipeToRefresh;
 
     private Toolbar toolbar;
 
@@ -188,6 +198,10 @@ public class TopProfileActivity extends BaseSimpleActivity
 
     private void initView() {
         appBarLayout = findViewById(R.id.app_bar_layout);
+        swipeToRefresh = findViewById(R.id.swipe_refresh_layout);
+        swipeToRefresh.setProgressViewOffset(true,
+                -1 * swipeToRefresh.getProgressViewEndOffset(),
+                swipeToRefresh.getProgressViewEndOffset());
         toolbar = findViewById(R.id.toolbar);
         tabLayout = findViewById(R.id.tab_profile);
         viewPager = findViewById(R.id.pager);
@@ -232,6 +246,14 @@ public class TopProfileActivity extends BaseSimpleActivity
                 }
             });
         }
+
+        swipeToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                presenter.getTopProfileData(userId);
+                swipeToRefresh.setRefreshing(true);
+            }
+        });
 
         favoriteShopLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -334,6 +356,7 @@ public class TopProfileActivity extends BaseSimpleActivity
     @Override
     public void onSuccessGetProfileData(TopProfileViewModel topProfileViewModel) {
         this.topProfileViewModel = topProfileViewModel;
+        swipeToRefresh.setRefreshing(false);
 
         initTabLoad();
         populateData();
@@ -341,6 +364,7 @@ public class TopProfileActivity extends BaseSimpleActivity
 
     @Override
     public void onErrorGetProfileData(String message) {
+        swipeToRefresh.setRefreshing(false);
         showErrorScreen(message, tryAgainOnlickListener());
     }
 
@@ -348,8 +372,18 @@ public class TopProfileActivity extends BaseSimpleActivity
     public void onSuccessFollowKol() {
         topProfileViewModel.setFollowed(!topProfileViewModel.isFollowed());
 
-        if (!topProfileViewModel.isFollowed()) enableFollowButton();
-        else disableFollowButton();
+        if (topProfileViewModel.isFollowed()) {
+            disableFollowButton();
+            ToasterNormal
+                    .make(swipeToRefresh,
+                            getString(R.string.follow_success_toast),
+                            TOAST_LENGTH)
+                    .setAction(getString(R.string.follow_success_check_now),
+                            followSuccessOnClickListener())
+                    .show();
+        } else {
+            enableFollowButton();
+        }
 
         if (getIntent() != null && getIntent().getExtras() != null) {
             resultIntent.putExtra(
@@ -379,7 +413,7 @@ public class TopProfileActivity extends BaseSimpleActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == MANAGE_PEOPLE_CODE || requestCode == LOGIN_REQUEST_CODE) {
-            presenter.getTopProfileData(userId);
+            presenter.initView(userId);
         }
     }
 
@@ -471,6 +505,12 @@ public class TopProfileActivity extends BaseSimpleActivity
                     tvTitleToolbar.setVisibility(View.GONE);
                     buttonFollowToolbar.setVisibility(View.GONE);
                     isShow = false;
+                }
+
+                if (verticalOffset == 0 && topProfileViewModel.isKol()) {
+                    swipeToRefresh.setEnabled(true);
+                } else {
+                    swipeToRefresh.setEnabled(false);
                 }
             }
         });
@@ -610,7 +650,25 @@ public class TopProfileActivity extends BaseSimpleActivity
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.getTopProfileData(userId);
+                presenter.initView(userId);
+            }
+        };
+    }
+
+    private View.OnClickListener followSuccessOnClickListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RouteManager.route(getContext(), ApplinkConst.FEED);
+
+                if (getContext().getApplicationContext() instanceof AbstractionRouter) {
+                    String kolName = topProfileViewModel.getName();
+                    ((AbstractionRouter) getContext().getApplicationContext()).getAnalyticTracker()
+                            .sendEventTracking(EVENT_CLICK_TOP_PROFILE,
+                                    KOL_TOP_PROFILE,
+                                    CLICK_PROMPT,
+                                    String.format(GO_TO_FEED_FORMAT, kolName));
+                }
             }
         };
     }

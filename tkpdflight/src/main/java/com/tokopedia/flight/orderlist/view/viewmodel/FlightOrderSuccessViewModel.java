@@ -1,8 +1,11 @@
 package com.tokopedia.flight.orderlist.view.viewmodel;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.flight.orderlist.data.cloud.entity.CancellationEntity;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 import com.tokopedia.flight.orderlist.view.adapter.FlightOrderTypeFactory;
+
+import java.util.List;
 
 /**
  * @author by alvarisi on 12/12/17.
@@ -15,6 +18,7 @@ public class FlightOrderSuccessViewModel implements Visitable<FlightOrderTypeFac
     private String pdf;
     private int status;
     private FlightOrderJourney orderJourney;
+    private List<CancellationEntity> cancellations;
 
     public FlightOrderSuccessViewModel() {
     }
@@ -70,5 +74,13 @@ public class FlightOrderSuccessViewModel implements Visitable<FlightOrderTypeFac
 
     public void setPdf(String pdf) {
         this.pdf = pdf;
+    }
+
+    public List<CancellationEntity> getCancellations() {
+        return cancellations;
+    }
+
+    public void setCancellations(List<CancellationEntity> cancellationEntityList) {
+        this.cancellations = cancellationEntityList;
     }
 }

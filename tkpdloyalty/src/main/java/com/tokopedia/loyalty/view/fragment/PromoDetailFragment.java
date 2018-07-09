@@ -76,7 +76,8 @@ public class PromoDetailFragment extends BaseDaggerFragment implements
     @Inject PromoDetailPresenter promoDetailPresenter;
     @Inject PromoDetailAdapter promoDetailAdapter;
     @Inject PromoDataMapper promoDataMapper;
-    @Inject CompositeSubscription compositeSubscription;
+    @Inject
+    CompositeSubscription compositeSubscription;
 
     @Override
     protected String getScreenName() {

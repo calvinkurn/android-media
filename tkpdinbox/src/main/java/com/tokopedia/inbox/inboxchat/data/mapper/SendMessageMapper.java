@@ -7,7 +7,7 @@ import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.inboxchat.data.pojo.SendMessagePojo;
+import com.tokopedia.inbox.inboxchat.domain.pojo.SendMessagePojo;
 import com.tokopedia.inbox.inboxchat.viewmodel.SendMessageViewModel;
 
 import retrofit2.Response;

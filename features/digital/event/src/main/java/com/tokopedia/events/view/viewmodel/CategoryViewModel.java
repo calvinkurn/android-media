@@ -13,12 +13,14 @@ import java.util.List;
 public class CategoryViewModel implements Parcelable {
     private String title;
     private String name;
+    private String mediaURL;
     private List<CategoryItemsViewModel> items = null;
 
-    public CategoryViewModel(String title, String name, List<CategoryItemsViewModel> items) {
-        this.title=title;
-        this.name=name;
+    public CategoryViewModel(String title, String name, String mediaUrl, List<CategoryItemsViewModel> items) {
+        this.title = title;
+        this.name = name;
         this.items = items;
+        this.mediaURL = mediaUrl;
     }
 
     public String getTitle() {
@@ -35,6 +37,14 @@ public class CategoryViewModel implements Parcelable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getMediaURL() {
+        return mediaURL;
+    }
+
+    public void setMediaURL(String mediaURL) {
+        this.mediaURL = mediaURL;
     }
 
     public List<CategoryItemsViewModel> getItems() {

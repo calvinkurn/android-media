@@ -81,6 +81,12 @@
     <style name="TextView.Title.BlackSecondary">
         <item name="android:textColor">@color/font_black_secondary_54</item>
     </style>
+    <style name="TextView.Title.OrangeRed">
+        <item name="android:textColor">@color/tkpd_main_orange</item>
+    </style>
+    <style name="TextView.Title.OrangeRed.Bold">
+        <item name="android:textStyle">bold</item>
+    </style>
 
     <style name="TextView.Small">
         <item name="android:fontFamily">sans-serif</item>

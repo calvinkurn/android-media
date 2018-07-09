@@ -3,18 +3,18 @@ package com.tokopedia.session.changephonenumber.view.presenter;
 import android.text.Editable;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.util.CustomPhoneNumberUtil;
 import com.tokopedia.session.changephonenumber.domain.interactor.ValidateNumberUseCase;
 import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberInputFragmentListener;
 import com.tokopedia.session.changephonenumber.view.subscriber.SubmitNumberSubscriber;
 import com.tokopedia.session.changephonenumber.view.subscriber.ValidateNumberSubscriber;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javax.inject.Inject;
 
-import static com.tokopedia.session.changephonenumber.domain.interactor.ValidateNumberUseCase
-        .getSubmitNumberParam;
-import static com.tokopedia.session.changephonenumber.domain.interactor.ValidateNumberUseCase
-        .getValidateNumberParam;
+import static com.tokopedia.session.changephonenumber.domain.interactor.ValidateNumberUseCase.getSubmitNumberParam;
+import static com.tokopedia.session.changephonenumber.domain.interactor.ValidateNumberUseCase.getValidateNumberParam;
 
 /**
  * Created by milhamj on 20/12/17.
@@ -23,8 +23,9 @@ import static com.tokopedia.session.changephonenumber.domain.interactor.Validate
 public class ChangePhoneNumberInputPresenter
         extends BaseDaggerPresenter<ChangePhoneNumberInputFragmentListener.View>
         implements ChangePhoneNumberInputFragmentListener.Presenter {
-    private static final int MINIMUM_NUMBER_LENGTH = 7;
+    private static final int MINIMUM_NUMBER_LENGTH = 8;
     private static final int MAXIMUM_NUMBER_LENGTH = 15;
+    private static final String REGEX_CLEAN_PHONE_NUMBER = "(?!^)\\+|[^+0-9\\n]+";
 
     private final ValidateNumberUseCase validateNumberUseCase;
     private ChangePhoneNumberInputFragmentListener.View view;
@@ -47,8 +48,10 @@ public class ChangePhoneNumberInputPresenter
 
     @Override
     public void onNewNumberTextChanged(Editable editable, int selection) {
-        String newNumber = editable.toString().replaceAll("\\s+", "");
-        newNumber = CustomPhoneNumberUtil.transform(newNumber);
+        final Pattern pattern = Pattern.compile(REGEX_CLEAN_PHONE_NUMBER);
+        String newNumber = editable.toString();
+        final Matcher matcher = pattern.matcher(newNumber);
+        newNumber = matcher.replaceAll("");
 
         if (isNumberLengthValid(newNumber)) {
             view.enableNextButton();
@@ -69,7 +72,7 @@ public class ChangePhoneNumberInputPresenter
     }
 
     private boolean isNumberLengthValid(String newNumber) {
-        newNumber = newNumber.replace("-", "");
+        newNumber = newNumber.replace("+", "");
         return (newNumber.length() >= MINIMUM_NUMBER_LENGTH && newNumber.length() <=
                 MAXIMUM_NUMBER_LENGTH);
     }
