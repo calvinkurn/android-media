@@ -177,7 +177,7 @@ class TopAdsKeywordNewItemFragment: BaseDaggerFragment() {
     }
 
     private fun setupToggleKeywordTypeDesc(){
-        seeDetailTextView.setOnClickListener {
+        baseDetailToggle.setOnClickListener {
             seeDetailToggleDesc.toggle()
         }
         seeDetailToggleIcon.rotation = 0f

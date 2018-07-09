@@ -156,6 +156,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/baseDetailToggle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -170,9 +171,9 @@
 
                 <ImageView
                     android:id="@+id/seeDetailToggleIcon"
-                    android:layout_width="@dimen/dp_12"
-                    android:layout_height="@dimen/dp_12"
-                    app:srcCompat="@drawable/arrow_drop_down"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/ic_arrow_down_grey"
                     android:layout_gravity="center"
                     android:layout_marginLeft="@dimen/dp_4"
                     android:layout_marginStart="@dimen/dp_4"
