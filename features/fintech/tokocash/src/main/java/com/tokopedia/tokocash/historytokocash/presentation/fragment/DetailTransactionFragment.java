@@ -19,11 +19,11 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.tokocash.R;
 import com.tokopedia.tokocash.TokoCashRouter;
-import com.tokopedia.tokocash.historytokocash.presentation.activity.HelpHistoryDetailActivity;
 import com.tokopedia.tokocash.historytokocash.presentation.activity.MoveToSaldoActivity;
 import com.tokopedia.tokocash.historytokocash.presentation.model.ActionHistory;
 import com.tokopedia.tokocash.historytokocash.presentation.model.ItemHistory;
 import com.tokopedia.tokocash.historytokocash.presentation.model.WalletToDepositPassData;
+import com.tokopedia.tokocash.network.api.WalletUrl;
 
 /**
  * Created by nabillasabbaha on 2/12/18.
@@ -167,17 +167,15 @@ public class DetailTransactionFragment extends BaseDaggerFragment {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!TextUtils.isEmpty(itemHistory.getHelpRedirect())) {
-                    Application application = getActivity().getApplication();
-                    if (application != null && application instanceof TokoCashRouter) {
-                        Intent intent = ((TokoCashRouter) application).getWebviewActivityWithIntent(getActivity(),
-                                itemHistory.getHelpRedirect(), getString(R.string.title_help_history));
-                        startActivity(intent);
-                    }
-                } else {
-                    Intent helpIntent = HelpHistoryDetailActivity.newInstance(getActivity());
-                    helpIntent.putExtra(HelpHistoryDetailActivity.TRANSACTION_ID, String.valueOf(itemHistory.getTransactionId()));
-                    startActivityForResult(helpIntent, REQUEST_HELP_NATIVE);
+                String helpCenterUrl = !TextUtils.isEmpty(itemHistory.getHelpRedirect()) ?
+                        itemHistory.getHelpRedirect() :
+                        WalletUrl.BaseUrl.WEB_DOMAIN + WalletUrl.Wallet.WEBVIEW_HELP_CENTER;
+
+                Application application = getActivity().getApplication();
+                if (application != null && application instanceof TokoCashRouter) {
+                    Intent intent = ((TokoCashRouter) application).getWebviewActivityWithIntent(getActivity(),
+                            helpCenterUrl, getString(R.string.title_help_history));
+                    startActivity(intent);
                 }
             }
         };
