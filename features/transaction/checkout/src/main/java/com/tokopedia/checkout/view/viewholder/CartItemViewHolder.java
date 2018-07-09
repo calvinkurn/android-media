@@ -71,7 +71,7 @@ public class CartItemViewHolder extends ShipmentItemViewHolder {
         ImageHandler.LoadImage(mIvProductImage, cartItem.getImageUrl());
         mTvProductName.setText(cartItem.getName());
         mTvProductPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                (int) cartItem.getPrice(), true));
+                (long) cartItem.getPrice(), true));
         mTvProductCountAndWeight.setText(cartItem.getWeightFmt());
         mTvProductCountAndWeight.setText(String.format(mTvProductCountAndWeight.getContext()
                         .getString(R.string.iotem_count_and_weight_format),

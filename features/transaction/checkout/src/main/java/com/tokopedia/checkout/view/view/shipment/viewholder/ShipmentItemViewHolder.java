@@ -290,7 +290,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         ImageHandler.LoadImage(ivProductImage, cartItemModel.getImageUrl());
         tvProductName.setText(cartItemModel.getName());
         tvProductPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                (int) cartItemModel.getPrice(), true));
+                (long) cartItemModel.getPrice(), true));
         tvItemCountAndWeight.setText(String.format(tvItemCountAndWeight.getContext()
                         .getString(R.string.iotem_count_and_weight_format),
                 String.valueOf(cartItemModel.getQuantity()), cartItemModel.getWeightFmt()));
@@ -380,8 +380,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         int shippingPrice = 0;
         int insurancePrice = 0;
         int additionalPrice = 0;
-        int subTotalPrice = 0;
-        int totalItemPrice = 0;
+        long subTotalPrice = 0;
+        long totalItemPrice = 0;
 
         if (shipmentCartItemModel.isStateDetailSubtotalViewExpanded()) {
             rlShipmentCost.setVisibility(View.VISIBLE);
@@ -677,7 +677,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         }
     }
 
-    private String getPriceFormat(TextView textViewLabel, TextView textViewPrice, int price) {
+    private String getPriceFormat(TextView textViewLabel, TextView textViewPrice, long price) {
         if (price == 0) {
             textViewLabel.setVisibility(View.GONE);
             textViewPrice.setVisibility(View.GONE);
