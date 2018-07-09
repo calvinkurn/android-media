@@ -1,13 +1,9 @@
 package com.tokopedia.topads.sdk.view.adapter.viewholder.discovery;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.LayoutRes;
 import android.text.Html;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.style.BulletSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -22,7 +18,6 @@ import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
-import com.tokopedia.topads.sdk.utils.LabelLoader;
 import com.tokopedia.topads.sdk.view.FlowLayout;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductListViewModel;
 
@@ -35,7 +30,7 @@ import java.util.List;
 public class ProductListViewHolder extends AbstractViewHolder<ProductListViewModel> implements View.OnClickListener {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.layout_ads_produt_list;
+    public static final int LAYOUT = R.layout.layout_ads_product_list;
     private static final String TAG = ProductListViewHolder.class.getSimpleName();
 
     private LocalAdsClickListener itemClickListener;

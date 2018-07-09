@@ -288,6 +288,7 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             } else {
                 gridLayoutManager.setSpanSizeLookup(new SpanSizeLookup(gridLayoutManager));
             }
+            this.typeFactory.setLayoutManager(gridLayoutManager);
             this.recyclerView.setLayoutManager(gridLayoutManager);
         } else if (layoutManager instanceof LinearLayoutManager) {
             if (getConfig().getDisplayMode() == DisplayMode.FEED) {

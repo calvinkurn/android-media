@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
+import com.tokopedia.topads.sdk.listener.DisplayChangeListener;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
 import com.tokopedia.topads.sdk.view.DisplayMode;
@@ -47,12 +48,16 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> {
     private TopAdsInfoClickListener clickListener;
     private TextView textHeader;
 
-    public TopAdsViewHolder(View itemView, LocalAdsClickListener itemClickListener) {
+    public TopAdsViewHolder(View itemView, LocalAdsClickListener itemClickListener, GridLayoutManager gridLayoutManager) {
         super(itemView);
         context = itemView.getContext();
         recyclerView = (RecyclerView) itemView.findViewById(R.id.list);
-        gridLayoutManager = new GridLayoutManager(context, DEFAULT_SPAN_COUNT,
+        if(gridLayoutManager!=null){
+            this.gridLayoutManager = gridLayoutManager;
+        } else {
+            this.gridLayoutManager = new GridLayoutManager(context, DEFAULT_SPAN_COUNT,
                 GridLayoutManager.VERTICAL, false);
+        }
         linearLayoutManager = new LinearLayoutManager(context);
         container = (LinearLayout) itemView.findViewById(R.id.root);
         adapter = new AdsItemAdapter(context);

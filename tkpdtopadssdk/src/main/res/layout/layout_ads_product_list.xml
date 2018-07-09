@@ -2,11 +2,11 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/white"
     android:layout_width="match_parent"
-    android:layout_marginTop="@dimen/dp_5"
+    android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/dp_5"
-    android:layout_height="wrap_content">
+    android:layout_marginTop="@dimen/dp_5"
+    android:background="@color/white">
 
     <LinearLayout
         android:id="@id/container"
@@ -20,13 +20,13 @@
         <android.support.v7.widget.CardView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="@dimen/dp_4"
-            app:cardPreventCornerOverlap="false"
-            android:layout_marginTop="@dimen/dp_5"
             android:layout_marginBottom="@dimen/dp_5"
-            android:layout_marginRight="@dimen/dp_5"
             android:layout_marginLeft="@dimen/dp_15"
+            android:layout_marginRight="@dimen/dp_5"
+            android:layout_marginTop="@dimen/dp_5"
+            app:cardCornerRadius="@dimen/dp_4"
             app:cardElevation="0dp"
+            app:cardPreventCornerOverlap="false"
             app:cardUseCompatPadding="true">
 
             <com.tokopedia.topads.sdk.view.SquareImageView
@@ -36,10 +36,11 @@
                 android:adjustViewBounds="true"
                 android:gravity="center"
                 app:srcCompat="@drawable/loading_page" />
+
             <RelativeLayout
                 android:id="@+id/relativeLayout"
                 android:layout_width="24dp"
-                android:layout_height="19dp"
+                android:layout_height="22dp"
                 android:layout_margin="5dp"
                 android:background="@drawable/bg_preorder_label"
                 android:visibility="visible">
@@ -63,7 +64,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="38dp"
+                android:ellipsize="end"
                 android:fontFamily="sans-serif-medium"
+                android:lineSpacingExtra="5sp"
+                android:maxLines="2"
                 android:textColor="@color/black_70"
                 android:textSize="@dimen/text_size_s_medium"
                 android:textStyle="normal"
@@ -103,19 +107,20 @@
                     tools:text="Jakarta" />
 
             </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/rating_review_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="3dp"
                 android:layout_marginBottom="@dimen/dp_3"
+                android:layout_marginTop="3dp"
                 android:orientation="horizontal">
 
                 <ImageView
                     android:id="@+id/rating"
                     android:layout_width="@dimen/topads_rating_width"
                     android:layout_height="@dimen/topads_rating_height"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/review_count"
@@ -125,6 +130,7 @@
                     android:textSize="@dimen/text_size_xsmall" />
 
             </LinearLayout>
+
             <com.tokopedia.topads.sdk.view.FlowLayout
                 android:id="@+id/label_container"
                 android:layout_width="wrap_content"
@@ -136,6 +142,7 @@
 
         </LinearLayout>
     </LinearLayout>
+
     <RelativeLayout
         android:id="@+id/wishlist_button_container"
         android:layout_width="32dp"

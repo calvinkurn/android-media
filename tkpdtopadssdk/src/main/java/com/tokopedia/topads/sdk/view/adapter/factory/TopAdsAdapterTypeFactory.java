@@ -1,6 +1,7 @@
 package com.tokopedia.topads.sdk.view.adapter.factory;
 
 import android.content.Context;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
@@ -21,9 +22,14 @@ public class TopAdsAdapterTypeFactory implements TopAdsTypeFactory {
 
     private LocalAdsClickListener itemClickListener;
     public static int CLIENT_ADAPTER_VIEW_TYPE = -7238;
+    private GridLayoutManager gridLayoutManager;
 
     public void setItemClickListener(LocalAdsClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
+    }
+
+    public void setLayoutManager(GridLayoutManager gridLayoutManager) {
+        this.gridLayoutManager = gridLayoutManager;
     }
 
     @Override
@@ -44,7 +50,7 @@ public class TopAdsAdapterTypeFactory implements TopAdsTypeFactory {
     @Override
     public RecyclerView.ViewHolder createViewHolder(ViewGroup view, int viewType) {
         if (viewType == TopAdsViewHolder.LAYOUT) {
-            return new TopAdsViewHolder(view, itemClickListener);
+            return new TopAdsViewHolder(view, itemClickListener, gridLayoutManager);
         } else if(viewType == LoadingViewHolder.LAYOUT){
             return new LoadingViewHolder(view);
         } else {

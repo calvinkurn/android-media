@@ -1,0 +1,187 @@
+package com.tokopedia.topads.sdk.view.adapter.viewholder.discovery;
+
+import android.content.Context;
+import android.os.Build;
+import android.support.annotation.LayoutRes;
+import android.text.Html;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import com.tokopedia.topads.sdk.R;
+import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
+import com.tokopedia.topads.sdk.domain.model.Badge;
+import com.tokopedia.topads.sdk.domain.model.Data;
+import com.tokopedia.topads.sdk.domain.model.Product;
+import com.tokopedia.topads.sdk.domain.model.Shop;
+import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
+import com.tokopedia.topads.sdk.utils.ImageLoader;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductGridViewModel;
+
+import java.util.List;
+
+/**
+ * Created by errysuprayogi on 3/27/17.
+ */
+
+public class ProductListBigViewHolder extends AbstractViewHolder<ProductGridViewModel> implements
+        View.OnClickListener {
+
+    @LayoutRes
+    public static final int LAYOUT = R.layout.layout_ads_product_grid;
+    private static final String TAG = ProductListBigViewHolder.class.getSimpleName();
+
+    private LocalAdsClickListener itemClickListener;
+    private Data data;
+    private Context context;
+    public LinearLayout badgeContainer;
+    public TextView productName;
+    public TextView productPrice;
+    public TextView shopLocation;
+    public ImageView productImage;
+    private ImageLoader imageLoader;
+    private ImageView rating;
+    private TextView newLabelTxt;
+    private TextView reviewCount;
+    private LinearLayout topLabelContainer;
+    private LinearLayout bottomLabelContainer;
+    private ImageView btnWishList;
+    private int clickPosition;
+
+
+    public ProductListBigViewHolder(View itemView, ImageLoader imageLoader, LocalAdsClickListener itemClickListener, int clickPosition) {
+        super(itemView);
+        itemView.findViewById(R.id.container).setOnClickListener(this);
+        itemView.findViewById(R.id.wishlist_button_container).setOnClickListener(this);
+        this.itemClickListener = itemClickListener;
+        this.imageLoader = imageLoader;
+        this.clickPosition = clickPosition;
+        context = itemView.getContext();
+        badgeContainer = (LinearLayout) itemView.findViewById(R.id.badges_container);
+        productImage = (ImageView) itemView.findViewById(R.id.product_image);
+        productName = (TextView) itemView.findViewById(R.id.title);
+        productPrice = (TextView) itemView.findViewById(R.id.price);
+        shopLocation = (TextView) itemView.findViewById(R.id.location);
+        rating = (ImageView) itemView.findViewById(R.id.rating);
+        reviewCount = (TextView) itemView.findViewById(R.id.review_count);
+        newLabelTxt = itemView.findViewById(R.id.new_label);
+        topLabelContainer = itemView.findViewById(R.id.top_label_container);
+        bottomLabelContainer = itemView.findViewById(R.id.bottom_label_container);
+        btnWishList = itemView.findViewById(R.id.wishlist_button);
+    }
+
+    @Override
+    public void bind(ProductGridViewModel element) {
+        data = element.getData();
+        if (data.getProduct() != null) {
+            bindProduct(data.getProduct());
+        }
+        if (data.getShop() != null) {
+            bindShop(data.getShop());
+        }
+    }
+
+    private void bindShop(Shop shop) {
+        if (shop.getBadges() != null && !shop.getLocation().isEmpty()) {
+            imageLoader.loadBadge(badgeContainer, shop.getBadges());
+            if(isBadgesExist(shop.getBadges())) {
+                shopLocation.setText(String.format(" \u2022 %s", shop.getLocation()));
+            } else {
+                shopLocation.setText(shop.getLocation());
+            }
+        } else {
+            shopLocation.setText(shop.getLocation());
+        }
+    }
+
+    private void bindProduct(final Product product) {
+        imageLoader.loadImage(product.getImage().getS_ecs(), product.getImage().getS_url(),
+                productImage);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            productName.setText(Html.fromHtml(product.getName(),
+                    Html.FROM_HTML_MODE_LEGACY));
+        } else {
+            productName.setText(Html.fromHtml(product.getName()));
+        }
+        productPrice.setText(product.getPriceFormat());
+
+        if (data.getProduct().getProductRating() == 0) {
+            rating.setVisibility(View.GONE);
+            reviewCount.setVisibility(View.GONE);
+            if (data.getProduct().isProductNewLabel()) {
+                newLabelTxt.setVisibility(View.VISIBLE);
+            } else {
+                newLabelTxt.setVisibility(View.GONE);
+            }
+        } else {
+            newLabelTxt.setVisibility(View.GONE);
+            rating.setVisibility(View.VISIBLE);
+            reviewCount.setVisibility(View.VISIBLE);
+            rating.setImageResource(
+                    ImageLoader.getRatingDrawable(getStarCount(data.getProduct().getProductRating()))
+            );
+            reviewCount.setText("(" + data.getProduct().getCountReviewFormat() + ")");
+        }
+        topLabelContainer.removeAllViews();
+        if (product.getTopLabels() != null) {
+            for (String l : product.getTopLabels()) {
+                TextView label = (TextView) LayoutInflater.from(context).inflate(R.layout.layout_top_label,
+                        null, false);
+                label.setText(l);
+                topLabelContainer.addView(label);
+            }
+        }
+        bottomLabelContainer.removeAllViews();
+        if (product.getBottomLabels() != null) {
+            for (String l : product.getBottomLabels()) {
+                TextView label = (TextView) LayoutInflater.from(context).inflate(R.layout.layout_bottom_label,
+                        null, false);
+                label.setText(l);
+                bottomLabelContainer.addView(label);
+            }
+        }
+        renderWishlistButton(data.isWislished());
+    }
+
+    private int getStarCount(int rating) {
+        return Math.round(rating / 20f);
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (itemClickListener != null) {
+            if(v.getId() == R.id.container) {
+                itemClickListener.onProductItemClicked(clickPosition, data);
+            }
+            if(v.getId() == R.id.wishlist_button_container){
+                itemClickListener.onAddWishLish(clickPosition, data);
+                data.setWislished(!data.isWislished());
+                renderWishlistButton(data.isWislished());
+            }
+        }
+    }
+
+    protected void renderWishlistButton(boolean wishlist) {
+        if (wishlist) {
+            btnWishList.setBackgroundResource(R.drawable.ic_wishlist_red);
+        } else {
+            btnWishList.setBackgroundResource(R.drawable.ic_wishlist);
+        }
+    }
+
+    private boolean isBadgesExist(List<Badge> badges) {
+        if (badges == null || badges.isEmpty()) {
+            return false;
+        }
+
+        for (Badge badgeItem : badges) {
+            if (badgeItem.isShow()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+}
