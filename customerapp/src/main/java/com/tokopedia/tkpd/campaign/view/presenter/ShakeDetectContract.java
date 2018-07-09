@@ -34,11 +34,14 @@ public interface ShakeDetectContract {
         boolean isLongShakeTriggered();
         void setInvisibleCounter();
         void showDisableShakeShakeVisible();
-
+        public void makeInvisibleShakeShakeDisableView();
         public void setCancelButtonVisible();
 
         public Activity getActivity();
-    }
+
+        public void setSnackBarErrorMessage(String msg);
+
+        }
 
     public interface Presenter extends CustomerPresenter<View>{
         public void onShakeDetect();

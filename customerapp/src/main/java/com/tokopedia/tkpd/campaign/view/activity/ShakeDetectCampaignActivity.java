@@ -16,6 +16,8 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.campaign.di.CampaignComponent;
 import com.tokopedia.tkpd.campaign.di.DaggerCampaignComponent;
@@ -38,6 +40,7 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
 
     public static String SCREEN_NAME = "ShakeDetectCampaignActivity";
     View shakeShakeMessageButton;
+    View parent;
     View cancelButton;
     View cancelBtn;
     View disableShakeShake;
@@ -67,6 +70,7 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
         shakeShakeMessage = (TextView) findViewById(R.id.shake_shake_message);
         shakeShakeMessageButton =  findViewById(R.id.shake_shake_message_button);
         cancelButton = findViewById(R.id.cancel_button);
+        parent = findViewById(R.id.parent);
         cancelBtn = findViewById(R.id.cancel_btn);
         cancelBtn1 = findViewById(R.id.cancel_btn2);
         cancelBtn2 = findViewById(R.id.cancel_btn3);
@@ -170,22 +174,6 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
         shakeShakeErrorMsg.setText(message);
         layoutshakeShakeErrorMsg.setVisibility(View.VISIBLE);
         cancelButton.setVisibility(View.GONE);
-       /* AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.title_dialog_wrong_scan));
-        builder.setMessage(message);
-        builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialogInterface) {
-                presenter.onRetryClick();
-            }
-        });
-        builder.setPositiveButton(getString(R.string.btn_dialog_wrong_scan),
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int i) {
-                        dialog.dismiss();
-                    }
-                }).create().show();*/
     }
 
 
@@ -216,6 +204,26 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
         return getIntent().getBooleanExtra(KEY_LONG_SHAKE, false);
     }
 
+    static int TOAST_LENGTH = 3000;
+
+    @Override
+    public void setSnackBarErrorMessage(String msg) {
+
+        ToasterNormal
+                .make(parent,
+                        msg,
+                        TOAST_LENGTH)
+                .setAction(getString(R.string.masuk_sekarang),
+                        new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                startActivity(((TkpdCoreRouter)(getActivity().getApplication())).getLoginIntent(getActivity()));
+                                finish();
+                            }
+                        })
+                .show();
+    }
+
     @Override
     public void setInvisibleCounter() {
         shakeShakeMessageButton.setVisibility(View.GONE);
@@ -223,26 +231,11 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
 
     @Override
     public void showDisableShakeShakeVisible() {
-   /*     AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(getString(R.string.disable_shake_shake));
-        builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                finish();
-            }
-        });
-        builder.setPositiveButton(getString(R.string.ok),
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int i) {
-                        dialog.dismiss();
-                        presenter.onDisableShakeShake();
-
-
-                    }
-                }).create().show();*/
         disableShakeShake.setVisibility(View.VISIBLE);
+    }
+
+    public void makeInvisibleShakeShakeDisableView() {
+        disableShakeShake.setVisibility(View.GONE);
     }
 
     @Override

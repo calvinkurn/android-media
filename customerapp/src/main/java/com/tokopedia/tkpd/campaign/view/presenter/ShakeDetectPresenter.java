@@ -230,11 +230,12 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
         ShakeDetectManager.getShakeDetectManager().disableShakeShake();
         if(SessionHandler.isV4Login(getView().getActivity())) {
             getView().getActivity().startActivity(ManageGeneral.getCallingIntent(getView().getActivity(), ManageGeneral.TAB_POSITION_MANAGE_APP));
-
+            getView().finish();
         }else {
-            getView().showMessage("Anda bisa menghidupkan kembali fitur shake-shake di pengaturan aplikasi setelah masuk");
+            getView().makeInvisibleShakeShakeDisableView();
+            getView().setSnackBarErrorMessage("Anda bisa menghidupkan kembali fitur shake-shake di pengaturan aplikasi setelah masuk");
         }
-        getView().finish();
+
     }
 
     public void vibrate() {
