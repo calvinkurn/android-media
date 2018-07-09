@@ -6,7 +6,7 @@ import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.view.view.shipment.ShipmentAdapter;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItemModel;
-import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentRequest;
+import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
 import com.tokopedia.transactiondata.entity.request.DropshipDataCheckoutRequest;
@@ -21,7 +21,7 @@ import javax.inject.Inject;
 
 /**
  * @author Irfan Khoirul on 07/03/18
- * Originally Authored by Kris, Aghny
+ *         Originally Authored by Kris, Aghny
  */
 
 public class ShipmentDataRequestConverter {

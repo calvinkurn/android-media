@@ -8,7 +8,7 @@ ext {
     jacocoVersion = "0.7.9"
     kotlinVersion = "1.2.40"
 
-    supportLibraryVersion = '26.0.2'
+    supportLibraryVersion = '27.1.1'
     playServiceVersion = '11.0.4'
     butterKnifeVersion = '9.0.0-SNAPSHOT'
     dbFlowVersion = '3.0.1'
@@ -22,6 +22,7 @@ ext {
     rulesVersion = "0.5"
     apolloVersion = '0.3.0'
     lottieVersion = '2.0.0-rc1'
+    cardioVersion = '5.5.1'
     reactNativeVersion = '0.52.1'
     alibabaCoreLibVersion = '3.2.8'
 
@@ -177,6 +178,7 @@ ext {
             roundCornerProgressBar: 'com.akexorcist:RoundCornerProgressBar:2.0.3',
             slidinguppanel        : "com.sothree.slidinguppanel:library:3.3.1",
             lottie                : "com.airbnb.android:lottie:$lottieVersion",
+            cardio                : "io.card:android-sdk:$cardioVersion",
             loaderviewlibrary     : "com.elyeproj.libraries:loaderviewlibrary:1.4.1",
             imagecropper          : "com.theartofdev.edmodo:android-image-cropper:2.5.1",
             reactNative           : "com.facebook.react:react-native:$reactNativeVersion",
@@ -251,6 +253,7 @@ ext {
             gamification          : "com.tokopedia.gamification:gamification:${tkpdGamificationVersion}",
             mitraToppers          : "com.tokopedia.mitratoppers:mitra_toppers:${tkpdMitraToppersVersion}",
             goldMerchant          : "com.tokopedia.gm:gold_merchant:${tkpdGoldMerchantVersion}",
+            goldMerchantSubscribe : "com.tokopedia.gm:gold_merchant-subscribe:${tkpdGoldMerchantVersion}",
             topAdsManagement      : "com.tokopedia.topads:top_ads_management:${tkpdTopAdsSDKVersion}",
             districtRecommendation: "com.tokopedia.district_recommendation:district_recommendation:${tkpdDistrictRecommendationVersion}"
     ]
@@ -267,6 +270,7 @@ ext {
 
     features = [
             loyalty               : ":tkpdloyalty",
+            nps                   : ":features:common:nps",
             feed                  : ":features:content:feed",
             digitalproduct        : ":features:digital:digitalproduct",
             core                  : ":tkpdcore",
@@ -283,6 +287,7 @@ ext {
             districtRecommendation: ":features:logistic:district_recommendation",
             goldMerchantCommon    : ":features:merchant:gold_merchant_common",
             goldMerchant          : ":features:merchant:gold_merchant",
+            goldMerchantSubscribe : ":features:merchant:gold_merchant_subscribe",
             reputationCommon      : ":features:merchant:reputation_common",
             reputation            : ":features:merchant:reputation",
             shopCommon            : ":features:merchant:shop_common",
@@ -291,7 +296,7 @@ ext {
             topAdsCommon          : ":features:top_ads:top_ads_management_common",
             topAdsSourceTagging   : ":features:top_ads:top_ads_management_sourcetagging",
             tokoCash              : ":features:fintech:tokocash",
-            instantLoan           : ":features:fintech:instant_loan",
+            instantLoan           : ":features:fintech:instant_loan"
             flight                : ":tkpdflight",
             flightNoOp            : ":features:digital:flight_no_op",
             mitraToppers          : ":features:fintech:mitra_toppers",

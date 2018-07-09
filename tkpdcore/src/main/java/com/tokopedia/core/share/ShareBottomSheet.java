@@ -188,7 +188,7 @@ public class ShareBottomSheet extends BottomSheets implements ShareAdapter.OnIte
             @Override
             public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
                 Intent intent = getIntent(shareContents);
-                startActivity(Intent.createChooser(intent, getString(R.string.fb_cat_etc)));
+                startActivity(Intent.createChooser(intent, getString(R.string.other)));
 
                 sendTracker(packageName);
             }
