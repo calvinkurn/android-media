@@ -254,7 +254,6 @@ dependencies {
 
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.digitalproduct)
-    compile project(rootProject.ext.features.topchat)
 
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
 
