@@ -17,13 +17,27 @@ public class GetTotalScheduleUseCase extends UseCase<Integer> {
 
     private TrainRepository trainRepository;
 
+    private String arrivalTimestampSelected;
+
+    private int scheduleVariant;
+
     public GetTotalScheduleUseCase(TrainRepository trainRepository) {
         this.trainRepository = trainRepository;
     }
 
+    public void setArrivalTimestampSelected(String arrivalTimestampSelected) {
+        this.arrivalTimestampSelected = arrivalTimestampSelected;
+    }
+
+    public void setScheduleVariant(int scheduleVariant) {
+        this.scheduleVariant = scheduleVariant;
+    }
+
     @Override
     public Observable<Integer> createObservable(RequestParams requestParams) {
-        return trainRepository.getCountSchedule((FilterSearchData) requestParams.getObject(FILTER_PARAM));
+        return trainRepository.getCountSchedule(
+                (FilterSearchData) requestParams.getObject(FILTER_PARAM),
+                scheduleVariant, arrivalTimestampSelected);
     }
 
     public RequestParams createRequestParam(FilterSearchData filterSearchData) {

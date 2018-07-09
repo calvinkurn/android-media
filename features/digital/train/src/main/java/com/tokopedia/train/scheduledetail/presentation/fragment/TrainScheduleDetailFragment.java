@@ -17,8 +17,6 @@ import com.tokopedia.train.scheduledetail.presentation.model.TrainScheduleDetail
  */
 public class TrainScheduleDetailFragment extends BaseDaggerFragment {
 
-    private static final String ARGS_SHOW_SUBMIT_BUTTON = "ARGS_SHOW_SUBMIT_BUTTON";
-
     private TextView trip;
     private TextView trainName;
     private TextView trainClass;
@@ -71,7 +69,9 @@ public class TrainScheduleDetailFragment extends BaseDaggerFragment {
     }
 
     public void showScheduleDetail(TrainScheduleDetailViewModel trainScheduleDetailViewModel) {
-        trip.setText(trainScheduleDetailViewModel.isReturnTrip() ? "Perjalan Pulang" : "Perjalanan Pergi");
+        trip.setText(trainScheduleDetailViewModel.isReturnTrip() ?
+                getString(R.string.train_search_return_title) :
+                getString(R.string.train_search_departure_title));
         trainName.setText(trainScheduleDetailViewModel.getTrainName());
         trainClass.setText(trainScheduleDetailViewModel.getTrainClass());
         date.setText(trainScheduleDetailViewModel.getDepartureDate());

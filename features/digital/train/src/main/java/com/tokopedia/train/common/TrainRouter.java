@@ -1,7 +1,8 @@
 package com.tokopedia.train.common;
 
-import com.tokopedia.train.passenger.viewmodel.ProfileBuyerInfo;
+import com.tokopedia.train.passenger.presentation.viewmodel.ProfileBuyerInfo;
 
+import okhttp3.Interceptor;
 import rx.Observable;
 
 /**
@@ -10,4 +11,6 @@ import rx.Observable;
 public interface TrainRouter {
 
     Observable<ProfileBuyerInfo> getProfileInfo();
+
+    Interceptor getChuckInterceptor();
 }

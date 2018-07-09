@@ -39,7 +39,7 @@ public class TrainFilterSearchActivity extends TrainBaseActivity
         implements TrainFilterSearchContract.View, FilterSearchActionView {
 
     public static final String MODEL_SEARCH_FILTER = "model_filter";
-    private static final String MAP_PARAM_SCHEDULE = "map_param_schedule";
+    private static final String ARRIVAL_TIMESTAMP_SELECTED = "arrival_timestamp_selected";
     private static final String SCHEDULE_VARIANT = "schedule_variant";
     private static final String FILTER_SEARCH = "filter_search";
 
@@ -51,11 +51,13 @@ public class TrainFilterSearchActivity extends TrainBaseActivity
     private FilterSearchData filterSearchData;
     private Button filterButton;
     private boolean showCloseButton;
+    private String arrivalTimestampSelected;
+    private int scheduleVariant;
 
-    public static Intent getCallingIntent(Activity activity, HashMap<String, Object> mapParam,
+    public static Intent getCallingIntent(Activity activity, String arrivalTimestampSelected,
                                           int scheduleVariant, FilterSearchData filterSearchData) {
         Intent intent = new Intent(activity, TrainFilterSearchActivity.class);
-        intent.putExtra(MAP_PARAM_SCHEDULE, mapParam);
+        intent.putExtra(ARRIVAL_TIMESTAMP_SELECTED, arrivalTimestampSelected);
         intent.putExtra(SCHEDULE_VARIANT, scheduleVariant);
         intent.putExtra(FILTER_SEARCH, filterSearchData);
         return intent;
@@ -81,8 +83,9 @@ public class TrainFilterSearchActivity extends TrainBaseActivity
                 .build()
                 .inject(this);
         presenter.attachView(this);
-        HashMap<String, Object> mapParam = (HashMap<String, Object>) getIntent().getSerializableExtra(MAP_PARAM_SCHEDULE);
-        presenter.getFilterSearchData(mapParam, getIntent().getIntExtra(SCHEDULE_VARIANT, 0));
+        arrivalTimestampSelected = getIntent().getStringExtra(ARRIVAL_TIMESTAMP_SELECTED);
+        scheduleVariant = getIntent().getIntExtra(SCHEDULE_VARIANT, 0);
+        presenter.getFilterSearchData();
     }
 
     @Override
@@ -122,6 +125,16 @@ public class TrainFilterSearchActivity extends TrainBaseActivity
     @Override
     public FilterSearchData getFilterSearchDataFromIntent() {
         return getIntent().getParcelableExtra(FILTER_SEARCH);
+    }
+
+    @Override
+    public String getArrivalTimestampSelected() {
+        return arrivalTimestampSelected;
+    }
+
+    @Override
+    public int getScheduleVariant() {
+        return scheduleVariant;
     }
 
     @Override

@@ -82,7 +82,7 @@
                 android:textStyle="bold"
                 android:layout_weight="1"
                 android:textColor="@color/black"
-                android:text="Pembayaran Anda"/>
+                android:text="@string/train_schedule_detail_price_label_your_payment"/>
 
             <TextView
                 android:id="@+id/text_total_price"

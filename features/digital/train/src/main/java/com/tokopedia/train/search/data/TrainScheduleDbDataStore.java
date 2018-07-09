@@ -24,7 +24,11 @@ import com.tokopedia.train.search.data.typedef.TrainScheduleTypeDef;
 import com.tokopedia.train.search.domain.mapper.TrainScheduleMapper;
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import rx.Observable;
@@ -118,7 +122,17 @@ public class TrainScheduleDbDataStore implements TrainDataDBSource<TrainSchedule
         String departureHour = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
                 TrainDateUtil.FORMAT_HOUR, trainScheduleEntity.getDepartureTimestamp());
         trainScheduleDbTable.setDepartureHour(Integer.valueOf(departureHour));
+
+        String departureTimestampCustom = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
+                TrainDateUtil.DEFAULT_TIMESTAMP_FORMAT, trainScheduleEntity.getDepartureTimestamp());
+        trainScheduleDbTable.setDepartureTime(convertTimestampToLong(departureTimestampCustom));
+
         adapter.insert(trainScheduleDbTable);
+    }
+
+    private long convertTimestampToLong(String timeString) {
+        Timestamp timestamp = Timestamp.valueOf(timeString);
+        return timestamp.getTime();
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.tokopedia.train.passenger.contract;
+package com.tokopedia.train.passenger.presentation.contract;
 
 import android.support.annotation.StringRes;
 
@@ -6,8 +6,8 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.design.component.CardWithAction;
 import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
-import com.tokopedia.train.passenger.viewmodel.ProfileBuyerInfo;
-import com.tokopedia.train.passenger.viewmodel.TrainPassengerViewModel;
+import com.tokopedia.train.passenger.presentation.viewmodel.ProfileBuyerInfo;
+import com.tokopedia.train.passenger.presentation.viewmodel.TrainPassengerViewModel;
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
 
 import java.util.List;
@@ -23,7 +23,7 @@ public interface TrainBookingPassengerContract {
 
         String getString(@StringRes int resId);
 
-        void renderPassenger(List<TrainPassengerViewModel> trainPassengerViewModels);
+        void renderPassengers(List<TrainPassengerViewModel> trainPassengerViewModels);
 
         void setCurrentListPassenger(List<TrainPassengerViewModel> trainPassengerViewModels);
 
@@ -57,15 +57,19 @@ public interface TrainBookingPassengerContract {
 
         void setContactName(String contactName);
 
-        void setBirthdate(String birthdate);
-
         void setPhoneNumber(String phoneNumber);
 
         void setEmail(String email);
-
+        
         void navigateToChooseSeat(TrainSoftbook trainSoftbook);
 
         void navigateToReview(TrainSoftbook trainSoftbook);
+
+        void loadPassengerSameAsBuyer(TrainPassengerViewModel trainPassengerViewModel);
+
+        void toastValidityData();
+
+        void showMessageErrorInSnackBar(int resId);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -81,5 +85,9 @@ public interface TrainBookingPassengerContract {
         void onSubmitButtonClicked();
 
         void onChooseSeatButtonClicked();
+
+        void wrapPassengerSameAsBuyer();
+
+        void removePassengerSameAsBuyer();
     }
 }

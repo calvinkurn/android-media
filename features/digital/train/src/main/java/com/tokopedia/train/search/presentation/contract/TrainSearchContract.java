@@ -2,6 +2,7 @@ package com.tokopedia.train.search.presentation.contract;
 
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.train.search.domain.FilterParam;
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
 import com.tokopedia.usecase.RequestParams;
 
@@ -26,7 +27,7 @@ public interface TrainSearchContract {
 
         void showDataScheduleFromCache(List<TrainScheduleViewModel> trainScheduleViewModels);
 
-        void setSortOptionId(int sortOptionId);
+        void markSortOption();
 
         void addPaddingSortAndFilterSearch();
 
@@ -35,12 +36,19 @@ public interface TrainSearchContract {
         void hideFilterAndSortButtonAction();
 
         void selectSchedule(String scheduleId);
+
+        int getSortOptionSelected();
+
+        String getArrivalTimeDepartureTripSelected();
+
+        int getScheduleVariantSelected();
+
     }
 
     interface Presenter extends CustomerPresenter<View> {
-        void getTrainSchedules(int scheduleVariant);
+        void getTrainSchedules();
 
         void getFilteredAndSortedSchedules(long minPrice, long maxPrice, List<String> trainClass,
-                                           List<String> trains, List<String> departureTrains, int sortOptionId);
+                                           List<String> trains, List<String> departureTrains);
     }
 }

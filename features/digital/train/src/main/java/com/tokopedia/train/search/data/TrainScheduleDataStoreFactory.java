@@ -11,16 +11,15 @@ import com.tokopedia.train.search.data.specification.TrainScheduleDepartureTimeF
 import com.tokopedia.train.search.data.specification.TrainScheduleNameFilterSpecification;
 import com.tokopedia.train.search.data.specification.TrainSchedulePriceFilterSpecification;
 import com.tokopedia.train.search.data.specification.TrainScheduleSortSpecification;
-import com.tokopedia.train.search.data.specification.TrainScheduleSpecification;
+import com.tokopedia.train.search.data.specification.TrainSearchScheduleSpecification;
 import com.tokopedia.train.search.data.typedef.TrainScheduleTypeDef;
 import com.tokopedia.train.search.domain.FilterParam;
-import com.tokopedia.train.search.presentation.model.FilterSearchData;
 import com.tokopedia.train.search.domain.mapper.AvailabilityKeysMapper;
 import com.tokopedia.train.search.presentation.model.AvailabilityKeySchedule;
+import com.tokopedia.train.search.presentation.model.FilterSearchData;
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
 
 import java.util.List;
-import java.util.Map;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -83,7 +82,7 @@ public class TrainScheduleDataStoreFactory {
                 });
     }
 
-    public Observable<List<TrainScheduleViewModel>> getAvailabilitySchedule(Specification specification, final int scheduleVariant) {
+    public Observable<List<TrainScheduleViewModel>> getAvailabilitySchedule(Specification specification) {
         return cloudDataStore.getDatasAvailability(specification)
                 .flatMap(new Func1<List<AvailabilityEntity>, Observable<List<TrainScheduleViewModel>>>() {
                     @Override
@@ -95,7 +94,7 @@ public class TrainScheduleDataStoreFactory {
                                         if (!isSuccessSavedData) {
                                             return Observable.empty();
                                         } else {
-                                            return dbDataStore.getDatas(new TrainAvailabilitySpecification(scheduleAvailabilityEntities, scheduleVariant));
+                                            return dbDataStore.getDatas(new TrainAvailabilitySpecification(scheduleAvailabilityEntities));
                                         }
                                     }
                                 });
@@ -118,15 +117,22 @@ public class TrainScheduleDataStoreFactory {
                     new TrainScheduleDepartureTimeFilterSpecification(filterParam.getDepartureTimeList()));
         }
         specification = new AndDbFlowSpecification(specification,
+                new TrainSearchScheduleSpecification(filterParam.getScheduleVariant(), filterParam.getArrivalTimestampSelected()));
+
+        specification = new AndDbFlowSpecification(specification,
                 new TrainScheduleSortSpecification(sortOptionId));
         return dbDataStore.getDatas(specification);
     }
 
-    public Observable<Integer> getCountSchedule(FilterSearchData filterSearchData) {
+    public Observable<Integer> getCountSchedule(FilterSearchData filterSearchData, int scheduleVariant,
+                                                String arrivalTimestampSelected) {
         DbFlowSpecification specification = getSpecificationPrice(filterSearchData);
         specification = new AndDbFlowSpecification(specification, getSpecificationTrainClass(filterSearchData));
         specification = new AndDbFlowSpecification(specification, getSpecificationTrainName(filterSearchData));
         specification = new AndDbFlowSpecification(specification, getSpecificationTrainDeparture(filterSearchData));
+        specification = new AndDbFlowSpecification(specification,
+                new TrainSearchScheduleSpecification(scheduleVariant, arrivalTimestampSelected));
+
         return dbDataStore.getCount(specification);
     }
 
@@ -172,11 +178,5 @@ public class TrainScheduleDataStoreFactory {
 
     public Observable<TrainScheduleViewModel> getDetailScheduleById(Specification specification) {
         return dbDataStore.getData(specification);
-    }
-
-    public Observable<List<TrainScheduleViewModel>> getFilterSearchParamData(Map<String, Object> mapParam, int scheduleVariant) {
-        TrainScheduleSpecification trainScheduleSpecification = new TrainScheduleSpecification(mapParam);
-        trainScheduleSpecification.setScheduleVariant(scheduleVariant);
-        return dbDataStore.getDatas(trainScheduleSpecification);
     }
 }

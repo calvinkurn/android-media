@@ -1,5 +1,7 @@
 package com.tokopedia.train.search.presentation.activity;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -14,7 +16,8 @@ import com.tokopedia.train.search.presentation.fragment.TrainSearchFragment;
  * @author by alvarisi on 3/8/18.
  */
 
-public abstract class TrainSearchActivity extends TrainBaseActivity {
+public abstract class TrainSearchActivity extends TrainBaseActivity implements TrainSearchFragment.ActionListener {
+
     public static final String EXTRA_SEARCH_PASS_DATA = "EXTRA_SEARCH_PASS_DATA";
     protected TrainSearchPassDataViewModel trainSearchPassDataViewModel;
     private String dateString;
@@ -55,4 +58,10 @@ public abstract class TrainSearchActivity extends TrainBaseActivity {
 
     protected abstract String getDepartureDate();
 
+    @Override
+    public void navigateToHomepage() {
+        Intent intent = new Intent();
+        setResult(Activity.RESULT_OK, intent);
+        finish();
+    }
 }

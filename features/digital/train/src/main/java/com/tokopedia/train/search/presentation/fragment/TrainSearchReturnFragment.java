@@ -10,7 +10,7 @@ import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.di.utils.TrainComponentUtils;
 import com.tokopedia.train.common.util.TrainDateUtil;
 import com.tokopedia.train.homepage.presentation.model.TrainSearchPassDataViewModel;
-import com.tokopedia.train.passenger.activity.TrainBookingPassengerActivity;
+import com.tokopedia.train.passenger.presentation.activity.TrainBookingPassengerActivity;
 import com.tokopedia.train.search.data.typedef.TrainScheduleTypeDef;
 import com.tokopedia.train.search.di.DaggerTrainSearchComponent;
 import com.tokopedia.train.search.presentation.activity.TrainSearchActivity;
@@ -39,12 +39,15 @@ public class TrainSearchReturnFragment extends TrainSearchFragment
     private TrainScheduleBookingPassData trainScheduleBookingPassData;
 
     public static TrainSearchReturnFragment newInstance(TrainSearchPassDataViewModel trainSearchPassDataViewModel,
-                                                        String idSchedule, TrainScheduleBookingPassData scheduleBookingPassData) {
+                                                        String idSchedule,
+                                                        TrainScheduleBookingPassData scheduleBookingPassData,
+                                                        String arrivalScheduleSelected) {
         TrainSearchReturnFragment fragment = new TrainSearchReturnFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(TrainSearchActivity.EXTRA_SEARCH_PASS_DATA, trainSearchPassDataViewModel);
         bundle.putString(TrainSearchReturnActivity.EXTRA_SEARCH_ID_SCHEDULE, idSchedule);
         bundle.putParcelable(TrainSearchReturnActivity.EXTRA_SCHEDULE_BOOKING, scheduleBookingPassData);
+        bundle.putString(TrainSearchReturnActivity.EXTRA_ARRIVAL_TIME_SCHEDULE_SELECTED, arrivalScheduleSelected);
         fragment.setArguments(bundle);
         return fragment;
     }

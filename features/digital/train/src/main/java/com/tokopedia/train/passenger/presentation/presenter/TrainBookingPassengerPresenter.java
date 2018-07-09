@@ -1,21 +1,25 @@
-package com.tokopedia.train.passenger.presenter;
+package com.tokopedia.train.passenger.presentation.presenter;
+
+import android.text.TextUtils;
+import android.util.Patterns;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.design.component.CardWithAction;
 import com.tokopedia.tkpdtrain.R;
-import com.tokopedia.train.common.util.TrainDateUtil;
-import com.tokopedia.train.passenger.contract.TrainBookingPassengerContract;
 import com.tokopedia.train.passenger.data.TrainBookingPassenger;
 import com.tokopedia.train.passenger.domain.TrainSoftBookingUseCase;
 import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
-import com.tokopedia.train.passenger.viewmodel.ProfileBuyerInfo;
-import com.tokopedia.train.passenger.viewmodel.TrainPassengerViewModel;
+import com.tokopedia.train.passenger.presentation.contract.TrainBookingPassengerContract;
+import com.tokopedia.train.passenger.presentation.viewmodel.ProfileBuyerInfo;
+import com.tokopedia.train.passenger.presentation.viewmodel.TrainPassengerViewModel;
 import com.tokopedia.train.search.domain.GetDetailScheduleUseCase;
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
@@ -73,11 +77,6 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
                         if (getView().getPhoneNumberEt().length() == 0) {
                             getView().setPhoneNumber(profileBuyerInfo.getPhoneNumber());
                         }
-
-                        getView().setBirthdate(
-                                TrainDateUtil.dateToString(
-                                        TrainDateUtil.stringToDate(profileBuyerInfo.getBday()),
-                                        TrainDateUtil.DEFAULT_FORMAT));
                     }
                 }));
     }
@@ -120,7 +119,7 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
     public void processInitPassengers(int adultPassengers, int infantPassengers) {
         List<TrainPassengerViewModel> passengerViewModelList = initPassenger(adultPassengers, infantPassengers);
         getView().setCurrentListPassenger(passengerViewModelList);
-        getView().renderPassenger(passengerViewModelList);
+        getView().renderPassengers(passengerViewModelList);
     }
 
     @Override
@@ -130,11 +129,15 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
         if (indexPassenger != -1) {
             passengerViewModels.set(indexPassenger, trainPassengerViewModel);
         }
-        getView().renderPassenger(passengerViewModels);
+        getView().renderPassengers(passengerViewModels);
     }
 
     @Override
     public void onSubmitButtonClicked() {
+        //TODO delete this after softbooking finish
+        if (isAllDataValid()) {
+            getView().toastValidityData();
+        }
         trainSoftBookingUseCase.execute(trainSoftBookingUseCase.create(), new Subscriber<TrainSoftbook>() {
             @Override
             public void onCompleted() {
@@ -155,22 +158,125 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
 
     @Override
     public void onChooseSeatButtonClicked() {
-        trainSoftBookingUseCase.execute(trainSoftBookingUseCase.create(), new Subscriber<TrainSoftbook>() {
-            @Override
-            public void onCompleted() {
+        if (isAllDataValid()) {
+            getView().navigateToChooseSeat(null);
+        }
+//        trainSoftBookingUseCase.execute(trainSoftBookingUseCase.create(), new Subscriber<TrainSoftbook>() {
+//            @Override
+//            public void onCompleted() {
+//
+//            }
+//
+//            @Override
+//            public void onError(Throwable e) {
+//
+//            }
+//
+//            @Override
+//            public void onNext(TrainSoftbook trainSoftbook) {
+//                getView().navigateToChooseSeat(trainSoftbook);
+//            }
+//        });
+    }
 
+    private boolean isAllDataValid() {
+        boolean isValid = true;
+        if (TextUtils.isEmpty(getView().getContactNameEt())) {
+            isValid = false;
+            getView().showMessageErrorInSnackBar(R.string.train_passenger_contact_name_empty_error);
+        } else if (!isAlphabetAndSpaceOnly(getView().getContactNameEt())) {
+            isValid = false;
+            getView().showMessageErrorInSnackBar(R.string.train_passenger_contact_name_alpha_space_error);
+        } else if (TextUtils.isEmpty(getView().getPhoneNumberEt())) {
+            isValid = false;
+            getView().showMessageErrorInSnackBar(R.string.train_passenger_contact_phone_empty_error);
+        } else if (!isNumericOnly(getView().getPhoneNumberEt())) {
+            isValid = false;
+            getView().showMessageErrorInSnackBar(R.string.train_passenger_contact_phone_invalid_error);
+        } else if (!isNumericOnly(getView().getPhoneNumberEt())) {
+            isValid = false;
+            getView().showMessageErrorInSnackBar(R.string.train_passenger_contact_phone_invalid_error);
+        } else if (!isMinPhoneNumberValid(getView().getPhoneNumberEt())) {
+            isValid = false;
+            getView().showMessageErrorInSnackBar(R.string.train_passenger_contact_phone_min_length_error);
+        } else if (!isMaxPhoneNumberValid(getView().getPhoneNumberEt())) {
+            isValid = false;
+            getView().showMessageErrorInSnackBar(R.string.train_passenger_contact_phone_max_length_error);
+        } else if (TextUtils.isEmpty(getView().getEmailEt())) {
+            isValid = false;
+            getView().showMessageErrorInSnackBar(R.string.train_passenger_contact_email_empty_error);
+        } else if (!isEmailWithoutProhibitSymbol(getView().getEmailEt()) || !isValidEmail(getView().getEmailEt())) {
+            isValid = false;
+            getView().showMessageErrorInSnackBar(R.string.train_passenger_contact_email_invalid_error);
+        } else if (!isAllPassengerFilled(getView().getCurrentPassengerList())) {
+            isValid = false;
+            getView().showMessageErrorInSnackBar(R.string.train_passenger_passenger_not_fullfilled_error);
+        }
+        return isValid;
+    }
+
+    private boolean isEmailWithoutProhibitSymbol(String contactEmail) {
+        return !contactEmail.contains("+");
+    }
+
+    private boolean isAllPassengerFilled(List<TrainPassengerViewModel> trainPassengerViewModels) {
+        boolean isvalid = true;
+        for (TrainPassengerViewModel trainPassengerViewModel : trainPassengerViewModels) {
+            if (trainPassengerViewModel.getName() == null) {
+                isvalid = false;
+                break;
             }
+        }
+        return isvalid;
+    }
 
-            @Override
-            public void onError(Throwable e) {
+    private boolean isMinPhoneNumberValid(String phoneNumber) {
+        return phoneNumber.length() >= 9;
+    }
 
-            }
+    private boolean isMaxPhoneNumberValid(String phoneNumber) {
+        return phoneNumber.length() <= 13;
+    }
 
-            @Override
-            public void onNext(TrainSoftbook trainSoftbook) {
-                getView().navigateToChooseSeat(trainSoftbook);
-            }
-        });
+    private boolean isNumericOnly(String expression) {
+        Pattern pattern = Pattern.compile(new String("^[0-9\\s]*$"));
+        Matcher matcher = pattern.matcher(expression);
+        return matcher.matches();
+    }
+
+    private boolean isAlphabetAndSpaceOnly(String expression) {
+        Pattern pattern = Pattern.compile(new String("^[a-zA-Z\\s]*$"));
+        Matcher matcher = pattern.matcher(expression);
+        return matcher.matches();
+    }
+
+    private boolean isValidEmail(String contactEmail) {
+        return Patterns.EMAIL_ADDRESS.matcher(contactEmail).matches() && !contactEmail.contains(".@") && !contactEmail.contains("@.");
+    }
+
+
+    @Override
+    public void wrapPassengerSameAsBuyer() {
+        TrainPassengerViewModel trainPassengerViewModel = new TrainPassengerViewModel();
+        trainPassengerViewModel.setPassengerId(1);
+        trainPassengerViewModel.setName(getView().getContactNameEt());
+        trainPassengerViewModel.setPhone(getView().getPhoneNumberEt());
+        trainPassengerViewModel.setPaxType(TrainBookingPassenger.ADULT);
+        trainPassengerViewModel.setHeaderTitle(
+                formatPassengerHeader(getView().getString(R.string.train_passenger_header_title),
+                        1, getView().getString(R.string.train_select_passenger_adult_title)));
+        getView().loadPassengerSameAsBuyer(trainPassengerViewModel);
+    }
+
+    @Override
+    public void removePassengerSameAsBuyer() {
+        TrainPassengerViewModel trainPassengerViewModel = new TrainPassengerViewModel();
+        trainPassengerViewModel.setPassengerId(1);
+        trainPassengerViewModel.setPaxType(TrainBookingPassenger.ADULT);
+        trainPassengerViewModel.setHeaderTitle(
+                formatPassengerHeader(getView().getString(R.string.train_passenger_header_title),
+                        1, getView().getString(R.string.train_select_passenger_adult_title)));
+        updateDataPassengers(trainPassengerViewModel);
     }
 
     private List<TrainPassengerViewModel> initPassenger(int adultPassengers, int infantPassengers) {

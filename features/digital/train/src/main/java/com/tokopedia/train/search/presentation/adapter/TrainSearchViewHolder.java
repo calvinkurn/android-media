@@ -97,7 +97,7 @@ public class TrainSearchViewHolder extends AbstractViewHolder<TrainScheduleViewM
         setFlagTrainSchedule(trainScheduleViewModel.getAvailableSeat() == OUT_OF_STOCK,
                 trainScheduleViewModel.isFastestFlag(),
                 trainScheduleViewModel.isCheapestFlag());
-        trainNameTv.setText(trainScheduleViewModel.getTrainName());
+        trainNameTv.setText(trainScheduleViewModel.getTrainName() + " " + trainScheduleViewModel.getTrainNumber());
         classNameTv.setText(trainScheduleViewModel.getDisplayClass() + " (" +
                 trainScheduleViewModel.getClassTrain() + ")");
         originCodeTv.setText(trainScheduleViewModel.getOrigin());

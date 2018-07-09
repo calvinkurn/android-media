@@ -1,4 +1,4 @@
-package com.tokopedia.train.passenger.adapter;
+package com.tokopedia.train.passenger.presentation.adapter;
 
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.AppCompatTextView;
@@ -8,7 +8,7 @@ import android.widget.LinearLayout;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.design.label.LabelView;
 import com.tokopedia.tkpdtrain.R;
-import com.tokopedia.train.passenger.viewmodel.TrainPassengerViewModel;
+import com.tokopedia.train.passenger.presentation.viewmodel.TrainPassengerViewModel;
 
 /**
  * Created by nabillasabbaha on 25/06/18.

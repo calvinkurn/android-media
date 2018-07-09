@@ -64,7 +64,7 @@ public class TrainWagonFragment extends BaseDaggerFragment implements TrainSeatA
             }
         }
         if (!isFilledByExistingPassenger) {
-            interaction.onPassengerSeatChange(selectedPassenger, seat);
+            interaction.onPassengerSeatChange(selectedPassenger, seat, trainWagonViewModel.getWagonCode());
             popupWindow.dismiss();
         }
     }
@@ -72,12 +72,13 @@ public class TrainWagonFragment extends BaseDaggerFragment implements TrainSeatA
     @Override
     public void notifyPassengerUpdate() {
         adapter.setSelecteds(transformToSelectedSeat(interaction.getPassengers()));
+        adapter.notifyDataSetChanged();
     }
 
     public interface OnFragmentInteraction {
         List<TrainSeatPassengerViewModel> getPassengers();
 
-        void onPassengerSeatChange(TrainSeatPassengerViewModel passenger, TrainSeatViewModel seat);
+        void onPassengerSeatChange(TrainSeatPassengerViewModel passenger, TrainSeatViewModel seat, String wagonCode);
     }
 
     @Override
@@ -112,6 +113,7 @@ public class TrainWagonFragment extends BaseDaggerFragment implements TrainSeatA
         adapter.setSeats(trainWagonViewModel.getSeats());
         adapter.setSelecteds(transformToSelectedSeat(interaction.getPassengers()));
         adapter.setListener(this);
+        seatsRecyclerView.setNestedScrollingEnabled(false);
         seatsRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), columnCount));
 //        seatsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         seatsRecyclerView.setAdapter(adapter);

@@ -1,7 +1,7 @@
 package com.tokopedia.tkpd.train;
 
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
-import com.tokopedia.train.passenger.viewmodel.ProfileBuyerInfo;
+import com.tokopedia.train.passenger.presentation.viewmodel.ProfileBuyerInfo;
 
 import rx.functions.Func1;
 
@@ -18,7 +18,7 @@ public class TrainGetBuyerProfileInfoMapper implements Func1<ProfileInfo, Profil
         ProfileBuyerInfo profileBuyerInfo = new ProfileBuyerInfo();
         profileBuyerInfo.setFullname(profileInfo.getFullname());
         profileBuyerInfo.setEmail(profileInfo.getEmail());
-        profileBuyerInfo.setBday(profileInfo.getEmail());
+        profileBuyerInfo.setBday(profileInfo.getBday());
         profileBuyerInfo.setGender(profileInfo.getGender());
         profileBuyerInfo.setPhoneNumber(profileInfo.getPhoneNumber());
         return profileBuyerInfo;

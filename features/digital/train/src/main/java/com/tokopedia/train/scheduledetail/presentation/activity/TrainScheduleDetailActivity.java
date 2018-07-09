@@ -37,6 +37,11 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
 
     public static final String EXTRA_TRAIN_SELECTED = "EXTRA_TRAIN_SELECTED";
 
+    private final int PAGE_COUNT = 2;
+    private final int OFFSCREEN_PAGE_LIMIT = 2;
+    private final int VIEWPAGER_INDEX_ZERO = 0;
+    private final int VIEWPAGER_INDEX_ONE = 1;
+
     @Inject
     TrainSchedulePresenter trainSchedulePresenter;
 
@@ -90,9 +95,6 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
     protected void setupLayout(Bundle savedInstanceState) {
         super.setupLayout(savedInstanceState);
 
-        collapsingToolbarLayout = findViewById(R.id.collapsing_toolbar);
-        collapsingToolbarLayout.setTitle(" ");
-
         buttonSubmit = findViewById(R.id.button_submit);
         collapsingToolbarLayout = findViewById(R.id.collapsing_toolbar);
         collapsingToolbarLayout.setTitle("");
@@ -123,8 +125,8 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
             @Override
             public CharSequence getPageTitle(int position) {
                 switch (position) {
-                    case 0 : return "Perjalanan";
-                    case 1 : return "Harga";
+                    case 0 : return getString(R.string.train_schedule_detail_title_trip);
+                    case 1 : return getString(R.string.train_schedule_detail_title_price);
                 }
                 return null;
             }
@@ -140,14 +142,14 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
 
             @Override
             public int getCount() {
-                return 2;
+                return PAGE_COUNT;
             }
         };
     }
 
     @Override
     protected int getPageLimit() {
-        return 2;
+        return OFFSCREEN_PAGE_LIMIT;
     }
 
     @Override
@@ -158,11 +160,11 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
         destinationStationCode.setText(trainScheduleDetailViewModel.getDestinationStationCode());
         destinationCityName.setText(trainScheduleDetailViewModel.getDestinationCityName());
 
-        Fragment fragmentTrip = (Fragment) viewPager.getAdapter().instantiateItem(viewPager, 0);
+        Fragment fragmentTrip = (Fragment) viewPager.getAdapter().instantiateItem(viewPager, VIEWPAGER_INDEX_ZERO);
         if (fragmentTrip instanceof TrainScheduleDetailFragment) {
             ((TrainScheduleDetailFragment) fragmentTrip).showScheduleDetail(trainScheduleDetailViewModel);
         }
-        Fragment fragmentPrice = (Fragment) viewPager.getAdapter().instantiateItem(viewPager, 1);
+        Fragment fragmentPrice = (Fragment) viewPager.getAdapter().instantiateItem(viewPager, VIEWPAGER_INDEX_ONE);
         if (fragmentPrice instanceof TrainSchedulePriceDetailFragment) {
             ((TrainSchedulePriceDetailFragment) fragmentPrice).showPrice(trainScheduleDetailViewModel);
         }

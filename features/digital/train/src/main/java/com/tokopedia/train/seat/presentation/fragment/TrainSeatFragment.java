@@ -172,10 +172,14 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
             }
 
             @Override
-            public void onPassengerSeatChange(TrainSeatPassengerViewModel passenger, TrainSeatViewModel seat) {
+            public void onPassengerSeatChange(TrainSeatPassengerViewModel passenger, TrainSeatViewModel seat, String wagonCode) {
                 for (TrainSeatPassengerViewModel passengerSeat : passengers) {
                     if (passengerSeat.getName().equalsIgnoreCase(passenger.getName())) {
-                        passengerSeat.setSeatViewModel(passenger.getSeatViewModel());
+                        TrainSeatPassengerSeatViewModel seatViewModel = new TrainSeatPassengerSeatViewModel();
+                        seatViewModel.setWagonCode(wagonCode);
+                        seatViewModel.setRow(String.valueOf(seat.getRow()));
+                        seatViewModel.setColumn(seat.getColumn());
+                        passengerSeat.setSeatViewModel(seatViewModel);
                         break;
                     }
                 }
@@ -183,6 +187,7 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
                 if (fragment != null && fragment instanceof TrainSeatListener) {
                     ((TrainSeatListener) fragment).notifyPassengerUpdate();
                 }
+                trainSeatHeader.renderPassenger(getPassengers());
             }
         });
         wagonViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -192,8 +197,14 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
             }
 
             @Override
-            public void onPageSelected(int position) {
-                int a = position;
+            public void onPageSelected(int pos) {
+                trainSeatHeader.renderWagon(wagons.get(pos).getWagonCode());
+                wagonViewPager.setCurrentItem(pos);
+                pagerIndicator.setCurrentIndicator(pos);
+                Object fragment = adapter.instantiateItem(wagonViewPager, wagonViewPager.getCurrentItem());
+                if (fragment != null && fragment instanceof TrainSeatListener) {
+                    ((TrainSeatListener) fragment).notifyPassengerUpdate();
+                }
             }
 
             @Override
