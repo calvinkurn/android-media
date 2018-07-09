@@ -112,7 +112,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
                 .setName(activity.getString(R.string.app_share_title))
                 .setTextContent(contents)
                 .setUri(Constants.WEB_PLAYSTORE_BUYER_APP_URL)
-                .setProductUrl(url)
+                .setShareUrl(url)
                 .build();
 
         ShareBottomSheet.show(fragmentManager, shareData);
@@ -129,9 +129,9 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
 
     @Override
     public void getReferralVoucherCode() {
-        if (TextUtils.isEmpty(getVoucherCodeFromCache())) {
+       // if (TextUtils.isEmpty(getVoucherCodeFromCache())) {
             getView().showProcessDialog();
-        }
+        //}
 
         getReferralDataUseCase.execute(RequestParams.EMPTY, new Subscriber<ReferralCodeEntity>() {
             @Override
@@ -391,7 +391,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
                 .setName(activity.getString(R.string.app_share_title))
                 .setTextContent(contents)
                 .setUri(Constants.WEB_PLAYSTORE_BUYER_APP_URL)
-                .setUri(url)
+                .setShareUrl(url)
                 .build();
 
         if (shareApp.getPackageNmae().equalsIgnoreCase(TkpdState.PackageName.Whatsapp)) {
@@ -414,19 +414,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
             actionShare(shareData, TkpdState.PackageName.Pinterest, AppEventTracking.SOCIAL_MEDIA.PINTEREST);
         } else {
             shareApp(fragmentManager);
-            if (isAppShowReferralButtonActivated()) {
-                UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_SHARE_CODE, getView().getReferralCodeFromTextView());
-            } else {
-                UnifyTracking.eventAppShareWhenReferralOff(AppEventTracking.Action.CLICK, AppEventTracking.EventLabel.APP_SHARE_LABEL);
-            }
         }
-    }
-
-
-    public void shareFb(final ShareData data) {
-        ShareSocmedHandler.ShareSpecificUri(data, activity, TkpdState.PackageName.Facebook,
-                TkpdState.PackageName.TYPE_TEXT,
-                data.getImgUri(), null);
     }
 
     private void actionShare(ShareData data, String packageName, String media) {

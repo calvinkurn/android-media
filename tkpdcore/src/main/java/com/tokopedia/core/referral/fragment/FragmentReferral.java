@@ -151,17 +151,11 @@ public class FragmentReferral extends BasePresenterFragmentV4<IReferralPresenter
     @Override
     protected void initView(View view) {
         presenter.initialize();
-        //  appShareButton.setOnClickListener(getButtonAppShareClickListner());
         referralContentTextView.setText(presenter.getReferralContents());
         if (presenter.isAppShowReferralButtonActivated()) {
             referralCodeLayout.setVisibility(View.VISIBLE);
             TextViewHelpLink.setVisibility(View.VISIBLE);
-//            TextViewHelpLink.setText(presenter.getHowItWorks());
-//            renderVoucherCodeData(presenter.getVoucherCodeFromCache(), "");
             TextViewHelpLink.setOnClickListener(view1 -> {
-//                    UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_HOW_IT_WORKS, "");
-//                    startActivity(ManageWebViewActivity.getCallingIntent(getActivity(), TkpdUrl.REFERRAL_URL, ((AppCompatActivity) getActivity()).getSupportActionBar().getTitle().toString()));
-
                 focusOnView();
             });
         } else {
@@ -196,7 +190,7 @@ public class FragmentReferral extends BasePresenterFragmentV4<IReferralPresenter
     @OnClick(R2.id.btn_copy_referral_code)
     public void clickOnCopyButton() {
         presenter.copyVoucherCode(referralCodeTextView.getText().toString());
-        btnCopyReferralCode.setText("Tersalin");
+        btnCopyReferralCode.setText(R.string.copied);
         btnCopyReferralCode.setTextColor(getResources().getColor(R.color.green_250));
         imgTick.setVisibility(View.VISIBLE);
     }
@@ -216,31 +210,15 @@ public class FragmentReferral extends BasePresenterFragmentV4<IReferralPresenter
 
     }
 
-    private View.OnClickListener getButtonAppShareClickListner() {
-
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                presenter.shareApp(getChildFragmentManager());
-                if (presenter.isAppShowReferralButtonActivated()) {
-                    UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_SHARE_CODE, getReferralCodeFromTextView());
-                } else {
-                    UnifyTracking.eventAppShareWhenReferralOff(AppEventTracking.Action.CLICK, AppEventTracking.EventLabel.APP_SHARE_LABEL);
-                }
-            }
-        };
-
-    }
-
     @Override
     public void renderVoucherCodeData(ReferralCodeEntity referralData) {
         referralCodeTextView.setText(referralData.getPromoContent().getCode());
-        referralCount.setText(referralData.getPromoContent().getFriendCount() + "  teman diajak");
+        referralCount.setText(referralData.getPromoContent().getFriendCount() + getString(R.string.fiends_invited_lable));
         if (referralData.getPromoBenefit() != null) {
             progressBarReferral.setProgress(referralData.getPromoBenefit().getCurrentBenefit() == 0 ?
                     referralData.getPromoBenefit().getCurrentBenefit() : referralData.getPromoBenefit().getMaxBenefit()
                     / referralData.getPromoBenefit().getCurrentBenefit());
-            tvPercent.setText(referralData.getPromoBenefit().getCurrentBenefit() + " / " + referralData.getPromoBenefit().getMaxBenefit());
+            tvPercent.setText("Rp" + referralData.getPromoBenefit().getCurrentBenefit() + " / " + "Rp" + referralData.getPromoBenefit().getMaxBenefit());
         }
     }
 

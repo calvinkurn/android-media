@@ -218,9 +218,9 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/progress_bar_referral"
                 android:layout_marginBottom="@dimen/margin_sm"
-                android:text="Rp80.000 /  Rp1.000.000"
+                android:text=""
                 android:textColor="@color/black_38"
-                android:textSize="12sp" />
+                android:textSize="@dimen/fonts" />
 
         </LinearLayout>
 
