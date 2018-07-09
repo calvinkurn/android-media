@@ -5,7 +5,7 @@ import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.ViewGroup
 import com.tokopedia.topads.R
-import com.tokopedia.topads.common.util.inflateLayout
+import com.tokopedia.topads.common.extension.inflateLayout
 import com.tokopedia.topads.keyword.domain.model.keywordadd.AddKeywordDomainModelDatum
 import com.tokopedia.topads.keyword.view.adapter.viewholder.TopAdsKeywordAddViewHolder
 import kotlinx.android.synthetic.main.item_top_ads_keyword_add_new.view.*

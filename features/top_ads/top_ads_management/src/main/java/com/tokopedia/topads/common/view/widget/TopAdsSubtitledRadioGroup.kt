@@ -169,6 +169,7 @@ class TopAdsSubtitledRadioGroup: LinearLayout {
     }
 
     object ViewUtils {
+        const val MAX_ID_VALUE = 0x00FFFFFF
 
         private val sNextGeneratedId = AtomicInteger(1)
 
@@ -177,7 +178,7 @@ class TopAdsSubtitledRadioGroup: LinearLayout {
                 while (true) {
                     val result = sNextGeneratedId.get()
                     var newValue = result + 1
-                    if (newValue > 0x00FFFFFF) newValue = 1
+                    if (newValue > MAX_ID_VALUE) newValue = 1
                     if (sNextGeneratedId.compareAndSet(result, newValue)) {
                         return result
                     }
