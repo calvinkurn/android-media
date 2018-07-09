@@ -8,6 +8,7 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -21,6 +22,7 @@ import com.tokopedia.train.scheduledetail.presentation.fragment.TrainScheduleDet
 import com.tokopedia.train.scheduledetail.presentation.fragment.TrainSchedulePriceDetailFragment;
 import com.tokopedia.train.scheduledetail.presentation.model.TrainScheduleDetailViewModel;
 import com.tokopedia.train.scheduledetail.presentation.presenter.TrainSchedulePresenter;
+import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
 
 import javax.inject.Inject;
 
@@ -32,7 +34,9 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
     public static final String EXTRA_TRAIN_SCHEDULE_ID = "EXTRA_TRAIN_SCHEDULE_ID";
     public static final String EXTRA_NUMBER_OF_ADULT_PASSENGER = "EXTRA_NUMBER_OF_ADULT_PASSENGER";
     public static final String EXTRA_NUMBER_OF_INFANT_PASSENGER = "EXTRA_NUMBER_OF_INFANT_PASSENGER";
-    public static final String EXTRA_IS_RETURN_TRIP = "EXTRA_IS_RETURN_TRIP";
+    public static final String EXTRA_SHOW_SUBMIT_BUTTON = "EXTRA_SHOW_SUBMIT_BUTTON";
+
+    public static final String EXTRA_TRAIN_SELECTED = "EXTRA_TRAIN_SELECTED";
 
     private final int PAGE_COUNT = 2;
     private final int OFFSCREEN_PAGE_LIMIT = 2;
@@ -48,19 +52,23 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private AppBarLayout appBarLayout;
     private TextView originStationCode;
-    private TextView originStationName;
+    private TextView originCityName;
     private TextView destinationStationCode;
-    private TextView destinationStationName;
+    private TextView destinationCityName;
 
     private TrainScheduleDetailViewModel trainScheduleDetailViewModel;
+    private TrainScheduleViewModel trainScheduleViewModel;
+
+    private String scheduleId;
+    private boolean showSubmitButton;
 
     public static Intent createIntent(Context context, String scheduleId, int numOfAdultPassenger,
-                                      int numOfInfantPassenger, boolean isOneWay) {
+                                      int numOfInfantPassenger, boolean showSubmitButton) {
         Intent intent = new Intent(context, TrainScheduleDetailActivity.class);
         intent.putExtra(EXTRA_TRAIN_SCHEDULE_ID, scheduleId);
         intent.putExtra(EXTRA_NUMBER_OF_ADULT_PASSENGER, numOfAdultPassenger);
         intent.putExtra(EXTRA_NUMBER_OF_INFANT_PASSENGER, numOfInfantPassenger);
-        intent.putExtra(EXTRA_IS_RETURN_TRIP, isOneWay);
+        intent.putExtra(EXTRA_SHOW_SUBMIT_BUTTON, showSubmitButton);
         return intent;
     }
 
@@ -71,18 +79,18 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        showSubmitButton = getIntent().getBooleanExtra(EXTRA_SHOW_SUBMIT_BUTTON, false);
+
         super.onCreate(savedInstanceState);
 
         initInjector();
 
-        String scheduleId = getIntent().getStringExtra(EXTRA_TRAIN_SCHEDULE_ID);
+        scheduleId = getIntent().getStringExtra(EXTRA_TRAIN_SCHEDULE_ID);
         int numOfAdultPassenger = getIntent().getIntExtra(EXTRA_NUMBER_OF_ADULT_PASSENGER, 0);
         int numOfInfantPassenger = getIntent().getIntExtra(EXTRA_NUMBER_OF_INFANT_PASSENGER, 0);
-        boolean isOneWay = getIntent().getBooleanExtra(EXTRA_IS_RETURN_TRIP, false);
 
         trainSchedulePresenter.attachView(this);
-        trainSchedulePresenter.getScheduleDetail(scheduleId, numOfAdultPassenger, numOfInfantPassenger,
-                isOneWay);
+        trainSchedulePresenter.getScheduleDetail(scheduleId, numOfAdultPassenger, numOfInfantPassenger);
     }
 
     @Override
@@ -93,13 +101,24 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
         collapsingToolbarLayout = findViewById(R.id.collapsing_toolbar);
         collapsingToolbarLayout.setTitle("");
         appBarLayout = findViewById(R.id.app_bar_layout);
-        originStationCode = findViewById(R.id.departure_station_code);
-        originStationName = findViewById(R.id.departure_station_name);
-        destinationStationCode = findViewById(R.id.arrival_station_code);
-        destinationStationName = findViewById(R.id.arrival_station_name);
+        originStationCode = findViewById(R.id.header_origin_station_code);
+        originCityName = findViewById(R.id.header_origin_city_name);
+        destinationStationCode = findViewById(R.id.header_destination_station_code);
+        destinationCityName = findViewById(R.id.header_destination_city_name);
 
         appBarLayout.addOnOffsetChangedListener(onAppbarOffsetChange());
         tabLayout.setupWithViewPager(viewPager);
+
+        if (!showSubmitButton) {
+            buttonSubmit.setVisibility(View.GONE);
+        }
+
+        buttonSubmit.setOnClickListener(v -> {
+            Intent intent = new Intent();
+            intent.putExtra(EXTRA_TRAIN_SELECTED, trainScheduleViewModel);
+            setResult(RESULT_OK, intent);
+            finish();
+        });
     }
 
     @Override
@@ -136,12 +155,13 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
     }
 
     @Override
-    public void showScheduleDetail(TrainScheduleDetailViewModel trainScheduleDetailViewModel) {
+    public void showScheduleDetail(TrainScheduleViewModel trainScheduleViewModel, TrainScheduleDetailViewModel trainScheduleDetailViewModel) {
         this.trainScheduleDetailViewModel = trainScheduleDetailViewModel;
+        this.trainScheduleViewModel = trainScheduleViewModel;
         originStationCode.setText(trainScheduleDetailViewModel.getOriginStationCode());
-        originStationName.setText(trainScheduleDetailViewModel.getOriginStationName());
+        originCityName.setText(trainScheduleDetailViewModel.getOriginCityName());
         destinationStationCode.setText(trainScheduleDetailViewModel.getDestinationStationCode());
-        destinationStationName.setText(trainScheduleDetailViewModel.getDestinationStationName());
+        destinationCityName.setText(trainScheduleDetailViewModel.getDestinationCityName());
 
         Fragment fragmentTrip = (Fragment) viewPager.getAdapter().instantiateItem(viewPager, VIEWPAGER_INDEX_ZERO);
         if (fragmentTrip instanceof TrainScheduleDetailFragment) {

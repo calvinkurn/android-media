@@ -12,9 +12,4 @@ import dagger.Provides;
 @Module
 public class TrainScheduleDetailModule {
 
-    @Provides
-    GetScheduleDetailUseCase provideGetScheduleDetailUseCase(TrainRepository trainRepository) {
-        return new GetScheduleDetailUseCase(trainRepository);
-    }
-
 }

@@ -2,6 +2,8 @@ package com.tokopedia.train.common.di;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.train.common.domain.TrainRepository;
+import com.tokopedia.train.scheduledetail.domain.GetScheduleDetailUseCase;
+import com.tokopedia.train.search.domain.GetDetailScheduleUseCase;
 
 import dagger.Component;
 
@@ -11,5 +13,11 @@ import dagger.Component;
 @TrainScope
 @Component(modules = TrainModule.class, dependencies = BaseAppComponent.class)
 public interface TrainComponent {
+
     TrainRepository trainRepository();
+
+    GetDetailScheduleUseCase getDetailScheduleUseCase();
+
+    GetScheduleDetailUseCase getScheduleDetailUseCase();
+
 }

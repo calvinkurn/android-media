@@ -59,6 +59,7 @@
     <!-- passenger info -->
     <string name="train_booking_passenger_title">Isi Data Penumpang</string>
     <string name="train_buyer_title">Data Pemesan</string>
+    <string name="train_review_detail_title">Rincian Pemesanan</string>
     <string name="train_buyer_full_name">Nama Lengkap</string>
     <string name="train_buyer_full_name_hint">Isi Nama Lengkap</string>
     <string name="train_buyer_birthdate">Tanggal Lahir</string>
@@ -120,6 +121,7 @@
     <string name="train_seat_popup_choose_passenger">Pilih Penumpang</string>
     <string name="train_seat_choose_wagon_title">Pilih Gerbong</string>
 
+    <!-- schedule detail -->
     <string name="train_schedule_detail_title_trip">Perjalanan</string>
     <string name="train_schedule_detail_title_price">Harga</string>
     <string name="train_departure_trip">Perjalanan Pergi (%1$s -  %2$s)</string>
@@ -129,4 +131,10 @@
     <string name="train_label_currency">Rp%1$s</string>
     <string name="train_schedule_detail_price_label_your_payment">Pembayaran Anda</string>
     <string name="train_seat_wagon_close_label">Tutup</string>
+
+    <!-- review detail -->
+    <string name="train_review_item_passenger_index">%1$d. </string>
+    <string name="train_review_item_passenger_seat">%1$s %2$s</string>
+    <string name="train_review_item_passenger_info_seat">Kursi (%1$s -  %2$s)</string>
+    <string name="train_review_trip_passenger_count">%1$s - %2$s (Dewasa) x %3$d</string>
 </resources>

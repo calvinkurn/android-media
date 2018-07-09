@@ -3,20 +3,39 @@ package com.tokopedia.train.passenger.domain.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class TrainPaxPassenger implements Parcelable{
+public class TrainPaxPassenger implements Parcelable {
     private String name;
     private String idNumber;
     private int paxType;
     private TrainSeat seat;
 
-    public TrainPaxPassenger() {
+    public TrainPaxPassenger(String name, String idNumber, int paxType, TrainSeat seat) {
+        this.name = name;
+        this.idNumber = idNumber;
+        this.paxType = paxType;
+        this.seat = seat;
     }
+
+    public TrainPaxPassenger() {}
 
     protected TrainPaxPassenger(Parcel in) {
         name = in.readString();
         idNumber = in.readString();
         paxType = in.readInt();
         seat = in.readParcelable(TrainSeat.class.getClassLoader());
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeString(idNumber);
+        dest.writeInt(paxType);
+        dest.writeParcelable(seat, flags);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<TrainPaxPassenger> CREATOR = new Creator<TrainPaxPassenger>() {
@@ -47,19 +66,6 @@ public class TrainPaxPassenger implements Parcelable{
         return idNumber;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(name);
-        parcel.writeString(idNumber);
-        parcel.writeInt(paxType);
-        parcel.writeParcelable(seat, i);
-    }
-
     public void setName(String name) {
         this.name = name;
     }
@@ -75,4 +81,5 @@ public class TrainPaxPassenger implements Parcelable{
     public void setSeat(TrainSeat seat) {
         this.seat = seat;
     }
+
 }

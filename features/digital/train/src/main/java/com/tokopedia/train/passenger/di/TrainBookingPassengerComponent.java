@@ -16,4 +16,5 @@ public interface TrainBookingPassengerComponent {
     void inject(TrainBookingPassengerFragment trainBookingPassengerFragment);
 
     void inject(TrainBookingAddPassengerFragment trainBookingAddPassengerFragment);
+
 }

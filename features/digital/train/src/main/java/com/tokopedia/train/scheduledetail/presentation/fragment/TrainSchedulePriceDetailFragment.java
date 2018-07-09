@@ -28,8 +28,7 @@ public class TrainSchedulePriceDetailFragment extends Fragment {
     private TextView textTotalPrice;
 
     public static Fragment createInstance() {
-        TrainSchedulePriceDetailFragment fragment = new TrainSchedulePriceDetailFragment();
-        return fragment;
+        return new TrainSchedulePriceDetailFragment();
     }
 
     @Nullable
@@ -50,7 +49,7 @@ public class TrainSchedulePriceDetailFragment extends Fragment {
     }
 
     public void showPrice(TrainScheduleDetailViewModel trainScheduleDetailViewModel) {
-        if (trainScheduleDetailViewModel.isOneWay()) {
+        if (trainScheduleDetailViewModel.isReturnTrip()) {
             textTrip.setText(getString(R.string.train_departure_trip,
                     trainScheduleDetailViewModel.getOriginStationCode(),
                     trainScheduleDetailViewModel.getDestinationStationCode()));

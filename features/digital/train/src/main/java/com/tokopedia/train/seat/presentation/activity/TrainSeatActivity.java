@@ -14,6 +14,7 @@ import com.tokopedia.train.seat.di.TrainSeatComponent;
 import com.tokopedia.train.seat.presentation.fragment.TrainSeatFragment;
 
 public class TrainSeatActivity extends TrainBaseActivity implements HasComponent<TrainSeatComponent> {
+
     private static final String EXTRA_SOFTBOOK = "EXTRA_SOFTBOOK";
     private TrainSeatComponent trainSeatComponent;
     private TrainSoftbook trainSoftbook;
@@ -42,4 +43,5 @@ public class TrainSeatActivity extends TrainBaseActivity implements HasComponent
                 .build();
         return trainSeatComponent;
     }
+
 }

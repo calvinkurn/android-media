@@ -65,6 +65,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustResize" />
+        <activity android:name="com.tokopedia.train.reviewdetail.presentation.activity.TrainReviewDetailActivity"
+            android:label="@string/train_review_detail_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>

@@ -1,6 +1,5 @@
 package com.tokopedia.train.passenger.domain.model;
 
-
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -8,11 +7,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TrainSoftbook implements Parcelable {
+
     private String reservationId;
     private String tokpedBookCode;
     private String expiryTimestamp;
     private List<TrainTrip> departureTrips;
     private List<TrainTrip> returnTrips;
+
+    public TrainSoftbook(String reservationId, String tokpedBookCode, String expiryTimestamp, List<TrainTrip> departureTrips, List<TrainTrip> returnTrips) {
+        this.reservationId = reservationId;
+        this.tokpedBookCode = tokpedBookCode;
+        this.expiryTimestamp = expiryTimestamp;
+        this.departureTrips = departureTrips;
+        this.returnTrips = returnTrips;
+    }
+
+    public TrainSoftbook() {
+    }
 
     protected TrainSoftbook(Parcel in) {
         reservationId = in.readString();
@@ -33,9 +44,6 @@ public class TrainSoftbook implements Parcelable {
             return new TrainSoftbook[size];
         }
     };
-
-    public TrainSoftbook() {
-    }
 
     public String getReservationId() {
         return reservationId;
@@ -70,7 +78,6 @@ public class TrainSoftbook implements Parcelable {
         parcel.writeTypedList(departureTrips);
         parcel.writeTypedList(returnTrips);
     }
-
 
     public void setReservationId(String reservationId) {
         this.reservationId = reservationId;
@@ -166,4 +173,5 @@ public class TrainSoftbook implements Parcelable {
         softbook.setReturnTrips(trainTrips);
         return softbook;
     }
+
 }

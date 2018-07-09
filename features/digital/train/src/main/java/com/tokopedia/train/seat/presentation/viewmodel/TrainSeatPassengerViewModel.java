@@ -1,10 +1,34 @@
 package com.tokopedia.train.seat.presentation.viewmodel;
 
-public class TrainSeatPassengerViewModel {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class TrainSeatPassengerViewModel implements Parcelable {
     private int passengerNumber;
     private String name;
     private String number;
     private TrainSeatPassengerSeatViewModel seatViewModel;
+
+    public TrainSeatPassengerViewModel() {
+    }
+
+    protected TrainSeatPassengerViewModel(Parcel in) {
+        passengerNumber = in.readInt();
+        name = in.readString();
+        number = in.readString();
+    }
+
+    public static final Creator<TrainSeatPassengerViewModel> CREATOR = new Creator<TrainSeatPassengerViewModel>() {
+        @Override
+        public TrainSeatPassengerViewModel createFromParcel(Parcel in) {
+            return new TrainSeatPassengerViewModel(in);
+        }
+
+        @Override
+        public TrainSeatPassengerViewModel[] newArray(int size) {
+            return new TrainSeatPassengerViewModel[size];
+        }
+    };
 
     public String getName() {
         return name;
@@ -37,4 +61,17 @@ public class TrainSeatPassengerViewModel {
     public void setPassengerNumber(int passengerNumber) {
         this.passengerNumber = passengerNumber;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(passengerNumber);
+        dest.writeString(name);
+        dest.writeString(number);
+    }
+
 }

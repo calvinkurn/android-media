@@ -1,13 +1,21 @@
 package com.tokopedia.train.scheduledetail.presentation.presenter;
 
+import android.util.Pair;
+
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.train.scheduledetail.domain.GetScheduleDetailUseCase;
 import com.tokopedia.train.scheduledetail.presentation.contract.TrainScheduleContract;
 import com.tokopedia.train.scheduledetail.presentation.model.TrainScheduleDetailViewModel;
+import com.tokopedia.train.search.domain.GetDetailScheduleUseCase;
+import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
+import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;
 
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func2;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Rizky on 07/06/18.
@@ -16,19 +24,25 @@ public class TrainSchedulePresenter extends BaseDaggerPresenter<TrainScheduleCon
         TrainScheduleContract.Presenter {
 
     private GetScheduleDetailUseCase getScheduleDetailUseCase;
+    private GetDetailScheduleUseCase getDetailScheduleUseCase;
 
     @Inject
-    public TrainSchedulePresenter(GetScheduleDetailUseCase getScheduleDetailUseCase) {
+    public TrainSchedulePresenter(GetScheduleDetailUseCase getScheduleDetailUseCase,
+                                  GetDetailScheduleUseCase getDetailScheduleUseCase) {
         this.getScheduleDetailUseCase = getScheduleDetailUseCase;
+        this.getDetailScheduleUseCase = getDetailScheduleUseCase;
     }
 
     @Override
-    public void getScheduleDetail(String scheduleId, int numOfAdultPassenger, int numOfInfantPassenger,
-                                  boolean isOneWay) {
-        getScheduleDetailUseCase.execute(
-                getScheduleDetailUseCase.createRequestParams(scheduleId, numOfAdultPassenger, numOfInfantPassenger,
-                        isOneWay),
-                new Subscriber<TrainScheduleDetailViewModel>() {
+    public void getScheduleDetail(String scheduleId, int numOfAdultPassenger, int numOfInfantPassenger) {
+        getDetailScheduleUseCase.setIdSchedule(scheduleId);
+        getDetailScheduleUseCase.createObservable(RequestParams.EMPTY)
+                .zipWith(getScheduleDetailUseCase.createObservable(
+                        getScheduleDetailUseCase.createRequestParams(scheduleId, numOfAdultPassenger, numOfInfantPassenger)),
+                        (Func2<TrainScheduleViewModel, TrainScheduleDetailViewModel, Pair<TrainScheduleViewModel, TrainScheduleDetailViewModel>>) (trainScheduleViewModel, trainScheduleDetailViewModel) -> null)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Pair<TrainScheduleViewModel, TrainScheduleDetailViewModel>>() {
                     @Override
                     public void onCompleted() {
 
@@ -40,8 +54,8 @@ public class TrainSchedulePresenter extends BaseDaggerPresenter<TrainScheduleCon
                     }
 
                     @Override
-                    public void onNext(TrainScheduleDetailViewModel trainScheduleDetailViewModel) {
-                        getView().showScheduleDetail(trainScheduleDetailViewModel);
+                    public void onNext(Pair<TrainScheduleViewModel, TrainScheduleDetailViewModel> modelPair) {
+                        getView().showScheduleDetail(modelPair.first, modelPair.second);
                     }
                 });
     }

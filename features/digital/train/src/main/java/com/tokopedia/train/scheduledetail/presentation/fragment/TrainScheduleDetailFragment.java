@@ -49,11 +49,11 @@ public class TrainScheduleDetailFragment extends BaseDaggerFragment {
         arrivalTime = rootview.findViewById(R.id.arrival_time);
         departureDate = rootview.findViewById(R.id.departure_date);
         originStationName = rootview.findViewById(R.id.origin_station_name);
-        originCityName = rootview.findViewById(R.id.origin_city_name);
+        originCityName = rootview.findViewById(R.id.header_origin_city_name);
         tripDuration = rootview.findViewById(R.id.trip_duration);
         arrivalDate = rootview.findViewById(R.id.arrival_date);
         destinationStationName = rootview.findViewById(R.id.destination_station_name);
-        destinationCityName = rootview.findViewById(R.id.destination_city_name);
+        destinationCityName = rootview.findViewById(R.id.header_destination_city_name);
 
         return rootview;
     }
@@ -69,9 +69,9 @@ public class TrainScheduleDetailFragment extends BaseDaggerFragment {
     }
 
     public void showScheduleDetail(TrainScheduleDetailViewModel trainScheduleDetailViewModel) {
-        trip.setText(trainScheduleDetailViewModel.isOneWay() ?
-                getString(R.string.train_search_departure_title) :
-                getString(R.string.train_search_return_title));
+        trip.setText(trainScheduleDetailViewModel.isReturnTrip() ?
+                getString(R.string.train_search_return_title) :
+                getString(R.string.train_search_departure_title));
         trainName.setText(trainScheduleDetailViewModel.getTrainName());
         trainClass.setText(trainScheduleDetailViewModel.getTrainClass());
         date.setText(trainScheduleDetailViewModel.getDepartureDate());

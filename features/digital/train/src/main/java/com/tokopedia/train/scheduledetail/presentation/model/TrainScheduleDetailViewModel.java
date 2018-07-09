@@ -23,7 +23,7 @@ public class TrainScheduleDetailViewModel implements Parcelable {
     private String arrivalDate;
     private String departureTime;
     private String arrivalTime;
-    private boolean isOneWay;
+    private boolean isReturnTrip;
     private String displayAdultFare;
     private long adultFare;
     private double totalAdultFare;
@@ -50,7 +50,7 @@ public class TrainScheduleDetailViewModel implements Parcelable {
         this.arrivalDate = builder.arrivalDate;
         this.departureTime = builder.departureTime;
         this.arrivalTime = builder.arrivalTime;
-        this.isOneWay = builder.isOneWay;
+        this.isReturnTrip = builder.isReturnTrip;
         this.displayAdultFare = builder.displayAdultFare;
         this.adultFare = builder.adultFare;
         this.totalAdultFare = builder.totalAdultFare;
@@ -78,7 +78,7 @@ public class TrainScheduleDetailViewModel implements Parcelable {
         arrivalDate = in.readString();
         departureTime = in.readString();
         arrivalTime = in.readString();
-        isOneWay = in.readByte() != 0;
+        isReturnTrip = in.readByte() != 0;
         displayAdultFare = in.readString();
         adultFare = in.readLong();
         totalAdultFare = in.readDouble();
@@ -162,8 +162,8 @@ public class TrainScheduleDetailViewModel implements Parcelable {
         return arrivalTime;
     }
 
-    public boolean isOneWay() {
-        return isOneWay;
+    public boolean isReturnTrip() {
+        return isReturnTrip;
     }
 
     public String getDisplayAdultFare() {
@@ -224,7 +224,7 @@ public class TrainScheduleDetailViewModel implements Parcelable {
         dest.writeString(arrivalDate);
         dest.writeString(departureTime);
         dest.writeString(arrivalTime);
-        dest.writeByte((byte) (isOneWay ? 1 : 0));
+        dest.writeByte((byte) (isReturnTrip ? 1 : 0));
         dest.writeString(displayAdultFare);
         dest.writeLong(adultFare);
         dest.writeDouble(totalAdultFare);
@@ -252,7 +252,7 @@ public class TrainScheduleDetailViewModel implements Parcelable {
         private String arrivalDate;
         private String departureTime;
         private String arrivalTime;
-        private boolean isOneWay;
+        private boolean isReturnTrip;
         private String displayAdultFare;
         private long adultFare;
         private double totalAdultFare;
@@ -338,8 +338,8 @@ public class TrainScheduleDetailViewModel implements Parcelable {
             return this;
         }
 
-        public Builder isOneWay(boolean val) {
-            this.isOneWay = val;
+        public Builder isReturnTrip(boolean val) {
+            this.isReturnTrip = val;
             return this;
         }
 

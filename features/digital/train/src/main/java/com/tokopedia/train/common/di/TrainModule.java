@@ -11,10 +11,12 @@ import com.tokopedia.train.common.constant.TrainUrl;
 import com.tokopedia.train.common.data.TrainDataStoreFactory;
 import com.tokopedia.train.common.data.TrainRepositoryImpl;
 import com.tokopedia.train.common.domain.TrainRepository;
+import com.tokopedia.train.scheduledetail.domain.GetScheduleDetailUseCase;
 import com.tokopedia.train.search.data.TrainScheduleCacheDataStore;
 import com.tokopedia.train.search.data.TrainScheduleCloudDataStore;
 import com.tokopedia.train.search.data.TrainScheduleDataStoreFactory;
 import com.tokopedia.train.search.data.TrainScheduleDbDataStore;
+import com.tokopedia.train.search.domain.GetDetailScheduleUseCase;
 import com.tokopedia.train.seat.data.TrainSeatCloudDataStore;
 import com.tokopedia.train.station.data.TrainStationCacheDataStore;
 import com.tokopedia.train.station.data.TrainStationCloudDataStore;
@@ -48,7 +50,6 @@ public class TrainModule {
                 .addInterceptor(httpLoggingInterceptor)
                 .addInterceptor(trainRouter.getChuckInterceptor())
                 .build();
-
     }
 
     @TrainScope
@@ -145,4 +146,17 @@ public class TrainModule {
                                                                               TrainScheduleCacheDataStore trainScheduleCacheDataStore) {
         return new TrainScheduleDataStoreFactory(trainScheduleDbDataStore, trainScheduleCacheDataStore, trainScheduleCloudDataStore);
     }
+
+    @TrainScope
+    @Provides
+    GetDetailScheduleUseCase provideGetDetailScheduleUseCase(TrainRepository trainRepository) {
+        return new GetDetailScheduleUseCase(trainRepository);
+    }
+
+    @TrainScope
+    @Provides
+    GetScheduleDetailUseCase provideGetScheduleDetailUseCase(TrainRepository trainRepository) {
+        return new GetScheduleDetailUseCase(trainRepository);
+    }
+
 }

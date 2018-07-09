@@ -259,12 +259,9 @@ public class TrainScheduleDbDataStore implements TrainDataDBSource<TrainSchedule
 
                 subscriber.onNext(trainScheduleDBList);
             }
-        }).map(new Func1<TrainScheduleDbTable, TrainScheduleViewModel>() {
-            @Override
-            public TrainScheduleViewModel call(TrainScheduleDbTable trainScheduleDbTable) {
-                TrainScheduleMapper mapper = new TrainScheduleMapper();
-                return mapper.transform(trainScheduleDbTable);
-            }
+        }).map(trainScheduleDbTable -> {
+            TrainScheduleMapper mapper = new TrainScheduleMapper();
+            return mapper.transform(trainScheduleDbTable);
         });
     }
 }

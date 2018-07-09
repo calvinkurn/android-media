@@ -3,17 +3,40 @@ package com.tokopedia.train.passenger.domain.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class TrainSeat implements Parcelable{
+public class TrainSeat implements Parcelable {
     private String klass;
     private String wagonNo;
     private String row;
     private String column;
+
+    public TrainSeat(String klass, String wagonNo, String row, String column) {
+        this.klass = klass;
+        this.wagonNo = wagonNo;
+        this.row = row;
+        this.column = column;
+    }
+
+    public TrainSeat() {
+    }
 
     protected TrainSeat(Parcel in) {
         klass = in.readString();
         wagonNo = in.readString();
         row = in.readString();
         column = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(klass);
+        dest.writeString(wagonNo);
+        dest.writeString(row);
+        dest.writeString(column);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<TrainSeat> CREATOR = new Creator<TrainSeat>() {
@@ -27,9 +50,6 @@ public class TrainSeat implements Parcelable{
             return new TrainSeat[size];
         }
     };
-
-    public TrainSeat() {
-    }
 
     public String getKlass() {
         return klass;
@@ -47,19 +67,6 @@ public class TrainSeat implements Parcelable{
         return column;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(klass);
-        parcel.writeString(wagonNo);
-        parcel.writeString(row);
-        parcel.writeString(column);
-    }
-
     public void setKlass(String klass) {
         this.klass = klass;
     }
@@ -75,4 +82,5 @@ public class TrainSeat implements Parcelable{
     public void setColumn(String column) {
         this.column = column;
     }
+
 }
