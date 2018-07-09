@@ -23,10 +23,10 @@
             android:orientation="vertical">
 
             <android.support.v7.widget.AppCompatTextView
+                style="@style/TextView.Micro.BlackDisabled"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/dp_16"
-                style="@style/TextView.Micro.BlackDisabled"
                 android:text="@string/flight_cancellation_step_2_header_title" />
 
             <LinearLayout
@@ -53,8 +53,14 @@
                 <android.support.v7.widget.AppCompatTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="@dimen/padding_16"
                     android:text="@string/flight_cancellation_support_docs_label" />
+
+                <android.support.v7.widget.AppCompatTextView
+                    style="@style/TextView.Micro.OrangeRed"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="@dimen/padding_16"
+                    android:text="@string/flight_cancellation_support_docs_description" />
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/rv_attachments"

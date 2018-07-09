@@ -233,6 +233,7 @@ dependencies {
     implementation project(rootProject.ext.features.shopPage)
     implementation project(rootProject.ext.features.mitraToppers)
     implementation project(rootProject.ext.features.goldMerchant)
+    implementation project(rootProject.ext.features.goldMerchantSubscribe)
     implementation project(rootProject.ext.features.topAdsManagement)
     implementation project(rootProject.ext.features.seller)
     implementation project(rootProject.ext.features.session)
