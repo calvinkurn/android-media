@@ -3,6 +3,7 @@ package com.tokopedia.discovery.newdiscovery.category.presentation.product;
 import android.content.Context;
 import android.os.Bundle;
 
+import com.tokopedia.core.MaintenancePage;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.domain.DefaultSubscriber;
 import com.tokopedia.core.base.domain.RequestParams;
@@ -25,9 +26,14 @@ import com.tokopedia.discovery.newdiscovery.domain.usecase.RemoveWishlistActionU
 import com.tokopedia.discovery.newdiscovery.search.fragment.GetDynamicFilterSubscriber;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenterImpl;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
+import com.tokopedia.discovery.newdiscovery.wishlist.model.AddWishListResponse;
+import com.tokopedia.graphql.data.model.GraphqlRequest;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -51,8 +57,14 @@ public class ProductPresenter extends SearchSectionFragmentPresenterImpl<Product
     private ProductContract.View viewListener;
     private Context context;
 
+    private GraphqlUseCase addWishListGraphqlUseCase;
+
     public ProductPresenter(Context context) {
         this.context = context;
+
+//        addWishlistActionUseCase = new AddWishlistActionUseCase();
+
+        addWishListGraphqlUseCase = new GraphqlUseCase();
         CategoryComponent component = DaggerCategoryComponent.builder()
                 .appComponent(getComponent(context))
                 .build();
@@ -88,8 +100,7 @@ public class ProductPresenter extends SearchSectionFragmentPresenterImpl<Product
     }
 
     private void addWishlist(String productId, String userId, int adapterPosition) {
-        addWishlistActionUseCase.execute(AddWishlistActionUseCase.generateParam(productId, userId),
-                new AddWishlistActionSubscriber(wishlistActionListener, adapterPosition));
+        addWishlistActionUseCase.createObservable(productId, userId, wishlistActionListener, adapterPosition);
     }
 
     private void removeWishlist(String productId, String userId, int adapterPosition) {
@@ -213,7 +224,7 @@ public class ProductPresenter extends SearchSectionFragmentPresenterImpl<Product
     public void detachView() {
         super.detachView();
         getProductUseCase.unsubscribe();
-        addWishlistActionUseCase.unsubscribe();
+//        addWishlistActionUseCase.unsubscribeΩibe();
         removeWishlistActionUseCase.unsubscribe();
         getDynamicFilterUseCase.unsubscribe();
     }

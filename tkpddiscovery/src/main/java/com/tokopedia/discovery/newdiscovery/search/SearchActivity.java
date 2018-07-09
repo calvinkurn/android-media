@@ -44,6 +44,7 @@ import com.tokopedia.discovery.newdiscovery.widget.BottomSheetFilterView;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterDetailActivityRouter;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
+import com.tokopedia.graphql.data.GraphqlClient;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -278,7 +279,7 @@ public class SearchActivity extends DiscoveryActivity
                 DaggerSearchComponent.builder()
                         .appComponent(getApplicationComponent())
                         .build();
-
+        GraphqlClient.init(this);
         searchComponent.inject(this);
     }
 

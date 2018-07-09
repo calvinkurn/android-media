@@ -49,6 +49,7 @@ import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
 import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterHelper;
+import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
@@ -150,6 +151,7 @@ public class ProductListFragment extends SearchSectionFragment
         SearchComponent component = DaggerSearchComponent.builder()
                 .appComponent(getComponent(AppComponent.class))
                 .build();
+        GraphqlClient.init(getActivity());
         component.inject(this);
     }
 

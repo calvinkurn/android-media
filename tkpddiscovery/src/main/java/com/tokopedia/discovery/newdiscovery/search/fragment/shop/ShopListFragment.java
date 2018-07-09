@@ -36,6 +36,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.shop.listener.Favori
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.viewmodel.ShopViewModel;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameterBuilder;
+import com.tokopedia.graphql.data.GraphqlClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -106,6 +107,7 @@ public class ShopListFragment extends SearchSectionFragment
         SearchComponent component = DaggerSearchComponent.builder()
                 .appComponent(getComponent(AppComponent.class))
                 .build();
+        GraphqlClient.init(getActivity());
         component.inject(this);
     }
 

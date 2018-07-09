@@ -2,6 +2,7 @@ package com.tokopedia.discovery.newdiscovery.hotlist.view.presenter;
 
 import android.content.Context;
 
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
@@ -24,6 +25,12 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.GetDynamicFilterSubs
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenterImpl;
 import com.tokopedia.discovery.newdiscovery.util.HotlistParameter;
 import com.tokopedia.discovery.newdiscovery.util.WishlistActionListener;
+import com.tokopedia.discovery.newdiscovery.wishlist.model.AddWishListResponse;
+import com.tokopedia.graphql.data.model.GraphqlRequest;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -187,12 +194,34 @@ public class HotlistFragmentPresenter extends SearchSectionFragmentPresenterImpl
         return requestParams;
     }
 
+    private static final String PARAM_USER_ID = "userId";
+    private static final String PARAM_PRODUCT_ID = "productId";
+
+
     @Override
     public void addWishlist(String productID) {
-        addWishlistActionUseCase.execute(
+
+
+        GraphqlUseCase graphqlUseCase = new GraphqlUseCase();
+
+        Map<String, Object> variables = new HashMap<>();
+
+        variables.put(PARAM_PRODUCT_ID, productID);
+        variables.put(PARAM_USER_ID, SessionHandler.getLoginID(context));
+
+        GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(), R.raw.query_add_wishlist),
+                AddWishListResponse.class,
+                variables);
+
+        graphqlUseCase.addRequest(graphqlRequest);
+
+        graphqlUseCase.execute(new AddWishlistActionSubscriber(this, productID));
+
+
+        /*addWishlistActionUseCase.execute(
                 AddWishlistActionUseCase.generateParam(productID, SessionHandler.getLoginID(context)),
                 new AddWishlistActionSubscriber(this, productID)
-        );
+        );*/
     }
 
     @Override
@@ -232,7 +261,7 @@ public class HotlistFragmentPresenter extends SearchSectionFragmentPresenterImpl
     @Override
     public void detachView() {
         super.detachView();
-        addWishlistActionUseCase.unsubscribe();
+//        addWishlistActionUseCase.unsubscribe();
         removeWishlistActionUseCase.unsubscribe();
         getDynamicFilterUseCase.unsubscribe();
         getHotlistInitializeUseCase.unsubscribe();

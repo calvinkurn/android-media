@@ -43,6 +43,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.fact
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.factory.ItemClickListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.presenter.CatalogFragmentContract;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.presenter.CatalogPresenter;
+import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
@@ -145,6 +146,7 @@ public class CatalogFragment extends SearchSectionFragment implements
         SearchComponent component = DaggerSearchComponent.builder()
                 .appComponent(getComponent(AppComponent.class))
                 .build();
+        GraphqlClient.init(getActivity());
         component.inject(this);
         component.inject(presenter);
     }

@@ -51,11 +51,8 @@ public class ProductModule {
 
     @Provides
     AddWishlistActionUseCase addWishlistActionUseCase(
-            ThreadExecutor threadExecutor,
-            PostExecutionThread postExecutionThread,
-            @MojitoWishlistActionQualifier MojitoAuthApi service,
-            AddWishlistActionMapper mapper) {
-        return new AddWishlistActionUseCase(threadExecutor, postExecutionThread, service, mapper);
+            @ApplicationContext  Context context) {
+        return new AddWishlistActionUseCase(context);
     }
 
     @Provides

@@ -4,6 +4,8 @@ import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.listener.WishlistActionListener;
 import com.tokopedia.discovery.newdiscovery.domain.model.ActionResultModel;
+import com.tokopedia.discovery.newdiscovery.wishlist.model.AddWishListResponse;
+import com.tokopedia.graphql.data.model.GraphqlResponse;
 
 import rx.Subscriber;
 
@@ -11,7 +13,7 @@ import rx.Subscriber;
  * Created by henrypriyono on 10/19/17.
  */
 
-public class AddWishlistActionSubscriber extends Subscriber<ActionResultModel> {
+public class AddWishlistActionSubscriber extends Subscriber<GraphqlResponse> {
     private final WishlistActionListener viewListener;
     private int adapterPosition;
 
@@ -32,12 +34,27 @@ public class AddWishlistActionSubscriber extends Subscriber<ActionResultModel> {
     }
 
     @Override
-    public void onNext(ActionResultModel result) {
-        if (result.isSuccess())
+    public void onNext(GraphqlResponse graphqlResponse) {
+
+        if (graphqlResponse != null) {
+            AddWishListResponse addWishListResponse = graphqlResponse.getData(AddWishListResponse.class);
+            if (addWishListResponse.getWishlist_add().getSuccess())
+                viewListener.onSuccessAddWishlist(adapterPosition);
+            else
+                viewListener.onErrorAddWishList(
+                        viewListener.getString(R.string.default_request_error_unknown),
+                        adapterPosition);
+        } else {
+            viewListener.onErrorAddWishList(
+                    viewListener.getString(R.string.default_request_error_unknown),
+                    adapterPosition);
+        }
+
+        /*if (result.isSuccess())
             viewListener.onSuccessAddWishlist(adapterPosition);
         else
             viewListener.onErrorAddWishList(
                     viewListener.getString(R.string.default_request_error_unknown),
-                    adapterPosition);
+                    adapterPosition);*/
     }
 }
