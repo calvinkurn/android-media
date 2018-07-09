@@ -8,7 +8,7 @@ ext {
     jacocoVersion = "0.7.9"
     kotlinVersion = "1.2.40"
 
-    supportLibraryVersion = '26.0.2'
+    supportLibraryVersion = '27.1.1'
     playServiceVersion = '11.0.4'
     butterKnifeVersion = '9.0.0-SNAPSHOT'
     dbFlowVersion = '3.0.1'
@@ -65,6 +65,7 @@ ext {
     tkpdAnalyticsVersion = '2.22'
     tkpdGraphqlVersion = '2.22'
     tkpdContactUsVersion = '2.22'
+    tkpdCommonNetworkVersion = '2.22'
 
     networkDependencies = [
             retrofit          : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
@@ -329,6 +330,7 @@ ext {
             imageuploader     : ":libraries:imageuploader",
             youtubeApi        : ":libraries:YouTubeAndroidPlayerApi",
             analytics         : ":libraries:analytics",
-            graphql           : ":libraries:graphql"
+            graphql           : ":libraries:graphql",
+            commonNetwork     : ":libraries:common_network"
     ]
 }

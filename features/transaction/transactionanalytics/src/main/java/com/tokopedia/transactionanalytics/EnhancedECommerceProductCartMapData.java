@@ -27,7 +27,7 @@ public class EnhancedECommerceProductCartMapData {
     public static final String KEY_DIMENSION_40 = "dimension40";
     public static final String KEY_ATTRIBUTION = "attribution";
 
-    public static final String DEFAULT_VALUE_NONE_OTHER = "none/other";
+    public static final String DEFAULT_VALUE_NONE_OTHER = "none / other";
 
     public EnhancedECommerceProductCartMapData() {
 
@@ -41,43 +41,43 @@ public class EnhancedECommerceProductCartMapData {
         Product.put(KEY_ID, id);
     }
 
-    public void setPrice(Object price) {
+    public void setPrice(String price) {
         Product.put(KEY_PRICE, price);
     }
 
-    public void setQty(Object qty) {
+    public void setQty(String qty) {
         Product.put(KEY_QTY, qty);
     }
 
-    public void setCategory(Object category) {
+    public void setCategory(String category) {
         Product.put(KEY_CAT, category);
     }
 
-    public void setDimension38(Object data) {
+    public void setDimension38(String data) {
         Product.put(KEY_DIMENSION_38, data);
     }
 
-    public void setAttribution(Object data) {
+    public void setAttribution(String data) {
         Product.put(KEY_ATTRIBUTION, data);
     }
 
-    public void setDimension40(Object data) {
+    public void setDimension40(String data) {
         Product.put(KEY_DIMENSION_40, data);
     }
 
-    public void setListName(Object data) {
+    public void setListName(String data) {
         Product.put(KEY_LIST, data);
     }
 
-    public void setPosition(Object position) {
+    public void setPosition(String position) {
         Product.put(KEY_POS, position);
     }
 
-    public void setBrand(Object brand) {
+    public void setBrand(String brand) {
         Product.put(KEY_BRAND, brand);
     }
 
-    public void setVariant(Object variant) {
+    public void setVariant(String variant) {
         Product.put(KEY_VARIANT, variant);
     }
 

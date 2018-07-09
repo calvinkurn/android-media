@@ -304,10 +304,8 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
 
     private void onChooseOtherAddressClick() {
         ShipmentAddressListFragment fragment = ShipmentAddressListFragment.newInstance(currentAddress);
-        getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         getFragmentManager().beginTransaction()
-                .add(R.id.parent_view, fragment, fragment.getClass().getSimpleName())
-                .addToBackStack(fragment.getClass().getSimpleName())
+                .replace(R.id.parent_view, fragment, fragment.getClass().getSimpleName())
                 .commit();
         checkoutAnalyticsChangeAddress.eventClickChangeAddressClickPilihAlamatLainyaFromGAntiAlamat();
     }

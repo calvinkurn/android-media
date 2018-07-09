@@ -15,6 +15,7 @@ import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartShipmentData
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCheckoutButtonModel;
 import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
+import com.tokopedia.transactiondata.entity.request.CheckoutRequest;
 import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
 
@@ -38,8 +39,10 @@ public interface ShipmentContract {
         void renderCheckShipmentPrepareCheckoutSuccess();
 
         void renderErrorDataHasChangedCheckShipmentPrepareCheckout(
-                CartShipmentAddressFormData cartShipmentAddressFormData
+                CartShipmentAddressFormData cartShipmentAddressFormData, boolean needToRefreshItemList
         );
+
+        void renderErrorDataHasChangedAfterCheckout(CartShipmentAddressFormData cartShipmentAddressFormData);
 
         void renderThanksTopPaySuccess(String message);
 
@@ -67,10 +70,15 @@ public interface ShipmentContract {
 
         void renderCancelAutoApplyCouponSuccess();
 
+        List<DataCheckoutRequest> generateNewCheckoutRequest(List<ShipmentCartItemModel> shipmentCartItemModelList);
+
         Activity getActivityContext();
     }
 
     interface Presenter extends CustomerPresenter<View> {
+
+        void processReloadCheckoutPageBecauseOfError();
+
         void processCheckShipmentPrepareCheckout();
 
         void processCheckout();

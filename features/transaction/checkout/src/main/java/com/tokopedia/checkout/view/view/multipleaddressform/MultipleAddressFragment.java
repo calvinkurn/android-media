@@ -68,14 +68,11 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
 
     public static MultipleAddressFragment newInstance(
             CartListData cartListData,
-            RecipientAddressModel recipientModel,
-            Token token
-    ) {
+            RecipientAddressModel recipientModel) {
         MultipleAddressFragment fragment = new MultipleAddressFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ADDRESS_EXTRA, recipientModel);
         bundle.putParcelable(CART_LIST_DATA, cartListData);
-        bundle.putParcelable(DISTRICT_RECOMMENDATION_TOKEN, token);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -118,8 +115,7 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
     private List<MultipleAddressAdapterData> initiateAdapterData() {
         CartListData cartListData = getArguments().getParcelable(CART_LIST_DATA);
         RecipientAddressModel recipientAddressModel = getArguments().getParcelable(ADDRESS_EXTRA);
-        Token token = getArguments().getParcelable(DISTRICT_RECOMMENDATION_TOKEN);
-        return presenter.initiateMultipleAddressAdapterData(cartListData, recipientAddressModel, token);
+        return presenter.initiateMultipleAddressAdapterData(cartListData, recipientAddressModel);
     }
 
     @Override
@@ -221,6 +217,11 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
     @Override
     public void hideLoading() {
         progressDialogNormal.dismiss();
+    }
+
+    @Override
+    public Activity getActivityContext() {
+        return getActivity();
     }
 
     @Override

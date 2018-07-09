@@ -307,7 +307,7 @@ public class WishListImpl implements WishList {
         ).subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(addToCartSubscriber());
+                .subscribe(addToCartSubscriber(dataDetail));
     }
 
     private void routeToOldCheckout(Activity activity, Wishlist dataDetail) {
@@ -470,7 +470,7 @@ public class WishListImpl implements WishList {
             ProductItem product = new ProductItem();
             product.setId(wishlists.get(i).getId());
             product.setImgUri(wishlists.get(i).getImageUrl());
-            product.setIsNewGold(wishlists.get(i).getShop().getIsGoldMerchant() ? 1 : 0);
+            product.setIsNewGold(wishlists.get(i).getShop().isGoldMerchant() ? 1 : 0);
             product.setName(wishlists.get(i).getName());
             product.setPrice(wishlists.get(i).getPriceFmt());
             product.setShop(wishlists.get(i).getShop().getName());
@@ -479,12 +479,12 @@ public class WishListImpl implements WishList {
             product.setIsAvailable(wishlists.get(i).getIsAvailable());
             product.setWholesale(wishlists.get(i).getWholesale().size() > 0 ? "1" : "0");
             product.setPreorder(wishlists.get(i).getIsPreOrder() ? "1" : "0");
-            product.setIsGold(wishlists.get(i).getShop().getIsGoldMerchant() ? "1" : "0");
+            product.setIsGold(wishlists.get(i).getShop().isGoldMerchant() ? "1" : "0");
             product.setLuckyShop(wishlists.get(i).getShop().getLuckyMerchant());
             product.setBadges(wishlists.get(i).getBadges());
             product.setLabels(wishlists.get(i).getLabels());
             product.setShopLocation(wishlists.get(i).getShop().getLocation());
-            product.setOfficial(wishlists.get(i).getShop().getOfficial());
+            product.setOfficial(wishlists.get(i).getShop().isOfficial());
             products.add(product);
         }
 
@@ -549,7 +549,7 @@ public class WishListImpl implements WishList {
         }
     }
 
-    private Subscriber<AddToCartResult> addToCartSubscriber() {
+    private Subscriber<AddToCartResult> addToCartSubscriber(Wishlist dataDetail) {
         return new Subscriber<AddToCartResult>() {
             @Override
             public void onCompleted() {
@@ -589,7 +589,9 @@ public class WishListImpl implements WishList {
             public void onNext(AddToCartResult addToCartResult) {
                 wishListView.dismissProgressDialog();
                 wishListView.showAddToCartMessage(addToCartResult.getMessage());
+                wishListView.sendAddToCartAnalytics(dataDetail, addToCartResult);
             }
         };
     }
+
 }

@@ -53,7 +53,7 @@ public interface ICartListView extends IBaseView {
 
     void renderErrorTimeoutConnectionToShipmentForm(String message);
 
-    void renderToShipmentMultipleAddressSuccess(CartListData cartListData, RecipientAddressModel selectedAddress, Token token);
+    void renderToShipmentMultipleAddressSuccess(CartListData cartListData, RecipientAddressModel selectedAddress);
 
     void renderErrorToShipmentMultipleAddress(String message);
 

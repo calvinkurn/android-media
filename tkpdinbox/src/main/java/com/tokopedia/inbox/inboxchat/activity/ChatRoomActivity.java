@@ -10,11 +10,8 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.app.TaskStackBuilder;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
-
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -135,9 +132,12 @@ public class ChatRoomActivity extends BasePresenterActivity
             toolbar.setElevation(10);
         }
 
-        Drawable upArrow = ContextCompat.getDrawable(this, R.drawable.ic_action_back);
+        Drawable upArrow = MethodChecker.getDrawable(this, R.drawable.ic_action_back);
         if (upArrow != null) {
-            upArrow.setColorFilter(ContextCompat.getColor(this, R.color.grey_700), PorterDuff.Mode.SRC_ATOP);
+            upArrow.setColorFilter(
+                    MethodChecker.getColor(this, R.color.grey_700),
+                    PorterDuff.Mode.SRC_ATOP
+            );
             getSupportActionBar().setHomeAsUpIndicator(upArrow);
         }
     }

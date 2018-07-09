@@ -207,9 +207,8 @@ public class RemoveCartItemFragment extends BaseCheckoutFragment
     private void showDeleteCartItemDialog(int itemCount) {
         final Dialog dialog = new Dialog(getActivity(), Dialog.Type.LONG_PROMINANCE);
         dialog.setTitle(getString(R.string.label_dialog_title_delete_item));
-        dialog.setDesc(itemCount == 1 ? getString(R.string.label_dialog_message_remove_cart_item) :
-                String.format(getString(R.string.label_dialog_message_remove_cart_multiple_item),
-                        String.valueOf(itemCount)));
+        dialog.setDesc(String.format(getString(R.string.label_dialog_message_remove_cart_multiple_item),
+                String.valueOf(itemCount)));
         dialog.setBtnOk(getString(R.string.label_dialog_action_delete_and_add_to_wishlist));
         dialog.setBtnCancel(itemCount > 0 ? getString(R.string.label_dialog_action_delete) :
                 getString(R.string.label_dialog_action_delete_all));

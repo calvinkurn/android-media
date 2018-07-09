@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.view.adapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,7 +75,21 @@ public class MultipleAddressItemAdapter extends RecyclerView.Adapter
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String defaultCartId = null;
+                for (MultipleAddressItemData multipleAddressItemData : itemDataList) {
+                    if (!TextUtils.isEmpty(multipleAddressItemData.getCartId())) {
+                        defaultCartId = multipleAddressItemData.getCartId();
+                        break;
+                    }
+                }
                 itemDataList.remove(position);
+
+                for (MultipleAddressItemData multipleAddressItemData : itemDataList) {
+                    if (TextUtils.isEmpty(multipleAddressItemData.getCartId())) {
+                        multipleAddressItemData.setCartId(defaultCartId);
+                        break;
+                    }
+                }
                 notifyDataSetChanged();
             }
         };

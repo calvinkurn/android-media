@@ -35,6 +35,7 @@ public class ShipmentActivity extends BaseCheckoutActivity {
     public static final String EXTRA_PROMO_CODE_APPLIED_DATA = "EXTRA_PROMO_CODE_APPLIED_DATA";
     public static final String EXTRA_PROMO_CODE_COUPON_DEFAULT_SELECTED_TAB = "EXTRA_PROMO_CODE_COUPON_DEFAULT_SELECTED_TAB";
     public static final String EXTRA_NAVIGATE_TO_ADDRESS_CHOICE = "EXTRA_NAVIGATE_TO_ADDRESS_CHOICE";
+
     private CheckoutAnalyticsCourierSelection checkoutAnalyticsCourierSelection;
 
 

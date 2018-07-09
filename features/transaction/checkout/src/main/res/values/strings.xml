@@ -15,7 +15,7 @@
     <string name="label_delivery_hour_with_asterisk">\u0020jam perjalanan*</string>
     <string name="label_max_delivery">Maks\u0020</string>
     <string name="label_button_choose_shipment_courier">Pilih Kurir Pengiriman</string>
-    <string name="label_button_change_address_or_send_to_multiple_address">Ganti alamat atau gunakan beberapa alamat</string>
+    <string name="label_button_change_address_or_send_to_multiple_address">Ganti alamat atau kirim ke beberapa alamat</string>
     <string name="label_button_choose_courier">Pilih Kurir</string>
     <string name="label_sent_by">Dikirim oleh :</string>
     <string name="label_courier">Kurir Pengiriman</string>
@@ -91,7 +91,6 @@
     <string name="message_error_dropshipper_phone_empty">Mohon isi nomor telepon Anda</string>
     <string name="message_error_dropshipper_phone_invalid">Nomor telepon yang dimasukkan tidak sesuai</string>
     <string name="message_error_no_pinpoint">Anda belum menandai lokasi tujuan dalam peta</string>
-    <string name="message_error_dropshipper">Data dropshipper belum lengkap</string>
     <string name="label_main_address">Utama</string>
     <string name="show_case_finish">Mengerti</string>
     <string name="show_case_prev">Sebelumnya</string>
@@ -166,6 +165,8 @@
     <string name="checkout_module_subtitle_error_empty_address">Tidak ada alamat</string>
     <string name="checkout_module_label_button_retry_error_empty_address">Tambah Alamat</string>
     <string name="message_payment_success">Pembayaran Berhasil</string>
-    <string name="message_error_courier_not_selected">Pastikan Anda telah memilih kurir pengiriman untuk semua alamat</string>
+    <string name="message_error_courier_not_selected_or_dropshipper_empty">Pastikan Anda telah memilih kurir pengiriman untuk semua alamat dan melengkapi informasi tambahan.</string>
+    <string name="label_courier_etd">Perkiraan tiba dihitung sejak pesanan dikirim</string>
+    <string name="error_message_checkout_failed">Gagal memproses pembayaran. Silakan coba lagi.</string>
 
 </resources>

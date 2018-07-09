@@ -22,44 +22,22 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_16"
-                android:background="@drawable/bg_shadow"
+                android:background="@drawable/border_rectangle_grey"
                 android:orientation="horizontal">
 
-                <RelativeLayout
+                <TextView
+                    android:id="@+id/textview_promo_code"
+                    style="@style/TextSmallMediumBlack54"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:layout_weight="1"
-                    android:padding="@dimen/dp_16">
-
-                    <TextView
-                        android:id="@+id/label_promo_code"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        tools:text="Kode Promo: " />
-
-                    <TextView
-                        android:id="@+id/textview_promo_code"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginLeft="@dimen/dp_3"
-                        android:layout_marginStart="@dimen/dp_3"
-                        android:layout_toEndOf="@id/label_promo_code"
-                        android:layout_toRightOf="@+id/label_promo_code"
-                        android:textColor="@color/tkpd_main_orange"
-                        tools:text="TOPEDONGKIR" />
-
-                    <TextView
-                        android:id="@+id/textview_voucher_detail"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/textview_promo_code"
-                        android:layout_gravity="center"
-                        tools:text="Potensi mendapatkan potongan ongkos kirim Rp. 40.000" />
-
-                </RelativeLayout>
+                    android:lineSpacingExtra="6sp"
+                    android:padding="@dimen/dp_16"
+                    tools:text="Lorem ipsum dolor sit amet, consect etur adipiscing elit, sed do eiusmodte mpor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniamane" />
 
                 <ImageView
                     android:id="@+id/button_cancel"

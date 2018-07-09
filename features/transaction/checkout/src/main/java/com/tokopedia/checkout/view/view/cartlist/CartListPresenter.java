@@ -232,7 +232,7 @@ public class CartListPresenter implements ICartListPresenter {
 
     @SuppressWarnings("deprecation")
     @Override
-    public void processToShipmentMultipleAddress(final RecipientAddressModel selectedAddress, Token token) {
+    public void processToShipmentMultipleAddress(final RecipientAddressModel selectedAddress) {
         view.showProgressLoading();
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         param.put("lang", "id");
@@ -289,7 +289,7 @@ public class CartListPresenter implements ICartListPresenter {
                             public void onNext(CartListData cartListData) {
                                 view.hideProgressLoading();
                                 if (!cartListData.isError())
-                                    view.renderToShipmentMultipleAddressSuccess(cartListData, selectedAddress, token);
+                                    view.renderToShipmentMultipleAddressSuccess(cartListData, selectedAddress);
                                 else
                                     view.renderErrorToShipmentMultipleAddress(cartListData.getErrorMessage());
                             }
@@ -948,25 +948,21 @@ public class CartListPresenter implements ICartListPresenter {
 
         EnhancedECommerceCartMapData enhancedECommerceCartMapData = new EnhancedECommerceCartMapData();
 
-        enhancedECommerceCartMapData.setCurrencyCode("IDR");
-        enhancedECommerceCartMapData.setAction(enhancedECommerceAction);
-
         for (CartItemData cartItemData : cartItemDataList) {
             EnhancedECommerceProductCartMapData enhancedECommerceProductCartMapData =
                     new EnhancedECommerceProductCartMapData();
             enhancedECommerceProductCartMapData.setCartId(String.valueOf(cartItemData.getOriginData().getCartId()));
             enhancedECommerceProductCartMapData.setProductName(cartItemData.getOriginData().getProductName());
             enhancedECommerceProductCartMapData.setProductID(String.valueOf(cartItemData.getOriginData().getProductId()));
-            enhancedECommerceProductCartMapData.setPrice(cartItemData.getOriginData().getPriceFormatted());
+            enhancedECommerceProductCartMapData.setPrice(String.valueOf(cartItemData.getOriginData().getPricePlanInt()));
             enhancedECommerceProductCartMapData.setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
-
             enhancedECommerceProductCartMapData.setCategory(TextUtils.isEmpty(cartItemData.getOriginData().getCategoryForAnalytics())
                     ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
                     : cartItemData.getOriginData().getCategoryForAnalytics());
             enhancedECommerceProductCartMapData.setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
-            enhancedECommerceProductCartMapData.setQty(cartItemData.getUpdatedData().getQuantity());
+            enhancedECommerceProductCartMapData.setQty(String.valueOf(cartItemData.getUpdatedData().getQuantity()));
             enhancedECommerceProductCartMapData.setShopId(cartItemData.getOriginData().getShopId());
-            //   product.setShopType(generateShopType(productData.getShopInfo()));
+            enhancedECommerceProductCartMapData.setShopType(cartItemData.getOriginData().getShopType());
             enhancedECommerceProductCartMapData.setShopName(cartItemData.getOriginData().getShopName());
             enhancedECommerceProductCartMapData.setCategoryId(cartItemData.getOriginData().getCategoryId());
             enhancedECommerceProductCartMapData.setDimension38(
@@ -991,7 +987,10 @@ public class CartListPresenter implements ICartListPresenter {
             );
             enhancedECommerceCartMapData.addProduct(enhancedECommerceProductCartMapData.getProduct());
         }
-        return enhancedECommerceCartMapData.getCartMap();
 
+        enhancedECommerceCartMapData.setCurrencyCode("IDR");
+        enhancedECommerceCartMapData.setAction(enhancedECommerceAction);
+
+        return enhancedECommerceCartMapData.getCartMap();
     }
 }

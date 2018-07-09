@@ -49,7 +49,6 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
         if (currentAddress != null) {
             intent.putExtra(EXTRA_CURRENT_ADDRESS, currentAddress);
         }
-
         return intent;
     }
 
@@ -60,7 +59,6 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
         if (currentAddress != null) {
             intent.putExtra(EXTRA_CURRENT_ADDRESS, currentAddress);
         }
-
         return intent;
     }
 
@@ -139,10 +137,8 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
 
                 Fragment fragment = CartAddressChoiceFragment.newInstance(selectedAddressResult);
                 fragment.setArguments(bundle);
-
-                getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 getSupportFragmentManager().beginTransaction()
-                        .add(R.id.container, fragment, fragment.getClass().getSimpleName())
+                        .replace(R.id.parent_view, fragment, fragment.getClass().getSimpleName())
                         .commit();
                 break;
 
@@ -172,7 +168,6 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
             case TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST:
                 return ShipmentAddressListFragment.newInstance(
                         (RecipientAddressModel) getIntent().getParcelableExtra(EXTRA_CURRENT_ADDRESS));
-
         }
     }
 
@@ -182,8 +177,9 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
             ((CartAddressChoiceFragment) getCurrentFragment())
                     .checkoutAnalyticsChangeAddress.eventClickChangeAddressClickArrowBackFromGantiAlamat();
         }
-        setToolbarTitle(getString(R.string.checkout_module_title_shipping_dest));
+        if (getSupportFragmentManager() != null && getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            setToolbarTitle(getString(R.string.checkout_module_title_shipping_dest));
+        }
         super.onBackPressed();
-
     }
 }

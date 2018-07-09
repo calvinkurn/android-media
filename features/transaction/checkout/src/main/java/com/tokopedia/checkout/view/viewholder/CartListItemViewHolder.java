@@ -23,6 +23,8 @@ import com.tokopedia.checkout.view.adapter.CartListAdapter;
 import com.tokopedia.checkout.view.holderitemdata.CartItemHolderData;
 import com.tokopedia.design.component.TextViewCompat;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -168,9 +170,7 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
         if (cartItemHolderData.getCartItemData().getOriginData().getInvenageValue() == 0) {
             cartItemHolderData.getCartItemData().getOriginData().setInvenageValue(QTY_MAX);
         }
-        this.tvShopName.setText(
-                Html.fromHtml(data.getCartItemData().getOriginData().getShopName())
-        );
+        this.tvShopName.setText(data.getCartItemData().getOriginData().getShopName());
         this.tvProductName.setText(
                 Html.fromHtml(data.getCartItemData().getOriginData().getProductName())
         );
@@ -223,10 +223,11 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
             }
         });
 
-        if (TextUtils.isEmpty(data.getCartItemData().getUpdatedData().getRemark())
+        if (StringUtils.isBlank(data.getCartItemData().getUpdatedData().getRemark())
                 && !data.isEditableRemark()) {
             this.etRemark.setVisibility(View.GONE);
             this.tvLabelRemarkOption.setVisibility(View.VISIBLE);
+            this.etRemark.setText("");
         } else {
             this.etRemark.setVisibility(View.VISIBLE);
             this.tvLabelRemarkOption.setVisibility(View.GONE);
@@ -378,8 +379,8 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
 
     private void checkQtyMustDisabled(CartItemHolderData cartItemHolderData, int qty) {
         if ((qty <= QTY_MIN || qty <= cartItemHolderData.getCartItemData().getOriginData().getMinimalQtyOrder()) &&
-            (qty >= QTY_MAX || (cartItemHolderData.getCartItemData().getOriginData().getInvenageValue() != 0 &&
-                qty >= cartItemHolderData.getCartItemData().getOriginData().getInvenageValue()))) {
+                (qty >= QTY_MAX || (cartItemHolderData.getCartItemData().getOriginData().getInvenageValue() != 0 &&
+                        qty >= cartItemHolderData.getCartItemData().getOriginData().getInvenageValue()))) {
             btnQtyMinus.setEnabled(false);
             btnQtyPlus.setEnabled(false);
             btnQtyMinus.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.bg_button_counter_minus_disabled));

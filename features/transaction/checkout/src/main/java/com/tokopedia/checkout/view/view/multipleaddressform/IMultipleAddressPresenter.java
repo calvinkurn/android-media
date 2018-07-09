@@ -19,9 +19,7 @@ public interface IMultipleAddressPresenter {
 
     List<MultipleAddressAdapterData> initiateMultipleAddressAdapterData(
             CartListData cartListData,
-            RecipientAddressModel recipientAddressModel,
-            Token token
-    );
+            RecipientAddressModel recipientAddressModel);
 
     void onUnsubscribe();
 
