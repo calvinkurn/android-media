@@ -183,9 +183,13 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
                     .checkoutAnalyticsChangeAddress.eventClickChangeAddressClickArrowBackFromChangeAddress();
             super.onBackPressed();
         } else if (getCurrentFragment() instanceof ShipmentAddressListFragment) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.parent_view, defaultFragment, defaultFragment.getClass().getSimpleName())
-                    .commit();
+            if (defaultFragment != null) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.parent_view, defaultFragment, defaultFragment.getClass().getSimpleName())
+                        .commit();
+            } else {
+                super.onBackPressed();
+            }
         }
     }
 }
