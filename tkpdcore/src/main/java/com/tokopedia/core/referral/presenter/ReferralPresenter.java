@@ -71,6 +71,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
     private TokoCashUseCase tokoCashUseCase;
     private SessionHandler sessionHandler;
     private int max_apps = 4;
+    private String url = "";
 
     @Inject
     public ReferralPresenter(GetReferralDataUseCase getReferralDataUseCase, TokoCashUseCase tokoCashUseCase, SessionHandler sessionHandler) {
@@ -111,6 +112,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
                 .setName(activity.getString(R.string.app_share_title))
                 .setTextContent(contents)
                 .setUri(Constants.WEB_PLAYSTORE_BUYER_APP_URL)
+                .setProductUrl(url)
                 .build();
 
         ShareBottomSheet.show(fragmentManager, shareData);
@@ -171,6 +173,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
                     localCacheHandler.applyEditor();
                     contents = referralCodeEntity.getPromoContent().getContent();
                     getView().renderVoucherCodeData(referralCodeEntity);
+                    url = referralCodeEntity.getPromoContent().getShareUrl();
                 } else {
                     getView().renderErrorGetVoucherCode(referralCodeEntity.getErorMessage());
                 }
@@ -388,6 +391,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
                 .setName(activity.getString(R.string.app_share_title))
                 .setTextContent(contents)
                 .setUri(Constants.WEB_PLAYSTORE_BUYER_APP_URL)
+                .setUri(url)
                 .build();
 
         if (shareApp.getPackageNmae().equalsIgnoreCase(TkpdState.PackageName.Whatsapp)) {
