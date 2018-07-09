@@ -35,13 +35,15 @@ public class GridCalendarAdapter extends ArrayAdapter {
     private int dateCalMonth;
     private List<HolidayResult> holidayResultList;
     private Date currentCalendar;
+    private Date maxDateCal;
 
     public GridCalendarAdapter(Context context, List<CellDate> monthlyDates, Calendar currentDate,
-                               List<HolidayResult> holidayResultList) {
+                               Calendar maxDate, List<HolidayResult> holidayResultList) {
         super(context, R.layout.view_calendar_picker_day);
         this.monthlyDates = monthlyDates;
         this.currentDate = currentDate;
         this.holidayResultList = holidayResultList;
+        this.maxDateCal = maxDate.getTime();
         mInflater = LayoutInflater.from(context);
     }
 
@@ -82,7 +84,8 @@ public class GridCalendarAdapter extends ArrayAdapter {
                 viewHolder.cellNumber.setBackground(getContext().getResources().getDrawable(R.drawable.bg_calendar_picker_today_selected));
                 viewHolder.cellNumber.setTextColor(getContext().getResources().getColor(R.color.white));
             } else {
-                if (DateCalendarUtil.getZeroTimeDate(dateCal.getTime()).compareTo(DateCalendarUtil.getZeroTimeDate(currentCalendar)) < 0) {
+                if (DateCalendarUtil.getZeroTimeDate(dateCal.getTime()).compareTo(DateCalendarUtil.getZeroTimeDate(currentCalendar)) < 0 ||
+                        DateCalendarUtil.getZeroTimeDate(dateCal.getTime()).compareTo(DateCalendarUtil.getZeroTimeDate(maxDateCal)) > 0) {
                     viewHolder.cellNumber.setTextColor(getContext().getResources().getColor(R.color.grey_300));
                 } else {
                     viewHolder.cellNumber.setBackground(getContext().getResources().getDrawable(R.drawable.bg_calendar_picker_default));
@@ -108,7 +111,8 @@ public class GridCalendarAdapter extends ArrayAdapter {
                 public void onClick(View view) {
                     Date dateSelected = monthlyDates.get(position).getDate();
                     if (dateSelected.getMonth() == getDisplayMonthInt() &&
-                            DateCalendarUtil.getZeroTimeDate(dateSelected).compareTo(DateCalendarUtil.getZeroTimeDate(calendarCurrent.getTime())) > 0)
+                            DateCalendarUtil.getZeroTimeDate(dateSelected).compareTo(DateCalendarUtil.getZeroTimeDate(calendarCurrent.getTime())) > 0
+                            && DateCalendarUtil.getZeroTimeDate(dateSelected).compareTo(DateCalendarUtil.getZeroTimeDate(maxDateCal)) <= 0)
                         actionListener.onClickDate(monthlyDates.get(position));
                 }
             });

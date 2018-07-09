@@ -150,8 +150,12 @@ public class TravelCalendarActivity extends BaseSimpleActivity implements Travel
         List<String> titleMonths = new ArrayList<>();
         Calendar calendarDateUser = (Calendar) currentCalendar.clone();
 
+        Calendar calendarMaxDate = (Calendar) Calendar.getInstance();
+        calendarMaxDate.setTime((Date) getIntent().getSerializableExtra(EXTRA_MAX_DATE));
+
         for (int i = 0; i < monthDeviation; i++) {
-            fragments.add(TravelCalendarFragment.newInstance(dateFromIntent, month, year, (ArrayList) holidayResultList));
+            fragments.add(TravelCalendarFragment.newInstance(dateFromIntent, month, year, calendarMaxDate,
+                    (ArrayList) holidayResultList));
 
             calendarDateUser.set(Calendar.MONTH, month);
             calendarDateUser.set(Calendar.YEAR, year);
