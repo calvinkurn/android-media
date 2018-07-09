@@ -1091,11 +1091,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 PollOptionViewModel pollOptionViewModel
                         = pollViewModel.getOptionViewModels().get(i);
 
-                if (selectedIndex == i) {
-                    pollOptionViewModel.setSelected(PollOptionViewModel.SELECTED);
-                } else {
-                    pollOptionViewModel.setSelected(PollOptionViewModel.UNSELECTED);
-                }
+                pollOptionViewModel.setSelected(selectedIndex == i ?
+                        PollOptionViewModel.SELECTED : PollOptionViewModel.UNSELECTED);
 
                 String newPercentage
                         = voteStatisticDomainModel.getListOptions().get(i).getPercentage();
