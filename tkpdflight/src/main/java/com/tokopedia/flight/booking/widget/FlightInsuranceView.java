@@ -209,6 +209,7 @@ public class FlightInsuranceView extends LinearLayout {
                 @Override
                 public void updateDrawState(TextPaint ds) {
                     ds.setUnderlineText(false);
+                    ds.setColor(getResources().getColor(R.color.font_black_secondary_54));
                     ds.setTypeface(Typeface.create(Typeface.DEFAULT_BOLD, Typeface.BOLD));
                 }
             };
