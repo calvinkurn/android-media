@@ -49,7 +49,6 @@ public class WishListCheckMapper extends Mapper<TopAdsModel> {
                 }
             }
         } catch (Exception e) {
-            Log.e(TAG, e.getLocalizedMessage());
         }
         return topAdsModel;
     }

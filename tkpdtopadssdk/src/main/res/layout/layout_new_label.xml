@@ -5,7 +5,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_new_label"
-    android:textColor="#279ba4"
+    android:textColor="@color/new_label_color"
     android:fontFamily="sans-serif-medium"
     android:gravity="center"
     android:layout_marginRight="@dimen/dp_6"

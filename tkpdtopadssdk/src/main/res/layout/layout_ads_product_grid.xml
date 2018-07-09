@@ -190,7 +190,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/location_container"
         android:background="@drawable/bg_new_label"
-        android:textColor="#279ba4"
+        android:textColor="@color/new_label_color"
         android:fontFamily="sans-serif-medium"
         android:gravity="center"
         android:layout_marginTop="@dimen/dp_5"

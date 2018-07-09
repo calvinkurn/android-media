@@ -6,10 +6,6 @@
     android:layout_height="wrap_content"
     android:background="@color/white">
 
-    <!-- REMOVE THIS FILE FROM TKPDCORE -->
-    <!-- HotlistAdapter tkpddiscovery not yet use this -->
-    <!-- if anyone still use this, create your own xml or reuse listveiw_hotlist_product.xml if necessary -->
-
     <LinearLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
@@ -29,8 +25,8 @@
 
             <com.tokopedia.core.customwidget.SquareImageView
                 android:id="@+id/product_image"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="@dimen/dp_100"
+                android:layout_height="@dimen/dp_100"
                 android:adjustViewBounds="true"
                 android:gravity="center"
                 app:srcCompat="@drawable/loading_page" />

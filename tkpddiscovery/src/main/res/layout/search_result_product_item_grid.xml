@@ -8,10 +8,6 @@
     android:background="@color/white"
     android:clickable="true">
 
-    <!-- HAPUS INI KELAS DARI tkpdcore -->
-    <!-- use gridview_hotlist_product from tkpddiscovery -->
-    <!-- DELETE THIS FILE -->
-
     <android.support.v7.widget.CardView
         android:id="@+id/image_card"
         android:layout_width="match_parent"
@@ -185,8 +181,8 @@
 
         <ImageView
             android:id="@+id/rating"
-            android:layout_width="51dp"
-            android:layout_height="10dp"
+            android:layout_width="@dimen/dp_51"
+            android:layout_height="@dimen/dp_10"
             />
 
         <TextView
