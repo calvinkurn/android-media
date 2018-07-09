@@ -22,6 +22,7 @@ import com.tokopedia.train.scheduledetail.presentation.fragment.TrainScheduleDet
 import com.tokopedia.train.scheduledetail.presentation.fragment.TrainSchedulePriceDetailFragment;
 import com.tokopedia.train.scheduledetail.presentation.model.TrainScheduleDetailViewModel;
 import com.tokopedia.train.scheduledetail.presentation.presenter.TrainSchedulePresenter;
+import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
 
 import javax.inject.Inject;
 
@@ -56,6 +57,7 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
     private TextView destinationCityName;
 
     private TrainScheduleDetailViewModel trainScheduleDetailViewModel;
+    private TrainScheduleViewModel trainScheduleViewModel;
 
     private String scheduleId;
     private boolean showSubmitButton;
@@ -113,7 +115,7 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
 
         buttonSubmit.setOnClickListener(v -> {
             Intent intent = new Intent();
-            intent.putExtra(EXTRA_TRAIN_SELECTED, scheduleId);
+            intent.putExtra(EXTRA_TRAIN_SELECTED, trainScheduleViewModel);
             setResult(RESULT_OK, intent);
             finish();
         });
@@ -153,8 +155,9 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
     }
 
     @Override
-    public void showScheduleDetail(TrainScheduleDetailViewModel trainScheduleDetailViewModel) {
+    public void showScheduleDetail(TrainScheduleViewModel trainScheduleViewModel, TrainScheduleDetailViewModel trainScheduleDetailViewModel) {
         this.trainScheduleDetailViewModel = trainScheduleDetailViewModel;
+        this.trainScheduleViewModel = trainScheduleViewModel;
         originStationCode.setText(trainScheduleDetailViewModel.getOriginStationCode());
         originCityName.setText(trainScheduleDetailViewModel.getOriginCityName());
         destinationStationCode.setText(trainScheduleDetailViewModel.getDestinationStationCode());

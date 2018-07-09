@@ -35,7 +35,7 @@ public interface TrainSearchContract {
 
         void hideFilterAndSortButtonAction();
 
-        void selectSchedule(String scheduleId);
+        void selectSchedule(TrainScheduleViewModel trainScheduleViewModel);
 
         int getSortOptionSelected();
 
