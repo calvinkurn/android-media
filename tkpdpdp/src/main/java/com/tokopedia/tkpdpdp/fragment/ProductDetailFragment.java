@@ -1706,8 +1706,8 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         checkoutAnalyticsAddToCart.eventClickAddToCartImpressionAtcSuccess();
         updateCartNotification();
         enhanceEcommerceAtc(addToCartResult);
-        if (getActivity().getApplication() instanceof PdpRouter) {
-            Intent intent = ((PdpRouter) getActivity().getApplication())
+        if (getActivity() != null && getActivity().getApplicationContext() instanceof PdpRouter) {
+            Intent intent = ((PdpRouter) getActivity().getApplicationContext())
                     .getCartIntent(getActivity());
             startActivity(intent);
         }
@@ -1723,7 +1723,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     }
 
     private void showSnackbarSuccessAtc(String message) {
-        ToasterNormal.make(getView(), message, TOASTER_DURATION).show();
+        ToasterNormal.make(getView(), message, Snackbar.LENGTH_SHORT).show();
     }
 
     private void enhanceEcommerceAtc(AddToCartResult addToCartResult) {
