@@ -42,6 +42,7 @@ public class TravelCalendarPresenter extends BaseDaggerPresenter<TravelCalendarC
 
             @Override
             public void onNext(List<HolidayResult> holidayResults) {
+                getView().hideLoading();
                 getView().renderAllHolidayEvent(holidayResults);
             }
         });
@@ -49,6 +50,7 @@ public class TravelCalendarPresenter extends BaseDaggerPresenter<TravelCalendarC
 
     @Override
     public void getMonthsCalendarList(Date minDate, Date maxDate) {
+        getView().showLoading();
         Calendar initCalendar = Calendar.getInstance();
         Calendar calendarMinDate = (Calendar) initCalendar.clone();
         calendarMinDate.setTime(minDate);

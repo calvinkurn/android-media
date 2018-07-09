@@ -9,9 +9,13 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.travelcalendar.R;
 import com.tokopedia.travelcalendar.di.TravelCalendarComponent;
 import com.tokopedia.travelcalendar.view.model.CellDate;
@@ -50,7 +54,7 @@ public class TravelCalendarActivity extends BaseSimpleActivity implements Travel
     private PagerTabStrip pagerTabStrip;
     private TravelCalendarComponent travelCalendarComponent;
     private Calendar currentCalendar = Calendar.getInstance();
-    private ContentLoadingProgressBar progressBar;
+    private ProgressBar progressBar;
 
     @Inject
     TravelCalendarPresenter presenter;
@@ -176,7 +180,27 @@ public class TravelCalendarActivity extends BaseSimpleActivity implements Travel
 
     @Override
     public void renderErrorMessage(Throwable throwable) {
+        progressBar.setVisibility(View.GONE);
+        String errorMessage = ErrorHandler.getErrorMessage(this, throwable);
+        NetworkErrorHelper.createSnackbarWithAction(this, errorMessage,
+                new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                presenter.getHolidayEvents();
+            }
+        }).showRetrySnackbar();
+    }
 
+    @Override
+    public void showLoading() {
+        progressBar.setVisibility(View.VISIBLE);
+        viewPager.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void hideLoading() {
+        progressBar.setVisibility(View.GONE);
+        viewPager.setVisibility(View.VISIBLE);
     }
 
     @Override

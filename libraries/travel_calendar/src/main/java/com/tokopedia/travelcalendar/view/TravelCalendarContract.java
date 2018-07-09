@@ -20,6 +20,10 @@ public interface TravelCalendarContract {
 
         void renderErrorMessage(Throwable throwable);
 
+        void showLoading();
+
+        void hideLoading();
+
     }
 
     interface Presenter extends CustomerPresenter<View> {
