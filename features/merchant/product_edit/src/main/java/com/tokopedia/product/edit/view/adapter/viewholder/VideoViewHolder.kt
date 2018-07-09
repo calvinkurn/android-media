@@ -18,7 +18,7 @@ class VideoViewHolder(itemView: View,
     }
 
     private fun setViews(){
-        itemView.imageDelete.setOnClickListener({
+        itemView.llDelete.setOnClickListener({
             videoChoosenListener.onVideoChosenDeleteClicked(adapterPosition)
         })
     }

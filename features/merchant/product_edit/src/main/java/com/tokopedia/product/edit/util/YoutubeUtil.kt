@@ -27,22 +27,28 @@ class YoutubeUtil {
         }
 
         fun convertYoutubeTimeFormattoHHMMSS(youtubetime: String?): String {
-
-            val pattern = "^PT(?:(\\d+)H)?(?:(\\d+)M)?(?:(\\d+))S?$"
-
-            val r = Pattern.compile(pattern)
             var result: String
+            val pattern = "^P(?:(\\d+)D)?T(?:(\\d+)H)?(?:(\\d+)M)?(?:(\\d+))S?$"
+            val r = Pattern.compile(pattern)
 
             val m = r.matcher(youtubetime)
             if (m.find()) {
-                val hh = m.group(1)
-                var mm: String? = m.group(2)
-                var ss: String? = m.group(3)
+                val d = m.group(1)
+                var hh = m.group(2)
+                var mm: String? = m.group(3)
+                var ss: String? = m.group(4)
                 mm = if (mm != null) mm else "0"
                 ss = if (ss != null) ss else "0"
                 result = String.format("%02d:%02d", Integer.parseInt(mm), Integer.parseInt(ss))
 
                 if (hh != null) {
+                    if(d!=null){
+                        hh = ((d.toInt() * 24) + hh.toInt()).toString()
+                    }
+                    result = "$hh:$result"
+                } else if(d!=null){
+                    hh = "0"
+                    hh = ((d.toInt() * 24) + hh.toInt()).toString()
                     result = "$hh:$result"
                 }
             } else {
