@@ -88,6 +88,7 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
                 recyclerView.setBackgroundColor(ContextCompat.getColor(context, android.R.color.transparent));
                 break;
             case GRID:
+            case BIG:
                 recyclerView.setLayoutManager(gridLayoutManager);
                 recyclerView.setBackgroundColor(ContextCompat.getColor(context, R.color.white));
                 break;
@@ -103,9 +104,7 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
     }
 
     @Override
-    public void onDisplayChange(DisplayMode mode, int spanCount) {
-        if(displayMode == DisplayMode.GRID){
-            gridLayoutManager.setSpanCount(spanCount);
-        }
+    public void onDisplayChange(int spanCount) {
+        gridLayoutManager.setSpanCount(spanCount);
     }
 }

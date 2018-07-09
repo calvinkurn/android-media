@@ -3,6 +3,7 @@ package com.tokopedia.topads.sdk.data;
 import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.view.DisplayMode;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductBigViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductGridViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductListViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ShopGridViewModel;
@@ -19,6 +20,12 @@ import java.util.List;
  */
 
 public class ModelConverter {
+
+    public static ProductBigViewModel convertToProductBigViewModel(Data data) {
+        ProductBigViewModel viewModel = new ProductBigViewModel();
+        viewModel.setData(data);
+        return viewModel;
+    }
 
     public static ProductGridViewModel convertToProductGridViewModel(Data data) {
         ProductGridViewModel viewModel = new ProductGridViewModel();

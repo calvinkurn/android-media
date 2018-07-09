@@ -284,12 +284,14 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     public void setLayoutManager(RecyclerView.LayoutManager layoutManager) {
         if (layoutManager instanceof GridLayoutManager) {
+            GridLayoutManager gridLayoutManager = (GridLayoutManager) layoutManager;
             if (getConfig().getDisplayMode() == DisplayMode.FEED) {
                 placer.setDisplayMode(getConfig().getDisplayMode());
-            } else {
+            } else if(gridLayoutManager.getSpanCount() == 2){
                 placer.setDisplayMode(DisplayMode.GRID);
+            } else {
+                placer.setDisplayMode(DisplayMode.BIG);
             }
-            GridLayoutManager gridLayoutManager = (GridLayoutManager) layoutManager;
             if (spanSizeLookup != null) {
                 gridLayoutManager.setSpanSizeLookup(spanSizeLookup);
             } else {
@@ -297,8 +299,7 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             }
             this.recyclerView.setLayoutManager(gridLayoutManager);
             if(displayChangeListener!=null) {
-                this.displayChangeListener.onDisplayChange(getConfig().getDisplayMode(),
-                        gridLayoutManager.getSpanCount());
+                this.displayChangeListener.onDisplayChange(gridLayoutManager.getSpanCount());
             }
         } else if (layoutManager instanceof LinearLayoutManager) {
             if (getConfig().getDisplayMode() == DisplayMode.FEED) {

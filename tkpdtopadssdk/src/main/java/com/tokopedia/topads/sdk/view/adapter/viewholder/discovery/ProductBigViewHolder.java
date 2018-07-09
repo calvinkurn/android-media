@@ -26,12 +26,12 @@ import java.util.List;
  * Created by errysuprayogi on 3/27/17.
  */
 
-public class ProductListBigViewHolder extends AbstractViewHolder<ProductGridViewModel> implements
+public class ProductBigViewHolder extends AbstractViewHolder<ProductGridViewModel> implements
         View.OnClickListener {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.layout_ads_product_grid;
-    private static final String TAG = ProductListBigViewHolder.class.getSimpleName();
+    public static final int LAYOUT = R.layout.layout_ads_product_list_big;
+    private static final String TAG = ProductBigViewHolder.class.getSimpleName();
 
     private LocalAdsClickListener itemClickListener;
     private Data data;
@@ -51,7 +51,7 @@ public class ProductListBigViewHolder extends AbstractViewHolder<ProductGridView
     private int clickPosition;
 
 
-    public ProductListBigViewHolder(View itemView, ImageLoader imageLoader, LocalAdsClickListener itemClickListener, int clickPosition) {
+    public ProductBigViewHolder(View itemView, ImageLoader imageLoader, LocalAdsClickListener itemClickListener, int clickPosition) {
         super(itemView);
         itemView.findViewById(R.id.container).setOnClickListener(this);
         itemView.findViewById(R.id.wishlist_button_container).setOnClickListener(this);

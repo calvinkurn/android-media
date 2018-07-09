@@ -3,6 +3,7 @@ package com.tokopedia.topads.sdk.view.adapter.factory;
 import android.view.ViewGroup;
 
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductBigViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductGridViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductListViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ShopGridViewModel;
@@ -27,6 +28,8 @@ public interface AdsTypeFactory {
     int type(ShopFeedViewModel viewModel);
 
     int type(ProductFeedViewModel viewModel);
+
+    int type(ProductBigViewModel viewModel);
 
     AbstractViewHolder createViewHolder(ViewGroup view, int viewType);
 

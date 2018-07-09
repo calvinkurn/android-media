@@ -78,6 +78,8 @@ public class TopAdsUseCase extends UseCase<TopAdsParams, AdsView> {
                                 visitables.add(ModelConverter.convertToProductListViewModel(data));
                             } else if (displayMode == DisplayMode.FEED) {
                                 visitables.add(ModelConverter.convertToProductFeedViewModel(data));
+                            } else if (displayMode == DisplayMode.BIG) {
+                                visitables.add(ModelConverter.convertToProductBigViewModel(data));
                             }
                         } else if (data.getShop() != null) {
                             if (displayMode == DisplayMode.GRID) {
@@ -88,6 +90,8 @@ public class TopAdsUseCase extends UseCase<TopAdsParams, AdsView> {
                                 visitables.add(ModelConverter.convertToShopFeedViewModel(data, displayMode));
                             } else if (displayMode == DisplayMode.FEED_EMPTY) {
                                 visitables.add(ModelConverter.convertToShopFeedViewModel(data, displayMode));
+                            }  else if (displayMode == DisplayMode.BIG) {
+                                visitables.add(ModelConverter.convertToProductBigViewModel(data));
                             }
                         }
                     }
