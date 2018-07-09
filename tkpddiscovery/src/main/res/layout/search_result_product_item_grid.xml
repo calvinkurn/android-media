@@ -164,6 +164,9 @@
             android:gravity="center_vertical"
             android:textColor="@color/black_38"
             android:textSize="@dimen/sp_12"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:singleLine="true"
             android:fontFamily="sans-serif"
             android:textStyle="normal"/>
 
