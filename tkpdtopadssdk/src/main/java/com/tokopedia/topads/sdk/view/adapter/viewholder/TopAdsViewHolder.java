@@ -32,7 +32,7 @@ import java.util.List;
  * @author by errysuprayogi on 4/13/17.
  */
 
-public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> {
+public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implements DisplayChangeListener {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_ads;
@@ -48,16 +48,12 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> {
     private TopAdsInfoClickListener clickListener;
     private TextView textHeader;
 
-    public TopAdsViewHolder(View itemView, LocalAdsClickListener itemClickListener, GridLayoutManager gridLayoutManager) {
+    public TopAdsViewHolder(View itemView, LocalAdsClickListener itemClickListener) {
         super(itemView);
         context = itemView.getContext();
         recyclerView = (RecyclerView) itemView.findViewById(R.id.list);
-        if(gridLayoutManager!=null){
-            this.gridLayoutManager = gridLayoutManager;
-        } else {
-            this.gridLayoutManager = new GridLayoutManager(context, DEFAULT_SPAN_COUNT,
+        this.gridLayoutManager = new GridLayoutManager(context, DEFAULT_SPAN_COUNT,
                 GridLayoutManager.VERTICAL, false);
-        }
         linearLayoutManager = new LinearLayoutManager(context);
         container = (LinearLayout) itemView.findViewById(R.id.root);
         adapter = new AdsItemAdapter(context);
@@ -104,5 +100,12 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> {
 
     public void setClickListener(TopAdsInfoClickListener adsInfoClickListener) {
         clickListener = adsInfoClickListener;
+    }
+
+    @Override
+    public void onDisplayChange(DisplayMode mode, int spanCount) {
+        if(displayMode == DisplayMode.GRID){
+            gridLayoutManager.setSpanCount(spanCount);
+        }
     }
 }

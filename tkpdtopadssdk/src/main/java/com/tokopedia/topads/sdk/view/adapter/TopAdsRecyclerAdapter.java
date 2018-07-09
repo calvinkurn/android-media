@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.adapter.ObserverType;
+import com.tokopedia.topads.sdk.listener.DisplayChangeListener;
 import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
@@ -47,6 +48,7 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private LoadingViewModel loadingViewModel = new LoadingViewModel();
     private TopAdsPlacer placer;
     private int itemTreshold = 5;
+    private DisplayChangeListener displayChangeListener;
 
     private EndlessScrollRecycleListener endlessScrollListener = new EndlessScrollRecycleListener() {
 
@@ -126,6 +128,10 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         };
         this.mOriginalAdapter.registerAdapterDataObserver(mAdapterDataObserver);
 
+    }
+
+    private void setDisplayChangeListener(DisplayChangeListener displayChangeListener) {
+        this.displayChangeListener = displayChangeListener;
     }
 
     public void setConfig(Config config) {
@@ -239,6 +245,7 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         int originalPos = getOriginalPosition(position);
         if (originalPos == TopAdsViewModel.TOP_ADS_POSITION_TYPE) {
             TopAdsViewHolder topAdsViewHolder = (TopAdsViewHolder) holder;
+            setDisplayChangeListener(topAdsViewHolder);
             TopAdsViewModel adsViewModel = (TopAdsViewModel) placer.getItem(position);
             topAdsViewHolder.setDisplayMode(placer.getDisplayMode());
             topAdsViewHolder.bind(adsViewModel);
@@ -288,8 +295,11 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             } else {
                 gridLayoutManager.setSpanSizeLookup(new SpanSizeLookup(gridLayoutManager));
             }
-            this.typeFactory.setLayoutManager(gridLayoutManager);
             this.recyclerView.setLayoutManager(gridLayoutManager);
+            if(displayChangeListener!=null) {
+                this.displayChangeListener.onDisplayChange(getConfig().getDisplayMode(),
+                        gridLayoutManager.getSpanCount());
+            }
         } else if (layoutManager instanceof LinearLayoutManager) {
             if (getConfig().getDisplayMode() == DisplayMode.FEED) {
                 placer.setDisplayMode(getConfig().getDisplayMode());
