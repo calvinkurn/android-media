@@ -354,8 +354,8 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     @Override
     public void addDealsToCards(List<CategoryItemsViewModel> categoryItemsViewModels) {
         ((DealsCategoryAdapter) recyclerViewDeals.getAdapter()).addAll(categoryItemsViewModels);
-        if (((DealsCategoryAdapter) recyclerViewDeals.getAdapter()).getItemCount() == 0)
-            tvRecommendedDeals.setVisibility(View.GONE);
+        if (((DealsCategoryAdapter) recyclerViewDeals.getAdapter()).getItemCount() > 0)
+            tvRecommendedDeals.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -441,12 +441,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
 
     @Override
     public void notifyDataSetChanged(int position) {
-        if (dealDetail.getIsLiked()) {
-            ivFavourite.setBackgroundResource(R.drawable.ic_wishlist_filled);
-        } else {
-            ivFavourite.setBackgroundResource(R.drawable.ic_wishlist_unfilled);
-        }
-        setLikes(dealDetail.getLikes());
+        setLikes(dealDetail.getLikes(), dealDetail.getIsLiked());
     }
 
     @Override
@@ -474,7 +469,13 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     }
 
     @Override
-    public void setLikes(int likes) {
+    public void setLikes(int likes, boolean isLiked) {
+        dealDetail.setIsLiked(isLiked);
+        if (dealDetail.getIsLiked()) {
+            ivFavourite.setBackgroundResource(R.drawable.ic_wishlist_filled);
+        } else {
+            ivFavourite.setBackgroundResource(R.drawable.ic_wishlist_unfilled);
+        }
         if (likes == 0) {
             tvLikes.setVisibility(View.GONE);
         } else {

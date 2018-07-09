@@ -38,6 +38,8 @@ public class Items {
     @Expose
     private String metaData;
 
+    private boolean isTapActionsLoaded;
+
 
     public String getTitle() {
         return title;
@@ -101,6 +103,14 @@ public class Items {
 
     public void setMetaData(String metaData) {
         this.metaData = metaData;
+    }
+
+    public boolean isTapActionsLoaded() {
+        return isTapActionsLoaded;
+    }
+
+    public void setTapActionsLoaded(boolean tapActionsLoaded) {
+        isTapActionsLoaded = tapActionsLoaded;
     }
 
     @Override

@@ -539,7 +539,7 @@ public class DrawerBuyerHelper extends DrawerHelper
 
                     break;
                 case TkpdState.DrawerPosition.PEOPLE_FLIGHT_TRANSACTION_LIST:
-                    intent = FlightOrderListActivity.getCallingIntent(context);
+                    intent = TransactionPurchaseRouter.createIntentOrderListSummary(context, OrderCategory.FLIGHTS);
                     context.startActivity(intent);
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.FLIGHT_TRANSACTION_LIST);
                     AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(),AppEventTracking.EventLabel.FLIGHT_TRANSACTION_LIST, AppEventTracking.EventLabel.PURCHASE);

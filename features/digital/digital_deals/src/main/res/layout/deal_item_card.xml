@@ -66,25 +66,34 @@
             tools:text="1 Set Jumbo Bento for 2 persons on Weekdays (Monday - Friday)" />
 
 
-        <android.support.v7.widget.CardView
-            android:id="@+id/cv_brand"
-            android:layout_width="@dimen/image_width_brand_deals_card"
-            android:layout_height="@dimen/image_width_brand_deals_card"
+        <LinearLayout
+            android:id="@+id/ll_brand"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_8"
-            app:cardCornerRadius="@dimen/dp_8"
-            app:cardElevation="0dp"
+            android:orientation="vertical"
+            android:background="@drawable/background_brand_logo"
+
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_deal_intro">
 
-            <ImageView
-                android:id="@+id/iv_brand"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/background_brand_logo"
-                android:scaleType="fitCenter" />
+            <android.support.v7.widget.CardView
+                android:id="@+id/cv_brand"
+                android:layout_width="@dimen/image_width_brand_deals_card"
+                android:layout_height="@dimen/image_width_brand_deals_card"
+                android:layout_margin="@dimen/border_width"
+                app:cardCornerRadius="@dimen/dp_8"
+                app:cardElevation="0dp">
 
-        </android.support.v7.widget.CardView>
+                <ImageView
+                    android:id="@+id/iv_brand"
+                    android:layout_width="@dimen/image_width_brand_deals_card"
+                    android:layout_height="@dimen/image_width_brand_deals_card"
+                    android:scaleType="fitCenter" />
+
+            </android.support.v7.widget.CardView>
+        </LinearLayout>
 
         <TextView
             android:id="@+id/tv_brand_name"
@@ -100,8 +109,8 @@
             android:textColor="@color/black_40"
             android:textSize="@dimen/sp_12"
             android:textStyle="normal"
-            app:layout_constraintLeft_toRightOf="@+id/cv_brand"
-            app:layout_constraintTop_toTopOf="@+id/cv_brand"
+            app:layout_constraintLeft_toRightOf="@+id/ll_brand"
+            app:layout_constraintTop_toTopOf="@+id/ll_brand"
             tools:text="Bakerzin" />
 
 
@@ -119,7 +128,7 @@
             android:textColor="@color/black_40"
             android:textSize="@dimen/sp_12"
             android:textStyle="normal"
-            app:layout_constraintLeft_toRightOf="@+id/cv_brand"
+            app:layout_constraintLeft_toRightOf="@+id/ll_brand"
             app:layout_constraintRight_toLeftOf="@+id/tv_off"
             app:layout_constraintTop_toBottomOf="@+id/tv_brand_name"
             tools:text="Tersedia di 50 lokasi fgfg vgfg fgf gfgvgfgf fgfg fgf" />
@@ -190,8 +199,8 @@
             android:id="@+id/iv_wish_list"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="@dimen/dp_8"
             android:layout_marginLeft="@dimen/dp_8"
+            android:padding="@dimen/dp_8"
             app:layout_constraintBottom_toBottomOf="@+id/tv_sales_price"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="@+id/tv_mrp" />

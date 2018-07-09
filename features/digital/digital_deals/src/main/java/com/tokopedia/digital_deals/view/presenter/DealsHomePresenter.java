@@ -31,7 +31,6 @@ import com.tokopedia.digital_deals.view.viewmodel.BrandViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.CategoriesModel;
 import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.CategoryViewModel;
-import com.tokopedia.digital_deals.view.viewmodel.LocationViewModel;
 import com.tokopedia.usecase.RequestParams;
 
 import java.lang.reflect.Type;
@@ -128,7 +127,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
                         else if (currentPage + 1 >= totalPages) {
                             currentPage = 0;
                         }
-                        CommonUtils.dumper("in slide on next , currentPage "+currentPage + " , total page" +totalPages);
+                        CommonUtils.dumper("in slide on next , currentPage " + currentPage + " , total page" + totalPages);
                         mTouchViewPager.setCurrentItem(currentPage, true);
                     }
                 });
@@ -149,7 +148,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
             getView().navigateToActivityRequest(searchIntent, DealsHomeActivity.REQUEST_CODE_DEALSSEARCHACTIVITY);
         } else if (id == R.id.tv_location_name) {
             getView().navigateToActivityRequest(new Intent(getView().getActivity(), DealsLocationActivity.class), DealsHomeActivity.REQUEST_CODE_DEALSLOCATIONACTIVITY);
-            getView().getActivity().overridePendingTransition( R.anim.slide_in_up, R.anim.hold );
+            getView().getActivity().overridePendingTransition(R.anim.slide_in_up, R.anim.hold);
 
         } else if (id == R.id.action_menu_favourite) {
 
@@ -235,68 +234,40 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
         });
     }
 
-//    public void getBrandsList() {
-//        RequestParams brandsParams = RequestParams.create();
-//        brandsParams.putString(Utils.BRAND_QUERY_PARAM_TREE, Utils.BRAND_QUERY_PARAM_BRAND);
-////        LocationViewModel location=Utils.getSingletonInstance()
-////                .getLocation(getView().getActivity());
-////        if(location!=null) {
-////            brandsParams.putInt(Utils.BRAND_QUERY_PARAM_CITY_ID, location.getId());
-////        }
-//        getView().showProgressBar();
-//        getDealsListRequestUseCase.setRequestParams(brandsParams);
-//        getAllBrandsUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
-//            @Override
-//            public void onCompleted() {
-//
-//            }
-//
-//            @Override
-//            public void onError(Throwable e) {
-//
-//            }
-//
-//            @Override
-//            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
-//                Type token = new TypeToken<DataResponse<AllBrandsDomain>>() {
-//                }.getType();
-//                RestResponse restResponse = typeRestResponseMap.get(token);
-//                DataResponse data = restResponse.getData();
-//                AllBrandsDomain dealEntity = (AllBrandsDomain) data.getData();
-//                isBrandsLoaded = true;
-//
-//                brandViewModels = Utils.getSingletonInstance().convertIntoBrandListViewModel(dealEntity.getBrands());
-//                getView().renderBrandList(brandViewModels);
-//                showHideViews();
-//                CommonUtils.dumper("enter onNext");
-//
-//            }
-//        });
-//    }
-
     private void loadMoreItems() {
         isLoading = true;
 
-        getNextDealPageUseCase.execute(searchNextParams, new Subscriber<DealsDomain>() {
+        getNextDealPageUseCase.setRequestParams(searchNextParams);
+        getDealsListRequestUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
 
             }
 
             @Override
-            public void onError(Throwable throwable) {
+            public void onError(Throwable e) {
                 isLoading = false;
+
             }
 
             @Override
-            public void onNext(DealsDomain dealsDomain) {
+            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
                 isLoading = false;
+                Type token = new TypeToken<DataResponse<DealsResponse>>() {
+                }.getType();
+
+
+                RestResponse restResponse = typeRestResponseMap.get(token);
+                DataResponse data = restResponse.getData();
+                DealsResponse dealsResponse = (DealsResponse) data.getData();
+                DealsDomain dealsDomain = new DealsTransformMapper().call(dealsResponse);
                 processSearchResponse(dealsDomain);
                 getView().addDealsToCards(getCarouselOrTop(categoryViewModels, TOP));
 
                 checkIfToLoad(getView().getLayoutManager());
             }
         });
+
     }
 
     private void showHideViews() {
@@ -390,8 +361,8 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
                 .convertIntoCategoryListViewModel(dealEntity);
     }
 
-    public void stopBannerSlide(){
-        if(subscription != null) {
+    public void stopBannerSlide() {
+        if (subscription != null) {
             subscription.unsubscribe();
         }
     }

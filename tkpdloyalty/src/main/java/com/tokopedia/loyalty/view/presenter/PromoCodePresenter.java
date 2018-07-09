@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.exception.ResponseErrorException;
+import com.tokopedia.core.network.exception.model.UnProcessableHttpException;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
@@ -205,7 +206,7 @@ public class PromoCodePresenter implements IPromoCodePresenter {
                     @Override
                     public void onError(Throwable e) {
                         view.hideProgressLoading();
-                        if (e instanceof TokoPointResponseErrorException || e instanceof ResponseErrorException) {
+                        if (e instanceof TokoPointResponseErrorException || e instanceof ResponseErrorException  || e instanceof UnProcessableHttpException) {
                             view.onPromoCodeError(e.getMessage());
                         } else view.onGetGeneralError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                     }

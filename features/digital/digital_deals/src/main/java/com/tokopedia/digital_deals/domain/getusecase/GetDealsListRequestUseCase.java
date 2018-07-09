@@ -7,30 +7,23 @@ import com.tokopedia.common.network.domain.RestRequestUseCase;
 import com.tokopedia.digital_deals.data.entity.response.homeresponse.DealsResponse;
 import com.tokopedia.digital_deals.data.source.DealsBaseURL;
 import com.tokopedia.digital_deals.data.source.DealsUrl;
-import com.tokopedia.digital_deals.domain.DealsRepository;
-import com.tokopedia.digital_deals.domain.model.DealsDomain;
 import com.tokopedia.digital_deals.domain.model.allbrandsdomainmodel.AllBrandsDomain;
-import com.tokopedia.digital_deals.view.presenter.DealDetailsPresenter;
 import com.tokopedia.digital_deals.view.presenter.DealsHomePresenter;
-import com.tokopedia.usecase.RequestParams;
-import com.tokopedia.usecase.UseCase;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import rx.Observable;
+import javax.inject.Inject;
 
 
 public class GetDealsListRequestUseCase extends RestRequestUseCase {
-    private final DealsRepository dealsRepository;
+
     private HashMap<String, Object> params;
 
-    public GetDealsListRequestUseCase(DealsRepository eventRepository) {
-        super();
-        this.dealsRepository = eventRepository;
-    }
+    @Inject
+    public GetDealsListRequestUseCase(){ }
 
     public void setRequestParams(HashMap<String, Object> requestParams) {
         this.params = requestParams;

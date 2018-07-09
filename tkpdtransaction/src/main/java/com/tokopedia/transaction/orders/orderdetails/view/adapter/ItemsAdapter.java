@@ -45,8 +45,6 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private final int ITEM2 = 2;
     private boolean isShortLayout;
     OrderListDetailPresenter presenter;
-    ItemViewHolder viewHolder;
-    boolean isTapActionsLoaded = false;
 
     public ItemsAdapter(Context context, List<Items> itemsList, boolean isShortLayout, OrderListDetailPresenter presenter) {
         this.context = context;
@@ -88,7 +86,6 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        viewHolder = (ItemViewHolder) holder;
         ((ItemViewHolder) holder).setIndex(position);
         ((ItemViewHolder) holder).bindData(itemsList.get(position), isShortLayout);
     }
@@ -101,8 +98,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     @Override
     public void setTapActionButton(int position, List<TapActions> tapActions) {
         itemsList.get(position).setTapActions(tapActions);
+        itemsList.get(position).setTapActionsLoaded(true);
         notifyItemChanged(position);
-        isTapActionsLoaded = true;
     }
 
     private View.OnClickListener getActionButtonClickListener(final String uri) {
@@ -113,11 +110,6 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         .actionOpenGeneralWebView((OrderListDetailActivity) context, uri);
             }
         };
-    }
-
-    @Override
-    public void tapActionLayoutVisible(int visibility) {
-        viewHolder.tapActionLayout.setVisibility(visibility);
     }
 
 
@@ -162,8 +154,16 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 metaDataInfo = gson.fromJson(item.getMetaData(), MetaDataInfo.class);
             }
             if (metaDataInfo != null) {
-                ImageHandler.loadImage(context, dealImage, metaDataInfo.getEntityImage(), R.color.grey_1100, R.color.grey_1100);
-                dealsDetails.setText(metaDataInfo.getEntityProductName());
+                if (metaDataInfo.getEntityImage() == null || metaDataInfo.getEntityImage().length() == 0) {
+                    ImageHandler.loadImage(context, dealImage, item.getImageUrl(), R.color.grey_1100, R.color.grey_1100);
+                } else {
+                    ImageHandler.loadImage(context, dealImage, metaDataInfo.getEntityImage(), R.color.grey_1100, R.color.grey_1100);
+                }
+                if (metaDataInfo.getEntityProductName() == null || metaDataInfo.getEntityProductName().length() == 0) {
+                    dealsDetails.setText(item.getTitle());
+                } else {
+                    dealsDetails.setText(metaDataInfo.getEntityProductName());
+                }
                 brandName.setText(metaDataInfo.getEntityBrandName());
                 if (!isShortLayout) {
                     validDate.setText(String.format(context.getResources().getString(R.string.text_valid_till), metaDataInfo.getEndDate()));
@@ -176,22 +176,26 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 }
             }
 
-            if (item.getTapActions().size() > 0 && !isTapActionsLoaded) {
+            if (item.getTapActions() != null && item.getTapActions().size() > 0 && !item.isTapActionsLoaded()) {
                 progressBar.setVisibility(View.VISIBLE);
                 tapActionLayout.setVisibility(View.GONE);
                 presenter.setTapActionButton(item.getTapActions(), ItemsAdapter.this, getIndex());
             }
-            if (isTapActionsLoaded) {
+
+            if (item.isTapActionsLoaded()) {
                 progressBar.setVisibility(View.GONE);
-                tapActionLayout.setVisibility(View.VISIBLE);
+                if (item.getTapActions() == null || item.getTapActions().size() == 0) {
+                    tapActionLayout.setVisibility(View.GONE);
+                } else {
+                    tapActionLayout.setVisibility(View.VISIBLE);
+                }
+
                 for (int i = 0; i < item.getTapActions().size(); i++) {
                     TapActions tapActions = item.getTapActions().get(i);
 
                     TextView tapActionTextView = new TextView(context);
                     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                    if (i != 0) {
-                        params.setMargins(0, (int) context.getResources().getDimension(R.dimen.dp_8), 0, 0);
-                    }
+                    params.setMargins(0, (int) context.getResources().getDimension(R.dimen.dp_8), 0, 0);
                     tapActionTextView.setPadding(24, 24, 24, 24);
                     tapActionTextView.setLayoutParams(params);
                     tapActionTextView.setTextColor(Color.WHITE);
@@ -202,7 +206,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     shape.setColor(context.getResources().getColor(R.color.green_nob));
 
 
-                    if (i == item.getTapActions().size() - 1) {
+                    if (i == item.getTapActions().size() - 1 && (item.getActionButtons() != null || item.getActionButtons().size() == 0)) {
                         float radius = context.getResources().getDimension(R.dimen.dp_4);
                         shape.setCornerRadii(new float[]{0, 0, 0, 0, radius, radius, radius, radius});
 
@@ -215,6 +219,45 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     if (!tapActions.getBody().equals(""))
                         tapActionTextView.setOnClickListener(getActionButtonClickListener(tapActions.getBody().getAppURL()));
                     tapActionLayout.addView(tapActionTextView);
+                }
+
+
+            }
+
+            if (item.getActionButtons() != null) {
+                if (item.getActionButtons().size() > 0) {
+                    actionLayout.setVisibility(View.VISIBLE);
+                }else{
+                    actionLayout.setVisibility(View.GONE);
+                }
+                actionLayout.removeAllViews();
+                for (int i = 0; i < item.getActionButtons().size(); i++) {
+
+                    ActionButton actionButton = item.getActionButtons().get(i);
+
+                    TextView actionBtn = new TextView(context);
+                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                    params.setMargins(0, (int) context.getResources().getDimension(R.dimen.dp_8), 0, 0);
+                    actionBtn.setPadding(24, 24, 24, 24);
+                    actionBtn.setLayoutParams(params);
+
+                    actionBtn.setGravity(Gravity.CENTER_HORIZONTAL);
+                    actionBtn.setText(actionButton.getLabel().toUpperCase());
+                    GradientDrawable shape = new GradientDrawable();
+                    shape.setShape(GradientDrawable.RECTANGLE);
+
+
+                    if (i == item.getTapActions().size() - 1) {
+                        float radius = context.getResources().getDimension(R.dimen.dp_4);
+                        shape.setCornerRadii(new float[]{0, 0, 0, 0, radius, radius, radius, radius});
+
+                    } else {
+
+                        shape.setCornerRadius(4);
+                    }
+                    actionBtn.setBackground(shape);
+                    actionBtn.setOnClickListener(getActionButtonClickListener(actionButton.getBody().getAppURL()));
+                    actionLayout.addView(actionBtn);
                 }
             }
         }

@@ -16,29 +16,11 @@ import com.tokopedia.core.drawer2.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.core.drawer2.domain.ProfileRepository;
 import com.tokopedia.core.drawer2.domain.interactor.ProfileUseCase;
 import com.tokopedia.core.network.apiservices.user.PeopleService;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.interceptors.OmsInterceptor;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital_deals.DealsModuleRouter;
-import com.tokopedia.digital_deals.data.DealsDataStoreFactory;
-import com.tokopedia.digital_deals.data.DealsRepositoryData;
-import com.tokopedia.digital_deals.data.source.DealsApi;
 import com.tokopedia.digital_deals.data.source.DealsBaseURL;
 import com.tokopedia.digital_deals.di.scope.DealsScope;
-import com.tokopedia.digital_deals.domain.DealsRepository;
-import com.tokopedia.digital_deals.domain.getusecase.GetAllBrandsUseCase;
-import com.tokopedia.digital_deals.domain.getusecase.GetBrandDetailsUseCase;
-import com.tokopedia.digital_deals.domain.getusecase.GetCategoryDetailRequestUseCase;
-import com.tokopedia.digital_deals.domain.getusecase.GetDealDetailsUseCase;
-import com.tokopedia.digital_deals.domain.getusecase.GetDealLikesUseCase;
-import com.tokopedia.digital_deals.domain.getusecase.GetDealsListRequestUseCase;
-import com.tokopedia.digital_deals.domain.getusecase.GetLocationListRequestUseCase;
-import com.tokopedia.digital_deals.domain.getusecase.GetNextBrandPageUseCase;
-import com.tokopedia.digital_deals.domain.getusecase.GetNextCategoryPageUseCase;
-import com.tokopedia.digital_deals.domain.getusecase.GetNextDealPageUseCase;
-import com.tokopedia.digital_deals.domain.getusecase.GetSearchDealsListRequestUseCase;
-import com.tokopedia.digital_deals.domain.getusecase.GetSearchNextUseCase;
-import com.tokopedia.digital_deals.domain.postusecase.PostUpdateDealLikesUseCase;
 import com.tokopedia.oms.di.OmsModule;
 
 import dagger.Module;
@@ -53,103 +35,6 @@ public class DealsModule {
 
     public DealsModule(Context context) {
         thisContext = context;
-    }
-
-    @Provides
-    @DealsScope
-    DealsApi provideDealsApi(@DealsQualifier Retrofit retrofit) {
-        return retrofit.create(DealsApi.class);
-    }
-
-    @Provides
-    @DealsScope
-    DealsDataStoreFactory provideDealsDataStoreFactory(DealsApi dealsApi) {
-        return new DealsDataStoreFactory(dealsApi);
-    }
-
-    @Provides
-    @DealsScope
-    DealsRepository provideDealsRepository(DealsDataStoreFactory dealsDataStoreFactory) {
-        return new DealsRepositoryData(dealsDataStoreFactory);
-    }
-
-
-    @Provides
-    @DealsScope
-    GetDealsListRequestUseCase provideGetDealsListRequestUseCase(DealsRepository dealsRepository) {
-        return new GetDealsListRequestUseCase(dealsRepository);
-    }
-
-    @Provides
-    @DealsScope
-    GetSearchDealsListRequestUseCase provideGetSearchDealsListRequestUseCase(DealsRepository dealsRepository) {
-        return new GetSearchDealsListRequestUseCase(dealsRepository);
-    }
-
-    @Provides
-    @DealsScope
-    GetSearchNextUseCase providesGetSearchNextUseCase(DealsRepository dealsRepository) {
-        return new GetSearchNextUseCase(dealsRepository);
-    }
-
-    @Provides
-    @DealsScope
-    GetBrandDetailsUseCase provideGetBrandDetailsUseCase(DealsRepository dealsRepository) {
-        return new GetBrandDetailsUseCase(dealsRepository);
-    }
-
-    @Provides
-    @DealsScope
-    GetDealDetailsUseCase provideGetDealDetailsUseCase(DealsRepository dealsRepository) {
-        return new GetDealDetailsUseCase(dealsRepository);
-    }
-
-    @Provides
-    @DealsScope
-    GetLocationListRequestUseCase provideGetLocationListRequestUseCase(DealsRepository dealsRepository) {
-        return new GetLocationListRequestUseCase(dealsRepository);
-    }
-
-    @Provides
-    @DealsScope
-    GetCategoryDetailRequestUseCase provideGetCategoryDetailRequestUseCase(DealsRepository dealsRepository) {
-        return new GetCategoryDetailRequestUseCase(dealsRepository);
-    }
-
-    @Provides
-    @DealsScope
-    GetNextCategoryPageUseCase provideGetNextCategoryPageUseCase(DealsRepository dealsRepository) {
-        return new GetNextCategoryPageUseCase(dealsRepository);
-    }
-
-    @Provides
-    @DealsScope
-    GetAllBrandsUseCase provideGetAllBrandsUseCase(DealsRepository dealsRepository) {
-        return new GetAllBrandsUseCase(dealsRepository);
-    }
-
-    @Provides
-    @DealsScope
-    GetNextBrandPageUseCase provideGetNextBrandPageUseCase(DealsRepository dealsRepository) {
-        return new GetNextBrandPageUseCase(dealsRepository);
-    }
-
-    @Provides
-    @DealsScope
-    GetNextDealPageUseCase provideGetNextDealPageUseCase(DealsRepository dealsRepository) {
-        return new GetNextDealPageUseCase(dealsRepository);
-    }
-
-    @Provides
-    @DealsScope
-    PostUpdateDealLikesUseCase providePostUpdateDealLikesUseCase(DealsRepository dealsRepository) {
-        return new PostUpdateDealLikesUseCase(dealsRepository);
-    }
-
-    @Provides
-    @DealsScope
-    GetDealLikesUseCase provideGetDealLikesUseCase(DealsRepository dealsRepository) {
-        return new GetDealLikesUseCase(dealsRepository);
     }
 
     @Provides
@@ -192,32 +77,6 @@ public class DealsModule {
         return new SessionHandler(context);
     }
 
-    @Provides
-    @DealsQualifier
-    @DealsScope
-    Retrofit provideDealsRetrofit(@DealsQualifier OkHttpClient okHttpClient,
-                                  Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(DealsBaseURL.DEALS_DOMAIN).client(okHttpClient).build();
-    }
-
-    @DealsQualifier
-    @Provides
-    OmsInterceptor provideRideInterCeptor(@ApplicationContext Context context) {
-        String oAuthString = "Bearer " + SessionHandler.getAccessToken();
-        return new OmsInterceptor(oAuthString, context);
-    }
-
-    @DealsQualifier
-    @Provides
-    public OkHttpClient provideOkHttpClient(@ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
-                                            HeaderErrorResponseInterceptor errorResponseInterceptor, @DealsQualifier OmsInterceptor authInterceptor, @ApplicationContext Context context) {
-        return new OkHttpClient.Builder()
-                .addInterceptor(authInterceptor)
-                .addInterceptor(errorResponseInterceptor)
-                .addInterceptor(httpLoggingInterceptor)
-                .addInterceptor(((DealsModuleRouter) context).getChuckInterceptor())
-                .build();
-    }
 
     @Provides
     @DealsScope

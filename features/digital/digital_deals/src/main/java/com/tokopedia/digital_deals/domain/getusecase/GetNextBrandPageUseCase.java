@@ -6,29 +6,22 @@ import com.tokopedia.common.network.data.model.RestRequest;
 import com.tokopedia.common.network.domain.RestRequestUseCase;
 import com.tokopedia.digital_deals.data.source.DealsBaseURL;
 import com.tokopedia.digital_deals.data.source.DealsUrl;
-import com.tokopedia.digital_deals.domain.DealsRepository;
 import com.tokopedia.digital_deals.domain.model.allbrandsdomainmodel.AllBrandsDomain;
-import com.tokopedia.digital_deals.domain.model.dealdetailsdomainmodel.DealsDetailsDomain;
 import com.tokopedia.digital_deals.view.presenter.DealDetailsPresenter;
-import com.tokopedia.digital_deals.view.presenter.DealsHomePresenter;
 import com.tokopedia.usecase.RequestParams;
-import com.tokopedia.usecase.UseCase;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import rx.Observable;
+import javax.inject.Inject;
 
 public class GetNextBrandPageUseCase extends RestRequestUseCase {
-    private final DealsRepository dealsRepository;
     private RequestParams params;
 
-    public GetNextBrandPageUseCase(DealsRepository dealsRepository){
-        super();
-        this.dealsRepository=dealsRepository;
-    }
+    @Inject
+    public GetNextBrandPageUseCase(){ }
 
     public void setRequestParams(RequestParams params) {
         this.params = params;
