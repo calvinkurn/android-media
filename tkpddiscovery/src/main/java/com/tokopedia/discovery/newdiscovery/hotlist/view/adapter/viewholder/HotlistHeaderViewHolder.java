@@ -47,8 +47,11 @@ import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.TopAdsBannerView;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by hangnadi on 10/8/17.
@@ -60,7 +63,7 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
     public static final int LAYOUT = R.layout.recyclerview_hotlist_banner;
     public static final String DEFAULT_ITEM_VALUE = "1";
     public static final String HOTLIST_ADS_SRC = "hotlist";
-
+    private DecimalFormat decimalFormat = new DecimalFormat("#,###,###");
     private final Context context;
     private final ItemClickListener mItemClickListener;
 
@@ -113,7 +116,7 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
     @Override
     public void bind(HotlistHeaderViewModel element) {
         hasTagAdapter.setData(element.getHashTags());
-        productCount.setText(String.format(context.getString(R.string.product_count), element.getTotalData()));
+        productCount.setText(String.format(context.getString(R.string.product_count), decimalFormat.format(element.getTotalData())));
         if (element.getHotlistPromo() != null) {
             hotlistPromoView.setVisibility(View.VISIBLE);
             renderPromoView(element.getHotlistTitle(), element.getHotlistPromo());

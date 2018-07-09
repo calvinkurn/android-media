@@ -174,7 +174,7 @@ public class HotlistFragment extends SearchSectionFragment
     @Override
     public void loadImageHeader(String bannerImageUrl) {
         ImageView imageHeader = getActivity().findViewById(R.id.hotlist_background);
-        ImageHandler.LoadImage(imageHeader, bannerImageUrl);
+        ImageHandler.loadImageSourceSize(getContext(), imageHeader, bannerImageUrl);
     }
 
     @Override
