@@ -64,6 +64,7 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
     private String finalCameraResultFilePath;
     private ImageRatioCropPresenter imageRatioCropPresenter;
     private boolean isCameraOpen;
+    private CameraListener cameraListener;
 
     public interface OnImagePickerCameraFragmentListener {
         void onImageTaken(String filePath);
@@ -116,7 +117,8 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
         View useImageLayout = view.findViewById(R.id.layout_use);
         View recaptureLayout = view.findViewById(R.id.layout_recapture);
 
-        cameraView.addCameraListener(new CameraListener() {
+        //noinspection SuspiciousNameCombination
+        cameraListener = new CameraListener() {
 
             @Override
             public void onCameraOpened(CameraOptions options) {
@@ -176,10 +178,17 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
             }
 
             @Override
+            public void onCameraClosed() {
+                super.onCameraClosed();
+                isCameraOpen = false;
+            }
+
+            @Override
             public void onPictureTaken(byte[] imageByte) {
                 generateImage(imageByte);
             }
-        });
+        };
+        cameraView.addCameraListener(cameraListener);
 
         flashImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -439,6 +448,8 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
     private void startCamera() {
         try {
             showCameraView();
+            cameraView.clearCameraListeners();
+            cameraView.addCameraListener(cameraListener);
             cameraView.start();
         } catch (Throwable e) {
             // no-op
