@@ -26,6 +26,7 @@ import rx.schedulers.Schedulers;
 public class GeoLocationUtils {
 
     private static final String TAG = GeoLocationUtils.class.getSimpleName();
+    private static final String DEFAULT_STREET_NAME = "Unnamed Rd";
 
     private static void getReverseGeoCodeParallel(Context context,
                                                   double latitude,
@@ -82,7 +83,7 @@ public class GeoLocationUtils {
                                     Log.d(TAG, "reverseGeoCode: 7." + address.getThoroughfare());
                                     Log.d(TAG, "reverseGeoCode: 8." + address.getSubThoroughfare());
                                 } else {
-                                    if (responseAddress.equals("Unnamed Rd")) {
+                                    if (responseAddress.equals(DEFAULT_STREET_NAME)) {
                                         responseAddress = listAddresses.get(0).getAddressLine(j);
                                     } else {
                                         responseAddress = responseAddress
@@ -144,9 +145,7 @@ public class GeoLocationUtils {
                                               String latitude,
                                               String longitude,
                                               GeoLocationListener listener) {
-        if (latitude == null || longitude == null) {
-            listener.getGeoCode("");
-        } else if (latitude.isEmpty() || longitude.isEmpty()) {
+        if (latitude.isEmpty() || longitude.isEmpty()) {
             listener.getGeoCode("");
         } else {
             getReverseGeoCodeParallel(context,
