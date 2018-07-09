@@ -261,7 +261,9 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
     }
 
     private void updateTotalView(int position, String totalView) {
-        if (position != DEFAULT_NO_POSITION && !TextUtils.isEmpty(totalView)) {
+        if (position != DEFAULT_NO_POSITION
+                && position < getAdapter().getData().size()
+                && !TextUtils.isEmpty(totalView)) {
             getAdapter().getData().get(position).setTotalView(totalView);
             getAdapter().notifyItemChanged(position);
         }
