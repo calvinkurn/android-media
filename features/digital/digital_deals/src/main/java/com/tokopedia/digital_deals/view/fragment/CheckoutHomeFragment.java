@@ -121,7 +121,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
         mainContent = view.findViewById(R.id.main_content);
         progressParLayout = view.findViewById(R.id.progress_bar_layout);
         ivRemovePromo = view.findViewById(R.id.iv_remove_promo);
-        clPromoAmount=view.findViewById(R.id.cl_promo);
+        clPromoAmount = view.findViewById(R.id.cl_promo);
         Drawable img = getResources().getDrawable(R.drawable.ic_promo_code);
         tvApplyPromo.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
 
@@ -143,12 +143,13 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
     public void renderFromDetails(DealsDetailsViewModel dealDetails, PackageViewModel packageViewModel) {
 
 
-        if (dealDetails.getBrand() != null) {
-            ImageHandler.loadImage(getContext(), imageViewBrand,
-                    dealDetails.getImageWeb(),
-                    R.color.grey_1100, R.color.grey_1100);
+        ImageHandler.loadImage(getContext(), imageViewBrand,
+                dealDetails.getImageWeb(),
+                R.color.grey_1100, R.color.grey_1100);
+
+        if (dealDetails.getBrand() != null)
             tvBrandName.setText(dealDetails.getBrand().getTitle());
-        }
+
 
         tvDealDetails.setText(dealDetails.getDisplayName());
         tvExpiryDate.setText(String.format(getString(R.string.valid_through),
@@ -221,11 +222,11 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
         clPromoApplied.setVisibility(View.VISIBLE);
         tvDiscount.setText(message);
         tvVoucherCode.setText(text);
-        if(discountAmount!=0){
+        if (discountAmount != 0) {
             clPromoAmount.setVisibility(View.VISIBLE);
-            TextView view=getRootView().findViewById(R.id.tv_promo_discount);
+            TextView view = getRootView().findViewById(R.id.tv_promo_discount);
             view.setText(Utils.convertToCurrencyString(discountAmount));
-        }else{
+        } else {
             clPromoAmount.setVisibility(View.GONE);
         }
         mPresenter.updateAmount(discountAmount);

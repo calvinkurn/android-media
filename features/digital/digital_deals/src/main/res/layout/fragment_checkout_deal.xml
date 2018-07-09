@@ -42,7 +42,7 @@
                     app:layout_constraintTop_toTopOf="parent">
 
                     <ImageView
-                        android:id="@+id/iv_brand"
+                        android:id="@+id/image_view_brand"
                         android:layout_width="@dimen/image_width_brand"
                         android:layout_height="@dimen/image_width_brand"
                         android:scaleType="centerCrop"

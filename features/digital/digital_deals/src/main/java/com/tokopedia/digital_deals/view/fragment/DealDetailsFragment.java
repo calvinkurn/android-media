@@ -471,6 +471,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     @Override
     public void setLikes(int likes, boolean isLiked) {
         dealDetail.setIsLiked(isLiked);
+        dealDetail.setLikes(likes);
         if (dealDetail.getIsLiked()) {
             ivFavourite.setBackgroundResource(R.drawable.ic_wishlist_filled);
         } else {

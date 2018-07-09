@@ -65,6 +65,7 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
 
 
     private static final int EVENT_LOGIN_REQUEST = 1099;
+
     public static Fragment createInstance() {
         Fragment fragment = new SelectDealQuantityFragment();
         return fragment;
@@ -128,7 +129,7 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
         tvTotalAmount = view.findViewById(R.id.tv_total_amount);
         llContinue = view.findViewById(R.id.ll_continue);
         progressBarLayout = view.findViewById(R.id.progress_bar_layout);
-        mainContent=view.findViewById(R.id.main_content);
+        mainContent = view.findViewById(R.id.main_content);
     }
 
     void setButtons() {
@@ -154,7 +155,7 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
 
     void setUpTotalAmount() {
 
-            tvTotalAmount.setText(Utils.convertToCurrencyString(dealDetails.getSalesPrice() * CURRENT_QUANTITY));
+        tvTotalAmount.setText(Utils.convertToCurrencyString(dealDetails.getSalesPrice() * CURRENT_QUANTITY));
 
     }
 
@@ -177,7 +178,7 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
             setButtons();
 
         } else if (v.getId() == R.id.ll_continue) {
-            packageViewModel=new PackageViewModel();
+            packageViewModel = new PackageViewModel();
             packageViewModel.setCategoryId(dealDetails.getCategoryId());
             packageViewModel.setProductId(dealDetails.getId());
             packageViewModel.setSalesPrice(dealDetails.getSalesPrice());
@@ -208,8 +209,8 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
     @Override
     public void renderFromDetails(DealsDetailsViewModel dealDetail) {
 
+        ImageHandler.loadImage(getContext(), ivBrand, dealDetails.getImageWeb(), R.color.grey_1100, R.color.grey_1100);
         if (dealDetails.getBrand() != null) {
-            ImageHandler.loadImage(getContext(), ivBrand, dealDetails.getImageWeb(), R.color.grey_1100, R.color.grey_1100);
             tvBrandName.setText(dealDetails.getBrand().getTitle());
         }
 

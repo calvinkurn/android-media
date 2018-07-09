@@ -205,7 +205,7 @@
             android:layout_width="@dimen/image_width_brand"
             android:layout_height="@dimen/image_width_brand"
             android:layout_margin="@dimen/border_width"
-            app:cardCornerRadius="@dimen/card_corner_deals_item"
+            app:cardCornerRadius="@dimen/dp_8"
             app:cardElevation="0dp">
 
             <ImageView
