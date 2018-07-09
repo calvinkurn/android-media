@@ -67,11 +67,11 @@ public class SelectPassengerView extends BaseCustomView {
 
         // get resource full name, to use later for checking is it png or vector
         TypedValue value = new TypedValue();
-        getContext().getResources().getValue(styledAttributes.getResourceId(R.styleable.SelectPassengerView_spv_icon, R.drawable.ic_passenger_adult), value, true);
+        getContext().getResources().getValue(styledAttributes.getResourceId(R.styleable.SelectPassengerView_spv_icon, R.drawable.ic_train_passenger_adult), value, true);
 
         try {
             if (value.string.toString().contains(SVG_EXTENSION)) {
-                icon = VectorDrawableCompat.create(getContext().getResources(), styledAttributes.getResourceId(R.styleable.SelectPassengerView_spv_icon, R.drawable.ic_passenger_adult), getContext().getTheme());
+                icon = VectorDrawableCompat.create(getContext().getResources(), styledAttributes.getResourceId(R.styleable.SelectPassengerView_spv_icon, R.drawable.ic_train_passenger_adult), getContext().getTheme());
             } else if (value.string.toString().contains(PNG_EXTENSION)) {
                 icon = styledAttributes.getDrawable(R.styleable.SelectPassengerView_spv_icon);
             }

@@ -22,7 +22,7 @@
                 android:id="@+id/spv_passenger_adult"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:spv_icon="@drawable/ic_passenger_adult"
+                app:spv_icon="@drawable/ic_train_passenger_adult"
                 app:spv_max_value="7"
                 app:spv_min_value="1"
                 app:spv_subtitle="@string/select_passenger_adult_subtitle"
