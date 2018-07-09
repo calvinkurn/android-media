@@ -323,6 +323,7 @@ ext {
             bottomSheetBuilder: ":libraries:bottom_sheet_builder",
             userSession     : ":libraries:user_session",
             imagePicker     : ":libraries:image_picker",
+            cameraView      : ":libraries:camera_view",
             imageuploader   : ":libraries:imageuploader",
             youtubeApi      : ":libraries:YouTubeAndroidPlayerApi",
             analytics       : ":libraries:analytics"
