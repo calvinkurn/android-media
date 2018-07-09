@@ -204,7 +204,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         }
 
         String loginIdString = getUserSession().getUserId();
-        loginIdInt = loginIdString.isEmpty() ? 0 : Integer.valueOf(loginIdString);
+        loginIdInt = TextUtils.isEmpty(loginIdString) ? 0 : Integer.valueOf(loginIdString);
     }
 
     @Nullable
