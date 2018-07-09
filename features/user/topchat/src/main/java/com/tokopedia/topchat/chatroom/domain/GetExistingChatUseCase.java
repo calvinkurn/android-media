@@ -30,11 +30,14 @@ public class GetExistingChatUseCase extends UseCase<ExistingChatPojo> {
     public static RequestParams generateParam(boolean isUserAskShop, String
             destinationId, String source)
     {
+        String destinationShopIdKey = "to_shop_id";
+        String destinationUserIdKey = "to_user_id";
+        String sourceKey = "source";
         RequestParams requestParams = RequestParams.create();
-        if(isUserAskShop) requestParams.putString("to_shop_id",destinationId);
-        else requestParams.putString("to_user_id",destinationId);
+        if(isUserAskShop) requestParams.putString(destinationShopIdKey,destinationId);
+        else requestParams.putString(destinationUserIdKey,destinationId);
 
-        requestParams.putString("source",source);
+        requestParams.putString(sourceKey,source);
         return requestParams;
     }
 }

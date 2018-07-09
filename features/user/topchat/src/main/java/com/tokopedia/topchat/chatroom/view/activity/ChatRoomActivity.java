@@ -151,6 +151,7 @@ public class ChatRoomActivity extends BasePresenterActivity
     @DeepLink(ApplinkConst.TOPCHAT)
     public static TaskStackBuilder getCallingTaskStack(Context context, Bundle extras) {
         Intent homeIntent = null;
+        String urlQueryValueTrue = "true";
         if (GlobalConfig.isSellerApp()) {
             homeIntent = SellerAppRouter.getSellerHomeActivity(context);
         } else {
@@ -161,7 +162,7 @@ public class ChatRoomActivity extends BasePresenterActivity
 
         extras.putBoolean(PARAM_WEBSOCKET, true);
         detailsIntent = new Intent(context, ChatRoomActivity.class).putExtras(extras);
-        if (TextUtils.equals(extras.getString(TkpdInboxRouter.IS_CHAT_BOT), "true")
+        if (TextUtils.equals(extras.getString(TkpdInboxRouter.IS_CHAT_BOT), urlQueryValueTrue)
                 && context.getApplicationContext() instanceof TopChatRouter) {
             parentIntent = ((TopChatRouter) context.getApplicationContext()).getHelpPageActivity(
                     context,
