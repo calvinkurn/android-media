@@ -91,6 +91,11 @@ public class DynamicFilterItemPriceViewHolder extends DynamicFilterViewHolder {
             public void onButtonPressed(int minValue, int maxValue) {
                 dynamicFilterView.onPriceSliderPressed(minValue, maxValue);
             }
+
+            @Override
+            public void onValueEditedFromTextInput(int minValue, int maxValue) {
+                dynamicFilterView.onPriceEditedFromTextInput(minValue, maxValue);
+            }
         });
 
         priceRangeInputView.setOnValueChangedListener(new PriceRangeInputView.OnValueChangedListener() {

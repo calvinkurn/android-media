@@ -79,6 +79,7 @@ import org.json.JSONObject;
 import io.branch.referral.Branch;
 import io.branch.referral.BranchError;
 
+
 @DeepLinkHandler({
         ConsumerDeeplinkModule.class,
         CoreDeeplinkModule.class,
@@ -108,6 +109,8 @@ import io.branch.referral.BranchError;
 })
 
 public class DeeplinkHandlerActivity extends AppCompatActivity {
+
+
 
     public static DeepLinkDelegate getDelegateInstance() {
         return new DeepLinkDelegate(

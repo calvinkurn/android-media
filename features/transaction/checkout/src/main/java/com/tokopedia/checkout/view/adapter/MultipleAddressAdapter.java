@@ -90,8 +90,8 @@ public class MultipleAddressAdapter
     }
 
     @Override
-    public void onEditItemChoosen(MultipleAddressAdapterData productData, MultipleAddressItemData addressData) {
-        listener.onItemChoosen(this.addressData, productData, addressData);
+    public void onEditItemChoosen(int parentItemPosotion, MultipleAddressAdapterData productData, MultipleAddressItemData addressData) {
+        listener.onItemChoosen(parentItemPosotion, this.addressData, productData, addressData);
     }
 
     class MultipleAddressHeaderViewHolder extends RecyclerView.ViewHolder {
@@ -130,11 +130,13 @@ public class MultipleAddressAdapter
 
         void onGoToChooseCourier(List<MultipleAddressAdapterData> data);
 
-        void onItemChoosen(ArrayList<MultipleAddressAdapterData> dataList,
+        void onItemChoosen(int itemPosition,
+                           ArrayList<MultipleAddressAdapterData> dataList,
                            MultipleAddressAdapterData productData,
                            MultipleAddressItemData addressData);
 
-        void onAddNewShipmentAddress(int addressPositionToAdd,
+        void onAddNewShipmentAddress(int itemPosition,
+                                     int addressPositionToAdd,
                                      ArrayList<MultipleAddressAdapterData> dataList,
                                      MultipleAddressAdapterData data,
                                      MultipleAddressItemData addressData);

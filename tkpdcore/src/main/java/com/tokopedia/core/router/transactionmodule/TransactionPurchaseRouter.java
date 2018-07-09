@@ -27,7 +27,6 @@ public class TransactionPurchaseRouter {
 
     public static final String EXTRA_STATE_TAB_POSITION = "EXTRA_STATE_TAB_POSITION";
     public static final String EXTRA_STATE_TX_FILTER = "EXTRA_STATE_TX_FILTER";
-    public static final String EXTRA_OMS_ORDER_CATEGORY = "EXTRA_OMS_ORDER_CATEGORY";
 
     public final static int TAB_POSITION_PURCHASE_SUMMARY = 0;
     public final static int TAB_POSITION_PURCHASE_VERIFICATION = 1;
@@ -60,10 +59,9 @@ public class TransactionPurchaseRouter {
         return intent;
     }
 
-    public static Intent createIntentOrderListSummary(Context context, String orderCategory) {
+    public static Intent createIntentOrderListSummary(Context context) {
         Intent intent = RouterUtils.getActivityIntent(context, TRANSACTION_ORDER_LIST_ACTIVITY);
         intent.putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_PURCHASE_ALL_ORDER);
-        intent.putExtra(EXTRA_OMS_ORDER_CATEGORY, orderCategory);
         return intent;
     }
 

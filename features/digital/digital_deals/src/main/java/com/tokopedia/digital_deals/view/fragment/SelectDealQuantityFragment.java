@@ -209,7 +209,7 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
     public void renderFromDetails(DealsDetailsViewModel dealDetail) {
 
         if (dealDetails.getBrand() != null) {
-            ImageHandler.loadImage(getContext(), ivBrand, dealDetails.getBrand().getFeaturedThumbnailImage(), R.color.grey_1100, R.color.grey_1100);
+            ImageHandler.loadImage(getContext(), ivBrand, dealDetails.getImageWeb(), R.color.grey_1100, R.color.grey_1100);
             tvBrandName.setText(dealDetails.getBrand().getTitle());
         }
 

@@ -12,8 +12,8 @@ import java.util.List;
  * Created by baghira on 07/05/18.
  */
 
-public class OrderListContract {
-    public interface View extends CustomerView {
+public interface OrderListContract {
+    interface View extends CustomerView {
         void showProcessGetData(String orderCategory);
 
         void renderDataList(List<Order> orderDataList);
@@ -31,11 +31,9 @@ public class OrderListContract {
         void showErrorNetwork(String errorMessage);
 
         void renderEmptyList(int typeRequest);
-
-        Context getAppContext();
     }
 
-    public interface Presenter extends CustomerPresenter<View> {
+    interface Presenter extends CustomerPresenter<View> {
         void getAllOrderData(Context context, String orderCategory, int typeRequest, int page);
     }
 }

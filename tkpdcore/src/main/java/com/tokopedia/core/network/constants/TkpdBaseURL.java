@@ -58,6 +58,7 @@ public class TkpdBaseURL {
     public static String SCROOGE_CREDIT_CARD_DOMAIN = "https://pay.tokopedia.id/";
     public static String PAYMENT_DOMAIN = "https://payment.tokopedia.com/";
     public static String GALADRIEL = "https://galadriel.tokopedia.com/";
+    public static String POS_DOMAIN = "https://gw.tokopedia.com/";
     public static String MAPS_DOMAIN = "https://gw.tokopedia.com/";
     public static String EVENTS_DOMAIN = "https://booking.tokopedia.com/";
     public static String DEALS_DOMAIN = "https://booking-staging.tokopedia.com/";
@@ -274,6 +275,8 @@ public class TkpdBaseURL {
         public static final String PATH_REMOVE_WISHLIST_PRODUCT = "remove_wishlist_product.pl";
 
         public static final String PATH_IS_ALREADY_WISHLIST_PRODUCT = "is_already_wishlist_product.pl";
+
+        public static final String PATH_VALIDATE_PASSWORD = "api/v1/validate-password";
         public static final String URL_INBOX_MESSAGE_TIME_MACHINE = MOBILE_DOMAIN +
                 "inbox-message-old.pl?flag_app=1";
         public static final String URL_SECURITY_INFO = "https://www.tokopedia.com/panduan-keamanan/";
@@ -606,6 +609,8 @@ public class TkpdBaseURL {
         public static final String PATH_UNIVERSE_SEARCH_V5 = "/universe/v6";
         public static final String PATH_DELETE_SEARCH = "/universe/v1";
 
+        public static final String PATH_SEARCH_V3_1 = "search/product/v3.1";
+
         public static final String PATH_SEARCH_PRODUCT = "search/product/v3";
         public static final String PATH_IMAGE_SEARCH = "search/imagesearch/";
         public static final String PATH_GET_ATTRIBUTE = "search/product/attributes/v3";
@@ -882,8 +887,16 @@ public class TkpdBaseURL {
         public static final String PATH_ONE_CLICK = "ws/oneclick";
         public static final String PATH_CC_DISPLAY = "v2/ccvault/metadata";
         public static final String PATH_CC_DELETE = "v2/ccvault/delete";
+
         public static final String PATH_GET_CANCEL_TRANSACTION_DIALOG = "get_payment_status";
         public static final String PATH_CANCEL_TRANSACTION = "cancel";
+
+        public static final String PATH_INSTALLMENT_TERMS = "installment/terms/";
+        public static final String PATH_CC_BIN = "credit-card/bins";
+        public static final String PATH_PAYMENT = "v1/api/payments";
+        public static final String PATH_PAYMENT_STATUS = "v1/payment/status";
+        public static final String PATH_O2O_PAYMENT_ACTION = "/o2o/payment_action";
+
         public static final String PATH_ZEUS_CHECK_WHITELIST = "zeus/whitelist/status";
         public static final String PATH_ZEUS_UPDATE_WHITELIST = "zeus/whitelist";
 
@@ -895,6 +908,9 @@ public class TkpdBaseURL {
     public static class FinTech {
         public static final String PATH_MITRA_TOPPERS_WEBVIEW = "mitra-toppers";
 
+    }
+
+    public class Pos {
     }
 
     public static class Chat {

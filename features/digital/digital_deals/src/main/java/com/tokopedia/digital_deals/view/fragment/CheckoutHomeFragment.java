@@ -145,7 +145,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
 
         if (dealDetails.getBrand() != null) {
             ImageHandler.loadImage(getContext(), imageViewBrand,
-                    dealDetails.getBrand().getFeaturedThumbnailImage(),
+                    dealDetails.getImageWeb(),
                     R.color.grey_1100, R.color.grey_1100);
             tvBrandName.setText(dealDetails.getBrand().getTitle());
         }

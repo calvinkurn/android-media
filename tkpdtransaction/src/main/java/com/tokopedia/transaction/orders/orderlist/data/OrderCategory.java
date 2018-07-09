@@ -6,7 +6,4 @@ package com.tokopedia.transaction.orders.orderlist.data;
 
 public class OrderCategory {
     public static final String DIGITAL = "DIGITAL";
-    public static final String DEALS = "DEALS";
-    public static final String ALL = "ALL";
-    public static final String FLIGHTS = "FLIGHTS";
 }
