@@ -55,13 +55,13 @@ public class CalendarPickerView extends LinearLayout {
 
     }
 
-    private void renderView(int month, int year) {
+    private void renderView(int month, int year, Calendar maxDateCal) {
         calendarDateUser = (Calendar) currentDate.clone();
         calendarDateUser.setTime(cellDateUser.getDate());
-        renderCalendar(month, year);
+        renderCalendar(month, year, maxDateCal);
     }
 
-    private void renderCalendar(int month, int year) {
+    private void renderCalendar(int month, int year, Calendar maxDateCal) {
         cells = new ArrayList<>();
 
         Calendar mCal = currentDate;
@@ -84,7 +84,7 @@ public class CalendarPickerView extends LinearLayout {
             cells.add(cellDate);
             mCal.add(Calendar.DAY_OF_MONTH, 1);
         }
-        adapter = new GridCalendarAdapter(getContext(), cells, mCal, holidayResultList);
+        adapter = new GridCalendarAdapter(getContext(), cells, mCal, maxDateCal, holidayResultList);
         adapter.setActionListener(new GridCalendarAdapter.ActionListener() {
             @Override
             public void onClickDate(CellDate cellDate) {
@@ -108,10 +108,11 @@ public class CalendarPickerView extends LinearLayout {
         calendarGrid = view.findViewById(R.id.calendar_grid);
     }
 
-    public void setDateRange(CellDate cellDate, int month, int year, List<HolidayResult> holidayResultList) {
+    public void setDateRange(CellDate cellDate, int month, int year, Calendar maxDateCal,
+                             List<HolidayResult> holidayResultList) {
         this.cellDateUser = cellDate;
         this.holidayResultList = holidayResultList;
-        renderView(month, year);
+        renderView(month, year, maxDateCal);
     }
 
     public interface ActionListener {
