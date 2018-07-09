@@ -16,6 +16,8 @@ public class TrainPaxPassenger implements Parcelable {
         this.seat = seat;
     }
 
+    public TrainPaxPassenger() {}
+
     protected TrainPaxPassenger(Parcel in) {
         name = in.readString();
         idNumber = in.readString();

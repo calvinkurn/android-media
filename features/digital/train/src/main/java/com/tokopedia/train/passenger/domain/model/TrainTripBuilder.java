@@ -168,7 +168,8 @@ public class TrainTripBuilder {
     }
 
     public TrainTrip createTrainTrip() {
-        return new TrainTrip(errCode, org, des, departureTimestamp, arrivalTimestamp, trainNo, bookCode, numCode, normalSales, displayNormalSales, extraFee, displayExtraFee, bookBalance, displayBookBalance, discount, displayDiscount, adultPrice, displayAdultPrice, infantPrice, displayInfantPrice, totalPriceAdult, displayTotalPriceAdult, totalPriceInfant, displayTotalPriceInfant, totalPrice, displayTotalPrice, paxPassengers);
+        return new TrainTrip(errCode, org, des, departureTimestamp, arrivalTimestamp, trainNo, bookCode,
+                numCode, normalSales, displayNormalSales, extraFee, displayExtraFee, bookBalance, displayBookBalance, discount, displayDiscount, adultPrice, displayAdultPrice, infantPrice, displayInfantPrice, totalPriceAdult, displayTotalPriceAdult, totalPriceInfant, displayTotalPriceInfant, totalPrice, displayTotalPrice, paxPassengers);
     }
 
 }

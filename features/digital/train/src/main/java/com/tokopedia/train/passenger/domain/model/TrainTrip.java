@@ -80,6 +80,42 @@ public class TrainTrip implements Parcelable {
     public TrainTrip() {
     }
 
+    public TrainTrip(int errCode, String org, String des, String departureTimestamp, String arrivalTimestamp,
+                     String trainNo, String bookCode, String numCode, String normalSales, String displayNormalSales,
+                     int extraFee, String displayExtraFee, int bookBalance, String displayBookBalance,
+                     int discount, String displayDiscount, int adultPrice, String displayAdultPrice,
+                     int infantPrice, String displayInfantPrice, int totalPriceAdult, String displayTotalPriceAdult,
+                     int totalPriceInfant, String displayTotalPriceInfant, int totalPrice, String displayTotalPrice,
+                     List<TrainPaxPassenger> paxPassengers) {
+        this.errCode = errCode;
+        this.org = org;
+        this.des = des;
+        this.departureTimestamp = departureTimestamp;
+        this.arrivalTimestamp = arrivalTimestamp;
+        this.trainNo = trainNo;
+        this.bookCode = bookCode;
+        this.numCode = numCode;
+        this.normalSales = normalSales;
+        this.displayNormalSales = displayNormalSales;
+        this.extraFee = extraFee;
+        this.displayExtraFee = displayExtraFee;
+        this.bookBalance = bookBalance;
+        this.displayBookBalance = displayBookBalance;
+        this.discount = discount;
+        this.displayDiscount = displayDiscount;
+        this.adultPrice = adultPrice;
+        this.displayAdultPrice = displayAdultPrice;
+        this.infantPrice = infantPrice;
+        this.displayInfantPrice = displayInfantPrice;
+        this.totalPriceAdult = totalPriceAdult;
+        this.displayTotalPriceAdult = displayTotalPriceAdult;
+        this.totalPriceInfant = totalPriceInfant;
+        this.displayTotalPriceInfant = displayTotalPriceInfant;
+        this.totalPrice = totalPrice;
+        this.displayTotalPrice = displayTotalPrice;
+        this.paxPassengers = paxPassengers;
+    }
+
     public int getErrCode() {
         return errCode;
     }
