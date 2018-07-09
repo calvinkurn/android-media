@@ -52,11 +52,13 @@ public class ProductCommunicationAdapter
 
             if (holder.getAdapterPosition() == 0) {
                 marginLayoutParams.leftMargin = (int) resources.getDimension(R.dimen.dp_16);
+                marginLayoutParams.rightMargin = 0;
             } else if (holder.getAdapterPosition() == getItemCount() - 1) {
                 marginLayoutParams.leftMargin = (int) resources.getDimension(R.dimen.dp_8);
                 marginLayoutParams.rightMargin = (int) resources.getDimension(R.dimen.dp_8);
             } else {
                 marginLayoutParams.leftMargin = (int) resources.getDimension(R.dimen.dp_8);
+                marginLayoutParams.rightMargin = 0;
             }
         }
 
