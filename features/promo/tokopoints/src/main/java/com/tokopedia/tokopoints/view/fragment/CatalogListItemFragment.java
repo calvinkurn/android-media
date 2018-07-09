@@ -255,7 +255,7 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
         adb.setPositiveButton(labelPositive, (dialogInterface, i) -> {
             switch (resCode) {
                 case CommonConstant.CouponRedemptionCode.LOW_POINT:
-                    getAppContext().startActivity(HomeRouter.getHomeActivityInterfaceRouter(
+                    startActivity(HomeRouter.getHomeActivityInterfaceRouter(
                             getAppContext()));
                     break;
                 case CommonConstant.CouponRedemptionCode.QUOTA_LIMIT_REACHED:

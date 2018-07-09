@@ -315,7 +315,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
         adb.setPositiveButton(labelPositive, (dialogInterface, i) -> {
             switch (resCode) {
                 case CommonConstant.CouponRedemptionCode.LOW_POINT:
-                    getAppContext().startActivity(HomeRouter.getHomeActivityInterfaceRouter(
+                    startActivity(HomeRouter.getHomeActivityInterfaceRouter(
                             getAppContext()));
                     break;
                 case CommonConstant.CouponRedemptionCode.QUOTA_LIMIT_REACHED:
