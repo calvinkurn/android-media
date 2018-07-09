@@ -1,5 +1,6 @@
 package com.tokopedia.transaction.orders.orderdetails.view.fragment;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
@@ -24,16 +25,20 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
+import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
 import com.tokopedia.transaction.orders.orderdetails.data.AdditionalInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.ContactUs;
 import com.tokopedia.transaction.orders.orderdetails.data.Detail;
 import com.tokopedia.transaction.orders.orderdetails.data.Invoice;
+import com.tokopedia.transaction.orders.orderdetails.data.Items;
 import com.tokopedia.transaction.orders.orderdetails.data.OrderToken;
+import com.tokopedia.transaction.orders.orderdetails.data.PayMethod;
 import com.tokopedia.transaction.orders.orderdetails.data.Pricing;
 import com.tokopedia.transaction.orders.orderdetails.data.Status;
 import com.tokopedia.transaction.orders.orderdetails.data.Title;
+import com.tokopedia.transaction.orders.orderdetails.di.DaggerOrderDetailsComponent;
 import com.tokopedia.transaction.orders.orderdetails.di.OrderDetailsComponent;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailContract;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailPresenter;
@@ -42,16 +47,17 @@ import com.tokopedia.transaction.orders.orderlist.data.PaymentData;
 
 import javax.inject.Inject;
 
-import com.tokopedia.transaction.orders.orderdetails.di.DaggerOrderDetailsComponent;
 import com.tokopedia.transaction.orders.common.view.DoubleTextView;
+
+import java.util.List;
 
 /**
  * Created by baghira on 09/05/18.
  */
-
 public class OrderListDetailFragment extends BaseDaggerFragment implements OrderListDetailContract.View {
 
     public static final String KEY_ORDER_ID = "OrderId";
+    public static final String KEY_ORDER_CATEGORY = "OrderCategory";
     @Inject
     OrderListDetailPresenter presenter;
     OrderDetailsComponent orderListComponent;
@@ -75,6 +81,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     TextView beliLagi;
 
 
+
     @Override
     protected String getScreenName() {
         return null;
@@ -85,12 +92,14 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         orderListComponent = DaggerOrderDetailsComponent.builder()
                 .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
                 .build();
+        GraphqlClient.init(getActivity());
         orderListComponent.inject(this);
     }
 
-    public static Fragment getInstance(String orderId) {
+    public static Fragment getInstance(String orderId, String orderCategory) {
         Bundle bundle = new Bundle();
         bundle.putString(KEY_ORDER_ID, orderId);
+        bundle.putString(KEY_ORDER_CATEGORY, orderCategory);
         Fragment fragment = new OrderListDetailFragment();
         fragment.setArguments(bundle);
         return fragment;
@@ -126,14 +135,15 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        presenter.setOrderDetailsContent((String) getArguments().get(KEY_ORDER_ID));
+        presenter.setOrderDetailsContent((String) getArguments().get(KEY_ORDER_ID), (String) getArguments().get(KEY_ORDER_CATEGORY), getArguments().getString("from_payment"));
     }
 
     @Override
     public void setStatus(Status status) {
         statusLabel.setText(status.statusLabel());
         statusValue.setText(status.statusText());
-        statusValue.setTextColor(Color.parseColor(status.textColor()));
+        if (!status.textColor().equals(""))
+            statusValue.setTextColor(Color.parseColor(status.textColor()));
     }
 
     @Override
@@ -162,6 +172,9 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     @Override
     public void setInvoice(final Invoice invoice) {
         invoiceView.setText(invoice.invoiceRefNum());
+        if (invoice.invoiceUrl().equals("")) {
+            lihat.setVisibility(View.GONE);
+        }
         lihat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -221,7 +234,8 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(paymentData.label());
         doubleTextView.setBottomText(paymentData.value());
-        doubleTextView.setBottomTextColor(Color.parseColor(paymentData.textColor()));
+        if (!paymentData.textColor().equals(""))
+            doubleTextView.setBottomTextColor(Color.parseColor(paymentData.textColor()));
         doubleTextView.setBottomTextSize(16);
         doubleTextView.setBottomGravity(Gravity.RIGHT);
         totalPrice.addView(doubleTextView);
@@ -253,26 +267,26 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
 
     @Override
     public void setTopActionButton(ActionButton actionButton) {
-        langannan.setText(actionButton.label());
+        langannan.setText(actionButton.getLabel());
         GradientDrawable shape = new GradientDrawable();
         shape.setShape(GradientDrawable.RECTANGLE);
         shape.setCornerRadius(4);
         shape.setColor(getResources().getColor(R.color.white));
         shape.setStroke(2, getResources().getColor(R.color.grey_300));
         langannan.setBackground(shape);
-        langannan.setOnClickListener(getActionButtonClickListener(actionButton.uri()));
+        langannan.setOnClickListener(getActionButtonClickListener(actionButton.getUri()));
     }
 
     @Override
     public void setBottomActionButton(ActionButton actionButton) {
-        beliLagi.setText(actionButton.label());
+        beliLagi.setText(actionButton.getLabel());
         GradientDrawable shape = new GradientDrawable();
         shape.setShape(GradientDrawable.RECTANGLE);
         shape.setCornerRadius(4);
         shape.setColor(getResources().getColor(R.color.deep_orange_500));
         beliLagi.setBackground(shape);
         beliLagi.setTextColor(getResources().getColor(R.color.white));
-        beliLagi.setOnClickListener(getActionButtonClickListener(actionButton.uri()));
+        beliLagi.setOnClickListener(getActionButtonClickListener(actionButton.getUri()));
     }
 
     private View.OnClickListener getActionButtonClickListener(final String uri) {
@@ -296,6 +310,21 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     public void setActionButtonsVisibility(int topBtnVisibility, int bottomBtnVisibility) {
         langannan.setVisibility(topBtnVisibility);
         beliLagi.setVisibility(bottomBtnVisibility);
+    }
+
+    @Override
+    public void setItems(List<Items> items) {
+
+    }
+
+    @Override
+    public Context getAppContext() {
+        return getActivity().getApplicationContext();
+    }
+
+    @Override
+    public void setPayMethodInfo(PayMethod payMethod) {
+
     }
 
     @Override

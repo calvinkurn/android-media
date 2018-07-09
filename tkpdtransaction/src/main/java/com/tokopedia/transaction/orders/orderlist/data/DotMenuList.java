@@ -1,26 +1,19 @@
 package com.tokopedia.transaction.orders.orderlist.data;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
 public class DotMenuList {
-    @SerializedName("name")
-    @Expose
-    private String name;
-    @SerializedName("uri")
-    @Expose
-    private String uri;
+        private String name;
+        private String uri;
 
-    public DotMenuList(String name, String uri) {
-        this.name = name;
-        this.uri = uri;
-    }
+        public DotMenuList(String name, String uri) {
+            this.name = name;
+            this.uri = uri;
+        }
 
-    public String name() {
-        return name;
-    }
+        public String name() {
+            return name;
+        }
 
-    public String uri() {
-        return uri;
+        public String uri() {
+            return uri;
+        }
     }
-}
