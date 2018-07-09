@@ -3,9 +3,12 @@
     android:id="@id/video_thumbnail_main_view"
     android:layout_width="@dimen/digital_youtube_thumbnail_width"
     android:layout_height="@dimen/digital_youtube_thumbnail_height"
-    android:gravity="center_horizontal"
     android:layout_gravity="center_horizontal"
-    android:orientation="vertical">
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/dp_10"
+    android:paddingRight="@dimen/dp_10"
+    android:paddingTop="@dimen/dp_5">
 
     <com.google.android.youtube.player.YouTubeThumbnailView
         android:id="@id/youtube_thumbnail_view"

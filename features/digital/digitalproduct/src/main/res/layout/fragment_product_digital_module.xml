@@ -51,9 +51,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/white"
-                    app:tabGravity="fill"
                     app:tabIndicatorColor="@color/colorPrimary"
-                    app:tabMode="fixed"
+                    app:tabMode="scrollable"
                     app:tabSelectedTextColor="@color/colorPrimary"
                     app:tabTextAppearance="@style/TitlePageWhiteIndicator"
                     app:tabTextColor="@color/font_black_disabled_38" />
