@@ -22,7 +22,7 @@ import rx.functions.Func1;
 public class CheckoutUseCase extends UseCase<CheckoutData> {
     public static final String PARAM_CARTS = "carts";
     private static final String PARAM_OPTIONAL = "optional";
-    private static final String PARAM_IS_THANKYOU_NATIVE = "is_thankyou_native";
+    private static final String PARAM_IS_THANKYOU_NATIVE = "is_thankyou_native_new";
 
     private final ICartRepository cartRepository;
     private final ICheckoutMapper checkoutMapper;
