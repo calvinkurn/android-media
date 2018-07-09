@@ -77,7 +77,7 @@ public class KolPostYoutubeViewHolder extends AbstractViewHolder<KolPostYoutubeV
     public void bind(KolPostYoutubeViewModel element) {
         ivPlay.setVisibility(GONE);
         baseKolView.bind(element);
-
+        destroyReleaseProcess();
         if (type == Type.PROFILE && getAdapterPosition() == 0) {
             topShadow.setVisibility(View.VISIBLE);
         } else {

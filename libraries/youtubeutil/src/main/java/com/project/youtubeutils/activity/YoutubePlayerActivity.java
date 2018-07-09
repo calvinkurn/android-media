@@ -24,13 +24,13 @@ public abstract class YoutubePlayerActivity extends YouTubeBaseActivity implemen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.acitivity_youtube_player);
         youTubePlayerView = (YouTubePlayerView) findViewById(R.id.youtube_player_main);
-        setSideBarAvailability();
+        initVideo();
 
     }
 
     protected abstract String getVideoUrl();
 
-    private void setSideBarAvailability() {
+    private void initVideo() {
         youTubePlayerView.initialize(YoutubePlayerConstant.GOOGLE_API_KEY,
                 YoutubeInitializer.singleVideoInitializer(getVideoUrl(),this));
     }
