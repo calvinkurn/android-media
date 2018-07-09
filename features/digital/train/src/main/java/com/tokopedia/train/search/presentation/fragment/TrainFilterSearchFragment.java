@@ -188,8 +188,8 @@ public class TrainFilterSearchFragment extends BaseDaggerFragment implements Bas
             return;
         }
 
-        FilterSearchData filterSearchData = listener.getFilterSearchData();
-        filterSearchData.resetSelectedValue();
+        FilterSearchData filterSearchDataExisting = listener.getFilterSearchData();
+        filterSearchData = filterSearchDataExisting.resetSelectedValue();
         populateView(view);
         listener.onChangeFilterSearchData(filterSearchData);
     }

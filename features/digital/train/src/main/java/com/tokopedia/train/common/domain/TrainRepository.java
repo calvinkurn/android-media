@@ -29,15 +29,14 @@ public interface TrainRepository {
 
     Observable<List<AvailabilityKeySchedule>> getSchedule(Map<String, Object> mapParam, int scheduleVariant);
 
-    Observable<List<TrainScheduleViewModel>> getAvailabilitySchedule(Map<String, Object> mapParam, int scheduleVariant, String arrivalTimeDepartureTripSelected);
+    Observable<List<TrainScheduleViewModel>> getAvailabilitySchedule(Map<String, Object> mapParam);
 
     Observable<List<TrainScheduleViewModel>> getFilteredAndSortedSchedule(FilterParam filterParam, int sortOptionId);
 
     Observable<TrainScheduleViewModel> getDetailSchedule(String idSchedule);
 
-    Observable<Integer> getCountSchedule(FilterSearchData filterSearchData);
-
-    Observable<List<TrainScheduleViewModel>> getFilterSearchParamData(Map<String, Object> mapParam, int scheduleVariant);
+    Observable<Integer> getCountSchedule(FilterSearchData filterSearchData, int scheduleVariant,
+                                         String arrivalTimestampSelected);
 
     Observable<List<TrainSeatMapEntity>> getSeat(HashMap<String, Object> parameters);
 

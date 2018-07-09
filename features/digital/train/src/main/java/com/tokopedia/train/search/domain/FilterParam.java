@@ -13,6 +13,8 @@ public class FilterParam {
     private List<String> departureTimeList;
     private List<String> trains;
     private List<String> trainClass;
+    private String arrivalTimestampSelected;
+    private int scheduleVariant;
 
     private FilterParam(Builder builder) {
         this.setMinPrice(builder.minPrice);
@@ -20,6 +22,8 @@ public class FilterParam {
         this.setTrains(builder.trains);
         this.setTrainClass(builder.trainClass);
         this.setDepartureTimeList(builder.departureTimeList);
+        this.setArrivalTimestampSelected(builder.arrivalTimestampSelected);
+        this.setScheduleVariant(builder.scheduleVariant);
     }
 
     public long getMinPrice() {
@@ -62,6 +66,22 @@ public class FilterParam {
         this.trainClass = trainClass;
     }
 
+    public String getArrivalTimestampSelected() {
+        return arrivalTimestampSelected;
+    }
+
+    public void setArrivalTimestampSelected(String arrivalTimestampSelected) {
+        this.arrivalTimestampSelected = arrivalTimestampSelected;
+    }
+
+    public int getScheduleVariant() {
+        return scheduleVariant;
+    }
+
+    public void setScheduleVariant(int scheduleVariant) {
+        this.scheduleVariant = scheduleVariant;
+    }
+
     public static class Builder {
 
         private long minPrice;
@@ -69,6 +89,8 @@ public class FilterParam {
         private List<String> departureTimeList;
         private List<String> trains;
         private List<String> trainClass;
+        private String arrivalTimestampSelected;
+        private int scheduleVariant;
 
         public Builder minPrice(long minPrice) {
             this.minPrice = minPrice;
@@ -92,6 +114,16 @@ public class FilterParam {
 
         public Builder departureTimeList(List<String> departureTimeList) {
             this.departureTimeList = departureTimeList;
+            return this;
+        }
+
+        public Builder arrivalTimestampSelected(String arrivalTimestampSelected) {
+            this.arrivalTimestampSelected = arrivalTimestampSelected;
+            return this;
+        }
+
+        public Builder scheduleVariant(int scheduleVariant) {
+            this.scheduleVariant = scheduleVariant;
             return this;
         }
 

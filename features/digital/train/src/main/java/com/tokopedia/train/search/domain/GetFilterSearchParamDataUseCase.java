@@ -1,6 +1,7 @@
 package com.tokopedia.train.search.domain;
 
 import com.tokopedia.train.common.domain.TrainRepository;
+import com.tokopedia.train.search.constant.TrainSortOption;
 import com.tokopedia.train.search.data.typedef.DepartureTimeTypeDef;
 import com.tokopedia.train.search.presentation.model.FilterSearchData;
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
@@ -21,19 +22,19 @@ import rx.functions.Func1;
 public class GetFilterSearchParamDataUseCase extends UseCase<FilterSearchData> {
 
     private TrainRepository trainRepository;
-    private int scheduleVariant;
+    private FilterParam filterParam;
 
     public GetFilterSearchParamDataUseCase(TrainRepository trainRepository) {
         this.trainRepository = trainRepository;
     }
 
-    public void setScheduleVariant(int scheduleVariant) {
-        this.scheduleVariant = scheduleVariant;
+    public void setFilterParam(FilterParam filterParam) {
+        this.filterParam = filterParam;
     }
 
     @Override
     public Observable<FilterSearchData> createObservable(RequestParams requestParams) {
-        return trainRepository.getFilterSearchParamData(requestParams.getParameters(), scheduleVariant)
+        return trainRepository.getFilteredAndSortedSchedule(filterParam, TrainSortOption.NO_PREFERENCE)
                 .map(new Func1<List<TrainScheduleViewModel>, FilterSearchData>() {
                     @Override
                     public FilterSearchData call(List<TrainScheduleViewModel> trainScheduleViewModels) {

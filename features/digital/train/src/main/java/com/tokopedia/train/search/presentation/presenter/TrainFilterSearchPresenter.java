@@ -1,12 +1,14 @@
 package com.tokopedia.train.search.presentation.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.train.search.domain.FilterParam;
 import com.tokopedia.train.search.presentation.model.FilterSearchData;
 import com.tokopedia.train.search.domain.GetFilterSearchParamDataUseCase;
 import com.tokopedia.train.search.domain.GetTotalScheduleUseCase;
 import com.tokopedia.train.search.presentation.contract.TrainFilterSearchContract;
 import com.tokopedia.usecase.RequestParams;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -31,6 +33,8 @@ public class TrainFilterSearchPresenter extends BaseDaggerPresenter<TrainFilterS
 
     @Override
     public void getCountScheduleAvailable(FilterSearchData filterSearchData) {
+        getTotalScheduleUseCase.setScheduleVariant(getView().getScheduleVariant());
+        getTotalScheduleUseCase.setArrivalTimestampSelected(getView().getArrivalTimestampSelected());
         getTotalScheduleUseCase.execute(getTotalScheduleUseCase.createRequestParam(filterSearchData),
                 new Subscriber<Integer>() {
                     @Override
@@ -51,12 +55,19 @@ public class TrainFilterSearchPresenter extends BaseDaggerPresenter<TrainFilterS
     }
 
     @Override
-    public void getFilterSearchData(Map<String, Object> mapParam, int scheduleVariant) {
+    public void getFilterSearchData() {
         getView().showLoading();
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putAll(mapParam);
-        getFilterSearchParamDataUseCase.setScheduleVariant(scheduleVariant);
-        getFilterSearchParamDataUseCase.execute(requestParams, new Subscriber<FilterSearchData>() {
+        FilterParam filterParam = new FilterParam.Builder()
+                .minPrice(Integer.MIN_VALUE)
+                .maxPrice(Integer.MAX_VALUE)
+                .departureTimeList(new ArrayList<>())
+                .trainClass(new ArrayList<>())
+                .trains(new ArrayList<>())
+                .arrivalTimestampSelected(getView().getArrivalTimestampSelected())
+                .scheduleVariant(getView().getScheduleVariant())
+                .build();
+        getFilterSearchParamDataUseCase.setFilterParam(filterParam);
+        getFilterSearchParamDataUseCase.execute(RequestParams.EMPTY, new Subscriber<FilterSearchData>() {
             @Override
             public void onCompleted() {
 
