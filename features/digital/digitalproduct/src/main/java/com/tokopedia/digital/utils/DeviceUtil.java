@@ -261,22 +261,4 @@ public class DeviceUtil {
         }
         return null;
     }
-
-    public static String loadJSONFromAsset(String nameJson) {
-        String json;
-
-        try {
-            InputStream is = MainApplication.getAppContext().getAssets().open("json/" + nameJson);
-
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
-            json = new String(buffer, "UTF-8");
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return null;
-        }
-        return json;
-    }
 }

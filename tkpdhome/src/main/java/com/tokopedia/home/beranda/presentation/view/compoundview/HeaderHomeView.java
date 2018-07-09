@@ -37,6 +37,7 @@ public class HeaderHomeView extends BaseCustomView {
     private TextView tvActionTokocash;
     private ProgressBar tokocashProgressBar;
     private LinearLayout tokocashActionContainer;
+    private ImageView imageInfoBtn;
 
     private View tokoPointHolder;
     private TextView tvTitleTokoPoint;
@@ -74,6 +75,7 @@ public class HeaderHomeView extends BaseCustomView {
         ivLogoTokocash = view.findViewById(R.id.iv_logo_tokocash);
         tokocashProgressBar = view.findViewById(R.id.progress_bar_tokocash);
         tokocashActionContainer = view.findViewById(R.id.container_action_tokocash);
+        imageInfoBtn = view.findViewById(R.id.info_button);
 
         tokoPointHolder = view.findViewById(R.id.container_tokopoint);
         tvTitleTokoPoint = view.findViewById(R.id.tv_title_tokopoint);
@@ -194,7 +196,9 @@ public class HeaderHomeView extends BaseCustomView {
                 tvActionTokocash.setText(getContext().getString(R.string.top_up_button));
                 tvActionTokocash.setVisibility(homeHeaderWalletAction.isVisibleActionButton() ? VISIBLE : GONE);
                 tvTitleTokocash.setVisibility(homeHeaderWalletAction.isVisibleActionButton() ? GONE : VISIBLE);
+                imageInfoBtn.setVisibility(GONE);
             } else {
+                imageInfoBtn.setVisibility(GONE);
                 tvTitleTokocash.setTypeface(null, Typeface.NORMAL);
                 tvActionTokocash.setVisibility(VISIBLE);
                 tvActionTokocash.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
@@ -207,7 +211,10 @@ public class HeaderHomeView extends BaseCustomView {
                         tvBalanceTokocash.setTextColor(
                                 getContext().getResources().getColor(R.color.black_38)
                         );
-                        tvBalanceTokocash.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_info, 0);
+                        imageInfoBtn.setVisibility(VISIBLE);
+                        imageInfoBtn.setOnClickListener(
+                                getOnClickPendingCashBackListener(homeHeaderWalletAction)
+                        );
                         tvBalanceTokocash.setOnClickListener(
                                 getOnClickPendingCashBackListener(homeHeaderWalletAction)
                         );

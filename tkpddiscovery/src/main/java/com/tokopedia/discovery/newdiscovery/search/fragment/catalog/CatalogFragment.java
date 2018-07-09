@@ -358,6 +358,7 @@ public class CatalogFragment extends SearchSectionFragment implements
             topAdsRecyclerAdapter.shouldLoadAds(false);
             String message = String.format(getString(R.string.empty_search_content_template), query);
             catalogAdapter.showEmptyState(message);
+            SearchTracking.eventSearchNoResult(query, getScreenName(), getSelectedFilter());
         }
     }
 
@@ -457,6 +458,7 @@ public class CatalogFragment extends SearchSectionFragment implements
                         openSortActivity();
                         return true;
                     case 1:
+                        SearchTracking.eventSearchResultOpenFilterPageCatalog();
                         openFilterActivity();
                         return true;
                     case 2:
@@ -545,7 +547,7 @@ public class CatalogFragment extends SearchSectionFragment implements
     }
 
     @Override
-    protected void reloadData() {
+    public void reloadData() {
         catalogAdapter.resetStartFrom();
         catalogAdapter.clearData();
         topAdsRecyclerAdapter.reset();

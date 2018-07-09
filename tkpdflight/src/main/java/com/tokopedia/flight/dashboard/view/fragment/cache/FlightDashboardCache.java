@@ -3,8 +3,6 @@ package com.tokopedia.flight.dashboard.view.fragment.cache;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.google.gson.Gson;
-
 /**
  * @author by alvarisi on 11/15/17.
  */

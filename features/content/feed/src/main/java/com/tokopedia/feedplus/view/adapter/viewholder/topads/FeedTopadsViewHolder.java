@@ -3,7 +3,7 @@ package com.tokopedia.feedplus.view.adapter.viewholder.topads;
 import android.support.annotation.LayoutRes;
 import android.view.View;
 
-import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.view.viewmodel.topads.FeedTopAdsViewModel;
 import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;

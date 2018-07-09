@@ -315,6 +315,8 @@ public interface ProductDetailView extends ViewListener {
 
     boolean isSellerApp();
 
+    void renderAddToCartSuccess(String message);
+
     void updateButtonBuyListener();
 
     void trackingEnhanceProductDetail();
