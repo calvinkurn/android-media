@@ -42,6 +42,8 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     private int typeRequest;
     private Token token;
 
+    private CartAddressChoiceFragment defaultFragment;
+
     public static Intent createInstance(Activity activity, RecipientAddressModel currentAddress, int typeRequest) {
         Intent intent = new Intent(activity, CartAddressChoiceActivity.class);
         intent.putExtra(EXTRA_TYPE_REQUEST, typeRequest);
@@ -165,20 +167,25 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
                 return ShipmentAddressListFragment.newInstance(
                         (RecipientAddressModel) getIntent().getParcelableExtra(EXTRA_CURRENT_ADDRESS));
             default:
-                return CartAddressChoiceFragment.newInstance(
+                defaultFragment = CartAddressChoiceFragment.newInstance(
                         getIntent().getParcelableExtra(EXTRA_CURRENT_ADDRESS));
+                return defaultFragment;
         }
     }
 
     @Override
     public void onBackPressed() {
-        if (getCurrentFragment() instanceof CartAddressChoiceFragment) {
-            ((CartAddressChoiceFragment) getCurrentFragment())
-                    .checkoutAnalyticsChangeAddress.eventClickChangeAddressClickArrowBackFromChangeAddress();
-        }
         if (getSupportFragmentManager() != null && getSupportFragmentManager().getBackStackEntryCount() > 0) {
             setToolbarTitle(getString(R.string.checkout_module_title_shipping_dest));
         }
-        super.onBackPressed();
+        if (getCurrentFragment() instanceof CartAddressChoiceFragment) {
+            ((CartAddressChoiceFragment) getCurrentFragment())
+                    .checkoutAnalyticsChangeAddress.eventClickChangeAddressClickArrowBackFromChangeAddress();
+            super.onBackPressed();
+        } else if (getCurrentFragment() instanceof ShipmentAddressListFragment) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.parent_view, defaultFragment, defaultFragment.getClass().getSimpleName())
+                    .commit();
+        }
     }
 }
