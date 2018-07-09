@@ -2,7 +2,9 @@ package com.tokopedia.feedplus.data.pojo;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-
+import java.lang.Boolean;
+import java.lang.Integer;
+import java.lang.String;
 import java.util.List;
 
 public class FeedPolling {
@@ -22,15 +24,15 @@ public class FeedPolling {
   @Expose
   private String question;
 
-  @SerializedName("commentcount")
+  @SerializedName("commentCount")
   @Expose
   private Integer commentCount;
 
-  @SerializedName("likecount")
+  @SerializedName("likeCount")
   @Expose
   private Integer likeCount;
 
-  @SerializedName("create_time")
+  @SerializedName("createTime")
   @Expose
   private String createTime;
 
@@ -42,15 +44,19 @@ public class FeedPolling {
   @Expose
   private Boolean followed;
 
-  @SerializedName("show_comment")
+  @SerializedName("showComment")
   @Expose
   private Boolean showComment;
 
-  @SerializedName("total_voter")
+  @SerializedName("showLike")
+  @Expose
+  private Boolean showLike;
+
+  @SerializedName("totalVoter")
   @Expose
   private Integer totalVoter;
 
-  @SerializedName("is_answered")
+  @SerializedName("isAnswered")
   @Expose
   private Boolean isAnswered;
 
@@ -78,8 +84,12 @@ public class FeedPolling {
   @Expose
   private List<PollingOption> options;
 
-  public void setPollId(Integer pollId) {
-    this.pollId = pollId;
+  @SerializedName("relation")
+  @Expose
+  private Relation relation;
+
+  public void setPollId(Integer poll_id) {
+    this.pollId = poll_id;
   }
 
   public void setTitle(String title) {
@@ -118,6 +128,10 @@ public class FeedPolling {
     this.showComment = showComment;
   }
 
+  public void setShowLike(Boolean showLike) {
+    this.showLike = showLike;
+  }
+
   public void setTotalVoter(Integer totalVoter) {
     this.totalVoter = totalVoter;
   }
@@ -148,6 +162,10 @@ public class FeedPolling {
 
   public void setOptions(List<PollingOption> options) {
     this.options = options;
+  }
+
+  public void setRelation(Relation relation) {
+    this.relation = relation;
   }
 
   public Integer getPollId() {
@@ -190,6 +208,10 @@ public class FeedPolling {
     return this.showComment;
   }
 
+  public Boolean getShowLike() {
+    return this.showLike;
+  }
+
   public Integer getTotalVoter() {
     return this.totalVoter;
   }
@@ -220,5 +242,9 @@ public class FeedPolling {
 
   public List<PollingOption> getOptions() {
     return this.options;
+  }
+
+  public Relation getRelation() {
+    return this.relation;
   }
 }

@@ -26,5 +26,10 @@ public interface FeedModuleRouter {
 
     Intent getKolCommentActivity(Context context, int postId, int rowNumber);
 
+    Intent getHomeIntent(Context context);
+
+    void goToProductDetail(Context context, String productId, String imageSourceSingle,
+                           String name, String price);
+
     void openRedirectUrl(Activity activity, String url);
 }

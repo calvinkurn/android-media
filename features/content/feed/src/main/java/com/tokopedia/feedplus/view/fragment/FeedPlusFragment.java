@@ -42,9 +42,6 @@ import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.router.productdetail.PdpRouter;
-import com.tokopedia.core.router.productdetail.ProductDetailRouter;
-import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.feedplus.FeedModuleRouter;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.domain.usecase.FollowKolPostUseCase;
@@ -113,6 +110,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private static final int OPEN_KOL_PROFILE_FROM_RECOMMENDATION = 83;
     private static final int DEFAULT_VALUE = -1;
 
+    private static final String TAG = FeedPlusFragment.class.getSimpleName();
     private static final String ARGS_ROW_NUMBER = "row_number";
     private static final String ARGS_ITEM_ROW_NUMBER = "item_row_number";
     private static final String FIRST_CURSOR = "FIRST_CURSOR";
@@ -130,6 +128,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private TkpdProgressDialog progressDialog;
     private RemoteConfig remoteConfig;
     private AbstractionRouter abstractionRouter;
+    private FeedModuleRouter feedModuleRouter;
 
     @Inject
     FeedPlusPresenter presenter;
@@ -138,8 +137,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private FeedPlusAdapter adapter;
     private CallbackManager callbackManager;
     private TopAdsInfoBottomSheet infoBottomSheet;
-    private static final String TOPADS_ITEM = "4,1";
-    private static final String TAG = FeedPlusFragment.class.getSimpleName();
     private String firstCursor = "";
     private int loginIdInt;
 
@@ -177,17 +174,14 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private void initVar() {
         FeedPlusTypeFactory typeFactory = new FeedPlusTypeFactoryImpl(this);
         adapter = new FeedPlusAdapter(typeFactory);
-        adapter.setOnLoadListener(new FeedPlusAdapter.OnLoadListener() {
-            @Override
-            public void onLoad(int totalCount) {
-                int size = adapter.getlist().size();
-                int lastIndex = size - 1;
-                if (!(adapter.getlist().get(0) instanceof EmptyModel)
-                        && !(adapter.getlist().get(lastIndex) instanceof RetryModel)
-                        && !(adapter.getlist().get(lastIndex) instanceof AddFeedViewHolder)
-                        )
-                    presenter.fetchNextPage();
-            }
+        adapter.setOnLoadListener(totalCount -> {
+            int size = adapter.getlist().size();
+            int lastIndex = size - 1;
+            if (!(adapter.getlist().get(0) instanceof EmptyModel)
+                    && !(adapter.getlist().get(lastIndex) instanceof RetryModel)
+                    && !(adapter.getlist().get(lastIndex) instanceof AddFeedViewHolder)
+                    )
+                presenter.fetchNextPage();
         });
         layoutManager = new NpaLinearLayoutManager(getActivity(),
                 LinearLayoutManager.VERTICAL,
@@ -202,8 +196,15 @@ public class FeedPlusFragment extends BaseDaggerFragment
                     AbstractionRouter.class.getSimpleName());
         }
 
+        if (getActivity().getApplication() instanceof FeedModuleRouter) {
+            feedModuleRouter = (FeedModuleRouter) getActivity().getApplication();
+        } else {
+            throw new IllegalStateException("Application must implement " +
+                    FeedModuleRouter.class.getSimpleName());
+        }
+
         String loginIdString = getUserSession().getUserId();
-        loginIdInt = loginIdString.isEmpty() ? 0 : Integer.valueOf(loginIdString);
+        loginIdInt = TextUtils.isEmpty(loginIdString) ? 0 : Integer.valueOf(loginIdString);
     }
 
     @Nullable
@@ -213,9 +214,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
                              @Nullable Bundle savedInstanceState) {
         setRetainInstance(true);
         View parentView = inflater.inflate(R.layout.fragment_feed_plus, container, false);
-        recyclerView = (RecyclerView) parentView.findViewById(R.id.recycler_view);
-        swipeToRefresh = (SwipeToRefresh) parentView.findViewById(R.id.swipe_refresh_layout);
-        mainContent = (RelativeLayout) parentView.findViewById(R.id.main);
+        recyclerView = parentView.findViewById(R.id.recycler_view);
+        swipeToRefresh = parentView.findViewById(R.id.swipe_refresh_layout);
+        mainContent = parentView.findViewById(R.id.main);
         newFeed = parentView.findViewById(R.id.layout_new_feed);
 
         prepareView();
@@ -230,13 +231,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
         recyclerView.setAdapter(adapter);
         swipeToRefresh.setOnRefreshListener(this);
         infoBottomSheet = TopAdsInfoBottomSheet.newInstance(getActivity());
-        newFeed.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                scrollToTop();
-                showRefresh();
-                onRefresh();
-            }
+        newFeed.setOnClickListener(v -> {
+            scrollToTop();
+            showRefresh();
+            onRefresh();
         });
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -247,7 +245,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                             && newState == RecyclerView.SCROLL_STATE_IDLE
                             && layoutManager != null) {
                         int position = 0;
-                        Visitable item = null;
+                        Visitable item;
                         if (itemIsFullScreen()) {
                             position = layoutManager.findLastVisibleItemPosition();
                         } else if (layoutManager.findFirstCompletelyVisibleItemPosition() != -1) {
@@ -259,7 +257,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                         item = adapter.getlist().get(position);
 
                         if (position != 0 && item != null && !isTopads(item)) {
-                            trackImpression(item, position);
+                            trackImpression(item);
                         }
                     }
                 } catch (IndexOutOfBoundsException e) {
@@ -271,7 +269,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         });
     }
 
-    private void trackImpression(Visitable item, int position) {
+    private void trackImpression(Visitable item) {
         if (isInspirationItem(item)) {
             UnifyTracking.eventR3(AppEventTracking.Action.IMPRESSION,
                     FeedTrackingEventLabel.Impression.FEED_RECOMMENDATION);
@@ -359,19 +357,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     }
 
-    private void goToProductDetail(String productId, String imageSourceSingle, String name, String price) {
-        if (getActivity().getApplication() instanceof PdpRouter) {
-            ((PdpRouter) getActivity().getApplication()).goToProductDetail(
-                    getActivity(),
-                    ProductPass.Builder.aProductPass()
-                            .setProductId(productId)
-                            .setProductImage(imageSourceSingle)
-                            .setProductName(name)
-                            .setProductPrice(price)
-
-                            .build()
-            );
-        }
+    private void goToProductDetail(String productId, String imageSourceSingle, String name,
+                                   String price) {
+        feedModuleRouter.goToProductDetail(getContext(), productId, imageSourceSingle, name, price);
     }
 
     @Override
@@ -460,7 +448,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToShopDetail(int page, int rowNumber, Integer shopId, String url) {
-        Intent intent = ((FeedModuleRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), String.valueOf(shopId));
+        Intent intent = feedModuleRouter.getShopPageIntent(getActivity(), String.valueOf(shopId));
         startActivity(intent);
         UnifyTracking.eventFeedViewShop(String.valueOf(shopId), getFeedAnalyticsHeader(page, rowNumber) + FeedTrackingEventLabel.View.FEED_SHOP);
     }
@@ -561,12 +549,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         finishLoading();
         if (adapter.getItemCount() == 0) {
             NetworkErrorHelper.showEmptyState(getActivity(), mainContent, errorMessage,
-                    new NetworkErrorHelper.RetryClickedListener() {
-                        @Override
-                        public void onRetryClicked() {
-                            presenter.refreshPage();
-                        }
-                    });
+                    () -> presenter.refreshPage());
         } else {
             NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
         }
@@ -575,7 +558,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onSearchShopButtonClicked() {
-        Intent intent = HomeRouter.getHomeActivity(getActivity());
+        Intent intent = feedModuleRouter.getHomeIntent(getContext());
         intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_FAVORITE);
         startActivity(intent);
     }
@@ -644,16 +627,18 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         callbackManager.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
+
+        if (data == null) {
+            return;
+        }
+
         switch (requestCode) {
             case OPEN_DETAIL:
                 if (resultCode == Activity.RESULT_OK)
                     showSnackbar(data.getStringExtra("message"));
                 break;
             case OPEN_KOL_COMMENT:
-                if (resultCode == Activity.RESULT_OK
-                        && data.hasExtra(KolCommentActivity.ARGS_POSITION)
-                        && data.hasExtra(KolCommentFragment.ARGS_TOTAL_COMMENT)) {
-
+                if (resultCode == Activity.RESULT_OK) {
                     onSuccessAddDeleteKolComment(
                             data.getIntExtra(KolCommentActivity.ARGS_POSITION, DEFAULT_VALUE),
                             data.getIntExtra(KolCommentFragment.ARGS_TOTAL_COMMENT, 0)
@@ -661,13 +646,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 }
                 break;
             case OPEN_KOL_PROFILE:
-                if (resultCode == Activity.RESULT_OK
-                        && data.hasExtra(ARGS_ROW_NUMBER)
-                        && data.hasExtra(TopProfileActivity.EXTRA_IS_FOLLOWING)
-                        && data.hasExtra(PARAM_IS_LIKED)
-                        && data.hasExtra(PARAM_TOTAL_LIKES)
-                        && data.hasExtra(PARAM_TOTAL_COMMENTS)) {
-
+                if (resultCode == Activity.RESULT_OK) {
                     onSuccessFollowUnfollowFromProfile(
                             data.getIntExtra(ARGS_ROW_NUMBER, DEFAULT_VALUE),
                             data.getIntExtra(TopProfileActivity.EXTRA_IS_FOLLOWING, DEFAULT_VALUE)
@@ -682,11 +661,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 }
                 break;
             case OPEN_KOL_PROFILE_FROM_RECOMMENDATION:
-                if (resultCode == Activity.RESULT_OK
-                        && data.hasExtra(ARGS_ROW_NUMBER)
-                        && data.hasExtra(ARGS_ITEM_ROW_NUMBER)
-                        && data.hasExtra(TopProfileActivity.EXTRA_IS_FOLLOWING)) {
-
+                if (resultCode == Activity.RESULT_OK) {
                     onSuccessFollowUnfollowFromProfileRecommendation(
                             data.getIntExtra(ARGS_ROW_NUMBER, DEFAULT_VALUE),
                             data.getIntExtra(ARGS_ITEM_ROW_NUMBER, DEFAULT_VALUE),
@@ -700,9 +675,12 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onProductItemClicked(int position, Product product) {
-        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity(),
-                product.getId());
-        getActivity().startActivity(intent);
+        goToProductDetail(product.getId(),
+                product.getImage().getS_ecs(),
+                product.getName(),
+                product.getPriceFormat()
+        );
+
         UnifyTracking.eventFeedClickProduct(product.getId(),
                 FeedTrackingEventLabel.Click.TOP_ADS_PRODUCT);
 
@@ -726,7 +704,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onShopItemClicked(int position, Shop shop) {
-        Intent intent = ((FeedModuleRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), shop.getId());
+        Intent intent = feedModuleRouter.getShopPageIntent(getActivity(), shop.getId());
         startActivity(intent);
         UnifyTracking.eventFeedClickShop(shop.getId(), FeedTrackingEventLabel.Click.TOP_ADS_SHOP);
   
@@ -819,7 +797,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                                 .OFFICIAL_STORE_BRAND +
                         officialStoreViewModel.getShopName());
 
-        Intent intent = ((FeedModuleRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), String.valueOf(officialStoreViewModel.getShopId()));
+        Intent intent = feedModuleRouter.getShopPageIntent(getActivity(), String.valueOf(officialStoreViewModel.getShopId()));
         startActivity(intent);
     }
 
@@ -877,7 +855,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onContentProductLinkClicked(String url) {
-        ((FeedModuleRouter) getActivity().getApplication()).openRedirectUrl(getActivity(), url);
+        if (!TextUtils.isEmpty(url)) {
+            feedModuleRouter.openRedirectUrl(getActivity(), url);
+        }
     }
 
     @Override
@@ -898,7 +878,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToKolProfileUsingApplink(int rowNumber, String applink) {
-        ((FeedModuleRouter) getActivity().getApplication()).openRedirectUrl(getActivity(), applink);
+        feedModuleRouter.openRedirectUrl(getActivity(), applink);
     }
 
     @Override
@@ -929,16 +909,15 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToKolComment(int rowNumber, int id) {
-        if (getActivity().getApplication() instanceof FeedModuleRouter) {
-            FeedModuleRouter router = ((FeedModuleRouter) getActivity().getApplication());
-            Intent intent = router.getKolCommentActivity(getContext(), id, rowNumber);
-            startActivityForResult(intent, OPEN_KOL_COMMENT);
-        }
+        Intent intent = feedModuleRouter.getKolCommentActivity(getContext(), id, rowNumber);
+        startActivityForResult(intent, OPEN_KOL_COMMENT);
     }
 
     @Override
     public void onGoToLink(String link) {
-        ((FeedModuleRouter) getActivity().getApplication()).openRedirectUrl(getActivity(), link);
+        if (!TextUtils.isEmpty(link)) {
+            feedModuleRouter.openRedirectUrl(getActivity(), link);
+        }
     }
 
     @Override
@@ -957,15 +936,12 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onErrorFollowKol(String errorMessage, final int id, final int status, final int rowNumber) {
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(), errorMessage, new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                if (status == FollowKolPostUseCase.PARAM_UNFOLLOW)
-                    presenter.unfollowKol(id, rowNumber, FeedPlusFragment.this);
-                else
-                    presenter.followKol(id, rowNumber, FeedPlusFragment.this);
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), errorMessage, () -> {
+            if (status == FollowKolPostUseCase.PARAM_UNFOLLOW)
+                presenter.unfollowKol(id, rowNumber, FeedPlusFragment.this);
+            else
+                presenter.followKol(id, rowNumber, FeedPlusFragment.this);
 
-            }
         }).showRetrySnackbar();
     }
 
@@ -1021,7 +997,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     private void onSuccessAddDeleteKolComment(int rowNumber, int totalNewComment) {
-        if (adapter.getlist().get(rowNumber) instanceof BaseKolViewModel) {
+        if (adapter.getlist().size() > rowNumber
+                && adapter.getlist().get(rowNumber) instanceof BaseKolViewModel) {
             BaseKolViewModel kolViewModel = (BaseKolViewModel) adapter.getlist().get(rowNumber);
             kolViewModel.setTotalComment((
                     (BaseKolViewModel)
@@ -1032,7 +1009,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     private void onSuccessFollowUnfollowFromProfile(int rowNumber, int isFollowing) {
-        if (rowNumber != DEFAULT_VALUE && adapter.getlist().get(rowNumber) instanceof KolPostViewModel) {
+        if (rowNumber != DEFAULT_VALUE
+                && adapter.getlist().size() > rowNumber
+                && adapter.getlist().get(rowNumber) instanceof KolPostViewModel) {
             KolPostViewModel kolViewModel = (KolPostViewModel) adapter.getlist().get(rowNumber);
 
             if (isFollowing != DEFAULT_VALUE) {
@@ -1044,7 +1023,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     private void updatePostState(int rowNumber, int isLiked, int totalLike, int totalComment) {
-        if (rowNumber != DEFAULT_VALUE && adapter.getlist().get(rowNumber) instanceof BaseKolViewModel) {
+        if (rowNumber != DEFAULT_VALUE
+                && adapter.getlist().size() > rowNumber
+                && adapter.getlist().get(rowNumber) instanceof BaseKolViewModel) {
             BaseKolViewModel kolViewModel = (BaseKolViewModel) adapter.getlist().get(rowNumber);
 
             if (isLiked != DEFAULT_VALUE) {
@@ -1067,6 +1048,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                                                                   int isFollowing) {
         if (rowNumber != DEFAULT_VALUE
                 && itemRowNumber != DEFAULT_VALUE
+                && adapter.getlist().size() > rowNumber
                 && adapter.getlist().get(rowNumber) instanceof KolRecommendationViewModel) {
             KolRecommendationViewModel recommendationViewModel =
                     (KolRecommendationViewModel) adapter.getlist().get(rowNumber);
@@ -1091,14 +1073,15 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToLogin() {
-        Intent intent = ((FeedModuleRouter) getActivity().getApplication()).getLoginIntent(getContext());
+        Intent intent = feedModuleRouter.getLoginIntent(getContext());
         startActivity(intent);
     }
 
     @Override
     public void onSuccessSendVote(int rowNumber, PollOptionViewModel selectedOption,
                                   VoteStatisticDomainModel voteStatisticDomainModel) {
-        if (adapter.getlist().get(rowNumber) instanceof PollViewModel) {
+        if (adapter.getlist().size() > rowNumber
+                && adapter.getlist().get(rowNumber) instanceof PollViewModel) {
             PollViewModel pollViewModel = (PollViewModel) adapter.getlist().get(rowNumber);
             pollViewModel.setVoted(true);
             pollViewModel.setTotalVoter(voteStatisticDomainModel.getTotalParticipants());
@@ -1108,11 +1091,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 PollOptionViewModel pollOptionViewModel
                         = pollViewModel.getOptionViewModels().get(i);
 
-                if (selectedIndex == i) {
-                    pollOptionViewModel.setSelected(PollOptionViewModel.SELECTED);
-                } else {
-                    pollOptionViewModel.setSelected(PollOptionViewModel.UNSELECTED);
-                }
+                pollOptionViewModel.setSelected(selectedIndex == i ?
+                        PollOptionViewModel.SELECTED : PollOptionViewModel.UNSELECTED);
 
                 String newPercentage
                         = voteStatisticDomainModel.getListOptions().get(i).getPercentage();

@@ -23,11 +23,12 @@ public class BaseKolViewModel {
     private boolean reviewExpanded;
     private String time;
     private boolean isShowComment;
+    private boolean isShowLike;
 
     public BaseKolViewModel(int userId, String cardType, String title, String name, String avatar,
                             String label, String kolProfileUrl, boolean followed, String review,
                             boolean liked, int totalLike, int totalComment, int page, int kolId,
-                            String time, boolean isShowComment) {
+                            String time, boolean isShowComment, boolean isShowLike) {
         this.userId = userId;
         this.cardType = cardType;
         this.title = title;
@@ -44,6 +45,7 @@ public class BaseKolViewModel {
         this.kolId = kolId;
         this.time = time;
         this.isShowComment = isShowComment;
+        this.isShowLike = isShowLike;
     }
 
     public int getUserId() {
@@ -180,5 +182,13 @@ public class BaseKolViewModel {
 
     public void setShowComment(boolean showComment) {
         isShowComment = showComment;
+    }
+
+    public boolean isShowLike() {
+        return isShowLike;
+    }
+
+    public void setShowLike(boolean showLike) {
+        isShowLike = showLike;
     }
 }
