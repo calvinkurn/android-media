@@ -119,6 +119,11 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
             productAddVideoPresenter.getYoutubeDataVideoChosen(videoIDs)
         else {
             renderListData(videoViewModelList)
+            if(videoRecommendationViewModelList.isEmpty()){
+                if(adapter.data[0] is SectionVideoRecommendationViewModel){
+                    adapter.clearElement(adapter.data[0])
+                }
+            }
         }
 
         setButtonAddVideoUrl()
@@ -214,6 +219,7 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
     }
 
     override fun onSuccessGetYoutubeDataVideoChosen(youtubeVideoModelArrayList: ArrayList<YoutubeVideoModel>) {
+        videoViewModelList.clear()
         videoViewModelList = mapper.transformDataToVideoViewModel(youtubeVideoModelArrayList) as ArrayList<VideoViewModel>
         renderListData(videoViewModelList)
         (activity as AppCompatActivity).supportActionBar?.subtitle = getString(R.string.product_from_to_video, videoIDs.size, ProductAddVideoFragment.MAX_VIDEO)
