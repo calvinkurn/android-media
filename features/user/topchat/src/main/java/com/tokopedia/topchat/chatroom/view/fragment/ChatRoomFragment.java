@@ -473,7 +473,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         ArrayList<String> strings = new ArrayList<>();
         strings.add(attachment.getAttributes().getImageUrl());
 
-        ((PdpRouter) getActivity().getApplication()).openImagePreviewFromChat(getActivity(),
+        ((TopChatRouter) getActivity().getApplication()).openImagePreviewFromChat(getActivity(),
                 strings, new ArrayList<String>(), title, fullTime);
     }
 
@@ -482,7 +482,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         ArrayList<String> strings = new ArrayList<>();
         strings.add(imageUrl);
 
-        ((TkpdInboxRouter) getActivity().getApplication()).openImagePreviewFromChat(getActivity(),
+        ((TopChatRouter) getActivity().getApplication()).openImagePreviewFromChat(getActivity(),
                 strings, new ArrayList<String>(), title, replyTime);
     }
 

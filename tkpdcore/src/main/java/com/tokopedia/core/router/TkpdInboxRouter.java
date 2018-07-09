@@ -73,8 +73,5 @@ public interface TkpdInboxRouter {
 
     boolean isEnabledGroupChat();
 
-    void openImagePreviewFromChat(Context context, ArrayList<String> listImage, ArrayList<String>
-            imageDesc, String title, String date);
-
     Intent getChatBotIntent(Context context, String messageId);
 }
