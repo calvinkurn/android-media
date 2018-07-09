@@ -26,7 +26,7 @@ public class FeedbackDataRepository implements FeedbackRepository {
         final FeedbackMapper mapper = new FeedbackMapper();
         return this.dataStoreFactory
                 .createDataStore()
-                .post(params.getParamsAllValueInString())
+                .post(params)
                 .map(mapper);
     }
 }

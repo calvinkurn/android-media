@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.nps.data.mapper.FeedbackEntityMapper;
 import com.tokopedia.nps.data.model.FeedbackEntity;
 import com.tokopedia.nps.data.net.NpsService;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.HashMap;
 
@@ -23,16 +24,7 @@ public class CloudFeedbackDataStore implements FeedbackDataStore {
     }
 
     @Override
-    public Observable<FeedbackEntity> post(HashMap<String, String> params) {
-        return service.getApi().postFeedback(
-                params.get("rating"),
-                params.get("category"),
-                params.get("user_id"),
-                params.get("comment"),
-                params.get("app_version"),
-                params.get("device_model"),
-                params.get("os_type"),
-                params.get("os_version")
-        ).map(mapper);
+    public Observable<FeedbackEntity> post(RequestParams params) {
+        return service.getApi().postFeedback(params.getParamsAllValueInString()).map(mapper);
     }
 }

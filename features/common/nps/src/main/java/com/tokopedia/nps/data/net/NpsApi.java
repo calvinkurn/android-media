@@ -2,8 +2,12 @@ package com.tokopedia.nps.data.net;
 
 import com.tokopedia.network.constant.TkpdBaseURL;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import retrofit2.Response;
 import retrofit2.http.Field;
+import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
 import rx.Observable;
@@ -24,5 +28,11 @@ public interface NpsApi {
             @Field("device_model") String deviceModel,
             @Field("os_type") String osType,
             @Field("os_version") String osVersion
+    );
+
+    @POST(TkpdBaseURL.ContactUs.PATH_FEEDBACK)
+    @FormUrlEncoded
+    Observable<Response<String>> postFeedback(
+            @FieldMap() HashMap<String, String> params
     );
 }
