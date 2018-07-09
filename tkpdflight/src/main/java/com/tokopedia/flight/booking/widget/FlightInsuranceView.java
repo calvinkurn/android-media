@@ -11,10 +11,11 @@ import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
+import android.text.style.CharacterStyle;
 import android.text.style.ClickableSpan;
 import android.util.AttributeSet;
 import android.view.View;
@@ -106,7 +107,7 @@ public class FlightInsuranceView extends LinearLayout {
                     ivProtectionImageView.setRotation(180);
                 } else {
                     ivProtectionImageView.setRotation(0);
-                    if (listener != null){
+                    if (listener != null) {
                         listener.onBenefitExpanded();
                     }
                 }
@@ -174,14 +175,15 @@ public class FlightInsuranceView extends LinearLayout {
         }
     }
 
-    private SpannableString buildTncText(String tncAggreement, String tncUrl, String title) {
+    private SpannableStringBuilder buildTncText(String tncAggreement, String tncUrl, String title) {
+        String asterisk = "*";
         final int color = getResources().getColor(R.color.green_300);
         String fullText = String.format("%s. ", tncAggreement);
         if (tncUrl != null && tncUrl.length() > 0) {
             fullText += getContext().getString(R.string.flight_insurance_learn_more_label);
         }
         int stopIndex = fullText.length();
-        SpannableString descriptionStr = new SpannableString(fullText);
+        SpannableStringBuilder descriptionStr = new SpannableStringBuilder(fullText);
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(View widget) {
@@ -199,6 +201,21 @@ public class FlightInsuranceView extends LinearLayout {
             }
         };
         descriptionStr.setSpan(clickableSpan, tncAggreement.length() + 2, stopIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        int firstAsterisk = tncAggreement.indexOf(asterisk);
+        int lastAsterisk = tncAggreement.lastIndexOf(asterisk);
+        if (firstAsterisk != -1 && lastAsterisk != -1 && firstAsterisk != lastAsterisk) {
+            CharacterStyle asteriskStyle = new CharacterStyle() {
+
+                @Override
+                public void updateDrawState(TextPaint ds) {
+                    ds.setUnderlineText(false);
+                    ds.setTypeface(Typeface.create(Typeface.DEFAULT_BOLD, Typeface.BOLD));
+                }
+            };
+            descriptionStr.delete(lastAsterisk, lastAsterisk + 1);
+            descriptionStr.delete(firstAsterisk, firstAsterisk + 1);
+            descriptionStr.setSpan(asteriskStyle, firstAsterisk, lastAsterisk, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
         return descriptionStr;
     }
 
