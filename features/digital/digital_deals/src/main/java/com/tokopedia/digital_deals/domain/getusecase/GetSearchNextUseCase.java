@@ -1,27 +1,44 @@
 package com.tokopedia.digital_deals.domain.getusecase;
 
 
-
-import com.tokopedia.digital_deals.domain.DealsRepository;
+import com.google.gson.reflect.TypeToken;
+import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.common.network.data.model.RestRequest;
+import com.tokopedia.common.network.domain.RestRequestUseCase;
 import com.tokopedia.digital_deals.domain.model.searchdomainmodel.SearchDomainModel;
 import com.tokopedia.usecase.RequestParams;
-import com.tokopedia.usecase.UseCase;
 
-import rx.Observable;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
-public class GetSearchNextUseCase extends UseCase<SearchDomainModel> {
+import javax.inject.Inject;
 
-    private final DealsRepository dealsRepository;
+public class GetSearchNextUseCase extends RestRequestUseCase {
 
-    public GetSearchNextUseCase(DealsRepository dealsRepository) {
-        super();
-        this.dealsRepository = dealsRepository;
+    private RequestParams params;
+
+    @Inject
+    public GetSearchNextUseCase() {
+    }
+
+    public void setRequestParams(RequestParams params) {
+        this.params = params;
     }
 
     @Override
-    public Observable<SearchDomainModel> createObservable(RequestParams requestParams) {
-        String nextUrl = requestParams.getString("nexturl", "");
-        nextUrl+="&page_size=5";
-        return dealsRepository.getSearchNext(nextUrl);
+    protected List<RestRequest> buildRequest() {
+        String url = params.getString("nexturl", "");
+
+        List<RestRequest> tempRequest = new ArrayList<>();
+
+        //Request 1
+        Type token = new TypeToken<DataResponse<SearchDomainModel>>() {
+        }.getType();
+
+        RestRequest restRequest1 = new RestRequest.Builder(url, token)
+                .build();
+        tempRequest.add(restRequest1);
+        return tempRequest;
     }
 }

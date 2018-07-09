@@ -2,9 +2,9 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/main_content"
     android:background="@color/bottomnav_bg">
 
 
@@ -21,7 +21,7 @@
             android:minHeight="?attr/actionBarSize"
             app:contentInsetLeft="0dp"
             app:contentInsetStart="0dp"
-            app:contentInsetStartWithNavigation="0dp"/>
+            app:contentInsetStartWithNavigation="0dp" />
     </android.support.design.widget.AppBarLayout>
 
     <ScrollView
@@ -33,28 +33,38 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <android.support.v7.widget.CardView
-                android:id="@+id/card_view_brand"
+
+            <LinearLayout
+                android:id="@+id/ll_brand"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_24"
-                app:cardCornerRadius="@dimen/dp_8"
-                app:cardElevation="@dimen/dp_0"
+                android:background="@drawable/background_brand_logo"
+                android:orientation="vertical"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <ImageView
-                    android:id="@+id/iv_brand"
-                    android:layout_width="@dimen/image_width_brand"
-                    android:layout_height="@dimen/image_width_brand"
-                    android:background="@drawable/background_brand_logo"
-                    android:scaleType="centerCrop"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_popular"
-                    app:layout_constraintTop_toTopOf="parent" />
-            </android.support.v7.widget.CardView>
+                <android.support.v7.widget.CardView
+                    android:id="@+id/card_view_brand"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/border_width"
+                    android:layout_gravity="center_horizontal"
+                    app:cardCornerRadius="@dimen/dp_8"
+                    app:cardElevation="@dimen/dp_0">
+
+                    <ImageView
+                        android:id="@+id/iv_brand"
+                        android:layout_width="@dimen/image_width_brand"
+                        android:layout_height="@dimen/image_width_brand"
+                        android:scaleType="centerCrop"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_popular"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </android.support.v7.widget.CardView>
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/tv_deal_details"
@@ -68,9 +78,9 @@
                 android:textColor="@color/black_39"
                 android:textSize="@dimen/sp_17"
                 android:textStyle="normal"
-                app:layout_constraintLeft_toRightOf="@+id/card_view_brand"
+                app:layout_constraintLeft_toRightOf="@+id/ll_brand"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/card_view_brand"
+                app:layout_constraintTop_toTopOf="@+id/ll_brand"
                 tools:text="5 Persons Package (Include 3 Small Pizza's, 1 pasta, 1 Garlic Bread, Drinks)" />
 
             <TextView
@@ -83,8 +93,8 @@
                 android:textColor="@color/black_40"
                 android:textSize="@dimen/sp_14"
                 android:textStyle="normal"
+                app:layout_constraintBottom_toBottomOf="@+id/ll_brand"
                 app:layout_constraintLeft_toLeftOf="@+id/tv_deal_details"
-                app:layout_constraintBottom_toBottomOf="@+id/card_view_brand"
                 tools:text="Bakerzin" />
 
             <View
@@ -93,7 +103,7 @@
                 android:layout_height="@dimen/dp_1"
                 android:layout_marginTop="@dimen/dp_16"
                 android:background="@color/divider_color"
-                app:layout_constraintTop_toBottomOf="@+id/card_view_brand" />
+                app:layout_constraintTop_toBottomOf="@+id/ll_brand" />
 
 
             <TextView
@@ -144,13 +154,13 @@
                 android:fontFamily="sans-serif"
                 android:gravity="center_horizontal"
                 android:minWidth="40dp"
-                tools:text="1"
                 android:textColor="@color/black_39"
                 android:textSize="@dimen/sp_16"
                 android:textStyle="normal"
                 app:layout_constraintBottom_toBottomOf="@+id/iv_add"
                 app:layout_constraintRight_toLeftOf="@+id/iv_add"
-                app:layout_constraintTop_toTopOf="@+id/iv_add" />
+                app:layout_constraintTop_toTopOf="@+id/iv_add"
+                tools:text="1" />
 
             <View
                 android:id="@+id/divider3"
@@ -195,14 +205,14 @@
                 android:layout_marginRight="@dimen/dp_8"
                 android:fontFamily="sans-serif"
                 android:gravity="end"
-                tools:text="Rp 1.200.000"
                 android:textColor="@color/black_38"
                 android:textSize="@dimen/sp_12"
                 android:textStyle="normal"
                 app:layout_constraintBottom_toBottomOf="@id/tv_price"
                 app:layout_constraintRight_toLeftOf="@+id/tv_sales_price"
                 app:layout_constraintTop_toTopOf="@id/tv_price"
-                app:layout_goneMarginRight="@dimen/dp_16" />
+                app:layout_goneMarginRight="@dimen/dp_16"
+                tools:text="Rp 1.200.000" />
 
             <TextView
                 android:id="@+id/tv_sales_price"
@@ -211,13 +221,13 @@
                 android:layout_marginRight="@dimen/dp_16"
                 android:fontFamily="sans-serif-medium"
                 android:includeFontPadding="false"
-                tools:text="Rp 800.000"
                 android:textColor="@color/black_39"
                 android:textSize="@dimen/sp_14"
                 android:textStyle="normal"
                 app:layout_constraintBottom_toBottomOf="@id/tv_price"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="@id/tv_price" />
+                app:layout_constraintTop_toTopOf="@id/tv_price"
+                tools:text="Rp 800.000" />
 
 
             <View
@@ -251,13 +261,13 @@
                 android:layout_marginTop="@dimen/margin_vvvs"
                 android:fontFamily="sans-serif-medium"
                 android:includeFontPadding="false"
-                tools:text="Rp 800.000"
                 android:textColor="@color/red_800"
                 android:textSize="@dimen/sp_17"
                 android:textStyle="normal"
                 app:layout_constraintBottom_toBottomOf="@id/tv_total_payment"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="@id/tv_total_payment" />
+                app:layout_constraintTop_toTopOf="@id/tv_total_payment"
+                tools:text="Rp 800.000" />
 
 
         </android.support.constraint.ConstraintLayout>
@@ -269,8 +279,8 @@
         android:layout_height="match_parent"
         android:background="@color/black_12"
         android:clickable="true"
-        android:visibility="gone"
-        android:focusable="true">
+        android:focusable="true"
+        android:visibility="gone">
 
         <ProgressBar
             android:id="@+id/prog_bar"

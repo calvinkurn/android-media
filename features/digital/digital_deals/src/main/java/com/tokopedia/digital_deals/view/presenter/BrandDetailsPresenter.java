@@ -3,8 +3,11 @@ package com.tokopedia.digital_deals.view.presenter;
 
 import android.support.v7.widget.LinearLayoutManager;
 
+import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.digital_deals.domain.getusecase.GetBrandDetailsUseCase;
 import com.tokopedia.digital_deals.domain.model.branddetailsmodel.BrandDetailsDomain;
@@ -15,8 +18,10 @@ import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.PageViewModel;
 import com.tokopedia.usecase.RequestParams;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -58,8 +63,8 @@ public class BrandDetailsPresenter extends BaseDaggerPresenter<BrandDetailsContr
         getView().showProgressBar();
         getView().hideCollapsingHeader();
         searchNextParams = getView().getParams();
-        getBrandDetailsUseCase.execute(getView().getParams(), new Subscriber<BrandDetailsDomain>() {
-
+        getBrandDetailsUseCase.setRequestParams(getView().getParams());
+        getBrandDetailsUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
                 CommonUtils.dumper("enter onCompleted");
@@ -80,7 +85,14 @@ public class BrandDetailsPresenter extends BaseDaggerPresenter<BrandDetailsContr
             }
 
             @Override
-            public void onNext(BrandDetailsDomain dealEntity) {
+            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                Type token = new TypeToken<DataResponse<BrandDetailsDomain>>(){
+                }.getType();
+
+                RestResponse restResponse = typeRestResponseMap.get(token);
+                DataResponse dataResponse = restResponse.getData();
+                BrandDetailsDomain dealEntity = (BrandDetailsDomain) dataResponse.getData();
+
                 getView().hideProgressBar();
                 getView().showCollapsingHeader();
 
@@ -99,19 +111,27 @@ public class BrandDetailsPresenter extends BaseDaggerPresenter<BrandDetailsContr
     private void loadMoreItems() {
         isLoading = true;
         searchNextParams.putBoolean("search_next", true);
-        getBrandDetailsUseCase.execute(searchNextParams, new Subscriber<BrandDetailsDomain>() {
+        getBrandDetailsUseCase.setRequestParams(searchNextParams);
+        getBrandDetailsUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
-
+                CommonUtils.dumper("enter onCompleted");
             }
 
             @Override
-            public void onError(Throwable throwable) {
+            public void onError(Throwable e) {
                 isLoading = false;
             }
 
             @Override
-            public void onNext(BrandDetailsDomain dealEntity) {
+            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                Type token = new TypeToken<DataResponse<BrandDetailsDomain>>(){
+                }.getType();
+
+                RestResponse restResponse = typeRestResponseMap.get(token);
+                DataResponse dataResponse = restResponse.getData();
+                BrandDetailsDomain dealEntity = (BrandDetailsDomain) dataResponse.getData();
+
                 isLoading = false;
                 ArrayList<CategoryItemsViewModel> categoryList = Utils.getSingletonInstance()
                         .convertIntoCategoryListItemsViewModel(dealEntity.getDealItems());

@@ -66,25 +66,34 @@
             tools:text="1 Set Jumbo Bento for 2 persons on Weekdays (Monday - Friday)" />
 
 
-        <android.support.v7.widget.CardView
-            android:id="@+id/cv_brand"
-            android:layout_width="@dimen/image_width_brand_deals_card"
-            android:layout_height="@dimen/image_width_brand_deals_card"
+        <LinearLayout
+            android:id="@+id/ll_brand"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_8"
-            app:cardCornerRadius="@dimen/dp_8"
-            app:cardElevation="0dp"
+            android:orientation="vertical"
+            android:background="@drawable/background_brand_logo"
+
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_deal_intro">
 
-            <ImageView
-                android:id="@+id/iv_brand"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/background_brand_logo"
-                android:scaleType="fitCenter" />
+            <android.support.v7.widget.CardView
+                android:id="@+id/cv_brand"
+                android:layout_width="@dimen/image_width_brand_deals_card"
+                android:layout_height="@dimen/image_width_brand_deals_card"
+                android:layout_margin="@dimen/border_width"
+                app:cardCornerRadius="@dimen/dp_8"
+                app:cardElevation="0dp">
 
-        </android.support.v7.widget.CardView>
+                <ImageView
+                    android:id="@+id/iv_brand"
+                    android:layout_width="@dimen/image_width_brand_deals_card"
+                    android:layout_height="@dimen/image_width_brand_deals_card"
+                    android:scaleType="fitCenter" />
+
+            </android.support.v7.widget.CardView>
+        </LinearLayout>
 
         <TextView
             android:id="@+id/tv_brand_name"
@@ -93,32 +102,41 @@
             android:layout_marginBottom="@dimen/dp_4"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_4"
+            android:layout_marginTop="14dp"
+            android:ellipsize="end"
             android:fontFamily="sans-serif"
+            android:maxLines="1"
             android:textColor="@color/black_40"
             android:textSize="@dimen/sp_12"
             android:textStyle="normal"
-            app:layout_constraintBottom_toTopOf="@+id/tv_available_locations"
-            app:layout_constraintLeft_toRightOf="@+id/cv_brand"
+            app:layout_constraintLeft_toRightOf="@+id/ll_brand"
+            app:layout_constraintTop_toTopOf="@+id/ll_brand"
             tools:text="Bakerzin" />
 
 
         <TextView
             android:id="@+id/tv_available_locations"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp_4"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_4"
+            android:ellipsize="end"
             android:fontFamily="sans-serif"
+            android:gravity="center_vertical"
+            android:maxLines="1"
             android:textColor="@color/black_40"
             android:textSize="@dimen/sp_12"
             android:textStyle="normal"
-            app:layout_constraintBottom_toBottomOf="@+id/cv_brand"
-            app:layout_constraintLeft_toLeftOf="@+id/tv_brand_name"
-            tools:text="Tersedia di 50 lokasi" />
+            app:layout_constraintLeft_toRightOf="@+id/ll_brand"
+            app:layout_constraintRight_toLeftOf="@+id/tv_off"
+            app:layout_constraintTop_toBottomOf="@+id/tv_brand_name"
+            tools:text="Tersedia di 50 lokasi fgfg vgfg fgf gfgvgfgf fgfg fgf" />
 
         <TextView
             android:id="@+id/tv_off"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_marginRight="@dimen/dp_8"
             android:background="@drawable/background_lightgreen_oval"
             android:fontFamily="sans-serif"
@@ -130,8 +148,9 @@
             android:textColor="@color/colorRed"
             android:textSize="@dimen/sp_11"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/cv_brand"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_available_locations"
             app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tv_available_locations"
             tools:text="20% OFF" />
 
 
@@ -145,7 +164,7 @@
             android:background="@color/divider_color"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cv_brand" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_available_locations" />
 
         <TextView
             android:id="@+id/tv_mrp"
@@ -180,8 +199,8 @@
             android:id="@+id/iv_wish_list"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:padding="@dimen/dp_2"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:padding="@dimen/dp_8"
             app:layout_constraintBottom_toBottomOf="@+id/tv_sales_price"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="@+id/tv_mrp" />
@@ -190,7 +209,6 @@
             android:id="@+id/tv_wish_list"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_8"
             android:fontFamily="sans-serif-medium"
             android:textColor="@color/black_40"
             android:textSize="@dimen/sp_12"
@@ -204,8 +222,8 @@
             android:id="@+id/iv_share"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:padding="@dimen/dp_2"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:padding="@dimen/dp_8"
             app:layout_constraintBottom_toBottomOf="@+id/tv_sales_price"
             app:layout_constraintLeft_toRightOf="@id/tv_wish_list"
             app:layout_constraintTop_toTopOf="@+id/tv_mrp"

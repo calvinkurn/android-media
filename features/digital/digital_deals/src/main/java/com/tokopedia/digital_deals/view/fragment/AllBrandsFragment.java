@@ -9,6 +9,8 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -62,6 +64,7 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.categoriesModel = getArguments().getParcelable(ARG_PARAM_EXTRA_DEALS_DATA);
+        setHasOptionsMenu(true);
 
     }
 
@@ -92,9 +95,20 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
         recyclerview.setLayoutManager(layoutManager);
         recyclerview.setAdapter(new DealsBrandAdapter(getContext(), null, !IS_SHORT_LAYOUT));
         searchInputView.setListener(this);
+        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.hideSoftInputFromWindow(searchInputView.getSearchTextView().getWindowToken(), 0);
+            baseMainContent.requestFocus();
+        }
 
     }
 
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        MenuItem item = menu.findItem(R.id.action_menu_search);
+        if (item != null)
+            item.setVisible(false);
+    }
 
     @Override
     public void onSearchSubmitted(String text) {
@@ -140,6 +154,7 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
 
     @Override
     public void renderBrandList(List<BrandViewModel> brandList, boolean isSearchSubmitted) {
+
         if (brandList != null && brandList.size() != 0) {
             ((DealsBrandAdapter) recyclerview.getAdapter()).updateAdapter(brandList);
             recyclerview.setVisibility(View.VISIBLE);

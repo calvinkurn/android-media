@@ -30,8 +30,6 @@
         android:fontFamily="sans-serif"
         android:lineSpacingExtra="2sp"
         android:layout_marginLeft="@dimen/dp_16"
-        android:maxLines="1"
-        android:ellipsize="end"
         tools:text="PACIFIC PLACE MALL, 4th Floor…"
         android:textColor="@color/black_38"
         android:textSize="@dimen/sp_14"

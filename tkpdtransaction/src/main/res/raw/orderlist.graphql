@@ -8,6 +8,8 @@ query ($orderCategory: OrderCategory, $Page: Int, $PerPage: Int) {
     statusColor
     statusStr
     paymentID
+    appLink
+    upstream
     paymentData {
       label
       value
@@ -75,5 +77,4 @@ query ($orderCategory: OrderCategory, $Page: Int, $PerPage: Int) {
       }
     }
   }
-  orderLabelList
 }

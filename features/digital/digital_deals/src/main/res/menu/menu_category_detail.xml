@@ -6,8 +6,7 @@
         android:id="@+id/action_menu_search"
         android:icon="@drawable/ic_search_grey"
         android:orderInCategory="100"
-        android:tint="@color/color_search_icon"
-        android:title="@string/favourite"
+        android:title="@string/search"
         android:visible="false"
         app:showAsAction="always"
         tools:ignore="AppCompatResource" />

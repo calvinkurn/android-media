@@ -66,7 +66,7 @@ public interface OrderListDetailContract {
     }
 
     public interface Presenter extends CustomerPresenter<View>{
-        void setOrderDetailsContent(String orderId, String orderCategory);
+        void setOrderDetailsContent(String orderId, String orderCategory, boolean fromPayment);
 
         void setTapActionButton(List<TapActions> tapActionButton, TapActionInterface view, int position);
 
@@ -74,8 +74,6 @@ public interface OrderListDetailContract {
     }
 
     interface TapActionInterface {
-        void setTapActionButton(int position, TapActions tapActions);
-
-        void tapActionLayoutVisible();
+        void setTapActionButton(int position, List<TapActions> tapActions);
     }
 }

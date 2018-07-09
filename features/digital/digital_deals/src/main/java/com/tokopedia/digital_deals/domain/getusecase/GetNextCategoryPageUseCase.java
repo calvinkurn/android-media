@@ -1,24 +1,40 @@
 package com.tokopedia.digital_deals.domain.getusecase;
 
-import com.tokopedia.digital_deals.domain.DealsRepository;
+import com.google.gson.reflect.TypeToken;
+import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.common.network.data.model.RestRequest;
+import com.tokopedia.common.network.domain.RestRequestUseCase;
 import com.tokopedia.digital_deals.domain.model.categorydomainmodel.CategoryDetailsDomain;
 import com.tokopedia.digital_deals.view.presenter.DealsCategoryDetailPresenter;
 import com.tokopedia.usecase.RequestParams;
-import com.tokopedia.usecase.UseCase;
 
-import rx.Observable;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
-public class GetNextCategoryPageUseCase extends UseCase<CategoryDetailsDomain> {
-    private final DealsRepository dealsRepository;
+import javax.inject.Inject;
 
-    public GetNextCategoryPageUseCase(DealsRepository eventRepository) {
-        super();
-        this.dealsRepository = eventRepository;
+public class GetNextCategoryPageUseCase extends RestRequestUseCase {
+    private RequestParams params;
+
+    @Inject
+    public GetNextCategoryPageUseCase(){ }
+
+    public void setRequestParams(RequestParams params) {
+        this.params = params;
     }
 
     @Override
-    public Observable<CategoryDetailsDomain> createObservable(RequestParams requestParams) {
-        String nextUrl = requestParams.getString(DealsCategoryDetailPresenter.TAG, "");
-        return dealsRepository.getCategoryDetails(nextUrl);
+    protected List<RestRequest> buildRequest() {
+        List<RestRequest> tempRequest = new ArrayList<>();
+
+        String url = params.getString(DealsCategoryDetailPresenter.TAG, "");
+        Type token = new TypeToken<DataResponse<CategoryDetailsDomain>>() {
+        }.getType();
+
+        RestRequest restRequest1 = new RestRequest.Builder(url, token)
+                .build();
+        tempRequest.add(restRequest1);
+        return tempRequest;
     }
 }

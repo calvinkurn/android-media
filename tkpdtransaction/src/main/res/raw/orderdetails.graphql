@@ -1,5 +1,5 @@
-query OMSDETAILS($orderCategory: OrderCategory, $orderId: String, $detail: Int, $action: Int) {
-  orderDetails(orderCategory: $orderCategory, orderId: $orderId, details: $detail, actions: $action) {
+query OMSDETAILS($orderCategoryStr: String, $upstream:String, $orderId: String, $detail: Int, $action: Int) {
+  orderDetails(orderCategoryStr: $orderCategoryStr,upstream:$upstream,orderId: $orderId, details: $detail, actions: $action) {
     status {
       status
       statusText
@@ -21,6 +21,7 @@ query OMSDETAILS($orderCategory: OrderCategory, $orderId: String, $detail: Int, 
       invoiceUrl
     }
     items {
+      id
       imageUrl
       title
       quantity

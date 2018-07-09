@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -24,10 +25,10 @@ import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DaggerDealsComponent;
 import com.tokopedia.digital_deals.di.DealsModule;
 import com.tokopedia.digital_deals.view.activity.CategoryDetailActivity;
+import com.tokopedia.digital_deals.view.activity.DealsHomeActivity;
 import com.tokopedia.digital_deals.view.adapter.DealsBrandAdapter;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
 import com.tokopedia.digital_deals.view.contractor.DealsCategoryDetailContract;
-import com.tokopedia.digital_deals.view.presenter.DealDetailsPresenter;
 import com.tokopedia.digital_deals.view.presenter.DealsCategoryDetailPresenter;
 import com.tokopedia.digital_deals.view.presenter.DealsHomePresenter;
 import com.tokopedia.digital_deals.view.utils.CategoryDetailCallbacks;
@@ -35,11 +36,14 @@ import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.digital_deals.view.viewmodel.BrandViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.CategoriesModel;
 import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
+import com.tokopedia.digital_deals.view.viewmodel.LocationViewModel;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
 
 import javax.inject.Inject;
+
+import static android.app.Activity.RESULT_OK;
 
 public class CategoryDetailHomeFragment extends BaseDaggerFragment implements DealsCategoryDetailContract.View, View.OnClickListener {
 
@@ -61,6 +65,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     DealsCategoryDetailPresenter mPresenter;
     private CategoriesModel categoriesModel;
     private CategoryDetailCallbacks fragmentCallbacks;
+    private String locationName;
 
 
     @Override
@@ -82,7 +87,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.categoriesModel = getArguments().getParcelable(DealDetailsPresenter.HOME_DATA);
+        this.categoriesModel = getArguments().getParcelable(CategoryDetailActivity.CATEGORIES_DATA);
 
     }
 
@@ -93,7 +98,6 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
         setViewIds(view);
 
 
-
         mPresenter.getCategoryDetails();
         mPresenter.getBrandsList();
         return view;
@@ -101,10 +105,6 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
 
 
     private void setViewIds(View view) {
-
-        if (categoriesModel.getTitle() != null) {
-            ((CategoryDetailActivity) getActivity()).getSupportActionBar().setTitle(categoriesModel.getTitle());
-        }
 
         seeAllBrands = view.findViewById(R.id.tv_see_all);
         popularLocation = view.findViewById(R.id.tv_popular);
@@ -155,8 +155,9 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
             recyclerViewDeals.setVisibility(View.GONE);
             noContent.setVisibility(View.VISIBLE);
         }
+        locationName = Utils.getSingletonInstance().getLocation(getContext()).getName();
         popularLocation.setText(String.format(getActivity().getResources().getString(R.string.popular_deals_in_location)
-                , Utils.getSingletonInstance().getLocation(getContext()).getName()));
+                , locationName));
     }
 
     @Override
@@ -272,6 +273,27 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
         requestParams.putInt(Utils.BRAND_QUERY_PARAM_CHILD_CATEGORY_ID, categoriesModel.getCategoryId());
 //        requestParams.putInt(Utils.BRAND_QUERY_PARAM_CITY_ID, Utils.getSingletonInstance().getLocation(getContext()).getId());
         return requestParams;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        switch (requestCode) {
+
+
+            case DealsHomeActivity.REQUEST_CODE_DEALSSEARCHACTIVITY:
+                if (resultCode == RESULT_OK) {
+                    LocationViewModel location1 = Utils.getSingletonInstance().getLocation(getActivity());
+                    if (!locationName.equals(location1.getName())) {
+                        mPresenter.getCategoryDetails();
+                        mPresenter.getBrandsList();
+                    }
+
+                }
+                break;
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

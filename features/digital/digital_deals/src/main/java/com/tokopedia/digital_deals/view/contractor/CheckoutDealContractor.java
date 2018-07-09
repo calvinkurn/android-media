@@ -31,13 +31,13 @@ public class CheckoutDealContractor {
 
         android.view.View getRootView();
 
-        void showPromoSuccessMessage(String text, String message);
+        void showPromoSuccessMessage(String text, String message, long discountAmount);
 
         void showCashbackMessage(String text);
 
         void hideSuccessMessage();
 
-
+        void updateAmount(String s);
     }
 
     public interface Presenter extends CustomerPresenter<View> {

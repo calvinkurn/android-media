@@ -1,10 +1,14 @@
 package com.tokopedia.digital_deals.view.presenter;
 
 import android.content.Intent;
+import android.os.Parcelable;
 import android.support.v7.widget.LinearLayoutManager;
 
+import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.domain.getusecase.GetAllBrandsUseCase;
@@ -21,8 +25,10 @@ import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.digital_deals.view.viewmodel.PageViewModel;
 import com.tokopedia.usecase.RequestParams;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -55,7 +61,7 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
     public DealsCategoryDetailPresenter(GetCategoryDetailRequestUseCase getCategoryDetailRequestUseCase, GetNextCategoryPageUseCase getNextCategoryPageUseCase, GetAllBrandsUseCase getAllBrandsUseCase) {
         this.getCategoryDetailRequestUseCase = getCategoryDetailRequestUseCase;
         this.getNextCategoryPageUseCase = getNextCategoryPageUseCase;
-        this.getAllBrandsUseCase=getAllBrandsUseCase;
+        this.getAllBrandsUseCase = getAllBrandsUseCase;
     }
 
     @Override
@@ -72,9 +78,17 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
 
     @Override
     public boolean onOptionMenuClick(int id) {
-        if (id == R.id.search_input_view) {
+        if (id == R.id.action_menu_search) {
             Intent searchIntent = new Intent(getView().getActivity(), DealsSearchActivity.class);
-            searchIntent.putParcelableArrayListExtra("TOPDEALS", categoryViewModels);
+            int size = 5;
+            if (categoryViewModels.size() < size) {
+                size = categoryViewModels.size();
+            }
+            ArrayList<CategoryItemsViewModel> searchItems = new ArrayList<CategoryItemsViewModel>();
+            for (int i = 0; i < size; i++) {
+                searchItems.add(categoryViewModels.get(i));
+            }
+            searchIntent.putParcelableArrayListExtra("TOPDEALS", searchItems);
             getView().navigateToActivityRequest(searchIntent, DealsHomeActivity.REQUEST_CODE_DEALSSEARCHACTIVITY);
         } else if (id == R.id.action_promo) {
             getView().startGeneralWebView(PROMOURL);
@@ -95,8 +109,8 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
 
     public void getBrandsList() {
         getView().showProgressBar();
-        getAllBrandsUseCase.execute(getView().getBrandParams(), new Subscriber<AllBrandsDomain>() {
-
+        getAllBrandsUseCase.setRequestParams(getView().getBrandParams());
+        getAllBrandsUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
                 CommonUtils.dumper("enter onCompleted");
@@ -116,7 +130,12 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
             }
 
             @Override
-            public void onNext(AllBrandsDomain dealEntity) {
+            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                Type token = new TypeToken<DataResponse<AllBrandsDomain>>() {
+                }.getType();
+                RestResponse restResponse = typeRestResponseMap.get(token);
+                DataResponse data = restResponse.getData();
+                AllBrandsDomain dealEntity = (AllBrandsDomain) data.getData();
                 isBrandsLoaded = true;
                 brandViewModels = Utils.getSingletonInstance().convertIntoBrandListViewModel(dealEntity.getBrands());
                 getView().renderBrandList(brandViewModels);
@@ -128,29 +147,35 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
 
     public void getCategoryDetails() {
         getView().showProgressBar();
-        getCategoryDetailRequestUseCase.execute(getView().getCategoryParams(), new Subscriber<CategoryDetailsDomain>() {
-
+        getCategoryDetailRequestUseCase.setRequestParams(getView().getCategoryParams());
+        getCategoryDetailRequestUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
-                CommonUtils.dumper("enter onCompleted");
+
+                    CommonUtils.dumper("enter onCompleted");
             }
 
             @Override
             public void onError(Throwable e) {
-                CommonUtils.dumper("enter error");
-                e.printStackTrace();
-                getView().hideProgressBar();
-                NetworkErrorHelper.showEmptyState(getView().getActivity(), getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        getCategoryDetails();
-                    }
-                });
+                    CommonUtils.dumper("enter error");
+                    e.printStackTrace();
+                    getView().hideProgressBar();
+                    NetworkErrorHelper.showEmptyState(getView().getActivity(), getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
+                        @Override
+                        public void onRetryClicked() {
+                            getCategoryDetails();
+                        }
+                    });
             }
 
             @Override
-            public void onNext(CategoryDetailsDomain dealEntity) {
-                isDealsLoaded=true;
+            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                Type token = new TypeToken<DataResponse<CategoryDetailsDomain>>(){
+                }.getType();
+                RestResponse restResponse = typeRestResponseMap.get(token);
+                DataResponse dataResponse = restResponse.getData();
+                CategoryDetailsDomain dealEntity = (CategoryDetailsDomain) dataResponse.getData();
+                isDealsLoaded = true;
                 categoryViewModels = Utils.getSingletonInstance()
                         .convertIntoCategoryListItemsViewModel(dealEntity.getDealItems());
                 pageViewModel = Utils.getSingletonInstance().convertIntoPageViewModel(dealEntity.getPage());
@@ -163,23 +188,28 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
     }
 
 
-
     private void loadMoreItems() {
         isLoading = true;
 
-        getNextCategoryPageUseCase.execute(searchNextParams, new Subscriber<CategoryDetailsDomain>() {
+        getNextCategoryPageUseCase.setRequestParams(searchNextParams);
+        getNextCategoryPageUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
 
             }
 
             @Override
-            public void onError(Throwable throwable) {
+            public void onError(Throwable e) {
                 isLoading = false;
             }
 
             @Override
-            public void onNext(CategoryDetailsDomain categoryDetailsDomain) {
+            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                Type token = new TypeToken<DataResponse<CategoryDetailsDomain>>(){
+                }.getType();
+                RestResponse restResponse = typeRestResponseMap.get(token);
+                DataResponse dataResponse = restResponse.getData();
+                CategoryDetailsDomain categoryDetailsDomain = (CategoryDetailsDomain) dataResponse.getData();
                 isLoading = false;
                 ArrayList<CategoryItemsViewModel> categoryList = Utils.getSingletonInstance()
                         .convertIntoCategoryListItemsViewModel(categoryDetailsDomain.getDealItems());

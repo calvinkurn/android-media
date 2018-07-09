@@ -31,6 +31,7 @@ public class DealDetailsActivity extends BaseSimpleActivity implements DealFragm
     private DealsDetailsViewModel dealDetail;
 
     @DeepLink({DIGITAL_DEALS_DETAILS})
+
     public static TaskStackBuilder getInstanceIntentAppLinkBackToHome(Context context, Bundle extras) {
         String deepLink = extras.getString(DeepLink.URI);
         Intent destination;
@@ -59,10 +60,8 @@ public class DealDetailsActivity extends BaseSimpleActivity implements DealFragm
 
     @Override
     protected Fragment getNewFragment() {
-        String seoUrl = getIntent().getStringExtra(DealDetailsPresenter.HOME_DATA);
-        Bundle bundle = new Bundle();
-        bundle.putString(DealDetailsPresenter.HOME_DATA, seoUrl);
-        return DealDetailsFragment.createInstance(bundle);
+
+        return DealDetailsFragment.createInstance(getIntent().getExtras());
     }
 
     @Override
@@ -76,6 +75,7 @@ public class DealDetailsActivity extends BaseSimpleActivity implements DealFragm
     public void replaceFragment(List<OutletViewModel> outlets, int flag) {
         this.outlets = outlets;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(R.anim.slide_in_up, R.anim.slide_in_down, R.anim.slide_out_down, R.anim.slide_out_up);
         transaction.add(R.id.parent_view, DealDetailsAllRedeemLocationsFragment.createInstance());
         transaction.addToBackStack(null);
         transaction.commit();
@@ -99,4 +99,6 @@ public class DealDetailsActivity extends BaseSimpleActivity implements DealFragm
     public DealsDetailsViewModel getDealDetails() {
         return dealDetail;
     }
+
+
 }

@@ -17,10 +17,13 @@ dependencies {
     implementation project(rootProject.ext.libraries.design)
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.networkDependencies.glide
     implementation 'at.blogc:expandabletextview:1.0.5'
     implementation project(path: ':libraries:oms')
     implementation project(path: ':tkpdloyalty')
     implementation project(rootProject.ext.libraries.useCase)
+    implementation project(rootProject.ext.libraries.commonNetwork)
+    implementation project(rootProject.ext.libraries.applink)
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor

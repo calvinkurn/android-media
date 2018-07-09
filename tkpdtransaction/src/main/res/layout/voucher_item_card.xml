@@ -97,7 +97,7 @@
             android:textColor="@color/black_39"
             android:textSize="@dimen/sp_14"
             android:textStyle="normal"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintStart_toEndOf="@+id/imageView"
             app:layout_constraintTop_toTopOf="@+id/imageView" />
 
@@ -117,17 +117,21 @@
 
         <TextView
             android:id="@+id/tv_redeem_locations"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginRight="@dimen/margin_small"
             android:layout_marginTop="@dimen/dp_4"
+            android:ellipsize="end"
             android:fontFamily="sans-serif"
+            android:maxLines="2"
             android:text="Dapat ditukar di "
             android:textColor="@color/black_40"
             android:textSize="@dimen/dp_12"
             android:textStyle="normal"
             app:layout_constraintBottom_toBottomOf="@+id/imageView"
-            app:layout_constraintLeft_toRightOf="@+id/imageView" />
+            app:layout_constraintLeft_toRightOf="@+id/imageView"
+            app:layout_constraintRight_toRightOf="parent" />
 
 
         <LinearLayout
@@ -159,33 +163,52 @@
                 android:textStyle="bold" />
         </LinearLayout>
 
-
         <LinearLayout
-            android:id="@+id/tapAction"
+            android:id="@+id/progress_bar_layout"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="@dimen/dp_8"
-            android:background="@color/white"
-            android:layout_marginLeft="18dp"
-            android:layout_marginRight="18dp"
-            android:orientation="vertical"
-            android:visibility="visible"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ll_valid"/>
-
-        <LinearLayout
-            android:id="@+id/actionButton"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="@dimen/dp_8"
-            android:layout_marginLeft="18dp"
-            android:layout_marginRight="18dp"
-            android:background="@color/white"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
             android:orientation="vertical"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tapAction"/>
+            app:layout_constraintTop_toBottomOf="@+id/ll_valid">
+
+            <ProgressBar
+                android:id="@+id/prog_bar"
+                android:layout_width="@dimen/dp_40"
+                android:layout_height="@dimen/dp_40"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/dp_8"
+                android:visibility="gone"/>
+
+            <LinearLayout
+                android:id="@+id/tapAction"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_1"
+                android:layout_marginRight="@dimen/dp_1"
+                android:background="@color/white"
+                android:orientation="vertical"
+                android:visibility="visible" />
+
+            <LinearLayout
+                android:id="@+id/actionButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_1"
+                android:layout_marginRight="@dimen/dp_1"
+                android:background="@color/white"
+                android:orientation="vertical"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tapAction" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="8dp"/>
+        </LinearLayout>
+
     </android.support.constraint.ConstraintLayout>
 
     <TextView

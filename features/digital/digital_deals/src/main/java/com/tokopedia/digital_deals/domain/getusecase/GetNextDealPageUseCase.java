@@ -1,25 +1,46 @@
 package com.tokopedia.digital_deals.domain.getusecase;
 
-import com.tokopedia.digital_deals.domain.DealsRepository;
-import com.tokopedia.digital_deals.domain.model.DealsDomain;
+import com.google.gson.reflect.TypeToken;
+import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.common.network.data.model.RestRequest;
+import com.tokopedia.common.network.domain.RestRequestUseCase;
+import com.tokopedia.digital_deals.data.entity.response.homeresponse.DealsResponse;
 import com.tokopedia.digital_deals.view.presenter.DealsHomePresenter;
 import com.tokopedia.usecase.RequestParams;
-import com.tokopedia.usecase.UseCase;
 
-import rx.Observable;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
-public class GetNextDealPageUseCase extends UseCase<DealsDomain> {
-    private final DealsRepository dealsRepository;
+import javax.inject.Inject;
 
-    public GetNextDealPageUseCase(DealsRepository eventRepository) {
-        super();
-        this.dealsRepository = eventRepository;
+public class GetNextDealPageUseCase extends RestRequestUseCase {
+
+    private RequestParams params;
+
+    @Inject
+    public GetNextDealPageUseCase() {
+
+    }
+
+    public void setRequestParams(RequestParams params) {
+        this.params = params;
     }
 
     @Override
-    public Observable<DealsDomain> createObservable(RequestParams requestParams) {
-        String nextUrl=requestParams.getString(DealsHomePresenter.TAG, "");
-        return dealsRepository.getDeals(nextUrl);
+    protected List<RestRequest> buildRequest() {
+        List<RestRequest> tempRequest=new ArrayList<>();
+        HashMap<String, Object> map = params.getParameters();
+        String nextUrl= String.valueOf(map.get(DealsHomePresenter.TAG));
+        Type token=new TypeToken<DataResponse<DealsResponse>>(){
+
+        }.getType();
+
+        RestRequest restRequest=new RestRequest.Builder(nextUrl, token)
+                .build();
+        tempRequest.add(restRequest);
+        return tempRequest;
     }
 
 }

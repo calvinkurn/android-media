@@ -68,7 +68,8 @@ public class DealsCategoryItemAdapter extends RecyclerView.Adapter<DealsCategory
             categoriesModel.setCategoryId(categoryItems.get(getIndex()).getCategoryId());
             categoriesModel.setPosition(getIndex()+1);
             Intent detailsIntent = new Intent(context, CategoryDetailActivity.class);
-            detailsIntent.putExtra(DealDetailsPresenter.HOME_DATA, categoriesModel);
+            detailsIntent.putExtra(CategoryDetailActivity.CATEGORIES_DATA, categoriesModel);
+            detailsIntent.putExtra(CategoryDetailActivity.CATEGORY_NAME, categoriesModel.getTitle());
             context.startActivity(detailsIntent);
         }
     }

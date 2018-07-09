@@ -1,20 +1,29 @@
 package com.tokopedia.transaction.orders.orderdetails.view.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.net.Uri;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 
 import com.google.gson.Gson;
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
 import com.tokopedia.transaction.orders.orderdetails.data.EntityAddress;
@@ -25,6 +34,7 @@ import com.tokopedia.transaction.orders.orderdetails.view.activity.OrderListDeta
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailContract;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailPresenter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements OrderListDetailContract.TapActionInterface {
@@ -35,7 +45,6 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private final int ITEM2 = 2;
     private boolean isShortLayout;
     OrderListDetailPresenter presenter;
-    ItemViewHolder viewHolder;
 
     public ItemsAdapter(Context context, List<Items> itemsList, boolean isShortLayout, OrderListDetailPresenter presenter) {
         this.context = context;
@@ -77,20 +86,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        viewHolder = (ItemViewHolder) holder;
-        /*switch (getItemViewType(position)) {
-            case ITEM:*/
         ((ItemViewHolder) holder).setIndex(position);
         ((ItemViewHolder) holder).bindData(itemsList.get(position), isShortLayout);
-        // break;
-//            case ITEM2:
-//                ((ItemViewHolder) holder).setIndex(position);
-//                ((ItemViewHolder) holder).bindData(itemsList.get(position), isShortLayout);
-//                break;
-           /* default:
-                break;
-        }*/
-
     }
 
     @Override
@@ -99,23 +96,10 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     @Override
-    public void setTapActionButton(int position, TapActions tapActions) {
-        TextView tapActionTextView = new TextView(context);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        tapActionTextView.setPadding(24, 24, 24, 24);
-        tapActionTextView.setLayoutParams(params);
-        tapActionTextView.setTextColor(Color.WHITE);
-        tapActionTextView.setGravity(Gravity.CENTER_HORIZONTAL);
-        tapActionTextView.setText(tapActions.getLabel().toUpperCase());
-        GradientDrawable shape = new GradientDrawable();
-        shape.setShape(GradientDrawable.RECTANGLE);
-        shape.setColor(context.getResources().getColor(R.color.green_nob));
-        shape.setCornerRadius(4);
-        shape.setStroke(1, Color.BLACK);
-        tapActionTextView.setBackground(shape);
-        if (!tapActions.getBody().equals(""))
-            tapActionTextView.setOnClickListener(getActionButtonClickListener(tapActions.getBody().getAppURL()));
-        viewHolder.tapActionLayout.addView(tapActionTextView);
+    public void setTapActionButton(int position, List<TapActions> tapActions) {
+        itemsList.get(position).setTapActions(tapActions);
+        itemsList.get(position).setTapActionsLoaded(true);
+        notifyItemChanged(position);
     }
 
     private View.OnClickListener getActionButtonClickListener(final String uri) {
@@ -123,14 +107,9 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             @Override
             public void onClick(View view) {
                 ((TkpdCoreRouter) context.getApplicationContext())
-                        .actionOpenGeneralWebView((OrderListDetailActivity)context, uri);
+                        .actionOpenGeneralWebView((OrderListDetailActivity) context, uri);
             }
         };
-    }
-
-    @Override
-    public void tapActionLayoutVisible() {
-        viewHolder.tapActionLayout.setVisibility(View.VISIBLE);
     }
 
 
@@ -141,11 +120,9 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         private TextView brandName;
         private TextView cityName;
         private TextView validDate;
-
-        //        private TextView redeemButton;
+        private ProgressBar progressBar;
         private LinearLayout tapActionLayout;
         private LinearLayout actionLayout;
-        //        private TextView voucherRedeemedDate;
         private View clCard;
         private int index;
 
@@ -158,14 +135,13 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             cityName = itemView.findViewById(R.id.tv_redeem_locations);
             if (!isShortLayout) {
                 validDate = itemView.findViewById(R.id.tv_valid_till_date);
-//                redeemButton = itemView.findViewById(R.id.tv_redeem_voucher);
                 tapActionLayout = itemView.findViewById(R.id.tapAction);
                 actionLayout = itemView.findViewById(R.id.actionButton);
-//                voucherRedeemedDate = itemView.findViewById(R.id.tv_voucher_redeemed);
                 clCard = itemView.findViewById(R.id.cl_card);
                 itemView.findViewById(R.id.divider1).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
             }
+            progressBar = itemView.findViewById(R.id.prog_bar);
 
         }
 
@@ -178,38 +154,111 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 metaDataInfo = gson.fromJson(item.getMetaData(), MetaDataInfo.class);
             }
             if (metaDataInfo != null) {
-                ImageHandler.loadImage(context, dealImage, metaDataInfo.getEntityImage(), R.color.grey_1100, R.color.grey_1100);
-                dealsDetails.setText(metaDataInfo.getEntityProductName());
+                if (metaDataInfo.getEntityImage() == null || metaDataInfo.getEntityImage().length() == 0) {
+                    ImageHandler.loadImage(context, dealImage, item.getImageUrl(), R.color.grey_1100, R.color.grey_1100);
+                } else {
+                    ImageHandler.loadImage(context, dealImage, metaDataInfo.getEntityImage(), R.color.grey_1100, R.color.grey_1100);
+                }
+                if (metaDataInfo.getEntityProductName() == null || metaDataInfo.getEntityProductName().length() == 0) {
+                    dealsDetails.setText(item.getTitle());
+                } else {
+                    dealsDetails.setText(metaDataInfo.getEntityProductName());
+                }
                 brandName.setText(metaDataInfo.getEntityBrandName());
                 if (!isShortLayout) {
-//                validDate.setText();
-//                    redeemButton.setOnClickListener(this);
                     validDate.setText(String.format(context.getResources().getString(R.string.text_valid_till), metaDataInfo.getEndDate()));
                 }
                 EntityAddress entityAddress = metaDataInfo.getEntityAddress();
                 if (entityAddress != null) {
-                    cityName.setText(entityAddress.getAddress() + ", " + entityAddress.getCity() + ", " + entityAddress.getDistrict() + ", " + entityAddress.getState());
+                    if (entityAddress.getName() != null) {
+                        cityName.setText(entityAddress.getName());
+                    }
                 }
             }
-            if (item.getActionButtons().size() > 0) {
-                actionLayout.setVisibility(View.VISIBLE);
-            }
-            for (ActionButton actionButton : item.getActionButtons()) {
-                TextView smsButton = new TextView(context);
-                smsButton.setText(actionButton.getLabel().toUpperCase());
-                smsButton.setGravity(Gravity.CENTER_HORIZONTAL);
-                smsButton.setPadding(24, 24, 24, 24);
-                GradientDrawable shape = new GradientDrawable();
-                shape.setShape(GradientDrawable.RECTANGLE);
-                shape.setCornerRadius(4);
-                shape.setStroke(1, Color.BLACK);
-                smsButton.setBackground(shape);
-                smsButton.setOnClickListener(getActionButtonClickListener(actionButton.getBody().getAppURL()));
-                actionLayout.addView(smsButton);
+
+            if (item.getTapActions() != null && item.getTapActions().size() > 0 && !item.isTapActionsLoaded()) {
+                progressBar.setVisibility(View.VISIBLE);
+                tapActionLayout.setVisibility(View.GONE);
+                presenter.setTapActionButton(item.getTapActions(), ItemsAdapter.this, getIndex());
             }
 
-            if (item.getTapActions().size() > 0) {
-                presenter.setTapActionButton(item.getTapActions(), ItemsAdapter.this, getIndex());
+            if (item.isTapActionsLoaded()) {
+                progressBar.setVisibility(View.GONE);
+                if (item.getTapActions() == null || item.getTapActions().size() == 0) {
+                    tapActionLayout.setVisibility(View.GONE);
+                } else {
+                    tapActionLayout.setVisibility(View.VISIBLE);
+                }
+
+                for (int i = 0; i < item.getTapActions().size(); i++) {
+                    TapActions tapActions = item.getTapActions().get(i);
+
+                    TextView tapActionTextView = new TextView(context);
+                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                    params.setMargins(0, (int) context.getResources().getDimension(R.dimen.dp_8), 0, 0);
+                    tapActionTextView.setPadding(24, 24, 24, 24);
+                    tapActionTextView.setLayoutParams(params);
+                    tapActionTextView.setTextColor(Color.WHITE);
+                    tapActionTextView.setGravity(Gravity.CENTER_HORIZONTAL);
+                    tapActionTextView.setText(tapActions.getLabel().toUpperCase());
+                    GradientDrawable shape = new GradientDrawable();
+                    shape.setShape(GradientDrawable.RECTANGLE);
+                    shape.setColor(context.getResources().getColor(R.color.green_nob));
+
+
+                    if (i == item.getTapActions().size() - 1 && (item.getActionButtons() != null || item.getActionButtons().size() == 0)) {
+                        float radius = context.getResources().getDimension(R.dimen.dp_4);
+                        shape.setCornerRadii(new float[]{0, 0, 0, 0, radius, radius, radius, radius});
+
+                    } else {
+
+                        shape.setCornerRadius(4);
+                    }
+
+                    tapActionTextView.setBackground(shape);
+                    if (!tapActions.getBody().equals(""))
+                        tapActionTextView.setOnClickListener(getActionButtonClickListener(tapActions.getBody().getAppURL()));
+                    tapActionLayout.addView(tapActionTextView);
+                }
+
+
+            }
+
+            if (item.getActionButtons() != null) {
+                if (item.getActionButtons().size() > 0) {
+                    actionLayout.setVisibility(View.VISIBLE);
+                }else{
+                    actionLayout.setVisibility(View.GONE);
+                }
+                actionLayout.removeAllViews();
+                for (int i = 0; i < item.getActionButtons().size(); i++) {
+
+                    ActionButton actionButton = item.getActionButtons().get(i);
+
+                    TextView actionBtn = new TextView(context);
+                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                    params.setMargins(0, (int) context.getResources().getDimension(R.dimen.dp_8), 0, 0);
+                    actionBtn.setPadding(24, 24, 24, 24);
+                    actionBtn.setLayoutParams(params);
+
+                    actionBtn.setGravity(Gravity.CENTER_HORIZONTAL);
+                    actionBtn.setText(actionButton.getLabel().toUpperCase());
+                    GradientDrawable shape = new GradientDrawable();
+                    shape.setShape(GradientDrawable.RECTANGLE);
+
+
+                    if (i == item.getTapActions().size() - 1) {
+                        float radius = context.getResources().getDimension(R.dimen.dp_4);
+                        shape.setCornerRadii(new float[]{0, 0, 0, 0, radius, radius, radius, radius});
+
+                    } else {
+
+                        shape.setCornerRadius(4);
+                    }
+                    actionBtn.setBackground(shape);
+                    actionBtn.setOnClickListener(getActionButtonClickListener(actionButton.getBody().getAppURL()));
+                    actionLayout.addView(actionBtn);
+                }
             }
         }
 

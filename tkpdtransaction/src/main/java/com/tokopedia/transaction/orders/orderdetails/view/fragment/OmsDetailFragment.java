@@ -99,10 +99,11 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         orderListComponent.inject(this);
     }
 
-    public static Fragment getInstance(String orderId, String orderCategory) {
+    public static Fragment getInstance(String orderId, String orderCategory, boolean fromPayment) {
         Bundle bundle = new Bundle();
         bundle.putString(KEY_ORDER_ID, orderId);
         bundle.putString(KEY_ORDER_CATEGORY, orderCategory);
+        bundle.putBoolean("from_payment", fromPayment);
         Fragment fragment = new OmsDetailFragment();
         fragment.setArguments(bundle);
         return fragment;
@@ -129,6 +130,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         recyclerView = view.findViewById(R.id.recycler_view);
         redeemInfo=view.findViewById(R.id.tv_redeem_info);
         paymentMethodInfo = view.findViewById(R.id.info_payment);
+        recyclerView.setNestedScrollingEnabled(false);
 
         initInjector();
         setMainViewVisible(View.GONE);
@@ -139,7 +141,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        presenter.setOrderDetailsContent((String) getArguments().get(KEY_ORDER_ID), (String) getArguments().get(KEY_ORDER_CATEGORY));
+        presenter.setOrderDetailsContent((String) getArguments().get(KEY_ORDER_ID), (String) getArguments().get(KEY_ORDER_CATEGORY), getArguments().getBoolean("from_payment", false));
     }
 
     @Override

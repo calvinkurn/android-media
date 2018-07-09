@@ -144,17 +144,6 @@
 
 
                 <TextView
-                    android:id="@+id/deals_in_city"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-medium"
-                    android:padding="@dimen/dp_16"
-                    android:textColor="@color/black_39"
-                    android:textSize="@dimen/sp_17"
-                    android:textStyle="normal"
-                    tools:text="Deals ‘Spaghetti’ di Jakarta" />
-
-                <TextView
                     android:id="@+id/tv_topevents"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -163,7 +152,6 @@
                     android:padding="@dimen/dp_16"
                     android:text="@string/trending_deals"
                     android:textColor="@color/black_38"
-
                     android:textSize="@dimen/sp_12"
                     android:textStyle="normal" />
 

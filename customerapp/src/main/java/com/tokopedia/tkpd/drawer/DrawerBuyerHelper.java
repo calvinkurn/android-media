@@ -145,7 +145,6 @@ public class DrawerBuyerHelper extends DrawerHelper
                     android.R.drawable.stat_sys_warning,
                     TkpdState.DrawerPosition.DEVELOPER_OPTIONS, true));
         }
-
     }
 
     private void createDataLogin(ArrayList<DrawerItem> data) {
@@ -546,7 +545,7 @@ public class DrawerBuyerHelper extends DrawerHelper
                     AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(),AppEventTracking.EventLabel.DIGITAL_TRANSACTION_LIST, AppEventTracking.EventLabel.PURCHASE);
                     break;
                 case TkpdState.DrawerPosition.PEOPLE_FLIGHT_TRANSACTION_LIST:
-                    intent = FlightOrderListActivity.getCallingIntent(context);
+                    intent = TransactionPurchaseRouter.createIntentOrderListSummary(context, OrderCategory.FLIGHTS);
                     context.startActivity(intent);
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.FLIGHT_TRANSACTION_LIST);
                     AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(),AppEventTracking.EventLabel.FLIGHT_TRANSACTION_LIST, AppEventTracking.EventLabel.PURCHASE);
