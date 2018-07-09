@@ -5,13 +5,14 @@ import android.os.Parcelable;
 
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author by alvarisi on 11/9/17.
  */
 
-public class FlightBookingParamViewModel implements Parcelable {
+public class FlightBookingParamViewModel implements Parcelable{
     private String id;
     private String orderDueTimestamp;
     private FlightSearchPassDataViewModel searchParam;
@@ -23,8 +24,10 @@ public class FlightBookingParamViewModel implements Parcelable {
     private int totalPriceNumeric;
     private String totalPriceFmt;
     private List<SimpleViewModel> priceListDetails;
+    private List<FlightInsuranceViewModel> insurances;
 
     public FlightBookingParamViewModel() {
+        insurances = new ArrayList<>();
     }
 
     protected FlightBookingParamViewModel(Parcel in) {
@@ -39,6 +42,7 @@ public class FlightBookingParamViewModel implements Parcelable {
         totalPriceNumeric = in.readInt();
         totalPriceFmt = in.readString();
         priceListDetails = in.createTypedArrayList(SimpleViewModel.CREATOR);
+        insurances = in.createTypedArrayList(FlightInsuranceViewModel.CREATOR);
     }
 
     public static final Creator<FlightBookingParamViewModel> CREATOR = new Creator<FlightBookingParamViewModel>() {
@@ -141,23 +145,32 @@ public class FlightBookingParamViewModel implements Parcelable {
         this.priceListDetails = priceListDetails;
     }
 
+    public List<FlightInsuranceViewModel> getInsurances() {
+        return insurances;
+    }
+
+    public void setInsurances(List<FlightInsuranceViewModel> insurances) {
+        this.insurances = insurances;
+    }
+
     @Override
     public int describeContents() {
         return 0;
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(id);
-        dest.writeString(orderDueTimestamp);
-        dest.writeParcelable(searchParam, flags);
-        dest.writeParcelable(phoneCodeViewModel, flags);
-        dest.writeTypedList(passengerViewModels);
-        dest.writeString(contactName);
-        dest.writeString(contactEmail);
-        dest.writeString(contactPhone);
-        dest.writeInt(totalPriceNumeric);
-        dest.writeString(totalPriceFmt);
-        dest.writeTypedList(priceListDetails);
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(id);
+        parcel.writeString(orderDueTimestamp);
+        parcel.writeParcelable(searchParam, i);
+        parcel.writeParcelable(phoneCodeViewModel, i);
+        parcel.writeTypedList(passengerViewModels);
+        parcel.writeString(contactName);
+        parcel.writeString(contactEmail);
+        parcel.writeString(contactPhone);
+        parcel.writeInt(totalPriceNumeric);
+        parcel.writeString(totalPriceFmt);
+        parcel.writeTypedList(priceListDetails);
+        parcel.writeTypedList(insurances);
     }
 }

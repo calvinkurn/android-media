@@ -23,10 +23,9 @@ import com.tokopedia.core.network.retrofit.interceptors.TkpdBaseInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdBearerWithAuthTypeJsonUtInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdErrorResponseInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TopAdsAuthInterceptor;
-import com.tokopedia.core.network.retrofit.interceptors.WalletAuthInterceptor;
+import com.tokopedia.core.network.retrofit.interceptors.UserAgentInterceptor;
 import com.tokopedia.core.network.retrofit.response.TkpdV4ResponseError;
 import com.tokopedia.core.network.retrofit.response.TopAdsResponseError;
-import com.tokopedia.core.network.validator.CacheApiTKPDResponseValidator;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 
@@ -159,16 +158,27 @@ public class OkHttpFactory {
     }
 
     public OkHttpClient buildClientDefaultAuth() {
+        return buildClientDefaultAuthBuilder().build();
+    }
+
+    public TkpdOkHttpBuilder buildClientDefaultAuthBuilder() {
         return new TkpdOkHttpBuilder(builder)
                 .addInterceptor(new FingerprintInterceptor())
                 .addInterceptor(new CacheApiInterceptor())
                 .addInterceptor(new TkpdAuthInterceptor())
                 .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
+                .addDebugInterceptor();
+    }
+
+    public OkHttpClient buildClientDefaultAuthWithUserAgent() {
+        return new TkpdOkHttpBuilder(builder)
+                .addInterceptor(new FingerprintInterceptor())
+                .addInterceptor(new CacheApiInterceptor())
+                .addInterceptor(new UserAgentInterceptor())
+                .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
                 .addDebugInterceptor()
                 .build();
     }
-
-
 
     public OkHttpClient buildClientNoAuth() {
         return new TkpdOkHttpBuilder(builder)
@@ -204,15 +214,6 @@ public class OkHttpFactory {
         return new TkpdOkHttpBuilder(builder)
                 .addInterceptor(new FingerprintInterceptor())
                 .addInterceptor(new StandardizedInterceptor(authorizationString))
-                .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
-                .addDebugInterceptor()
-                .build();
-    }
-
-    public OkHttpClient buildClientBearerWalletAuth(String authKey) {
-        return new TkpdOkHttpBuilder(builder)
-                .addInterceptor(new FingerprintInterceptor())
-                .addInterceptor(new WalletAuthInterceptor(authKey))
                 .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
                 .addDebugInterceptor()
                 .build();
@@ -445,7 +446,7 @@ public class OkHttpFactory {
                 .addDebugInterceptor()
                 .build();
     }
-
+    
     public OkHttpClient buildDaggerClientBearerEvents(EventInerceptors eventInterceptor,
                                                       OkHttpRetryPolicy okHttpRetryPolicy,
                                                       ChuckInterceptor chuckInterceptor,

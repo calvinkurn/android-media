@@ -2,6 +2,7 @@ package com.tokopedia.transaction.purchase.detail.model.detail.viewmodel;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import java.util.List;
 
@@ -9,7 +10,7 @@ import java.util.List;
  * Created by kris on 11/2/17. Tokopedia
  */
 
-public class OrderDetailData implements Parcelable{
+public class OrderDetailData implements Parcelable {
 
     private String orderId;
 
@@ -104,6 +105,24 @@ public class OrderDetailData implements Parcelable{
     private boolean showInsuranceNotification;
 
     private String insuranceNotification;
+
+    private String pickupPinCode;
+
+    private String liveTrackingUrl;
+
+    private boolean showUploadAwb;
+
+    private String awbUploadProofText;
+
+    private String awbUploadProofUrl;
+
+    public String getAwbUploadProofUrl() {
+        return awbUploadProofUrl;
+    }
+
+    public void setAwbUploadProofUrl(String awbUploadProofUrl) {
+        this.awbUploadProofUrl = awbUploadProofUrl;
+    }
 
     public OrderDetailData() {
     }
@@ -308,6 +327,22 @@ public class OrderDetailData implements Parcelable{
         this.partialOrderStatus = partialOrderStatus;
     }
 
+    public boolean isShowUploadAwb() {
+        return showUploadAwb;
+    }
+
+    public void setShowUploadAwb(boolean showUploadAwb) {
+        this.showUploadAwb = showUploadAwb;
+    }
+
+    public String getAwbUploadProofText() {
+        return awbUploadProofText;
+    }
+
+    public void setAwbUploadProofText(String awbUploadProofText) {
+        this.awbUploadProofText = awbUploadProofText;
+    }
+
     public String getPreorderPeriod() {
         return preorderPeriod;
     }
@@ -412,6 +447,14 @@ public class OrderDetailData implements Parcelable{
         this.insurancePrice = insurancePrice;
     }
 
+    public String getPickupPinCode() {
+        return pickupPinCode;
+    }
+
+    public void setPickupPinCode(String pickupPinCode) {
+        this.pickupPinCode = pickupPinCode;
+    }
+
     public String getAdditionalFee() {
         return additionalFee;
     }
@@ -485,6 +528,16 @@ public class OrderDetailData implements Parcelable{
     }
 
 
+    public String getLiveTrackingUrl() {
+        if (TextUtils.isEmpty(liveTrackingUrl))
+            return "";
+        return liveTrackingUrl;
+    }
+
+    public void setLiveTrackingUrl(String liveTrackingUrl) {
+        this.liveTrackingUrl = liveTrackingUrl;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -539,6 +592,11 @@ public class OrderDetailData implements Parcelable{
         dest.writeString(this.driverVehicle);
         dest.writeByte(this.showInsuranceNotification ? (byte) 1 : (byte) 0);
         dest.writeString(this.insuranceNotification);
+        dest.writeString(this.pickupPinCode);
+        dest.writeByte(this.showUploadAwb ? (byte) 1 : (byte) 0);
+        dest.writeString(this.awbUploadProofText);
+        dest.writeString(this.awbUploadProofUrl);
+        dest.writeString(this.liveTrackingUrl);
     }
 
     protected OrderDetailData(Parcel in) {
@@ -589,6 +647,11 @@ public class OrderDetailData implements Parcelable{
         this.driverVehicle = in.readString();
         this.showInsuranceNotification = in.readByte() != 0;
         this.insuranceNotification = in.readString();
+        this.pickupPinCode = in.readString();
+        this.showUploadAwb = in.readByte() != 0;
+        this.awbUploadProofText = in.readString();
+        this.awbUploadProofUrl = in.readString();
+        this.liveTrackingUrl = in.readString();
     }
 
     public static final Creator<OrderDetailData> CREATOR = new Creator<OrderDetailData>() {

@@ -17,6 +17,10 @@ import java.util.List;
 /**
  * Created by Angga.Prasetiyo on 01/12/2015.
  */
+@Deprecated
+/**
+ @see com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response
+ */
 public class TkpdResponse {
 
     public static final String TOO_MANY_REQUEST = "TOO_MANY_REQUEST";
@@ -93,7 +97,7 @@ public class TkpdResponse {
             }
 
             isNullData = jsonDataArray == null && jsonData == null;
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             jsonDataArray = null;
         }

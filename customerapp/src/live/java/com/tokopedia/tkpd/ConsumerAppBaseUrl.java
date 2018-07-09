@@ -19,6 +19,7 @@ public class ConsumerAppBaseUrl {
     public static final String BASE_INBOX_DOMAIN = "https://inbox.tokopedia.com";
     public static final String BASE_JS_DOMAIN = "https://js.tokopedia.com/";
     public static final String BASE_KERO_DOMAIN = "https://kero.tokopedia.com/";
+    public static final String BASE_KERO_RATES_DOMAIN = "https://gw.tokopedia.com/";
     public static final String BASE_JAHE_DOMAIN = "https://jahe.tokopedia.com";
     public static final String BASE_PULSA_WEB_DOMAIN = "https://pulsa.tokopedia.com";
     public static final String BASE_GOLD_MERCHANT_DOMAIN = "https://goldmerchant.tokopedia.com";
@@ -47,5 +48,5 @@ public class ConsumerAppBaseUrl {
     public static final String GAMIFICATION_BASE_URL = "https://gql.tokopedia.com/";
     public static final String ACCOUNTS_DOMAIN = "https://accounts.tokopedia.com";
     public static final String TOP_PAY_DOMAIN = "https://pay.tokopedia.id";
-    public static final String CHANGE_PHONE_DOMAIN = "https://13-feature-m-staging.tokopedia.com";
+    public static final String CHANGE_PHONE_DOMAIN = BASE_MOBILE_DOMAIN;
 }

@@ -1,6 +1,6 @@
 package com.tokopedia.feedplus.view.subscriber;
 
-import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.feedplus.domain.model.recentview.RecentViewBadgeDomain;
 import com.tokopedia.feedplus.domain.model.recentview.RecentViewLabelDomain;

@@ -1,12 +1,12 @@
 package com.tokopedia.tkpdpdp.dialog;
 
-import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.text.SpannableString;
 import android.text.TextPaint;

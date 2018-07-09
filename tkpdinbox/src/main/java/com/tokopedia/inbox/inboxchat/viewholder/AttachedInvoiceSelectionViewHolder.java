@@ -10,8 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomContract;
 import com.tokopedia.inbox.inboxchat.viewmodel.AttachInvoiceSelectionViewModel;

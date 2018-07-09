@@ -1,6 +1,6 @@
 package com.tokopedia.seller.seller.info.view.util;
 
-import com.tokopedia.seller.common.williamchart.util.GoldMerchantDateUtils;
+import com.db.williamchart.util.GoldMerchantDateUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
