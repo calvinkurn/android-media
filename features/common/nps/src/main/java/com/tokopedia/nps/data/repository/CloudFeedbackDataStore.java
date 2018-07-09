@@ -1,12 +1,9 @@
 package com.tokopedia.nps.data.repository;
 
-import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.nps.data.mapper.FeedbackEntityMapper;
 import com.tokopedia.nps.data.model.FeedbackEntity;
 import com.tokopedia.nps.data.net.NpsService;
 import com.tokopedia.usecase.RequestParams;
-
-import java.util.HashMap;
 
 import rx.Observable;
 
