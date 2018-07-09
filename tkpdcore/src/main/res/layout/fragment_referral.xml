@@ -126,8 +126,8 @@
                         android:layout_marginTop="@dimen/margin_med"
                         android:background="@color/white"
                         android:gravity="center_horizontal|center_vertical"
-                        android:paddingLeft="@dimen/padding_large"
-                        android:paddingRight="@dimen/padding_large"
+                        android:paddingLeft="@dimen/padding_vvs"
+                        android:paddingRight="@dimen/padding_vvs"
                         android:text="Bagikan ke"
                         android:textColor="@color/black_54"
                         android:textSize="@dimen/fonts" />
@@ -183,7 +183,7 @@
                     android:id="@+id/referral_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="6  teman diajak"
+                    android:text="6 teman diajak"
                     android:textColor="@color/black_70"
                     android:textSize="18sp" />
             </LinearLayout>
