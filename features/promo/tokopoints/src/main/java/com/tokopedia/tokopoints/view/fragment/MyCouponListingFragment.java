@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.tokopoints.R;
+import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.adapter.CouponListAdapter;
 import com.tokopedia.tokopoints.view.adapter.SpacesItemDecoration;
@@ -139,8 +140,7 @@ public class MyCouponListingFragment extends BaseDaggerFragment implements MyCou
 
     @Override
     public void openWebView(String url) {
-        Intent intent = SimpleWebViewWithFilePickerActivity.getIntent(getActivityContext(), url);
-        startActivity(intent);
+        ((TokopointRouter) getAppContext()).openTokoPoint(getContext(), url);
     }
 
     @Override

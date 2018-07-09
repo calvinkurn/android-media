@@ -21,6 +21,7 @@ import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.tokopoints.R;
+import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.adapter.CatalogListAdapter;
 import com.tokopedia.tokopoints.view.adapter.SpacesItemDecoration;
@@ -118,8 +119,7 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
 
     @Override
     public void openWebView(String url) {
-        Intent intent = SimpleWebViewWithFilePickerActivity.getIntent(getActivityContext(), url);
-        startActivity(intent);
+        ((TokopointRouter) getAppContext()).openTokoPoint(getContext(), url);
     }
 
     @Override

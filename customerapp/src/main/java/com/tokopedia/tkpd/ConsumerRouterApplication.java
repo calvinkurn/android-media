@@ -271,6 +271,7 @@ import com.tokopedia.tokocash.di.TokoCashComponent;
 import com.tokopedia.tokocash.historytokocash.presentation.model.PeriodRangeModelData;
 import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 import com.tokopedia.tokocash.pendingcashback.receiver.TokocashPendingDataBroadcastReceiver;
+import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.topads.sourcetagging.util.TopAdsAppLinkUtil;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.bcaoneklik.usecase.CreditCardFingerPrintUseCase;
@@ -346,7 +347,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ContactUsModuleRouter,
         ITransactionOrderDetailRouter,
         ILogisticUploadAwbRouter,
-        NetworkRouter {
+        NetworkRouter,
+        TokopointRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;

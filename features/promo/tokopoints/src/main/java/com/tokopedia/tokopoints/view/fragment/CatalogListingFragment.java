@@ -20,8 +20,11 @@ import android.widget.ViewFlipper;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
+import com.tokopedia.core.router.loyaltytokopoint.ILoyaltyRouter;
+import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.design.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.tokopoints.R;
+import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.activity.MyCouponListingActivity;
 import com.tokopedia.tokopoints.view.adapter.CatalogBannerPagerAdapter;
@@ -260,7 +263,6 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
 
     @Override
     public void openWebView(String url) {
-        Intent intent = SimpleWebViewWithFilePickerActivity.getIntent(getActivityContext(), url);
-        startActivity(intent);
+        ((TokopointRouter) getAppContext()).openTokoPoint(getContext(), url);
     }
 }
