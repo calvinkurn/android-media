@@ -16,6 +16,9 @@ public class TrainSeat implements Parcelable {
         this.column = column;
     }
 
+    public TrainSeat() {
+    }
+
     protected TrainSeat(Parcel in) {
         klass = in.readString();
         wagonNo = in.readString();
@@ -63,4 +66,21 @@ public class TrainSeat implements Parcelable {
     public String getColumn() {
         return column;
     }
+
+    public void setKlass(String klass) {
+        this.klass = klass;
+    }
+
+    public void setWagonNo(String wagonNo) {
+        this.wagonNo = wagonNo;
+    }
+
+    public void setRow(String row) {
+        this.row = row;
+    }
+
+    public void setColumn(String column) {
+        this.column = column;
+    }
+
 }

@@ -19,9 +19,7 @@ public class TrainWagonViewModelMapper {
     public TrainWagonViewModel transform(TrainWagonEntity entity) {
         TrainWagonViewModel viewModel = null;
         if (entity != null) {
-            viewModel = new TrainWagonViewModel();
-            viewModel.setWagonCode(entity.getWagonCode());
-            viewModel.setSeats(trainSeatViewModelMapper.transform(entity.getSeatDetailEntities()));
+            viewModel = trainSeatViewModelMapper.transform(entity);
         }
         return viewModel;
     }

@@ -64,4 +64,20 @@ public class TrainPaxPassenger implements Parcelable {
         return idNumber;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setIdNumber(String idNumber) {
+        this.idNumber = idNumber;
+    }
+
+    public void setPaxType(int paxType) {
+        this.paxType = paxType;
+    }
+
+    public void setSeat(TrainSeat seat) {
+        this.seat = seat;
+    }
+
 }

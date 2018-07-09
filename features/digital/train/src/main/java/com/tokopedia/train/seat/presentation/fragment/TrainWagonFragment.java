@@ -21,6 +21,7 @@ import com.tokopedia.train.seat.presentation.fragment.listener.TrainSeatListener
 import com.tokopedia.train.seat.presentation.viewmodel.TrainSeatPassengerViewModel;
 import com.tokopedia.train.seat.presentation.viewmodel.TrainSeatViewModel;
 import com.tokopedia.train.seat.presentation.viewmodel.TrainWagonViewModel;
+import com.tokopedia.train.seat.presentation.widget.TrainSeatItemDivider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -108,14 +109,24 @@ public class TrainWagonFragment extends BaseDaggerFragment implements TrainSeatA
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        int columnCount = calculateColumn(trainWagonViewModel.getSeats());
-        adapter = new TrainSeatAdapter();
+        adapter = new TrainSeatAdapter(trainWagonViewModel.getMaxColumn());
         adapter.setSeats(trainWagonViewModel.getSeats());
         adapter.setSelecteds(transformToSelectedSeat(interaction.getPassengers()));
         adapter.setListener(this);
         seatsRecyclerView.setNestedScrollingEnabled(false);
-        seatsRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), columnCount));
-//        seatsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), trainWagonViewModel.getMaxColumn() + 1);
+        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                if ((position + 1) % trainWagonViewModel.getMaxColumn() == 2)
+                    return 2;
+                else
+                    return 1;
+            }
+        });
+        seatsRecyclerView.setLayoutManager(gridLayoutManager);
+
+//        seatsRecyclerView.addItemDecoration(new TrainSeatItemDivider(columnCount));
         seatsRecyclerView.setAdapter(adapter);
     }
 
@@ -133,12 +144,9 @@ public class TrainWagonFragment extends BaseDaggerFragment implements TrainSeatA
         return seats;
     }
 
-    private int calculateColumn(List<TrainSeatViewModel> seats) {
-        int column = 4;
-        if (seats.size() > 5) {
-            column = seats.get(4).getColumn().equalsIgnoreCase("E") ? 5 : 4;
-        }
-        return column;
+    @Override
+    public List<TrainSeatPassengerViewModel> getPassengers() {
+        return interaction.getPassengers();
     }
 
     @Override
