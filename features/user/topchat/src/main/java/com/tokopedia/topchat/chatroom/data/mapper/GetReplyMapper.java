@@ -36,7 +36,7 @@ import static com.tokopedia.topchat.chatroom.data.mapper.WebSocketMapper.TYPE_CH
  * Created by stevenfredian on 8/31/17.
  */
 
-public class GetReplyMapper extends BaseChatAPICallMapper<ReplyData,ChatRoomViewModel>{
+public class GetReplyMapper extends BaseChatApiCallMapper<ReplyData,ChatRoomViewModel> {
 
     private static final String SHOP_ADMIN_ROLE = "Shop Admin";
     private static final String SHOP_OWNER_ROLE = "Shop Owner";

@@ -17,7 +17,7 @@ import rx.functions.Func1;
 /**
  * Created by Hendri on 07/06/18.
  */
-public abstract class BaseChatAPICallMapper<I, O> implements Func1<Response<TkpdResponse>, O>{
+public abstract class BaseChatApiCallMapper<I, O> implements Func1<Response<TkpdResponse>, O>{
     /**
      * Returns a {@link Type} object to identify generic types
      * @return type

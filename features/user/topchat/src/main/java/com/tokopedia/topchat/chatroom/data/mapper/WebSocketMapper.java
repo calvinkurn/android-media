@@ -126,7 +126,8 @@ public class WebSocketMapper {
 
     private AttachInvoiceSelectionViewModel convertToInvoiceSelection(WebSocketResponseData pojo,
                                                                       JsonObject jsonAttribute) {
-        JsonObject jsonObject = jsonAttribute.getAsJsonObject("invoice_list");
+        String invoiceListKey = "invoice_list";
+        JsonObject jsonObject = jsonAttribute.getAsJsonObject(invoiceListKey);
         if (jsonObject == null)
             return null;
 
