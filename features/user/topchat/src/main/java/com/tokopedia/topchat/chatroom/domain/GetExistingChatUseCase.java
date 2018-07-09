@@ -35,8 +35,6 @@ public class GetExistingChatUseCase extends UseCase<ExistingChatPojo> {
         else requestParams.putString("to_user_id",destinationId);
 
         requestParams.putString("source",source);
-//        source	Depends from what page are u sending the chat (shop, pdp, tx_ask_buyer, tx_ask_seller, chat_bot)
-
         return requestParams;
     }
 }
