@@ -213,9 +213,6 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
                     }
 
                     tvLocationName.setText(location.getName());
-//                    mPresenter.stopBannerSlide();
-//                    mPresenter.getDealsList();
-//                    mPresenter.getBrandsList();
                 }
                 break;
 
@@ -225,7 +222,6 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
                     if(!tvLocationName.getText().equals(location1.getName())){
                         tvLocationName.setText(location1.getName());
                         mPresenter.getDealsList();
-//                        mPresenter.getBrandsList();
                     }
 
 
@@ -236,11 +232,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
                     Location location1 = Utils.getSingletonInstance().getLocation(getActivity());
                     if(!tvLocationName.getText().equals(location1.getName())){
                         tvLocationName.setText(location1.getName());
-//                        mPresenter.getDealsList();
-//                        mPresenter.getBrandsList();
                     }
-
-
                 }
                 break;
         }
@@ -352,7 +344,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(Utils.BRAND_QUERY_PARAM_TREE, Utils.BRAND_QUERY_PARAM_BRAND);
-//        requestParams.putInt(Utils.BRAND_QUERY_PARAM_CITY_ID, location.getId());
+        requestParams.putInt(Utils.BRAND_QUERY_PARAM_CITY_ID, location.getId());
         return requestParams;
     }
 

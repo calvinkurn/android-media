@@ -57,6 +57,8 @@ public class DealsSearchPresenter
         highlight = searchText;
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(getSearchDealsListRequestUseCase.TAG, searchText);
+        Location location = Utils.getSingletonInstance().getLocation(getView().getActivity());
+        requestParams.putInt(Utils.BRAND_QUERY_PARAM_CITY_ID, location.getId());
         getSearchDealsListRequestUseCase.setRequestParams(requestParams);
         getSearchDealsListRequestUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
