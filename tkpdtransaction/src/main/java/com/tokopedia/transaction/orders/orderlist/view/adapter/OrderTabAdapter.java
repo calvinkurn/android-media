@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import com.tokopedia.flight.orderlist.view.FlightOrderListFragment;
 import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
 import com.tokopedia.transaction.orders.orderlist.view.fragment.OrderListFragment;
 
@@ -27,7 +28,12 @@ public class OrderTabAdapter extends FragmentStatePagerAdapter {
         Bundle arg = new Bundle();
         String orderCategory = OrderCategory.TABS_CATEGORY[position];
         arg.putString(ORDER_CATEGORY, orderCategory);
-        Fragment fragment = new OrderListFragment();
+        Fragment fragment;
+        if(orderCategory.equals(OrderCategory.FLIGHTS)) {
+            fragment = FlightOrderListFragment.createInstance();
+        } else {
+            fragment = new OrderListFragment();
+        }
         fragment.setArguments(arg);
         return fragment;
 
