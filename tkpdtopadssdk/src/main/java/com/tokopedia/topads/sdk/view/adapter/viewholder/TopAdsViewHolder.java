@@ -25,6 +25,7 @@ import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.SpacesItemDecoration;
 import com.tokopedia.topads.sdk.view.TopAdsInfoBottomSheet;
 import com.tokopedia.topads.sdk.view.adapter.AdsItemAdapter;
+import com.tokopedia.topads.sdk.view.adapter.AdsItemDecoration;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.TopAdsViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.feed.ShopFeedViewModel;
 
@@ -60,8 +61,8 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
         container = (LinearLayout) itemView.findViewById(R.id.root);
         adapter = new AdsItemAdapter(context);
         adapter.setItemClickListener(itemClickListener);
-        recyclerView.addItemDecoration(new AdsSpacingItemDecoration(2, context.getResources()
-                .getDimensionPixelSize(R.dimen.dp_16), false));
+        recyclerView.addItemDecoration(new AdsItemDecoration(context.getResources()
+                .getDimensionPixelSize(R.dimen.dp_16)));
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setAdapter(adapter);
     }
