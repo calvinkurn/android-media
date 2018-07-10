@@ -79,6 +79,11 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
 
     @Override
     public void getChannelInfo(String channelUuid) {
+        getChannelInfo(channelUuid, false);
+    }
+
+    @Override
+    public void getChannelInfo(String channelUuid, boolean reInit) {
         getChannelInfoUseCase.execute(GetChannelInfoUseCase.createParams(channelUuid),
                 new Subscriber<ChannelInfoViewModel>() {
                     @Override
