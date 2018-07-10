@@ -47,7 +47,7 @@
                     android:layout_marginTop="@dimen/dp_8"
                     android:layout_weight="1"
                     android:background="@drawable/rect_grey_search_background"
-                    android:drawableLeft="@drawable/ic_search_grey"
+                    android:drawableLeft="@drawable/ic_search_grey_deal"
                     android:drawablePadding="@dimen/dp_4"
                     android:ellipsize="end"
                     android:gravity="center_vertical"

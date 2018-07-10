@@ -5,8 +5,8 @@ import android.content.Intent;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.digital_deals.view.viewmodel.DealsDetailsViewModel;
-import com.tokopedia.digital_deals.view.viewmodel.PackageViewModel;
+import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse;
+import com.tokopedia.digital_deals.view.model.PackageViewModel;
 import com.tokopedia.usecase.RequestParams;
 
 
@@ -19,7 +19,7 @@ public class CheckoutDealContractor {
 
         void navigateToActivityRequest(Intent intent, int requestCode);
 
-        void renderFromDetails(DealsDetailsViewModel dealDetails, PackageViewModel packageViewModel);
+        void renderFromDetails(DealsDetailsResponse dealDetails, PackageViewModel packageViewModel);
 
         void showProgressBar();
 

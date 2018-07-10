@@ -10,16 +10,14 @@ import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.digital_deals.domain.getusecase.GetBrandDetailsUseCase;
-import com.tokopedia.digital_deals.domain.model.branddetailsmodel.BrandDetailsDomain;
 import com.tokopedia.digital_deals.view.contractor.BrandDetailsContract;
-import com.tokopedia.digital_deals.view.utils.Utils;
-import com.tokopedia.digital_deals.view.viewmodel.BrandViewModel;
-import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
-import com.tokopedia.digital_deals.view.viewmodel.PageViewModel;
+import com.tokopedia.digital_deals.view.model.Brand;
+import com.tokopedia.digital_deals.view.model.Page;
+import com.tokopedia.digital_deals.view.model.ProductItem;
+import com.tokopedia.digital_deals.view.model.response.BrandDetailsResponse;
 import com.tokopedia.usecase.RequestParams;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -34,13 +32,12 @@ public class BrandDetailsPresenter extends BaseDaggerPresenter<BrandDetailsContr
     public final static String TAG = "url";
     public final static String BRAND_DATA = "brand_data";
     private GetBrandDetailsUseCase getBrandDetailsUseCase;
-    private List<CategoryItemsViewModel> categoryViewModels;
-    private BrandViewModel brandViewModel;
+    private List<ProductItem> categoryViewModels;
+    private Brand brand;
     private boolean isLoading;
     private boolean isLastPage;
-    private final int PAGE_SIZE = 20;
     private RequestParams searchNextParams;
-    private PageViewModel pageViewModel;
+    private Page page;
 
     @Inject
     public BrandDetailsPresenter(GetBrandDetailsUseCase getBrandDetailsUseCase) {
@@ -86,25 +83,28 @@ public class BrandDetailsPresenter extends BaseDaggerPresenter<BrandDetailsContr
 
             @Override
             public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
-                Type token = new TypeToken<DataResponse<BrandDetailsDomain>>(){
+                Type token = new TypeToken<DataResponse<BrandDetailsResponse>>() {
                 }.getType();
 
                 RestResponse restResponse = typeRestResponseMap.get(token);
                 DataResponse dataResponse = restResponse.getData();
-                BrandDetailsDomain dealEntity = (BrandDetailsDomain) dataResponse.getData();
+                BrandDetailsResponse dealEntity = (BrandDetailsResponse) dataResponse.getData();
 
                 getView().hideProgressBar();
                 getView().showCollapsingHeader();
 
-                categoryViewModels = Utils.getSingletonInstance()
-                        .convertIntoCategoryListItemsViewModel(dealEntity.getDealItems());
-                if(dealEntity.getDealBrand()!=null) {
-                    brandViewModel = Utils.getSingletonInstance().convertIntoBrandViewModel(dealEntity.getDealBrand());
+                if (dealEntity.getDealItems() != null) {
+                    categoryViewModels = dealEntity.getDealItems();
                 }
-                pageViewModel = Utils.getSingletonInstance().convertIntoPageViewModel(dealEntity.getPage());
+                if (dealEntity.getDealBrand() != null) {
+                    brand = dealEntity.getDealBrand();
+                }
+                if (dealEntity.getPage() != null) {
+                    page = dealEntity.getPage();
+                }
 
                 getNextPageUrl();
-                getView().renderBrandDetails(categoryViewModels, brandViewModel, dealEntity.getCount());
+                getView().renderBrandDetails(categoryViewModels, brand, dealEntity.getCount());
                 CommonUtils.dumper("enter onNext");
             }
         });
@@ -127,17 +127,16 @@ public class BrandDetailsPresenter extends BaseDaggerPresenter<BrandDetailsContr
 
             @Override
             public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
-                Type token = new TypeToken<DataResponse<BrandDetailsDomain>>(){
+                Type token = new TypeToken<DataResponse<BrandDetailsResponse>>() {
                 }.getType();
 
                 RestResponse restResponse = typeRestResponseMap.get(token);
                 DataResponse dataResponse = restResponse.getData();
-                BrandDetailsDomain dealEntity = (BrandDetailsDomain) dataResponse.getData();
+                BrandDetailsResponse dealEntity = (BrandDetailsResponse) dataResponse.getData();
 
                 isLoading = false;
-                ArrayList<CategoryItemsViewModel> categoryList = Utils.getSingletonInstance()
-                        .convertIntoCategoryListItemsViewModel(dealEntity.getDealItems());
-                pageViewModel = Utils.getSingletonInstance().convertIntoPageViewModel(dealEntity.getPage());
+                List<ProductItem> categoryList = dealEntity.getDealItems();
+                page = dealEntity.getPage();
                 getView().removeFooter();
                 getNextPageUrl();
                 getView().addDealsToCards(categoryList);
@@ -146,14 +145,15 @@ public class BrandDetailsPresenter extends BaseDaggerPresenter<BrandDetailsContr
         });
     }
 
-    void getNextPageUrl() {
-
-        String nexturl = pageViewModel.getUriNext();
-        if (nexturl != null && !nexturl.isEmpty() && nexturl.length() > 0) {
-            searchNextParams.putString(TAG, nexturl);
-            isLastPage = false;
-        } else {
-            isLastPage = true;
+    private void getNextPageUrl() {
+        if(page!=null) {
+            String nexturl = page.getUriNext();
+            if (nexturl != null && !nexturl.isEmpty() && nexturl.length() > 0) {
+                searchNextParams.putString(TAG, nexturl);
+                isLastPage = false;
+            } else {
+                isLastPage = true;
+            }
         }
     }
 

@@ -7,10 +7,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
-import com.tokopedia.digital_deals.view.viewmodel.BrandViewModel;
-import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
-import com.tokopedia.digital_deals.view.viewmodel.DealsDetailsViewModel;
-import com.tokopedia.digital_deals.view.viewmodel.OutletViewModel;
+import com.tokopedia.digital_deals.view.model.ProductItem;
+import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse;
+import com.tokopedia.digital_deals.view.model.Outlet;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
@@ -23,9 +22,9 @@ public class DealDetailsContract {
 
         void navigateToActivityRequest(Intent intent, int requestCode);
 
-        void renderDealDetails(DealsDetailsViewModel detailsViewModel);
+        void renderDealDetails(DealsDetailsResponse detailsViewModel);
 
-        void addDealsToCards(List<CategoryItemsViewModel> categoryItemsViewModels);
+        void addDealsToCards(List<ProductItem> productItems);
 
         void showProgressBar();
 
@@ -63,7 +62,7 @@ public class DealDetailsContract {
 
         void startBannerSlide(TouchViewPager viewPager);
 
-        List<OutletViewModel> getAllOutlets();
+        List<Outlet> getAllOutlets();
 
 
     }

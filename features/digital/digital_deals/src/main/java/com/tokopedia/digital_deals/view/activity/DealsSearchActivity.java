@@ -37,8 +37,8 @@ import com.tokopedia.digital_deals.view.customview.SearchInputView;
 import com.tokopedia.digital_deals.view.fragment.SelectLocationFragment;
 import com.tokopedia.digital_deals.view.presenter.DealsSearchPresenter;
 import com.tokopedia.digital_deals.view.utils.Utils;
-import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
-import com.tokopedia.digital_deals.view.viewmodel.LocationViewModel;
+import com.tokopedia.digital_deals.view.model.ProductItem;
+import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
@@ -108,7 +108,7 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
         searchInputView.setSearchHint(getResources().getString(R.string.search_input_hint_deals));
         searchInputView.setSearchTextSize(getResources().getDimension(R.dimen.sp_14));
         searchInputView.setSearchImageViewDimens(getResources().getDimensionPixelSize(R.dimen.dp_18), getResources().getDimensionPixelSize(R.dimen.dp_18));
-        searchInputView.setSearchImageView(getResources().getDrawable(R.drawable.ic_search_grey));
+        searchInputView.setSearchImageView(getResources().getDrawable(R.drawable.ic_search_grey_deal));
         EditText etSearch=searchInputView.findViewById(R.id.edit_text_search);
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         rvDeals.setLayoutManager(layoutManager);
@@ -158,11 +158,11 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
     }
 
     @Override
-    public void renderFromSearchResults(List<CategoryItemsViewModel> categoryItemsViewModels, String searchText, int count) {
-        LocationViewModel location = Utils.getSingletonInstance().getLocation(getActivity());
+    public void renderFromSearchResults(List<ProductItem> productItems, String searchText, int count) {
+        Location location = Utils.getSingletonInstance().getLocation(getActivity());
 
-        if (categoryItemsViewModels != null && categoryItemsViewModels.size() != 0) {
-            DealsCategoryAdapter dealsCategoryAdapter = new DealsCategoryAdapter(getActivity(), categoryItemsViewModels, !IS_SHORT_LAYOUT);
+        if (productItems != null && productItems.size() != 0) {
+            DealsCategoryAdapter dealsCategoryAdapter = new DealsCategoryAdapter(getActivity(), productItems, !IS_SHORT_LAYOUT);
             rvDeals.addOnScrollListener(rvOnScrollListener);
             rvDeals.setAdapter(dealsCategoryAdapter);
             llDeals.setVisibility(View.VISIBLE);
@@ -171,9 +171,9 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
             String text = String.format(getString(R.string.deals_search_location_result), searchText);
 
             int startIndexOfLink = text.length();
-            if (categoryItemsViewModels.size() != 0) {
+            if (productItems.size() != 0) {
                 if (count == 0)
-                    count = categoryItemsViewModels.size();
+                    count = productItems.size();
             }
             text += " " + String.format(getActivity().getResources().getString(R.string.number_of_items), count);
             SpannableString spannableString = new SpannableString(text);
@@ -234,7 +234,7 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
     }
 
     @Override
-    public void setTrendingDeals(List<CategoryItemsViewModel> searchViewModels, LocationViewModel location) {
+    public void setTrendingDeals(List<ProductItem> searchViewModels, Location location) {
 
 
         if (searchViewModels != null && !searchViewModels.isEmpty()) {
@@ -258,8 +258,8 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
     }
 
     @Override
-    public void setSuggestions(List<CategoryItemsViewModel> suggestions, String highlight) {
-        LocationViewModel location = Utils.getSingletonInstance().getLocation(getActivity());
+    public void setSuggestions(List<ProductItem> suggestions, String highlight) {
+        Location location = Utils.getSingletonInstance().getLocation(getActivity());
         if (suggestions != null && !suggestions.isEmpty()) {
             TopDealsSuggestionsAdapter adapter = new TopDealsSuggestionsAdapter(this, suggestions, mPresenter);
             adapter.setHighLightText(highlight);
@@ -294,13 +294,13 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
     }
 
     @Override
-    public void addDealsToCards(List<CategoryItemsViewModel> categoryItemsViewModels) {
-        ((DealsCategoryAdapter) rvDeals.getAdapter()).addAll(categoryItemsViewModels);
+    public void addDealsToCards(List<ProductItem> productItems) {
+        ((DealsCategoryAdapter) rvDeals.getAdapter()).addAll(productItems);
     }
 
 
     @Override
-    public void addDeals(List<CategoryItemsViewModel> searchViewModels) {
+    public void addDeals(List<ProductItem> searchViewModels) {
         ((TopDealsSuggestionsAdapter) rvDeals.getAdapter()).addAll(searchViewModels);
     }
 
@@ -348,7 +348,7 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
             case REQUEST_CODE_DEALSLOCATIONACTIVITY:
 
                 if (resultCode == Activity.RESULT_OK) {
-                    LocationViewModel location = Utils.getSingletonInstance().getLocation(getActivity());
+                    Location location = Utils.getSingletonInstance().getLocation(getActivity());
                     if (location == null) {
                         Toast.makeText(getActivity(), getResources().getString(R.string.select_location_first), Toast.LENGTH_SHORT).show();
                         finish();

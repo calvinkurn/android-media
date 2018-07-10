@@ -6,7 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.digital_deals.view.viewmodel.BrandViewModel;
+import com.tokopedia.digital_deals.view.model.Brand;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
@@ -23,7 +23,7 @@ public class AllBrandsContract {
 
         void navigateToActivity(Intent intent);
 
-        void renderBrandList(List<BrandViewModel> brandList, boolean isSearchSubmitted);
+        void renderBrandList(List<Brand> brandList, boolean isSearchSubmitted);
 
         RequestParams getParams();
 
@@ -39,7 +39,7 @@ public class AllBrandsContract {
 
         void addFooter();
 
-        void addBrandsToCards(List<BrandViewModel> brandList);
+        void addBrandsToCards(List<Brand> brandList);
 
         LinearLayoutManager getLayoutManager();
 

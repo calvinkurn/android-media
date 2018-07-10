@@ -39,8 +39,8 @@ import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
 import com.tokopedia.digital_deals.view.contractor.BrandDetailsContract;
 import com.tokopedia.digital_deals.view.presenter.BrandDetailsPresenter;
 import com.tokopedia.digital_deals.view.utils.Utils;
-import com.tokopedia.digital_deals.view.viewmodel.BrandViewModel;
-import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
+import com.tokopedia.digital_deals.view.model.Brand;
+import com.tokopedia.digital_deals.view.model.ProductItem;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
@@ -169,26 +169,26 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
 
 
     @Override
-    public void renderBrandDetails(List<CategoryItemsViewModel> categoryItemsViewModels, BrandViewModel brandViewModel, int count) {
-        collapsingToolbarLayout.setTitle(brandViewModel.getTitle());
-        tvExpandableDesc.setText(brandViewModel.getDescription());
+    public void renderBrandDetails(List<ProductItem> productItems, Brand brand, int count) {
+        collapsingToolbarLayout.setTitle(brand.getTitle());
+        tvExpandableDesc.setText(brand.getDescription());
         tvCityName.setText(String.format(getResources().getString(R.string.deals_brand_detail_location), Utils.getSingletonInstance().getLocation(getActivity()).getName()));
 
-//        ImageHandler.loadImage(getActivity(), ivHeader, brandViewModel.getFeaturedImage(), R.color.grey_1100, R.color.grey_1100);
-        loadBrandImage(ivHeader, brandViewModel.getFeaturedImage());
-//        ImageHandler.loadImageChat(ivHeader, brandViewModel.getFeaturedImage(), new
+//        ImageHandler.loadImage(getActivity(), ivHeader, brand.getFeaturedImage(), R.color.grey_1100, R.color.grey_1100);
+        loadBrandImage(ivHeader, brand.getFeaturedImage());
+//        ImageHandler.loadImageChat(ivHeader, brand.getFeaturedImage(), new
 
 
-        ImageHandler.loadImage(getActivity(), ivBrandLogo, brandViewModel.getFeaturedThumbnailImage(), R.color.grey_1100, R.color.grey_1100);
-        for (CategoryItemsViewModel categoryItemsViewModel : categoryItemsViewModels) {
-            categoryItemsViewModel.setBrand(brandViewModel);
+        ImageHandler.loadImage(getActivity(), ivBrandLogo, brand.getFeaturedThumbnailImage(), R.color.grey_1100, R.color.grey_1100);
+        for (ProductItem productItem : productItems) {
+            productItem.setBrand(brand);
         }
-        if (categoryItemsViewModels.size() != 0) {
+        if (productItems.size() != 0) {
             if (count == 0)
-                tvDealsCount.setText(String.format(getResources().getString(R.string.number_of_items), categoryItemsViewModels.size()));
+                tvDealsCount.setText(String.format(getResources().getString(R.string.number_of_items), productItems.size()));
             else
                 tvDealsCount.setText(String.format(getResources().getString(R.string.number_of_items), count));
-            categoryAdapter = new DealsCategoryAdapter(getActivity(), categoryItemsViewModels, !isShortLayout, true);
+            categoryAdapter = new DealsCategoryAdapter(getActivity(), productItems, !isShortLayout, true);
 
             recyclerViewDeals.setAdapter(categoryAdapter);
             recyclerViewDeals.setVisibility(View.VISIBLE);
@@ -256,9 +256,9 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
 
     @Override
     public RequestParams getParams() {
-        BrandViewModel brandViewModel = getArguments().getParcelable(BrandDetailsPresenter.BRAND_DATA);
+        Brand brand = getArguments().getParcelable(BrandDetailsPresenter.BRAND_DATA);
         RequestParams requestParams = RequestParams.create();
-        requestParams.putString(BrandDetailsPresenter.TAG, brandViewModel.getUrl());
+        requestParams.putString(BrandDetailsPresenter.TAG, brand.getUrl());
         requestParams.putInt(Utils.BRAND_QUERY_PARAM_LOCATION_ID, Utils.getSingletonInstance().getLocation(getActivity()).getId());
 //        requestParams.putInt("size", 5);
         return requestParams;
@@ -286,8 +286,10 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
     }
 
     @Override
-    public void addDealsToCards(ArrayList<CategoryItemsViewModel> categoryList) {
-        ((DealsCategoryAdapter) recyclerViewDeals.getAdapter()).addAll(categoryList);
+    public void addDealsToCards(List<ProductItem> categoryList) {
+        if(categoryList!=null) {
+            ((DealsCategoryAdapter) recyclerViewDeals.getAdapter()).addAll(categoryList);
+        }
     }
 
     private RecyclerView.OnScrollListener rvOnScrollListener = new RecyclerView.OnScrollListener() {

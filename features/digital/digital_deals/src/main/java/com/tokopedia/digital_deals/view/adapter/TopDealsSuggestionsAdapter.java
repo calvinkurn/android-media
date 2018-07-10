@@ -14,7 +14,7 @@ import android.widget.TextView;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.view.presenter.DealsSearchPresenter;
 import com.tokopedia.digital_deals.view.utils.Utils;
-import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
+import com.tokopedia.digital_deals.view.model.ProductItem;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ import java.util.List;
 public class TopDealsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context mContext;
-    private List<CategoryItemsViewModel> categoryItems;
+    private List<ProductItem> categoryItems;
     private DealsSearchPresenter mPresenter;
     private String highLightText;
     private String lowerhighlight;
@@ -33,7 +33,7 @@ public class TopDealsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVie
     private static final int ITEM = 1;
     private static final int FOOTER = 2;
 
-    public TopDealsSuggestionsAdapter(Context context, List<CategoryItemsViewModel> categoryItems, DealsSearchPresenter presenter) {
+    public TopDealsSuggestionsAdapter(Context context, List<ProductItem> categoryItems, DealsSearchPresenter presenter) {
         this.mContext = context;
         this.mPresenter = presenter;
         this.categoryItems = categoryItems;
@@ -90,26 +90,26 @@ public class TopDealsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVie
     public void addFooter() {
         if (!isFooterAdded) {
             isFooterAdded = true;
-            add(new CategoryItemsViewModel());
+            add(new ProductItem());
         }
     }
 
-    private CategoryItemsViewModel getItem(int position) {
+    private ProductItem getItem(int position) {
         return categoryItems.get(position);
     }
 
-    public void add(CategoryItemsViewModel item) {
+    public void add(ProductItem item) {
         categoryItems.add(item);
         notifyItemInserted(categoryItems.size() - 1);
     }
 
-    public void addAll(List<CategoryItemsViewModel> items) {
-        for (CategoryItemsViewModel item : items) {
+    public void addAll(List<ProductItem> items) {
+        for (ProductItem item : items) {
             add(item);
         }
     }
 
-    private void remove(CategoryItemsViewModel item) {
+    private void remove(ProductItem item) {
         int position = categoryItems.indexOf(item);
         if (position > -1) {
             categoryItems.remove(position);
@@ -137,7 +137,7 @@ public class TopDealsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVie
             isFooterAdded = false;
 
             int position = categoryItems.size() - 1;
-            CategoryItemsViewModel item = getItem(position);
+            ProductItem item = getItem(position);
 
             if (item != null) {
                 categoryItems.remove(position);
@@ -157,7 +157,7 @@ public class TopDealsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVie
         TextView tvDealTitle;
         TextView tvBrandName;
         View itemView;
-        CategoryItemsViewModel valueItem;
+        ProductItem valueItem;
         int mPosition;
 
         private DealsTitleHolder(View itemView) {
@@ -168,7 +168,7 @@ public class TopDealsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVie
             tvBrandName =itemView.findViewById(R.id.tv_brand_name);
         }
 
-        private void setDealTitle(int position, CategoryItemsViewModel value) {
+        private void setDealTitle(int position, ProductItem value) {
             this.valueItem = value;
             this.mPosition = position;
             SpannableString spannableString = new SpannableString(valueItem.getDisplayName());

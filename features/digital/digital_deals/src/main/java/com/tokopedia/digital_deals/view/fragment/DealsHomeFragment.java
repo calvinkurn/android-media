@@ -1,7 +1,6 @@
 package com.tokopedia.digital_deals.view.fragment;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -48,9 +47,9 @@ import com.tokopedia.digital_deals.view.adapter.SlidingImageAdapter;
 import com.tokopedia.digital_deals.view.contractor.DealsContract;
 import com.tokopedia.digital_deals.view.presenter.DealsHomePresenter;
 import com.tokopedia.digital_deals.view.utils.Utils;
-import com.tokopedia.digital_deals.view.viewmodel.BrandViewModel;
-import com.tokopedia.digital_deals.view.viewmodel.CategoryViewModel;
-import com.tokopedia.digital_deals.view.viewmodel.LocationViewModel;
+import com.tokopedia.digital_deals.view.model.Brand;
+import com.tokopedia.digital_deals.view.model.CategoryItem;
+import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
@@ -115,7 +114,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
 
     private void checkLocationStatus() {
 
-        LocationViewModel location = Utils.getSingletonInstance().getLocation(getActivity());
+        Location location = Utils.getSingletonInstance().getLocation(getActivity());
 
         if (location != null) {
             tvLocationName.setText(location.getName());
@@ -155,7 +154,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         rvBrandItems.setLayoutManager(new GridLayoutManager(getActivity(), SPAN_COUNT_4,
                 GridLayoutManager.VERTICAL, false));
 
-        Drawable img = getResources().getDrawable(R.drawable.ic_search_grey);
+        Drawable img = getResources().getDrawable(R.drawable.ic_search_grey_deal);
         setDrawableTint(img);
         searchInputView.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
 
@@ -202,7 +201,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
 
         switch (requestCode) {
             case DealsHomeActivity.REQUEST_CODE_DEALSLOCATIONACTIVITY:
-                LocationViewModel location = Utils.getSingletonInstance().getLocation(getActivity());
+                Location location = Utils.getSingletonInstance().getLocation(getActivity());
                 if (location == null) {
                     Toast.makeText(getActivity(), getResources().getString(R.string.select_location_first), Toast.LENGTH_SHORT).show();
                     getActivity().finish();
@@ -222,7 +221,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
 
             case DealsHomeActivity.REQUEST_CODE_DEALSSEARCHACTIVITY:
                 if (resultCode == RESULT_OK) {
-                    LocationViewModel location1 = Utils.getSingletonInstance().getLocation(getActivity());
+                    Location location1 = Utils.getSingletonInstance().getLocation(getActivity());
                     if(!tvLocationName.getText().equals(location1.getName())){
                         tvLocationName.setText(location1.getName());
                         mPresenter.getDealsList();
@@ -234,7 +233,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
                 break;
             case DealsHomeActivity.REQUEST_CODE_DEALDETAILACTIVITY:
                 if (resultCode == RESULT_OK) {
-                    LocationViewModel location1 = Utils.getSingletonInstance().getLocation(getActivity());
+                    Location location1 = Utils.getSingletonInstance().getLocation(getActivity());
                     if(!tvLocationName.getText().equals(location1.getName())){
                         tvLocationName.setText(location1.getName());
 //                        mPresenter.getDealsList();
@@ -250,7 +249,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     }
 
     @Override
-    public void renderCategoryList(List<CategoryViewModel> categoryList, CategoryViewModel carousel, CategoryViewModel top) {
+    public void renderCategoryList(List<CategoryItem> categoryList, CategoryItem carousel, CategoryItem top) {
 
         if (top.getItems() != null) {
             DealsCategoryAdapter categoryAdapter = new DealsCategoryAdapter(getActivity(), top.getItems(), IS_SHORT_LAYOUT);
@@ -269,14 +268,14 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     }
 
     @Override
-    public void renderBrandList(List<BrandViewModel> brandList) {
+    public void renderBrandList(List<Brand> brandList) {
         if (brandList != null) {
             rvBrandItems.setAdapter(new DealsBrandAdapter(getActivity(), brandList, true));
         }
     }
 
     @Override
-    public void addDealsToCards(CategoryViewModel top) {
+    public void addDealsToCards(CategoryItem top) {
         if (top.getItems() != null) {
             ((DealsCategoryAdapter) rvTrendingDeals.getAdapter()).addAll(top.getItems());
         }
@@ -342,9 +341,18 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
 
     @Override
     public RequestParams getParams() {
-        LocationViewModel location = Utils.getSingletonInstance().getLocation(getActivity());
+        Location location = Utils.getSingletonInstance().getLocation(getActivity());
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(DealsHomePresenter.TAG, location.getSearchName());
+        return requestParams;
+    }
+
+    @Override
+    public RequestParams getBrandParams() {
+        Location location = Utils.getSingletonInstance().getLocation(getActivity());
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(Utils.BRAND_QUERY_PARAM_TREE, Utils.BRAND_QUERY_PARAM_BRAND);
+//        requestParams.putInt(Utils.BRAND_QUERY_PARAM_CITY_ID, location.getId());
         return requestParams;
     }
 

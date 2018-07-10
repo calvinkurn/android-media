@@ -8,15 +8,13 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.shop.model.shopData.Data;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.domain.getusecase.GetAllBrandsUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetNextBrandPageUseCase;
-import com.tokopedia.digital_deals.domain.model.allbrandsdomainmodel.AllBrandsDomain;
 import com.tokopedia.digital_deals.view.contractor.AllBrandsContract;
-import com.tokopedia.digital_deals.view.utils.Utils;
-import com.tokopedia.digital_deals.view.viewmodel.BrandViewModel;
-import com.tokopedia.digital_deals.view.viewmodel.PageViewModel;
+import com.tokopedia.digital_deals.view.model.Brand;
+import com.tokopedia.digital_deals.view.model.Page;
+import com.tokopedia.digital_deals.view.model.response.AllBrandsResponse;
 import com.tokopedia.usecase.RequestParams;
 
 import java.lang.reflect.Type;
@@ -33,21 +31,20 @@ public class AllBrandsPresenter extends BaseDaggerPresenter<AllBrandsContract.Vi
 
     private boolean isLoading;
     private boolean isLastPage;
-    private final int PAGE_SIZE = 20;
     public final static String TAG = "url";
     private boolean SEARCH_SUBMITTED;
 
     private GetAllBrandsUseCase getAllBrandsUseCase;
     private GetNextBrandPageUseCase getNextAllBrandPageUseCase;
-    private List<BrandViewModel> brandViewModels;
-    private PageViewModel pageViewModel;
+    private List<Brand> brands;
+    private Page page;
     private RequestParams searchNextParams = RequestParams.create();
 
 
     @Inject
     public AllBrandsPresenter(GetAllBrandsUseCase getAllBrandsUseCase, GetNextBrandPageUseCase getNextBrandPageUseCase) {
         this.getAllBrandsUseCase = getAllBrandsUseCase;
-        this.getNextAllBrandPageUseCase =getNextBrandPageUseCase;
+        this.getNextAllBrandPageUseCase = getNextBrandPageUseCase;
     }
 
     @Override
@@ -101,17 +98,17 @@ public class AllBrandsPresenter extends BaseDaggerPresenter<AllBrandsContract.Vi
 
             @Override
             public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
-                Type token = new TypeToken<DataResponse<AllBrandsDomain>>() {
+                Type token = new TypeToken<DataResponse<AllBrandsResponse>>() {
                 }.getType();
                 RestResponse restResponse = typeRestResponseMap.get(token);
                 DataResponse data = restResponse.getData();
-                AllBrandsDomain dealEntity = (AllBrandsDomain) data.getData();
+                AllBrandsResponse brandsResponse = (AllBrandsResponse) data.getData();
                 getView().hideProgressBar();
 
-                brandViewModels = Utils.getSingletonInstance().convertIntoBrandListViewModel(dealEntity.getBrands());
-                pageViewModel = Utils.getSingletonInstance().convertIntoPageViewModel(dealEntity.getPage());
+                brands = brandsResponse.getBrands();
+                page = brandsResponse.getPage();
                 getNextPageUrl();
-                getView().renderBrandList(brandViewModels, SEARCH_SUBMITTED);
+                getView().renderBrandList(brands, SEARCH_SUBMITTED);
             }
         });
     }
@@ -132,17 +129,18 @@ public class AllBrandsPresenter extends BaseDaggerPresenter<AllBrandsContract.Vi
 
             @Override
             public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
-                Type token = new TypeToken<DataResponse<AllBrandsDomain>>(){
-                    }.getType();
+                Type token = new TypeToken<DataResponse<AllBrandsResponse>>() {
+                }.getType();
                 RestResponse restResponse = typeRestResponseMap.get(token);
                 DataResponse dataResponse = restResponse.getData();
-                AllBrandsDomain allBrandsDomain = (AllBrandsDomain) dataResponse.getData();
+                AllBrandsResponse allBrandsResponse = (AllBrandsResponse) dataResponse.getData();
                 isLoading = false;
-                List<BrandViewModel> brandViewModels1 = Utils.getSingletonInstance().convertIntoBrandListViewModel(allBrandsDomain.getBrands());
-                pageViewModel = Utils.getSingletonInstance().convertIntoPageViewModel(allBrandsDomain.getPage());
+                List<Brand> brandViewModels1 = allBrandsResponse.getBrands();
+                page = allBrandsResponse.getPage();
                 getView().removeFooter();
                 getNextPageUrl();
-                brandViewModels.addAll(brandViewModels1);
+                if (brandViewModels1 != null)
+                    brands.addAll(brandViewModels1);
                 getView().addBrandsToCards(brandViewModels1);
                 checkIfToLoad(getView().getLayoutManager());
             }
@@ -164,21 +162,23 @@ public class AllBrandsPresenter extends BaseDaggerPresenter<AllBrandsContract.Vi
         }
     }
 
-    void getNextPageUrl() {
+    private void getNextPageUrl() {
 
-        String nexturl = pageViewModel.getUriNext();
-        if (nexturl != null && !nexturl.isEmpty() && nexturl.length() > 0) {
-            searchNextParams.putString(TAG, nexturl);
-            isLastPage = false;
-        } else {
-            isLastPage = true;
+        if (page != null) {
+            String nexturl = page.getUriNext();
+            if (nexturl != null && !nexturl.isEmpty() && nexturl.length() > 0) {
+                searchNextParams.putString(TAG, nexturl);
+                isLastPage = false;
+            } else {
+                isLastPage = true;
+            }
         }
     }
 
-    public void getBrandListBySearch(String searchText) {
-        List<BrandViewModel> brandModels = new ArrayList<>();
-        if(brandViewModels!=null) {
-            for (BrandViewModel brand : brandViewModels) {
+    private void getBrandListBySearch(String searchText) {
+        List<Brand> brandModels = new ArrayList<>();
+        if (brands != null) {
+            for (Brand brand : brands) {
                 if (brand.getTitle().trim().toLowerCase().contains(searchText.trim().toLowerCase())) {
                     brandModels.add(brand);
                 }
@@ -195,10 +195,10 @@ public class AllBrandsPresenter extends BaseDaggerPresenter<AllBrandsContract.Vi
                 getBrandListBySearch(searchText);
             }
             if (searchText.length() == 0) {
-                getView().renderBrandList(brandViewModels, SEARCH_SUBMITTED);
+                getView().renderBrandList(brands, SEARCH_SUBMITTED);
             }
         } else {
-            getView().renderBrandList(brandViewModels, SEARCH_SUBMITTED);
+            getView().renderBrandList(brands, SEARCH_SUBMITTED);
         }
     }
 

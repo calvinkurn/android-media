@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.view.utils.Utils;
-import com.tokopedia.digital_deals.view.viewmodel.LocationViewModel;
+import com.tokopedia.digital_deals.view.model.Location;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,17 +18,17 @@ public class DealsLocationAdapter extends RecyclerView.Adapter<DealsLocationAdap
 
 
     private Context context;
-    private List<LocationViewModel> locations;
+    private List<Location> locations;
     private ActionListener actionListener;
 
-    public DealsLocationAdapter(Context context, List<LocationViewModel> locations, ActionListener actionListener) {
+    public DealsLocationAdapter(Context context, List<Location> locations, ActionListener actionListener) {
         this.context = context;
         this.locations = new ArrayList<>();
         this.locations = locations;
         this.actionListener=actionListener;
     }
 
-    public void updateAdapter(List<LocationViewModel> locations) {
+    public void updateAdapter(List<Location> locations) {
         this.locations = locations;
         notifyDataSetChanged();
     }
@@ -74,14 +74,14 @@ public class DealsLocationAdapter extends RecyclerView.Adapter<DealsLocationAdap
             return this.index;
         }
 
-        public void bindData(LocationViewModel location) {
+        public void bindData(Location location) {
             locationName.setText(location.getName());
             itemView.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-            LocationViewModel location=Utils.getSingletonInstance().getLocation(context);
+            Location location=Utils.getSingletonInstance().getLocation(context);
             Utils.getSingletonInstance().updateLocation(context, locations.get(getIndex()));
             actionListener.onLocationItemSelected(location!=null);
         }

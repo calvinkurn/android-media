@@ -29,8 +29,8 @@ import com.tokopedia.digital_deals.view.contractor.CheckoutDealContractor;
 import com.tokopedia.digital_deals.view.presenter.CheckoutDealPresenter;
 import com.tokopedia.digital_deals.view.utils.DealFragmentCallbacks;
 import com.tokopedia.digital_deals.view.utils.Utils;
-import com.tokopedia.digital_deals.view.viewmodel.DealsDetailsViewModel;
-import com.tokopedia.digital_deals.view.viewmodel.PackageViewModel;
+import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse;
+import com.tokopedia.digital_deals.view.model.PackageViewModel;
 import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;
@@ -140,7 +140,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
     }
 
     @Override
-    public void renderFromDetails(DealsDetailsViewModel dealDetails, PackageViewModel packageViewModel) {
+    public void renderFromDetails(DealsDetailsResponse dealDetails, PackageViewModel packageViewModel) {
 
 
         ImageHandler.loadImage(getContext(), imageViewBrand,

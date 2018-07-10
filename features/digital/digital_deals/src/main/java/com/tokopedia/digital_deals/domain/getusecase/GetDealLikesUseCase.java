@@ -1,13 +1,11 @@
 package com.tokopedia.digital_deals.domain.getusecase;
 
-import com.google.gson.JsonArray;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.common.network.data.model.RestRequest;
 import com.tokopedia.common.network.domain.RestRequestUseCase;
-import com.tokopedia.digital_deals.data.source.DealsBaseURL;
 import com.tokopedia.digital_deals.data.source.DealsUrl;
-import com.tokopedia.digital_deals.domain.model.request.likes.GetLikesDomain;
+import com.tokopedia.digital_deals.view.model.response.GetLikesResponse;
 import com.tokopedia.usecase.RequestParams;
 
 import java.lang.reflect.Type;
@@ -34,9 +32,9 @@ public class GetDealLikesUseCase extends RestRequestUseCase {
         List<RestRequest> tempRequest = new ArrayList<>();
 
         HashMap<String, Object> map = params.getParameters();
-        String url = DealsBaseURL.DEALS_DOMAIN + DealsUrl.DEALS_LIKES_PRODUCT +"/" + map.get("deal_id");
+        String url = DealsUrl.DEALS_DOMAIN + DealsUrl.DEALS_LIKES_PRODUCT +"/" + map.get("deal_id");
         //Request 1
-        Type token = new TypeToken<DataResponse<ArrayList<GetLikesDomain>>>() {
+        Type token = new TypeToken<DataResponse<ArrayList<GetLikesResponse>>>() {
         }.getType();
 
         RestRequest restRequest1 = new RestRequest.Builder(url, token)

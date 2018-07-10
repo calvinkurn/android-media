@@ -5,13 +5,13 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.digital_deals.view.model.response.LikeUpdateResult;
 import com.tokopedia.digital_deals.domain.postusecase.PostUpdateDealLikesUseCase;
-import com.tokopedia.digital_deals.domain.model.LikeUpdateResultDomain;
-import com.tokopedia.digital_deals.domain.model.request.likes.LikeUpdateModel;
-import com.tokopedia.digital_deals.domain.model.request.likes.Rating;
+import com.tokopedia.digital_deals.view.model.response.LikeUpdateModel;
+import com.tokopedia.digital_deals.view.model.Rating;
 import com.tokopedia.digital_deals.view.contractor.DealCategoryAdapterContract;
-import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
-import com.tokopedia.digital_deals.view.viewmodel.DealsDetailsViewModel;
+import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse;
+import com.tokopedia.digital_deals.view.model.ProductItem;
 
 import java.lang.reflect.Type;
 import java.util.Map;
@@ -19,14 +19,11 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 public class DealCategoryAdapterPresenter extends BaseDaggerPresenter<DealCategoryAdapterContract.View>
         implements DealCategoryAdapterContract.Presenter {
 
-    PostUpdateDealLikesUseCase postUpdateDealLikesUseCase;
-
+    private PostUpdateDealLikesUseCase postUpdateDealLikesUseCase;
 
     @Inject
     public DealCategoryAdapterPresenter(PostUpdateDealLikesUseCase postUpdateDealLikesUseCase) {
@@ -38,7 +35,7 @@ public class DealCategoryAdapterPresenter extends BaseDaggerPresenter<DealCatego
         postUpdateDealLikesUseCase.unsubscribe();
     }
 
-    public void setDealLike(final CategoryItemsViewModel model, final int position) {
+    public boolean setDealLike(final ProductItem model, final int position) {
         if (SessionHandler.isV4Login(getView().getActivity())) {
             LikeUpdateModel requestModel = new LikeUpdateModel();
             Rating rating = new Rating();
@@ -67,26 +64,17 @@ public class DealCategoryAdapterPresenter extends BaseDaggerPresenter<DealCatego
 
                 @Override
                 public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
-                    Type token = new TypeToken<DataResponse<LikeUpdateResultDomain>>() {
-                    }.getType();
-                    RestResponse restResponse = typeRestResponseMap.get(token);
-                    DataResponse dataResponse = restResponse.getData();
-                    LikeUpdateResultDomain likeUpdateResultDomain = (LikeUpdateResultDomain) dataResponse.getData();
-                    model.setLiked(likeUpdateResultDomain.isLiked());
-                    if (likeUpdateResultDomain.isLiked())
-                        model.setLikes(model.getLikes() + 1);
-                    else
-                        model.setLikes(model.getLikes() - 1);
-
-                    getView().notifyDataSetChanged(position);
                 }
             });
+            return true;
         } else {
-            getView().showLoginSnackbar("Please Login to like or share deals");
+            getView().showLoginSnackbar("Please Login to like deals");
+            return false;
         }
+
     }
 
-    public void setDealLike(final DealsDetailsViewModel model, final int position) {
+    public void setDealLike(final DealsDetailsResponse model, final int position) {
         if (SessionHandler.isV4Login(getView().getActivity())) {
             LikeUpdateModel requestModel = new LikeUpdateModel();
             Rating rating = new Rating();
@@ -115,12 +103,16 @@ public class DealCategoryAdapterPresenter extends BaseDaggerPresenter<DealCatego
 
                 @Override
                 public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
-                    Type token = new TypeToken<DataResponse<LikeUpdateResultDomain>>() {
+                    Type token = new TypeToken<DataResponse<LikeUpdateResult>>() {
                     }.getType();
                     RestResponse restResponse = typeRestResponseMap.get(token);
                     DataResponse dataResponse = restResponse.getData();
-                    LikeUpdateResultDomain likeUpdateResultDomain = (LikeUpdateResultDomain) dataResponse.getData();
-                    model.setIsLiked(likeUpdateResultDomain.isLiked());
+                    LikeUpdateResult likeUpdateResult = (LikeUpdateResult) dataResponse.getData();
+                    model.setIsLiked(likeUpdateResult.isLiked());
+                    if (likeUpdateResult.isLiked())
+                        model.setLikes(model.getLikes() + 1);
+                    else
+                        model.setLikes(model.getLikes() - 1);
                     getView().notifyDataSetChanged(position);
                 }
             });

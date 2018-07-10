@@ -5,7 +5,7 @@ import android.content.Intent;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.digital_deals.view.viewmodel.DealsDetailsViewModel;
+import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse;
 import com.tokopedia.usecase.RequestParams;
 
 
@@ -20,7 +20,7 @@ public class SelectQuantityContract {
 
         void navigateToActivity(Intent intent);
 
-        void renderFromDetails(DealsDetailsViewModel dealDetail);
+        void renderFromDetails(DealsDetailsResponse dealDetail);
 
         RequestParams getParams();
 
@@ -40,7 +40,7 @@ public class SelectQuantityContract {
 
     public interface Presenter extends CustomerPresenter<SelectQuantityContract.View> {
 
-        void initialize(DealsDetailsViewModel detailsViewModel);
+        void initialize(DealsDetailsResponse detailsViewModel);
 
         void onDestroy();
 

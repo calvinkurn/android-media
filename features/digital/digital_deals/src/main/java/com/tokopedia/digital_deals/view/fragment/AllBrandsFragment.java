@@ -27,8 +27,8 @@ import com.tokopedia.digital_deals.view.contractor.AllBrandsContract;
 import com.tokopedia.digital_deals.view.customview.SearchInputView;
 import com.tokopedia.digital_deals.view.presenter.AllBrandsPresenter;
 import com.tokopedia.digital_deals.view.utils.Utils;
-import com.tokopedia.digital_deals.view.viewmodel.BrandViewModel;
-import com.tokopedia.digital_deals.view.viewmodel.CategoriesModel;
+import com.tokopedia.digital_deals.view.model.Brand;
+import com.tokopedia.digital_deals.view.model.CategoriesModel;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
@@ -153,7 +153,7 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
     }
 
     @Override
-    public void renderBrandList(List<BrandViewModel> brandList, boolean isSearchSubmitted) {
+    public void renderBrandList(List<Brand> brandList, boolean isSearchSubmitted) {
 
         if (brandList != null && brandList.size() != 0) {
             ((DealsBrandAdapter) recyclerview.getAdapter()).updateAdapter(brandList);
@@ -220,8 +220,10 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
     }
 
     @Override
-    public void addBrandsToCards(List<BrandViewModel> brandList) {
-        ((DealsBrandAdapter) recyclerview.getAdapter()).addAll(brandList);
+    public void addBrandsToCards(List<Brand> brandList) {
+        if(brandList!=null) {
+            ((DealsBrandAdapter) recyclerview.getAdapter()).addAll(brandList);
+        }
 
     }
 

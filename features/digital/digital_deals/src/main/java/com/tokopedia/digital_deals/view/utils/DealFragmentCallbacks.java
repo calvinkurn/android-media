@@ -1,17 +1,17 @@
 package com.tokopedia.digital_deals.view.utils;
 
-import com.tokopedia.digital_deals.view.viewmodel.DealsDetailsViewModel;
-import com.tokopedia.digital_deals.view.viewmodel.OutletViewModel;
+import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse;
+import com.tokopedia.digital_deals.view.model.Outlet;
 
 import java.util.List;
 
 public interface DealFragmentCallbacks {
 
-    void replaceFragment(List<OutletViewModel> outlets, int flag);
+    void replaceFragment(List<Outlet> outlets, int flag);
 
-    void replaceFragment(DealsDetailsViewModel detailsViewModel, int flag);
+    void replaceFragment(DealsDetailsResponse detailsViewModel, int flag);
 
-    List<OutletViewModel> getOutlets();
+    List<Outlet> getOutlets();
 
-    DealsDetailsViewModel getDealDetails();
+    DealsDetailsResponse getDealDetails();
 }

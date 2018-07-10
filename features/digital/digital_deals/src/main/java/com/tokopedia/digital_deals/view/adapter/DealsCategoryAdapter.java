@@ -26,24 +26,21 @@ import com.tokopedia.digital_deals.view.activity.BrandDetailsActivity;
 import com.tokopedia.digital_deals.view.activity.DealDetailsActivity;
 import com.tokopedia.digital_deals.view.activity.DealsHomeActivity;
 import com.tokopedia.digital_deals.view.contractor.DealCategoryAdapterContract;
-import com.tokopedia.digital_deals.view.fragment.DealsHomeFragment;
 import com.tokopedia.digital_deals.view.presenter.BrandDetailsPresenter;
 import com.tokopedia.digital_deals.view.presenter.DealCategoryAdapterPresenter;
 import com.tokopedia.digital_deals.view.presenter.DealDetailsPresenter;
 import com.tokopedia.digital_deals.view.utils.Utils;
-import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
-import com.tokopedia.digital_deals.view.viewmodel.LocationViewModel;
+import com.tokopedia.digital_deals.view.model.ProductItem;
+import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
-import retrofit2.http.HEAD;
-
 public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements DealCategoryAdapterContract.View {
 
-    private List<CategoryItemsViewModel> categoryItems;
+    private List<ProductItem> categoryItems;
     private Context context;
     private final int ITEM = 1;
     private final int FOOTER = 2;
@@ -57,7 +54,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     DealCategoryAdapterPresenter mPresenter;
     private String headerText;
 
-    public DealsCategoryAdapter(Context context, List<CategoryItemsViewModel> categoryItems, Boolean... layoutType) {
+    public DealsCategoryAdapter(Context context, List<ProductItem> categoryItems, Boolean... layoutType) {
         this.context = context;
         this.categoryItems = categoryItems;
         if (layoutType[0] != null) {
@@ -151,7 +148,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     public void addFooter() {
         if (!isFooterAdded) {
             isFooterAdded = true;
-            add(new CategoryItemsViewModel());
+            add(new ProductItem());
         }
     }
 
@@ -159,18 +156,18 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         if (!isHeaderAdded) {
             isHeaderAdded = true;
             headerText = text;
-            categoryItems.add(0, new CategoryItemsViewModel());
+            categoryItems.add(0, new ProductItem());
             notifyItemInserted(0);
         }
     }
 
-    public void add(CategoryItemsViewModel item) {
+    public void add(ProductItem item) {
         categoryItems.add(item);
         notifyItemInserted(categoryItems.size() - 1);
     }
 
-    public void addAll(List<CategoryItemsViewModel> items) {
-        for (CategoryItemsViewModel item : items) {
+    public void addAll(List<ProductItem> items) {
+        for (ProductItem item : items) {
             add(item);
         }
     }
@@ -181,7 +178,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             isFooterAdded = false;
 
             int position = categoryItems.size() - 1;
-            CategoryItemsViewModel item = categoryItems.get(position);
+            ProductItem item = categoryItems.get(position);
 
             if (item != null) {
                 categoryItems.remove(position);
@@ -202,8 +199,9 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     @Override
     public void notifyDataSetChanged(int position) {
-        notifyItemChanged(position);
+
     }
+
 
     @Override
     public void showLoginSnackbar(String message) {
@@ -221,7 +219,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         private ImageView dealImage;
         private ImageView brandImage;
         private TextView discount;
-        private TextView likes;
+        private TextView tvLikes;
         private TextView dealsDetails;
         private TextView brandName;
         private TextView dealavailableLocations;
@@ -237,7 +235,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             super(itemView);
             this.itemView = itemView;
             dealImage = itemView.findViewById(R.id.iv_product);
-            likes = itemView.findViewById(R.id.tv_wish_list);
+            tvLikes = itemView.findViewById(R.id.tv_wish_list);
             discount = itemView.findViewById(R.id.tv_off);
             dealsDetails = itemView.findViewById(R.id.tv_deal_intro);
             brandName = itemView.findViewById(R.id.tv_brand_name);
@@ -251,13 +249,13 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             cvBrand = itemView.findViewById(R.id.cv_brand);
         }
 
-        public void bindData(final CategoryItemsViewModel categoryItemsViewModel) {
-            dealsDetails.setText(categoryItemsViewModel.getDisplayName());
-            ImageHandler.loadImage(context, dealImage, categoryItemsViewModel.getImageWeb(), R.color.grey_1100, R.color.grey_1100);
+        public void bindData(final ProductItem productItem) {
+            dealsDetails.setText(productItem.getDisplayName());
+            ImageHandler.loadImage(context, dealImage, productItem.getImageWeb(), R.color.grey_1100, R.color.grey_1100);
             if (!brandPageCard) {
-                ImageHandler.loadImage(context, brandImage, categoryItemsViewModel.getBrand().getFeaturedThumbnailImage(), R.color.grey_1100, R.color.grey_1100);
-                brandName.setText(categoryItemsViewModel.getBrand().getTitle());
-                if (categoryItemsViewModel.getBrand().getUrl() != null) {
+                ImageHandler.loadImage(context, brandImage, productItem.getBrand().getFeaturedThumbnailImage(), R.color.grey_1100, R.color.grey_1100);
+                brandName.setText(productItem.getBrand().getTitle());
+                if (productItem.getBrand().getUrl() != null) {
                     cvBrand.setOnClickListener(this);
                 }
 
@@ -269,34 +267,40 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 dealavailableLocations.setCompoundDrawablePadding(getActivity().getResources().getDimensionPixelSize(R.dimen.dp_8));
 
             }
-            if (categoryItemsViewModel.getLikes() != 0) {
-                likes.setVisibility(View.VISIBLE);
-                likes.setText(String.valueOf(categoryItemsViewModel.getLikes()));
-            } else {
-                likes.setVisibility(View.GONE);
-            }
-            if (categoryItemsViewModel.isLiked()) {
-                ivFavourite.setImageResource(R.drawable.ic_wishlist_filled);
-            } else {
-                ivFavourite.setImageResource(R.drawable.ic_wishlist_unfilled);
-            }
+            setLikes(productItem.getLikes(), productItem.isLiked());
 
-            if (categoryItemsViewModel.getDisplayTags() != null) {
+            if (productItem.getDisplayTags() != null) {
                 hotDeal.setVisibility(View.VISIBLE);
             } else {
                 hotDeal.setVisibility(View.GONE);
             }
-            LocationViewModel location = Utils.getSingletonInstance().getLocation(context);
+            Location location = Utils.getSingletonInstance().getLocation(context);
             if (location != null) {
                 dealavailableLocations.setText(location.getName());
             }
-            dealListPrice.setText(Utils.convertToCurrencyString(categoryItemsViewModel.getMrp()));
+            dealListPrice.setText(Utils.convertToCurrencyString(productItem.getMrp()));
             dealListPrice.setPaintFlags(dealListPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            discount.setText(categoryItemsViewModel.getSavingPercentage());
-            dealSellingPrice.setText(Utils.convertToCurrencyString(categoryItemsViewModel.getSalesPrice()));
+            discount.setText(productItem.getSavingPercentage());
+            dealSellingPrice.setText(Utils.convertToCurrencyString(productItem.getSalesPrice()));
             itemView.setOnClickListener(this);
             ivShareVia.setOnClickListener(this);
             ivFavourite.setOnClickListener(this);
+        }
+
+        void setLikes(int likes, boolean isLiked) {
+            categoryItems.get(getIndex()).setLikes(likes);
+            categoryItems.get(getIndex()).setLiked(isLiked);
+            if (likes != 0) {
+                tvLikes.setVisibility(View.VISIBLE);
+                tvLikes.setText(String.valueOf(likes));
+            } else {
+                tvLikes.setVisibility(View.GONE);
+            }
+            if (isLiked) {
+                ivFavourite.setImageResource(R.drawable.ic_wishlist_filled);
+            } else {
+                ivFavourite.setImageResource(R.drawable.ic_wishlist_unfilled);
+            }
         }
 
         public void setIndex(int position) {
@@ -314,7 +318,15 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                         context, categoryItems.get(getIndex()).getDisplayName(),
                         categoryItems.get(getIndex()).getImageWeb());
             } else if (v.getId() == R.id.iv_wish_list) {
-                mPresenter.setDealLike(categoryItems.get(getIndex()), getIndex());
+
+                boolean isLoggedIn = mPresenter.setDealLike(categoryItems.get(getIndex()), getIndex());
+                if (isLoggedIn) {
+                    if (categoryItems.get(getIndex()).isLiked()) {
+                        setLikes(categoryItems.get(getIndex()).getLikes() - 1, !categoryItems.get(getIndex()).isLiked());
+                    } else {
+                        setLikes(categoryItems.get(getIndex()).getLikes() + 1, !categoryItems.get(getIndex()).isLiked());
+                    }
+                }
             } else if (v.getId() == R.id.cv_brand) {
                 Intent detailsIntent = new Intent(context, BrandDetailsActivity.class);
                 detailsIntent.putExtra(BrandDetailsPresenter.BRAND_DATA, categoryItems.get(getIndex()).getBrand());
@@ -362,23 +374,23 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         }
 
-        public void bindData(final CategoryItemsViewModel categoryItemsViewModel) {
-            dealsDetails.setText(categoryItemsViewModel.getDisplayName());
-            ImageHandler.loadImage(context, dealImage, categoryItemsViewModel.getImageWeb(), R.color.grey_1100, R.color.grey_1100);
-            ImageHandler.loadImage(context, brandImage, categoryItemsViewModel.getBrand().getFeaturedThumbnailImage(), R.color.grey_1100, R.color.grey_1100);
-            brandName.setText(categoryItemsViewModel.getBrand().getTitle());
-            if (categoryItemsViewModel.getDisplayTags() != null) {
+        public void bindData(final ProductItem productItem) {
+            dealsDetails.setText(productItem.getDisplayName());
+            ImageHandler.loadImage(context, dealImage, productItem.getImageWeb(), R.color.grey_1100, R.color.grey_1100);
+            ImageHandler.loadImage(context, brandImage, productItem.getBrand().getFeaturedThumbnailImage(), R.color.grey_1100, R.color.grey_1100);
+            brandName.setText(productItem.getBrand().getTitle());
+            if (productItem.getDisplayTags() != null) {
                 hotDeal.setVisibility(View.VISIBLE);
             } else {
                 hotDeal.setVisibility(View.GONE);
             }
-            if (categoryItemsViewModel.getBrand().getUrl() != null) {
+            if (productItem.getBrand().getUrl() != null) {
                 cvBrand.setOnClickListener(this);
             }
-            dealListPrice.setText(Utils.convertToCurrencyString(categoryItemsViewModel.getMrp()));
+            dealListPrice.setText(Utils.convertToCurrencyString(productItem.getMrp()));
             dealListPrice.setPaintFlags(dealListPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            discount.setText(categoryItemsViewModel.getSavingPercentage());
-            dealSellingPrice.setText(Utils.convertToCurrencyString(categoryItemsViewModel.getSalesPrice()));
+            discount.setText(productItem.getSavingPercentage());
+            dealSellingPrice.setText(Utils.convertToCurrencyString(productItem.getSalesPrice()));
             itemView.setOnClickListener(this);
 
         }

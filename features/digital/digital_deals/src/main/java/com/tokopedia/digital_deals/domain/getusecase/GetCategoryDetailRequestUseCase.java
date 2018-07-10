@@ -4,7 +4,7 @@ import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.common.network.data.model.RestRequest;
 import com.tokopedia.common.network.domain.RestRequestUseCase;
-import com.tokopedia.digital_deals.domain.model.categorydomainmodel.CategoryDetailsDomain;
+import com.tokopedia.digital_deals.view.model.response.CategoryDetailsResponse;
 import com.tokopedia.digital_deals.view.presenter.DealsHomePresenter;
 import com.tokopedia.usecase.RequestParams;
 
@@ -32,7 +32,7 @@ public class GetCategoryDetailRequestUseCase extends RestRequestUseCase {
         HashMap<String, Object> requestParams=params.getParameters();
         String url=String.valueOf(requestParams.get(DealsHomePresenter.TAG));
         requestParams.remove(DealsHomePresenter.TAG);
-        Type token = new TypeToken<DataResponse<CategoryDetailsDomain>>() {
+        Type token = new TypeToken<DataResponse<CategoryDetailsResponse>>() {
         }.getType();
 
         RestRequest restRequest1 = new RestRequest.Builder(url, token)

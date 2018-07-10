@@ -8,7 +8,7 @@ import android.support.v4.view.ViewPager;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.view.adapter.BrandsFragmentPagerAdapter;
-import com.tokopedia.digital_deals.view.viewmodel.CategoriesModel;
+import com.tokopedia.digital_deals.view.model.CategoriesModel;
 
 import java.util.List;
 

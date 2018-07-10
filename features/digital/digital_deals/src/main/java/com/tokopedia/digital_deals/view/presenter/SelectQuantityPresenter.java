@@ -13,9 +13,8 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital_deals.view.activity.CheckoutActivity;
 import com.tokopedia.digital_deals.view.contractor.SelectQuantityContract;
-import com.tokopedia.digital_deals.view.viewmodel.DealsDetailsViewModel;
-import com.tokopedia.digital_deals.view.viewmodel.PackageViewModel;
-import com.tokopedia.oms.data.entity.response.verifyresponse.VerifyCartResponse;
+import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse;
+import com.tokopedia.digital_deals.view.model.PackageViewModel;
 import com.tokopedia.oms.data.entity.response.verifyresponse.VerifyMyCartResponse;
 import com.tokopedia.oms.domain.model.request.cart.CartItem;
 import com.tokopedia.oms.domain.model.request.cart.CartItems;
@@ -40,7 +39,7 @@ public class SelectQuantityPresenter
     private PostVerifyCartUseCase postVerifyCartUseCase;
     private String promocode="";
     private PackageViewModel checkoutData;
-    private DealsDetailsViewModel dealDetails;
+    private DealsDetailsResponse dealDetails;
 
 
     @Inject
@@ -49,7 +48,7 @@ public class SelectQuantityPresenter
     }
 
     @Override
-    public void initialize(DealsDetailsViewModel detailsViewModel) {
+    public void initialize(DealsDetailsResponse detailsViewModel) {
         this.dealDetails=detailsViewModel;
         getView().renderFromDetails(dealDetails);
     }

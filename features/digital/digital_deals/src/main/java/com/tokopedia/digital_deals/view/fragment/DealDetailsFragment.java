@@ -51,14 +51,15 @@ import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
 import com.tokopedia.digital_deals.view.adapter.SlidingImageAdapterDealDetails;
 import com.tokopedia.digital_deals.view.contractor.DealCategoryAdapterContract;
 import com.tokopedia.digital_deals.view.contractor.DealDetailsContract;
+import com.tokopedia.digital_deals.view.model.Media;
 import com.tokopedia.digital_deals.view.presenter.BrandDetailsPresenter;
 import com.tokopedia.digital_deals.view.presenter.DealCategoryAdapterPresenter;
 import com.tokopedia.digital_deals.view.presenter.DealDetailsPresenter;
 import com.tokopedia.digital_deals.view.utils.DealFragmentCallbacks;
 import com.tokopedia.digital_deals.view.utils.Utils;
-import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
-import com.tokopedia.digital_deals.view.viewmodel.DealsDetailsViewModel;
-import com.tokopedia.digital_deals.view.viewmodel.OutletViewModel;
+import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse;
+import com.tokopedia.digital_deals.view.model.ProductItem;
+import com.tokopedia.digital_deals.view.model.Outlet;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
@@ -110,7 +111,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     private CardView cardView;
     private Toolbar toolbar;
     private DealFragmentCallbacks fragmentCallbacks;
-    private DealsDetailsViewModel dealDetail;
+    private DealsDetailsResponse dealDetail;
     private LinearLayoutManager mLayoutManager;
     private final boolean IS_SHORT_LAYOUT = true;
     private String latLng;
@@ -205,7 +206,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         tvExpandableTC.setInterpolator(new OvershootInterpolator());
         mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         recyclerViewDeals.setLayoutManager(mLayoutManager);
-        recyclerViewDeals.setAdapter(new DealsCategoryAdapter(getActivity(), new ArrayList<CategoryItemsViewModel>(), IS_SHORT_LAYOUT));
+        recyclerViewDeals.setAdapter(new DealsCategoryAdapter(getActivity(), new ArrayList<ProductItem>(), IS_SHORT_LAYOUT));
         recyclerViewDeals.addOnScrollListener(rvOnScrollListener);
     }
 
@@ -232,7 +233,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     }
 
     @Override
-    public void renderDealDetails(DealsDetailsViewModel detailsViewModel) {
+    public void renderDealDetails(DealsDetailsResponse detailsViewModel) {
         this.dealDetail = detailsViewModel;
         collapsingToolbarLayout.setTitle(detailsViewModel.getDisplayName());
         tvDealDetails.setText(detailsViewModel.getDisplayName());
@@ -251,15 +252,15 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
 
 
         if (detailsViewModel.getOutlets() != null && detailsViewModel.getOutlets().size() != 0) {
-            OutletViewModel outletViewModel = detailsViewModel.getOutlets().get(0);
-            latLng = outletViewModel.getCoordinates();
+            Outlet outlet = detailsViewModel.getOutlets().get(0);
+            latLng = outlet.getCoordinates();
             if (latLng != null && latLng != "") {
                 tvViewMap.setVisibility(View.VISIBLE);
             } else {
                 tvViewMap.setVisibility(View.GONE);
             }
-            tvBrandVenue.setText(outletViewModel.getName());
-            tvBrandAddress.setText(outletViewModel.getDistrict());
+            tvBrandVenue.setText(outlet.getName());
+            tvBrandAddress.setText(outlet.getDistrict());
             tvNumberOfLocations.setText(String.format(getString(R.string.number_of_items), detailsViewModel.getOutlets().size()));
             tvBrandName.setText(detailsViewModel.getBrand().getTitle());
             ImageHandler.loadImage(getContext(), ivBrandLogo, dealDetail.getBrand().getFeaturedThumbnailImage(), R.color.grey_1100, R.color.grey_1100);
@@ -286,8 +287,10 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
 
             circlePageIndicator.setVisibility(View.GONE);
             if (detailsViewModel.getImageWeb() != null) {
-                List<String> images = new ArrayList<>();
-                images.add(detailsViewModel.getImageWeb());
+                List<Media> images = new ArrayList<>();
+                Media media=new Media();
+                media.setUrl(detailsViewModel.getImageWeb());
+                images.add(media);
                 setViewPagerListener(new SlidingImageAdapterDealDetails(getActivity(), images));
             }
             circlePageIndicator.setViewPager(viewPager);
@@ -352,8 +355,8 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     }
 
     @Override
-    public void addDealsToCards(List<CategoryItemsViewModel> categoryItemsViewModels) {
-        ((DealsCategoryAdapter) recyclerViewDeals.getAdapter()).addAll(categoryItemsViewModels);
+    public void addDealsToCards(List<ProductItem> productItems) {
+        ((DealsCategoryAdapter) recyclerViewDeals.getAdapter()).addAll(productItems);
         if (((DealsCategoryAdapter) recyclerViewDeals.getAdapter()).getItemCount() > 0)
             tvRecommendedDeals.setVisibility(View.VISIBLE);
     }

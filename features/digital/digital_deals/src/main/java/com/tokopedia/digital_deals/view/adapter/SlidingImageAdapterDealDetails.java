@@ -11,22 +11,30 @@ import android.widget.ImageView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.digital_deals.R;
+import com.tokopedia.digital_deals.view.model.Media;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 
 public class SlidingImageAdapterDealDetails extends PagerAdapter {
 
 
-    private List<String> image;
+    private List<String> images;
     private LayoutInflater inflater;
     private Context context;
 
 
-    public SlidingImageAdapterDealDetails(Context context, List<String> image) {
+    public SlidingImageAdapterDealDetails(Context context, List<Media> mediaList) {
         this.context = context;
-        this.image = image;
+        if (mediaList != null) {
+            this.images=new ArrayList<>();
+            for (Media media : mediaList) {
+                if (media != null && media.getUrl() != null && media.getUrl().length() > 0)
+                    this.images.add(media.getUrl());
+            }
+        }
         inflater = LayoutInflater.from(context);
     }
 
@@ -37,7 +45,10 @@ public class SlidingImageAdapterDealDetails extends PagerAdapter {
 
     @Override
     public int getCount() {
-        return image.size();
+        if (images != null) {
+            return images.size();
+        }
+        return 0;
     }
 
     @Override
@@ -47,7 +58,7 @@ public class SlidingImageAdapterDealDetails extends PagerAdapter {
         assert imageLayout != null;
         final ImageView imageView = imageLayout.findViewById(R.id.deal_image);
 
-        ImageHandler.loadImage(context, imageView, image.get(position), R.color.grey_1100, R.color.grey_1100);
+        ImageHandler.loadImage(context, imageView, images.get(position), R.color.grey_1100, R.color.grey_1100);
 
         view.addView(imageLayout, 0);
 

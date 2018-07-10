@@ -12,14 +12,14 @@ import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.domain.getusecase.GetSearchDealsListRequestUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetSearchNextUseCase;
-import com.tokopedia.digital_deals.domain.model.searchdomainmodel.SearchDomainModel;
+import com.tokopedia.digital_deals.view.model.response.SearchResponse;
 import com.tokopedia.digital_deals.view.activity.DealDetailsActivity;
 import com.tokopedia.digital_deals.view.activity.DealsHomeActivity;
 import com.tokopedia.digital_deals.view.activity.DealsLocationActivity;
 import com.tokopedia.digital_deals.view.contractor.DealsSearchContract;
 import com.tokopedia.digital_deals.view.utils.Utils;
-import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
-import com.tokopedia.digital_deals.view.viewmodel.LocationViewModel;
+import com.tokopedia.digital_deals.view.model.ProductItem;
+import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.usecase.RequestParams;
 
 import java.lang.reflect.Type;
@@ -37,14 +37,13 @@ public class DealsSearchPresenter
 
     private GetSearchDealsListRequestUseCase getSearchDealsListRequestUseCase;
     private GetSearchNextUseCase getSearchNextUseCase;
-    private List<CategoryItemsViewModel> mTopDeals;
-    private SearchDomainModel mSearchData;
+    private List<ProductItem> mTopDeals;
+    private SearchResponse mSearchData;
     private String highlight;
     private boolean isLoading;
     private boolean isLastPage;
-    private final int PAGE_SIZE = 20;
     private boolean SEARCH_SUBMITTED = false;
-    RequestParams searchNextParams = RequestParams.create();
+    private RequestParams searchNextParams = RequestParams.create();
 
     @Inject
     public DealsSearchPresenter(GetSearchDealsListRequestUseCase getSearchDealsListRequestUseCase,
@@ -73,15 +72,15 @@ public class DealsSearchPresenter
 
             @Override
             public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
-                Type token = new TypeToken<DataResponse<SearchDomainModel>>(){
+                Type token = new TypeToken<DataResponse<SearchResponse>>(){
                 }.getType();
                 RestResponse restResponse = typeRestResponseMap.get(token);
                 DataResponse dataResponse = restResponse.getData();
-                SearchDomainModel searchDomainModel = (SearchDomainModel) dataResponse.getData();
+                SearchResponse searchResponse = (SearchResponse) dataResponse.getData();
                 if (SEARCH_SUBMITTED)
-                    getView().renderFromSearchResults(processSearchResponse(searchDomainModel), searchText, searchDomainModel.getCount());
+                    getView().renderFromSearchResults(processSearchResponse(searchResponse), searchText, searchResponse.getCount());
                 else
-                    getView().setSuggestions(processSearchResponse(searchDomainModel), highlight);
+                    getView().setSuggestions(processSearchResponse(searchResponse), highlight);
                 checkIfToLoad(getView().getLayoutManager());
                 CommonUtils.dumper("enter onNext");
             }
@@ -91,7 +90,7 @@ public class DealsSearchPresenter
     @Override
     public void initialize() {
         mTopDeals = getView().getActivity().getIntent().getParcelableArrayListExtra("TOPDEALS");
-        LocationViewModel location=Utils.getSingletonInstance().getLocation(getView().getActivity());
+        Location location=Utils.getSingletonInstance().getLocation(getView().getActivity());
         getView().setTrendingDeals(mTopDeals, location);
     }
 
@@ -136,7 +135,7 @@ public class DealsSearchPresenter
 
 
     @Override
-    public void onSearchResultClick(CategoryItemsViewModel searchViewModel) {
+    public void onSearchResultClick(ProductItem searchViewModel) {
         Intent detailsIntent = new Intent(getView().getActivity(), DealDetailsActivity.class);
         detailsIntent.putExtra(DealDetailsPresenter.HOME_DATA, searchViewModel.getSeoUrl());
         getView().navigateToActivity(detailsIntent);
@@ -164,17 +163,17 @@ public class DealsSearchPresenter
 
             @Override
             public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
-                Type token = new TypeToken<DataResponse<SearchDomainModel>>() {
+                Type token = new TypeToken<DataResponse<SearchResponse>>() {
                 }.getType();
                 RestResponse restResponse = typeRestResponseMap.get(token);
                 DataResponse dataResponse = restResponse.getData();
-                SearchDomainModel searchDomainModel = (SearchDomainModel) dataResponse.getData();
+                SearchResponse searchResponse = (SearchResponse) dataResponse.getData();
                 isLoading = false;
                 getView().removeFooter(SEARCH_SUBMITTED);
                 if (SEARCH_SUBMITTED)
-                    getView().addDealsToCards(processSearchResponse(searchDomainModel));
+                    getView().addDealsToCards(processSearchResponse(searchResponse));
                 else
-                    getView().addDeals(processSearchResponse(searchDomainModel));
+                    getView().addDeals(processSearchResponse(searchResponse));
                 checkIfToLoad(getView().getLayoutManager());
             }
         });
@@ -195,8 +194,8 @@ public class DealsSearchPresenter
         }
     }
 
-    List<CategoryItemsViewModel> processSearchResponse(SearchDomainModel searchDomainModel) {
-        mSearchData = searchDomainModel;
+    private List<ProductItem> processSearchResponse(SearchResponse searchResponse) {
+        mSearchData = searchResponse;
         String nexturl = mSearchData.getPage().getUriNext();
         if (nexturl != null && !nexturl.isEmpty() && nexturl.length() > 0) {
             searchNextParams.putString("nexturl", nexturl);
@@ -204,9 +203,8 @@ public class DealsSearchPresenter
         } else {
             isLastPage = true;
         }
-        List<CategoryItemsViewModel> categoryItemsViewModels = Utils.getSingletonInstance()
-                .convertIntoCategoryListItemsViewModel(searchDomainModel.getDeals());
-        return categoryItemsViewModels;
+        List<ProductItem> productItems= searchResponse.getDeals();
+        return productItems;
     }
 
 }

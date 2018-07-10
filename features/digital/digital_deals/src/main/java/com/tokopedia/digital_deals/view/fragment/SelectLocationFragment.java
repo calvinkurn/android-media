@@ -26,7 +26,7 @@ import com.tokopedia.digital_deals.view.adapter.DealsLocationAdapter;
 import com.tokopedia.digital_deals.view.contractor.DealsLocationContract;
 import com.tokopedia.digital_deals.view.customview.SearchInputView;
 import com.tokopedia.digital_deals.view.presenter.DealsLocationPresenter;
-import com.tokopedia.digital_deals.view.viewmodel.LocationViewModel;
+import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
@@ -110,7 +110,7 @@ public class SelectLocationFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public void renderFromSearchResults(List<LocationViewModel> locationViewModelList, boolean isTopLocations) {
+    public void renderFromSearchResults(List<Location> locationList, boolean isTopLocations) {
 
         if (isTopLocations) {
             tvTopDeals.setVisibility(View.VISIBLE);
@@ -118,8 +118,8 @@ public class SelectLocationFragment extends BaseDaggerFragment implements
         } else {
             tvTopDeals.setVisibility(View.GONE);
         }
-        if (locationViewModelList != null && locationViewModelList.size() != 0) {
-            dealsCategoryAdapter.updateAdapter(locationViewModelList);
+        if (locationList != null && locationList.size() != 0) {
+            dealsCategoryAdapter.updateAdapter(locationList);
             rvSearchResults.setVisibility(View.VISIBLE);
             noContent.setVisibility(View.GONE);
             llTopEvents.setVisibility(View.VISIBLE);

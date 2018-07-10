@@ -14,9 +14,9 @@ import com.tokopedia.core.drawer2.domain.interactor.ProfileUseCase;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.view.contractor.CheckoutDealContractor;
-import com.tokopedia.digital_deals.view.viewmodel.DealsDetailsViewModel;
-import com.tokopedia.digital_deals.view.viewmodel.OutletViewModel;
-import com.tokopedia.digital_deals.view.viewmodel.PackageViewModel;
+import com.tokopedia.digital_deals.view.model.Outlet;
+import com.tokopedia.digital_deals.view.model.PackageViewModel;
+import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse;
 import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
 import com.tokopedia.oms.domain.model.request.cart.CartItem;
 import com.tokopedia.oms.domain.model.request.cart.CartItems;
@@ -49,7 +49,7 @@ public class CheckoutDealPresenter
     public static String EXTRA_PACKAGEVIEWMODEL = "EXTRA_PACKAGEVIEWMODEL";
     private ProfileModel profileModel;
     private String email;
-    private DealsDetailsViewModel dealDetail;
+    private DealsDetailsResponse dealDetail;
     private PackageViewModel packageViewModel;
     private String cartData;
 
@@ -243,7 +243,7 @@ public class CheckoutDealPresenter
 
     }
 
-    public List<OutletViewModel> getOutlets() {
+    public List<Outlet> getOutlets() {
         return dealDetail.getOutlets();
     }
 }

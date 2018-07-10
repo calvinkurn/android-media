@@ -17,7 +17,6 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -33,10 +32,10 @@ import com.tokopedia.digital_deals.view.presenter.DealsCategoryDetailPresenter;
 import com.tokopedia.digital_deals.view.presenter.DealsHomePresenter;
 import com.tokopedia.digital_deals.view.utils.CategoryDetailCallbacks;
 import com.tokopedia.digital_deals.view.utils.Utils;
-import com.tokopedia.digital_deals.view.viewmodel.BrandViewModel;
-import com.tokopedia.digital_deals.view.viewmodel.CategoriesModel;
-import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
-import com.tokopedia.digital_deals.view.viewmodel.LocationViewModel;
+import com.tokopedia.digital_deals.view.model.Brand;
+import com.tokopedia.digital_deals.view.model.CategoriesModel;
+import com.tokopedia.digital_deals.view.model.ProductItem;
+import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
@@ -140,7 +139,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     }
 
     @Override
-    public void renderCategoryList(List<CategoryItemsViewModel> deals, int count) {
+    public void renderCategoryList(List<ProductItem> deals, int count) {
         if (deals.size() != 0) {
             if (count == 0)
                 numberOfDeals.setText(String.format(getResources().getString(R.string.number_of_items), deals.size()));
@@ -161,7 +160,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     }
 
     @Override
-    public void renderBrandList(List<BrandViewModel> brandList) {
+    public void renderBrandList(List<Brand> brandList) {
         if (brandList != null) {
             recyclerViewBrands.setAdapter(new DealsBrandAdapter(getActivity(), brandList, true));
         }
@@ -228,8 +227,10 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     }
 
     @Override
-    public void addDealsToCards(List<CategoryItemsViewModel> categoryItemsViewModels) {
-        ((DealsCategoryAdapter) recyclerViewDeals.getAdapter()).addAll(categoryItemsViewModels);
+    public void addDealsToCards(List<ProductItem> productItems) {
+        if (productItems != null) {
+            ((DealsCategoryAdapter) recyclerViewDeals.getAdapter()).addAll(productItems);
+        }
 
     }
 
@@ -283,7 +284,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
 
             case DealsHomeActivity.REQUEST_CODE_DEALSSEARCHACTIVITY:
                 if (resultCode == RESULT_OK) {
-                    LocationViewModel location1 = Utils.getSingletonInstance().getLocation(getActivity());
+                    Location location1 = Utils.getSingletonInstance().getLocation(getActivity());
                     if (!locationName.equals(location1.getName())) {
                         mPresenter.getCategoryDetails();
                         mPresenter.getBrandsList();

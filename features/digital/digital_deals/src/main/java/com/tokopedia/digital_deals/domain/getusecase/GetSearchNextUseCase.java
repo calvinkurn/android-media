@@ -5,7 +5,7 @@ import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.common.network.data.model.RestRequest;
 import com.tokopedia.common.network.domain.RestRequestUseCase;
-import com.tokopedia.digital_deals.domain.model.searchdomainmodel.SearchDomainModel;
+import com.tokopedia.digital_deals.view.model.response.SearchResponse;
 import com.tokopedia.usecase.RequestParams;
 
 import java.lang.reflect.Type;
@@ -33,7 +33,7 @@ public class GetSearchNextUseCase extends RestRequestUseCase {
         List<RestRequest> tempRequest = new ArrayList<>();
 
         //Request 1
-        Type token = new TypeToken<DataResponse<SearchDomainModel>>() {
+        Type token = new TypeToken<DataResponse<SearchResponse>>() {
         }.getType();
 
         RestRequest restRequest1 = new RestRequest.Builder(url, token)

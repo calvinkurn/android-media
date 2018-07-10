@@ -10,7 +10,7 @@ import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.view.fragment.AllBrandsFragment;
 import com.tokopedia.digital_deals.view.fragment.CategoryDetailHomeFragment;
 import com.tokopedia.digital_deals.view.utils.CategoryDetailCallbacks;
-import com.tokopedia.digital_deals.view.viewmodel.CategoriesModel;
+import com.tokopedia.digital_deals.view.model.CategoriesModel;
 
 public class CategoryDetailActivity extends BaseSimpleActivity implements CategoryDetailCallbacks {
 

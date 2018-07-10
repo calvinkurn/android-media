@@ -3,7 +3,6 @@ package com.tokopedia.digital_deals.view.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,14 +12,14 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.view.activity.BrandDetailsActivity;
 import com.tokopedia.digital_deals.view.presenter.BrandDetailsPresenter;
-import com.tokopedia.digital_deals.view.viewmodel.BrandViewModel;
+import com.tokopedia.digital_deals.view.model.Brand;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private List<BrandViewModel> brandItems;
+    private List<Brand> brandItems;
     private Context context;
     private int MAX_BRANDS = 8;
     private static final int ITEM = 1;
@@ -30,7 +29,7 @@ public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private boolean isShortLayout;
 
 
-    public DealsBrandAdapter(Context context, List<BrandViewModel> brandItems, boolean isShortLayout) {
+    public DealsBrandAdapter(Context context, List<Brand> brandItems, boolean isShortLayout) {
         this.context = context;
         this.brandItems = new ArrayList<>();
         this.isShortLayout = isShortLayout;
@@ -42,7 +41,7 @@ public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
     }
 
-    public void updateAdapter(List<BrandViewModel> brands) {
+    public void updateAdapter(List<Brand> brands) {
         this.brandItems = brands;
         notifyDataSetChanged();
     }
@@ -59,8 +58,8 @@ public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             imageViewBrandItem = itemView.findViewById(R.id.iv_brand);
         }
 
-        public void bindData(final BrandViewModel brandViewModel, int position) {
-            ImageHandler.loadImage(context, imageViewBrandItem, brandViewModel.getFeaturedThumbnailImage(), R.color.grey_1100, R.color.grey_1100);
+        public void bindData(final Brand brand, int position) {
+            ImageHandler.loadImage(context, imageViewBrandItem, brand.getFeaturedThumbnailImage(), R.color.grey_1100, R.color.grey_1100);
 
 
             itemView.setOnClickListener(this);
@@ -114,17 +113,17 @@ public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     public void addFooter() {
         if (!isFooterAdded) {
             isFooterAdded = true;
-            add(new BrandViewModel());
+            add(new Brand());
         }
     }
 
-    public void add(BrandViewModel item) {
+    public void add(Brand item) {
         brandItems.add(item);
         notifyItemInserted(brandItems.size() - 1);
     }
 
-    public void addAll(List<BrandViewModel> items) {
-        for (BrandViewModel item : items) {
+    public void addAll(List<Brand> items) {
+        for (Brand item : items) {
             add(item);
         }
     }
@@ -135,7 +134,7 @@ public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             isFooterAdded = false;
 
             int position = brandItems.size() - 1;
-            BrandViewModel item = brandItems.get(position);
+            Brand item = brandItems.get(position);
 
             if (item != null) {
                 brandItems.remove(position);

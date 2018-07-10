@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
@@ -30,8 +29,8 @@ import com.tokopedia.digital_deals.view.contractor.SelectQuantityContract;
 import com.tokopedia.digital_deals.view.presenter.SelectQuantityPresenter;
 import com.tokopedia.digital_deals.view.utils.DealFragmentCallbacks;
 import com.tokopedia.digital_deals.view.utils.Utils;
-import com.tokopedia.digital_deals.view.viewmodel.DealsDetailsViewModel;
-import com.tokopedia.digital_deals.view.viewmodel.PackageViewModel;
+import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse;
+import com.tokopedia.digital_deals.view.model.PackageViewModel;
 import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;
@@ -60,7 +59,7 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
     @Inject
     public SelectQuantityPresenter mPresenter;
     private PackageViewModel packageViewModel;
-    private DealsDetailsViewModel dealDetails;
+    private DealsDetailsResponse dealDetails;
     private DealFragmentCallbacks fragmentCallbacks;
 
 
@@ -207,7 +206,7 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
     }
 
     @Override
-    public void renderFromDetails(DealsDetailsViewModel dealDetail) {
+    public void renderFromDetails(DealsDetailsResponse dealDetail) {
 
         ImageHandler.loadImage(getContext(), ivBrand, dealDetails.getImageWeb(), R.color.grey_1100, R.color.grey_1100);
         if (dealDetails.getBrand() != null) {

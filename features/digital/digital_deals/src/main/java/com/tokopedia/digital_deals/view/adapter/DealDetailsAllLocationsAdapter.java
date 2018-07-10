@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.view.utils.Utils;
-import com.tokopedia.digital_deals.view.viewmodel.OutletViewModel;
+import com.tokopedia.digital_deals.view.model.Outlet;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,9 +20,9 @@ public class DealDetailsAllLocationsAdapter extends RecyclerView.Adapter<DealDet
 
 
     Context context;
-    List<OutletViewModel> outlets;
+    List<Outlet> outlets;
 
-    public DealDetailsAllLocationsAdapter(Context context, List<OutletViewModel> outlets){
+    public DealDetailsAllLocationsAdapter(Context context, List<Outlet> outlets){
         this.context=context;
         this.outlets=new ArrayList<>();
         this.outlets=outlets;
@@ -73,7 +73,7 @@ public class DealDetailsAllLocationsAdapter extends RecyclerView.Adapter<DealDet
             return this.index;
         }
 
-        public void bindData(OutletViewModel outlet) {
+        public void bindData(Outlet outlet) {
             outletName.setText(outlet.getName());
             outletAddress.setText(outlet.getDistrict());
             if(outlet.getCoordinates()!=null && outlet.getCoordinates()!=""){

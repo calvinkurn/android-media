@@ -6,19 +6,17 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.transition.Fade;
 import android.transition.Transition;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.view.fragment.SelectLocationFragment;
 import com.tokopedia.digital_deals.view.utils.Utils;
-import com.tokopedia.digital_deals.view.viewmodel.LocationViewModel;
+import com.tokopedia.digital_deals.view.model.Location;
 
 
 public class DealsLocationActivity extends BaseSimpleActivity {
 
-    private LocationViewModel location;
+    private Location location;
 
     @Override
     protected int getLayoutRes() {
