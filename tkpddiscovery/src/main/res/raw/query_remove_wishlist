@@ -1,6 +1,7 @@
-query removeWishlist($productID: Int!, $userID: Int!) {
+mutation removeWishlist($productID: Int!, $userID: Int!) {
     wishlist_remove(productID: $productID, userID: $userID) {
         id
         success
+        __typename
     }
 }

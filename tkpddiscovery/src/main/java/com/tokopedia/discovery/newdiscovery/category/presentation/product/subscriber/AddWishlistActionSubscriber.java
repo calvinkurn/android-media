@@ -2,7 +2,7 @@ package com.tokopedia.discovery.newdiscovery.category.presentation.product.subsc
 
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.newdiscovery.category.presentation.product.listener.WishlistActionListener;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.listener.WishlistActionListener;
 import com.tokopedia.discovery.newdiscovery.wishlist.model.AddWishListResponse;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 
@@ -34,7 +34,6 @@ public class AddWishlistActionSubscriber extends Subscriber<GraphqlResponse> {
 
     @Override
     public void onNext(GraphqlResponse graphqlResponse) {
-
 
         if (graphqlResponse != null) {
             AddWishListResponse addWishListResponse = graphqlResponse.getData(AddWishListResponse.class);

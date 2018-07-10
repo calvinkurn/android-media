@@ -3,11 +3,11 @@ package com.tokopedia.discovery.newdiscovery.category.presentation.product;
 import android.os.Bundle;
 
 import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.discovery.newdiscovery.category.presentation.product.listener.WishlistActionListener;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategoryHeaderModel;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentView;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.listener.WishlistActionListener;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 
 import java.util.List;

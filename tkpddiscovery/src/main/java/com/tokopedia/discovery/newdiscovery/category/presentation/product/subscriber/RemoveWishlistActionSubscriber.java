@@ -2,8 +2,8 @@ package com.tokopedia.discovery.newdiscovery.category.presentation.product.subsc
 
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.newdiscovery.category.presentation.product.listener.WishlistActionListener;
 import com.tokopedia.discovery.newdiscovery.domain.model.ActionResultModel;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.listener.WishlistActionListener;
 
 import rx.Subscriber;
 

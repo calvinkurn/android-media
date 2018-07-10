@@ -2,15 +2,13 @@ package com.tokopedia.discovery.imagesearch.search.fragment.product;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 
-import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.domain.DefaultSubscriber;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
-import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
 import com.tokopedia.discovery.newdiscovery.domain.model.SearchResultModel;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.AddWishlistActionUseCase;
@@ -18,22 +16,15 @@ import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.RemoveWishlistActionUseCase;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.ProductViewModelHelper;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.listener.WishlistActionListener;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.subscriber.AddWishlistActionSubscriber;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.subscriber.RemoveWishlistActionSubscriber;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
-import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
-import com.tokopedia.discovery.newdiscovery.wishlist.model.AddWishListResponse;
 import com.tokopedia.graphql.data.GraphqlClient;
-import com.tokopedia.graphql.data.model.GraphqlRequest;
-import com.tokopedia.graphql.domain.GraphqlUseCase;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -146,24 +137,7 @@ public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProd
     }
 
     private void addWishlist(String productId, String userId, int adapterPosition) {
-
-        GraphqlUseCase graphqlUseCase = new GraphqlUseCase();
-
-        Map<String, Object> variables = new HashMap<>();
-
-        variables.put(PARAM_PRODUCT_ID, productId);
-        variables.put(PARAM_USER_ID, userId);
-
-        GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(), R.raw.query_add_wishlist),
-                AddWishListResponse.class,
-                variables);
-
-        graphqlUseCase.addRequest(graphqlRequest);
-
-        graphqlUseCase.execute(new AddWishlistActionSubscriber(wishlistActionListener, adapterPosition));
-
-        /*addWishlistActionUseCase.execute(AddWishlistActionUseCase.generateParam(productId, userId),
-                new AddWishlistActionSubscriber(wishlistActionListener, adapterPosition));*/
+        addWishlistActionUseCase.createObservable(productId, userId, wishlistActionListener, adapterPosition);
     }
 
     private void removeWishlist(String productId, String userId, int adapterPosition) {
