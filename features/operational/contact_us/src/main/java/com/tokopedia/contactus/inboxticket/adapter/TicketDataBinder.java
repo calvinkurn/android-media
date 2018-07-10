@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.contactus.ContactUsModuleRouter;
-import com.tokopedia.contactus.inboxticket.model.inboxticketdetail.TicketReplyDatum;
 import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
@@ -22,6 +21,7 @@ import com.tokopedia.core.customadapter.ImageUploadAdapter;
 import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.core.util.DataBinder;
 import com.tokopedia.core.util.LabelUtils;
+import com.tokopedia.contactus.inboxticket.model.inboxticketdetail.TicketReplyDatum;
 
 import java.util.ArrayList;
 import java.util.List;
