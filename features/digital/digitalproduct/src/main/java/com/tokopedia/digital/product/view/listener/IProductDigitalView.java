@@ -84,4 +84,8 @@ public interface IProductDigitalView extends IBaseView {
 
     void renderPromoPanduanTab(int tabCount, String firstTab);
 
+    void hidePromoPanduanTab();
+
+    void showPromoPanduanTab();
+
 }

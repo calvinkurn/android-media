@@ -251,6 +251,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
                 }
 
                 if (bannerDataList.size() > 0 || guideDataList.size() > 0) {
+                    view.showPromoPanduanTab();
                     view.renderBannerListData(
                             categoryData.getName(),
                             bannerDataList != null ? bannerDataList : new ArrayList<BannerData>()
@@ -262,6 +263,8 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
                     view.renderGuideListData(
                             guideDataList != null ? guideDataList : new ArrayList<>()
                     );
+                } else {
+                    view.hidePromoPanduanTab();
                 }
             }
         } else {

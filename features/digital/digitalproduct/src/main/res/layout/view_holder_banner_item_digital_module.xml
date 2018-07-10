@@ -34,14 +34,14 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    style="@style/TextView.Small.Bold"
+                    style="@style/TextView.Micro.Bold"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/title_voucher_code" />
 
                 <TextView
                     android:id="@+id/tv_voucher_code"
-                    style="@style/TextView.Small.Bold"
+                    style="@style/TextView.Micro.Bold"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/dp_3"
@@ -56,7 +56,7 @@
 
                 <TextView
                     android:id="@+id/btn_copy"
-                    style="@style/TextSubTitleSmall"
+                    style="@style/TextView.Micro"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/digital_white_grey_button_rounded"

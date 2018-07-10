@@ -166,6 +166,8 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     TabLayout promoTabLayout;
     @BindView(R2.id.pager)
     DigitalWrapContentViewPager promoViewPager;
+    @BindView(R2.id.panduan_separator)
+    View panduanSeparator;
 
     private ProductDigitalPresenter presenter;
 
@@ -1258,4 +1260,17 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         return promoPanduanPagerAdapter;
     }
 
+    @Override
+    public void hidePromoPanduanTab() {
+        promoTabLayout.setVisibility(View.GONE);
+        promoViewPager.setVisibility(View.GONE);
+        panduanSeparator.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showPromoPanduanTab() {
+        promoTabLayout.setVisibility(View.VISIBLE);
+        promoViewPager.setVisibility(View.VISIBLE);
+        panduanSeparator.setVisibility(View.VISIBLE);
+    }
 }
