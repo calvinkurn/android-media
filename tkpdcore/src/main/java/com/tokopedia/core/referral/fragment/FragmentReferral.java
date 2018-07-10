@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.widget.NestedScrollView;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -188,9 +189,11 @@ public class FragmentReferral extends BasePresenterFragmentV4<IReferralPresenter
     @OnClick(R2.id.btn_copy_referral_code)
     public void clickOnCopyButton() {
         presenter.copyVoucherCode(referralCodeTextView.getText().toString());
-        btnCopyReferralCode.setText(R.string.copied);
-        btnCopyReferralCode.setTextColor(getResources().getColor(R.color.green_250));
-        imgTick.setVisibility(View.VISIBLE);
+        if (!TextUtils.isEmpty(referralCodeTextView.getText().toString())) {
+            btnCopyReferralCode.setText(R.string.copied);
+            btnCopyReferralCode.setTextColor(getResources().getColor(R.color.green_250));
+            imgTick.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

@@ -32,6 +32,7 @@ import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.router.wallet.WalletRouterUtil;
 import com.tokopedia.core.share.DefaultShare;
+import com.tokopedia.core.share.ShareBottomSheet;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.ShareSocmedHandler;
 import com.tokopedia.core.var.TkpdCache;
@@ -107,7 +108,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
                 .setShareUrl(url)
                 .build();
 
-        new DefaultShare(activity, shareData).show();
+        ShareBottomSheet.show(fragmentManager, shareData);
         TrackingUtils.sendMoEngageReferralScreenOpen(activity.getString(R.string.referral_share_screen_name));
     }
 
