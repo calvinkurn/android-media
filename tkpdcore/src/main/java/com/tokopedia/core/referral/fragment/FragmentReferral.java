@@ -17,6 +17,8 @@ import android.widget.Toast;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.app.BasePresenterFragmentV4;
 import com.tokopedia.core.app.MainApplication;
@@ -150,6 +152,8 @@ public class FragmentReferral extends BasePresenterFragmentV4<IReferralPresenter
             TextViewHelpLink.setVisibility(View.VISIBLE);
             TextViewHelpLink.setOnClickListener(view1 -> {
                 focusOnView();
+                UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_HOW_IT_WORKS, "");
+
             });
         } else {
             referralCodeLayout.setVisibility(View.INVISIBLE);
@@ -161,6 +165,7 @@ public class FragmentReferral extends BasePresenterFragmentV4<IReferralPresenter
 
         pagerGuide.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabGuide));
         tabGuide.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(pagerGuide));
+
         llShareIcons.removeAllViews();
         presenter.getSharableApps();
     }

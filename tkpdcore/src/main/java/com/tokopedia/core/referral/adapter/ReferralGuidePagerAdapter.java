@@ -68,10 +68,11 @@ public class ReferralGuidePagerAdapter extends PagerAdapter {
 
             btnShare.setOnClickListener(view1 -> {
                 listener.onShareClick();
+                UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_SHARE_TEMAN, "");
             });
 
             tvHelpLink.setOnClickListener(view1 -> {
-                UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_HOW_IT_WORKS, "");
+                UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_WHAT_IS_TOKOCASH, "");
                 context.startActivity(ManageWebViewActivity.getCallingIntent(context, TkpdUrl.REFERRAL_URL, ((AppCompatActivity) context).getSupportActionBar().getTitle().toString()));
             });
 

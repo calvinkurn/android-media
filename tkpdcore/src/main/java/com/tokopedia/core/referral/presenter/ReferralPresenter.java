@@ -403,6 +403,8 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
             actionShare(shareData, TkpdState.PackageName.Pinterest, AppEventTracking.SOCIAL_MEDIA.PINTEREST);
         } else {
             shareApp(fragmentManager);
+            UnifyTracking.eventReferralAndShare(AppEventTracking.Action.SELECT_CHANNEL, AppEventTracking.Action.OTHER_CHANNEL);
+
         }
     }
 
