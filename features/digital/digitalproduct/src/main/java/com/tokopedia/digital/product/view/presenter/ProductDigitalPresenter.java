@@ -54,7 +54,7 @@ import java.util.List;
 
 import rx.Subscriber;
 
-import static com.tokopedia.digital.product.view.adapter.PromoGuidePagerAdapter.PANDUAN_TAB;
+import static com.tokopedia.digital.product.view.adapter.PromoGuidePagerAdapter.GUIDE_TAB;
 import static com.tokopedia.digital.product.view.adapter.PromoGuidePagerAdapter.PROMO_TAB;
 
 /**
@@ -243,15 +243,15 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
 
             if (!GlobalConfig.isSellerApp()) {
                 if (bannerDataList.size() > 0 && guideDataList.size() > 0) {
-                    view.renderPromoPanduanTab(TAB_COUNT_TWO, PROMO_TAB);
+                    view.renderPromoGuideTab(TAB_COUNT_TWO, PROMO_TAB);
                 } else if (bannerDataList.size() > 0 && guideDataList.size() == 0) {
-                    view.renderPromoPanduanTab(TAB_COUNT_ONE, PROMO_TAB);
+                    view.renderPromoGuideTab(TAB_COUNT_ONE, PROMO_TAB);
                 } else if (bannerDataList.size() == 0 && guideDataList.size() > 0) {
-                    view.renderPromoPanduanTab(TAB_COUNT_ONE, PANDUAN_TAB);
+                    view.renderPromoGuideTab(TAB_COUNT_ONE, GUIDE_TAB);
                 }
 
                 if (bannerDataList.size() > 0 || guideDataList.size() > 0) {
-                    view.showPromoPanduanTab();
+                    view.showPromoGuideTab();
                     view.renderBannerListData(
                             categoryData.getName(),
                             bannerDataList != null ? bannerDataList : new ArrayList<BannerData>()
@@ -264,7 +264,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
                             guideDataList != null ? guideDataList : new ArrayList<>()
                     );
                 } else {
-                    view.hidePromoPanduanTab();
+                    view.hidePromoGuideTab();
                 }
             }
         } else {

@@ -109,7 +109,7 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHol
         public GuideViewHolder(View itemView) {
             super(itemView);
 
-            tvTitle = itemView.findViewById(R.id.tv_panduan_title);
+            tvTitle = itemView.findViewById(R.id.tv_guide_title);
             youtubeTV = itemView.findViewById(R.id.youtube_thumbnail_view);
             progressBar = itemView.findViewById(R.id.youtube_thumbnail_loading_bar);
         }

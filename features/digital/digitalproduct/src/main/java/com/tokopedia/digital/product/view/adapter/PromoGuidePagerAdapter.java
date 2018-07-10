@@ -23,7 +23,7 @@ public class PromoGuidePagerAdapter extends FragmentStatePagerAdapter
         implements DigitalPromoFragment.DigitalPromoConnector, DigitalGuideFragment.DigitalGuideConnector {
 
     public static final String PROMO_TAB = "promo_tab";
-    public static final String PANDUAN_TAB = "panduan_tab";
+    public static final String GUIDE_TAB = "guide_tab";
 
     private Context context;
     private int currentPosition = -1;
@@ -52,11 +52,11 @@ public class PromoGuidePagerAdapter extends FragmentStatePagerAdapter
             case 0 :
                 if (firstTab.equals(PROMO_TAB)) {
                     return context.getString(R.string.promo_tab_title);
-                } else if (firstTab.equals(PANDUAN_TAB)) {
-                    return context.getString(R.string.panduan_tab_title);
+                } else if (firstTab.equals(GUIDE_TAB)) {
+                    return context.getString(R.string.guide_tab_title);
                 }
             case 1 :
-                return context.getString(R.string.panduan_tab_title);
+                return context.getString(R.string.guide_tab_title);
             default:
                 return super.getPageTitle(position);
         }
@@ -83,7 +83,7 @@ public class PromoGuidePagerAdapter extends FragmentStatePagerAdapter
                     digitalPromoFragment = DigitalPromoFragment.createInstance();
                     digitalPromoFragment.setDigitalPromoConnector(this);
                     return digitalPromoFragment;
-                } else if (firstTab.equals(PANDUAN_TAB)) {
+                } else if (firstTab.equals(GUIDE_TAB)) {
                     digitalGuideFragment = DigitalGuideFragment.createInstance();
                     digitalGuideFragment.setConnector(this);
                     return digitalGuideFragment;

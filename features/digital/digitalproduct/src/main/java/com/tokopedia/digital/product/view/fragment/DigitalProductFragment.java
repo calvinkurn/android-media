@@ -166,8 +166,8 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     TabLayout promoTabLayout;
     @BindView(R2.id.pager)
     DigitalWrapContentViewPager promoViewPager;
-    @BindView(R2.id.panduan_separator)
-    View panduanSeparator;
+    @BindView(R2.id.guide_separator)
+    View guideSeparator;
 
     private ProductDigitalPresenter presenter;
 
@@ -206,7 +206,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     private ShowCaseDialog showCaseDialog;
     private int selectedSimIndex = 0;//start from 0
     private boolean ussdInProgress = false;
-    private PromoGuidePagerAdapter promoPanduanPagerAdapter;
+    private PromoGuidePagerAdapter promoGuidePagerAdapter;
 
     public static Fragment newInstance(
             String categoryId, String operatorId, String productId, String clientNumber,
@@ -397,19 +397,19 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     @Override
     public void renderBannerListData(String title, List<BannerData> bannerDataList) {
         this.bannerDataListState = getBannerDataWithoutEmptyItem(bannerDataList);
-        promoPanduanPagerAdapter.setBannerDataList(title, bannerDataList);
+        promoGuidePagerAdapter.setBannerDataList(title, bannerDataList);
     }
 
     @Override
     public void renderOtherBannerListData(String title, List<BannerData> otherBannerDataList) {
         this.otherBannerDataListState = getBannerDataWithoutEmptyItem(otherBannerDataList);
-        promoPanduanPagerAdapter.setOtherBannerDataList(title, otherBannerDataList);
+        promoGuidePagerAdapter.setOtherBannerDataList(title, otherBannerDataList);
     }
 
     @Override
     public void renderGuideListData(List<GuideData> guideDataList) {
         this.guideDataListState = guideDataList;
-        promoPanduanPagerAdapter.setGuideDataList(guideDataList);
+        promoGuidePagerAdapter.setGuideDataList(guideDataList);
     }
 
     private List<BannerData> getBannerDataWithoutEmptyItem(List<BannerData> bannerDataList) {
@@ -1241,7 +1241,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     @Override
-    public void renderPromoPanduanTab(int tabCount, String firstTab) {
+    public void renderPromoGuideTab(int tabCount, String firstTab) {
         promoTabLayout.setupWithViewPager(promoViewPager);
         promoViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(promoTabLayout));
         promoViewPager.setAdapter(getViewPagerAdapter(tabCount, firstTab));
@@ -1255,22 +1255,22 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     private PagerAdapter getViewPagerAdapter(int tabCount, String firstTab) {
-        promoPanduanPagerAdapter = new PromoGuidePagerAdapter(getFragmentManager(), context,
+        promoGuidePagerAdapter = new PromoGuidePagerAdapter(getFragmentManager(), context,
                 tabCount, firstTab);
-        return promoPanduanPagerAdapter;
+        return promoGuidePagerAdapter;
     }
 
     @Override
-    public void hidePromoPanduanTab() {
+    public void hidePromoGuideTab() {
         promoTabLayout.setVisibility(View.GONE);
         promoViewPager.setVisibility(View.GONE);
-        panduanSeparator.setVisibility(View.GONE);
+        guideSeparator.setVisibility(View.GONE);
     }
 
     @Override
-    public void showPromoPanduanTab() {
+    public void showPromoGuideTab() {
         promoTabLayout.setVisibility(View.VISIBLE);
         promoViewPager.setVisibility(View.VISIBLE);
-        panduanSeparator.setVisibility(View.VISIBLE);
+        guideSeparator.setVisibility(View.VISIBLE);
     }
 }

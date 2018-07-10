@@ -27,7 +27,7 @@
             android:paddingTop="@dimen/dp_5">
 
             <com.tokopedia.design.component.TextViewCompat
-                android:id="@+id/tv_panduan_title"
+                android:id="@+id/tv_guide_title"
                 style="@style/TextView.Small.Bold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

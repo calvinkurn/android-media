@@ -34,7 +34,7 @@ public class DigitalGuideFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_digital_guide, container, false);
-        rvGuide = view.findViewById(R.id.rv_panduan);
+        rvGuide = view.findViewById(R.id.rv_guide);
         return view;
     }
 
