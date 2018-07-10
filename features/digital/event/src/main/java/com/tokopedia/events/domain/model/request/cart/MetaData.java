@@ -287,7 +287,7 @@ public class MetaData implements Parcelable {
 		this.totalTicketCount = in.readInt();
 	}
 
-	public static final Parcelable.Creator<MetaData> CREATOR = new Parcelable.Creator<MetaData>() {
+	public static final Creator<MetaData> CREATOR = new Creator<MetaData>() {
 		@Override
 		public MetaData createFromParcel(Parcel source) {
 			return new MetaData(source);

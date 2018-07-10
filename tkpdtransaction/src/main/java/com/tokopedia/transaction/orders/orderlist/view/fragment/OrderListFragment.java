@@ -1,10 +1,11 @@
 package com.tokopedia.transaction.orders.orderlist.view.fragment;
 
 import android.app.Activity;
+import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -17,11 +18,11 @@ import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.orderlist.data.Order;
 import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
+import com.tokopedia.transaction.orders.orderlist.di.DaggerOrderListComponent;
 import com.tokopedia.transaction.orders.orderlist.di.OrderListComponent;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.OrderListAdapter;
 import com.tokopedia.transaction.orders.orderlist.view.presenter.OrderListContract;
 import com.tokopedia.transaction.orders.orderlist.view.presenter.OrderListPresenterImpl;
-import com.tokopedia.transaction.orders.orderlist.di.DaggerOrderListComponent;
 import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractor;
 
 import java.util.ArrayList;
@@ -55,6 +56,15 @@ public class OrderListFragment extends BasePresenterFragment<OrderListContract.P
     private ArrayList<Order> mOrderDataList;
     private String mOrderCategory;
 
+    public static Fragment newInstance(int orderCategory) {
+        Fragment fragment = new OrderListFragment();
+        Bundle arg = new Bundle();
+        arg.putInt(ORDER_CATEGORY, orderCategory);
+        fragment.setArguments(arg);
+
+        return fragment;
+    }
+
     @Override
     protected boolean isRetainInstance() {
         return false;
@@ -83,10 +93,10 @@ public class OrderListFragment extends BasePresenterFragment<OrderListContract.P
 
     @Override
     protected void initialPresenter() {
-        initInjector();
         presenter.attachView(this);
     }
 
+    @Override
     protected void initInjector() {
         orderListComponent = DaggerOrderListComponent.builder()
                 .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
@@ -286,6 +296,11 @@ public class OrderListFragment extends BasePresenterFragment<OrderListContract.P
 
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
+    }
 
     @Override
     public void startUri(String uri) {
@@ -293,4 +308,3 @@ public class OrderListFragment extends BasePresenterFragment<OrderListContract.P
             TransactionPurchaseRouter.startWebViewActivity(getActivity(), uri);
     }
 }
-

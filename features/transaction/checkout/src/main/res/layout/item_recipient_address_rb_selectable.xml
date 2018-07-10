@@ -24,6 +24,7 @@
             android:layout_weight="1"
             android:clickable="false"
             android:focusable="false"
+            android:theme="@style/TransactionToggleButton"
             android:focusableInTouchMode="false"/>
 
     </LinearLayout>

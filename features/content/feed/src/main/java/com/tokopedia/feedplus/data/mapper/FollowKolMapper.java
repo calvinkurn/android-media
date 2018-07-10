@@ -8,6 +8,8 @@ import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.domain.model.FollowKolDomain;
 
+import javax.inject.Inject;
+
 import rx.functions.Func1;
 
 /**
@@ -15,6 +17,10 @@ import rx.functions.Func1;
  */
 
 public class FollowKolMapper implements Func1<FollowKol.Data, FollowKolDomain> {
+
+    @Inject
+    public FollowKolMapper() {
+    }
 
     @Override
     public FollowKolDomain call(FollowKol.Data data) {

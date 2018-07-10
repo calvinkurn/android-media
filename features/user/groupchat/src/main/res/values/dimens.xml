@@ -60,4 +60,7 @@
     <dimen name="max_width_template">132dp</dimen>
     <dimen name="min_width_template">52dp</dimen>
     <dimen name="min_height_template">32dp</dimen>
+
+    <dimen name="min_width_button_shopping">160dp</dimen>
+    <dimen name="min_height_button_shopping">40dp</dimen>
 </resources>

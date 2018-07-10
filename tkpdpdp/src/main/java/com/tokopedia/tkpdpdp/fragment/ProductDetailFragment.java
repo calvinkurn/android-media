@@ -42,7 +42,6 @@ import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.analytics.ProductPageTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.nishikino.model.GTMCart;
 import com.tokopedia.core.app.BasePresenterFragmentV4;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -73,6 +72,7 @@ import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
+import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
 import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.core.util.AppIndexHandler;
 import com.tokopedia.core.util.GlobalConfig;
@@ -118,7 +118,9 @@ import com.tokopedia.tkpdpdp.listener.AppBarStateChangeListener;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenter;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenterImpl;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticProductDetailPage;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsAddToCart;
+import com.tokopedia.transactionanalytics.EnhancedECommerceCartMapData;
+import com.tokopedia.transactionanalytics.EnhancedECommerceProductCartMapData;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -239,7 +241,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     private RemoteConfig remoteConfig;
     private ShowCaseDialog showCaseDialog;
-    private CheckoutAnalyticProductDetailPage checkoutAnalyticProductDetailPage;
+    private CheckoutAnalyticsAddToCart checkoutAnalyticsAddToCart;
 
     public static ProductDetailFragment newInstance(@NonNull ProductPass productPass) {
         ProductDetailFragment fragment = new ProductDetailFragment();
@@ -432,7 +434,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     protected void initialVar() {
-        checkoutAnalyticProductDetailPage = new CheckoutAnalyticProductDetailPage(getAnalyticTracker());
+        checkoutAnalyticsAddToCart = new CheckoutAnalyticsAddToCart(getAnalyticTracker());
         userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
         appIndexHandler = new AppIndexHandler(getActivity());
         loading = new ProgressDialog(getActivity());
@@ -709,6 +711,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void onProductBuySessionLogin(@NonNull ProductCartPass data) {
+        buttonBuyView.changeToLoading();
         presenter.processToCart(getActivity(), data);
     }
 
@@ -990,6 +993,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void showToastMessage(String message) {
+        buttonBuyView.removeLoading();
         if (message == null) {
             message = getString(R.string.default_request_error_unknown_short);
         }
@@ -1043,7 +1047,9 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-        presenter.prepareOptionMenu(menu, getActivity(), productData);
+        if (getActivity() != null) {
+            presenter.prepareOptionMenu(menu, getActivity(), productData);
+        }
     }
 
     @Override
@@ -1627,17 +1633,18 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     }
 
     @Override
-    public void renderAddToCartSuccess(String message) {
-        checkoutAnalyticProductDetailPage.eventClickAddToCartImpressionAtcSuccess();
+    public void renderAddToCartSuccess(AddToCartResult addToCartResult) {
+        buttonBuyView.removeLoading();
+        checkoutAnalyticsAddToCart.eventClickAddToCartImpressionAtcSuccess();
         updateCartNotification();
         android.support.v4.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.add(
                 AddToCartConfirmationDialog.newInstance(
-                        message,
+                        addToCartResult.getMessage(),
                         new AddToCartConfirmationDialog.ActionListener() {
                             @Override
                             public void onButtonAddToCartPayClicked() {
-                                checkoutAnalyticProductDetailPage.eventClickAddToCartClickBayarOnAtcSuccess();
+                                checkoutAnalyticsAddToCart.eventClickAddToCartClickBayarOnAtcSuccess();
                                 if (getActivity().getApplication() instanceof PdpRouter) {
                                     Intent intent = ((PdpRouter) getActivity().getApplication())
                                             .getCartIntent(getActivity());
@@ -1647,7 +1654,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
                             @Override
                             public void onButtonAddToCartContinueShopingClicked() {
-                                checkoutAnalyticProductDetailPage.eventClickAddToCartClickLanjutkanBelanjaOnAtcSuccess();
+                                checkoutAnalyticsAddToCart.eventClickAddToCartClickLanjutkanBelanjaOnAtcSuccess();
                             }
                         }),
                 AddToCartConfirmationDialog.ADD_TO_CART_DIALOG_FRAGMENT_TAG
@@ -1655,40 +1662,51 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         ft.commitAllowingStateLoss();
 
 
-        com.tokopedia.core.analytics.nishikino.model.Product product =
-                new com.tokopedia.core.analytics.nishikino.model.Product();
-        product.setProductName(productData.getInfo().getProductName());
-        product.setProductID(String.valueOf(productData.getInfo().getProductId()));
-        product.setPrice(productData.getInfo().getProductPrice());
-        product.setBrand(com.tokopedia.core.analytics.nishikino.model.Product.DEFAULT_VALUE_NONE_OTHER);
+        EnhancedECommerceProductCartMapData enhancedECommerceProductCartMapData =
+                new EnhancedECommerceProductCartMapData();
+        enhancedECommerceProductCartMapData.setProductName(productData.getInfo().getProductName());
+        enhancedECommerceProductCartMapData.setProductID(String.valueOf(productData.getInfo().getProductId()));
+        enhancedECommerceProductCartMapData.setPrice(String.valueOf(productData.getInfo().getProductPriceUnformatted()));
+        enhancedECommerceProductCartMapData.setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
         String categoryLevelStr = generateCategoryStringLevel(productData.getBreadcrumb());
-
-        product.setCategory(TextUtils.isEmpty(categoryLevelStr)
-                ? com.tokopedia.core.analytics.nishikino.model.Product.DEFAULT_VALUE_NONE_OTHER
+        enhancedECommerceProductCartMapData.setCartId(addToCartResult.getCartId());
+        enhancedECommerceProductCartMapData.setCategory(TextUtils.isEmpty(categoryLevelStr)
+                ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
                 : categoryLevelStr);
-        product.setVariant(com.tokopedia.core.analytics.nishikino.model.Product.DEFAULT_VALUE_NONE_OTHER);
-        product.setQty(productData.getInfo().getProductMinOrder());
-        product.setShopId(productData.getShopInfo().getShopId());
-        product.setShopType(generateShopType(productData.getShopInfo()));
-        product.setShopName(productData.getShopInfo().getShopName());
-        product.setCategoryId(generateCategoryId(productData.getBreadcrumb()));
-        product.setDimension38(
+        enhancedECommerceProductCartMapData.setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
+        enhancedECommerceProductCartMapData.setQty(productData.getInfo().getProductMinOrder());
+        enhancedECommerceProductCartMapData.setShopId(productData.getShopInfo().getShopId());
+        enhancedECommerceProductCartMapData.setShopType(generateShopType(productData.getShopInfo()));
+        enhancedECommerceProductCartMapData.setShopName(productData.getShopInfo().getShopName());
+        enhancedECommerceProductCartMapData.setCategoryId(generateCategoryId(productData.getBreadcrumb()));
+        enhancedECommerceProductCartMapData.setDimension38(
                 TextUtils.isEmpty(productPass.getTrackerAttribution())
-                        ? com.tokopedia.core.analytics.nishikino.model.Product.DEFAULT_VALUE_NONE_OTHER
+                        ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
                         : productPass.getTrackerAttribution()
         );
-        product.setDimension40(
+        enhancedECommerceProductCartMapData.setAttribution(
+                TextUtils.isEmpty(productPass.getTrackerAttribution())
+                        ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
+                        : productPass.getTrackerAttribution()
+        );
+        enhancedECommerceProductCartMapData.setDimension40(
                 TextUtils.isEmpty(productPass.getTrackerListName())
-                        ? com.tokopedia.core.analytics.nishikino.model.Product.DEFAULT_VALUE_NONE_OTHER
+                        ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
+                        : productPass.getTrackerListName()
+        );
+        enhancedECommerceProductCartMapData.setListName(
+                TextUtils.isEmpty(productPass.getTrackerListName())
+                        ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
                         : productPass.getTrackerListName()
         );
 
-        GTMCart gtmCart = new GTMCart();
-        gtmCart.addProduct(product.getProduct());
-        gtmCart.setCurrencyCode("IDR");
-        gtmCart.setAddAction(GTMCart.ADD_ACTION);
+        EnhancedECommerceCartMapData enhancedECommerceCartMapData = new EnhancedECommerceCartMapData();
+        enhancedECommerceCartMapData.addProduct(enhancedECommerceProductCartMapData.getProduct());
+        enhancedECommerceCartMapData.setCurrencyCode("IDR");
+        enhancedECommerceCartMapData.setAction(EnhancedECommerceCartMapData.ADD_ACTION);
 
-        checkoutAnalyticProductDetailPage.enhancedECommerceAddToCart(gtmCart.getCartMap());
+        checkoutAnalyticsAddToCart.enhancedECommerceAddToCart(
+                enhancedECommerceCartMapData.getCartMap(), productPass.getProductName());
     }
 
     private String generateCategoryStringLevel(List<ProductBreadcrumb> breadcrumb) {
