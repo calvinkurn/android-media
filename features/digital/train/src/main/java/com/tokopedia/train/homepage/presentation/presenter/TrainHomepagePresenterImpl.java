@@ -171,6 +171,12 @@ public class TrainHomepagePresenterImpl extends BaseDaggerPresenter<TrainHomepag
         renderUi();
     }
 
+    @Override
+    public void onSavedStateAvailable(TrainHomepageViewModel trainHomepageViewModel) {
+        getView().setHomepageViewModel(trainHomepageViewModel);
+        renderUi();
+    }
+
     private boolean validateFields() {
         boolean isValid = true;
         TrainHomepageViewModel viewModel = getView().getHomepageViewModel();

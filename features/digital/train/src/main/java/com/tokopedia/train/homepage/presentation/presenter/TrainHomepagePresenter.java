@@ -2,6 +2,7 @@ package com.tokopedia.train.homepage.presentation.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.train.homepage.presentation.listener.TrainHomepageView;
+import com.tokopedia.train.homepage.presentation.model.TrainHomepageViewModel;
 import com.tokopedia.train.homepage.presentation.model.TrainPassengerViewModel;
 import com.tokopedia.train.station.presentation.adapter.viewmodel.TrainStationAndCityViewModel;
 
@@ -32,5 +33,7 @@ public interface TrainHomepagePresenter extends CustomerPresenter<TrainHomepageV
     void onSubmitButtonClicked();
 
     void onTrainPassengerChange(TrainPassengerViewModel passengerViewModel);
+
+    void onSavedStateAvailable(TrainHomepageViewModel viewModel);
 
 }
