@@ -36,4 +36,6 @@ public interface TrainHomepagePresenter extends CustomerPresenter<TrainHomepageV
 
     void onSavedStateAvailable(TrainHomepageViewModel viewModel);
 
+    void onReverseStationButtonClicked();
+
 }

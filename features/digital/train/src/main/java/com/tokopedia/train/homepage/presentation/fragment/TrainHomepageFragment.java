@@ -124,6 +124,7 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
         buttonRoundTrip.setOnClickListener(v -> trainHomepagePresenterImpl.roundTrip());
 
         imageReverseOriginDestitation.setOnClickListener(v -> {
+            trainHomepagePresenterImpl.onReverseStationButtonClicked();
             Animation shake = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate);
             shake.setAnimationListener(new Animation.AnimationListener() {
                 @Override
