@@ -154,8 +154,10 @@ public class RemoveCartItemFragment extends BaseCheckoutFragment
         tvRemoveProduct.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                cartPageAnalytics.eventClickCartClickHapusFormHapus();
-                showDeleteCartItemDialog(removeCartItemAdapter.getCheckedItemCount());
+                if (removeCartItemAdapter.getCheckedItemCount() > 0) {
+                    cartPageAnalytics.eventClickCartClickHapusFormHapus();
+                    showDeleteCartItemDialog(removeCartItemAdapter.getCheckedItemCount());
+                }
             }
         });
     }

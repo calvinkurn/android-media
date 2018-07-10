@@ -74,7 +74,7 @@ public class CategoryViewModel implements Parcelable {
         in.readList(this.items, CategoryItemsViewModel.class.getClassLoader());
     }
 
-    public static final Parcelable.Creator<CategoryViewModel> CREATOR = new Parcelable.Creator<CategoryViewModel>() {
+    public static final Creator<CategoryViewModel> CREATOR = new Creator<CategoryViewModel>() {
         @Override
         public CategoryViewModel createFromParcel(Parcel source) {
             return new CategoryViewModel(source);

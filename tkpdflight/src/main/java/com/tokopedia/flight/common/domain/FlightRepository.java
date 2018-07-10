@@ -117,4 +117,6 @@ public interface FlightRepository {
     Observable<EstimateRefundResultEntity> estimateRefund(FlightEstimateRefundRequest object);
 
     Observable<CancellationRequestEntity> cancellationRequest(FlightCancellationRequestBody request);
+
+    Observable<Boolean> cancelVoucherApply();
 }

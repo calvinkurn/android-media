@@ -446,8 +446,8 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
 
     private static boolean isContextValid(Context context) {
         Context tempContext = context;
-        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP){
-           tempContext = CommonUtils.getActivity(context);
+        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP) {
+            tempContext = CommonUtils.getActivity(context);
         }
         return (tempContext instanceof Activity && !((Activity) tempContext).isFinishing()) || tempContext instanceof Application;
     }
