@@ -66,6 +66,10 @@ import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
+import com.tokopedia.digital_deals.DealsModuleRouter;
+import com.tokopedia.digital_deals.di.DaggerDealsComponent;
+import com.tokopedia.digital_deals.di.DealsComponent;
+import com.tokopedia.digital_deals.di.DealsModule;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -174,6 +178,8 @@ import com.tokopedia.loyalty.view.fragment.LoyaltyNotifFragmentDialog;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.network.service.AccountsService;
+import com.tokopedia.oms.OmsModuleRouter;
+import com.tokopedia.oms.data.entity.response.verifyresponse.VerifyMyCartResponse;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationProfileActivity;
 import com.tokopedia.otp.phoneverification.view.activity.ReferralPhoneNumberVerificationActivity;
@@ -345,7 +351,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ITransactionOrderDetailRouter,
         ILogisticUploadAwbRouter,
         NetworkRouter,
-        TopChatRouter{
+        TopChatRouter,
+        DealsModuleRouter,
+        OmsModuleRouter{
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -357,6 +365,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private DaggerFlightConsumerComponent.Builder daggerFlightBuilder;
     private DaggerContentConsumerComponent.Builder daggerContentBuilder;
     private EventComponent eventComponent;
+    private DealsComponent dealsComponent;
     private FlightConsumerComponent flightConsumerComponent;
     private ContentConsumerComponent contentConsumerComponent;
     private ProductComponent productComponent;
@@ -426,6 +435,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         eventComponent = DaggerEventComponent.builder()
                 .appComponent(getApplicationComponent())
                 .eventModule(new EventModule(this))
+                .build();
+        dealsComponent = DaggerDealsComponent.builder()
+                .baseAppComponent((this).getBaseAppComponent())
+                .dealsModule(new DealsModule(this))
                 .build();
     }
 
@@ -1454,7 +1467,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return new AnalyticTracker() {
             @Override
             public void sendEventTracking(Map<String, Object> events) {
-                UnifyTracking.eventClearEnhanceEcommerce();
                 UnifyTracking.sendGTMEvent(events);
             }
 
@@ -2113,6 +2125,23 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 resultMap.put("promocode_failure_message", verifyCartResponse.getCart().getPromocodeFailureMessage());
                 resultMap.put("promocode_success_message", verifyCartResponse.getCart().getPromocodeSuccessMessage());
                 resultMap.put("promocode_status", verifyCartResponse.getCart().getPromocodeStatus());
+                return resultMap;
+            }
+        });
+    }
+
+    @Override
+    public Observable<TKPDMapParam<String, Object>> verifyDealPromo(com.tokopedia.usecase.RequestParams requestParams) {
+        return dealsComponent.getPostVerifyCartUseCase().getExecuteObservable(requestParams).map(new Func1<VerifyMyCartResponse, TKPDMapParam<String, Object>>() {
+            @Override
+            public TKPDMapParam<String, Object> call(VerifyMyCartResponse verifyCartResponse) {
+                TKPDMapParam<String, Object> resultMap = new TKPDMapParam<>();
+                resultMap.put("promocode", verifyCartResponse.getCart().get("promocode").getAsString());
+                resultMap.put("promocode_discount", verifyCartResponse.getCart().get("promocode_discount").getAsInt());
+                resultMap.put("promocode_cashback", verifyCartResponse.getCart().get("promocode_cashback").getAsInt());
+                resultMap.put("promocode_failure_message", verifyCartResponse.getCart().get("promocode_failure_message").getAsString());
+                resultMap.put("promocode_success_message", verifyCartResponse.getCart().get("promocode_success_message").getAsString());
+                resultMap.put("promocode_status", verifyCartResponse.getCart().get("promocode_status").getAsString());
                 return resultMap;
             }
         });

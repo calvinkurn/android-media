@@ -35,7 +35,7 @@ import javax.inject.Inject;
 public class OrderListFragment extends BasePresenterFragment<OrderListContract.Presenter> implements
         RefreshHandler.OnRefreshHandlerListener, OrderListContract.View, OrderListAdapter.OnMenuItemListener {
 
-    private static final java.lang.String ORDER_CATEGORY = "orderCategory";
+    private static final String ORDER_CATEGORY = "orderCategory";
     OrderListComponent orderListComponent;
     RecyclerView recyclerView;
     SwipeToRefresh swipeToRefresh;

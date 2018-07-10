@@ -1,0 +1,38 @@
+package com.tokopedia.oms.data;
+
+import com.google.gson.JsonObject;
+import com.tokopedia.abstraction.common.network.mapper.DataResponseMapper;
+import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.oms.data.entity.response.checkoutreponse.CheckoutResponse;
+import com.tokopedia.oms.data.entity.response.verifyresponse.VerifyCartResponse;
+import com.tokopedia.oms.data.entity.response.verifyresponse.VerifyMyCartResponse;
+import com.tokopedia.oms.data.source.OmsApi;
+
+import javax.inject.Inject;
+
+import rx.Observable;
+
+
+
+public class CloudOmsDataStore implements OmsDataStore {
+
+    private final OmsApi omsApi;
+
+    @Inject
+    public CloudOmsDataStore(OmsApi eventsApi) {
+        this.omsApi = eventsApi;
+    }
+
+    @Override
+    public Observable<VerifyMyCartResponse> verifyCart(JsonObject requestBody) {
+        return omsApi.postCartVerify(requestBody);
+    }
+
+    @Override
+    public Observable<JsonObject> checkoutCart(JsonObject requestBody) {
+        String appversion = GlobalConfig.VERSION_NAME;
+        String client = "android";
+        return omsApi.checkoutCart(requestBody, client, appversion);
+    }
+
+}

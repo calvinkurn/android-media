@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bottomnav_bg">
+
+
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/base_main_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bottomnav_bg"
+        android:visibility="gone">
+
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/app_bar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/dp_1">
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/cl_search_view"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/bottomnav_bg"
+                android:visibility="gone"
+                app:layout_scrollFlags="scroll|enterAlways">
+
+
+                <View
+                    android:id="@+id/divider1"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/divider_height_thinv"
+                    android:background="@color/divider_color"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/search_input_view"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dp_8"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginRight="@dimen/dp_15"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:layout_weight="1"
+                    android:background="@drawable/rect_grey_search_background"
+                    android:drawableLeft="@drawable/ic_search_grey_deal"
+                    android:drawablePadding="@dimen/dp_4"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:hint="@string/search_input_hint_deals"
+                    android:maxLines="1"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/dp_10"
+                    android:textColor="@color/black_70"
+                    android:textSize="@dimen/sp_14"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toLeftOf="@+id/tv_location_name"
+                    app:layout_constraintTop_toBottomOf="@+id/divider1" />
+
+
+
+
+
+                <TextView
+                    android:id="@+id/tv_location_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxWidth="@dimen/dp_100"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:drawableLeft="@drawable/ic_location_2"
+                    android:drawablePadding="@dimen/dp_8"
+                    android:fontFamily="sans-serif"
+                    android:gravity="center_vertical"
+                    android:lines="1"
+                    android:paddingBottom="@dimen/dp_8"
+                    android:paddingTop="@dimen/dp_8"
+                    android:text="Surabayhjhhhhhhhhhhjhjhjhhghgha"
+                    android:ellipsize="end"
+                    android:textColor="@color/black_39"
+                    android:textSize="@dimen/sp_14"
+                    android:textStyle="normal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </android.support.constraint.ConstraintLayout>
+
+        </android.support.design.widget.AppBarLayout>
+
+
+        <android.support.v4.widget.NestedScrollView
+            android:id="@+id/nested_scroll_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <com.tokopedia.abstraction.base.view.widget.TouchViewPager
+                    android:id="@+id/deals_bannerpager"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/banner_height_deals" />
+
+
+                <com.tokopedia.design.viewpagerindicator.CirclePageIndicator
+                    android:id="@+id/pager_indicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/dp_12"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:padding="@dimen/dp_2"
+                    app:centered="false"
+                    app:fillColor="@color/green_nob"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/deals_bannerpager"
+                    app:pageColor="@color/grey_400"
+                    app:radius="@dimen/dp_3"
+                    app:strokeColor="@color/grey_400" />
+
+                <TextView
+                    android:id="@+id/see_all_promo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:gravity="top"
+                    android:text="@string/promo_button_text"
+                    android:textColor="@color/green_nob"
+                    android:textSize="@dimen/sp_12"
+                    android:textStyle="normal"
+                    app:layout_constraintBottom_toBottomOf="@+id/pager_indicator"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/pager_indicator"
+                    app:layout_constraintVertical_bias="0.5" />
+
+
+                <TextView
+                    android:id="@+id/tv_popular_category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_24"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="@string/category_voucher"
+                    android:textColor="@color/black_39"
+                    android:textSize="@dimen/font_medium"
+                    android:textStyle="normal"
+                    app:layout_constraintLeft_toLeftOf="@+id/pager_indicator"
+                    app:layout_constraintTop_toBottomOf="@+id/pager_indicator" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rv_category_items"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:nestedScrollingEnabled="false"
+                    app:layoutManager="android.support.v7.widget.GridLayoutManager"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_popular_category"
+                    app:spanCount="4"
+                    tools:listitem="@layout/category_item" />
+
+                <TextView
+                    android:id="@+id/tv_popular_brand"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_32"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="@string/popular_brand"
+                    android:textColor="@color/black_39"
+                    android:textSize="@dimen/sp_17"
+                    android:textStyle="normal"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/rv_category_items" />
+
+                <TextView
+                    android:id="@+id/tv_see_all_brands"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/dp_16"
+                    android:paddingRight="@dimen/dp_16"
+                    android:text="@string/see_all"
+                    android:textColor="@color/green_nob"
+                    android:textSize="@dimen/sp_12"
+                    android:textStyle="normal"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_popular_brand"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/tv_popular_brand" />
+
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rv_brand_items"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:nestedScrollingEnabled="false"
+                    app:layoutManager="android.support.v7.widget.GridLayoutManager"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_popular_brand"
+                    app:spanCount="4"
+                    tools:listitem="@layout/item_brand" />
+
+                <TextView
+                    android:id="@+id/tv_popular"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:fontFamily="sans-serif-medium"
+                    android:paddingBottom="@dimen/dp_16"
+                    android:paddingTop="@dimen/dp_16"
+                    android:text="@string/text_trending_deals"
+                    android:textColor="@color/black_39"
+                    android:textSize="@dimen/sp_17"
+                    android:textStyle="normal"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/rv_brand_items" />
+
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rv_trending_deals"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_popular" />
+
+
+            </android.support.constraint.ConstraintLayout>
+
+
+        </android.support.v4.widget.NestedScrollView>
+
+
+    </android.support.design.widget.CoordinatorLayout>
+
+    <FrameLayout
+        android:id="@+id/progress_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black_12"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ProgressBar
+            android:id="@+id/prog_bar"
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="@dimen/dp_50"
+            android:layout_gravity="center" />
+    </FrameLayout>
+</android.support.design.widget.CoordinatorLayout>

@@ -143,8 +143,8 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         GradientDrawable shape = new GradientDrawable();
         shape.setShape(GradientDrawable.RECTANGLE);
         shape.setCornerRadius(9);
-        shape.setColor(android.graphics.Color.parseColor(conditionalInfo.color().background()));
-        shape.setStroke(1, android.graphics.Color.parseColor(conditionalInfo.color().border()));
+        shape.setColor(Color.parseColor(conditionalInfo.color().background()));
+        shape.setStroke(1, Color.parseColor(conditionalInfo.color().border()));
         conditionalInfoText.setBackground(shape);
         conditionalInfoText.setPadding(16, 16, 16, 16);
         conditionalInfoText.setText(conditionalInfo.text());
