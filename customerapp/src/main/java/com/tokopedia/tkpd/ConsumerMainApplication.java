@@ -62,6 +62,7 @@ import com.tokopedia.topchat.chatroom.data.network.ChatBotUrl;
 import com.tokopedia.transaction.network.TransactionUrl;
 import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
 import com.tokopedia.transactiondata.constant.TransactionDataApiUrl;
+import com.tokopedia.vote.data.VoteUrl;
 
 import io.hansel.hanselsdk.Hansel;
 
@@ -179,9 +180,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TkpdBaseURL.TOKOPOINT_API_DOMAIN = ConsumerAppBaseUrl.TOKOPOINT_API_DOMAIN;
         FlightUrl.BASE_URL = ConsumerAppBaseUrl.BASE_API_DOMAIN;
         FlightUrl.WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
-        FlightUrl.PULSA_BASE_URL = ConsumerAppBaseUrl.BASE_DIGITAL_API_DOMAIN;
         AbstractionBaseURL.JS_DOMAIN = ConsumerAppBaseUrl.BASE_JS_DOMAIN;
-        FlightUrl.BANNER_PATH = ConsumerAppBaseUrl.BASE_DIGITAL_API_DOMAIN + FlightUrl.FLIGHT_BANNER_VERSION;
         FlightUrl.ALL_PROMO_LINK = ConsumerAppBaseUrl.BASE_WEB_DOMAIN + FlightUrl.PROMO_PATH;
         FlightUrl.CONTACT_US = ConsumerAppBaseUrl.BASE_WEB_DOMAIN + FlightUrl.CONTACT_US_PATH;
         FlightUrl.CONTACT_US_FLIGHT_PREFIX_GLOBAL = FlightUrl.CONTACT_US + FlightUrl.CONTACT_US_FLIGHT_PREFIX;
@@ -199,6 +198,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         ProfileUrl.BASE_URL = ConsumerAppBaseUrl.TOPPROFILE_DOMAIN;
         DigitalUrl.WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
         GroupChatUrl.BASE_URL = ConsumerAppBaseUrl.CHAT_DOMAIN;
+        VoteUrl.BASE_URL = ConsumerAppBaseUrl.CHAT_DOMAIN;
         GamificationUrl.GQL_BASE_URL = ConsumerAppBaseUrl.GAMIFICATION_BASE_URL;
         ChatBotUrl.BASE_URL = ConsumerAppBaseUrl.CHATBOT_DOMAIN;
         CotpUrl.BASE_URL = ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;

@@ -16,7 +16,7 @@ import android.view.View;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.tokopedia.core.analytics.ScreenTracking;
-import com.tokopedia.core.analytics.SearchTracking;
+import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.discovery.model.DynamicFilterModel;
@@ -33,7 +33,6 @@ import com.tokopedia.discovery.activity.SortProductActivity;
 import com.tokopedia.discovery.newdiscovery.base.BottomNavigationListener;
 import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
 import com.tokopedia.discovery.newdiscovery.base.RedirectionListener;
-import com.tokopedia.discovery.newdiscovery.search.SearchActivity;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.ProductListFragment;
 import com.tokopedia.discovery.newdynamicfilter.RevampedDynamicFilterActivity;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
@@ -238,18 +237,18 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
                 setSpanCount(2);
                 gridLayoutManager.setSpanCount(spanCount);
                 getAdapter().changeDoubleGridView();
-                SearchTracking.eventSearchResultChangeGrid("grid 2", getScreenName());
+                SearchTracking.eventSearchResultChangeGrid(getActivity(),"grid 2", getScreenName());
                 break;
             case GRID_2:
                 setSpanCount(1);
                 gridLayoutManager.setSpanCount(spanCount);
                 getAdapter().changeSingleGridView();
-                SearchTracking.eventSearchResultChangeGrid("grid 1", getScreenName());
+                SearchTracking.eventSearchResultChangeGrid(getActivity(), "grid 1", getScreenName());
                 break;
             case GRID_3:
                 setSpanCount(1);
                 getAdapter().changeListView();
-                SearchTracking.eventSearchResultChangeGrid("list", getScreenName());
+                SearchTracking.eventSearchResultChangeGrid(getActivity(),"list", getScreenName());
                 break;
         }
         refreshBottomBarGridIcon();
@@ -273,7 +272,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
             return;
         }
 
-        SearchTracking.eventSearchResultShare(getScreenName());
+        SearchTracking.eventSearchResultShare(getActivity(), getScreenName());
 
         ShareData shareData = ShareData.Builder.aShareData()
                 .setType(ShareData.DISCOVERY_TYPE)
@@ -299,7 +298,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
             } else if (requestCode == getFilterRequestCode()) {
                 setFlagFilterHelper((FilterFlagSelectedModel) data.getParcelableExtra(RevampedDynamicFilterActivity.EXTRA_SELECTED_FLAG_FILTER));
                 setSelectedFilter((HashMap<String, String>) data.getSerializableExtra(RevampedDynamicFilterActivity.EXTRA_SELECTED_FILTERS));
-                SearchTracking.eventSearchResultFilter(getScreenName(), getSelectedFilter());
+                SearchTracking.eventSearchResultFilter(getActivity(), getScreenName(), getSelectedFilter());
                 clearDataFilterSort();
                 showBottomBarNavigation(false);
                 updateDepartmentId(getFlagFilterHelper().getCategoryId());
@@ -555,7 +554,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     }
 
     public void onBottomSheetHide() {
-        SearchTracking.eventSearchResultCloseBottomSheetFilter(getScreenName(), getSelectedFilter());
+        SearchTracking.eventSearchResultCloseBottomSheetFilter(getActivity(), getScreenName(), getSelectedFilter());
     }
 
     protected boolean isUsingBottomSheetFilter() {

@@ -51,7 +51,6 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.data.viewmodel.PopUpNotif;
-import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gallery.GalleryActivity;
@@ -125,9 +124,7 @@ import com.tokopedia.events.di.EventComponent;
 import com.tokopedia.events.di.EventModule;
 import com.tokopedia.feedplus.FeedModuleRouter;
 import com.tokopedia.feedplus.domain.model.FollowKolDomain;
-import com.tokopedia.feedplus.domain.model.LikeKolDomain;
 import com.tokopedia.feedplus.domain.usecase.FollowKolPostUseCase;
-import com.tokopedia.feedplus.domain.usecase.LikeKolPostUseCase;
 import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.feedplus.view.di.FeedPlusComponent;
 import com.tokopedia.fingerprint.util.FingerprintConstant;
@@ -156,12 +153,12 @@ import com.tokopedia.imageuploader.ImageUploaderRouter;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
+import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.KolRouter;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
 import com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListActivity;
 import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment;
-import com.tokopedia.kol.feature.post.view.subscriber.LikeKolPostSubscriber;
 import com.tokopedia.logisticuploadawb.ILogisticUploadAwbRouter;
 import com.tokopedia.logisticuploadawb.UploadAwbLogisticActivity;
 import com.tokopedia.loyalty.LoyaltyRouter;
@@ -420,7 +417,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
         FeedPlusComponent feedPlusComponent =
                 DaggerFeedPlusComponent.builder()
-                        .appComponent(getApplicationComponent())
+                        .kolComponent(KolComponentInstance.getKolComponent(this))
                         .build();
 
         daggerContentBuilder = DaggerContentConsumerComponent.builder()
@@ -577,6 +574,18 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         args.putBoolean(ARG_FROM_DEEPLINK, true);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void goToProductDetail(Context context, String productId, String imageSourceSingle,
+                                  String name, String price) {
+        ProductPass productPass = ProductPass.Builder.aProductPass()
+                .setProductId(productId)
+                .setProductImage(imageSourceSingle)
+                .setProductName(name)
+                .setProductPrice(price)
+                .build();
+        goToProductDetail(context, productPass);
     }
 
     @Override
@@ -832,6 +841,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getLoyaltyWithCoupon(Activity activity, String platform, String categoryId, String cartId) {
         return LoyaltyActivity.newInstanceCouponActive(activity, platform, categoryId, cartId);
+    }
+
+    @Override
+    public Intent getLoyaltyWithCouponTabSelected(Activity activity, String platform, String categoryId, String cartId) {
+        return LoyaltyActivity.newInstanceCouponActiveAndSelected(activity, platform, categoryId, cartId);
     }
 
     @Override
@@ -1440,6 +1454,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return new AnalyticTracker() {
             @Override
             public void sendEventTracking(Map<String, Object> events) {
+                UnifyTracking.eventClearEnhanceEcommerce();
                 UnifyTracking.sendGTMEvent(events);
             }
 
@@ -1904,34 +1919,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public String getKolCommentArgsTotalComment() {
         return KolCommentFragment.ARGS_TOTAL_COMMENT;
-    }
-
-    @Override
-    public void doLikeKolPost(int id, LikeKolPostSubscriber likeKolPostSubscriber) {
-        likeUnlikeKolPost(id, LikeKolPostUseCase.ACTION_LIKE, likeKolPostSubscriber);
-    }
-
-    @Override
-    public void doUnlikeKolPost(int id, LikeKolPostSubscriber likeKolPostSubscriber) {
-        likeUnlikeKolPost(id, LikeKolPostUseCase.ACTION_UNLIKE, likeKolPostSubscriber);
-    }
-
-    private void likeUnlikeKolPost(int id, int action,
-                                   LikeKolPostSubscriber likeKolPostSubscriber) {
-        LikeKolPostUseCase likeKolPostUseCase = ContentGetFeedUseCase
-                .newInstance(getContentConsumerComponent())
-                .inject()
-                .getLikeKolPostUseCase();
-        likeKolPostUseCase.createObservable(LikeKolPostUseCase.getParam(id, action))
-                .map(new Func1<LikeKolDomain, Boolean>() {
-                    @Override
-                    public Boolean call(LikeKolDomain likeKolDomain) {
-                        return likeKolDomain.isSuccess();
-                    }
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(likeKolPostSubscriber);
     }
 
     @Override
