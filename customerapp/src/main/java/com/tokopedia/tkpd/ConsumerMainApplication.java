@@ -62,6 +62,7 @@ import com.tokopedia.tokocash.network.api.WalletUrl;
 import com.tokopedia.transaction.network.TransactionUrl;
 import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
 import com.tokopedia.transactiondata.constant.TransactionDataApiUrl;
+import com.tokopedia.vote.data.VoteUrl;
 
 import io.hansel.hanselsdk.Hansel;
 
@@ -197,6 +198,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         ProfileUrl.BASE_URL = ConsumerAppBaseUrl.TOPPROFILE_DOMAIN;
         DigitalUrl.WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
         GroupChatUrl.BASE_URL = ConsumerAppBaseUrl.CHAT_DOMAIN;
+        VoteUrl.BASE_URL = ConsumerAppBaseUrl.CHAT_DOMAIN;
         GamificationUrl.GQL_BASE_URL = ConsumerAppBaseUrl.GAMIFICATION_BASE_URL;
         ChatBotUrl.BASE_URL = ConsumerAppBaseUrl.CHATBOT_DOMAIN;
         CotpUrl.BASE_URL = ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
