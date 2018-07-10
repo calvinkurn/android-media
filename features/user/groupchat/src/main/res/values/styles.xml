@@ -8,6 +8,7 @@
     <style name="ToolbarGroupChat" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">
         <item name="android:textSize">@dimen/sp_16</item>
         <item name="android:textStyle">bold</item>
+        <item name="android:gravity">center_vertical</item>
         <item name="android:fontFamily">sans-serif</item>
     </style>
 
