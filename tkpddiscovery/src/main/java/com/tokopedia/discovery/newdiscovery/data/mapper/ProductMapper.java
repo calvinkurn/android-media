@@ -80,6 +80,7 @@ public class ProductMapper implements Func1<Response<String>, SearchResultModel>
             ProductModel model = new ProductModel();
             model.setProductID(data.getId());
             model.setProductName(data.getName());
+            model.setProductUrl(data.getUrl());
             model.setImageUrl(data.getImageUrl());
             model.setImageUrl700(data.getImageUrl700());
             model.setRating(data.getRating());

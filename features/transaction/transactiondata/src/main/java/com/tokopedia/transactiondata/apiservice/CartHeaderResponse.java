@@ -14,7 +14,7 @@ public class CartHeaderResponse {
     @SerializedName("process_time")
     @Expose
     private double processTime;
-    @SerializedName("message")
+    @SerializedName("messages")
     @Expose
     private List<String> message = new ArrayList<>();
     @SerializedName("reason")

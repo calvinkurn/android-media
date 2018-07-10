@@ -4,7 +4,6 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.feedplus.data.repository.HomeFeedRepository;
 import com.tokopedia.feedplus.domain.model.feed.FeedResult;
 
@@ -30,10 +29,10 @@ public class GetHomeFeedsUseCase extends UseCase<FeedResult> {
         return feedRepository.getHomeFeeds(requestParams);
     }
 
-    public RequestParams getFeedPlusParam(int page, SessionHandler sessionHandler, String
+    public RequestParams getFeedPlusParam(int page, String userId, String
             currentCursor) {
         RequestParams params = RequestParams.create();
-        params.putInt(GetFeedsUseCase.PARAM_USER_ID, Integer.parseInt(sessionHandler.getLoginID()));
+        params.putInt(GetFeedsUseCase.PARAM_USER_ID, Integer.parseInt(userId));
         params.putString(GetFeedsUseCase.PARAM_CURSOR, currentCursor);
         params.putInt(GetFeedsUseCase.PARAM_PAGE, page);
         return params;
