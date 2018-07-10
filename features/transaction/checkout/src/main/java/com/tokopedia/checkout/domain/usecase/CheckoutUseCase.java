@@ -22,7 +22,8 @@ import rx.functions.Func1;
 public class CheckoutUseCase extends UseCase<CheckoutData> {
     public static final String PARAM_CARTS = "carts";
     private static final String PARAM_OPTIONAL = "optional";
-    private static final String PARAM_IS_THANKYOU_NATIVE = "is_thankyou_native_new";
+    public static final String PARAM_IS_THANKYOU_NATIVE = "is_thankyou_native";
+    private static final String PARAM_IS_THANKYOU_NATIVE_NEW = "is_thankyou_native_new";
 
     private final ICartRepository cartRepository;
     private final ICheckoutMapper checkoutMapper;
@@ -41,6 +42,7 @@ public class CheckoutUseCase extends UseCase<CheckoutData> {
         param.put(PARAM_CARTS, new Gson().toJson(checkoutRequest));
         param.put(PARAM_OPTIONAL, "0");
         param.put(PARAM_IS_THANKYOU_NATIVE, "1");
+        param.put(PARAM_IS_THANKYOU_NATIVE_NEW, "1");
         return cartRepository.checkout(param)
                 .map(new Func1<CheckoutDataResponse, CheckoutData>() {
                     @Override
