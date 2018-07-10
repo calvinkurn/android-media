@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/black_54"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <LinearLayout
 
@@ -42,7 +42,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:gravity="center"
-                android:text="Oops!"
+                android:text="@string/oops"
                 android:textColor="#b3000000"
                 android:textSize="@dimen/sp_18"
                 android:textStyle="bold" />
@@ -55,8 +55,6 @@
                 android:layout_marginLeft="@dimen/dp_25"
                 android:layout_marginRight="@dimen/dp_25"
                 android:gravity="center"
-                android:text="Kejutannya masih dibungkus.
-Yuk, shake lagi handphone-mu."
                 android:textColor="#b3000000"
                 android:textSize="16sp" />
 
@@ -68,7 +66,7 @@ Yuk, shake lagi handphone-mu."
                 android:layout_margin="@dimen/dp_10"
                 android:background="@drawable/bg_btn_green"
                 android:gravity="center"
-                android:text="Shake Lagi"
+                android:text="@string/shake_lagi"
                 android:textColor="#ffffff"
                 android:textSize="@dimen/sp_13" />
         </LinearLayout>
@@ -109,7 +107,7 @@ Yuk, shake lagi handphone-mu."
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:gravity="center"
-                android:text="Oops!"
+                android:text="@string/oops"
                 android:textColor="#b3000000"
                 android:textSize="@dimen/sp_18"
                 android:textStyle="bold" />
@@ -121,8 +119,7 @@ Yuk, shake lagi handphone-mu."
                 android:layout_marginLeft="@dimen/dp_25"
                 android:layout_marginRight="@dimen/dp_25"
                 android:gravity="center"
-                android:text="Sepertinya sistem Shake di hp-mu
-sedang lelah. Istirahat dulu yuk!"
+                android:text="@string/sepertinya_sistem_shake"
                 android:textColor="#b3000000"
                 android:textSize="@dimen/sp_16" />
 
@@ -134,7 +131,7 @@ sedang lelah. Istirahat dulu yuk!"
                 android:layout_marginTop="@dimen/dp_15"
                 android:background="@drawable/bg_btn_green"
                 android:gravity="center"
-                android:text="Matikan Shake"
+                android:text="@string/matikan_shake"
                 android:textColor="#ffffff"
                 android:textSize="@dimen/sp_13" />
         </LinearLayout>

@@ -109,4 +109,8 @@
     <string name="shake_login_error">Login sekarang untuk menghidupkan kembali fitur shake-shake!</string>
     <string name="mainapp_extend_gold_merchant">Perpanjang Gold Merchant</string>
     <string name="mainapp_upgrade_gold_merchant">Upgrade ke Gold Merchant</string>
+    <string name="oops">Oops!</string>
+    <string name="shake_lagi">Shake Lagi</string>
+    <string name="sepertinya_sistem_shake">Sepertinya sistem Shake di hp-mu sedang lelah. Istirahat dulu yuk!</string>
+    <string name="matikan_shake">Matikan Shake</string>
 </resources>

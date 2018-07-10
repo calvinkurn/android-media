@@ -11,7 +11,6 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.app.MainApplication;
@@ -202,7 +201,6 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
                                 intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 if(intent1.resolveActivity(context.getPackageManager()) != null)
                                     RouteManager.route(activity,intent.getStringExtra("data"));
-                                    //context.startActivity(intent1);
 
                             }
                         }, 500);
