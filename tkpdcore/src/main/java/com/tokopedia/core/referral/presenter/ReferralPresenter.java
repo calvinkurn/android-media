@@ -16,7 +16,6 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.domain.interactor.TokoCashUseCase;
-import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseDataNullException;
 import com.tokopedia.core.network.exception.ResponseErrorException;
@@ -54,6 +53,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
     private GetReferralDataUseCase getReferralDataUseCase;
     private TokoCashUseCase tokoCashUseCase;
     private SessionHandler sessionHandler;
+    private String url = "";
 
     @Inject
     public ReferralPresenter(GetReferralDataUseCase getReferralDataUseCase, TokoCashUseCase tokoCashUseCase, SessionHandler sessionHandler) {
@@ -85,16 +85,16 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
     @Override
     public void shareApp(FragmentManager fragmentManager) {
         formatSharingContents();
-        String type= ShareData.APP_SHARE_TYPE;
-        if(isAppShowReferralButtonActivated()){
-            type= ShareData.REFERRAL_TYPE;
+        String type = ShareData.APP_SHARE_TYPE;
+        if (isAppShowReferralButtonActivated()) {
+            type = ShareData.REFERRAL_TYPE;
         }
         ShareData shareData = ShareData.Builder.aShareData()
                 .setType(type)
                 .setId(getView().getReferralCodeFromTextView())
                 .setName(activity.getString(R.string.app_share_title))
                 .setTextContent(contents)
-                .setUri(Constants.WEB_PLAYSTORE_BUYER_APP_URL)
+                .setProductUrl(url)
                 .build();
 
         new DefaultShare(activity, shareData).show();
@@ -103,14 +103,10 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
 
     private void formatSharingContents() {
         if (!isAppShowReferralButtonActivated()) {
-            contents = getAppShareDescription();
+            contents = getAppShareDescription() + activity.getString(R.string.cek_label);
         } else if (TextUtils.isEmpty(contents)) {
             contents = getAppShareDefaultMessage();
         }
-        if(!contents.contains(activity.getString(R.string.cek_label))){
-            contents = contents + activity.getString(R.string.cek_label);
-        }
-
     }
 
     @Override
@@ -127,7 +123,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
 
             @Override
             public void onError(Throwable e) {
-                if(!isViewAttached()){
+                if (!isViewAttached()) {
                     return;
                 }
                 getView().hideProcessDialog();
@@ -150,7 +146,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
 
             @Override
             public void onNext(ReferralCodeEntity referralCodeEntity) {
-                if(!isViewAttached()){
+                if (!isViewAttached()) {
                     return;
                 }
                 if (referralCodeEntity.getErorMessage() == null) {
@@ -159,6 +155,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
                     localCacheHandler.applyEditor();
                     contents = referralCodeEntity.getPromoContent().getContent();
                     getView().renderVoucherCode(referralCodeEntity.getPromoContent().getCode());
+                    url = referralCodeEntity.getPromoContent().getUrl();
                 } else {
                     getView().renderErrorGetVoucherCode(referralCodeEntity.getErorMessage());
                 }
@@ -236,7 +233,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
 
             @Override
             public void onNext(TokoCashData tokoCashData) {
-                if(!isViewAttached()){
+                if (!isViewAttached()) {
                     return;
                 }
 
