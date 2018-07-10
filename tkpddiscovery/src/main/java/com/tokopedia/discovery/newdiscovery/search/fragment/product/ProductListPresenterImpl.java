@@ -4,11 +4,14 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.domain.DefaultSubscriber;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
+import com.tokopedia.core.network.entity.discovery.gql.SearchProductGqlResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
 import com.tokopedia.discovery.newdiscovery.domain.model.SearchResultModel;
@@ -30,10 +33,17 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.He
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
+import com.tokopedia.graphql.GraphqlConstant;
+import com.tokopedia.graphql.data.model.CacheType;
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy;
+import com.tokopedia.graphql.data.model.GraphqlRequest;
+import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -58,6 +68,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
     GetDynamicFilterUseCase getDynamicFilterUseCase;
     @Inject
     GetDynamicFilterV4UseCase getDynamicFilterV4UseCase;
+    GraphqlUseCase graphqlUseCase;
     private WishlistActionListener wishlistActionListener;
     private Context context;
     private boolean isUsingFilterV4;
@@ -68,6 +79,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                 .appComponent(getComponent(context))
                 .build();
         component.inject(this);
+        graphqlUseCase = new GraphqlUseCase();
     }
 
     @Override
@@ -146,6 +158,81 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
         enrichWithAdditionalParams(requestParams, additionalParams);
         removeDefaultCategoryParam(requestParams);
 
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("q", searchParameter.getQueryKey());
+        variables.put("start", searchParameter.getStartRow());
+        variables.put("rows", 12);
+        variables.put("uniqueId", searchParameter.getUniqueID());
+
+        GraphqlRequest graphqlRequest = new
+                GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(),
+                R.raw.gql_search_product), SearchProductGqlResponse.class, variables);
+
+        GraphqlCacheStrategy graphqlCacheStrategy = new GraphqlCacheStrategy.Builder(CacheType.CACHE_ONLY)
+                .setExpiryTime(GraphqlConstant.ExpiryTimes.HOUR.val())
+                .setSessionIncluded(true)
+                .build();
+        graphqlUseCase.setCacheStrategy(graphqlCacheStrategy);
+
+        graphqlUseCase.setRequest(graphqlRequest);
+
+        graphqlUseCase.execute(new DefaultSubscriber<GraphqlResponse>() {
+                    @Override
+                    public void onStart() {
+                        getView().setTopAdsEndlessListener();
+                        getView().incrementStart();
+                    }
+
+                    @Override
+                    public void onNext(GraphqlResponse objects) {
+                        SearchProductGqlResponse gqlResponse = objects.getData(SearchProductGqlResponse.class);
+                        ProductViewModel productViewModel
+                                = ProductViewModelHelper.convertToProductViewModel(gqlResponse);
+                        if (isViewAttached()) {
+                            if (productViewModel.getProductList().isEmpty()) {
+                                getView().unSetTopAdsEndlessListener();
+                                getView().showBottomBarNavigation(false);
+                            } else {
+                                List<Visitable> list = new ArrayList<Visitable>();
+                                list.addAll(productViewModel.getProductList());
+                                getView().setProductList(list);
+                                if (getView().isEvenPage()) {
+                                    getView().addGuidedSearch();
+                                }
+                                getView().showBottomBarNavigation(true);
+                                if (getView().getStartFrom() >= productViewModel.getTotalData()) {
+                                    getView().unSetTopAdsEndlessListener();
+                                }
+                            }
+                            getView().storeTotalData(productViewModel.getTotalData());
+                        }
+                    }
+
+                    @Override
+                    public void onCompleted() {
+                        if (isViewAttached()) {
+                            getView().hideRefreshLayout();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (isViewAttached()) {
+                            getView().hideRefreshLayout();
+                            getView().showNetworkError(searchParameter.getStartRow());
+                            getView().showBottomBarNavigation(false);
+                        }
+                    }
+                });
+    }
+
+    /*@Override
+    public void loadMoreData(final SearchParameter searchParameter, HashMap<String, String> additionalParams) {
+        RequestParams requestParams = GetProductUseCase.createInitializeSearchParam(searchParameter, false);
+        enrichWithFilterAndSortParams(requestParams);
+        enrichWithAdditionalParams(requestParams, additionalParams);
+        removeDefaultCategoryParam(requestParams);
+
         getProductUseCase.execute(requestParams,
                 new DefaultSubscriber<SearchResultModel>() {
                     @Override
@@ -194,7 +281,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                         }
                     }
                 });
-    }
+    }*/
 
     @Override
     public void loadData(final SearchParameter searchParameter, boolean isForceSearch, HashMap<String, String> additionalParams) {

@@ -82,6 +82,7 @@ dependencies {
     }
     implementation project(rootProject.ext.libraries.analytics)
     implementation rootProject.ext.miscDependencies.flexBoxLayout
+    implementation project(rootProject.ext.libraries.graphql)
 }
 
 apply from: '../publish_local.gradle'

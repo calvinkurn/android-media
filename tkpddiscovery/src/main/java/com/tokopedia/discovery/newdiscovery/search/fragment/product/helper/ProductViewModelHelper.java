@@ -1,9 +1,12 @@
 package com.tokopedia.discovery.newdiscovery.search.fragment.product.helper;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.network.entity.discovery.gql.SearchProductGqlResponse;
+import com.tokopedia.design.utils.CurrencyFormatHelper;
 import com.tokopedia.discovery.newdiscovery.domain.model.BadgeModel;
 import com.tokopedia.discovery.newdiscovery.domain.model.LabelModel;
 import com.tokopedia.discovery.newdiscovery.domain.model.ProductModel;
@@ -36,6 +39,20 @@ public class ProductViewModelHelper {
         LocalCacheHandler.clearCache(MainApplication.getAppContext(), SEARCH_RESULT_ENHANCE_ANALYTIC);
     }
 
+    public static ProductViewModel convertToProductViewModel(SearchProductGqlResponse gqlResponse) {
+        SearchProductGqlResponse.SearchProduct searchProductResponse
+                = gqlResponse.getData().getSearchProduct();
+        ProductViewModel productViewModel = new ProductViewModel();
+        productViewModel.setProductList(convertToProductItemListGql(searchProductResponse.getProducts()));
+        productViewModel.setQuery(searchProductResponse.getQuery());
+        productViewModel.setShareUrl(searchProductResponse.getShareUrl());
+        productViewModel.setHasCatalog(ListHelper.isContainItems(searchProductResponse.getCatalogs()));
+        productViewModel.setSuggestionModel(createSuggestionModel(searchProductResponse.getSuggestion()));
+        productViewModel.setTotalData(searchProductResponse.getCount());
+        return productViewModel;
+    }
+
+
     public static ProductViewModel convertToProductViewModel(SearchResultModel searchResultModel) {
         ProductViewModel productViewModel = new ProductViewModel();
         productViewModel.setProductList(convertToProductItemList(searchResultModel.getProductList()));
@@ -51,6 +68,15 @@ public class ProductViewModelHelper {
         return productViewModel;
     }
 
+    private static SuggestionModel createSuggestionModel(SearchProductGqlResponse.Suggestion gqlSuggestionResponse) {
+        SuggestionModel model = new SuggestionModel();
+        model.setSuggestionText(gqlSuggestionResponse.getText());
+        model.setSuggestedQuery(gqlSuggestionResponse.getQuery());
+        model.setSuggestionCurrentKeyword(gqlSuggestionResponse.getCurrentKeyword());
+        model.setFormattedResultCount(Long.toString(gqlSuggestionResponse.getSuggestionCount()));
+        return model;
+    }
+
     private static SuggestionModel createSuggestionModel(SearchResultModel searchResultModel) {
         SuggestionModel model = new SuggestionModel();
         model.setSuggestionText(searchResultModel.getSuggestionText());
@@ -58,6 +84,21 @@ public class ProductViewModelHelper {
         model.setSuggestionCurrentKeyword(searchResultModel.getSuggestionCurrentKeyword());
         model.setFormattedResultCount(searchResultModel.getTotalDataText());
         return model;
+    }
+
+    private static List<ProductItem> convertToProductItemListGql(List<SearchProductGqlResponse.Product> productModels) {
+        List<ProductItem> productItemList = new ArrayList<>();
+
+        int position = getLastPositionFromCache();
+
+        for (SearchProductGqlResponse.Product productModel : productModels) {
+            position++;
+            productItemList.add(convertToProductItem(productModel, position));
+        }
+
+        saveLastPositionToCache(position);
+
+        return productItemList;
     }
 
     private static List<ProductItem> convertToProductItemList(List<ProductModel> productModels) {
@@ -88,6 +129,32 @@ public class ProductViewModelHelper {
         }
         cache.putInt(LAST_POSITION_ENHANCE_PRODUCT, position);
         cache.applyEditor();
+    }
+
+    private static ProductItem convertToProductItem(SearchProductGqlResponse.Product productModel, int position) {
+        ProductItem productItem = new ProductItem();
+        productItem.setProductID(productModel.getId());
+        productItem.setProductName(productModel.getName());
+        productItem.setImageUrl(productModel.getImageUrl());
+        productItem.setImageUrl700(productModel.getImageUrlLarge());
+        productItem.setRating(productModel.getRating());
+        productItem.setCountReview(productModel.getCountReview());
+        //productItem.setCountCourier(productModel.getCountCourier());
+        //productItem.setDiscountPercentage(productModel.getDiscountPercentage());
+        //productItem.setOriginalPrice(productModel.getOriginalPrice());
+        productItem.setPrice(productModel.getPrice());
+        productItem.setShopID(productModel.getShop().getId());
+        productItem.setShopName(productModel.getShop().getName());
+        productItem.setShopCity(productModel.getShop().getCity());
+        productItem.setGoldMerchant(productModel.getShop().isGoldmerchant());
+        productItem.setOfficial(productModel.getShop().isOfficial());
+        productItem.setWishlisted(productModel.isWishlist());
+        productItem.setBadgesList(new ArrayList<>());
+        productItem.setLabelList(new ArrayList<>());
+        //productItem.setBadgesList(convertToBadgesItemList(productModel.getBadgesList()));
+        //productItem.setLabelList(convertToLabelsItemList(productModel.getLabelList()));
+        productItem.setPosition(position);
+        return productItem;
     }
 
     private static ProductItem convertToProductItem(ProductModel productModel, int position) {
