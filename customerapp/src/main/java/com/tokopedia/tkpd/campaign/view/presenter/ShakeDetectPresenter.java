@@ -103,11 +103,6 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
             if (ShakeDetectManager.sTopActivity != null) {
                 requestParams.putString(SCREEN_NAME, ShakeDetectManager.sTopActivity.trim().replaceAll(" ", "_"));
             }
-            //For Testing
-            if(BuildConfig.DEBUG) {
-                requestParams.putString("is_qc","1");
-            }
-            //For Testing
             shakeUseCase.execute(requestParams, new Subscriber<CampaignResponseEntity>() {
                 @Override
                 public void onCompleted() {

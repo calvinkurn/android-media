@@ -124,7 +124,6 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
 
     @Override
     public void hearShake() {
-        Log.e("shakeshake","hear Shake");
         sTopActivity = mOpenedActivity;
         /*if(mShakeEnabler.hasMessages(MESSAGE_ENABLE_SHAKE)) {
             mShakeEnabler.removeMessages(MESSAGE_ENABLE_SHAKE);
@@ -175,7 +174,6 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
                    }
                    break;
                case MESSAGE_SHAKE_SHAKE_CONTINUE_LONG:
-                   Log.e("shakeshake","Long Shake Detected");
                    startShake(true);
                    break;
 
