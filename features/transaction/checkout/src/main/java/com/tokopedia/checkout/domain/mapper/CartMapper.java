@@ -15,6 +15,7 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.UpdateCartData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.WholesalePrice;
 import com.tokopedia.transactiondata.entity.response.cartlist.CartDataListResponse;
 import com.tokopedia.transactiondata.entity.response.cartlist.CartList;
+import com.tokopedia.transactiondata.entity.response.cartlist.Shop;
 import com.tokopedia.transactiondata.entity.response.deletecart.DeleteCartDataResponse;
 import com.tokopedia.transactiondata.entity.response.resetcart.ResetCartDataResponse;
 import com.tokopedia.transactiondata.entity.response.updatecart.UpdateCartDataResponse;
@@ -29,6 +30,9 @@ import javax.inject.Inject;
  */
 
 public class CartMapper implements ICartMapper {
+    private static final String SHOP_TYPE_OFFICIAL_STORE = "official_store";
+    private static final String SHOP_TYPE_GOLD_MERCHANT = "gold_merchant";
+    private static final String SHOP_TYPE_REGULER = "reguler";
     private final IMapperUtil mapperUtil;
 
     @Inject
@@ -81,6 +85,8 @@ public class CartMapper implements ICartMapper {
             cartItemDataOrigin.setProductId(String.valueOf(data.getProduct().getProductId()));
             cartItemDataOrigin.setPriceFormatted(data.getProduct().getProductPriceFmt());
             cartItemDataOrigin.setPricePlan(data.getProduct().getProductPrice());
+            cartItemDataOrigin.setPricePlanInt(data.getProduct().getProductPrice());
+            cartItemDataOrigin.setShopType(generateShopType(data.getShop()));
             cartItemDataOrigin.setPriceCurrency(data.getProduct().getProductPriceCurrency());
             cartItemDataOrigin.setPreOrder(data.getProduct().getIsPreorder() == 1);
             cartItemDataOrigin.setFavorite(false);
@@ -174,6 +180,14 @@ public class CartMapper implements ICartMapper {
         cartListData.setAutoApplyData(autoApplyData);
 
         return cartListData;
+    }
+
+    private String generateShopType(Shop shop) {
+        if (shop.getIsOfficial() == 1)
+            return SHOP_TYPE_OFFICIAL_STORE;
+        else if (shop.getIsGold() == 1)
+            return SHOP_TYPE_GOLD_MERCHANT;
+        else return SHOP_TYPE_REGULER;
     }
 
     @Override

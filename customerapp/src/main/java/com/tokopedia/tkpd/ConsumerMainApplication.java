@@ -27,6 +27,7 @@ import com.raizlabs.android.dbflow.config.TkpdSellerGeneratedDatabaseHolder;
 import com.sendbird.android.SendBird;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.constant.AbstractionBaseURL;
+import com.tokopedia.analytics.Analytics;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.core.gcm.Constants;
@@ -88,6 +89,9 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
         GlobalConfig.DEBUG = BuildConfig.DEBUG;
         GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
+        com.tokopedia.config.GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
+        com.tokopedia.config.GlobalConfig.DEBUG = BuildConfig.DEBUG;
+        com.tokopedia.config.GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.DEBUG;
         generateConsumerAppBaseUrl();
         generateConsumerAppNetworkKeys();
         initializeDatabase();
@@ -266,6 +270,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
                 .build());
         TkpdFlight.initDatabase(getApplicationContext());
         PushNotification.initDatabase(getApplicationContext());
+        Analytics.initDB(getApplicationContext());
     }
 
     @Override

@@ -213,6 +213,7 @@ android {
         packagingOptions {
             exclude "lib/arm64-v8a/libgnustl_shared.so"
         }
+        resConfigs "en", "id"
     }
 
 
@@ -246,12 +247,15 @@ android {
 }
 
 dependencies {
+
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
     implementation project(rootProject.ext.features.core)
+    implementation project(rootProject.ext.features.contactUs)
     implementation project(rootProject.ext.features.gamification)
     implementation project(rootProject.ext.features.kol)
     implementation project(rootProject.ext.features.shopPage)
+    implementation project(rootProject.ext.features.goldMerchantSubscribe)
     implementation project(rootProject.ext.features.home)
     implementation project(rootProject.ext.features.groupchat)
     implementation project(rootProject.ext.features.event)
@@ -282,6 +286,8 @@ dependencies {
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.tracking)
     implementation project(rootProject.ext.features.logisticuploadawb)
+    implementation project(rootProject.ext.features.nps)
+    implementation project(rootProject.ext.features.transactionanalytics)
 
 
     implementation project(rootProject.ext.libraries.pushNotif)
@@ -297,6 +303,8 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.bcaOneClick
     implementation project(rootProject.ext.features.shopCommon)
+    implementation project(rootProject.ext.libraries.network)
+    implementation project(rootProject.ext.libraries.config)
 
     implementation rootProject.ext.playServicesDependencies.remoteConfig
     implementation rootProject.ext.playServicesDependencies.firebase
