@@ -36,6 +36,7 @@ import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
+import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +52,7 @@ import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.E
 import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_COUPON_ACTIVE;
 import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PLATFORM;
 import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_SELECTED_TAB;
+import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.MARKETPLACE_STRING;
 import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.PLATFORM_PAGE_MARKETPLACE_CART_LIST;
 import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.PLATFORM_PAGE_MARKETPLACE_CART_SHIPMENT;
 
@@ -375,6 +377,48 @@ public class LoyaltyActivity extends BasePresenterActivity
     @Override
     public void sendAnalyticsImpressionCouponEmptyShipmentPage() {
         checkoutAnalyticsCourierSelection.eventImpressionCourierSelectionImpressionOnPopUpKupon();
+    }
+
+    @Override
+    public void sendAnalyticsScreenNameCoupon() {
+        if (platformString.equalsIgnoreCase(MARKETPLACE_STRING)) {
+            switch (platformPageString) {
+                case PLATFORM_PAGE_MARKETPLACE_CART_LIST:
+                    checkoutAnalyticsCart.sendScreenName(this,
+                            ConstantTransactionAnalytics.ScreenName.PROMO_PAGE_FROM_CART_TAB_COUPON
+                    );
+                    break;
+                case PLATFORM_PAGE_MARKETPLACE_CART_SHIPMENT:
+                    checkoutAnalyticsCourierSelection.sendScreenName(
+                            this,
+                            ConstantTransactionAnalytics.ScreenName.PROMO_PAGE_FROM_CHECKOUT_TAB_COUPON
+                    );
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    @Override
+    public void sendAnalyticsScreenNamePromoCode() {
+        if (platformString.equalsIgnoreCase(MARKETPLACE_STRING)) {
+            switch (platformPageString) {
+                case PLATFORM_PAGE_MARKETPLACE_CART_LIST:
+                    checkoutAnalyticsCart.sendScreenName(this,
+                            ConstantTransactionAnalytics.ScreenName.PROMO_PAGE_FROM_CART_TAB_PROMO
+                    );
+                    break;
+                case PLATFORM_PAGE_MARKETPLACE_CART_SHIPMENT:
+                    checkoutAnalyticsCourierSelection.sendScreenName(
+                            this,
+                            ConstantTransactionAnalytics.ScreenName.PROMO_PAGE_FROM_CHECKOUT_TAB_PROMO
+                    );
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
     public static Intent newInstanceCouponActive(Activity activity, String platform, String categoryId, String cartId) {
