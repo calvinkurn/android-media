@@ -52,23 +52,22 @@ public class ShopPagePagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        ShopProductListLimitedFragment shopProductListLimitedFragment = ShopProductListLimitedFragment.createInstance(shopAttribution);
-        shopProductListLimitedFragment.setPromoWebViewListener(listener);
         switch (position) {
             case 0:
+                ShopProductListLimitedFragment shopProductListLimitedFragment =  ShopProductListLimitedFragment.createInstance(shopAttribution);
+                shopProductListLimitedFragment.setPromoWebViewListener(listener);
                 return shopProductListLimitedFragment;
             case 1:
                 if (shopModuleRouter != null) {
                     return shopModuleRouter.getShopReputationFragmentShop(shopId, shopDomain);
                 }
-                break;
+            default:
             case 2:
                 if (shopModuleRouter != null) {
                     return shopModuleRouter.getShopTalkFragment();
                 }
-                break;
         }
-        return shopProductListLimitedFragment;
+        return new Fragment();
     }
 
     @Override
