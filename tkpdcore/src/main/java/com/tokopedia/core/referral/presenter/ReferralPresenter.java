@@ -71,7 +71,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
     private TokoCashUseCase tokoCashUseCase;
     private SessionHandler sessionHandler;
     private int max_apps = 4;
-    private String url = "";
+    private String url;
 
     @Inject
     public ReferralPresenter(GetReferralDataUseCase getReferralDataUseCase, TokoCashUseCase tokoCashUseCase, SessionHandler sessionHandler) {
