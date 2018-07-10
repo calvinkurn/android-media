@@ -183,20 +183,9 @@
                     android:id="@+id/referral_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text=" teman diajak"
                     android:textColor="@color/black_70"
                     android:textSize="18sp" />
             </LinearLayout>
-
-            <TextView
-                android:id="@+id/tv_referral_progress_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/img_profile"
-                android:layout_marginTop="@dimen/margin_small"
-                android:text="Perolehan Referral:"
-                android:textColor="@color/black_38"
-                android:textSize="12sp" />
 
             <ProgressBar
                 android:id="@+id/progress_bar_referral"
@@ -218,7 +207,6 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/progress_bar_referral"
                 android:layout_marginBottom="@dimen/margin_sm"
-                android:text=""
                 android:textColor="@color/black_38"
                 android:textSize="@dimen/fonts" />
 
@@ -248,16 +236,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
-                    android:text="Cara Kerja"
+                    android:text="@string/cara_kerja"
                     android:textAlignment="textStart" />
 
                 <android.support.design.widget.TabItem
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
-                    android:text="Ketentuan"
+                    android:text="@string/ketentuan"
                     android:textAlignment="textStart" />
-
             </android.support.design.widget.TabLayout>
 
             <View
@@ -271,7 +258,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_sm"
                 android:measureAllChildren="true" />
-
 
         </LinearLayout>
 

@@ -2212,5 +2212,8 @@ di Tokopedia Sekarang!</string>
     <string name="copied">Tersalin</string>
     <string name="fiends_invited_lable">teman diajak</string>
     <string name="referral_title_desc">Ajak teman belanja di Tokopedia dan dapatkan hingga Rp80.000</string>
+    <string name="perolehan_referral">Perolehan Referral:</string>
+    <string name="cara_kerja">Cara Kerja</string>
+    <string name="ketentuan">Ketentuan</string>
 
 </resources>
