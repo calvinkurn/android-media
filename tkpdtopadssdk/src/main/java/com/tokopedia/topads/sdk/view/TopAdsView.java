@@ -20,8 +20,8 @@ import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.presenter.TopAdsPresenter;
-import com.tokopedia.topads.sdk.utils.DividerItemDecoration;
 import com.tokopedia.topads.sdk.view.adapter.AdsItemAdapter;
+import com.tokopedia.topads.sdk.view.adapter.AdsItemDecoration;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ShopGridViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ShopListViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.feed.ShopFeedViewModel;
@@ -41,7 +41,7 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
     private TypedArray styledAttributes;
     private DisplayMode displayMode = DisplayMode.GRID; // Default Display Mode
     private TopAdsItemClickListener adsItemClickListener;
-    private DividerItemDecoration itemDecoration;
+    private AdsItemDecoration itemDecoration;
     private RelativeLayout contentLayout;
     private static final int DEFAULT_SPAN_COUNT = 2;
     private TopAdsListener adsListener;
@@ -74,7 +74,8 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2,
                 GridLayoutManager.VERTICAL, false));
-        itemDecoration = new DividerItemDecoration(context, DividerItemDecoration.HORIZONTAL_LIST);
+        itemDecoration = new AdsItemDecoration(context.getResources()
+                .getDimensionPixelSize(R.dimen.dp_16));
         recyclerView.addItemDecoration(itemDecoration);
         recyclerView.setAdapter(adapter);
     }
@@ -128,24 +129,20 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
     public void setDisplayMode(DisplayMode displayMode) {
         switch (displayMode) {
             case GRID:
-                itemDecoration.setOrientation(DividerItemDecoration.HORIZONTAL_LIST);
                 recyclerView.setLayoutManager(new GridLayoutManager(getContext(), DEFAULT_SPAN_COUNT,
                         GridLayoutManager.VERTICAL, false));
                 recyclerView.setBackgroundColor(getResources().getColor(R.color.white));
                 break;
             case LIST:
-                itemDecoration.setOrientation(DividerItemDecoration.VERTICAL_LIST);
                 recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
                 recyclerView.setBackgroundColor(getResources().getColor(R.color.white));
                 break;
             case FEED:
-                itemDecoration.setOrientation(DividerItemDecoration.HORIZONTAL_LIST);
                 recyclerView.setLayoutManager(new GridLayoutManager(getContext(), DEFAULT_SPAN_COUNT,
                         GridLayoutManager.VERTICAL, false));
                 recyclerView.setBackgroundColor(getResources().getColor(R.color.white));
                 break;
             case FEED_EMPTY:
-                itemDecoration.setOrientation(DividerItemDecoration.VERTICAL_LIST);
                 recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
                 break;
         }
