@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
 public class AppliedItem implements Parcelable {
 
     @SerializedName("id")
-    private int id;
+    private String id;
 
     @SerializedName("name")
     private String name;
@@ -18,7 +18,7 @@ public class AppliedItem implements Parcelable {
     private int priority;
 
     protected AppliedItem(Parcel in) {
-        id = in.readInt();
+        id = in.readString();
         name = in.readString();
         priority = in.readInt();
     }
@@ -60,11 +60,11 @@ public class AppliedItem implements Parcelable {
         this.name = name;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
@@ -75,7 +75,7 @@ public class AppliedItem implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
+        dest.writeString(id);
         dest.writeString(name);
         dest.writeInt(priority);
 
