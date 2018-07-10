@@ -32,9 +32,10 @@ public class TravelCalendarFragment extends BaseDaggerFragment {
     private RecyclerView recyclerViewHoliday;
     private HolidayAdapter holidayAdapter;
     private Calendar currentCalendar = Calendar.getInstance();
+    private Calendar maxDateCalendar;
     private int month;
 
-    public static Fragment newInstance(Date selectedDate, int month, int year,
+    public static Fragment newInstance(Date selectedDate, int month, int year, Calendar maxDate,
                                        ArrayList<HolidayResult> holidayResultList) {
         TravelCalendarFragment fragment = new TravelCalendarFragment();
         Bundle bundle = new Bundle();
@@ -42,6 +43,7 @@ public class TravelCalendarFragment extends BaseDaggerFragment {
         bundle.putParcelableArrayList(TravelCalendarActivity.EXTRA_LIST_HOLIDAY, holidayResultList);
         bundle.putInt(TravelCalendarActivity.EXTRA_MONTH, month);
         bundle.putInt(TravelCalendarActivity.EXTRA_YEAR, year);
+        bundle.putSerializable(TravelCalendarActivity.EXTRA_MAX_DATE, maxDate);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -92,7 +94,9 @@ public class TravelCalendarFragment extends BaseDaggerFragment {
         cellDate.setDate((Date) getArguments().getSerializable(TravelCalendarActivity.EXTRA_INITAL_DATE));
         cellDate.setSelected(true);
         calendarPickerView.setDateRange(cellDate, getArguments().getInt(TravelCalendarActivity.EXTRA_MONTH),
-                getArguments().getInt(TravelCalendarActivity.EXTRA_YEAR), currentHolidayList);
+                getArguments().getInt(TravelCalendarActivity.EXTRA_YEAR),
+                (Calendar) getArguments().getSerializable(TravelCalendarActivity.EXTRA_MAX_DATE),
+                currentHolidayList);
         calendarPickerView.setActionListener(new CalendarPickerView.ActionListener() {
             @Override
             public void onDateClicked(CellDate cellDate) {

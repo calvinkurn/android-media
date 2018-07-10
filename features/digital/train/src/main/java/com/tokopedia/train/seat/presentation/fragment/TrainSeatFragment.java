@@ -284,20 +284,12 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
 
         menus.setItemMenuList(wagonsTitle);
         menus.setActionText(getString(R.string.train_seat_wagon_close_label));
-        menus.setOnActionClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                menus.dismiss();
-            }
-        });
-        menus.setOnItemMenuClickListener(new Menus.OnItemMenuClickListener() {
-            @Override
-            public void onClick(Menus.ItemMenus itemMenus, int pos) {
-                trainSeatHeader.renderWagon(wagons.get(pos).getWagonCode());
-                wagonViewPager.setCurrentItem(pos);
-                pagerIndicator.setCurrentIndicator(pos);
-                menus.dismiss();
-            }
+        menus.setOnActionClickListener(view -> menus.dismiss());
+        menus.setOnItemMenuClickListener((itemMenus, pos) -> {
+            trainSeatHeader.renderWagon(wagons.get(pos).getWagonCode());
+            wagonViewPager.setCurrentItem(pos);
+            pagerIndicator.setCurrentIndicator(pos);
+            menus.dismiss();
         });
         menus.show();
     }

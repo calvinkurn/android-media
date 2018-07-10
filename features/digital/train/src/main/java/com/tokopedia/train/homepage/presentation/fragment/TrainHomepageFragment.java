@@ -10,6 +10,9 @@ import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -18,6 +21,7 @@ import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.design.component.Menus;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.constant.TrainAppScreen;
 import com.tokopedia.train.common.presentation.TextInputView;
@@ -50,6 +54,8 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
     private static final int DATE_PICKER_RETURN_REQUEST_CODE = 1006;
     private static final int DEPARTURE_SCHEDULE_REQUEST_CODE = 1007;
 
+    private static final String STATE_HOMEPAGE = "STATE_HOMEPAGE";
+
     private final int DEFAULT_RANGE_OF_DEPARTURE_AND_ARRIVAL = 2;
 
     private AppCompatButton buttonOneWayTrip;
@@ -67,8 +73,18 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
 
     private TrainHomepageViewModel viewModel;
 
+    private OnCloseBottomMenusListener onCloseBottomMenusListener;
+
+    private Menus menus;
+
     @Inject
     TrainHomepagePresenterImpl trainHomepagePresenterImpl;
+
+    public interface OnCloseBottomMenusListener {
+
+        void onCloseBottomMenus();
+
+    }
 
     public TrainHomepageFragment() {
         // Required empty public constructor
@@ -93,89 +109,51 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
         buttonSearchTicket = view.findViewById(R.id.button_search_ticket);
         separatorDateReturn = view.findViewById(R.id.separator_date_return);
 
-        layoutOriginStation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivityForResult(TrainStationsActivity.getCallingIntent(getActivity(), getString(R.string.train_station_origin_toolbar)), ORIGIN_STATION_REQUEST_CODE);
-            }
-        });
+        layoutOriginStation.setOnClickListener(view12 -> startActivityForResult(
+                TrainStationsActivity.getCallingIntent(getActivity(), getString(R.string.train_station_origin_toolbar)),
+                ORIGIN_STATION_REQUEST_CODE));
 
-        layoutDestinationStation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivityForResult(TrainStationsActivity.getCallingIntent(getActivity(), getString(R.string.train_station_destination_toolbar)), DESTINATION_STATION_REQUEST_CODE);
-            }
-        });
+        layoutDestinationStation.setOnClickListener(view13 -> startActivityForResult(
+                TrainStationsActivity.getCallingIntent(getActivity(),
+                        getString(R.string.train_station_destination_toolbar)), DESTINATION_STATION_REQUEST_CODE));
 
         buttonOneWayTrip.setSelected(true);
 
-        buttonOneWayTrip.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                trainHomepagePresenterImpl.singleTrip();
-            }
+        buttonOneWayTrip.setOnClickListener(v -> trainHomepagePresenterImpl.singleTrip());
+
+        buttonRoundTrip.setOnClickListener(v -> trainHomepagePresenterImpl.roundTrip());
+
+        imageReverseOriginDestitation.setOnClickListener(v -> {
+            trainHomepagePresenterImpl.onReverseStationButtonClicked();
+            Animation shake = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate);
+            shake.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+            imageReverseOriginDestitation.startAnimation(shake);
         });
 
-        buttonRoundTrip.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                trainHomepagePresenterImpl.roundTrip();
-            }
-        });
+        textInputViewDateDeparture.setOnClickListener(v -> trainHomepagePresenterImpl.onDepartureDateButtonClicked());
 
-        imageReverseOriginDestitation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Animation shake = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate);
-                shake.setAnimationListener(new Animation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart(Animation animation) {
+        textInputViewDateReturn.setOnClickListener(v -> trainHomepagePresenterImpl.onReturnDateButtonClicked());
 
-                    }
+        textInputViewPassenger.setOnClickListener(v -> startActivityForResult(TrainPassengerPickerActivity.getCallingIntent(getActivity(),
+                getHomepageViewModel().getTrainPassengerViewModel()),
+                PASSENGER_REQUEST_CODE));
 
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animation animation) {
-
-                    }
-                });
-                imageReverseOriginDestitation.startAnimation(shake);
-            }
-        });
-
-        textInputViewDateDeparture.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                trainHomepagePresenterImpl.onDepartureDateButtonClicked();
-            }
-        });
-
-        textInputViewDateReturn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                trainHomepagePresenterImpl.onReturnDateButtonClicked();
-            }
-        });
-
-        textInputViewPassenger.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivityForResult(TrainPassengerPickerActivity.getCallingIntent(getActivity(),
-                        getHomepageViewModel().getTrainPassengerViewModel()),
-                        PASSENGER_REQUEST_CODE);
-            }
-        });
-
-        buttonSearchTicket.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                trainHomepagePresenterImpl.onSubmitButtonClicked();
-            }
-        });
+        buttonSearchTicket.setOnClickListener(view1 -> trainHomepagePresenterImpl.onSubmitButtonClicked());
 
         return view;
     }
@@ -183,8 +161,23 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         trainHomepagePresenterImpl.attachView(this);
         trainHomepagePresenterImpl.initialize();
+
+        if (savedInstanceState != null) {
+            viewModel = savedInstanceState.getParcelable(STATE_HOMEPAGE);
+
+            trainHomepagePresenterImpl.onSavedStateAvailable(viewModel);
+        }
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        onCloseBottomMenusListener = (OnCloseBottomMenusListener) activity;
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -362,6 +355,41 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
     @Override
     public void getShowOriginAndDestinationShouldNotSameError(int resId) {
         showMessageErrorInSnackBar(resId);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putParcelable(STATE_HOMEPAGE, viewModel);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+
+        inflater.inflate(R.menu.menu_train_homepage, menu);
+    }
+
+    public void showBottomMenus() {
+        menus = new Menus(getActivity());
+        String [] menuItem = new String[] {"Daftar Transaksi", "Cek Pesanan"};
+        menus.setItemMenuList(menuItem);
+
+        menus.setOnActionClickListener(view -> {
+            menus.dismiss();
+            onCloseBottomMenusListener.onCloseBottomMenus();
+        });
+        menus.setOnItemMenuClickListener((itemMenus, pos) -> {
+            menus.dismiss();
+            onCloseBottomMenusListener.onCloseBottomMenus();
+        });
+
+        menus.show();
+    }
+
+    public void closeBottomMenus() {
+        menus.dismiss();
     }
 
 }

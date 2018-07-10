@@ -32,7 +32,7 @@ public class TrainScheduleDepartureTimeFilterSpecification implements DbFlowSpec
                     conditions.or(TrainScheduleDbTable_Table.departure_hour.between(12).and(18));
                     break;
                 case DepartureTimeTypeDef.NIGHT:
-                    conditions.or(TrainScheduleDbTable_Table.departure_hour.between(18).and(00));
+                    conditions.or(TrainScheduleDbTable_Table.departure_hour.between(18).and(23));
                     break;
             }
         }

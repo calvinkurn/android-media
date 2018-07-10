@@ -42,6 +42,7 @@ public class TravelCalendarPresenter extends BaseDaggerPresenter<TravelCalendarC
 
             @Override
             public void onNext(List<HolidayResult> holidayResults) {
+                getView().hideLoading();
                 getView().renderAllHolidayEvent(holidayResults);
             }
         });
@@ -49,6 +50,7 @@ public class TravelCalendarPresenter extends BaseDaggerPresenter<TravelCalendarC
 
     @Override
     public void getMonthsCalendarList(Date minDate, Date maxDate) {
+        getView().showLoading();
         Calendar initCalendar = Calendar.getInstance();
         Calendar calendarMinDate = (Calendar) initCalendar.clone();
         calendarMinDate.setTime(minDate);
@@ -60,7 +62,7 @@ public class TravelCalendarPresenter extends BaseDaggerPresenter<TravelCalendarC
         int monthMaxDate = calendarMaxDate.get(Calendar.MONTH);
         int yearMaxDate = calendarMaxDate.get(Calendar.YEAR);
 
-        int yearDeviation = (yearMaxDate - yearMinDate) * 12;
+        int yearDeviation = ((yearMaxDate - yearMinDate) * 12) + 1;
         int monthDeviation = (yearDeviation + monthMaxDate) - monthMinDate;
 
         if (isViewAttached()) {
