@@ -20,7 +20,7 @@ import javax.inject.Inject;
 
 public class LoadNextChatMessagesUseCase {
     private static final boolean PARAM_IS_INCLUSIVE = false;
-    private static final int PARAM_LIMIT_NEXT_MESSAGE = 30;
+    private static final int PARAM_LIMIT_NEXT_MESSAGE = 20;
     private static final boolean PARAM_IS_REVERSE = true;
 
     GroupChatMessagesMapper mapper;

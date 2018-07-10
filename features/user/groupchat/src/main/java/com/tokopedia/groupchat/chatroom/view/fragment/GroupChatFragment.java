@@ -11,9 +11,9 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,15 +38,19 @@ import com.tokopedia.groupchat.chatroom.di.DaggerChatroomComponent;
 import com.tokopedia.groupchat.chatroom.domain.mapper.GroupChatMessagesMapper;
 import com.tokopedia.groupchat.chatroom.view.activity.GroupChatActivity;
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.GroupChatAdapter;
+import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.QuickReplyAdapter;
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.GroupChatTypeFactory;
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.GroupChatTypeFactoryImpl;
+import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.QuickReplyTypeFactory;
+import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.QuickReplyTypeFactoryImpl;
 import com.tokopedia.groupchat.chatroom.view.listener.ChatroomContract;
 import com.tokopedia.groupchat.chatroom.view.listener.GroupChatContract;
 import com.tokopedia.groupchat.chatroom.view.presenter.ChatroomPresenter;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel;
-import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.AdsViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.ChatViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatPointsViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatQuickReplyItemViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatQuickReplyViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.PendingChatViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.PinnedMessageViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleAnnouncementViewModel;
@@ -55,8 +59,8 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleViewMo
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.UserActionViewModel;
 import com.tokopedia.groupchat.common.analytics.EEPromotion;
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics;
-import com.tokopedia.groupchat.common.data.GroupChatUrl;
 import com.tokopedia.groupchat.common.design.CloseableBottomSheetDialog;
+import com.tokopedia.groupchat.common.design.QuickReplyItemDecoration;
 import com.tokopedia.groupchat.common.design.SpaceItemDecoration;
 import com.tokopedia.groupchat.common.di.component.DaggerGroupChatComponent;
 import com.tokopedia.groupchat.common.di.component.GroupChatComponent;
@@ -93,11 +97,13 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     GroupChatMessagesMapper groupChatMessagesMapper;
 
     private RecyclerView chatRecyclerView;
+    private RecyclerView quickReplyRecyclerView;
     private EditText replyEditText;
     private View sendButton;
     private View divider;
     private View main, loading;
     private GroupChatAdapter adapter;
+    private QuickReplyAdapter quickReplyAdapter;
     private LinearLayoutManager layoutManager;
     private View chatNotificationView;
     private View login;
@@ -150,6 +156,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_group_chat_room_new, container, false);
         chatRecyclerView = view.findViewById(R.id.chat_list);
+        quickReplyRecyclerView = view.findViewById(R.id.quick_reply);
         replyEditText = view.findViewById(R.id.reply_edit_text);
         sendButton = view.findViewById(R.id.button_send);
         divider = view.findViewById(R.id.view);
@@ -186,15 +193,21 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     private void prepareView() {
         GroupChatTypeFactory groupChatTypeFactory = new GroupChatTypeFactoryImpl(this);
         adapter = GroupChatAdapter.createInstance(groupChatTypeFactory);
+        QuickReplyTypeFactory quickReplyTypeFactory = new QuickReplyTypeFactoryImpl(this);
+        quickReplyAdapter = new QuickReplyAdapter(quickReplyTypeFactory);
         layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setReverseLayout(true);
         layoutManager.setStackFromEnd(true);
         chatRecyclerView.setLayoutManager(layoutManager);
+        quickReplyRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         chatRecyclerView.setAdapter(adapter);
+        quickReplyRecyclerView.setAdapter(quickReplyAdapter);
         SpaceItemDecoration itemDecoration = new SpaceItemDecoration((int) getActivity()
                 .getResources().getDimension(R.dimen.space_chat));
+        QuickReplyItemDecoration quickReplyItemDecoration = new QuickReplyItemDecoration((int) getActivity()
+                .getResources().getDimension(R.dimen.dp_16));
         chatRecyclerView.addItemDecoration(itemDecoration);
-
+        quickReplyRecyclerView.addItemDecoration(quickReplyItemDecoration);
         chatRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -223,8 +236,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivityForResult(((GroupChatModuleRouter) getActivity().getApplicationContext())
-                        .getLoginIntent(getActivity()), REQUEST_LOGIN);
+                goToLogin();
             }
         });
 
@@ -261,6 +273,12 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         });
 
         setPinnedMessage(((GroupChatContract.View) getActivity()).getPinnedMessage());
+    }
+
+    private void goToLogin() {
+        ((GroupChatContract.View)getActivity()).logoutChannel(mChannel);
+        startActivityForResult(((GroupChatModuleRouter) getActivity().getApplicationContext())
+                .getLoginIntent(getActivity()), REQUEST_LOGIN);
     }
 
     private void setSendButtonEnabled(boolean isEnabled) {
@@ -342,6 +360,17 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 });
             } else {
                 pinnedMessageView.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    private void setQuickReply(final List<GroupChatQuickReplyItemViewModel> list) {
+        if (getView() != null) {
+            if (list != null && !list.isEmpty() && userSession.isLoggedIn()){
+                quickReplyRecyclerView.setVisibility(View.VISIBLE);
+                quickReplyAdapter.setList(list);
+            } else {
+                quickReplyRecyclerView.setVisibility(View.GONE);
             }
         }
     }
@@ -460,6 +489,21 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         }
     }
 
+    @Override
+    public void addQuickReply(String message) {
+        String text = replyEditText.getText().toString();
+        int index = replyEditText.getSelectionStart();
+        replyEditText.setText(Html.fromHtml(String.format("%s %s %s", text.substring(0, index), message, text
+                .substring(index))));
+        PendingChatViewModel pendingChatViewModel = new PendingChatViewModel
+                (presenter.checkText(replyEditText.getText().toString()),
+                        userSession.getUserId(),
+                        userSession.getName(),
+                        userSession.getProfilePicture(),
+                        false);
+        presenter.sendQuickReply(pendingChatViewModel, mChannel);
+    }
+
     private void trackViewSprintSaleComponent(SprintSaleViewModel sprintSaleViewModel) {
         ArrayList<EEPromotion> list = new ArrayList<>();
         for (SprintSaleProductViewModel productViewModel : sprintSaleViewModel
@@ -560,6 +604,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
                 setSprintSaleIcon(((GroupChatContract.View) getActivity()).getSprintSaleViewModel());
                 setPinnedMessage(((GroupChatContract.View) getActivity()).getPinnedMessage());
+                setQuickReply(((GroupChatContract.View) getActivity()).getChannelInfoViewModel().getQuickRepliesViewModel());
             }
 
             if (getActivity() != null
@@ -599,6 +644,12 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         replyEditText.setText("");
         scrollToBottom();
         setSendButtonEnabled(true);
+    }
+
+    @Override
+    public void onSuccessSendQuickReply(PendingChatViewModel pendingChatViewModel, ChatViewModel viewModel) {
+        onSuccessSendMessage(pendingChatViewModel, viewModel);
+        quickReplyRecyclerView.setVisibility(View.GONE);
     }
 
     @Override
@@ -664,6 +715,10 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
         if (messageItem instanceof PinnedMessageViewModel) {
             setPinnedMessage((PinnedMessageViewModel) messageItem);
+        }
+
+        if(messageItem instanceof GroupChatQuickReplyViewModel){
+            setQuickReply(((GroupChatQuickReplyViewModel)messageItem).getList());
         }
 
         if (!groupChatMessagesMapper.shouldHideMessage(messageItem)) {
@@ -785,10 +840,12 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
             replyEditText.setVisibility(View.VISIBLE);
             sendButton.setVisibility(View.VISIBLE);
             login.setVisibility(View.GONE);
+            setQuickReply(((GroupChatContract.View) getActivity()).getChannelInfoViewModel().getQuickRepliesViewModel());
         } else {
             divider.setVisibility(View.GONE);
             replyEditText.setVisibility(View.GONE);
             sendButton.setVisibility(View.GONE);
+            quickReplyRecyclerView.setVisibility(View.GONE);
             login.setVisibility(View.VISIBLE);
         }
     }
@@ -897,7 +954,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_LOGIN) {
-            refreshChat();
             ((GroupChatContract.View) getActivity()).onSuccessLogin();
             userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
             setForLoginUser(userSession != null && userSession.isLoggedIn());
