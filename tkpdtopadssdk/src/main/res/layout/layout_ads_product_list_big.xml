@@ -96,8 +96,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/image_card"
-        android:layout_marginLeft="@dimen/product_grid_padding"
-        android:layout_marginRight="@dimen/product_grid_padding"
         android:layout_marginTop="4dp"
         android:ellipsize="end"
         android:fontFamily="sans-serif-medium"
@@ -113,8 +111,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/title"
-        android:layout_marginLeft="@dimen/product_grid_padding"
-        android:layout_marginRight="@dimen/product_grid_padding"
         android:layout_marginTop="2dp"
         android:layout_marginBottom="5dp"
         android:layout_weight="1"
@@ -129,9 +125,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/price"
-        android:layout_marginBottom="@dimen/product_grid_padding"
-        android:layout_marginLeft="@dimen/product_grid_padding"
-        android:layout_marginRight="@dimen/product_grid_padding"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
