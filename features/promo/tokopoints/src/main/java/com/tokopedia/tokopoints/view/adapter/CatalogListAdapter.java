@@ -70,7 +70,7 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
             String firstSpan = holder.quota.getResources().getString(R.string.tp_label_remaining_exchange);
             String secondSpan = " " + item.getQuota() + "x";
             Spannable wordtoSpan = new SpannableString(firstSpan + secondSpan);
-            wordtoSpan.setSpan(new ForegroundColorSpan(ContextCompat.getColor(holder.quota.getContext(), R.color.orange_red)), firstSpan.length(), wordtoSpan.length() ,
+            wordtoSpan.setSpan(new ForegroundColorSpan(ContextCompat.getColor(holder.quota.getContext(), R.color.orange_red)), firstSpan.length(), wordtoSpan.length(),
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             holder.quota.setText(wordtoSpan);
             holder.quota.setVisibility(View.VISIBLE);
@@ -89,7 +89,7 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
 
     @Override
     public int getItemCount() {
-        return mItems.size();
+        return mItems.size() > CommonConstant.HOMEPAGE_PAGE_SIZE ? CommonConstant.HOMEPAGE_PAGE_SIZE : mItems.size();
     }
 
     public void updateItems(List<CatalogsValueEntity> items) {

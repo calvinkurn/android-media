@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.view.model.CatalogCategory;
 import com.tokopedia.tokopoints.view.presenter.CatalogListingPresenter;
+import com.tokopedia.tokopoints.view.util.CommonConstant;
 
 import java.util.List;
 
@@ -59,6 +60,6 @@ public class CatalogChipAdapter extends RecyclerView.Adapter<CatalogChipAdapter.
 
     @Override
     public int getItemCount() {
-        return mItems.size();
+        return mItems.size() > CommonConstant.HOMEPAGE_PAGE_SIZE ? CommonConstant.HOMEPAGE_PAGE_SIZE : mItems.size();
     }
 }
