@@ -56,8 +56,6 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
 
     private static final String STATE_HOMEPAGE = "STATE_HOMEPAGE";
 
-    private final int DEFAULT_RANGE_OF_DEPARTURE_AND_ARRIVAL = 2;
-
     private AppCompatButton buttonOneWayTrip;
     private AppCompatButton buttonRoundTrip;
     private LinearLayout layoutOriginStation;
