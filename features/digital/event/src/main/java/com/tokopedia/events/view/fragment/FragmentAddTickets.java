@@ -21,7 +21,6 @@ import java.util.List;
 public class FragmentAddTickets extends Fragment {
     private static final String ARG_PARAM1 = "typecount";
 
-    private int mTicketTypeCount;
     private List<PackageViewModel> mPackages;
 
     private EventBookTicketPresenter mPresenter;
@@ -44,15 +43,6 @@ public class FragmentAddTickets extends Fragment {
     public void setData(List<PackageViewModel> packages, EventBookTicketPresenter presenter) {
         this.mPresenter = presenter;
         this.mPackages = packages;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mTicketTypeCount = getArguments().getInt(ARG_PARAM1);
-        }
-
     }
 
     @Override
@@ -128,6 +118,8 @@ public class FragmentAddTickets extends Fragment {
     }
 
     public void resetAdapter() {
+        if (ticketAdapter == null)
+            ticketAdapter = new AddTicketAdapter(getActivity(), mPackages, mPresenter);
         ticketAdapter.setData(mPackages);
         ticketAdapter.notifyDataSetChanged();
     }

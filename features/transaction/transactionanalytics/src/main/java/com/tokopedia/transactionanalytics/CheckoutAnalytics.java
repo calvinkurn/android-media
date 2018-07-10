@@ -1,5 +1,7 @@
 package com.tokopedia.transactionanalytics;
 
+import android.app.Activity;
+
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 
 /**
@@ -11,5 +13,9 @@ public abstract class CheckoutAnalytics {
 
     public CheckoutAnalytics(AnalyticTracker analyticTracker) {
         this.analyticTracker = analyticTracker;
+    }
+
+    public void sendScreenName(Activity activity, String screenName) {
+        analyticTracker.sendScreen(activity, screenName);
     }
 }
