@@ -313,7 +313,12 @@ public class LoyaltyActivity extends BasePresenterActivity
 
     @Override
     public void onUsePromoCodeClicked() {
-        checkoutAnalyticsCart.eventClickCartClickGunakanKodeFormGunakanKodePromoAtauKupon();
+        if (platformPageString.equalsIgnoreCase(PLATFORM_PAGE_MARKETPLACE_CART_LIST)) {
+            checkoutAnalyticsCart.eventClickCartClickGunakanKodeFormGunakanKodePromoAtauKupon();
+        } else {
+            checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickGunakanKodeFormGunakanKodePromoAtauKupon();
+        }
+
     }
 
 
