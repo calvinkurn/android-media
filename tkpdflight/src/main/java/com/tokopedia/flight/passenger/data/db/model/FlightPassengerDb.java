@@ -8,9 +8,9 @@ import com.raizlabs.android.dbflow.annotation.ConflictAction;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.structure.BaseModel;
-import com.tokopedia.flight.passenger.data.cloud.entity.PassengerListEntity;
 import com.tokopedia.flight.common.database.TkpdFlightDatabase;
 import com.tokopedia.flight.common.util.FlightDateUtil;
+import com.tokopedia.flight.passenger.data.cloud.entity.PassengerListEntity;
 
 /**
  * @author by furqan on 28/02/18.

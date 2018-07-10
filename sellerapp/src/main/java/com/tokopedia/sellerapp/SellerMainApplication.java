@@ -48,6 +48,8 @@ import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivit
 
 import rx.Observable;
 
+import rx.Observable;
+
 /**
  * Created by ricoharisin on 11/11/16.
  */
@@ -275,6 +277,11 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
 
     @Override
     public Intent getWebviewActivityWithIntent(Context context, String url) {
+        return null;
+    }
+
+    @Override
+    public Intent getOrderListIntent(Context context) {
         return null;
     }
 }
