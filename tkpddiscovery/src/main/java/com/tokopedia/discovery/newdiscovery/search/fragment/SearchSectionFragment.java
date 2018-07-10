@@ -292,11 +292,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
             if (requestCode == getSortRequestCode()) {
                 setSelectedSort((HashMap<String, String>) data.getSerializableExtra(SortProductActivity.EXTRA_SELECTED_SORT));
                 String selectedSortName = data.getStringExtra(SortProductActivity.EXTRA_SELECTED_NAME);
-                if (getActivity() instanceof HotlistActivity) {
-                    HotlistPageTracking.eventHotlistSort(selectedSortName);
-                } else {
-                    UnifyTracking.eventSearchResultSort(getScreenName(), selectedSortName);
-                }
+                UnifyTracking.eventSearchResultSort(getScreenName(), selectedSortName);
                 clearDataFilterSort();
                 showBottomBarNavigation(false);
                 reloadData();

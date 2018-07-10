@@ -1,5 +1,6 @@
 package com.tokopedia.discovery.newdiscovery.hotlist.view.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -40,6 +41,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.activity.SortProductActivity;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.discovery.newdiscovery.base.BottomNavigationListener;
 import com.tokopedia.discovery.newdiscovery.hotlist.di.component.DaggerHotlistComponent;
@@ -58,6 +60,8 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmen
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionGeneralAdapter;
 import com.tokopedia.discovery.newdiscovery.util.HotlistParameter;
+import com.tokopedia.discovery.newdynamicfilter.RevampedDynamicFilterActivity;
+import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
@@ -70,6 +74,7 @@ import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -516,7 +521,28 @@ public class HotlistFragment extends SearchSectionFragment
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == getSortRequestCode()) {
+                setSelectedSort((HashMap<String, String>) data.getSerializableExtra(SortProductActivity.EXTRA_SELECTED_SORT));
+                String selectedSortName = data.getStringExtra(SortProductActivity.EXTRA_SELECTED_NAME);
+                HotlistPageTracking.eventHotlistSort(selectedSortName);
+                clearDataFilterSort();
+                showBottomBarNavigation(false);
+                reloadData();
+            } else if (requestCode == getFilterRequestCode()) {
+                setFlagFilterHelper((FilterFlagSelectedModel) data.getParcelableExtra(RevampedDynamicFilterActivity.EXTRA_SELECTED_FLAG_FILTER));
+                setSelectedFilter((HashMap<String, String>) data.getSerializableExtra(RevampedDynamicFilterActivity.EXTRA_SELECTED_FILTERS));
+                if (getActivity() instanceof HotlistActivity) {
+                    HotlistPageTracking.eventHotlistFilter(getSelectedFilter());
+                } else {
+                    SearchTracking.eventSearchResultFilter(getScreenName(), getSelectedFilter());
+                }
+                clearDataFilterSort();
+                showBottomBarNavigation(false);
+                updateDepartmentId(getFlagFilterHelper().getCategoryId());
+                reloadData();
+            }
+        }
         onHandlingDataFromPDP(requestCode, resultCode, data);
     }
 
