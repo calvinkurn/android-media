@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.analytics.SearchTracking;
+import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -309,7 +309,7 @@ public class ProductListFragment extends SearchSectionFragment
                 dataLayerList.add(((ProductItem) object).getProductAsObjectDataLayer(userId));
             }
         }
-        SearchTracking.eventImpressionSearchResultProduct(dataLayerList, getQueryKey());
+        SearchTracking.eventImpressionSearchResultProduct(getActivity(), dataLayerList, getQueryKey());
     }
 
     @Override
@@ -401,7 +401,7 @@ public class ProductListFragment extends SearchSectionFragment
                         openSortActivity();
                         return true;
                     case 1:
-                        SearchTracking.eventSearchResultOpenFilterPageProduct();
+                        SearchTracking.eventSearchResultOpenFilterPageProduct(getActivity());
                         openFilterActivity();
                         return true;
                     case 2:
@@ -531,6 +531,7 @@ public class ProductListFragment extends SearchSectionFragment
                 SessionHandler.getLoginID(getContext()) : "";
 
         SearchTracking.trackEventClickSearchResultProduct(
+                getActivity(),
                 item.getProductAsObjectDataLayer(userId),
                 item.getPageNumber(),
                 productViewModel.getQuery(),
@@ -668,7 +669,7 @@ public class ProductListFragment extends SearchSectionFragment
     public void setEmptyProduct() {
         topAdsRecyclerAdapter.shouldLoadAds(false);
         adapter.showEmpty(productViewModel.getQuery());
-        SearchTracking.eventSearchNoResult(productViewModel.getQuery(), getScreenName(), getSelectedFilter());
+        SearchTracking.eventSearchNoResult(getActivity(), productViewModel.getQuery(), getScreenName(), getSelectedFilter());
     }
 
     @Override
@@ -809,6 +810,7 @@ public class ProductListFragment extends SearchSectionFragment
         String currentPage = String.valueOf(adapter.getStartFrom() / 12);
 
         SearchTracking.eventImpressionGuidedSearch(
+                getActivity(),
                 currentKey,
                 currentPage
         );

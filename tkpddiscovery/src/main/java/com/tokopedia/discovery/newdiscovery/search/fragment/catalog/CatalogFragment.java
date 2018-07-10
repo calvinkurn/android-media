@@ -1,10 +1,8 @@
 package com.tokopedia.discovery.newdiscovery.search.fragment.catalog;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -16,8 +14,7 @@ import android.widget.ProgressBar;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.analytics.SearchTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
@@ -240,7 +237,7 @@ public class CatalogFragment extends SearchSectionFragment implements
 
     @Override
     public void setOnCatalogClicked(String catalogID, String catalogName) {
-        SearchTracking.eventSearchResultCatalogClick(query, catalogName);
+        SearchTracking.eventSearchResultCatalogClick(getActivity(), query, catalogName);
         Intent intent = DetailProductRouter.getCatalogDetailActivity(getActivity(), catalogID);
         startActivityForResult(intent, REQUEST_CODE_GOTO_CATALOG_DETAIL);
     }
@@ -360,7 +357,7 @@ public class CatalogFragment extends SearchSectionFragment implements
             topAdsRecyclerAdapter.shouldLoadAds(false);
             String message = String.format(getString(R.string.empty_search_content_template), query);
             catalogAdapter.showEmptyState(message);
-            SearchTracking.eventSearchNoResult(query, getScreenName(), getSelectedFilter());
+            SearchTracking.eventSearchNoResult(getActivity(), query, getScreenName(), getSelectedFilter());
         }
     }
 
@@ -460,7 +457,7 @@ public class CatalogFragment extends SearchSectionFragment implements
                         openSortActivity();
                         return true;
                     case 1:
-                        SearchTracking.eventSearchResultOpenFilterPageCatalog();
+                        SearchTracking.eventSearchResultOpenFilterPageCatalog(getActivity());
                         openFilterActivity();
                         return true;
                     case 2:

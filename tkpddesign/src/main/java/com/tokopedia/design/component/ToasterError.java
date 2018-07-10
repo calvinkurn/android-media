@@ -1,5 +1,6 @@
 package com.tokopedia.design.component;
 
+import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.Snackbar;
 import android.view.View;
 
@@ -13,7 +14,7 @@ import com.tokopedia.design.base.BaseToaster;
 public class ToasterError extends BaseToaster {
     public static Snackbar make(View view,
                                 String snackbarText,
-                                @Snackbar.Duration int duration) {
+                                @Duration int duration) {
         return new Builder(view, snackbarText, duration)
                 .setBackgroundDrawable(R.drawable.bg_snackbar_error)
                 .setTextColor(R.color.font_black_secondary_54)

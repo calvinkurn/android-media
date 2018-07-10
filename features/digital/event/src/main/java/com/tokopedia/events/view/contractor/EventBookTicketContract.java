@@ -53,7 +53,7 @@ public class EventBookTicketContract {
         void setLocationDate(String location, String date, SchedulesViewModel datas);
     }
 
-    public interface Presenter extends CustomerPresenter<EventBookTicketContract.EventBookTicketView> {
+    public interface Presenter extends CustomerPresenter<EventBookTicketView> {
 
         void initialize();
 

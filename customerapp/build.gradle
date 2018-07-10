@@ -91,8 +91,8 @@ buildscript {
 android {
 
     project.ext {
-        defaultVersionCode = 222001101;
-        defaultVersionName = "2.22";
+        defaultVersionCode = 221001101;
+        defaultVersionName = "2.24";
         react = [
                 nodeExecutableAndArgs: ["${nodeExecutableAndArgs}"]
         ]
@@ -195,7 +195,7 @@ android {
             include "mdpi", "hdpi", "xhdpi", "xxhdpi"
             compatibleScreens 'small', 'normal', 'large', 'xlarge'
         }
-       
+
     }
 
     defaultConfig {
@@ -255,7 +255,9 @@ dependencies {
     implementation project(rootProject.ext.features.gamification)
     implementation project(rootProject.ext.features.kol)
     implementation project(rootProject.ext.features.shopPage)
+    implementation project(rootProject.ext.features.goldMerchantSubscribe)
     implementation project(rootProject.ext.features.home)
+    implementation project(rootProject.ext.features.vote)
     implementation project(rootProject.ext.features.groupchat)
     implementation project(rootProject.ext.features.event)
     implementation project(rootProject.ext.features.tokoCash)
@@ -285,6 +287,8 @@ dependencies {
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.tracking)
     implementation project(rootProject.ext.features.logisticuploadawb)
+    implementation project(rootProject.ext.features.topchat)
+    implementation project(rootProject.ext.features.nps)
     implementation project(rootProject.ext.features.transactionanalytics)
 
 
@@ -416,7 +420,6 @@ dependencies {
     //[END] test and androidTest dependencies
 
     implementation project(rootProject.ext.libraries.analytics)
-
 
 }
 

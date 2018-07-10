@@ -44,7 +44,7 @@ public class TkpdBaseURL {
     public static String WEB_DOMAIN = "https://www.tokopedia.com/";
     public static String MOBILE_DOMAIN = "https://m.tokopedia.com/";
     public static String BASE_CONTACT_US = WEB_DOMAIN + "contact-us";
-    public static String TOKOPEDIA_CART_DOMAIN = "https://fs.tokopedia.net/tkpdcart";
+    public static String TOKOPEDIA_CART_DOMAIN = "https://fs.tokopedia.net/tkpdcart/";
     public static String BASE_ACTION = BASE_DOMAIN + "v4/action/";
     public static String DIGITAL_API_DOMAIN = "https://pulsa-api.tokopedia.com/";
     public static String DIGITAL_WEBSITE_DOMAIN = "https://pulsa.tokopedia.com/";
@@ -929,6 +929,7 @@ public class TkpdBaseURL {
         public static final String SET_TEMPLATE = "tc/v1/templates";
         public static final String SET_TEMPLATE_OLD = "tc/v1/update_chat_templates";
         public static final String CREATE_TEMPLATE = "tc/v1/templates";
+        public static final String GET_EXISTING_CHAT = "/tc/v1/existing_chat";
     }
 
     public static class Reputation {
@@ -1007,7 +1008,7 @@ public class TkpdBaseURL {
     }
 
     public class Referral {
-        public static final String PATH_GET_REFERRAL_VOUCHER_CODE = "galadriel/promos/referral/code";
+        public static final String PATH_GET_REFERRAL_VOUCHER_CODE = "galadriel/promos/v2/referral/code";
     }
 
     public class Promo {

@@ -11,7 +11,6 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.search.di.DaggerFlightSearchComponent;

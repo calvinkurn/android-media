@@ -43,7 +43,7 @@ public class OtherChargesItem implements Parcelable {
 		this.convFee = in.readInt();
 	}
 
-	public static final Parcelable.Creator<OtherChargesItem> CREATOR = new Parcelable.Creator<OtherChargesItem>() {
+	public static final Creator<OtherChargesItem> CREATOR = new Creator<OtherChargesItem>() {
 		@Override
 		public OtherChargesItem createFromParcel(Parcel source) {
 			return new OtherChargesItem(source);
