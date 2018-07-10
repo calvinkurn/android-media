@@ -32,7 +32,7 @@
                     android:layout_marginTop="@dimen/margin_sm"
                     android:fontFamily="sans-serif"
                     android:gravity="center_horizontal"
-                    android:text="Ajak teman belanja di Tokopedia dan dapatkan hingga Rp80.000"
+                    android:text="@string/referral_title_desc"
                     android:textColor="@color/black_70"
                     android:textSize="@dimen/sp_20" />
 
@@ -44,7 +44,7 @@
                     android:layout_marginTop="@dimen/margin_small"
                     android:fontFamily="sans-serif"
                     android:gravity="center_horizontal"
-                    android:text="Teman Anda juga mendapat cashback hingga Rp100.000. Bagikan kode referral ini:"
+                    android:text="@string/app_share_referral_label_desc"
                     android:textColor="@color/black_54"
                     android:textSize="@dimen/sp_14" />
 

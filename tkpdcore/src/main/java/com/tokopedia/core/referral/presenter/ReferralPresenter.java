@@ -62,7 +62,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
     private GetReferralDataUseCase getReferralDataUseCase;
     private TokoCashUseCase tokoCashUseCase;
     private SessionHandler sessionHandler;
-    private int max_apps = 4;
+    private final static int MAX_APPS = 4;
     private String url;
 
     @Inject
@@ -223,6 +223,12 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
         return message;
     }
 
+    @Override
+    public String getReferralTitleDesc() {
+        return remoteConfig.getString(TkpdCache.RemoteConfigKey.REFERRAL_TITLE_DESC, getView().getActivity().getString(R.string.referral_title_desc));
+    }
+
+
     /**
      * This function fetches the tokocash balance and then check Voucher code
      */
@@ -270,40 +276,40 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
     public ShareApps[] checkInstalledApps() {
         int index = 0;
         ShareApps shareApps;
-        ShareApps[] selectedApps = new ShareApps[max_apps];
-        if (index < max_apps && appInstalledOrNot(TkpdState.PackageName.Whatsapp)) {
+        ShareApps[] selectedApps = new ShareApps[MAX_APPS];
+        if (index < MAX_APPS && appInstalledOrNot(TkpdState.PackageName.Whatsapp)) {
             shareApps = new ShareApps(TkpdState.PackageName.Whatsapp, R.drawable.ic_btn_wa);
             selectedApps[index++] = shareApps;
         }
-        if (index < max_apps && appInstalledOrNot(TkpdState.PackageName.Line)) {
+        if (index < MAX_APPS && appInstalledOrNot(TkpdState.PackageName.Line)) {
             shareApps = new ShareApps(TkpdState.PackageName.Line, R.drawable.ic_btn_line);
             selectedApps[index++] = shareApps;
         }
-        if (index < max_apps && appInstalledOrNot(TkpdState.PackageName.Instagram)) {
+        if (index < MAX_APPS && appInstalledOrNot(TkpdState.PackageName.Instagram)) {
             shareApps = new ShareApps(TkpdState.PackageName.Instagram, R.drawable.ic_btn_instagram);
             selectedApps[index++] = shareApps;
         }
-        if (index < max_apps && appInstalledOrNot(TkpdState.PackageName.Facebook)) {
+        if (index < MAX_APPS && appInstalledOrNot(TkpdState.PackageName.Facebook)) {
             shareApps = new ShareApps(TkpdState.PackageName.Facebook, R.drawable.ic_btn_fb);
             selectedApps[index++] = shareApps;
         }
-        if (index < max_apps && appInstalledOrNot(TkpdState.PackageName.Gplus)) {
+        if (index < MAX_APPS && appInstalledOrNot(TkpdState.PackageName.Gplus)) {
             shareApps = new ShareApps(TkpdState.PackageName.Gplus, R.drawable.ic_btn_g);
             selectedApps[index++] = shareApps;
         }
-        if (index < max_apps && appInstalledOrNot(TkpdState.PackageName.Twitter)) {
+        if (index < MAX_APPS && appInstalledOrNot(TkpdState.PackageName.Twitter)) {
             shareApps = new ShareApps(TkpdState.PackageName.Twitter, R.drawable.ic_btn_twitter);
             selectedApps[index++] = shareApps;
         }
-        if (index < max_apps && appInstalledOrNot(TkpdState.PackageName.Gmail)) {
+        if (index < MAX_APPS && appInstalledOrNot(TkpdState.PackageName.Gmail)) {
             shareApps = new ShareApps(TkpdState.PackageName.Gmail, R.drawable.ic_btn_gmail);
             selectedApps[index++] = shareApps;
         }
-        if (index < max_apps && appInstalledOrNot(TkpdState.PackageName.Sms)) {
+        if (index < MAX_APPS && appInstalledOrNot(TkpdState.PackageName.Sms)) {
             shareApps = new ShareApps(TkpdState.PackageName.Sms, R.drawable.ic_btn_sms);
             selectedApps[index++] = shareApps;
         }
-        if (index < max_apps && appInstalledOrNot(TkpdState.PackageName.Pinterest)) {
+        if (index < MAX_APPS && appInstalledOrNot(TkpdState.PackageName.Pinterest)) {
             shareApps = new ShareApps(TkpdState.PackageName.Pinterest, R.drawable.ic_pinterest_share);
             selectedApps[index++] = shareApps;
         }

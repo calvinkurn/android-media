@@ -23,4 +23,7 @@ public interface IReferralPresenter {
     String getVoucherCodeFromCache();
 
     Boolean isAppShowReferralButtonActivated();
+
+    String getReferralTitleDesc();
 }
+

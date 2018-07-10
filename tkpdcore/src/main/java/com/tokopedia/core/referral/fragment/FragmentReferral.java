@@ -81,6 +81,8 @@ public class FragmentReferral extends BasePresenterFragmentV4<IReferralPresenter
     ProgressBar progressBarReferral;
     @BindView(R2.id.tv_referral_percent)
     TextView tvPercent;
+    @BindView((R2.id.tv_referral_title))
+    TextView referralTitleTextview;
 
     private ReferralGuidePagerAdapter referralGuidePagerAdapter;
 
@@ -148,6 +150,7 @@ public class FragmentReferral extends BasePresenterFragmentV4<IReferralPresenter
     protected void initView(View view) {
         presenter.initialize();
         referralContentTextView.setText(presenter.getReferralContents());
+        referralTitleTextview.setText(presenter.getReferralTitleDesc());
         if (presenter.isAppShowReferralButtonActivated()) {
             referralCodeLayout.setVisibility(View.VISIBLE);
             TextViewHelpLink.setVisibility(View.VISIBLE);
