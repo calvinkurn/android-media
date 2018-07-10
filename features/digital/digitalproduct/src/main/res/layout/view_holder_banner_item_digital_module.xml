@@ -13,7 +13,8 @@
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        card_view:cardElevation="3sp"
+        android:background="?attr/selectableItemBackground"
+        card_view:cardElevation="@dimen/dp_2"
         card_view:cardUseCompatPadding="true">
 
         <LinearLayout
@@ -54,21 +55,30 @@
                     android:paddingStart="@dimen/dp_5"
                     tools:text="ANGGAKERENABIS" />
 
-                <TextView
-                    android:id="@+id/btn_copy"
-                    style="@style/TextView.Micro"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/digital_white_grey_button_rounded"
-                    android:padding="@dimen/dp_3"
                     android:paddingEnd="@dimen/dp_10"
-                    android:paddingStart="@dimen/dp_10"
-                    android:text="@string/button_copy" />
+                    android:paddingRight="@dimen/dp_10">
+
+                    <TextView
+                        android:id="@+id/btn_copy"
+                        style="@style/TextView.Micro"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/digital_white_grey_button_rounded"
+                        android:padding="@dimen/dp_3"
+                        android:paddingEnd="@dimen/dp_10"
+                        android:paddingLeft="@dimen/dp_10"
+                        android:paddingRight="@dimen/dp_10"
+                        android:paddingStart="@dimen/dp_10"
+                        android:text="@string/button_copy" />
+                </LinearLayout>
             </LinearLayout>
 
             <TextView
                 android:id="@+id/tv_desc_banner"
-                style="@style/TextView.Small"
+                style="@style/TextView.Micro"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingTop="@dimen/digital_padding_8"

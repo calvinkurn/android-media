@@ -15,7 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.util.DeepLinkChecker;
@@ -122,7 +122,7 @@ public class DigitalPromoFragment extends Fragment implements BannerAdapter.Acti
 
     private void showToastMessage(String message) {
         View view = getView();
-        if (view != null) NetworkErrorHelper.showSnackbar(getActivity(), message);
+        if (view != null) NetworkErrorHelper.showGreenCloseSnackbar(getActivity(), message);
         else Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 
