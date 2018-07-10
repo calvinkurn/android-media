@@ -270,11 +270,7 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
     private String generateTextButtonBuy() {
         switch (stateFormVariantPage) {
             case STATE_BUTTON_BUY:
-                if (productDetailData.getPreOrder() != null && productDetailData.getPreOrder().getPreorderStatus().equals("1")
-                        && !productDetailData.getPreOrder().getPreorderStatus().equals("0")
-                        && !productDetailData.getPreOrder().getPreorderProcessTime().equals("0")
-                        && !productDetailData.getPreOrder().getPreorderProcessTimeType().equals("0")
-                        && !productDetailData.getPreOrder().getPreorderProcessTimeTypeString().equals("0")) {
+                if (isPreOrder()) {
                     return getResources().getString(R.string.title_pre_order);
                 } else {
                     return getResources().getString(R.string.title_buy_now);
@@ -282,16 +278,20 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
             case STATE_BUTTON_CART:
                 return getResources().getString(R.string.title_add_to_cart);
             default:
-                if (productDetailData.getPreOrder() != null && productDetailData.getPreOrder().getPreorderStatus().equals("1")
-                        && !productDetailData.getPreOrder().getPreorderStatus().equals("0")
-                        && !productDetailData.getPreOrder().getPreorderProcessTime().equals("0")
-                        && !productDetailData.getPreOrder().getPreorderProcessTimeType().equals("0")
-                        && !productDetailData.getPreOrder().getPreorderProcessTimeTypeString().equals("0")) {
+                if (isPreOrder()) {
                     return getResources().getString(R.string.title_pre_order);
                 } else {
                     return getResources().getString(R.string.title_buy);
                 }
         }
+    }
+
+    private boolean isPreOrder() {
+        return productDetailData.getPreOrder() != null && productDetailData.getPreOrder().getPreorderStatus().equals("1")
+                && !productDetailData.getPreOrder().getPreorderStatus().equals("0")
+                && !productDetailData.getPreOrder().getPreorderProcessTime().equals("0")
+                && !productDetailData.getPreOrder().getPreorderProcessTimeType().equals("0")
+                && !productDetailData.getPreOrder().getPreorderProcessTimeTypeString().equals("0");
     }
 
     private Drawable generateBackgroundButtonBuy() {
