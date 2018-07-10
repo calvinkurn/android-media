@@ -57,6 +57,10 @@ public class ActionButton {
     @Expose
     private String key;
 
+    @SerializedName("color")
+    @Expose
+    private TapActionColor tapActionColor;
+
     public Body getBody() {
         return Body;
     }
@@ -159,6 +163,14 @@ public class ActionButton {
 
     public void setKey(String key) {
         this.key = key;
+    }
+
+    public TapActionColor getTapActionColor() {
+        return tapActionColor;
+    }
+
+    public void setTapActionColor(TapActionColor tapActionColor) {
+        this.tapActionColor = tapActionColor;
     }
 
     @Override

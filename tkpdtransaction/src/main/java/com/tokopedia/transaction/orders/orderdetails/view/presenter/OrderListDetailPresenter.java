@@ -10,6 +10,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
+import com.tokopedia.transaction.orders.orderdetails.data.ActionButtonList;
 import com.tokopedia.transaction.orders.orderdetails.data.AdditionalInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.Detail;
 import com.tokopedia.transaction.orders.orderdetails.data.DetailsData;
@@ -38,6 +39,7 @@ import rx.schedulers.Schedulers;
 public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetailContract.View> implements OrderListDetailContract.Presenter {
     GraphqlUseCase orderDetailsUseCase;
     List<TapActions> tapActionsList;
+    List<ActionButton> actionButtonList;
     OrderListDetailContract.TapActionInterface view;
 
     @Inject
@@ -125,6 +127,47 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                             tapActionsList = data.getTapActionsList();
                             if (tapActionsList != null)
                                 view.setTapActionButton(position, tapActionsList);
+                        }
+                    }
+                });
+    }
+
+    @Override
+    public void setActionButton(List<ActionButton> actionButtons, OrderListDetailContract.TapActionInterface view, int position) {
+        Map<String, Object> variables = new HashMap<>();
+        this.view = view;
+        variables.put("param", actionButtons);
+
+        orderDetailsUseCase = new GraphqlUseCase();
+
+
+        GraphqlRequest graphqlRequest = new
+                GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
+                R.raw.tapactions), TapActionList.class, variables);
+
+        orderDetailsUseCase.clearRequest();
+        orderDetailsUseCase.setRequest(graphqlRequest);
+        orderDetailsUseCase.createObservable(RequestParams.EMPTY).subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<GraphqlResponse>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e("sandeep", "error = " + e);
+                    }
+
+                    @Override
+                    public void onNext(GraphqlResponse response) {
+
+                        if (response != null) {
+                            ActionButtonList data = response.getData(ActionButtonList.class);
+                            actionButtonList = data.getActionButtonList();
+                            if (actionButtonList != null)
+                                view.setActionButton(position, actionButtonList);
                         }
                     }
                 });

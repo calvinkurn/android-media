@@ -40,6 +40,8 @@ public class Items {
 
     private boolean isTapActionsLoaded;
 
+    private boolean isActionButtonLoaded;
+
 
     public String getTitle() {
         return title;
@@ -111,6 +113,14 @@ public class Items {
 
     public void setTapActionsLoaded(boolean tapActionsLoaded) {
         isTapActionsLoaded = tapActionsLoaded;
+    }
+
+    public boolean isActionButtonLoaded() {
+        return isActionButtonLoaded;
+    }
+
+    public void setActionButtonLoaded(boolean actionButtonLoaded) {
+        isActionButtonLoaded = actionButtonLoaded;
     }
 
     @Override

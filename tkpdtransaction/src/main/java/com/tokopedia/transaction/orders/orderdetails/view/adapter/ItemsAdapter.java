@@ -101,6 +101,13 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         notifyItemChanged(position);
     }
 
+    @Override
+    public void setActionButton(int position, List<ActionButton> actionButtons) {
+        itemsList.get(position).setActionButtons(actionButtons);
+        itemsList.get(position).setActionButtonLoaded(true);
+        notifyItemChanged(position);
+    }
+
     private View.OnClickListener getActionButtonClickListener(final String uri) {
         return new View.OnClickListener() {
             @Override
@@ -209,12 +216,10 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     }
                     if (!tapActions.getTapActionColor().getBorder().equals("")) {
                         shape.setStroke(1, android.graphics.Color.parseColor(tapActions.getTapActionColor().getBorder()));
-                    } else {
-                        shape.setStroke(1, Color.GREEN);
                     }
                     tapActionTextView.setBackground(shape);
                     if (!tapActions.getTapActionColor().getTextColor().equals("")) {
-                        tapActionTextView.setTextColor(Integer.parseInt(tapActions.getTapActionColor().getTextColor()));
+                        tapActionTextView.setTextColor(android.graphics.Color.parseColor(tapActions.getTapActionColor().getTextColor()));
                     } else {
                         tapActionTextView.setTextColor(Color.WHITE);
                     }
@@ -230,38 +235,67 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     }
 
                     tapActionTextView.setBackground(shape);
-                    if (!tapActions.getBody().equals(""))
-                        tapActionTextView.setOnClickListener(getActionButtonClickListener(tapActions.getBody().getAppURL()));
+                    if (tapActions.getButtonType().equalsIgnoreCase("button")) {
+                        presenter.setTapActionButton(item.getTapActions(), ItemsAdapter.this, getIndex());
+                    } else if (tapActions.getButtonType().equalsIgnoreCase("redirect")) {
+                        if (!tapActions.getBody().equals("")) {
+                            if (!tapActions.getBody().getAppURL().equals(""))
+                                tapActionTextView.setOnClickListener(getActionButtonClickListener(tapActions.getBody().getAppURL()));
+                        }
+                    }
+
                     tapActionLayout.addView(tapActionTextView);
                 }
 
 
             }
 
-            if (item.getActionButtons() != null) {
-                if (item.getActionButtons().size() > 0) {
-                    actionLayout.setVisibility(View.VISIBLE);
-                }else{
-                    actionLayout.setVisibility(View.GONE);
-                }
-                actionLayout.removeAllViews();
-                for (int i = 0; i < item.getActionButtons().size(); i++) {
 
+
+            if (item.getActionButtons() != null && item.getActionButtons().size() > 0 && !item.isActionButtonLoaded()) {
+                progressBar.setVisibility(View.VISIBLE);
+                actionLayout.setVisibility(View.GONE);
+                presenter.setActionButton(item.getActionButtons(), ItemsAdapter.this, getIndex());
+            }
+
+            if (item.isActionButtonLoaded()) {
+                progressBar.setVisibility(View.GONE);
+                if (item.getActionButtons() == null || item.getActionButtons().size() == 0) {
+                    actionLayout.setVisibility(View.GONE);
+                } else {
+                    actionLayout.setVisibility(View.VISIBLE);
+                }
+
+                for (int i = 0; i < item.getActionButtons().size(); i++) {
                     ActionButton actionButton = item.getActionButtons().get(i);
 
-                    TextView actionBtn = new TextView(context);
+                    TextView actionTextView = new TextView(context);
                     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                     params.setMargins(0, (int) context.getResources().getDimension(R.dimen.dp_8), 0, 0);
-                    actionBtn.setPadding(24, 24, 24, 24);
-                    actionBtn.setLayoutParams(params);
-
-                    actionBtn.setGravity(Gravity.CENTER_HORIZONTAL);
-                    actionBtn.setText(actionButton.getLabel().toUpperCase());
+                    actionTextView.setPadding(24, 24, 24, 24);
+                    actionTextView.setLayoutParams(params);
+                    actionTextView.setTextColor(Color.WHITE);
+                    actionTextView.setGravity(Gravity.CENTER_HORIZONTAL);
+                    actionTextView.setText(actionButton.getLabel().toUpperCase());
                     GradientDrawable shape = new GradientDrawable();
                     shape.setShape(GradientDrawable.RECTANGLE);
+                    if (!actionButton.getTapActionColor().getBackground().equals("")) {
+                        shape.setColor(android.graphics.Color.parseColor(actionButton.getTapActionColor().getBackground()));
+                    } else {
+                        shape.setColor(context.getResources().getColor(R.color.green_nob));
+                    }
+                    if (!actionButton.getTapActionColor().getBorder().equals("")) {
+                        shape.setStroke(1, android.graphics.Color.parseColor(actionButton.getTapActionColor().getBorder()));
+                    }
+                    actionTextView.setBackground(shape);
+                    if (!actionButton.getTapActionColor().getTextColor().equals("")) {
+                        actionTextView.setTextColor(android.graphics.Color.parseColor(actionButton.getTapActionColor().getTextColor()));
+                    } else {
+                        actionTextView.setTextColor(Color.WHITE);
+                    }
 
 
-                    if (i == item.getTapActions().size() - 1) {
+                    if (i == item.getTapActions().size() - 1 && (item.getActionButtons() != null || item.getActionButtons().size() == 0)) {
                         float radius = context.getResources().getDimension(R.dimen.dp_4);
                         shape.setCornerRadii(new float[]{0, 0, 0, 0, radius, radius, radius, radius});
 
@@ -269,10 +303,21 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
                         shape.setCornerRadius(4);
                     }
-                    actionBtn.setBackground(shape);
-                    actionBtn.setOnClickListener(getActionButtonClickListener(actionButton.getBody().getAppURL()));
-                    actionLayout.addView(actionBtn);
+
+                    actionTextView.setBackground(shape);
+                    if (actionButton.getButtonType().equalsIgnoreCase("button")) {
+                        presenter.setTapActionButton(item.getTapActions(), ItemsAdapter.this, getIndex());
+                    } else if (actionButton.getButtonType().equalsIgnoreCase("redirect")) {
+                        if (!actionButton.getBody().equals("")) {
+                            if (!actionButton.getBody().getAppURL().equals(""))
+                                actionTextView.setOnClickListener(getActionButtonClickListener(actionButton.getBody().getAppURL()));
+                        }
+                    }
+
+                    actionLayout.addView(actionTextView);
                 }
+
+
             }
         }
 

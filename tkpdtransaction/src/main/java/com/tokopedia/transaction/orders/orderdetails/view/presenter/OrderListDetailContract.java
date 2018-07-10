@@ -71,11 +71,15 @@ public interface OrderListDetailContract {
 
         void setTapActionButton(List<TapActions> tapActionButton, TapActionInterface view, int position);
 
+        void setActionButton(List<ActionButton> actionButtons, TapActionInterface view, int position);
+
         List<TapActions> getTapActionList();
     }
 
     interface TapActionInterface {
         void setTapActionButton(int position, List<TapActions> tapActions);
+
+        void setActionButton(int position, List<ActionButton> actionButtons);
 
     }
 }
