@@ -141,8 +141,6 @@ public class TrainHomepagePresenterImpl extends BaseDaggerPresenter<TrainHomepag
         }
 
         renderUi();
-//        setupViewModel();
-//        singleTrip() ;
     }
 
     @Override
