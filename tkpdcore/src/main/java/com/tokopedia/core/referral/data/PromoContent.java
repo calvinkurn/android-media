@@ -12,6 +12,10 @@ public class PromoContent {
     @Expose
     private String code;
 
+    @SerializedName("url")
+    @Expose
+    private String url;
+
     @SerializedName("content")
     @Expose
     private String content;

@@ -113,7 +113,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
 
     private void formatSharingContents() {
         if (!isAppShowReferralButtonActivated()) {
-            contents = getAppShareDescription();
+            contents = getAppShareDescription() + activity.getString(R.string.cek_label);
         } else if (TextUtils.isEmpty(contents)) {
             contents = getAppShareDefaultMessage();
         }

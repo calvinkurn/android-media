@@ -69,6 +69,7 @@ public class BranchSdkUtils {
         if (isBranchUrlActivated(activity, data.getType()) && !ShareData.RIDE_TYPE.equalsIgnoreCase(data.getType())) {
             if (ShareData.REFERRAL_TYPE.equalsIgnoreCase(data.getType()) && !TextUtils.isEmpty(data.getshareUrl())) {
                 ShareContentsCreateListener.onCreateShareContents(data.getTextContentForBranch(data.getshareUrl()), data.getTextContentForBranch(data.getshareUrl()), data.getshareUrl());
+
             } else {
                 BranchUniversalObject branchUniversalObject = createBranchUniversalObject(data);
                 LinkProperties linkProperties = createLinkProperties(data, data.getSource(), activity);
