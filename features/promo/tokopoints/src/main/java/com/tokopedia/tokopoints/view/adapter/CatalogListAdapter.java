@@ -24,6 +24,7 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
 
     private List<CatalogsValueEntity> mItems;
     private CatalogPurchaseRedemptionPresenter mPresenter;
+    private boolean mIsLimitEnable;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView title, label, value, btnContinue, pointValue, quota;
@@ -46,6 +47,12 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
     public CatalogListAdapter(CatalogPurchaseRedemptionPresenter presenter, List<CatalogsValueEntity> items) {
         this.mPresenter = presenter;
         this.mItems = items;
+    }
+
+    public CatalogListAdapter(CatalogPurchaseRedemptionPresenter presenter, List<CatalogsValueEntity> items, boolean isLimitEnable) {
+        this.mPresenter = presenter;
+        this.mItems = items;
+        this.mIsLimitEnable = isLimitEnable;
     }
 
     @Override
@@ -89,7 +96,11 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
 
     @Override
     public int getItemCount() {
-        return mItems.size() > CommonConstant.HOMEPAGE_PAGE_SIZE ? CommonConstant.HOMEPAGE_PAGE_SIZE : mItems.size();
+        if (mIsLimitEnable) {
+            return mItems.size() > CommonConstant.HOMEPAGE_PAGE_SIZE ? CommonConstant.HOMEPAGE_PAGE_SIZE : mItems.size();
+        } else {
+            return mItems.size();
+        }
     }
 
     public void updateItems(List<CatalogsValueEntity> items) {

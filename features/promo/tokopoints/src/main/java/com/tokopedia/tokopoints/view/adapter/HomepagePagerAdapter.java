@@ -30,8 +30,8 @@ public class HomepagePagerAdapter extends PagerAdapter {
         this.mCatalogs = catalogs;
         this.mCoupons = coupons;
         this.mPresenter = presenter;
-        this.mCatalogsAdapter = new CatalogListAdapter(presenter, mCatalogs);
-        this.mCouponsAdapter = new CouponListAdapter(presenter, mCoupons);
+        this.mCatalogsAdapter = new CatalogListAdapter(presenter, mCatalogs, true);
+        this.mCouponsAdapter = new CouponListAdapter(presenter, mCoupons, true);
     }
 
     @Override

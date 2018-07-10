@@ -19,6 +19,7 @@ public class CouponListAdapter extends RecyclerView.Adapter<CouponListAdapter.Vi
 
     private List<CouponValueEntity> mItems;
     private CatalogPurchaseRedemptionPresenter mPresenter;
+    private boolean mIsLimitEnable;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView title, label, value, btnContinue;
@@ -38,6 +39,12 @@ public class CouponListAdapter extends RecyclerView.Adapter<CouponListAdapter.Vi
     public CouponListAdapter(CatalogPurchaseRedemptionPresenter presenter, List<CouponValueEntity> items) {
         this.mItems = items;
         this.mPresenter = presenter;
+    }
+
+    public CouponListAdapter(CatalogPurchaseRedemptionPresenter presenter, List<CouponValueEntity> items, boolean isLimitEnable) {
+        this.mItems = items;
+        this.mPresenter = presenter;
+        this.mIsLimitEnable = isLimitEnable;
     }
 
     @Override
@@ -72,6 +79,10 @@ public class CouponListAdapter extends RecyclerView.Adapter<CouponListAdapter.Vi
 
     @Override
     public int getItemCount() {
-        return mItems.size() > CommonConstant.HOMEPAGE_PAGE_SIZE ? CommonConstant.HOMEPAGE_PAGE_SIZE : mItems.size();
+        if (mIsLimitEnable) {
+            return mItems.size() > CommonConstant.HOMEPAGE_PAGE_SIZE ? CommonConstant.HOMEPAGE_PAGE_SIZE : mItems.size();
+        } else {
+            return mItems.size();
+        }
     }
 }
