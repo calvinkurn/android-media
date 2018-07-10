@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatCheckBox;
@@ -176,7 +177,13 @@ public class FlightInsuranceView extends LinearLayout {
     }
 
     private SpannableStringBuilder buildTncText(String tncAggreement, String tncUrl, String title) {
-        String asterisk = "*";
+        SpannableStringBuilder descriptionStr = setMoreInfoToBold(tncAggreement, tncUrl, title);
+        setAsteriskToBold(tncAggreement, descriptionStr);
+        return descriptionStr;
+    }
+
+    @NonNull
+    private SpannableStringBuilder setMoreInfoToBold(String tncAggreement, String tncUrl, String title) {
         final int color = getResources().getColor(R.color.green_300);
         String fullText = String.format("%s. ", tncAggreement);
         if (tncUrl != null && tncUrl.length() > 0) {
@@ -201,6 +208,11 @@ public class FlightInsuranceView extends LinearLayout {
             }
         };
         descriptionStr.setSpan(clickableSpan, tncAggreement.length() + 2, stopIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return descriptionStr;
+    }
+
+    private void setAsteriskToBold(String tncAggreement, SpannableStringBuilder descriptionStr) {
+        String asterisk = "*";
         int firstAsterisk = tncAggreement.indexOf(asterisk);
         int lastAsterisk = tncAggreement.lastIndexOf(asterisk);
         if (firstAsterisk != -1 && lastAsterisk != -1 && firstAsterisk != lastAsterisk) {
@@ -217,7 +229,6 @@ public class FlightInsuranceView extends LinearLayout {
             descriptionStr.delete(firstAsterisk, firstAsterisk + 1);
             descriptionStr.setSpan(asteriskStyle, firstAsterisk, lastAsterisk, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
-        return descriptionStr;
     }
 
     public void setListener(ActionListener listener) {
