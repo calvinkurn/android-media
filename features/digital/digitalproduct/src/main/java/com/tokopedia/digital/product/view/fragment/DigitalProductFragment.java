@@ -76,7 +76,7 @@ import com.tokopedia.digital.product.view.activity.DigitalChooserActivity;
 import com.tokopedia.digital.product.view.activity.DigitalSearchNumberActivity;
 import com.tokopedia.digital.product.view.activity.DigitalUssdActivity;
 import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
-import com.tokopedia.digital.product.view.adapter.PromoPanduanPagerAdapter;
+import com.tokopedia.digital.product.view.adapter.PromoGuidePagerAdapter;
 import com.tokopedia.digital.product.view.compoundview.CheckPulsaBalanceView;
 import com.tokopedia.digital.product.view.compoundview.DigitalWrapContentViewPager;
 import com.tokopedia.digital.product.view.listener.IProductDigitalView;
@@ -206,7 +206,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     private ShowCaseDialog showCaseDialog;
     private int selectedSimIndex = 0;//start from 0
     private boolean ussdInProgress = false;
-    private PromoPanduanPagerAdapter promoPanduanPagerAdapter;
+    private PromoGuidePagerAdapter promoPanduanPagerAdapter;
 
     public static Fragment newInstance(
             String categoryId, String operatorId, String productId, String clientNumber,
@@ -1255,7 +1255,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     private PagerAdapter getViewPagerAdapter(int tabCount, String firstTab) {
-        promoPanduanPagerAdapter = new PromoPanduanPagerAdapter(getFragmentManager(), context,
+        promoPanduanPagerAdapter = new PromoGuidePagerAdapter(getFragmentManager(), context,
                 tabCount, firstTab);
         return promoPanduanPagerAdapter;
     }

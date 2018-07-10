@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.product.view.adapter.PanduanAdapter;
+import com.tokopedia.digital.product.view.adapter.GuideAdapter;
 import com.tokopedia.digital.product.view.model.GuideData;
 import com.tokopedia.digital.utils.LinearLayoutManagerNonScroll;
 
@@ -19,22 +19,22 @@ import java.util.List;
  * @author by furqan on 07/06/18.
  */
 
-public class DigitalPanduanFragment extends Fragment {
+public class DigitalGuideFragment extends Fragment {
 
-    private RecyclerView rvPanduan;
+    private RecyclerView rvGuide;
 
-    private DigitalPanduanConnector connector;
-    private PanduanAdapter adapter;
+    private DigitalGuideConnector connector;
+    private GuideAdapter adapter;
 
-    public static DigitalPanduanFragment createInstance() {
-        return new DigitalPanduanFragment();
+    public static DigitalGuideFragment createInstance() {
+        return new DigitalGuideFragment();
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_digital_panduan, container, false);
-        rvPanduan = view.findViewById(R.id.rv_panduan);
+        rvGuide = view.findViewById(R.id.rv_panduan);
         return view;
     }
 
@@ -46,9 +46,9 @@ public class DigitalPanduanFragment extends Fragment {
     }
 
     private void initView() {
-        rvPanduan.setLayoutManager(new LinearLayoutManagerNonScroll(getActivity()));
-        adapter = new PanduanAdapter(getActivity());
-        rvPanduan.setAdapter(adapter);
+        rvGuide.setLayoutManager(new LinearLayoutManagerNonScroll(getActivity()));
+        adapter = new GuideAdapter(getActivity());
+        rvGuide.setAdapter(adapter);
         renderData();
     }
 
@@ -56,11 +56,11 @@ public class DigitalPanduanFragment extends Fragment {
         adapter.addData(connector.getGuideDataList());
     }
 
-    public void setConnector(DigitalPanduanConnector connector) {
+    public void setConnector(DigitalGuideConnector connector) {
         this.connector = connector;
     }
 
-    public interface DigitalPanduanConnector {
+    public interface DigitalGuideConnector {
 
         List<GuideData> getGuideDataList();
 

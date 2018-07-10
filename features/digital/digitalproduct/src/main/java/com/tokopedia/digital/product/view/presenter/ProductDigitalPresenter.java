@@ -54,8 +54,8 @@ import java.util.List;
 
 import rx.Subscriber;
 
-import static com.tokopedia.digital.product.view.adapter.PromoPanduanPagerAdapter.PANDUAN_TAB;
-import static com.tokopedia.digital.product.view.adapter.PromoPanduanPagerAdapter.PROMO_TAB;
+import static com.tokopedia.digital.product.view.adapter.PromoGuidePagerAdapter.PANDUAN_TAB;
+import static com.tokopedia.digital.product.view.adapter.PromoGuidePagerAdapter.PROMO_TAB;
 
 /**
  * @author anggaprasetiyo on 4/26/17.

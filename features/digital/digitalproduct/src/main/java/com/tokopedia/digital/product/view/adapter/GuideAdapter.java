@@ -23,7 +23,7 @@ import java.util.List;
  * @author by furqan on 04/07/18.
  */
 
-public class PanduanAdapter extends RecyclerView.Adapter<PanduanAdapter.PanduanViewHolder> {
+public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.PanduanViewHolder> {
 
     private static final int LAYOUT = R.layout.item_panduan_tab;
 
@@ -31,7 +31,7 @@ public class PanduanAdapter extends RecyclerView.Adapter<PanduanAdapter.PanduanV
     private Context context;
     private YouTubeThumbnailLoader youTubeThumbnailLoader;
 
-    public PanduanAdapter(Context context) {
+    public GuideAdapter(Context context) {
         this.context = context;
     }
 

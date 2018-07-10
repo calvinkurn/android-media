@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.view.compoundview.DigitalWrapContentViewPager;
-import com.tokopedia.digital.product.view.fragment.DigitalPanduanFragment;
+import com.tokopedia.digital.product.view.fragment.DigitalGuideFragment;
 import com.tokopedia.digital.product.view.fragment.DigitalPromoFragment;
 import com.tokopedia.digital.product.view.model.BannerData;
 import com.tokopedia.digital.product.view.model.GuideData;
@@ -19,8 +19,8 @@ import java.util.List;
  * @author by furqan on 07/06/18.
  */
 
-public class PromoPanduanPagerAdapter extends FragmentStatePagerAdapter
-        implements DigitalPromoFragment.DigitalPromoConnector, DigitalPanduanFragment.DigitalPanduanConnector{
+public class PromoGuidePagerAdapter extends FragmentStatePagerAdapter
+        implements DigitalPromoFragment.DigitalPromoConnector, DigitalGuideFragment.DigitalGuideConnector {
 
     public static final String PROMO_TAB = "promo_tab";
     public static final String PANDUAN_TAB = "panduan_tab";
@@ -31,7 +31,7 @@ public class PromoPanduanPagerAdapter extends FragmentStatePagerAdapter
     private String firstTab;
 
     private DigitalPromoFragment digitalPromoFragment;
-    private DigitalPanduanFragment digitalPanduanFragment;
+    private DigitalGuideFragment digitalGuideFragment;
 
     private String bannerDataTitle;
     private List<BannerData> bannerDataList;
@@ -39,7 +39,7 @@ public class PromoPanduanPagerAdapter extends FragmentStatePagerAdapter
     private List<BannerData> otherBannerDataList;
     private List<GuideData> guideDataList;
 
-    public PromoPanduanPagerAdapter(FragmentManager fm, Context context, int tabCount, String firstTab) {
+    public PromoGuidePagerAdapter(FragmentManager fm, Context context, int tabCount, String firstTab) {
         super(fm);
         this.context = context;
         this.tabCount = tabCount;
@@ -84,14 +84,14 @@ public class PromoPanduanPagerAdapter extends FragmentStatePagerAdapter
                     digitalPromoFragment.setDigitalPromoConnector(this);
                     return digitalPromoFragment;
                 } else if (firstTab.equals(PANDUAN_TAB)) {
-                    digitalPanduanFragment = DigitalPanduanFragment.createInstance();
-                    digitalPanduanFragment.setConnector(this);
-                    return digitalPanduanFragment;
+                    digitalGuideFragment = DigitalGuideFragment.createInstance();
+                    digitalGuideFragment.setConnector(this);
+                    return digitalGuideFragment;
                 }
             case 1 :
-                digitalPanduanFragment = DigitalPanduanFragment.createInstance();
-                digitalPanduanFragment.setConnector(this);
-                return digitalPanduanFragment;
+                digitalGuideFragment = DigitalGuideFragment.createInstance();
+                digitalGuideFragment.setConnector(this);
+                return digitalGuideFragment;
             default :
                 return null;
         }
