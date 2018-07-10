@@ -65,7 +65,6 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
     private int currentPage, totalPages;
     private List<AdapterCallbacks> adapterCallbacks;
     private boolean showFavAfterLogin = false;
-    Subscription subscription;
 
 
     @Inject
@@ -245,7 +244,7 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
     }
 
     @Override
-    public void setupCallback(EventsContract.AdapterCallbacks callbacks) {
+    public void setupCallback(AdapterCallbacks callbacks) {
         this.adapterCallbacks.add(callbacks);
     }
 

@@ -28,6 +28,7 @@ import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsMultipleAddress;
+import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,7 +80,7 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
 
     @Override
     protected String getScreenName() {
-        return null;
+        return ConstantTransactionAnalytics.ScreenName.MULTI_ADDRESS_PAGE;
     }
 
     @Override
@@ -302,5 +303,11 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
 
     public void stayInPage() {
         checkoutAnalyticsMultipleAddress.eventClickMultipleAddressClickTetapDiHalamanIniFromKirimKeBeberapaAlamat();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        checkoutAnalyticsChangeAddress.sendScreenName(getActivity(), getScreenName());
     }
 }
