@@ -101,6 +101,8 @@ public class HotlistFragment extends SearchSectionFragment
     private static final String EXTRA_ALIAS = "extra_alias";
     private static final String EXTRA_QUERY_HOTLIST = "EXTRA_QUERY_HOTLIST";
     private static final String EXTRA_DISABLE_TOPADS = "EXTRA_DISABLE_TOPADS";
+    private static final String EXTRA_HEADER_URL = "EXTRA_HEADER_URL";
+    private static final String EXTRA_DESC = "EXTRA_DESC";
 
     private static final int REQUEST_ACTIVITY_SORT_HOTLIST = 2021;
     private static final int REQUEST_ACTIVITY_FILTER_HOTLIST = 1202;
@@ -115,6 +117,8 @@ public class HotlistFragment extends SearchSectionFragment
 
     private String aliasHotlist;
     private String shareUrl;
+    private String descTxt;
+    private String headerUrl;
     private HotlistQueryModel queryModel;
     private boolean disableTopads;
 
@@ -179,6 +183,7 @@ public class HotlistFragment extends SearchSectionFragment
 
     @Override
     public void loadImageHeader(String bannerImageUrl) {
+        this.headerUrl = bannerImageUrl;
         ImageView imageHeader = getActivity().findViewById(R.id.hotlist_background);
         ImageHandler.loadImageSourceSize(getContext(), imageHeader, bannerImageUrl);
     }
@@ -190,6 +195,7 @@ public class HotlistFragment extends SearchSectionFragment
 
     @Override
     public void setDescription(String description) {
+        this.descTxt = description;
         ((HotlistActivity) getActivity()).renderHotlistDescription(description);
     }
 
@@ -311,6 +317,8 @@ public class HotlistFragment extends SearchSectionFragment
         outState.putString(EXTRA_ALIAS, getHotlistAlias());
         outState.putParcelable(EXTRA_QUERY_HOTLIST, getQueryModel());
         outState.putBoolean(EXTRA_DISABLE_TOPADS, isDisableTopads());
+        outState.putString(EXTRA_HEADER_URL, headerUrl);
+        outState.putString(EXTRA_DESC, descTxt);
     }
 
     @Override
@@ -322,6 +330,8 @@ public class HotlistFragment extends SearchSectionFragment
         switchLayoutType();
         initTopAdsParams();
         hotlistAdapter.onRestoreInstanceState(savedInstanceState);
+        loadImageHeader(savedInstanceState.getString(EXTRA_HEADER_URL));
+        setDescription(savedInstanceState.getString(EXTRA_DESC));
     }
 
     @Override
