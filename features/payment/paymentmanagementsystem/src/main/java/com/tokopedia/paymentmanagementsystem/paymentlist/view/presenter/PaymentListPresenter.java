@@ -11,12 +11,9 @@ import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.paymentmanagementsystem.R;
 import com.tokopedia.paymentmanagementsystem.common.Constant;
-import com.tokopedia.paymentmanagementsystem.paymentlist.data.model.CancelDetail;
-import com.tokopedia.paymentmanagementsystem.paymentlist.data.model.CancelPayment;
 import com.tokopedia.paymentmanagementsystem.paymentlist.data.model.DataCancelDetail;
 import com.tokopedia.paymentmanagementsystem.paymentlist.data.model.DataCancelPayment;
 import com.tokopedia.paymentmanagementsystem.paymentlist.data.model.DataPaymentList;
-import com.tokopedia.paymentmanagementsystem.paymentlist.data.model.PaymentList;
 import com.tokopedia.paymentmanagementsystem.paymentlist.view.mapper.PaymentListMapper;
 import com.tokopedia.usecase.RequestParams;
 
@@ -44,9 +41,11 @@ public class PaymentListPresenter extends BaseDaggerPresenter<PaymentListContrac
         this.cancelPaymentUseCase = cancelPaymentUseCase;
     }
 
-    public void getPaymentList(Resources resources, Context context) {
+    public void getPaymentList(Resources resources, Context context, int page) {
+        Map<String, Object> variables = new HashMap<>();
+        variables.put(Constant.PAGE, page);
         GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(resources,
-                R.raw.payment_list_query), DataPaymentList.class);
+                R.raw.payment_list_query), DataPaymentList.class, variables);
         getPaymentListUseCase.clearRequest();
         getPaymentListUseCase.setRequest(graphqlRequest);
         getPaymentListUseCase.execute(RequestParams.create(), new Subscriber<GraphqlResponse>() {
@@ -63,7 +62,7 @@ public class PaymentListPresenter extends BaseDaggerPresenter<PaymentListContrac
             @Override
             public void onNext(GraphqlResponse objects) {
                 DataPaymentList paymentList = objects.getData(DataPaymentList.class);
-                getView().renderList(paymentListMapper.map(paymentList.getPaymentList().getPaymentList(), context));
+                getView().renderList(paymentListMapper.map(paymentList.getPaymentList().getPaymentList(), context), paymentList.getPaymentList().isHasNextPage());
             }
         });
     }

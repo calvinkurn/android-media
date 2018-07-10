@@ -105,6 +105,7 @@ public class PaymentListFragment extends BaseListFragment<PaymentListModel, Paym
     public void onResultCancelPayment(boolean isSuccess, String message) {
         if(isSuccess){
             NetworkErrorHelper.showGreenCloseSnackbar(getActivity(), message);
+            onSwipeRefresh();
         }else{
             NetworkErrorHelper.showRedCloseSnackbar(getActivity(), message);
         }
@@ -137,7 +138,7 @@ public class PaymentListFragment extends BaseListFragment<PaymentListModel, Paym
 
     @Override
     public void loadData(int page) {
-        paymentListPresenter.getPaymentList(getResources(), getContext());
+        paymentListPresenter.getPaymentList(getResources(), getContext(), page);
     }
 
     @Override

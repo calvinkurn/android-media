@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.fragment.BaseWebViewFragment;
+import com.tokopedia.abstraction.common.utils.network.URLGenerator;
 import com.tokopedia.paymentmanagementsystem.common.Constant;
 
 /**
@@ -15,7 +16,11 @@ import com.tokopedia.paymentmanagementsystem.common.Constant;
 public class InvoiceDetailFragment extends BaseWebViewFragment {
     @Override
     protected String getUrl() {
-        return getArguments().getString(Constant.INVOICE_URL_EXTRA);
+        String deviceId = "";
+        if(getActivity().getApplication() instanceof AbstractionRouter){
+            deviceId =  ((AbstractionRouter)getActivity().getApplication()).getSession().getDeviceId();
+        }
+        return URLGenerator.generateURLSessionLogin(getArguments().getString(Constant.INVOICE_URL_EXTRA), deviceId, getUserIdForHeader());
     }
 
     @Nullable
@@ -43,4 +48,6 @@ public class InvoiceDetailFragment extends BaseWebViewFragment {
         invoiceDetailFragment.setArguments(bundle);
         return invoiceDetailFragment;
     }
+
+
 }

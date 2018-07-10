@@ -164,6 +164,7 @@
                         <android.support.v7.widget.AppCompatTextView
                             android:id="@+id/tv_label_sender_account"
                             style="@style/TextView.Micro.BlackSecondary"
+                            android:layout_marginBottom="@dimen/dp_8"
                             android:text="@string/payment_label_acc_sender" />
 
                         <android.support.v7.widget.AppCompatTextView
@@ -180,8 +181,7 @@
                     <View
                         android:id="@+id/separator_vertical"
                         android:layout_width="1dp"
-                        android:layout_height="wrap_content"
-                        android:layout_alignBottom="@+id/container_sender"
+                        android:layout_height="@dimen/dp_60"
                         android:layout_centerHorizontal="true"
                         android:background="@drawable/bg_line_separator_vertical" />
 
@@ -199,6 +199,7 @@
                         <android.support.v7.widget.AppCompatTextView
                             android:id="@+id/tv_label_receiver_account"
                             style="@style/TextView.Micro.BlackSecondary"
+                            android:layout_marginBottom="@dimen/dp_8"
                             android:text="@string/payment_label_acc_dest" />
 
                         <android.support.v7.widget.AppCompatTextView

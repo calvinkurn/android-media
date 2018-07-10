@@ -29,7 +29,7 @@ public interface PaymentListContract {
 
     interface Presenter extends CustomerPresenter<View>{
 
-        void getPaymentList(Resources resources, Context context);
+        void getPaymentList(Resources resources, Context context, int page);
 
         void getCancelDetail(Resources resources, String transactionID, String merchantCode);
 
