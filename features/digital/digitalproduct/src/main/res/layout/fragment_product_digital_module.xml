@@ -39,7 +39,7 @@
                 android:orientation="vertical" />
 
             <View
-                android:id="@+id/panduan_separator"
+                android:id="@+id/guide_separator"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginBottom="@dimen/dp_5"
