@@ -37,7 +37,6 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 import static com.tokopedia.tkpd.campaign.domain.shake.ShakeUseCase.IS_AUDIO;
@@ -72,7 +71,7 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
     }
 
     private boolean isDoubleShakeShakeEnable() {
-        return remoteConfig.getBoolean(FIREBASE_DOUBLE_SHAKE_CONFIG_KEY,true) || true; //enable double shake shake default
+        return remoteConfig.getBoolean(FIREBASE_DOUBLE_SHAKE_CONFIG_KEY,true);
 
     }
 
@@ -228,8 +227,8 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
     public void onDisableShakeShake() {
         //disable the shake shake
         ShakeDetectManager.getShakeDetectManager().disableShakeShake();
-        if(SessionHandler.isV4Login(getView().getActivity())) {
-            getView().getActivity().startActivity(ManageGeneral.getCallingIntent(getView().getActivity(), ManageGeneral.TAB_POSITION_MANAGE_APP));
+        if(SessionHandler.isV4Login(getView().getCurrentActivity())) {
+            getView().getCurrentActivity().startActivity(ManageGeneral.getCallingIntent(getView().getCurrentActivity(), ManageGeneral.TAB_POSITION_MANAGE_APP));
             getView().finish();
         }else {
             getView().makeInvisibleShakeShakeDisableView();

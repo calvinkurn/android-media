@@ -2,12 +2,9 @@ package com.tokopedia.tkpd.campaign.view.activity;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.LinearLayoutCompat;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,9 +23,7 @@ import com.tokopedia.tkpd.campaign.view.presenter.ShakeDetectPresenter;
 
 import javax.inject.Inject;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * Created by sandeepgoyal on 14/02/18.
@@ -39,15 +34,15 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
 
 
     public static String SCREEN_NAME = "ShakeDetectCampaignActivity";
-    View shakeShakeMessageButton;
-    View parent;
-    View cancelButton;
-    View cancelBtn;
-    View disableShakeShake;
-    View layoutshakeShakeErrorMsg;
-    View btnShakeClose;
-    TextView shakeShakeErrorMsg;
-    View btnTurnOff;
+    private View shakeShakeMessageButton;
+    private View parent;
+    private View cancelButton;
+    private View cancelBtn;
+    private View disableShakeShake;
+    private View layoutshakeShakeErrorMsg;
+    private View btnShakeClose;
+    private TextView shakeShakeErrorMsg;
+    private View btnTurnOff;
     private TkpdProgressDialog progressDialog;
     protected CampaignComponent campaignComponent;
 
@@ -57,7 +52,7 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
     TextView shakeShakeMessage;
     public static final String KEY_LONG_SHAKE = "KEY_LONG_SHAKE_SHAKE";
     private View cancelBtn1;
-    View cancelBtn2;
+    private View cancelBtn2;
 
     @Override
     protected Fragment getNewFragment() {
@@ -217,7 +212,7 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
                         new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                startActivity(((TkpdCoreRouter)(getActivity().getApplication())).getLoginIntent(getActivity()));
+                                startActivity(((TkpdCoreRouter)(getApplication())).getLoginIntent(getCurrentActivity()));
                                 finish();
                             }
                         })
@@ -244,7 +239,7 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
     }
 
     @Override
-    public Activity getActivity() {
+    public Activity getCurrentActivity() {
         return this;
     }
 

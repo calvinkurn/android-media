@@ -40,8 +40,8 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
     public static final String ACTION_SHAKE_SHAKE_SYNCED = "com.tkpd.action.shake.shake";
     public static final String FIREBASE_SHAKE_SHAKE_REMOTE_CONFIG_KEY = "app_shake_feature_enabled";
     public static final String FIREBASE_SHAKE_SHAKE_AUDIO_REMOTE_CONFIG_KEY = "audio_campaign_is_audio";
-    SharedPreferences sharedPreferences;
-    String NOTIFICATION_SHAKE_SHAKE = Constants.Settings.NOTIFICATION_SHAKE_SHAKE;
+    private SharedPreferences sharedPreferences;
+    private String NOTIFICATION_SHAKE_SHAKE = Constants.Settings.NOTIFICATION_SHAKE_SHAKE;
     public static final int MESSAGE_ENABLE_SHAKE = 1;
     public static final int MESSAGE_DISABLE_SHAKE = 2;
     public static final int MESSAGE_SHAKE_START = 3;
@@ -112,7 +112,7 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
     }
 
     private boolean isShakeShakeEnable() {
-        return (true || remoteConfig.getBoolean(FIREBASE_SHAKE_SHAKE_REMOTE_CONFIG_KEY,true)) && isNotificationOn;
+        return remoteConfig.getBoolean(FIREBASE_SHAKE_SHAKE_REMOTE_CONFIG_KEY,true) && isNotificationOn;
 
     }
 

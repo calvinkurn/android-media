@@ -37,7 +37,7 @@ public interface ShakeDetectContract {
         public void makeInvisibleShakeShakeDisableView();
         public void setCancelButtonVisible();
 
-        public Activity getActivity();
+        public Activity getCurrentActivity();
 
         public void setSnackBarErrorMessage();
 
