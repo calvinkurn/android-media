@@ -123,4 +123,18 @@ public interface ConstantTransactionAnalytics {
         String COURIER_NOT_COMPLETE = "courier not complete";
         String KUOTA_PENUKARAN = "kuota penukaran";
     }
+
+    interface ScreenName {
+        String CART = "/cart";
+        String CHECKOUT = "/cart/shipment";
+        String SELECT_COURIER = "/selectcourier";
+        String PROMO_PAGE_FROM_CART_TAB_PROMO = "/cart/voucher";
+        String PROMO_PAGE_FROM_CART_TAB_COUPON = "/cart/coupon";
+        String PROMO_PAGE_FROM_CHECKOUT_TAB_PROMO = "/cart/shipment/voucher";
+        String PROMO_PAGE_FROM_CHECKOUT_TAB_COUPON = "/cart/shipment/coupon";
+        String MULTI_ADDRESS_PAGE = "/cart/shipment/multiple";
+        String EDIT_MULTIPLE_ADDRESS_PAGE = "/cart/shipment/multiple/edit";
+        String ADDRESS_LIST_PAGE = "/cart/address";
+        String ADD_NEW_ADDRESS_PAGE = "/cart/address/create";
+    }
 }

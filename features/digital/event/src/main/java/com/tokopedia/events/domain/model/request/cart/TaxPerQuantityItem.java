@@ -47,7 +47,7 @@ public class TaxPerQuantityItem implements Parcelable {
 		this.service = in.readInt();
 	}
 
-	public static final Parcelable.Creator<TaxPerQuantityItem> CREATOR = new Parcelable.Creator<TaxPerQuantityItem>() {
+	public static final Creator<TaxPerQuantityItem> CREATOR = new Creator<TaxPerQuantityItem>() {
 		@Override
 		public TaxPerQuantityItem createFromParcel(Parcel source) {
 			return new TaxPerQuantityItem(source);
