@@ -290,7 +290,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         ImageHandler.LoadImage(ivProductImage, cartItemModel.getImageUrl());
         tvProductName.setText(cartItemModel.getName());
         tvProductPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                (int) cartItemModel.getPrice(), true));
+                (long) cartItemModel.getPrice(), true));
         tvItemCountAndWeight.setText(String.format(tvItemCountAndWeight.getContext()
                         .getString(R.string.iotem_count_and_weight_format),
                 String.valueOf(cartItemModel.getQuantity()), cartItemModel.getWeightFmt()));
@@ -339,16 +339,15 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         if (isCourierSelected) {
             if (!TextUtils.isEmpty(shipmentDetailData.getSelectedCourier().getShipmentItemDataEtd()) &&
                     !TextUtils.isEmpty(shipmentDetailData.getSelectedCourier().getShipmentItemDataType())) {
-                if (!TextUtils.isEmpty(shipmentDetailData.getSelectedCourier().getShipmentItemDataType()) &&
-                        !TextUtils.isEmpty(shipmentDetailData.getSelectedCourier().getShipmentItemDataEtd())) {
-                    String etd = "(" +
-                            shipmentDetailData.getSelectedCourier().getShipmentItemDataEtd() +
-                            ")";
+                if (TextUtils.isEmpty(shipmentDetailData.getSelectedCourier().getEstimatedTimeDelivery()) ||
+                        (shipmentDetailData.getSelectedCourier().getMinEtd() != 0 &&
+                                shipmentDetailData.getSelectedCourier().getMaxEtd() != 0)) {
+                    String etd = "(" + shipmentDetailData.getSelectedCourier().getEstimatedTimeDelivery() + ")";
                     tvShippingEtd.setText(etd);
                     tvShippingEtd.setVisibility(View.VISIBLE);
-                } else if (shipmentDetailData.getSelectedCourier().getMinEtd() != 0 &&
-                        shipmentDetailData.getSelectedCourier().getMaxEtd() != 0) {
-                    String etd = "(" + shipmentDetailData.getSelectedCourier().getEstimatedTimeDelivery() + ")";
+                } else if (!TextUtils.isEmpty(shipmentDetailData.getSelectedCourier().getShipmentItemDataType()) &&
+                        !TextUtils.isEmpty(shipmentDetailData.getSelectedCourier().getShipmentItemDataEtd())) {
+                    String etd = "(" + shipmentDetailData.getSelectedCourier().getShipmentItemDataEtd() + ")";
                     tvShippingEtd.setText(etd);
                     tvShippingEtd.setVisibility(View.VISIBLE);
                 } else {
@@ -381,8 +380,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         int shippingPrice = 0;
         int insurancePrice = 0;
         int additionalPrice = 0;
-        int subTotalPrice = 0;
-        int totalItemPrice = 0;
+        long subTotalPrice = 0;
+        long totalItemPrice = 0;
 
         if (shipmentCartItemModel.isStateDetailSubtotalViewExpanded()) {
             rlShipmentCost.setVisibility(View.VISIBLE);
@@ -678,7 +677,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         }
     }
 
-    private String getPriceFormat(TextView textViewLabel, TextView textViewPrice, int price) {
+    private String getPriceFormat(TextView textViewLabel, TextView textViewPrice, long price) {
         if (price == 0) {
             textViewLabel.setVisibility(View.GONE);
             textViewPrice.setVisibility(View.GONE);
@@ -776,13 +775,14 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void disableItemView() {
-        tvProductName.setTextColor(ContextCompat.getColor(tvProductName.getContext(), R.color.grey_nonactive_text));
-        tvProductPrice.setTextColor(ContextCompat.getColor(tvProductPrice.getContext(), R.color.grey_nonactive_text));
-        tvFreeReturnLabel.setTextColor(ContextCompat.getColor(tvFreeReturnLabel.getContext(), R.color.grey_nonactive_text));
-        tvPreOrder.setTextColor(ContextCompat.getColor(tvPreOrder.getContext(), R.color.grey_nonactive_text));
-        tvNoteToSellerLabel.setTextColor(ContextCompat.getColor(tvNoteToSellerLabel.getContext(), R.color.grey_nonactive_text));
-        tvOptionalNoteToSeller.setTextColor(ContextCompat.getColor(tvOptionalNoteToSeller.getContext(), R.color.grey_nonactive_text));
-        tvCashback.setBackgroundColor(ContextCompat.getColor(tvCashback.getContext(), R.color.grey_nonactive_text));
+        int nonActiveTextColor = ContextCompat.getColor(tvProductName.getContext(), R.color.grey_nonactive_text);
+        tvProductName.setTextColor(nonActiveTextColor);
+        tvProductPrice.setTextColor(nonActiveTextColor);
+        tvFreeReturnLabel.setTextColor(nonActiveTextColor);
+        tvPreOrder.setTextColor(nonActiveTextColor);
+        tvNoteToSellerLabel.setTextColor(nonActiveTextColor);
+        tvOptionalNoteToSeller.setTextColor(nonActiveTextColor);
+        tvCashback.setBackgroundColor(nonActiveTextColor);
         setImageFilterGrayScale();
     }
 
@@ -800,7 +800,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         tvFreeReturnLabel.setTextColor(ContextCompat.getColor(tvFreeReturnLabel.getContext(), R.color.font_black_secondary_54));
         tvPreOrder.setTextColor(ContextCompat.getColor(tvPreOrder.getContext(), R.color.font_black_secondary_54));
         tvNoteToSellerLabel.setTextColor(ContextCompat.getColor(tvNoteToSellerLabel.getContext(), R.color.black_38));
-        tvOptionalNoteToSeller.setTextColor(ContextCompat.getColor(tvOptionalNoteToSeller.getContext(), R.color.black_70));
+        tvOptionalNoteToSeller.setTextColor(ContextCompat.getColor(tvOptionalNoteToSeller.getContext(), R.color.black_38));
         tvCashback.setBackground(ContextCompat.getDrawable(tvCashback.getContext(), R.drawable.bg_cashback));
         setImageFilterNormal();
     }
@@ -809,6 +809,5 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         ivProductImage.setColorFilter(null);
         ivProductImage.setImageAlpha(IMAGE_ALPHA_ENABLED);
     }
-
 
 }

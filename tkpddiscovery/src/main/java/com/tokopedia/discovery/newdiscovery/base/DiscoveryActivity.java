@@ -596,6 +596,16 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         }
     }
 
+    @Override
+    public void showImageNotSupportedError() {
+        super.showImageNotSupportedError();
+        if (tkpdProgressDialog != null) {
+            tkpdProgressDialog.dismiss();
+        }
+
+        NetworkErrorHelper.showSnackbar(this, getResources().getString(R.string.image_not_supported));
+    }
+
     public void showSnackBarView(String message) {
         if (message == null) {
             NetworkErrorHelper.showSnackbar(this);

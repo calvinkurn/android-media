@@ -44,6 +44,12 @@ public class RegisterInitialActivity extends TActivity implements HasComponent {
         initView();
     }
 
+    @Override
+    protected void setupToolbar() {
+        super.setupToolbar();
+        toolbar.setPadding(0, 0, 30, 0);
+    }
+
     private void initView() {
 
         Fragment fragment = getSupportFragmentManager().findFragmentByTag

@@ -835,6 +835,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Intent getLoyaltyWithCouponTabSelected(Activity activity, String platform, String categoryId, String cartId) {
+        return LoyaltyActivity.newInstanceCouponActiveAndSelected(activity, platform, categoryId, cartId);
+    }
+
+    @Override
     public FlightVoucherCodeWrapper getFlightVoucherCodeWrapper() {
         return new FlightVoucherCodeWrapperImpl();
     }
@@ -1440,6 +1445,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return new AnalyticTracker() {
             @Override
             public void sendEventTracking(Map<String, Object> events) {
+                UnifyTracking.eventClearEnhanceEcommerce();
                 UnifyTracking.sendGTMEvent(events);
             }
 

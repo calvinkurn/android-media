@@ -399,6 +399,22 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
         listener = (ManualInsertCodeListener) context;
     }
 
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser && isResumed()) {
+            listener.sendAnalyticsScreenNamePromoCode();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (getUserVisibleHint()) {
+            listener.sendAnalyticsScreenNamePromoCode();
+        }
+    }
+
     public interface ManualInsertCodeListener {
 
         void onCodeSuccess(String voucherCode, String voucherMessage, String voucherAmount);
@@ -406,6 +422,8 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
         void onDigitalCodeSuccess(String voucherCode, String voucherMessage, long discountAmount, long cashBackAmount);
 
         void onUsePromoCodeClicked();
+
+        void sendAnalyticsScreenNamePromoCode();
 
     }
 }
