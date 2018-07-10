@@ -16,9 +16,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.loyalty.R;
@@ -209,25 +209,7 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
                         getActivity(),
                         voucherCodeField.getText().toString(), getArguments().getString(ADDITIONAL_DATA_KEY, ""));
             }
-        };
-    }
-
-    private View.OnClickListener onSubmitMarketPlaceCartShipmentVoucher(
-            final EditText voucherCodeField,
-            final TextInputLayout textHolder) {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                voucherCodeFieldHolder.setError(null);
-                if (voucherCodeField.getText().toString().isEmpty()) {
-                    textHolder.setError(getActivity().getString(R.string.error_empty_voucher_code));
-                } else {
-                    dPresenter.processCheckMarketPlaceCartShipmentPromoCode(
-                            getActivity(),
-                            voucherCodeField.getText().toString(),
-                            getArguments().getString(ADDITIONAL_DATA_KEY));
-                }
-            }
+            listener.onUsePromoCodeClicked();
         };
     }
 
@@ -278,7 +260,7 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
     protected void initInjector() {
         super.initInjector();
         PromoCodeComponent promoCodeComponent = DaggerPromoCodeComponent.builder()
-                .appComponent((AppComponent) getComponent(AppComponent.class))
+                .baseAppComponent((BaseAppComponent) getComponent(BaseAppComponent.class))
                 .promoCodeViewModule(new PromoCodeViewModule(this))
                 .build();
         promoCodeComponent.inject(this);
@@ -294,7 +276,7 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
     }
 
 
-    public static Fragment newInstance(String platform,String platformPage, String categoryKey,
+    public static Fragment newInstance(String platform, String platformPage, String categoryKey,
                                        String cartId, String additionalDataString) {
         PromoCodeFragment fragment = new PromoCodeFragment();
         Bundle bundle = new Bundle();
@@ -418,6 +400,22 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
         listener = (ManualInsertCodeListener) context;
     }
 
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser && isResumed()) {
+            listener.sendAnalyticsScreenNamePromoCode();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (getUserVisibleHint()) {
+            listener.sendAnalyticsScreenNamePromoCode();
+        }
+    }
+
     public interface ManualInsertCodeListener {
 
         void onCodeSuccess(String voucherCode, String voucherMessage, String voucherAmount);
@@ -425,6 +423,8 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
         void onDigitalCodeSuccess(String voucherCode, String voucherMessage, long discountAmount, long cashBackAmount);
 
         void onUsePromoCodeClicked();
+
+        void sendAnalyticsScreenNamePromoCode();
 
     }
 }

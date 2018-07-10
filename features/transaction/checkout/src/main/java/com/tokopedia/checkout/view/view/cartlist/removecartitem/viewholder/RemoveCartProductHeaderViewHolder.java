@@ -20,13 +20,11 @@ public class RemoveCartProductHeaderViewHolder extends RecyclerView.ViewHolder {
 
     private RemoveCartItemAdapter removeCartItemAdapter;
 
-    private FrameLayout flSelectToRemove;
     private CheckBox cbSelectAll;
 
     public RemoveCartProductHeaderViewHolder(View itemView, RemoveCartItemAdapter removeCartItemAdapter) {
         super(itemView);
         this.removeCartItemAdapter = removeCartItemAdapter;
-        flSelectToRemove = itemView.findViewById(R.id.fl_select_to_remove);
         cbSelectAll = itemView.findViewById(R.id.checkBox);
     }
 
@@ -34,13 +32,10 @@ public class RemoveCartProductHeaderViewHolder extends RecyclerView.ViewHolder {
         cbSelectAll.setChecked(cartProductHeaderViewModel.isChecked());
         cbSelectAll.setClickable(false);
 
-        itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                cbSelectAll.setChecked(!cbSelectAll.isChecked());
-                cartProductHeaderViewModel.setChecked(cbSelectAll.isChecked());
-                removeCartItemAdapter.getRemoveCartItemViewListener().onAllItemCheckChanged(cbSelectAll.isChecked());
-            }
+        itemView.setOnClickListener(view -> {
+            cbSelectAll.setChecked(!cbSelectAll.isChecked());
+            cartProductHeaderViewModel.setChecked(cbSelectAll.isChecked());
+            removeCartItemAdapter.getRemoveCartItemViewListener().onAllItemCheckChanged(cbSelectAll.isChecked());
         });
     }
 

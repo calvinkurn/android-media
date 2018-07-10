@@ -3,7 +3,6 @@ package com.tokopedia.flight.detail.view.adapter;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
@@ -29,6 +28,6 @@ public class FlightDetailRecyclerView extends VerticalRecyclerView {
 
     @Override
     protected ItemDecoration getItemDecoration() {
-        return new DividerItemDecoration(getContext(), ContextCompat.getDrawable(getContext(), R.drawable.line_divider_flight_detail));
+        return new DividerItemDecoration(getContext(), ContextCompat.getDrawable(getContext(), R.drawable.line_divider_flight_search));
     }
 }

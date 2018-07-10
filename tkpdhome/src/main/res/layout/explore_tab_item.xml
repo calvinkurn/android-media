@@ -9,8 +9,8 @@
 
     <ImageView
         android:id="@+id/icon"
-        android:layout_width="24dp"
-        android:layout_height="24dp" />
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24" />
 
     <TextView
         android:id="@+id/label"
@@ -18,10 +18,13 @@
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-medium"
         android:gravity="center_horizontal"
-        android:lineSpacingExtra="3sp"
+        android:lineSpacingExtra="@dimen/dp_3"
         android:layout_weight="1"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:singleLine="true"
         android:textColor="@color/black_70"
-        android:textSize="11sp"
+        android:textSize="@dimen/sp_11"
         android:textStyle="normal"
         tools:text="Beli" />
 </LinearLayout>

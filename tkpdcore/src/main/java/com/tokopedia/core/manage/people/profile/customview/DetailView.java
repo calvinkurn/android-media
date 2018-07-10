@@ -11,6 +11,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.DatePickerUtil;
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.manage.people.profile.model.DataUser;
 import com.tokopedia.core.manage.people.profile.model.Profile;
@@ -134,7 +135,7 @@ public class DetailView extends BaseView<Profile, ManagePeopleProfileFragmentPre
         public void onClick(View view) {
             DatePickerUtil datePicker =
                     new DatePickerUtil(
-                            (Activity) getContext(),
+                            CommonUtils.getActivity(getContext()),
                             getBirthDay(dataUser.getBirthDay()),
                             getBirthMonth(dataUser.getBirthMonth()),
                             getBirthYear(dataUser.getBirthYear())

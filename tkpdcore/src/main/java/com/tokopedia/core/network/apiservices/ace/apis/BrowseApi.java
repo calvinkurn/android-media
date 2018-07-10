@@ -259,9 +259,8 @@ public interface BrowseApi {
             @QueryMap TKPDMapParam<String, Object> param
     );
 
-    @FormUrlEncoded
-    @HTTP(method = "DELETE", path = TkpdBaseURL.Ace.PATH_DELETE_SEARCH, hasBody = true)
+    @DELETE(TkpdBaseURL.Ace.PATH_DELETE_SEARCH)
     Observable<Response<Void>> deleteRecentSearch(
-            @FieldMap TKPDMapParam<String, Object> parameters
+            @QueryMap TKPDMapParam<String, Object> parameters
     );
 }

@@ -2,6 +2,7 @@ package com.tokopedia.loyalty.domain.repository;
 
 import android.text.TextUtils;
 
+import com.tokopedia.core.drawer2.data.viewmodel.PopUpNotif;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.loyalty.domain.entity.response.Coupon;
 import com.tokopedia.loyalty.domain.entity.response.CouponListDataResponse;
@@ -62,7 +63,7 @@ public class TokoPointResponseMapper implements ITokoPointResponseMapper {
 
     @Override
     public TokoPointDrawerData convertTokoplusPointDrawer(GqlTokoPointDrawerDataResponse tokoplusPointDrawerData) {
-        TokoPointDrawerData.PopUpNotif popUpNotif = new TokoPointDrawerData.PopUpNotif();
+        PopUpNotif popUpNotif = new PopUpNotif();
         TokoPointDrawerData.UserTier userTier = new TokoPointDrawerData.UserTier();
         TokoPointDrawerData tokoPointDrawerData = new TokoPointDrawerData();
 
