@@ -1,13 +1,13 @@
 package com.tokopedia.feedplus.domain.usecase;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.feedplus.data.repository.FeedRepository;
 import com.tokopedia.feedplus.domain.model.recentview.RecentViewProductDomain;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 
@@ -20,10 +20,8 @@ public class GetRecentViewUseCase extends UseCase<List<RecentViewProductDomain>>
 
     private final FeedRepository feedRepository;
 
-    public GetRecentViewUseCase(ThreadExecutor threadExecutor,
-                                PostExecutionThread postExecutionThread,
-                                FeedRepository feedRepository) {
-        super(threadExecutor, postExecutionThread);
+    @Inject
+    public GetRecentViewUseCase(FeedRepository feedRepository) {
         this.feedRepository = feedRepository;
     }
 

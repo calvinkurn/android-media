@@ -7,9 +7,7 @@ import javax.annotation.Nullable;
  */
 
 public class KolPostDomain {
-    private final
-    @Nullable
-    int id;
+    private final int id;
 
     private final
     @Nullable
@@ -19,21 +17,13 @@ public class KolPostDomain {
     @Nullable
     String description;
 
-    private final
-    @Nullable
-    int commentCount;
+    private final int commentCount;
 
-    private final
-    @Nullable
-    int likeCount;
+    private final int likeCount;
 
-    private final
-    @Nullable
-    boolean isLiked;
+    private final boolean isLiked;
 
-    private final
-    @Nullable
-    boolean isFollowed;
+    private final boolean isFollowed;
 
     private final
     @Nullable
@@ -67,9 +57,7 @@ public class KolPostDomain {
     @Nullable
     String caption;
 
-    private final
-    @Nullable
-    int itemId;
+    private final int itemId;
 
     private final
     @Nullable
@@ -82,11 +70,11 @@ public class KolPostDomain {
     @Nullable
     private final String userUrl;
 
-    @Nullable
     private final int userId;
 
-    @Nullable
     private final boolean isShowComment;
+
+    private final boolean isShowLike;
 
     @Nullable
     private final String cardType;
@@ -94,9 +82,10 @@ public class KolPostDomain {
 
     public KolPostDomain(int id, String imageUrl, String description, int commentCount,
                          int likeCount, boolean isLiked, boolean isFollowed, String createTime,
-                         String productPrice, String contentLink, String contentUrl, String userName,
-                         String userPhoto, String tagsType, String caption, int itemId, String label,
-                         String headerTitle, String userUrl, int userId, boolean isShowComment, String cardType) {
+                         String productPrice, String contentLink, String contentUrl,
+                         String userName, String userPhoto, String tagsType, String caption,
+                         int itemId, String label, String headerTitle, String userUrl, int userId,
+                         boolean isShowComment, boolean isShowLike, String cardType) {
         this.id = id;
         this.imageUrl = imageUrl;
         this.description = description;
@@ -118,10 +107,10 @@ public class KolPostDomain {
         this.userUrl = userUrl;
         this.userId = userId;
         this.isShowComment = isShowComment;
+        this.isShowLike = isShowLike;
         this.cardType = cardType;
     }
 
-    @Nullable
     public int getId() {
         return id;
     }
@@ -136,22 +125,18 @@ public class KolPostDomain {
         return description;
     }
 
-    @Nullable
     public int getCommentCount() {
         return commentCount;
     }
 
-    @Nullable
     public int getLikeCount() {
         return likeCount;
     }
 
-    @Nullable
     public boolean isLiked() {
         return isLiked;
     }
 
-    @Nullable
     public boolean isFollowed() {
         return isFollowed;
     }
@@ -196,7 +181,6 @@ public class KolPostDomain {
         return caption;
     }
 
-    @Nullable
     public int getItemId() {
         return itemId;
     }
@@ -216,14 +200,16 @@ public class KolPostDomain {
         return userUrl;
     }
 
-    @Nullable
     public int getUserId() {
         return userId;
     }
 
-    @Nullable
     public boolean isShowComment() {
         return isShowComment;
+    }
+
+    public boolean isShowLike() {
+        return isShowLike;
     }
 
     @Nullable

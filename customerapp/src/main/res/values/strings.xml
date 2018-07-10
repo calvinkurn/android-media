@@ -102,4 +102,6 @@
     <string name="cancel_shake_shake">Memuat Shake-Shake</string>
     <string name="shake_shake_terus">Shake sekali lagi</string>
     <string name="yes">Ya</string>
+    <string name="mainapp_extend_gold_merchant">Perpanjang Gold Merchant</string>
+    <string name="mainapp_upgrade_gold_merchant">Upgrade ke Gold Merchant</string>
 </resources>

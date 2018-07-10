@@ -35,6 +35,7 @@ import com.tokopedia.flight.orderlist.data.cloud.FlightOrderDataSource;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderMapper;
 import com.tokopedia.flight.passenger.data.FlightPassengerFactorySource;
 import com.tokopedia.flight.review.data.FlightBookingDataSource;
+import com.tokopedia.flight.review.data.FlightCancelVoucherDataSource;
 import com.tokopedia.flight.review.data.FlightCheckVoucheCodeDataSource;
 import com.tokopedia.flight.search.data.FlightSearchReturnDataSource;
 import com.tokopedia.flight.search.data.FlightSearchSingleDataSource;
@@ -133,12 +134,14 @@ public class FlightModule {
                                                     FlightOrderDataSource flightOrderDataSource,
                                                     FlightOrderMapper flightOrderMapper,
                                                     FlightPassengerFactorySource flightPassengerFactorySource,
-                                                    FlightCancellationCloudDataSource flightCancellationCloudDataSource) {
+                                                    FlightCancellationCloudDataSource flightCancellationCloudDataSource,
+                                                    FlightCancelVoucherDataSource flightCancelVoucherDataSource) {
         return new FlightRepositoryImpl(bannerDataSource, flightAirportDataListSource, flightAirlineDataListSource,
                 flightSearchSingleDataListSource, flightSearchReturnDataListSource, getFlightClassesUseCase,
                 flightCartDataSource, flightMetaDataDBSource, flightAirportDataListBackgroundSource,
                 flightCheckVoucheCodeDataSource, flightBookingDataSource, flightAirportVersionDBSource,
-                flightOrderDataSource, flightOrderMapper, flightPassengerFactorySource, flightCancellationCloudDataSource);
+                flightOrderDataSource, flightOrderMapper, flightPassengerFactorySource, flightCancellationCloudDataSource,
+                flightCancelVoucherDataSource);
     }
 
     @Provides
