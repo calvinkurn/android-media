@@ -1,5 +1,6 @@
 package com.tokopedia.paymentmanagementsystem.paymentlist.view.fragment;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -42,6 +43,9 @@ import javax.inject.Inject;
 
 public class PaymentListFragment extends BaseListFragment<PaymentListModel, PaymentListAdapterTypeFactory> implements PaymentListContract.View, PaymentListViewHolder.ListenerPaymentList {
 
+    public static final int REQUEST_CODE_CHANGE_BANK_ACCOUNT = 1;
+    public static final int REQUEST_CODE_UPLOAD_PROOF = 2;
+    public static final int REQUEST_CODE_CHANGE_BCA_ID = 3;
     @Inject
     PaymentListPresenter paymentListPresenter;
     private ProgressDialog progressDialog;
@@ -181,17 +185,31 @@ public class PaymentListFragment extends BaseListFragment<PaymentListModel, Paym
 
     private void changeAccountDetail(PaymentListModel paymentListModel) {
         Intent intent = ChangeBankAccountActivity.createIntent(getActivity(), paymentListModel);
-        startActivity(intent);
+        startActivityForResult(intent, REQUEST_CODE_CHANGE_BANK_ACCOUNT);
     }
 
     private void uploadProofPayment(PaymentListModel paymentListModel) {
         Intent intent = UploadProofPaymentActivity.createIntent(getActivity(), paymentListModel);
-        startActivity(intent);
+        startActivityForResult(intent, REQUEST_CODE_UPLOAD_PROOF);
     }
 
     private void changeBcaUserId(PaymentListModel paymentListModel) {
         Intent intent = ChangeClickBcaActivity.createIntent(getActivity(), paymentListModel.getTransactionId(), paymentListModel.getMerchantCode(), paymentListModel.getValueDynamicViewDetailPayment());
-        startActivity(intent);
+        startActivityForResult(intent, REQUEST_CODE_CHANGE_BCA_ID);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode == Activity.RESULT_OK){
+            switch (requestCode){
+                case REQUEST_CODE_CHANGE_BANK_ACCOUNT:
+                case REQUEST_CODE_CHANGE_BCA_ID:
+                case REQUEST_CODE_UPLOAD_PROOF:
+                    onSwipeRefresh();
+                    break;
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

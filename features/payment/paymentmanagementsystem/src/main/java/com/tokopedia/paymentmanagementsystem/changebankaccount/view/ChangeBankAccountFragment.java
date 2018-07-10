@@ -132,6 +132,8 @@ public class ChangeBankAccountFragment extends BaseDaggerFragment implements Cha
     public void onResultEditDetailAccount(boolean success, String message) {
         if(success){
             NetworkErrorHelper.showGreenCloseSnackbar(getActivity(), message);
+            getActivity().setResult(Activity.RESULT_OK);
+            getActivity().finish();
         }else{
             NetworkErrorHelper.showRedCloseSnackbar(getActivity(), message);
         }

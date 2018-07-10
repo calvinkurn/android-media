@@ -1,5 +1,6 @@
 package com.tokopedia.paymentmanagementsystem.changeclickbca.view;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -103,6 +104,8 @@ public class ChangeClickBcaFragment extends BaseDaggerFragment implements Change
     public void onResultChangeClickBcaUserId(boolean isSuccess, String message) {
         if(isSuccess){
             NetworkErrorHelper.showGreenCloseSnackbar(getActivity(), message);
+            getActivity().setResult(Activity.RESULT_OK);
+            getActivity().finish();
         }else{
             NetworkErrorHelper.showRedCloseSnackbar(getActivity(), message);
         }

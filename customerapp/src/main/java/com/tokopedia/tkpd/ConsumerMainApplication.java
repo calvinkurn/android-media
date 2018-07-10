@@ -211,6 +211,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         LogisticDataConstantUrl.BASE_DOMAIN = ConsumerAppBaseUrl.BASE_DOMAIN;
         GMCommonUrl.BASE_URL = ConsumerAppBaseUrl.BASE_GOLD_MERCHANT_DOMAIN;
         CatalogConstant.URL_HADES = ConsumerAppBaseUrl.BASE_HADES_DOMAIN;
+        TkpdBaseURL.HOME_DATA_BASE_URL = ConsumerAppBaseUrl.GRAPHQL_DOMAIN;
 
         generateTransactionDataModuleBaseUrl();
         generateLogisticDataModuleBaseUrl();
