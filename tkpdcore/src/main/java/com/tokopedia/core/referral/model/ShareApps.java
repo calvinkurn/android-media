@@ -7,12 +7,12 @@ package com.tokopedia.core.referral.model;
 public class ShareApps {
     private int id;
     private String name;
-    private String packageNmae;
+    private String packageName;
     private  int icon;
     private int index;
 
-    public ShareApps(String packageNmae, int icon) {
-        this.packageNmae = packageNmae;
+    public ShareApps(String packageName, int icon) {
+        this.packageName = packageName;
         this.icon = icon;
     }
 
@@ -32,12 +32,12 @@ public class ShareApps {
         this.name = name;
     }
 
-    public String getPackageNmae() {
-        return packageNmae;
+    public String getpackageName() {
+        return packageName;
     }
 
-    public void setPackageNmae(String packageNmae) {
-        this.packageNmae = packageNmae;
+    public void setpackageName(String packageName) {
+        this.packageName = packageName;
     }
 
     public int getIcon() {
