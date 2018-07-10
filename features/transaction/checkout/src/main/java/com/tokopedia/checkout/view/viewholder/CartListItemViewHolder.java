@@ -69,6 +69,7 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
     private TextViewCompat tvError;
     private FrameLayout layoutWarning;
     private TextViewCompat tvWarning;
+    private ImageView imgShopBadge;
 
     private CartItemHolderData cartItemHolderData;
     private QuantityTextwatcherListener quantityTextwatcherListener;
@@ -100,6 +101,7 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
         this.tvError = itemView.findViewById(R.id.tv_error);
         this.layoutWarning = itemView.findViewById(R.id.layout_warning);
         this.tvWarning = itemView.findViewById(R.id.tv_warning);
+        this.imgShopBadge = itemView.findViewById(R.id.img_shop_badge);
 
         etRemark.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -328,6 +330,16 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
             this.ivWishlistBadge.setImageResource(R.drawable.ic_wishlist_red);
         } else {
             this.ivWishlistBadge.setImageResource(R.drawable.ic_wishlist);
+        }
+
+        if (data.getCartItemData().getOriginData().isOfficialStore()) {
+            imgShopBadge.setImageDrawable(ContextCompat.getDrawable(imgShopBadge.getContext(), R.drawable.ic_badge_official));
+            imgShopBadge.setVisibility(View.VISIBLE);
+        } else if (data.getCartItemData().getOriginData().isGoldMerchant()) {
+            imgShopBadge.setImageDrawable(ContextCompat.getDrawable(imgShopBadge.getContext(), R.drawable.ic_shop_gold));
+            imgShopBadge.setVisibility(View.VISIBLE);
+        } else {
+            imgShopBadge.setVisibility(View.GONE);
         }
 
     }

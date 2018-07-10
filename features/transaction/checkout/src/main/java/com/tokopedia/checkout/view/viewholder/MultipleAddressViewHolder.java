@@ -2,6 +2,7 @@ package com.tokopedia.checkout.view.viewholder;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -44,6 +45,7 @@ public class MultipleAddressViewHolder extends RecyclerView.ViewHolder {
     private View marginHeader;
     private Button btAddNewShipment;
     private LinearLayout rlProductPoliciesLayout;
+    private ImageView imgShopBadge;
 
     public MultipleAddressViewHolder(Context context, View itemView) {
         super(itemView);
@@ -61,6 +63,7 @@ public class MultipleAddressViewHolder extends RecyclerView.ViewHolder {
         marginHeader = itemView.findViewById(R.id.margin_header);
         btAddNewShipment = itemView.findViewById(R.id.bt_add_new_shipment);
         rlProductPoliciesLayout = itemView.findViewById(R.id.rl_product_policies_layout);
+        imgShopBadge = itemView.findViewById(R.id.img_shop_badge);
 
     }
 
@@ -71,6 +74,16 @@ public class MultipleAddressViewHolder extends RecyclerView.ViewHolder {
             MultipleAddressAdapter.MultipleAddressAdapterListener addressListener,
             boolean firstItemPosition
     ) {
+        if (data.isOfficialStore()) {
+            imgShopBadge.setImageDrawable(ContextCompat.getDrawable(imgShopBadge.getContext(), R.drawable.ic_badge_official));
+            imgShopBadge.setVisibility(View.VISIBLE);
+        } else if (data.isGoldMerchant()) {
+            imgShopBadge.setImageDrawable(ContextCompat.getDrawable(imgShopBadge.getContext(), R.drawable.ic_shop_gold));
+            imgShopBadge.setVisibility(View.VISIBLE);
+        } else {
+            imgShopBadge.setVisibility(View.GONE);
+        }
+
         senderName.setText(data.getSenderName());
         productName.setText(data.getProductName());
         productPrice.setText(data.getProductPrice());

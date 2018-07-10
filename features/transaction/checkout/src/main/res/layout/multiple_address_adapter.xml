@@ -29,7 +29,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/dp_16">
+                android:layout_margin="@dimen/dp_16"
+                android:gravity="center_vertical">
 
                 <TextView
                     style="@style/TextSmallMedium"
@@ -45,7 +46,13 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_8"
                     android:layout_marginRight="@dimen/dp_8"
-                    tools:text="Adidas" />
+                    tools:text="Adidas sjdbgjk sdjgbjksd jsdgk" />
+
+                <ImageView
+                    android:id="@+id/img_shop_badge"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    tools:src="@drawable/ic_badge_official" />
 
             </LinearLayout>
 

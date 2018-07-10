@@ -26,6 +26,8 @@ public class ShipmentCartItemModel implements ShipmentData {
     private ShipmentCartData shipmentCartData;
     private ShipmentDetailData selectedShipmentDetailData;
     private String shopName;
+    private boolean isGoldMerchant;
+    private boolean isOfficialStore;
 
     private int weightUnit;
     private boolean productFinsurance;
@@ -77,6 +79,8 @@ public class ShipmentCartItemModel implements ShipmentData {
         newShipmentCartItemModel.setDestinationDistrictName(shipmentCartItemModel.getDestinationDistrictName());
         newShipmentCartItemModel.setDestinationDistrictId(shipmentCartItemModel.getDestinationDistrictId());
         newShipmentCartItemModel.setRecipientAddressModel(shipmentCartItemModel.getRecipientAddressModel());
+        newShipmentCartItemModel.setOfficialStore(shipmentCartItemModel.isOfficialStore());
+        newShipmentCartItemModel.setGoldMerchant(shipmentCartItemModel.isGoldMerchant());
 
         return newShipmentCartItemModel;
     }
@@ -271,5 +275,21 @@ public class ShipmentCartItemModel implements ShipmentData {
 
     public void setCartItemModels(List<CartItemModel> cartItemModels) {
         this.cartItemModels = cartItemModels;
+    }
+
+    public boolean isGoldMerchant() {
+        return isGoldMerchant;
+    }
+
+    public void setGoldMerchant(boolean goldMerchant) {
+        isGoldMerchant = goldMerchant;
+    }
+
+    public boolean isOfficialStore() {
+        return isOfficialStore;
+    }
+
+    public void setOfficialStore(boolean officialStore) {
+        isOfficialStore = officialStore;
     }
 }

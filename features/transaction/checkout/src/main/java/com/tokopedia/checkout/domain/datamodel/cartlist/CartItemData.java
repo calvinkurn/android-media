@@ -113,6 +113,8 @@ public class CartItemData implements Parcelable {
         private String trackerAttribution;
         private String trackerListName;
         private String shopType;
+        private boolean isGoldMerchant;
+        private boolean isOfficialStore;
 
         public String getTrackerAttribution() {
             return trackerAttribution;
@@ -362,6 +364,22 @@ public class CartItemData implements Parcelable {
             this.wholesalePriceFormatted = wholesalePriceFormatted;
         }
 
+        public boolean isGoldMerchant() {
+            return isGoldMerchant;
+        }
+
+        public void setGoldMerchant(boolean goldMerchant) {
+            this.isGoldMerchant = goldMerchant;
+        }
+
+        public boolean isOfficialStore() {
+            return isOfficialStore;
+        }
+
+        public void setOfficialStore(boolean officialStore) {
+            this.isOfficialStore = officialStore;
+        }
+
         public OriginData() {
         }
 
@@ -403,6 +421,8 @@ public class CartItemData implements Parcelable {
             dest.writeString(this.trackerAttribution);
             dest.writeString(this.trackerListName);
             dest.writeString(this.shopType);
+            dest.writeByte(this.isGoldMerchant ? (byte) 1 : (byte) 0);
+            dest.writeByte(this.isOfficialStore ? (byte) 1 : (byte) 0);
         }
 
         protected OriginData(Parcel in) {
@@ -437,6 +457,8 @@ public class CartItemData implements Parcelable {
             this.trackerAttribution = in.readString();
             this.trackerListName = in.readString();
             this.shopType = in.readString();
+            this.isGoldMerchant = in.readByte() != 0;
+            this.isOfficialStore = in.readByte() != 0;
         }
 
         public static final Creator<OriginData> CREATOR = new Creator<OriginData>() {

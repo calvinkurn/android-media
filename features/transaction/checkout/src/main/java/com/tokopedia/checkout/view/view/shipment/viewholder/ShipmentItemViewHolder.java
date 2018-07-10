@@ -141,6 +141,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
     private TextView tvAdditionalFee;
     private TextView tvAdditionalFeePrice;
     private TextView tvLabelInsurance;
+    private ImageView imgShopBadge;
 
     public ShipmentItemViewHolder(View itemView) {
         super(itemView);
@@ -230,6 +231,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         tvAdditionalFee = itemView.findViewById(R.id.tv_additional_fee);
         tvAdditionalFeePrice = itemView.findViewById(R.id.tv_additional_fee_price);
         tvLabelInsurance = itemView.findViewById(R.id.tv_label_insurance);
+        imgShopBadge = itemView.findViewById(R.id.img_shop_badge);
     }
 
     protected void showBottomSheet(Context context, String title, String message, int image) {
@@ -247,7 +249,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
     public void bindViewHolder(ShipmentCartItemModel shipmentCartItemModel,
                                RecipientAddressModel recipientAddressModel,
                                ArrayList<ShowCaseObject> showCaseObjectList) {
-        tvShopName.setText(shipmentCartItemModel.getShopName());
+        renderShop(shipmentCartItemModel);
         renderAddress(shipmentCartItemModel.getRecipientAddressModel());
         renderCourier(shipmentCartItemModel, shipmentCartItemModel.getSelectedShipmentDetailData(), recipientAddressModel);
         renderError(shipmentCartItemModel);
@@ -255,7 +257,15 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         renderInsurance(shipmentCartItemModel);
         renderDropshipper(shipmentCartItemModel);
         renderCostDetail(shipmentCartItemModel);
+        renderCartItem(shipmentCartItemModel);
 
+        if (showCaseObjectList.size() == 1) {
+            setShowCase(llShipmentOptionViewLayout, showCaseObjectList);
+        }
+
+    }
+
+    private void renderCartItem(ShipmentCartItemModel shipmentCartItemModel) {
         List<CartItemModel> cartItemModelList = new ArrayList<>(shipmentCartItemModel.getCartItemModels());
         if (cartItemModelList.size() > 0) {
             renderFirstCartItem(cartItemModelList.remove(FIRST_ELEMENT));
@@ -270,11 +280,19 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
             vSeparatorMultipleProductSameStore.setVisibility(View.GONE);
             vSeparatorAboveCourier.setVisibility(View.GONE);
         }
+    }
 
-        if (showCaseObjectList.size() == 1) {
-            setShowCase(llShipmentOptionViewLayout, showCaseObjectList);
+    private void renderShop(ShipmentCartItemModel shipmentCartItemModel) {
+        if (shipmentCartItemModel.isOfficialStore()) {
+            imgShopBadge.setImageDrawable(ContextCompat.getDrawable(imgShopBadge.getContext(), R.drawable.ic_badge_official));
+            imgShopBadge.setVisibility(View.VISIBLE);
+        } else if (shipmentCartItemModel.isGoldMerchant()) {
+            imgShopBadge.setImageDrawable(ContextCompat.getDrawable(imgShopBadge.getContext(), R.drawable.ic_shop_gold));
+            imgShopBadge.setVisibility(View.VISIBLE);
+        } else {
+            imgShopBadge.setVisibility(View.GONE);
         }
-
+        tvShopName.setText(shipmentCartItemModel.getShopName());
     }
 
     private void renderFirstCartItem(CartItemModel cartItemModel) {

@@ -121,6 +121,8 @@ public class ShipmentDataConverter {
         Shop shop = groupShop.getShop();
         shipmentCartItemModel.setShopId(shop.getShopId());
         shipmentCartItemModel.setShopName(shop.getShopName());
+        shipmentCartItemModel.setOfficialStore(shop.isOfficial());
+        shipmentCartItemModel.setGoldMerchant(shop.isGold());
 
         List<Product> products = groupShop.getProducts();
         List<CartItemModel> cartItemModels = convertFromProductList(products);
