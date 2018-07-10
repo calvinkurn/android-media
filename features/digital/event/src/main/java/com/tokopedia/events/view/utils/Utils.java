@@ -166,7 +166,6 @@ public class Utils {
     public void setEventLike(Context context, CategoryItemsViewModel model, PostUpdateEventLikesUseCase postUpdateEventLikesUseCase,
                              Subscriber<LikeUpdateResultDomain> subscriber) {
         LikeUpdateModel requestModel = new LikeUpdateModel();
-        //todo set requestmodel values
         Rating rating = new Rating();
         if (model.isLiked()) {
             rating.setIsLiked("false");
@@ -313,7 +312,7 @@ public class Utils {
     }
 
     public void shareEvent(Context context, String title, String URL) {
-        Intent share = new Intent(android.content.Intent.ACTION_SEND);
+        Intent share = new Intent(Intent.ACTION_SEND);
         share.setType("text/plain");
         share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
         share.putExtra(Intent.EXTRA_SUBJECT,

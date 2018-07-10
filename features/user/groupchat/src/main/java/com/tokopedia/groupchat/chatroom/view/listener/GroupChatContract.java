@@ -74,11 +74,15 @@ public interface GroupChatContract {
 
         @Nullable
         ExitMessage getExitMessage();
+
+        void logoutChannel(OpenChannel openChannel);
     }
 
     interface Presenter extends CustomerPresenter<GroupChatContract.View> {
 
         void getChannelInfo(String channelUuid);
+
+        void getChannelInfo(String channelUuid, boolean reInit);
 
         void logoutChannel(OpenChannel mChannel);
 

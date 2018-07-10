@@ -16,15 +16,6 @@ def getDpiId(String density) {
     return 0;
 }
 
-def getAbiId(String abi) {
-
-    def ABI_ID = ['null': 0, 'armeabi-v7a': 10, 'x86': 20]
-    if (abi != null)
-        return ABI_ID.get(abi);
-    return 0;
-}
-
-
 def generateBuildId(String density) {
     return getDpiId(density);
 }
@@ -88,7 +79,7 @@ buildscript {
         maven { url 'https://hansel.io/maven' }
     }
     dependencies {
-        classpath('com.jakewharton:butterknife-gradle-plugin:9.0.0-SNAPSHOT') {
+        classpath ('com.jakewharton:butterknife-gradle-plugin:9.0.0-SNAPSHOT'){
             exclude group: 'com.android.tools.build', module: 'gradle'
         }
         classpath 'io.fabric.tools:gradle:1.+'
@@ -100,8 +91,8 @@ buildscript {
 android {
 
     project.ext {
-        defaultVersionCode = 222001101;
-        defaultVersionName = "2.22";
+        defaultVersionCode = 221001101;
+        defaultVersionName = "2.24";
         react = [
                 nodeExecutableAndArgs: ["${nodeExecutableAndArgs}"]
         ]
@@ -204,12 +195,6 @@ android {
             include "mdpi", "hdpi", "xhdpi", "xxhdpi"
             compatibleScreens 'small', 'normal', 'large', 'xlarge'
         }
-        abi {
-            enable allowSplit()
-            reset()
-            include 'x86', 'armeabi-v7a'
-            universalApk false
-        }
 
     }
 
@@ -270,7 +255,9 @@ dependencies {
     implementation project(rootProject.ext.features.gamification)
     implementation project(rootProject.ext.features.kol)
     implementation project(rootProject.ext.features.shopPage)
+    implementation project(rootProject.ext.features.goldMerchantSubscribe)
     implementation project(rootProject.ext.features.home)
+    implementation project(rootProject.ext.features.vote)
     implementation project(rootProject.ext.features.groupchat)
     implementation project(rootProject.ext.features.event)
     implementation project(rootProject.ext.features.tokoCash)
@@ -301,6 +288,8 @@ dependencies {
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.tracking)
     implementation project(rootProject.ext.features.logisticuploadawb)
+    implementation project(rootProject.ext.features.topchat)
+    implementation project(rootProject.ext.features.nps)
     implementation project(rootProject.ext.features.transactionanalytics)
 
 
@@ -326,7 +315,7 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.playServicesDependencies.perfMon
 
-    implementation(rootProject.ext.debugToolsDependencies.chuck) {
+    implementation (rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'
         exclude group: 'com.squareup.okio'
         exclude group: 'com.android.support'
@@ -335,7 +324,6 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.design
     implementation rootProject.ext.supportLibDependencies.cardViewV7
 
-    implementation 'com.android.support:support-v4:27.1.1'
     annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
     implementation rootProject.ext.dbDependencies.dbFlowCore
     implementation rootProject.ext.dbDependencies.dbFlow
@@ -348,13 +336,13 @@ dependencies {
     implementation rootProject.ext.networkDependencies.glide
 
     implementation rootProject.ext.analyticsDependencies.appsflyer
-    implementation(rootProject.ext.analyticsDependencies.branch) {
+    implementation (rootProject.ext.analyticsDependencies.branch) {
         exclude module: 'answers-shim'
     }
-    implementation(rootProject.ext.analyticsDependencies.moengage) {
+    implementation (rootProject.ext.analyticsDependencies.moengage) {
         exclude group: 'com.moengage', module: 'moe-push-gcm'
     }
-    implementation(rootProject.ext.analyticsDependencies.moengageMSG) {
+    implementation (rootProject.ext.analyticsDependencies.moengageMSG) {
         exclude group: 'com.android.support'
     }
 
@@ -423,7 +411,7 @@ dependencies {
     }
 
     // Cloud testing
-    androidTestImplementation(name: 'cloudtestingscreenshotter_lib', ext: 'aar')
+    androidTestImplementation (name:'cloudtestingscreenshotter_lib', ext:'aar')
 
     androidTestImplementation(rootProject.ext.miscDependencies.facebook) {
         exclude group: 'com.android.support'
@@ -435,12 +423,11 @@ dependencies {
 
     implementation project(rootProject.ext.libraries.analytics)
 
-
 }
 
 
 project.ext.sentryCli = [
-        logLevel   : "debug",
+        logLevel: "debug",
         flavorAware: true
 ]
 

@@ -470,6 +470,20 @@ public class PromoCouponFragment extends BasePresenterFragment
         super.onDestroy();
     }
 
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser && isResumed()) {
+            listener.sendAnalyticsScreenNameCoupon();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (getUserVisibleHint()) listener.sendAnalyticsScreenNameCoupon();
+    }
+
     public interface ChooseCouponListener {
 
         void onCouponSuccess(
@@ -492,6 +506,8 @@ public class PromoCouponFragment extends BasePresenterFragment
         void sendAnalyticsImpressionCouponEmptyCartListPage();
 
         void sendAnalyticsImpressionCouponEmptyShipmentPage();
+
+        void sendAnalyticsScreenNameCoupon();
 
     }
 
