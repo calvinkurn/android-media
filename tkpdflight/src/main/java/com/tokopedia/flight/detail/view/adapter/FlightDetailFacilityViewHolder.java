@@ -38,6 +38,7 @@ public class FlightDetailFacilityViewHolder extends AbstractViewHolder<FlightDet
     private TextView refundableInfo;
     private View separatorInfoView;
     private TextView facilityInfoTextView;
+    private TextView facilitySeparatorTextView;
 
     public FlightDetailFacilityViewHolder(View itemView) {
         super(itemView);
@@ -49,6 +50,7 @@ public class FlightDetailFacilityViewHolder extends AbstractViewHolder<FlightDet
         airlineCode = (TextView) itemView.findViewById(R.id.airline_code);
         separatorInfoView = (View) itemView.findViewById(R.id.separator_info);
         facilityInfoTextView = (TextView) itemView.findViewById(R.id.title_info);
+        facilitySeparatorTextView = (TextView) itemView.findViewById(R.id.tv_facility_separator);
 
         listInfo.setLayoutManager(new LinearLayoutManager(itemView.getContext()));
         adapterInfo = new ListInfoAdapter();
@@ -85,8 +87,10 @@ public class FlightDetailFacilityViewHolder extends AbstractViewHolder<FlightDet
             gridAmenity.setVisibility(View.VISIBLE);
             separatorInfoView.setVisibility(View.VISIBLE);
             facilityInfoTextView.setVisibility(View.VISIBLE);
+            facilitySeparatorTextView.setVisibility(View.VISIBLE);
             adapterAmenity.addData(flightDetailRouteViewModel.getAmenities());
         } else {
+            facilitySeparatorTextView.setVisibility(View.GONE);
             separatorInfoView.setVisibility(View.GONE);
             gridAmenity.setVisibility(View.GONE);
             facilityInfoTextView.setVisibility(View.GONE);

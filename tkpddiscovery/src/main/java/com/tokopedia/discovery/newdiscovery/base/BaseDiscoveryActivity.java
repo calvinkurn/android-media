@@ -171,6 +171,11 @@ public class BaseDiscoveryActivity
     }
 
     @Override
+    public void showImageNotSupportedError() {
+
+    }
+
+    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(KEY_FORCE_SEARCH, isForceSearch());

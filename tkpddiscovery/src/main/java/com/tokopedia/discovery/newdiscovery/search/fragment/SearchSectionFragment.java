@@ -17,8 +17,7 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.tokopedia.core.analytics.HotlistPageTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
-import com.tokopedia.core.analytics.SearchTracking;
-import com.tokopedia.core.analytics.TrackingConfig;
+import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.discovery.model.DynamicFilterModel;
@@ -35,7 +34,6 @@ import com.tokopedia.discovery.activity.SortProductActivity;
 import com.tokopedia.discovery.newdiscovery.base.BottomNavigationListener;
 import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
 import com.tokopedia.discovery.newdiscovery.base.RedirectionListener;
-import com.tokopedia.discovery.newdiscovery.search.SearchActivity;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.ProductListFragment;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.activity.HotlistActivity;
 import com.tokopedia.discovery.newdynamicfilter.RevampedDynamicFilterActivity;
@@ -241,40 +239,28 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
                 setSpanCount(2);
                 gridLayoutManager.setSpanCount(spanCount);
                 getAdapter().changeDoubleGridView();
-                if(getActivity() instanceof HotlistActivity){
-                    HotlistPageTracking.eventHotlistDisplay("grid");
-                } else {
-                    SearchTracking.eventSearchResultChangeGrid("grid 2", getScreenName());
-                }
+                SearchTracking.eventSearchResultChangeGrid(getActivity(),"grid 2", getScreenName());
                 break;
             case GRID_2:
                 setSpanCount(1);
                 gridLayoutManager.setSpanCount(spanCount);
                 getAdapter().changeSingleGridView();
-                if(getActivity() instanceof HotlistActivity){
-                    HotlistPageTracking.eventHotlistDisplay("full");
-                } else {
-                    SearchTracking.eventSearchResultChangeGrid("grid 1", getScreenName());
-                }
+                SearchTracking.eventSearchResultChangeGrid(getActivity(), "grid 1", getScreenName());
                 break;
             case GRID_3:
                 setSpanCount(1);
                 getAdapter().changeListView();
-                if(getActivity() instanceof HotlistActivity){
-                    HotlistPageTracking.eventHotlistDisplay("list");
-                } else {
-                    SearchTracking.eventSearchResultChangeGrid("list", getScreenName());
-                }
+                SearchTracking.eventSearchResultChangeGrid(getActivity(),"list", getScreenName());
                 break;
         }
         refreshBottomBarGridIcon();
     }
 
-    private void refreshBottomBarGridIcon() {
+    public void refreshBottomBarGridIcon() {
         bottomNavigationListener.refreshBottomNavigationIcon(getBottomNavigationItems());
     }
 
-    private void setSpanCount(int spanCount) {
+    public void setSpanCount(int spanCount) {
         this.spanCount = spanCount;
     }
 
@@ -282,11 +268,13 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         return spanCount;
     }
 
-    public void startShareActivity(String shareUrl) {
+    protected void startShareActivity(String shareUrl) {
 
         if (TextUtils.isEmpty(shareUrl)) {
             return;
         }
+
+        SearchTracking.eventSearchResultShare(getActivity(), getScreenName());
 
         ShareData shareData = ShareData.Builder.aShareData()
                 .setType(ShareData.DISCOVERY_TYPE)
@@ -310,11 +298,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
             if (requestCode == getSortRequestCode()) {
                 setSelectedSort((HashMap<String, String>) data.getSerializableExtra(SortProductActivity.EXTRA_SELECTED_SORT));
                 String selectedSortName = data.getStringExtra(SortProductActivity.EXTRA_SELECTED_NAME);
-                if (getActivity() instanceof HotlistActivity) {
-                    HotlistPageTracking.eventHotlistSort(selectedSortName);
-                } else {
-                    UnifyTracking.eventSearchResultSort(getScreenName(), selectedSortName);
-                }
+                UnifyTracking.eventSearchResultSort(getScreenName(), selectedSortName);
                 clearDataFilterSort();
                 showBottomBarNavigation(false);
                 reloadData();
@@ -324,7 +308,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
                 if (getActivity() instanceof HotlistActivity) {
                     HotlistPageTracking.eventHotlistFilter(getSelectedFilter());
                 } else {
-                    SearchTracking.eventSearchResultFilter(getScreenName(), getSelectedFilter());
+                    SearchTracking.eventSearchResultFilter(getActivity(), getScreenName(), getSelectedFilter());
                 }
                 clearDataFilterSort();
                 showBottomBarNavigation(false);
@@ -581,7 +565,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     }
 
     public void onBottomSheetHide() {
-        SearchTracking.eventSearchResultCloseBottomSheetFilter(getScreenName(), getSelectedFilter());
+        SearchTracking.eventSearchResultCloseBottomSheetFilter(getActivity(), getScreenName(), getSelectedFilter());
     }
 
     protected boolean isUsingBottomSheetFilter() {

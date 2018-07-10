@@ -78,7 +78,7 @@ public class GetHotlistInitializeSubscriber extends rx.Subscriber<HotlistModel> 
         view.setTitleHeader(hotlistModel.getBanner().getHotlistTitle());
         view.setDescription(hotlistModel.getBanner().getBannerDesc());
         HotlistHeaderViewModel header = mappingHotlistHeader(hotlistModel.getBanner(),
-                hotlistModel.getAttribute().getHastTags(), hotlistModel.getTotalDataText());
+                hotlistModel.getAttribute().getHastTags(), hotlistModel.getTotalData());
 
         view.clearLastProductTracker(page == 1);
 
@@ -195,7 +195,7 @@ public class GetHotlistInitializeSubscriber extends rx.Subscriber<HotlistModel> 
         return list;
     }
 
-    private HotlistHeaderViewModel mappingHotlistHeader(HotlistBannerModel banner, List<HotlistHashtagModel> hashTags, String totalData) {
+    private HotlistHeaderViewModel mappingHotlistHeader(HotlistBannerModel banner, List<HotlistHashtagModel> hashTags, double totalData) {
         HotlistHeaderViewModel headerViewModel = new HotlistHeaderViewModel();
         headerViewModel.setImageUrl(banner.getBannerImage());
         headerViewModel.setTotalData(totalData);

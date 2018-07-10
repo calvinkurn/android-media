@@ -1,40 +1,21 @@
 package com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.viewholder;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.support.annotation.LayoutRes;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.target.Target;
-import com.tkpd.library.utils.ImageHandler;
-import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.core.analytics.HotlistPageTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.HotlistViewPagerAdapter;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.ItemClickListener;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.customview.HotlistPromoView;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistHashTagViewModel;
@@ -44,9 +25,9 @@ import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
-import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.TopAdsBannerView;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,7 +41,7 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
     public static final int LAYOUT = R.layout.recyclerview_hotlist_banner;
     public static final String DEFAULT_ITEM_VALUE = "1";
     public static final String HOTLIST_ADS_SRC = "hotlist";
-
+    private DecimalFormat decimalFormat = new DecimalFormat("#,###,###");
     private final Context context;
     private final ItemClickListener mItemClickListener;
 
@@ -113,7 +94,7 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
     @Override
     public void bind(HotlistHeaderViewModel element) {
         hasTagAdapter.setData(element.getHashTags());
-        productCount.setText(String.format(context.getString(R.string.product_count), element.getTotalData()));
+        productCount.setText(String.format(context.getString(R.string.product_count), decimalFormat.format(element.getTotalData())));
         if (element.getHotlistPromo() != null) {
             hotlistPromoView.setVisibility(View.VISIBLE);
             renderPromoView(element.getHotlistTitle(), element.getHotlistPromo());
