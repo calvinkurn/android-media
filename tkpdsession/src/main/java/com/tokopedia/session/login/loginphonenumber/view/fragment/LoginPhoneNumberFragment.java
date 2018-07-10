@@ -18,15 +18,14 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.SessionRouter;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.analytics.LoginPhoneNumberAnalytics;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.network.SessionUrl;
 import com.tokopedia.otp.tokocashotp.view.activity.VerificationActivity;
@@ -66,6 +65,8 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
 
     TkpdProgressDialog progressDialog;
 
+    SessionRouter sessionRouter;
+
     @Inject
     LoginPhoneNumberPresenter presenter;
 
@@ -97,6 +98,18 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
     public void onStart() {
         super.onStart();
         ScreenTracking.screen(getScreenName());
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (getActivity().getApplication() instanceof SessionRouter) {
+            sessionRouter = (SessionRouter) getActivity().getApplication();
+        } else {
+            throw new IllegalStateException("Application must implement "
+                    + SessionRouter.class.getSimpleName());
+        }
     }
 
     @Nullable
@@ -169,6 +182,8 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
         changeInactiveNumber.setText(changeInactiveString);
         changeInactiveNumber.setMovementMethod(LinkMovementMethod.getInstance());
         changeInactiveNumber.setHighlightColor(Color.TRANSPARENT);
+        changeInactiveNumber.setVisibility(sessionRouter.isLoginInactivePhoneLinkEnabled() ?
+                View.VISIBLE : View.GONE);
     }
 
     @Override

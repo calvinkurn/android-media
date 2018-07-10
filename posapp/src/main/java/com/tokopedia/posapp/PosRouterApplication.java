@@ -725,6 +725,11 @@ public class PosRouterApplication extends MainApplication implements
         }
     }
 
+    @Override
+    public boolean isLoginInactivePhoneLinkEnabled() {
+        return true;
+    }
+
     public PosAppComponent getPosAppComponent() {
         if(posAppComponent == null) {
             posAppComponent = DaggerPosAppComponent.builder().baseAppComponent(getBaseAppComponent()).build();
