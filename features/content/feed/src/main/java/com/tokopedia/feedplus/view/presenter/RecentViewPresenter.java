@@ -1,7 +1,7 @@
 package com.tokopedia.feedplus.view.presenter;
 
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.feedplus.domain.usecase.AddWishlistUseCase;
 import com.tokopedia.feedplus.domain.usecase.GetRecentViewUseCase;
 import com.tokopedia.feedplus.domain.usecase.RemoveWishlistUseCase;
@@ -23,7 +23,7 @@ public class RecentViewPresenter extends BaseDaggerPresenter<RecentView.View>
     private final GetRecentViewUseCase getRecentProductUseCase;
     private final AddWishlistUseCase addWishlistUseCase;
     private final RemoveWishlistUseCase removeWishlistUseCase;
-    private final SessionHandler sessionHandler;
+    private final UserSession userSession;
     private RecentView.View viewListener;
     private WishlistListener wishlistListener;
 
@@ -31,11 +31,11 @@ public class RecentViewPresenter extends BaseDaggerPresenter<RecentView.View>
     RecentViewPresenter(GetRecentViewUseCase getRecentProductUseCase,
                         AddWishlistUseCase addWishlistUseCase,
                         RemoveWishlistUseCase removeWishlistUseCase,
-                        SessionHandler sessionHandler) {
+                        UserSession userSession) {
         this.getRecentProductUseCase = getRecentProductUseCase;
         this.addWishlistUseCase = addWishlistUseCase;
         this.removeWishlistUseCase = removeWishlistUseCase;
-        this.sessionHandler = sessionHandler;
+        this.userSession = userSession;
     }
 
     public void attachView(RecentView.View view, WishlistListener wishlistListener) {
@@ -58,7 +58,7 @@ public class RecentViewPresenter extends BaseDaggerPresenter<RecentView.View>
         viewListener.showLoading();
         getRecentProductUseCase.execute(
                 getRecentProductUseCase.getParam(
-                        sessionHandler.getLoginID()),
+                        userSession.getUserId()),
                 new RecentViewSubscriber(viewListener)
         );
     }
@@ -66,7 +66,7 @@ public class RecentViewPresenter extends BaseDaggerPresenter<RecentView.View>
     public void addToWishlist(int adapterPosition, String productId) {
         viewListener.showLoadingProgress();
         addWishlistUseCase.execute(
-                AddWishlistUseCase.generateParam(productId, sessionHandler),
+                AddWishlistUseCase.generateParam(productId, userSession),
                 new AddWishlistSubscriber(wishlistListener, adapterPosition));
     }
 
@@ -75,7 +75,7 @@ public class RecentViewPresenter extends BaseDaggerPresenter<RecentView.View>
     public void removeFromWishlist(int adapterPosition, String productId) {
         viewListener.showLoadingProgress();
         removeWishlistUseCase.execute(
-                RemoveWishlistUseCase.generateParam(productId, sessionHandler),
+                RemoveWishlistUseCase.generateParam(productId, userSession),
                 new RemoveWishlistSubscriber(wishlistListener, adapterPosition));
     }
 }
