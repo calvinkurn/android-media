@@ -36,7 +36,6 @@ import com.tokopedia.contactus.home.view.presenter.ContactUsHomeContract;
 import com.tokopedia.contactus.home.view.presenter.ContactUsHomePresenter;
 import com.tokopedia.contactus.inboxticket.activity.InboxTicketActivity;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
 
 import java.util.List;
 
@@ -208,7 +207,8 @@ public class ContactUsHomeFragment extends BaseDaggerFragment
 
     @OnClick(R2.id.btn_chat_toped)
     public void onBtnChatClicked() {
-        startActivity(ChatRoomActivity.getChatBotIntent(getContext(), msgId));
+        startActivity(((ContactUsModuleRouter)(getContext().getApplicationContext()))
+                .getChatBotIntent(getContext(),msgId));
     }
 
     @Override

@@ -77,19 +77,18 @@ public class MultipleAddressItemAdapter extends RecyclerView.Adapter
             public void onClick(View view) {
                 String defaultCartId = null;
                 for (MultipleAddressItemData multipleAddressItemData : itemDataList) {
-                    if (!TextUtils.isEmpty(multipleAddressItemData.getCartId())) {
+                    if (!TextUtils.isEmpty(multipleAddressItemData.getCartId()) &&
+                            !multipleAddressItemData.getCartId().equals("0")) {
                         defaultCartId = multipleAddressItemData.getCartId();
-                        break;
+                    } else {
+                        if (!TextUtils.isEmpty(defaultCartId) ||
+                                multipleAddressItemData.getCartId().equals("0")) {
+                            multipleAddressItemData.setCartId(defaultCartId);
+                            break;
+                        }
                     }
                 }
                 itemDataList.remove(position);
-
-                for (MultipleAddressItemData multipleAddressItemData : itemDataList) {
-                    if (TextUtils.isEmpty(multipleAddressItemData.getCartId())) {
-                        multipleAddressItemData.setCartId(defaultCartId);
-                        break;
-                    }
-                }
                 notifyDataSetChanged();
             }
         };

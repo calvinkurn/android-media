@@ -9,6 +9,7 @@ import java.util.Map;
  * @author anggaprasetiyo on 05/06/18.
  */
 public class EnhancedECommerceCartMapData {
+    public static final String VALUE_CURRENCY_IDR = "IDR";
 
     public static final String ADD_ACTION = "add";
     public static final String REMOVE_ACTION = "remove";

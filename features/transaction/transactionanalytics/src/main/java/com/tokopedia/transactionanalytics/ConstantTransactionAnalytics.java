@@ -77,9 +77,7 @@ public interface ConstantTransactionAnalytics {
         String IMPRESSION_CHANGE_ADDRESS = "impression change address";
         String SUBMIT_SEARCH_FROM_PILIH_ALAMAT_LAINNYA = "submit search from pilih alamat lainnya";
         String CLICK_TAMBAH_ALAMAT_FROM_PLUS = "click tambah alamat from +";
-        // Cart change address ends here
 
-        // Cart multiple address starts here
         String CLICK_BACK_ARROW_FROM_KIRIM_KE_BEBERAPA_ALAMAT = "click back arrow from kirim ke beberapa alamat";
         String CLICK_KEMBALI_DAN_HAPUS_PERUBAHAN_FROM_KIRIM_KE_BEBERAPA_ALAMAT = "click kembali dan hapus perubahan from kirim ke beberapa alamat";
         String CLICK_TETAP_DI_HALAMAN_INI_FROM_KIRIM_KE_BEBERAPA_ALAMAT = "click tetap di halaman ini from kirim ke beberapa alamat";
@@ -92,7 +90,6 @@ public interface ConstantTransactionAnalytics {
         String CLICK_INPUT_QUANTITY_FROM_UBAH_FROM_KIRIM_KE_BEBERAPA_ALAMAT = "click input quantity from ubah from kirim ke beberapa alamat";
         String CLICK_TULIS_CATATAN_FROM_UBAH_FROM_KIRIM_KE_BEBERAPA_ALAMAT = "click tulis catatan from ubah from kirim ke beberapa alamat";
         String CLICK_SIMPAN_FROM_UBAH_FROM_KIRIM_KE_BEBERAPA_ALAMAT = "click simpan from ubah from kirim ke beberapa alamat";
-        // Cart multiple address ends here
 
         String CLICK_TERIMA_SEBAGIAN = "click terima sebagian";
         String CLICK_X_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON = "click x from gunakan kode promo atau kupon";
@@ -121,16 +118,23 @@ public interface ConstantTransactionAnalytics {
     }
 
     interface EventLabel {
-
-
-
-
-
-
-
         String SUCCESS = "success";
         String NOT_SUCCESS = "not success";
         String COURIER_NOT_COMPLETE = "courier not complete";
         String KUOTA_PENUKARAN = "kuota penukaran";
+    }
+
+    interface ScreenName {
+        String CART = "/cart";
+        String CHECKOUT = "/cart/shipment";
+        String SELECT_COURIER = "/selectcourier";
+        String PROMO_PAGE_FROM_CART_TAB_PROMO = "/cart/voucher";
+        String PROMO_PAGE_FROM_CART_TAB_COUPON = "/cart/coupon";
+        String PROMO_PAGE_FROM_CHECKOUT_TAB_PROMO = "/cart/shipment/voucher";
+        String PROMO_PAGE_FROM_CHECKOUT_TAB_COUPON = "/cart/shipment/coupon";
+        String MULTI_ADDRESS_PAGE = "/cart/shipment/multiple";
+        String EDIT_MULTIPLE_ADDRESS_PAGE = "/cart/shipment/multiple/edit";
+        String ADDRESS_LIST_PAGE = "/cart/address";
+        String ADD_NEW_ADDRESS_PAGE = "/cart/address/create";
     }
 }

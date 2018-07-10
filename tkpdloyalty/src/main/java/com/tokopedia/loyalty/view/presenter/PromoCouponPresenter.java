@@ -41,6 +41,10 @@ import rx.Subscriber;
 
 public class PromoCouponPresenter implements IPromoCouponPresenter {
 
+    private static final String PARAM_CARTS = "carts";
+    private static final String PARAM_PROMO_CODE = "promo_code";
+    private static final String PARAM_SUGGESTED = "suggested";
+    private static final String PARAM_LANG = "lang";
     private final IPromoCouponInteractor promoCouponInteractor;
     private final IPromoCouponView view;
     private FlightCheckVoucherUseCase flightCheckVoucherUseCase;
@@ -176,12 +180,12 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
         TKPDMapParam<String, String> paramUpdateCart = null;
         if (!TextUtils.isEmpty(paramUpdateCartString)) {
             paramUpdateCart = new TKPDMapParam<>();
-            paramUpdateCart.put("carts", paramUpdateCartString);
+            paramUpdateCart.put(PARAM_CARTS, paramUpdateCartString);
         }
         TKPDMapParam<String, String> paramCheckPromo = new TKPDMapParam<>();
-        paramCheckPromo.put("promo_code", couponData.getCode());
-        paramCheckPromo.put("suggested", "0");
-        paramCheckPromo.put("lang", "id");
+        paramCheckPromo.put(PARAM_PROMO_CODE, couponData.getCode());
+        paramCheckPromo.put(PARAM_SUGGESTED, "0");
+        paramCheckPromo.put(PARAM_LANG, "id");
 
         promoCouponInteractor.submitCheckPromoCodeMarketPlace(
                 paramUpdateCart != null ? AuthUtil.generateParamsNetwork(activity, paramUpdateCart) : null,

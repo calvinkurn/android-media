@@ -13,21 +13,24 @@ public class CheckoutAnalyticsChangeAddress extends CheckoutAnalytics {
         super(analyticTracker);
     }
 
-    public void eventClickChangeAddressClickPilihAlamatLainyaFromGAntiAlamat() {
+    // Klik pilih alamat lainnya dari ganti alamat
+    public void eventClickChangeAddressClickChooseOtherAddressFromChangeAddress() {
         analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.CLICK_PILIH_ALAMAT_LAINNYA_FROM_GANTI_ALAMAT,
                 "");
     }
 
-    public void eventClickChangeAddressClickTambahAlamatBaruFromGantiAlamat() {
+    // Klik tambah alamat baru dari ganti alamat
+    public void eventClickChangeAddressClickAddNewAddressFromChangeAddress() {
         analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.CLICK_TAMBAH_ALAMAT_BARU_FROM_GANTI_ALAMAT,
                 "");
     }
 
-    public void eventClickChangeAddressClickKirimKeBeberapaAlamatFromGantiAlamat() {
+    // Klik kirim ke beberapa alamat dari ganti alamat
+    public void eventClickChangeAddressClickSendToMultipleAddressFromChangeAddress() {
         analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.CLICK_KIRIM_KE_BEBERAPA_ALAMAT_FROM_GANTI_ALAMAT,
@@ -35,7 +38,8 @@ public class CheckoutAnalyticsChangeAddress extends CheckoutAnalytics {
         );
     }
 
-    public void eventClickChangeAddressClickKirimKeAlamatIniFromGantiAlamat() {
+    // Klik kirim ke alamat ini dari ganti alamat
+    public void eventClickChangeAddressClickSendToThisAddressFromChangeAddress() {
         analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.CLICK_KIRIM_KE_ALAMAT_INI_FROM_GANTI_ALAMAT,
@@ -43,7 +47,8 @@ public class CheckoutAnalyticsChangeAddress extends CheckoutAnalytics {
         );
     }
 
-    public void eventClickChangeAddressClickXFromPilihAlamatLainnya() {
+    // Klik X dari pilih alamat lainnya
+    public void eventClickChangeAddressClickXFromChooseOtherAddress() {
         analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.CLICK_X_FROM_PILIH_ALAMAT_LAINNYA,
@@ -51,7 +56,8 @@ public class CheckoutAnalyticsChangeAddress extends CheckoutAnalytics {
         );
     }
 
-    public void eventClickChangeAddressClickPlusFromPilihAlamatLainnya() {
+    // Klik plus dari pilih alamat lainnya
+    public void eventClickChangeAddressClickPlusFromChooseOtherAddress() {
         analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.CLICK_PLUS_FROM_PILIH_ALAMAT_LAINNYA,
@@ -59,7 +65,8 @@ public class CheckoutAnalyticsChangeAddress extends CheckoutAnalytics {
         );
     }
 
-    public void eventClickChangeAddressClickUbahFromPilihAlamatLainnya() {
+    // Klik ubah dari pilih alamat lainnya
+    public void eventClickChangeAddressClickEditFromChooseOtherAddress() {
         analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.CLICK_UBAH_FROM_PILIH_ALAMAT_LAINNYA,
@@ -67,7 +74,8 @@ public class CheckoutAnalyticsChangeAddress extends CheckoutAnalytics {
         );
     }
 
-    public void eventClickChangeAddressClickChecklistAlamatFromPilihAlamatLainnya() {
+    // Klik checklist alamat dari pilih alamat lainnya
+    public void eventClickChangeAddressClickChecklistAddressFromChooseOtherAddress() {
         analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.CLICK_CHECKLIST_ALAMAT_FROM_PILIH_ALAMAT_LAINNYA,
@@ -75,7 +83,7 @@ public class CheckoutAnalyticsChangeAddress extends CheckoutAnalytics {
         );
     }
 
-    public void eventImpressionChangeAddressImpressionChangeAddress() {
+    public void eventImpressionChangeAddress() {
         analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.VIEW_ATC,
                 ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.IMPRESSION_CHANGE_ADDRESS,
@@ -83,7 +91,8 @@ public class CheckoutAnalyticsChangeAddress extends CheckoutAnalytics {
         );
     }
 
-    public void eventClickChangeAddressSubmitSearchFromPilihAlamatLainnya() {
+    // Submit search dari pilih alamat lainnya
+    public void eventClickChangeAddressSubmitSearchFromChooseOtherAddress() {
         analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.SUBMIT_SEARCH_FROM_PILIH_ALAMAT_LAINNYA,
@@ -91,7 +100,8 @@ public class CheckoutAnalyticsChangeAddress extends CheckoutAnalytics {
         );
     }
 
-    public void eventClickChangeAddressClickTambahAlamatFromPlus() {
+    // Klik tambah alamat dari plus
+    public void eventClickChangeAddressClickAddAddressFromPlus() {
         analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.CLICK_TAMBAH_ALAMAT_FROM_PLUS,
@@ -99,7 +109,8 @@ public class CheckoutAnalyticsChangeAddress extends CheckoutAnalytics {
         );
     }
 
-    public void eventClickChangeAddressClickArrowBackFromGantiAlamat() {
+    // Klik arrow back dari ganti alamat
+    public void eventClickChangeAddressClickArrowBackFromChangeAddress() {
         analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.CLICK_ARROW_BACK_FROM_GANTI_ALAMAT,
