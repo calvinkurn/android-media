@@ -1,4 +1,3 @@
-
 mutation addWishlist($productID: Int!, $userID: Int!) {
     wishlist_add(productID: $productID, userID: $userID) {
         id

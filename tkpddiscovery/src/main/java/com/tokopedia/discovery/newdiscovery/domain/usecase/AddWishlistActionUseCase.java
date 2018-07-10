@@ -28,8 +28,8 @@ import rx.Observable;
  */
 
 public class AddWishlistActionUseCase{
-    private static final String PARAM_USER_ID = "userId";
-    private static final String PARAM_PRODUCT_ID = "productId";
+    private static final String PARAM_USER_ID = "userID";
+    private static final String PARAM_PRODUCT_ID = "productID";
     private final Context context;
 
     private AddWishlistActionMapper mapper;
@@ -63,7 +63,7 @@ public class AddWishlistActionUseCase{
 
         GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(), R.raw.query_add_wishlist),
                 AddWishListResponse.class,
-                variables);
+                variables, "addWishlist");
 
         graphqlUseCase.addRequest(graphqlRequest);
 
