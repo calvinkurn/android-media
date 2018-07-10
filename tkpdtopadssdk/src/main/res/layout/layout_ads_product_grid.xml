@@ -167,6 +167,7 @@
         android:layout_marginLeft="@dimen/product_grid_padding"
         android:layout_marginRight="@dimen/product_grid_padding"
         android:layout_marginTop="3dp"
+        android:gravity="center_vertical"
         android:orientation="horizontal">
 
         <ImageView

@@ -91,6 +91,8 @@ public class AdsAdapterTypeFactory implements AdsTypeFactory {
             holder = new ProductGridViewHolder(view, imageLoader, itemClickListener, clickPosition);
         } else if (viewType == ProductListViewHolder.LAYOUT) {
             holder = new ProductListViewHolder(view, imageLoader, itemClickListener, clickPosition);
+        } else if (viewType == ProductBigViewHolder.LAYOUT) {
+            holder = new ProductBigViewHolder(view, imageLoader, itemClickListener, clickPosition);
         } else if (viewType == ShopGridViewHolder.LAYOUT) {
             holder = new ShopGridViewHolder(view, imageLoader, itemClickListener);
         } else if (viewType == ShopListViewHolder.LAYOUT) {
