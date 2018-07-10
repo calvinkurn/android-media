@@ -54,4 +54,5 @@
     <string name="event_action_click_keranjang">click - tambah ke keranjang</string>
     <string name="event_action_click_beli_in_variants_page">click - beli on variants page</string>
     <string name="event_action_click_keranjang_in_variants_page">click - tambah ke keranjang on variants page</string>
+    <string name="format_notes_variant">Variant : %1$s</string>
 </resources>
