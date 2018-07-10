@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <include layout="@layout/view_kai_homepage_form" />
+        <include layout="@layout/view_train_homepage_form" />
 
         <!--Banner disini-->
 

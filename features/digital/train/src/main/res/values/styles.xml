@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="ButtonRound">
+    <style name="TrainButtonRound">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/grey_400</item>
@@ -13,7 +13,7 @@
         <item name="android:paddingBottom">@dimen/dp_10</item>
         <item name="android:includeFontPadding">false</item>
         <item name="android:minHeight">0dp</item>
-        <item name="android:background">@drawable/bg_button_round</item>
+        <item name="android:background">@drawable/bg_train_button_round</item>
     </style>
 
     <style name="WidgetSelectPassengerView">
