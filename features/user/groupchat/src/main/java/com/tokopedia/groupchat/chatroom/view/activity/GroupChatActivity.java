@@ -94,6 +94,7 @@ import com.tokopedia.groupchat.common.util.TextFormatter;
 import com.tokopedia.groupchat.common.util.TransparentStatusBarHelper;
 import com.tokopedia.groupchat.vote.view.model.VoteInfoViewModel;
 import com.tokopedia.groupchat.vote.view.model.VoteViewModel;
+import com.tokopedia.vote.di.VoteModule;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -273,8 +274,9 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     private void initInjector() {
-        GroupChatComponent streamComponent = DaggerGroupChatComponent.builder().baseAppComponent(
-                ((BaseMainApplication) getApplication()).getBaseAppComponent()).build();
+        GroupChatComponent streamComponent = DaggerGroupChatComponent.builder()
+                .baseAppComponent(((BaseMainApplication) getApplication()).getBaseAppComponent())
+                .build();
 
         DaggerChatroomComponent.builder()
                 .groupChatComponent(streamComponent)
