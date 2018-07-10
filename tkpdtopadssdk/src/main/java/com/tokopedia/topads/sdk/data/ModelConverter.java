@@ -85,8 +85,8 @@ public class ModelConverter {
             } else if (displayMode == DisplayMode.GRID && visitable instanceof ShopListViewModel) {
                 list.set(i, ModelConverter.convertToShopGridViewModel(((ShopListViewModel)
                         visitable).getData()));
-            } else if (displayMode == DisplayMode.LIST && visitable instanceof ProductGridViewModel) {
-                list.set(i, ModelConverter.convertToProductListViewModel(((ProductGridViewModel)
+            } else if (displayMode == DisplayMode.LIST && visitable instanceof ProductBigViewModel) {
+                list.set(i, ModelConverter.convertToProductListViewModel(((ProductBigViewModel)
                         visitable).getData()));
             } else if (displayMode == DisplayMode.LIST && visitable instanceof ShopGridViewModel) {
                 list.set(i, ModelConverter.convertToShopListViewModel(((ShopGridViewModel)
@@ -95,6 +95,9 @@ public class ModelConverter {
                     || displayMode == DisplayMode.FEED_EMPTY && visitable instanceof ShopGridViewModel) {
                 list.set(i, ModelConverter.convertToShopFeedViewModel(((ShopGridViewModel)
                         visitable).getData(), displayMode));
+            } else if (displayMode == DisplayMode.BIG && visitable instanceof ProductGridViewModel) {
+                list.set(i, ModelConverter.convertToProductBigViewModel(((ProductGridViewModel)
+                        visitable).getData()));
             }
         }
     }
