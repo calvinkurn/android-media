@@ -1,5 +1,6 @@
 package com.tokopedia.core.analytics;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.appsflyer.AFInAppEventType;
@@ -17,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.tokopedia.core.util.DateFormatUtils.DEFAULT_LOCALE;
