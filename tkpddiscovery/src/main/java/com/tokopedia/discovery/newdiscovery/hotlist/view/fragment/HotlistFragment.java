@@ -21,6 +21,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.HotlistPageTracking;
+import com.tokopedia.core.analytics.SearchTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.model.Hotlist;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
@@ -31,7 +32,9 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
+import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
+import com.tokopedia.core.share.ShareBottomSheet;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
@@ -405,6 +408,51 @@ public class HotlistFragment extends SearchSectionFragment
                 }
             }
         };
+    }
+
+    @Override
+    protected void switchLayoutType() {
+        if (!getUserVisibleHint()) {
+            return;
+        }
+
+        switch (getAdapter().getCurrentLayoutType()) {
+            case GRID_1:
+                setSpanCount(2);
+                getGridLayoutManager().setSpanCount(spanCount);
+                getAdapter().changeDoubleGridView();
+                HotlistPageTracking.eventHotlistDisplay("grid");
+                break;
+            case GRID_2:
+                setSpanCount(1);
+                getGridLayoutManager().setSpanCount(spanCount);
+                getAdapter().changeSingleGridView();
+                HotlistPageTracking.eventHotlistDisplay("full");
+                break;
+            case GRID_3:
+                setSpanCount(1);
+                getAdapter().changeListView();
+                HotlistPageTracking.eventHotlistDisplay("list");
+                break;
+        }
+        refreshBottomBarGridIcon();
+    }
+
+    @Override
+    protected void startShareActivity(String shareUrl) {
+        if (TextUtils.isEmpty(shareUrl)) {
+            return;
+        }
+
+        ShareData shareData = ShareData.Builder.aShareData()
+                .setType(ShareData.DISCOVERY_TYPE)
+                .setName(getString(R.string.message_share_catalog))
+                .setTextContent(getString(R.string.message_share_category))
+                .setUri(shareUrl)
+                .build();
+
+        shareData.setType(ShareData.HOTLIST_TYPE);
+        ShareBottomSheet.show(getChildFragmentManager(), shareData);
     }
 
     @Override
