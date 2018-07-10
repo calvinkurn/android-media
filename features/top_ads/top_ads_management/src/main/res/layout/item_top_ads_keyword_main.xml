@@ -42,8 +42,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                app:srcCompat="@drawable/ic_more_vert_grey_2"
-                tools:src="@drawable/ic_more_vert_grey_2" />
+                app:srcCompat="@drawable/ic_topads_more_vert_grey"
+                tools:src="@drawable/ic_topads_more_vert_grey" />
         </FrameLayout>
 
 
