@@ -22,7 +22,6 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.HotlistPageTracking;
-import com.tokopedia.core.analytics.SearchTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.model.Hotlist;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
@@ -43,6 +42,7 @@ import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.activity.SortProductActivity;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
+import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.base.BottomNavigationListener;
 import com.tokopedia.discovery.newdiscovery.hotlist.di.component.DaggerHotlistComponent;
 import com.tokopedia.discovery.newdiscovery.hotlist.di.component.HotlistComponent;
@@ -535,7 +535,7 @@ public class HotlistFragment extends SearchSectionFragment
                 if (getActivity() instanceof HotlistActivity) {
                     HotlistPageTracking.eventHotlistFilter(getSelectedFilter());
                 } else {
-                    SearchTracking.eventSearchResultFilter(getScreenName(), getSelectedFilter());
+                    SearchTracking.eventSearchResultFilter(getActivity(), getScreenName(), getSelectedFilter());
                 }
                 clearDataFilterSort();
                 showBottomBarNavigation(false);
