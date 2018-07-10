@@ -768,11 +768,11 @@ public class DrawerBuyerHelper extends DrawerHelper
             if (remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.APP_SHOW_REFERRAL_BUTTON)) {
                 data.add(new DrawerItem(remoteConfig.getString(TkpdCache.RemoteConfigKey.APP_REFERRAL_TITLE, context.getString(R.string.drawer_title_referral_appshare)),
                         R.drawable.share_ke_teman, TkpdState.DrawerPosition.APPSHARE,
-                        true, true));
+                        true, false));
             } else {
                 data.add(new DrawerItem(context.getString(R.string.drawer_title_appshare),
                         R.drawable.share_ke_teman, TkpdState.DrawerPosition.APPSHARE,
-                        true, true));
+                        true, false));
             }
         }
     }
