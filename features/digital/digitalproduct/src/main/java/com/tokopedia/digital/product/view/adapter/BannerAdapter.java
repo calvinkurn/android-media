@@ -69,24 +69,24 @@ public class BannerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                                 R.drawable.digital_bg_banner_selected
                         )
                 );
-                /*bannerItemHolder.tvVoucherCode.setBackgroundColor(context
+                bannerItemHolder.tvVoucherCode.setBackgroundColor(context
                         .getResources()
                         .getColor(R.color.digital_voucher_copied_color));
                 bannerItemHolder.tvVoucherCode.setTextColor(context
                         .getResources()
-                        .getColor(android.R.color.white));*/
+                        .getColor(android.R.color.white));
             } else {
                 bannerItemHolder.mainContainer.setBackgroundDrawable(
                         context.getResources().getDrawable(
                                 R.drawable.digital_bg_banner_item
                         )
                 );
-                /*bannerItemHolder.tvVoucherCode.setTextColor(context
+                bannerItemHolder.tvVoucherCode.setTextColor(context
                         .getResources()
                         .getColor(R.color.digital_voucher_copied_color));
                 bannerItemHolder.tvVoucherCode.setBackgroundColor(context
                         .getResources()
-                        .getColor(android.R.color.transparent));*/
+                        .getColor(android.R.color.transparent));
             }
 
             bannerItemHolder.tvDescBanner.setText(MethodChecker.fromHtml(bannerData.getTitle()));
