@@ -291,6 +291,7 @@
                 android:theme="@style/TransactionCheckboxDisabled" />
 
             <TextView
+                android:id="@+id/tv_label_insurance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/label_shipment_insurance" />

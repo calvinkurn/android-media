@@ -146,6 +146,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
     private TextView tvShippingEtd;
     private TextView tvAdditionalFee;
     private TextView tvAdditionalFeePrice;
+    private TextView tvLabelInsurance;
 
     public ShipmentItemViewHolder(View itemView) {
         super(itemView);
@@ -234,6 +235,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         tvShippingEtd = itemView.findViewById(R.id.tv_shipping_etd);
         tvAdditionalFee = itemView.findViewById(R.id.tv_additional_fee);
         tvAdditionalFeePrice = itemView.findViewById(R.id.tv_additional_fee_price);
+        tvLabelInsurance = itemView.findViewById(R.id.tv_label_insurance);
     }
 
     protected void showBottomSheet(Context context, String title, String message, int image) {
@@ -596,6 +598,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
             final CourierItemData courierItemData = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier();
             if (courierItemData.getInsuranceType() == InsuranceConstant.INSURANCE_TYPE_MUST) {
                 llInsurance.setVisibility(View.VISIBLE);
+                tvLabelInsurance.setText(R.string.label_must_insurance);
                 cbInsurance.setVisibility(View.GONE);
                 cbInsuranceDisabled.setVisibility(View.VISIBLE);
                 cbInsuranceDisabled.setChecked(true);
@@ -607,6 +610,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                 llInsurance.setVisibility(View.GONE);
                 shipmentCartItemModel.getSelectedShipmentDetailData().setUseInsurance(false);
             } else if (courierItemData.getInsuranceType() == InsuranceConstant.INSURANCE_TYPE_OPTIONAL) {
+                tvLabelInsurance.setText(R.string.label_shipment_insurance);
                 llInsurance.setVisibility(View.VISIBLE);
                 cbInsuranceDisabled.setVisibility(View.GONE);
                 cbInsurance.setVisibility(View.VISIBLE);
