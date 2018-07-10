@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.widget.NestedScrollView;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -18,8 +17,6 @@ import android.widget.Toast;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
-import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.app.BasePresenterFragmentV4;
 import com.tokopedia.core.app.MainApplication;
@@ -27,7 +24,6 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.referral.HeightWrappingViewPager;
 import com.tokopedia.core.referral.adapter.ReferralGuidePagerAdapter;
-import com.tokopedia.core.referral.data.PromoContent;
 import com.tokopedia.core.referral.data.ReferralCodeEntity;
 import com.tokopedia.core.referral.di.DaggerReferralComponent;
 import com.tokopedia.core.referral.di.ReferralComponent;
@@ -38,7 +34,6 @@ import com.tokopedia.core.referral.presenter.IReferralPresenter;
 import com.tokopedia.core.referral.presenter.ReferralPresenter;
 import com.tokopedia.core.router.OtpRouter;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.util.ShareSocmedHandler;
 
 import javax.inject.Inject;
 
@@ -55,8 +50,6 @@ public class FragmentReferral extends BasePresenterFragmentV4<IReferralPresenter
 
     @Inject
     ReferralPresenter presenter;
-    //@BindView(R2.id.btn_app_share)
-    //TextView appShareButton;
     @BindView(R2.id.tv_referral_code)
     TextView referralCodeTextView;
     @BindView(R2.id.tv_referral_desc)

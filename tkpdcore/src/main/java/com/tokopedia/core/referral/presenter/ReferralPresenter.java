@@ -2,20 +2,14 @@ package com.tokopedia.core.referral.presenter;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
-import android.widget.Toast;
 
-import com.facebook.login.LoginManager;
 import com.tkpd.library.utils.CommonUtils;
-import com.tkpd.library.utils.ConnectionDetector;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -127,10 +121,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
 
     @Override
     public void getReferralVoucherCode() {
-       // if (TextUtils.isEmpty(getVoucherCodeFromCache())) {
-            getView().showProcessDialog();
-        //}
-
+        getView().showProcessDialog();
         getReferralDataUseCase.execute(RequestParams.EMPTY, new Subscriber<ReferralCodeEntity>() {
             @Override
             public void onCompleted() {
