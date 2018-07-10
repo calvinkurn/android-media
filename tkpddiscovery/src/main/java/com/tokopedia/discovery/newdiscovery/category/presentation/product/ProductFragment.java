@@ -66,6 +66,8 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.core.router.productdetail.ProductDetailRouter.EXTRA_PRODUCT_ID;
+
 /**
  * @author by alifa on 10/26/17.
  */
@@ -116,7 +118,7 @@ public class ProductFragment extends SearchSectionFragment
     public static ProductFragment newInstance(ProductViewModel productViewModel, String categoryUrl, String trackerAttribution) {
         Bundle args = new Bundle();
         args.putParcelable(ARG_VIEW_MODEL, productViewModel);
-        args.putString(ARG_URL,categoryUrl);
+        args.putString(ARG_URL, categoryUrl);
         args.putString(ARGS_TRACKER_ATTRIBUTION, trackerAttribution);
         ProductFragment productListFragment = new ProductFragment();
         productListFragment.setArguments(args);
@@ -193,7 +195,7 @@ public class ProductFragment extends SearchSectionFragment
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        if (savedInstanceState!=null) {
+        if (savedInstanceState != null) {
             switchLayoutType();
         }
     }
@@ -217,7 +219,7 @@ public class ProductFragment extends SearchSectionFragment
         adapter = new CategoryProductListAdapter(this,
                 productViewModel.getCategoryHeaderModel(),
                 productViewModel.getProductList(),
-                new CategoryProductListTypeFactoryImpl(this,this,this, topAdsConfig)
+                new CategoryProductListTypeFactoryImpl(this, this, this, topAdsConfig)
         );
         topAdsRecyclerAdapter = new TopAdsRecyclerAdapter(getActivity(), adapter);
         topAdsRecyclerAdapter.setHasHeader(true);
@@ -486,7 +488,20 @@ public class ProductFragment extends SearchSectionFragment
             boolean isWishlist = data.getExtras().getBoolean(ProductDetailRouter
                     .WIHSLIST_STATUS_IS_WISHLIST, false);
 
-            updateWishlistFromPDP(position, isWishlist);
+            String productId = data.getExtras().getString(EXTRA_PRODUCT_ID);
+
+            if (null == productId ||
+                    "".equals(productId)) {
+                updateWishlistFromPDP(position, isWishlist);
+            } else {
+                updateWishlistFromPDP(productId, position, isWishlist);
+            }
+        }
+    }
+
+    private void updateWishlistFromPDP(String productId, int position, boolean isWishlist) {
+        if (adapter != null && adapter.isProductItem(position)) {
+            adapter.updateWishlistStatus(productId, isWishlist);
         }
     }
 
@@ -536,33 +551,33 @@ public class ProductFragment extends SearchSectionFragment
     }
 
     @Override
-    public void onWishlistButtonClicked(ProductItem productItem, int adapterPosition) {
-        presenter.handleWishlistButtonClicked(productItem, topAdsRecyclerAdapter.getOriginalPosition(adapterPosition));
+    public void onWishlistButtonClicked(ProductItem productItem) {
+        presenter.handleWishlistButtonClicked(productItem);
     }
 
     @Override
-    public void onErrorAddWishList(String errorMessage, int adapterPosition) {
-        enableWishlistButton(adapterPosition);
+    public void onErrorAddWishList(String errorMessage, String productId) {
+        enableWishlistButton(productId);
         NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
 
     @Override
-    public void onSuccessAddWishlist(int adapterPosition) {
-        adapter.updateWishlistStatus(adapterPosition, true);
-        enableWishlistButton(adapterPosition);
+    public void onSuccessAddWishlist(String productId) {
+        adapter.updateWishlistStatus(productId, true);
+        enableWishlistButton(productId);
         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_add_wishlist));
     }
 
     @Override
-    public void onErrorRemoveWishlist(String errorMessage, int adapterPosition) {
-        enableWishlistButton(adapterPosition);
+    public void onErrorRemoveWishlist(String errorMessage, String productId) {
+        enableWishlistButton(productId);
         NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
 
     @Override
-    public void onSuccessRemoveWishlist(int adapterPosition) {
-        adapter.updateWishlistStatus(adapterPosition, false);
-        enableWishlistButton(adapterPosition);
+    public void onSuccessRemoveWishlist(String productId) {
+        adapter.updateWishlistStatus(productId, false);
+        enableWishlistButton(productId);
         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_remove_wishlist));
     }
 
@@ -594,13 +609,13 @@ public class ProductFragment extends SearchSectionFragment
     }
 
     @Override
-    public void disableWishlistButton(int adapterPosition) {
-        adapter.setWishlistButtonEnabled(adapterPosition, false);
+    public void disableWishlistButton(String productId) {
+        adapter.setWishlistButtonEnabled(productId, false);
     }
 
     @Override
-    public void enableWishlistButton(int adapterPosition) {
-        adapter.setWishlistButtonEnabled(adapterPosition, true);
+    public void enableWishlistButton(String productId) {
+        adapter.setWishlistButtonEnabled(productId, true);
     }
 
     @Override

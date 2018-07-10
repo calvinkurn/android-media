@@ -3,7 +3,6 @@ package com.tokopedia.discovery.newdiscovery.category.presentation.product;
 import android.content.Context;
 import android.os.Bundle;
 
-import com.tokopedia.core.MaintenancePage;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.domain.DefaultSubscriber;
 import com.tokopedia.core.base.domain.RequestParams;
@@ -12,7 +11,6 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.discovery.newdiscovery.category.di.component.CategoryComponent;
 import com.tokopedia.discovery.newdiscovery.category.di.component.DaggerCategoryComponent;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.helper.CategoryModelHelper;
-import com.tokopedia.discovery.newdiscovery.category.presentation.product.subscriber.RemoveWishlistActionSubscriber;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategoryHeaderModel;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ProductViewModel;
@@ -25,12 +23,9 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.GetDynamicFilterSubs
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenterImpl;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.listener.WishlistActionListener;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
-import com.tokopedia.graphql.domain.GraphqlUseCase;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -54,14 +49,8 @@ public class ProductPresenter extends SearchSectionFragmentPresenterImpl<Product
     private ProductContract.View viewListener;
     private Context context;
 
-    private GraphqlUseCase addWishListGraphqlUseCase;
-
     public ProductPresenter(Context context) {
         this.context = context;
-
-//        addWishlistActionUseCase = new AddWishlistActionUseCase();
-
-        addWishListGraphqlUseCase = new GraphqlUseCase();
         CategoryComponent component = DaggerCategoryComponent.builder()
                 .appComponent(getComponent(context))
                 .build();
@@ -77,13 +66,13 @@ public class ProductPresenter extends SearchSectionFragmentPresenterImpl<Product
     }
 
     @Override
-    public void handleWishlistButtonClicked(ProductItem productItem, int adapterPosition) {
+    public void handleWishlistButtonClicked(ProductItem productItem) {
         if (viewListener.isUserHasLogin()) {
-            viewListener.disableWishlistButton(adapterPosition);
+            viewListener.disableWishlistButton(productItem.getProductID());
             if (productItem.isWishlisted()) {
-                removeWishlist(productItem.getProductID(), viewListener.getUserId(), adapterPosition);
+                removeWishlist(productItem.getProductID(), viewListener.getUserId());
             } else {
-                addWishlist(productItem.getProductID(), viewListener.getUserId(), adapterPosition);
+                addWishlist(productItem.getProductID(), viewListener.getUserId());
             }
         } else {
             launchLoginActivity(productItem.getProductID());
@@ -96,13 +85,12 @@ public class ProductPresenter extends SearchSectionFragmentPresenterImpl<Product
         viewListener.launchLoginActivity(extras);
     }
 
-    private void addWishlist(String productId, String userId, int adapterPosition) {
-        addWishlistActionUseCase.createObservable(productId, userId, wishlistActionListener, adapterPosition);
+    private void addWishlist(String productId, String userId) {
+        addWishlistActionUseCase.createObservable(productId, userId, wishlistActionListener);
     }
 
-    private void removeWishlist(String productId, String userId, int adapterPosition) {
-        removeWishlistActionUseCase.execute(RemoveWishlistActionUseCase.generateParam(productId, userId),
-                new RemoveWishlistActionSubscriber(wishlistActionListener, adapterPosition));
+    private void removeWishlist(String productId, String userId) {
+        removeWishlistActionUseCase.createObservable(productId, userId, wishlistActionListener);
     }
 
     @Override
@@ -135,10 +123,10 @@ public class ProductPresenter extends SearchSectionFragmentPresenterImpl<Product
         RequestParams requestParams
                 = enrichWithFilterAndSortParams(GetProductUseCase.createInitializeSearchParam(searchParameter));
         removeDefaultCategoryParam(requestParams);
-        getProductUseCase.execute(requestParams, new DefaultSubscriber<SearchResultModel>(){
+        getProductUseCase.execute(requestParams, new DefaultSubscriber<SearchResultModel>() {
             @Override
             public void onStart() {
-                if(isViewAttached()){
+                if (isViewAttached()) {
                     getView().showRefreshLayout();
                     getView().setTopAdsEndlessListener();
                 }
@@ -146,12 +134,12 @@ public class ProductPresenter extends SearchSectionFragmentPresenterImpl<Product
 
             @Override
             public void onNext(SearchResultModel searchResultModel) {
-                if(isViewAttached()){
+                if (isViewAttached()) {
                     int page = (searchParameter.getStartRow() / 12) + 1;
                     getView().clearLastProductTracker(page == 1);
                     ProductViewModel productViewModel
                             = CategoryModelHelper.convertToProductViewModel(searchResultModel, categoryHeaderModel);
-                    if(productViewModel.getProductList().isEmpty()){
+                    if (productViewModel.getProductList().isEmpty()) {
                         getView().unSetTopAdsEndlessListener();
                         getView().showEmptyProduct();
                     } else {
@@ -167,7 +155,7 @@ public class ProductPresenter extends SearchSectionFragmentPresenterImpl<Product
 
             @Override
             public void onError(Throwable e) {
-                if(isViewAttached()){
+                if (isViewAttached()) {
                     getView().showNetworkError(0);
                     getView().hideRefreshLayout();
                 }
@@ -175,7 +163,7 @@ public class ProductPresenter extends SearchSectionFragmentPresenterImpl<Product
 
             @Override
             public void onCompleted() {
-                if(isViewAttached()){
+                if (isViewAttached()) {
                     getView().hideRefreshLayout();
                     viewListener.getDynamicFilter();
                 }
@@ -186,7 +174,7 @@ public class ProductPresenter extends SearchSectionFragmentPresenterImpl<Product
     @Override
     public void loadMore(SearchParameter searchParameter, ProductPresenter.LoadMoreListener loadMoreListener) {
         RequestParams requestParams
-                = enrichWithFilterAndSortParams(GetProductUseCase.createInitializeSearchParam(searchParameter,false));
+                = enrichWithFilterAndSortParams(GetProductUseCase.createInitializeSearchParam(searchParameter, false));
         removeDefaultCategoryParam(requestParams);
         getProductUseCase.execute(requestParams, createLoadMoreSubscriber(loadMoreListener));
     }
@@ -221,8 +209,6 @@ public class ProductPresenter extends SearchSectionFragmentPresenterImpl<Product
     public void detachView() {
         super.detachView();
         getProductUseCase.unsubscribe();
-//        addWishlistActionUseCase.unsubscribeΩibe();
-        removeWishlistActionUseCase.unsubscribe();
         getDynamicFilterUseCase.unsubscribe();
     }
 }

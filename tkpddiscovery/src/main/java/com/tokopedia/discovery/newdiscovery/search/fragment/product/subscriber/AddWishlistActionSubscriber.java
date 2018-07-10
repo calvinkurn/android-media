@@ -3,7 +3,6 @@ package com.tokopedia.discovery.newdiscovery.search.fragment.product.subscriber;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.listener.WishlistActionListener;
-import com.tokopedia.discovery.newdiscovery.domain.model.ActionResultModel;
 import com.tokopedia.discovery.newdiscovery.wishlist.model.AddWishListResponse;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 
@@ -15,11 +14,11 @@ import rx.Subscriber;
 
 public class AddWishlistActionSubscriber extends Subscriber<GraphqlResponse> {
     private final WishlistActionListener viewListener;
-    private int adapterPosition;
+    private String productId;
 
-    public AddWishlistActionSubscriber(WishlistActionListener viewListener, int adapterPosition) {
+    public AddWishlistActionSubscriber(WishlistActionListener viewListener, String productId) {
         this.viewListener = viewListener;
-        this.adapterPosition = adapterPosition;
+        this.productId = productId;
     }
 
     @Override
@@ -30,7 +29,7 @@ public class AddWishlistActionSubscriber extends Subscriber<GraphqlResponse> {
     @Override
     public void onError(Throwable e) {
         viewListener.onErrorAddWishList(
-                ErrorHandler.getErrorMessage(e), adapterPosition);
+                ErrorHandler.getErrorMessage(e), productId);
     }
 
     @Override
@@ -39,22 +38,15 @@ public class AddWishlistActionSubscriber extends Subscriber<GraphqlResponse> {
         if (graphqlResponse != null) {
             AddWishListResponse addWishListResponse = graphqlResponse.getData(AddWishListResponse.class);
             if (addWishListResponse.getWishlist_add().getSuccess())
-                viewListener.onSuccessAddWishlist(adapterPosition);
+                viewListener.onSuccessAddWishlist(productId);
             else
                 viewListener.onErrorAddWishList(
-                        viewListener.getString(R.string.default_request_error_unknown),
-                        adapterPosition);
+                        viewListener.getString(R.string.msg_error_add_wishlist),
+                        productId);
         } else {
             viewListener.onErrorAddWishList(
                     viewListener.getString(R.string.default_request_error_unknown),
-                    adapterPosition);
+                    productId);
         }
-
-        /*if (result.isSuccess())
-            viewListener.onSuccessAddWishlist(adapterPosition);
-        else
-            viewListener.onErrorAddWishList(
-                    viewListener.getString(R.string.default_request_error_unknown),
-                    adapterPosition);*/
     }
 }

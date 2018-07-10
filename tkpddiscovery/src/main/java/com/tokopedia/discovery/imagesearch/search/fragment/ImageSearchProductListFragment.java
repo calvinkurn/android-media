@@ -60,6 +60,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import static com.tokopedia.core.home.helper.ProductFeedHelper.calcColumnSize;
+import static com.tokopedia.core.router.productdetail.ProductDetailRouter.EXTRA_PRODUCT_ID;
 
 /**
  * Created by sachinbansal on 4/12/18.
@@ -280,7 +281,20 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
             boolean isWishlist = data.getExtras().getBoolean(ProductDetailRouter
                     .WIHSLIST_STATUS_IS_WISHLIST, false);
 
-            updateWishlistFromPDP(position, isWishlist);
+            String productId = data.getExtras().getString(EXTRA_PRODUCT_ID);
+
+            if (null == productId ||
+                    "".equals(productId)) {
+                updateWishlistFromPDP(position, isWishlist);
+            } else {
+                updateWishlistFromPDP(productId, position, isWishlist);
+            }
+        }
+    }
+
+    private void updateWishlistFromPDP(String productId, int position, boolean isWishlist) {
+        if (adapter != null && adapter.isProductItem(position)) {
+            adapter.updateWishlistStatus(productId, isWishlist);
         }
     }
 
@@ -394,13 +408,13 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     }
 
     @Override
-    public void disableWishlistButton(int adapterPosition) {
-        adapter.setWishlistButtonEnabled(adapterPosition, false);
+    public void disableWishlistButton(String productId) {
+        adapter.setWishlistButtonEnabled(productId, false);
     }
 
     @Override
-    public void enableWishlistButton(int adapterPosition) {
-        adapter.setWishlistButtonEnabled(adapterPosition, true);
+    public void enableWishlistButton(String productId) {
+        adapter.setWishlistButtonEnabled(productId, true);
     }
 
 
@@ -504,33 +518,30 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     }
 
     @Override
-    public void onErrorAddWishList(String errorMessage, int adapterPosition) {
-        enableWishlistButton(adapterPosition);
-        adapter.notifyItemChanged(adapterPosition);
+    public void onErrorAddWishList(String errorMessage, String productId) {
+        enableWishlistButton(productId);
         NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
 
     @Override
-    public void onSuccessAddWishlist(int adapterPosition) {
+    public void onSuccessAddWishlist(String productId) {
         UnifyTracking.eventSearchResultProductWishlistClick(true, getQueryKey());
-        adapter.updateWishlistStatus(adapterPosition, true);
-        enableWishlistButton(adapterPosition);
-        adapter.notifyItemChanged(adapterPosition);
+        adapter.updateWishlistStatus(productId, true);
+        enableWishlistButton(productId);
         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_add_wishlist));
     }
 
     @Override
-    public void onErrorRemoveWishlist(String errorMessage, int adapterPosition) {
-        enableWishlistButton(adapterPosition);
+    public void onErrorRemoveWishlist(String errorMessage, String productId) {
+        enableWishlistButton(productId);
         NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
 
     @Override
-    public void onSuccessRemoveWishlist(int adapterPosition) {
+    public void onSuccessRemoveWishlist(String productId) {
         UnifyTracking.eventSearchResultProductWishlistClick(false, getQueryKey());
-        adapter.updateWishlistStatus(adapterPosition, false);
-        enableWishlistButton(adapterPosition);
-        adapter.notifyItemChanged(adapterPosition);
+        adapter.updateWishlistStatus(productId, false);
+        enableWishlistButton(productId);
         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_remove_wishlist));
     }
 
@@ -577,8 +588,8 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     }
 
     @Override
-    public void onWishlistButtonClicked(ProductItem productItem, int adapterPosition) {
-        presenter.handleWishlistButtonClicked(productItem, topAdsRecyclerAdapter.getOriginalPosition(adapterPosition));
+    public void onWishlistButtonClicked(ProductItem productItem) {
+        presenter.handleWishlistButtonClicked(productItem);
     }
 
     @Override

@@ -2,7 +2,6 @@ package com.tokopedia.discovery.newdiscovery.hotlist.view.presenter;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
@@ -16,21 +15,13 @@ import com.tokopedia.discovery.newdiscovery.domain.usecase.RemoveWishlistActionU
 import com.tokopedia.discovery.newdiscovery.hotlist.domain.usecase.GetHotlistInitializeUseCase;
 import com.tokopedia.discovery.newdiscovery.hotlist.domain.usecase.GetHotlistLoadMoreUseCase;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistHeaderViewModel;
-import com.tokopedia.discovery.newdiscovery.hotlist.view.subscriber.AddWishlistActionSubscriber;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.subscriber.GetHotlistInitializeSubscriber;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.subscriber.GetHotlistLoadMoreSubscriber;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.subscriber.RefreshHotlistSubscriber;
-import com.tokopedia.discovery.newdiscovery.hotlist.view.subscriber.RemoveWishlistActionSubscriber;
 import com.tokopedia.discovery.newdiscovery.search.fragment.GetDynamicFilterSubscriber;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenterImpl;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.listener.WishlistActionListener;
 import com.tokopedia.discovery.newdiscovery.util.HotlistParameter;
-import com.tokopedia.discovery.newdiscovery.util.WishlistActionListener;
-import com.tokopedia.discovery.newdiscovery.wishlist.model.AddWishListResponse;
-import com.tokopedia.graphql.data.model.GraphqlRequest;
-import com.tokopedia.graphql.domain.GraphqlUseCase;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -200,36 +191,14 @@ public class HotlistFragmentPresenter extends SearchSectionFragmentPresenterImpl
 
     @Override
     public void addWishlist(String productID) {
-
-
-        GraphqlUseCase graphqlUseCase = new GraphqlUseCase();
-
-        Map<String, Object> variables = new HashMap<>();
-
-        variables.put(PARAM_PRODUCT_ID, productID);
-        variables.put(PARAM_USER_ID, SessionHandler.getLoginID(context));
-
-        GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(), R.raw.query_add_wishlist),
-                AddWishListResponse.class,
-                variables);
-
-        graphqlUseCase.addRequest(graphqlRequest);
-
-        graphqlUseCase.execute(new AddWishlistActionSubscriber(this, productID));
-
-
-        /*addWishlistActionUseCase.execute(
-                AddWishlistActionUseCase.generateParam(productID, SessionHandler.getLoginID(context)),
-                new AddWishlistActionSubscriber(this, productID)
-        );*/
+        addWishlistActionUseCase.createObservable(productID, SessionHandler.getLoginID(context),
+                this);
     }
 
     @Override
     public void removeWishlist(String productID) {
-        removeWishlistActionUseCase.execute(
-                RemoveWishlistActionUseCase.generateParam(productID, SessionHandler.getLoginID(context)),
-                new RemoveWishlistActionSubscriber(this, productID)
-        );
+        removeWishlistActionUseCase.createObservable(productID, SessionHandler.getLoginID(context),
+                this);
     }
 
     @Override
@@ -259,10 +228,15 @@ public class HotlistFragmentPresenter extends SearchSectionFragmentPresenterImpl
     }
 
     @Override
+    public String getString(int resId) {
+        return getView().getString(resId);
+    }
+
+    @Override
     public void detachView() {
         super.detachView();
 //        addWishlistActionUseCase.unsubscribe();
-        removeWishlistActionUseCase.unsubscribe();
+//        removeWishlistActionUseCase.unsubscribe();
         getDynamicFilterUseCase.unsubscribe();
         getHotlistInitializeUseCase.unsubscribe();
         getHotlistLoadMoreUseCase.unsubscribe();

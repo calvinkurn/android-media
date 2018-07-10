@@ -5,13 +5,13 @@ package com.tokopedia.discovery.newdiscovery.search.fragment.product.listener;
  */
 
 public interface WishlistActionListener {
-    void onErrorAddWishList(String errorMessage, int adapterPosition);
+    void onErrorAddWishList(String errorMessage, String productId);
 
-    void onSuccessAddWishlist(int adapterPosition);
+    void onSuccessAddWishlist(String productId);
 
-    void onErrorRemoveWishlist(String errorMessage, int adapterPosition);
+    void onErrorRemoveWishlist(String errorMessage, String productId);
 
-    void onSuccessRemoveWishlist(int adapterPosition);
+    void onSuccessRemoveWishlist(String productId);
 
     String getString(int resId);
 }

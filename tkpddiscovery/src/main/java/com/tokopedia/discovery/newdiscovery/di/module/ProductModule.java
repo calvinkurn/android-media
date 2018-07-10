@@ -8,9 +8,7 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.apiservices.mojito.apis.MojitoApi;
-import com.tokopedia.core.network.apiservices.mojito.apis.MojitoAuthApi;
 import com.tokopedia.core.network.di.qualifier.MojitoGetWishlistQualifier;
-import com.tokopedia.core.network.di.qualifier.MojitoWishlistActionQualifier;
 import com.tokopedia.discovery.newdiscovery.data.mapper.AddWishlistActionMapper;
 import com.tokopedia.discovery.newdiscovery.data.mapper.ProductMapper;
 import com.tokopedia.discovery.newdiscovery.data.mapper.RemoveWishlistActionMapper;
@@ -51,17 +49,14 @@ public class ProductModule {
 
     @Provides
     AddWishlistActionUseCase addWishlistActionUseCase(
-            @ApplicationContext  Context context) {
+            @ApplicationContext Context context) {
         return new AddWishlistActionUseCase(context);
     }
 
     @Provides
     RemoveWishlistActionUseCase removeWishlistActionUseCase(
-            ThreadExecutor threadExecutor,
-            PostExecutionThread postExecutionThread,
-            @MojitoWishlistActionQualifier MojitoAuthApi service,
-            RemoveWishlistActionMapper mapper) {
-        return new RemoveWishlistActionUseCase(threadExecutor, postExecutionThread, service, mapper);
+            @ApplicationContext Context context) {
+        return new RemoveWishlistActionUseCase(context);
     }
 
     @Provides

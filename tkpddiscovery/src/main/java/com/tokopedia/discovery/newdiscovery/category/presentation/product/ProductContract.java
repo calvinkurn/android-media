@@ -43,9 +43,9 @@ public class ProductContract {
 
         void initTopAdsParams();
 
-        void disableWishlistButton(int adapterPosition);
+        void disableWishlistButton(String productId);
 
-        void enableWishlistButton(int adapterPosition);
+        void enableWishlistButton(String productId);
 
         void showNetworkError(int startRow);
 
@@ -72,7 +72,7 @@ public class ProductContract {
 
         void loadMore(SearchParameter searchParameter,
                       ProductPresenter.LoadMoreListener loadMoreListener);
-        void handleWishlistButtonClicked(ProductItem productItem, int adapterPosition);
+        void handleWishlistButtonClicked(ProductItem productItem);
         void attachView(ProductContract.View viewListener, WishlistActionListener wishlistActionListener);
 
     }

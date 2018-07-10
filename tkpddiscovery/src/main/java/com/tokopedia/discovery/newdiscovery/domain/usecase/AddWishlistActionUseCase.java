@@ -4,8 +4,8 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.newdiscovery.category.presentation.product.subscriber.AddWishlistActionSubscriber;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.listener.WishlistActionListener;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.subscriber.AddWishlistActionSubscriber;
 import com.tokopedia.discovery.newdiscovery.wishlist.model.AddWishListResponse;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
@@ -27,7 +27,7 @@ public class AddWishlistActionUseCase {
         this.context = context;
     }
 
-    public void createObservable(String productId, String userId, WishlistActionListener wishlistActionListener, int adapterPosition) {
+    public void createObservable(String productId, String userId, WishlistActionListener wishlistActionListener) {
 
         GraphqlUseCase graphqlUseCase = new GraphqlUseCase();
 
@@ -42,7 +42,7 @@ public class AddWishlistActionUseCase {
 
         graphqlUseCase.addRequest(graphqlRequest);
 
-        graphqlUseCase.execute(new AddWishlistActionSubscriber(wishlistActionListener, adapterPosition));
+        graphqlUseCase.execute(new AddWishlistActionSubscriber(wishlistActionListener, productId));
 
     }
 

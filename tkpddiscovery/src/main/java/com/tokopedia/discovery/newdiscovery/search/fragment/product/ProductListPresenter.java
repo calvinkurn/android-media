@@ -17,7 +17,7 @@ public interface ProductListPresenter extends SearchSectionFragmentPresenter<Pro
 
     void loadData(SearchParameter searchParameter, boolean isForceSearch, HashMap<String, String> additionalParams);
 
-    void handleWishlistButtonClicked(ProductItem productItem, int adapterPosition);
+    void handleWishlistButtonClicked(ProductItem productItem);
 
     void attachView(ProductListFragmentView viewListener, WishlistActionListener wishlistActionListener);
 
