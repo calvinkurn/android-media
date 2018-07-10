@@ -9,10 +9,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.analytics.HotlistPageTracking;
-import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.model.Hotlist;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.customwidget.FlowLayout;
 import com.tokopedia.core.helper.IndicatorViewHelper;
@@ -108,7 +104,8 @@ public class ListProductViewHolder extends AbstractViewHolder<HotlistProductView
 
     protected void onWishlistButtonClick(HotlistProductViewModel element) {
         if (element.isWishlistButtonEnabled()) {
-            mItemClickListener.onWishlistClicked(element.getProductID(), element.isWishlist());
+            mItemClickListener.onWishlistClicked(getAdapterPosition(),
+                    element.getProductName(), element.getProductID(), element.isWishlist());
         }
     }
 

@@ -12,10 +12,11 @@ import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostMo
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartShipmentData;
+import com.tokopedia.checkout.view.view.shipment.converter.ShipmentDataConverter;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCheckoutButtonModel;
+import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
-import com.tokopedia.transactiondata.entity.request.CheckoutRequest;
 import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
 
@@ -42,7 +43,7 @@ public interface ShipmentContract {
                 CartShipmentAddressFormData cartShipmentAddressFormData, boolean needToRefreshItemList
         );
 
-        void renderErrorDataHasChangedAfterCheckout(CartShipmentAddressFormData cartShipmentAddressFormData);
+        void renderErrorDataHasChangedAfterCheckout(List<ShipmentCartItemModel> shipmentCartItemModelList);
 
         void renderThanksTopPaySuccess(String message);
 
@@ -70,7 +71,11 @@ public interface ShipmentContract {
 
         void renderCancelAutoApplyCouponSuccess();
 
+        void navigateToSetPinpoint(String message, LocationPass locationPass);
+
         List<DataCheckoutRequest> generateNewCheckoutRequest(List<ShipmentCartItemModel> shipmentCartItemModelList);
+
+        ShipmentDataConverter getShipmentDataConverter();
 
         Activity getActivityContext();
     }
@@ -125,7 +130,7 @@ public interface ShipmentContract {
 
         void setShipmentCheckoutButtonModel(ShipmentCheckoutButtonModel shipmentCheckoutButtonModel);
 
-        void editAddressPinpoint(String latitude, String longitude, ShipmentCartItemModel shipmentCartItemModel);
+        void editAddressPinpoint(String latitude, String longitude, ShipmentCartItemModel shipmentCartItemModel, LocationPass locationPass);
 
         void cancelAutoApplyCoupon();
 

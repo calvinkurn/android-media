@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
@@ -42,6 +41,8 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
 
     private int typeRequest;
     private Token token;
+
+    private CartAddressChoiceFragment defaultFragment;
 
     public static Intent createInstance(Activity activity, RecipientAddressModel currentAddress, int typeRequest) {
         Intent intent = new Intent(activity, CartAddressChoiceActivity.class);
@@ -162,24 +163,33 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     @Override
     protected android.support.v4.app.Fragment getNewFragment() {
         switch (typeRequest) {
-            default:
-                return CartAddressChoiceFragment.newInstance(
-                        getIntent().getParcelableExtra(EXTRA_CURRENT_ADDRESS));
             case TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST:
                 return ShipmentAddressListFragment.newInstance(
                         (RecipientAddressModel) getIntent().getParcelableExtra(EXTRA_CURRENT_ADDRESS));
+            default:
+                defaultFragment = CartAddressChoiceFragment.newInstance(
+                        getIntent().getParcelableExtra(EXTRA_CURRENT_ADDRESS));
+                return defaultFragment;
         }
     }
 
     @Override
     public void onBackPressed() {
-        if (getCurrentFragment() instanceof CartAddressChoiceFragment) {
-            ((CartAddressChoiceFragment) getCurrentFragment())
-                    .checkoutAnalyticsChangeAddress.eventClickChangeAddressClickArrowBackFromGantiAlamat();
-        }
         if (getSupportFragmentManager() != null && getSupportFragmentManager().getBackStackEntryCount() > 0) {
             setToolbarTitle(getString(R.string.checkout_module_title_shipping_dest));
         }
-        super.onBackPressed();
+        if (getCurrentFragment() instanceof CartAddressChoiceFragment) {
+            ((CartAddressChoiceFragment) getCurrentFragment())
+                    .checkoutAnalyticsChangeAddress.eventClickChangeAddressClickArrowBackFromChangeAddress();
+            super.onBackPressed();
+        } else if (getCurrentFragment() instanceof ShipmentAddressListFragment) {
+            if (defaultFragment != null) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.parent_view, defaultFragment, defaultFragment.getClass().getSimpleName())
+                        .commit();
+            } else {
+                super.onBackPressed();
+            }
+        }
     }
 }

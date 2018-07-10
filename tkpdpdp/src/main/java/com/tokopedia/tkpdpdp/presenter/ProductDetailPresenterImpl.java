@@ -175,7 +175,6 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     public void processToCart(@NonNull Activity context, @NonNull ProductCartPass data) {
         sendAppsFlyerCheckout(context, data);
         routeToNewCheckout(context, data, data.isSkipToCart() ? getBuySubscriber(data.getSourceAtc()) : getCartSubscriber(data.getSourceAtc()));
-        /*routeToOldCheckout(context, data);*/
         UnifyTracking.eventPDPCart();
     }
 
@@ -277,6 +276,30 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                     .unsubscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(subscriber);
+        }
+    }
+
+    private void handleCheckoutError(Throwable e) {
+        if (e instanceof UnknownHostException) {
+            /* Ini kalau ga ada internet */
+            viewListener.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
+        } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
+            /* Ini kalau timeout */
+            viewListener.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+        } else if (e instanceof ResponseErrorException) {
+            /* Ini kalau error dari API kasih message error */
+            viewListener.showToastMessage(e.getMessage());
+        } else if (e instanceof ResponseDataNullException) {
+            /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
+            viewListener.showToastMessage(e.getMessage());
+        } else if (e instanceof HttpErrorException) {
+            /* Ini Http error, misal 403, 500, 404,
+            code http errornya bisa diambil
+            e.getErrorCode */
+            viewListener.showToastMessage(e.getMessage());
+        } else {
+            /* Ini diluar dari segalanya hahahaha */
+            viewListener.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
         }
     }
 

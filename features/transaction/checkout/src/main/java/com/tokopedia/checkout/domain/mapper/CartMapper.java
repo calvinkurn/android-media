@@ -30,6 +30,9 @@ import javax.inject.Inject;
  */
 
 public class CartMapper implements ICartMapper {
+    private static final String SHOP_TYPE_OFFICIAL_STORE = "official_store";
+    private static final String SHOP_TYPE_GOLD_MERCHANT = "gold_merchant";
+    private static final String SHOP_TYPE_REGULER = "reguler";
     private final IMapperUtil mapperUtil;
 
     @Inject
@@ -181,10 +184,10 @@ public class CartMapper implements ICartMapper {
 
     private String generateShopType(Shop shop) {
         if (shop.getIsOfficial() == 1)
-            return "official_store";
+            return SHOP_TYPE_OFFICIAL_STORE;
         else if (shop.getIsGold() == 1)
-            return "gold_merchant";
-        else return "reguler";
+            return SHOP_TYPE_GOLD_MERCHANT;
+        else return SHOP_TYPE_REGULER;
     }
 
     @Override

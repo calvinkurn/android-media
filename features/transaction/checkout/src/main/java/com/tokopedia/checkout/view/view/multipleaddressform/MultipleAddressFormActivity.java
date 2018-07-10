@@ -78,7 +78,9 @@ public class MultipleAddressFormActivity extends BaseCheckoutActivity {
     @Override
     public void onBackPressed() {
         final Dialog dialog = new Dialog(this, Dialog.Type.LONG_PROMINANCE);
-        fragment.backPressed();
+        if (fragment != null) {
+            fragment.backPressed();
+        }
         dialog.setTitle(getString(R.string.dialog_title_back_to_choose_address));
         dialog.setDesc(getString(R.string.dialog_message_back_to_cart));
         dialog.setBtnCancel(getString(R.string.label_dialog_back_to_cart_button_positive));
@@ -87,7 +89,9 @@ public class MultipleAddressFormActivity extends BaseCheckoutActivity {
             @Override
             public void onClick(View view) {
                 setResult(RESULT_CODE_FORCE_RESET_CART_ADDRESS_FORM);
-                fragment.deleteChanges();
+                if (fragment != null) {
+                    fragment.deleteChanges();
+                }
                 finish();
                 dialog.dismiss();
             }

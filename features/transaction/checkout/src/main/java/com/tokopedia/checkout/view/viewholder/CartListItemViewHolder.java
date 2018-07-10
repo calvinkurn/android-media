@@ -11,6 +11,7 @@ import android.text.Html;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.FrameLayout;
@@ -99,6 +100,21 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
         this.tvError = itemView.findViewById(R.id.tv_error);
         this.layoutWarning = itemView.findViewById(R.id.layout_warning);
         this.tvWarning = itemView.findViewById(R.id.tv_warning);
+
+        etRemark.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
+                if (view.getId() == R.id.et_remark) {
+                    view.getParent().requestDisallowInterceptTouchEvent(true);
+                    switch (event.getAction() & MotionEvent.ACTION_MASK) {
+                        case MotionEvent.ACTION_UP:
+                            view.getParent().requestDisallowInterceptTouchEvent(false);
+                            break;
+                    }
+                }
+                return false;
+            }
+        });
 
         initTextwatcherDebouncer(cadapterCmpositeSubscription);
     }
@@ -220,6 +236,7 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
                 actionListener.onCartItemLabelInputRemarkClicked();
                 etRemark.setVisibility(View.VISIBLE);
                 tvLabelRemarkOption.setVisibility(View.GONE);
+                data.setStateRemarkExpanded(true);
             }
         });
 
@@ -233,6 +250,11 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
             this.tvLabelRemarkOption.setVisibility(View.GONE);
             this.etRemark.setText(data.getCartItemData().getUpdatedData().getRemark());
             this.etRemark.setSelection(etRemark.length());
+        }
+
+        if (data.isStateRemarkExpanded()) {
+            this.etRemark.setVisibility(View.VISIBLE);
+            this.tvLabelRemarkOption.setVisibility(View.GONE);
         }
 
         this.ivProductImage.setOnClickListener(getOnClickProductItemListener(getAdapterPosition(), data));

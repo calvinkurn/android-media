@@ -446,7 +446,7 @@ public class OkHttpFactory {
                 .addDebugInterceptor()
                 .build();
     }
-
+    
     public OkHttpClient buildDaggerClientBearerEvents(EventInerceptors eventInterceptor,
                                                       OkHttpRetryPolicy okHttpRetryPolicy,
                                                       ChuckInterceptor chuckInterceptor,
