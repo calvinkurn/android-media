@@ -209,6 +209,7 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
                         getActivity(),
                         voucherCodeField.getText().toString(), getArguments().getString(ADDITIONAL_DATA_KEY, ""));
             }
+            listener.onUsePromoCodeClicked();
         };
     }
 
