@@ -10,6 +10,9 @@ import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -18,6 +21,7 @@ import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.design.component.Menus;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.constant.TrainAppScreen;
 import com.tokopedia.train.common.presentation.TextInputView;
@@ -69,8 +73,18 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
 
     private TrainHomepageViewModel viewModel;
 
+    private OnCloseBottomMenusListener onCloseBottomMenusListener;
+
+    private Menus menus;
+
     @Inject
     TrainHomepagePresenterImpl trainHomepagePresenterImpl;
+
+    public interface OnCloseBottomMenusListener {
+
+        void onCloseBottomMenus();
+
+    }
 
     public TrainHomepageFragment() {
         // Required empty public constructor
@@ -155,6 +169,14 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
 
             trainHomepagePresenterImpl.onSavedStateAvailable(viewModel);
         }
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        onCloseBottomMenusListener = (OnCloseBottomMenusListener) activity;
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -339,6 +361,34 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
         super.onSaveInstanceState(outState);
 
         outState.putParcelable(STATE_HOMEPAGE, viewModel);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+
+        inflater.inflate(R.menu.menu_train_homepage, menu);
+    }
+
+    public void showBottomMenus() {
+        menus = new Menus(getActivity());
+        String [] menuItem = new String[] {"Daftar Transaksi", "Cek Pesanan"};
+        menus.setItemMenuList(menuItem);
+
+        menus.setOnActionClickListener(view -> {
+            menus.dismiss();
+            onCloseBottomMenusListener.onCloseBottomMenus();
+        });
+        menus.setOnItemMenuClickListener((itemMenus, pos) -> {
+            menus.dismiss();
+            onCloseBottomMenusListener.onCloseBottomMenus();
+        });
+
+        menus.show();
+    }
+
+    public void closeBottomMenus() {
+        menus.dismiss();
     }
 
 }

@@ -39,7 +39,7 @@ public class TrainSchedulePresenter extends BaseDaggerPresenter<TrainScheduleCon
         getDetailScheduleUseCase.createObservable(RequestParams.EMPTY)
                 .zipWith(getScheduleDetailUseCase.createObservable(
                         getScheduleDetailUseCase.createRequestParams(scheduleId, numOfAdultPassenger, numOfInfantPassenger)),
-                        (Func2<TrainScheduleViewModel, TrainScheduleDetailViewModel, Pair<TrainScheduleViewModel, TrainScheduleDetailViewModel>>) (trainScheduleViewModel, trainScheduleDetailViewModel) -> null)
+                        Pair::create)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Pair<TrainScheduleViewModel, TrainScheduleDetailViewModel>>() {
