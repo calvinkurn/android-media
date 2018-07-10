@@ -6,25 +6,23 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 
-import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.view.base.BaseCheckoutActivity;
-import com.tokopedia.checkout.view.di.component.CartComponent;
-import com.tokopedia.checkout.view.di.component.CartComponentInjector;
+import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.design.component.Dialog;
 
 /**
  * Created by kris on 2/22/18. Tokopedia
  */
 
-public class MultipleAddressFormActivity extends BaseCheckoutActivity implements
-        HasComponent<CartComponent> {
+public class MultipleAddressFormActivity extends BaseCheckoutActivity {
     public static final int REQUEST_CODE = 982;
 
     private static final String EXTRA_CART_LIST_DATA = "EXTRA_CART_LIST_DATA";
     private static final String EXTRA_RECIPIENT_ADDRESS_DATA = "EXTRA_RECIPIENT_ADDRESS_DATA";
+    private static final String EXTRA_DISTRICT_RECOMMENDATION_TOKEN = "EXTRA_DISTRICT_RECOMMENDATION_TOKEN";
     public static final int RESULT_CODE_SUCCESS_SET_SHIPPING = 22;
     public static final int RESULT_CODE_FORCE_RESET_CART_ADDRESS_FORM = 23;
 
@@ -80,8 +78,10 @@ public class MultipleAddressFormActivity extends BaseCheckoutActivity implements
     @Override
     public void onBackPressed() {
         final Dialog dialog = new Dialog(this, Dialog.Type.LONG_PROMINANCE);
-        fragment.backPressed();
-        dialog.setTitle(getString(R.string.dialog_title_back_to_cart));
+        if (fragment != null) {
+            fragment.backPressed();
+        }
+        dialog.setTitle(getString(R.string.dialog_title_back_to_choose_address));
         dialog.setDesc(getString(R.string.dialog_message_back_to_cart));
         dialog.setBtnCancel(getString(R.string.label_dialog_back_to_cart_button_positive));
         dialog.setBtnOk(getString(R.string.label_dialog_back_to_cart_button_negative));
@@ -89,8 +89,11 @@ public class MultipleAddressFormActivity extends BaseCheckoutActivity implements
             @Override
             public void onClick(View view) {
                 setResult(RESULT_CODE_FORCE_RESET_CART_ADDRESS_FORM);
-                fragment.deleteChanges();
+                if (fragment != null) {
+                    fragment.deleteChanges();
+                }
                 finish();
+                dialog.dismiss();
             }
         });
         dialog.setOnOkClickListener(new View.OnClickListener() {
@@ -103,19 +106,11 @@ public class MultipleAddressFormActivity extends BaseCheckoutActivity implements
         dialog.getAlertDialog().setCancelable(true);
         dialog.getAlertDialog().setCanceledOnTouchOutside(true);
         dialog.show();
-
     }
 
     @Override
     protected android.support.v4.app.Fragment getNewFragment() {
-        fragment = MultipleAddressFragment.newInstance(
-                cartListData,
-                addressData);
+        fragment = MultipleAddressFragment.newInstance(cartListData, addressData);
         return fragment;
-    }
-
-    @Override
-    public CartComponent getComponent() {
-        return CartComponentInjector.newInstance(getApplication()).getCartApiServiceComponent();
     }
 }

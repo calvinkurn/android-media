@@ -13,15 +13,25 @@ import com.tokopedia.checkout.view.view.shippingoptions.viewmodel.ShipmentTypeDa
 
 public class CourierHeaderViewHolder extends RecyclerView.ViewHolder {
 
+    public static final int ITEM_VIEW_SHIPMENT_TYPE = R.layout.item_shipment_category;
+    private static final int POSITION_HEADER_AFTER_TICKER = 1;
+
     private TextView tvShipmentType;
+    private View vSeparator;
 
     public CourierHeaderViewHolder(View itemView) {
         super(itemView);
 
         tvShipmentType = itemView.findViewById(R.id.tv_shipment_type);
+        vSeparator = itemView.findViewById(R.id.v_separator);
     }
 
     public void bindData(ShipmentTypeData shipmentTypeData) {
-        tvShipmentType.setText(shipmentTypeData.getShipmentType());
+        tvShipmentType.setText(String.format("%s (%s)", shipmentTypeData.getShipmentType(), shipmentTypeData.getEtd()));
+        if (getAdapterPosition() == POSITION_HEADER_AFTER_TICKER) {
+            vSeparator.setVisibility(View.GONE);
+        } else {
+            vSeparator.setVisibility(View.VISIBLE);
+        }
     }
 }
