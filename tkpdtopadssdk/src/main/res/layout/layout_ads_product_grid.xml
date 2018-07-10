@@ -96,8 +96,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/image_card"
-        android:layout_marginLeft="@dimen/product_grid_padding"
-        android:layout_marginRight="@dimen/product_grid_padding"
         android:layout_marginTop="4dp"
         android:ellipsize="end"
         android:fontFamily="sans-serif-medium"
@@ -130,8 +128,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/price"
-        android:layout_marginLeft="@dimen/product_grid_padding"
-        android:layout_marginRight="@dimen/product_grid_padding"
         android:gravity="center"
         android:orientation="horizontal">
 
@@ -160,9 +156,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/location_container"
-        android:layout_marginBottom="@dimen/product_grid_padding"
-        android:layout_marginLeft="@dimen/product_grid_padding"
-        android:layout_marginRight="@dimen/product_grid_padding"
         android:layout_marginTop="3dp"
         android:gravity="center_vertical"
         android:orientation="horizontal">
@@ -193,9 +186,6 @@
         android:fontFamily="sans-serif-medium"
         android:gravity="center"
         android:layout_marginTop="@dimen/dp_5"
-        android:layout_marginRight="@dimen/dp_2"
-        android:layout_marginLeft="@dimen/product_grid_padding"
-        android:layout_marginBottom="@dimen/product_grid_padding"
         android:text="@string/baru"
         android:paddingLeft="@dimen/dp_8"
         android:paddingRight="@dimen/dp_8"
