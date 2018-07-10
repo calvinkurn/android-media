@@ -162,12 +162,6 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
 
         trainHomepagePresenterImpl.attachView(this);
         trainHomepagePresenterImpl.initialize();
-
-        if (savedInstanceState != null) {
-            viewModel = savedInstanceState.getParcelable(STATE_HOMEPAGE);
-
-            trainHomepagePresenterImpl.onSavedStateAvailable(viewModel);
-        }
     }
 
     @Override
@@ -358,8 +352,6 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-
-        outState.putParcelable(STATE_HOMEPAGE, viewModel);
 
         trainHomepagePresenterImpl.saveHomepageViewModelToCache(viewModel);
     }
