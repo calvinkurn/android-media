@@ -23,9 +23,9 @@ import java.util.List;
  * @author by furqan on 04/07/18.
  */
 
-public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.PanduanViewHolder> {
+public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHolder> {
 
-    private static final int LAYOUT = R.layout.item_panduan_tab;
+    private static final int LAYOUT = R.layout.item_guide_tab;
 
     private List<GuideData> guideDataList = new ArrayList<>();
     private Context context;
@@ -36,13 +36,13 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.PanduanViewH
     }
 
     @Override
-    public PanduanViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new PanduanViewHolder(LayoutInflater.from(context)
+    public GuideViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        return new GuideViewHolder(LayoutInflater.from(context)
                 .inflate(LAYOUT, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(PanduanViewHolder holder, int position) {
+    public void onBindViewHolder(GuideViewHolder holder, int position) {
         GuideData data = guideDataList.get(position);
 
         holder.tvTitle.setText(data.getTitle());
@@ -100,13 +100,13 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.PanduanViewH
         };
     }
 
-    class PanduanViewHolder extends RecyclerView.ViewHolder {
+    class GuideViewHolder extends RecyclerView.ViewHolder {
 
         TextViewCompat tvTitle;
         YouTubeThumbnailView youtubeTV;
         ProgressBar progressBar;
 
-        public PanduanViewHolder(View itemView) {
+        public GuideViewHolder(View itemView) {
             super(itemView);
 
             tvTitle = itemView.findViewById(R.id.tv_panduan_title);
