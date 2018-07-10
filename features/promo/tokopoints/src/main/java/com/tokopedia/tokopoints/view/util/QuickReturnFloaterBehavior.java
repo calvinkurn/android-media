@@ -13,7 +13,7 @@ import com.tokopedia.tokopoints.R;
 
 public class QuickReturnFloaterBehavior extends CoordinatorLayout.Behavior<View> {
 
-    private static final int MIN_SCROLL_PX = 10;
+    private static final int MIN_SCROLL_PX = 4;
     private static final int TIME_TO_RETURN_MS = 500;
     private boolean mIsScrollStarted;
 
