@@ -1,14 +1,11 @@
 package com.tokopedia.tokopoints.view.util;
 
-import android.animation.Animator;
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
@@ -16,13 +13,17 @@ import com.tokopedia.tokopoints.R;
 
 public class QuickReturnFloaterBehavior extends CoordinatorLayout.Behavior<View> {
 
+    private static final int MIN_SCROLL_PX = 10;
+    private static final int TIME_TO_RETURN_MS = 500;
+    private boolean mIsScrollStarted;
+
     public QuickReturnFloaterBehavior(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
     private void slideUp(View child) {
         Animation bottomUp = AnimationUtils.loadAnimation(child.getContext(),
-                R.animator.bottom_up);
+                R.animator.tp_bottom_up);
         child.startAnimation(bottomUp);
         child.setVisibility(View.VISIBLE);
 
@@ -30,7 +31,7 @@ public class QuickReturnFloaterBehavior extends CoordinatorLayout.Behavior<View>
 
     private void slideDown(View child) {
         Animation slideDown = AnimationUtils.loadAnimation(child.getContext(),
-                R.animator.bottom_down);
+                R.animator.tp_bottom_down);
         child.startAnimation(slideDown);
         child.setVisibility(View.GONE);
     }
@@ -48,10 +49,10 @@ public class QuickReturnFloaterBehavior extends CoordinatorLayout.Behavior<View>
                                @NonNull View target, int dxConsumed, int dyConsumed,
                                int dxUnconsumed, int dyUnconsumed,
                                @ViewCompat.NestedScrollType int type) {
-        child.post(new Runnable() {
-            @Override
-            public void run() {
+        child.post(() -> {
+            if (Math.abs(dyConsumed) >= MIN_SCROLL_PX) {
                 slideDown(child);
+                mIsScrollStarted = true;
             }
         });
     }
@@ -59,11 +60,11 @@ public class QuickReturnFloaterBehavior extends CoordinatorLayout.Behavior<View>
 
     public void onStopNestedScroll(@NonNull CoordinatorLayout coordinatorLayout,
                                    @NonNull View child, @NonNull View target, @ViewCompat.NestedScrollType int type) {
-        child.postDelayed(new Runnable() {
-            @Override
-            public void run() {
+        child.postDelayed(() -> {
+            if (mIsScrollStarted) {
                 slideUp(child);
+                mIsScrollStarted = false;
             }
-        }, 500);
+        }, TIME_TO_RETURN_MS);
     }
 }

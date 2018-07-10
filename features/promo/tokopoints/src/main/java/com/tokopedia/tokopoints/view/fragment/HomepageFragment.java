@@ -27,6 +27,7 @@ import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.gamification.applink.ApplinkConstant;
 import com.tokopedia.gamification.floating.view.fragment.FloatingEggButtonFragment;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.tokopoints.R;
@@ -180,6 +181,8 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
             openWebView(CommonConstant.WebLink.HISTORY);
         } else if (source.getId() == R.id.text_failed_action) {
             mPresenter.getTokoPointDetail();
+        } else if (source.getId() == R.id.container_fab_egg_token) {
+            RouteManager.route(getActivity(), ApplinkConstant.GAMIFICATION);
         }
     }
 
@@ -208,6 +211,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
         getView().findViewById(R.id.text_loyalty_label).setOnClickListener(this);
         getView().findViewById(R.id.text_loyalty_value).setOnClickListener(this);
         getView().findViewById(R.id.text_failed_action).setOnClickListener(this);
+        getView().findViewById(R.id.container_fab_egg_token).setOnClickListener(this);
     }
 
     @Override
@@ -228,31 +232,18 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
     @Override
     public void onSuccessTokenDetail(LuckyEggEntity tokenDetail) {
         if (tokenDetail != null && tokenDetail.getSumToken() > 0) {
-            getView().findViewById(R.id.container_fab_egg_token).setVisibility(View.VISIBLE);
-            TextView textCount = getView().findViewById(R.id.text_token_count);
-            TextView textMessage = getView().findViewById(R.id.text_token_title);
-            ImageView imgToken = getView().findViewById(R.id.img_token);
-            textCount.setText(tokenDetail.getSumToken() + "");
-            textMessage.setText(tokenDetail.getFloating().getTokenClaimText());
-            ImageHandler.loadImageFit2(getContext(), imgToken, tokenDetail.getFloating().getTokenAsset().getFloatingImgUrl());
-            getView().findViewById(R.id.container_fab_egg_token).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    RouteManager.route(getActivity(),"tokopedia://gamification");
-                }
-            });
-        }
-    }
-
-
-    private void initPromoPager(List<CatalogsValueEntity> catalogs, List<CouponValueEntity> coupons) {
-        mPagerPromos.setAdapter(new HomepagePagerAdapter(getActivityContext(), mPresenter, catalogs, coupons));
-        mPagerPromos.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayoutPromo));
-        mTabLayoutPromo.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mPagerPromos));
-
-        //Check for coupons and make sure user coupon get selected if he has any number.
-        if (coupons != null && !coupons.isEmpty()) {
-            mPagerPromos.setCurrentItem(1);
+            try {
+                getView().findViewById(R.id.container_fab_egg_token).setVisibility(View.VISIBLE);
+                TextView textCount = getView().findViewById(R.id.text_token_count);
+                TextView textMessage = getView().findViewById(R.id.text_token_title);
+                ImageView imgToken = getView().findViewById(R.id.img_token);
+                textCount.setText(String.valueOf(tokenDetail.getSumToken()));
+                textMessage.setText(tokenDetail.getFloating().getTokenClaimText());
+                ImageHandler.loadImageFit2(getContext(), imgToken, tokenDetail.getFloating().getTokenAsset().getFloatingImgUrl());
+            } catch (Exception e) {
+                e.printStackTrace();
+                //to avoid any accidental crash in order to prevent homepage error
+            }
         }
     }
 
@@ -361,6 +352,17 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
         AlertDialog dialog = adb.create();
         dialog.show();
         decorateDialog(dialog);
+    }
+
+    private void initPromoPager(List<CatalogsValueEntity> catalogs, List<CouponValueEntity> coupons) {
+        mPagerPromos.setAdapter(new HomepagePagerAdapter(getActivityContext(), mPresenter, catalogs, coupons));
+        mPagerPromos.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayoutPromo));
+        mTabLayoutPromo.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mPagerPromos));
+
+        //Check for coupons and make sure user coupon get selected if he has any number.
+        if (coupons != null && !coupons.isEmpty()) {
+            mPagerPromos.setCurrentItem(1);
+        }
     }
 
     private void decorateDialog(AlertDialog dialog) {
