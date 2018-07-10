@@ -228,6 +228,11 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
         mPagerPromos.setAdapter(new HomepagePagerAdapter(getActivityContext(), mPresenter, catalogs, coupons));
         mPagerPromos.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayoutPromo));
         mTabLayoutPromo.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mPagerPromos));
+
+        //Check for coupons and make sure user coupon get selected if he has any number.
+        if (coupons != null && !coupons.isEmpty()) {
+            mPagerPromos.setCurrentItem(1);
+        }
     }
 
     @Override
