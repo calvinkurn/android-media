@@ -71,7 +71,7 @@
                 android:layout_height="@dimen/dp_32"
                 android:layout_gravity="top|right"
                 android:background="@drawable/circle_wishlist"
-                android:visibility="visible">
+                android:visibility="gone">
 
                 <ImageView
                     android:id="@+id/wishlist_button"
