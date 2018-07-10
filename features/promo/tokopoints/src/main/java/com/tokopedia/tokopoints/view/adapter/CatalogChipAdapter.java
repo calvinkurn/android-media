@@ -60,6 +60,6 @@ public class CatalogChipAdapter extends RecyclerView.Adapter<CatalogChipAdapter.
 
     @Override
     public int getItemCount() {
-        return mItems.size() > CommonConstant.HOMEPAGE_PAGE_SIZE ? CommonConstant.HOMEPAGE_PAGE_SIZE : mItems.size();
+        return mItems.size();
     }
 }

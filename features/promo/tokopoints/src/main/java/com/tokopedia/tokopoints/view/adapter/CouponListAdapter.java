@@ -72,6 +72,6 @@ public class CouponListAdapter extends RecyclerView.Adapter<CouponListAdapter.Vi
 
     @Override
     public int getItemCount() {
-        return mItems.size();
+        return mItems.size() > CommonConstant.HOMEPAGE_PAGE_SIZE ? CommonConstant.HOMEPAGE_PAGE_SIZE : mItems.size();
     }
 }
