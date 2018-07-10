@@ -5,6 +5,8 @@ import com.tokopedia.feedplus.data.mapper.AddWishlistMapper;
 import com.tokopedia.feedplus.data.mapper.RemoveWishlistMapper;
 import com.tokopedia.feedplus.data.source.cloud.AddWishlistCloudSource;
 
+import javax.inject.Inject;
+
 /**
  * @author by nisie on 5/30/17.
  */
@@ -15,6 +17,7 @@ public class WishlistFactory {
     private RemoveWishlistMapper removeWishlistMapper;
     private MojitoNoRetryAuthService service;
 
+    @Inject
     public WishlistFactory(AddWishlistMapper addWishlistMapper,
                            RemoveWishlistMapper removeWishlistMapper,
                            MojitoNoRetryAuthService service) {

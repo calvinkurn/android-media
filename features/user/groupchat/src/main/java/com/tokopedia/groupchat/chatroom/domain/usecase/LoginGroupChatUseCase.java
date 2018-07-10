@@ -11,7 +11,6 @@ import com.sendbird.android.User;
 import com.tokopedia.groupchat.R;
 import com.tokopedia.groupchat.common.util.GroupChatErrorHandler;
 
-import java.util.Date;
 import java.util.UUID;
 
 import javax.inject.Inject;

@@ -8,6 +8,8 @@ import com.tokopedia.feedplus.domain.model.wishlist.AddWishlistDomain;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import javax.inject.Inject;
+
 import retrofit2.Response;
 import rx.functions.Func1;
 
@@ -18,6 +20,10 @@ import rx.functions.Func1;
 public class AddWishlistMapper implements Func1<Response<TkpdResponse>, AddWishlistDomain> {
     private static final String DEFAULT_ERROR = "Terjadi kesalahan, mohon coba kembali.";
     private static final String ERROR_MESSAGE = "message_error";
+
+    @Inject
+    public AddWishlistMapper() {
+    }
 
     @Override
     public AddWishlistDomain call(Response<TkpdResponse> response) {

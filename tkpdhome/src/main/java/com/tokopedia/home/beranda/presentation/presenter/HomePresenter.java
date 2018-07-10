@@ -371,7 +371,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         getHomeFeedsUseCase.execute(
                 getHomeFeedsUseCase.getFeedPlusParam(
                         pagingHandler.getPage(),
-                        sessionHandler,
+                        sessionHandler.getLoginID(),
                         currentCursor),
                 new GetHomeFeedsSubscriber(feedListener, pagingHandler.getPage()));
     }
