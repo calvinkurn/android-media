@@ -32,16 +32,16 @@ public class ListAdapterPresenterImpl extends BaseDaggerPresenter<ListAdapterCon
         if (actionButtons.size() == 2) {
             ActionButton leftActionButton = actionButtons.get(0);
             ActionButton rightActionButton = actionButtons.get(1);
-            view.setButtonData(View.VISIBLE, View.VISIBLE, leftActionButton.label(), rightActionButton.label(), leftActionButton.uri(), rightActionButton.uri(), leftActionButton.color(), rightActionButton.color());
+            view.setButtonData(View.VISIBLE, View.VISIBLE, leftActionButton.label(), rightActionButton.label(), leftActionButton.uri(), rightActionButton.uri(), null, null, leftActionButton.color(), rightActionButton.color());
         } else if (actionButtons.size() == 1) {
             ActionButton actionButton = actionButtons.get(0);
             if (actionButton.buttonType().equals("primary")) {
-                view.setButtonData(View.VISIBLE, View.GONE, actionButton.label(), null, actionButton.uri(),null, actionButton.color(), null);
+                view.setButtonData(View.VISIBLE, View.GONE, actionButton.label(), null, actionButton.uri(), null, null, null, actionButton.color(), null);
             } else {
-                view.setButtonData(View.GONE, View.VISIBLE, null, actionButton.label(), null, actionButton.uri(), null, actionButton.color());
+                view.setButtonData(View.GONE, View.VISIBLE, null, actionButton.label(), null, actionButton.uri(), null, null, null, actionButton.color());
             }
         } else {
-            view.setButtonData(View.GONE, View.GONE, null, null, null, null, null, null);
+            view.setButtonData(View.GONE, View.GONE, null, null, null, null, null, null, null, null);
         }
     }
 

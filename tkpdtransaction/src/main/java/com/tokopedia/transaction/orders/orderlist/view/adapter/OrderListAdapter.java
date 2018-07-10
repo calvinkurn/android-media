@@ -26,6 +26,7 @@ import com.tokopedia.transaction.orders.orderlist.data.Color;
 import com.tokopedia.transaction.orders.orderlist.data.DotMenuList;
 import com.tokopedia.transaction.orders.orderlist.data.MetaData;
 import com.tokopedia.transaction.orders.orderlist.data.Order;
+import com.tokopedia.transaction.orders.orderlist.data.Popup;
 import com.tokopedia.transaction.orders.orderlist.view.presenter.ListAdapterContract;
 import com.tokopedia.transaction.orders.orderlist.view.presenter.ListAdapterPresenterImpl;
 
@@ -39,7 +40,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private final Context context;
     private ListAdapterContract.Presenter orderListPresenter;
     OrderListViewHolder currentHolder;
-    ArrayList<Order> mOrderList;
+    List<Order> mOrderList;
 
     OnMenuItemListener menuListener;
     private boolean loading = false;
@@ -101,12 +102,13 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public void setButtonData(int leftVisibility, int rightVisibility, String leftText, String rightText,
                               final String leftButtonUri, final String rightButtonUri,
+                              Popup leftPopup, Popup rightPopup,
                               Color leftButtonColor, Color rightButtonColor) {
-        setButtonData(currentHolder.leftButton, leftText, leftVisibility, leftButtonUri, leftButtonColor);
-        setButtonData(currentHolder.rightButton, rightText, rightVisibility, rightButtonUri, rightButtonColor);
+        setButtonData(currentHolder.leftButton, leftText, leftVisibility, leftButtonUri, leftPopup, leftButtonColor);
+        setButtonData(currentHolder.rightButton, rightText, rightVisibility, rightButtonUri, rightPopup, rightButtonColor);
     }
 
-    private void setButtonData(TextView button, String text, int visibility, final String buttonUri, Color bgColor) {
+    private void setButtonData(TextView button, String text, int visibility, final String buttonUri, Popup popup, Color bgColor) {
         button.setVisibility(visibility);
         button.setText(text);
 
@@ -127,6 +129,8 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 }
             }
         });
+        if (popup != null) {
+        }
     }
 
     @Override
@@ -249,7 +253,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private void showPopup(View v, final Order order) {
         PopupMenu popup = new PopupMenu(context, v);
         addCancelReplacementMenu(order.dotMenuList(), popup);
-        popup.setOnMenuItemClickListener(new OnMenuPopupClicked(order.dotMenuList(), order.id()));
+        popup.setOnMenuItemClickListener(new OnMenuPopupClicked(order.dotMenuList(), order.id(), order.category()));
         popup.show();
     }
 
@@ -268,10 +272,12 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private class OnMenuPopupClicked implements PopupMenu.OnMenuItemClickListener {
         private final List<DotMenuList> orderData;
         private String orderId;
+        private String orderCategory;
 
-        OnMenuPopupClicked(List<DotMenuList> item, String id) {
+        OnMenuPopupClicked(List<DotMenuList> item, String id, String category) {
             this.orderData = item;
             this.orderId = id;
+            this.orderCategory = category;
         }
 
         @Override
@@ -283,7 +289,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 if(!orderData.get(1).uri().equals("")){
                     menuListener.startUri(orderData.get(1).uri());
                 } else{
-                    context.startActivity(OrderListDetailActivity.createInstance(context, orderId));
+                    context.startActivity(OrderListDetailActivity.createInstance(context, orderId, orderCategory, false));
                 }
                 return true;
             } else {
@@ -320,6 +326,8 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         View itemView;
         String orderId;
+        String orderCategory;
+        String appLink;
 
         public OrderListViewHolder(View itemView) {
             super(itemView);
@@ -344,12 +352,15 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         @Override
         public void onClick(View view) {
-            context.startActivity(OrderListDetailActivity.createInstance(context, orderId));
+            RouteManager.route(context, appLink);
+//            context.startActivity(OrderListDetailActivity.createInstance(context, orderId, mOrderCategory, false));
         }
 
         public void bindData(Order order, int position) {
             if (order != null) {
                 orderId = order.id();
+                orderCategory = order.category();
+                appLink = order.getAppLink() + "/" + "false";
                 parentMetadataLayout.removeAllViews();
                 orderListPresenter.setViewData(order);
                 orderListPresenter.setActionButtonData(order.actionButtons());
