@@ -32,8 +32,6 @@ public class AddWishlistActionUseCase{
     private static final String PARAM_PRODUCT_ID = "productID";
     private final Context context;
 
-    private AddWishlistActionMapper mapper;
-
     public AddWishlistActionUseCase(/*ThreadExecutor threadExecutor,
                                     PostExecutionThread postExecutionThread,
                                     MojitoAuthApi service,
@@ -41,7 +39,6 @@ public class AddWishlistActionUseCase{
 //        super(threadExecutor, postExecutionThread);
 //        this.service = service;
         this.context = context;
-        this.mapper = mapper;
     }
 
     public static RequestParams generateParam(String productId, String userId) {

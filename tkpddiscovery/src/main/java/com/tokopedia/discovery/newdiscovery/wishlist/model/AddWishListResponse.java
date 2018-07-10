@@ -30,6 +30,8 @@ public class AddWishListResponse {
         @Expose
         private String id;
 
+        @SerializedName("__typename")
+        @Expose
         private String __typename;
 
         @SerializedName("success")
