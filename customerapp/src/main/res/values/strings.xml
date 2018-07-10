@@ -107,4 +107,6 @@
     <string name="yes">Ya</string>
     <string name="masuk_sekarang">Ok</string>
     <string name="shake_login_error">Login sekarang untuk menghidupkan kembali fitur shake-shake!</string>
+    <string name="mainapp_extend_gold_merchant">Perpanjang Gold Merchant</string>
+    <string name="mainapp_upgrade_gold_merchant">Upgrade ke Gold Merchant</string>
 </resources>

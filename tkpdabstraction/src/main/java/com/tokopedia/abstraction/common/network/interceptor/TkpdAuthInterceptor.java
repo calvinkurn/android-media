@@ -28,6 +28,7 @@ import okio.Buffer;
 /**
  * @author Angga.Prasetiyo on 27/11/2015.
  */
+@Deprecated
 public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     private static final int ERROR_FORBIDDEN_REQUEST = 403;
     private static final String ACTION_TIMEZONE_ERROR = "com.tokopedia.tkpd.TIMEZONE_ERROR";
@@ -361,7 +362,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     }
 
     private Request recreateRequestWithNewAccessToken(Chain chain) {
-        String freshAccessToken = userSession.getFreshToken();
+        String freshAccessToken = userSession.getAccessToken();
         return chain.request().newBuilder()
                 .header(HEADER_PARAM_AUTHORIZATION, HEADER_PARAM_BEARER + " " + freshAccessToken)
                 .header(HEADER_ACCOUNTS_AUTHORIZATION, HEADER_PARAM_BEARER + " " + freshAccessToken)
@@ -398,7 +399,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
 
 
     private Request recreateRequestWithNewAccessTokenAccountsAuth(Chain chain) {
-        String freshAccessToken = userSession.getFreshToken();
+        String freshAccessToken = userSession.getAccessToken();
         return chain.request().newBuilder()
                 .header(HEADER_ACCOUNTS_AUTHORIZATION, HEADER_PARAM_BEARER + " " + freshAccessToken)
                 .build();

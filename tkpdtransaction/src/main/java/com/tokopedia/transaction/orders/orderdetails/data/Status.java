@@ -1,16 +1,33 @@
 package com.tokopedia.transaction.orders.orderdetails.data;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by baghira on 10/05/18.
  */
 
 public class Status {
+    @SerializedName("statusText")
+    @Expose
     private String statusText;
+    @SerializedName("status")
+    @Expose
     private String status;
+    @SerializedName("statusLabel")
+    @Expose
     private String statusLabel;
+    @SerializedName("iconUrl")
+    @Expose
     private String iconUrl;
+    @SerializedName("textColor")
+    @Expose
     private String textColor;
+    @SerializedName("backgroundColor")
+    @Expose
     private String backgroundColor;
+    @SerializedName("fontSize")
+    @Expose
     private String fontSize;
 
     public Status(String statusText, String status, String statusLabel, String iconUrl, String textColor, String backgroundColor, String fontSize) {

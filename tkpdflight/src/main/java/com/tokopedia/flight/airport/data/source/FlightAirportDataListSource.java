@@ -63,26 +63,17 @@ public class FlightAirportDataListSource extends DataListSource<FlightAirportCou
         return (String) params.get(FlightAirportDataListDBSource.ID);
     }
 
-    public static String getIdCountryFromMap(HashMap<String, Object> params) {
-        if (params == null) {
-            return "";
-        }
-        return (String) params.get(ID_COUNTRY);
-    }
-
     public Observable<List<FlightAirportDB>> getAirportList(final String queryText) {
         final HashMap<String, Object> map = generateGetParam(queryText);
         return getDataList(map);
     }
 
-    public Observable<List<FlightAirportDB>> getAirportList(String query, String idCountry) {
-        HashMap<String, Object> map = generateGetParam(query);
-        map.put(ID_COUNTRY, idCountry);
-        return getDataList(map);
-    }
-
     public Observable<List<FlightAirportDB>> getPhoneCodeList(String query) {
         return flightAirportDataListDBSource.getPhoneCodeList(query);
+    }
+
+    public Observable<FlightAirportDB> getAirportByCountryId(String id) {
+        return flightAirportDataListDBSource.getAirportByCountryId(id);
     }
 
     public Observable<FlightAirportDB> getAirport(final String airportCode) {
@@ -123,7 +114,9 @@ public class FlightAirportDataListSource extends DataListSource<FlightAirportCou
     }
 
     public Observable<FlightAirportDB> getAirport(final Map<String, String> params) {
-        return flightAirportDataListDBSource.isDataAvailable().flatMap(new Func1<Boolean, Observable<FlightAirportDB>>() {
+        return flightAirportDataListDBSource
+                .isDataAvailable()
+                .flatMap(new Func1<Boolean, Observable<FlightAirportDB>>() {
             @Override
             public Observable<FlightAirportDB> call(Boolean isLocalAvailable) {
                 if (isLocalAvailable) {

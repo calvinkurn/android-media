@@ -33,6 +33,7 @@ import com.tokopedia.discovery.helper.OfficialStoreQueryHelper;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
+import com.tokopedia.discovery.util.AutoCompleteTracking;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -72,11 +73,23 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     private UploadImageDialog uploadDialog;
     private TkpdProgressDialog tkpdProgressDialog;
     private boolean fromCamera;
+    private String imagePath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutRes());
+        proceed();
+    }
+
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        proceed();
+    }
+
+    private void proceed() {
         initView();
         prepareView();
     }
@@ -168,6 +181,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
 
     @Override
     public boolean onQueryTextSubmit(String query) {
+        AutoCompleteTracking.eventClickSubmit(this, query);
         if (OfficialStoreQueryHelper.isOfficialStoreSearchQuery(query)) {
             onHandleOfficialStorePage();
             sendSearchProductGTM(query);
@@ -491,7 +505,8 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         }
     }
 
-    private void onImagePickedSuccess(String imagePath) {
+    public void onImagePickedSuccess(String imagePath) {
+        setImagePath(imagePath);
         tkpdProgressDialog = new TkpdProgressDialog(this, 1);
         tkpdProgressDialog.showDialog();
         getPresenter().requestImageSearch(imagePath);
@@ -508,8 +523,49 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         } else {
             sendGalleryImageSearchResultGTM(FAILURE);
         }
-
         NetworkErrorHelper.showSnackbar(this, getResources().getString(R.string.no_result_found));
+    }
+
+    @Override
+    public void showErrorNetwork(String message) {
+        if (tkpdProgressDialog != null) {
+            tkpdProgressDialog.dismiss();
+        }
+
+        if (fromCamera) {
+            sendCameraImageSearchResultGTM(NO_RESPONSE);
+        } else {
+            sendGalleryImageSearchResultGTM(NO_RESPONSE);
+        }
+
+        if (TextUtils.isEmpty(getImagePath())) {
+            NetworkErrorHelper.showSnackbar(this, message);
+        } else {
+            NetworkErrorHelper.createSnackbarWithAction(this, message, new NetworkErrorHelper.RetryClickedListener() {
+                @Override
+                public void onRetryClicked() {
+                    onImagePickedSuccess(getImagePath());
+                }
+            }).showRetrySnackbar();
+        }
+    }
+
+    @Override
+    public void showTimeoutErrorNetwork(String message) {
+        if (tkpdProgressDialog != null) {
+            tkpdProgressDialog.dismiss();
+        }
+
+        if (TextUtils.isEmpty(getImagePath())) {
+            NetworkErrorHelper.showSnackbar(this, message);
+        } else {
+            NetworkErrorHelper.createSnackbarWithAction(this, message, new NetworkErrorHelper.RetryClickedListener() {
+                @Override
+                public void onRetryClicked() {
+                    onImagePickedSuccess(getImagePath());
+                }
+            }).showRetrySnackbar();
+        }
     }
 
     @Override
@@ -524,7 +580,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
             sendGalleryImageSearchResultGTM(NO_RESPONSE);
         }
 
-        NetworkErrorHelper.showSnackbar(this, getResources().getString(R.string.no_result_found));
+        NetworkErrorHelper.showSnackbar(this, getResources().getString(R.string.invalid_image_search_response));
     }
 
     @Override
@@ -538,6 +594,16 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         } else {
             sendGalleryImageSearchResultGTM(SUCCESS);
         }
+    }
+
+    @Override
+    public void showImageNotSupportedError() {
+        super.showImageNotSupportedError();
+        if (tkpdProgressDialog != null) {
+            tkpdProgressDialog.dismiss();
+        }
+
+        NetworkErrorHelper.showSnackbar(this, getResources().getString(R.string.image_not_supported));
     }
 
     public void showSnackBarView(String message) {
@@ -618,5 +684,13 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         listPermission.add(Manifest.permission.CAMERA);
 
         RequestPermissionUtil.onNeverAskAgain(this, listPermission);
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
+    public String getImagePath() {
+        return imagePath;
     }
 }

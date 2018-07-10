@@ -10,12 +10,12 @@
         <activity
             android:name="view.activity.BlogWebViewActivity"
             android:label="@string/app_name"
-            />
+            android:screenOrientation="portrait"/>
 
         <activity
             android:name=".view.activity.RecentViewActivity"
             android:label="@string/recent_view"
-            />
+            android:screenOrientation="portrait"/>
 
         <activity
             android:name=".view.activity.TransparentVideoActivity"
@@ -25,12 +25,12 @@
 
         <activity
             android:name=".view.activity.KolProfileWebViewActivity"
-            />
+            android:screenOrientation="portrait"/>
 
         <activity android:name=".ReactNativeExplorePageActivity"
-             />
+            android:screenOrientation="portrait" />
         <activity android:name=".ReactNativeContentDetailsActivity"
-             />
+            android:screenOrientation="portrait" />
 
     </application>
 

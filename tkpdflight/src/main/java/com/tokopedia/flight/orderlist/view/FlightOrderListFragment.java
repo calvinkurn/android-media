@@ -1,7 +1,6 @@
 package com.tokopedia.flight.orderlist.view;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -244,12 +243,16 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
                 break;
             case REQUEST_CODE_CANCELLATION:
                 if (resultCode == RESULT_OK) {
+                    getAdapter().clearAllElements();
+                    getAdapter().notifyDataSetChanged();
                     loadData(getDefaultInitialPage());
                 }
                 break;
             case REQUEST_CODE_ORDER_DETAIL:
                 if (resultCode == RESULT_OK && data != null &&
                         data.getBooleanExtra(EXTRA_IS_AFTER_CANCELLATION, false)) {
+                    getAdapter().clearAllElements();
+                    getAdapter().notifyDataSetChanged();
                     loadData(getDefaultInitialPage());
                 }
         }

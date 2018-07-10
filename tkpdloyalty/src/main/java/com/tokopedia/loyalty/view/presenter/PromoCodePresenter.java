@@ -3,12 +3,12 @@ package com.tokopedia.loyalty.view.presenter;
 import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import com.google.gson.JsonObject;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
+import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.exception.ResponseErrorException;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
@@ -30,6 +30,10 @@ import rx.Subscriber;
  */
 
 public class PromoCodePresenter implements IPromoCodePresenter {
+    private static final String PARAM_CARTS = "carts";
+    private static final String PARAM_PROMO_CODE = "promo_code";
+    private static final String PARAM_SUGGESTED = "suggested";
+    private static final String PARAM_LANG = "lang";
     private final IPromoCodeView view;
     private final IPromoCodeInteractor promoCodeInteractor;
     private FlightCheckVoucherUseCase flightCheckVoucherUseCase;
@@ -65,6 +69,54 @@ public class PromoCodePresenter implements IPromoCodePresenter {
         promoCodeInteractor.submitDigitalVoucher(voucherCode,
                 AuthUtil.generateParamsNetwork(context, param),
                 makeDigitalVoucherViewModel());
+    }
+
+    @Override
+    public void processCheckMarketPlaceCartListPromoCode(
+            Activity activity, String voucherCode, String paramUpdateCartString
+    ) {
+        TKPDMapParam<String, String> paramUpdateCart = null;
+        if (!TextUtils.isEmpty(paramUpdateCartString)) {
+            paramUpdateCart = new TKPDMapParam<>();
+            paramUpdateCart.put(PARAM_CARTS, paramUpdateCartString);
+        }
+        TKPDMapParam<String, String> paramCheckPromo = new TKPDMapParam<>();
+        paramCheckPromo.put(PARAM_PROMO_CODE, voucherCode);
+        paramCheckPromo.put(PARAM_SUGGESTED, "0");
+        paramCheckPromo.put(PARAM_LANG, "id");
+
+        promoCodeInteractor.submitCheckPromoCodeMarketPlace(
+                paramUpdateCart != null ? AuthUtil.generateParamsNetwork(activity, paramUpdateCart) : null,
+                AuthUtil.generateParamsNetwork(activity, paramCheckPromo),
+                new Subscriber<VoucherViewModel>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        view.hideProgressLoading();
+                        if (e instanceof TokoPointResponseErrorException || e instanceof ResponseErrorException) {
+                            view.onPromoCodeError(e.getMessage());
+                        } else view.onGetGeneralError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+
+                    }
+
+                    @Override
+                    public void onNext(VoucherViewModel voucherViewModel) {
+                        if (!voucherViewModel.isSuccess()) {
+                            view.onPromoCodeError(voucherViewModel.getMessage());
+                        } else {
+                            view.hideProgressLoading();
+                            view.checkVoucherSuccessfull(voucherViewModel);
+                        }
+
+                    }
+                }
+
+        );
     }
 
     @Override
@@ -145,7 +197,7 @@ public class PromoCodePresenter implements IPromoCodePresenter {
                 view.hideProgressLoading();
                 if (e instanceof LoyaltyErrorException || e instanceof ResponseErrorException) {
                     view.onPromoCodeError(e.getMessage());
-                }else if (e instanceof MessageErrorException) {
+                } else if (e instanceof MessageErrorException) {
                     view.onGetGeneralError(e.getMessage());
                 } else view.onGetGeneralError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
             }

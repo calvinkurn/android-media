@@ -46,6 +46,11 @@ public class InboxReputationDetailItemViewHolder extends
     private static final String MORE_DESCRIPTION = "<font color='#42b549'>Selengkapnya</font>";
     private static final String BY = "Oleh";
 
+    private static final int MENU_EDIT = 101;
+    private static final int MENU_REPORT = 102;
+    private static final int MENU_DELETE = 103;
+    private static final int MENU_SHARE = 104;
+
     private final InboxReputationDetail.View viewListener;
     boolean isReplyOpened = false;
 
@@ -340,14 +345,14 @@ public class InboxReputationDetailItemViewHolder extends
                 @Override
                 public void onClick(View v) {
                     final PopupMenu popup = new PopupMenu(context, v);
-                    popup.getMenu().add(1, R.id.menu_delete, 1,
+                    popup.getMenu().add(1, MENU_DELETE, 1,
                             MainApplication.getAppContext()
                                     .getString(R.string.menu_delete));
 
                     popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                         @Override
                         public boolean onMenuItemClick(MenuItem item) {
-                            if (item.getItemId() == R.id.menu_delete) {
+                            if (item.getItemId() == MENU_DELETE) {
                                 viewListener.onDeleteReviewResponse(element);
                                 return true;
                             } else {
@@ -440,31 +445,31 @@ public class InboxReputationDetailItemViewHolder extends
             public void onClick(View v) {
                 PopupMenu popup = new PopupMenu(context, v);
                 if (element.isReviewIsEditable())
-                    popup.getMenu().add(1, R.id.menu_edit, 1, MainApplication.getAppContext()
+                    popup.getMenu().add(1, MENU_EDIT, 1, MainApplication.getAppContext()
                             .getString(R.string.menu_edit));
 
                 if (element.getTab() == InboxReputationActivity.TAB_BUYER_REVIEW)
-                    popup.getMenu().add(1, R.id.menu_report, 2, MainApplication.getAppContext()
+                    popup.getMenu().add(1, MENU_REPORT, 2, MainApplication.getAppContext()
                             .getString(R.string.menu_report));
 
                 if (!TextUtils.isEmpty(element.getProductName()))
-                    popup.getMenu().add(1, R.id.menu_share, 3, MainApplication.getAppContext()
+                    popup.getMenu().add(1, MENU_SHARE, 3, MainApplication.getAppContext()
                             .getString(R.string.menu_share));
 
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
 
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
-                        if (item.getItemId() == R.id.menu_edit) {
+                        if (item.getItemId() == MENU_EDIT) {
                             viewListener.onEditReview(element);
                             return true;
-                        } else if (item.getItemId() == R.id.menu_report) {
+                        } else if (item.getItemId() == MENU_REPORT) {
                             viewListener.onGoToReportReview(
                                     element.getShopId(),
                                     element.getReviewId()
                             );
                             return true;
-                        } else if (item.getItemId() == R.id.menu_share) {
+                        } else if (item.getItemId() == MENU_SHARE) {
                             viewListener.onShareReview(
                                     element.getProductName(),
                                     element.getProductAvatar(),

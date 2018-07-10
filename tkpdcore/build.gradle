@@ -130,8 +130,10 @@ dependencies {
     implementation rootProject.ext.debugToolsDependencies.stetho
 
     implementation rootProject.ext.analyticsDependencies.logentries
+    implementation project(rootProject.ext.libraries.network)
+    implementation project(rootProject.ext.libraries.userSession)
+    implementation project(rootProject.ext.libraries.analytics)
 }
 
 apply plugin: 'com.google.gms.google-services'
 apply from: '../publish_local.gradle'
-

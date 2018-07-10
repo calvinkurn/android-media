@@ -96,12 +96,10 @@
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan"/>
         <activity
             android:name=".register.view.activity.SmartLockActivity"
-            android:theme="@style/Theme.AppCompat.Dialog"
-            android:screenOrientation="portrait"/>
+            android:theme="@style/AppTheme.Dialog"/>
         <activity
             android:name=".google.GoogleSignInActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/DialogTheme"/>
+            android:theme="@style/AppTheme.Dialog"/>
 
         <activity android:name="com.tokopedia.otp.phoneverification.view.activity.ReferralPhoneNumberVerificationActivity">
         </activity>
@@ -109,6 +107,7 @@
         <activity
             android:name=".register.view.activity.RegisterInitialActivity"
             android:label="@string/title_register"
+            android:windowSoftInputMode="stateHidden"
             android:screenOrientation="portrait"/>
 
         <activity

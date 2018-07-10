@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
+import com.tokopedia.flight.orderlist.domain.model.FlightInsurance;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationJourney;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrder;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
@@ -80,6 +81,8 @@ public interface FlightDetailOrderContract {
 
         void hideCancellationContainer();
 
+        void hideCancelButton();
+
         void navigateToInputEmailForm(String userId, String userEmail);
 
         Observable<ProfileInfo> getProfileObservable();
@@ -91,6 +94,12 @@ public interface FlightDetailOrderContract {
         void showRefundableCancelDialog(String id, List<FlightCancellationJourney> items);
 
         void showNonRefundableCancelDialog(String id, List<FlightCancellationJourney> items);
+
+        void hideInsuranceLayout();
+
+        void showInsuranceLayout();
+
+        void renderInsurances(List<FlightInsurance> insurances);
     }
 
     interface Presenter extends CustomerPresenter<View> {

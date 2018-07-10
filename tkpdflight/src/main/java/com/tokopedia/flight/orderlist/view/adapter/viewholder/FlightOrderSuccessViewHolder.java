@@ -87,10 +87,7 @@ public class FlightOrderSuccessViewHolder extends FlightOrderBaseViewHolder<Flig
 
         setSingleArrow();
 
-        if (element.getCancellations().size() > 0) {
-            countCancellationStatus(element.getCancellations());
-        }
-
+        renderCancellationStatus(element);
         renderDepartureSchedule(element.getOrderJourney());
     }
 
@@ -138,6 +135,14 @@ public class FlightOrderSuccessViewHolder extends FlightOrderBaseViewHolder<Flig
         popup.show();
     }
 
+    private void renderCancellationStatus(FlightOrderSuccessViewModel element) {
+        if (element.getCancellations().size() > 0) {
+            countCancellationStatus(element.getCancellations());
+        } else {
+            hideCancellationStatus();
+        }
+    }
+
     private void showCancellationStatus() {
         tvTicketCancellationStatus.setText(getString(R.string.flight_cancellation_ticket_status));
         containerTicketCancellationStatus.setVisibility(View.VISIBLE);
@@ -147,6 +152,10 @@ public class FlightOrderSuccessViewHolder extends FlightOrderBaseViewHolder<Flig
         tvTicketCancellationStatus.setText(String.format(getString(
                 R.string.flight_cancellation_ticket_status_in_progress), numberOfProcess));
         containerTicketCancellationStatus.setVisibility(View.VISIBLE);
+    }
+
+    private void hideCancellationStatus() {
+        containerTicketCancellationStatus.setVisibility(View.GONE);
     }
 
     private void countCancellationStatus(List<CancellationEntity> cancellationEntityList) {

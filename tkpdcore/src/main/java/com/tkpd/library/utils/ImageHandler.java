@@ -14,6 +14,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
+import android.net.Uri;
 import android.support.v7.content.res.AppCompatResources;
 import android.text.TextUtils;
 import android.widget.ImageView;
@@ -24,6 +25,7 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.FutureTarget;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.gcm.BuildAndShowNotification;
 
@@ -101,6 +103,16 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
         }
         image = Bitmap.createScaledBitmap(image, finalWidth, finalHeight, true);
         return image;
+    }
+
+    public static Bitmap getBitmapFromUri(Context context, Uri uri, int width, int height) {
+        Bitmap bitmap = null;
+        try {
+            bitmap = Glide.with(context).load(uri).asBitmap().into(width, height).get();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return bitmap;
     }
 
     public static void loadImageWithId(ImageView imageview, int resId) {
@@ -419,7 +431,8 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
 
     }
 
-    public static void LoadImageWGender(ImageView imageview, String url, Activity context, String gender) {
+    public static void LoadImageWGender(ImageView imageview, String url, Context context, String
+            gender) {
         if (!url.equals("null")) {
             loadImageCircle2(imageview.getContext(), imageview, url);
         } else {
@@ -432,6 +445,10 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
     }
 
     private static boolean isContextValid(Context context) {
-        return (context instanceof Activity && !((Activity) context).isFinishing()) || context instanceof Application;
+        Context tempContext = context;
+        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP) {
+            tempContext = CommonUtils.getActivity(context);
+        }
+        return (tempContext instanceof Activity && !((Activity) tempContext).isFinishing()) || tempContext instanceof Application;
     }
 }

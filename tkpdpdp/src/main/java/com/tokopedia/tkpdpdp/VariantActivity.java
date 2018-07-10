@@ -1,6 +1,7 @@
 package com.tokopedia.tkpdpdp;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -12,7 +13,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager;
+import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.network.entity.variant.Child;
@@ -26,6 +29,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.view.View.VISIBLE;
+import static com.tokopedia.core.router.productdetail.ProductDetailRouter.EXTRA_PRODUCT_ID;
+import static com.tokopedia.core.var.TkpdCache.Key.STATE_ORIENTATION_CHANGED;
+import static com.tokopedia.core.var.TkpdCache.PRODUCT_DETAIL;
 
 
 public class VariantActivity extends TActivity  implements VariantOptionAdapter.OnVariantOptionChoosedListener  {
@@ -41,6 +47,7 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
     public static final int SELECTED_VARIANT_RESULT = 99;
     public static final int SELECTED_VARIANT_RESULT_TO_BUY = 98;
     public static final int KILL_PDP_BACKGROUND = 97;
+    private static final String CRASHLYTIC_VARIANT_TAG = "CRASHLYTIC VARIANT";
 
     private TextView topBarTitle;
     private ImageView productImage;
@@ -67,12 +74,19 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
     private ProductVariant productVariant;
     private ProductDetailData productDetailData;
     private String mainImage = "";
+    private LocalCacheHandler localCacheHandler;
+
+    @Override
+    protected void forceRotation() {
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         productVariant = getIntent().getParcelableExtra(KEY_VARIANT_DATA);
         productDetailData = getIntent().getParcelableExtra(KEY_PRODUCT_DETAIL_DATA);
+        localCacheHandler = new LocalCacheHandler(VariantActivity.this, PRODUCT_DETAIL);
         setContentView(R.layout.activity_variant);
         hideToolbar();
         initView();
@@ -131,6 +145,23 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
             });
         }
         renderHeaderInfo();
+        setUpByConfiguration(getResources().getConfiguration());
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        setUpByConfiguration(newConfig);
+    }
+
+    private void setUpByConfiguration(Configuration configuration) {
+        if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            if (!localCacheHandler.getBoolean(STATE_ORIENTATION_CHANGED).booleanValue()) {
+                UnifyTracking.eventPDPOrientationChanged(Integer.toString(productDetailData.getInfo().getProductId()));
+                localCacheHandler.putBoolean(STATE_ORIENTATION_CHANGED,Boolean.TRUE);
+                localCacheHandler.applyEditor();
+            }
+        }
     }
 
     private void renderHeaderInfo() {
@@ -170,7 +201,7 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
 
     private void initViewListener() {
         if (getIntent().getBooleanExtra(KEY_SELLER_MODE,false)) {
-           buttonSave.setVisibility(View.GONE);
+            buttonSave.setVisibility(View.GONE);
         }
         findViewById(R.id.simple_top_bar_close_button)
                 .setOnClickListener(new View.OnClickListener() {
@@ -274,10 +305,18 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
             defaultChild = productVariant.getChildFromProductId(productVariant.getDefaultChild());
         }
 
-        if (defaultChild != null && TextUtils.isEmpty(defaultChild.getPicture().getThumbnail())) {
-            mainImage = new String (productDetailData.getProductImages().get(0).getImageSrc());
-        } else if (productDetailData.getProductImages().size()>1) {
-            mainImage = new String (productDetailData.getProductImages().get(1).getImageSrc());
+        try {
+            if (defaultChild != null && TextUtils.isEmpty(defaultChild.getPicture().getThumbnail())) {
+                mainImage = productDetailData.getProductImages().get(0).getImageSrc();
+            } else if (productDetailData.getProductImages().size()>1) {
+                mainImage = productDetailData.getProductImages().get(1).getImageSrc();
+            }
+        } catch (Exception e) {
+            Crashlytics.log(
+                    0,
+                    CRASHLYTIC_VARIANT_TAG,
+                    String.valueOf(productDetailData.getInfo().getProductId()) + " " + e.getMessage()
+            );
         }
 
         for (Child child: productVariant.getChildren()) {

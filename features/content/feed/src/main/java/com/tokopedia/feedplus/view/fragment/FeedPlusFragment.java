@@ -727,7 +727,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
                     showSnackbar(data.getStringExtra("message"));
                 break;
             case OPEN_KOL_COMMENT:
-                if (resultCode == Activity.RESULT_OK) {
+                if (resultCode == Activity.RESULT_OK
+                        && data.hasExtra(KolCommentActivity.ARGS_POSITION)
+                        && data.hasExtra(KolCommentFragment.ARGS_TOTAL_COMMENT)) {
+
                     onSuccessAddDeleteKolComment(
                             data.getIntExtra(KolCommentActivity.ARGS_POSITION, DEFAULT_VALUE),
                             data.getIntExtra(KolCommentFragment.ARGS_TOTAL_COMMENT, 0)
@@ -735,7 +738,13 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 }
                 break;
             case OPEN_KOL_PROFILE:
-                if (resultCode == Activity.RESULT_OK) {
+                if (resultCode == Activity.RESULT_OK
+                        && data.hasExtra(ARGS_ROW_NUMBER)
+                        && data.hasExtra(TopProfileActivity.EXTRA_IS_FOLLOWING)
+                        && data.hasExtra(PARAM_IS_LIKED)
+                        && data.hasExtra(PARAM_TOTAL_LIKES)
+                        && data.hasExtra(PARAM_TOTAL_COMMENTS)) {
+
                     onSuccessFollowUnfollowFromProfile(
                             data.getIntExtra(ARGS_ROW_NUMBER, DEFAULT_VALUE),
                             data.getIntExtra(TopProfileActivity.EXTRA_IS_FOLLOWING, DEFAULT_VALUE)
@@ -750,7 +759,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 }
                 break;
             case OPEN_KOL_PROFILE_FROM_RECOMMENDATION:
-                if (resultCode == Activity.RESULT_OK) {
+                if (resultCode == Activity.RESULT_OK
+                        && data.hasExtra(ARGS_ROW_NUMBER)
+                        && data.hasExtra(ARGS_ITEM_ROW_NUMBER)
+                        && data.hasExtra(TopProfileActivity.EXTRA_IS_FOLLOWING)) {
+
                     onSuccessFollowUnfollowFromProfileRecommendation(
                             data.getIntExtra(ARGS_ROW_NUMBER, DEFAULT_VALUE),
                             data.getIntExtra(ARGS_ITEM_ROW_NUMBER, DEFAULT_VALUE),
@@ -1034,7 +1047,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToListKolRecommendation(int page, int rowNumber, String url) {
-        if(remoteConfig != null && !remoteConfig.getBoolean(KEY_EXPLORE_NATIVE_ENABLE, false)) {
+        if (remoteConfig != null && !remoteConfig.getBoolean(KEY_EXPLORE_NATIVE_ENABLE, false)) {
             url = remoteConfig.getString(KEY_EXPLORE_URL, DEFAULT_EXPLORE_URL);
         }
         ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity(), url);
