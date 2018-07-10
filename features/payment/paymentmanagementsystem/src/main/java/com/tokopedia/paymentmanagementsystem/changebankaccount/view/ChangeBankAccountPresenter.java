@@ -8,8 +8,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.paymentmanagementsystem.R;
-import com.tokopedia.paymentmanagementsystem.changebankaccount.data.model.EditTransfer;
-import com.tokopedia.paymentmanagementsystem.changeclickbca.data.model.EditKlikbca;
+import com.tokopedia.paymentmanagementsystem.changebankaccount.data.model.DataEditTransfer;
 import com.tokopedia.paymentmanagementsystem.common.Constant;
 import com.tokopedia.usecase.RequestParams;
 
@@ -30,7 +29,8 @@ public class ChangeBankAccountPresenter extends BaseDaggerPresenter<ChangeBankAc
         this.saveDetailAccountUseCase = saveDetailAccountUseCase;
     }
 
-    public void saveDetailAccount(Resources resources, String transactionId, String merchantCode, String destbank, String accountNo, String accountName, String notes) {
+    public void saveDetailAccount(Resources resources, String transactionId, String merchantCode, Integer destbank, String accountNo, String accountName, String notes) {
+        getView().showLoadingDialog();
         Map<String, Object> variables = new HashMap<>();
         variables.put(Constant.TRANSACTION_ID, transactionId);
         variables.put(Constant.MERCHANT_CODE, merchantCode);
@@ -40,7 +40,7 @@ public class ChangeBankAccountPresenter extends BaseDaggerPresenter<ChangeBankAc
         variables.put(Constant.BANK_ID, destbank);
 
         GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(resources,
-                R.raw.edit_account_detail), EditTransfer.class, variables);
+                R.raw.edit_account_detail), DataEditTransfer.class, variables);
         saveDetailAccountUseCase.setRequest(graphqlRequest);
         saveDetailAccountUseCase.execute(RequestParams.create(), new Subscriber<GraphqlResponse>() {
             @Override
@@ -50,13 +50,17 @@ public class ChangeBankAccountPresenter extends BaseDaggerPresenter<ChangeBankAc
 
             @Override
             public void onError(Throwable e) {
-                getView().onErrorEditDetailAccount(e);
+                if(isViewAttached()) {
+                    getView().hideLoadingDialog();
+                    getView().onErrorEditDetailAccount(e);
+                }
             }
 
             @Override
             public void onNext(GraphqlResponse objects) {
-                EditTransfer editTransfer = objects.getData(EditTransfer.class);
-                getView().onResultEditDetailAccount(editTransfer.isSuccess());
+                getView().hideLoadingDialog();
+                DataEditTransfer editTransfer = objects.getData(DataEditTransfer.class);
+                getView().onResultEditDetailAccount(editTransfer.getEditTransfer().isSuccess(), editTransfer.getEditTransfer().getMessage());
             }
         });
     }

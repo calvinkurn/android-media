@@ -18,10 +18,12 @@
       user_bank_account {
         acc_no
         acc_name
+        bank_id
       }
       dest_bank_account {
         acc_no
         acc_name
+        bank_id
       }
       show_upload_button
       show_edit_transfer_button

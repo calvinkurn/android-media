@@ -1,11 +1,13 @@
 package com.tokopedia.paymentmanagementsystem.paymentlist.view.fragment;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,11 +15,16 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.Menus;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.paymentmanagementsystem.R;
 import com.tokopedia.paymentmanagementsystem.changebankaccount.view.ChangeBankAccountActivity;
 import com.tokopedia.paymentmanagementsystem.changeclickbca.view.ChangeClickBcaActivity;
+import com.tokopedia.paymentmanagementsystem.invoicedetail.InvoiceDetailActivity;
 import com.tokopedia.paymentmanagementsystem.paymentlist.di.PaymentListModule;
 import com.tokopedia.paymentmanagementsystem.paymentlist.view.adapter.PaymentListAdapterTypeFactory;
 import com.tokopedia.paymentmanagementsystem.paymentlist.view.adapter.PaymentListViewHolder;
@@ -25,6 +32,7 @@ import com.tokopedia.paymentmanagementsystem.paymentlist.view.model.PaymentListM
 import com.tokopedia.paymentmanagementsystem.paymentlist.view.presenter.PaymentListContract;
 import com.tokopedia.paymentmanagementsystem.paymentlist.view.presenter.PaymentListPresenter;
 import com.tokopedia.paymentmanagementsystem.paymentlist.di.DaggerPaymentListComponent;
+import com.tokopedia.paymentmanagementsystem.uploadproofpayment.view.UploadProofPaymentActivity;
 
 import javax.inject.Inject;
 
@@ -36,6 +44,7 @@ public class PaymentListFragment extends BaseListFragment<PaymentListModel, Paym
 
     @Inject
     PaymentListPresenter paymentListPresenter;
+    private ProgressDialog progressDialog;
 
     @Override
     protected String getScreenName() {
@@ -46,6 +55,12 @@ public class PaymentListFragment extends BaseListFragment<PaymentListModel, Paym
     public void onCreate(Bundle savedInstanceState) {
         GraphqlClient.init(getActivity());
         super.onCreate(savedInstanceState);
+    }
+
+    @Nullable
+    @Override
+    public SwipeRefreshLayout getSwipeRefreshLayout(View view) {
+        return view.findViewById(R.id.swipe_refresh_layout);
     }
 
     @Override
@@ -62,6 +77,8 @@ public class PaymentListFragment extends BaseListFragment<PaymentListModel, Paym
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_payment_list, container, false);
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setMessage(getString(R.string.title_loading));
         return view;
     }
 
@@ -77,21 +94,36 @@ public class PaymentListFragment extends BaseListFragment<PaymentListModel, Paym
             }
         });
         alertDialog.setNegativeButton(getString(R.string.payment_label_no), null);
+        alertDialog.show();
     }
 
     @Override
-    public void onResultCancelPayment(boolean isSuccess) {
-
+    public void onResultCancelPayment(boolean isSuccess, String message) {
+        if(isSuccess){
+            NetworkErrorHelper.showGreenCloseSnackbar(getActivity(), message);
+        }else{
+            NetworkErrorHelper.showRedCloseSnackbar(getActivity(), message);
+        }
     }
 
     @Override
     public void onErrorGetCancelDetail(Throwable e) {
-
+        NetworkErrorHelper.showCloseSnackbar(getActivity(), ErrorHandler.getErrorMessage(getActivity(), e));
     }
 
     @Override
     public void onErrorCancelPayment(Throwable e) {
+        NetworkErrorHelper.showCloseSnackbar(getActivity(), ErrorHandler.getErrorMessage(getActivity(), e));
+    }
 
+    @Override
+    public void showDialogLoading() {
+        progressDialog.show();
+    }
+
+    @Override
+    public void hideDialogLoading() {
+        progressDialog.hide();
     }
 
     @Override
@@ -129,12 +161,7 @@ public class PaymentListFragment extends BaseListFragment<PaymentListModel, Paym
                 menus.dismiss();
             }
         });
-        menus.setOnItemMenuClickListener(getListenerOnMenuClick(paymentListModel));
-        menus.show();
-    }
-
-    private Menus.OnItemMenuClickListener getListenerOnMenuClick(PaymentListModel paymentListModel) {
-        return new Menus.OnItemMenuClickListener() {
+        menus.setOnItemMenuClickListener(new Menus.OnItemMenuClickListener() {
             @Override
             public void onClick(Menus.ItemMenus itemMenus, int pos) {
                 if(itemMenus.title.equals(getString(R.string.payment_label_cancel_transaction))){
@@ -146,8 +173,10 @@ public class PaymentListFragment extends BaseListFragment<PaymentListModel, Paym
                 } else if(itemMenus.title.equals(getString(R.string.payment_label_change_account_detail))){
                     changeAccountDetail(paymentListModel);
                 }
+                menus.dismiss();
             }
-        };
+        });
+        menus.show();
     }
 
     private void changeAccountDetail(PaymentListModel paymentListModel) {
@@ -156,17 +185,18 @@ public class PaymentListFragment extends BaseListFragment<PaymentListModel, Paym
     }
 
     private void uploadProofPayment(PaymentListModel paymentListModel) {
-
+        Intent intent = UploadProofPaymentActivity.createIntent(getActivity(), paymentListModel);
+        startActivity(intent);
     }
 
     private void changeBcaUserId(PaymentListModel paymentListModel) {
-        Intent intent = ChangeClickBcaActivity.createIntent(getActivity(), paymentListModel.getTransactionId(), paymentListModel.getMerchantCode());
+        Intent intent = ChangeClickBcaActivity.createIntent(getActivity(), paymentListModel.getTransactionId(), paymentListModel.getMerchantCode(), paymentListModel.getValueDynamicViewDetailPayment());
         startActivity(intent);
     }
 
     @Override
     public void onClickHowToPay(PaymentListModel element) {
-        paymentListPresenter.getHowToPay();
+        RouteManager.route(getContext(), element.getAppLink());
     }
 
     @Override
@@ -176,6 +206,7 @@ public class PaymentListFragment extends BaseListFragment<PaymentListModel, Paym
 
     @Override
     public void onClickSeeDetail(String invoiceUrl) {
-
+        Intent intent = InvoiceDetailActivity.createIntent(getActivity(), invoiceUrl);
+        startActivity(intent);
     }
 }

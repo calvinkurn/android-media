@@ -28,7 +28,7 @@ public class BankListDataSourceLocal {
 
     public Observable<List<BankListModel>> getBankList() {
         String[] listOfBank = context.getResources().getStringArray(R.array.payment_list_bank_name);
-        int[] listOfBankCode = context.getResources().getIntArray(R.array.payment_list_bank_code);
+        String[] listOfBankCode = context.getResources().getStringArray(R.array.payment_list_bank_code);
         List<BankListModel> bankListModels = new ArrayList<>();
         for(int i = 0; i < listOfBank.length; i++){
             BankListModel bankListModel = new BankListModel();

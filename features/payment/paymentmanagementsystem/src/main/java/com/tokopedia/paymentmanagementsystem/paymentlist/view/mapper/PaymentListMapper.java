@@ -42,6 +42,7 @@ public class PaymentListMapper {
             paymentListModel.setPaymentMethod(paymentListInside.getGatewayName());
             paymentListModel.setMerchantCode(paymentListInside.getMerchantCode());
             paymentListModel.setAppLink(paymentListInside.getAppLink());
+            paymentListModel.setBankId(String.valueOf(paymentListInside.getUserBankAccount().getBankId()));
             paymentListModels.add(paymentListModel);
         }
         return paymentListModels;

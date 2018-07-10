@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/iv_proof_payment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_badge_shop_gm"
+        android:layout_above="@+id/button_save"
+        android:layout_margin="@dimen/dp_10" />
+
+    <Button
+        android:id="@+id/button_save"
+        style="@style/Button.Submit.Green"
+        android:layout_alignParentBottom="true"
+        android:text="@string/payment_label_choose_image" />
+</RelativeLayout>

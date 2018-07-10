@@ -1,5 +1,7 @@
 package com.tokopedia.paymentmanagementsystem.changebankaccount.view;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -10,14 +12,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.design.text.SpinnerTextView;
 import com.tokopedia.paymentmanagementsystem.R;
 import com.tokopedia.paymentmanagementsystem.bankdestinationlist.view.activity.BankDestinationActivity;
+import com.tokopedia.paymentmanagementsystem.bankdestinationlist.view.model.BankListModel;
 import com.tokopedia.paymentmanagementsystem.changebankaccount.di.ChangeBankAccountModule;
 import com.tokopedia.paymentmanagementsystem.common.Constant;
+import com.tokopedia.paymentmanagementsystem.common.SpinnerTextViewBankList;
 import com.tokopedia.paymentmanagementsystem.paymentlist.view.model.PaymentListModel;
 import com.tokopedia.paymentmanagementsystem.changebankaccount.di.DaggerChangeBankAccountComponent;
 
@@ -34,11 +40,12 @@ public class ChangeBankAccountFragment extends BaseDaggerFragment implements Cha
     ChangeBankAccountPresenter changeBankAccountPresenter;
 
     private PaymentListModel paymentListModel;
-    private Spinner spinnerBankDest;
+    private SpinnerTextViewBankList spinnerBankDest;
     private EditText inputAccountNo;
     private EditText inputAccountName;
     private EditText notes;
     private Button buttonUse;
+    private ProgressDialog progressDialog;
 
     @Override
     protected String getScreenName() {
@@ -78,20 +85,23 @@ public class ChangeBankAccountFragment extends BaseDaggerFragment implements Cha
         inputAccountName = view.findViewById(R.id.input_account_name);
         notes = view.findViewById(R.id.input_note_optional);
         buttonUse = view.findViewById(R.id.button_use);
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setMessage(getString(R.string.title_loading));
 
         inputAccountNo.setText(paymentListModel.getUserAccountNo());
         inputAccountName.setText(paymentListModel.getUserAccountName());
+        spinnerBankDest.setSpinnerValue(paymentListModel.getBankId());
 
         buttonUse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 changeBankAccountPresenter.saveDetailAccount(getResources(), paymentListModel.getTransactionId(), paymentListModel.getMerchantCode(),
-                        "destbank", inputAccountNo.getText().toString(), inputAccountName.getText().toString(), notes.getText().toString());
+                        Integer.valueOf(spinnerBankDest.getSpinnerValue()), inputAccountNo.getText().toString(), inputAccountName.getText().toString(), notes.getText().toString());
             }
         });
-        spinnerBankDest.setOnClickListener(new View.OnClickListener() {
+        spinnerBankDest.setListenerOnClick(new SpinnerTextViewBankList.ListenerOnClick() {
             @Override
-            public void onClick(View view) {
+            public void onClickTextAutoComplete(View view) {
                 startActivityForResult(BankDestinationActivity.createIntent(getActivity()), REQUEST_CODE_GET_LIST_BANK);
             }
         });
@@ -100,6 +110,10 @@ public class ChangeBankAccountFragment extends BaseDaggerFragment implements Cha
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == REQUEST_CODE_GET_LIST_BANK && resultCode == Activity.RESULT_OK){
+            BankListModel bankListModel = data.getParcelableExtra(Constant.EXTRA_BANK_LIST_MODEL);
+            spinnerBankDest.setSpinnerValue(bankListModel.getId());
+        }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -111,11 +125,25 @@ public class ChangeBankAccountFragment extends BaseDaggerFragment implements Cha
 
     @Override
     public void onErrorEditDetailAccount(Throwable e) {
-
+        NetworkErrorHelper.showSnackbar(getActivity(), ErrorHandler.getErrorMessage(getActivity(), e));
     }
 
     @Override
-    public void onResultEditDetailAccount(boolean success) {
+    public void onResultEditDetailAccount(boolean success, String message) {
+        if(success){
+            NetworkErrorHelper.showGreenCloseSnackbar(getActivity(), message);
+        }else{
+            NetworkErrorHelper.showRedCloseSnackbar(getActivity(), message);
+        }
+    }
 
+    @Override
+    public void showLoadingDialog() {
+        progressDialog.show();
+    }
+
+    @Override
+    public void hideLoadingDialog() {
+        progressDialog.hide();
     }
 }

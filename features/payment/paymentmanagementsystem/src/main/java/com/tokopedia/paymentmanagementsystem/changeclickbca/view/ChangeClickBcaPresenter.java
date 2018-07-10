@@ -8,6 +8,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.paymentmanagementsystem.R;
+import com.tokopedia.paymentmanagementsystem.changeclickbca.data.model.DataEditKlikBca;
 import com.tokopedia.paymentmanagementsystem.changeclickbca.data.model.EditKlikbca;
 import com.tokopedia.paymentmanagementsystem.common.Constant;
 import com.tokopedia.usecase.RequestParams;
@@ -32,13 +33,14 @@ public class ChangeClickBcaPresenter extends BaseDaggerPresenter<ChangeClickBcaC
 
     @Override
     public void changeClickBcaUserId(Resources resources, String transactionId, String merchantCode, String newClickBcaUserId) {
+        getView().showLoadingDialog();
         Map<String, Object> variables = new HashMap<>();
         variables.put(Constant.TRANSACTION_ID, transactionId);
         variables.put(Constant.MERCHANT_CODE, merchantCode);
         variables.put(Constant.NEW_KLIKBCA_USER_ID, newClickBcaUserId);
 
         GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(resources,
-                R.raw.change_click_bca), EditKlikbca.class, variables);
+                R.raw.change_click_bca), DataEditKlikBca.class, variables);
         changeClickBcaUseCase.setRequest(graphqlRequest);
         changeClickBcaUseCase.execute(RequestParams.create(), new Subscriber<GraphqlResponse>() {
             @Override
@@ -48,13 +50,17 @@ public class ChangeClickBcaPresenter extends BaseDaggerPresenter<ChangeClickBcaC
 
             @Override
             public void onError(Throwable e) {
-                getView().onErrorChangeClickBcaUserID(e);
+                if(isViewAttached()) {
+                    getView().hideLoadingDialog();
+                    getView().onErrorChangeClickBcaUserID(e);
+                }
             }
 
             @Override
             public void onNext(GraphqlResponse objects) {
-                EditKlikbca editKlikbca = objects.getData(EditKlikbca.class);
-                getView().onResultChangeClickBcaUserId(editKlikbca.isSuccess());
+                getView().hideLoadingDialog();
+                DataEditKlikBca editKlikbca = objects.getData(DataEditKlikBca.class);
+                getView().onResultChangeClickBcaUserId(editKlikbca.getEditKlikbca().isSuccess(), editKlikbca.getEditKlikbca().getMessage());
             }
         });
     }

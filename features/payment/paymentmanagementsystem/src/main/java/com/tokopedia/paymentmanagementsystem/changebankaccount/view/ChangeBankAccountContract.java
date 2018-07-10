@@ -14,9 +14,13 @@ public interface ChangeBankAccountContract {
 
         void onErrorEditDetailAccount(Throwable e);
 
-        void onResultEditDetailAccount(boolean success);
+        void onResultEditDetailAccount(boolean success, String message);
+
+        void showLoadingDialog();
+
+        void hideLoadingDialog();
     }
     interface Presenter extends CustomerPresenter<View>{
-        void saveDetailAccount(Resources resources, String transactionId, String merchantCode, String destbank, String accountNo, String accountName, String notes);
+        void saveDetailAccount(Resources resources, String transactionId, String merchantCode, Integer destbank, String accountNo, String accountName, String notes);
     }
 }

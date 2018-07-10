@@ -14,10 +14,11 @@ import com.tokopedia.paymentmanagementsystem.common.Constant;
 
 public class ChangeClickBcaActivity extends BaseSimpleActivity {
 
-    public static Intent createIntent(Context context, String transactionId, String merchantCode){
+    public static Intent createIntent(Context context, String transactionId, String merchantCode, String userIdKlikBca){
         Intent intent = new Intent(context, ChangeClickBcaActivity.class);
         intent.putExtra(Constant.TRANSACTION_ID, transactionId);
         intent.putExtra(Constant.MERCHANT_CODE, merchantCode);
+        intent.putExtra(Constant.USER_ID_KLIK_BCA, userIdKlikBca);
         return intent;
     }
 
@@ -25,6 +26,7 @@ public class ChangeClickBcaActivity extends BaseSimpleActivity {
     protected Fragment getNewFragment() {
         String transactionId = getIntent().getStringExtra(Constant.TRANSACTION_ID);
         String merchantCode = getIntent().getStringExtra(Constant.MERCHANT_CODE);
-        return ChangeClickBcaFragment.createInstance(transactionId, merchantCode);
+        String userIdKlikBca = getIntent().getStringExtra(Constant.USER_ID_KLIK_BCA);
+        return ChangeClickBcaFragment.createInstance(transactionId, merchantCode, userIdKlikBca);
     }
 }

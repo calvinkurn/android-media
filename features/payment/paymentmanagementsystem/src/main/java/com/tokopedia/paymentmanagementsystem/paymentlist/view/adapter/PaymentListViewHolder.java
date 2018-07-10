@@ -75,9 +75,9 @@ public class PaymentListViewHolder extends AbstractViewHolder<PaymentListModel> 
         ImageHandler.LoadImage(imageBank, element.getPaymentImage());
         totalTransaction.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(element.getPaymentAmount(), true));
         accountUserNo.setText(element.getUserAccountNo());
-        accountUserName.setText(element.getUserAccountName());
+        accountUserName.setText(getString(R.string.payment_label_name_acc_formated,element.getUserAccountName()));
         accountDestNo.setText(element.getDestAccountNo());
-        accountDestName.setText(element.getDestAccountName());
+        accountDestName.setText(getString(R.string.payment_label_name_acc_formated,element.getDestAccountName()));
         labelDynamicView.setText(element.getLabelDynamicViewDetailPayment());
         valueDynamicView.setText(element.getValueDynamicViewDetailPayment());
         paymentMethod.setText(element.getPaymentMethod());

@@ -12,6 +12,9 @@ public class UserBankAccount {
     @SerializedName("acc_name")
     @Expose
     private String accName;
+    @SerializedName("bank_id")
+    @Expose
+    private int bankId;
 
     public String getAccNo() {
         return accNo;
@@ -29,4 +32,11 @@ public class UserBankAccount {
         this.accName = accName;
     }
 
+    public int getBankId() {
+        return bankId;
+    }
+
+    public void setBankId(int bankId) {
+        this.bankId = bankId;
+    }
 }

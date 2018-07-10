@@ -1,5 +1,6 @@
 package com.tokopedia.paymentmanagementsystem.changeclickbca.view;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,6 +12,8 @@ import android.widget.EditText;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.paymentmanagementsystem.R;
 import com.tokopedia.paymentmanagementsystem.changeclickbca.di.ChangeClickBcaModule;
@@ -31,15 +34,18 @@ public class ChangeClickBcaFragment extends BaseDaggerFragment implements Change
     private TkpdHintTextInputLayout inputLayoutClickBcaUserId;
     private EditText inputClickBcaUserId;
     private Button buttonUse;
+    private ProgressDialog progressDialog;
 
-    String transactionId;
-    String merchantCode;
+    private String transactionId;
+    private String merchantCode;
+    private String userIdKlikBca;
 
-    public static Fragment createInstance(String transactionId, String merchantCode){
+    public static Fragment createInstance(String transactionId, String merchantCode, String userIdKlikBca){
         ChangeClickBcaFragment changeClickBcaFragment = new ChangeClickBcaFragment();
         Bundle bundle = new Bundle();
         bundle.putString(Constant.TRANSACTION_ID, transactionId);
         bundle.putString(Constant.MERCHANT_CODE, merchantCode);
+        bundle.putString(Constant.USER_ID_KLIK_BCA, userIdKlikBca);
         changeClickBcaFragment.setArguments(bundle);
         return changeClickBcaFragment;
     }
@@ -64,6 +70,7 @@ public class ChangeClickBcaFragment extends BaseDaggerFragment implements Change
         super.onCreate(savedInstanceState);
         transactionId = getArguments().getString(Constant.TRANSACTION_ID, "");
         merchantCode = getArguments().getString(Constant.MERCHANT_CODE, "");
+        userIdKlikBca = getArguments().getString(Constant.USER_ID_KLIK_BCA, "");
     }
 
     @Nullable
@@ -73,7 +80,11 @@ public class ChangeClickBcaFragment extends BaseDaggerFragment implements Change
         inputLayoutClickBcaUserId = view.findViewById(R.id.input_layout_click_bca_user_id);
         inputClickBcaUserId = view.findViewById(R.id.input_click_bca_user_id);
         buttonUse = view.findViewById(R.id.button_use);
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setMessage(getString(R.string.title_loading));
 
+        inputClickBcaUserId.setText(userIdKlikBca);
+        inputLayoutClickBcaUserId.setHelper(getString(R.string.payment_label_helper_change_click_bca, userIdKlikBca));
         buttonUse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -85,11 +96,25 @@ public class ChangeClickBcaFragment extends BaseDaggerFragment implements Change
 
     @Override
     public void onErrorChangeClickBcaUserID(Throwable e) {
-
+        NetworkErrorHelper.showCloseSnackbar(getActivity(), ErrorHandler.getErrorMessage(getActivity(), e));
     }
 
     @Override
-    public void onResultChangeClickBcaUserId(boolean isSuccess) {
+    public void onResultChangeClickBcaUserId(boolean isSuccess, String message) {
+        if(isSuccess){
+            NetworkErrorHelper.showGreenCloseSnackbar(getActivity(), message);
+        }else{
+            NetworkErrorHelper.showRedCloseSnackbar(getActivity(), message);
+        }
+    }
 
+    @Override
+    public void showLoadingDialog() {
+        progressDialog.show();
+    }
+
+    @Override
+    public void hideLoadingDialog() {
+        progressDialog.hide();
     }
 }
