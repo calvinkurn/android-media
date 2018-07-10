@@ -475,7 +475,6 @@ public interface AppEventTracking {
         String CLICK_EXPLORE_TOKOPEDIA = "click explore tokopedia";
         String CLICK_WHAT_IS_TOKOCASH = "click apa itu tokocash";
         String CLICK_SHARE_TEMAN = "click ajak teman";
-        String OTHER_CHANNEL = "other";
 
 
         String CLICK_PRODUCT_PROBLEM = "click barang & masalah";
