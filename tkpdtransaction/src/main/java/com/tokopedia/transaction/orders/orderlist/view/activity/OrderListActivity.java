@@ -30,12 +30,13 @@ import com.tokopedia.transaction.orders.orderlist.view.adapter.OrderTabAdapter;
 import com.tokopedia.transaction.orders.orderlist.view.presenter.OrderListInitContract;
 import com.tokopedia.transaction.orders.orderlist.view.presenter.OrderListInitPresenterImpl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter.EXTRA_STATE_TAB_POSITION;
 
-public class OrderListActivity extends DrawerPresenterActivity<OrderListInitContract.Presenter> implements HasComponent<OrderListComponent>, OrderListInitContract.View, OrderTabAdapter.Listener {
+public class OrderListActivity extends DrawerPresenterActivity<OrderListInitContract.Presenter>
+        implements HasComponent<OrderListComponent>, OrderListInitContract.View, OrderTabAdapter.Listener{
+    private static final String ORDER_CATEGORY = "orderCategory";
     private int drawerPosition;
     private String orderCategory = "ALL";
     private ProgressBar progressBar;
@@ -44,9 +45,17 @@ public class OrderListActivity extends DrawerPresenterActivity<OrderListInitCont
     private LinearLayout mainLayout;
     private OrderTabAdapter adapter;
 
-    @DeepLink({TransactionAppLink.ORDER_HISTORY})
-    public static Intent getOrderListIntent(Context context, Bundle bundle) {
+    @DeepLink({TransactionAppLink.ORDER_LIST_DEALS, TransactionAppLink.ORDER_LIST_DIGITAL,
+            TransactionAppLink.ORDER_LIST_EVENTS, TransactionAppLink.ORDER_LIST_FLIGHTS})
+    public static Intent getOrderListIntent(Context context, Bundle bundle){
+
         Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
+        String link = bundle.getString(DeepLink.URI);
+        String category = link.substring(link.indexOf("//")+2, link.lastIndexOf("/")).toUpperCase();
+        if(category.equals("PESAWAT")){
+            category = OrderCategory.FLIGHTS;
+        }
+        bundle.putString(ORDER_CATEGORY, category);
         return new Intent(context, OrderListActivity.class)
                 .setData(uri.build())
                 .putExtras(bundle);
@@ -69,7 +78,7 @@ public class OrderListActivity extends DrawerPresenterActivity<OrderListInitCont
 
     @Override
     protected void initialPresenter() {
-        presenter = new OrderListInitPresenterImpl(this, new GraphqlUseCase());
+        presenter = new OrderListInitPresenterImpl(this,new GraphqlUseCase());
     }
 
     @Override
@@ -80,8 +89,21 @@ public class OrderListActivity extends DrawerPresenterActivity<OrderListInitCont
     @Override
     protected void onResume() {
         super.onResume();
-        if (drawerHelper != null) {
-            drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.PEOPLE_DIGITAL_TRANSACTION_LIST);
+        if(drawerHelper != null) {
+            switch (orderCategory){
+                case OrderCategory.DIGITAL:
+                    drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.PEOPLE_DIGITAL_TRANSACTION_LIST);
+                    break;
+                case OrderCategory.FLIGHTS:
+                    drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.PEOPLE_FLIGHT_TRANSACTION_LIST);
+                    break;
+                    case OrderCategory.DEALS:
+                    drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.PEOPLE_DEALS_TRANSACTION_LIST);
+                    break;
+                case OrderCategory.EVENTS:
+                    drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.PEOPLE_EVENTS_TRANSACTION_LIST);
+                    break;
+            }
         }
     }
 
@@ -113,7 +135,39 @@ public class OrderListActivity extends DrawerPresenterActivity<OrderListInitCont
     protected void onCreate(Bundle savedInstanceState) {
         GraphqlClient.init(this);
         super.onCreate(savedInstanceState);
-        presenter.getInitData(orderCategory, 1, 10);
+        //presenter.getInitData(orderCategory, 1, 10);
+        Bundle bundle = getIntent().getExtras();
+        if(bundle != null){
+            orderCategory = bundle.getString(ORDER_CATEGORY);
+        }
+        initTabs();
+
+//        toolbar.setBackgroundColor(getResources().getColor(R.color.white));
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+////            toolbar.getNavigationIcon().setTint(getResources().getColor(R.color.black));
+//        }
+////        toolbar.setTitleTextAppearance(this, R.style.ToolbarText_SansSerifMedium);
+//        if (orderCategory.equals("DIGITAL")) {
+//            toolbar.setTitle("DIGITAL");
+//        } else {
+//            toolbar.setTitle("Entertainment");
+//        }
+    }
+
+    private void initTabs() {
+        removeProgressBarView();
+        int position = 0;
+        for(int i = 0; i < OrderCategory.TABS_CATEGORY.length; i++) {
+            if(orderCategory.equals(OrderCategory.TABS_CATEGORY[i])){
+                position = i;
+            }
+            tabLayout.addTab(tabLayout.newTab().setText(OrderCategory.TABS_LABEL[i]));
+        }
+        adapter = new OrderTabAdapter(getSupportFragmentManager(),this);
+        viewPager.setAdapter(adapter);
+        viewPager.addOnPageChangeListener(new OnTabPageChangeListener(tabLayout));
+        tabLayout.addOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager));
+        viewPager.setCurrentItem(position);
     }
 
     @Override
@@ -135,16 +189,13 @@ public class OrderListActivity extends DrawerPresenterActivity<OrderListInitCont
 
     @Override
     public void renderTabs(List<OrderLabelList> orderLabelList) {
-        List<String> labels = new ArrayList<>();
-        for(OrderLabelList tabContent: orderLabelList) {
-            labels.add(tabContent.getOrderCategory());
+        for(OrderLabelList tabContent: orderLabelList)
             tabLayout.addTab(tabLayout.newTab().setText(tabContent.getLabel()));
-        }
-        adapter = new OrderTabAdapter(getSupportFragmentManager(), orderLabelList, this);
+        adapter = new OrderTabAdapter(getSupportFragmentManager(),this);
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new OnTabPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager));
-        viewPager.setCurrentItem(labels.indexOf(orderCategory));
+        //viewPager.setCurrentItem(0);
     }
 
     @Override
@@ -170,6 +221,25 @@ public class OrderListActivity extends DrawerPresenterActivity<OrderListInitCont
             super.onPageSelected(position);
             hideKeyboard();
             drawerPosition = position;
+            switch (orderCategory){
+                case OrderCategory.DIGITAL:
+                    drawerPosition = TkpdState.DrawerPosition.PEOPLE_DIGITAL_TRANSACTION_LIST;
+                    drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.PEOPLE_DIGITAL_TRANSACTION_LIST);
+                    break;
+                case OrderCategory.FLIGHTS:
+                    drawerPosition = TkpdState.DrawerPosition.PEOPLE_FLIGHT_TRANSACTION_LIST;
+                    drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.PEOPLE_FLIGHT_TRANSACTION_LIST);
+                    break;
+                case OrderCategory.EVENTS:
+                    drawerPosition = TkpdState.DrawerPosition.PEOPLE_EVENTS_TRANSACTION_LIST;
+                    drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.PEOPLE_EVENTS_TRANSACTION_LIST);
+                    break;
+                case OrderCategory.DEALS:
+                    drawerPosition = TkpdState.DrawerPosition.PEOPLE_DEALS_TRANSACTION_LIST;
+                    drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.PEOPLE_DEALS_TRANSACTION_LIST);
+                    break;
+
+            }
         }
 
         private void hideKeyboard() {

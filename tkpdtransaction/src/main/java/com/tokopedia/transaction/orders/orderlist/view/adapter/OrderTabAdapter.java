@@ -6,31 +6,26 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
-import com.tokopedia.transaction.orders.orderlist.data.OrderLabelList;
 import com.tokopedia.transaction.orders.orderlist.view.fragment.OrderListFragment;
-
-import java.util.List;
 
 public class OrderTabAdapter extends FragmentStatePagerAdapter {
     private static final String ORDER_CATEGORY = "orderCategory";
     Listener listener;
-    List<OrderLabelList> adapterItems;
 
-    public OrderTabAdapter(FragmentManager fragmentManager, List<OrderLabelList> adapterItems, Listener listener) {
+    public OrderTabAdapter(FragmentManager fragmentManager, Listener listener) {
         super(fragmentManager);
         this.listener = listener;
-        this.adapterItems = adapterItems;
     }
 
     @Override
     public int getCount() {
-        return adapterItems.size();
+        return OrderCategory.TABS_CATEGORY.length;
     }
 
     @Override
     public Fragment getItem(int position) {
         Bundle arg = new Bundle();
-        String orderCategory = adapterItems.get(position).getOrderCategory();
+        String orderCategory = OrderCategory.TABS_CATEGORY[position];
         arg.putString(ORDER_CATEGORY, orderCategory);
         Fragment fragment = new OrderListFragment();
         fragment.setArguments(arg);

@@ -30,7 +30,7 @@ public class OrderListDetailActivity extends BaseSimpleActivity {
     private String orderId;
 
 
-    @DeepLink({TransactionAppLink.ORDER_DETAIL, TransactionAppLink.ORDER_OMS_DETAIL, TransactionAppLink.ORDER_DETAIL_PAYMENT})
+    @DeepLink({TransactionAppLink.ORDER_DETAIL, TransactionAppLink.ORDER_OMS_DETAIL})
     public static Intent getOrderDetailIntent(Context context, Bundle bundle) {
         Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, OrderListDetailActivity.class)

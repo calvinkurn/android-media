@@ -175,12 +175,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         if (invoice.invoiceUrl().equals("")) {
             lihat.setVisibility(View.GONE);
         }
-        lihat.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                TransactionPurchaseRouter.startWebViewActivity(getContext(), invoice.invoiceUrl());
-            }
-        });
+        lihat.setOnClickListener(view -> TransactionPurchaseRouter.startWebViewActivity(getContext(), invoice.invoiceUrl()));
     }
 
     @Override
@@ -199,15 +194,12 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     @Override
     public void setAdditionInfoVisibility(int visibility) {
         additionalText.setVisibility(visibility);
-        additionalText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                additionalText.setOnClickListener(null);
-                additionalText.setText(getResources().getString(R.string.additional_text));
-                additionalText.setTypeface(Typeface.DEFAULT_BOLD);
-                additionalText.setTextColor(getResources().getColor(R.color.black_70));
-                additionalInfoLayout.setVisibility(View.VISIBLE);
-            }
+        additionalText.setOnClickListener(view -> {
+            additionalText.setOnClickListener(null);
+            additionalText.setText(getResources().getString(R.string.additional_text));
+            additionalText.setTypeface(Typeface.DEFAULT_BOLD);
+            additionalText.setTextColor(getResources().getColor(R.color.black_70));
+            additionalInfoLayout.setVisibility(View.VISIBLE);
         });
     }
 
@@ -290,18 +282,15 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     }
 
     private View.OnClickListener getActionButtonClickListener(final String uri) {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String newUri = uri;
-                if (uri.startsWith("tokopedia")) {
-                    Uri url = Uri.parse(newUri);
-                    newUri = newUri.replace(url.getQueryParameter("idem_potency_key"), "");
-                    newUri = newUri.replace("idem_potency_key=", "");
-                    RouteManager.route(getActivity(), newUri);
-                } else {
-                    TransactionPurchaseRouter.startWebViewActivity(getActivity(), uri);
-                }
+        return view -> {
+            String newUri = uri;
+            if (uri.startsWith("tokopedia")) {
+                Uri url = Uri.parse(newUri);
+                newUri = newUri.replace(url.getQueryParameter("idem_potency_key"), "");
+                newUri = newUri.replace("idem_potency_key=", "");
+                RouteManager.route(getActivity(), newUri);
+            } else {
+                TransactionPurchaseRouter.startWebViewActivity(getActivity(), uri);
             }
         };
     }
