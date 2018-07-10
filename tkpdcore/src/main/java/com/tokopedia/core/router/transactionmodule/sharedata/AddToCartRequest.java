@@ -21,12 +21,21 @@ public class AddToCartRequest {
     @SerializedName("shop_id")
     @Expose
     private int shopId;
+    @SerializedName("tracker_attribution")
+    @Expose
+    private String trackerAttribution;
+    @SerializedName("tracker_list_name")
+    @Expose
+    private String trackerListName;
+
 
     private AddToCartRequest(Builder builder) {
         setProductId(builder.productId);
         setQuantity(builder.quantity);
         setNotes(builder.notes);
         setShopId(builder.shopId);
+        setTrackerAttribution(builder.trackerAttribution);
+        setTrackerListName(builder.trackerListName);
     }
 
     public int getProductId() {
@@ -61,12 +70,29 @@ public class AddToCartRequest {
         this.shopId = shopId;
     }
 
+    public String getTrackerAttribution() {
+        return trackerAttribution;
+    }
+
+    public void setTrackerAttribution(String trackerAttribution) {
+        this.trackerAttribution = trackerAttribution;
+    }
+
+    public String getTrackerListName() {
+        return trackerListName;
+    }
+
+    public void setTrackerListName(String trackerListName) {
+        this.trackerListName = trackerListName;
+    }
 
     public static final class Builder {
         private int productId;
         private int quantity;
         private String notes;
         private int shopId;
+        private String trackerAttribution;
+        private String trackerListName;
 
         public Builder() {
         }
@@ -88,6 +114,16 @@ public class AddToCartRequest {
 
         public Builder shopId(int val) {
             shopId = val;
+            return this;
+        }
+
+        public Builder trackerAttribution(String val) {
+            trackerAttribution = val;
+            return this;
+        }
+
+        public Builder trackerListName(String val) {
+            trackerListName = val;
             return this;
         }
 

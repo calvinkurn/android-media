@@ -2,11 +2,11 @@ package com.tokopedia.checkout.domain.usecase;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
+import com.tokopedia.checkout.domain.datamodel.cartcheckout.CheckoutData;
+import com.tokopedia.checkout.domain.mapper.ICheckoutMapper;
 import com.tokopedia.transactiondata.entity.request.CheckoutRequest;
 import com.tokopedia.transactiondata.entity.response.checkout.CheckoutDataResponse;
 import com.tokopedia.transactiondata.repository.ICartRepository;
-import com.tokopedia.checkout.domain.datamodel.cartcheckout.CheckoutData;
-import com.tokopedia.checkout.domain.mapper.ICheckoutMapper;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -21,6 +21,8 @@ import rx.functions.Func1;
 
 public class CheckoutUseCase extends UseCase<CheckoutData> {
     public static final String PARAM_CARTS = "carts";
+    private static final String PARAM_OPTIONAL = "optional";
+    private static final String PARAM_IS_THANKYOU_NATIVE = "is_thankyou_native_new";
 
     private final ICartRepository cartRepository;
     private final ICheckoutMapper checkoutMapper;
@@ -37,7 +39,8 @@ public class CheckoutUseCase extends UseCase<CheckoutData> {
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         CheckoutRequest checkoutRequest = (CheckoutRequest) requestParams.getObject(PARAM_CARTS);
         param.put(PARAM_CARTS, new Gson().toJson(checkoutRequest));
-        param.put("optional", "0");
+        param.put(PARAM_OPTIONAL, "0");
+        param.put(PARAM_IS_THANKYOU_NATIVE, "1");
         return cartRepository.checkout(param)
                 .map(new Func1<CheckoutDataResponse, CheckoutData>() {
                     @Override

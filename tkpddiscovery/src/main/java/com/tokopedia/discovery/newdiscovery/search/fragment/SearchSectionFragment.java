@@ -17,7 +17,7 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.tokopedia.core.analytics.HotlistPageTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
-import com.tokopedia.core.analytics.SearchTracking;
+import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.discovery.model.DynamicFilterModel;
@@ -239,18 +239,18 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
                 setSpanCount(2);
                 gridLayoutManager.setSpanCount(spanCount);
                 getAdapter().changeDoubleGridView();
-                SearchTracking.eventSearchResultChangeGrid("grid 2", getScreenName());
+                SearchTracking.eventSearchResultChangeGrid(getActivity(),"grid 2", getScreenName());
                 break;
             case GRID_2:
                 setSpanCount(1);
                 gridLayoutManager.setSpanCount(spanCount);
                 getAdapter().changeSingleGridView();
-                SearchTracking.eventSearchResultChangeGrid("grid 1", getScreenName());
+                SearchTracking.eventSearchResultChangeGrid(getActivity(), "grid 1", getScreenName());
                 break;
             case GRID_3:
                 setSpanCount(1);
                 getAdapter().changeListView();
-                SearchTracking.eventSearchResultChangeGrid("list", getScreenName());
+                SearchTracking.eventSearchResultChangeGrid(getActivity(),"list", getScreenName());
                 break;
         }
         refreshBottomBarGridIcon();
@@ -274,6 +274,8 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
             return;
         }
 
+        SearchTracking.eventSearchResultShare(getActivity(), getScreenName());
+
         ShareData shareData = ShareData.Builder.aShareData()
                 .setType(ShareData.DISCOVERY_TYPE)
                 .setName(getString(R.string.message_share_catalog))
@@ -281,7 +283,6 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
                 .setUri(shareUrl)
                 .build();
 
-        SearchTracking.eventSearchResultShare(getScreenName());
         ShareBottomSheet.show(getChildFragmentManager(), shareData);
     }
 
@@ -302,7 +303,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
                 if (getActivity() instanceof HotlistActivity) {
                     HotlistPageTracking.eventHotlistFilter(getSelectedFilter());
                 } else {
-                    SearchTracking.eventSearchResultFilter(getScreenName(), getSelectedFilter());
+                    SearchTracking.eventSearchResultFilter(getActivity(), getScreenName(), getSelectedFilter());
                 }
                 clearDataFilterSort();
                 showBottomBarNavigation(false);
@@ -559,7 +560,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     }
 
     public void onBottomSheetHide() {
-        SearchTracking.eventSearchResultCloseBottomSheetFilter(getScreenName(), getSelectedFilter());
+        SearchTracking.eventSearchResultCloseBottomSheetFilter(getActivity(), getScreenName(), getSelectedFilter());
     }
 
     protected boolean isUsingBottomSheetFilter() {

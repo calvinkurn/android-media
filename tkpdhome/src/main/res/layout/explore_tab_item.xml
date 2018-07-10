@@ -25,6 +25,9 @@
         android:singleLine="true"
         android:textColor="@color/black_70"
         android:textSize="11sp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:singleLine="true"
         android:textStyle="normal"
         tools:text="Beli" />
 </LinearLayout>

@@ -305,6 +305,7 @@ public class HeaderHomeView extends BaseCustomView {
         tvBalanceTokocash = view.findViewById(R.id.tv_balance_tokocash);
         tokocashProgressBar = view.findViewById(R.id.progress_bar_tokocash);
         tokocashActionContainer = view.findViewById(R.id.container_action_tokocash);
+        imageInfoBtn = view.findViewById(R.id.info_button);
         renderTokocashLayoutListener();
         if (headerViewModel.getHomeHeaderWalletActionData() != null) {
             renderVisibilityTitleOnlyTokoCash(headerViewModel.getHomeHeaderWalletActionData()
