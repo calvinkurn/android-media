@@ -1,7 +1,12 @@
 package com.tokopedia.train.seat.presentation.fragment;
 
+import android.content.Context;
+import android.graphics.Rect;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.AppCompatImageView;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,18 +15,19 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.tkpdtrain.R;
+import com.tokopedia.train.common.presentation.TrainFullDividerItemDecoration;
 import com.tokopedia.train.seat.presentation.fragment.adapter.TrainSeatAdapter;
 import com.tokopedia.train.seat.presentation.fragment.adapter.TrainSeatPopupAdapter;
 import com.tokopedia.train.seat.presentation.fragment.listener.TrainSeatListener;
 import com.tokopedia.train.seat.presentation.viewmodel.TrainSeatPassengerViewModel;
 import com.tokopedia.train.seat.presentation.viewmodel.TrainSeatViewModel;
 import com.tokopedia.train.seat.presentation.viewmodel.TrainWagonViewModel;
-import com.tokopedia.train.seat.presentation.widget.TrainSeatItemDivider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +42,7 @@ public class TrainWagonFragment extends BaseDaggerFragment implements TrainSeatA
     private PopupWindow popupWindow;
 
     private TrainSeatAdapter adapter;
+    private GridLayoutManager gridLayoutManager;
 
     public static TrainWagonFragment newInstance(TrainWagonViewModel trainWagonViewModel, OnFragmentInteraction interactionListener) {
         TrainWagonFragment fragment = new TrainWagonFragment();
@@ -114,7 +121,7 @@ public class TrainWagonFragment extends BaseDaggerFragment implements TrainSeatA
         adapter.setSelecteds(transformToSelectedSeat(interaction.getPassengers()));
         adapter.setListener(this);
         seatsRecyclerView.setNestedScrollingEnabled(false);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), trainWagonViewModel.getMaxColumn() + 1);
+        gridLayoutManager = new GridLayoutManager(getContext(), trainWagonViewModel.getMaxColumn() + 1);
         gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
@@ -150,7 +157,11 @@ public class TrainWagonFragment extends BaseDaggerFragment implements TrainSeatA
     }
 
     @Override
-    public void seatClicked(TrainSeatViewModel viewModel, int top, int left, int width, int height) {
+    public void seatClicked(TrainSeatViewModel viewModel, int position, int top, int left, int width, int height) {
+        int pos[] = new int[2];
+        gridLayoutManager.findViewByPosition(position).getLocationOnScreen(pos);
+        int newtop = pos[1];
+        int popupHeight = getResources().getDimensionPixelSize(R.dimen.train_seat_popup);
         LayoutInflater inflater = (LayoutInflater)
                 getContext().getSystemService(LAYOUT_INFLATER_SERVICE);
         View popupView = inflater.inflate(R.layout.view_train_seat_popup, null);
@@ -161,18 +172,43 @@ public class TrainWagonFragment extends BaseDaggerFragment implements TrainSeatA
         boolean focusable = true; // lets taps outside the popup also dismiss it
         popupWindow = new PopupWindow(popupView, widthL, heightL, focusable);
         RecyclerView passengerRecyclerView = popupView.findViewById(R.id.rv_passenger);
+        LinearLayout topSeatLayout = popupView.findViewById(R.id.top_seat_layout);
+        AppCompatImageView topSeatArrow = popupView.findViewById(R.id.top_seat_arrow);
+        LinearLayout bottomSeatLayout = popupView.findViewById(R.id.bottom_seat_layout);
+        AppCompatImageView bottomSeatArrow = popupView.findViewById(R.id.bottom_seat_arrow);
 
         TrainSeatPopupAdapter adapter = new TrainSeatPopupAdapter(interaction.getPassengers(), viewModel);
         adapter.setListener(this);
+        passengerRecyclerView.addItemDecoration(new TrainFullDividerItemDecoration(getActivity()));
         passengerRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         passengerRecyclerView.setAdapter(adapter);
         // show the popup window
         // which view you pass in doesn't matter, it is only used for the window tolken
-        int x = 0;
-        int y = top > height ? top - height : top;
-        popupWindow.showAtLocation(getView(), Gravity.CENTER, x, y);
+        int x = pos[0];
+        int y = 0;
+        if (newtop > popupHeight) {
+            // top view
+            y = newtop - popupHeight + height;
+            topSeatLayout.setVisibility(View.GONE);
+            topSeatArrow.setVisibility(View.GONE);
+            bottomSeatLayout.setX(x);
+            bottomSeatLayout.setLeft(x);
+            AppCompatTextView bottomSeatTextView = popupView.findViewById(R.id.tv_bottom_seat_label);
+            bottomSeatTextView.setText(String.format("%d%s", viewModel.getRow(), viewModel.getColumn()));
+        } else {
+            // bottom view
+            y = newtop;
+            topSeatLayout.setX(x);
+            topSeatLayout.setLeft(x);
+            bottomSeatLayout.setVisibility(View.GONE);
+            bottomSeatArrow.setVisibility(View.GONE);
+            AppCompatTextView topSeatTextView = popupView.findViewById(R.id.tv_top_seat_label);
+            topSeatTextView.setText(String.format("%d%s", viewModel.getRow(), viewModel.getColumn()));
+        }
 
 
+        popupWindow.showAtLocation(getView(), Gravity.TOP | Gravity.LEFT, 0, y);
+        dimBehind(popupWindow);
         // dismiss the popup window when touched
         popupView.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -181,5 +217,45 @@ public class TrainWagonFragment extends BaseDaggerFragment implements TrainSeatA
                 return true;
             }
         });
+    }
+
+    public void dimBehind(PopupWindow popupWindow) {
+        View container;
+        if (popupWindow.getBackground() == null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                container = (View) popupWindow.getContentView().getParent();
+            } else {
+                container = popupWindow.getContentView();
+            }
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                container = (View) popupWindow.getContentView().getParent().getParent();
+            } else {
+                container = (View) popupWindow.getContentView().getParent();
+            }
+        }
+        Context context = popupWindow.getContentView().getContext();
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        WindowManager.LayoutParams p = (WindowManager.LayoutParams) container.getLayoutParams();
+        p.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+        p.dimAmount = 0.7f;
+        wm.updateViewLayout(container, p);
+    }
+
+    public static Rect locateView(View v) {
+        int[] loc_int = new int[2];
+        if (v == null) return null;
+        try {
+            v.getLocationOnScreen(loc_int);
+        } catch (NullPointerException npe) {
+            //Happens when the view doesn't exist on screen anymore.
+            return null;
+        }
+        Rect location = new Rect();
+        location.left = loc_int[0];
+        location.top = loc_int[1];
+        location.right = location.left + v.getWidth();
+        location.bottom = location.top + v.getHeight();
+        return location;
     }
 }
