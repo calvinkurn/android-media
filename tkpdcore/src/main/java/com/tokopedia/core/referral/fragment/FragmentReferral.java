@@ -213,7 +213,7 @@ public class FragmentReferral extends BasePresenterFragmentV4<IReferralPresenter
     @Override
     public void renderVoucherCodeData(ReferralCodeEntity referralData) {
         referralCodeTextView.setText(referralData.getPromoContent().getCode());
-        referralCount.setText(referralData.getPromoContent().getFriendCount() + getString(R.string.fiends_invited_lable));
+        referralCount.setText(referralData.getPromoContent().getFriendCount() + " " + getString(R.string.fiends_invited_lable));
         if (referralData.getPromoBenefit() != null) {
             progressBarReferral.setProgress(referralData.getPromoBenefit().getCurrentBenefit() == 0 ?
                     referralData.getPromoBenefit().getCurrentBenefit() : referralData.getPromoBenefit().getMaxBenefit()

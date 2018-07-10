@@ -16,6 +16,9 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.manage.general.ManageWebViewActivity;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.core.remoteconfig.RemoteConfig;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdUrl;
 
 /**
@@ -30,11 +33,13 @@ public class ReferralGuidePagerAdapter extends PagerAdapter {
     private final int TERMS_POSITION = 1;
     private Activity context;
     private ReferralGuidePagerListener listener;
+    private RemoteConfig remoteConfig;
 
     public ReferralGuidePagerAdapter(Activity context, ReferralGuidePagerListener listener) {
         this.context = context;
         mInflater = LayoutInflater.from(context);
         this.listener = listener;
+        remoteConfig = new FirebaseRemoteConfigImpl(context);
     }
 
     @Override
@@ -72,10 +77,14 @@ public class ReferralGuidePagerAdapter extends PagerAdapter {
 
         } else {
             WebView tnc = layout.findViewById(R.id.webview_referral_terms);
-            tnc.loadDataWithBaseURL(null, context.getResources().getString(R.string.referral_tnc), "text/html", "utf-8", null);
+            tnc.loadDataWithBaseURL(null, getReferralTerms(), "text/html", "utf-8", null);
         }
         view.addView(layout);
         return layout;
+    }
+
+    public String getReferralTerms() {
+            return remoteConfig.getString(TkpdCache.RemoteConfigKey.REFFERAL_TERMS, context.getString(R.string.referral_tnc));
     }
 
     public interface ReferralGuidePagerListener {
