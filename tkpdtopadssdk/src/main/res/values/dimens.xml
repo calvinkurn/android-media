@@ -48,5 +48,7 @@
     <dimen name="feed_image_padding">0.5dp</dimen>
     <dimen name="ads_banner_height">65dp</dimen>
     <dimen name="wishlish_button_size">28dp</dimen>
+    <dimen name="dp_18">18dp</dimen>
+    <dimen name="dp_32">32dp</dimen>
 
 </resources>
