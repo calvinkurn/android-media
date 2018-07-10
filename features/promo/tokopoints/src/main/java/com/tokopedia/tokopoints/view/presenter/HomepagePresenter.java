@@ -11,6 +11,7 @@ import com.tokopedia.tokopoints.view.contract.CatalogPurchaseRedemptionPresenter
 import com.tokopedia.tokopoints.view.contract.HomepageContract;
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
 import com.tokopedia.tokopoints.view.model.RedeemCouponBaseEntity;
+import com.tokopedia.tokopoints.view.model.TokenDetailOuter;
 import com.tokopedia.tokopoints.view.model.TokoPointDetailEntity;
 import com.tokopedia.tokopoints.view.model.TokoPointPromosEntity;
 import com.tokopedia.tokopoints.view.model.ValidateCouponBaseEntity;
@@ -73,10 +74,15 @@ public class HomepagePresenter extends BaseDaggerPresenter<HomepageContract.View
     @Override
     public void getTokoPointDetail() {
         getView().showLoading();
+        mGetTokoPointDetailUseCase.clearRequest();
         GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(), R.raw.tp_gql_tokopoint_detail),
                 TokoPointDetailEntity.class);
-        mGetTokoPointDetailUseCase.clearRequest();
         mGetTokoPointDetailUseCase.addRequest(graphqlRequest);
+
+        GraphqlRequest graphqlRequestEgg = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(), R.raw.tp_gql_lucky_egg_details),
+                TokenDetailOuter.class);
+        mGetTokoPointDetailUseCase.addRequest(graphqlRequestEgg);
+
         mGetTokoPointDetailUseCase.execute(new Subscriber<GraphqlResponse>() {
             @Override
             public void onCompleted() {
@@ -90,8 +96,17 @@ public class HomepagePresenter extends BaseDaggerPresenter<HomepageContract.View
 
             @Override
             public void onNext(GraphqlResponse graphqlResponse) {
+                //Handling for main data
                 TokoPointDetailEntity data = graphqlResponse.getData(TokoPointDetailEntity.class);
                 getView().onSuccess(data.getTokoPoints().getStatus().getTier(), data.getTokoPoints().getStatus().getPoints());
+
+                //handling for lucky egg data
+                TokenDetailOuter tokenDetail = graphqlResponse.getData(TokenDetailOuter.class);
+                if (tokenDetail != null
+                        && tokenDetail.getTokenDetail() != null
+                        && tokenDetail.getTokenDetail().getResultStatus().getCode() == CommonConstant.CouponRedemptionCode.SUCCESS) {
+                    getView().onSuccessTokenDetail(tokenDetail.getTokenDetail());
+                }
             }
         });
     }

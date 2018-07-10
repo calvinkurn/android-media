@@ -14,7 +14,7 @@ public class LuckyEggEntity {
 
     @Expose
     @SerializedName("sumToken")
-    private String sumToken;
+    private int sumToken;
 
     @Expose
     @SerializedName("sumTokenStr")
@@ -40,11 +40,11 @@ public class LuckyEggEntity {
         this.offFlag = offFlag;
     }
 
-    public String getSumToken() {
+    public int getSumToken() {
         return sumToken;
     }
 
-    public void setSumToken(String sumToken) {
+    public void setSumToken(int sumToken) {
         this.sumToken = sumToken;
     }
 

@@ -56,19 +56,22 @@
                     android:layout_height="wrap_content" />
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/container_fab_egg_token"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:layout_gravity="bottom|center_horizontal"
+                android:background="@color/transparent"
+                android:paddingBottom="@dimen/tp_padding_small"
+                app:layout_behavior="com.tokopedia.tokopoints.view.util.QuickReturnFloaterBehavior">
+
+                <include layout="@layout/tp_layout_floating_token" />
+            </LinearLayout>
+
         </android.support.design.widget.CoordinatorLayout>
 
         <include layout="@layout/layout_tp_network_error_large" />
 
     </ViewFlipper>
-
-    <fragment
-        android:id="@+id/floating_egg_fragment"
-        android:name="com.tokopedia.gamification.floating.view.fragment.FloatingEggButtonFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:tag="floating_egg"
-        app:draggable="true"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        app:margin_bottom="@dimen/new_margin_sm" />
 </FrameLayout>

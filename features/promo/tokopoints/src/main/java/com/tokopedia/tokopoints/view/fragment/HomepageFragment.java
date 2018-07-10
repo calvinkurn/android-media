@@ -21,6 +21,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
@@ -38,6 +39,7 @@ import com.tokopedia.tokopoints.view.contract.HomepageContract;
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
 import com.tokopedia.tokopoints.view.model.CouponExtraInfoEntity;
 import com.tokopedia.tokopoints.view.model.CouponValueEntity;
+import com.tokopedia.tokopoints.view.model.LuckyEggEntity;
 import com.tokopedia.tokopoints.view.model.TokoPointPromosEntity;
 import com.tokopedia.tokopoints.view.model.TokoPointStatusPointsEntity;
 import com.tokopedia.tokopoints.view.model.TokoPointStatusTierEntity;
@@ -48,6 +50,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.gamification.applink.ApplinkConstant.GAMIFICATION;
 
 public class HomepageFragment extends BaseDaggerFragment implements HomepageContract.View, View.OnClickListener {
     private static final int CONTAINER_LOADER = 0;
@@ -83,15 +87,12 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
         mPresenter.attachView(this);
         initListener();
         mPresenter.getTokoPointDetail();
-        loadEggData();
         LocalCacheHandler localCacheHandler = new LocalCacheHandler(getAppContext(), CommonConstant.PREF_TOKOPOINTS);
         if (!localCacheHandler.getBoolean(CommonConstant.PREF_KEY_ON_BOARDED)) {
             showOnBoardingTooltip(getString(R.string.tp_label_know_tokopoints), getString(R.string.tp_message_tokopoints_on_boarding));
             localCacheHandler.putBoolean(CommonConstant.PREF_KEY_ON_BOARDED, true);
             localCacheHandler.applyEditor();
         }
-
-        initEggTokenScrollListener();
     }
 
     @Override
@@ -223,6 +224,26 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
     public void gotoCoupons() {
         startActivity(MyCouponListingActivity.getCallingIntent(getActivityContext()));
     }
+
+    @Override
+    public void onSuccessTokenDetail(LuckyEggEntity tokenDetail) {
+        if (tokenDetail != null && tokenDetail.getSumToken() > 0) {
+            getView().findViewById(R.id.container_fab_egg_token).setVisibility(View.VISIBLE);
+            TextView textCount = getView().findViewById(R.id.text_token_count);
+            TextView textMessage = getView().findViewById(R.id.text_token_title);
+            ImageView imgToken = getView().findViewById(R.id.img_token);
+            textCount.setText(tokenDetail.getSumToken() + "");
+            textMessage.setText(tokenDetail.getFloating().getTokenClaimText());
+            ImageHandler.loadImageFit2(getContext(), imgToken, tokenDetail.getFloating().getTokenAsset().getFloatingImgUrl());
+            getView().findViewById(R.id.container_fab_egg_token).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    RouteManager.route(getActivity(),"tokopedia://gamification");
+                }
+            });
+        }
+    }
+
 
     private void initPromoPager(List<CatalogsValueEntity> catalogs, List<CouponValueEntity> coupons) {
         mPagerPromos.setAdapter(new HomepagePagerAdapter(getActivityContext(), mPresenter, catalogs, coupons));
@@ -366,32 +387,6 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
                 .build());
 
         mToolTip.show();
-    }
-
-    private FloatingEggButtonFragment getFloatingEggButtonFragment() {
-        if (floatingEggButtonFragment == null) {
-            floatingEggButtonFragment = (FloatingEggButtonFragment) getChildFragmentManager().findFragmentById(R.id.floating_egg_fragment);
-        }
-        return floatingEggButtonFragment;
-    }
-
-    private void loadEggData() {
-        FloatingEggButtonFragment floatingEggButtonFragment = getFloatingEggButtonFragment();
-        if (floatingEggButtonFragment != null) {
-            floatingEggButtonFragment.loadEggData();
-        }
-    }
-
-    private void initEggTokenScrollListener() {
-        onEggScrollListener.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
-            if (verticalOffset == 0) {
-                return;
-            }
-            FloatingEggButtonFragment floatingEggButtonFragment = getFloatingEggButtonFragment();
-            if (floatingEggButtonFragment != null) {
-                floatingEggButtonFragment.hideOnScrolling();
-            }
-        });
     }
 
     private void buildTickerView(List<CouponExtraInfoEntity> tickers) {
