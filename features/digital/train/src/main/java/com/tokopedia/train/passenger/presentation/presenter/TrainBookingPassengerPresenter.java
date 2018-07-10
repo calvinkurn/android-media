@@ -158,9 +158,9 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
 
     @Override
     public void onChooseSeatButtonClicked() {
-        if (isAllDataValid()) {
+//        if (isAllDataValid()) {
             getView().navigateToChooseSeat(null);
-        }
+//        }
 //        trainSoftBookingUseCase.execute(trainSoftBookingUseCase.create(), new Subscriber<TrainSoftbook>() {
 //            @Override
 //            public void onCompleted() {

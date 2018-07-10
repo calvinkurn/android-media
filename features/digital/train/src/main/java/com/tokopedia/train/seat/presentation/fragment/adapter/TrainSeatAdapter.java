@@ -8,13 +8,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.seat.presentation.viewmodel.TrainSeatPassengerViewModel;
 import com.tokopedia.train.seat.presentation.viewmodel.TrainSeatViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import com.tokopedia.tkpdtrain.R;
 
 public class TrainSeatAdapter extends RecyclerView.Adapter<TrainSeatAdapter.ViewHolder> {
     private List<TrainSeatViewModel> seatMaps;
@@ -25,7 +24,7 @@ public class TrainSeatAdapter extends RecyclerView.Adapter<TrainSeatAdapter.View
     public interface ActionListener {
         List<TrainSeatPassengerViewModel> getPassengers();
 
-        void seatClicked(TrainSeatViewModel viewModel, int top, int left, int width, int height);
+        void seatClicked(TrainSeatViewModel viewModel, int position, int top, int left, int width, int height);
     }
 
     public TrainSeatAdapter(int maxColumn) {
@@ -100,7 +99,7 @@ public class TrainSeatAdapter extends RecyclerView.Adapter<TrainSeatAdapter.View
                     int index = TrainSeatAdapter.this.selectedSeat.indexOf(item);
                     if (index != -1 || item.isAvailable()) {
                         if (listener != null) {
-                            listener.seatClicked(item, itemView.getTop(), itemView.getLeft(), itemView.getWidth(), itemView.getHeight());
+                            listener.seatClicked(item, position, itemView.getTop(), itemView.getLeft(), itemView.getWidth(), itemView.getHeight());
                         }
                     }
                 }
