@@ -22,6 +22,9 @@ public class FlightAttribute {
     @SerializedName("amenities")
     @Expose
     private List<Amenity> amenities;
+    @SerializedName("voucher")
+    @Expose
+    private Voucher voucher;
 
     public FlightAttribute() {
     }
@@ -40,5 +43,9 @@ public class FlightAttribute {
 
     public List<Amenity> getAmenities() {
         return amenities;
+    }
+
+    public Voucher getVoucher() {
+        return voucher;
     }
 }
