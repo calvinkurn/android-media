@@ -18,6 +18,7 @@ import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductBigViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductGridViewModel;
 
 import java.util.List;
@@ -26,7 +27,7 @@ import java.util.List;
  * Created by errysuprayogi on 3/27/17.
  */
 
-public class ProductBigViewHolder extends AbstractViewHolder<ProductGridViewModel> implements
+public class ProductBigViewHolder extends AbstractViewHolder<ProductBigViewModel> implements
         View.OnClickListener {
 
     @LayoutRes
@@ -73,7 +74,7 @@ public class ProductBigViewHolder extends AbstractViewHolder<ProductGridViewMode
     }
 
     @Override
-    public void bind(ProductGridViewModel element) {
+    public void bind(ProductBigViewModel element) {
         data = element.getData();
         if (data.getProduct() != null) {
             bindProduct(data.getProduct());
