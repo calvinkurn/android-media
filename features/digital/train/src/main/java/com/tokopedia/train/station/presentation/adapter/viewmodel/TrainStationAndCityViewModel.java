@@ -15,6 +15,11 @@ public class TrainStationAndCityViewModel implements Parcelable {
         stationCode = in.readString();
     }
 
+    public TrainStationAndCityViewModel(String cityName, String stationCode) {
+        this.cityName = cityName;
+        this.stationCode = stationCode;
+    }
+
     public static final Creator<TrainStationAndCityViewModel> CREATOR = new Creator<TrainStationAndCityViewModel>() {
         @Override
         public TrainStationAndCityViewModel createFromParcel(Parcel in) {

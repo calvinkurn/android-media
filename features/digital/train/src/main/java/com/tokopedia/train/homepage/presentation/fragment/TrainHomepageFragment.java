@@ -362,6 +362,8 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
         super.onSaveInstanceState(outState);
 
         outState.putParcelable(STATE_HOMEPAGE, viewModel);
+
+        trainHomepagePresenterImpl.saveHomepageViewModelToCache(viewModel);
     }
 
     @Override
