@@ -57,12 +57,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
     private static final int IMAGE_ALPHA_DISABLED = 128;
     private static final int IMAGE_ALPHA_ENABLED = 255;
 
-    private static final float CHECKBOX_DISABLED_ALPHA = 0.4f;
-
-    private static final int GRAM = 0;
-    private static final int KILOGRAM = 1;
-    private static final int KILOGRAM_TO_GRAM_MULTIPLIER = 1000;
-
     private static final int DROPSHIPPER_MIN_NAME_LENGTH = 3;
     private static final int DROPSHIPPER_MAX_NAME_LENGTH = 100;
     private static final int DROPSHIPPER_MIN_PHONE_LENGTH = 6;
@@ -302,13 +296,18 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         tvOptionalNoteToSeller.setText(cartItemModel.getNoteToSeller());
         tvNoteToSellerLabel.setVisibility(View.GONE);
 
-        llProductPoliciesLayout.setVisibility(View.GONE);
         ivFreeReturnIcon.setVisibility(cartItemModel.isFreeReturn() ? View.VISIBLE : View.GONE);
-        tvFreeReturnLabel.setVisibility(cartItemModel.isFreeReturn() ? View.VISIBLE : View.GONE);
         tvPreOrder.setVisibility(cartItemModel.isPreOrder() ? View.VISIBLE : View.GONE);
         tvCashback.setVisibility(cartItemModel.isCashback() ? View.VISIBLE : View.GONE);
-        String cashback = tvCashback.getContext().getString(R.string.label_cashback) + " " + cartItemModel.getCashback();
+        String cashback = "    " + tvCashback.getContext().getString(R.string.label_cashback) + " " +
+                cartItemModel.getCashback() + "    ";
         tvCashback.setText(cashback);
+
+        if (cartItemModel.isFreeReturn() || cartItemModel.isPreOrder() || cartItemModel.isCashback()) {
+            llProductPoliciesLayout.setVisibility(View.VISIBLE);
+        } else {
+            llProductPoliciesLayout.setVisibility(View.GONE);
+        }
     }
 
     private void renderOtherCartItems(ShipmentCartItemModel shipmentItem, List<CartItemModel> cartItemModels) {

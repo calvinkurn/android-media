@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
@@ -31,55 +32,35 @@ import java.util.ArrayList;
 public class MultipleAddressViewHolder extends RecyclerView.ViewHolder {
 
     private Context context;
-
     private TextView senderName;
-
     private ImageView productImage;
-
     private TextView productName;
-
     private TextView productPrice;
-
     private RecyclerView shippingDestinationList;
-
     private ImageView imgFreeReturn;
-
     private TextView tvFreeReturnLabel;
-
     private TextView tvPreOrder;
-
     private TextView tvCashback;
-
     private View marginHeader;
-
     private Button btAddNewShipment;
+    private LinearLayout rlProductPoliciesLayout;
 
     public MultipleAddressViewHolder(Context context, View itemView) {
         super(itemView);
 
         this.context = context;
-
         senderName = itemView.findViewById(R.id.sender_name);
-
         productImage = itemView.findViewById(R.id.product_image);
-
         productName = itemView.findViewById(R.id.product_name);
-
         productPrice = itemView.findViewById(R.id.product_price);
-
         shippingDestinationList = itemView.findViewById(R.id.shipping_destination_list);
-
         imgFreeReturn = itemView.findViewById(R.id.iv_free_return_icon);
-
         tvFreeReturnLabel = itemView.findViewById(R.id.tv_free_return_label);
-
         tvPreOrder = itemView.findViewById(R.id.tv_pre_order);
-
         tvCashback = itemView.findViewById(R.id.tv_cashback);
-
         marginHeader = itemView.findViewById(R.id.margin_header);
-
         btAddNewShipment = itemView.findViewById(R.id.bt_add_new_shipment);
+        rlProductPoliciesLayout = itemView.findViewById(R.id.rl_product_policies_layout);
 
     }
 
@@ -117,10 +98,8 @@ public class MultipleAddressViewHolder extends RecyclerView.ViewHolder {
 
         if (data.isFreeReturn()) {
             imgFreeReturn.setVisibility(View.VISIBLE);
-            tvFreeReturnLabel.setVisibility(View.VISIBLE);
         } else {
             imgFreeReturn.setVisibility(View.GONE);
-            tvFreeReturnLabel.setVisibility(View.GONE);
         }
 
         if (data.isCashBack()) {
@@ -134,6 +113,12 @@ public class MultipleAddressViewHolder extends RecyclerView.ViewHolder {
             tvPreOrder.setVisibility(View.VISIBLE);
         } else {
             tvPreOrder.setVisibility(View.GONE);
+        }
+
+        if (data.isCashBack() || data.isFreeReturn() || data.isPreOrder()) {
+            rlProductPoliciesLayout.setVisibility(View.VISIBLE);
+        } else {
+            rlProductPoliciesLayout.setVisibility(View.GONE);
         }
     }
 
