@@ -60,6 +60,7 @@ import com.tokopedia.groupchat.common.design.CloseableBottomSheetDialog;
 import com.tokopedia.groupchat.common.design.SpaceItemDecoration;
 import com.tokopedia.groupchat.common.di.component.DaggerGroupChatComponent;
 import com.tokopedia.groupchat.common.di.component.GroupChatComponent;
+import com.tokopedia.vote.di.VoteModule;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -122,7 +123,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     @Override
     protected void initInjector() {
         GroupChatComponent streamComponent = DaggerGroupChatComponent.builder().baseAppComponent(
-                ((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent()).build();
+                ((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
+                .build();
 
         DaggerChatroomComponent.builder()
                 .groupChatComponent(streamComponent)
@@ -328,7 +330,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         if (getView() != null) {
             ChannelInfoViewModel channelInfoViewModel = ((GroupChatContract.View) getActivity()).getChannelInfoViewModel();
             View pinnedMessageView = getView().findViewById(R.id.pinned_message);
-            if (pinnedMessage != null) {
+            if (pinnedMessage != null && !TextUtils.isEmpty(pinnedMessage.getTitle())
+                    && !TextUtils.isEmpty(pinnedMessage.getMessage())) {
                 pinnedMessageView.setVisibility(View.VISIBLE);
                 ((TextView) pinnedMessageView.findViewById(R.id.message)).setText(pinnedMessage.getTitle());
                 pinnedMessageView.setOnClickListener(new View.OnClickListener() {
@@ -364,7 +367,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         dialog.show();
     }
 
-    private View createContentView(PinnedMessageViewModel pinnedMessage) {
+    private View createContentView(final PinnedMessageViewModel pinnedMessage) {
         ChannelInfoViewModel channelInfoViewModel = ((GroupChatContract.View) getActivity()).getChannelInfoViewModel();
         View view = getLayoutInflater().inflate(R.layout.layout_pinned_message_expanded, null);
         ImageHandler.loadImageCircle2(getActivity(), (ImageView) view.findViewById(R.id.pinned_message_avatar)
@@ -372,8 +375,17 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         ((TextView) view.findViewById(R.id.chat_header).findViewById(R.id.nickname))
                 .setText(channelInfoViewModel.getAdminName());
         ((TextView) view.findViewById(R.id.message)).setText(pinnedMessage.getMessage());
-        ImageHandler.loadImageCircle2(getActivity(), (ImageView) view.findViewById(R.id.thumbnail)
+        ImageHandler.loadImage(getActivity(), (ImageView) view.findViewById(R.id.thumbnail)
                 , pinnedMessage.getThumbnail(), R.drawable.loading_page);
+        if(!TextUtils.isEmpty(pinnedMessage.getImageUrl())){
+            view.findViewById(R.id.thumbnail).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ((GroupChatModuleRouter) getActivity().getApplicationContext()).openRedirectUrl
+                            (getActivity(), pinnedMessage.getImageUrl());
+                }
+            });
+        }
         return view;
     }
 

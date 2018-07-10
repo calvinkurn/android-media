@@ -1,11 +1,6 @@
 package com.tokopedia.transaction.orders.orderdetails.domain;
 
-import android.util.Log;
-
 import com.tokopedia.transaction.orders.orderdetails.data.DetailsData;
-import com.tokopedia.transaction.orders.orderlist.data.Data;
-import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
-import com.tokopedia.transaction.orders.orderlist.domain.OrderListRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -29,7 +24,7 @@ public class OrderDetailsUseCase extends UseCase<DetailsData> {
         return orderDetailsRepository.getOrderDetails(requestParams) ;
     }
 
-    public RequestParams getUserAttrParam(OrderCategory orderCategory, String orderId){
+    public RequestParams getUserAttrParam(String orderCategory, String orderId){
         RequestParams params = RequestParams.create();
         params.putObject(ORDER_CATEGORY, orderCategory);
         params.putString(ORDER_ID, orderId);

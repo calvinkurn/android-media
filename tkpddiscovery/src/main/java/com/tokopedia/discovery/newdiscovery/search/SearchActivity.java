@@ -2,6 +2,7 @@ package com.tokopedia.discovery.newdiscovery.search;
 
 import android.Manifest;
 import android.content.ClipData;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -12,17 +13,17 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.ViewTreeObserver;
+import android.webkit.MimeTypeMap;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tokopedia.core.analytics.SearchTracking;
+import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
-import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.discovery.R;
@@ -205,7 +206,8 @@ public class SearchActivity extends DiscoveryActivity
                 Uri uri = clipData.getItemAt(0).getUri();
                 SearchActivityPermissionsDispatcher.onImageSuccessWithCheck(SearchActivity.this, uri.toString());
             } else if (intent.getData() != null &&
-                    !TextUtils.isEmpty(intent.getData().toString())) {
+                    !TextUtils.isEmpty(intent.getData().toString()) &&
+                    isValidMimeType(intent.getData().toString())) {
                 searchView.hideShowCaseDialog(true);
                 sendImageSearchFromGalleryGTM("");
                 SearchActivityPermissionsDispatcher.onImageSuccessWithCheck(SearchActivity.this, intent.getData().toString());
@@ -213,6 +215,29 @@ public class SearchActivity extends DiscoveryActivity
         }
     }
 
+    private boolean isValidMimeType(String url) {
+        String mimeType = getMimeTypeUri(Uri.parse(url));
+
+        return mimeType != null &&
+                (mimeType.equalsIgnoreCase("image/jpg") ||
+                        mimeType.equalsIgnoreCase("image/png") ||
+                        mimeType.equalsIgnoreCase("image/jpeg"));
+
+    }
+
+    private String getMimeTypeUri(Uri uri) {
+        String mimeType = null;
+        if (uri.getScheme().equals(ContentResolver.SCHEME_CONTENT)) {
+            ContentResolver cr = getContentResolver();
+            mimeType = cr.getType(uri);
+        } else {
+            String fileExtension = MimeTypeMap.getFileExtensionFromUrl(uri
+                    .toString());
+            mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
+                    fileExtension.toLowerCase());
+        }
+        return mimeType;
+    }
 
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public void onImageSuccess(String uri) {
@@ -328,13 +353,13 @@ public class SearchActivity extends DiscoveryActivity
             public void onTabSelected(TabLayout.Tab tab) {
                 switch (tab.getPosition()) {
                     case TAB_PRODUCT:
-                        SearchTracking.eventSearchResultTabClick(productTabTitle);
+                        SearchTracking.eventSearchResultTabClick(getActivityContext(), productTabTitle);
                         break;
                     case TAB_SECOND_POSITION:
-                        SearchTracking.eventSearchResultTabClick(catalogTabTitle);
+                        SearchTracking.eventSearchResultTabClick(getActivityContext(), catalogTabTitle);
                         break;
                     case TAB_THIRD_POSITION:
-                        SearchTracking.eventSearchResultTabClick(shopTabTitle);
+                        SearchTracking.eventSearchResultTabClick(getActivityContext(), shopTabTitle);
                         break;
                 }
             }
@@ -380,10 +405,10 @@ public class SearchActivity extends DiscoveryActivity
             public void onTabSelected(TabLayout.Tab tab) {
                 switch (tab.getPosition()) {
                     case TAB_PRODUCT:
-                        SearchTracking.eventSearchResultTabClick(productTabTitle);
+                        SearchTracking.eventSearchResultTabClick(getActivityContext(), productTabTitle);
                         break;
                     case TAB_SECOND_POSITION:
-                        SearchTracking.eventSearchResultTabClick(shopTabTitle);
+                        SearchTracking.eventSearchResultTabClick(getActivityContext(), shopTabTitle);
                         break;
                 }
             }
@@ -467,14 +492,14 @@ public class SearchActivity extends DiscoveryActivity
 
             @Override
             public void launchFilterCategoryPage(Filter filter, String selectedCategoryRootId, String selectedCategoryId) {
-                SearchTracking.eventSearchResultNavigateToFilterDetail(getResources().getString(R.string.title_category));
+                SearchTracking.eventSearchResultNavigateToFilterDetail(getActivityContext(), getResources().getString(R.string.title_category));
                 FilterDetailActivityRouter.launchCategoryActivity(SearchActivity.this,
                         filter, selectedCategoryRootId, selectedCategoryId, true);
             }
 
             @Override
             public void launchFilterDetailPage(Filter filter) {
-                SearchTracking.eventSearchResultNavigateToFilterDetail(filter.getTitle());
+                SearchTracking.eventSearchResultNavigateToFilterDetail(getActivityContext(), filter.getTitle());
                 FilterDetailActivityRouter.launchDetailActivity(SearchActivity.this, filter, true);
             }
         });
@@ -566,5 +591,15 @@ public class SearchActivity extends DiscoveryActivity
     @Override
     public void launchFilterBottomSheet() {
         bottomSheetFilterView.launchFilterBottomSheet();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        bottomSheetFilterView.onSaveInstanceState(outState);
+    }
+
+    private Context getActivityContext() {
+        return this;
     }
 }

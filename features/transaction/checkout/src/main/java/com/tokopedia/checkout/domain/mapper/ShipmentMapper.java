@@ -1,6 +1,5 @@
 package com.tokopedia.checkout.domain.mapper;
 
-import com.tokopedia.transactiondata.entity.response.shippingaddressform.ShipmentAddressFormDataResponse;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.GroupAddress;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.GroupShop;
@@ -11,6 +10,7 @@ import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ServiceId;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShipProd;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.Shop;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
+import com.tokopedia.transactiondata.entity.response.shippingaddressform.ShipmentAddressFormDataResponse;
 
 import java.util.ArrayList;
 import java.util.List;

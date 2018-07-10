@@ -11,7 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.analytics.SearchTracking;
+import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.Visitable;
@@ -386,7 +386,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
                     }
                     j++;
                 }
-                SearchTracking.eventImpressionImageSearchResultProduct(dataLayerList);
+                SearchTracking.eventImpressionImageSearchResultProduct(getActivity(), dataLayerList);
             }
         }
     }
@@ -612,7 +612,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
                 SessionHandler.getLoginID(getContext()) : "";
 
         SearchTracking.trackEventClickImageSearchResultProduct(
-                item.getProductAsObjectDataLayerForImageSearch(userId), (item.getPosition() + 1) / 2);
+                getActivity(), item.getProductAsObjectDataLayerForImageSearch(userId), (item.getPosition() + 1) / 2);
     }
 
     @Override

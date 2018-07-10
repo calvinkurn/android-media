@@ -49,7 +49,7 @@
                 android:id="@+id/btn_content"
                 android:layout_width="110dp"
                 android:layout_height="35dp"
-                android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginTop="@dimen/dp_15"
                 android:layout_gravity="center"
                 android:background="@drawable/bg_button_enable"
                 android:gravity="center"

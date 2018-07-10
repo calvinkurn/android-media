@@ -1,0 +1,35 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+
+android {
+    defaultConfig {
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ['targetModuleName': 'CommonNetwork']
+            }
+        }
+    }
+}
+
+project.ext {
+    artifactId = 'common_network'
+    groupId = 'com.tokopedia.common.network'
+    versionName = "${tkpdCommonNetworkVersion}"
+    artifactName = "common_network-release"
+}
+
+
+
+dependencies {
+    implementation project(rootProject.ext.libraries.useCase)
+    implementation rootProject.ext.miscDependencies.gson
+    implementation project(rootProject.ext.libraries.userSession)
+    implementation project(rootProject.ext.libraries.config)
+
+    annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
+    implementation rootProject.ext.dbDependencies.dbFlowCore
+    implementation rootProject.ext.dbDependencies.dbFlow
+    implementation project(rootProject.ext.libraries.network)
+}
+
+apply from: '../../publish_local.gradle'

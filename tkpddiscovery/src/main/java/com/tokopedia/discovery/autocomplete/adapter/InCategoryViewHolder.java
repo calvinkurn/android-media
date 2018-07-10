@@ -9,11 +9,11 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.autocomplete.viewmodel.InCategorySearch;
 import com.tokopedia.discovery.search.view.adapter.ItemClickListener;
+import com.tokopedia.discovery.util.AutoCompleteTracking;
 
 import java.util.Locale;
 
@@ -26,10 +26,12 @@ public class InCategoryViewHolder extends AbstractViewHolder<InCategorySearch> {
     private final TextView subTitleTextView;
     private final ItemClickListener listener;
     private final ImageView iconCopyTextView;
+    private final String tabName;
 
-    public InCategoryViewHolder(View itemView, ItemClickListener clickListener) {
+    public InCategoryViewHolder(View itemView, ItemClickListener clickListener, String tabName) {
         super(itemView);
         this.listener = clickListener;
+        this.tabName = tabName;
         titleTextView = itemView.findViewById(R.id.titleTextView);
         subTitleTextView = itemView.findViewById(R.id.subTitleTextView);
         iconCopyTextView = itemView.findViewById(R.id.icon);
@@ -57,10 +59,18 @@ public class InCategoryViewHolder extends AbstractViewHolder<InCategorySearch> {
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UnifyTracking.eventClickAutoCompleteCategory(
-                        element.getRecom(),
-                        element.getCategoryId(),
-                        element.getKeyword()
+                AutoCompleteTracking.eventClickInCategory(
+                        itemView.getContext(),
+                        String.format(
+                                "keyword: %s - value: %s - cat: %s - cat id: %s - po: %s - applink: %s",
+                                element.getSearchTerm(),
+                                element.getKeyword(),
+                                element.getRecom(),
+                                element.getCategoryId(),
+                                String.valueOf(getAdapterPosition() + 1),
+                                element.getApplink()
+                        ),
+                        tabName
                 );
                 listener.onItemSearchClicked(
                         element.getKeyword(),

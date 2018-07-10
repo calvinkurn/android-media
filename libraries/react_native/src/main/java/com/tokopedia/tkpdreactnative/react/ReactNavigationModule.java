@@ -23,6 +23,7 @@ import com.tokopedia.tkpdreactnative.react.fingerprint.view.FingerPrintUIHelper;
 import com.tokopedia.tkpdreactnative.react.fingerprint.view.FingerprintDialogConfirmation;
 import com.tokopedia.tkpdreactnative.react.singleauthpayment.view.SingleAuthPaymentDialog;
 import com.tokopedia.tkpdreactnative.router.ReactNativeRouter;
+import com.tokopedia.core.util.GlobalConfig;
 
 import java.util.HashMap;
 
@@ -63,11 +64,18 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule implements
     public void navigateWithMobileUrl(String appLinks, String mobileUrl, String extra) {
         if (((IDigitalModuleRouter) context.getApplicationContext()).isSupportedDelegateDeepLink(appLinks)) {
             ((TkpdCoreRouter) context.getApplicationContext())
-                    .actionApplink(this.getCurrentActivity(), appLinks);
+                    .actionApplink(this.getCurrentActivity(), appLinks, extra);
         } else {
             ((TkpdCoreRouter) context.getApplicationContext())
                     .actionOpenGeneralWebView(this.getCurrentActivity(), mobileUrl);
         }
+    }
+
+    @ReactMethod
+    public void navigateAndFinish(String appLinks, String extra) {
+        navigate(appLinks, extra);
+
+        finish();
     }
 
     @ReactMethod
@@ -190,6 +198,15 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule implements
     public void hideProgressDialog() {
         if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();
+        }
+    }
+
+    @ReactMethod
+    public void getDebuggingMode(Promise promise){
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            promise.resolve("debug");
+        } else {
+            promise.resolve("release");
         }
     }
 }
