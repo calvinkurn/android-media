@@ -95,8 +95,13 @@ public class TrainHomepagePresenterImpl extends BaseDaggerPresenter<TrainHomepag
                 getView().renderRoundTripView(getView().getHomepageViewModel());
             } else {
                 Date reAssignReturnDate = TrainDateUtil.addDate(newDepartureDate, DEFAULT_RANGE_OF_DEPARTURE_AND_ARRIVAL);
-                getView().getHomepageViewModel().setReturnDate(TrainDateUtil.dateToString(reAssignReturnDate, TrainDateUtil.DEFAULT_FORMAT));
-                getView().getHomepageViewModel().setReturnDateFmt(TrainDateUtil.dateToString(reAssignReturnDate, TrainDateUtil.DEFAULT_VIEW_FORMAT));
+                if (reAssignReturnDate.after(limitDate)) {
+                    getView().getHomepageViewModel().setReturnDate(TrainDateUtil.dateToString(newDepartureDate, TrainDateUtil.DEFAULT_FORMAT));
+                    getView().getHomepageViewModel().setReturnDateFmt(TrainDateUtil.dateToString(newDepartureDate, TrainDateUtil.DEFAULT_VIEW_FORMAT));
+                } else {
+                    getView().getHomepageViewModel().setReturnDate(TrainDateUtil.dateToString(reAssignReturnDate, TrainDateUtil.DEFAULT_FORMAT));
+                    getView().getHomepageViewModel().setReturnDateFmt(TrainDateUtil.dateToString(reAssignReturnDate, TrainDateUtil.DEFAULT_VIEW_FORMAT));
+                }
                 getView().renderSingleTripView(getView().getHomepageViewModel());
             }
         }
