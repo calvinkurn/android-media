@@ -39,7 +39,13 @@ public interface BaseDiscoveryContract {
 
         void onHandleInvalidImageSearchResponse();
 
+        void showErrorNetwork(String message);
+
+        void showTimeoutErrorNetwork(String message);
+
         void onHandleImageSearchResponseSuccess();
+
+        void showImageNotSupportedError();
     }
 
     interface Presenter<D extends View> {

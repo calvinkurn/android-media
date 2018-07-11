@@ -12,6 +12,7 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.gson.Gson;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.util.GlobalConfig;
@@ -24,6 +25,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Formatter;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -39,7 +41,7 @@ import rx.schedulers.Schedulers;
 
 /**
  * @author Angga.Prasetiyo on 25/11/2015.
- *         Modified by kulomady add method without params
+ * Modified by kulomady add method without params
  */
 public class AuthUtil {
     private static final String CONTENT_TYPE = "application/x-www-form-urlencoded";
@@ -89,6 +91,23 @@ public class AuthUtil {
 
     public static final String HEADER_HMAC_SIGNATURE_KEY = "TKPDROID AndroidApps:";
     private static final String HEADER_TKPD_USER_ID = "Tkpd-UserId";
+
+    public static Map<String, String> generateHeaderCartCheckout(String path,
+                                                                 String strParam,
+                                                                 String method,
+                                                                 String authKey,
+                                                                 String contentTypeHeader) {
+        Map<String, String> finalHeader = getDefaultHeaderMap(
+                path, strParam, method, contentTypeHeader != null ? contentTypeHeader : CONTENT_TYPE,
+                authKey, DATE_FORMAT
+        );
+
+        finalHeader.put("X-APP-VERSION", "\"" + GlobalConfig.VERSION_NAME + "\"");
+        finalHeader.put("Tkpd-UserId", SessionHandler.getLoginID(MainApplication.getAppContext()));
+        finalHeader.put(HEADER_DEVICE, "android");
+        finalHeader.put("Tkpd-SessionId", GCMHandler.getRegistrationId(MainApplication.getAppContext()));
+        return finalHeader;
+    }
 
 
     /**
@@ -516,6 +535,21 @@ public class AuthUtil {
         return params;
     }
 
+    public static RequestParams generateRequestParamsNetwork(Context context) {
+        String deviceId = GCMHandler.getRegistrationId(context);
+        String userId = SessionHandler.getLoginID(context);
+        String hash = md5(userId + "~" + deviceId);
+        RequestParams params = RequestParams.create();
+
+        params.putString(PARAM_USER_ID, userId);
+        params.putString(PARAM_DEVICE_ID, deviceId);
+        params.putString(PARAM_HASH, hash);
+        params.putString(PARAM_OS_TYPE, "1");
+        params.putString(PARAM_TIMESTAMP, String.valueOf((new Date().getTime()) / 1000));
+
+        return params;
+    }
+
     public static TKPDMapParam<String, Object> generateParamsNetworkObject(Context context,
                                                                            TKPDMapParam<String, Object>
                                                                                    params,
@@ -533,7 +567,7 @@ public class AuthUtil {
         return params;
     }
 
-    private static String calculateRFC2104HMAC(String authString, String authKey) {
+    public static String calculateRFC2104HMAC(String authString, String authKey) {
         try {
             SecretKeySpec signingKey = new SecretKeySpec(authKey.getBytes(), MAC_ALGORITHM);
             Mac mac = Mac.getInstance(MAC_ALGORITHM);
@@ -545,6 +579,28 @@ public class AuthUtil {
             e.printStackTrace();
             return "";
         }
+    }
+
+    public static String calculateHmacSHA1(String authString, String authKey) {
+        try {
+            SecretKeySpec signingKey = new SecretKeySpec(authKey.getBytes(), MAC_ALGORITHM);
+            Mac mac = Mac.getInstance(MAC_ALGORITHM);
+            mac.init(signingKey);
+            return toHexString(mac.doFinal(authString.getBytes()));
+        } catch (NoSuchAlgorithmException | InvalidKeyException e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+    private static String toHexString(byte[] bytes) {
+        Formatter formatter = new Formatter();
+
+        for (byte b : bytes) {
+            formatter.format("%02x", b);
+        }
+
+        return formatter.toString().trim();
     }
 
     private static String generateContentMd5(String s) {

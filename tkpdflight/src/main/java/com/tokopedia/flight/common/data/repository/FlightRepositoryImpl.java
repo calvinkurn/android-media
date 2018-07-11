@@ -31,6 +31,7 @@ import com.tokopedia.flight.passenger.data.cloud.requestbody.DeletePassengerRequ
 import com.tokopedia.flight.passenger.data.cloud.requestbody.UpdatePassengerRequest;
 import com.tokopedia.flight.passenger.data.db.model.FlightPassengerDb;
 import com.tokopedia.flight.review.data.FlightBookingDataSource;
+import com.tokopedia.flight.review.data.FlightCancelVoucherDataSource;
 import com.tokopedia.flight.review.data.FlightCheckVoucheCodeDataSource;
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
 import com.tokopedia.flight.review.data.model.FlightCheckoutEntity;
@@ -76,6 +77,7 @@ public class FlightRepositoryImpl implements FlightRepository {
     private FlightOrderMapper flightOrderMapper;
     private FlightPassengerFactorySource flightPassengerFactorySource;
     private FlightCancellationCloudDataSource flightCancellationCloudDataSource;
+    private FlightCancelVoucherDataSource flightCancelVoucherDataSource;
 
     public FlightRepositoryImpl(BannerDataSource bannerDataSource,
                                 FlightAirportDataListSource flightAirportDataListSource,
@@ -92,7 +94,8 @@ public class FlightRepositoryImpl implements FlightRepository {
                                 FlightOrderDataSource flightOrderDataSource,
                                 FlightOrderMapper flightOrderMapper,
                                 FlightPassengerFactorySource flightPassengerFactorySource,
-                                FlightCancellationCloudDataSource flightCancellationCloudDataSource) {
+                                FlightCancellationCloudDataSource flightCancellationCloudDataSource,
+                                FlightCancelVoucherDataSource flightCancelVoucherDataSource) {
         this.bannerDataSource = bannerDataSource;
         this.flightAirportDataListSource = flightAirportDataListSource;
         this.flightAirlineDataListSource = flightAirlineDataListSource;
@@ -109,6 +112,7 @@ public class FlightRepositoryImpl implements FlightRepository {
         this.flightOrderMapper = flightOrderMapper;
         this.flightPassengerFactorySource = flightPassengerFactorySource;
         this.flightCancellationCloudDataSource = flightCancellationCloudDataSource;
+        this.flightCancelVoucherDataSource = flightCancelVoucherDataSource;
     }
 
     @Override
@@ -127,27 +131,13 @@ public class FlightRepositoryImpl implements FlightRepository {
     }
 
     @Override
-    public Observable<List<FlightAirportDB>> getAirportList(final String query, final String idCountry) {
-        if (query != null && query.length() > 0 && idCountry != null && idCountry.length() > 0) {
-            return flightAirportDataListSource.getAirportList(query, idCountry);
-        } else {
-            return flightAirportDataListSource.getAirportCount(query, idCountry)
-                    .flatMap(new Func1<Integer, Observable<List<FlightAirportDB>>>() {
-                        @Override
-                        public Observable<List<FlightAirportDB>> call(Integer airportTotal) {
-                            if (airportTotal == 0) {
-                                flightAirportDataListSource.deleteCache();
-                                flightAirlineDataListSource.setCacheExpired();
-                            }
-                            return flightAirportDataListSource.getAirportList(query, idCountry);
-                        }
-                    });
-        }
+    public Observable<List<FlightAirportDB>> getPhoneCodeList(String query) {
+        return flightAirportDataListSource.getPhoneCodeList(query);
     }
 
     @Override
-    public Observable<List<FlightAirportDB>> getPhoneCodeList(String query) {
-        return flightAirportDataListSource.getPhoneCodeList(query);
+    public Observable<FlightAirportDB> getAirportByCountryId(String id) {
+        return flightAirportDataListSource.getAirportByCountryId(id);
     }
 
     @Override
@@ -444,5 +434,10 @@ public class FlightRepositoryImpl implements FlightRepository {
     public Observable<CancellationRequestEntity> cancellationRequest(FlightCancellationRequestBody request) {
         DataRequest<FlightCancellationRequestBody> requestBody = new DataRequest<>(request);
         return flightCancellationCloudDataSource.requestCancellation(requestBody);
+    }
+
+    @Override
+    public Observable<Boolean> cancelVoucherApply() {
+        return flightCancelVoucherDataSource.cancelVoucher();
     }
 }

@@ -3,6 +3,7 @@ package com.tokopedia.digital.categorylist.view.fragment;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.IntentService;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -25,6 +26,8 @@ import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.apiservices.mojito.MojitoService;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.wallet.IWalletRouter;
@@ -69,6 +72,7 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     public static final int NUMBER_OF_COLUMN_GRID_CATEGORY_LIST = 4;
     private static final String EXTRA_STATE_DIGITAL_CATEGORY_LIST_DATA =
             "EXTRA_STATE_DIGITAL_CATEGORY_LIST_DATA";
+    private static final String FIREBASE_DIGITAL_OMS_REMOTE_CONFIG_KEY = "app_enable_oms_native";
 
     @BindView(R2.id.rv_digital_category)
     RecyclerView rvDigitalCategoryList;
@@ -90,6 +94,8 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     private TokoCashData tokoCashBalanceData;
     private List<DigitalCategoryItemData> digitalCategoryListDataState;
     private boolean fromAppShortcut = false;
+
+    private RemoteConfig remoteConfig;
 
     public static DigitalCategoryListFragment newInstance() {
         return new DigitalCategoryListFragment();
@@ -231,8 +237,17 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
         linearLayoutManager = new LinearLayoutManager(getActivity());
         gridLayoutManager = new GridLayoutManager(getActivity(), NUMBER_OF_COLUMN_GRID_CATEGORY_LIST);
         adapter = new DigitalCategoryListAdapter(this, this, NUMBER_OF_COLUMN_GRID_CATEGORY_LIST);
+        initRemoteConfig();
     }
 
+    private void initRemoteConfig() {
+        remoteConfig = new FirebaseRemoteConfigImpl(context);
+    }
+
+    public boolean isDigitalOmsEnable() {
+        return remoteConfig.getBoolean(FIREBASE_DIGITAL_OMS_REMOTE_CONFIG_KEY,true);
+
+    }
     @Override
     protected void setActionVar() {
         presenter.processGetTokoCashData();
@@ -290,6 +305,11 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     }
 
     @Override
+    public Context getAppContext() {
+        return getActivity();
+    }
+
+    @Override
     public void navigateToActivityRequest(Intent intent, int requestCode) {
         startActivityForResult(intent, requestCode);
     }
@@ -326,21 +346,6 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
 
     @Override
     public void showToastMessage(String message) {
-
-    }
-
-    @Override
-    public void showDialog(Dialog dialog) {
-
-    }
-
-    @Override
-    public void dismissDialog(Dialog dialog) {
-
-    }
-
-    @Override
-    public void executeIntentService(Bundle bundle, Class<? extends IntentService> clazz) {
 
     }
 
@@ -435,6 +440,11 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     @Override
     public void onClickCategoryHeaderMenu(DigitalCategoryItemHeader data) {
         switch (data.getTypeMenu()) {
+            case TRANSACTION:
+                if(isDigitalOmsEnable()) {
+                    startActivity(((IDigitalModuleRouter) getActivity().getApplication()).getOrderListIntent(getActivity()));
+                    break;
+                }
             default:
                 startActivity(DigitalWebActivity.newInstance(getActivity(), data.getSiteUrl()));
                 break;
@@ -444,5 +454,4 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     public boolean isFromAppShortcut() {
         return fromAppShortcut;
     }
-
 }

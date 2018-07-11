@@ -9,6 +9,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,7 +77,8 @@ public class PromoDetailFragment extends BaseDaggerFragment implements
     @Inject PromoDetailPresenter promoDetailPresenter;
     @Inject PromoDetailAdapter promoDetailAdapter;
     @Inject PromoDataMapper promoDataMapper;
-    @Inject CompositeSubscription compositeSubscription;
+    @Inject
+    CompositeSubscription compositeSubscription;
 
     @Override
     protected String getScreenName() {
@@ -190,7 +192,7 @@ public class PromoDetailFragment extends BaseDaggerFragment implements
                 promoData.getId(),
                 String.valueOf(this.page),
                 String.valueOf(this.position + 1),
-                promoData.getThumbnailImage(),
+                promoData.getTitle(),
                 promoData.getThumbnailImage(),
                 parsePromoCodes(promoData)
         );
@@ -295,7 +297,7 @@ public class PromoDetailFragment extends BaseDaggerFragment implements
                         promoData.getId(),
                         String.valueOf(page),
                         String.valueOf(position + 1),
-                        promoData.getThumbnailImage(),
+                        promoData.getTitle(),
                         promoData.getThumbnailImage(),
                         parsePromoCodes(promoData)
                 );

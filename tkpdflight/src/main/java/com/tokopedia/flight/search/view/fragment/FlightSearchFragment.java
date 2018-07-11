@@ -13,26 +13,25 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
 
+import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder;
+import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
+import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder;
-import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
-import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder;
 import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
+import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.util.FlightErrorUtil;
 import com.tokopedia.flight.common.view.HorizontalProgressBar;
@@ -85,9 +84,6 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     private static final String SAVED_PROGRESS = "svd_progress";
     private static final float DEFAULT_DIMENS_MULTIPLIER = 0.5f;
     private static final int PADDING_SEARCH_LIST = 60;
-    private static final int DEFAULT_LAST_HOUR_IN_DAY = 23;
-    private static final int DEFAULT_LAST_MIN_IN_DAY = 59;
-    private static final int DEFAULT_LAST_SEC_IN_DAY = 59;
 
     @Inject
     public FlightSearchPresenter flightSearchPresenter;
@@ -137,10 +133,9 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
 
     private void setUpCombinationAirport() {
         List<String> departureAirportList;
-        String depAirportID = getDepartureAirport().getAirportId();
+        String depAirportID = getDepartureAirport().getAirportCode();
         if (TextUtils.isEmpty(depAirportID)) {
-            String depAirportIDString = getDepartureAirport().getAirportIds();
-            String[] depAirportIDs = depAirportIDString.split(",");
+            String[] depAirportIDs = getDepartureAirport().getCityAirports();
             departureAirportList = Arrays.asList(depAirportIDs);
         } else {
             departureAirportList = new ArrayList<>();
@@ -148,10 +143,9 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         }
 
         List<String> arrivalAirportList;
-        String arrAirportID = getArrivalAirport().getAirportId();
+        String arrAirportID = getArrivalAirport().getAirportCode();
         if (TextUtils.isEmpty(arrAirportID)) {
-            String arrAirportIDString = getArrivalAirport().getAirportIds();
-            String[] arrAirportIDs = arrAirportIDString.split(",");
+            String[] arrAirportIDs = getArrivalAirport().getCityAirports();
             arrivalAirportList = Arrays.asList(arrAirportIDs);
         } else {
             arrivalAirportList = new ArrayList<>();
@@ -161,11 +155,11 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         airportCombineModelList = new AirportCombineModelList(departureAirportList, arrivalAirportList);
     }
 
-    protected FlightAirportDB getDepartureAirport() {
+    protected FlightAirportViewModel getDepartureAirport() {
         return flightSearchPassDataViewModel.getDepartureAirport();
     }
 
-    protected FlightAirportDB getArrivalAirport() {
+    protected FlightAirportViewModel getArrivalAirport() {
         return flightSearchPassDataViewModel.getArrivalAirport();
     }
 
@@ -739,29 +733,26 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     private void setMinMaxDatePicker(DatePicker datePicker) {
         Date maxDate = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, 2);
         maxDate = FlightDateUtil.addTimeToSpesificDate(maxDate, Calendar.DATE, -1);
-        Calendar maxDateCalendar = FlightDateUtil.getCurrentCalendar();
-        maxDateCalendar.setTime(maxDate);
-        maxDateCalendar.set(Calendar.HOUR_OF_DAY, DEFAULT_LAST_HOUR_IN_DAY);
-        maxDateCalendar.set(Calendar.MINUTE, DEFAULT_LAST_MIN_IN_DAY);
-        maxDateCalendar.set(Calendar.SECOND, DEFAULT_LAST_SEC_IN_DAY);
+        maxDate = FlightDateUtil.trimDate(maxDate);
 
         if (isReturning()) {
             String dateDepStr = flightSearchPassDataViewModel.getDate(false);
             Date dateDep = FlightDateUtil.stringToDate(dateDepStr);
-
+            dateDep = FlightDateUtil.trimDate(dateDep);
             datePicker.setMinDate(dateDep.getTime());
-            datePicker.setMaxDate(maxDateCalendar.getTime().getTime());
+            datePicker.setMaxDate(maxDate.getTime());
         } else {
-            Date dateNow = FlightDateUtil.getCurrentDate();
+            Date dateNow = FlightDateUtil.trimDate(FlightDateUtil.getCurrentDate());
             datePicker.setMinDate(dateNow.getTime());
 
             boolean isOneWay = flightSearchPassDataViewModel.isOneWay();
             if (!isOneWay) {
                 String dateReturnStr = flightSearchPassDataViewModel.getDate(true);
                 Date dateReturn = FlightDateUtil.stringToDate(dateReturnStr);
+                dateReturn = FlightDateUtil.trimDate(dateReturn);
                 datePicker.setMaxDate(dateReturn.getTime());
             } else {
-                datePicker.setMaxDate(maxDateCalendar.getTime().getTime());
+                datePicker.setMaxDate(maxDate.getTime());
             }
         }
     }

@@ -43,7 +43,6 @@ public interface FlightRepository {
 
     Observable<FlightAirportDB> getAirportWithParam(Map<String, String> params);
 
-    Observable<List<FlightAirportDB>> getAirportList(String query, String idCountry);
 
     Observable<List<FlightClassEntity>> getFlightClasses();
 
@@ -89,6 +88,8 @@ public interface FlightRepository {
 
     Observable<List<FlightAirportDB>> getPhoneCodeList(String string);
 
+    Observable<FlightAirportDB> getAirportByCountryId(String id);
+
     Observable<FlightAirlineDB> getAirlineById(String airlineId);
 
     Observable<SendEmailEntity> sendEmail(Map<String, Object> params);
@@ -116,4 +117,6 @@ public interface FlightRepository {
     Observable<EstimateRefundResultEntity> estimateRefund(FlightEstimateRefundRequest object);
 
     Observable<CancellationRequestEntity> cancellationRequest(FlightCancellationRequestBody request);
+
+    Observable<Boolean> cancelVoucherApply();
 }

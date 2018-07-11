@@ -27,9 +27,10 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.design.banner.BannerView;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
+import com.tokopedia.flight.airport.service.GetAirportListService;
 import com.tokopedia.flight.airport.view.activity.FlightAirportPickerActivity;
 import com.tokopedia.flight.airport.view.fragment.FlightAirportPickerFragment;
+import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
 import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.banner.view.adapter.FlightBannerPagerAdapter;
 import com.tokopedia.flight.common.constant.FlightUrl;
@@ -328,6 +329,13 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     }
 
     @Override
+    public void startAirportSyncInBackground(long airportVersion) {
+        if (getActivity() != null) {
+            GetAirportListService.startService(getActivity(), airportVersion);
+        }
+    }
+
+    @Override
     public void renderSingleTripView() {
         oneWayTripAppCompatButton.setTextColor(getResources().getColor(R.color.white));
         roundTripAppCompatButton.setTextColor(getResources().getColor(R.color.grey_400));
@@ -500,7 +508,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         this.bannerList = bannerList;
         List<String> promoUrls = new ArrayList<>();
         for (BannerDetail bannerModel : bannerList) {
-            promoUrls.add(bannerModel.getAttributes().getFileName());
+            promoUrls.add(bannerModel.getAttributes().getImageUrl());
         }
         bannerView.setPromoList(promoUrls);
         bannerView.buildView();
@@ -552,11 +560,11 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
                     presenter.onFlightPassengerChange(passengerViewModel);
                     break;
                 case REQUEST_CODE_AIRPORT_DEPARTURE:
-                    FlightAirportDB departureAirport = data.getParcelableExtra(FlightAirportPickerFragment.EXTRA_SELECTED_AIRPORT);
+                    FlightAirportViewModel departureAirport = data.getParcelableExtra(FlightAirportPickerFragment.EXTRA_SELECTED_AIRPORT);
                     presenter.onDepartureAirportChange(departureAirport);
                     break;
                 case REQUEST_CODE_AIRPORT_ARRIVAL:
-                    FlightAirportDB arrivalAirport = data.getParcelableExtra(FlightAirportPickerFragment.EXTRA_SELECTED_AIRPORT);
+                    FlightAirportViewModel arrivalAirport = data.getParcelableExtra(FlightAirportPickerFragment.EXTRA_SELECTED_AIRPORT);
                     presenter.onArrivalAirportChange(arrivalAirport);
                     break;
                 case REQUEST_CODE_SEARCH:
@@ -592,7 +600,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
 
     private void bannerClickAction(int position) {
         if (getBannerData(position) != null && getBannerData(position).getAttributes() != null) {
-            String url = getBannerData(position).getAttributes().getImgUrl();
+            String url = getBannerData(position).getAttributes().getLinkUrl();
             Uri uri = Uri.parse(url);
             boolean isPromoNativeActive = isPromoNativeActive();
             if (isPromoNativeActive && uri != null

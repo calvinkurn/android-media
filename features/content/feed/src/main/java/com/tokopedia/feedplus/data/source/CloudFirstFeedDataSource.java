@@ -1,16 +1,19 @@
 package com.tokopedia.feedplus.data.source;
 
-import com.apollographql.apollo.ApolloClient;
+import android.content.Context;
+
 import com.google.gson.reflect.TypeToken;
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.database.CacheUtil;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.abstraction.common.utils.network.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.feedplus.data.api.FeedApi;
 import com.tokopedia.feedplus.data.mapper.FeedListMapper;
 import com.tokopedia.feedplus.data.mapper.FeedResultMapper;
 import com.tokopedia.feedplus.data.source.cloud.CloudFeedDataSource;
 import com.tokopedia.feedplus.data.source.local.LocalFeedDataSource;
 import com.tokopedia.feedplus.domain.model.feed.FeedDomain;
 import com.tokopedia.feedplus.domain.model.feed.FeedResult;
+import com.tokopedia.usecase.RequestParams;
 
 import rx.Observable;
 import rx.functions.Action1;
@@ -21,11 +24,12 @@ import rx.functions.Action1;
 
 public class CloudFirstFeedDataSource extends CloudFeedDataSource {
 
-    public CloudFirstFeedDataSource(ApolloClient apolloClient,
+    public CloudFirstFeedDataSource(@ApplicationContext Context context,
+                                    FeedApi feedApi,
                                     FeedListMapper feedListMapper,
                                     FeedResultMapper feedResultMapperCloud,
                                     GlobalCacheManager globalCacheManager) {
-        super(apolloClient, feedListMapper, feedResultMapperCloud, globalCacheManager);
+        super(context, feedApi, feedListMapper, feedResultMapperCloud, globalCacheManager);
     }
 
     public Observable<FeedResult> getFirstPageFeedsList(RequestParams requestParams) {

@@ -14,21 +14,20 @@ import android.widget.TextView;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
+import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.presentation.BaseDaggerFragment;
-import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
-import com.tokopedia.core.database.model.PagingHandler;
-import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
-import com.tokopedia.core.share.ShareActivity;
-import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.feedplus.FeedModuleRouter;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.view.activity.FeedPlusDetailActivity;
@@ -43,6 +42,7 @@ import com.tokopedia.feedplus.view.presenter.FeedPlusDetailPresenter;
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailHeaderViewModel;
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailViewModel;
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.SingleFeedDetailViewModel;
+import com.tokopedia.kol.KolComponentInstance;
 
 import java.util.ArrayList;
 
@@ -67,7 +67,7 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     FeedPlusDetailPresenter presenter;
 
 
-    private EndlessRecyclerviewListener recyclerviewScrollListener;
+    private EndlessRecyclerViewScrollListener recyclerviewScrollListener;
     private LinearLayoutManager layoutManager;
     private DetailFeedAdapter adapter;
     private CallbackManager callbackManager;
@@ -89,16 +89,10 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
-
-        AppComponent appComponent = getComponent(AppComponent.class);
-
-        DaggerFeedPlusComponent daggerFeedPlusComponent =
-                (DaggerFeedPlusComponent) DaggerFeedPlusComponent.builder()
-                        .appComponent(appComponent)
-                        .build();
-
-        daggerFeedPlusComponent.inject(this);
-
+        DaggerFeedPlusComponent.builder()
+                .kolComponent(KolComponentInstance.getKolComponent(getActivity().getApplication()))
+                .build()
+                .inject(this);
     }
 
     @Override
@@ -147,10 +141,10 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
         recyclerView.addOnScrollListener(recyclerviewScrollListener);
     }
 
-    private EndlessRecyclerviewListener onRecyclerViewListener() {
-        return new EndlessRecyclerviewListener(layoutManager) {
+    private EndlessRecyclerViewScrollListener onRecyclerViewListener() {
+        return new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
-            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+            public void onLoadMore(int page, int totalItemsCount) {
                 if (!adapter.isLoading() && pagingHandler.CheckNextPage()) {
                     pagingHandler.nextPage();
                     presenter.getFeedDetail(detailId, pagingHandler.getPage());
@@ -440,6 +434,6 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     }
 
     private void onProductShareClicked(@NonNull ShareData data) {
-        startActivity(ShareActivity.createIntent(getActivity(), data));
+        new DefaultShare(getActivity(), data).show();
     }
 }

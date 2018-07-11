@@ -229,7 +229,7 @@
     <string name="flight_booking_passenger_toolbar_title">Data Penumpang</string>
     <string name="flight_booking_passenger_not_fullfilled_error">Info penumpang tidak boleh ada yang kosong</string>
     <string name="flight_booking_dialog_price_change_title">Harga Tiket Telah Berubah</string>
-    <string name="flight_booking_dialog_price_change_description">Perubahan harga tiket terjadi karena pengaruh nilai tukar mata uang dan sisa kursi.</string>
+    <string name="flight_booking_dialog_price_change_description">Telah terjadi perubahan harga dari pihak maskapai, ini adalah harga terbaru.</string>
     <string name="flight_booking_dialog_price_change_prev_price_label">Harga Sebelumnya</string>
     <string name="flight_booking_dialog_price_change_after_price_label">Harga Sekarang</string>
     <string name="flight_booking_dialog_price_change_continue_label">Lanjut Pembayaran</string>
@@ -366,7 +366,7 @@
     <string name="flight_cancellation_step_2_header_title">2. Input Alasan Pembatalan Tiket</string>
     <string name="flight_cancellation_step_3_header_title" formatted="false">%d. Detail Total Refund</string>
     <string name="flight_cancellation_reason_label">Alasan Pembatalan Tiket</string>
-    <string name="flight_cancellation_support_docs_label">Dokumen Penunjang</string>
+    <string name="flight_cancellation_support_docs_label">Bukti Identitas</string>
     <string name="flight_cancellation_reason_hint_label">Isi alasan pembatalan</string>
     <string name="flight_cancellation_attachment_description_label">(Dokumen penunjang dapat berupa surat, foto, atau dokumen yang menjadi alasan pembatalan pesanan). Ukuran Minimum  Lebar 300px dan Tinggi 100px.</string>
     <string name="flight_cancellation_proof_reaseon_submit_button">Selanjutnya</string>
@@ -407,13 +407,13 @@
     <string name="flight_order_detail_cancellation_label">Detail Pembatalan</string>
     <string name="flight_cancellation_list_title">Detail Pembatalan</string>
     <string name="flight_cancellation_list_id" formatted="false">Cancellation ID: %s</string>
-    <string name="flight_cancellation_list_created_time">Tanggal Pembatalan: %s</string>
+    <string name="flight_cancellation_list_created_time" formatted="false">Tanggal Pembatalan: %s</string>
     <string name="flight_cancellation_cancelled_passegner_detail">Detail Penumpang yang Dibatalkan</string>
     <string name="flight_cancellation_detail_refund_information_label">Informasi Refund</string>
     <string name="flight_cancellation_total_refund_label">Total Refund</string>
     <string name="flight_cancellation_estimate_refund_label">Estimate Refund</string>
-    <string name="flight_cancellation_passenger_status">Pembatalan tiket %s</string>
-    <string name="flight_cancellation_ticket_status_in_progress">Terdapat %d proses pembatalan tiket.</string>
+    <string name="flight_cancellation_passenger_status" formatted="false">Pembatalan tiket %s</string>
+    <string name="flight_cancellation_ticket_status_in_progress" formatted="false">Terdapat %d proses pembatalan tiket.</string>
     <string name="flight_cancellation_ticket_status">Terdapat pembatalan pada tiket ini.</string>
     <string name="flight_label_cancellation_date">Tanggal Pembatalan</string>
     <string name="flight_cancellation_status_success">Pembatalan Berhasil</string>
@@ -426,6 +426,29 @@
     <string name="flight_cancellation_journey_title" formatted="false">Penerbangan %d - %s</string>
     <string name="flight_cancellation_review_dialog_description">Apakah anda yakin ingin membatalkan pesanan?</string>
     <string name="flight_cancellation_review_journey_number">Penerbangan %d</string>
+    <string name="flight_insurance_prefix_label">Asuransi Perjalanan</string>
+    <string name="flight_insurance_additional_benefits_prefix" formatted="false">Termasuk %d Proteksi Lain</string>
+    <string name="flight_insurance_learn_more_label"> Info Selengkapnya</string>
     <string name="flight_passenger_choose_salutation">Pilih Titel</string>
     <string name="flight_review_minus_discount_prefix">- %1$s</string>
+    <string name="flight_passenger_passport_number_secondary_hint">Isi nomor passport</string>
+    <string name="flight_passenger_passport_expiration_secondary_hint">Pilih tanggal</string>
+    <string name="flight_passenger_nationality_secondary_hint">Pilih kewarganegaraan</string>
+    <string name="flight_passenger_passport_issuer_country_secondary_hint">Pilih negara</string>
+    <string name="flight_passenger_passport_expired_date_less_than_6_month_error">Passport harus valid setidaknya sampai %s.</string>
+    <string name="flight_passenger_passport_expired_date_more_than_20_year_error">Masa berlaku passport tidak boleh lebih dari %s.</string>
+    <string name="flight_booking_passport_number_empty_error">Nomor Passport harus diisi</string>
+    <string name="flight_booking_passport_number_alphanumeric_error">Nomor Passport hanya boleh terdiri dari huruf dan angka</string>
+    <string name="flight_booking_passport_nationality_empty_error">Kewarganegaraan harus diisi</string>
+    <string name="flight_booking_passport_issuer_country_empty_error">Negara Penerbit Passport harus diisi</string>
+    <string name="flight_booking_passport_expired_date_empty_error">Tanggal Berakhir Passport harus diisi</string>
+    <string name="flight_passport_search_hint">Cari Negara Penerbit Passport</string>
+    <string name="flight_nationality_search_hint">Cari Negara Kewarganegaraan</string>
+    <string name="flight_detail_order_protection_label">Terproteksi</string>
+    <string name="flight_order_detail_insurance_description">Untuk melihat polis asuransi, cek email Anda.</string>
+    <string name="flight_order_prefix_insurance_price_label" formatted="false">Asuransi %dx</string>
+    <string name="flight_insurance_webview_toolbar_title">Asuransi Perjalanan</string>
+    <string name="flight_detail_facility_label">Fasilitas</string>
+    <string name="flight_detail_facility_separator">:</string>
+    <string name="flight_cancellation_support_docs_description">Harap unggah bukti identitas yang valid. Jika bukti identitas salah, pengembalian dana Anda tidak akan diproses</string>
 </resources>

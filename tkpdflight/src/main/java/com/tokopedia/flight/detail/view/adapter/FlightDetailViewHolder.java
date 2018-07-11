@@ -4,7 +4,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.support.annotation.LayoutRes;
-import android.support.graphics.drawable.VectorDrawableCompat;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -83,17 +83,16 @@ public class FlightDetailViewHolder extends AbstractViewHolder<FlightDetailRoute
         departureTime.setText(FlightDateUtil.formatDate(FlightDateUtil.FORMAT_DATE_API_DETAIL, FlightDateUtil.FORMAT_TIME_DETAIL, route.getDepartureTimestamp()));
         departureDate.setText(FlightDateUtil.formatDate(FlightDateUtil.FORMAT_DATE_API_DETAIL, FlightDateUtil.FORMAT_DATE_LOCAL_DETAIL, route.getDepartureTimestamp()));
         setColorCircle();
-        departureAirportName.setText(String.format("%s (%s)", route.getDepartureAirportCity(), route.getDepartureAirportCode()));
-        departureAirportDesc.setText(route.getDepartureAirportName());
+        setDepartureInfo(route);
+
         flightTime.setText(route.getDuration());
         arrivalTime.setText(FlightDateUtil.formatDate(FlightDateUtil.FORMAT_DATE_API_DETAIL, FlightDateUtil.FORMAT_TIME_DETAIL, route.getArrivalTimestamp()));
         arrivalDate.setText(FlightDateUtil.formatDate(FlightDateUtil.FORMAT_DATE_API_DETAIL, FlightDateUtil.FORMAT_DATE_LOCAL_DETAIL, route.getArrivalTimestamp()));
-        arrivalAirportName.setText(String.format("%s (%s)", route.getArrivalAirportCity(), route.getArrivalAirportCode()));
-        arrivalAirportDesc.setText(route.getArrivalAirportName());
-        transitInfo.setText(itemView.getContext().getString(R.string.flight_label_transit, route.getArrivalAirportCity(), route.getLayover()));
+        setArrivalInfo(route);
         setPNR(route.getPnr());
         ImageHandler.loadImageWithoutPlaceholder(imageAirline, route.getAirlineLogo(),
-                VectorDrawableCompat.create(itemView.getResources(), R.drawable.ic_airline_default, itemView.getContext().getTheme()));
+                ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_airline_default)
+        );
         if (onFlightDetailListener != null) {
             bindLastPosition(onFlightDetailListener.getItemCount() == getAdapterPosition());
             bindTransitInfo(onFlightDetailListener.getItemCount());
@@ -112,6 +111,28 @@ public class FlightDetailViewHolder extends AbstractViewHolder<FlightDetailRoute
             }
         } else {
             stopOverContainerLayout.setVisibility(View.GONE);
+        }
+    }
+
+    private void setDepartureInfo(FlightDetailRouteViewModel route) {
+        if (!TextUtils.isEmpty(route.getDepartureAirportCity())) {
+            departureAirportName.setText(String.format("%s (%s)", route.getDepartureAirportCity(), route.getDepartureAirportCode()));
+            departureAirportDesc.setText(route.getDepartureAirportName());
+        } else {
+            departureAirportName.setText(route.getDepartureAirportCode());
+            departureAirportDesc.setText("");
+        }
+    }
+
+    private void setArrivalInfo(FlightDetailRouteViewModel route) {
+        if (!TextUtils.isEmpty(route.getArrivalAirportCity())) {
+            arrivalAirportDesc.setText(route.getArrivalAirportName());
+            arrivalAirportName.setText(String.format("%s (%s)", route.getArrivalAirportCity(), route.getArrivalAirportCode()));
+            transitInfo.setText(itemView.getContext().getString(R.string.flight_label_transit, route.getArrivalAirportCity(), route.getLayover()));
+        } else {
+            arrivalAirportName.setText(route.getArrivalAirportCode());
+            arrivalAirportDesc.setText("");
+            transitInfo.setText(itemView.getContext().getString(R.string.flight_label_transit, route.getArrivalAirportCode(), route.getLayover()));
         }
     }
 

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.home">
+
+    <application android:label="@string/app_name">
+        <activity
+            android:name="com.tokopedia.home.explore.view.activity.ExploreActivity"
+            android:label="@string/explore"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+    </application>
+
+</manifest>

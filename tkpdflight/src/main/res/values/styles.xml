@@ -81,6 +81,11 @@
         <item name="android:textColor">@color/flight_chips_danger_text</item>
     </style>
 
+    <style name="CardInsuranceDetail">
+        <item name="android:background">@drawable/bg_flight_insurance_card_success</item>
+        <item name="android:textSize">@dimen/sp_11</item>
+    </style>
+
     <style name="CardSuccessStatusStyle">
         <item name="android:background">@drawable/bg_card_success</item>
         <item name="android:textSize">@dimen/sp_10</item>
@@ -154,4 +159,9 @@
         <item name="android:textStyle">normal</item>
         <item name="footerIndicatorHeight">3dp</item>
     </style>
+
+    <style name="TextView.Micro.OrangeRed">
+        <item name="android:textColor">@color/tkpd_main_orange</item>
+    </style>
+
 </resources>

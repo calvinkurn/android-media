@@ -2,24 +2,28 @@ package com.tokopedia.flight.review.view.presenter;
 
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.domain.FlightAddToCartUseCase;
-import com.tokopedia.flight.passenger.domain.FlightPassengerDeleteAllListUseCase;
 import com.tokopedia.flight.booking.view.presenter.FlightBaseBookingPresenter;
 import com.tokopedia.flight.booking.view.viewmodel.BaseCartData;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingVoucherViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightInsuranceViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.mapper.FlightBookingCartDataMapper;
 import com.tokopedia.flight.common.data.model.FlightException;
 import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.common.util.FlightErrorUtil;
+import com.tokopedia.flight.passenger.domain.FlightPassengerDeleteAllListUseCase;
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
 import com.tokopedia.flight.review.data.model.FlightCheckoutEntity;
 import com.tokopedia.flight.review.domain.FlightBookingCheckoutUseCase;
 import com.tokopedia.flight.review.domain.FlightBookingVerifyUseCase;
-import com.tokopedia.flight.review.domain.FlightCheckVoucherCodeUseCase;
+import com.tokopedia.flight.review.domain.FlightCancelVoucherUseCase;
 import com.tokopedia.flight.review.domain.verifybooking.model.response.CartItem;
 import com.tokopedia.flight.review.domain.verifybooking.model.response.DataResponseVerify;
+import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
 import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
 import com.tokopedia.usecase.RequestParams;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -30,6 +34,9 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
+import static com.tokopedia.flight.review.view.fragment.FlightBookingReviewFragment.DEFAULT_IS_COUPON_ONE;
+import static com.tokopedia.flight.review.view.fragment.FlightBookingReviewFragment.DEFAULT_IS_COUPON_ZERO;
+
 /**
  * Created by zulfikarrahman on 11/10/17.
  */
@@ -39,6 +46,7 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
     private final FlightBookingCheckoutUseCase flightBookingCheckoutUseCase;
     private final FlightBookingVerifyUseCase flightBookingVerifyUseCase;
     private final FlightPassengerDeleteAllListUseCase flightPassengerDeleteAllListUseCase;
+    private final FlightCancelVoucherUseCase flightCancelVoucherUseCase;
     private FlightAnalytics flightAnalytics;
 
     @Inject
@@ -47,20 +55,47 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
                                         FlightBookingCartDataMapper flightBookingCartDataMapper,
                                         FlightBookingVerifyUseCase flightBookingVerifyUseCase,
                                         FlightPassengerDeleteAllListUseCase flightPassengerDeleteAllListUseCase,
+                                        FlightCancelVoucherUseCase flightCancelVoucherUseCase,
                                         FlightAnalytics flightAnalytics) {
         super(flightAddToCartUseCase, flightBookingCartDataMapper);
         this.flightBookingCheckoutUseCase = flightBookingCheckoutUseCase;
         this.flightBookingVerifyUseCase = flightBookingVerifyUseCase;
         this.flightPassengerDeleteAllListUseCase = flightPassengerDeleteAllListUseCase;
+        this.flightCancelVoucherUseCase = flightCancelVoucherUseCase;
         this.flightAnalytics = flightAnalytics;
+    }
+
+    @Override
+    public void onViewCreated() {
+        FlightBookingReviewModel reviewModel = getView().getCurrentBookingReviewModel();
+
+        if (reviewModel.getVoucherViewModel().isEnableVoucher()) {
+            getView().showVoucherContainer();
+
+            if (reviewModel.getVoucherViewModel().isAutoapplySuccess()) {
+                if (!(reviewModel.getVoucherViewModel().getIsCouponActive() == DEFAULT_IS_COUPON_ZERO &&
+                        reviewModel.getVoucherViewModel().getIsCoupon() == DEFAULT_IS_COUPON_ONE)) {
+                    renderCouponAndVoucher();
+                }
+            }
+        } else {
+            getView().hideVoucherContainer();
+        }
     }
 
     @Override
     public void verifyBooking(String promoCode, int price, int adult, String cartId,
                               List<FlightBookingPassengerViewModel> flightPassengerViewModels,
-                              String contactName, String country, String email, String phone) {
+                              String contactName, String country, String email, String phone,
+                              List<FlightInsuranceViewModel> insurances) {
         getView().showCheckoutLoading();
         flightAnalytics.eventReviewNextClick();
+        List<String> insuranceIds = new ArrayList<>();
+        for (FlightInsuranceViewModel insurance : insurances) {
+            insuranceIds.add(insurance.getId());
+        }
+
+
         flightBookingVerifyUseCase.createObservable(
                 flightBookingVerifyUseCase.createRequestParams(
                         promoCode,
@@ -70,7 +105,8 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
                         contactName,
                         country,
                         email,
-                        phone
+                        phone,
+                        insuranceIds
                 )
         ).flatMap(new Func1<DataResponseVerify, Observable<FlightCheckoutEntity>>() {
             @Override
@@ -153,6 +189,30 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
         flightAnalytics.eventPurchaseAttemptCancelled();
     }
 
+    @Override
+    public void onCancelAppliedVoucher() {
+        this.flightCancelVoucherUseCase.execute(
+                this.flightCancelVoucherUseCase.createEmptyParams(),
+                new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+
+                    }
+
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        getView().getCurrentBookingReviewModel().getVoucherViewModel()
+                                .setAutoapplySuccess(false);
+                    }
+                }
+        );
+    }
+
     public Subscriber<FlightCheckoutEntity> getSubscriberSubmitData() {
         return new Subscriber<FlightCheckoutEntity>() {
             @Override
@@ -217,6 +277,11 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
         getView().setTimeStamp(timestamp);
     }
 
+    @Override
+    public List<FlightInsuranceViewModel> getInsurances() {
+        return getView().getCurrentBookingReviewModel().getInsuranceIds();
+    }
+
     private void deleteListPassenger() {
         flightPassengerDeleteAllListUseCase.execute(
                 flightPassengerDeleteAllListUseCase.createEmptyRequestParams(),
@@ -238,5 +303,20 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
                     }
                 }
         );
+    }
+
+    private void renderCouponAndVoucher() {
+        FlightBookingVoucherViewModel voucherViewModel = getView().getCurrentBookingReviewModel().getVoucherViewModel();
+        if (voucherViewModel.getIsCoupon() == DEFAULT_IS_COUPON_ONE) {
+            getView().renderCouponInfoData();
+        } else {
+            getView().renderVoucherInfoData();
+        }
+
+        AttributesVoucher attributesVoucher = new AttributesVoucher();
+        attributesVoucher.setVoucherCode(voucherViewModel.getCode());
+        attributesVoucher.setMessage(voucherViewModel.getMessageSuccess());
+        attributesVoucher.setDiscountAmountPlain(voucherViewModel.getDiscountAmount());
+        getView().updateFinalTotal(attributesVoucher, getView().getCurrentBookingReviewModel());
     }
 }

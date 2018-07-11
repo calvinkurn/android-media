@@ -133,10 +133,10 @@ public class TokoCashUtil {
         data.setTypeAction(tokoCashData.getLinked() ? HomeHeaderWalletAction.TYPE_ACTION_TOP_UP
                 : HomeHeaderWalletAction.TYPE_ACTION_ACTIVATION);
 
-        if(tokoCashData.getLinked()) {
+        if (tokoCashData.getLinked()) {
             data.setAppLinkActionButton(tokoCashData.getAction().getApplinks() == null ? ""
                     : tokoCashData.getAction().getApplinks());
-        }else{
+        } else {
             data.setAppLinkActionButton(WALLET_ACTIVATION);
             data.setLabelActionButton(context.getString(R.string.title_activation));
             data.setLabelTitle(context.getString(R.string.label_tokocash));
@@ -186,10 +186,10 @@ public class TokoCashUtil {
         data.setRedirectUrlActionButton(tokoCashData.getAction().getRedirectUrl() == null ? ""
                 : tokoCashData.getAction().getRedirectUrl());
 
-        if(tokoCashData.getLinked()) {
+        if (tokoCashData.getLinked()) {
             data.setAppLinkActionButton(tokoCashData.getAction().getApplinks() == null ? ""
                     : tokoCashData.getAction().getApplinks());
-        }else{
+        } else {
             data.setAppLinkActionButton(WALLET_ACTIVATION);
             data.setLabelActionButton(context.getString(R.string.title_activation));
             data.setLabelTitle(context.getString(R.string.label_tokocash));

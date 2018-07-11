@@ -24,10 +24,10 @@ public class Passenger {
     @SerializedName("dob")
     @Expose
     private String dob;
-    /*@SerializedName("nationality")
+    @SerializedName("nationality")
     @Expose
-    private String nationality;*/
-    /*@SerializedName("passport_no")
+    private String nationality;
+    @SerializedName("passport_no")
     @Expose
     private String passportNo;
     @SerializedName("passport_country")
@@ -35,7 +35,7 @@ public class Passenger {
     private String passportCountry;
     @SerializedName("passport_expiry")
     @Expose
-    private String passportExpiry;*/
+    private String passportExpiry;
     @SerializedName("amenities")
     @Expose
     private List<AmenityPassenger> amenities = new ArrayList<>();
@@ -80,15 +80,15 @@ public class Passenger {
         this.dob = dob;
     }
 
-    /*public String getNationality() {
+    public String getNationality() {
         return nationality;
     }
 
     public void setNationality(String nationality) {
         this.nationality = nationality;
-    }*/
+    }
 
-    /*public String getPassportNo() {
+    public String getPassportNo() {
         return passportNo;
     }
 
@@ -110,7 +110,7 @@ public class Passenger {
 
     public void setPassportExpiry(String passportExpiry) {
         this.passportExpiry = passportExpiry;
-    }*/
+    }
 
     public List<AmenityPassenger> getAmenities() {
         return amenities;

@@ -10,6 +10,8 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingCartData;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingParamViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingVoucherViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightInsuranceViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
@@ -25,18 +27,7 @@ import java.util.List;
 
 public class FlightBookingReviewModel implements Parcelable {
 
-    public static final Creator<FlightBookingReviewModel> CREATOR = new Creator<FlightBookingReviewModel>() {
-        @Override
-        public FlightBookingReviewModel createFromParcel(Parcel in) {
-            return new FlightBookingReviewModel(in);
-        }
-
-        @Override
-        public FlightBookingReviewModel[] newArray(int size) {
-            return new FlightBookingReviewModel[size];
-        }
-    };
-    List<FlightBookingPassengerViewModel> detailPassengersData;
+    private List<FlightBookingPassengerViewModel> detailPassengersData;
     private String id;
     private FlightDetailViewModel detailViewModelListDeparture;
     private FlightDetailViewModel detailViewModelListReturn;
@@ -58,6 +49,8 @@ public class FlightBookingReviewModel implements Parcelable {
     private String departureDate;
     private String returnDate;
     private String departureTripId;
+    private FlightBookingVoucherViewModel voucherViewModel;
+    private List<FlightInsuranceViewModel> insuranceIds;
 
     public FlightBookingReviewModel(FlightBookingParamViewModel flightBookingParamViewModel,
                                     FlightBookingCartData flightBookingCartData,
@@ -65,7 +58,8 @@ public class FlightBookingReviewModel implements Parcelable {
                                     String returnTripId,
                                     String luggagePrefix,
                                     String mealPrefix,
-                                    String birthdatePrefix) {
+                                    String birthdatePrefix,
+                                    String passportNumberPrefix) {
         setId(flightBookingParamViewModel.getId());
         setDetailViewModelListDeparture(flightBookingCartData.getDepartureTrip());
         setDetailViewModelListReturn(flightBookingCartData.getReturnTrip());
@@ -74,7 +68,8 @@ public class FlightBookingReviewModel implements Parcelable {
                         flightBookingParamViewModel.getPassengerViewModels(),
                         luggagePrefix,
                         mealPrefix,
-                        birthdatePrefix
+                        birthdatePrefix,
+                        passportNumberPrefix
                 )
         );
         setFlightReviewFares(flightBookingParamViewModel.getPriceListDetails());
@@ -95,9 +90,12 @@ public class FlightBookingReviewModel implements Parcelable {
         setFlightClass(flightBookingParamViewModel.getSearchParam().getFlightClass());
         setDepartureDate(flightBookingParamViewModel.getSearchParam().getDepartureDate());
         setReturnDate(flightBookingParamViewModel.getSearchParam().getReturnDate());
+        setVoucherViewModel(flightBookingCartData.getVoucherViewModel());
+        setInsuranceIds(flightBookingParamViewModel.getInsurances());
     }
 
     protected FlightBookingReviewModel(Parcel in) {
+        detailPassengersData = in.createTypedArrayList(FlightBookingPassengerViewModel.CREATOR);
         id = in.readString();
         detailViewModelListDeparture = in.readParcelable(FlightDetailViewModel.class.getClassLoader());
         detailViewModelListReturn = in.readParcelable(FlightDetailViewModel.class.getClassLoader());
@@ -106,7 +104,6 @@ public class FlightBookingReviewModel implements Parcelable {
         dateFinishTime = in.readString();
         totalPrice = in.readString();
         totalPriceNumeric = in.readInt();
-        detailPassengersData = in.createTypedArrayList(FlightBookingPassengerViewModel.CREATOR);
         phoneCodeViewModel = in.readParcelable(FlightBookingPhoneCodeViewModel.class.getClassLoader());
         contactName = in.readString();
         contactEmail = in.readString();
@@ -120,6 +117,61 @@ public class FlightBookingReviewModel implements Parcelable {
         departureDate = in.readString();
         returnDate = in.readString();
         departureTripId = in.readString();
+        voucherViewModel = in.readParcelable(FlightBookingVoucherViewModel.class.getClassLoader());
+        insuranceIds = in.createTypedArrayList(FlightInsuranceViewModel.CREATOR);
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeTypedList(detailPassengersData);
+        dest.writeString(id);
+        dest.writeParcelable(detailViewModelListDeparture, flags);
+        dest.writeParcelable(detailViewModelListReturn, flags);
+        dest.writeTypedList(detailPassengers);
+        dest.writeTypedList(flightReviewFares);
+        dest.writeString(dateFinishTime);
+        dest.writeString(totalPrice);
+        dest.writeInt(totalPriceNumeric);
+        dest.writeParcelable(phoneCodeViewModel, flags);
+        dest.writeString(contactName);
+        dest.writeString(contactEmail);
+        dest.writeString(contactPhone);
+        dest.writeTypedList(farePrices);
+        dest.writeInt(adult);
+        dest.writeInt(children);
+        dest.writeInt(infant);
+        dest.writeString(returnTripId);
+        dest.writeParcelable(flightClass, flags);
+        dest.writeString(departureDate);
+        dest.writeString(returnDate);
+        dest.writeString(departureTripId);
+        dest.writeParcelable(voucherViewModel, flags);
+        dest.writeTypedList(insuranceIds);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<FlightBookingReviewModel> CREATOR = new Creator<FlightBookingReviewModel>() {
+        @Override
+        public FlightBookingReviewModel createFromParcel(Parcel in) {
+            return new FlightBookingReviewModel(in);
+        }
+
+        @Override
+        public FlightBookingReviewModel[] newArray(int size) {
+            return new FlightBookingReviewModel[size];
+        }
+    };
+
+    public void setInsuranceIds(List<FlightInsuranceViewModel> insuranceIds) {
+        this.insuranceIds = insuranceIds;
+    }
+
+    public List<FlightInsuranceViewModel> getInsuranceIds() {
+        return insuranceIds;
     }
 
     public FlightBookingPhoneCodeViewModel getPhoneCodeViewModel() {
@@ -298,10 +350,19 @@ public class FlightBookingReviewModel implements Parcelable {
         this.departureTripId = departureTripId;
     }
 
+    public FlightBookingVoucherViewModel getVoucherViewModel() {
+        return voucherViewModel;
+    }
+
+    public void setVoucherViewModel(FlightBookingVoucherViewModel voucherViewModel) {
+        this.voucherViewModel = voucherViewModel;
+    }
+
     private List<FlightDetailPassenger> generateFlightDetailPassenger(List<FlightBookingPassengerViewModel> passengerViewModels,
                                                                       String luggagePrefix,
                                                                       String mealPrefix,
-                                                                      String birthdatePrefix) {
+                                                                      String birthdatePrefix,
+                                                                      String passportNumberPrefix) {
         List<FlightDetailPassenger> flightDetailPassengers = new ArrayList<>();
         for (FlightBookingPassengerViewModel flightBookingPassengerViewModel : passengerViewModels) {
             FlightDetailPassenger flightDetailPassenger = new FlightDetailPassenger();
@@ -309,11 +370,13 @@ public class FlightBookingReviewModel implements Parcelable {
             flightDetailPassenger.setPassengerType(flightBookingPassengerViewModel.getType());
             flightDetailPassenger.setInfoPassengerList(
                     generateDetailViewModelPassenger(flightBookingPassengerViewModel.getPassengerBirthdate(),
+                            flightBookingPassengerViewModel.getPassportNumber(),
                             flightBookingPassengerViewModel.getFlightBookingLuggageMetaViewModels(),
                             flightBookingPassengerViewModel.getFlightBookingMealMetaViewModels(),
                             luggagePrefix,
                             mealPrefix,
-                            birthdatePrefix
+                            birthdatePrefix,
+                            passportNumberPrefix
                     )
             );
             flightDetailPassengers.add(flightDetailPassenger);
@@ -322,17 +385,23 @@ public class FlightBookingReviewModel implements Parcelable {
     }
 
     private List<SimpleViewModel> generateDetailViewModelPassenger(String passengerBirthdate,
+                                                                   String passportNumber,
                                                                    List<FlightBookingAmenityMetaViewModel> flightBookingLuggageMetaViewModels,
                                                                    List<FlightBookingAmenityMetaViewModel> flightBookingAmenityMetaViewModels,
                                                                    String luggagePrefix,
                                                                    String mealPrefix,
-                                                                   String birthdatePrefix) {
+                                                                   String birthdatePrefix,
+                                                                   String passportNumberPrefix) {
         List<SimpleViewModel> simpleViewModels = new ArrayList<>();
 
         // add tanggal lahir
         if (passengerBirthdate != null && !passengerBirthdate.equals(""))
             simpleViewModels.add(new SimpleViewModel(String.valueOf(FlightDateUtil.formatDate(
                     FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.DEFAULT_VIEW_FORMAT, passengerBirthdate)), birthdatePrefix));
+
+        if (passportNumber != null && !passportNumber.equals("")) {
+            simpleViewModels.add(new SimpleViewModel(passportNumber, passportNumberPrefix));
+        }
 
         for (FlightBookingAmenityMetaViewModel flightBookingLuggageMetaViewModel : flightBookingLuggageMetaViewModels) {
             SimpleViewModel simpleViewModel = new SimpleViewModel();
@@ -347,6 +416,7 @@ public class FlightBookingReviewModel implements Parcelable {
             simpleViewModel.setLabel(generateLabelMeal(flightBookingAmenityMetaViewModel.getAmenities()));
             simpleViewModels.add(simpleViewModel);
         }
+
         return simpleViewModels;
     }
 
@@ -364,36 +434,5 @@ public class FlightBookingReviewModel implements Parcelable {
             labelLuggage = labelLuggage + flightBookingLuggageViewModel.getTitle() + "\n";
         }
         return labelLuggage;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(id);
-        dest.writeParcelable(detailViewModelListDeparture, flags);
-        dest.writeParcelable(detailViewModelListReturn, flags);
-        dest.writeTypedList(detailPassengers);
-        dest.writeTypedList(flightReviewFares);
-        dest.writeString(dateFinishTime);
-        dest.writeString(totalPrice);
-        dest.writeInt(totalPriceNumeric);
-        dest.writeTypedList(detailPassengersData);
-        dest.writeParcelable(phoneCodeViewModel, flags);
-        dest.writeString(contactName);
-        dest.writeString(contactEmail);
-        dest.writeString(contactPhone);
-        dest.writeTypedList(farePrices);
-        dest.writeInt(adult);
-        dest.writeInt(children);
-        dest.writeInt(infant);
-        dest.writeString(returnTripId);
-        dest.writeParcelable(flightClass, flags);
-        dest.writeString(departureDate);
-        dest.writeString(returnDate);
-        dest.writeString(departureTripId);
     }
 }

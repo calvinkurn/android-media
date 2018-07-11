@@ -1,11 +1,13 @@
 package com.tokopedia.digital.product.view.listener;
 
 import android.app.Activity;
+
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.digital.cart.listener.IBaseView;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.product.view.model.BannerData;
 import com.tokopedia.digital.product.view.model.CategoryData;
+import com.tokopedia.digital.product.view.model.GuideData;
 import com.tokopedia.digital.product.view.model.HistoryClientNumber;
 import com.tokopedia.digital.product.view.model.PulsaBalance;
 
@@ -21,10 +23,14 @@ public interface IProductDigitalView extends IBaseView {
 
     void renderOtherBannerListData(String title, List<BannerData> otherBannerDataList);
 
+    void renderGuideListData(List<GuideData> guideDataList);
+
     void renderStateSelectedAllData();
 
     void renderCheckPulsaBalanceData(int selectedSim, String ussdCode, String phoneNumber,
                                      String operatorErrorMsg, Boolean isSimActive, String carrierName);
+
+    void renderCheckETollBalance(String text, String buttonText);
 
     void renderErrorStyleNotSupportedProductDigitalData(String message);
 
@@ -41,6 +47,8 @@ public interface IProductDigitalView extends IBaseView {
     List<BannerData> getBannerDataListState();
 
     List<BannerData> getOtherBannerDataListState();
+
+    List<GuideData> getGuideDataListState();
 
     HistoryClientNumber getHistoryClientNumberState();
 
@@ -71,4 +79,13 @@ public interface IProductDigitalView extends IBaseView {
     void navigateToWebview(String helpUrl);
 
     Activity getActivity();
+
+    boolean isDigitalSmartcardEnabled();
+
+    void renderPromoGuideTab(int tabCount, String firstTab);
+
+    void hidePromoGuideTab();
+
+    void showPromoGuideTab();
+
 }

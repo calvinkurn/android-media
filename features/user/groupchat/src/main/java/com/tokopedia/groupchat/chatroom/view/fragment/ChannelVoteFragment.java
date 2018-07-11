@@ -48,8 +48,9 @@ import com.tokopedia.groupchat.vote.view.adapter.VoteAdapter;
 import com.tokopedia.groupchat.vote.view.adapter.typefactory.VoteTypeFactory;
 import com.tokopedia.groupchat.vote.view.adapter.typefactory.VoteTypeFactoryImpl;
 import com.tokopedia.groupchat.vote.view.model.VoteInfoViewModel;
-import com.tokopedia.groupchat.vote.view.model.VoteStatisticViewModel;
 import com.tokopedia.groupchat.vote.view.model.VoteViewModel;
+import com.tokopedia.vote.di.VoteModule;
+import com.tokopedia.vote.domain.model.VoteStatisticDomainModel;
 
 import javax.inject.Inject;
 
@@ -103,8 +104,10 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
 
     @Override
     protected void initInjector() {
-        GroupChatComponent streamComponent = DaggerGroupChatComponent.builder().baseAppComponent(
-                ((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent()).build();
+        GroupChatComponent streamComponent = DaggerGroupChatComponent.builder()
+                .voteModule(new VoteModule())
+                .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
+                .build();
 
         DaggerChatroomComponent.builder()
                 .groupChatComponent(streamComponent)
@@ -245,7 +248,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
         voteInfoLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!TextUtils.isEmpty(voteInfoViewModel.getVoteInfoUrl())) {
+                if (!TextUtils.isEmpty(voteInfoViewModel.getVoteInfoUrl())) {
                     ((GroupChatModuleRouter) getActivity().getApplicationContext()).openRedirectUrl
                             (getActivity(), voteInfoViewModel.getVoteInfoUrl());
                 }
@@ -354,7 +357,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
     }
 
     @Override
-    public void onSuccessVote(VoteViewModel element, VoteStatisticViewModel voteStatisticViewModel) {
+    public void onSuccessVote(VoteViewModel element, VoteStatisticDomainModel voteStatisticViewModel) {
         canVote = true;
         if (voteInfoViewModel != null) {
             voteAdapter.change(voteInfoViewModel, element, voteStatisticViewModel);

@@ -1,7 +1,9 @@
 package com.tokopedia.tkpdpdp;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -12,7 +14,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager;
+import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.network.entity.variant.Child;
@@ -20,18 +24,29 @@ import com.tokopedia.core.network.entity.variant.Option;
 import com.tokopedia.core.network.entity.variant.ProductVariant;
 import com.tokopedia.core.network.entity.variant.Variant;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
+import com.tokopedia.design.component.EditTextCompat;
+import com.tokopedia.design.component.NumberPickerWithCounterView;
+import com.tokopedia.design.utils.CurrencyFormatHelper;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.tkpdpdp.adapter.VariantOptionAdapter;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import static android.view.View.VISIBLE;
+import static com.tokopedia.core.var.TkpdCache.Key.STATE_ORIENTATION_CHANGED;
+import static com.tokopedia.core.var.TkpdCache.PRODUCT_DETAIL;
 
 
 public class VariantActivity extends TActivity  implements VariantOptionAdapter.OnVariantOptionChoosedListener  {
 
     public static final String KEY_VARIANT_DATA = "VARIANT_DATA";
     public static final String KEY_PRODUCT_DETAIL_DATA = "PRODUCT_DETAIL_DATA";
+    public static final String KEY_STATE_OPEN_VARIANT = "KEY_STATE_OPEN_VARIANT";
+    public static final String KEY_STATE_RESULT_VARIANT = "KEY_STATE_RESULT_VARIANT";
+    public static final String KEY_SELECTED_QUANTIY = "KEY_QUANTITY";
+    public static final String KEY_REMARK_FOR_SELLER = "KEY_REMARK_FOR_SELLER";
     public static final String KEY_SELLER_MODE = "ON_SELLER_MODE";
     public static final String KEY_LEVEL1_SELECTED= "LEVEL1_OPTION";
     public static final String KEY_LEVEL2_SELECTED= "LEVEL2_OPTION";
@@ -39,8 +54,15 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
     public static final String IDENTIFIER_SIZE = "size";
 
     public static final int SELECTED_VARIANT_RESULT = 99;
-    public static final int SELECTED_VARIANT_RESULT_TO_BUY = 98;
-    public static final int KILL_PDP_BACKGROUND = 97;
+    public static final int SELECTED_VARIANT_RESULT_SKIP_TO_CART = 98;
+    public static final int SELECTED_VARIANT_RESULT_STAY_IN_PDP = 97;
+    public static final int SELECTED_VARIANT_RESULT_CANCEL = 95;
+    public static final int KILL_PDP_BACKGROUND = 96;
+    private static final String CRASHLYTIC_VARIANT_TAG = "CRASHLYTIC VARIANT";
+
+    public static final int STATE_BUTTON_BUY = 1123;
+    public static final int STATE_BUTTON_CART = 2234;
+    public static final int STATE_VARIANT_DEFAULT = 0;
 
     private TextView topBarTitle;
     private ImageView productImage;
@@ -60,19 +82,43 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
     private TextView sizeChartLevel1;
     private TextView sizeChartLevel2;
     private TextView textStock;
+    private View viewNewCheckoutFlow;
+    private View buttonCart;
+    private View viewCartPrice;
+    private TextView textCartPrice;
+    private View buttonBuy;
+    private TextView textButtonBuy;
+    private NumberPickerWithCounterView widgetQty;
+    private EditTextCompat etNotesSeller;
+    private View viewContainerQty;
+    private View viewContainerRemark;
+    private View viewContainerButton;
 
     private VariantOptionAdapter variantOptionAdapterLevel2;
     private VariantOptionAdapter variantOptionAdapterLevel1;
 
+    private int stateFormVariantPage;
+    private int selectedQuantity;
+    private String selectedRemarkNotes;
     private ProductVariant productVariant;
     private ProductDetailData productDetailData;
     private String mainImage = "";
+    private LocalCacheHandler localCacheHandler;
+
+    @Override
+    protected void forceRotation() {
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         productVariant = getIntent().getParcelableExtra(KEY_VARIANT_DATA);
         productDetailData = getIntent().getParcelableExtra(KEY_PRODUCT_DETAIL_DATA);
+        stateFormVariantPage = getIntent().getIntExtra(KEY_STATE_OPEN_VARIANT, STATE_VARIANT_DEFAULT);
+        selectedQuantity = getIntent().getIntExtra(KEY_SELECTED_QUANTIY, 1);
+        selectedRemarkNotes = getIntent().getStringExtra(KEY_REMARK_FOR_SELLER);
+        localCacheHandler = new LocalCacheHandler(VariantActivity.this, PRODUCT_DETAIL);
         setContentView(R.layout.activity_variant);
         hideToolbar();
         initView();
@@ -80,6 +126,13 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
         initAdapter();
         initVariantData();
         setupTopbar();
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        unregisterShake();
     }
 
 
@@ -102,6 +155,18 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
         sizeChartLevel1 = findViewById(R.id.sizechart_level1);
         sizeChartLevel2 = findViewById(R.id.sizechart_level2);
         textStock = findViewById(R.id.text_variant_stock);
+        viewNewCheckoutFlow = findViewById(R.id.container_new_checkout_flow);
+        buttonCart = findViewById(R.id.action_button_cart);
+        viewCartPrice = findViewById(R.id.view_product_price);
+        textCartPrice = findViewById(R.id.text_product_price);
+        buttonBuy = findViewById(R.id.new_button_save);
+        textButtonBuy = findViewById(R.id.new_text_button_save);
+        widgetQty = findViewById(R.id.number_picker_quantitiy_product);
+        etNotesSeller = findViewById(R.id.et_remark);
+        viewContainerQty = findViewById(R.id.view_qty_product);
+        viewContainerRemark = findViewById(R.id.view_remark_for_seller);
+        viewContainerButton = findViewById(R.id.all_kind_button_buy);
+
         ImageHandler.LoadImage(productImage, productDetailData.getProductImages().get(0).getImageSrc300());
         if (!TextUtils.isEmpty(productVariant.getSizechart()) &&
                 productVariant.getVariant().get(0).getIdentifier().equals(IDENTIFIER_SIZE)) {
@@ -124,13 +189,43 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
             });
         }
         renderHeaderInfo();
+        setUpByConfiguration(getResources().getConfiguration());
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        setUpByConfiguration(newConfig);
+    }
+
+    private void setUpByConfiguration(Configuration configuration) {
+        if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            if (!localCacheHandler.getBoolean(STATE_ORIENTATION_CHANGED).booleanValue()) {
+                UnifyTracking.eventPDPOrientationChanged(Integer.toString(productDetailData.getInfo().getProductId()));
+                localCacheHandler.putBoolean(STATE_ORIENTATION_CHANGED,Boolean.TRUE);
+                localCacheHandler.applyEditor();
+            }
+        }
     }
 
     private void renderHeaderInfo() {
         productName.setText(productDetailData.getInfo().getProductName());
         productPrice.setText(productDetailData.getInfo().getProductPrice());
-        if(productDetailData.getCampaign() != null
-                && productDetailData.getCampaign().getActive()) {
+        widgetQty.setNumber(selectedQuantity);
+        etNotesSeller.setText(selectedRemarkNotes);
+        widgetQty.setOnPickerActionListener(num -> {
+            if (isCampaign()) {
+                textCartPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(productDetailData.getCampaign().getDiscountedPrice() * num, true));
+            } else {
+                textCartPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(productDetailData.getInfo().getProductPriceUnformatted() * num, true));
+            }
+        });
+        try {
+            widgetQty.setMinValue(Integer.parseInt(productDetailData.getInfo().getProductMinOrder()));
+        } catch (NumberFormatException e) {
+            widgetQty.setMinValue(1);
+        }
+        if(isCampaign()) {
             textOriginalPrice.setText(productDetailData.getCampaign().getOriginalPriceFmt());
             textOriginalPrice.setPaintFlags(
                     textOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG
@@ -150,6 +245,11 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
 
     }
 
+    private boolean isCampaign() {
+        return productDetailData.getCampaign() != null
+                && productDetailData.getCampaign().getActive();
+    }
+
     private void openSizeChart() {
         ArrayList<String> images = new ArrayList<>();
         images.add(productVariant.getSizechart());
@@ -163,7 +263,7 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
 
     private void initViewListener() {
         if (getIntent().getBooleanExtra(KEY_SELLER_MODE,false)) {
-           buttonSave.setVisibility(View.GONE);
+            viewContainerButton.setVisibility(View.GONE);
         }
         findViewById(R.id.simple_top_bar_close_button)
                 .setOnClickListener(new View.OnClickListener() {
@@ -174,34 +274,110 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
                 });
     }
 
+    private String generateTextButtonBuy() {
+        switch (stateFormVariantPage) {
+            case STATE_BUTTON_BUY:
+                if (isPreOrder()) {
+                    return getResources().getString(R.string.title_pre_order);
+                } else {
+                    return getResources().getString(R.string.title_buy_now);
+                }
+            case STATE_BUTTON_CART:
+                return getResources().getString(R.string.title_add_to_cart);
+            default:
+                if (isPreOrder()) {
+                    return getResources().getString(R.string.title_pre_order);
+                } else {
+                    return getResources().getString(R.string.title_buy);
+                }
+        }
+    }
+
+    private boolean isPreOrder() {
+        return productDetailData.getPreOrder() != null && productDetailData.getPreOrder().getPreorderStatus().equals("1")
+                && !productDetailData.getPreOrder().getPreorderStatus().equals("0")
+                && !productDetailData.getPreOrder().getPreorderProcessTime().equals("0")
+                && !productDetailData.getPreOrder().getPreorderProcessTimeType().equals("0")
+                && !productDetailData.getPreOrder().getPreorderProcessTimeTypeString().equals("0");
+    }
+
+    private Drawable generateBackgroundButtonBuy() {
+        switch (stateFormVariantPage) {
+            case STATE_BUTTON_CART:
+                return ContextCompat.getDrawable(VariantActivity.this, R.drawable.white_button_rounded);
+            case STATE_BUTTON_BUY:
+            default:
+                return ContextCompat.getDrawable(VariantActivity.this, R.drawable.orange_button_rounded);
+        }
+    }
+
+    private int generateColorTextButtonBuy() {
+        switch (stateFormVariantPage) {
+            case STATE_BUTTON_CART:
+                return ContextCompat.getColor(VariantActivity.this, R.color.font_black_primary_70);
+            case STATE_BUTTON_BUY:
+            default:
+                return ContextCompat.getColor(VariantActivity.this, R.color.href_link_rev);
+        }
+    }
+
+    private String generateTextPriceCart() {
+        if(productDetailData.getCampaign() != null
+                && productDetailData.getCampaign().getActive()) {
+            return CurrencyFormatUtil.convertPriceValueToIdrFormat(productDetailData.getCampaign().getDiscountedPrice() * widgetQty.getValue(), true);
+        } else {
+            return CurrencyFormatUtil.convertPriceValueToIdrFormat(productDetailData.getInfo().getProductPriceUnformatted() * widgetQty.getValue(), true);
+        }
+    }
+
+    private View.OnClickListener onButtonCartClick() {
+        return view -> {
+            Intent intent = generateExtraSelectedIntent();
+            intent.putExtra(KEY_STATE_RESULT_VARIANT, VariantActivity.SELECTED_VARIANT_RESULT_STAY_IN_PDP);
+            setResult(RESULT_OK, intent);
+            finish();
+            VariantActivity.this.overridePendingTransition(0,com.tokopedia.core.R.anim.push_down);
+        };
+    }
+
+    private View.OnClickListener onButtonBuyClick() {
+        return view -> {
+            Intent intent = generateExtraSelectedIntent();
+            intent.putExtra(KEY_STATE_RESULT_VARIANT, VariantActivity.SELECTED_VARIANT_RESULT_SKIP_TO_CART);
+            setResult(RESULT_OK, intent);
+            finish();
+            VariantActivity.this.overridePendingTransition(0,com.tokopedia.core.R.anim.push_down);
+        };
+    }
+
     public void updateButton(Child child) {
         if (child.isIsBuyable() && productDetailData.getShopInfo().getShopStatus()==1) {
-            buttonSave.setBackground(ContextCompat.getDrawable(VariantActivity.this,R.drawable.button_save_orange));
-            textButtonSave.setTextColor(ContextCompat.getColor(VariantActivity.this,R.color.href_link_rev));
-            if (productDetailData.getPreOrder() != null && productDetailData.getPreOrder().getPreorderStatus().equals("1")
-                    && !productDetailData.getPreOrder().getPreorderStatus().equals("0")
-                    && !productDetailData.getPreOrder().getPreorderProcessTime().equals("0")
-                    && !productDetailData.getPreOrder().getPreorderProcessTimeType().equals("0")
-                    && !productDetailData.getPreOrder().getPreorderProcessTimeTypeString().equals("0")) {
-                textButtonSave.setText(getResources().getString(R.string.title_pre_order));
-            } else {
-                textButtonSave.setText(getResources().getString(R.string.title_buy));
-            }
-            buttonSave.setClickable(true);
-            buttonSave.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    setResult(VariantActivity.SELECTED_VARIANT_RESULT_TO_BUY, generateExtraSelectedIntent());
-                    finish();
-                    VariantActivity.this.overridePendingTransition(0,com.tokopedia.core.R.anim.push_down);
-                }
-            });
+            viewNewCheckoutFlow.setVisibility(VISIBLE);
+            buttonSave.setVisibility(View.GONE);
+            buttonBuy.setBackground(ContextCompat.getDrawable(VariantActivity.this, R.drawable.orange_button_rounded));
+
+            textButtonBuy.setText(generateTextButtonBuy());
+            textCartPrice.setText(generateTextPriceCart());
+
+            buttonCart.setVisibility(stateFormVariantPage == STATE_VARIANT_DEFAULT ? VISIBLE : View.GONE);
+
+            buttonBuy.setClickable(true);
+            buttonBuy.setOnClickListener(
+                    stateFormVariantPage == STATE_BUTTON_CART ?
+                            onButtonCartClick() :
+                            onButtonBuyClick()
+            );
+            buttonCart.setOnClickListener(onButtonCartClick());
         } else if (child.isIsBuyable()==false) {
+            viewNewCheckoutFlow.setVisibility(View.GONE);
+            buttonSave.setVisibility(View.VISIBLE);
             textButtonSave.setText(getResources().getString(R.string.title_warehouse));
             textButtonSave.setTextColor(ContextCompat.getColor(VariantActivity.this,R.color.black_38));
             buttonSave.setBackground(ContextCompat.getDrawable(VariantActivity.this,R.drawable.button_save_grey));
             buttonSave.setClickable(false);
         } else {
+            viewNewCheckoutFlow.setVisibility(View.GONE);
+            buttonSave.setVisibility(View.VISIBLE);
             if (productDetailData.getPreOrder() != null && productDetailData.getPreOrder().getPreorderStatus().equals("1")
                     && !productDetailData.getPreOrder().getPreorderStatus().equals("0")
                     && !productDetailData.getPreOrder().getPreorderProcessTime().equals("0")
@@ -219,10 +395,14 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
 
     private Intent generateExtraSelectedIntent() {
         Intent intent = new Intent();
-        intent.putExtra(KEY_PRODUCT_DETAIL_DATA,productDetailData);
-        intent.putExtra(KEY_VARIANT_DATA,productVariant);
-        intent.putExtra(KEY_LEVEL1_SELECTED,variantOptionAdapterLevel1.getSelectedOption());
-        if (productVariant.getVariant().size()>1)intent.putExtra(KEY_LEVEL2_SELECTED,variantOptionAdapterLevel2.getSelectedOption());
+        intent.putExtra(KEY_PRODUCT_DETAIL_DATA, productDetailData);
+        intent.putExtra(KEY_VARIANT_DATA, productVariant);
+        intent.putExtra(KEY_SELECTED_QUANTIY, widgetQty.getValue());
+        intent.putExtra(KEY_REMARK_FOR_SELLER, String.valueOf(etNotesSeller.getText()));
+        intent.putExtra(KEY_LEVEL1_SELECTED, variantOptionAdapterLevel1.getSelectedOption());
+        if (productVariant.getVariant().size() > 1) {
+            intent.putExtra(KEY_LEVEL2_SELECTED, variantOptionAdapterLevel2.getSelectedOption());
+        }
         return intent;
     }
 
@@ -267,10 +447,18 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
             defaultChild = productVariant.getChildFromProductId(productVariant.getDefaultChild());
         }
 
-        if (defaultChild != null && TextUtils.isEmpty(defaultChild.getPicture().getThumbnail())) {
-            mainImage = new String (productDetailData.getProductImages().get(0).getImageSrc());
-        } else if (productDetailData.getProductImages().size()>1) {
-            mainImage = new String (productDetailData.getProductImages().get(1).getImageSrc());
+        try {
+            if (defaultChild != null && TextUtils.isEmpty(defaultChild.getPicture().getThumbnail())) {
+                mainImage = productDetailData.getProductImages().get(0).getImageSrc();
+            } else if (productDetailData.getProductImages().size()>1) {
+                mainImage = productDetailData.getProductImages().get(1).getImageSrc();
+            }
+        } catch (Exception e) {
+            Crashlytics.log(
+                    0,
+                    CRASHLYTIC_VARIANT_TAG,
+                    String.valueOf(productDetailData.getInfo().getProductId()) + " " + e.getMessage()
+            );
         }
 
         for (Child child: productVariant.getChildren()) {
@@ -405,6 +593,10 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
             updateButton(child);
         }
         renderHeaderInfo();
+        List<String> joinVariant = productVariant.generateVariantValueIntoList(productDetailData.getInfo().getProductId());
+        etNotesSeller.setText(
+                getString(R.string.format_notes_variant, TextUtils.join(", ", joinVariant))
+        );
         if (productVariant.getVariant().get(level-1).getIdentifier().equals(IDENTIFIER_SIZE)) {
             UnifyTracking.eventSelectSizeVariant(option.getValue());
         } else if (productVariant.getVariant().get(level-1).getIdentifier().equals(IDENTIFIER_COLOUR)) {
@@ -415,15 +607,19 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
     @Override
     public void onBackPressed(){
         Child childSelected = getProductDatumSelected();
+        Intent intent;
         if (childSelected!=null && childSelected.isIsBuyable() && productDetailData.getShopInfo().getShopStatus()==1) {
-            setResult(VariantActivity.SELECTED_VARIANT_RESULT, generateExtraSelectedIntent());
+            intent = generateExtraSelectedIntent();
+            intent.putExtra(KEY_STATE_RESULT_VARIANT, VariantActivity.SELECTED_VARIANT_RESULT_CANCEL);
         } else {
-            Intent intent = new Intent();
+            intent = new Intent();
             intent.putExtra(KEY_PRODUCT_DETAIL_DATA, productDetailData);
             intent.putExtra(KEY_VARIANT_DATA, productVariant);
-            setResult(VariantActivity.SELECTED_VARIANT_RESULT, intent);
+            intent.putExtra(KEY_STATE_RESULT_VARIANT, VariantActivity.SELECTED_VARIANT_RESULT_CANCEL);
         }
+        setResult(RESULT_OK, intent);
         finish();
         VariantActivity.this.overridePendingTransition(0,com.tokopedia.core.R.anim.push_down);
     }
+
 }
