@@ -245,9 +245,9 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     }
 
                     tapActionTextView.setBackground(shape);
-                    if (tapActions.getButtonType().equalsIgnoreCase("button")) {
+                    if (tapActions.getControl().equalsIgnoreCase("button")) {
                         presenter.setTapActionButton(item.getTapActions(), ItemsAdapter.this, getIndex());
-                    } else if (tapActions.getButtonType().equalsIgnoreCase("redirect")) {
+                    } else if (tapActions.getControl().equalsIgnoreCase("redirect")) {
                         if (!tapActions.getBody().equals("")) {
                             if (!tapActions.getBody().getAppURL().equals(""))
                                 tapActionTextView.setOnClickListener(getActionButtonClickListener(tapActions.getBody().getAppURL()));
@@ -261,67 +261,74 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             }
 
 
-
 //            if (item.getActionButtons() != null && item.getActionButtons().size() > 0 && !item.isActionButtonLoaded()) {
 //                progressBar.setVisibility(View.VISIBLE);
 //                actionLayout.setVisibility(View.GONE);
 //                presenter.setActionButton(item.getActionButtons(), ItemsAdapter.this, getIndex());
 //            }
 
-            if (item.isActionButtonLoaded()) {
-                progressBar.setVisibility(View.GONE);
-                if (item.getActionButtons() == null || item.getActionButtons().size() == 0) {
-                    actionLayout.setVisibility(View.GONE);
+
+            progressBar.setVisibility(View.GONE);
+            if (item.getActionButtons() == null || item.getActionButtons().size() == 0) {
+                actionLayout.setVisibility(View.GONE);
+            } else {
+                actionLayout.setVisibility(View.VISIBLE);
+            }
+
+            for (int i = 0; i < item.getActionButtons().size(); i++) {
+                ActionButton actionButton = item.getActionButtons().get(i);
+
+                TextView actionTextView = new TextView(context);
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                params.setMargins(0, (int) context.getResources().getDimension(R.dimen.dp_8), 0, 0);
+                actionTextView.setPadding(24, 24, 24, 24);
+                actionTextView.setLayoutParams(params);
+                actionTextView.setTextColor(Color.WHITE);
+                actionTextView.setGravity(Gravity.CENTER_HORIZONTAL);
+                actionTextView.setText(actionButton.getLabel().toUpperCase());
+                GradientDrawable shape = new GradientDrawable();
+                shape.setShape(GradientDrawable.RECTANGLE);
+                if (!actionButton.getActionColor().getBackground().equals("")) {
+                    shape.setColor(android.graphics.Color.parseColor(actionButton.getActionColor().getBackground()));
                 } else {
-                    actionLayout.setVisibility(View.VISIBLE);
+                    shape.setColor(context.getResources().getColor(R.color.green_nob));
+                }
+                if (!actionButton.getActionColor().getBorder().equals("")) {
+                    shape.setStroke(1, android.graphics.Color.parseColor(actionButton.getActionColor().getBorder()));
+                }
+                actionTextView.setBackground(shape);
+                if (!actionButton.getActionColor().getTextColor().equals("")) {
+                    actionTextView.setTextColor(android.graphics.Color.parseColor(actionButton.getActionColor().getTextColor()));
+                } else {
+                    actionTextView.setTextColor(Color.WHITE);
                 }
 
-                for (int i = 0; i < item.getActionButtons().size(); i++) {
-                    ActionButton actionButton = item.getActionButtons().get(i);
 
-                    TextView actionTextView = new TextView(context);
-                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                    params.setMargins(0, (int) context.getResources().getDimension(R.dimen.dp_8), 0, 0);
-                    actionTextView.setPadding(24, 24, 24, 24);
-                    actionTextView.setLayoutParams(params);
-                    actionTextView.setTextColor(Color.WHITE);
-                    actionTextView.setGravity(Gravity.CENTER_HORIZONTAL);
-                    actionTextView.setText(actionButton.getLabel().toUpperCase());
-                    GradientDrawable shape = new GradientDrawable();
-                    shape.setShape(GradientDrawable.RECTANGLE);
-                    if (!actionButton.getTapActionColor().getBackground().equals("")) {
-                        shape.setColor(android.graphics.Color.parseColor(actionButton.getTapActionColor().getBackground()));
+                if (i == item.getTapActions().size() - 1 && (item.getActionButtons() != null || item.getActionButtons().size() == 0)) {
+                    float radius = context.getResources().getDimension(R.dimen.dp_4);
+                    shape.setCornerRadii(new float[]{0, 0, 0, 0, radius, radius, radius, radius});
+
+                } else {
+
+                    shape.setCornerRadius(4);
+                }
+
+                actionTextView.setBackground(shape);
+                if (!actionButton.getControl().equalsIgnoreCase("text")) {
+                    if (item.isActionButtonLoaded()) {
+                        if (actionButton.getControl().equalsIgnoreCase("redirect")) {
+                            if (!actionButton.getBody().equals("")) {
+                                if (!actionButton.getBody().getAppURL().equals(""))
+                                    RouteManager.route(context, actionButton.getBody().getAppURL());
+                            }
+                        }
                     } else {
-                        shape.setColor(context.getResources().getColor(R.color.green_nob));
-                    }
-                    if (!actionButton.getTapActionColor().getBorder().equals("")) {
-                        shape.setStroke(1, android.graphics.Color.parseColor(actionButton.getTapActionColor().getBorder()));
-                    }
-                    actionTextView.setBackground(shape);
-                    if (!actionButton.getTapActionColor().getTextColor().equals("")) {
-                        actionTextView.setTextColor(android.graphics.Color.parseColor(actionButton.getTapActionColor().getTextColor()));
-                    } else {
-                        actionTextView.setTextColor(Color.WHITE);
-                    }
-
-
-                    if (i == item.getTapActions().size() - 1 && (item.getActionButtons() != null || item.getActionButtons().size() == 0)) {
-                        float radius = context.getResources().getDimension(R.dimen.dp_4);
-                        shape.setCornerRadii(new float[]{0, 0, 0, 0, radius, radius, radius, radius});
-
-                    } else {
-
-                        shape.setCornerRadius(4);
-                    }
-
-                    actionTextView.setBackground(shape);
-                    if (!actionButton.getButtonType().equalsIgnoreCase("text")) {
                         actionTextView.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                if (actionButton.getButtonType().equalsIgnoreCase("button")) {
+                                if (actionButton.getControl().equalsIgnoreCase("button")) {
                                     presenter.setActionButton(item.getActionButtons(), ItemsAdapter.this, getIndex());
-                                } else if (actionButton.getButtonType().equalsIgnoreCase("redirect")) {
+                                } else if (actionButton.getControl().equalsIgnoreCase("redirect")) {
                                     if (!actionButton.getBody().equals("")) {
                                         if (!actionButton.getBody().getAppURL().equals(""))
                                             actionTextView.setOnClickListener(getActionButtonClickListener(actionButton.getBody().getAppURL()));
@@ -331,11 +338,9 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                             }
                         });
                     }
-
-                    actionLayout.addView(actionTextView);
                 }
 
-
+                actionLayout.addView(actionTextView);
             }
         }
 

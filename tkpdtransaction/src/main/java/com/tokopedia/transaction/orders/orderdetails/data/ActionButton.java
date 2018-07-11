@@ -15,7 +15,7 @@ public class ActionButton {
 
     @SerializedName("weight")
     @Expose
-    private String weight;
+    private int weight;
 
     @SerializedName("uriWeb")
     @Expose
@@ -59,7 +59,7 @@ public class ActionButton {
 
     @SerializedName("color")
     @Expose
-    private TapActionColor tapActionColor;
+    private ActionColor actionColor;
 
     public Body getBody() {
         return Body;
@@ -77,11 +77,11 @@ public class ActionButton {
         this.Value = Value;
     }
 
-    public String getWeight() {
+    public int getWeight() {
         return weight;
     }
 
-    public void setWeight(String weight) {
+    public void setWeight(int weight) {
         this.weight = weight;
     }
 
@@ -165,12 +165,12 @@ public class ActionButton {
         this.key = key;
     }
 
-    public TapActionColor getTapActionColor() {
-        return tapActionColor;
+    public ActionColor getActionColor() {
+        return actionColor;
     }
 
-    public void setTapActionColor(TapActionColor tapActionColor) {
-        this.tapActionColor = tapActionColor;
+    public void setActionColor(ActionColor actionColor) {
+        this.actionColor = actionColor;
     }
 
     @Override

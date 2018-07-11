@@ -41,6 +41,11 @@ query OMSDETAILS($orderCategoryStr: String, $upstream:String, $orderId: String, 
         name
         control
         header
+        color{
+          textColor
+          border
+          background
+        }
         body {
           appURL
           webURL
