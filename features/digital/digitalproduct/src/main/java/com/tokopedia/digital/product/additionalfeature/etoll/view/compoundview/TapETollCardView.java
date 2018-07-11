@@ -16,6 +16,7 @@ import com.tokopedia.digital.R;
  */
 public class TapETollCardView extends RelativeLayout {
 
+    private TextView textTitle;
     private TextView textLabel;
     private LottieAnimationView lottieAnimationView;
 
@@ -43,12 +44,14 @@ public class TapETollCardView extends RelativeLayout {
     private void init() {
         View view = inflate(getContext(), R.layout.view_tap_etoll_card, this);
 
+        textTitle = view.findViewById(R.id.text_title);
         textLabel = view.findViewById(R.id.text_label);
         lottieAnimationView = view.findViewById(R.id.lottie_animation_view);
     }
 
     public void showLoading() {
-        textLabel.setText(getResources().getString(R.string.reading_card_label));
+        textTitle.setText(getResources().getString(R.string.reading_card_label_title));
+        textLabel.setText(getResources().getString(R.string.reading_card_label_message));
         lottieAnimationView.setVisibility(VISIBLE);
         lottieAnimationView.clearAnimation();
         lottieAnimationView.setAnimation("emoney_loading.json");
@@ -56,7 +59,8 @@ public class TapETollCardView extends RelativeLayout {
     }
 
     public void showInitialState() {
-        textLabel.setText(getResources().getString(R.string.emoney_tap_card_instruction));
+        textTitle.setText(getResources().getString(R.string.emoney_tap_card_instruction_title));
+        textLabel.setText(getResources().getString(R.string.emoney_tap_card_instruction_message));
         lottieAnimationView.setVisibility(VISIBLE);
         lottieAnimationView.clearAnimation();
         lottieAnimationView.setAnimation("emoney_animation.json");
