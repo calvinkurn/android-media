@@ -66,6 +66,7 @@ query FeedQuery($userID: Int!, $limit: Int!, $cursor: String, $source: String) {
           isFollowed
           createTime
           showComment
+          showLike
           userName
           userPhoto
           userInfo
@@ -99,6 +100,7 @@ query FeedQuery($userID: Int!, $limit: Int!, $cursor: String, $source: String) {
           isFollowed
           createTime
           showComment
+          showLike
           userName
           userPhoto
           userInfo
