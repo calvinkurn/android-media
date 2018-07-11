@@ -34,6 +34,22 @@
     <string name="payment_label_acc_sender">Rekening Pengirim</string>
     <string name="payment_label_acc_dest">Rekening Tujuan</string>
     <string name="payment_label_name_acc_formated">a.n %1$s</string>
+    <string name="payment_label_help_proof">Pastikan bukti pembayaran menampilkan</string>
+    <string name="payment_label_help_proof_date">Tanggal/Waktu Transfer</string>
+    <string name="payment_label_help_proof_example_date">contoh : tgl. 04/06/19 jam 07:24:06</string>
+    <string name="payment_label_help_proof_success_status">Status Berhasil</string>
+    <string name="payment_label_help_proof_example_success_status">contoh : Transfer BERHASIL, transaksi SUKSES</string>
+    <string name="payment_label_help_proof_receiver">Detail Penerima</string>
+    <string name="payment_label_help_proof_example_receiver">contoh : Transfer ke Rekening PT Tokopedia</string>
+    <string name="payment_label_help_proof_total_transfer">Jumlah Transfer</string>
+    <string name="payment_label_help_proof_example_total">contoh : Rp 123.456,00</string>
+    <string name="payment_label_format_image">(format .JPG .JPEG .PNG max 10 MB)</string>
+    <string name="payment_label_help_upload_proof">Unggah bukti pembayaran dapat mempercepat verifikasi pembayaran</string>
+    <string name="payment_label_confirmation_upload_image">Apakah kamu yakin ingin mengunggah gambar ini sebagai bukti pembayaran?</string>
+    <string name="payment_label_choose_another_image">Pilih Gambar Lain</string>
+    <string name="payment_label_finish">Selesai</string>
+    <string name="payment_label_succes_upload_proof">Bukti fisik pembayaran berhasil diunggah</string>
+    <string name="payment_label_save_image">Simpan Gambar</string>
 
     <string-array name="payment_list_bank_name">
         <item>BCA</item>
