@@ -201,6 +201,7 @@ public class SimpleWebViewWithFilePickerFragment extends Fragment {
         WebSettings webSettings = webview.getSettings();
         webSettings.setDomStorageEnabled(true);
         webSettings.setJavaScriptEnabled(true);
+        webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
         webSettings.setBuiltInZoomControls(true);
         optimizeWebView();
         CookieManager.getInstance().setAcceptCookie(true);
