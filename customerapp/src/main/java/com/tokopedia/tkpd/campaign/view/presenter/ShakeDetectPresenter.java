@@ -135,6 +135,7 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
                         ServerErrorHandlerUtil.handleError(e);
                     } else {
                         getView().showErrorGetInfo(SHAKE_SHAKE_ERROR);
+                        return;
                     }
 
 
