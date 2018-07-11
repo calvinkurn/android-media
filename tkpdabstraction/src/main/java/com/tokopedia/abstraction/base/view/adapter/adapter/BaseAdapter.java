@@ -62,14 +62,17 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
     }
 
     public boolean isLoading() {
-        //use last index for performance since loading is in the last item position
-        return visitables.lastIndexOf(loadingModel) != -1;
+        int lastIndex = getLastIndex();
+        if (lastIndex > -1) {
+            return visitables.get(lastIndex) instanceof LoadingModel ||
+                    visitables.get(lastIndex) instanceof LoadingMoreModel;
+        } else {
+            return false;
+        }
     }
 
     public void showLoading() {
-        //use last index for performance since loading is in the last item position
-        // note: do not use flag, because loading model can be removed from anywhere
-        if (visitables.lastIndexOf(loadingModel) == -1) {
+        if (!isLoading()) {
             if (visitables.size() == 0) {
                 visitables.add(loadingModel);
             } else {
@@ -79,18 +82,27 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
         }
     }
 
-    public void hideLoading() {
-        //use last index for performance since loading is in the last item position
-        // note: do not use flag, because loading model can be removed from anywhere
-        int indexLoading = visitables.lastIndexOf(loadingModel);
-        if (indexLoading != -1) {
-            visitables.remove(indexLoading);
-            notifyItemRemoved(indexLoading);
+    public int getFirstIndex() {
+        int size = visitables.size();
+        if (size > 0) {
+            return 0;
         }
-        int indexLoadMore = visitables.lastIndexOf(loadingMoreModel);
-        if (indexLoadMore != -1) {
-            visitables.remove(indexLoadMore);
-            notifyItemRemoved(indexLoadMore);
+        return -1;
+    }
+
+    public int getLastIndex() {
+        int size = visitables.size();
+        if (size > 0) {
+            return size - 1;
+        }
+        return -1;
+    }
+
+    public void hideLoading() {
+        if (isLoading()) {
+            int lastIndex = getLastIndex();
+            visitables.remove(getLastIndex());
+            notifyItemRemoved(lastIndex);
         }
     }
 

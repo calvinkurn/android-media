@@ -25,7 +25,6 @@ public class BaseListAdapter<T, F extends AdapterTypeFactory> extends BaseAdapte
             LoadingModel.class, LoadingMoreModel.class});
 
     private OnAdapterInteractionListener<T> onAdapterInteractionListener;
-    private boolean nonDataElementOnLastOnly = true;
 
     public BaseListAdapter(F baseListAdapterTypeFactory) {
         super(baseListAdapterTypeFactory);
@@ -38,10 +37,6 @@ public class BaseListAdapter<T, F extends AdapterTypeFactory> extends BaseAdapte
 
     public void setOnAdapterInteractionListener(OnAdapterInteractionListener<T> onAdapterInteractionListener) {
         this.onAdapterInteractionListener = onAdapterInteractionListener;
-    }
-
-    public void setNonDataElementOnLastOnly(boolean nonDataElementOnLastOnly) {
-        this.nonDataElementOnLastOnly = nonDataElementOnLastOnly;
     }
 
     @Override
@@ -68,44 +63,40 @@ public class BaseListAdapter<T, F extends AdapterTypeFactory> extends BaseAdapte
      * this to remove loading/empty/error (all non T data) in adapter
      */
     public void clearAllNonDataElement() {
-        for (int i = visitables.size() - 1; i >= 0; i--) {
-            try {
-                T item = (T) visitables.get(i);
-                if (nonDataElementOnLastOnly) {
-                    break;
-                }
-            } catch (ClassCastException cce) {
-                visitables.remove(i);
-            }
+        if (hasNonDataElementAtLastIndex()) {
+            visitables.remove(getLastIndex());
         }
     }
 
     public List<T> getData() {
         List<T> list = new ArrayList<>();
-        for (Visitable visitable : this.visitables) {
-            try {
-                if (!REGISTERED_NOT_DATA_CLASSES.contains(visitable.getClass())) {
-                    T item = (T) visitable;
-                    list.add(item);
-                }
-            } catch (ClassCastException exception) {
-                exception.printStackTrace();
-            }
+        boolean hasNonDataElement = hasNonDataElementAtLastIndex();
+        if (hasNonDataElement) {
+            return (ArrayList<T>) (visitables.subList(0, visitables.size() - 1));
         }
         return list;
     }
 
-    public int getDataSize() {
-        return getData().size();
-    }
-
-    public boolean isContainData() {
-        for (Visitable visitable : visitables) {
-            if (!REGISTERED_NOT_DATA_CLASSES.contains(visitable.getClass())) {
+    private boolean hasNonDataElementAtLastIndex() {
+        if (visitables.size() > 0) {
+            Visitable visitable = visitables.get(getLastIndex());
+            if (REGISTERED_NOT_DATA_CLASSES.contains(visitable.getClass())) {
                 return true;
             }
         }
         return false;
+    }
+
+    public int getDataSize() {
+        if (hasNonDataElementAtLastIndex()) {
+            return visitables.size() - 1;
+        } else {
+            return visitables.size();
+        }
+    }
+
+    public boolean isContainData() {
+        return visitables.size() > 0 && !hasNonDataElementAtLastIndex();
     }
 
     public interface OnAdapterInteractionListener<T> {
