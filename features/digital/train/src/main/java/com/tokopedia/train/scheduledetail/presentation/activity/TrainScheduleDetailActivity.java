@@ -49,14 +49,7 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
     private TrainScheduleDetailComponent trainScheduleDetailComponent;
 
     private Button buttonSubmit;
-//    private CollapsingToolbarLayout collapsingToolbarLayout;
-//    private AppBarLayout appBarLayout;
-//    private TextView originStationCode;
-//    private TextView originCityName;
-//    private TextView destinationStationCode;
-//    private TextView destinationCityName;
 
-//    private TrainScheduleDetailViewModel trainScheduleDetailViewModel;
     private TrainScheduleViewModel trainScheduleViewModel;
 
     private String scheduleId;
@@ -98,15 +91,7 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
         super.setupLayout(savedInstanceState);
 
         buttonSubmit = findViewById(R.id.button_submit);
-//        collapsingToolbarLayout = findViewById(R.id.collapsing_toolbar);
-//        collapsingToolbarLayout.setTitle("");
-//        appBarLayout = findViewById(R.id.app_bar_layout);
-//        originStationCode = findViewById(R.id.header_origin_station_code);
-//        originCityName = findViewById(R.id.header_origin_city_name);
-//        destinationStationCode = findViewById(R.id.header_destination_station_code);
-//        destinationCityName = findViewById(R.id.header_destination_city_name);
 
-//        appBarLayout.addOnOffsetChangedListener(onAppbarOffsetChange());
         tabLayout.setupWithViewPager(viewPager);
 
         if (!showSubmitButton) {
@@ -156,13 +141,7 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
 
     @Override
     public void showScheduleDetail(TrainScheduleViewModel trainScheduleViewModel, TrainScheduleDetailViewModel trainScheduleDetailViewModel) {
-//        this.trainScheduleDetailViewModel = trainScheduleDetailViewModel;
         this.trainScheduleViewModel = trainScheduleViewModel;
-
-//        originStationCode.setText(trainScheduleDetailViewModel.getOriginStationCode());
-//        originCityName.setText(trainScheduleDetailViewModel.getOriginCityName());
-//        destinationStationCode.setText(trainScheduleDetailViewModel.getDestinationStationCode());
-//        destinationCityName.setText(trainScheduleDetailViewModel.getDestinationCityName());
 
         Fragment fragmentTrip = (Fragment) viewPager.getAdapter().instantiateItem(viewPager, VIEWPAGER_INDEX_ZERO);
         if (fragmentTrip instanceof TrainScheduleDetailFragment) {
@@ -186,33 +165,6 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
         }
         trainScheduleDetailComponent.inject(this);
     }
-
-//    private AppBarLayout.OnOffsetChangedListener onAppbarOffsetChange() {
-//        return new AppBarLayout.OnOffsetChangedListener() {
-//            boolean isShow = false;
-//            int scrollRange = -1;
-//
-//            @Override
-//            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-//                if (scrollRange == -1) {
-//                    scrollRange = appBarLayout.getTotalScrollRange();
-//                }
-//                if (scrollRange + verticalOffset == 0) {
-//                    setUpToolbarTitle();
-//                    isShow = true;
-//                } else if (isShow) {
-//                    collapsingToolbarLayout.setTitle(" ");
-//                    isShow = false;
-//                }
-//            }
-//        };
-//    }
-
-//    private void setUpToolbarTitle() {
-//        String title = trainScheduleDetailViewModel.getOriginCityName() + " ➝ " +
-//                trainScheduleDetailViewModel.getDestinationCityName();
-//        collapsingToolbarLayout.setTitle(title);
-//    }
 
     @Override
     protected boolean isShowCloseButton() {
