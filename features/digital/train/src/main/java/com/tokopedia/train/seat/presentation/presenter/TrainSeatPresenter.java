@@ -10,6 +10,7 @@ import com.tokopedia.train.seat.domain.model.request.ChangeSeatMapRequest;
 import com.tokopedia.train.seat.presentation.contract.TrainSeatContract;
 import com.tokopedia.train.seat.presentation.viewmodel.TrainSeatPassengerSeatViewModel;
 import com.tokopedia.train.seat.presentation.viewmodel.TrainSeatPassengerViewModel;
+import com.tokopedia.train.seat.presentation.viewmodel.TrainSeatViewModel;
 import com.tokopedia.train.seat.presentation.viewmodel.TrainWagonViewModel;
 import com.tokopedia.usecase.RequestParams;
 
@@ -67,7 +68,7 @@ public class TrainSeatPresenter extends BaseDaggerPresenter<TrainSeatContract.Vi
 
     @Override
     public void onWagonChooserClicked() {
-
+        getView().showWagonChooser();
     }
 
     @Override
@@ -114,6 +115,21 @@ public class TrainSeatPresenter extends BaseDaggerPresenter<TrainSeatContract.Vi
     @Override
     public void onViewCreated() {
         buildPassengers(getView().isReturning(), getView().getTrainSoftbook());
+    }
+
+    @Override
+    public void onPassengerSeatChange(TrainSeatPassengerViewModel passenger, TrainSeatViewModel seat, String wagonCode) {
+        for (TrainSeatPassengerViewModel passengerSeat : getView().getPassengers()) {
+            if (passengerSeat.getName().equalsIgnoreCase(passenger.getName())) {
+                TrainSeatPassengerSeatViewModel seatViewModel = new TrainSeatPassengerSeatViewModel();
+                seatViewModel.setWagonCode(wagonCode);
+                seatViewModel.setRow(String.valueOf(seat.getRow()));
+                seatViewModel.setColumn(seat.getColumn());
+                passengerSeat.setSeatViewModel(seatViewModel);
+                break;
+            }
+        }
+        getView().updateSelectedWagon();
     }
 
     private void buildPassengers(boolean returning, TrainSoftbook trainSoftbook) {

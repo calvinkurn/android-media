@@ -1,0 +1,65 @@
+package com.tokopedia.train.seat.presentation.fragment.adapter.viewholder;
+
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.AppCompatTextView;
+import android.view.View;
+import android.widget.LinearLayout;
+
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.tkpdtrain.R;
+import com.tokopedia.train.seat.presentation.fragment.adapter.TrainSeatAdapterTypeFactory;
+import com.tokopedia.train.seat.presentation.viewmodel.TrainSeatViewModel;
+
+public class TrainSeatViewHolder extends AbstractViewHolder<TrainSeatViewModel> {
+    public static final int LAYOUT = R.layout.item_train_seat;
+    private LinearLayout container;
+    private AppCompatTextView labelTextView;
+    private TrainSeatViewModel item;
+
+    private TrainSeatAdapterTypeFactory.ActionListener listener;
+
+    public TrainSeatViewHolder(View itemView, TrainSeatAdapterTypeFactory.ActionListener listener) {
+        super(itemView);
+        container = itemView.findViewById(R.id.container);
+        labelTextView = itemView.findViewById(R.id.tv_label);
+        this.listener = listener;
+    }
+
+    @Override
+    public void bind(TrainSeatViewModel viewModel) {
+        item = viewModel;
+        int index = listener.getSelectedSelected().indexOf(viewModel);
+        if (index != -1) {
+            if (listener != null) {
+                labelTextView.setText("P" + listener.getPassengers().get(index).getPassengerNumber());
+            }
+            labelTextView.setTextColor(itemView.getResources().getColor(R.color.white));
+            container.setBackground(ContextCompat.getDrawable(itemView.getContext(), R.drawable.bg_train_your_choice));
+        } else {
+            labelTextView.setTextColor(itemView.getResources().getColor(R.color.grey_500));
+            if (viewModel.isAvailable()) {
+                container.setBackground(ContextCompat.getDrawable(itemView.getContext(), R.drawable.bg_train_available));
+            } else {
+                container.setBackground(ContextCompat.getDrawable(itemView.getContext(), R.drawable.bg_train_filled));
+            }
+            labelTextView.setText(String.format("%d%s", viewModel.getRow(), viewModel.getColumn()));
+        }
+
+        container.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int index = listener.getSelectedSelected().indexOf(viewModel);
+                if (index != -1 || item.isAvailable()) {
+                    if (listener != null) {
+                        listener.seatClicked(item, getAdapterPosition(), itemView.getHeight());
+                    }
+                }
+            }
+        });
+        if (viewModel.isEmpty()) {
+            container.setVisibility(View.GONE);
+        } else {
+            container.setVisibility(View.VISIBLE);
+        }
+    }
+}

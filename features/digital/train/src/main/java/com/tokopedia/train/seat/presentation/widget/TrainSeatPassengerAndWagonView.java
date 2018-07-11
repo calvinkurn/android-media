@@ -63,7 +63,9 @@ public class TrainSeatPassengerAndWagonView extends BaseCustomView {
         wagonLabel.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (actionListener != null) actionListener.onWagonClicked();
+                if (actionListener != null) {
+                    actionListener.onWagonClicked();
+                }
             }
         });
         passengerLabel.setOnClickListener(view -> {

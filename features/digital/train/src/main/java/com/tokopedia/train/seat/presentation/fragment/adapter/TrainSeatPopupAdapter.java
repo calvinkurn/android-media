@@ -15,6 +15,7 @@ import com.tokopedia.train.seat.presentation.viewmodel.TrainSeatViewModel;
 import java.util.List;
 
 public class TrainSeatPopupAdapter extends RecyclerView.Adapter<TrainSeatPopupAdapter.ViewHolder> {
+    private String wagonCode;
     private List<TrainSeatPassengerViewModel> passengers;
     private TrainSeatViewModel seat;
     private ActionListener listener;
@@ -23,7 +24,8 @@ public class TrainSeatPopupAdapter extends RecyclerView.Adapter<TrainSeatPopupAd
         void onPassengerClicked(TrainSeatPassengerViewModel passenger, TrainSeatViewModel seat);
     }
 
-    public TrainSeatPopupAdapter(List<TrainSeatPassengerViewModel> passengers, TrainSeatViewModel seat) {
+    public TrainSeatPopupAdapter(String wagonCode, List<TrainSeatPassengerViewModel> passengers, TrainSeatViewModel seat) {
+        this.wagonCode = wagonCode;
         this.passengers = passengers;
         this.seat = seat;
     }
@@ -70,7 +72,9 @@ public class TrainSeatPopupAdapter extends RecyclerView.Adapter<TrainSeatPopupAd
             tvPassengerNumber.setText(String.format("P%d", viewModel.getPassengerNumber()));
             tvName.setText(viewModel.getName());
             tvSeat.setText(String.format("%s - %s%s", viewModel.getSeatViewModel().getWagonCode(), viewModel.getSeatViewModel().getRow(), viewModel.getSeatViewModel().getColumn()));
-            if (seat.getColumn().equalsIgnoreCase(viewModel.getSeatViewModel().getColumn()) && viewModel.getSeatViewModel().getRow().equalsIgnoreCase(String.valueOf(seat.getRow()))) {
+            if (wagonCode.equalsIgnoreCase(viewModel.getSeatViewModel().getWagonCode()) &&
+                    seat.getColumn().equalsIgnoreCase(viewModel.getSeatViewModel().getColumn()) &&
+                    viewModel.getSeatViewModel().getRow().equalsIgnoreCase(String.valueOf(seat.getRow()))) {
                 ivCheck.setVisibility(View.VISIBLE);
                 container.setBackgroundColor(itemView.getResources().getColor(R.color.train_pupup_passenger_selected));
             } else {

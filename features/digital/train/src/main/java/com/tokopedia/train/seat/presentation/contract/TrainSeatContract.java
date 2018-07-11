@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
 import com.tokopedia.train.seat.presentation.viewmodel.TrainSeatPassengerViewModel;
+import com.tokopedia.train.seat.presentation.viewmodel.TrainSeatViewModel;
 import com.tokopedia.train.seat.presentation.viewmodel.TrainWagonViewModel;
 
 import java.util.Date;
@@ -43,6 +44,10 @@ public interface TrainSeatContract {
         void setOriginPassenger(List<TrainSeatPassengerViewModel> originPassengers);
 
         void setPassengers(List<TrainSeatPassengerViewModel> originPassengers);
+
+        void updateSelectedWagon();
+
+        void showWagonChooser();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -56,5 +61,9 @@ public interface TrainSeatContract {
         void onSubmitButtonClicked();
 
         void onViewCreated();
+
+        void onPassengerSeatChange(TrainSeatPassengerViewModel passenger,
+                                   TrainSeatViewModel seat,
+                                   String wagonCode);
     }
 }

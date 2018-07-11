@@ -38,9 +38,11 @@ public class TrainSeatActivity extends TrainBaseActivity implements HasComponent
 
     @Override
     public TrainSeatComponent getComponent() {
-        trainSeatComponent = DaggerTrainSeatComponent.builder()
-                .trainComponent(TrainComponentUtils.getTrainComponent(getApplication()))
-                .build();
+        if (trainSeatComponent == null) {
+            trainSeatComponent = DaggerTrainSeatComponent.builder()
+                    .trainComponent(TrainComponentUtils.getTrainComponent(getApplication()))
+                    .build();
+        }
         return trainSeatComponent;
     }
 

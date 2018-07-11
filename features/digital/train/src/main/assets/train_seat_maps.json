@@ -30,12 +30,6 @@
                 "subclass": "C"
               },
               {
-                "column": "B",
-                "row": 2,
-                "status": 0,
-                "subclass": "C"
-              },
-              {
                 "column": "C",
                 "row": 2,
                 "status": 1,
@@ -60,12 +54,6 @@
                 "subclass": "C"
               },
               {
-                "column": "C",
-                "row": 3,
-                "status": 0,
-                "subclass": "C"
-              },
-              {
                 "column": "D",
                 "row": 3,
                 "status": 0,
@@ -90,18 +78,6 @@
                 "subclass": "C"
               },
               {
-                "column": "D",
-                "row": 4,
-                "status": 0,
-                "subclass": "C"
-              },
-              {
-                "column": "A",
-                "row": 5,
-                "status": 0,
-                "subclass": "C"
-              },
-              {
                 "column": "B",
                 "row": 5,
                 "status": 0,
@@ -126,45 +102,9 @@
                 "subclass": "C"
               },
               {
-                "column": "B",
-                "row": 6,
-                "status": 0,
-                "subclass": "C"
-              },
-              {
-                "column": "C",
-                "row": 6,
-                "status": 0,
-                "subclass": "C"
-              },
-              {
                 "column": "D",
                 "row": 6,
                 "status": 0,
-                "subclass": "C"
-              },
-              {
-                "column": "A",
-                "row": 7,
-                "status": 0,
-                "subclass": "C"
-              },
-              {
-                "column": "B",
-                "row": 7,
-                "status": 0,
-                "subclass": "C"
-              },
-              {
-                "column": "C",
-                "row": 7,
-                "status": 0,
-                "subclass": "C"
-              },
-              {
-                "column": "D",
-                "row": 7,
-                "status": 1,
                 "subclass": "C"
               },
               {
