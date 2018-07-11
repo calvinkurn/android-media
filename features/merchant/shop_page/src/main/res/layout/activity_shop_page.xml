@@ -10,8 +10,13 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="top"
+        android:gravity="center_vertical"
         android:theme="?toolbarTheme"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        app:contentInsetStartWithNavigation="0dp"
+        app:subtitleTextAppearance="?subtitleTextAppearance"
+        app:titleTextAppearance="?titleTextAppearance"
         app:elevation="0dp" />
 
     <android.support.design.widget.CoordinatorLayout
@@ -33,10 +38,12 @@
                 app:layout_scrollFlags="scroll|enterAlways"/>
 
             <android.support.design.widget.TabLayout
-                android:id="@+id/indicator"
+                android:id="@+id/tabLayout"
                 style="?tabTheme"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"/>
 
         </android.support.design.widget.AppBarLayout>
 
@@ -47,7 +54,7 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <com.tokopedia.shop.page.view.widget.ShopPageViewPager
-                android:id="@+id/pager"
+                android:id="@+id/viewPager"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
         </RelativeLayout>
