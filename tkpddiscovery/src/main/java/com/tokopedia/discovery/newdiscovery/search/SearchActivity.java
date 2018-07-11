@@ -113,6 +113,11 @@ public class SearchActivity extends DiscoveryActivity
         intent.putExtras(bundle);
         return intent;
     }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        unregisterShake();
+    }
 
     public static Intent newInstance(Context context, Bundle bundle) {
         Intent intent = new Intent(context, SearchActivity.class);
@@ -169,12 +174,6 @@ public class SearchActivity extends DiscoveryActivity
             }
         } else {
             searchView.showSearch(true, false);
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    KeyboardHandler.showSoftKeyboard(SearchActivity.this);
-                }
-            }, 200);
         }
 
         if (intent != null &&

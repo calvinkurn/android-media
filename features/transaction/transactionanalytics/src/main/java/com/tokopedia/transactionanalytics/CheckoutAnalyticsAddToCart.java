@@ -32,6 +32,17 @@ public class CheckoutAnalyticsAddToCart extends CheckoutAnalytics {
 
     }
 
+    public void enhancedECommerceAddToCart(Map<String, Object> cartMap, String eventLabel, String eventAction) {
+        if (analyticTracker != null)
+            analyticTracker.sendEnhancedEcommerce(
+                    DataLayer.mapOf("event", ConstantTransactionAnalytics.EventName.ADD_TO_CART,
+                            "eventCategory", ConstantTransactionAnalytics.EventCategory.ADD_TO_CART,
+                            "eventAction", eventAction,
+                            "eventLabel", eventLabel,
+                            "ecommerce", cartMap)
+            );
+    }
+
     public void eventClickAddToCartImpressionAtcSuccess() {
         if (analyticTracker != null)
             analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,

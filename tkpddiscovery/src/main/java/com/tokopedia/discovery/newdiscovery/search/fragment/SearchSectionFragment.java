@@ -15,6 +15,7 @@ import android.view.View;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
+import com.tokopedia.core.analytics.HotlistPageTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -26,7 +27,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
-import com.tokopedia.core.share.DefaultShare;
+import com.tokopedia.core.share.ShareBottomSheet;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.activity.SortProductActivity;
@@ -34,6 +35,7 @@ import com.tokopedia.discovery.newdiscovery.base.BottomNavigationListener;
 import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
 import com.tokopedia.discovery.newdiscovery.base.RedirectionListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.ProductListFragment;
+import com.tokopedia.discovery.newdiscovery.hotlist.view.activity.HotlistActivity;
 import com.tokopedia.discovery.newdynamicfilter.RevampedDynamicFilterActivity;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
@@ -198,7 +200,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         if (bottomNavigationListener == null) {
             return;
         }
-        
+
         boolean isBottomSheetShown = bottomSheetListener != null
                 && bottomSheetListener.isBottomSheetShown();
 
@@ -254,11 +256,11 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         refreshBottomBarGridIcon();
     }
 
-    private void refreshBottomBarGridIcon() {
+    public void refreshBottomBarGridIcon() {
         bottomNavigationListener.refreshBottomNavigationIcon(getBottomNavigationItems());
     }
 
-    private void setSpanCount(int spanCount) {
+    public void setSpanCount(int spanCount) {
         this.spanCount = spanCount;
     }
 
@@ -266,7 +268,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         return spanCount;
     }
 
-    public void startShareActivity(String shareUrl) {
+    protected void startShareActivity(String shareUrl) {
 
         if (TextUtils.isEmpty(shareUrl)) {
             return;
@@ -281,7 +283,12 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
                 .setUri(shareUrl)
                 .build();
 
-        new DefaultShare(getActivity(), shareData).show();
+        if(getActivity() instanceof HotlistActivity){
+            shareData.setType(ShareData.HOTLIST_TYPE);
+        } else {
+            SearchTracking.eventSearchResultShare(getScreenName());
+        }
+        ShareBottomSheet.show(getChildFragmentManager(), shareData);
     }
 
     @Override
@@ -298,7 +305,11 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
             } else if (requestCode == getFilterRequestCode()) {
                 setFlagFilterHelper((FilterFlagSelectedModel) data.getParcelableExtra(RevampedDynamicFilterActivity.EXTRA_SELECTED_FLAG_FILTER));
                 setSelectedFilter((HashMap<String, String>) data.getSerializableExtra(RevampedDynamicFilterActivity.EXTRA_SELECTED_FILTERS));
-                SearchTracking.eventSearchResultFilter(getActivity(), getScreenName(), getSelectedFilter());
+                if (getActivity() instanceof HotlistActivity) {
+                    HotlistPageTracking.eventHotlistFilter(getSelectedFilter());
+                } else {
+                    SearchTracking.eventSearchResultFilter(getActivity(), getScreenName(), getSelectedFilter());
+                }
                 clearDataFilterSort();
                 showBottomBarNavigation(false);
                 updateDepartmentId(getFlagFilterHelper().getCategoryId());
