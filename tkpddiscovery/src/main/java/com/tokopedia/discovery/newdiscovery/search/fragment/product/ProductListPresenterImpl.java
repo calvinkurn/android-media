@@ -168,12 +168,6 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                 GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(),
                 R.raw.gql_search_product), SearchProductGqlResponse.class, variables);
 
-        GraphqlCacheStrategy graphqlCacheStrategy = new GraphqlCacheStrategy.Builder(CacheType.CACHE_ONLY)
-                .setExpiryTime(GraphqlConstant.ExpiryTimes.HOUR.val())
-                .setSessionIncluded(true)
-                .build();
-        graphqlUseCase.setCacheStrategy(graphqlCacheStrategy);
-
         graphqlUseCase.setRequest(graphqlRequest);
 
         graphqlUseCase.execute(new DefaultSubscriber<GraphqlResponse>() {
