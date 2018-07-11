@@ -285,6 +285,79 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
         enrichWithAdditionalParams(requestParams, additionalParams);
         removeDefaultCategoryParam(requestParams);
 
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("q", searchParameter.getQueryKey());
+        variables.put("start", 0);
+        variables.put("rows", 12);
+        variables.put("uniqueId", searchParameter.getUniqueID());
+
+        GraphqlRequest graphqlRequest = new
+                GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(),
+                R.raw.gql_search_product_first_page), SearchProductGqlResponse.class, variables);
+
+        graphqlUseCase.setRequest(graphqlRequest);
+
+        graphqlUseCase.execute(new DefaultSubscriber<GraphqlResponse>() {
+                    @Override
+                    public void onStart() {
+                        getView().setTopAdsEndlessListener();
+                        getView().showRefreshLayout();
+                        getView().incrementStart();
+                    }
+
+                    @Override
+                    public void onCompleted() {
+                        getView().getDynamicFilter();
+                        getView().getQuickFilter();
+                        getView().hideRefreshLayout();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (isViewAttached()) {
+                            getView().showNetworkError(0);
+                            getView().hideRefreshLayout();
+                            getView().showBottomBarNavigation(false);
+                        }
+                    }
+
+                    @Override
+                    public void onNext(GraphqlResponse objects) {
+                        if (isViewAttached()) {
+                            SearchProductGqlResponse gqlResponse = objects.getData(SearchProductGqlResponse.class);
+                            ProductViewModel productViewModel
+                                    = ProductViewModelHelper.convertToProductViewModelFirstPageGql(gqlResponse);
+                            List<Visitable> list = new ArrayList<Visitable>();
+                            if (productViewModel.getProductList().isEmpty()) {
+                                getView().setEmptyProduct();
+                                getView().setTotalSearchResultCount("0");
+                                getView().showBottomBarNavigation(false);
+                            } else {
+                                HeaderViewModel headerViewModel = new HeaderViewModel();
+                                headerViewModel.setSuggestionModel(productViewModel.getSuggestionModel());
+                                list.add(headerViewModel);
+                                list.addAll(productViewModel.getProductList());
+                                getView().setProductList(list);
+                                getView().setTotalSearchResultCount(productViewModel.getSuggestionModel().getFormattedResultCount());
+                                getView().showBottomBarNavigation(true);
+                                if (getView().getStartFrom() > productViewModel.getTotalData()) {
+                                    getView().unSetTopAdsEndlessListener();
+                                }
+                            }
+                            getView().storeTotalData(productViewModel.getTotalData());
+                        }
+                    }
+                });
+    }
+
+    /*@Override
+    public void loadData(final SearchParameter searchParameter, boolean isForceSearch, HashMap<String, String> additionalParams) {
+        RequestParams requestParams = GetProductUseCase.createInitializeSearchParam(searchParameter, false, true);
+        enrichWithFilterAndSortParams(requestParams);
+        enrichWithForceSearchParam(requestParams, isForceSearch);
+        enrichWithAdditionalParams(requestParams, additionalParams);
+        removeDefaultCategoryParam(requestParams);
+
         getProductUseCase.execute(requestParams,
                 new DefaultSubscriber<SearchResultModel>() {
                     @Override
@@ -336,6 +409,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                     }
                 });
     }
+    */
 
     @Override
     public void loadGuidedSearch(String keyword) {

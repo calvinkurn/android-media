@@ -2,6 +2,7 @@ package com.tokopedia.core.network.entity.discovery.gql;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.core.discovery.model.Filter;
 
 import java.util.List;
 
@@ -11,8 +12,16 @@ public class SearchProductGqlResponse {
     @Expose
     private SearchProduct searchProduct;
 
+    @SerializedName("filter")
+    @Expose
+    private Filter filter;
+
     public SearchProduct getSearchProduct() {
         return searchProduct;
+    }
+
+    public Filter getFilter() {
+        return filter;
     }
 
     public static class SearchProduct {

@@ -30,6 +30,11 @@ public class ProductViewModelHelper {
     private static final String LAST_POSITION_ENHANCE_PRODUCT = "LAST_POSITION_ENHANCE_PRODUCT";
     private static LocalCacheHandler cache;
 
+    public static ProductViewModel convertToProductViewModelFirstPageGql(SearchProductGqlResponse gqlResponse) {
+        clearPositionCache();
+        return convertToProductViewModel(gqlResponse);
+    }
+
     public static ProductViewModel convertToProductViewModelFirstPage(SearchResultModel searchResultModel) {
         clearPositionCache();
         return convertToProductViewModel(searchResultModel);

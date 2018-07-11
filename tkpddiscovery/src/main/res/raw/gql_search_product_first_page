@@ -1,0 +1,123 @@
+query SearchProduct(
+ $q: String,
+ $start: Int,
+ $rows: Int,
+ $ob: Int,
+ $uniqueId: String
+) {
+ searchProduct(q: $q, start: $start, rows: $rows, ob: $ob, uniqueId: $uniqueId) {
+   query
+   source
+   shareUrl
+   isFilter
+   count
+   redirection {
+     redirectUrl
+     departmentId
+   }
+   suggestion {
+     currentKeyword
+     suggestion
+     suggestionCount
+     instead
+     insteadCount
+     text
+     query
+   }
+   products {
+     id
+     name
+     childs
+     url
+     imageUrl
+     imageUrlLarge
+     price
+     rating
+     countReview
+     preorder
+     cashback
+     wishlist
+     gaKey
+     catId
+     shop {
+       id
+       name
+       url
+       location
+       city
+       reputation
+       clover
+       goldmerchant
+       official
+     }
+   }
+   catalogs {
+     id
+     name
+     price
+     rawPrice
+     minPrice
+     maxPrice
+     rawMinPrice
+     rawMaxPrice
+     count
+     description
+     imageUrl
+     url
+     departmentId
+   }
+ }
+ dynamicAttribute(source: "search_product") {
+     data {
+       filter {
+         title
+         search {
+           searchable
+           placeholder
+         }
+         options {
+           name
+           key
+           icon
+           value
+           inputType
+           totalData
+           valMax
+           valMin
+           hexColor
+           child {
+             key
+             value
+             name
+             icon
+             inputType
+             totalData
+             child {
+               key
+               value
+               name
+               icon
+               inputType
+               totalData
+               child {
+                 key
+                 value
+                 name
+                 icon
+                 inputType
+                 totalData
+               }
+             }
+           }
+           isPopular
+         }
+       }
+       sort {
+         name
+         key
+         value
+         inputType
+       }
+     }
+   }
+}
