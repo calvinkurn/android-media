@@ -34,6 +34,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DaggerDealsComponent;
+import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.digital_deals.di.DealsModule;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
 import com.tokopedia.digital_deals.view.contractor.BrandDetailsContract;
@@ -48,7 +49,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDetailsContract.View, View.OnClickListener {
+public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDetailsContract.View, View.OnClickListener, DealsCategoryAdapter.INavigateToActivityRequest {
     private final boolean isShortLayout = true;
 
     private CollapsingToolbarLayout collapsingToolbarLayout;
@@ -154,10 +155,7 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
 
     @Override
     protected void initInjector() {
-        DaggerDealsComponent.builder()
-                .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
-                .dealsModule(new DealsModule(getContext()))
-                .build().inject(this);
+        getComponent(DealsComponent.class).inject(this);
         mPresenter.attachView(this);
     }
 
@@ -173,22 +171,17 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
         collapsingToolbarLayout.setTitle(brand.getTitle());
         tvExpandableDesc.setText(brand.getDescription());
         tvCityName.setText(String.format(getResources().getString(R.string.deals_brand_detail_location), Utils.getSingletonInstance().getLocation(getActivity()).getName()));
-
-//        ImageHandler.loadImage(getActivity(), ivHeader, brand.getFeaturedImage(), R.color.grey_1100, R.color.grey_1100);
         loadBrandImage(ivHeader, brand.getFeaturedImage());
-//        ImageHandler.loadImageChat(ivHeader, brand.getFeaturedImage(), new
-
-
         ImageHandler.loadImage(getActivity(), ivBrandLogo, brand.getFeaturedThumbnailImage(), R.color.grey_1100, R.color.grey_1100);
-        for (ProductItem productItem : productItems) {
-            productItem.setBrand(brand);
-        }
-        if (productItems.size() != 0) {
+        if (productItems!=null && productItems.size() > 0) {
+            for (ProductItem productItem : productItems) {
+                productItem.setBrand(brand);
+            }
             if (count == 0)
                 tvDealsCount.setText(String.format(getResources().getString(R.string.number_of_items), productItems.size()));
             else
                 tvDealsCount.setText(String.format(getResources().getString(R.string.number_of_items), count));
-            categoryAdapter = new DealsCategoryAdapter(getActivity(), productItems, !isShortLayout, true);
+            categoryAdapter = new DealsCategoryAdapter(getActivity(), productItems, this, !isShortLayout, true);
 
             recyclerViewDeals.setAdapter(categoryAdapter);
             recyclerViewDeals.setVisibility(View.VISIBLE);
@@ -259,8 +252,7 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
         Brand brand = getArguments().getParcelable(BrandDetailsPresenter.BRAND_DATA);
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(BrandDetailsPresenter.TAG, brand.getUrl());
-        requestParams.putInt(Utils.BRAND_QUERY_PARAM_LOCATION_ID, Utils.getSingletonInstance().getLocation(getActivity()).getId());
-//        requestParams.putInt("size", 5);
+        requestParams.putInt(Utils.BRAND_QUERY_PARAM_CITY_ID, Utils.getSingletonInstance().getLocation(getActivity()).getId());
         return requestParams;
     }
 
@@ -315,5 +307,10 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
     @Override
     protected String getScreenName() {
         return null;
+    }
+
+    @Override
+    public void onNavigateToActivityRequest(Intent intent, int requestCode) {
+        navigateToActivityRequest(intent, requestCode);
     }
 }

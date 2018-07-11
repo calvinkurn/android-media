@@ -21,6 +21,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DaggerDealsComponent;
+import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.digital_deals.di.DealsModule;
 import com.tokopedia.digital_deals.view.adapter.DealsBrandAdapter;
 import com.tokopedia.digital_deals.view.contractor.AllBrandsContract;
@@ -126,10 +127,7 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
 
     @Override
     protected void initInjector() {
-        DaggerDealsComponent.builder()
-                .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
-                .dealsModule(new DealsModule(getContext()))
-                .build().inject(this);
+        getComponent(DealsComponent.class).inject(this);
         mPresenter.attachView(this);
     }
 
@@ -156,7 +154,7 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
     @Override
     public void renderBrandList(List<Brand> brandList, boolean isSearchSubmitted) {
 
-        if (brandList != null && brandList.size() != 0) {
+        if (brandList != null && brandList.size() > 0) {
             ((DealsBrandAdapter) recyclerview.getAdapter()).updateAdapter(brandList);
             recyclerview.setVisibility(View.VISIBLE);
             recyclerview.addOnScrollListener(rvOnScrollListener);

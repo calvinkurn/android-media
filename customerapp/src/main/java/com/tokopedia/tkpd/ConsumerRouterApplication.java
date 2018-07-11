@@ -439,7 +439,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 .build();
         dealsComponent = DaggerDealsComponent.builder()
                 .baseAppComponent((this).getBaseAppComponent())
-                .dealsModule(new DealsModule(this))
                 .build();
     }
 

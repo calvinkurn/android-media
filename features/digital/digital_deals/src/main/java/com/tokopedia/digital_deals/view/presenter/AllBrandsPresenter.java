@@ -1,6 +1,7 @@
 package com.tokopedia.digital_deals.view.presenter;
 
 import android.support.v7.widget.LinearLayoutManager;
+import android.text.TextUtils;
 
 import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.CommonUtils;
@@ -15,6 +16,7 @@ import com.tokopedia.digital_deals.view.contractor.AllBrandsContract;
 import com.tokopedia.digital_deals.view.model.Brand;
 import com.tokopedia.digital_deals.view.model.Page;
 import com.tokopedia.digital_deals.view.model.response.AllBrandsResponse;
+import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.usecase.RequestParams;
 
 import java.lang.reflect.Type;
@@ -166,8 +168,8 @@ public class AllBrandsPresenter extends BaseDaggerPresenter<AllBrandsContract.Vi
 
         if (page != null) {
             String nexturl = page.getUriNext();
-            if (nexturl != null && !nexturl.isEmpty() && nexturl.length() > 0) {
-                searchNextParams.putString(TAG, nexturl);
+            if (!TextUtils.isEmpty(nexturl)) {
+                searchNextParams.putString(Utils.NEXT_URL, nexturl);
                 isLastPage = false;
             } else {
                 isLastPage = true;

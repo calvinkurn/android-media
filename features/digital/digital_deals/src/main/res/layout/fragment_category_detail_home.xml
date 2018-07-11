@@ -105,7 +105,8 @@
             android:id="@+id/rv_deals"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_16"
+            android:paddingTop="@dimen/dp_16"
+            android:clipToPadding="false"
             app:layoutManager="android.support.v7.widget.LinearLayoutManager"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             tools:listitem="@layout/deal_item_card" />

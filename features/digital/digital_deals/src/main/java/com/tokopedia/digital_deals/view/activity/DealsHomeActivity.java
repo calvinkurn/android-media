@@ -13,12 +13,13 @@ import com.tokopedia.digital_deals.view.fragment.DealsHomeFragment;
 
 import static com.tokopedia.digital_deals.view.utils.Utils.Constants.DIGITAL_DEALS;
 
-public class DealsHomeActivity extends BaseSimpleActivity {
+public class DealsHomeActivity extends DealsBaseActivity {
 
 
     public static final int REQUEST_CODE_DEALSLOCATIONACTIVITY = 101;
     public static final int REQUEST_CODE_DEALSSEARCHACTIVITY = 102;
     public final static int REQUEST_CODE_DEALDETAILACTIVITY=103;
+    public final static int REQUEST_CODE_LOGIN=104;
 
     @DeepLink({DIGITAL_DEALS})
     public static Intent getCallingApplinksTaskStask(Context context, Bundle extras) {

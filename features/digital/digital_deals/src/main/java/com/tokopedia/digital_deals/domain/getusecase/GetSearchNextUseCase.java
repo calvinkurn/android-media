@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.common.network.data.model.RestRequest;
 import com.tokopedia.common.network.domain.RestRequestUseCase;
 import com.tokopedia.digital_deals.view.model.response.SearchResponse;
+import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.usecase.RequestParams;
 
 import java.lang.reflect.Type;
@@ -18,6 +19,7 @@ public class GetSearchNextUseCase extends RestRequestUseCase {
 
     private RequestParams params;
 
+
     @Inject
     public GetSearchNextUseCase() {
     }
@@ -28,7 +30,7 @@ public class GetSearchNextUseCase extends RestRequestUseCase {
 
     @Override
     protected List<RestRequest> buildRequest() {
-        String url = params.getString("nexturl", "");
+        String url = params.getString(Utils.NEXT_URL, "");
 
         List<RestRequest> tempRequest = new ArrayList<>();
 

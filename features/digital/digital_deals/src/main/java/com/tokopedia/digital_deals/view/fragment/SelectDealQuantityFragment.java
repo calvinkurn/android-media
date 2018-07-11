@@ -23,6 +23,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DaggerDealsComponent;
+import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.digital_deals.di.DealsModule;
 import com.tokopedia.digital_deals.view.activity.DealDetailsActivity;
 import com.tokopedia.digital_deals.view.contractor.SelectQuantityContract;
@@ -84,10 +85,7 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
 
     @Override
     protected void initInjector() {
-        DaggerDealsComponent.builder()
-                .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
-                .dealsModule(new DealsModule(getContext()))
-                .build().inject(this);
+        getComponent(DealsComponent.class).inject(this);
         mPresenter.attachView(this);
     }
 
@@ -216,8 +214,13 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
         tvDealDetails.setText(dealDetails.getDisplayName());
 
         tvQuantity.setText(String.format(getContext().getResources().getString(R.string.quantity_of_deals), CURRENT_QUANTITY));
-        tvMrp.setText(Utils.convertToCurrencyString(dealDetails.getMrp()));
-        tvMrp.setPaintFlags(tvMrp.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        if(dealDetails.getMrp()!=0){
+            tvMrp.setVisibility(View.VISIBLE);
+            tvMrp.setText(Utils.convertToCurrencyString(dealDetails.getMrp()));
+            tvMrp.setPaintFlags(tvMrp.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        }else{
+            tvMrp.setVisibility(View.GONE);
+        }
         tvSalesPrice.setText(Utils.convertToCurrencyString(dealDetails.getSalesPrice()));
         tvTotalAmount.setText(Utils.convertToCurrencyString(dealDetails.getSalesPrice()));
 
