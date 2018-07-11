@@ -209,6 +209,8 @@ public class ProductPresenter extends SearchSectionFragmentPresenterImpl<Product
     public void detachView() {
         super.detachView();
         getProductUseCase.unsubscribe();
+        addWishlistActionUseCase.unsubscribe();
+        removeWishlistActionUseCase.unsubscribe();
         getDynamicFilterUseCase.unsubscribe();
     }
 }
