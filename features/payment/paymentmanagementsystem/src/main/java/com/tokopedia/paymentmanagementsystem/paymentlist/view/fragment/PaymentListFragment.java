@@ -151,11 +151,6 @@ public class PaymentListFragment extends BaseListFragment<PaymentListModel, Paym
     }
 
     @Override
-    protected boolean isLoadMoreEnabledByDefault() {
-        return false;
-    }
-
-    @Override
     public void onClickOverFlow(PaymentListModel paymentListModel) {
         Menus menus = new Menus(getContext());
         menus.setItemMenuList(paymentListModel.getListOfAction().toArray(new String[paymentListModel.getListOfAction().size()]));
