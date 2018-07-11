@@ -45,7 +45,7 @@ public class ReferralGuidePagerAdapter extends PagerAdapter {
 
     @Override
     public void destroyItem(View container, int position, Object object) {
-        ((ViewPager) container).removeView((View) object);
+            ((ViewPager) container).removeView((View) object);
     }
 
     @Override

@@ -38,6 +38,8 @@ import com.tokopedia.core.referral.presenter.ReferralPresenter;
 import com.tokopedia.core.router.OtpRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
+import com.tokopedia.design.utils.CurrencyFormatHelper;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 
 import javax.inject.Inject;
 
@@ -223,7 +225,7 @@ public class FragmentReferral extends BasePresenterFragmentV4<IReferralPresenter
             progressBarReferral.setProgress(referralData.getPromoBenefit().getCurrentBenefit() == 0 ?
                     referralData.getPromoBenefit().getCurrentBenefit() : referralData.getPromoBenefit().getMaxBenefit()
                     / referralData.getPromoBenefit().getCurrentBenefit());
-            tvPercent.setText("Rp" + referralData.getPromoBenefit().getCurrentBenefit() + " / " + "Rp" + referralData.getPromoBenefit().getMaxBenefit());
+            tvPercent.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(referralData.getPromoBenefit().getCurrentBenefit(),false)+ " / " + CurrencyFormatUtil.convertPriceValueToIdrFormat(referralData.getPromoBenefit().getMaxBenefit(),false));
         }
     }
 
