@@ -24,6 +24,9 @@ public class ProductCartPass implements Parcelable {
     private String shopType;
     private String trackerAttribution;
     private String listName;
+    private int orderQuantity;
+    private boolean skipToCart;
+    private String sourceAtc;
 
     public ProductCartPass() {
     }
@@ -164,6 +167,8 @@ public class ProductCartPass implements Parcelable {
         shopType = in.readString();
         trackerAttribution = in.readString();
         listName = in.readString();
+        orderQuantity = in.readInt();
+        sourceAtc = in.readString();
     }
 
 
@@ -189,6 +194,8 @@ public class ProductCartPass implements Parcelable {
         dest.writeString(shopType);
         dest.writeString(trackerAttribution);
         dest.writeString(listName);
+        dest.writeInt(orderQuantity);
+        dest.writeString(sourceAtc);
     }
 
     @SuppressWarnings("unused")
@@ -205,6 +212,29 @@ public class ProductCartPass implements Parcelable {
                 }
             };
 
+    public int getOrderQuantity() {
+        return orderQuantity;
+    }
+
+    public void setOrderQuantity(int orderQuantity) {
+        this.orderQuantity = orderQuantity;
+    }
+
+    public boolean isSkipToCart() {
+        return skipToCart;
+    }
+
+    public void setSkipToCart(boolean skipToCart) {
+        this.skipToCart = skipToCart;
+    }
+
+    public void setSourceAtc(String sourceAtc) {
+        this.sourceAtc = sourceAtc;
+    }
+
+    public String getSourceAtc() {
+        return sourceAtc;
+    }
 
     public static class Builder {
         private String productId;
@@ -222,6 +252,9 @@ public class ProductCartPass implements Parcelable {
         private String shopType;
         private String homeAttribution;
         private String listName;
+        private int orderQuantity;
+        private boolean isSkipToCart;
+        private String sourceAtc;
 
         private Builder() {
         }
@@ -305,7 +338,20 @@ public class ProductCartPass implements Parcelable {
             return this;
         }
 
+        public Builder setOrderQuantity(int orderQuantity) {
+            this.orderQuantity = orderQuantity;
+            return this;
+        }
 
+        public Builder setSkipToCart(boolean skipToCart) {
+            this.isSkipToCart = skipToCart;
+            return this;
+        }
+
+        public Builder setSourceAtc(String sourceAtc) {
+            this.sourceAtc = sourceAtc;
+            return this;
+        }
 
         public Builder but() {
             return aProductCartPass()
@@ -323,7 +369,9 @@ public class ProductCartPass implements Parcelable {
                     .setCategoryLevelName(categoryLevelName)
                     .setShopType(shopType)
                     .setHomeAttribution(homeAttribution)
-                    .setListName(listName);
+                    .setListName(listName)
+                    .setOrderQuantity(orderQuantity)
+                    .setSkipToCart(isSkipToCart);
 
         }
 
@@ -344,6 +392,9 @@ public class ProductCartPass implements Parcelable {
             productCartPass.setShopType(shopType);
             productCartPass.setTrackerAttribution(homeAttribution);
             productCartPass.setListName(listName);
+            productCartPass.setOrderQuantity(orderQuantity);
+            productCartPass.setSkipToCart(isSkipToCart);
+            productCartPass.setSourceAtc(sourceAtc);
             return productCartPass;
         }
     }

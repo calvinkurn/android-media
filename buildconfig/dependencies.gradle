@@ -139,7 +139,7 @@ ext {
     analyticsDependencies = [
             appsflyer  : "com.appsflyer:af-android-sdk:4.8.11@aar",
             installRef : "com.android.installreferrer:installreferrer:1.0",
-            moengage   : "com.moengage:moe-android-sdk:8.2.00",
+            moengage   : "com.moengage:moe-android-sdk:9.1.04",
             moengageMSG: "com.moengage:addon-messaging:2.0.03",
             branch     : "io.branch.sdk.android:library:2.+",
             logentries : "com.github.LogentriesCommunity:le_android:logentries-android-4.4.1"
@@ -281,7 +281,7 @@ ext {
             transaction           : ":tkpdtransaction",
             transactioncommon     : ":tkpdtransaction-common",
             session               : ":tkpdsession",
-            topAdsSdk             : ":tkpdtopadssdk",
+            topAdsSdk             : ":features:discovery:topadssdk",
             productDetail         : ":tkpdpdp",
             seller                : ":tkpdseller",
             payment               : ":features:payment:payment",
@@ -303,7 +303,7 @@ ext {
             flightNoOp            : ":features:digital:flight_no_op",
             mitraToppers          : ":features:fintech:mitra_toppers",
             event                 : ":features:digital:event",
-            home                  : ":tkpdhome",
+            home                  : ":features:discovery:home",
             content               : ":tkpdcontent",
             checkout              : ":features:transaction:checkout",
             kol                   : ":features:content:kol",
