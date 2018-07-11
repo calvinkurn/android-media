@@ -1,5 +1,5 @@
 <resources>
-    <string name="tp_title_tokopoints">Tokopoints</string>
+    <string name="tp_title_tokopoints">TokoPoints</string>
     <string name="tp_label_coupon">Kupon</string>
     <string name="tp_mes_coupon_part_2">akan digunakan pada transaksi selanjutnya.</string>
     <string name="tp_label_later">Nanti Saja</string>
