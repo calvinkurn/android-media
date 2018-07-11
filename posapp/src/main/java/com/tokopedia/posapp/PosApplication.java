@@ -45,7 +45,6 @@ public class PosApplication extends PosRouterApplication {
     }
 
     private void initializeDatabase() {
-        FlowManager.init(new FlowConfig.Builder(this).build());
         FlowManager.init(new FlowConfig.Builder(this)
                 .addDatabaseHolder(TkpdCacheApiGeneratedDatabaseHolder.class)
                 .build());
