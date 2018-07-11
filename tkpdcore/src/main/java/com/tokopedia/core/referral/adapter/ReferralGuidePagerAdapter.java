@@ -20,6 +20,7 @@ import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdUrl;
+import com.tokopedia.design.bottomsheet.BottomSheetView;
 
 /**
  * Created by ashwanityagi on 02/05/18.
@@ -73,7 +74,7 @@ public class ReferralGuidePagerAdapter extends PagerAdapter {
 
             tvHelpLink.setOnClickListener(view1 -> {
                 UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_WHAT_IS_TOKOCASH, "");
-                context.startActivity(ManageWebViewActivity.getCallingIntent(context, TkpdUrl.REFERRAL_URL, ((AppCompatActivity) context).getSupportActionBar().getTitle().toString()));
+                showOnBoardingTooltip(context.getString(R.string.acquisition_referral) ,context.getString(R.string.what_is_referral_tokocash) );
             });
 
         } else {
@@ -86,6 +87,17 @@ public class ReferralGuidePagerAdapter extends PagerAdapter {
 
     public String getReferralTerms() {
             return remoteConfig.getString(TkpdCache.RemoteConfigKey.REFFERAL_TERMS, context.getString(R.string.referral_tnc));
+    }
+
+    private void showOnBoardingTooltip(String title, String content) {
+        BottomSheetView mToolTip = new BottomSheetView(context);
+        mToolTip.renderBottomSheet(new BottomSheetView.BottomSheetField
+                .BottomSheetFieldBuilder()
+                .setTitle(title)
+                .setBody(content)
+                .build());
+
+        mToolTip.show();
     }
 
     public interface ReferralGuidePagerListener {

@@ -37,6 +37,7 @@ import com.tokopedia.core.referral.presenter.IReferralPresenter;
 import com.tokopedia.core.referral.presenter.ReferralPresenter;
 import com.tokopedia.core.router.OtpRouter;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.design.bottomsheet.BottomSheetView;
 
 import javax.inject.Inject;
 
@@ -335,4 +336,5 @@ public class FragmentReferral extends BasePresenterFragmentV4<IReferralPresenter
     public void onShareClick() {
         presenter.shareApp(getChildFragmentManager());
     }
+
 }

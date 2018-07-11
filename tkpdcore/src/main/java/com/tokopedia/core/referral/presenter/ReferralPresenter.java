@@ -389,23 +389,23 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
                 .setShareUrl(url)
                 .build();
 
-        if (shareApp.getPackageNmae().equalsIgnoreCase(TkpdState.PackageName.Whatsapp)) {
+        if (shareApp.getpackageName().equalsIgnoreCase(TkpdState.PackageName.Whatsapp)) {
             actionShare(shareData, TkpdState.PackageName.Whatsapp, AppEventTracking.SOCIAL_MEDIA.WHATSHAPP);
-        } else if (shareApp.getPackageNmae().equalsIgnoreCase(TkpdState.PackageName.Line)) {
+        } else if (shareApp.getpackageName().equalsIgnoreCase(TkpdState.PackageName.Line)) {
             actionShare(shareData, TkpdState.PackageName.Line, AppEventTracking.SOCIAL_MEDIA.LINE);
-        } else if (shareApp.getPackageNmae().equalsIgnoreCase(TkpdState.PackageName.Instagram)) {
+        } else if (shareApp.getpackageName().equalsIgnoreCase(TkpdState.PackageName.Instagram)) {
             actionShare(shareData, TkpdState.PackageName.Instagram, AppEventTracking.SOCIAL_MEDIA.INSTAGRAM);
-        } else if (shareApp.getPackageNmae().equalsIgnoreCase(TkpdState.PackageName.Facebook)) {
+        } else if (shareApp.getpackageName().equalsIgnoreCase(TkpdState.PackageName.Facebook)) {
             actionShare(shareData, TkpdState.PackageName.Facebook, AppEventTracking.SOCIAL_MEDIA.FACEBOOK);
-        } else if (shareApp.getPackageNmae().equalsIgnoreCase(TkpdState.PackageName.Gplus)) {
+        } else if (shareApp.getpackageName().equalsIgnoreCase(TkpdState.PackageName.Gplus)) {
             actionShare(shareData, TkpdState.PackageName.Gplus, AppEventTracking.SOCIAL_MEDIA.GOOGLE_PLUS);
-        } else if (shareApp.getPackageNmae().equalsIgnoreCase(TkpdState.PackageName.Twitter)) {
+        } else if (shareApp.getpackageName().equalsIgnoreCase(TkpdState.PackageName.Twitter)) {
             actionShare(shareData, TkpdState.PackageName.Twitter, AppEventTracking.SOCIAL_MEDIA.TWITTER);
-        } else if (shareApp.getPackageNmae().equalsIgnoreCase(TkpdState.PackageName.Gmail)) {
+        } else if (shareApp.getpackageName().equalsIgnoreCase(TkpdState.PackageName.Gmail)) {
             actionShare(shareData, TkpdState.PackageName.Gmail, AppEventTracking.SOCIAL_MEDIA.GMAIL);
-        } else if (shareApp.getPackageNmae().equalsIgnoreCase(TkpdState.PackageName.Sms)) {
+        } else if (shareApp.getpackageName().equalsIgnoreCase(TkpdState.PackageName.Sms)) {
             actionShare(shareData, TkpdState.PackageName.Sms, AppEventTracking.SOCIAL_MEDIA.SMS);
-        } else if (shareApp.getPackageNmae().equalsIgnoreCase(TkpdState.PackageName.Pinterest)) {
+        } else if (shareApp.getpackageName().equalsIgnoreCase(TkpdState.PackageName.Pinterest)) {
             actionShare(shareData, TkpdState.PackageName.Pinterest, AppEventTracking.SOCIAL_MEDIA.PINTEREST);
         } else {
             shareApp(fragmentManager);
