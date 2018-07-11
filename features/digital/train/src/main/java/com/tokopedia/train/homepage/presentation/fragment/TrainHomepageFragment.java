@@ -56,8 +56,6 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
 
     private static final String STATE_HOMEPAGE = "STATE_HOMEPAGE";
 
-    private final int DEFAULT_RANGE_OF_DEPARTURE_AND_ARRIVAL = 2;
-
     private AppCompatButton buttonOneWayTrip;
     private AppCompatButton buttonRoundTrip;
     private LinearLayout layoutOriginStation;
@@ -73,18 +71,10 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
 
     private TrainHomepageViewModel viewModel;
 
-    private OnCloseBottomMenusListener onCloseBottomMenusListener;
-
     private Menus menus;
 
     @Inject
     TrainHomepagePresenterImpl trainHomepagePresenterImpl;
-
-    public interface OnCloseBottomMenusListener {
-
-        void onCloseBottomMenus();
-
-    }
 
     public TrainHomepageFragment() {
         // Required empty public constructor
@@ -164,19 +154,13 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
 
         trainHomepagePresenterImpl.attachView(this);
         trainHomepagePresenterImpl.initialize();
-
-        if (savedInstanceState != null) {
-            viewModel = savedInstanceState.getParcelable(STATE_HOMEPAGE);
-
-            trainHomepagePresenterImpl.onSavedStateAvailable(viewModel);
-        }
     }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
-        onCloseBottomMenusListener = (OnCloseBottomMenusListener) activity;
+//        onCloseBottomMenusListener = (OnCloseBottomMenusListener) activity;
         setHasOptionsMenu(true);
     }
 
@@ -361,14 +345,23 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putParcelable(STATE_HOMEPAGE, viewModel);
+        trainHomepagePresenterImpl.saveHomepageViewModelToCache(viewModel);
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-
         inflater.inflate(R.menu.menu_train_homepage, menu);
+
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_overflow_menu) {
+            showBottomMenus();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public void showBottomMenus() {
@@ -378,18 +371,13 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
 
         menus.setOnActionClickListener(view -> {
             menus.dismiss();
-            onCloseBottomMenusListener.onCloseBottomMenus();
         });
         menus.setOnItemMenuClickListener((itemMenus, pos) -> {
             menus.dismiss();
-            onCloseBottomMenusListener.onCloseBottomMenus();
         });
+        menus.setActionText("Tutup");
 
         menus.show();
-    }
-
-    public void closeBottomMenus() {
-        menus.dismiss();
     }
 
 }

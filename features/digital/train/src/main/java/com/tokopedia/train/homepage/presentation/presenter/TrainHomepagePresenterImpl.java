@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.util.TrainDateUtil;
+import com.tokopedia.train.homepage.presentation.TrainHomepageCache;
 import com.tokopedia.train.homepage.presentation.listener.TrainHomepageView;
 import com.tokopedia.train.homepage.presentation.model.TrainHomepageViewModel;
 import com.tokopedia.train.homepage.presentation.model.TrainPassengerViewModel;
@@ -26,8 +27,11 @@ public class TrainHomepagePresenterImpl extends BaseDaggerPresenter<TrainHomepag
     private final int DEFAULT_RANGE_OF_DEPARTURE_AND_ARRIVAL = 2;
     private final int MAX_BOOKING_DAYS_FROM_TODAY = 100;
 
+    private TrainHomepageCache trainHomepageCache;
+
     @Inject
-    public TrainHomepagePresenterImpl() {
+    public TrainHomepagePresenterImpl(TrainHomepageCache trainHomepageCache) {
+        this.trainHomepageCache = trainHomepageCache;
     }
 
     @Override
@@ -121,8 +125,22 @@ public class TrainHomepagePresenterImpl extends BaseDaggerPresenter<TrainHomepag
 
     @Override
     public void initialize() {
-        setupViewModel();
-        singleTrip();
+        getView().setHomepageViewModel(trainHomepageCache.buildTrainHomepageViewModelFromCache());
+        final TrainHomepageViewModel trainHomepageViewModel = getView().getHomepageViewModel();
+
+        if (trainHomepageViewModel.getDepartureDate() != null && !trainHomepageViewModel.getDepartureDate().isEmpty()) {
+            Calendar departureCalendar = TrainDateUtil.getCurrentCalendar();
+            departureCalendar.setTime(TrainDateUtil.stringToDate(trainHomepageViewModel.getDepartureDate()));
+            onDepartureDateChange(departureCalendar.get(Calendar.YEAR), departureCalendar.get(Calendar.MONTH), departureCalendar.get(Calendar.DATE));
+        }
+
+        if (!trainHomepageViewModel.getReturnDate().isEmpty()) {
+            Calendar returnDate = TrainDateUtil.getCurrentCalendar();
+            returnDate.setTime(TrainDateUtil.stringToDate(trainHomepageViewModel.getReturnDate()));
+            onReturnDateChange(returnDate.get(Calendar.YEAR), returnDate.get(Calendar.MONTH), returnDate.get(Calendar.DATE));
+        }
+
+        renderUi();
     }
 
     @Override
@@ -186,6 +204,11 @@ public class TrainHomepagePresenterImpl extends BaseDaggerPresenter<TrainHomepag
         viewModel.setOriginStation(tempDestinationStation);
         getView().setHomepageViewModel(viewModel);
         renderUi();
+    }
+
+    @Override
+    public void saveHomepageViewModelToCache(TrainHomepageViewModel viewModel) {
+        trainHomepageCache.saveToCache(viewModel);
     }
 
     private boolean validateFields() {

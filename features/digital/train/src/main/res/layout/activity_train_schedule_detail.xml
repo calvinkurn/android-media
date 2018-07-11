@@ -57,6 +57,7 @@
                 style="@style/Tabs.Secondary.Train"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:layout_scrollFlags="scroll|snap"
                 app:tabGravity="fill"
                 app:tabMode="fixed"
                 app:tabIndicatorColor="@color/colorPrimary"
