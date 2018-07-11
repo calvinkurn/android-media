@@ -56,8 +56,6 @@ class ShopPageActivity: BaseTabActivity(), ShopPagePromoWebView.Listener, HasCom
         tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE)
         tabLayout.setupWithViewPager(viewPager)
         setSupportActionBar(toolbar)
-        collapsingToolbar.setExpandedTitleColor(Color.TRANSPARENT)
-        collapsingToolbar.setTitle(" ")
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
