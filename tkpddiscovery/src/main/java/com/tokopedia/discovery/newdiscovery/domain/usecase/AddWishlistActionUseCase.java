@@ -22,6 +22,7 @@ public class AddWishlistActionUseCase {
     private final String PARAM_PRODUCT_ID = "productID";
     private final String OPERATION_NAME = "addWishlist";
     private final Context context;
+    private GraphqlUseCase graphqlUseCase;
 
     public AddWishlistActionUseCase(Context context) {
         this.context = context;
@@ -29,7 +30,7 @@ public class AddWishlistActionUseCase {
 
     public void createObservable(String productId, String userId, WishlistActionListener wishlistActionListener) {
 
-        GraphqlUseCase graphqlUseCase = new GraphqlUseCase();
+        graphqlUseCase = new GraphqlUseCase();
 
         Map<String, Object> variables = new HashMap<>();
 
@@ -46,4 +47,7 @@ public class AddWishlistActionUseCase {
 
     }
 
+    public void unsubscribe() {
+        graphqlUseCase.unsubscribe();
+    }
 }
