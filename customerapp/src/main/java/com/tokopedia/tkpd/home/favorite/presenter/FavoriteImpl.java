@@ -21,7 +21,7 @@ import com.tokopedia.core.network.entity.home.TopAdsData;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.rxjava.RxUtils;
-import com.tokopedia.shop.page.view.activity.ShopPageActivity;
+import com.tokopedia.shop.page.view.activity.OldShopPageActivity;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.RecyclerViewItem;
@@ -252,7 +252,7 @@ public class FavoriteImpl implements Favorite {
 
         // untuk klik berdasarkan shop id tertentu
         if (moreDatas != null && moreDatas.length > 0 && (moreDatas[shopIdKeyIndex]).equals(SHOP_ID_KEY)) {
-            Intent intent = ShopPageActivity.createIntent(mContext, (String) moreDatas[shopIdValueIndex]);
+            Intent intent = OldShopPageActivity.createIntent(mContext, (String) moreDatas[shopIdValueIndex]);
             mContext.startActivity(intent);
         } else if (data instanceof HorizontalProductList) {// untuk klik show semua wishlist
             sendAllClickEventGTM();

@@ -32,6 +32,7 @@
     <!-- Shop Info -->
     <string name="shop_info_title">Shop Info</string>
     <string name="shop_info_title_tab_product">Produk</string>
+    <string name="shop_info_title_tab_info">Info</string>
     <string name="shop_info_title_tab_review">Ulasan</string>
     <string name="shop_info_title_tab_discussion">Diskusi</string>
 
@@ -102,6 +103,8 @@
     <string name="shop_product_empty_title_desc">Tidak ada produk di etalase ini</string>
     <string name="out_of_stock">Stok Kosong</string>
     <string name="shop_page_label_view_more">Lihat Produk Selengkapnya</string>
+    <string name="official_store_label">Official Store</string>
+    <string name="shop_page_chat_label">Chat</string>
 
 
 </resources>

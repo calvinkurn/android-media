@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 
@@ -54,7 +53,6 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.data.viewmodel.PopUpNotif;
-import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gallery.GalleryActivity;
@@ -1768,7 +1766,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent checkoutModuleRouterGetShopInfoIntent(Context context, String shopId) {
-        return ShopPageActivity.createIntent(context, shopId);
+        return ShopPageActivity.Companion.createIntent(context, shopId);
     }
 
     @Override
@@ -2019,12 +2017,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getShopPageIntent(Context context, String shopId) {
-        return ShopPageActivity.createIntent(context, shopId);
+        return ShopPageActivity.Companion.createIntent(context, shopId);
     }
 
     @Override
     public Intent getShopPageIntentByDomain(Context context, String domain) {
-        return ShopPageActivity.createIntentWithDomain(context, domain);
+        return ShopPageActivity.Companion.createIntentWithDomain(context, domain);
     }
 
     @Override

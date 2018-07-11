@@ -16,7 +16,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -62,7 +61,7 @@ import javax.inject.Inject;
  * Created by nathan on 2/3/18.
  */
 
-public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWebView.Listener, ShopPageHeaderViewHolder.Listener, HasComponent<ShopComponent>, ShopPageView {
+public class OldShopPageActivity extends BaseTabActivity implements ShopPagePromoWebView.Listener, ShopPageHeaderViewHolder.Listener, HasComponent<ShopComponent>, ShopPageView {
 
     private static final float OFFSET_TOOLBAR_TITLE_SHOWN = 0.76f;
     private static final float OFFSET_TOOLBAR_TITLE_SHOWN_CLOSED = 0.813f;
@@ -110,13 +109,13 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
     private String shopName;
 
     public static Intent createIntent(Context context, String shopId) {
-        Intent intent = new Intent(context, ShopPageActivity.class);
+        Intent intent = new Intent(context, OldShopPageActivity.class);
         intent.putExtra(SHOP_ID, shopId);
         return intent;
     }
 
     public static Intent createIntentWithDomain(Context context, String shopDomain) {
-        Intent intent = new Intent(context, ShopPageActivity.class);
+        Intent intent = new Intent(context, OldShopPageActivity.class);
         intent.putExtra(SHOP_DOMAIN, shopDomain);
         return intent;
     }
@@ -125,7 +124,7 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
     public static Intent getCallingIntent(Context context, Bundle extras) {
 
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, ShopPageActivity.class)
+        return new Intent(context, OldShopPageActivity.class)
                 .setData(uri.build())
                 .putExtra(SHOP_ID, extras.getString(APP_LINK_EXTRA_SHOP_ID))
                 .putExtra(SHOP_ATTRIBUTION, extras.getString(APP_LINK_EXTRA_SHOP_ATTRIBUTION, ""))
@@ -136,7 +135,7 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
     @DeepLink(ShopAppLink.SHOP_TALK)
     public static Intent getCallingIntentTalkSelected(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, ShopPageActivity.class)
+        return new Intent(context, OldShopPageActivity.class)
                 .setData(uri.build())
                 .putExtra(SHOP_ID, extras.getString(APP_LINK_EXTRA_SHOP_ID))
                 .putExtra(SHOP_ATTRIBUTION, extras.getString(APP_LINK_EXTRA_SHOP_ATTRIBUTION, ""))
@@ -147,7 +146,7 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
     @DeepLink(ShopAppLink.SHOP_REVIEW)
     public static Intent getCallingIntentReviewSelected(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, ShopPageActivity.class)
+        return new Intent(context, OldShopPageActivity.class)
                 .setData(uri.build())
                 .putExtra(SHOP_ID, extras.getString(APP_LINK_EXTRA_SHOP_ID))
                 .putExtra(SHOP_ATTRIBUTION, extras.getString(APP_LINK_EXTRA_SHOP_ATTRIBUTION, ""))
@@ -202,7 +201,7 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
 
     @Override
     protected int getLayoutRes() {
-        return R.layout.activity_shop_page;
+        return R.layout.activity_old_shop_page;
     }
 
     @Override
@@ -313,7 +312,7 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
                     getSupportActionBar().setHomeAsUpIndicator(icBackRes);
                 }
                 if (menu != null && menu.size() > 0) {
-                    menu.findItem(R.id.action_share).setIcon(ContextCompat.getDrawable(ShopPageActivity.this, icShareRes));
+                    menu.findItem(R.id.action_share).setIcon(ContextCompat.getDrawable(OldShopPageActivity.this, icShareRes));
                 }
             }
         };
@@ -416,7 +415,7 @@ public class ShopPageActivity extends BaseTabActivity implements ShopPagePromoWe
                     ShopPageTracking.getShopType(shopInfo.getInfo()));
         }
         if (shopInfo != null) {
-            ((ShopModuleRouter) getApplication()).goToChatSeller(ShopPageActivity.this, shopId, shopName, shopInfo.getInfo().getShopAvatar());
+            ((ShopModuleRouter) getApplication()).goToChatSeller(OldShopPageActivity.this, shopId, shopName, shopInfo.getInfo().getShopAvatar());
         }
     }
 
