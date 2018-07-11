@@ -664,8 +664,8 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
         boolean isAdExists = dashboardPopulateResponse.getTotalAd() != null && getTotalAd(dashboardPopulateResponse.getTotalAd()) > 0;
         snackbarRetry.hideRetrySnackbar();
         swipeToRefresh.setRefreshing(false);
+        onLoadTopAdsShopDepositSuccess(dashboardPopulateResponse.getDataDeposit());
         if (isUsageExists || isAdExists){
-            onLoadTopAdsShopDepositSuccess(dashboardPopulateResponse.getDataDeposit());
             onSuccessPopulateTotalAds(dashboardPopulateResponse.getTotalAd());
             loadStatisticsData();
             getView().findViewById(R.id.topads_dashboard_empty).setVisibility(View.GONE);
