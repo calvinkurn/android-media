@@ -45,6 +45,11 @@ public class PosApplication extends PosRouterApplication {
     }
 
     private void initializeDatabase() {
+        try{
+            FlowManager.getConfig();
+        } catch (IllegalStateException e) {
+            FlowManager.init(new FlowConfig.Builder(applicationContext).build());
+        }
         FlowManager.init(new FlowConfig.Builder(this)
                 .addDatabaseHolder(TkpdCacheApiGeneratedDatabaseHolder.class)
                 .build());
