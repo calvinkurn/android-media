@@ -177,8 +177,9 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
         checkIfToLoad(layoutManager);
     }
 
-    public void getDealsList() {
-        getView().showProgressBar();
+    public void getDealsList(boolean showProgressBar) {
+        if (showProgressBar)
+            getView().showProgressBar();
         params.putAll(getView().getParams().getParameters());
         params.putAll(getView().getBrandParams().getParameters());
         getDealsListRequestUseCase.setRequestParams(params);
@@ -196,7 +197,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
                 NetworkErrorHelper.showEmptyState(getView().getActivity(), getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
-                        getDealsList();
+                        getDealsList(true);
                     }
                 });
             }

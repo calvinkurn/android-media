@@ -6,6 +6,7 @@ import com.tokopedia.common.network.data.model.RestRequest;
 import com.tokopedia.common.network.domain.RestRequestUseCase;
 import com.tokopedia.digital_deals.view.model.response.CategoryDetailsResponse;
 import com.tokopedia.digital_deals.view.presenter.DealsCategoryDetailPresenter;
+import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.usecase.RequestParams;
 
 import java.lang.reflect.Type;
@@ -28,7 +29,7 @@ public class GetNextCategoryPageUseCase extends RestRequestUseCase {
     protected List<RestRequest> buildRequest() {
         List<RestRequest> tempRequest = new ArrayList<>();
 
-        String url = params.getString(DealsCategoryDetailPresenter.TAG, "");
+        String url = params.getString(Utils.NEXT_URL, "");
         Type token = new TypeToken<DataResponse<CategoryDetailsResponse>>() {
         }.getType();
 

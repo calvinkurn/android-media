@@ -2,6 +2,7 @@ package com.tokopedia.digital_deals.view.presenter;
 
 import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
+import android.text.TextUtils;
 
 import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.CommonUtils;
@@ -21,6 +22,7 @@ import com.tokopedia.digital_deals.view.model.Page;
 import com.tokopedia.digital_deals.view.model.ProductItem;
 import com.tokopedia.digital_deals.view.model.response.AllBrandsResponse;
 import com.tokopedia.digital_deals.view.model.response.CategoryDetailsResponse;
+import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.usecase.RequestParams;
 
 import java.lang.reflect.Type;
@@ -103,8 +105,9 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
         checkIfToLoad(layoutManager);
     }
 
-    public void getBrandsList() {
-        getView().showProgressBar();
+    public void getBrandsList(boolean showProgressBar) {
+        if (showProgressBar)
+            getView().showProgressBar();
         getAllBrandsUseCase.setRequestParams(getView().getBrandParams());
         getAllBrandsUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
@@ -120,7 +123,7 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
                 NetworkErrorHelper.showEmptyState(getView().getActivity(), getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
-                        getBrandsList();
+                        getBrandsList(true);
                     }
                 });
             }
@@ -141,8 +144,9 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
         });
     }
 
-    public void getCategoryDetails() {
-        getView().showProgressBar();
+    public void getCategoryDetails(boolean showProgressBar) {
+        if (showProgressBar)
+            getView().showProgressBar();
         getCategoryDetailRequestUseCase.setRequestParams(getView().getCategoryParams());
         getCategoryDetailRequestUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
@@ -159,7 +163,7 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
                 NetworkErrorHelper.showEmptyState(getView().getActivity(), getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
-                        getCategoryDetails();
+                        getCategoryDetails(true);
                     }
                 });
             }
@@ -231,12 +235,11 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
         }
     }
 
-    void getNextPageUrl() {
+    private void getNextPageUrl() {
         if (page != null) {
 
-            String nexturl = page.getUriNext();
-            if (nexturl != null && !nexturl.isEmpty() && nexturl.length() > 0) {
-                searchNextParams.putString(TAG, nexturl);
+            if (!TextUtils.isEmpty(page.getUriNext())) {
+                searchNextParams.putString(Utils.NEXT_URL, page.getUriNext());
                 isLastPage = false;
             } else {
                 isLastPage = true;

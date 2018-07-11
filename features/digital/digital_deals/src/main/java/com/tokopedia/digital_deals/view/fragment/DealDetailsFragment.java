@@ -20,6 +20,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -44,6 +45,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DaggerDealsComponent;
+import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.digital_deals.di.DealsModule;
 import com.tokopedia.digital_deals.view.activity.BrandDetailsActivity;
 import com.tokopedia.digital_deals.view.activity.DealDetailsActivity;
@@ -67,7 +69,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class DealDetailsFragment extends BaseDaggerFragment implements DealDetailsContract.View, View.OnClickListener, DealCategoryAdapterContract.View {
+public class DealDetailsFragment extends BaseDaggerFragment implements DealDetailsContract.View, View.OnClickListener, DealCategoryAdapterContract.View, DealsCategoryAdapter.INavigateToActivityRequest {
 
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private at.blogc.android.views.ExpandableTextView tvExpandableDesc;
@@ -206,17 +208,14 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         tvExpandableTC.setInterpolator(new OvershootInterpolator());
         mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         recyclerViewDeals.setLayoutManager(mLayoutManager);
-        recyclerViewDeals.setAdapter(new DealsCategoryAdapter(getActivity(), new ArrayList<ProductItem>(), IS_SHORT_LAYOUT));
+        recyclerViewDeals.setAdapter(new DealsCategoryAdapter(getActivity(), new ArrayList<ProductItem>(), this, IS_SHORT_LAYOUT));
         recyclerViewDeals.addOnScrollListener(rvOnScrollListener);
     }
 
 
     @Override
     protected void initInjector() {
-        DaggerDealsComponent.builder()
-                .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
-                .dealsModule(new DealsModule(getContext()))
-                .build().inject(this);
+        getComponent(DealsComponent.class).inject(this);
         mPresenter.attachView(this);
         mPresenter2.attachView(this);
     }
@@ -229,7 +228,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
 
     @Override
     public void navigateToActivityRequest(Intent intent, int requestCode) {
-
+        startActivityForResult(intent, requestCode);
     }
 
     @Override
@@ -240,18 +239,26 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         tvDealDetails.setVisibility(View.VISIBLE);
 
 
-        tvMrp.setText(Utils.convertToCurrencyString(detailsViewModel.getMrp()));
-        tvMrp.setPaintFlags(tvMrp.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-
+        if(detailsViewModel.getMrp()!=0){
+            tvMrp.setVisibility(View.VISIBLE);
+            tvMrp.setText(Utils.convertToCurrencyString(detailsViewModel.getMrp()));
+            tvMrp.setPaintFlags(tvMrp.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        }else{
+            tvMrp.setVisibility(View.GONE);
+        }
+        if(TextUtils.isEmpty(detailsViewModel.getSavingPercentage())){
+            tvOff.setVisibility(View.GONE);
+        }else{
+            tvOff.setVisibility(View.VISIBLE);
+            tvOff.setText(detailsViewModel.getSavingPercentage());
+        }
 
         tvSalesPrice.setText(Utils.convertToCurrencyString(detailsViewModel.getSalesPrice()));
-        tvOff.setText(detailsViewModel.getSavingPercentage());
-
 
         tvExpiryDate.setText(String.format(getString(R.string.valid_through), Utils.convertEpochToString(detailsViewModel.getSaleEndDate())));
 
 
-        if (detailsViewModel.getOutlets() != null && detailsViewModel.getOutlets().size() != 0) {
+        if (detailsViewModel.getOutlets() != null && detailsViewModel.getOutlets().size() > 0) {
             Outlet outlet = detailsViewModel.getOutlets().get(0);
             latLng = outlet.getCoordinates();
             if (latLng != null && latLng != "") {
@@ -277,7 +284,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
 
         }
 
-        if (detailsViewModel.getMediaUrl() != null && detailsViewModel.getMediaUrl().size() != 0) {
+        if (detailsViewModel.getMediaUrl() != null && detailsViewModel.getMediaUrl().size() > 0) {
             if (detailsViewModel.getMediaUrl().size() == 1)
                 circlePageIndicator.setVisibility(View.GONE);
             setViewPagerListener(new SlidingImageAdapterDealDetails(getActivity(), detailsViewModel.getMediaUrl()));
@@ -583,4 +590,9 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
             mPresenter.onRecyclerViewScrolled(mLayoutManager);
         }
     };
+
+    @Override
+    public void onNavigateToActivityRequest(Intent intent, int requestCode) {
+        navigateToActivityRequest(intent, requestCode);
+    }
 }

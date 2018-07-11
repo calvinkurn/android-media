@@ -15,6 +15,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
+import android.text.TextUtils;
 import android.text.style.ClickableSpan;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -47,8 +48,8 @@ import javax.inject.Inject;
 
 import static com.tokopedia.digital_deals.view.activity.DealsHomeActivity.REQUEST_CODE_DEALSLOCATIONACTIVITY;
 
-public class DealsSearchActivity extends BaseSimpleActivity implements
-        DealsSearchContract.View, SearchInputView.Listener, android.view.View.OnClickListener {
+public class DealsSearchActivity extends DealsBaseActivity implements
+        DealsSearchContract.View, SearchInputView.Listener, android.view.View.OnClickListener, DealsCategoryAdapter.INavigateToActivityRequest {
 
     private final boolean IS_SHORT_LAYOUT = true;
 
@@ -68,7 +69,6 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
     private TextView tvCityName;
     private TextView tvChangeCity;
 
-    private DealsComponent dealsComponent;
     @Inject
     public DealsSearchPresenter mPresenter;
 
@@ -81,7 +81,6 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initInjector();
-        executeInjector();
         setUpVariables();
         searchInputView.setListener(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
@@ -109,13 +108,13 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
         searchInputView.setSearchTextSize(getResources().getDimension(R.dimen.sp_14));
         searchInputView.setSearchImageViewDimens(getResources().getDimensionPixelSize(R.dimen.dp_18), getResources().getDimensionPixelSize(R.dimen.dp_18));
         searchInputView.setSearchImageView(getResources().getDrawable(R.drawable.ic_search_grey_deal));
-        EditText etSearch=searchInputView.findViewById(R.id.edit_text_search);
+        EditText etSearch = searchInputView.findViewById(R.id.edit_text_search);
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         rvDeals.setLayoutManager(layoutManager);
         etSearch.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus){
+                if (hasFocus) {
                     back.setImageResource(R.drawable.ic_close_deals);
                     mPresenter.searchTextChanged(etSearch.getText().toString());
                 }
@@ -161,44 +160,21 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
     public void renderFromSearchResults(List<ProductItem> productItems, String searchText, int count) {
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
 
-        if (productItems != null && productItems.size() != 0) {
-            DealsCategoryAdapter dealsCategoryAdapter = new DealsCategoryAdapter(getActivity(), productItems, !IS_SHORT_LAYOUT);
+        if (productItems != null && productItems.size() > 0) {
+            DealsCategoryAdapter dealsCategoryAdapter = new DealsCategoryAdapter(getActivity(), productItems, this,  !IS_SHORT_LAYOUT);
             rvDeals.addOnScrollListener(rvOnScrollListener);
             rvDeals.setAdapter(dealsCategoryAdapter);
             llDeals.setVisibility(View.VISIBLE);
             noContent.setVisibility(View.GONE);
             tvTopDeals.setVisibility(View.GONE);
-            String text = String.format(getString(R.string.deals_search_location_result), searchText);
-
-            int startIndexOfLink = text.length();
-            if (productItems.size() != 0) {
+            if (productItems.size() > 0) {
                 if (count == 0)
                     count = productItems.size();
             }
-            text += " " + String.format(getActivity().getResources().getString(R.string.number_of_items), count);
-            SpannableString spannableString = new SpannableString(text);
-
-
-            spannableString.setSpan(new ClickableSpan() {
-                @Override
-                public void onClick(View view) {
-                }
-
-                @Override
-                public void updateDrawState(TextPaint ds) {
-                    super.updateDrawState(ds);
-                    ds.setUnderlineText(false);
-                    ds.setColor(getResources().getColor(R.color.black_38)); // specific color for this link
-                }
-            }, startIndexOfLink, text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            dealsCategoryAdapter.addHeader(spannableString.toString());
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            if (imm != null) {
-                imm.hideSoftInputFromWindow(searchInputView.getSearchTextView().getWindowToken(), 0);
-                rvDeals.requestFocus();
-            }
-
-
+            String headerString = getHeaderFormattedText(searchText, count);
+            if (!TextUtils.isEmpty(headerString))
+                dealsCategoryAdapter.addHeader(headerString);
+            hideKeyboard();
         } else {
             llDeals.setVisibility(View.GONE);
             noContent.setVisibility(View.VISIBLE);
@@ -206,6 +182,34 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
         clLocation.setVisibility(View.VISIBLE);
         tvCityName.setText(location.getName());
 
+    }
+
+    private void hideKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.hideSoftInputFromWindow(searchInputView.getSearchTextView().getWindowToken(), 0);
+            rvDeals.requestFocus();
+        }
+    }
+
+    private String getHeaderFormattedText(String searchText, int count) {
+        String text = String.format(getString(R.string.deals_search_location_result), searchText);
+        int startIndexOfLink = text.length();
+        text += " " + String.format(getActivity().getResources().getString(R.string.number_of_items), count);
+        SpannableString spannableString = new SpannableString(text);
+        spannableString.setSpan(new ClickableSpan() {
+            @Override
+            public void onClick(View view) {
+            }
+
+            @Override
+            public void updateDrawState(TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setUnderlineText(false);
+                ds.setColor(getResources().getColor(R.color.black_38));
+            }
+        }, startIndexOfLink, text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return spannableString.toString();
     }
 
     @Override
@@ -310,17 +314,11 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
     }
 
     private void initInjector() {
-        dealsComponent = DaggerDealsComponent.builder()
+        DaggerDealsComponent.builder()
                 .baseAppComponent(((BaseMainApplication) getApplication()).getBaseAppComponent())
-                .dealsModule(new DealsModule(this))
-                .build();
+                .build()
+                .inject(this);
     }
-
-    private void executeInjector() {
-        if (dealsComponent == null) initInjector();
-        dealsComponent.inject(this);
-    }
-
 
     private RecyclerView.OnScrollListener rvOnScrollListener = new RecyclerView.OnScrollListener() {
         @Override
@@ -365,6 +363,17 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
                     }
                 }
                 break;
+            case DealsHomeActivity.REQUEST_CODE_DEALDETAILACTIVITY:
+                if (resultCode == RESULT_OK) {
+                    Location location1 = Utils.getSingletonInstance().getLocation(getActivity());
+                    if (!tvCityName.getText().equals(location1.getName())) {
+                        tvCityName.setText(location1.getName());
+                    }
+                    if (searchInputView.getSearchText() != null && searchInputView.getSearchText() != "")
+                        mPresenter.getDealsListBySearch(searchInputView.getSearchText());
+
+                }
+                break;
         }
 
         super.onActivityResult(requestCode, resultCode, data);
@@ -385,5 +394,10 @@ public class DealsSearchActivity extends BaseSimpleActivity implements
     public void goBack() {
         setResult(RESULT_OK);
         super.onBackPressed();
+    }
+
+    @Override
+    public void onNavigateToActivityRequest(Intent intent, int requestCode) {
+        navigateToActivityRequest(intent, requestCode);
     }
 }

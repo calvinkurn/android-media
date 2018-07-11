@@ -180,6 +180,7 @@ import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.oms.OmsModuleRouter;
 import com.tokopedia.oms.data.entity.response.verifyresponse.VerifyMyCartResponse;
+import com.tokopedia.oms.domain.PostVerifyCartWrapper;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationProfileActivity;
 import com.tokopedia.otp.phoneverification.view.activity.ReferralPhoneNumberVerificationActivity;
@@ -353,7 +354,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         NetworkRouter,
         TopChatRouter,
         DealsModuleRouter,
-        OmsModuleRouter{
+        OmsModuleRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -438,7 +439,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 .build();
         dealsComponent = DaggerDealsComponent.builder()
                 .baseAppComponent((this).getBaseAppComponent())
-                .dealsModule(new DealsModule(this))
                 .build();
     }
 
@@ -2132,19 +2132,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Observable<TKPDMapParam<String, Object>> verifyDealPromo(com.tokopedia.usecase.RequestParams requestParams) {
-        return dealsComponent.getPostVerifyCartUseCase().getExecuteObservable(requestParams).map(new Func1<VerifyMyCartResponse, TKPDMapParam<String, Object>>() {
-            @Override
-            public TKPDMapParam<String, Object> call(VerifyMyCartResponse verifyCartResponse) {
-                TKPDMapParam<String, Object> resultMap = new TKPDMapParam<>();
-                resultMap.put("promocode", verifyCartResponse.getCart().get("promocode").getAsString());
-                resultMap.put("promocode_discount", verifyCartResponse.getCart().get("promocode_discount").getAsInt());
-                resultMap.put("promocode_cashback", verifyCartResponse.getCart().get("promocode_cashback").getAsInt());
-                resultMap.put("promocode_failure_message", verifyCartResponse.getCart().get("promocode_failure_message").getAsString());
-                resultMap.put("promocode_success_message", verifyCartResponse.getCart().get("promocode_success_message").getAsString());
-                resultMap.put("promocode_status", verifyCartResponse.getCart().get("promocode_status").getAsString());
-                return resultMap;
-            }
-        });
+        return new PostVerifyCartWrapper(this, dealsComponent.getPostVerifyCartUseCase())
+                .verifyDealPromo(requestParams);
     }
 
     @Override

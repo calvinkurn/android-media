@@ -5,14 +5,13 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.view.fragment.AllBrandsFragment;
 import com.tokopedia.digital_deals.view.fragment.CategoryDetailHomeFragment;
-import com.tokopedia.digital_deals.view.utils.CategoryDetailCallbacks;
 import com.tokopedia.digital_deals.view.model.CategoriesModel;
+import com.tokopedia.digital_deals.view.utils.CategoryDetailCallbacks;
 
-public class CategoryDetailActivity extends BaseSimpleActivity implements CategoryDetailCallbacks {
+public class CategoryDetailActivity extends DealsBaseActivity implements CategoryDetailCallbacks{
 
     private final String BRAND_FRAGMENT = "BRAND_FRAGMENT";
     public static final String CATEGORY_NAME = "CATEGORY_NAME";
@@ -27,7 +26,7 @@ public class CategoryDetailActivity extends BaseSimpleActivity implements Catego
     @Override
     protected Fragment getNewFragment() {
         categoryName = getIntent().getStringExtra(CATEGORY_NAME);
-        toolbar.setTitle(categoryName);
+        updateTitle(categoryName);
         getSupportFragmentManager().addOnBackStackChangedListener(getListener());
 
         return CategoryDetailHomeFragment.createInstance(getIntent().getExtras());
@@ -57,14 +56,14 @@ public class CategoryDetailActivity extends BaseSimpleActivity implements Catego
                     if (manager.getBackStackEntryCount() >= 1) {
                         String topOnStack = manager.getBackStackEntryAt(manager.getBackStackEntryCount() - 1).getName();
                         if (topOnStack.equals(BRAND_FRAGMENT)) {
-                            toolbar.setTitle(String.format(getResources().getString(R.string.brand_category),
+                            updateTitle(String.format(getResources().getString(R.string.brand_category),
                                     categoryName));
 
                         } else {
-                            toolbar.setTitle(categoryName);
+                            updateTitle(categoryName);
                         }
                     } else {
-                        toolbar.setTitle(categoryName);
+                        updateTitle(categoryName);
                     }
                 }
             }
@@ -72,4 +71,6 @@ public class CategoryDetailActivity extends BaseSimpleActivity implements Catego
 
         return result;
     }
+
+
 }

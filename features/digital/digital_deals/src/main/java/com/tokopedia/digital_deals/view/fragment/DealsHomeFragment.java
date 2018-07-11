@@ -29,15 +29,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.design.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.digital_deals.R;
-import com.tokopedia.digital_deals.di.DaggerDealsComponent;
-import com.tokopedia.digital_deals.di.DealsModule;
+import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.digital_deals.view.activity.DealsHomeActivity;
 import com.tokopedia.digital_deals.view.activity.DealsLocationActivity;
 import com.tokopedia.digital_deals.view.adapter.DealsBrandAdapter;
@@ -45,11 +43,11 @@ import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryItemAdapter;
 import com.tokopedia.digital_deals.view.adapter.SlidingImageAdapter;
 import com.tokopedia.digital_deals.view.contractor.DealsContract;
-import com.tokopedia.digital_deals.view.presenter.DealsHomePresenter;
-import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.digital_deals.view.model.Brand;
 import com.tokopedia.digital_deals.view.model.CategoryItem;
 import com.tokopedia.digital_deals.view.model.Location;
+import com.tokopedia.digital_deals.view.presenter.DealsHomePresenter;
+import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
@@ -58,7 +56,7 @@ import javax.inject.Inject;
 
 import static android.app.Activity.RESULT_OK;
 
-public class DealsHomeFragment extends BaseDaggerFragment implements DealsContract.View, View.OnClickListener {
+public class DealsHomeFragment extends BaseDaggerFragment implements DealsContract.View, View.OnClickListener, DealsCategoryAdapter.INavigateToActivityRequest {
 
 
     private final int SPAN_COUNT_4 = 4;
@@ -82,8 +80,8 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     private LinearLayoutManager layoutManager;
     private TextView tvSeeAllBrands;
     private TextView tvSeeAllPromo;
-    public final static String ADAPTER_POSITION="ADAPTER_POSITION";
-    public final static String FROM_HOME="FROM_HOME";
+    public final static String ADAPTER_POSITION = "ADAPTER_POSITION";
+    public final static String FROM_HOME = "FROM_HOME";
 
     public static Fragment createInstance() {
         Fragment fragment = new DealsHomeFragment();
@@ -102,14 +100,9 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
 
         setHasOptionsMenu(true);
         setUpVariables(view);
+        checkLocationStatus();
 
         return view;
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        checkLocationStatus();
     }
 
     private void checkLocationStatus() {
@@ -118,8 +111,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
 
         if (location != null) {
             tvLocationName.setText(location.getName());
-            mPresenter.getDealsList();
-//            mPresenter.getBrandsList();
+            mPresenter.getDealsList(true);
 
         } else {
             navigateToActivityRequest(new Intent(getActivity(), DealsLocationActivity.class), DealsHomeActivity.REQUEST_CODE_DEALSLOCATIONACTIVITY);
@@ -172,10 +164,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     @Override
     protected void initInjector() {
         NetworkClient.init(getActivity());
-        DaggerDealsComponent.builder()
-                .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
-                .dealsModule(new DealsModule(getContext()))
-                .build().inject(this);
+        getComponent(DealsComponent.class).inject(this);
         mPresenter.attachView(this);
     }
 
@@ -208,10 +197,12 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
                 } else {
                     if (data != null) {
                         boolean isLocationUpdated = data.getBooleanExtra(SelectLocationFragment.EXTRA_CALLBACK_LOCATION, true);
-                        if (isLocationUpdated)
+                        if (isLocationUpdated) {
                             Utils.getSingletonInstance().setSnackBarLocationChange(location.getName(), getActivity(), mainContent);
-                    }
+                            mPresenter.getDealsList(true);
 
+                        }
+                    }
                     tvLocationName.setText(location.getName());
                 }
                 break;
@@ -219,9 +210,9 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
             case DealsHomeActivity.REQUEST_CODE_DEALSSEARCHACTIVITY:
                 if (resultCode == RESULT_OK) {
                     Location location1 = Utils.getSingletonInstance().getLocation(getActivity());
-                    if(!tvLocationName.getText().equals(location1.getName())){
+                    if (!tvLocationName.getText().equals(location1.getName())) {
                         tvLocationName.setText(location1.getName());
-                        mPresenter.getDealsList();
+                        mPresenter.getDealsList(true);
                     }
 
 
@@ -230,9 +221,13 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
             case DealsHomeActivity.REQUEST_CODE_DEALDETAILACTIVITY:
                 if (resultCode == RESULT_OK) {
                     Location location1 = Utils.getSingletonInstance().getLocation(getActivity());
-                    if(!tvLocationName.getText().equals(location1.getName())){
+                    if (!tvLocationName.getText().equals(location1.getName())) {
                         tvLocationName.setText(location1.getName());
+                        mPresenter.getDealsList(true);
+                    }else{
+                        mPresenter.getDealsList(false);
                     }
+
                 }
                 break;
         }
@@ -244,7 +239,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     public void renderCategoryList(List<CategoryItem> categoryList, CategoryItem carousel, CategoryItem top) {
 
         if (top.getItems() != null) {
-            DealsCategoryAdapter categoryAdapter = new DealsCategoryAdapter(getActivity(), top.getItems(), IS_SHORT_LAYOUT);
+            DealsCategoryAdapter categoryAdapter = new DealsCategoryAdapter(getActivity(), top.getItems(), this, IS_SHORT_LAYOUT);
             rvTrendingDeals.setAdapter(categoryAdapter);
         }
         if (carousel.getItems() != null) {
@@ -411,7 +406,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     }
 
     @Override
-    public void onClick(View v) {
+    public void onClick(View v) { ;
         mPresenter.onOptionMenuClick(v.getId());
     }
 
@@ -422,7 +417,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
             if (rvTrendingDeals.getAdapter() != null) {
                 ((DealsCategoryAdapter) rvTrendingDeals.getAdapter()).unsubscribeUseCase();
             }
-        }catch(Exception e){
+        } catch (Exception e) {
 
         }
         super.onDestroy();
@@ -431,5 +426,11 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     @Override
     protected String getScreenName() {
         return null;
+    }
+
+
+    @Override
+    public void onNavigateToActivityRequest(Intent intent, int requestCode) {
+        navigateToActivityRequest(intent, requestCode);
     }
 }

@@ -49,7 +49,7 @@ public class DealCategoryAdapterPresenter extends BaseDaggerPresenter<DealCatego
             rating.setFeedback("");
             requestModel.setRating(rating);
             com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
-            requestParams.putObject("request_body", requestModel);
+            requestParams.putObject(PostUpdateDealLikesUseCase.REQUEST_BODY, requestModel);
             postUpdateDealLikesUseCase.setRequestParams(requestParams);
             postUpdateDealLikesUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
                 @Override
@@ -88,7 +88,7 @@ public class DealCategoryAdapterPresenter extends BaseDaggerPresenter<DealCatego
             rating.setFeedback("");
             requestModel.setRating(rating);
             com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
-            requestParams.putObject("request_body", requestModel);
+            requestParams.putObject(PostUpdateDealLikesUseCase.REQUEST_BODY, requestModel);
             postUpdateDealLikesUseCase.setRequestParams(requestParams);
             postUpdateDealLikesUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
                 @Override

@@ -2,6 +2,7 @@ package com.tokopedia.digital_deals.di;
 
 import android.content.Context;
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
@@ -22,15 +23,10 @@ import dagger.Provides;
 
 @Module(includes = OmsModule.class)
 public class DealsModule {
-    Context thisContext;
-
-    public DealsModule(Context context) {
-        thisContext = context;
-    }
 
     @Provides
     @DealsScope
-    ProfileSourceFactory providesProfileSourceFactory(Context context, SessionHandler sessionHandler) {
+    ProfileSourceFactory providesProfileSourceFactory(@ApplicationContext Context context, SessionHandler sessionHandler) {
         return new ProfileSourceFactory(context,
                 new PeopleService(),
                 new ProfileMapper(),
@@ -64,14 +60,7 @@ public class DealsModule {
     }
 
     @Provides
-    public SessionHandler provideSessionHandler(@DealsScope Context context){
+    public SessionHandler provideSessionHandler(@ApplicationContext Context context){
         return new SessionHandler(context);
-    }
-
-
-    @Provides
-    @DealsScope
-    Context getActivityContext() {
-        return thisContext;
     }
 }
