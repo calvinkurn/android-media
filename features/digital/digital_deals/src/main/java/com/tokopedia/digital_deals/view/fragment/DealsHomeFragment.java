@@ -82,8 +82,8 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     private LinearLayoutManager layoutManager;
     private TextView tvSeeAllBrands;
     private TextView tvSeeAllPromo;
-    public final static String ADAPTER_POSITION="ADAPTER_POSITION";
-    public final static String FROM_HOME="FROM_HOME";
+    public final static String ADAPTER_POSITION = "ADAPTER_POSITION";
+    public final static String FROM_HOME = "FROM_HOME";
 
     public static Fragment createInstance() {
         Fragment fragment = new DealsHomeFragment();
@@ -102,6 +102,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
 
         setHasOptionsMenu(true);
         setUpVariables(view);
+        checkLocationStatus();
 
         return view;
     }
@@ -109,7 +110,6 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     @Override
     public void onStart() {
         super.onStart();
-        checkLocationStatus();
     }
 
     private void checkLocationStatus() {
@@ -119,7 +119,6 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         if (location != null) {
             tvLocationName.setText(location.getName());
             mPresenter.getDealsList();
-//            mPresenter.getBrandsList();
 
         } else {
             navigateToActivityRequest(new Intent(getActivity(), DealsLocationActivity.class), DealsHomeActivity.REQUEST_CODE_DEALSLOCATIONACTIVITY);
@@ -208,10 +207,12 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
                 } else {
                     if (data != null) {
                         boolean isLocationUpdated = data.getBooleanExtra(SelectLocationFragment.EXTRA_CALLBACK_LOCATION, true);
-                        if (isLocationUpdated)
+                        if (isLocationUpdated) {
                             Utils.getSingletonInstance().setSnackBarLocationChange(location.getName(), getActivity(), mainContent);
-                    }
+                            mPresenter.getDealsList();
 
+                        }
+                    }
                     tvLocationName.setText(location.getName());
                 }
                 break;
@@ -219,7 +220,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
             case DealsHomeActivity.REQUEST_CODE_DEALSSEARCHACTIVITY:
                 if (resultCode == RESULT_OK) {
                     Location location1 = Utils.getSingletonInstance().getLocation(getActivity());
-                    if(!tvLocationName.getText().equals(location1.getName())){
+                    if (!tvLocationName.getText().equals(location1.getName())) {
                         tvLocationName.setText(location1.getName());
                         mPresenter.getDealsList();
                     }
@@ -230,8 +231,10 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
             case DealsHomeActivity.REQUEST_CODE_DEALDETAILACTIVITY:
                 if (resultCode == RESULT_OK) {
                     Location location1 = Utils.getSingletonInstance().getLocation(getActivity());
-                    if(!tvLocationName.getText().equals(location1.getName())){
+                    if (!tvLocationName.getText().equals(location1.getName())) {
                         tvLocationName.setText(location1.getName());
+                        mPresenter.getDealsList();
+
                     }
                 }
                 break;
@@ -422,7 +425,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
             if (rvTrendingDeals.getAdapter() != null) {
                 ((DealsCategoryAdapter) rvTrendingDeals.getAdapter()).unsubscribeUseCase();
             }
-        }catch(Exception e){
+        } catch (Exception e) {
 
         }
         super.onDestroy();
