@@ -21,40 +21,6 @@ public class AppInfo {
         return context.getPackageName();
     }
 
-    public static String getVersionName(Context context) {
-        try {
-            PackageInfo pInfo = context.getPackageManager().getPackageInfo(getPackageName(context), 0);
-            return pInfo.versionName + "";
-        } catch (PackageManager.NameNotFoundException e) {
-            Log.e("Exception", "Error while retrieving app version name ", e);
-        }
-
-        return NOT_AVAILABLE;
-    }
-
-    public static String getVersionCode(Context context) {
-        try {
-            PackageInfo pInfo = context.getPackageManager().getPackageInfo(getPackageName(context), 0);
-            return pInfo.versionCode + "";
-        } catch (PackageManager.NameNotFoundException e) {
-            Log.e("Exception", "Error while retrieving app version code ", e);
-        }
-
-        return NOT_AVAILABLE;
-    }
-
-    public static String getApplicationName(Context context) {
-        final PackageManager packageManager = context.getPackageManager();
-        ApplicationInfo applicationInfo;
-        try {
-            applicationInfo = packageManager.getApplicationInfo(context.getPackageName(), 0);
-        } catch (final PackageManager.NameNotFoundException e) {
-            applicationInfo = null;
-        }
-
-        return (String) (applicationInfo != null ? packageManager.getApplicationLabel(applicationInfo) : NOT_AVAILABLE);
-    }
-
     public static String getDefaultAcceptLanguage(Context context) {
         Configuration configuration = context.getResources().getConfiguration();
         if (configuration == null) {
