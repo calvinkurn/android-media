@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.view.view.shipment.viewmodel;
 
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
+import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentCartData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
@@ -25,6 +26,7 @@ public class ShipmentCartItemModel implements ShipmentData {
     private int shopId;
     private ShipmentCartData shipmentCartData;
     private ShipmentDetailData selectedShipmentDetailData;
+    private List<ShopShipment> shopShipmentList;
     private String shopName;
 
     private int weightUnit;
@@ -77,6 +79,7 @@ public class ShipmentCartItemModel implements ShipmentData {
         newShipmentCartItemModel.setDestinationDistrictName(shipmentCartItemModel.getDestinationDistrictName());
         newShipmentCartItemModel.setDestinationDistrictId(shipmentCartItemModel.getDestinationDistrictId());
         newShipmentCartItemModel.setRecipientAddressModel(shipmentCartItemModel.getRecipientAddressModel());
+        newShipmentCartItemModel.setShopShipmentList(shipmentCartItemModel.getShopShipmentList());
 
         return newShipmentCartItemModel;
     }
@@ -271,5 +274,13 @@ public class ShipmentCartItemModel implements ShipmentData {
 
     public void setCartItemModels(List<CartItemModel> cartItemModels) {
         this.cartItemModels = cartItemModels;
+    }
+
+    public List<ShopShipment> getShopShipmentList() {
+        return shopShipmentList;
+    }
+
+    public void setShopShipmentList(List<ShopShipment> shopShipmentList) {
+        this.shopShipmentList = shopShipmentList;
     }
 }

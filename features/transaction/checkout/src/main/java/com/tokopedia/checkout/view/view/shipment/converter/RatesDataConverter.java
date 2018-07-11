@@ -145,6 +145,7 @@ public class RatesDataConverter {
     }
 
     public ShipmentDetailData getShipmentDetailData(ShipmentDetailData shipmentDetailData,
+                                                    List<ShopShipment> shopShipmentList,
                                                     RatesResponse ratesResponse) {
         if (shipmentDetailData == null) {
             shipmentDetailData = new ShipmentDetailData();
@@ -173,8 +174,31 @@ public class RatesDataConverter {
             }
         }
 
+        for (ShipmentItemData shipmentItemData : shipmentItemDataList) {
+            List<CourierItemData> activeCourierItemDataList = new ArrayList<>();
+            for (CourierItemData courierItemData : shipmentItemData.getCourierItemData()) {
+                if (isCourierActive(shopShipmentList, courierItemData)) {
+                    activeCourierItemDataList.add(courierItemData);
+                }
+            }
+            shipmentItemData.setCourierItemData(activeCourierItemDataList);
+        }
+
         shipmentDetailData.setShipmentItemData(shipmentItemDataList);
         return shipmentDetailData;
+    }
+
+    private boolean isCourierActive(List<ShopShipment> shopShipmentList, CourierItemData courierItemData) {
+        for (ShopShipment shopShipment : shopShipmentList) {
+            if (shopShipment.getShipId() == courierItemData.getShipperId()) {
+                for (ShipProd shipProd : shopShipment.getShipProds()) {
+                    if (shipProd.getShipProdId() == courierItemData.getShipperProductId()) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     private List<ShipmentItemData> getShipmentItemDataList(RatesResponse ratesResponse) {

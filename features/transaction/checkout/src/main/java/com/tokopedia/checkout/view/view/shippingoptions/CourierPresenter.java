@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.checkout.R;
+import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentCartData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
@@ -53,13 +54,14 @@ public class CourierPresenter extends BaseDaggerPresenter<CourierContract.View>
     }
 
     @Override
-    public void loadCourier(ShipmentDetailData shipmentDetailData) {
+    public void loadCourier(ShipmentDetailData shipmentDetailData, List<ShopShipment> shopShipmentList) {
         getView().showLoading();
         this.shipmentDetailData = shipmentDetailData;
         if (shipmentDetailData.getShipmentCartData() == null) {
             shipmentDetailData.setShipmentCartData(new ShipmentCartData());
         }
         getRatesUseCase.setShipmentDetailData(shipmentDetailData);
+        getRatesUseCase.setShopShipmentList(shopShipmentList);
         getRatesUseCase.execute(getRatesUseCase.getParams(), new Subscriber<ShipmentDetailData>() {
             @Override
             public void onCompleted() {
