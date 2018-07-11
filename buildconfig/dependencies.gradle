@@ -299,7 +299,6 @@ ext {
             topAdsCommon          : ":features:top_ads:top_ads_management_common",
             topAdsSourceTagging   : ":features:top_ads:top_ads_management_sourcetagging",
             tokoCash              : ":features:fintech:tokocash",
-            instantLoan           : ":features:fintech:instant_loan",
             flight                : ":tkpdflight",
             flightNoOp            : ":features:digital:flight_no_op",
             mitraToppers          : ":features:fintech:mitra_toppers",
@@ -311,13 +310,16 @@ ext {
             groupchat             : ":features:user:groupchat",
             gamification          : ":features:promo:gamification",
             profile               : ":features:user:profile",
+            topchat               : ":features:user:topchat",
             contactUs             : ":features:operational:contact_us",
             otp                   : ":features:user:otp",
             logisticdata          : ":features:logistic:logisticdata",
             transactiondata       : ":features:transaction:transactiondata",
             transactionanalytics  : ":features:transaction:transactionanalytics",
             tracking              : ":features:logistic:tracking",
-            logisticuploadawb     : ":features:logistic:logisticuploadawb"
+            logisticuploadawb     : ":features:logistic:logisticuploadawb",
+            vote                  : ":features:user:vote",
+            instantLoan           : ":features:fintech:instant_loan"
     ]
 
     libraries = [

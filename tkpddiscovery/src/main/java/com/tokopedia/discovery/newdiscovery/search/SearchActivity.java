@@ -169,12 +169,6 @@ public class SearchActivity extends DiscoveryActivity
             }
         } else {
             searchView.showSearch(true, false);
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    KeyboardHandler.showSoftKeyboard(SearchActivity.this);
-                }
-            }, 200);
         }
 
         if (intent != null &&
