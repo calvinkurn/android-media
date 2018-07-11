@@ -1902,8 +1902,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void registerShake(String screenName) {
-        ShakeDetectManager.getShakeDetectManager().registerShake(screenName);
+    public void registerShake(String screenName,Activity activity) {
+        ShakeDetectManager.getShakeDetectManager().registerShake(screenName,activity);
     }
 
     @Override
