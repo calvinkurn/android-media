@@ -660,11 +660,6 @@ public class PosRouterApplication extends MainApplication implements
     }
 
     @Override
-    public void registerShake(String screenName) {
-
-    }
-
-    @Override
     public void unregisterShake() {
 
     }
