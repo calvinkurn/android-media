@@ -29,6 +29,8 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.RequestPermissionUtil;
+import com.tokopedia.product.edit.view.activity.ProductAddVideoActivity;
+import com.tokopedia.product.edit.view.fragment.ProductAddVideoFragment;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.imageeditor.GalleryCropWatermarkActivity;
@@ -41,7 +43,6 @@ import com.tokopedia.seller.product.edit.constant.StockTypeDef;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.catalogdata.Catalog;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddCatalogPickerActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddDescriptionPickerActivity;
-import com.tokopedia.seller.product.edit.view.activity.ProductAddVideoActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductScoringDetailActivity;
 import com.tokopedia.seller.product.edit.view.dialog.ProductAddImageDialogFragment;
 import com.tokopedia.seller.product.edit.view.dialog.ProductAddImageDescriptionDialog;
@@ -55,7 +56,6 @@ import com.tokopedia.seller.product.edit.view.holder.ProductManageViewHolder;
 import com.tokopedia.seller.product.edit.view.holder.ProductPriceViewHolder;
 import com.tokopedia.seller.product.edit.view.holder.ProductScoreViewHolder;
 import com.tokopedia.seller.product.edit.view.listener.ProductAddView;
-import com.tokopedia.seller.product.edit.view.listener.YoutubeAddVideoView;
 import com.tokopedia.seller.product.edit.view.mapper.AnalyticsMapper;
 import com.tokopedia.seller.product.edit.view.model.ImageSelectModel;
 import com.tokopedia.seller.product.edit.view.model.categoryrecomm.ProductCategoryPredictionViewModel;
@@ -430,10 +430,13 @@ public abstract class BaseProductAddEditFragment<T extends ProductAddPresenter>
 
     @Override
     public final void startYoutubeVideoActivity(ArrayList<String> videoIds) {
+        collectDataFromView();
         Intent intent = new Intent(getActivity(), ProductAddVideoActivity.class);
-        if (CommonUtils.checkCollectionNotNull(videoIds)) {
-            intent.putStringArrayListExtra(YoutubeAddVideoView.KEY_VIDEOS_LINK, videoIds);
+        if (!CommonUtils.checkCollectionNotNull(videoIds)) {
+            videoIds = new ArrayList<>();
         }
+        intent.putStringArrayListExtra(ProductAddVideoFragment.EXTRA_VIDEOS_LINKS, videoIds);
+        intent.putExtra(ProductAddVideoFragment.EXTRA_KEYWORD, currentProductViewModel.getProductName());
         startActivityForResult(intent, ProductDescriptionViewHolder.REQUEST_CODE_GET_VIDEO);
     }
 

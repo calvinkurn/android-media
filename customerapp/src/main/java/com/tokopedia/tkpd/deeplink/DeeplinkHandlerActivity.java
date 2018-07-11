@@ -62,6 +62,10 @@ import com.tokopedia.tkpdpdp.applink.PdpApplinkModule;
 import com.tokopedia.tkpdpdp.applink.PdpApplinkModuleLoader;
 import com.tokopedia.tokocash.applink.TokoCashApplinkModule;
 import com.tokopedia.tokocash.applink.TokoCashApplinkModuleLoader;
+import com.tokopedia.tokopoints.TokopointApplinkModule;
+import com.tokopedia.tokopoints.TokopointApplinkModuleLoader;
+import com.tokopedia.topchat.deeplink.TopChatAppLinkModule;
+import com.tokopedia.topchat.deeplink.TopChatAppLinkModuleLoader;
 import com.tokopedia.tracking.applink.TrackingAppLinkModule;
 import com.tokopedia.tracking.applink.TrackingAppLinkModuleLoader;
 import com.tokopedia.transaction.applink.TransactionApplinkModule;
@@ -71,6 +75,7 @@ import org.json.JSONObject;
 
 import io.branch.referral.Branch;
 import io.branch.referral.BranchError;
+
 
 @DeepLinkHandler({
         ConsumerDeeplinkModule.class,
@@ -96,10 +101,13 @@ import io.branch.referral.BranchError;
         KolApplinkModule.class,
         TrackingAppLinkModule.class,
         CheckoutAppLinkModule.class,
-        CustomerCareApplinkModule.class
+        CustomerCareApplinkModule.class,
+        TopChatAppLinkModule.class,
+        TokopointApplinkModule.class
 })
 
 public class DeeplinkHandlerActivity extends AppCompatActivity {
+
 
     public static DeepLinkDelegate getDelegateInstance() {
         return new DeepLinkDelegate(
@@ -126,7 +134,9 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new KolApplinkModuleLoader(),
                 new TrackingAppLinkModuleLoader(),
                 new CheckoutAppLinkModuleLoader(),
-                new CustomerCareApplinkModuleLoader()
+                new CustomerCareApplinkModuleLoader(),
+                new TopChatAppLinkModuleLoader(),
+                new TokopointApplinkModuleLoader()
         );
     }
 

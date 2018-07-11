@@ -60,6 +60,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
     private RecyclerView notificationHelpStep;
     private ViewGroup liveTrackingButton;
     private ViewGroup rootView;
+    private LinearLayout descriptionLayout;
 
     @Inject
     ITrackingPagePresenter presenter;
@@ -101,6 +102,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
         emptyUpdateNotification = view.findViewById(R.id.empty_update_notification);
         notificationText = view.findViewById(R.id.notification_text);
         notificationHelpStep = view.findViewById(R.id.notification_help_step);
+        descriptionLayout = view.findViewById(R.id.description_layout);
         TextView furtherInformationText = view.findViewById(R.id.further_information_text);
         furtherInformationText.setText(Html
                         .fromHtml(getString(R.string.further_information_text_html)),
@@ -115,9 +117,10 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
     public void populateView(TrackingViewModel model) {
         referenceNumber.setText(model.getReferenceNumber());
         ImageHandler.LoadImage(courierLogo, model.getCourierLogoUrl());
-        if (!TextUtils.isEmpty(model.getDeliveryDate())) {
+        if(TextUtils.isEmpty(model.getServiceCode())) descriptionLayout.setVisibility(View.GONE);
+        if (!TextUtils.isEmpty(model.getDeliveryDate()))
             deliveryDate.setText(dateUtil.getFormattedDate(model.getDeliveryDate()));
-        }
+
         storeName.setText(model.getSellerStore());
         storeAddress.setText(model.getSellerAddress());
         serviceCode.setText(model.getServiceCode());

@@ -44,17 +44,16 @@ public class DrawerInjector {
 
     public static DrawerDataManager getDrawerDataManager(Context context,
                                                          DrawerDataListener drawerDataListener,
-                                                         SessionHandler sessionHandler,
                                                          LocalCacheHandler drawerCache) {
 
         JobExecutor jobExecutor = new JobExecutor();
         PostExecutionThread uiThread = new UIThread();
 
-        NetworkRouter networkRouter =  (NetworkRouter) context.getApplicationContext();
+        NetworkRouter networkRouter = (NetworkRouter) context.getApplicationContext();
         UserSession userSession = new UserSession(context);
 
         UserAttributesRepository userAttributesRepository = new UserAttributesRepositoryImpl(
-                new UserAttributesFactory(context, new DrawerService(context, userSession, networkRouter), drawerCache)
+                new UserAttributesFactory(new DrawerService(context, userSession, networkRouter), drawerCache)
         );
 
         GetUserAttributesUseCase getUserAttributesUseCase = new GetUserAttributesUseCase(jobExecutor,

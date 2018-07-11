@@ -52,6 +52,7 @@ public interface AppEventTracking {
         String GIMMICK = "clickGimmick";
         String REGISTER_SUCCESS = "registerSuccess";
         String HOTLIST = "clickHotlist";
+        String HOTLIST_PAGE = "hotlist page";
         String FAVORITE = "clickFavorite";
         String SEARCH = "clickSearch";
         String IMAGE_SEARCH_CLICK = "imageSearchClick";
@@ -297,6 +298,7 @@ public interface AppEventTracking {
         String ONBOARDING = "onboarding";
         String RESOLUTION_CENTER = "resolution center";
         String MANAGE_PROFILE = "pengaturan profile";
+        String PROFILE_PAGE = "profile page";
         String RESOLUTION_CENTER_CHAT = "resolution chat";
 
         String PROMO_MICROSITE_PROMO_LIST = "promo microsite - promo list";
@@ -337,6 +339,7 @@ public interface AppEventTracking {
         String REGISTER_SUCCESS = "Register Success";
         String REGISTER_ERROR = "Register Error";
         String NO_RESULT = "No Result";
+        String NO_SEARCH_RESULT = "no search result";
         String ABANDON = "Abandon";
         String DEEPLINK = "Deeplink";
         String RESET_SUCCESS = "Reset Success";

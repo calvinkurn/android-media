@@ -20,5 +20,16 @@ project.ext {
 }
 
 dependencies {
+    implementation project(rootProject.ext.libraries.useCase)
+    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.abstraction)
     implementation rootProject.ext.playServicesDependencies.firebaseAnalytics
+
+    implementation rootProject.ext.miscDependencies.multiDex
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
+    implementation rootProject.ext.dbDependencies.dbFlowCore
+    implementation rootProject.ext.dbDependencies.dbFlow
+
+    testImplementation rootProject.ext.testDependencies.junit
 }

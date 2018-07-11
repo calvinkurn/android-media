@@ -53,6 +53,9 @@ public class ItemHistoryEntity {
     @SerializedName("actions")
     @Expose
     private List<ActionHistoryEntity> actions;
+    @SerializedName("help_redirect")
+    @Expose
+    private String helpRedirect;
 
     public long getTransaction_id() {
         return transaction_id;
@@ -164,5 +167,9 @@ public class ItemHistoryEntity {
 
     public void setAmount_pending(String amount_pending) {
         this.amount_pending = amount_pending;
+    }
+
+    public String getHelpRedirect() {
+        return helpRedirect;
     }
 }

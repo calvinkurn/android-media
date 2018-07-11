@@ -119,12 +119,12 @@ public class EventSearchActivity extends TActivity implements
 
     @Override
     public void showProgressBar() {
-
+        progressBarLayout.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgressBar() {
-
+        progressBarLayout.setVisibility(View.GONE);
     }
 
     @Override
@@ -134,7 +134,7 @@ public class EventSearchActivity extends TActivity implements
 
     @Override
     public View getRootView() {
-        return null;
+        return mainContent;
     }
 
     @Override
