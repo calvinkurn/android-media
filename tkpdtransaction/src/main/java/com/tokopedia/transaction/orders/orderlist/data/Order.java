@@ -1,27 +1,70 @@
 package com.tokopedia.transaction.orders.orderlist.data;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 public class Order {
+    @SerializedName("conditionalInfo")
+    @Expose
     private ConditionalInfo conditionalInfo;
+    @SerializedName("paymentData")
+    @Expose
     private PaymentData paymentData;
+    @SerializedName("paymentID")
+    @Expose
     private String paymentID;
+    @SerializedName("categoryName")
+    @Expose
     private String categoryName;
-    private String appLink;
-    private String upstream;
+    @SerializedName("category")
+    @Expose
     private String category;
+    @SerializedName("appLink")
+    @Expose
+    private String appLink;
+    @SerializedName("upstream")
+    @Expose
+    private String upstream;
+    @SerializedName("id")
+    @Expose
     private String id;
+    @SerializedName("createdAt")
+    @Expose
     private String createdAt;
+    @SerializedName("status")
+    @Expose
     private int status;
+    @SerializedName("statusStr")
+    @Expose
     private String statusStr;
+    @SerializedName("statusColor")
+    @Expose
     private String statusColor;
+    @SerializedName("invoiceRefNum")
+    @Expose
     private String invoiceRefNum;
+    @SerializedName("title")
+    @Expose
     private String title;
+    @SerializedName("metaData")
+    @Expose
     private List<MetaData> metaData;
+    @SerializedName("dotMenuList")
+    @Expose
     private List<DotMenuList> dotMenuList;
+    @SerializedName("actionButtons")
+    @Expose
     private List<ActionButton> actionButtons;
+    @SerializedName("totalInvoices")
+    @Expose
     private String totalInvoices;
+    @SerializedName("itemCount")
+    @Expose
     private String itemCount;
+    @SerializedName("items")
+    @Expose
     private List<Item> items;
 
 
