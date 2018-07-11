@@ -3,14 +3,11 @@ package com.tokopedia.train.scheduledetail.presentation.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
 import com.tokopedia.tkpdtrain.R;
@@ -67,7 +64,7 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
 
     @Override
     protected int getLayoutRes() {
-        return R.layout.activity_train_schedule_detail2;
+        return R.layout.activity_train_schedule_detail;
     }
 
     @Override
