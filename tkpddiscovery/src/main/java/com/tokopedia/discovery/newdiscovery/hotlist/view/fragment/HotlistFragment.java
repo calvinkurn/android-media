@@ -1,5 +1,6 @@
 package com.tokopedia.discovery.newdiscovery.hotlist.view.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -9,14 +10,15 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.google.android.gms.tagmanager.DataLayer;
+import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.HotlistPageTracking;
@@ -29,17 +31,22 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
+import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
+import com.tokopedia.core.share.ShareBottomSheet;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.activity.SortProductActivity;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
+import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.base.BottomNavigationListener;
 import com.tokopedia.discovery.newdiscovery.hotlist.di.component.DaggerHotlistComponent;
 import com.tokopedia.discovery.newdiscovery.hotlist.di.component.HotlistComponent;
 import com.tokopedia.discovery.newdiscovery.hotlist.domain.model.HotlistQueryModel;
+import com.tokopedia.discovery.newdiscovery.hotlist.view.activity.HotlistActivity;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.HotlistAdapter;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.ItemClickListener;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.factory.HotlistAdapterTypeFactory;
@@ -53,6 +60,8 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmen
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionGeneralAdapter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.itemdecoration.ProductItemDecoration;
 import com.tokopedia.discovery.newdiscovery.util.HotlistParameter;
+import com.tokopedia.discovery.newdynamicfilter.RevampedDynamicFilterActivity;
+import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
@@ -64,6 +73,7 @@ import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -80,7 +90,8 @@ public class HotlistFragment extends SearchSectionFragment
         implements
         HotlistFragmentContract.View,
         RefreshHandler.OnRefreshHandlerListener, SearchSectionGeneralAdapter.OnItemChangeView,
-        ItemClickListener, TopAdsListener, TopAdsItemClickListener {
+        ItemClickListener, TopAdsListener, TopAdsItemClickListener,
+        HotlistActivity.FragmentListener {
 
     private static final String HOTLIST_DETAIL_ENHANCE_ANALYTIC = "HOTLIST_DETAIL_ENHANCE_ANALYTIC";
     private static final String LAST_POSITION_ENHANCE_PRODUCT = "LAST_POSITION_ENHANCE_PRODUCT";
@@ -91,6 +102,8 @@ public class HotlistFragment extends SearchSectionFragment
     private static final String EXTRA_ALIAS = "extra_alias";
     private static final String EXTRA_QUERY_HOTLIST = "EXTRA_QUERY_HOTLIST";
     private static final String EXTRA_DISABLE_TOPADS = "EXTRA_DISABLE_TOPADS";
+    private static final String EXTRA_HEADER_URL = "EXTRA_HEADER_URL";
+    private static final String EXTRA_DESC = "EXTRA_DESC";
 
     private static final int REQUEST_ACTIVITY_SORT_HOTLIST = 2021;
     private static final int REQUEST_ACTIVITY_FILTER_HOTLIST = 1202;
@@ -105,6 +118,8 @@ public class HotlistFragment extends SearchSectionFragment
 
     private String aliasHotlist;
     private String shareUrl;
+    private String descTxt;
+    private String headerUrl;
     private HotlistQueryModel queryModel;
     private boolean disableTopads;
 
@@ -168,6 +183,24 @@ public class HotlistFragment extends SearchSectionFragment
     }
 
     @Override
+    public void loadImageHeader(String bannerImageUrl) {
+        this.headerUrl = bannerImageUrl;
+        ImageView imageHeader = getActivity().findViewById(R.id.hotlist_background);
+        ImageHandler.loadImageSourceSize(getContext(), imageHeader, bannerImageUrl);
+    }
+
+    @Override
+    public void setTitleHeader(String title) {
+        getActivity().setTitle(title);
+    }
+
+    @Override
+    public void setDescription(String description) {
+        this.descTxt = description;
+        ((HotlistActivity) getActivity()).renderHotlistDescription(description);
+    }
+
+    @Override
     public void setDisableTopads(boolean disableTopads) {
         this.disableTopads = disableTopads;
     }
@@ -214,7 +247,6 @@ public class HotlistFragment extends SearchSectionFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setRetainInstance(true);
         trackerProductCache = new LocalCacheHandler(getActivity(), HOTLIST_DETAIL_ENHANCE_ANALYTIC);
         if (getArguments() != null) {
             setTrackerAttribution(getArguments().getString(EXTRA_TRACKER_ATTRIBUTION, ""));
@@ -224,6 +256,7 @@ public class HotlistFragment extends SearchSectionFragment
                 setHotlistAlias(generateAliasUsingURL(getArguments().getString(EXTRA_URL, "")));
             }
         }
+
     }
 
     @Override
@@ -285,6 +318,8 @@ public class HotlistFragment extends SearchSectionFragment
         outState.putString(EXTRA_ALIAS, getHotlistAlias());
         outState.putParcelable(EXTRA_QUERY_HOTLIST, getQueryModel());
         outState.putBoolean(EXTRA_DISABLE_TOPADS, isDisableTopads());
+        outState.putString(EXTRA_HEADER_URL, headerUrl);
+        outState.putString(EXTRA_DESC, descTxt);
     }
 
     @Override
@@ -296,6 +331,8 @@ public class HotlistFragment extends SearchSectionFragment
         switchLayoutType();
         initTopAdsParams();
         hotlistAdapter.onRestoreInstanceState(savedInstanceState);
+        loadImageHeader(savedInstanceState.getString(EXTRA_HEADER_URL));
+        setDescription(savedInstanceState.getString(EXTRA_DESC));
     }
 
     @Override
@@ -388,6 +425,51 @@ public class HotlistFragment extends SearchSectionFragment
     }
 
     @Override
+    protected void switchLayoutType() {
+        if (!getUserVisibleHint()) {
+            return;
+        }
+
+        switch (getAdapter().getCurrentLayoutType()) {
+            case GRID_1:
+                setSpanCount(2);
+                getGridLayoutManager().setSpanCount(spanCount);
+                getAdapter().changeDoubleGridView();
+                HotlistPageTracking.eventHotlistDisplay("grid");
+                break;
+            case GRID_2:
+                setSpanCount(1);
+                getGridLayoutManager().setSpanCount(spanCount);
+                getAdapter().changeSingleGridView();
+                HotlistPageTracking.eventHotlistDisplay("full");
+                break;
+            case GRID_3:
+                setSpanCount(1);
+                getAdapter().changeListView();
+                HotlistPageTracking.eventHotlistDisplay("list");
+                break;
+        }
+        refreshBottomBarGridIcon();
+    }
+
+    @Override
+    protected void startShareActivity(String shareUrl) {
+        if (TextUtils.isEmpty(shareUrl)) {
+            return;
+        }
+
+        ShareData shareData = ShareData.Builder.aShareData()
+                .setType(ShareData.DISCOVERY_TYPE)
+                .setName(getString(R.string.message_share_catalog))
+                .setTextContent(getString(R.string.message_share_category))
+                .setUri(shareUrl)
+                .build();
+
+        shareData.setType(ShareData.HOTLIST_TYPE);
+        ShareBottomSheet.show(getChildFragmentManager(), shareData);
+    }
+
+    @Override
     protected int getFilterRequestCode() {
         return REQUEST_ACTIVITY_FILTER_HOTLIST;
     }
@@ -443,8 +525,35 @@ public class HotlistFragment extends SearchSectionFragment
     }
 
     @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        ((HotlistActivity) getActivity()).setFragmentListener(this);
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == getSortRequestCode()) {
+                setSelectedSort((HashMap<String, String>) data.getSerializableExtra(SortProductActivity.EXTRA_SELECTED_SORT));
+                String selectedSortName = data.getStringExtra(SortProductActivity.EXTRA_SELECTED_NAME);
+                HotlistPageTracking.eventHotlistSort(selectedSortName);
+                clearDataFilterSort();
+                showBottomBarNavigation(false);
+                reloadData();
+            } else if (requestCode == getFilterRequestCode()) {
+                setFlagFilterHelper((FilterFlagSelectedModel) data.getParcelableExtra(RevampedDynamicFilterActivity.EXTRA_SELECTED_FLAG_FILTER));
+                setSelectedFilter((HashMap<String, String>) data.getSerializableExtra(RevampedDynamicFilterActivity.EXTRA_SELECTED_FILTERS));
+                if (getActivity() instanceof HotlistActivity) {
+                    HotlistPageTracking.eventHotlistFilter(getSelectedFilter());
+                } else {
+                    SearchTracking.eventSearchResultFilter(getActivity(), getScreenName(), getSelectedFilter());
+                }
+                clearDataFilterSort();
+                showBottomBarNavigation(false);
+                updateDepartmentId(getFlagFilterHelper().getCategoryId());
+                reloadData();
+            }
+        }
         onHandlingDataFromPDP(requestCode, resultCode, data);
     }
 
@@ -644,6 +753,7 @@ public class HotlistFragment extends SearchSectionFragment
     @Override
     public void onHashTagClicked(String name, String url, String departmentID) {
         IntermediaryActivity.moveTo(getActivity(), departmentID, name);
+        HotlistPageTracking.eventClickHastag(url);
     }
 
     @Override
@@ -661,8 +771,8 @@ public class HotlistFragment extends SearchSectionFragment
     private void trackingClickEnhance(HotlistProductViewModel product) {
         Map<String, Object> map = DataLayer.mapOf("event", "productClick",
                 "eventCategory", "hotlist page",
-                "eventAction", "click product curation",
-                "eventLabel", "",
+                "eventAction", "click product list",
+                "eventLabel", product.getProductUrl(),
                 "ecommerce", DataLayer.mapOf(
                         "currencyCode", "IDR",
                         "click", DataLayer.mapOf(
@@ -725,7 +835,7 @@ public class HotlistFragment extends SearchSectionFragment
     }
 
     @Override
-    public void onWishlistClicked(String productID, boolean wishlist) {
+    public void onWishlistClicked(int position, String productName, String productID, boolean wishlist) {
         if (SessionHandler.isV4Login(getActivity())) {
             hotlistAdapter.disableWishlistButton(productID);
             if (wishlist) {
@@ -736,6 +846,7 @@ public class HotlistFragment extends SearchSectionFragment
         } else {
             openLoginActivity(productID);
         }
+        HotlistPageTracking.eventAddWishlist(position, productName, productID);
     }
 
     @Override
@@ -871,5 +982,10 @@ public class HotlistFragment extends SearchSectionFragment
     @Override
     protected String getScreenName() {
         return getScreenNameId();
+    }
+
+    @Override
+    public void stopScroll() {
+        recyclerView.stopScroll();
     }
 }
