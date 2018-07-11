@@ -235,8 +235,8 @@ public class HotlistFragmentPresenter extends SearchSectionFragmentPresenterImpl
     @Override
     public void detachView() {
         super.detachView();
-//        addWishlistActionUseCase.unsubscribe();
-//        removeWishlistActionUseCase.unsubscribe();
+        addWishlistActionUseCase.unsubscribe();
+        removeWishlistActionUseCase.unsubscribe();
         getDynamicFilterUseCase.unsubscribe();
         getHotlistInitializeUseCase.unsubscribe();
         getHotlistLoadMoreUseCase.unsubscribe();
