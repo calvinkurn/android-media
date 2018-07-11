@@ -217,12 +217,13 @@ public class RatesDataConverter {
         courierItemData.setInsuranceUsedDefault(product.getInsuranceUsedDefault());
         courierItemData.setCourierInfo(product.getShipperProductDesc());
         courierItemData.setInsuranceUsedType(product.getInsuranceUsedType());
-        courierItemData.setDeliveryPrice(product.getShipperPrice());
+        courierItemData.setShipperPrice(product.getShipperPrice());
         courierItemData.setEstimatedTimeDelivery(product.getShipperEtd());
         courierItemData.setMinEtd(product.getMinEtd());
         courierItemData.setMaxEtd(product.getMaxEtd());
         courierItemData.setShipmentItemDataEtd(shipmentItemData.getDeliveryTimeRange());
         courierItemData.setShipmentItemDataType(shipmentItemData.getType());
+        courierItemData.setShipperFormattedPrice(product.getShipperFormattedPrice());
 
         return courierItemData;
     }
