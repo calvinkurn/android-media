@@ -238,7 +238,7 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
     }
 
     @Override
-    public void showDepartureDateMax100Days(@StringRes int resId) {
+    public void showDepartureDateMax90Days(@StringRes int resId) {
         showMessageErrorInSnackBar(resId);
     }
 
@@ -342,8 +342,8 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
+    public void onStop() {
+        super.onStop();
 
         trainHomepagePresenterImpl.saveHomepageViewModelToCache(viewModel);
     }
