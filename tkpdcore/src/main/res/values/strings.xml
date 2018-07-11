@@ -2218,5 +2218,9 @@ di Tokopedia Sekarang!</string>
     <string name="ketentuan">Ketentuan</string>
     <string name="what_is_referral_tokocash">![CDATA[<p>Cashback dari program Referral akan masuk ke TokoCash Anda.</p><p>TokoCash adalah uang elektronik yang hanya bisa Anda gunakan untuk</p><p><strong>bertransaksi di Tokopedia</strong>. TokoCash tidak dapat diuangkan.]]</p></string>
     <string name="acquisition_referral">Perolehan Referral</string>
+    <string name="bagikan_ke">Bagikan ke</string>
+    <string name="dapatkan_cashback_dalam">Dapatkan Cashback dalam 3 Langkah:</string>
+    <string name="bagi_kode_referral">Bagi kode referral-mu</string>
+    <string name="apa_itu_tokocash">Apa itu TokoCash?</string>
 
 </resources>

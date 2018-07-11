@@ -360,7 +360,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
     private boolean appInstalledOrNot(String uri) {
         PackageManager pm = getView().getActivity().getPackageManager();
         try {
-            pm.getPackageInfo(uri, PackageManager.GET_ACTIVITIES);
+            pm.getPackageInfo(uri, PackageManager.GET_META_DATA);
             return true;
         } catch (PackageManager.NameNotFoundException e) {
         }
