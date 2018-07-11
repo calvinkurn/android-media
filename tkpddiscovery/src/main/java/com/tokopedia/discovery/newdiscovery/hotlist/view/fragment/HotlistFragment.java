@@ -58,6 +58,7 @@ import com.tokopedia.discovery.newdiscovery.hotlist.view.presenter.HotlistFragme
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragment;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionGeneralAdapter;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.itemdecoration.ProductItemDecoration;
 import com.tokopedia.discovery.newdiscovery.util.HotlistParameter;
 import com.tokopedia.discovery.newdynamicfilter.RevampedDynamicFilterActivity;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
@@ -493,6 +494,8 @@ public class HotlistFragment extends SearchSectionFragment
         topAdsRecyclerAdapter.setHasHeader(true);
         topAdsRecyclerAdapter.setSpanSizeLookup(onSpanSizeLookup());
         recyclerView.setAdapter(topAdsRecyclerAdapter);
+        recyclerView.addItemDecoration(new ProductItemDecoration(getContext().getResources().getDimensionPixelSize(R.dimen.dp_16)));
+        recyclerView.setBackgroundColor(getContext().getResources().getColor(R.color.white));
         topAdsRecyclerAdapter.setLayoutManager(getGridLayoutManager());
     }
 
@@ -588,6 +591,11 @@ public class HotlistFragment extends SearchSectionFragment
     @Override
     public void onAddFavorite(int position, Data data) {
 
+    }
+
+    @Override
+    public void onAddWishList(int position, Data data) {
+        presenter.addWishlist(data.getProduct().getId());
     }
 
     @Override

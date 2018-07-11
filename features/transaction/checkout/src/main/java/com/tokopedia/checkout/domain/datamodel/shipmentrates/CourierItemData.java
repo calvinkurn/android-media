@@ -17,7 +17,8 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
     private String estimatedTimeDelivery;
     private int minEtd;
     private int maxEtd;
-    private int deliveryPrice;
+    private int shipperPrice;
+    private String shipperFormattedPrice;
     private int insurancePrice;
     private int additionalPrice;
     private String courierInfo;
@@ -75,12 +76,12 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         this.deliverySchedule = deliverySchedule;
     }
 
-    public int getDeliveryPrice() {
-        return deliveryPrice;
+    public int getShipperPrice() {
+        return shipperPrice;
     }
 
-    public void setDeliveryPrice(int deliveryPrice) {
-        this.deliveryPrice = deliveryPrice;
+    public void setShipperPrice(int shipperPrice) {
+        this.shipperPrice = shipperPrice;
     }
 
     public int getInsurancePrice() {
@@ -195,6 +196,14 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         this.shipmentItemDataType = shipmentItemDataType;
     }
 
+    public String getShipperFormattedPrice() {
+        return shipperFormattedPrice;
+    }
+
+    public void setShipperFormattedPrice(String shipperFormattedPrice) {
+        this.shipperFormattedPrice = shipperFormattedPrice;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -209,7 +218,7 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         dest.writeString(this.estimatedTimeDelivery);
         dest.writeInt(this.minEtd);
         dest.writeInt(this.maxEtd);
-        dest.writeInt(this.deliveryPrice);
+        dest.writeInt(this.shipperPrice);
         dest.writeInt(this.insurancePrice);
         dest.writeInt(this.additionalPrice);
         dest.writeString(this.courierInfo);
@@ -222,6 +231,7 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         dest.writeByte(this.selected ? (byte) 1 : (byte) 0);
         dest.writeString(this.shipmentItemDataEtd);
         dest.writeString(this.shipmentItemDataType);
+        dest.writeString(this.shipperFormattedPrice);
     }
 
     protected CourierItemData(Parcel in) {
@@ -232,7 +242,7 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         this.estimatedTimeDelivery = in.readString();
         this.minEtd = in.readInt();
         this.maxEtd = in.readInt();
-        this.deliveryPrice = in.readInt();
+        this.shipperPrice = in.readInt();
         this.insurancePrice = in.readInt();
         this.additionalPrice = in.readInt();
         this.courierInfo = in.readString();
@@ -245,6 +255,7 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         this.selected = in.readByte() != 0;
         this.shipmentItemDataEtd = in.readString();
         this.shipmentItemDataType = in.readString();
+        this.shipperFormattedPrice = in.readString();
     }
 
     public static final Creator<CourierItemData> CREATOR = new Creator<CourierItemData>() {
