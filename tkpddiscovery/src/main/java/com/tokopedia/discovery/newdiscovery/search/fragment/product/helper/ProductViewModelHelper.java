@@ -41,7 +41,7 @@ public class ProductViewModelHelper {
 
     public static ProductViewModel convertToProductViewModel(SearchProductGqlResponse gqlResponse) {
         SearchProductGqlResponse.SearchProduct searchProductResponse
-                = gqlResponse.getData().getSearchProduct();
+                = gqlResponse.getSearchProduct();
         ProductViewModel productViewModel = new ProductViewModel();
         productViewModel.setProductList(convertToProductItemListGql(searchProductResponse.getProducts()));
         productViewModel.setQuery(searchProductResponse.getQuery());

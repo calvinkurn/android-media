@@ -7,23 +7,12 @@ import java.util.List;
 
 public class SearchProductGqlResponse {
 
-    @SerializedName("data")
+    @SerializedName("searchProduct")
     @Expose
-    private Data data;
+    private SearchProduct searchProduct;
 
-    public Data getData() {
-        return data;
-    }
-
-    public static class Data {
-
-        @SerializedName("searchProduct")
-        @Expose
-        private SearchProduct searchProduct;
-
-        public SearchProduct getSearchProduct() {
-            return searchProduct;
-        }
+    public SearchProduct getSearchProduct() {
+        return searchProduct;
     }
 
     public static class SearchProduct {
