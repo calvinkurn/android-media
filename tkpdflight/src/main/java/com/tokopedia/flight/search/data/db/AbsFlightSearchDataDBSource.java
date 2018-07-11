@@ -70,9 +70,11 @@ public abstract class AbsFlightSearchDataDBSource
 
     private class InsertMetaDataFunc implements Func1<Boolean, Observable<Boolean>> {
         Meta meta;
-        InsertMetaDataFunc(Meta flightMeta){
+
+        InsertMetaDataFunc(Meta flightMeta) {
             this.meta = flightMeta;
         }
+
         @Override
         public Observable<Boolean> call(Boolean aBoolean) {
             return insertFlightMetaData(meta);
@@ -92,7 +94,7 @@ public abstract class AbsFlightSearchDataDBSource
 
     protected abstract void insertSingleFlightData(FlightSearchData flightSearchData);
 
-    private Observable<Boolean> insertFlightMetaData(final Meta meta){
+    private Observable<Boolean> insertFlightMetaData(final Meta meta) {
         final FlightMetaDataDB flightMetaDataDB = new FlightMetaDataDB(meta);
         return Observable.unsafeCreate(new Observable.OnSubscribe<Boolean>() {
             @Override
@@ -164,8 +166,19 @@ public abstract class AbsFlightSearchDataDBSource
         if (refundableEnumCondition != null) {
             conditionGroup.and(refundableEnumCondition);
         }
-
+        ConditionGroup specialPrice = getSpecialPriceRefund(flightFilterModel);
+        if (specialPrice.getConditions().size() > 0) {
+            conditionGroup.and(specialPrice);
+        }
         return conditionGroup;
+    }
+
+    private ConditionGroup getSpecialPriceRefund(FlightFilterModel flightFilterModel) {
+        ConditionGroup conditions = ConditionGroup.clause();
+        if (flightFilterModel.isSpecialPrice()) {
+            conditions.and(getSpecialPriceColumn().notEq(""));
+        }
+        return conditions;
     }
 
     private ConditionGroup getTransitCondition(List<TransitEnum> transitEnumList) {
@@ -247,7 +260,7 @@ public abstract class AbsFlightSearchDataDBSource
         ConditionGroup airlineConditionGroup = ConditionGroup.clause();
         for (int i = 0, sizei = airlineList.size(); i < sizei; i++) {
             String airline = airlineList.get(i);
-            airlineConditionGroup.or(getAirlineColumn().like("%"+airline+"%"));
+            airlineConditionGroup.or(getAirlineColumn().like("%" + airline + "%"));
         }
         return airlineConditionGroup;
     }
@@ -263,15 +276,21 @@ public abstract class AbsFlightSearchDataDBSource
     private IntProperty getTotalTransit() {
         return new IntProperty(getDBClass(), FlightSearchSingleRouteDB.TOTAL_TRANSIT);
     }
+
     private Property<String> getAirlineColumn() {
         return new Property<>(getDBClass(), FlightSearchSingleRouteDB.AIRLINE);
     }
+
     private IntProperty getDepartureTimeColumn() {
         return new IntProperty(getDBClass(), FlightSearchSingleRouteDB.DEPARTURE_TIME_INT);
     }
 
     private IntProperty getRefundableColumn() {
         return new IntProperty(getDBClass(), FlightSearchSingleRouteDB.IS_REFUNDABLE);
+    }
+
+    private Property<String> getSpecialPriceColumn() {
+        return new Property<String>(getDBClass(), FlightSearchSingleRouteDB.BEFORE_TOTAL);
     }
 
     private Property<String> getPrimaryColumn() {

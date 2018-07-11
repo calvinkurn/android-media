@@ -27,9 +27,9 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
-import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Address;
-import com.tokopedia.core.manage.general.districtrecommendation.view.DistrictRecommendationActivity;
+import com.tokopedia.district_recommendation.domain.model.Address;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.shopsettings.shipping.customview.CourierView;
 import com.tokopedia.seller.shopsettings.shipping.customview.ShippingAddressLayout;
@@ -41,7 +41,7 @@ import com.tokopedia.seller.shopsettings.shipping.model.openshopshipping.OpenSho
 import com.tokopedia.seller.shopsettings.shipping.presenter.EditShippingPresenter;
 import com.tokopedia.seller.shopsettings.shipping.presenter.EditShippingPresenterImpl;
 
-import static com.tokopedia.core.manage.general.districtrecommendation.view.DistrictRecommendationContract.Constant.INTENT_DATA_ADDRESS;
+import static com.tokopedia.district_recommendation.view.DistrictRecommendationContract.Constant.INTENT_DATA_ADDRESS;
 
 /**
  * Created by Kris on 2/19/2016.

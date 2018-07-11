@@ -1,8 +1,10 @@
 package com.tokopedia.flight.passenger.data.cloud;
 
+import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.data.source.cloud.DataListCloudSource;
 import com.tokopedia.abstraction.common.data.model.request.DataRequest;
 import com.tokopedia.flight.common.data.source.cloud.api.FlightApi;
+import com.tokopedia.flight.common.di.qualifier.FlightQualifier;
 import com.tokopedia.flight.passenger.data.cloud.entity.PassengerListEntity;
 import com.tokopedia.flight.passenger.data.cloud.requestbody.DeletePassengerRequest;
 import com.tokopedia.flight.passenger.data.cloud.requestbody.UpdatePassengerRequest;
@@ -22,11 +24,14 @@ import rx.functions.Func1;
  */
 
 public class FlightPassengerDataListCloudSource extends DataListCloudSource<PassengerListEntity> {
+
     private FlightApi flightApi;
+    private Gson gson;
 
     @Inject
-    public FlightPassengerDataListCloudSource(FlightApi flightApi) {
+    public FlightPassengerDataListCloudSource(FlightApi flightApi, @FlightQualifier Gson gson) {
         this.flightApi = flightApi;
+        this.gson = gson;
     }
 
     @Override

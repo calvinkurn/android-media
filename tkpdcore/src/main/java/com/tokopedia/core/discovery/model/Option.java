@@ -25,6 +25,9 @@ public class Option implements Parcelable {
     public static final String UID_SEPARATOR_SYMBOL = "#";
     public static final String METRIC_INTERNATIONAL = "International";
 
+    public static final String RATING_ABOVE_FOUR_NAME = "4 Keatas";
+    public static final String RATING_ABOVE_FOUR_VALUE = "4,5";
+
     @SerializedName("name")
     @Expose
     String name;
@@ -69,6 +72,11 @@ public class Option implements Parcelable {
     List<LevelTwoCategory> levelTwoCategoryList;
 
     String inputState = "";
+
+
+    public boolean isCategoryOption() {
+        return Option.KEY_CATEGORY.equals(getKey());
+    }
 
     /**
      * @return The name

@@ -64,6 +64,12 @@
                 style="@style/FlightFilterLabelLayout"
                 app:slv_title="@string/flight_search_filter_refund_policy" />
 
+            <com.tokopedia.flight.common.view.FlightRadioLabelView
+                android:id="@+id/swith_special_price"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:frlv_title="@string/flight_search_filter_special_price" />
+
         </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>

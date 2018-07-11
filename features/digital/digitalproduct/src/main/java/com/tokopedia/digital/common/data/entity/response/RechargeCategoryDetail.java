@@ -46,6 +46,9 @@ public class RechargeCategoryDetail {
     @SerializedName("operator_label")
     @Expose
     private String operatorLabel;
+    @SerializedName("additional_feature")
+    @Expose
+    private AdditionalFeature additionalFeature;
     @SerializedName("client_number")
     @Expose
     private ClientNumber clientNumber;
@@ -153,6 +156,10 @@ public class RechargeCategoryDetail {
 
     public void setOperatorLabel(String operatorLabel) {
         this.operatorLabel = operatorLabel;
+    }
+
+    public AdditionalFeature getAdditionalFeature() {
+        return additionalFeature;
     }
 
     public ClientNumber getClientNumber() {

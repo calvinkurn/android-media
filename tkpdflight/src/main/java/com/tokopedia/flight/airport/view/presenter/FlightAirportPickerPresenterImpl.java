@@ -1,64 +1,68 @@
 package com.tokopedia.flight.airport.view.presenter;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.airport.domain.interactor.FlightAirportPickerUseCase;
-import com.tokopedia.flight.airport.domain.interactor.FlightAirportVersionCheckUseCase;
+import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
+import com.tokopedia.flight.airport.view.viewmodel.FlightCountryAirportViewModel;
+import com.tokopedia.flight.common.subscriber.AutoCompleteInputListener;
+import com.tokopedia.flight.common.subscriber.AutoCompleteKeywordListener;
+import com.tokopedia.flight.common.subscriber.AutoCompleteKeywordSubscriber;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
+
+import rx.Observable;
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by zulfikarrahman on 10/24/17.
  */
 
-public class FlightAirportPickerPresenterImpl extends BaseDaggerPresenter<FlightAirportPickerView> implements FlightAirportPickerPresenter {
-
+public class FlightAirportPickerPresenterImpl extends BaseDaggerPresenter<FlightAirportPickerView> implements FlightAirportPickerPresenter, AutoCompleteKeywordListener {
     private final FlightAirportPickerUseCase flightAirportPickerUseCase;
-    private FlightAirportVersionCheckUseCase flightAirportVersionCheckUseCase;
+    private CompositeSubscription compositeSubscription;
+    private AutoCompleteInputListener inputListener;
 
-    public FlightAirportPickerPresenterImpl(FlightAirportPickerUseCase flightAirportPickerUseCase,
-                                            FlightAirportVersionCheckUseCase flightAirportVersionCheckUseCase) {
+    @Inject
+    public FlightAirportPickerPresenterImpl(FlightAirportPickerUseCase flightAirportPickerUseCase) {
         this.flightAirportPickerUseCase = flightAirportPickerUseCase;
-        this.flightAirportVersionCheckUseCase = flightAirportVersionCheckUseCase;
+        this.compositeSubscription = new CompositeSubscription();
+        Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(final Subscriber<? super String> subscriber) {
+                inputListener = new AutoCompleteInputListener() {
+                    @Override
+                    public void onQuerySubmit(String query) {
+                        subscriber.onNext(String.valueOf(query));
+                    }
+                };
+            }
+        }).debounce(250, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new AutoCompleteKeywordSubscriber(this));
     }
 
     @Override
     public void getAirportList(String text, boolean isFirstTime) {
         getView().showGetAirportListLoading();
-        flightAirportPickerUseCase.execute(FlightAirportPickerUseCase.createRequestParams(text), getSubscriberGetAirportList());
+        if (inputListener != null) {
+            inputListener.onQuerySubmit(text);
+        }
     }
 
-    @Override
-    public void checkAirportVersion(long currentVersion) {
-        flightAirportVersionCheckUseCase.execute(flightAirportVersionCheckUseCase.createRequestParams(currentVersion),
-                getSubscriberCheckAirportVersion());
-    }
-
-    private Subscriber<Boolean> getSubscriberCheckAirportVersion() {
-        return new Subscriber<Boolean>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(Boolean isShouldUpdate) {
-                if (isShouldUpdate) {
-                    getView().updateAirportListOnBackground();
-                }
-            }
-        };
-    }
-
-    public Subscriber<List<FlightAirportDB>> getSubscriberGetAirportList() {
-        return new Subscriber<List<FlightAirportDB>>() {
+    private Subscriber<List<Visitable>> getSubscriberGetAirportList() {
+        return new Subscriber<List<Visitable>>() {
             @Override
             public void onCompleted() {
 
@@ -73,7 +77,7 @@ public class FlightAirportPickerPresenterImpl extends BaseDaggerPresenter<Flight
             }
 
             @Override
-            public void onNext(List<FlightAirportDB> flightAirportDBs) {
+            public void onNext(List<Visitable> flightAirportDBs) {
                 getView().hideGetAirportListLoading();
                 getView().renderList(flightAirportDBs);
             }
@@ -83,6 +87,26 @@ public class FlightAirportPickerPresenterImpl extends BaseDaggerPresenter<Flight
     @Override
     public void detachView() {
         super.detachView();
-        flightAirportPickerUseCase.unsubscribe();
+        if (compositeSubscription.hasSubscriptions()) compositeSubscription.unsubscribe();
+    }
+
+
+    @Override
+    public void onTextReceive(String keyword) {
+        if (isViewAttached()) {
+            getView().showLoading();
+            compositeSubscription.add(flightAirportPickerUseCase
+                    .createObservable(FlightAirportPickerUseCase.createRequestParams(keyword))
+                    .subscribeOn(Schedulers.io())
+                    .unsubscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(getSubscriberGetAirportList())
+            );
+        }
+    }
+
+    @Override
+    public void onError(Throwable e) {
+        e.printStackTrace();
     }
 }

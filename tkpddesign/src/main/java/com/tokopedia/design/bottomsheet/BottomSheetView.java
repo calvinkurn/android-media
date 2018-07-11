@@ -90,7 +90,7 @@ public class BottomSheetView extends BottomSheetDialog {
                 imgIconBottomSheet.setVisibility(View.GONE);
             } else {
                 imgIconBottomSheet.setVisibility(View.VISIBLE);
-                imgIconBottomSheet.setImageDrawable(ContextCompat.getDrawable(context, bottomSheetField.getImg()));
+                imgIconBottomSheet.setImageResource(bottomSheetField.getImg());
             }
         }
 
