@@ -46,6 +46,8 @@ import com.tokopedia.kol.applink.KolApplinkModule;
 import com.tokopedia.kol.applink.KolApplinkModuleLoader;
 import com.tokopedia.loyalty.applink.LoyaltyAppLinkModule;
 import com.tokopedia.loyalty.applink.LoyaltyAppLinkModuleLoader;
+import com.tokopedia.paymentmanagementsystem.howtopay.HowtopayApplinkModule;
+import com.tokopedia.paymentmanagementsystem.howtopay.HowtopayApplinkModuleLoader;
 import com.tokopedia.profile.applink.ProfileApplinkModule;
 import com.tokopedia.profile.applink.ProfileApplinkModuleLoader;
 import com.tokopedia.pushnotif.Constant;
@@ -97,7 +99,8 @@ import io.branch.referral.BranchError;
         KolApplinkModule.class,
         TrackingAppLinkModule.class,
         CheckoutAppLinkModule.class,
-        CustomerCareApplinkModule.class
+        CustomerCareApplinkModule.class,
+        HowtopayApplinkModule.class
 })
 
 public class DeeplinkHandlerActivity extends AppCompatActivity {
@@ -129,7 +132,8 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new KolApplinkModuleLoader(),
                 new TrackingAppLinkModuleLoader(),
                 new CheckoutAppLinkModuleLoader(),
-                new CustomerCareApplinkModuleLoader()
+                new CustomerCareApplinkModuleLoader(),
+                new HowtopayApplinkModuleLoader()
         );
     }
 

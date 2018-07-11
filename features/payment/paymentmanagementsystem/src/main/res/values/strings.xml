@@ -34,6 +34,7 @@
     <string name="payment_label_acc_sender">Rekening Pengirim</string>
     <string name="payment_label_acc_dest">Rekening Tujuan</string>
     <string name="payment_label_name_acc_formated">a.n %1$s</string>
+    <string name="payment_title_activity_howtopay">Cara Pembayaran</string>
 
     <string-array name="payment_list_bank_name">
         <item>BCA</item>
