@@ -206,6 +206,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     tapActionLayout.setVisibility(View.VISIBLE);
                 }
 
+                tapActionLayout.removeAllViews();
                 for (int i = 0; i < item.getTapActions().size(); i++) {
                     TapActions tapActions = item.getTapActions().get(i);
 
@@ -268,12 +269,12 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 //            }
 
 
-            progressBar.setVisibility(View.GONE);
             if (item.getActionButtons() == null || item.getActionButtons().size() == 0) {
                 actionLayout.setVisibility(View.GONE);
             } else {
                 actionLayout.setVisibility(View.VISIBLE);
             }
+            actionLayout.removeAllViews();
 
             for (int i = 0; i < item.getActionButtons().size(); i++) {
                 ActionButton actionButton = item.getActionButtons().get(i);

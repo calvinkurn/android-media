@@ -55,7 +55,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         variables.put("orderCategoryStr", orderCategory);
         variables.put("orderId", orderId);
         variables.put("detail", 1);
-        if (fromPayment.equalsIgnoreCase("true")) {
+        if (fromPayment != null && fromPayment.equalsIgnoreCase("true")) {
             variables.put("action", 0);
         } else {
             variables.put("action", 1);
@@ -67,7 +67,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                 R.raw.orderdetails), DetailsData.class, variables);
 
 
-        orderDetailsUseCase.setRequest(graphqlRequest);
+        orderDetailsUseCase.addRequest(graphqlRequest);
         orderDetailsUseCase.execute(new Subscriber<GraphqlResponse>() {
             @Override
             public void onCompleted() {
