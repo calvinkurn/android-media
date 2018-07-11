@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.common.network.exception.ResponseDataNullException;
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.CacheDuration;
@@ -28,6 +29,13 @@ import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.RecyclerViewItem;
+import com.tokopedia.graphql.data.ObservableFactory;
+import com.tokopedia.graphql.data.model.CacheType;
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy;
+import com.tokopedia.graphql.data.model.GraphqlRequest;
+import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.interactor.CacheHomeInteractor;
 import com.tokopedia.tkpd.home.interactor.CacheHomeInteractorImpl;
 import com.tokopedia.tkpd.home.service.FavoritePart1Service;
@@ -42,7 +50,9 @@ import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Response;
 import rx.Observable;
@@ -59,6 +69,10 @@ import rx.subscriptions.CompositeSubscription;
  */
 public class WishListImpl implements WishList {
     private static final String TAG = WishListImpl.class.getSimpleName();
+    private static final String PARAM_USER_ID = "user_id";
+    private static final String PAGE_NO = "page";
+    private static final String ITEM_COUNT = "count";
+
     WishListView wishListView;
 
     List<RecyclerViewItem> data = new ArrayList<>();
@@ -194,13 +208,38 @@ public class WishListImpl implements WishList {
 
     @Override
     public void fetchDataFromInternet(final Context context) {
-        Observable<Response<WishlistData>> observable = mojitoAuthService.getApi().getWishlist(
+
+        Map<String, Object> variables = new HashMap<>();
+
+        variables.put(PARAM_USER_ID, Integer.parseInt(SessionHandler.getLoginID(context)));
+        variables.put(PAGE_NO, mPaging.getPage());
+        variables.put(ITEM_COUNT, 10);
+
+        GraphqlRequest graphqlRequest = new GraphqlRequest(
+                GraphqlHelper.loadRawString(context.getResources(), R.raw.query_get_wishlist),
+                WishlistData.class,
+                variables);
+
+        List<GraphqlRequest> graphqlRequestList = new ArrayList<>();
+        graphqlRequestList.add(graphqlRequest);
+
+        GraphqlCacheStrategy graphqlCacheStrategy =
+                new GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build();
+
+        Observable<GraphqlResponse> observable = ObservableFactory.create(graphqlRequestList,
+                graphqlCacheStrategy);
+
+
+//        graphqlUseCase.execute(new AddWishlistActionSubscriber(wishlistActionListener, productId));
+
+
+        /*Observable<Response<WishlistData>> observable = mojitoAuthService.getApi().getWishlist(
                 SessionHandler.getLoginID(context),
                 10,
                 mPaging.getPage()
-        );
+        );*/
 
-        Subscriber<Response<WishlistData>> subscriber = new Subscriber<Response<WishlistData>>() {
+        Subscriber<GraphqlResponse> subscriber = new Subscriber<GraphqlResponse>() {
             @Override
             public void onCompleted() {
 
@@ -215,8 +254,14 @@ public class WishListImpl implements WishList {
             }
 
             @Override
-            public void onNext(Response<WishlistData> response) {
-                setData(response.body());
+            public void onNext(GraphqlResponse graphqlResponse) {
+                if (graphqlResponse != null) {
+                    WishlistData wishlistData = graphqlResponse.getData(WishlistData.class);
+                    setData(wishlistData);
+                } else {
+                    setData();
+                }
+//                setData(response.body());
             }
         };
 
