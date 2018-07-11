@@ -1,35 +1,21 @@
 package com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.viewholder;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.support.annotation.LayoutRes;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewPager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.target.Target;
-import com.tkpd.library.utils.ImageHandler;
-import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
+import com.tokopedia.core.analytics.HotlistPageTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.HotlistViewPagerAdapter;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.ItemClickListener;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.customview.HotlistPromoView;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistHashTagViewModel;
@@ -39,9 +25,10 @@ import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
-import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.TopAdsBannerView;
 
+import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -54,18 +41,15 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
     public static final int LAYOUT = R.layout.recyclerview_hotlist_banner;
     public static final String DEFAULT_ITEM_VALUE = "1";
     public static final String HOTLIST_ADS_SRC = "hotlist";
-
+    private DecimalFormat decimalFormat = new DecimalFormat("#,###,###");
     private final Context context;
     private final ItemClickListener mItemClickListener;
 
-    private final CirclePageIndicator indicator;
-    private final ViewPager viewpager;
-    private final LinearLayout containerHashtag;
-    private final ImageView hotlistBackground;
-    private final View hashtTagScrollView;
+    private HasTagAdapter hasTagAdapter;
+    private final RecyclerView hastagList;
+    private final TextView productCount;
     private final HotlistPromoView hotlistPromoView;
     private final TopAdsBannerView topAdsBannerView;
-    private int counterError;
     private final String searchQuery;
 
     public HotlistHeaderViewHolder(View parent, ItemClickListener mItemClickListener, String searchQuery) {
@@ -73,13 +57,14 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
         context = parent.getContext();
         this.mItemClickListener = mItemClickListener;
         this.searchQuery = searchQuery;
-        this.indicator = (CirclePageIndicator) parent.findViewById(R.id.hot_list_banner_indicator);
-        this.viewpager = (ViewPager) parent.findViewById(R.id.hot_list_banner_view_pager);
-        this.containerHashtag = (LinearLayout) parent.findViewById(R.id.hot_list_banner_hashtags);
-        this.hotlistBackground = (ImageView) parent.findViewById(R.id.hotlist_background);
-        this.hashtTagScrollView = parent.findViewById(R.id.hashtag_scroll_view);
         this.hotlistPromoView = (HotlistPromoView) parent.findViewById(R.id.view_hotlist_promo);
         this.topAdsBannerView = (TopAdsBannerView) parent.findViewById(R.id.topAdsBannerView);
+        this.hastagList = parent.findViewById(R.id.hastag_list);
+        this.productCount = parent.findViewById(R.id.product_counter);
+        hasTagAdapter = new HasTagAdapter(context, mItemClickListener);
+        hastagList.setNestedScrollingEnabled(false);
+        hastagList.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+        hastagList.setAdapter(hasTagAdapter);
         initTopAds();
     }
 
@@ -108,19 +93,8 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
 
     @Override
     public void bind(HotlistHeaderViewModel element) {
-        HotlistViewPagerAdapter adapter = new HotlistViewPagerAdapter(context, element.getDesc(), mItemClickListener);
-        renderImage(element.getImageUrl());
-        viewpager.setAdapter(adapter);
-        indicator.setViewPager(viewpager);
-        indicator.setFillColor(ContextCompat.getColor(context, R.color.tkpd_dark_green));
-        indicator.setStrokeColor(ContextCompat.getColor(context, R.color.white));
-        if (element.getHashTags() != null && !element.getHashTags().isEmpty()) {
-            hashtTagScrollView.setVisibility(View.VISIBLE);
-            renderHashtag(element.getHashTags());
-        } else {
-            hashtTagScrollView.setVisibility(View.GONE);
-        }
-
+        hasTagAdapter.setData(element.getHashTags());
+        productCount.setText(String.format(context.getString(R.string.product_count), decimalFormat.format(element.getTotalData())));
         if (element.getHotlistPromo() != null) {
             hotlistPromoView.setVisibility(View.VISIBLE);
             renderPromoView(element.getHotlistTitle(), element.getHotlistPromo());
@@ -141,59 +115,57 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
                 TrackingUtils.clickCopyButtonHotlistPromo(hotlistTitle, titlePromo, voucherCode);
             }
         });
+        HotlistPageTracking.eventHotlistPromoImpression(hotlistTitle, hotlistPromo.getTitle(), hotlistPromo.getVoucherCode());
     }
 
-    private void renderHashtag(final List<HotlistHashTagViewModel> hashTags) {
-        LayoutInflater vi = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        containerHashtag.removeAllViews();
-        for (int i = 0; i < hashTags.size(); i++) {
-            final int pos = i;
-            View view = vi.inflate(R.layout.layout_textview_hashtag, null);
-            TextView texthash = (TextView) view.findViewById(R.id.hashtags_txt);
-            texthash.setText(String.format("#%s", hashTags.get(pos).getName()));
-            texthash.setOnClickListener(new View.OnClickListener() {
+    private static class HasTagAdapter extends RecyclerView.Adapter<HasTagAdapter.ItemViewHolder> {
+
+        private final Context context;
+        private List<HotlistHashTagViewModel> tags;
+        private final ItemClickListener mItemClickListener;
+
+        public HasTagAdapter(Context context, ItemClickListener mItemClickListener) {
+            this.context = context;
+            this.mItemClickListener = mItemClickListener;
+            this.tags = new ArrayList<>();
+        }
+
+        public void setData(List<HotlistHashTagViewModel> data) {
+            this.tags = data;
+            notifyDataSetChanged();
+        }
+
+        @Override
+        public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            return new ItemViewHolder(LayoutInflater.from(context).inflate(R.layout.hastag_list_item, parent, false));
+        }
+
+        @Override
+        public void onBindViewHolder(ItemViewHolder holder, final int pos) {
+            holder.title.setText(tags.get(pos).getName());
+            holder.title.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v) {
-                    mItemClickListener.onHashTagClicked(hashTags.get(pos).getName(),
-                            hashTags.get(pos).getURL(), hashTags.get(pos).getDepartmentID());
+                public void onClick(View view) {
+                    mItemClickListener.onHashTagClicked(tags.get(pos).getName(),
+                            tags.get(pos).getURL(), tags.get(pos).getDepartmentID());
                 }
             });
-            containerHashtag.addView(view);
+        }
+
+        @Override
+        public int getItemCount() {
+            return tags.size();
+        }
+
+        static class ItemViewHolder extends RecyclerView.ViewHolder {
+
+            TextView title;
+
+            public ItemViewHolder(View itemView) {
+                super(itemView);
+                title = itemView.findViewById(R.id.title);
+            }
         }
     }
 
-    private void renderImage(final String imageUrl) {
-        Glide.with(context)
-                .load(imageUrl)
-                .asBitmap()
-                .dontAnimate()
-                .placeholder(com.tokopedia.core.R.drawable.loading_page)
-                .error(com.tokopedia.core.R.drawable.error_drawable)
-                .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .into(new SimpleTarget<Bitmap>() {
-                    @Override
-                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                        super.onLoadFailed(e, errorDrawable);
-                        counterError++;
-                        if (counterError < 5) {
-                            ImageHandler.loadImageBitmap2(itemView.getContext(), imageUrl, this);
-                        }
-                    }
-
-                    @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                        counterError = 0;
-                        hotlistBackground.setImageBitmap(resource);
-                    }
-
-
-                    @Override
-                    public void onLoadStarted(Drawable placeholder) {
-                        super.onLoadStarted(placeholder);
-                        counterError = 0;
-                        hotlistBackground.setImageDrawable(placeholder);
-                    }
-                });
-    }
 }

@@ -22,7 +22,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.LocalBroadcastManager;
-
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -166,6 +165,24 @@ public class GroupChatActivity extends BaseSimpleActivity
         return taskStackBuilder;
     }
 
+    @DeepLink(ApplinkConstant.GROUPCHAT_VOTE_VIA_LIST)
+    public static TaskStackBuilder getCallingTaskStackVoteViaList(Context context, Bundle extras) {
+        String id = extras.getString(ApplinkConstant.PARAM_CHANNEL_ID);
+        Intent homeIntent = ((GroupChatModuleRouter) context.getApplicationContext()).getHomeIntent(context);
+        Intent detailsIntent = GroupChatActivity.getCallingIntent(context, id);
+        detailsIntent.putExtra(INITIAL_FRAGMENT, CHANNEL_VOTE_FRAGMENT);
+        Intent parentIntent = ((GroupChatModuleRouter) context.getApplicationContext())
+                .getInboxChannelsIntent(context);
+
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
+        taskStackBuilder.addNextIntent(homeIntent);
+        if (((GroupChatModuleRouter) context.getApplicationContext()).isEnabledGroupChat()) {
+            taskStackBuilder.addNextIntent(parentIntent);
+        }
+        taskStackBuilder.addNextIntent(detailsIntent);
+        return taskStackBuilder;
+    }
+
     private static final long VIBRATE_LENGTH = TimeUnit.SECONDS.toMillis(1);
     private static final long KICK_TRESHOLD_TIME = TimeUnit.MINUTES.toMillis(15);
     private static final long TOOLTIP_DELAY = 1500L;
@@ -190,6 +207,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     private Handler tooltipHandler;
     private boolean canShowDialog = true;
     private boolean isFirstTime;
+    private boolean shouldRefreshAfterLogin = false;
     private BroadcastReceiver notifReceiver;
 
     public View rootView, loading, main;
@@ -598,7 +616,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     @Override
     public void onBackPressed() {
-        if(currentlyLoadingFragment() || hasErrorEmptyState()){
+        if (currentlyLoadingFragment() || hasErrorEmptyState()) {
             finish();
             super.onBackPressed();
         } else {
@@ -611,7 +629,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     private boolean hasErrorEmptyState() {
-        return rootView.findViewById(R.id.main_retry)!=null
+        return rootView.findViewById(R.id.main_retry) != null
                 && rootView.findViewById(R.id.main_retry).getVisibility() == View.VISIBLE;
     }
 
@@ -731,7 +749,8 @@ public class GroupChatActivity extends BaseSimpleActivity
             if (getApplication() instanceof AbstractionRouter) {
                 userSession = ((AbstractionRouter) getApplication()).getSession();
             }
-            presenter.enterChannel(userSession.getUserId(), viewModel.getChannelUrl(),
+
+            presenter.enterChannel(userSession.getUserId(), viewModel.getChannelInfoViewModel().getChannelUrl(),
                     userSession.getName(), userSession.getProfilePicture(), this, channelInfoViewModel.getSendBirdToken());
 
             Intent intent = new Intent();
@@ -959,7 +978,7 @@ public class GroupChatActivity extends BaseSimpleActivity
             sponsorLayout.setVisibility(View.GONE);
         }
 
-        if(TextUtils.isEmpty(viewModel.getChannelInfoViewModel().getAdsImageUrl())){
+        if (TextUtils.isEmpty(viewModel.getChannelInfoViewModel().getAdsImageUrl())) {
             sponsorLayout.setVisibility(View.GONE);
         }
     }
@@ -976,7 +995,8 @@ public class GroupChatActivity extends BaseSimpleActivity
             kickIfIdleForTooLong();
         }
 
-        if (viewModel != null && viewModel.getChannelInfoViewModel() != null) {
+        if (viewModel != null && viewModel.getChannelInfoViewModel() != null
+                && !isFirstTime) {
             setChannelConnectionHandler();
         }
 
@@ -1050,7 +1070,9 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     @Override
     public void onSuccessLogin() {
-        initData();
+        isFirstTime = true;
+        presenter.getChannelInfo(viewModel.getChannelUuid(), true);
+        showLoading();
     }
 
     private void showPushNotif(GroupChatPointsViewModel model) {
@@ -1061,6 +1083,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     private void refreshChat() {
         ((GroupChatFragment) getSupportFragmentManager().findFragmentByTag
                 (GroupChatFragment.class.getSimpleName())).refreshChat();
+
     }
 
     private void refreshVote(VoteInfoViewModel voteInfoViewModel) {
@@ -1130,6 +1153,12 @@ public class GroupChatActivity extends BaseSimpleActivity
             tooltipHandler.removeCallbacks(runnable);
         }
         presenter.detachView();
+        logoutChannel(mChannel);
+    }
+
+    @Override
+    public void logoutChannel(OpenChannel openChannel) {
+        this.mChannel = openChannel;
         presenter.logoutChannel(mChannel);
     }
 
@@ -1175,6 +1204,14 @@ public class GroupChatActivity extends BaseSimpleActivity
         try {
             hideLoading();
             mChannel = openChannel;
+
+            Fragment fragment = getSupportFragmentManager().findFragmentByTag
+                    (GroupChatFragment.class.getSimpleName());
+            if (fragment != null) {
+                ((GroupChatFragment) fragment).setChannel(mChannel);
+                ((GroupChatFragment) fragment).refreshChat();
+            }
+
             setupViewPager();
             showFragment(initialFragment);
 
