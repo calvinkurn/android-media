@@ -4,16 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <item
-        android:id="@+id/action_menu_subscription_digital"
+        android:id="@+id/action_overflow_menu"
         android:orderInCategory="100"
-        android:title="Dummy"
-        app:showAsAction="never"
-        tools:ignore="AppCompatResource" />
+        app:showAsAction="always"
+        android:icon="@drawable/ic_toolbar_overflow_level_two_black"
+        tools:ignore="AppCompatResource"
+        android:title="" />
 
-    <!--<item-->
-        <!--android:id="@+id/action_menu_help_digital"-->
-        <!--android:orderInCategory="100"-->
-        <!--android:title="@string/title_menu_help_digital"-->
-        <!--app:showAsAction="never"-->
-        <!--tools:ignore="AppCompatResource" />-->
 </menu>
