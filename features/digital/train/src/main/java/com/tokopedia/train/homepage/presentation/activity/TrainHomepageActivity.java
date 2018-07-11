@@ -17,8 +17,7 @@ import com.tokopedia.train.homepage.di.DaggerTrainHomepageComponent;
 import com.tokopedia.train.homepage.di.TrainHomepageComponent;
 import com.tokopedia.train.homepage.presentation.fragment.TrainHomepageFragment;
 
-public class TrainHomepageActivity extends TrainBaseActivity implements HasComponent<TrainHomepageComponent>,
-        TrainHomepageFragment.OnCloseBottomMenusListener {
+public class TrainHomepageActivity extends TrainBaseActivity implements HasComponent<TrainHomepageComponent> {
 
     private static TrainHomepageComponent component;
 
@@ -56,19 +55,6 @@ public class TrainHomepageActivity extends TrainBaseActivity implements HasCompo
         ((TrainHomepageFragment) getFragment()).showBottomMenus();
 
         return false;
-//        return super.onMenuOpened(featureId, menu);
-    }
-
-    @Override
-    public void onPanelClosed(int featureId, Menu menu) {
-        ((TrainHomepageFragment) getFragment()).closeBottomMenus();
-
-        super.onPanelClosed(featureId, menu);
-    }
-
-    @Override
-    public void onCloseBottomMenus() {
-        closeOptionsMenu();
     }
 
 }
