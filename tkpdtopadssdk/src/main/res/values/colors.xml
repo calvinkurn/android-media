@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="new_label_color">#279ba4</color>
     <color name="white">#ffffff</color>
     <color name="grey_300">#e0e0e0</color>
     <color name="tkpd_main_green">#42b549</color>
@@ -16,5 +17,6 @@
     <color name="green_buy">#3e9d43</color>
     <color name="tkpd_dark_gray">#999999</color>
     <color name="border_favorite">#e0e0e0</color>
-    <color name="green_500">#259b24</color> <!-- Use with white text -->
+    <color name="green_500">#259b24</color>
+    <color name="bottom_label_color">#42b549</color> <!-- Use with white text -->
 </resources>

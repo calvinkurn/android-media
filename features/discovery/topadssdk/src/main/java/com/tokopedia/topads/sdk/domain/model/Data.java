@@ -28,6 +28,7 @@ public class Data {
     private Shop shop;
     private Product product;
     private boolean favorit;
+    private boolean wislished;
 
     public Data() {
     }
@@ -140,5 +141,13 @@ public class Data {
 
     public void setFavorit(boolean favorit) {
         this.favorit = favorit;
+    }
+
+    public void setWislished(boolean wislished) {
+        this.wislished = wislished;
+    }
+
+    public boolean isWislished() {
+        return wislished;
     }
 }

@@ -14,4 +14,5 @@ public interface LocalAdsClickListener {
 
     void onAddFavorite(int position, Data dataShop);
 
+    void onAddWishLish(int position, Data data);
 }

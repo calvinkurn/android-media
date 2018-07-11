@@ -304,6 +304,12 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
         }
     }
 
+    @Override
+    public void onAddWishLish(int position, Data data) {
+        if (adsItemClickListener != null) {
+            adsItemClickListener.onAddWishList(position, data);
+        }
+    }
 
     public interface DataObserver {
         void onStreamLoaded(int type);

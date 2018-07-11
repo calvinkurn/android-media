@@ -6,22 +6,19 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.util.TypedValue;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
+import com.tokopedia.topads.sdk.listener.DisplayChangeListener;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
 import com.tokopedia.topads.sdk.view.DisplayMode;
-import com.tokopedia.topads.sdk.view.TopAdsInfoBottomSheet;
 import com.tokopedia.topads.sdk.view.adapter.AdsItemAdapter;
+import com.tokopedia.topads.sdk.view.adapter.AdsItemDecoration;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.TopAdsViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.feed.ShopFeedViewModel;
 
@@ -31,7 +28,7 @@ import java.util.List;
  * @author by errysuprayogi on 4/13/17.
  */
 
-public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> {
+public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implements DisplayChangeListener {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_ads;
@@ -51,12 +48,14 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> {
         super(itemView);
         context = itemView.getContext();
         recyclerView = (RecyclerView) itemView.findViewById(R.id.list);
-        gridLayoutManager = new GridLayoutManager(context, DEFAULT_SPAN_COUNT,
+        this.gridLayoutManager = new GridLayoutManager(context, DEFAULT_SPAN_COUNT,
                 GridLayoutManager.VERTICAL, false);
         linearLayoutManager = new LinearLayoutManager(context);
         container = (LinearLayout) itemView.findViewById(R.id.root);
         adapter = new AdsItemAdapter(context);
         adapter.setItemClickListener(itemClickListener);
+        recyclerView.addItemDecoration(new AdsItemDecoration(context.getResources()
+                .getDimensionPixelSize(R.dimen.dp_16)));
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setAdapter(adapter);
     }
@@ -87,6 +86,7 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> {
                 recyclerView.setBackgroundColor(ContextCompat.getColor(context, android.R.color.transparent));
                 break;
             case GRID:
+            case BIG:
                 recyclerView.setLayoutManager(gridLayoutManager);
                 recyclerView.setBackgroundColor(ContextCompat.getColor(context, R.color.white));
                 break;
@@ -99,5 +99,12 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> {
 
     public void setClickListener(TopAdsInfoClickListener adsInfoClickListener) {
         clickListener = adsInfoClickListener;
+    }
+
+    @Override
+    public void onDisplayChange(DisplayMode mode, int spanCount) {
+        this.displayMode = mode;
+        adapter.switchDisplayMode(displayMode);
+        gridLayoutManager.setSpanCount(spanCount);
     }
 }

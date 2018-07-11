@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Build;
 import android.support.annotation.LayoutRes;
 import android.text.Html;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -11,14 +12,16 @@ import android.widget.TextView;
 
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
+import com.tokopedia.topads.sdk.domain.model.Badge;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
-import com.tokopedia.topads.sdk.utils.LabelLoader;
 import com.tokopedia.topads.sdk.view.FlowLayout;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductListViewModel;
+
+import java.util.List;
 
 /**
  * Created by errysuprayogi on 3/27/17.
@@ -27,7 +30,7 @@ import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductListView
 public class ProductListViewHolder extends AbstractViewHolder<ProductListViewModel> implements View.OnClickListener {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.layout_ads_produt_list;
+    public static final int LAYOUT = R.layout.layout_ads_product_list;
     private static final String TAG = ProductListViewHolder.class.getSimpleName();
 
     private LocalAdsClickListener itemClickListener;
@@ -37,28 +40,31 @@ public class ProductListViewHolder extends AbstractViewHolder<ProductListViewMod
     public FlowLayout labelContainer;
     public TextView productName;
     public TextView productPrice;
-    public TextView shopName;
     public TextView shopLocation;
     public ImageView productImage;
     private ImageLoader imageLoader;
     private ImageView rating;
     private TextView reviewCount;
+    private int clickPosition;
+    private ImageView btnWishList;
 
-    public ProductListViewHolder(View itemView, ImageLoader imageLoader, LocalAdsClickListener itemClickListener) {
+    public ProductListViewHolder(View itemView, ImageLoader imageLoader, LocalAdsClickListener itemClickListener, int clickPosition) {
         super(itemView);
         this.itemClickListener = itemClickListener;
         this.imageLoader = imageLoader;
+        this.clickPosition = clickPosition;
         context = itemView.getContext();
         badgeContainer = (LinearLayout) itemView.findViewById(R.id.badges_container);
         labelContainer = (FlowLayout) itemView.findViewById(R.id.label_container);
         productImage = (ImageView) itemView.findViewById(R.id.product_image);
         productName = (TextView) itemView.findViewById(R.id.title);
         productPrice = (TextView) itemView.findViewById(R.id.price);
-        shopName = (TextView) itemView.findViewById(R.id.shop_name);
         shopLocation = (TextView) itemView.findViewById(R.id.location);
         rating = (ImageView) itemView.findViewById(R.id.rating);
         reviewCount = (TextView) itemView.findViewById(R.id.review_count);
+        btnWishList = itemView.findViewById(R.id.wishlist_button);
         ((LinearLayout) itemView.findViewById(R.id.container)).setOnClickListener(this);
+        itemView.findViewById(R.id.wishlist_button_container).setOnClickListener(this);
     }
 
     @Override
@@ -76,9 +82,6 @@ public class ProductListViewHolder extends AbstractViewHolder<ProductListViewMod
             }
             productPrice.setText(product.getPriceFormat());
 
-            if (product.getLabels() != null) {
-                LabelLoader.initLabel(context, labelContainer, product.getLabels());
-            }
             if (data.getProduct().getProductRating() == 0) {
                 rating.setVisibility(View.GONE);
                 reviewCount.setVisibility(View.GONE);
@@ -90,20 +93,55 @@ public class ProductListViewHolder extends AbstractViewHolder<ProductListViewMod
                 );
                 reviewCount.setText("(" + data.getProduct().getCountReviewFormat() + ")");
             }
+
+            labelContainer.removeAllViews();
+            if (data.getProduct().getProductRating() == 0) {
+                rating.setVisibility(View.GONE);
+                reviewCount.setVisibility(View.GONE);
+                if (data.getProduct().isProductNewLabel()) {
+                    TextView label = (TextView) LayoutInflater.from(context).inflate(R.layout.layout_new_label,
+                            null, false);
+                    labelContainer.addView(label);
+                }
+            } else {
+                rating.setVisibility(View.VISIBLE);
+                reviewCount.setVisibility(View.VISIBLE);
+                rating.setImageResource(
+                        ImageLoader.getRatingDrawable(getStarCount(data.getProduct().getProductRating()))
+                );
+                reviewCount.setText("(" + data.getProduct().getCountReviewFormat() + ")");
+            }
+            if (product.getTopLabels() != null) {
+                for (String l : product.getTopLabels()) {
+                    TextView label = (TextView) LayoutInflater.from(context).inflate(R.layout.layout_top_label,
+                            null, false);
+                    label.setText(l);
+                    labelContainer.addView(label);
+                }
+            }
+            if (product.getBottomLabels() != null) {
+                for (String l : product.getBottomLabels()) {
+                    TextView label = (TextView) LayoutInflater.from(context).inflate(R.layout.layout_bottom_label,
+                            null, false);
+                    label.setText(l);
+                    labelContainer.addView(label);
+                }
+            }
         }
         Shop shop = data.getShop();
         if (shop != null) {
-            shopLocation.setText(shop.getLocation());
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                shopName.setText(Html.fromHtml(shop.getName(),
-                        Html.FROM_HTML_MODE_LEGACY));
-            } else {
-                shopName.setText(Html.fromHtml(shop.getName()));
-            }
-            if (shop.getBadges() != null) {
+            if (shop.getBadges() != null && !shop.getLocation().isEmpty()) {
                 imageLoader.loadBadge(badgeContainer, shop.getBadges());
+                if(isBadgesExist(shop.getBadges())) {
+                    shopLocation.setText(String.format(" \u2022 %s", shop.getLocation()));
+                } else {
+                    shopLocation.setText(shop.getLocation());
+                }
+            } else {
+                shopLocation.setText(shop.getLocation());
             }
         }
+        renderWishlistButton(data.isWislished());
     }
 
     private int getStarCount(int rating) {
@@ -112,8 +150,36 @@ public class ProductListViewHolder extends AbstractViewHolder<ProductListViewMod
 
     @Override
     public void onClick(View v) {
-        if (itemClickListener != null && v.getId() == R.id.container) {
-            itemClickListener.onProductItemClicked(getAdapterPosition(), data);
+        if (itemClickListener != null) {
+            if(v.getId() == R.id.container) {
+                itemClickListener.onProductItemClicked(clickPosition, data);
+            }
+            if(v.getId() == R.id.wishlist_button_container){
+                itemClickListener.onAddWishLish(clickPosition, data);
+                data.setWislished(!data.isWislished());
+                renderWishlistButton(data.isWislished());
+            }
         }
+    }
+
+    protected void renderWishlistButton(boolean wishlist) {
+        if (wishlist) {
+            btnWishList.setBackgroundResource(R.drawable.ic_wishlist_red);
+        } else {
+            btnWishList.setBackgroundResource(R.drawable.ic_wishlist);
+        }
+    }
+
+    private boolean isBadgesExist(List<Badge> badges) {
+        if (badges == null || badges.isEmpty()) {
+            return false;
+        }
+
+        for (Badge badgeItem : badges) {
+            if (badgeItem.isShow()) {
+                return true;
+            }
+        }
+        return false;
     }
 }

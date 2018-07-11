@@ -16,4 +16,5 @@ public interface TopAdsItemClickListener {
 
     void onAddFavorite(int position, Data data);
 
+    void onAddWishList(int position, Data data);
 }

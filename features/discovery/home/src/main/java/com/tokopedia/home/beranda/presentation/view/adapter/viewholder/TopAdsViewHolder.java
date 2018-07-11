@@ -78,4 +78,9 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
         data.setFavorit(true);
         topAdsWidgetView.notifyDataChange();
     }
+
+    @Override
+    public void onAddWishList(int position, Data data) {
+        //TODO: next implement wishlist action
+    }
 }

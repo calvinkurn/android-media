@@ -7,6 +7,8 @@ import com.tokopedia.topads.sdk.domain.model.PreferedCategory;
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 import com.tokopedia.topads.sdk.base.TKPDMapParam;
 
+import java.util.List;
+
 
 /**
  * Created by errysuprayogi on 3/27/17.
@@ -25,5 +27,7 @@ public interface TopAdsDataSource {
     MerlinRecomendation getMerlinRecomendation(String query);
 
     String clickTopAdsUrl(String url);
+
+    TopAdsModel checkWishlist(TopAdsModel model);
 
 }

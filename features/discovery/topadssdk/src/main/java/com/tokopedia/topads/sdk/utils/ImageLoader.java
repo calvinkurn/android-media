@@ -68,16 +68,18 @@ public class ImageLoader {
     public void loadBadge(final LinearLayout container, List<Badge> badges) {
         container.removeAllViews();
         for (Badge badge : badges) {
-            final View view = LayoutInflater.from(context).inflate(R.layout.layout_badge, null);
-            final ImageView imageView = (ImageView) view.findViewById(R.id.badge);
-            imageFetcher.loadImage(badge.getImageUrl(), imageView, new ImageWorker.OnImageLoadedListener() {
-                @Override
-                public void onImageLoaded(boolean success) {
-                    if (success) {
-                        container.addView(view);
+            if(badge.isShow()) {
+                final View view = LayoutInflater.from(context).inflate(R.layout.layout_badge, null);
+                final ImageView imageView = (ImageView) view.findViewById(R.id.badge);
+                imageFetcher.loadImage(badge.getImageUrl(), imageView, new ImageWorker.OnImageLoadedListener() {
+                    @Override
+                    public void onImageLoaded(boolean success) {
+                        if (success) {
+                            container.addView(view);
+                        }
                     }
-                }
-            }, true);
+                }, true);
+            }
         }
     }
 

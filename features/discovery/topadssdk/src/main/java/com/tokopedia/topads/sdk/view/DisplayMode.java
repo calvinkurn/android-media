@@ -9,7 +9,8 @@ public enum DisplayMode {
     GRID(0),
     LIST(1),
     FEED(3), //Condition if TopAds shop will display 1 item only
-    FEED_EMPTY(4);
+    FEED_EMPTY(4),
+    BIG(5);
 
     private int value;
 

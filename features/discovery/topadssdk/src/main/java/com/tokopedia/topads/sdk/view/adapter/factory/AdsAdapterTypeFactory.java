@@ -8,11 +8,13 @@ import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.discovery.ProductGridViewHolder;
+import com.tokopedia.topads.sdk.view.adapter.viewholder.discovery.ProductBigViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.discovery.ProductListViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.discovery.ShopGridViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.discovery.ShopListViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.feed.ProductFeedViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.feed.ShopFeedViewHolder;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductBigViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductGridViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductListViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ShopGridViewModel;
@@ -78,12 +80,19 @@ public class AdsAdapterTypeFactory implements AdsTypeFactory {
     }
 
     @Override
+    public int type(ProductBigViewModel viewModel) {
+        return ProductBigViewHolder.LAYOUT;
+    }
+
+    @Override
     public AbstractViewHolder createViewHolder(ViewGroup view, int viewType) {
         AbstractViewHolder holder;
         if (viewType == ProductGridViewHolder.LAYOUT) {
-            holder = new ProductGridViewHolder(view, imageLoader, itemClickListener);
+            holder = new ProductGridViewHolder(view, imageLoader, itemClickListener, clickPosition);
         } else if (viewType == ProductListViewHolder.LAYOUT) {
-            holder = new ProductListViewHolder(view, imageLoader, itemClickListener);
+            holder = new ProductListViewHolder(view, imageLoader, itemClickListener, clickPosition);
+        } else if (viewType == ProductBigViewHolder.LAYOUT) {
+            holder = new ProductBigViewHolder(view, imageLoader, itemClickListener, clickPosition);
         } else if (viewType == ShopGridViewHolder.LAYOUT) {
             holder = new ShopGridViewHolder(view, imageLoader, itemClickListener);
         } else if (viewType == ShopListViewHolder.LAYOUT) {

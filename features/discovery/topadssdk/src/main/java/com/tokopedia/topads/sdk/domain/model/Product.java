@@ -27,9 +27,12 @@ public class Product {
     private static final String KEY_FREERETURN = "free_feturn";
     private static final String KEY_PRODUCT_CASHBACK = "product_cashback";
     private static final String KEY_PRODUCT_CASHBACK_RATE = "product_cashback_rate";
+    private static final String KEY_PRODUCT_NEW_LABEL = "product_new_label";
     private static final String KEY_PRODUCT_RATE = "product_rating";
     private static final String KEY_WHOLESALE_PRICE = "wholesale_price";
     private static final String KEY_LABELS = "labels";
+    private static final String KEY_TOP_LABEL = "top_label";
+    private static final String KEY_BOTTOM_LABEL = "bottom_label";
     private static final String KEY_APPLINKS = "applinks";
     private static final String KEY_IMAGE_PRODUCT = "image_product";
 
@@ -49,10 +52,13 @@ public class Product {
     private String freeReturn;
     private boolean productCashback;
     private String productCashbackRate;
+    private boolean productNewLabel;
     private int productRating;
     private String applinks;
     private List<WholesalePrice> wholesalePrice = new ArrayList<>();
     private List<Label> labels = new ArrayList<>();
+    private List<String> topLabels = new ArrayList<>();
+    private List<String> bottomLabels = new ArrayList<>();
     private ImageProduct imageProduct;
 
     public Product() {
@@ -98,6 +104,9 @@ public class Product {
         if(!object.isNull(KEY_PRODUCT_CASHBACK)){
             setProductCashback(object.getBoolean(KEY_PRODUCT_CASHBACK));
         }
+        if(!object.isNull(KEY_PRODUCT_NEW_LABEL)){
+            setProductNewLabel(object.getBoolean(KEY_PRODUCT_NEW_LABEL));
+        }
         if(!object.isNull(KEY_APPLINKS)){
             setApplinks(object.getString(KEY_APPLINKS));
         }
@@ -122,6 +131,34 @@ public class Product {
                 labels.add(new Label(labelArray.getJSONObject(i)));
             }
         }
+        if(!object.isNull(KEY_TOP_LABEL)) {
+            JSONArray arr = object.getJSONArray(KEY_TOP_LABEL);
+            for (int i = 0; i < arr.length(); i++) {
+                topLabels.add(arr.getString(i));
+            }
+        }
+        if(!object.isNull(KEY_BOTTOM_LABEL)) {
+            JSONArray arr = object.getJSONArray(KEY_BOTTOM_LABEL);
+            for (int i = 0; i < arr.length(); i++) {
+                bottomLabels.add(arr.getString(i));
+            }
+        }
+    }
+
+    public List<String> getTopLabels() {
+        return topLabels;
+    }
+
+    public void setTopLabels(List<String> topLabels) {
+        this.topLabels = topLabels;
+    }
+
+    public List<String> getBottomLabels() {
+        return bottomLabels;
+    }
+
+    public void setBottomLabels(List<String> bottomLabels) {
+        this.bottomLabels = bottomLabels;
     }
 
     public ImageProduct getImageProduct() {
@@ -190,6 +227,14 @@ public class Product {
 
     public String getCountReviewFormat() {
         return countReviewFormat;
+    }
+
+    public boolean isProductNewLabel() {
+        return productNewLabel;
+    }
+
+    public void setProductNewLabel(boolean productNewLabel) {
+        this.productNewLabel = productNewLabel;
     }
 
     public void setCountReviewFormat(String countReviewFormat) {

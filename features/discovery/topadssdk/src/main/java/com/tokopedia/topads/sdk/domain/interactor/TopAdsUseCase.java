@@ -61,7 +61,8 @@ public class TopAdsUseCase extends UseCase<TopAdsParams, AdsView> {
 
             @Override
             protected TopAdsModel doInBackground(TopAdsParams... params) {
-                return dataSource.getTopAds(params[0].getParam(), params[0].getAdsPosition());
+                TopAdsModel adsModel = dataSource.getTopAds(params[0].getParam(), params[0].getAdsPosition());
+                return dataSource.checkWishlist(adsModel);
             }
 
             @Override
@@ -77,6 +78,8 @@ public class TopAdsUseCase extends UseCase<TopAdsParams, AdsView> {
                                 visitables.add(ModelConverter.convertToProductListViewModel(data));
                             } else if (displayMode == DisplayMode.FEED) {
                                 visitables.add(ModelConverter.convertToProductFeedViewModel(data));
+                            } else if (displayMode == DisplayMode.BIG) {
+                                visitables.add(ModelConverter.convertToProductBigViewModel(data));
                             }
                         } else if (data.getShop() != null) {
                             if (displayMode == DisplayMode.GRID) {
@@ -87,6 +90,8 @@ public class TopAdsUseCase extends UseCase<TopAdsParams, AdsView> {
                                 visitables.add(ModelConverter.convertToShopFeedViewModel(data, displayMode));
                             } else if (displayMode == DisplayMode.FEED_EMPTY) {
                                 visitables.add(ModelConverter.convertToShopFeedViewModel(data, displayMode));
+                            }  else if (displayMode == DisplayMode.BIG) {
+                                visitables.add(ModelConverter.convertToProductBigViewModel(data));
                             }
                         }
                     }
