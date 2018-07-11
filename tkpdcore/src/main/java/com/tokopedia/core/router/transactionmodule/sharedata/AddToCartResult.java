@@ -8,6 +8,7 @@ public class AddToCartResult {
     private boolean success;
     private String message;
     private String cartId;
+    private String source;
 
     public AddToCartResult() {
     }
@@ -40,6 +41,14 @@ public class AddToCartResult {
 
     public String getCartId() {
         return cartId;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
     }
 
     public static final class Builder {

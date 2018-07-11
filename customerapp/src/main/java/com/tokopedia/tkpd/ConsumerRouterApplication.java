@@ -154,6 +154,9 @@ import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivit
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
 import com.tokopedia.kol.KolComponentInstance;
+import com.tokopedia.instantloan.di.module.InstantLoanChuckRouter;
+import com.tokopedia.instantloan.router.InstantLoanRouter;
+import com.tokopedia.instantloan.view.activity.InstantLoanActivity;
 import com.tokopedia.kol.KolRouter;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
@@ -269,6 +272,7 @@ import com.tokopedia.topchat.common.TopChatRouter;
 import com.tokopedia.tokocash.historytokocash.presentation.model.PeriodRangeModelData;
 import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 import com.tokopedia.tokocash.pendingcashback.receiver.TokocashPendingDataBroadcastReceiver;
+import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.topads.sourcetagging.util.TopAdsAppLinkUtil;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.bcaoneklik.usecase.CreditCardFingerPrintUseCase;
@@ -345,7 +349,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ITransactionOrderDetailRouter,
         ILogisticUploadAwbRouter,
         NetworkRouter,
-        TopChatRouter{
+        InstantLoanChuckRouter,
+        InstantLoanRouter,
+        TopChatRouter,
+        TokopointRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -1897,8 +1904,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void registerShake(String screenName) {
-        ShakeDetectManager.getShakeDetectManager().registerShake(screenName);
+    public void registerShake(String screenName,Activity activity) {
+        ShakeDetectManager.getShakeDetectManager().registerShake(screenName,activity);
     }
 
     @Override
@@ -1991,6 +1998,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId) {
         return ShopProductListActivity.createIntent(context, shopId, keyword, etalaseId, "");
+    }
+
+    @Override
+    public Intent getInstantLoanIntent(Context context) {
+        return InstantLoanActivity.createIntent(context);
     }
 
     public void showForceHockeyAppDialog() {

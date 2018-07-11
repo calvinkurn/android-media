@@ -248,6 +248,7 @@ public class TkpdCache extends com.tokopedia.abstraction.constant.TkpdCache {
         public static final String APP_REFERRAL_HOWITWORKS = "app_referral_howitworks";
         public static final String APP_SHOW_REFERRAL_BUTTON = "app_show_referral_button";
         public static final String APP_SHOW_RECOMENDATION_BUTTON = "mainapp_show_recomendation_button";
+        public static final String APP_SHOW_TOKOPOINT_NATIVE = "app_enable_tokopoint_native";
         public static final String APP_SHARE_DEFAULT_MESSAGE = "app_share_default_message";
         public static final String REFFERAL_TERMS = "referral_terms";
         public static final String REFERRAL_TITLE_DESC = "mainapp_referral_title_desc";
@@ -270,6 +271,7 @@ public class TkpdCache extends com.tokopedia.abstraction.constant.TkpdCache {
         public static final String ENABLE_BOTTOM_SHEET_FILTER = "mainapp_enable_bottom_sheet_filter";
 
         public static final String FIREBASE_DIGITAL_OMS_REMOTE_CONFIG_KEY = "app_enable_oms_native";
+        public static final String SHOW_INSTANT_LOAN = "app_enable_instant_loan";
     }
 
 }

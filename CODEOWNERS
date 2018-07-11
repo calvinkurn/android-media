@@ -48,3 +48,4 @@
 /libraries/user_session/                @tokopedia/minion-kevin
 /libraries/common_network/              @lavekush-t
 /libraries/graphql/                     @lavekush-t
+/features/promo/tokopoints              @lavekush-t

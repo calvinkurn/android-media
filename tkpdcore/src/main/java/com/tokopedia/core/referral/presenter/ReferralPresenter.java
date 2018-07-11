@@ -94,9 +94,9 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
     @Override
     public void shareApp(FragmentManager fragmentManager) {
         formatSharingContents();
-        String type = ShareData.APP_SHARE_TYPE;
-        if (isAppShowReferralButtonActivated()) {
-            type = ShareData.REFERRAL_TYPE;
+        String type= ShareData.APP_SHARE_TYPE;
+        if(isAppShowReferralButtonActivated()){
+            type= ShareData.REFERRAL_TYPE;
         }
         ShareData shareData = ShareData.Builder.aShareData()
                 .setType(type)
@@ -113,10 +113,14 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
 
     private void formatSharingContents() {
         if (!isAppShowReferralButtonActivated()) {
-            contents = getAppShareDescription() + activity.getString(R.string.cek_label);
+            contents = getAppShareDescription();
         } else if (TextUtils.isEmpty(contents)) {
             contents = getAppShareDefaultMessage();
         }
+        if(!contents.contains(activity.getString(R.string.cek_label))){
+            contents = contents + activity.getString(R.string.cek_label);
+        }
+
     }
 
     @Override
@@ -130,7 +134,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
 
             @Override
             public void onError(Throwable e) {
-                if (!isViewAttached()) {
+                if(!isViewAttached()){
                     return;
                 }
                 getView().hideProcessDialog();
@@ -153,7 +157,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
 
             @Override
             public void onNext(ReferralCodeEntity referralCodeEntity) {
-                if (!isViewAttached()) {
+                if(!isViewAttached()){
                     return;
                 }
                 if (referralCodeEntity.getErorMessage() == null) {
@@ -246,7 +250,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
 
             @Override
             public void onNext(TokoCashData tokoCashData) {
-                if (!isViewAttached()) {
+                if(!isViewAttached()){
                     return;
                 }
 
