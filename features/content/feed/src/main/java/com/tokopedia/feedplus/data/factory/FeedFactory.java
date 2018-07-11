@@ -5,6 +5,7 @@ import android.content.Context;
 import com.apollographql.apollo.ApolloClient;
 import com.tokopedia.core.base.common.service.MojitoService;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.feedplus.data.api.FeedApi;
 import com.tokopedia.feedplus.data.mapper.CheckNewFeedMapper;
 import com.tokopedia.feedplus.data.mapper.FeedDetailListMapper;
 import com.tokopedia.feedplus.data.mapper.FeedListMapper;
@@ -23,42 +24,40 @@ import com.tokopedia.feedplus.data.source.local.LocalFeedDataSource;
 
 public class FeedFactory {
 
-    private final CheckNewFeedMapper checkNewFeedMapper;
-    private ApolloClient apolloClient;
-    private Context context;
-    private FeedListMapper feedListMapper;
-    private FeedResultMapper feedResultMapperLocal;
-    private FeedResultMapper feedResultMapperCloud;
-    private GlobalCacheManager globalCacheManager;
-    private FeedDetailListMapper feedDetailListMapper;
+    private final Context context;
+    private final FeedApi feedApi;
+    private final ApolloClient apolloClient;
+    private final FeedListMapper feedListMapper;
+    private final FeedResultMapper feedResultMapperLocal;
+    private final FeedResultMapper feedResultMapperCloud;
+    private final GlobalCacheManager globalCacheManager;
+    private final FeedDetailListMapper feedDetailListMapper;
     private final MojitoService mojitoService;
-    private RecentProductMapper recentProductMapper;
+    private final RecentProductMapper recentProductMapper;
+    private final CheckNewFeedMapper checkNewFeedMapper;
 
-    public FeedFactory(Context context,
-                       ApolloClient apolloClient,
-                       FeedListMapper feedListMapper,
+    public FeedFactory(Context context, FeedApi feedApi, ApolloClient apolloClient,
+                       FeedListMapper feedListMapper, FeedResultMapper feedResultMapperLocal,
                        FeedResultMapper feedResultMapperCloud,
-                       FeedResultMapper feedResultMapperLocal,
                        GlobalCacheManager globalCacheManager,
-                       FeedDetailListMapper feedDetailListMapper,
-                       MojitoService mojitoService,
+                       FeedDetailListMapper feedDetailListMapper, MojitoService mojitoService,
                        RecentProductMapper recentProductMapper,
                        CheckNewFeedMapper checkNewFeedMapper) {
-
-        this.apolloClient = apolloClient;
         this.context = context;
+        this.feedApi = feedApi;
+        this.apolloClient = apolloClient;
         this.feedListMapper = feedListMapper;
-        this.feedDetailListMapper = feedDetailListMapper;
-        this.feedResultMapperCloud = feedResultMapperCloud;
         this.feedResultMapperLocal = feedResultMapperLocal;
+        this.feedResultMapperCloud = feedResultMapperCloud;
         this.globalCacheManager = globalCacheManager;
+        this.feedDetailListMapper = feedDetailListMapper;
         this.mojitoService = mojitoService;
         this.recentProductMapper = recentProductMapper;
         this.checkNewFeedMapper = checkNewFeedMapper;
     }
 
     public CloudFeedDataSource createCloudFeedDataSource() {
-        return new CloudFeedDataSource(apolloClient, feedListMapper, feedResultMapperCloud,
+        return new CloudFeedDataSource(context, feedApi, feedListMapper, feedResultMapperCloud,
                 globalCacheManager);
     }
 
@@ -71,7 +70,7 @@ public class FeedFactory {
     }
 
     public CloudFirstFeedDataSource createCloudFirstFeedDataSource() {
-        return new CloudFirstFeedDataSource(apolloClient, feedListMapper, feedResultMapperCloud,
+        return new CloudFirstFeedDataSource(context, feedApi, feedListMapper, feedResultMapperCloud,
                 globalCacheManager);
     }
 

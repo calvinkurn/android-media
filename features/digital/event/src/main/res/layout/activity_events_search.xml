@@ -22,7 +22,7 @@
         android:background="@color/white"
         android:gravity="center"
         android:orientation="vertical"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/iv_no_fav"
@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_16"
             android:scaleType="fitXY"
-            android:visibility="visible"
+            android:visibility="gone"
             app:srcCompat="@drawable/ic_no_fav" />
 
         <TextView
@@ -39,6 +39,7 @@
             android:layout_gravity="center"
             android:fontFamily="sans-serif-medium"
             android:gravity="center_horizontal"
+            android:visibility="gone"
             android:text="@string/hasil_tidak"
             android:textColor="@color/black_70"
             android:textSize="17sp"

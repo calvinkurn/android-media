@@ -179,4 +179,8 @@ public interface AccountsApi {
     Observable<Response<ValidateOtpStatusData>> validateOtpStatus(@QueryMap Map<String, Object>
                                                                  parameters);
 
+    @FormUrlEncoded
+    @POST(SessionUrl.Register.PATH_REGISTER_VALIDATION)
+    Observable<Response<TkpdResponse>> validateRegister(@FieldMap Map<String, Object>
+                                                                          parameters);
 }
