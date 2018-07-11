@@ -25,7 +25,7 @@ public interface TrainHomepageView extends CustomerView {
 
     void showDepartureDateShouldAtLeastToday(@StringRes int resId);
 
-    void showDepartureDateMax100Days(@StringRes int resId);
+    void showDepartureDateMax90Days(@StringRes int resId);
 
     void showReturnDateShouldGreaterOrEqual(@StringRes int resId);
 

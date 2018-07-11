@@ -169,7 +169,7 @@ public class TrainHomepagePresenterImplTest {
 
         trainHomepagePresenterImpl.onDepartureDateChange(newFakeDepartureYear, newFakeDepartureMonth, newFakeDepartureDate);
 
-        verify(trainHomepageView).showDepartureDateMax100Days(R.string.kai_homepage_departure_max_100_days_from_today_error);
+        verify(trainHomepageView).showDepartureDateMax90Days(R.string.kai_homepage_departure_max_90_days_from_today_error);
     }
 
     // today's date   = 17 Oct 1994

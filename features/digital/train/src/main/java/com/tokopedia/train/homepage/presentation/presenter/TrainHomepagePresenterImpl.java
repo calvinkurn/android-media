@@ -11,7 +11,6 @@ import com.tokopedia.train.homepage.presentation.model.TrainHomepageViewModel;
 import com.tokopedia.train.homepage.presentation.model.TrainPassengerViewModel;
 import com.tokopedia.train.homepage.presentation.model.TrainSearchPassDataViewModel;
 import com.tokopedia.train.station.presentation.adapter.viewmodel.TrainStationAndCityViewModel;
-import com.tokopedia.train.station.presentation.adapter.viewmodel.TrainStationViewModel;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -25,7 +24,7 @@ import javax.inject.Inject;
 public class TrainHomepagePresenterImpl extends BaseDaggerPresenter<TrainHomepageView> implements TrainHomepagePresenter {
 
     private final int DEFAULT_RANGE_OF_DEPARTURE_AND_ARRIVAL = 2;
-    private final int MAX_BOOKING_DAYS_FROM_TODAY = 100;
+    private final int MAX_BOOKING_DAYS_FROM_TODAY = 90;
 
     private TrainHomepageCache trainHomepageCache;
 
@@ -73,7 +72,7 @@ public class TrainHomepagePresenterImpl extends BaseDaggerPresenter<TrainHomepag
         Date newDepartureDate = now.getTime();
 
         if (newDepartureDate.after(limitDate)) {
-            getView().showDepartureDateMax100Days(R.string.kai_homepage_departure_max_100_days_from_today_error);
+            getView().showDepartureDateMax90Days(R.string.kai_homepage_departure_max_90_days_from_today_error);
         } else if (newDepartureDate.before(TrainDateUtil.getCurrentDate())) {
             getView().showDepartureDateShouldAtLeastToday(R.string.kai_homepage_departure_should_atleast_today_error);
         } else {
@@ -85,8 +84,13 @@ public class TrainHomepagePresenterImpl extends BaseDaggerPresenter<TrainHomepag
                 Date currentReturnDate = TrainDateUtil.stringToDate(getView().getHomepageViewModel().getReturnDate());
                 if (currentReturnDate.compareTo(newDepartureDate) < 0) {
                     Date reAssignReturnDate = TrainDateUtil.addDate(newDepartureDate, DEFAULT_RANGE_OF_DEPARTURE_AND_ARRIVAL);
-                    getView().getHomepageViewModel().setReturnDate(TrainDateUtil.dateToString(reAssignReturnDate, TrainDateUtil.DEFAULT_FORMAT));
-                    getView().getHomepageViewModel().setReturnDateFmt(TrainDateUtil.dateToString(reAssignReturnDate, TrainDateUtil.DEFAULT_VIEW_FORMAT));
+                    if (reAssignReturnDate.after(limitDate)) {
+                        getView().getHomepageViewModel().setReturnDate(TrainDateUtil.dateToString(newDepartureDate, TrainDateUtil.DEFAULT_FORMAT));
+                        getView().getHomepageViewModel().setReturnDateFmt(TrainDateUtil.dateToString(newDepartureDate, TrainDateUtil.DEFAULT_VIEW_FORMAT));
+                    } else {
+                        getView().getHomepageViewModel().setReturnDate(TrainDateUtil.dateToString(reAssignReturnDate, TrainDateUtil.DEFAULT_FORMAT));
+                        getView().getHomepageViewModel().setReturnDateFmt(TrainDateUtil.dateToString(reAssignReturnDate, TrainDateUtil.DEFAULT_VIEW_FORMAT));
+                    }
                 }
                 getView().renderRoundTripView(getView().getHomepageViewModel());
             } else {
