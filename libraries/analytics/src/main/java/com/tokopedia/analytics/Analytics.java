@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
-import com.raizlabs.android.dbflow.config.TkpdAnalyticsGeneratedDatabaseHolder;
+import com.raizlabs.android.dbflow.config.GeneratedDatabaseHolder;
 
 /**
  * @author okasurya on 5/16/18.
@@ -17,6 +17,6 @@ public class Analytics {
         } catch (IllegalStateException e) {
             FlowManager.init(new FlowConfig.Builder(applicationContext).build());
         }
-        FlowManager.initModule(TkpdAnalyticsGeneratedDatabaseHolder.class);
+        FlowManager.initModule(GeneratedDatabaseHolder.class);
     }
 }
