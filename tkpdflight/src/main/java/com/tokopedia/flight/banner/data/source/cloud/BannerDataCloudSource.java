@@ -28,7 +28,7 @@ public class BannerDataCloudSource {
     }
 
     public Observable<List<BannerDetail>> getBannerData(Map<String, String> params) {
-        return flightApi.getBanners(FlightUrl.BANNER_PATH, params)
+        return flightApi.getBanners(FlightUrl.FLIGHT_PROMO, params)
                 .flatMap(new Func1<Response<DataResponse<List<BannerDetail>>>, Observable<List<BannerDetail>>>() {
                     @Override
                     public Observable<List<BannerDetail>> call(Response<DataResponse<List<BannerDetail>>> dataResponseResponse) {

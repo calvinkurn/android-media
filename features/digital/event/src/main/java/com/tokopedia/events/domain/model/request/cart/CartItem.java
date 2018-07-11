@@ -85,7 +85,7 @@ public class CartItem implements Parcelable {
 		this.metaData = in.readParcelable(MetaData.class.getClassLoader());
 	}
 
-	public static final Parcelable.Creator<CartItem> CREATOR = new Parcelable.Creator<CartItem>() {
+	public static final Creator<CartItem> CREATOR = new Creator<CartItem>() {
 		@Override
 		public CartItem createFromParcel(Parcel source) {
 			return new CartItem(source);

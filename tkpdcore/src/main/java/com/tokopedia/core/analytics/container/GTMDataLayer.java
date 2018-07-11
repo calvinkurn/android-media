@@ -3,13 +3,12 @@ package com.tokopedia.core.analytics.container;
 import android.content.Context;
 import android.util.Log;
 import com.google.android.gms.tagmanager.TagManager;
-import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.analytics.debugger.GtmLogger;
 
 import java.util.Map;
 
 import rx.Observable;
 import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -25,6 +24,8 @@ public class GTMDataLayer {
         GTMBody gtmBody = new GTMBody();
         gtmBody.context = context;
         gtmBody.values = values;
+
+        log(context, gtmBody);
 
         Observable.just(gtmBody)
                 .subscribeOn(Schedulers.newThread())
@@ -62,6 +63,8 @@ public class GTMDataLayer {
         gtmBody.values = values;
         gtmBody.eventName = eventName;
 
+        log(context, gtmBody);
+
         Observable.just(gtmBody)
                 .subscribeOn(Schedulers.newThread())
                 .map(new Func1<GTMBody, Boolean>() {
@@ -89,6 +92,11 @@ public class GTMDataLayer {
                     }
                 });
 
+    }
+
+    private static void log(Context context, GTMBody gtmBody) {
+        String name = gtmBody.eventName == null ? (String) gtmBody.values.get("event") : gtmBody.eventName;
+        GtmLogger.getInstance().save(context, name, gtmBody.values);
     }
 
     private static class GTMBody {
