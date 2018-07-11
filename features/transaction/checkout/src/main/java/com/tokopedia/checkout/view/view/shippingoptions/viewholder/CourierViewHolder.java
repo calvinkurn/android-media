@@ -46,9 +46,11 @@ public class CourierViewHolder extends RecyclerView.ViewHolder {
             tvPrice.setText(tvPrice.getContext().getResources().getString(
                     R.string.label_shipment_type_format, CurrencyFormatUtil.convertPriceValueToIdrFormat(
                             courierItemData.getShipperPrice(), true)));
-        } else {
+        } else if (!TextUtils.isEmpty(courierItemData.getShipperFormattedPrice())) {
             tvPrice.setText(tvPrice.getContext().getResources().getString(
                     R.string.label_shipment_type_format, courierItemData.getShipperFormattedPrice()));
+        } else {
+            tvPrice.setVisibility(View.GONE);
         }
 
         if (courierItemData.getDeliverySchedule() != null) {

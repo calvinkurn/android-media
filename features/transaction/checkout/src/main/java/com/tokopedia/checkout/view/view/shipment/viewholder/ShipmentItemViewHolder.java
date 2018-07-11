@@ -147,6 +147,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
     private TextView tvAdditionalFee;
     private TextView tvAdditionalFeePrice;
     private TextView tvLabelInsurance;
+    private TextView tvDash;
 
     public ShipmentItemViewHolder(View itemView) {
         super(itemView);
@@ -236,6 +237,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         tvAdditionalFee = itemView.findViewById(R.id.tv_additional_fee);
         tvAdditionalFeePrice = itemView.findViewById(R.id.tv_additional_fee_price);
         tvLabelInsurance = itemView.findViewById(R.id.tv_label_insurance);
+        tvDash = itemView.findViewById(R.id.tv_dash);
+
     }
 
     protected void showBottomSheet(Context context, String title, String message, int image) {
@@ -341,11 +344,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                 && shipmentDetailData.getSelectedCourier() != null;
 
         if (isCourierSelected) {
-            if (!TextUtils.isEmpty(shipmentDetailData.getSelectedCourier().getShipmentItemDataEtd()) &&
-                    !TextUtils.isEmpty(shipmentDetailData.getSelectedCourier().getShipmentItemDataType())) {
-                if (TextUtils.isEmpty(shipmentDetailData.getSelectedCourier().getEstimatedTimeDelivery()) ||
-                        (shipmentDetailData.getSelectedCourier().getMinEtd() != 0 &&
-                                shipmentDetailData.getSelectedCourier().getMaxEtd() != 0)) {
+            if (!TextUtils.isEmpty(shipmentDetailData.getSelectedCourier().getShipmentItemDataType())) {
+                if (shipmentDetailData.getSelectedCourier().getMinEtd() != 0 &&
+                        shipmentDetailData.getSelectedCourier().getMaxEtd() != 0) {
                     String etd = "(" + shipmentDetailData.getSelectedCourier().getEstimatedTimeDelivery() + ")";
                     tvShippingEtd.setText(etd);
                     tvShippingEtd.setVisibility(View.VISIBLE);
@@ -363,9 +364,16 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                 llShipmpingType.setVisibility(View.GONE);
             }
             tvCourierName.setText(shipmentDetailData.getSelectedCourier().getName());
-            String courierPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                    shipmentDetailData.getSelectedCourier().getShipperPrice(), true);
-            tvCourierPrice.setText(courierPrice);
+            if (shipmentDetailData.getSelectedCourier().getShipperPrice() != 0) {
+                String courierPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                        shipmentDetailData.getSelectedCourier().getShipperPrice(), true);
+                tvCourierPrice.setText(courierPrice);
+                tvCourierPrice.setVisibility(View.VISIBLE);
+                tvDash.setVisibility(View.VISIBLE);
+            } else {
+                tvCourierPrice.setVisibility(View.GONE);
+                tvDash.setVisibility(View.GONE);
+            }
             llShipmentOptionViewLayout.setVisibility(View.GONE);
             llSelectedCourier.setVisibility(View.VISIBLE);
         } else {
