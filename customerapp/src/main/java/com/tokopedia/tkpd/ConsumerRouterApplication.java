@@ -154,6 +154,9 @@ import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivit
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
 import com.tokopedia.kol.KolComponentInstance;
+import com.tokopedia.instantloan.di.module.InstantLoanChuckRouter;
+import com.tokopedia.instantloan.router.InstantLoanRouter;
+import com.tokopedia.instantloan.view.activity.InstantLoanActivity;
 import com.tokopedia.kol.KolRouter;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
@@ -345,6 +348,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ITransactionOrderDetailRouter,
         ILogisticUploadAwbRouter,
         NetworkRouter,
+        InstantLoanChuckRouter,
+        InstantLoanRouter,
         TopChatRouter{
 
     @Inject
@@ -1991,6 +1996,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId) {
         return ShopProductListActivity.createIntent(context, shopId, keyword, etalaseId, "");
+    }
+
+    @Override
+    public Intent getInstantLoanIntent(Context context) {
+        return InstantLoanActivity.createIntent(context);
     }
 
     public void showForceHockeyAppDialog() {
