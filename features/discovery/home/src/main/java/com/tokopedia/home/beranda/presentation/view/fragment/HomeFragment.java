@@ -53,6 +53,7 @@ import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.router.wallet.WalletRouterUtil;
+import com.tokopedia.core.util.RouterUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
@@ -77,6 +78,8 @@ import com.tokopedia.home.beranda.presentation.view.compoundview.CountDownView;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewModel;
 import com.tokopedia.home.widget.FloatingTextButton;
 import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
+import com.tokopedia.tokopoints.ApplinkConstant;
+import com.tokopedia.tokopoints.view.activity.TokoPointsHomeActivity;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -86,6 +89,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import static com.tokopedia.core.constants.HomeFragmentBroadcastReceiverConstant.EXTRA_ACTION_RECEIVER;
+import static com.tokopedia.tokopoints.ApplinkConstant.HOMEPAGE;
 
 /**
  * @author by errysuprayogi on 11/27/17.
@@ -113,6 +117,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private LinearLayoutManager layoutManager;
     private FloatingTextButton floatingTextButton;
     private boolean showRecomendation;
+    private boolean mShowTokopointNative;
     private RecyclerView.OnScrollListener onEggScrollListener;
 
     public static HomeFragment newInstance() {
@@ -153,6 +158,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private void fetchRemoteConfig() {
         firebaseRemoteConfig = new FirebaseRemoteConfigImpl(getActivity());
         showRecomendation = firebaseRemoteConfig.getBoolean(TkpdCache.RemoteConfigKey.APP_SHOW_RECOMENDATION_BUTTON, false);
+        mShowTokopointNative = firebaseRemoteConfig.getBoolean(TkpdCache.RemoteConfigKey.APP_SHOW_TOKOPOINT_NATIVE, true);
     }
 
     @Override
@@ -480,10 +486,14 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void actionTokoPointClicked(String tokoPointUrl, String pageTitle) {
-        if (TextUtils.isEmpty(pageTitle))
-            startActivity(TokoPointWebviewActivity.getIntent(getActivity(), tokoPointUrl));
-        else
-            startActivity(TokoPointWebviewActivity.getIntentWithTitle(getActivity(), tokoPointUrl, pageTitle));
+        if (mShowTokopointNative) {
+            RouterUtils.getDefaultRouter().actionAppLink(getContext(), ApplinkConstant.HOMEPAGE);
+        } else {
+            if (TextUtils.isEmpty(pageTitle))
+                startActivity(TokoPointWebviewActivity.getIntent(getActivity(), tokoPointUrl));
+            else
+                startActivity(TokoPointWebviewActivity.getIntentWithTitle(getActivity(), tokoPointUrl, pageTitle));
+        }
     }
 
     @Override

@@ -38,4 +38,4 @@ include "features:digital:digitalproduct"
 include "features:logistic:tracking"
 include "features:fintech:tokocash"
 include "features:user:topchat"
-
+include "features:promo:tokopoints"

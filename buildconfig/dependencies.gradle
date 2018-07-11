@@ -68,6 +68,7 @@ ext {
     tkpdGraphqlVersion = '2.22'
     tkpdContactUsVersion = '2.22'
     tkpdCommonNetworkVersion = '2.22'
+    tkpdTokopointVersion = '2.22'
 
     networkDependencies = [
             retrofit          : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
@@ -319,7 +320,8 @@ ext {
             tracking              : ":features:logistic:tracking",
             logisticuploadawb     : ":features:logistic:logisticuploadawb",
             vote                  : ":features:user:vote",
-            instantLoan           : ":features:fintech:instant_loan"
+            instantLoan           : ":features:fintech:instant_loan",
+            tokopoints            : ":features:promo:tokopoints"
     ]
 
     libraries = [
