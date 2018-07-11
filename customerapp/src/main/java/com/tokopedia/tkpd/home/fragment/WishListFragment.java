@@ -32,7 +32,6 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
-import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.RecyclerViewItem;
