@@ -114,7 +114,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private FloatingTextButton floatingTextButton;
     private boolean showRecomendation;
     private RecyclerView.OnScrollListener onEggScrollListener;
-    private FloatingEggButtonFragment floatingEggButtonFragment;
 
     public static HomeFragment newInstance() {
 
@@ -330,10 +329,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private FloatingEggButtonFragment getFloatingEggButtonFragment() {
-        if (floatingEggButtonFragment == null && getChildFragmentManager() != null) {
-            floatingEggButtonFragment = (FloatingEggButtonFragment) getChildFragmentManager().findFragmentById(R.id.floating_egg_fragment);
+        // https://stackoverflow.com/questions/28672883/java-lang-illegalstateexception-fragment-not-attached-to-activity
+        if (getActivity() != null && isAdded() && getChildFragmentManager() != null) {
+            return (FloatingEggButtonFragment) getChildFragmentManager().findFragmentById(R.id.floating_egg_fragment);
         }
-        return floatingEggButtonFragment;
+        return null;
     }
 
     private boolean isAllowLoadMore() {
