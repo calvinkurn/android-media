@@ -473,7 +473,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         ((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData().getSelectedCourier() != null) {
                     Boolean useInsurance = ((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData().getUseInsurance();
                     shippingFee += shipmentSingleAddressItem.getSelectedShipmentDetailData()
-                            .getSelectedCourier().getDeliveryPrice();
+                            .getSelectedCourier().getShipperPrice();
                     if (useInsurance != null && useInsurance) {
                         insuranceFee += shipmentSingleAddressItem.getSelectedShipmentDetailData()
                                 .getSelectedCourier().getInsurancePrice();
