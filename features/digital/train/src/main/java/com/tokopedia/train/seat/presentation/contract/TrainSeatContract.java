@@ -1,5 +1,7 @@
 package com.tokopedia.train.seat.presentation.contract;
 
+import android.support.annotation.StringRes;
+
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
@@ -35,7 +37,7 @@ public interface TrainSeatContract {
 
         List<TrainSeatPassengerViewModel> getOriginalPassenger();
 
-        void navigateToReview(List<TrainSeatPassengerViewModel> originalPassenger);
+        void navigateToReview(TrainSoftbook trainSoftbook);
 
         TrainSoftbook getTrainSoftbook();
 
@@ -48,6 +50,10 @@ public interface TrainSeatContract {
         void updateSelectedWagon();
 
         void showWagonChooser();
+
+        String getString(@StringRes int resId);
+
+        void setToolbarSubTitle(String subtitle);
     }
 
     interface Presenter extends CustomerPresenter<View> {

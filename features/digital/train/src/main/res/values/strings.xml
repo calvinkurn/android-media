@@ -137,4 +137,7 @@
     <string name="train_review_item_passenger_seat">%1$s %2$s</string>
     <string name="train_review_item_passenger_info_seat">Kursi (%1$s -  %2$s)</string>
     <string name="train_review_trip_passenger_count">%1$s - %2$s (Dewasa) x %3$d</string>
+    <string name="train_seat_prefix_toolbar_title">Perjalanan Pergi</string>
+    <string name="train_seat_toolbar_title">Pilih Kursi</string>
+    <string name="train_seat_prefix_toolbar_return_trip_title">Perjalanan Pulang</string>
 </resources>

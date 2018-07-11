@@ -24,15 +24,14 @@ import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.TrainRouter;
 import com.tokopedia.train.common.di.utils.TrainComponentUtils;
 import com.tokopedia.train.common.util.TrainDateUtil;
-import com.tokopedia.train.passenger.data.TrainBookingPassenger;
+import com.tokopedia.train.passenger.di.DaggerTrainBookingPassengerComponent;
+import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
 import com.tokopedia.train.passenger.presentation.activity.TrainBookingAddPassengerActivity;
 import com.tokopedia.train.passenger.presentation.activity.TrainBookingPassengerActivity;
 import com.tokopedia.train.passenger.presentation.adapter.TrainBookingPassengerAdapter;
 import com.tokopedia.train.passenger.presentation.adapter.TrainBookingPassengerAdapterListener;
 import com.tokopedia.train.passenger.presentation.adapter.TrainBookingPassengerAdapterTypeFactory;
 import com.tokopedia.train.passenger.presentation.contract.TrainBookingPassengerContract;
-import com.tokopedia.train.passenger.di.DaggerTrainBookingPassengerComponent;
-import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
 import com.tokopedia.train.passenger.presentation.presenter.TrainBookingPassengerPresenter;
 import com.tokopedia.train.passenger.presentation.viewmodel.ProfileBuyerInfo;
 import com.tokopedia.train.passenger.presentation.viewmodel.TrainParamPassenger;
@@ -298,7 +297,7 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
 
     @Override
     public void navigateToChooseSeat(TrainSoftbook trainSoftbook) {
-        getActivity().startActivity(TrainSeatActivity.getCallingIntent(getActivity(), TrainSoftbook.dummy()));
+        getActivity().startActivity(TrainSeatActivity.getCallingIntent(getActivity(), TrainSoftbook.dummy(), trainScheduleBookingPassData));
     }
 
     @Override

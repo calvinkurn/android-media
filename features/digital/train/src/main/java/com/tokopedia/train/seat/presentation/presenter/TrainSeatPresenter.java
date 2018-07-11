@@ -1,9 +1,12 @@
 package com.tokopedia.train.seat.presentation.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.util.TrainDateUtil;
 import com.tokopedia.train.passenger.domain.model.TrainPaxPassenger;
+import com.tokopedia.train.passenger.domain.model.TrainSeat;
 import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
+import com.tokopedia.train.passenger.domain.model.TrainTrip;
 import com.tokopedia.train.seat.domain.TrainChangeSeatUseCase;
 import com.tokopedia.train.seat.domain.TrainGetSeatsUseCase;
 import com.tokopedia.train.seat.domain.model.request.ChangeSeatMapRequest;
@@ -103,18 +106,71 @@ public class TrainSeatPresenter extends BaseDaggerPresenter<TrainSeatContract.Vi
                             getView().showPage();
                             List<TrainSeatPassengerViewModel> passengers = getView().getOriginalPassenger();
                             passengers = getView().getPassengers();
-                            getView().navigateToReview(passengers);
+                            navigateToReview(passengers);
                         }
                     });
         } else {
-            getView().navigateToReview(getView().getOriginalPassenger());
+            getView().navigateToReview(getView().getTrainSoftbook());
+        }
+    }
 
+    private void navigateToReview(List<TrainSeatPassengerViewModel> passengers) {
+        if (!getView().isReturning()) {
+            List<TrainPaxPassenger> paxPassengers = new ArrayList<>();
+            List<TrainPaxPassenger> oldPaxPassengers = getView().getTrainSoftbook().getDepartureTrips().get(0).getPaxPassengers();
+            buildNewPaxPassengers(passengers, paxPassengers, oldPaxPassengers);
+            getView().getTrainSoftbook().getDepartureTrips().get(0).setPaxPassengers(paxPassengers);
+            getView().navigateToReview(getView().getTrainSoftbook());
+        } else {
+            List<TrainPaxPassenger> paxPassengers = new ArrayList<>();
+            List<TrainPaxPassenger> oldPaxPassengers = getView().getTrainSoftbook().getReturnTrips().get(0).getPaxPassengers();
+            buildNewPaxPassengers(passengers, paxPassengers, oldPaxPassengers);
+            getView().getTrainSoftbook().getReturnTrips().get(0).setPaxPassengers(paxPassengers);
+            getView().navigateToReview(getView().getTrainSoftbook());
+        }
+    }
+
+    private void buildNewPaxPassengers(List<TrainSeatPassengerViewModel> passengers, List<TrainPaxPassenger> paxPassengers, List<TrainPaxPassenger> oldPaxPassengers) {
+        TrainPaxPassenger paxPassenger;
+        for (TrainPaxPassenger oldPaxPassenger :
+                oldPaxPassengers) {
+            for (TrainSeatPassengerViewModel passenger : passengers) {
+                if (oldPaxPassenger.getName().equalsIgnoreCase(passenger.getName())) {
+                    paxPassenger = new TrainPaxPassenger();
+                    paxPassenger.setIdNumber(oldPaxPassenger.getIdNumber());
+                    paxPassenger.setName(passenger.getName());
+                    paxPassenger.setPaxType(oldPaxPassenger.getPaxType());
+                    TrainSeat trainSeat = new TrainSeat();
+                    trainSeat.setColumn(passenger.getSeatViewModel().getColumn());
+                    trainSeat.setRow(passenger.getSeatViewModel().getRow());
+                    trainSeat.setWagonNo(passenger.getSeatViewModel().getRow());
+                    paxPassenger.setSeat(trainSeat);
+                    paxPassengers.add(paxPassenger);
+                    break;
+                }
+            }
         }
     }
 
     @Override
     public void onViewCreated() {
         buildPassengers(getView().isReturning(), getView().getTrainSoftbook());
+        getView().setToolbarSubTitle(buildToolbarSubtitle(getView().isReturning(), getView().getTrainSoftbook()));
+    }
+
+    private String buildToolbarSubtitle(boolean returning, TrainSoftbook trainSoftbook) {
+        if (!returning) {
+            if (trainSoftbook.getDepartureTrips().size() > 0) {
+                TrainTrip trainTrip = trainSoftbook.getDepartureTrips().get(0);
+                return getView().getString(R.string.train_seat_prefix_toolbar_title) + " (" + trainTrip.getOrg() + " - " + trainTrip.getDes() + ")";
+            }
+        } else {
+            if (trainSoftbook.getReturnTrips() != null && trainSoftbook.getReturnTrips().size() > 0) {
+                TrainTrip trainTrip = trainSoftbook.getReturnTrips().get(0);
+                return getView().getString(R.string.train_seat_prefix_toolbar_return_trip_title) + " (" + trainTrip.getOrg() + " - " + trainTrip.getDes() + ")";
+            }
+        }
+        return "";
     }
 
     @Override
@@ -136,24 +192,37 @@ public class TrainSeatPresenter extends BaseDaggerPresenter<TrainSeatContract.Vi
         if (!returning) {
             if (trainSoftbook.getDepartureTrips().size() > 0) {
                 List<TrainSeatPassengerViewModel> originPassengers = new ArrayList<>();
-                TrainSeatPassengerViewModel viewModel;
-                for (int i = 0; i < trainSoftbook.getDepartureTrips().get(0).getPaxPassengers().size(); i++) {
-                    TrainPaxPassenger trainPaxPassenger = trainSoftbook.getDepartureTrips().get(0).getPaxPassengers().get(i);
-                    viewModel = new TrainSeatPassengerViewModel();
-                    viewModel.setName(trainPaxPassenger.getName());
-                    viewModel.setNumber(trainPaxPassenger.getIdNumber());
-                    viewModel.setPassengerNumber(i + 1);
-                    TrainSeatPassengerSeatViewModel trainSeatPassengerSeatViewModel = new TrainSeatPassengerSeatViewModel();
-                    trainSeatPassengerSeatViewModel.setColumn(trainPaxPassenger.getSeat().getColumn());
-                    trainSeatPassengerSeatViewModel.setRow(trainPaxPassenger.getSeat().getRow());
-                    trainSeatPassengerSeatViewModel.setWagonCode(trainPaxPassenger.getSeat().getWagonNo());
-                    trainSeatPassengerSeatViewModel.setClassSeat(trainPaxPassenger.getSeat().getKlass());
-                    viewModel.setSeatViewModel(trainSeatPassengerSeatViewModel);
-                    originPassengers.add(viewModel);
-                }
+                List<TrainPaxPassenger> paxPassengers = trainSoftbook.getDepartureTrips().get(0).getPaxPassengers();
+                prepareTrainSeatPassengerViewModel(originPassengers, paxPassengers);
                 getView().setOriginPassenger(originPassengers);
                 getView().setPassengers(originPassengers);
             }
+        } else {
+            if (trainSoftbook.getReturnTrips().size() > 0) {
+                List<TrainSeatPassengerViewModel> originPassengers = new ArrayList<>();
+                List<TrainPaxPassenger> paxPassengers = trainSoftbook.getReturnTrips().get(0).getPaxPassengers();
+                prepareTrainSeatPassengerViewModel(originPassengers, paxPassengers);
+                getView().setOriginPassenger(originPassengers);
+                getView().setPassengers(originPassengers);
+            }
+        }
+    }
+
+    private void prepareTrainSeatPassengerViewModel(List<TrainSeatPassengerViewModel> originPassengers, List<TrainPaxPassenger> paxPassengers) {
+        TrainSeatPassengerViewModel viewModel;
+        for (int i = 0; i < paxPassengers.size(); i++) {
+            TrainPaxPassenger trainPaxPassenger = paxPassengers.get(i);
+            viewModel = new TrainSeatPassengerViewModel();
+            viewModel.setName(trainPaxPassenger.getName());
+            viewModel.setNumber(trainPaxPassenger.getIdNumber());
+            viewModel.setPassengerNumber(i + 1);
+            TrainSeatPassengerSeatViewModel trainSeatPassengerSeatViewModel = new TrainSeatPassengerSeatViewModel();
+            trainSeatPassengerSeatViewModel.setColumn(trainPaxPassenger.getSeat().getColumn());
+            trainSeatPassengerSeatViewModel.setRow(trainPaxPassenger.getSeat().getRow());
+            trainSeatPassengerSeatViewModel.setWagonCode(trainPaxPassenger.getSeat().getWagonNo());
+            trainSeatPassengerSeatViewModel.setClassSeat(trainPaxPassenger.getSeat().getKlass());
+            viewModel.setSeatViewModel(trainSeatPassengerSeatViewModel);
+            originPassengers.add(viewModel);
         }
     }
 

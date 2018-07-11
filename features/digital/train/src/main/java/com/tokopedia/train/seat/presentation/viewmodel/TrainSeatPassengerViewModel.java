@@ -3,7 +3,7 @@ package com.tokopedia.train.seat.presentation.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class TrainSeatPassengerViewModel implements Parcelable {
+public class TrainSeatPassengerViewModel implements Parcelable{
     private int passengerNumber;
     private String name;
     private String number;
@@ -68,10 +68,9 @@ public class TrainSeatPassengerViewModel implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(passengerNumber);
-        dest.writeString(name);
-        dest.writeString(number);
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(passengerNumber);
+        parcel.writeString(name);
+        parcel.writeString(number);
     }
-
 }

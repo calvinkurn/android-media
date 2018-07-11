@@ -1,5 +1,6 @@
 package com.tokopedia.train.seat.presentation.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,6 +18,8 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.component.Menus;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
+import com.tokopedia.train.reviewdetail.presentation.activity.TrainReviewDetailActivity;
+import com.tokopedia.train.search.presentation.model.TrainScheduleBookingPassData;
 import com.tokopedia.train.seat.di.TrainSeatComponent;
 import com.tokopedia.train.seat.presentation.contract.TrainSeatContract;
 import com.tokopedia.train.seat.presentation.fragment.listener.TrainSeatListener;
@@ -36,6 +39,7 @@ import javax.inject.Inject;
 
 public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatContract.View, TrainSeatPassengerAndWagonView.TrainSeatActionListener {
     private static final String EXTRA_SOFTBOOK = "EXTRA_SOFTBOOK";
+    private static final String EXTRA_PASSDATA = "EXTRA_PASSDATA";
     @Inject
     TrainSeatPresenter presenter;
 
@@ -53,11 +57,19 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
     private List<TrainWagonViewModel> wagons;
 
     private TrainSoftbook trainSoftbook;
+    private TrainScheduleBookingPassData passData;
 
-    public static Fragment newInstance(TrainSoftbook trainSoftbook) {
+    private InteractionListener interactionListener;
+
+    public interface InteractionListener {
+        void setToolbar(String subtitle);
+    }
+
+    public static Fragment newInstance(TrainSoftbook trainSoftbook, TrainScheduleBookingPassData passData) {
         Fragment fragment = new TrainSeatFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_SOFTBOOK, trainSoftbook);
+        bundle.putParcelable(EXTRA_PASSDATA, passData);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -65,6 +77,7 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
     @Override
     public void onCreate(Bundle savedInstanceState) {
         trainSoftbook = getArguments().getParcelable(EXTRA_SOFTBOOK);
+        passData = getArguments().getParcelable(EXTRA_PASSDATA);
         super.onCreate(savedInstanceState);
     }
 
@@ -255,8 +268,12 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
     }
 
     @Override
-    public void navigateToReview(List<TrainSeatPassengerViewModel> originalPassenger) {
+    public void navigateToReview(TrainSoftbook trainSoftbook) {
+        if (!isReturning()) {
+            startActivity(TrainReviewDetailActivity.createIntent(getActivity(), trainSoftbook, passData));
+        } else {
 
+        }
     }
 
     @Override
@@ -302,5 +319,20 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
             menus.dismiss();
         });
         menus.show();
+    }
+
+    @Override
+    public void setToolbarSubTitle(String subtitle) {
+        interactionListener.setToolbar(subtitle);
+    }
+
+    @Override
+    protected void onAttachActivity(Context context) {
+        super.onAttachActivity(context);
+        if (context instanceof InteractionListener) {
+            interactionListener = (InteractionListener) context;
+        } else {
+            throw new RuntimeException("Activity must implement " + InteractionListener.class.getSimpleName());
+        }
     }
 }
