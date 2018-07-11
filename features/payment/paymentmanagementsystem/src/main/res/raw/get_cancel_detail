@@ -1,9 +1,9 @@
-{
-  cancelDetail($transactionID: String!, $merchantCode: String!) {
-    success
-    hasRefund
-    refundCCAmount
-    refundWalletAmount
-    refundMessage
-  }
+query cancelDetail($transactionID: String!, $merchantCode: String!) {
+  cancelDetail(transactionID: $transactionID, merchantCode: $merchantCode) {
+      success
+      hasRefund
+      refundCCAmount
+      refundWalletAmount
+      refundMessage
+    }
 }

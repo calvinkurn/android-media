@@ -12,7 +12,7 @@ import java.util.List;
  * Created by zulfikarrahman on 6/21/18.
  */
 
-public class PaymentListModel implements Visitable<PaymentListAdapterTypeFactory>,Parcelable {
+public class PaymentListModel implements Visitable<PaymentListAdapterTypeFactory>, Parcelable {
     private String transactionId;
     private String transaction_date;
     private boolean showTickerMessage;
@@ -36,6 +36,7 @@ public class PaymentListModel implements Visitable<PaymentListAdapterTypeFactory
     private String paymentMethod;
     private String merchantCode;
     private String appLink;
+    private String bankId;
 
     @Override
     public int type(PaymentListAdapterTypeFactory typeFactory) {
@@ -74,7 +75,7 @@ public class PaymentListModel implements Visitable<PaymentListAdapterTypeFactory
         this.productName = productName;
     }
 
-    public void setListOfAction(List<String> listOfAction){
+    public void setListOfAction(List<String> listOfAction) {
         this.listOfAction = listOfAction;
     }
 
@@ -229,6 +230,14 @@ public class PaymentListModel implements Visitable<PaymentListAdapterTypeFactory
     public PaymentListModel() {
     }
 
+    public String getBankId() {
+        return bankId;
+    }
+
+    public void setBankId(String bankId) {
+        this.bankId = bankId;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -259,6 +268,7 @@ public class PaymentListModel implements Visitable<PaymentListAdapterTypeFactory
         dest.writeString(this.paymentMethod);
         dest.writeString(this.merchantCode);
         dest.writeString(this.appLink);
+        dest.writeString(this.bankId);
     }
 
     protected PaymentListModel(Parcel in) {
@@ -285,6 +295,7 @@ public class PaymentListModel implements Visitable<PaymentListAdapterTypeFactory
         this.paymentMethod = in.readString();
         this.merchantCode = in.readString();
         this.appLink = in.readString();
+        this.bankId = in.readString();
     }
 
     public static final Creator<PaymentListModel> CREATOR = new Creator<PaymentListModel>() {

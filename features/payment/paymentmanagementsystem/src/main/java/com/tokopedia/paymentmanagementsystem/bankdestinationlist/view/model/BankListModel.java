@@ -12,7 +12,7 @@ import com.tokopedia.paymentmanagementsystem.bankdestinationlist.view.adapter.Ba
 
 public class BankListModel implements Visitable<BankListAdapterTypeFactory>,Parcelable {
 
-    private int id;
+    private String id;
     private String bankName;
 
     @Override
@@ -20,11 +20,11 @@ public class BankListModel implements Visitable<BankListAdapterTypeFactory>,Parc
         return typeFactory.type(this);
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -43,7 +43,7 @@ public class BankListModel implements Visitable<BankListAdapterTypeFactory>,Parc
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.id);
+        dest.writeString(this.id);
         dest.writeString(this.bankName);
     }
 
@@ -51,7 +51,7 @@ public class BankListModel implements Visitable<BankListAdapterTypeFactory>,Parc
     }
 
     protected BankListModel(Parcel in) {
-        this.id = in.readInt();
+        this.id = in.readString();
         this.bankName = in.readString();
     }
 

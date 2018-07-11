@@ -19,6 +19,21 @@
             android:theme="@style/Theme.White"
             android:name=".changebankaccount.view.ChangeBankAccountActivity"/>
         <activity android:name=".howtopay.ReactNativeHowToPayActivity" />
+        <activity
+            android:label="@string/payment_title_activity_dest_bank"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:name=".bankdestinationlist.view.activity.BankDestinationActivity"/>
+        <activity
+            android:label="@string/payment_title_upload_proof"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:name=".uploadproofpayment.view.UploadProofPaymentActivity"/>
+        <activity
+            android:label="@string/payment_title_activity_invoice"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:name=".invoicedetail.InvoiceDetailActivity"/>
     </application>
 
 </manifest>

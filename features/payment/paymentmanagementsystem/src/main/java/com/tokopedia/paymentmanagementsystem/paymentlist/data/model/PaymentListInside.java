@@ -270,5 +270,4 @@ public class PaymentListInside {
     public void setTickerMessage(String tickerMessage) {
         this.tickerMessage = tickerMessage;
     }
-
 }

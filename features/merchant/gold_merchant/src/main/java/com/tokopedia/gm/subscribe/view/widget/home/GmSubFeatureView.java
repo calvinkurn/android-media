@@ -3,6 +3,7 @@ package com.tokopedia.gm.subscribe.view.widget.home;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
+import android.support.v7.content.res.AppCompatResources;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -48,7 +49,10 @@ public class GmSubFeatureView extends FrameLayout {
         initView();
         TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.GMFeatureHomeView);
         try {
-            imageSubFeature = styledAttributes.getDrawable(R.styleable.GMFeatureHomeView_feature_img);
+            final int drawableId = styledAttributes.getResourceId(R.styleable.GMFeatureHomeView_feature_img, -1);
+            if (drawableId >= 0) {
+                imageSubFeature = AppCompatResources.getDrawable(getContext(), drawableId);
+            }
             descSubFeature = styledAttributes.getString(R.styleable.GMFeatureHomeView_feature_desc);
         } finally {
             styledAttributes.recycle();

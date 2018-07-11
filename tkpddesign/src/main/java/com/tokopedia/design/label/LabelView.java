@@ -31,6 +31,7 @@ public class LabelView extends BaseCustomView {
 
     private Drawable imageDrawable;
     private int imageWidth;
+    private int imageMarginRight;
     private String titleText;
     private String subTitleText;
     @ColorInt
@@ -72,6 +73,7 @@ public class LabelView extends BaseCustomView {
                 imageDrawable = AppCompatResources.getDrawable(getContext(), drawableId);
             }
             imageWidth = (int) styledAttributes.getDimension(R.styleable.LabelView_lv_image_width, getResources().getDimension(R.dimen.dp_32));
+            imageMarginRight = (int) styledAttributes.getDimension(R.styleable.LabelView_lv_image_margin_right, getResources().getDimension(R.dimen.dp_8));
             titleText = styledAttributes.getString(R.styleable.LabelView_lv_title);
             titleColorValue = styledAttributes.getColor(R.styleable.LabelView_lv_title_color, ContextCompat.getColor(getContext(), R.color.font_black_primary_70));
             subTitleText = styledAttributes.getString(R.styleable.LabelView_lv_sub_title);
@@ -103,6 +105,8 @@ public class LabelView extends BaseCustomView {
         if (imageDrawable != null) {
             imageView.setImageDrawable(imageDrawable);
             imageView.setVisibility(View.VISIBLE);
+            titleTextView.setPadding(imageMarginRight, 0, 0, 0);
+            subTitleTextView.setPadding(imageMarginRight, 0, 0, 0);
         }
         ViewGroup.LayoutParams layoutParams = imageView.getLayoutParams();
         layoutParams.width = imageWidth;

@@ -11,10 +11,9 @@ import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.paymentmanagementsystem.R;
 import com.tokopedia.paymentmanagementsystem.common.Constant;
-import com.tokopedia.paymentmanagementsystem.paymentlist.data.model.CancelDetail;
-import com.tokopedia.paymentmanagementsystem.paymentlist.data.model.CancelPayment;
+import com.tokopedia.paymentmanagementsystem.paymentlist.data.model.DataCancelDetail;
+import com.tokopedia.paymentmanagementsystem.paymentlist.data.model.DataCancelPayment;
 import com.tokopedia.paymentmanagementsystem.paymentlist.data.model.DataPaymentList;
-import com.tokopedia.paymentmanagementsystem.paymentlist.data.model.PaymentList;
 import com.tokopedia.paymentmanagementsystem.paymentlist.view.mapper.PaymentListMapper;
 import com.tokopedia.usecase.RequestParams;
 
@@ -42,9 +41,12 @@ public class PaymentListPresenter extends BaseDaggerPresenter<PaymentListContrac
         this.cancelPaymentUseCase = cancelPaymentUseCase;
     }
 
-    public void getPaymentList(Resources resources, Context context) {
+    public void getPaymentList(Resources resources, Context context, int page) {
+        Map<String, Object> variables = new HashMap<>();
+        variables.put(Constant.PAGE, page);
         GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(resources,
-                R.raw.payment_list_query), DataPaymentList.class);
+                R.raw.payment_list_query), DataPaymentList.class, variables);
+        getPaymentListUseCase.clearRequest();
         getPaymentListUseCase.setRequest(graphqlRequest);
         getPaymentListUseCase.execute(RequestParams.create(), new Subscriber<GraphqlResponse>() {
             @Override
@@ -60,7 +62,7 @@ public class PaymentListPresenter extends BaseDaggerPresenter<PaymentListContrac
             @Override
             public void onNext(GraphqlResponse objects) {
                 DataPaymentList paymentList = objects.getData(DataPaymentList.class);
-                getView().renderList(paymentListMapper.map(paymentList.getPaymentList().getPaymentList(), context));
+                getView().renderList(paymentListMapper.map(paymentList.getPaymentList().getPaymentList(), context), paymentList.getPaymentList().isHasNextPage());
             }
         });
     }
@@ -75,12 +77,14 @@ public class PaymentListPresenter extends BaseDaggerPresenter<PaymentListContrac
 
     @Override
     public void getCancelDetail(Resources resources, String transactionID, String merchantCode) {
+        getView().showDialogLoading();
+        getCancelDetailUseCase.clearRequest();
         Map<String, Object> variables = new HashMap<>();
         variables.put(Constant.TRANSACTION_ID, transactionID);
         variables.put(Constant.MERCHANT_CODE, merchantCode);
 
         GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(resources,
-                R.raw.get_cancel_detail), CancelDetail.class, variables);
+                R.raw.get_cancel_detail), DataCancelDetail.class, variables);
         getCancelDetailUseCase.setRequest(graphqlRequest);
         getCancelDetailUseCase.execute(RequestParams.create(), new Subscriber<GraphqlResponse>() {
             @Override
@@ -90,25 +94,31 @@ public class PaymentListPresenter extends BaseDaggerPresenter<PaymentListContrac
 
             @Override
             public void onError(Throwable e) {
-                getView().onErrorGetCancelDetail(e);
+                if(isViewAttached()) {
+                    getView().hideDialogLoading();
+                    getView().onErrorGetCancelDetail(e);
+                }
             }
 
             @Override
             public void onNext(GraphqlResponse objects) {
-                CancelDetail cancelDetail = objects.getData(CancelDetail.class);
-                getView().showCancelationMessage(cancelDetail.getRefundMessage(), transactionID, merchantCode);
+                getView().hideDialogLoading();
+                DataCancelDetail cancelDetail = objects.getData(DataCancelDetail.class);
+                getView().showCancelationMessage(cancelDetail.getCancelDetail().getRefundMessage(), transactionID, merchantCode);
             }
         });
     }
 
     @Override
     public void cancelPayment(Resources resources, String transactionID, String merchantCode) {
+        getView().showDialogLoading();
+        cancelPaymentUseCase.clearRequest();
         Map<String, Object> variables = new HashMap<>();
         variables.put(Constant.TRANSACTION_ID, transactionID);
         variables.put(Constant.MERCHANT_CODE, merchantCode);
 
         GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(resources,
-                R.raw.cancel_payment), CancelPayment.class, variables);
+                R.raw.cancel_payment), DataCancelPayment.class, variables);
         cancelPaymentUseCase.setRequest(graphqlRequest);
         cancelPaymentUseCase.execute(RequestParams.create(), new Subscriber<GraphqlResponse>() {
             @Override
@@ -118,18 +128,18 @@ public class PaymentListPresenter extends BaseDaggerPresenter<PaymentListContrac
 
             @Override
             public void onError(Throwable e) {
-                getView().onErrorCancelPayment(e);
+                if(isViewAttached()) {
+                    getView().onErrorCancelPayment(e);
+                    getView().hideDialogLoading();
+                }
             }
 
             @Override
             public void onNext(GraphqlResponse objects) {
-                CancelPayment cancelPayment = objects.getData(CancelPayment.class);
-                getView().onResultCancelPayment(cancelPayment.isSuccess());
+                getView().hideDialogLoading();
+                DataCancelPayment cancelPayment = objects.getData(DataCancelPayment.class);
+                getView().onResultCancelPayment(cancelPayment.getCancelPayment().isSuccess(), cancelPayment.getCancelPayment().getMessage());
             }
         });
-    }
-
-    public void getHowToPay() {
-
     }
 }

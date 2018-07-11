@@ -14,7 +14,11 @@ public interface ChangeClickBcaContract {
 
         void onErrorChangeClickBcaUserID(Throwable e);
 
-        void onResultChangeClickBcaUserId(boolean isSuccess);
+        void onResultChangeClickBcaUserId(boolean isSuccess, String message);
+
+        void showLoadingDialog();
+
+        void hideLoadingDialog();
     }
 
     interface Presenter extends CustomerPresenter<View>{

@@ -2,7 +2,6 @@ package com.tokopedia.paymentmanagementsystem.changebankaccount.di;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.paymentmanagementsystem.changebankaccount.view.ChangeBankAccountFragment;
-import com.tokopedia.paymentmanagementsystem.changeclickbca.view.ChangeClickBcaFragment;
 
 import dagger.Component;
 

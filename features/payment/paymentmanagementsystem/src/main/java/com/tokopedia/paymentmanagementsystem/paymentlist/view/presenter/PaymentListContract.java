@@ -16,21 +16,23 @@ public interface PaymentListContract {
 
         void showCancelationMessage(String refundMessage, String transactionID, String merchantCode);
 
-        void onResultCancelPayment(boolean success);
+        void onResultCancelPayment(boolean isSuccess, String message);
 
         void onErrorGetCancelDetail(Throwable e);
 
         void onErrorCancelPayment(Throwable e);
+
+        void showDialogLoading();
+
+        void hideDialogLoading();
     }
 
     interface Presenter extends CustomerPresenter<View>{
 
-        void getPaymentList(Resources resources, Context context);
+        void getPaymentList(Resources resources, Context context, int page);
 
         void getCancelDetail(Resources resources, String transactionID, String merchantCode);
 
         void cancelPayment(Resources resources, String transactionID, String merchantCode);
-
-        void getHowToPay();
     }
 }

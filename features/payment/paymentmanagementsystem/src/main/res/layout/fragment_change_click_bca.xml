@@ -6,9 +6,11 @@
 
     <com.tokopedia.design.text.TkpdHintTextInputLayout
         android:id="@+id/input_layout_click_bca_user_id"
+        style="@style/HintTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_margin="@dimen/dp_8"
+        android:layout_alignParentTop="true"
         android:hint="@string/payment_label_hint_click_bca_user_id"
         app:helper="@string/payment_label_helper_change_click_bca">
 
@@ -23,9 +25,10 @@
     <Button
         android:id="@+id/button_use"
         style="@style/Button.Submit.Green"
-        android:text="@string/payment_label_use"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="@string/payment_label_use" />
 
 
 </RelativeLayout>

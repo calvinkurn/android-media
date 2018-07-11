@@ -511,7 +511,9 @@ public class RegisterInitialFragment extends BaseDaggerFragment
         return new GetFacebookCredentialSubscriber.GetFacebookCredentialListener() {
             @Override
             public void onErrorGetFacebookCredential(String errorMessage) {
-                NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+                if (isAdded()) {
+                    NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+                }
             }
 
             @Override

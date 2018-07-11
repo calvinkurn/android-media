@@ -1,5 +1,5 @@
-mutation{
-  editKlikbca($transactionID: String!, $merchantCode:String!, $newKlikbcaUserID: String!){
+mutation editKlikbca($transactionID: String!, $merchantCode:String!, $newKlikbcaUserID: String!){
+  editKlikbca(transactionID: $transactionID, merchantCode:$merchantCode, newKlikbcaUserID: $newKlikbcaUserID){
     success
     message
   }
