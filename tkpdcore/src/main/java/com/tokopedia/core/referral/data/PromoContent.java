@@ -12,10 +12,6 @@ public class PromoContent {
     @Expose
     private String code;
 
-    @SerializedName("url")
-    @Expose
-    private String url;
-
     @SerializedName("content")
     @Expose
     private String content;
@@ -36,11 +32,4 @@ public class PromoContent {
         this.content = content;
     }
 
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
 }
