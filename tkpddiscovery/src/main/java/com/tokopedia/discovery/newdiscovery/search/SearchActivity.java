@@ -114,6 +114,11 @@ public class SearchActivity extends DiscoveryActivity
         intent.putExtras(bundle);
         return intent;
     }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        unregisterShake();
+    }
 
     public static Intent newInstance(Context context, Bundle bundle) {
         Intent intent = new Intent(context, SearchActivity.class);

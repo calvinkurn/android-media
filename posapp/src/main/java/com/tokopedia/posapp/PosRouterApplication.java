@@ -248,6 +248,11 @@ public class PosRouterApplication extends MainApplication implements
     }
 
     @Override
+    public Intent getOrderListIntent(Context context) {
+        return null;
+    }
+
+    @Override
     public Intent getRegisterIntent(Context context) {
         return null;
     }
@@ -650,7 +655,7 @@ public class PosRouterApplication extends MainApplication implements
     }
 
     @Override
-    public void registerShake(String screenName) {
+    public void registerShake(String screenName, Activity activity) {
 
     }
 

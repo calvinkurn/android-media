@@ -36,6 +36,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmen
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionGeneralAdapter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.ProductListAdapter;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.itemdecoration.ProductItemDecoration;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ItemClickListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.typefactory.ProductListTypeFactory;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.typefactory.ProductListTypeFactoryImpl;
@@ -208,6 +209,8 @@ public class ProductListFragment extends SearchSectionFragment
         topAdsRecyclerAdapter.setConfig(topAdsConfig);
         topAdsRecyclerAdapter.setSpanSizeLookup(onSpanSizeLookup());
         recyclerView.setAdapter(topAdsRecyclerAdapter);
+        recyclerView.addItemDecoration(new ProductItemDecoration(getContext().getResources().getDimensionPixelSize(R.dimen.dp_16)));
+        recyclerView.setBackgroundColor(getContext().getResources().getColor(R.color.white));
         topAdsRecyclerAdapter.setLayoutManager(getGridLayoutManager());
         topAdsRecyclerAdapter.setOnLoadListener(new TopAdsRecyclerAdapter.OnLoadListener() {
             @Override
@@ -777,6 +780,14 @@ public class ProductListFragment extends SearchSectionFragment
     @Override
     public void onAddFavorite(int position, Data data) {
 
+    }
+
+    @Override
+    public void onAddWishList(int position, Data data) {
+        ProductItem productItem = new ProductItem();
+        productItem.setWishlisted(data.isWislished());
+        productItem.setProductID(data.getProduct().getId());
+        presenter.handleWishlistButtonClicked(productItem, topAdsRecyclerAdapter.getOriginalPosition(position));
     }
 
     @Override

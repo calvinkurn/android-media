@@ -5,6 +5,7 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/tools"
     android:orientation="vertical"
+    android:background="@color/tkpd_bg_color"
     android:paddingTop="@dimen/padding_vs"
     android:layout_marginBottom="@dimen/margin_vs">
 

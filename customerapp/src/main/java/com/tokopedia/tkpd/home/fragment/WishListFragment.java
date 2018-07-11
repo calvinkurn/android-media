@@ -139,6 +139,11 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     }
 
     @Override
+    public void onAddWishList(int position, Data data) {
+        //TODO: next implement wishlist action
+    }
+
+    @Override
     protected String getScreenName() {
         return AppScreen.SCREEN_FRAGMENT_WISHLIST;
     }

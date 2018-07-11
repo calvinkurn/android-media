@@ -119,7 +119,7 @@ public class ProductListAdapter extends SearchSectionGeneralAdapter {
     }
 
     public void updateWishlistStatus(int adapterPosition, boolean isWishlisted) {
-        if (list.get(adapterPosition) instanceof ProductItem) {
+        if (adapterPosition >= 0 && list.get(adapterPosition) instanceof ProductItem) {
             ((ProductItem) list.get(adapterPosition)).setWishlisted(isWishlisted);
             notifyItemChanged(adapterPosition);
         }

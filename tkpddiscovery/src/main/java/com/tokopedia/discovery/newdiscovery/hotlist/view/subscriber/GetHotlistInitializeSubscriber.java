@@ -166,6 +166,9 @@ public class GetHotlistInitializeSubscriber extends rx.Subscriber<HotlistModel> 
             model.setOriginalPrice(domain.getOriginalPrice());
             model.setDiscountPercentage(domain.getDiscountPercentage());
             model.setOfficial(domain.isOfficial());
+            model.setPriceRange(domain.getPriceRange());
+            model.setTopLabel(domain.getTopLabel());
+            model.setBottomLabel(domain.getBottomLabel());
 
             list.add(model);
         }
@@ -179,6 +182,7 @@ public class GetHotlistInitializeSubscriber extends rx.Subscriber<HotlistModel> 
             HotlistProductViewModel.BadgeModel viewModel = new HotlistProductViewModel.BadgeModel();
             viewModel.setImageUrl(domain.getImageUrl());
             viewModel.setTitle(domain.getTitle());
+            viewModel.setShown(domain.isShown());
             list.add(viewModel);
         }
         return list;
