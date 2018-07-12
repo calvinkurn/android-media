@@ -805,6 +805,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public void goToTrainOrderList(Context context) {
+        Intent intent = DigitalWebActivity.newInstance(context, TkpdBaseURL.TRAIN_WEBSITE_DOMAIN
+                + TkpdBaseURL.TrainWebsite.PATH_USER_BOOKING_LIST + TkpdBaseURL.DigitalWebsite.PARAM_DIGITAL_ISPULSA);
+        context.startActivity(intent);
+    }
+
+    @Override
     public Observable<PendingCashback> getPendingCashbackUseCase() {
         SessionHandler sessionHandler = new SessionHandler(this);
         com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();

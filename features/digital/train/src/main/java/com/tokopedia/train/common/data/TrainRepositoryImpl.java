@@ -62,7 +62,7 @@ public class TrainRepositoryImpl implements TrainRepository {
 
     @Override
     public Observable<TrainStation> getStationByStationCode(String stationCode) {
-        return trainStationDataStoreFactory.getStation(new TrainStationByStationCodeSpecification(stationCode));
+        return trainStationDataStoreFactory.getStation2(new TrainStationByStationCodeSpecification(stationCode));
     }
 
     @Override
