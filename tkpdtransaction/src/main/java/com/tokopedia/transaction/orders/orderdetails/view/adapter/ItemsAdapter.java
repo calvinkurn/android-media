@@ -118,17 +118,6 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         };
     }
 
-    private View.OnClickListener getTapActionButtonClickListener(final String uri) {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ((TkpdCoreRouter) context.getApplicationContext())
-                        .actionOpenGeneralWebView((OrderListDetailActivity) context, uri);
-            }
-        };
-    }
-
-
     public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private View itemView;
         private ImageView dealImage;
@@ -260,14 +249,6 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
 
             }
-
-
-//            if (item.getActionButtons() != null && item.getActionButtons().size() > 0 && !item.isActionButtonLoaded()) {
-//                progressBar.setVisibility(View.VISIBLE);
-//                actionLayout.setVisibility(View.GONE);
-//                presenter.setActionButton(item.getActionButtons(), ItemsAdapter.this, getIndex());
-//            }
-
 
             if (item.getActionButtons() == null || item.getActionButtons().size() == 0) {
                 actionLayout.setVisibility(View.GONE);

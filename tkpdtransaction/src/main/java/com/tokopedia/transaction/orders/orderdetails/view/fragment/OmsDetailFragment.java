@@ -63,6 +63,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
 
     public static final String KEY_ORDER_ID = "OrderId";
     public static final String KEY_ORDER_CATEGORY = "OrderCategory";
+    private static final String KEY_FROM_PAYMENT = "from_payment";
     @Inject
     OrderListDetailPresenter presenter;
 
@@ -104,7 +105,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         Bundle bundle = new Bundle();
         bundle.putString(KEY_ORDER_ID, orderId);
         bundle.putString(KEY_ORDER_CATEGORY, orderCategory);
-        bundle.putString("from_payment", fromPayment);
+        bundle.putString(KEY_FROM_PAYMENT, fromPayment);
         Fragment fragment = new OmsDetailFragment();
         fragment.setArguments(bundle);
         return fragment;

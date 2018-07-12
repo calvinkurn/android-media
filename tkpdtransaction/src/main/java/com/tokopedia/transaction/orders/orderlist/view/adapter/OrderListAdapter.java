@@ -290,7 +290,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 if (!orderData.get(1).uri().equals("")) {
                     menuListener.startUri(orderData.get(1).uri());
                 } else {
-                    context.startActivity(OrderListDetailActivity.createInstance(context, orderId, orderCategory, false));
+                    RouteManager.route(context, currentHolder.appLink);
                 }
                 return true;
             } else {
@@ -368,7 +368,6 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         @Override
         public void onClick(View view) {
             RouteManager.route(context, appLink);
-//            context.startActivity(OrderListDetailActivity.createInstance(context, orderId, mOrderCategory, false));
         }
 
         public void bindData(Order order, int position) {
@@ -377,7 +376,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 orderCategory = order.category();
                 appLink = order.getAppLink();
                 if(!(orderCategory.equals(OrderCategory.DIGITAL) || orderCategory.equals(OrderCategory.FLIGHTS))){
-                    appLink = appLink + "/" + "false";
+                    appLink = appLink + "?from_payment=false";
 
                 }
                 parentMetadataLayout.removeAllViews();
