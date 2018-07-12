@@ -27,7 +27,7 @@ public class PaymentListMapper {
             paymentListModel.setProductName(paymentListInside.getProductName());
             paymentListModel.setListOfAction(getListOfAction(paymentListInside,context));
             paymentListModel.setShowCancelTransaction(!paymentListInside.isShowHelpPage() &&
-                    paymentListInside.isShowCancelButton() && getListOfAction(paymentListInside, context).size() > 1);
+                    paymentListInside.isShowCancelButton());
             paymentListModel.setShowSeeDetail(!TextUtils.isEmpty(paymentListInside.getInvoiceUrl()));
             paymentListModel.setInvoiceUrl(paymentListInside.getInvoiceUrl());
             paymentListModel.setPaymentImage(TextUtils.isEmpty(paymentListInside.getBankImg()) ? paymentListInside.getGatewayImg() : paymentListInside.getBankImg());
