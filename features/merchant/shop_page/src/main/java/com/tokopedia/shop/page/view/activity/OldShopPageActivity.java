@@ -47,7 +47,7 @@ import com.tokopedia.shop.info.view.activity.ShopInfoActivity;
 import com.tokopedia.shop.page.di.component.DaggerShopPageComponent;
 import com.tokopedia.shop.page.di.module.ShopPageModule;
 import com.tokopedia.shop.page.view.adapter.ShopPagePagerAdapter;
-import com.tokopedia.shop.page.view.holder.ShopPageHeaderViewHolder;
+import com.tokopedia.shop.page.view.holder.OldShopPageHeaderViewHolder;
 import com.tokopedia.shop.page.view.listener.ShopPageView;
 import com.tokopedia.shop.page.view.presenter.ShopPagePresenter;
 import com.tokopedia.shop.page.view.widget.ShopPageViewPager;
@@ -61,7 +61,7 @@ import javax.inject.Inject;
  * Created by nathan on 2/3/18.
  */
 
-public class OldShopPageActivity extends BaseTabActivity implements ShopPagePromoWebView.Listener, ShopPageHeaderViewHolder.Listener, HasComponent<ShopComponent>, ShopPageView {
+public class OldShopPageActivity extends BaseTabActivity implements ShopPagePromoWebView.Listener, OldShopPageHeaderViewHolder.Listener, HasComponent<ShopComponent>, ShopPageView {
 
     private static final float OFFSET_TOOLBAR_TITLE_SHOWN = 0.76f;
     private static final float OFFSET_TOOLBAR_TITLE_SHOWN_CLOSED = 0.813f;
@@ -95,7 +95,7 @@ public class OldShopPageActivity extends BaseTabActivity implements ShopPageProm
     private TextView textRetryError;
     private TextView buttonRetryError;
 
-    private ShopPageHeaderViewHolder shopPageViewHolder;
+    private OldShopPageHeaderViewHolder shopPageViewHolder;
 
     private String shopId;
     private String shopDomain;
@@ -208,7 +208,7 @@ public class OldShopPageActivity extends BaseTabActivity implements ShopPageProm
     protected void setupLayout(Bundle savedInstanceState) {
         super.setupLayout(savedInstanceState);
 
-        shopPageViewHolder = new ShopPageHeaderViewHolder(findViewById(android.R.id.content), this);
+        shopPageViewHolder = new OldShopPageHeaderViewHolder(findViewById(android.R.id.content), this);
         appBarLayout = findViewById(R.id.app_bar_layout);
         collapsingToolbarLayout = findViewById(R.id.collapsing_toolbar);
         swipeToRefresh = findViewById(R.id.swipe_refresh_layout);
