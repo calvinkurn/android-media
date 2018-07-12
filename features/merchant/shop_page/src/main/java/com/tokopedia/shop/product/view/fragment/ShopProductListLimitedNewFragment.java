@@ -131,7 +131,6 @@ public class ShopProductListLimitedNewFragment extends BaseListFragment<ShopProd
         return inflater.inflate(R.layout.fragment_shop_product_limited_list, container, false);
     }
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
