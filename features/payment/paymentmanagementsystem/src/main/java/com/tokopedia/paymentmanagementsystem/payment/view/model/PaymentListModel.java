@@ -37,6 +37,7 @@ public class PaymentListModel implements Visitable<PaymentListAdapterTypeFactory
     private String merchantCode;
     private String appLink;
     private String bankId;
+    private boolean showHowToPay;
 
     @Override
     public int type(PaymentListAdapterTypeFactory typeFactory) {
@@ -238,6 +239,14 @@ public class PaymentListModel implements Visitable<PaymentListAdapterTypeFactory
         this.bankId = bankId;
     }
 
+    public boolean isShowHowToPay() {
+        return showHowToPay;
+    }
+
+    public void setShowHowToPay(boolean showHowToPay) {
+        this.showHowToPay = showHowToPay;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -269,6 +278,7 @@ public class PaymentListModel implements Visitable<PaymentListAdapterTypeFactory
         dest.writeString(this.merchantCode);
         dest.writeString(this.appLink);
         dest.writeString(this.bankId);
+        dest.writeByte(this.showHowToPay ? (byte) 1 : (byte) 0);
     }
 
     protected PaymentListModel(Parcel in) {
@@ -296,6 +306,7 @@ public class PaymentListModel implements Visitable<PaymentListAdapterTypeFactory
         this.merchantCode = in.readString();
         this.appLink = in.readString();
         this.bankId = in.readString();
+        this.showHowToPay = in.readByte() != 0;
     }
 
     public static final Creator<PaymentListModel> CREATOR = new Creator<PaymentListModel>() {
