@@ -1,5 +1,7 @@
 package com.tokopedia.train.common;
 
+import android.content.Context;
+
 import com.tokopedia.train.passenger.presentation.viewmodel.ProfileBuyerInfo;
 
 import okhttp3.Interceptor;
@@ -13,4 +15,7 @@ public interface TrainRouter {
     Observable<ProfileBuyerInfo> getProfileInfo();
 
     Interceptor getChuckInterceptor();
+
+    void goToTrainOrderList(Context context);
+
 }

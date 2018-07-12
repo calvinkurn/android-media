@@ -325,13 +325,6 @@ public class DrawerBuyerHelper extends DrawerHelper
                 )
         );
 
-        //TODO delete this after finish implement KAI
-        buyerMenu.add(new DrawerItem(
-                        "KERETA KENCANA",
-                        TkpdState.DrawerPosition.PEOPLE_KAI_HOMEPAGE,
-                        drawerCache.getBoolean(IS_PEOPLE_OPENED, false)
-                )
-        );
         return buyerMenu;
     }
 
@@ -553,11 +546,6 @@ public class DrawerBuyerHelper extends DrawerHelper
                     context.startActivity(intent);
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.FLIGHT_TRANSACTION_LIST);
                     AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(),AppEventTracking.EventLabel.FLIGHT_TRANSACTION_LIST, AppEventTracking.EventLabel.PURCHASE);
-                    break;
-                //TODO delete this after finish implement KAI
-                case TkpdState.DrawerPosition.PEOPLE_KAI_HOMEPAGE:
-                    context.startActivity(TrainHomepageActivity.getCallingIntent(context));
-                    sendGTMNavigationEvent(AppEventTracking.EventLabel.FLIGHT_TRANSACTION_LIST);
                     break;
                 case TkpdState.DrawerPosition.PEOPLE_TRAIN_TRANSACTION_LIST:
                     intent = DigitalWebActivity.newInstance(context, TkpdBaseURL.TRAIN_WEBSITE_DOMAIN
