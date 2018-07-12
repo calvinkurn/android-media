@@ -34,6 +34,7 @@ import com.tokopedia.core.database.model.District;
 import com.tokopedia.core.database.model.Province;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
+import com.tokopedia.core.geolocation.utils.GeoLocationUtils;
 import com.tokopedia.core.manage.people.address.fragment.adapter.ProvinceAdapter;
 import com.tokopedia.core.manage.people.address.fragment.adapter.RegencyAdapter;
 import com.tokopedia.core.manage.people.address.fragment.adapter.SubDistrictAdapter;
@@ -60,7 +61,7 @@ import static com.tokopedia.core.manage.people.address.ManageAddressConstant.REQ
  * Created by nisie on 9/6/16.
  */
 public class AddAddressFragment extends BasePresenterFragment<AddAddressPresenter>
-        implements AddAddressFragmentView {
+        implements AddAddressFragmentView, GeoLocationUtils.GeoLocationListener {
 
     private static final int DISTRICT_RECOMMENDATION_REQUEST_CODE = 130715;
     private static final String ADDRESS = "district_recommendation_address";
@@ -433,6 +434,20 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
         };
     }
 
+    private void setPinpointAddress(Destination address) {
+        if (address.getLatitude() != null &&
+                address.getLongitude() != null &&
+                !address.getLatitude().equals("") &&
+                !address.getLongitude().equals("")
+                ) {
+            GeoLocationUtils.reverseGeoCodeParallel(
+                    getActivity(),
+                    address.getLatitude(),
+                    address.getLongitude(), this
+            );
+        }
+    }
+
     public void initializeZipCodes() {
         zipCodeTextView.setText("");
         String header = getResources().getString(R.string.hint_type_postal_code);
@@ -563,7 +578,7 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
             zipCodeTextView.setText(address.getPostalCode());
             postCodeEditText.setText(address.getPostalCode());
             receiverPhoneEditText.setText(address.getReceiverPhone());
-            locationEditText.setText(address.getGeoLocation(getActivity()));
+            setPinpointAddress(address);
         } else if (address == null) {
             address = new Destination();
         }
@@ -861,5 +876,10 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
 //                isEdit = false;
         }
         this.mDistricts = new ArrayList<>(districts);
+    }
+
+    @Override
+    public void getGeoCode(String resultAddress) {
+        locationEditText.setText(resultAddress);
     }
 }

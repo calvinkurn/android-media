@@ -10,6 +10,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.events.R;
 import com.tokopedia.events.domain.GetSearchEventsListRequestUseCase;
 import com.tokopedia.events.domain.GetSearchNextUseCase;
@@ -54,11 +55,10 @@ public class EventSearchPresenter
     private String highlight;
     private boolean isLoading;
     private boolean isLastPage;
-    private boolean isEventCalendar;
     private final int PAGE_SIZE = 20;
     private String searchTag;
     private List<EventsContract.AdapterCallbacks> adapterCallbacks;
-    RequestParams searchNextParams = RequestParams.create();
+    private RequestParams searchNextParams = RequestParams.create();
 
     @Inject
     public EventSearchPresenter(GetSearchEventsListRequestUseCase getSearchEventsListRequestUseCase,
@@ -86,6 +86,8 @@ public class EventSearchPresenter
                 getView().hideProgressBar();
                 CommonUtils.dumper("enter error");
                 e.printStackTrace();
+                NetworkErrorHelper.showEmptyState(getView().getActivity(),
+                        getView().getRootView(), () -> getEventsListBySearch(highlight));
             }
 
             @Override
@@ -105,7 +107,7 @@ public class EventSearchPresenter
 
     @Override
     public void initialize() {
-        isEventCalendar = getView().getActivity().getIntent().
+        boolean isEventCalendar = getView().getActivity().getIntent().
                 getBooleanExtra(Utils.Constants.EXTRA_EVENT_CALENDAR, false);
         if (isEventCalendar) {
             searchSubmitted("");
@@ -291,7 +293,7 @@ public class EventSearchPresenter
         }
     }
 
-    List<CategoryItemsViewModel> processSearchResponse(SearchDomainModel searchDomainModel) {
+    private List<CategoryItemsViewModel> processSearchResponse(SearchDomainModel searchDomainModel) {
         mSearchData = searchDomainModel;
         String nexturl = mSearchData.getPage().getUriNext();
         if (nexturl != null && !nexturl.isEmpty() && nexturl.length() > 0) {
@@ -302,12 +304,5 @@ public class EventSearchPresenter
         }
         return Utils.getSingletonInstance()
                 .convertIntoCategoryListItemsVeiwModel(searchDomainModel.getEvents());
-//        return Utils.getSingletonInstance()
-//                .convertSearchResultsToModel(categoryItemsViewModels);
     }
-
-    public String getSearchTag() {
-        return searchTag;
-    }
-
 }

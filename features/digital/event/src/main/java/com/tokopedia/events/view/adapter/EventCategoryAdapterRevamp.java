@@ -221,7 +221,7 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
     }
 
     @Override
-    public void onViewAttachedToWindow(EventCategoryAdapterRevamp.ViewHolder holder) {
+    public void onViewAttachedToWindow(ViewHolder holder) {
         super.onViewAttachedToWindow(holder);
         if (!holder.isShown() && isTrackingEnabled) {
             holder.setShown(true);
