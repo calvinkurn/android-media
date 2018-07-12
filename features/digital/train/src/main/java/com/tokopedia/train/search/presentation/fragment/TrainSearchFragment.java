@@ -35,6 +35,7 @@ import com.tokopedia.train.scheduledetail.presentation.activity.TrainScheduleDet
 import com.tokopedia.train.search.constant.TrainSortOption;
 import com.tokopedia.train.search.di.DaggerTrainSearchComponent;
 import com.tokopedia.train.search.di.TrainSearchComponent;
+import com.tokopedia.train.search.domain.FilterParam;
 import com.tokopedia.train.search.domain.GetScheduleUseCase;
 import com.tokopedia.train.search.presentation.activity.TrainFilterSearchActivity;
 import com.tokopedia.train.search.presentation.activity.TrainSearchReturnActivity;
@@ -91,6 +92,11 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
     private FilterSearchData filterSearchData;
     private TrainScheduleBookingPassData trainScheduleBookingPassData;
     private ActionListener listener;
+    private long minPrice;
+    private long maxPrice;
+    private List<String> trains;
+    private List<String> trainClass;
+    private List<String> departureTrains;
 
     //this is for save departure trip - arrival timestamp schedule
     protected String arrivalScheduleSelected;
@@ -130,8 +136,12 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
         if (savedInstanceState == null) {
             filterSearchData = new FilterSearchData();
             selectedSortOption = TrainSortOption.CHEAPEST;
+            resetFilterParam();
         } else {
             selectedSortOption = savedInstanceState.getInt(SELECTED_SORT);
+            if (filterSearchData == null) {
+                resetFilterParam();
+            }
         }
 
         trainScheduleBookingPassData = new TrainScheduleBookingPassData();
@@ -140,15 +150,9 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
         trainScheduleBookingPassData.setAdultPassenger(adultPassenger);
         trainScheduleBookingPassData.setInfantPassenger(infantPassenger);
 
-        showLoading();
         presenter.getTrainSchedules();
-
         setUpButtonActionView(view);
-
-        originCodeTv.setText(originCode);
-        originCityTv.setText(originCity);
-        destinationCodeTv.setText(destinationCode);
-        destinationCityTv.setText(destinationCity);
+        initializeTripInfo();
     }
 
     @Override
@@ -159,6 +163,11 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
 
     @Override
     protected boolean isLoadMoreEnabledByDefault() {
+        return false;
+    }
+
+    @Override
+    protected boolean callInitialLoadAutomatically() {
         return false;
     }
 
@@ -178,6 +187,13 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
     protected abstract int getScheduleVariant();
 
     protected abstract void getDataFromFragment();
+
+    private void initializeTripInfo() {
+        originCodeTv.setText(originCode);
+        originCityTv.setText(originCity);
+        destinationCodeTv.setText(destinationCode);
+        destinationCityTv.setText(destinationCity);
+    }
 
     private void setUpButtonActionView(View view) {
         filterAndSortBottomAction = view.findViewById(R.id.bottom_action_filter_sort);
@@ -205,7 +221,7 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
             filterAndSortBottomAction.setMarkRight(true);
         }
 
-        if (filterSearchData.isHasFilter()) {
+        if (filterSearchData != null && filterSearchData.isHasFilter()) {
             filterAndSortBottomAction.setMarkLeft(true);
         } else {
             filterAndSortBottomAction.setMarkLeft(false);
@@ -216,7 +232,7 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
     protected Visitable getEmptyDataViewModel() {
         clearAdapterData();
         EmptyResultViewModel emptyResultViewModel;
-        if (filterSearchData.isHasFilter()) {
+        if (filterSearchData != null && filterSearchData.isHasFilter()) {
             emptyResultViewModel = new EmptyResultViewModel();
             emptyResultViewModel.setIconRes(R.drawable.ic_train_no_result);
             emptyResultViewModel.setContentRes(R.string.train_search_no_result_filter);
@@ -233,9 +249,12 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
                     getAdapter().clearAllNonDataElement();
                     showLoading();
                     markUiSortAndFilterOption();
-                    presenter.getFilteredAndSortedSchedules(filterSearchData.getMinPrice(),
-                            filterSearchData.getMaxPrice(), filterSearchData.getTrainClass(),
-                            filterSearchData.getTrains(), filterSearchData.getDepartureTimeList());
+                    minPrice = filterSearchData.getMinPrice();
+                    maxPrice = filterSearchData.getMaxPrice();
+                    trains = filterSearchData.getTrainClass();
+                    trainClass = filterSearchData.getTrains();
+                    departureTrains = filterSearchData.getDepartureTimeList();
+                    presenter.getFilteredAndSortedSchedules();
                 }
             });
             return emptyResultViewModel;
@@ -397,13 +416,36 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
     }
 
     @Override
-    public String getArrivalTimeDepartureTripSelected() {
-        return arrivalScheduleSelected;
+    public int getScheduleVariantSelected() {
+        return getScheduleVariant();
     }
 
     @Override
-    public int getScheduleVariantSelected() {
-        return getScheduleVariant();
+    public FilterParam getFilterParam() {
+        FilterParam filterParam = new FilterParam.Builder()
+                .minPrice(minPrice)
+                .maxPrice(maxPrice)
+                .trains(trains)
+                .trainClass(trainClass)
+                .departureTimeList(departureTrains)
+                .scheduleVariant(getScheduleVariant())
+                .arrivalTimestampSelected(arrivalScheduleSelected)
+                .build();
+        return filterParam;
+    }
+
+    @Override
+    public void resetFilterParam() {
+        minPrice = MIN_VALUE;
+        maxPrice = MAX_VALUE;
+        trains = new ArrayList<>();
+        trainClass = new ArrayList<>();
+        departureTrains = new ArrayList<>();
+    }
+
+    @Override
+    public void showLoadingPage() {
+        showLoading();
     }
 
     private void removePaddingSortAndFilterSearch() {
@@ -463,8 +505,8 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
                     public void onBottomSheetItemClick(MenuItem item) {
                         getAdapter().showLoading();
                         selectedSortOption = item.getItemId();
-                        presenter.getFilteredAndSortedSchedules(MIN_VALUE, MAX_VALUE,
-                                new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+                        resetFilterParam();
+                        presenter.getFilteredAndSortedSchedules();
                     }
                 })
                 .createDialog();
@@ -482,17 +524,16 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
             switch (requestCode) {
                 case FILTER_SEARCH_REQUEST_CODE:
                     filterSearchData = data.getExtras().getParcelable(TrainFilterSearchActivity.MODEL_SEARCH_FILTER);
-                    long minPrice = filterSearchData.getSelectedMinPrice() == 0 ? filterSearchData.getMinPrice() : filterSearchData.getSelectedMinPrice();
-                    long maxPrice = filterSearchData.getSelectedMaxPrice() == 0 ? filterSearchData.getMaxPrice() : filterSearchData.getSelectedMaxPrice();
-                    List<String> trains = filterSearchData.getSelectedTrains() != null && !filterSearchData.getSelectedTrains().isEmpty() ?
+                    minPrice = filterSearchData.getSelectedMinPrice() == 0 ? filterSearchData.getMinPrice() : filterSearchData.getSelectedMinPrice();
+                    maxPrice = filterSearchData.getSelectedMaxPrice() == 0 ? filterSearchData.getMaxPrice() : filterSearchData.getSelectedMaxPrice();
+                    trains = filterSearchData.getSelectedTrains() != null && !filterSearchData.getSelectedTrains().isEmpty() ?
                             filterSearchData.getSelectedTrains() : filterSearchData.getTrains();
-                    List<String> trainsClass = filterSearchData.getSelectedTrainClass() != null && !filterSearchData.getSelectedTrainClass().isEmpty() ?
+                    trainClass = filterSearchData.getSelectedTrainClass() != null && !filterSearchData.getSelectedTrainClass().isEmpty() ?
                             filterSearchData.getSelectedTrainClass() : filterSearchData.getTrainClass();
-                    List<String> departureHours = filterSearchData.getSelectedDepartureTimeList() != null && !filterSearchData.getSelectedDepartureTimeList().isEmpty() ?
+                    departureTrains = filterSearchData.getSelectedDepartureTimeList() != null && !filterSearchData.getSelectedDepartureTimeList().isEmpty() ?
                             filterSearchData.getSelectedDepartureTimeList() : filterSearchData.getDepartureTimeList();
 
-                    presenter.getFilteredAndSortedSchedules(minPrice, maxPrice, trainsClass, trains,
-                            departureHours);
+                    presenter.getFilteredAndSortedSchedules();
                     break;
                 case REQUEST_CODE_OPEN_TRAIN_SCHEDULE_DETAIL:
                     if (data != null && data.hasExtra(TrainScheduleDetailActivity.EXTRA_TRAIN_SELECTED)) {

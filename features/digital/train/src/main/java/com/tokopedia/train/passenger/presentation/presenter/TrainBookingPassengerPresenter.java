@@ -34,6 +34,8 @@ import rx.subscriptions.CompositeSubscription;
 public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBookingPassengerContract.View>
         implements TrainBookingPassengerContract.Presenter {
 
+    private static final int MAX_CONTACT_NAME = 60;
+
     private CompositeSubscription compositeSubscription;
     private GetDetailScheduleUseCase getDetailScheduleUseCase;
     private TrainSoftBookingUseCase trainSoftBookingUseCase;
@@ -187,6 +189,9 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
         } else if (!isAlphabetAndSpaceOnly(getView().getContactNameEt())) {
             isValid = false;
             getView().showMessageErrorInSnackBar(R.string.train_passenger_contact_name_alpha_space_error);
+        } else if (getView().getContactNameEt().length() > MAX_CONTACT_NAME) {
+            isValid = false;
+            getView().showMessageErrorInSnackBar(R.string.train_passenger_contact_name_max);
         } else if (TextUtils.isEmpty(getView().getPhoneNumberEt())) {
             isValid = false;
             getView().showMessageErrorInSnackBar(R.string.train_passenger_contact_phone_empty_error);
