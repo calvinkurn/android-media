@@ -23,7 +23,7 @@ public class WishListCommonRepositoryImpl implements WishListCommonRepository {
         return wishListCommonDataSource.getWishList(userId, productIdList);
     }
 
-    @Override
+    /*@Override
     public Observable<Boolean> addToWishList(String userId, String productId) {
         return wishListCommonDataSource.addToWishList(userId, productId);
     }
@@ -31,5 +31,5 @@ public class WishListCommonRepositoryImpl implements WishListCommonRepository {
     @Override
     public Observable<Boolean> removeFromWishList(String userId, String productId) {
         return wishListCommonDataSource.removeFromWishList(userId, productId);
-    }
+    }*/
 }

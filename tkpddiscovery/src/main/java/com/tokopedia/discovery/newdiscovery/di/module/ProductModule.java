@@ -9,9 +9,7 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.apiservices.mojito.apis.MojitoApi;
 import com.tokopedia.core.network.di.qualifier.MojitoGetWishlistQualifier;
-import com.tokopedia.discovery.newdiscovery.data.mapper.AddWishlistActionMapper;
 import com.tokopedia.discovery.newdiscovery.data.mapper.ProductMapper;
-import com.tokopedia.discovery.newdiscovery.data.mapper.RemoveWishlistActionMapper;
 import com.tokopedia.discovery.newdiscovery.data.repository.BannerRepository;
 import com.tokopedia.discovery.newdiscovery.data.repository.ProductRepository;
 import com.tokopedia.discovery.newdiscovery.data.repository.ProductRepositoryImpl;
@@ -72,15 +70,15 @@ public class ProductModule {
         return new RemoveWishlistActionUseCase(context);
     }*/
 
-    @Provides
+    /*@Provides
     AddWishlistActionMapper addWishlistActionMapper() {
         return new AddWishlistActionMapper();
-    }
+    }*/
 
-    @Provides
+    /*@Provides
     RemoveWishlistActionMapper removeWishlistActionMapper() {
         return new RemoveWishlistActionMapper();
-    }
+    }*/
 
     @Provides
     ProductDataSource productDataSource(BrowseApi searchApi, ProductMapper productMapper) {

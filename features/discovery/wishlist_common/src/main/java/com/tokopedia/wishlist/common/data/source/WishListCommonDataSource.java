@@ -30,11 +30,11 @@ public class WishListCommonDataSource {
         });
     }
 
-    public Observable<Boolean> addToWishList(String userId, String productId) {
+    /*public Observable<Boolean> addToWishList(String userId, String productId) {
         return wishListCommonCloudDataSource.addToWishList(userId, productId);
     }
 
     public Observable<Boolean> removeFromWishList(String userId, String productId) {
         return wishListCommonCloudDataSource.removeFromWishList(userId, productId);
-    }
+    }*/
 }

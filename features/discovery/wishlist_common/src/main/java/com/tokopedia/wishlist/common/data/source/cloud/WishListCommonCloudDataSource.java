@@ -27,7 +27,7 @@ public class WishListCommonCloudDataSource {
         return wishListCommonApi.getWishList(userId, WishListProductListMapper.convertCommaValue(productIdList));
     }
 
-    public Observable<Boolean> addToWishList(String userId, String productId) {
+    /*public Observable<Boolean> addToWishList(String userId, String productId) {
         return wishListCommonApi.addToWishList(userId, productId).flatMap(new Func1<Response<Void>, Observable<Boolean>>() {
             @Override
             public Observable<Boolean> call(Response<Void> response) {
@@ -43,5 +43,5 @@ public class WishListCommonCloudDataSource {
                 return Observable.just(true);
             }
         });
-    }
+    }*/
 }
