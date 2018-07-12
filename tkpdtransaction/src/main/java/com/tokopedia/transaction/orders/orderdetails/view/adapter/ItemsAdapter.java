@@ -1,12 +1,9 @@
 package com.tokopedia.transaction.orders.orderdetails.view.adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,15 +11,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 
 import com.google.gson.Gson;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
 import com.tokopedia.transaction.orders.orderdetails.data.EntityAddress;
@@ -33,7 +27,6 @@ import com.tokopedia.transaction.orders.orderdetails.view.activity.OrderListDeta
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailContract;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailPresenter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements OrderListDetailContract.TapActionInterface {
@@ -117,17 +110,6 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             }
         };
     }
-
-    private View.OnClickListener getTapActionButtonClickListener(final String uri) {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ((TkpdCoreRouter) context.getApplicationContext())
-                        .actionOpenGeneralWebView((OrderListDetailActivity) context, uri);
-            }
-        };
-    }
-
 
     public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private View itemView;
@@ -260,14 +242,6 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
 
             }
-
-
-//            if (item.getActionButtons() != null && item.getActionButtons().size() > 0 && !item.isActionButtonLoaded()) {
-//                progressBar.setVisibility(View.VISIBLE);
-//                actionLayout.setVisibility(View.GONE);
-//                presenter.setActionButton(item.getActionButtons(), ItemsAdapter.this, getIndex());
-//            }
-
 
             if (item.getActionButtons() == null || item.getActionButtons().size() == 0) {
                 actionLayout.setVisibility(View.GONE);

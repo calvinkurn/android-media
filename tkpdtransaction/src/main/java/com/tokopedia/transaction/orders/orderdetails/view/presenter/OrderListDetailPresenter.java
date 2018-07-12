@@ -1,8 +1,8 @@
 package com.tokopedia.transaction.orders.orderdetails.view.presenter;
 
-import android.util.Log;
 import android.view.View;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
@@ -37,6 +37,12 @@ import rx.schedulers.Schedulers;
  */
 
 public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetailContract.View> implements OrderListDetailContract.Presenter {
+    private static final String ORDER_CATEGORY = "orderCategoryStr";
+    private static final String ORDER_ID = "orderId";
+    private static final String DETAIL = "detail";
+    private static final String ACTION = "action";
+    private static final String UPSTREAM = "upstream";
+    private static final String PARAM = "param";
     GraphqlUseCase orderDetailsUseCase;
     List<TapActions> tapActionsList;
     List<ActionButton> actionButtonList;
@@ -52,15 +58,15 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     public void setOrderDetailsContent(String orderId, String orderCategory, String fromPayment) {
 
         Map<String, Object> variables = new HashMap<>();
-        variables.put("orderCategoryStr", orderCategory);
-        variables.put("orderId", orderId);
-        variables.put("detail", 1);
+        variables.put(ORDER_CATEGORY, orderCategory);
+        variables.put(ORDER_ID, orderId);
+        variables.put(DETAIL, 1);
         if (fromPayment != null && fromPayment.equalsIgnoreCase("true")) {
-            variables.put("action", 0);
+            variables.put(ACTION, 0);
         } else {
-            variables.put("action", 1);
+            variables.put(ACTION, 1);
         }
-        variables.put("upstream", "");
+        variables.put(UPSTREAM, "");
 
         GraphqlRequest graphqlRequest = new
                 GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
@@ -76,7 +82,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
             @Override
             public void onError(Throwable e) {
-                Log.e("sandeep", "error = " + e);
+                CommonUtils.dumper("error occured"+e);
             }
 
             @Override
@@ -95,7 +101,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     public void setTapActionButton(List<TapActions> tapActionButton, OrderListDetailContract.TapActionInterface view, int position) {
         Map<String, Object> variables = new HashMap<>();
         this.view = view;
-        variables.put("param", tapActionButton);
+        variables.put(PARAM, tapActionButton);
 
        orderDetailsUseCase = new GraphqlUseCase();
 
@@ -116,7 +122,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.e("sandeep", "error = " + e);
+                        CommonUtils.dumper("error occured"+e);
                     }
 
                     @Override
@@ -136,14 +142,14 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     public void setActionButton(List<ActionButton> actionButtons, OrderListDetailContract.TapActionInterface view, int position) {
         Map<String, Object> variables = new HashMap<>();
         this.view = view;
-        variables.put("param", actionButtons);
+        variables.put(PARAM, actionButtons);
 
         orderDetailsUseCase = new GraphqlUseCase();
 
 
         GraphqlRequest graphqlRequest = new
                 GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
-                R.raw.tapactions), TapActionList.class, variables);
+                R.raw.tapactions), ActionButtonList.class, variables);
 
         orderDetailsUseCase.clearRequest();
         orderDetailsUseCase.setRequest(graphqlRequest);
@@ -157,7 +163,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.e("sandeep", "error = " + e);
+                        CommonUtils.dumper("error occured"+e);
                     }
 
                     @Override

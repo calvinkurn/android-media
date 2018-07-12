@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.TaskStackBuilder;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
@@ -15,9 +16,7 @@ import com.tokopedia.transaction.orders.orderdetails.view.fragment.OmsDetailFrag
 import com.tokopedia.transaction.orders.orderdetails.view.fragment.OrderListDetailFragment;
 import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
 import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
-
-import static com.tokopedia.transaction.orders.orderdetails.view.fragment.OrderListDetailFragment.KEY_ORDER_CATEGORY;
-import static com.tokopedia.transaction.orders.orderdetails.view.fragment.OrderListDetailFragment.KEY_ORDER_ID;
+import com.tokopedia.transaction.router.UnifiedOrderRouter;
 
 /**
  * Created by baghira on 09/05/18.
@@ -25,33 +24,26 @@ import static com.tokopedia.transaction.orders.orderdetails.view.fragment.OrderL
 
 public class OrderListDetailActivity extends BaseSimpleActivity {
 
+    private static final String ORDER_ID = "order_id";
+    private static final String FROM_PAYMENT = "from_payment";
     private String fromPayment = "false";
-    private String orderCategory = "";
     private String orderId;
 
-
     @DeepLink({TransactionAppLink.ORDER_DETAIL, TransactionAppLink.ORDER_OMS_DETAIL})
-    public static Intent getOrderDetailIntent(Context context, Bundle bundle) {
+    public static TaskStackBuilder getOrderDetailIntent(Context context, Bundle bundle) {
         Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, OrderListDetailActivity.class)
+        Intent intent =  new Intent(context, OrderListDetailActivity.class)
                 .setData(uri.build())
                 .putExtras(bundle);
-    }
+        Intent homeIntent = ((UnifiedOrderRouter) context.getApplicationContext()).getHomeIntent
+                (context);
+        Intent parentIntent = OrderListActivity.getInstance(context);
 
-//    @DeepLink(TransactionAppLink.ORDER_OMS_DETAIL)
-//    public static Intent getOrderOMSDetailIntent(Context context, Bundle bundle) {
-//        Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
-//        return new Intent(context, OrderListDetailActivity.class)
-//                .setData(uri.build())
-//                .putExtras(bundle);
-//    }
-
-    public static Intent createInstance(Context context, String orderId, String orderCategory, boolean fromPayment) {
-        Intent intent = new Intent(context, OrderListDetailActivity.class);
-        intent.putExtra(KEY_ORDER_ID, orderId);
-        intent.putExtra(KEY_ORDER_CATEGORY, orderCategory);
-        intent.putExtra("fromPayment", fromPayment);
-        return intent;
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
+        taskStackBuilder.addNextIntent(homeIntent);
+        taskStackBuilder.addNextIntent(parentIntent);
+        taskStackBuilder.addNextIntent(intent);
+        return taskStackBuilder;
     }
 
     @Override
@@ -60,7 +52,7 @@ public class OrderListDetailActivity extends BaseSimpleActivity {
         if (category != null) {
             category = category.toUpperCase();
 
-            if (category.contains("DIGITAL")) {
+            if (category.contains(OrderCategory.DIGITAL)) {
                 return OrderListDetailFragment.getInstance(orderId, OrderCategory.DIGITAL);
             } else if (category.contains("")) {
                 return OmsDetailFragment.getInstance(orderId, "", fromPayment);
@@ -75,9 +67,11 @@ public class OrderListDetailActivity extends BaseSimpleActivity {
     @Override
     protected void onCreate(Bundle arg) {
         if (getIntent().getExtras() != null) {
-            orderCategory = getIntent().getStringExtra("order_category");
-            orderId = getIntent().getStringExtra("order_id");
-            fromPayment = getIntent().getStringExtra("from_payment");
+            orderId = getIntent().getStringExtra(ORDER_ID);
+            Uri uri = getIntent().getData();
+            if(uri != null){
+                fromPayment = uri.getQueryParameter(FROM_PAYMENT);
+            }
         }
         super.onCreate(arg);
         toolbar.setBackgroundColor(getResources().getColor(R.color.white));
@@ -87,7 +81,7 @@ public class OrderListDetailActivity extends BaseSimpleActivity {
         toolbar.setTitleTextAppearance(this, R.style.ToolbarText_SansSerifMedium);
         if (fromPayment != null) {
             if (fromPayment.equalsIgnoreCase("true")) {
-                toolbar.setTitle("Thank You");
+                toolbar.setTitle(getResources().getString(R.string.thank_you));
             }
         }
 

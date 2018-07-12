@@ -2,7 +2,6 @@ package com.tokopedia.transaction.orders.orderdetails.view.fragment;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -40,11 +39,9 @@ import com.tokopedia.transaction.orders.orderdetails.data.OrderToken;
 import com.tokopedia.transaction.orders.orderdetails.data.PayMethod;
 import com.tokopedia.transaction.orders.orderdetails.data.Pricing;
 import com.tokopedia.transaction.orders.orderdetails.data.Status;
-import com.tokopedia.transaction.orders.orderdetails.data.TapActions;
 import com.tokopedia.transaction.orders.orderdetails.data.Title;
 import com.tokopedia.transaction.orders.orderdetails.di.DaggerOrderDetailsComponent;
 import com.tokopedia.transaction.orders.orderdetails.di.OrderDetailsComponent;
-import com.tokopedia.transaction.orders.orderdetails.view.activity.OrderListDetailActivity;
 import com.tokopedia.transaction.orders.orderdetails.view.adapter.ItemsAdapter;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailContract;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailPresenter;
@@ -63,6 +60,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
 
     public static final String KEY_ORDER_ID = "OrderId";
     public static final String KEY_ORDER_CATEGORY = "OrderCategory";
+    private static final String KEY_FROM_PAYMENT = "from_payment";
     @Inject
     OrderListDetailPresenter presenter;
 
@@ -104,7 +102,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         Bundle bundle = new Bundle();
         bundle.putString(KEY_ORDER_ID, orderId);
         bundle.putString(KEY_ORDER_CATEGORY, orderCategory);
-        bundle.putString("from_payment", fromPayment);
+        bundle.putString(KEY_FROM_PAYMENT, fromPayment);
         Fragment fragment = new OmsDetailFragment();
         fragment.setArguments(bundle);
         return fragment;
