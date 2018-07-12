@@ -113,15 +113,13 @@ class AddEditBankFormFragment : AddEditBankContract.View,
 
 
     private fun goToAddBank() {
-        startActivityForResult(ChooseBankActivity.createIntentChooseBank(activity),
-                REQUEST_CHOOSE_BANK)
+        val intentChooseBank = ChooseBankActivity.createIntentChooseBank(activity)
+        startActivityForResult(intentChooseBank, REQUEST_CHOOSE_BANK)
     }
 
     private fun setMode() {
         if (activity.intent.getStringExtra(AddEditBankActivity.Companion.PARAM_ACTION) == BankFormModel.Companion.STATUS_ADD) {
-            activity.title = getString(R.string.title_add_bank)
-            bankFormModel.status = BankFormModel.Companion.STATUS_ADD
-            disableSubmitButton()
+            goToAddBank()
         } else {
             activity.title = getString(R.string.title_edit_bank)
             bankFormModel = activity.intent.getParcelableExtra(AddEditBankActivity.Companion.PARAM_DATA)
@@ -272,18 +270,23 @@ class AddEditBankFormFragment : AddEditBankContract.View,
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         try {
-            if (requestCode == REQUEST_CHOOSE_BANK
-                    && resultCode == Activity.RESULT_OK
-                    && data != null
-                    && data.extras != null
-                    && data.extras.getParcelable<BankViewModel>(ChooseBankActivity.PARAM_RESULT_DATA) != null
-            ) {
-                val selectedModel = data.extras.getParcelable<BankViewModel>(ChooseBankActivity
-                        .PARAM_RESULT_DATA)
-                bankFormModel.bankId = selectedModel.bankId!!
-                bankFormModel.bankName = selectedModel.bankName!!
-                bank_name_edit_text.setText(selectedModel.bankName)
-                checkIsValidForm()
+            if (requestCode == REQUEST_CHOOSE_BANK) {
+                activity.title = getString(R.string.title_add_bank)
+                bankFormModel.status = BankFormModel.Companion.STATUS_ADD
+                disableSubmitButton()
+
+                if (resultCode == Activity.RESULT_OK
+                        && data != null
+                        && data.extras != null
+                        && data.extras.getParcelable<BankViewModel>(ChooseBankActivity.PARAM_RESULT_DATA) != null
+                ) {
+                    val selectedModel = data.extras.getParcelable<BankViewModel>(ChooseBankActivity
+                            .PARAM_RESULT_DATA)
+                    bankFormModel.bankId = selectedModel.bankId!!
+                    bankFormModel.bankName = selectedModel.bankName!!
+                    bank_name_edit_text.setText(selectedModel.bankName)
+                    checkIsValidForm()
+                }
             }
         } catch (e: NullPointerException) {
             e.printStackTrace()

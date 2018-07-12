@@ -25,8 +25,7 @@ class GetBankAccountListUseCase(val api: SettingBankApi,
 
         fun getParam(
                 userId: String,
-                page: Int,
-                deviceId: String): RequestParams {
+                page: Int): RequestParams {
             val requestParams: RequestParams = RequestParams.create()
 
             requestParams.putInt(PARAM_PAGE, page)

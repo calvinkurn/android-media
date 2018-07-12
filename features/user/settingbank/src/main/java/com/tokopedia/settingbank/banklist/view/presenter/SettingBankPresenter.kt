@@ -27,8 +27,7 @@ class SettingBankPresenter(private val userSession: UserSession,
         view.showLoadingFull()
         getBankAccountUseCase.execute(GetBankAccountListUseCase.getParam(
                 userSession.userId,
-                page,
-                userSession.deviceId
+                page
         ), object : Subscriber<BankAccountListViewModel>() {
             override fun onCompleted() {
 
@@ -55,8 +54,7 @@ class SettingBankPresenter(private val userSession: UserSession,
         view.showLoadingList()
         getBankAccountUseCase.execute(GetBankAccountListUseCase.getParam(
                 userSession.userId,
-                page,
-                userSession.deviceId
+                page
         ), object : Subscriber<BankAccountListViewModel>() {
             override fun onCompleted() {
 

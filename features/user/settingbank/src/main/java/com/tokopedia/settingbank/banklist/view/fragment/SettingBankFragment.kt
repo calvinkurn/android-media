@@ -26,6 +26,7 @@ import com.tokopedia.settingbank.banklist.view.listener.SettingBankContract
 import com.tokopedia.settingbank.banklist.view.presenter.SettingBankPresenter
 import com.tokopedia.settingbank.banklist.view.viewmodel.BankAccountListViewModel
 import com.tokopedia.settingbank.banklist.view.viewmodel.BankAccountViewModel
+import com.tokopedia.settingbank.choosebank.view.activity.ChooseBankActivity
 import kotlinx.android.synthetic.main.fragment_setting_bank.*
 
 /**
@@ -37,7 +38,6 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
 
     private val REQUEST_ADD_BANK: Int = 101
     private val REQUEST_EDIT_BANK: Int = 102
-
 
     lateinit var presenter: SettingBankPresenter
     lateinit var adapter: BankAccountAdapter
@@ -227,7 +227,8 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
 
 
     override fun addNewAccount() {
-        startActivityForResult(AddEditBankActivity.createIntentAddBank(activity), REQUEST_ADD_BANK)
+        val intentBankForm = AddEditBankActivity.createIntentAddBank(activity)
+        startActivityForResult(intentBankForm, REQUEST_ADD_BANK)
     }
 
     override fun showLoadingFull() {

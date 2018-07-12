@@ -11,7 +11,7 @@ data class BankAccountListPojo(
 
 data class GetListBankAccountData(
         val paging: PagingModel? = PagingModel(),
-        val list: List<BankAccount> = ArrayList()
+        val bank_accounts: List<BankAccount> = ArrayList()
 )
 
 data class PagingModel(
