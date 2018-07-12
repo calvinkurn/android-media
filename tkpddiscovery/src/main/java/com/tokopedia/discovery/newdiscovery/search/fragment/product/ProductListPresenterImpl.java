@@ -12,23 +12,23 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
 import com.tokopedia.discovery.newdiscovery.domain.model.SearchResultModel;
-import com.tokopedia.discovery.newdiscovery.domain.usecase.AddWishlistActionUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetDynamicFilterUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetDynamicFilterV4UseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetSearchGuideUseCase;
-import com.tokopedia.discovery.newdiscovery.domain.usecase.RemoveWishlistActionUseCase;
 import com.tokopedia.discovery.newdiscovery.search.fragment.GetDynamicFilterSubscriber;
 import com.tokopedia.discovery.newdiscovery.search.fragment.GetQuickFilterSubscriber;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenterImpl;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.ProductViewModelHelper;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.listener.WishlistActionListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GuidedSearchViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.wishlist.common.listener.TkpdWishListActionListener;
+import com.tokopedia.wishlist.common.usecase.TkpdAddWishListUseCase;
+import com.tokopedia.wishlist.common.usecase.TkpdRemoveWishListUseCase;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,14 +50,14 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
     @Inject
     GetSearchGuideUseCase getSearchGuideUseCase;
     @Inject
-    AddWishlistActionUseCase addWishlistActionUseCase;
+    TkpdAddWishListUseCase addWishlistActionUseCase;
     @Inject
-    RemoveWishlistActionUseCase removeWishlistActionUseCase;
+    TkpdRemoveWishListUseCase removeWishlistActionUseCase;
     @Inject
     GetDynamicFilterUseCase getDynamicFilterUseCase;
     @Inject
     GetDynamicFilterV4UseCase getDynamicFilterV4UseCase;
-    private WishlistActionListener wishlistActionListener;
+    private TkpdWishListActionListener wishlistActionListener;
     private Context context;
     private boolean isUsingFilterV4;
 
@@ -72,7 +72,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
 
     @Override
     public void attachView(ProductListFragmentView viewListener,
-                           WishlistActionListener wishlistActionListener) {
+                           TkpdWishListActionListener wishlistActionListener) {
         super.attachView(viewListener);
         this.wishlistActionListener = wishlistActionListener;
     }

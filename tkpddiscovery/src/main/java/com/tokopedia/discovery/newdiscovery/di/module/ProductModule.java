@@ -16,9 +16,9 @@ import com.tokopedia.discovery.newdiscovery.data.repository.BannerRepository;
 import com.tokopedia.discovery.newdiscovery.data.repository.ProductRepository;
 import com.tokopedia.discovery.newdiscovery.data.repository.ProductRepositoryImpl;
 import com.tokopedia.discovery.newdiscovery.data.source.ProductDataSource;
-import com.tokopedia.discovery.newdiscovery.domain.usecase.AddWishlistActionUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
-import com.tokopedia.discovery.newdiscovery.domain.usecase.RemoveWishlistActionUseCase;
+import com.tokopedia.wishlist.common.usecase.TkpdAddWishListUseCase;
+import com.tokopedia.wishlist.common.usecase.TkpdRemoveWishListUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -47,17 +47,30 @@ public class ProductModule {
                 postExecutionThread, productRepository, bannerRepository, service);
     }
 
-    @Provides
+    /*@Provides
     AddWishlistActionUseCase addWishlistActionUseCase(
             @ApplicationContext Context context) {
         return new AddWishlistActionUseCase(context);
-    }
+    }*/
 
     @Provides
+    TkpdAddWishListUseCase providesTkpdAddWishListUseCase(
+            @ApplicationContext Context context) {
+        return new TkpdAddWishListUseCase(context);
+    }
+
+
+    @Provides
+    TkpdRemoveWishListUseCase providesTkpdRemoveWishListUseCase(
+            @ApplicationContext Context context) {
+        return new TkpdRemoveWishListUseCase(context);
+    }
+
+    /*@Provides
     RemoveWishlistActionUseCase removeWishlistActionUseCase(
             @ApplicationContext Context context) {
         return new RemoveWishlistActionUseCase(context);
-    }
+    }*/
 
     @Provides
     AddWishlistActionMapper addWishlistActionMapper() {

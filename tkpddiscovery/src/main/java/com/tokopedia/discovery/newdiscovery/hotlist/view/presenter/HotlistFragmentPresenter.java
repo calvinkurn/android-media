@@ -8,10 +8,8 @@ import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.newdiscovery.domain.usecase.AddWishlistActionUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetDynamicFilterUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
-import com.tokopedia.discovery.newdiscovery.domain.usecase.RemoveWishlistActionUseCase;
 import com.tokopedia.discovery.newdiscovery.hotlist.domain.usecase.GetHotlistInitializeUseCase;
 import com.tokopedia.discovery.newdiscovery.hotlist.domain.usecase.GetHotlistLoadMoreUseCase;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistHeaderViewModel;
@@ -20,8 +18,10 @@ import com.tokopedia.discovery.newdiscovery.hotlist.view.subscriber.GetHotlistLo
 import com.tokopedia.discovery.newdiscovery.hotlist.view.subscriber.RefreshHotlistSubscriber;
 import com.tokopedia.discovery.newdiscovery.search.fragment.GetDynamicFilterSubscriber;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenterImpl;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.listener.WishlistActionListener;
 import com.tokopedia.discovery.newdiscovery.util.HotlistParameter;
+import com.tokopedia.wishlist.common.listener.TkpdWishListActionListener;
+import com.tokopedia.wishlist.common.usecase.TkpdAddWishListUseCase;
+import com.tokopedia.wishlist.common.usecase.TkpdRemoveWishListUseCase;
 
 import javax.inject.Inject;
 
@@ -30,7 +30,7 @@ import javax.inject.Inject;
  */
 
 public class HotlistFragmentPresenter extends SearchSectionFragmentPresenterImpl<HotlistFragmentContract.View>
-        implements HotlistFragmentContract.Presenter, WishlistActionListener {
+        implements HotlistFragmentContract.Presenter, TkpdWishListActionListener {
 
     @Inject
     GetHotlistInitializeUseCase getHotlistInitializeUseCase;
@@ -45,10 +45,10 @@ public class HotlistFragmentPresenter extends SearchSectionFragmentPresenterImpl
     GetProductUseCase getProductUseCase;
 
     @Inject
-    AddWishlistActionUseCase addWishlistActionUseCase;
+    TkpdAddWishListUseCase addWishlistActionUseCase;
 
     @Inject
-    RemoveWishlistActionUseCase removeWishlistActionUseCase;
+    TkpdRemoveWishListUseCase removeWishlistActionUseCase;
 
     private final Context context;
 

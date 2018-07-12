@@ -48,7 +48,6 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmen
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionGeneralAdapter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.itemdecoration.ProductItemDecoration;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.listener.WishlistActionListener;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
@@ -59,6 +58,7 @@ import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
+import com.tokopedia.wishlist.common.listener.TkpdWishListActionListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,7 +75,7 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.EXTRA_
 
 public class ProductFragment extends SearchSectionFragment
         implements SearchSectionGeneralAdapter.OnItemChangeView, ProductContract.View,
-        ItemClickListener, WishlistActionListener, TopAdsItemClickListener, TopAdsListener,
+        ItemClickListener, TkpdWishListActionListener, TopAdsItemClickListener, TopAdsListener,
         DefaultCategoryAdapter.CategoryListener, RevampCategoryAdapter.CategoryListener {
 
     public static final int REQUEST_CODE_LOGIN = 1;

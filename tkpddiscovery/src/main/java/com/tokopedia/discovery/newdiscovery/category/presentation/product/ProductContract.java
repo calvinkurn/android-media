@@ -7,8 +7,8 @@ import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmo
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentView;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.listener.WishlistActionListener;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
+import com.tokopedia.wishlist.common.listener.TkpdWishListActionListener;
 
 import java.util.List;
 import java.util.Map;
@@ -72,8 +72,10 @@ public class ProductContract {
 
         void loadMore(SearchParameter searchParameter,
                       ProductPresenter.LoadMoreListener loadMoreListener);
+
         void handleWishlistButtonClicked(ProductItem productItem);
-        void attachView(ProductContract.View viewListener, WishlistActionListener wishlistActionListener);
+
+        void attachView(ProductContract.View viewListener, TkpdWishListActionListener wishlistActionListener);
 
     }
 }

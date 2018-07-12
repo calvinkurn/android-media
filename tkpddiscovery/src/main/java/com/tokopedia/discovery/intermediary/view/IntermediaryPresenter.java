@@ -13,10 +13,10 @@ import com.tokopedia.discovery.intermediary.domain.interactor.GetIntermediaryCat
 import com.tokopedia.discovery.intermediary.domain.model.CuratedSectionModel;
 import com.tokopedia.discovery.intermediary.domain.model.IntermediaryCategoryDomainModel;
 import com.tokopedia.discovery.intermediary.domain.model.ProductModel;
-import com.tokopedia.discovery.newdiscovery.domain.usecase.AddWishlistActionUseCase;
-import com.tokopedia.discovery.newdiscovery.domain.usecase.RemoveWishlistActionUseCase;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.listener.WishlistActionListener;
 import com.tokopedia.topads.sdk.domain.model.Data;
+import com.tokopedia.wishlist.common.listener.TkpdWishListActionListener;
+import com.tokopedia.wishlist.common.usecase.TkpdAddWishListUseCase;
+import com.tokopedia.wishlist.common.usecase.TkpdRemoveWishListUseCase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,14 +33,14 @@ public class IntermediaryPresenter extends BaseDaggerPresenter<IntermediaryContr
 
     private final GetIntermediaryCategoryUseCase getIntermediaryCategoryUseCase;
     private final GetCategoryHeaderUseCase getCategoryHeaderUseCase;
-    private final AddWishlistActionUseCase addWishlistActionUseCase;
-    private final RemoveWishlistActionUseCase removeWishlistActionUseCase;
-    private WishlistActionListener wishlistActionListener;
+    private final TkpdAddWishListUseCase addWishlistActionUseCase;
+    private final TkpdRemoveWishListUseCase removeWishlistActionUseCase;
+    private TkpdWishListActionListener wishlistActionListener;
 
     public IntermediaryPresenter(GetIntermediaryCategoryUseCase getIntermediaryCategoryUseCase,
                                  GetCategoryHeaderUseCase getCategoryHeaderUseCase,
-                                 AddWishlistActionUseCase addWishlistActionUseCase,
-                                 RemoveWishlistActionUseCase removeWishlistActionUseCase) {
+                                 TkpdAddWishListUseCase addWishlistActionUseCase,
+                                 TkpdRemoveWishListUseCase removeWishlistActionUseCase) {
         this.getIntermediaryCategoryUseCase = getIntermediaryCategoryUseCase;
         this.getCategoryHeaderUseCase = getCategoryHeaderUseCase;
         this.addWishlistActionUseCase = addWishlistActionUseCase;
@@ -76,8 +76,8 @@ public class IntermediaryPresenter extends BaseDaggerPresenter<IntermediaryContr
     }
 
     @Override
-    public void setWishlishListener(WishlistActionListener wishlishListener) {
-        this.wishlistActionListener = wishlishListener;
+    public void setWishlishListener(TkpdWishListActionListener tkpdWishListActionListener) {
+        this.wishlistActionListener = tkpdWishListActionListener;
     }
 
     private void addWishlist(String productId, String userId) {

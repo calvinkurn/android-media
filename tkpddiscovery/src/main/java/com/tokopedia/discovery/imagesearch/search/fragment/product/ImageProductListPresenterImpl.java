@@ -11,15 +11,15 @@ import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
 import com.tokopedia.discovery.newdiscovery.domain.model.SearchResultModel;
-import com.tokopedia.discovery.newdiscovery.domain.usecase.AddWishlistActionUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
-import com.tokopedia.discovery.newdiscovery.domain.usecase.RemoveWishlistActionUseCase;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.ProductViewModelHelper;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.listener.WishlistActionListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.wishlist.common.listener.TkpdWishListActionListener;
+import com.tokopedia.wishlist.common.usecase.TkpdAddWishListUseCase;
+import com.tokopedia.wishlist.common.usecase.TkpdRemoveWishListUseCase;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,10 +39,10 @@ public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProd
     @Inject
     GetProductUseCase getProductUseCase;
     @Inject
-    AddWishlistActionUseCase addWishlistActionUseCase;
+    TkpdAddWishListUseCase addWishlistActionUseCase;
     @Inject
-    RemoveWishlistActionUseCase removeWishlistActionUseCase;
-    private WishlistActionListener wishlistActionListener;
+    TkpdRemoveWishListUseCase removeWishlistActionUseCase;
+    private TkpdWishListActionListener tkpdWishListActionListener;
     private Context context;
 
 
@@ -57,9 +57,9 @@ public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProd
 
     @Override
     public void attachView(ImageProductListFragmentView viewListener,
-                           WishlistActionListener wishlistActionListener) {
+                           TkpdWishListActionListener wishlistActionListener) {
         super.attachView(viewListener);
-        this.wishlistActionListener = wishlistActionListener;
+        this.tkpdWishListActionListener = wishlistActionListener;
     }
 
 
@@ -136,11 +136,11 @@ public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProd
     }
 
     private void addWishlist(String productId, String userId) {
-        addWishlistActionUseCase.createObservable(productId, userId, wishlistActionListener);
+        addWishlistActionUseCase.createObservable(productId, userId, tkpdWishListActionListener);
     }
 
     private void removeWishlist(String productId, String userId) {
-        removeWishlistActionUseCase.createObservable(productId, userId, wishlistActionListener);
+        removeWishlistActionUseCase.createObservable(productId, userId, tkpdWishListActionListener);
     }
 
     private void removeDefaultCategoryParam(RequestParams params) {

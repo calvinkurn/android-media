@@ -15,14 +15,14 @@ import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmo
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.domain.model.SearchResultModel;
-import com.tokopedia.discovery.newdiscovery.domain.usecase.AddWishlistActionUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetDynamicFilterUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
-import com.tokopedia.discovery.newdiscovery.domain.usecase.RemoveWishlistActionUseCase;
 import com.tokopedia.discovery.newdiscovery.search.fragment.GetDynamicFilterSubscriber;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenterImpl;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.listener.WishlistActionListener;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
+import com.tokopedia.wishlist.common.listener.TkpdWishListActionListener;
+import com.tokopedia.wishlist.common.usecase.TkpdAddWishListUseCase;
+import com.tokopedia.wishlist.common.usecase.TkpdRemoveWishListUseCase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,12 +40,12 @@ public class ProductPresenter extends SearchSectionFragmentPresenterImpl<Product
     @Inject
     GetProductUseCase getProductUseCase;
     @Inject
-    AddWishlistActionUseCase addWishlistActionUseCase;
+    TkpdAddWishListUseCase addWishlistActionUseCase;
     @Inject
-    RemoveWishlistActionUseCase removeWishlistActionUseCase;
+    TkpdRemoveWishListUseCase removeWishlistActionUseCase;
     @Inject
     GetDynamicFilterUseCase getDynamicFilterUseCase;
-    private WishlistActionListener wishlistActionListener;
+    private TkpdWishListActionListener wishlistActionListener;
     private ProductContract.View viewListener;
     private Context context;
 
@@ -59,7 +59,7 @@ public class ProductPresenter extends SearchSectionFragmentPresenterImpl<Product
 
     @Override
     public void attachView(ProductContract.View viewListener,
-                           WishlistActionListener wishlistActionListener) {
+                           TkpdWishListActionListener wishlistActionListener) {
         super.attachView(viewListener);
         this.viewListener = viewListener;
         this.wishlistActionListener = wishlistActionListener;
@@ -202,6 +202,7 @@ public class ProductPresenter extends SearchSectionFragmentPresenterImpl<Product
 
     interface LoadMoreListener {
         void onSuccess(List<ProductItem> productItemList);
+
         void onFailed();
     }
 

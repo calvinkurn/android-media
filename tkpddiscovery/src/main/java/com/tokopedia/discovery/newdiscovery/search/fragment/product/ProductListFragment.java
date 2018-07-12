@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -30,6 +29,7 @@ import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragment;
@@ -41,15 +41,14 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.list
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.typefactory.ProductListTypeFactory;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.typefactory.ProductListTypeFactoryImpl;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.NetworkParamHelper;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.listener.WishlistActionListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GuidedSearchViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
-import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterHelper;
+import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
@@ -60,6 +59,7 @@ import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
+import com.tokopedia.wishlist.common.listener.TkpdWishListActionListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -73,7 +73,7 @@ import javax.inject.Inject;
 
 public class ProductListFragment extends SearchSectionFragment
         implements SearchSectionGeneralAdapter.OnItemChangeView, ProductListFragmentView,
-        ItemClickListener, WishlistActionListener, TopAdsItemClickListener, TopAdsListener {
+        ItemClickListener, TkpdWishListActionListener, TopAdsItemClickListener, TopAdsListener {
 
     public static final int REQUEST_CODE_LOGIN = 561;
     private static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 123;

@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.Visitable;
@@ -30,6 +29,7 @@ import com.tokopedia.discovery.imagesearch.search.fragment.product.ImageProductL
 import com.tokopedia.discovery.imagesearch.search.fragment.product.ImageProductListFragmentView;
 import com.tokopedia.discovery.imagesearch.search.fragment.product.ImageProductListPresenter;
 import com.tokopedia.discovery.imagesearch.search.fragment.product.adapter.typefactory.ImageProductListTypeFactoryImpl;
+import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.base.RedirectionListener;
 import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
@@ -37,7 +37,6 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionGeneral
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ItemClickListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.typefactory.ProductListTypeFactory;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.NetworkParamHelper;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.listener.WishlistActionListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
@@ -52,6 +51,7 @@ import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
+import com.tokopedia.wishlist.common.listener.TkpdWishListActionListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -67,8 +67,8 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.EXTRA_
  */
 
 public class ImageSearchProductListFragment extends BaseDaggerFragment implements
-        SearchSectionGeneralAdapter.OnItemChangeView, ImageProductListFragmentView, ItemClickListener, WishlistActionListener,
-        TopAdsItemClickListener, TopAdsListener {
+        SearchSectionGeneralAdapter.OnItemChangeView, ImageProductListFragmentView,
+        ItemClickListener, TkpdWishListActionListener, TopAdsItemClickListener, TopAdsListener {
 
     public static final int REQUEST_CODE_LOGIN = 561;
     private static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 123;
