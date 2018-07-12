@@ -3,29 +3,23 @@ package com.tokopedia.product.edit.view.presenter
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common.network.data.model.RestResponse
+import com.tokopedia.graphql.GraphqlConstant
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.product.edit.R
 import com.tokopedia.product.edit.domain.interactor.GetYoutubeVideoDetailUseCase
 import com.tokopedia.product.edit.domain.interactor.GetYoutubeVideoListDetailUseCase
-import com.tokopedia.product.edit.view.listener.ProductAddVideoView
-import com.tokopedia.product.edit.domain.mapper.VideoMapper
 import com.tokopedia.product.edit.domain.model.videorecommendation.VideoRecommendationData
 import com.tokopedia.product.edit.domain.model.videorecommendation.VideoRecommendationResult
 import com.tokopedia.product.edit.domain.model.youtube.YoutubeVideoModel
-import com.tokopedia.product.edit.view.viewmodel.EmptyVideoViewModel
-import com.tokopedia.product.edit.view.viewmodel.ProductAddVideoBaseViewModel
-import com.tokopedia.product.edit.view.viewmodel.SectionVideoRecommendationViewModel
-import com.tokopedia.product.edit.view.viewmodel.TitleVideoChosenViewModel
+import com.tokopedia.product.edit.view.listener.ProductAddVideoView
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 import java.lang.reflect.Type
-import java.util.ArrayList
-import java.util.HashMap
-import com.tokopedia.graphql.GraphqlConstant
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.graphql.data.model.CacheType
+import java.util.*
 
 
 class ProductAddVideoPresenter : BaseDaggerPresenter<ProductAddVideoView>() {
