@@ -13,6 +13,18 @@ public class TokoPointStatusEntity {
     @SerializedName("points")
     TokoPointStatusPointsEntity points;
 
+    @Expose
+    @SerializedName("sheetHowToGet")
+    LobDetails lobs;
+
+    public LobDetails getLobs() {
+        return lobs;
+    }
+
+    public void setLobs(LobDetails lobs) {
+        this.lobs = lobs;
+    }
+
     public TokoPointStatusTierEntity getTier() {
         return tier;
     }
@@ -34,6 +46,7 @@ public class TokoPointStatusEntity {
         return "TokoPointStatusEntity{" +
                 "tier=" + tier +
                 ", points=" + points +
+                ", lobs=" + lobs +
                 '}';
     }
 }
