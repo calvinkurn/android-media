@@ -23,6 +23,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.component.Menus;
 import com.tokopedia.tkpdtrain.R;
+import com.tokopedia.train.common.TrainRouter;
 import com.tokopedia.train.common.constant.TrainAppScreen;
 import com.tokopedia.train.common.presentation.TextInputView;
 import com.tokopedia.train.homepage.di.TrainHomepageComponent;
@@ -53,8 +54,6 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
     private static final int DATE_PICKER_DEPARTURE_REQUEST_CODE = 1005;
     private static final int DATE_PICKER_RETURN_REQUEST_CODE = 1006;
     private static final int DEPARTURE_SCHEDULE_REQUEST_CODE = 1007;
-
-    private static final String STATE_HOMEPAGE = "STATE_HOMEPAGE";
 
     private AppCompatButton buttonOneWayTrip;
     private AppCompatButton buttonRoundTrip;
@@ -366,16 +365,24 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
 
     public void showBottomMenus() {
         menus = new Menus(getActivity());
-        String [] menuItem = new String[] {"Daftar Transaksi", "Cek Pesanan"};
+        String [] menuItem = new String[] {
+                getResources().getString(R.string.train_homepage_bottom_menu_order_list),
+                getResources().getString(R.string.train_homepage_bottom_menu_check_orders)
+        };
         menus.setItemMenuList(menuItem);
 
-        menus.setOnActionClickListener(view -> {
-            menus.dismiss();
-        });
+        menus.setOnActionClickListener(view -> menus.dismiss());
+
         menus.setOnItemMenuClickListener((itemMenus, pos) -> {
+            if (pos == 0) {
+                if (getActivity().getApplication() instanceof TrainRouter) {
+                    ((TrainRouter) getActivity().getApplication()).goToTrainOrderList(getActivity());
+                }
+            }
             menus.dismiss();
         });
-        menus.setActionText("Tutup");
+
+        menus.setActionText(getResources().getString(R.string.train_homepage_bottom_menu_action_text));
 
         menus.show();
     }
