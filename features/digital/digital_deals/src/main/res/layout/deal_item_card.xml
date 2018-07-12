@@ -148,7 +148,6 @@
             android:textColor="@color/colorRed"
             android:textSize="@dimen/sp_11"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_available_locations"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@+id/tv_available_locations"
             tools:text="20% OFF" />

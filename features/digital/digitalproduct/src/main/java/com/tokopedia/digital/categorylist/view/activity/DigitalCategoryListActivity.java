@@ -29,6 +29,12 @@ public class DigitalCategoryListActivity extends BasePresenterActivity {
         return DigitalCategoryListActivity.newInstance(context);
     }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        unregisterShake();
+    }
     public static Intent newInstance(Context context) {
         return new Intent(context, DigitalCategoryListActivity.class);
     }

@@ -10,22 +10,21 @@ import android.support.v4.app.TaskStackBuilder;
 import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.view.fragment.DealDetailsAllRedeemLocationsFragment;
 import com.tokopedia.digital_deals.view.fragment.DealDetailsFragment;
 import com.tokopedia.digital_deals.view.fragment.SelectDealQuantityFragment;
+import com.tokopedia.digital_deals.view.model.Outlet;
+import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse;
 import com.tokopedia.digital_deals.view.presenter.DealDetailsPresenter;
 import com.tokopedia.digital_deals.view.utils.DealFragmentCallbacks;
-import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse;
-import com.tokopedia.digital_deals.view.model.Outlet;
 
 import java.util.List;
 
 import static com.tokopedia.digital_deals.view.utils.Utils.Constants.DIGITAL_DEALS_DETAILS;
 
-public class DealDetailsActivity extends BaseSimpleActivity implements DealFragmentCallbacks {
+public class DealDetailsActivity extends DealsBaseActivity implements DealFragmentCallbacks {
 
     private List<Outlet> outlets;
     private DealsDetailsResponse dealDetail;
@@ -98,6 +97,14 @@ public class DealDetailsActivity extends BaseSimpleActivity implements DealFragm
     @Override
     public DealsDetailsResponse getDealDetails() {
         return dealDetail;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(getSupportFragmentManager().getBackStackEntryCount()<1) {
+            setResult(RESULT_OK);
+        }
+        super.onBackPressed();
     }
 
 

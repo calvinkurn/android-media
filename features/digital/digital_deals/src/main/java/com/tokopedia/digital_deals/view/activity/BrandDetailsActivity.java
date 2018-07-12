@@ -9,7 +9,7 @@ import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.view.fragment.BrandDetailsFragment;
 import com.tokopedia.digital_deals.view.fragment.DealDetailsFragment;
 
-public class BrandDetailsActivity extends BaseSimpleActivity {
+public class BrandDetailsActivity extends DealsBaseActivity {
 
     @Override
     protected int getLayoutRes() {

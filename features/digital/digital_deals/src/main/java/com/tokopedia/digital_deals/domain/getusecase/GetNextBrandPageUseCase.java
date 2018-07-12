@@ -7,6 +7,7 @@ import com.tokopedia.common.network.domain.RestRequestUseCase;
 import com.tokopedia.digital_deals.data.source.DealsUrl;
 import com.tokopedia.digital_deals.view.model.response.AllBrandsResponse;
 import com.tokopedia.digital_deals.view.presenter.DealDetailsPresenter;
+import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.usecase.RequestParams;
 
 import java.lang.reflect.Type;
@@ -31,7 +32,7 @@ public class GetNextBrandPageUseCase extends RestRequestUseCase {
         List<RestRequest> tempRequest = new ArrayList<>();
 
         HashMap<String, Object> map = params.getParameters();
-        String url = DealsUrl.DEALS_DOMAIN + DealsUrl.DEALS_LIKES_PRODUCT +"/" + map.get(DealDetailsPresenter.TAG);
+        String url = String.valueOf(map.get(Utils.NEXT_URL));
         //Request 1
         Type token = new TypeToken<DataResponse<AllBrandsResponse>>() {
         }.getType();

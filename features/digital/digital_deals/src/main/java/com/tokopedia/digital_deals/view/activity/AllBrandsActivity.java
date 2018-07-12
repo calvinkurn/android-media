@@ -12,7 +12,7 @@ import com.tokopedia.digital_deals.view.model.CategoriesModel;
 
 import java.util.List;
 
-public class AllBrandsActivity extends BaseSimpleActivity {
+public class AllBrandsActivity extends DealsBaseActivity {
 
     private ViewPager categoryViewPager;
     private TabLayout tabs;
@@ -28,7 +28,7 @@ public class AllBrandsActivity extends BaseSimpleActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setUpVariables();
-        toolbar.setTitle(getResources().getString(R.string.brands));
+        updateTitle(getResources().getString(R.string.brands));
     }
 
     private void setUpVariables() {

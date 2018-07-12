@@ -177,8 +177,9 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
         checkIfToLoad(layoutManager);
     }
 
-    public void getDealsList() {
-        getView().showProgressBar();
+    public void getDealsList(boolean showProgressBar) {
+        if (showProgressBar)
+            getView().showProgressBar();
         params.putAll(getView().getParams().getParameters());
         params.putAll(getView().getBrandParams().getParameters());
         getDealsListRequestUseCase.setRequestParams(params);
@@ -196,32 +197,56 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
                 NetworkErrorHelper.showEmptyState(getView().getActivity(), getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
-                        getDealsList();
+                        getDealsList(true);
                     }
                 });
             }
 
             @Override
             public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+
+                if(getView()==null){
+                    return;
+                }
+
                 Type token = new TypeToken<DataResponse<DealsResponse>>() {
                 }.getType();
-                isDealsLoaded = true;
                 RestResponse restResponse = typeRestResponseMap.get(token);
+
+                if(restResponse == null || restResponse.isError()){
+                    getView().hideProgressBar();
+                    NetworkErrorHelper.showEmptyState(getView().getActivity(), getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
+                        @Override
+                        public void onRetryClicked() {
+                            getDealsList(true);
+                        }
+                    });
+                    return;
+                }
+
                 DataResponse data = restResponse.getData();
+
                 DealsResponse dealsResponse = (DealsResponse) data.getData();
+
                 processSearchResponse(dealsResponse);
+                isDealsLoaded = true;
+
                 getView().renderCategoryList(getCategories(categoryItems),
                         getCarouselOrTop(categoryItems, CAROUSEL),
                         getCarouselOrTop(categoryItems, TOP));
 
                 Type token2 = new TypeToken<DataResponse<AllBrandsResponse>>() {
                 }.getType();
+
                 RestResponse restResponse2 = typeRestResponseMap.get(token2);
                 DataResponse data2 = restResponse2.getData();
+                if(data2!=null){
                 AllBrandsResponse brandsResponse = (AllBrandsResponse) data2.getData();
+                    brands = brandsResponse.getBrands();
+                    getView().renderBrandList(brands);
+                }
                 isBrandsLoaded = true;
-                brands = brandsResponse.getBrands();
-                getView().renderBrandList(brands);
+
                 showHideViews();
                 CommonUtils.dumper("enter onNext");
             }
@@ -324,9 +349,9 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
 
     private List<CategoryItem> getCategories(List<CategoryItem> listItems) {
         List<CategoryItem> categoryList = null;
+        categoriesModels = new ArrayList<>();
         if (listItems != null && listItems.size() > 2) {
             categoryList = new ArrayList<>();
-            categoriesModels = new ArrayList<>();
             for (int i = 2; i < listItems.size(); i++) {
                 categoryList.add(listItems.get(i));
                 CategoriesModel categoriesModel = new CategoriesModel();
@@ -338,6 +363,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
                 categoriesModels.add(categoriesModel);
             }
         }
+
 
         CategoriesModel categoriesModel = new CategoriesModel();
         categoriesModel.setUrl("");

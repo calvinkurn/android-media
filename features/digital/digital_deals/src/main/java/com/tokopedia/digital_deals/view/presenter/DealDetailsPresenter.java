@@ -2,6 +2,7 @@ package com.tokopedia.digital_deals.view.presenter;
 
 
 import android.support.v7.widget.LinearLayoutManager;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.gson.reflect.TypeToken;
@@ -107,7 +108,7 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
                 getView().showShareButton();
                 getView().showCollapsingHeader();
                 getView().renderDealDetails(dealsDetailsResponse);
-                searchNextParams.putString("nexturl", dealsDetailsResponse.getRecommendationUrl());
+                searchNextParams.putString(Utils.NEXT_URL, dealsDetailsResponse.getRecommendationUrl());
                 getRecommendedDeals();
                 CommonUtils.dumper("enter onNext");
                 getLikes();
@@ -158,12 +159,10 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
 
             @Override
             public void onError(Throwable e) {
-                Log.d("inOnErrrror", e.getMessage());
             }
 
             @Override
             public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
-                Log.d("inOnNext", "ds");
 
                 Type token = new TypeToken<DataResponse<SearchResponse>>() {
                 }.getType();
@@ -184,8 +183,8 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
     private List<ProductItem> processSearchResponse(SearchResponse searchResponse) {
 
         String nexturl = searchResponse.getPage().getUriNext();
-        if (nexturl != null && !nexturl.isEmpty() && nexturl.length() > 0) {
-            searchNextParams.putString("nexturl", nexturl);
+        if (!TextUtils.isEmpty(nexturl)) {
+            searchNextParams.putString(Utils.NEXT_URL, nexturl);
             isLastPage = false;
         } else {
             isLastPage = true;

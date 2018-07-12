@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DaggerDealsComponent;
+import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.digital_deals.di.DealsModule;
 import com.tokopedia.digital_deals.view.activity.CheckoutActivity;
 import com.tokopedia.digital_deals.view.activity.DealDetailsActivity;
@@ -91,6 +92,6 @@ public class DealDetailsAllRedeemLocationsFragment extends BaseDaggerFragment {
 
     @Override
     protected void initInjector() {
-
+        getComponent(DealsComponent.class).inject(this);
     }
 }

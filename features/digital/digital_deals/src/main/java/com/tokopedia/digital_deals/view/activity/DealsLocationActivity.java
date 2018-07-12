@@ -14,7 +14,7 @@ import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.digital_deals.view.model.Location;
 
 
-public class DealsLocationActivity extends BaseSimpleActivity {
+public class DealsLocationActivity extends DealsBaseActivity {
 
     private Location location;
 

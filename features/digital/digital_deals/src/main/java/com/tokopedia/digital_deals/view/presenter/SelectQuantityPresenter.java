@@ -131,7 +131,6 @@ public class SelectQuantityPresenter
 
             @Override
             public void onError(Throwable throwable) {
-                Log.d("ReviewTicketPresenter", "onError");
                 throwable.printStackTrace();
                 getView().hideProgressBar();
                 NetworkErrorHelper.showEmptyState(getView().getActivity(),
@@ -145,7 +144,6 @@ public class SelectQuantityPresenter
 
             @Override
             public void onNext(VerifyMyCartResponse verifyCartResponse) {
-                Log.d("ReviewTicketPresenter", verifyCartResponse.toString());
 
 
                 Intent intent=new Intent(getView().getActivity(), CheckoutActivity.class);

@@ -446,15 +446,15 @@
                     android:id="@+id/tv_sales_price_per_quantity"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_8"
+                    android:layout_marginLeft="@dimen/dp_16"
                     android:fontFamily="sans-serif-medium"
                     android:includeFontPadding="false"
+                    android:layout_marginTop="@dimen/dp_4"
                     android:textColor="@color/black_39"
                     android:textSize="@dimen/sp_14"
                     android:textStyle="normal"
-                    app:layout_constraintBottom_toBottomOf="@+id/tv_mrp_per_quantity"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_number_vouchers"
                     app:layout_constraintLeft_toRightOf="@+id/tv_mrp_per_quantity"
-                    app:layout_constraintTop_toTopOf="@+id/tv_mrp_per_quantity"
                     tools:text="Rp 800.000" />
 
 
@@ -463,7 +463,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:visibility="gone"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_mrp_per_quantity">
+                    app:layout_constraintTop_toBottomOf="@+id/tv_sales_price_per_quantity">
 
                     <TextView
                         android:id="@+id/tv_promo"

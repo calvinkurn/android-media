@@ -42,7 +42,7 @@
     <string name="label_instant_payment_digital">Bayar Instan</string>
     <string name="title_voucher_code">Kode Voucher: </string>
     <string name="title_empty_stock">Stok Habis</string>
-    <string name="button_copy">salin </string>
+    <string name="button_copy">Salin</string>
     <string name="label_title_desc_promo_digital">Keterangan</string>
     <string name="label_title_price_info_digital">Harga</string>
     <string name="error_message_product_inactive_digital_module">Product tidak aktif</string>
@@ -124,4 +124,7 @@
     <string name="allow_nfc_permission">Izinkan</string>
     <string name="deny_nfc_permission">Tolak</string>
     <string name="nfc_permission_denied_message">Anda tidak memberikan izin akses untuk NFC</string>
+
+    <string name="promo_tab_title">Promo</string>
+    <string name="guide_tab_title">Panduan</string>
 </resources>

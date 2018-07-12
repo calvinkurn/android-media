@@ -3,6 +3,7 @@ package com.tokopedia.digital_deals.view.presenter;
 
 import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
+import android.text.TextUtils;
 
 import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.CommonUtils;
@@ -199,8 +200,8 @@ public class DealsSearchPresenter
     private List<ProductItem> processSearchResponse(SearchResponse searchResponse) {
         mSearchData = searchResponse;
         String nexturl = mSearchData.getPage().getUriNext();
-        if (nexturl != null && !nexturl.isEmpty() && nexturl.length() > 0) {
-            searchNextParams.putString("nexturl", nexturl);
+        if (!TextUtils.isEmpty(nexturl)) {
+            searchNextParams.putString(Utils.NEXT_URL, nexturl);
             isLastPage = false;
         } else {
             isLastPage = true;

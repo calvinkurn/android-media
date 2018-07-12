@@ -1,0 +1,20 @@
+{
+  filter: hachikoCatalogFilter {
+    categories {
+      id
+      name
+      image_id
+      image_url
+      index
+    }
+    points_range {
+      id
+      text
+      index
+    }
+    sort_type {
+      id
+      text
+    }
+  }
+}

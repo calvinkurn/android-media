@@ -20,6 +20,7 @@ import javax.inject.Inject;
 public class PostUpdateDealLikesUseCase extends RestRequestUseCase {
 
     private RequestParams params;
+    public static final String REQUEST_BODY="request_body";
 
     @Inject
     public PostUpdateDealLikesUseCase() {
@@ -33,7 +34,7 @@ public class PostUpdateDealLikesUseCase extends RestRequestUseCase {
     protected List<RestRequest> buildRequest() {
         List<RestRequest> tempRequest = new ArrayList<>();
 
-        LikeUpdateModel requestModel = (LikeUpdateModel) params.getObject("request_body");
+        LikeUpdateModel requestModel = (LikeUpdateModel) params.getObject(PostUpdateDealLikesUseCase.REQUEST_BODY);
         String url = DealsUrl.DEALS_DOMAIN + DealsUrl.DEALS_LIKES;
         Type token = new TypeToken<DataResponse<LikeUpdateResult>>() {
         }.getType();

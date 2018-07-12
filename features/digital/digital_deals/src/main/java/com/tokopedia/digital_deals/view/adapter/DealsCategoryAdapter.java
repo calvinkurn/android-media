@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +27,7 @@ import com.tokopedia.digital_deals.view.activity.BrandDetailsActivity;
 import com.tokopedia.digital_deals.view.activity.DealDetailsActivity;
 import com.tokopedia.digital_deals.view.activity.DealsHomeActivity;
 import com.tokopedia.digital_deals.view.contractor.DealCategoryAdapterContract;
+import com.tokopedia.digital_deals.view.fragment.DealsHomeFragment;
 import com.tokopedia.digital_deals.view.presenter.BrandDetailsPresenter;
 import com.tokopedia.digital_deals.view.presenter.DealCategoryAdapterPresenter;
 import com.tokopedia.digital_deals.view.presenter.DealDetailsPresenter;
@@ -50,11 +52,12 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     private boolean isHeaderAdded = false;
     private boolean isShortLayout;
     private boolean brandPageCard = false;
+    private INavigateToActivityRequest toActivityRequest;
     @Inject
     DealCategoryAdapterPresenter mPresenter;
     private String headerText;
 
-    public DealsCategoryAdapter(Context context, List<ProductItem> categoryItems, Boolean... layoutType) {
+    public DealsCategoryAdapter(Context context, List<ProductItem> categoryItems, INavigateToActivityRequest toActivityRequest, Boolean... layoutType) {
         this.context = context;
         this.categoryItems = categoryItems;
         if (layoutType[0] != null) {
@@ -65,6 +68,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 brandPageCard = layoutType[1];
             }
         }
+        this.toActivityRequest=toActivityRequest;
 
     }
 
@@ -105,7 +109,6 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         DaggerDealsComponent.builder()
                 .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
-                .dealsModule(new DealsModule(context))
                 .build().inject(this);
         mPresenter.attachView(this);
         return holder;
@@ -209,7 +212,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 getActivity().getResources().getString(R.string.title_activity_login), (View.OnClickListener) v -> {
                     Intent intent = ((TkpdCoreRouter) getActivity().getApplication()).
                             getLoginIntent(getActivity());
-                    getActivity().startActivityForResult(intent, 1099);
+                    toActivityRequest.onNavigateToActivityRequest(intent, DealsHomeActivity.REQUEST_CODE_LOGIN);
                 }
         ).show();
     }
@@ -274,13 +277,27 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             } else {
                 hotDeal.setVisibility(View.GONE);
             }
-            Location location = Utils.getSingletonInstance().getLocation(context);
-            if (location != null) {
-                dealavailableLocations.setText(location.getName());
+            if(TextUtils.isEmpty(productItem.getCityName())) {
+                Location location = Utils.getSingletonInstance().getLocation(context);
+                if (location != null) {
+                    dealavailableLocations.setText(location.getName());
+                }
+            }else{
+                dealavailableLocations.setText(productItem.getCityName());
             }
-            dealListPrice.setText(Utils.convertToCurrencyString(productItem.getMrp()));
-            dealListPrice.setPaintFlags(dealListPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            discount.setText(productItem.getSavingPercentage());
+            if(productItem.getMrp()!=0){
+                dealListPrice.setVisibility(View.VISIBLE);
+                dealListPrice.setText(Utils.convertToCurrencyString(productItem.getMrp()));
+                dealListPrice.setPaintFlags(dealListPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            }else{
+                dealListPrice.setVisibility(View.INVISIBLE);
+            }
+            if(TextUtils.isEmpty(productItem.getSavingPercentage())){
+                discount.setVisibility(View.INVISIBLE);
+            }else{
+                discount.setVisibility(View.VISIBLE);
+                discount.setText(productItem.getSavingPercentage());
+            }
             dealSellingPrice.setText(Utils.convertToCurrencyString(productItem.getSalesPrice()));
             itemView.setOnClickListener(this);
             ivShareVia.setOnClickListener(this);
@@ -290,7 +307,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         void setLikes(int likes, boolean isLiked) {
             categoryItems.get(getIndex()).setLikes(likes);
             categoryItems.get(getIndex()).setLiked(isLiked);
-            if (likes != 0) {
+            if (likes > 0) {
                 tvLikes.setVisibility(View.VISIBLE);
                 tvLikes.setText(String.valueOf(likes));
             } else {
@@ -334,7 +351,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             } else {
                 Intent detailsIntent = new Intent(context, DealDetailsActivity.class);
                 detailsIntent.putExtra(DealDetailsPresenter.HOME_DATA, categoryItems.get(getIndex()).getSeoUrl());
-                getActivity().startActivityForResult(detailsIntent, DealsHomeActivity.REQUEST_CODE_DEALDETAILACTIVITY);
+                toActivityRequest.onNavigateToActivityRequest(detailsIntent, DealsHomeActivity.REQUEST_CODE_DEALDETAILACTIVITY);
             }
         }
     }
@@ -387,9 +404,19 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             if (productItem.getBrand().getUrl() != null) {
                 cvBrand.setOnClickListener(this);
             }
-            dealListPrice.setText(Utils.convertToCurrencyString(productItem.getMrp()));
-            dealListPrice.setPaintFlags(dealListPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            discount.setText(productItem.getSavingPercentage());
+            if(productItem.getMrp()!=0){
+                dealListPrice.setVisibility(View.VISIBLE);
+                dealListPrice.setText(Utils.convertToCurrencyString(productItem.getMrp()));
+                dealListPrice.setPaintFlags(dealListPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            }else{
+                dealListPrice.setVisibility(View.INVISIBLE);
+            }
+            if(TextUtils.isEmpty(productItem.getSavingPercentage())){
+                discount.setVisibility(View.INVISIBLE);
+            }else{
+                discount.setVisibility(View.VISIBLE);
+                discount.setText(productItem.getSavingPercentage());
+            }
             dealSellingPrice.setText(Utils.convertToCurrencyString(productItem.getSalesPrice()));
             itemView.setOnClickListener(this);
 
@@ -443,5 +470,9 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     public void unsubscribeUseCase() {
         mPresenter.onDestroy();
+    }
+
+    public interface INavigateToActivityRequest{
+        void onNavigateToActivityRequest(Intent intent, int requestCode);
     }
 }

@@ -38,7 +38,8 @@
         <activity
             android:name=".orders.orderlist.view.activity.OrderListActivity"
             android:label="@string/title_order_list"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask"/>
         <activity
             android:name=".orders.orderdetails.view.activity.OrderListDetailActivity"
             android:label="@string/title_order_detail"

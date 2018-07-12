@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DaggerDealsComponent;
+import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.digital_deals.di.DealsModule;
 import com.tokopedia.digital_deals.view.activity.CheckoutActivity;
 import com.tokopedia.digital_deals.view.contractor.CheckoutDealContractor;
@@ -68,10 +70,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
 
     @Override
     protected void initInjector() {
-        DaggerDealsComponent.builder()
-                .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
-                .dealsModule(new DealsModule(getContext()))
-                .build().inject(this);
+        getComponent(DealsComponent.class).inject(this);
         mPresenter.attachView(this);
     }
 
@@ -156,8 +155,15 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
                 Utils.convertEpochToString(dealDetails.getSaleEndDate())));
 
 
-        tvMrp.setText(Utils.convertToCurrencyString(packageViewModel.getMrp()));
-        tvMrp.setPaintFlags(tvMrp.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+
+        if(dealDetails.getMrp()!=0){
+            tvMrp.setVisibility(View.VISIBLE);
+            tvMrp.setText(Utils.convertToCurrencyString(dealDetails.getMrp()));
+            tvMrp.setPaintFlags(tvMrp.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        }else{
+            tvMrp.setVisibility(View.GONE);
+        }
+
         tvSalesPrice.setText(Utils.convertToCurrencyString(packageViewModel.getSalesPrice()));
         tvTotalQuantityPrice.setText(Utils.convertToCurrencyString(packageViewModel.getSalesPrice() *
                 packageViewModel.getSelectedQuantity()));
@@ -174,7 +180,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
                 packageViewModel.getCommission()));
         tvNumberVouchers.setText(String.format(getActivity().getResources().getString(R.string.number_of_vouchers),
                 packageViewModel.getSelectedQuantity()));
-        if (dealDetails.getOutlets() != null && dealDetails.getOutlets().size() != 0) {
+        if (dealDetails.getOutlets() != null && dealDetails.getOutlets().size() > 0) {
             tvNumberLocations.setText(String.format(getResources().getString(R.string.number_of_locations)
                     , dealDetails.getOutlets().size()));
         }

@@ -16,17 +16,14 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.digital_deals.R;
-import com.tokopedia.digital_deals.di.DaggerDealsComponent;
-import com.tokopedia.digital_deals.di.DealsModule;
-import com.tokopedia.digital_deals.view.activity.DealsLocationActivity;
+import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.digital_deals.view.adapter.DealsLocationAdapter;
 import com.tokopedia.digital_deals.view.contractor.DealsLocationContract;
 import com.tokopedia.digital_deals.view.customview.SearchInputView;
-import com.tokopedia.digital_deals.view.presenter.DealsLocationPresenter;
 import com.tokopedia.digital_deals.view.model.Location;
+import com.tokopedia.digital_deals.view.presenter.DealsLocationPresenter;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
@@ -118,7 +115,7 @@ public class SelectLocationFragment extends BaseDaggerFragment implements
         } else {
             tvTopDeals.setVisibility(View.GONE);
         }
-        if (locationList != null && locationList.size() != 0) {
+        if (locationList != null && locationList.size() > 0) {
             dealsCategoryAdapter.updateAdapter(locationList);
             rvSearchResults.setVisibility(View.VISIBLE);
             noContent.setVisibility(View.GONE);
@@ -168,21 +165,15 @@ public class SelectLocationFragment extends BaseDaggerFragment implements
 
     @Override
     protected void initInjector() {
-        DaggerDealsComponent.builder()
-                .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
-                .dealsModule(new DealsModule(getContext()))
-                .build().inject(this);
+        getComponent(DealsComponent.class).inject(this);
         mPresenter.attachView(this);
     }
 
 
     @Override
     public void onLocationItemSelected(boolean locationUpdated) {
-
         getActivity().setResult(RESULT_OK, new Intent().putExtra(EXTRA_CALLBACK_LOCATION, locationUpdated));
-
-        ((DealsLocationActivity)getActivity()).finish();
-
+        getActivity().finish();
     }
 
     @Override
