@@ -19,8 +19,6 @@ import com.tokopedia.product.edit.view.listener.ProductAddVideoView
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 import java.lang.reflect.Type
-import java.util.*
-
 
 class ProductAddVideoPresenter : BaseDaggerPresenter<ProductAddVideoView>() {
 
