@@ -159,28 +159,22 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
         presenter.getDetailSchedule(trainScheduleBookingPassData.getDepartureScheduleId(), cardActionDeparture);
         presenter.getDetailSchedule(trainScheduleBookingPassData.getReturnScheduleId(), cardActionReturn);
 
-        cardActionDeparture.setActionListener(new CardWithAction.ActionListener() {
-            @Override
-            public void actionClicked() {
-                Intent intent = TrainScheduleDetailActivity.createIntent(getActivity(),
-                        trainScheduleBookingPassData.getDepartureScheduleId(),
-                        trainScheduleBookingPassData.getAdultPassenger(),
-                        trainScheduleBookingPassData.getInfantPassenger(),
-                        trainScheduleBookingPassData.getReturnScheduleId() == null);
-                startActivity(intent);
-            }
+        cardActionDeparture.setActionListener(() -> {
+            Intent intent = TrainScheduleDetailActivity.createIntent(getActivity(),
+                    trainScheduleBookingPassData.getDepartureScheduleId(),
+                    trainScheduleBookingPassData.getAdultPassenger(),
+                    trainScheduleBookingPassData.getInfantPassenger(),
+                    false);
+            startActivity(intent);
         });
 
-        cardActionReturn.setActionListener(new CardWithAction.ActionListener() {
-            @Override
-            public void actionClicked() {
-                Intent intent = TrainScheduleDetailActivity.createIntent(getActivity(),
-                        trainScheduleBookingPassData.getReturnScheduleId(),
-                        trainScheduleBookingPassData.getAdultPassenger(),
-                        trainScheduleBookingPassData.getInfantPassenger(),
-                        trainScheduleBookingPassData.getReturnScheduleId() == null);
-                startActivity(intent);
-            }
+        cardActionReturn.setActionListener(() -> {
+            Intent intent = TrainScheduleDetailActivity.createIntent(getActivity(),
+                    trainScheduleBookingPassData.getReturnScheduleId(),
+                    trainScheduleBookingPassData.getAdultPassenger(),
+                    trainScheduleBookingPassData.getInfantPassenger(),
+                    false);
+            startActivity(intent);
         });
     }
 

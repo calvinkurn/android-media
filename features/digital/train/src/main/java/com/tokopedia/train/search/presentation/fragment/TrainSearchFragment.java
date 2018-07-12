@@ -366,7 +366,7 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
                 trainScheduleViewModel.getIdSchedule(),
                 trainSearchPassDataViewModel.getAdult(),
                 trainSearchPassDataViewModel.getInfant(),
-                true);
+                trainScheduleViewModel.getAvailableSeat() > 0);
         startActivityForResult(intent, REQUEST_CODE_OPEN_TRAIN_SCHEDULE_DETAIL);
     }
 
