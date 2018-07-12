@@ -19,12 +19,14 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.component.Menus;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.TrainRouter;
 import com.tokopedia.train.common.constant.TrainAppScreen;
+import com.tokopedia.train.common.constant.TrainEventTracking;
 import com.tokopedia.train.common.presentation.TextInputView;
 import com.tokopedia.train.homepage.di.TrainHomepageComponent;
 import com.tokopedia.train.homepage.presentation.activity.TrainPassengerPickerActivity;
@@ -72,6 +74,8 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
 
     private Menus menus;
 
+    private AbstractionRouter abstractionRouter;
+
     @Inject
     TrainHomepagePresenterImpl trainHomepagePresenterImpl;
 
@@ -98,6 +102,8 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
         buttonSearchTicket = view.findViewById(R.id.button_search_ticket);
         separatorDateReturn = view.findViewById(R.id.separator_date_return);
 
+        abstractionRouter = (AbstractionRouter) getActivity().getApplication();
+
         layoutOriginStation.setOnClickListener(view12 -> startActivityForResult(
                 TrainStationsActivity.getCallingIntent(getActivity(), getString(R.string.train_station_origin_toolbar)),
                 ORIGIN_STATION_REQUEST_CODE));
@@ -108,7 +114,13 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
 
         buttonOneWayTrip.setSelected(true);
 
-        buttonOneWayTrip.setOnClickListener(v -> trainHomepagePresenterImpl.singleTrip());
+        buttonOneWayTrip.setOnClickListener(v -> {
+            trainHomepagePresenterImpl.singleTrip();
+
+//            abstractionRouter.getAnalyticTracker().sendEventTracking(
+//                    TrainEventTracking.Event.
+//            );
+        });
 
         buttonRoundTrip.setOnClickListener(v -> trainHomepagePresenterImpl.roundTrip());
 
