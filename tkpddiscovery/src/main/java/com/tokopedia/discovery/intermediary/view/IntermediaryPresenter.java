@@ -16,15 +16,11 @@ import com.tokopedia.discovery.intermediary.domain.model.ProductModel;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.AddWishlistActionUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.RemoveWishlistActionUseCase;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.listener.WishlistActionListener;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.subscriber.AddWishlistActionSubscriber;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.subscriber.RemoveWishlistActionSubscriber;
 import com.tokopedia.topads.sdk.domain.model.Data;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
-import javax.inject.Inject;
 
 import retrofit2.Response;
 
@@ -33,7 +29,7 @@ import retrofit2.Response;
  */
 
 public class IntermediaryPresenter extends BaseDaggerPresenter<IntermediaryContract.View>
-        implements  IntermediaryContract.Presenter{
+        implements IntermediaryContract.Presenter {
 
     private final GetIntermediaryCategoryUseCase getIntermediaryCategoryUseCase;
     private final GetCategoryHeaderUseCase getCategoryHeaderUseCase;
@@ -58,7 +54,7 @@ public class IntermediaryPresenter extends BaseDaggerPresenter<IntermediaryContr
         getView().showLoading();
        /* getIntermediaryCategoryUseCase.execute( RequestParams.EMPTY,
                 new IntermediarySubscirber());*/
-       getCategoryHeaderUseCase.execute(RequestParams.EMPTY, new CategoryHeaderSubscirber());
+        getCategoryHeaderUseCase.execute(RequestParams.EMPTY, new CategoryHeaderSubscirber());
     }
 
     @Override
@@ -70,9 +66,9 @@ public class IntermediaryPresenter extends BaseDaggerPresenter<IntermediaryContr
     public void addWishLish(int position, Data data) {
         if (getView().isUserHasLogin()) {
             if (data.isWislished()) {
-                removeWishlist(data.getProduct().getId(), getView().getUserId(), position);
+                removeWishlist(data.getProduct().getId(), getView().getUserId());
             } else {
-                addWishlist(data.getProduct().getId(), getView().getUserId(), position);
+                addWishlist(data.getProduct().getId(), getView().getUserId());
             }
         } else {
             launchLoginActivity(data.getProduct().getId());
@@ -84,16 +80,14 @@ public class IntermediaryPresenter extends BaseDaggerPresenter<IntermediaryContr
         this.wishlistActionListener = wishlishListener;
     }
 
-    private void addWishlist(String productId, String userId, int adapterPosition) {
+    private void addWishlist(String productId, String userId) {
         Log.d(this.toString(), "Add Wishlist " + productId);
-        addWishlistActionUseCase.execute(AddWishlistActionUseCase.generateParam(productId, userId),
-                new AddWishlistActionSubscriber(wishlistActionListener, adapterPosition));
+        addWishlistActionUseCase.createObservable(productId, userId, wishlistActionListener);
     }
 
-    private void removeWishlist(String productId, String userId, int adapterPosition) {
+    private void removeWishlist(String productId, String userId) {
         Log.d(this.toString(), "Remove Wishlist " + productId);
-        removeWishlistActionUseCase.execute(RemoveWishlistActionUseCase.generateParam(productId, userId),
-                new RemoveWishlistActionSubscriber(wishlistActionListener, adapterPosition));
+        removeWishlistActionUseCase.createObservable(productId, userId, wishlistActionListener);
     }
 
     private void launchLoginActivity(String productId) {
@@ -117,12 +111,12 @@ public class IntermediaryPresenter extends BaseDaggerPresenter<IntermediaryContr
 
         @Override
         public void onNext(Response<CategoryHadesModel> categoryHadesModelResponse) {
-            if (categoryHadesModelResponse.body().getData()!=null &&
+            if (categoryHadesModelResponse.body().getData() != null &&
                     categoryHadesModelResponse.body().getData().getIntermediary() &&
                     categoryHadesModelResponse.body().getData().getTemplate().equals(IntermediaryCategoryDomainModel.LIFESTYLE_TEMPLATE)) {
-                    getIntermediaryCategoryUseCase.setCategoryId(categoryHadesModelResponse.body().getData().getId());
-                    getIntermediaryCategoryUseCase.setCategoryHadesModel(categoryHadesModelResponse.body());
-                    getIntermediaryCategoryUseCase.execute(RequestParams.EMPTY, new IntermediarySubscirber(categoryHadesModelResponse.body()));
+                getIntermediaryCategoryUseCase.setCategoryId(categoryHadesModelResponse.body().getData().getId());
+                getIntermediaryCategoryUseCase.setCategoryHadesModel(categoryHadesModelResponse.body());
+                getIntermediaryCategoryUseCase.execute(RequestParams.EMPTY, new IntermediarySubscirber(categoryHadesModelResponse.body()));
             } else {
                 getView().skipIntermediaryPage(categoryHadesModelResponse.body());
             }
@@ -177,7 +171,7 @@ public class IntermediaryPresenter extends BaseDaggerPresenter<IntermediaryContr
         private List<CuratedSectionModel> mappingDataLayer(IntermediaryCategoryDomainModel domain) {
             int page;
             for (int i = 0; i < domain.getCuratedSectionModelList().size(); i++) {
-                page=+1;
+                page = +1;
                 CuratedSectionModel model = domain.getCuratedSectionModelList().get(i);
                 model.setProducts(mappingProduct(
                         model.getProducts(),
@@ -212,7 +206,7 @@ public class IntermediaryPresenter extends BaseDaggerPresenter<IntermediaryContr
                                                   String trackerListName,
                                                   String trackerAttribution) {
             int position = 1;
-            for (int i = 0; i<products.size(); i++) {
+            for (int i = 0; i < products.size(); i++) {
                 position++;
                 ProductModel model = products.get(i);
                 model.setTrackerListName(trackerListName);
