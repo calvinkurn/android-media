@@ -35,7 +35,6 @@ public class IntermediaryDependencyInjector {
         UIThread postExecutionThread = new UIThread();
 
         HadesService hadesService = new HadesService();
-        MojitoAuthService mojitoAuthService = new MojitoAuthService();
         HadesApi hadesApi = hadesService.getApi();
         AceSearchService aceSearchService = new AceSearchService();
         SearchApi searchApi = aceSearchService.getApi();
@@ -52,8 +51,8 @@ public class IntermediaryDependencyInjector {
         GetCategoryHeaderUseCase getCategoryHeaderUseCase = new GetCategoryHeaderUseCase(threadExecutor, postExecutionThread, repository);
 
         return  new IntermediaryPresenter(getIntermediaryCategoryUseCase, getCategoryHeaderUseCase,
-                new AddWishlistActionUseCase(threadExecutor, postExecutionThread, mojitoAuthService.getApi(), new AddWishlistActionMapper()),
-                new RemoveWishlistActionUseCase(threadExecutor, postExecutionThread, mojitoAuthService.getApi(), new RemoveWishlistActionMapper()));
+                new AddWishlistActionUseCase(context),
+                new RemoveWishlistActionUseCase(context));
 
     }
 }

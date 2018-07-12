@@ -575,7 +575,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         ProductItem productItem = new ProductItem();
         productItem.setWishlisted(data.isWislished());
         productItem.setProductID(data.getProduct().getId());
-        presenter.handleWishlistButtonClicked(productItem, topAdsRecyclerAdapter.getOriginalPosition(position));
+        presenter.handleWishlistButtonClicked(productItem);
     }
 
     @Override
