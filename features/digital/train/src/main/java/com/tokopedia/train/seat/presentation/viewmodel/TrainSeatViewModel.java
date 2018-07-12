@@ -3,7 +3,10 @@ package com.tokopedia.train.seat.presentation.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class TrainSeatViewModel implements Parcelable {
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.train.seat.presentation.fragment.adapter.TrainSeatAdapterTypeFactory;
+
+public class TrainSeatViewModel implements Parcelable, Visitable<TrainSeatAdapterTypeFactory> {
     private String column;
     private int row;
     private boolean available;
@@ -79,5 +82,10 @@ public class TrainSeatViewModel implements Parcelable {
         parcel.writeInt(row);
         parcel.writeByte((byte) (available ? 1 : 0));
         parcel.writeByte((byte) (isEmpty ? 1 : 0));
+    }
+
+    @Override
+    public int type(TrainSeatAdapterTypeFactory typeFactory) {
+        return typeFactory.type(this);
     }
 }

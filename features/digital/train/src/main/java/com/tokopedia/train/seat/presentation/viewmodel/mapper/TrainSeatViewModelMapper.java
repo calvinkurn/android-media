@@ -58,7 +58,14 @@ public class TrainSeatViewModelMapper {
                 if (j >= size) break;
                 int currentIndexSeat = seatAlphabet.get(entities.get(j).getColumn());
                 if (i < currentIndexSeat) {
-                    newViewModels.addAll(buildPreAlphabet(entities.get(j).getRow(), currentIndexSeat));
+                    int beforeItem = 0;
+                    if (newViewModels.size() > 0){
+                        int newBeforeItem = currentIndexSeat - seatAlphabet.get(newViewModels.get(newViewModels.size() - 1).getColumn());
+                        if (newBeforeItem >= 0) {
+                            beforeItem = newBeforeItem;
+                        }
+                    }
+                    newViewModels.addAll(buildPreAlphabet(entities.get(j).getRow(), currentIndexSeat, i));
                     newViewModels.add(transform(entities.get(j)));
                     i = currentIndexSeat;
                     j++;
@@ -74,10 +81,10 @@ public class TrainSeatViewModelMapper {
         return newViewModels;
     }
 
-    private List<TrainSeatViewModel> buildPreAlphabet(int row, int pos) {
+    private List<TrainSeatViewModel> buildPreAlphabet(int row, int pos, int beforeitem) {
         List<TrainSeatViewModel> viewModels = new ArrayList<>();
         TrainSeatViewModel viewModel;
-        for (int i = 0; i < pos; i++) {
+        for (int i = beforeitem; i < pos; i++) {
             viewModel = new TrainSeatViewModel();
             viewModel.setColumn(seating[i]);
             viewModel.setRow(row);

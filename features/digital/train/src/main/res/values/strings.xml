@@ -7,7 +7,7 @@
     <string name="kai_homepage_return_should_greater_equal_error">Tanggal keberangkatan pulang harus lebih besar sama dengan tanggal keberangkatan</string>
     <string name="kai_homepage_return_max_100_days_from_today_error">Tanggal keberangkatan pulang maksimal 100 hari dari hari ini</string>
 
-    <string name="kai_homepage_departure_max_100_days_from_today_error">Tanggal keberangkatan maksimal 100 hari dari hari ini</string>
+    <string name="kai_homepage_departure_max_90_days_from_today_error">Tanggal keberangkatan maksimal 90 hari dari hari ini</string>
     <string name="kai_homepage_departure_should_atleast_today_error">Tanggal keberangkatan harus lebih besar sama dengan hari ini</string>
 
     <string name="kai_homepage_adult_passenger">Dewasa</string>
@@ -15,6 +15,10 @@
     <string name="train_homepage_toolbar_title">Tiket Kereta</string>
     <string name="train_homepage_origin_station_hint">Kota/Stasiun Asal</string>
     <string name="train_homepage_destination_station_hint">Kota/Stasiun Tujuan</string>
+    <string name="train_homepage_bottom_menu_order_list">Daftar Transaksi</string>
+    <string name="train_homepage_bottom_menu_check_orders">Cek Pesanan</string>
+    <string name="train_homepage_bottom_menu_action_text">Tutup</string>
+
     <string name="train_station_popular_label">Populer</string>
     <string name="train_station_toolbar_title">Pencarian Stasiun</string>
     <string name="train_search_toolbar_title">Pencarian</string>
@@ -139,4 +143,7 @@
     <string name="train_review_item_passenger_seat">%1$s %2$s</string>
     <string name="train_review_item_passenger_info_seat">Kursi (%1$s -  %2$s)</string>
     <string name="train_review_trip_passenger_count">%1$s - %2$s (Dewasa) x %3$d</string>
+    <string name="train_seat_prefix_toolbar_title">Perjalanan Pergi</string>
+    <string name="train_seat_toolbar_title">Pilih Kursi</string>
+    <string name="train_seat_prefix_toolbar_return_trip_title">Perjalanan Pulang</string>
 </resources>

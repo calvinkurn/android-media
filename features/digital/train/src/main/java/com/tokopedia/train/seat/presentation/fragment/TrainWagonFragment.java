@@ -1,9 +1,9 @@
 package com.tokopedia.train.seat.presentation.fragment;
 
 import android.content.Context;
-import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
@@ -19,30 +19,38 @@ import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.presentation.TrainFullDividerItemDecoration;
+import com.tokopedia.train.seat.di.TrainSeatComponent;
+import com.tokopedia.train.seat.presentation.contract.TrainWagonContract;
 import com.tokopedia.train.seat.presentation.fragment.adapter.TrainSeatAdapter;
+import com.tokopedia.train.seat.presentation.fragment.adapter.TrainSeatAdapterTypeFactory;
 import com.tokopedia.train.seat.presentation.fragment.adapter.TrainSeatPopupAdapter;
 import com.tokopedia.train.seat.presentation.fragment.listener.TrainSeatListener;
+import com.tokopedia.train.seat.presentation.presenter.TrainWagonPresenter;
 import com.tokopedia.train.seat.presentation.viewmodel.TrainSeatPassengerViewModel;
 import com.tokopedia.train.seat.presentation.viewmodel.TrainSeatViewModel;
 import com.tokopedia.train.seat.presentation.viewmodel.TrainWagonViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
-public class TrainWagonFragment extends BaseDaggerFragment implements TrainSeatAdapter.ActionListener, TrainSeatPopupAdapter.ActionListener, TrainSeatListener {
+public class TrainWagonFragment extends BaseDaggerFragment implements TrainWagonContract.View, TrainSeatAdapterTypeFactory.ActionListener, TrainSeatPopupAdapter.ActionListener, TrainSeatListener {
     private static final String EXTRA_WAGON = "EXTRA_WAGON";
     private TrainWagonViewModel trainWagonViewModel;
-
+    private List<TrainSeatViewModel> selectedSeatsInWagon;
     private RecyclerView seatsRecyclerView;
     private PopupWindow popupWindow;
-
     private TrainSeatAdapter adapter;
     private GridLayoutManager gridLayoutManager;
+
+    @Inject
+    TrainWagonPresenter presenter;
 
     public static TrainWagonFragment newInstance(TrainWagonViewModel trainWagonViewModel, OnFragmentInteraction interactionListener) {
         TrainWagonFragment fragment = new TrainWagonFragment();
@@ -61,26 +69,12 @@ public class TrainWagonFragment extends BaseDaggerFragment implements TrainSeatA
 
     @Override
     public void onPassengerClicked(TrainSeatPassengerViewModel selectedPassenger, TrainSeatViewModel seat) {
-        List<TrainSeatPassengerViewModel> passengers = interaction.getPassengers();
-        boolean isFilledByExistingPassenger = false;
-        for (TrainSeatPassengerViewModel passenger : passengers) {
-            if (trainWagonViewModel.getWagonCode().equalsIgnoreCase(passenger.getSeatViewModel().getWagonCode()) &&
-                    passenger.getSeatViewModel().getRow().equalsIgnoreCase(String.valueOf(seat.getRow())) &&
-                    passenger.getSeatViewModel().getColumn().equalsIgnoreCase(String.valueOf(seat.getColumn()))) {
-                isFilledByExistingPassenger = true;
-                break;
-            }
-        }
-        if (!isFilledByExistingPassenger) {
-            interaction.onPassengerSeatChange(selectedPassenger, seat, trainWagonViewModel.getWagonCode());
-            popupWindow.dismiss();
-        }
+        presenter.onSeatClicked(selectedPassenger, seat);
     }
 
     @Override
     public void notifyPassengerUpdate() {
-        adapter.setSelecteds(transformToSelectedSeat(interaction.getPassengers()));
-        adapter.notifyDataSetChanged();
+        presenter.onPassengerSeatUpdate();
     }
 
     public interface OnFragmentInteraction {
@@ -91,7 +85,7 @@ public class TrainWagonFragment extends BaseDaggerFragment implements TrainSeatA
 
     @Override
     protected void initInjector() {
-
+        getComponent(TrainSeatComponent.class).inject(this);
     }
 
     @Override
@@ -116,39 +110,40 @@ public class TrainWagonFragment extends BaseDaggerFragment implements TrainSeatA
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        adapter = new TrainSeatAdapter(trainWagonViewModel.getMaxColumn());
-        adapter.setSeats(trainWagonViewModel.getSeats());
-        adapter.setSelecteds(transformToSelectedSeat(interaction.getPassengers()));
-        adapter.setListener(this);
+        TrainSeatAdapterTypeFactory adapterTypeFactory = new TrainSeatAdapterTypeFactory(this);
+        initView(adapterTypeFactory);
+        presenter.attachView(this);
+        presenter.onViewCreated();
+    }
+
+    private void initView(TrainSeatAdapterTypeFactory adapterTypeFactory) {
+        adapter = new TrainSeatAdapter(adapterTypeFactory);
         seatsRecyclerView.setNestedScrollingEnabled(false);
         gridLayoutManager = new GridLayoutManager(getContext(), trainWagonViewModel.getMaxColumn() + 1);
-        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-            @Override
-            public int getSpanSize(int position) {
-                if ((position + 1) % trainWagonViewModel.getMaxColumn() == 2)
-                    return 2;
-                else
-                    return 1;
-            }
-        });
+        gridLayoutManager.setSpanSizeLookup(getSpanSeatRule());
         seatsRecyclerView.setLayoutManager(gridLayoutManager);
-
-//        seatsRecyclerView.addItemDecoration(new TrainSeatItemDivider(columnCount));
         seatsRecyclerView.setAdapter(adapter);
     }
 
-    private List<TrainSeatViewModel> transformToSelectedSeat(List<TrainSeatPassengerViewModel> passengers) {
-        List<TrainSeatViewModel> seats = new ArrayList<>();
-        for (TrainSeatPassengerViewModel passenger : passengers) {
-            if (trainWagonViewModel.getWagonCode().equalsIgnoreCase(passenger.getSeatViewModel().getWagonCode())) {
-                TrainSeatViewModel seat = new TrainSeatViewModel();
-                seat.setRow(Integer.parseInt(passenger.getSeatViewModel().getRow()));
-                seat.setColumn(passenger.getSeatViewModel().getColumn());
-                seat.setAvailable(false);
-                seats.add(seat);
+    @NonNull
+    private GridLayoutManager.SpanSizeLookup getSpanSeatRule() {
+        return new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                if (trainWagonViewModel.getMaxColumn() == 4 && (position + 1) % trainWagonViewModel.getMaxColumn() == 2)
+                    return 2;
+                else if (trainWagonViewModel.getMaxColumn() == 5 && (position + 1) % trainWagonViewModel.getMaxColumn() == 3)
+                    return 3;
+                else
+                    return 1;
             }
-        }
-        return seats;
+        };
+    }
+
+
+    @Override
+    public TrainWagonViewModel getWagon() {
+        return trainWagonViewModel;
     }
 
     @Override
@@ -157,105 +152,142 @@ public class TrainWagonFragment extends BaseDaggerFragment implements TrainSeatA
     }
 
     @Override
-    public void seatClicked(TrainSeatViewModel viewModel, int position, int top, int left, int width, int height) {
+    public void setSelectedSeat(List<TrainSeatViewModel> trainSeatViewModels) {
+        this.selectedSeatsInWagon = trainSeatViewModels;
+    }
+
+    @Override
+    public void renderSeats(List<Visitable> seats) {
+        adapter.addElement(seats);
+    }
+
+    @Override
+    public void refreshSeats() {
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void updatePassengersSeat(TrainSeatPassengerViewModel selectedPassenger, TrainSeatViewModel seat, String wagonCode) {
+        interaction.onPassengerSeatChange(selectedPassenger, seat, wagonCode);
+        popupWindow.dismiss();
+    }
+
+    @Override
+    public List<TrainSeatViewModel> getSelectedSelected() {
+        return selectedSeatsInWagon;
+    }
+
+    @Override
+    public void seatClicked(TrainSeatViewModel viewModel, int position, int height) {
         int pos[] = new int[2];
         gridLayoutManager.findViewByPosition(position).getLocationOnScreen(pos);
-        int newtop = pos[1];
+        int top = pos[1];
+
         int popupHeight = getResources().getDimensionPixelSize(R.dimen.train_seat_popup);
-        LayoutInflater inflater = (LayoutInflater)
-                getContext().getSystemService(LAYOUT_INFLATER_SERVICE);
-        View popupView = inflater.inflate(R.layout.view_train_seat_popup, null);
+        TrainSeatPopupWindow trainPopup = new TrainSeatPopupWindow();
 
-        // create the popup window
-        int widthL = LinearLayout.LayoutParams.MATCH_PARENT;
-        int heightL = LinearLayout.LayoutParams.WRAP_CONTENT;
-        boolean focusable = true; // lets taps outside the popup also dismiss it
-        popupWindow = new PopupWindow(popupView, widthL, heightL, focusable);
-        RecyclerView passengerRecyclerView = popupView.findViewById(R.id.rv_passenger);
-        LinearLayout topSeatLayout = popupView.findViewById(R.id.top_seat_layout);
-        AppCompatImageView topSeatArrow = popupView.findViewById(R.id.top_seat_arrow);
-        LinearLayout bottomSeatLayout = popupView.findViewById(R.id.bottom_seat_layout);
-        AppCompatImageView bottomSeatArrow = popupView.findViewById(R.id.bottom_seat_arrow);
-
-        TrainSeatPopupAdapter adapter = new TrainSeatPopupAdapter(interaction.getPassengers(), viewModel);
-        adapter.setListener(this);
-        passengerRecyclerView.addItemDecoration(new TrainFullDividerItemDecoration(getActivity()));
-        passengerRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        passengerRecyclerView.setAdapter(adapter);
-        // show the popup window
-        // which view you pass in doesn't matter, it is only used for the window tolken
-        int x = pos[0];
-        int y = 0;
-        if (newtop > popupHeight) {
-            // top view
-            y = newtop - popupHeight + height;
-            topSeatLayout.setVisibility(View.GONE);
-            topSeatArrow.setVisibility(View.GONE);
-            bottomSeatLayout.setX(x);
-            bottomSeatLayout.setLeft(x);
-            AppCompatTextView bottomSeatTextView = popupView.findViewById(R.id.tv_bottom_seat_label);
-            bottomSeatTextView.setText(String.format("%d%s", viewModel.getRow(), viewModel.getColumn()));
-        } else {
-            // bottom view
-            y = newtop;
-            topSeatLayout.setX(x);
-            topSeatLayout.setLeft(x);
-            bottomSeatLayout.setVisibility(View.GONE);
-            bottomSeatArrow.setVisibility(View.GONE);
-            AppCompatTextView topSeatTextView = popupView.findViewById(R.id.tv_top_seat_label);
-            topSeatTextView.setText(String.format("%d%s", viewModel.getRow(), viewModel.getColumn()));
-        }
-
-
-        popupWindow.showAtLocation(getView(), Gravity.TOP | Gravity.LEFT, 0, y);
-        dimBehind(popupWindow);
-        // dismiss the popup window when touched
-        popupView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                popupWindow.dismiss();
-                return true;
-            }
-        });
+        trainPopup.showPopup(viewModel, height, pos[0], top, popupHeight);
     }
 
-    public void dimBehind(PopupWindow popupWindow) {
-        View container;
-        if (popupWindow.getBackground() == null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                container = (View) popupWindow.getContentView().getParent();
-            } else {
-                container = popupWindow.getContentView();
-            }
-        } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                container = (View) popupWindow.getContentView().getParent().getParent();
-            } else {
-                container = (View) popupWindow.getContentView().getParent();
-            }
-        }
-        Context context = popupWindow.getContentView().getContext();
-        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        WindowManager.LayoutParams p = (WindowManager.LayoutParams) container.getLayoutParams();
-        p.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND;
-        p.dimAmount = 0.7f;
-        wm.updateViewLayout(container, p);
+    @Override
+    public String getWagonCode() {
+        return trainWagonViewModel.getWagonCode();
     }
 
-    public static Rect locateView(View v) {
-        int[] loc_int = new int[2];
-        if (v == null) return null;
-        try {
-            v.getLocationOnScreen(loc_int);
-        } catch (NullPointerException npe) {
-            //Happens when the view doesn't exist on screen anymore.
-            return null;
+
+    public class TrainSeatPopupWindow {
+        RecyclerView passengerRecyclerView;
+        LinearLayout topSeatLayout;
+        AppCompatImageView topSeatArrow;
+        LinearLayout bottomSeatLayout;
+        AppCompatImageView bottomSeatArrow;
+
+        TrainSeatPopupWindow() {
         }
-        Rect location = new Rect();
-        location.left = loc_int[0];
-        location.top = loc_int[1];
-        location.right = location.left + v.getWidth();
-        location.bottom = location.top + v.getHeight();
-        return location;
+
+        void showPopup(TrainSeatViewModel viewModel, int height, int left, int top, int popupHeight) {
+            LayoutInflater inflater = (LayoutInflater)
+                    getContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+            View popupView = inflater.inflate(R.layout.view_train_seat_popup, null);
+
+            popupWindow = new PopupWindow(popupView, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, true);
+            bindView(popupView);
+            setupRecyclerView(viewModel);
+            preparePopUp(viewModel, height, left, top, popupHeight, popupView);
+            dimScreenBehind(popupWindow, 0.7f);
+
+            popupView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    popupWindow.dismiss();
+                    return true;
+                }
+            });
+        }
+
+        private void preparePopUp(TrainSeatViewModel viewModel, int height, int left, int top, int popupHeight, View popupView) {
+            int newTop = 0;
+            if (top > popupHeight) {
+                // top view
+                newTop = top - popupHeight + height;
+                topSeatLayout.setVisibility(View.GONE);
+                topSeatArrow.setVisibility(View.GONE);
+                bottomSeatLayout.setX(left);
+                bottomSeatLayout.setLeft(left);
+                AppCompatTextView bottomSeatTextView = popupView.findViewById(R.id.tv_bottom_seat_label);
+                bottomSeatTextView.setText(String.format("%d%s", viewModel.getRow(), viewModel.getColumn()));
+            } else {
+                // bottom view
+                newTop = top;
+                topSeatLayout.setX(left);
+                topSeatLayout.setLeft(left);
+                bottomSeatLayout.setVisibility(View.GONE);
+                bottomSeatArrow.setVisibility(View.GONE);
+                AppCompatTextView topSeatTextView = popupView.findViewById(R.id.tv_top_seat_label);
+                topSeatTextView.setText(String.format("%d%s", viewModel.getRow(), viewModel.getColumn()));
+            }
+
+            popupWindow.showAtLocation(getView(), Gravity.TOP | Gravity.LEFT, 0, newTop);
+        }
+
+        private void setupRecyclerView(TrainSeatViewModel viewModel) {
+            TrainSeatPopupAdapter adapter = new TrainSeatPopupAdapter(trainWagonViewModel.getWagonCode(), interaction.getPassengers(), viewModel);
+            adapter.setListener(TrainWagonFragment.this);
+            passengerRecyclerView.addItemDecoration(new TrainFullDividerItemDecoration(getActivity()));
+            passengerRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+            passengerRecyclerView.setAdapter(adapter);
+        }
+
+        private void bindView(View popupView) {
+            passengerRecyclerView = popupView.findViewById(R.id.rv_passenger);
+            topSeatLayout = popupView.findViewById(R.id.top_seat_layout);
+            topSeatArrow = popupView.findViewById(R.id.top_seat_arrow);
+            bottomSeatLayout = popupView.findViewById(R.id.bottom_seat_layout);
+            bottomSeatArrow = popupView.findViewById(R.id.bottom_seat_arrow);
+        }
+
+
+        void dimScreenBehind(PopupWindow popupWindow, Float dimAmount) {
+            View container;
+            if (popupWindow.getBackground() == null) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    container = (View) popupWindow.getContentView().getParent();
+                } else {
+                    container = popupWindow.getContentView();
+                }
+            } else {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    container = (View) popupWindow.getContentView().getParent().getParent();
+                } else {
+                    container = (View) popupWindow.getContentView().getParent();
+                }
+            }
+            Context context = popupWindow.getContentView().getContext();
+            WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+            WindowManager.LayoutParams p = (WindowManager.LayoutParams) container.getLayoutParams();
+            p.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+            p.dimAmount = dimAmount;
+            wm.updateViewLayout(container, p);
+        }
     }
 }

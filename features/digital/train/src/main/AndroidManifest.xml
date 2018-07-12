@@ -49,7 +49,7 @@
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name="com.tokopedia.train.seat.presentation.activity.TrainSeatActivity"
-            android:label="Pilih Tempat Duduk"
+            android:label="@string/train_seat_toolbar_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustResize" />

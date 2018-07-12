@@ -1,6 +1,8 @@
 package com.tokopedia.train.seat.presentation.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -16,12 +18,14 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.component.Menus;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
+import com.tokopedia.train.reviewdetail.presentation.activity.TrainReviewDetailActivity;
+import com.tokopedia.train.search.presentation.model.TrainScheduleBookingPassData;
 import com.tokopedia.train.seat.di.TrainSeatComponent;
+import com.tokopedia.train.seat.presentation.activity.TrainSeatActivity;
 import com.tokopedia.train.seat.presentation.contract.TrainSeatContract;
 import com.tokopedia.train.seat.presentation.fragment.listener.TrainSeatListener;
 import com.tokopedia.train.seat.presentation.fragment.viewpager.TrainWagonsPagerAdapter;
 import com.tokopedia.train.seat.presentation.presenter.TrainSeatPresenter;
-import com.tokopedia.train.seat.presentation.viewmodel.TrainSeatPassengerSeatViewModel;
 import com.tokopedia.train.seat.presentation.viewmodel.TrainSeatPassengerViewModel;
 import com.tokopedia.train.seat.presentation.viewmodel.TrainSeatViewModel;
 import com.tokopedia.train.seat.presentation.viewmodel.TrainWagonViewModel;
@@ -29,7 +33,6 @@ import com.tokopedia.train.seat.presentation.widget.CountdownTimeView;
 import com.tokopedia.train.seat.presentation.widget.TrainSeatPagerIndicator;
 import com.tokopedia.train.seat.presentation.widget.TrainSeatPassengerAndWagonView;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -37,6 +40,8 @@ import javax.inject.Inject;
 
 public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatContract.View, TrainSeatPassengerAndWagonView.TrainSeatActionListener {
     private static final String EXTRA_SOFTBOOK = "EXTRA_SOFTBOOK";
+    private static final String EXTRA_PASSDATA = "EXTRA_PASSDATA";
+    private static final String EXTRA_DEPARTURE_STATE = "EXTRA_DEPARTURE_STATE";
     @Inject
     TrainSeatPresenter presenter;
 
@@ -54,11 +59,23 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
     private List<TrainWagonViewModel> wagons;
 
     private TrainSoftbook trainSoftbook;
+    private TrainScheduleBookingPassData passData;
+    private boolean isDeparture;
 
-    public static Fragment newInstance(TrainSoftbook trainSoftbook) {
+    private InteractionListener interactionListener;
+
+    public interface InteractionListener {
+        void setToolbar(String subtitle);
+    }
+
+    public static Fragment newInstance(TrainSoftbook trainSoftbook,
+                                       TrainScheduleBookingPassData passData,
+                                       boolean isDeparture) {
         Fragment fragment = new TrainSeatFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_SOFTBOOK, trainSoftbook);
+        bundle.putParcelable(EXTRA_PASSDATA, passData);
+        bundle.putBoolean(EXTRA_DEPARTURE_STATE, isDeparture);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -66,6 +83,8 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
     @Override
     public void onCreate(Bundle savedInstanceState) {
         trainSoftbook = getArguments().getParcelable(EXTRA_SOFTBOOK);
+        passData = getArguments().getParcelable(EXTRA_PASSDATA);
+        isDeparture = getArguments().getBoolean(EXTRA_DEPARTURE_STATE);
         super.onCreate(savedInstanceState);
     }
 
@@ -144,37 +163,23 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
         pagerIndicator.setCurrentIndicator(0);
         trainSeatHeader.renderWagon(trainWagonViewModels.get(0).getWagonCode());
         trainSeatHeader.renderPassenger(getPassengers());
-        double height = trainWagonViewModels.get(0).getMaxRow() * getResources().getDimensionPixelOffset(R.dimen.train_seat_with_margin);
+        double height = (trainWagonViewModels.get(0).getMaxRow() + 1) * getResources().getDimensionPixelOffset(R.dimen.train_seat_with_margin);
         ViewGroup.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) height);
         wagonViewPager.setLayoutParams(layoutParams);
 
-        adapter = new TrainWagonsPagerAdapter(getFragmentManager(), trainWagonViewModels, new TrainWagonFragment.OnFragmentInteraction() {
-            @Override
-            public List<TrainSeatPassengerViewModel> getPassengers() {
-                return passengers;
-            }
+        adapter = new TrainWagonsPagerAdapter(getFragmentManager(),
+                trainWagonViewModels,
+                getWagonFragmentInteractionListener());
 
+        wagonViewPager.addOnPageChangeListener(getWagonPagerChangeListener());
+        wagonViewPager.setOffscreenPageLimit(wagons.size());
+        wagonViewPager.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+    }
 
-            @Override
-            public void onPassengerSeatChange(TrainSeatPassengerViewModel passenger, TrainSeatViewModel seat, String wagonCode) {
-                for (TrainSeatPassengerViewModel passengerSeat : passengers) {
-                    if (passengerSeat.getName().equalsIgnoreCase(passenger.getName())) {
-                        TrainSeatPassengerSeatViewModel seatViewModel = new TrainSeatPassengerSeatViewModel();
-                        seatViewModel.setWagonCode(wagonCode);
-                        seatViewModel.setRow(String.valueOf(seat.getRow()));
-                        seatViewModel.setColumn(seat.getColumn());
-                        passengerSeat.setSeatViewModel(seatViewModel);
-                        break;
-                    }
-                }
-                Object fragment = adapter.instantiateItem(wagonViewPager, wagonViewPager.getCurrentItem());
-                if (fragment != null && fragment instanceof TrainSeatListener) {
-                    ((TrainSeatListener) fragment).notifyPassengerUpdate();
-                }
-                trainSeatHeader.renderPassenger(getPassengers());
-            }
-        });
-        wagonViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+    @NonNull
+    private ViewPager.OnPageChangeListener getWagonPagerChangeListener() {
+        return new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -195,10 +200,32 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
             public void onPageScrollStateChanged(int state) {
 
             }
-        });
-        wagonViewPager.setOffscreenPageLimit(wagons.size());
-        wagonViewPager.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
+        };
+    }
+
+    @NonNull
+    private TrainWagonFragment.OnFragmentInteraction getWagonFragmentInteractionListener() {
+        return new TrainWagonFragment.OnFragmentInteraction() {
+            @Override
+            public List<TrainSeatPassengerViewModel> getPassengers() {
+                return passengers;
+            }
+
+
+            @Override
+            public void onPassengerSeatChange(TrainSeatPassengerViewModel passenger, TrainSeatViewModel seat, String wagonCode) {
+                presenter.onPassengerSeatChange(passenger, seat, wagonCode);
+            }
+        };
+    }
+
+    @Override
+    public void updateSelectedWagon() {
+        Object fragment = adapter.instantiateItem(wagonViewPager, wagonViewPager.getCurrentItem());
+        if (fragment != null && fragment instanceof TrainSeatListener) {
+            ((TrainSeatListener) fragment).notifyPassengerUpdate();
+        }
+        trainSeatHeader.renderPassenger(getPassengers());
     }
 
     @Override
@@ -248,8 +275,16 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
     }
 
     @Override
-    public void navigateToReview(List<TrainSeatPassengerViewModel> originalPassenger) {
-
+    public void navigateToReview(TrainSoftbook trainSoftbook) {
+        if (!isReturning()) {
+            if (trainSoftbook.getReturnTrips() != null && trainSoftbook.getReturnTrips().size() > 0) {
+                startActivity(TrainSeatActivity.getCallingIntent(getActivity(), trainSoftbook, passData, false));
+            } else {
+                startActivity(TrainReviewDetailActivity.createIntent(getActivity(), trainSoftbook, passData));
+            }
+        } else {
+            startActivity(TrainReviewDetailActivity.createIntent(getActivity(), trainSoftbook, passData));
+        }
     }
 
     @Override
@@ -259,7 +294,7 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
 
     @Override
     public boolean isReturning() {
-        return false;
+        return !isDeparture;
     }
 
     @Override
@@ -275,7 +310,10 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
     @Override
     public void onWagonClicked() {
         presenter.onWagonChooserClicked();
+    }
 
+    @Override
+    public void showWagonChooser() {
         Menus menus = new Menus(getActivity());
         String[] wagonsTitle = new String[wagons.size()];
         for (int i = 0; i < wagons.size(); i++) {
@@ -294,4 +332,18 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
         menus.show();
     }
 
+    @Override
+    public void setToolbarSubTitle(String subtitle) {
+        interactionListener.setToolbar(subtitle);
+    }
+
+    @Override
+    protected void onAttachActivity(Context context) {
+        super.onAttachActivity(context);
+        if (context instanceof InteractionListener) {
+            interactionListener = (InteractionListener) context;
+        } else {
+            throw new RuntimeException("Activity must implement " + InteractionListener.class.getSimpleName());
+        }
+    }
 }
