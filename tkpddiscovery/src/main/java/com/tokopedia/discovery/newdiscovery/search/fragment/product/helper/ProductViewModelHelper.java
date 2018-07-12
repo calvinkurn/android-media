@@ -52,7 +52,7 @@ public class ProductViewModelHelper {
         productViewModel.setQuery(searchProductResponse.getQuery());
         productViewModel.setShareUrl(searchProductResponse.getShareUrl());
         productViewModel.setHasCatalog(ListHelper.isContainItems(searchProductResponse.getCatalogs()));
-        productViewModel.setSuggestionModel(createSuggestionModel(searchProductResponse.getSuggestion()));
+        productViewModel.setSuggestionModel(createSuggestionModel(searchProductResponse));
         productViewModel.setTotalData(searchProductResponse.getCount());
         return productViewModel;
     }
@@ -73,12 +73,13 @@ public class ProductViewModelHelper {
         return productViewModel;
     }
 
-    private static SuggestionModel createSuggestionModel(SearchProductGqlResponse.Suggestion gqlSuggestionResponse) {
+    private static SuggestionModel createSuggestionModel(SearchProductGqlResponse.SearchProduct searchProductResponse) {
+        SearchProductGqlResponse.Suggestion gqlSuggestionResponse = searchProductResponse.getSuggestion();
         SuggestionModel model = new SuggestionModel();
         model.setSuggestionText(gqlSuggestionResponse.getText());
         model.setSuggestedQuery(gqlSuggestionResponse.getQuery());
         model.setSuggestionCurrentKeyword(gqlSuggestionResponse.getCurrentKeyword());
-        model.setFormattedResultCount(Long.toString(gqlSuggestionResponse.getSuggestionCount()));
+        model.setFormattedResultCount(Long.toString(searchProductResponse.getCount()));
         return model;
     }
 
