@@ -5,6 +5,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 import android.app.Activity;
 import android.app.Instrumentation;
@@ -53,6 +56,17 @@ public class TkpdHintTextInputLayoutTest {
         assertEquals(-1, view.getCounterMaxLength());
         assertEquals(view.getEditText().getId(), R.id.edit_text);
         assertNull(view.getError());
+
+//        view = getActivity().findViewById(R.id.text_input_layout2);
+//        TkpdHintTextInputLayout view2 = spy(view);
+//        assertFalse(view.isCounterEnabled());
+//        assertFalse(view.isSuccessShown());
+//        assertEquals(-1, view.getCounterMaxLength());
+//        assertEquals(view.getEditText().getId(), R.id.edit_text2);
+//        assertNull(view.getError());
+//
+//        view2.setCounterEnabled(true);
+
     }
 
     private Activity getActivity() {

@@ -23,5 +23,18 @@
                 android:layout_width="match_parent" />
         </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
+        <!--<com.tokopedia.design.text.TkpdHintTextInputLayout-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:id="@+id/text_input_layout2"-->
+            <!--android:layout_marginLeft="@dimen/dp_8"-->
+            <!--android:layout_marginStart="@dimen/dp_8">-->
+
+            <!--<android.support.v7.widget.AppCompatEditText-->
+                <!--android:id="@+id/edit_text2"-->
+                <!--style="@style/TextView.Small"-->
+                <!--android:layout_width="match_parent" />-->
+        <!--</com.tokopedia.design.text.TkpdHintTextInputLayout>-->
+
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>
