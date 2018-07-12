@@ -79,29 +79,6 @@ public class TrainStationDataStoreFactory {
         return trainStationCacheDataStore.isExpired().flatMap((Func1<Boolean, Observable<TrainStation>>)
                 isExpired -> {
                     if (isExpired) {
-                        return trainStationDbDataStore.deleteAll().flatMap((Func1<Boolean, Observable<TrainStation>>)
-                                isSuccessDeletingData -> {
-                                    if (isSuccessDeletingData)
-                                        return getDataFromCloud(specification);
-                                    else
-                                        return Observable.empty();
-                                });
-                    } else {
-                        return trainStationDbDataStore.getData(specification).flatMap((Func1<TrainStation, Observable<TrainStation>>)
-                                trainStation -> {
-                                    if (trainStation != null) {
-                                        return Observable.just(trainStation);
-                                    }
-                                    return getDataFromCloud(specification);
-                                });
-                    }
-                });
-    }
-
-    public Observable<TrainStation> getStation2(final Specification specification) {
-        return trainStationCacheDataStore.isExpired().flatMap((Func1<Boolean, Observable<TrainStation>>)
-                isExpired -> {
-                    if (isExpired) {
                         return trainStationDbDataStore.deleteAll()
                                 .flatMap((Func1<Boolean, Observable<TrainStation>>)
                                         isSuccessDeletingData -> {
