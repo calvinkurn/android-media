@@ -7,14 +7,11 @@ import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.orders.orderlist.data.Data;
 import com.tokopedia.transaction.orders.orderlist.data.TabData;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
-import java.util.HashMap;
-import java.util.Map;
 
 import rx.Subscriber;
 

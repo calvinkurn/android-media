@@ -10,8 +10,6 @@ import android.support.v4.app.TaskStackBuilder;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
-import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.applink.TransactionAppLink;
 import com.tokopedia.transaction.orders.orderdetails.view.fragment.OmsDetailFragment;
@@ -19,9 +17,6 @@ import com.tokopedia.transaction.orders.orderdetails.view.fragment.OrderListDeta
 import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
 import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
 import com.tokopedia.transaction.router.UnifiedOrderRouter;
-
-import static com.tokopedia.transaction.orders.orderdetails.view.fragment.OrderListDetailFragment.KEY_ORDER_CATEGORY;
-import static com.tokopedia.transaction.orders.orderdetails.view.fragment.OrderListDetailFragment.KEY_ORDER_ID;
 
 /**
  * Created by baghira on 09/05/18.

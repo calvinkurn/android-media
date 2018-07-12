@@ -21,7 +21,6 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.common.view.DoubleTextView;
-import com.tokopedia.transaction.orders.orderdetails.view.activity.OrderListDetailActivity;
 import com.tokopedia.transaction.orders.orderlist.data.Color;
 import com.tokopedia.transaction.orders.orderlist.data.DotMenuList;
 import com.tokopedia.transaction.orders.orderlist.data.MetaData;
