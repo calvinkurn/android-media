@@ -61,6 +61,7 @@ import javax.inject.Inject;
  * Created by nathan on 2/3/18.
  */
 
+@Deprecated
 public class OldShopPageActivity extends BaseTabActivity implements ShopPagePromoWebView.Listener, ShopPageHeaderViewHolder.Listener, HasComponent<ShopComponent>, ShopPageView {
 
     private static final float OFFSET_TOOLBAR_TITLE_SHOWN = 0.76f;

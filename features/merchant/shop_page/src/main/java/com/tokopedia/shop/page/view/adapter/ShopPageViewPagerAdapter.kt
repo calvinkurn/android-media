@@ -1,34 +1,52 @@
 package com.tokopedia.shop.page.view.adapter
 
-import android.os.Bundle
-import android.os.Parcelable
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
-import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedFragment
+import android.support.v4.util.SparseArrayCompat
+import android.view.ViewGroup
+import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedNewFragment
+import com.tokopedia.shop.product.view.widget.ShopPagePromoWebView
 
-class ShopPageViewPagerAdapter(val fragmentManager: FragmentManager, val titles: Array<String>,
-                               val shopId: String?, val shopDomain: String?, val shopAttribution: String?)
-    : FragmentStatePagerAdapter(fragmentManager) {
+class ShopPageViewPagerAdapter(val fragmentManager: FragmentManager,
+                               val titles: Array<String>,
+                               val webViewListener: ShopPagePromoWebView.Listener,
+                               val shopId: String?,
+                               val shopDomain: String?,
+                               val shopAttribution: String?) : FragmentStatePagerAdapter(fragmentManager) {
 
-    companion object {
-        const val STATES = "states"
-    }
+    private val registeredFragments = SparseArrayCompat<Fragment>()
 
     override fun getItem(position: Int): Fragment {
-        return ShopProductListLimitedFragment.createInstance(shopAttribution)
+        when (position) {
+            0 -> {
+                val shopProductListLimitedNewFragment = ShopProductListLimitedNewFragment.createInstance(shopAttribution)
+                shopProductListLimitedNewFragment.setPromoWebViewListener(webViewListener)
+                return shopProductListLimitedNewFragment
+            }
+            else -> {
+                //TODO go to product info fragment
+                return Fragment()
+            }
+        }
     }
 
     override fun getPageTitle(position: Int) = titles[position]
 
     override fun getCount() = titles.size
 
-    override fun saveState(): Parcelable {
-        var bundle: Bundle? = super.saveState() as Bundle
-        if (bundle == null){
-            bundle = Bundle()
-        }
-        bundle.putParcelableArray(STATES, null)
-        return bundle
+    override fun instantiateItem(container: ViewGroup, position: Int): Any {
+        val o = super.instantiateItem(container, position)
+        registeredFragments.put(position, o as Fragment)
+        return o
+    }
+
+    override fun destroyItem(container: ViewGroup?, position: Int, `object`: Any) {
+        registeredFragments.remove(position)
+        super.destroyItem(container, position, `object`)
+    }
+
+    fun getRegisteredFragment(position: Int): Fragment? {
+        return registeredFragments.get(position)
     }
 }
