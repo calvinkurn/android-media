@@ -12,7 +12,6 @@ class ShopPageViewPagerAdapter(val fragmentManager: FragmentManager,
                                val titles: Array<String>,
                                val webViewListener: ShopPagePromoWebView.Listener,
                                val shopId: String?,
-                               val shopDomain: String?,
                                val shopAttribution: String?) : FragmentStatePagerAdapter(fragmentManager) {
 
     private val registeredFragments = SparseArrayCompat<Fragment>()

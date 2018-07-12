@@ -119,7 +119,7 @@ class ShopPageActivity: BaseSimpleActivity(), ShopPagePromoWebView.Listener, Has
         val titles = arrayOf(getString(R.string.shop_info_title_tab_product),
                 getString(R.string.shop_info_title_tab_info))
         shopPageViewPagerAdapter = ShopPageViewPagerAdapter(supportFragmentManager, titles, this,
-                shopId, shopDomain, shopAttribution)
+                shopId, shopAttribution)
     }
 
     private fun initInjector() {
