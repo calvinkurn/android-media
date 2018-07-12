@@ -26,6 +26,12 @@ import butterknife.OnClick;
 
 public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.ImageViewHolder> {
 
+    private final OnSelectImageClick onSelectImageClick;
+
+
+    private static final int VIEW_UPLOAD_BUTTON = 100;
+    private int maxPicUpload = 5;
+
     public ArrayList<ImageUpload> getImageUpload() {
         return imageUpload;
     }
@@ -34,8 +40,10 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
 
     private Context context;
 
-    public ImageUploadAdapter(Context context) {
+    public ImageUploadAdapter(Context context, OnSelectImageClick onSelectImageClick) {
         this.context = context;
+        this.onSelectImageClick = onSelectImageClick;
+        imageUpload.add(new ImageUpload());
     }
 
     @Override
@@ -46,21 +54,36 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
 
     @Override
     public void onBindViewHolder(ImageViewHolder holder, int position) {
-        holder.setImage(imageUpload.get(position));
+        ImageUpload image = imageUpload.get(position);
+        if (getItemViewType(position) != VIEW_UPLOAD_BUTTON) {
+            image.setImgSrc(-1);
+        } else {
+            image.setImgSrc(R.drawable.ic_upload);
+        }
+        holder.setImage(image);
     }
 
     @Override
     public int getItemCount() {
+        if (imageUpload.size() >= maxPicUpload) {
+            return maxPicUpload;
+        }
         return imageUpload.size();
     }
 
     public void addImage(ImageUpload image) {
-        imageUpload.add(image);
+        imageUpload.add(0, image);
         notifyDataSetChanged();
     }
 
-
-
+    @Override
+    public int getItemViewType(int position) {
+        if (position == imageUpload.size() - 1) {
+            return VIEW_UPLOAD_BUTTON;
+        } else {
+            return super.getItemViewType(position);
+        }
+    }
 
     class ImageViewHolder extends RecyclerView.ViewHolder {
 
@@ -68,6 +91,8 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
 
         @BindView(R2.id.selected_image)
         ImageView selectedImage;
+        @BindView(R2.id.delete_image)
+        ImageView deleteImage;
 
         public ImageViewHolder(View itemView) {
             super(itemView);
@@ -76,13 +101,31 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
 
         public void setImage(ImageUpload image) {
             this.image = image;
-            ImageHandler.loadImageFromFile(context, selectedImage, new File(image.getFileLoc()));
+            if (image.getImgSrc() != -1) {
+                selectedImage.setImageResource(image.getImgSrc());
+                deleteImage.setVisibility(View.GONE);
+                selectedImage.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        onSelectImageClick.onClick();
+                    }
+                });
+            } else {
+                ImageHandler.loadImageFromFile(context, selectedImage, new File(image.getFileLoc()));
+                deleteImage.setVisibility(View.VISIBLE);
+            }
         }
 
         @OnClick(R2.id.delete_image)
         public void onViewClicked() {
-            imageUpload.remove(imageUpload.indexOf(image));
+            imageUpload.remove(image);
             notifyDataSetChanged();
         }
+
+
+    }
+
+    public interface OnSelectImageClick {
+        public void onClick();
     }
 }
