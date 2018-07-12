@@ -674,8 +674,10 @@ public class TopProfileActivity extends BaseSimpleActivity
     }
 
     private void followUnfollowKol() {
-        if (topProfileViewModel.isFollowed()) presenter.unfollowKol(userId);
-        else presenter.followKol(userId);
+        if (topProfileViewModel != null) {
+            if (topProfileViewModel.isFollowed()) presenter.unfollowKol(userId);
+            else presenter.followKol(userId);
+        }
     }
 
 }

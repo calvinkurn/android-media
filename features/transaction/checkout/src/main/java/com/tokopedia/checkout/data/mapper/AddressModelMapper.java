@@ -2,9 +2,10 @@ package com.tokopedia.checkout.data.mapper;
 
 import android.text.TextUtils;
 
+import com.tokopedia.checkout.domain.datamodel.addressoptions.Paging;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.PeopleAddressModel;
-import com.tokopedia.core.manage.people.address.model.AddressModel;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
+import com.tokopedia.core.manage.people.address.model.AddressModel;
 import com.tokopedia.core.manage.people.address.model.GetPeopleAddress;
 
 import java.util.ArrayList;
@@ -22,9 +23,13 @@ public class AddressModelMapper {
 
     public PeopleAddressModel transform(GetPeopleAddress peopleAddress) {
         PeopleAddressModel peopleAddressModel = new PeopleAddressModel();
-        peopleAddressModel.setRecipientAddressModelList(transform(peopleAddress.getList()));
-        peopleAddressModel.setToken(peopleAddress.getToken());
-
+        if (peopleAddress != null) {
+            peopleAddressModel.setRecipientAddressModelList(transform(peopleAddress.getList()));
+            peopleAddressModel.setToken(peopleAddress.getToken());
+            Paging paging = new Paging();
+            paging.setUriNext(peopleAddress.getPaging().getUriNext());
+            peopleAddressModel.setPaging(paging);
+        }
         return peopleAddressModel;
     }
 
@@ -73,12 +78,16 @@ public class AddressModelMapper {
         addressModel.setAddressStreet(recipientAddress.getAddressStreet());
         addressModel.setDistrictId(recipientAddress.getDestinationDistrictId());
         addressModel.setDistrictName(recipientAddress.getDestinationDistrictName());
+        addressModel.setCityId(recipientAddress.getCityId());
         addressModel.setCityName(recipientAddress.getAddressCityName());
+        addressModel.setProvinceId(recipientAddress.getProvinceId());
         addressModel.setProvinceName(recipientAddress.getAddressProvinceName());
         addressModel.setCountryName(recipientAddress.getAddressCountryName());
         addressModel.setPostalCode(recipientAddress.getAddressPostalCode());
         addressModel.setReceiverName(recipientAddress.getRecipientName());
         addressModel.setReceiverPhone(recipientAddress.getRecipientPhoneNumber());
+        addressModel.setLatitude(recipientAddress.getLatitude() != null ? String.valueOf(recipientAddress.getLatitude()) : "");
+        addressModel.setLongitude(recipientAddress.getLongitude() != null ? String.valueOf(recipientAddress.getLongitude()) : "");
 
         return addressModel;
     }

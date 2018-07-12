@@ -6,7 +6,7 @@ package com.tokopedia.checkout.view.view.cartlist.removecartitem;
 
 public interface RemoveCartItemViewListener {
 
-    void onSingleItemCheckChanged(int position);
+    void onSingleItemCheckChanged(boolean checked, int position);
 
     void onAllItemCheckChanged(boolean checked);
 }
