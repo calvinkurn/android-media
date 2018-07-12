@@ -40,9 +40,9 @@ public class ProductPresenter extends SearchSectionFragmentPresenterImpl<Product
     @Inject
     GetProductUseCase getProductUseCase;
     @Inject
-    TkpdAddWishListUseCase addWishlistActionUseCase;
+    TkpdAddWishListUseCase tkpdAddWishListUseCase;
     @Inject
-    TkpdRemoveWishListUseCase removeWishlistActionUseCase;
+    TkpdRemoveWishListUseCase tkpdRemoveWishListUseCase;
     @Inject
     GetDynamicFilterUseCase getDynamicFilterUseCase;
     private TkpdWishListActionListener wishlistActionListener;
@@ -86,11 +86,11 @@ public class ProductPresenter extends SearchSectionFragmentPresenterImpl<Product
     }
 
     private void addWishlist(String productId, String userId) {
-        addWishlistActionUseCase.createObservable(productId, userId, wishlistActionListener);
+        tkpdAddWishListUseCase.createObservable(productId, userId, wishlistActionListener);
     }
 
     private void removeWishlist(String productId, String userId) {
-        removeWishlistActionUseCase.createObservable(productId, userId, wishlistActionListener);
+        tkpdRemoveWishListUseCase.createObservable(productId, userId, wishlistActionListener);
     }
 
     @Override
@@ -210,8 +210,12 @@ public class ProductPresenter extends SearchSectionFragmentPresenterImpl<Product
     public void detachView() {
         super.detachView();
         getProductUseCase.unsubscribe();
-        addWishlistActionUseCase.unsubscribe();
-        removeWishlistActionUseCase.unsubscribe();
+        if (tkpdAddWishListUseCase != null) {
+            tkpdAddWishListUseCase.unsubscribe();
+        }
+        if (tkpdRemoveWishListUseCase != null) {
+            tkpdRemoveWishListUseCase.unsubscribe();
+        }
         getDynamicFilterUseCase.unsubscribe();
     }
 }

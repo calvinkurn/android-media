@@ -413,7 +413,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
         }
         if (featuredViewModelList.size() > 0) {
             shopPageTracking.eventViewProductFeaturedImpression(getString(R.string.shop_info_title_tab_product),
-                    featuredViewModelList, attribution, 
+                    featuredViewModelList, attribution,
                     shopProductListLimitedPresenter.isMyShop(shopInfo.getInfo().getShopId()), ShopPageTracking.getShopType(shopInfo.getInfo()), false);
         }
         if (productHomeViewModelList.size() > 0) {

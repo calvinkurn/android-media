@@ -13,6 +13,8 @@ import com.tokopedia.wishlist.common.subscriber.TkpdAddWishlistSubscriber;
 import java.util.HashMap;
 import java.util.Map;
 
+import rx.Subscriber;
+
 public class TkpdAddWishListUseCase {
 
     private final String PARAM_USER_ID = "userID";
@@ -22,12 +24,11 @@ public class TkpdAddWishListUseCase {
     private GraphqlUseCase graphqlUseCase;
 
     public TkpdAddWishListUseCase(Context context) {
+        graphqlUseCase = new GraphqlUseCase();
         this.context = context;
     }
 
     public void createObservable(String productId, String userId, TkpdWishListActionListener wishlistActionListener) {
-
-        graphqlUseCase = new GraphqlUseCase();
 
         Map<String, Object> variables = new HashMap<>();
 
@@ -44,7 +45,26 @@ public class TkpdAddWishListUseCase {
 
     }
 
+    public void createObservable(String productId, String userId, Subscriber subscriber) {
+
+        Map<String, Object> variables = new HashMap<>();
+
+        variables.put(PARAM_PRODUCT_ID, Integer.parseInt(productId));
+        variables.put(PARAM_USER_ID, Integer.parseInt(userId));
+
+        GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(), R.raw.query_add_wishlist),
+                TkpdAddWishListResponse.class,
+                variables, OPERATION_NAME);
+
+        graphqlUseCase.addRequest(graphqlRequest);
+
+        graphqlUseCase.execute(subscriber);
+
+    }
+
     public void unsubscribe() {
-        graphqlUseCase.unsubscribe();
+        if (graphqlUseCase != null) {
+            graphqlUseCase.unsubscribe();
+        }
     }
 }

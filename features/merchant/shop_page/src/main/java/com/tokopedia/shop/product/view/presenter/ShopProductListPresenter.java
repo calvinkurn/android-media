@@ -7,6 +7,8 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.response.PagingList;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.network.exception.UserNotLoginException;
+import com.tokopedia.graphql.data.model.GraphqlError;
+import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.shop.common.constant.ShopStatusDef;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
@@ -21,13 +23,13 @@ import com.tokopedia.shop.product.domain.interactor.GetShopProductListWithAttrib
 import com.tokopedia.shop.product.domain.model.ShopProductRequestModel;
 import com.tokopedia.shop.product.view.listener.ShopProductListView;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
-import com.tokopedia.usecase.RequestParams;
-import com.tokopedia.wishlist.common.domain.interactor.AddToWishListUseCase;
-import com.tokopedia.wishlist.common.domain.interactor.RemoveFromWishListUseCase;
+import com.tokopedia.wishlist.common.response.TkpdAddWishListResponse;
+import com.tokopedia.wishlist.common.response.TkpdRemoveWishListResponse;
+import com.tokopedia.wishlist.common.usecase.TkpdAddWishListUseCase;
+import com.tokopedia.wishlist.common.usecase.TkpdRemoveWishListUseCase;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
@@ -40,8 +42,10 @@ import rx.Subscriber;
 public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductListView> {
 
     private final GetShopProductListWithAttributeUseCase getShopProductListWithAttributeUseCase;
-    private final AddToWishListUseCase addToWishListUseCase;
-    private final RemoveFromWishListUseCase removeFromWishListUseCase;
+    //    private final AddToWishListUseCase addToWishListUseCase;
+    //    private final RemoveFromWishListUseCase removeFromWishListUseCase;
+    private final TkpdRemoveWishListUseCase tkpdRemoveWishListUseCase;
+    private final TkpdAddWishListUseCase tkpdAddWishListUseCase;
     private final DeleteShopProductUseCase deleteShopProductUseCase;
     private final GetShopInfoUseCase getShopInfoUseCase;
     private final GetShopEtalaseUseCase getShopEtalaseUseCase;
@@ -50,15 +54,17 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductLis
 
     @Inject
     public ShopProductListPresenter(GetShopProductListWithAttributeUseCase getShopProductListWithAttributeUseCase,
-                                    AddToWishListUseCase addToWishListUseCase,
-                                    RemoveFromWishListUseCase removeFromWishListUseCase,
+//                                    AddToWishListUseCase addToWishListUseCase,
+                                    TkpdAddWishListUseCase tkpdAddWishListUseCase,
+                                    TkpdRemoveWishListUseCase tkpdRemoveWishListUseCase,
+//                                    RemoveFromWishListUseCase removeFromWishListUseCase,
                                     DeleteShopProductUseCase deleteShopProductUseCase,
                                     GetShopInfoUseCase getShopInfoUseCase,
                                     GetShopEtalaseUseCase getShopEtalaseUseCase,
                                     UserSession userSession) {
         this.getShopProductListWithAttributeUseCase = getShopProductListWithAttributeUseCase;
-        this.addToWishListUseCase = addToWishListUseCase;
-        this.removeFromWishListUseCase = removeFromWishListUseCase;
+        this.tkpdAddWishListUseCase = tkpdAddWishListUseCase;
+        this.tkpdRemoveWishListUseCase = tkpdRemoveWishListUseCase;
         this.deleteShopProductUseCase = deleteShopProductUseCase;
         this.getShopInfoUseCase = getShopInfoUseCase;
         this.getShopEtalaseUseCase = getShopEtalaseUseCase;
@@ -117,7 +123,7 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductLis
 
     private void getShopProductWithEtalase(final ShopProductRequestModel shopProductRequestModel) {
         if (TextUtils.isEmpty(shopProductRequestModel.getEtalaseId())) {
-            getView().onSuccessGetEtalase("","");
+            getView().onSuccessGetEtalase("", "");
             getShopProductWithWishList(shopProductRequestModel);
             return;
         }
@@ -155,8 +161,8 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductLis
                 // If etalase Id not found, then reset etalaseId
                 if (TextUtils.isEmpty(etalaseName)) {
                     for (EtalaseModel etalaseModel : etalaseModelListTemp) {
-                        if (shopProductRequestModel.getEtalaseId().replaceAll("[\\W_]","")
-                                .equalsIgnoreCase(etalaseModel.getEtalaseName().replaceAll("[\\W_]",""))) {
+                        if (shopProductRequestModel.getEtalaseId().replaceAll("[\\W_]", "")
+                                .equalsIgnoreCase(etalaseModel.getEtalaseName().replaceAll("[\\W_]", ""))) {
                             shopProductRequestModel.setEtalaseId(etalaseModel.getEtalaseId());
                             etalaseName = etalaseModel.getEtalaseName();
                             shopProductRequestModel.setUseAce((etalaseModel.getUseAce() == USE_ACE));
@@ -198,7 +204,39 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductLis
             getView().onErrorAddToWishList(new UserNotLoginException());
             return;
         }
-        RequestParams requestParam = AddToWishListUseCase.createRequestParam(userSession.getUserId(), productId);
+
+        tkpdAddWishListUseCase.createObservable(productId, userSession.getUserId(), new Subscriber<GraphqlResponse>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (isViewAttached()) {
+                    getView().onErrorAddToWishList(e);
+                }
+            }
+
+            @Override
+            public void onNext(GraphqlResponse graphqlResponse) {
+
+                if (graphqlResponse.getData(TkpdRemoveWishListResponse.class) != null) {
+                    List<GraphqlError> graphqlError = graphqlResponse.getError(GraphqlError.class);
+                    getView().onErrorAddToWishList(new RuntimeException(graphqlError.get(0).getMessage()));
+
+                } else {
+                    TkpdAddWishListResponse tkpdAddWishListResponse =
+                            graphqlResponse.getData(TkpdAddWishListResponse.class);
+
+                    getView().onSuccessAddToWishList(productId,
+                            tkpdAddWishListResponse.getWishlist_add().getSuccess());
+                }
+
+            }
+        });
+
+        /*RequestParams requestParam = AddToWishListUseCase.createRequestParam(userSession.getUserId(), productId);
         addToWishListUseCase.execute(requestParam, new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {
@@ -216,12 +254,11 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductLis
             public void onNext(Boolean aBoolean) {
                 getView().onSuccessAddToWishList(productId, aBoolean);
             }
-        });
+        });*/
     }
 
     public void removeFromWishList(final String productId) {
-        RequestParams requestParam = RemoveFromWishListUseCase.createRequestParam(userSession.getUserId(), productId);
-        removeFromWishListUseCase.execute(requestParam, new Subscriber<Boolean>() {
+        tkpdRemoveWishListUseCase.createObservable(productId, userSession.getUserId(), new Subscriber<GraphqlResponse>() {
             @Override
             public void onCompleted() {
 
@@ -235,8 +272,20 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductLis
             }
 
             @Override
-            public void onNext(Boolean value) {
-                getView().onSuccessRemoveFromWishList(productId, value);
+            public void onNext(GraphqlResponse graphqlResponse) {
+
+                if (graphqlResponse.getData(TkpdRemoveWishListResponse.class) != null) {
+                    List<GraphqlError> graphqlError = graphqlResponse.getError(GraphqlError.class);
+                    getView().onErrorRemoveFromWishList(new RuntimeException(graphqlError.get(0).getMessage()));
+
+                } else {
+                    TkpdRemoveWishListResponse tkpdRemoveWishListResponse =
+                            graphqlResponse.getData(TkpdRemoveWishListResponse.class);
+
+                    getView().onSuccessRemoveFromWishList(productId,
+                            tkpdRemoveWishListResponse.getWishlistRemove().getSuccess());
+                }
+
             }
         });
     }
@@ -249,5 +298,11 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductLis
     public void detachView() {
         super.detachView();
         getShopProductListWithAttributeUseCase.unsubscribe();
+        if (tkpdAddWishListUseCase != null) {
+            tkpdAddWishListUseCase.unsubscribe();
+        }
+        if (tkpdRemoveWishListUseCase != null) {
+            tkpdRemoveWishListUseCase.unsubscribe();
+        }
     }
 }

@@ -41,10 +41,10 @@ import com.tokopedia.wishlist.common.data.source.WishListCommonDataSource;
 import com.tokopedia.wishlist.common.data.source.cloud.WishListCommonCloudDataSource;
 import com.tokopedia.wishlist.common.data.source.cloud.api.WishListCommonApi;
 import com.tokopedia.wishlist.common.data.source.cloud.mapper.WishListProductListMapper;
-import com.tokopedia.wishlist.common.domain.interactor.AddToWishListUseCase;
 import com.tokopedia.wishlist.common.domain.interactor.GetWishListUseCase;
-import com.tokopedia.wishlist.common.domain.interactor.RemoveFromWishListUseCase;
 import com.tokopedia.wishlist.common.domain.repository.WishListCommonRepository;
+import com.tokopedia.wishlist.common.usecase.TkpdAddWishListUseCase;
+import com.tokopedia.wishlist.common.usecase.TkpdRemoveWishListUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -181,30 +181,30 @@ public class ShopProductModule {
 
     @ShopProductScope
     @Provides
-    public AddToWishListUseCase provideAddToWishListUseCase(WishListCommonRepository wishListCommonRepository) {
-        return new AddToWishListUseCase(wishListCommonRepository);
+    public TkpdAddWishListUseCase provideAddToWishListUseCase(@ApplicationContext Context context) {
+        return new TkpdAddWishListUseCase(context);
     }
 
     @ShopProductScope
     @Provides
-    public RemoveFromWishListUseCase provideRemoveFromWishListUseCase(WishListCommonRepository wishListCommonRepository) {
-        return new RemoveFromWishListUseCase(wishListCommonRepository);
+    public TkpdRemoveWishListUseCase provideRemoveFromWishListUseCase(@ApplicationContext Context context) {
+        return new TkpdRemoveWishListUseCase(context);
     }
 
     // Product
     @Provides
     public ShopOfficialStoreAuthInterceptor provideShopOfficialStoreAuthInterceptor(@ApplicationContext Context context,
-                                                                           AbstractionRouter abstractionRouter,
-                                                                           UserSession userSession) {
+                                                                                    AbstractionRouter abstractionRouter,
+                                                                                    UserSession userSession) {
         return new ShopOfficialStoreAuthInterceptor(context, abstractionRouter, userSession);
     }
 
     @ShopProductQualifier
     @Provides
     public OkHttpClient provideOfficialStoreOkHttpClient(ShopOfficialStoreAuthInterceptor shopOfficialStoreAuthInterceptor,
-                                                    @ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
-                                                    HeaderErrorResponseInterceptor errorResponseInterceptor,
-                                                    CacheApiInterceptor cacheApiInterceptor) {
+                                                         @ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
+                                                         HeaderErrorResponseInterceptor errorResponseInterceptor,
+                                                         CacheApiInterceptor cacheApiInterceptor) {
         return new OkHttpClient.Builder()
                 .addInterceptor(cacheApiInterceptor)
                 .addInterceptor(shopOfficialStoreAuthInterceptor)
