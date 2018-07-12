@@ -24,9 +24,8 @@ import kotlinx.android.synthetic.main.activity_shop_page.*
 import javax.inject.Inject
 import android.support.design.widget.AppBarLayout
 
-
-class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
-        ShopPageView {
+class ShopPageActivity: BaseSimpleActivity(), HasComponent<ShopComponent>,
+        ShopPageView, ShopPageHeaderViewHolder.ShopPageHeaderListener {
 
     var shopId: String? = null
     var shopDomain: String? = null
@@ -58,7 +57,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         shopDomain = intent.getStringExtra(SHOP_DOMAIN)
         shopAttribution = intent.getStringExtra(SHOP_ATTRIBUTION)
         super.onCreate(savedInstanceState)
-        shopPageViewHolder = ShopPageHeaderViewHolder(shopPageHeader)
+        shopPageViewHolder = ShopPageHeaderViewHolder(shopPageHeader, this)
         initAdapter()
         viewPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
         viewPager.adapter = shopPageViewPagerAdapter
@@ -146,4 +145,35 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
     override fun getComponent() = ShopComponentInstance.getComponent(application)
 
+    override fun onFollowerTextClicked() {
+
+    }
+
+    override fun goToChatSeller() {
+
+    }
+
+    override fun goToManageShop() {
+
+    }
+
+    override fun toggleFavorite() {
+
+    }
+
+    override fun goToAddProduct() {
+
+    }
+
+    override fun openShop() {
+
+    }
+
+    override fun requestOpenShop() {
+
+    }
+
+    override fun goToHowActivate() {
+
+    }
 }

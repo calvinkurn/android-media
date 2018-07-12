@@ -12,9 +12,11 @@
     <string name="shop_page_label_already_favorite">Sudah Favorit</string>
     <string name="shop_page_label_featured_product">Produk Unggulan</string>
 
+    <string name="shop_page_header_total_follower">%1s Followers</string>
     <string name="shop_page_button_show_more_product">Lihat Produk Selengkapnya</string>
     <string name="shop_page_header_shop_closed_info">Toko tutup sampai dengan %1$s</string>
     <string name="shop_page_header_shop_in_moderation">Toko dalam status MODERASI</string>
+    <string name="shop_page_header_shop_in_permanent_moderation">Toko dalam status MODERASI PERMANEN</string>
     <string name="shop_page_header_closed_reason">Alasan : %1$s</string>
     <string name="shop_page_header_shop_not_active_title">Toko tidak aktif selama lebih dari 7 hari</string>
     <string name="shop_page_header_shop_not_active_description_buyer">Demi kenyamanan bertransaksi, kami menyarankan pembeli untuk memastikan terlebih dahulu bahwa toko yang dipilih berada dalam keadaan aktif.</string>
@@ -51,6 +53,9 @@
     <string name="shop_info_label_favourite">Favorit</string>
     <string name="shop_info_label_last_online">Terakhir Online</string>
     <string name="shop_info_label_open_since">Buka Sejak</string>
+    <string name="shop_info_label_open_action">Buka Operational Toko</string>
+    <string name="shop_info_label_open_request">Request Buka Toko</string>
+    <string name="shop_info_label_see_how_to_open">Lihat cara Aktifkan Toko</string>
     <string name="shop_info_label_total_product">Total Produk</string>
     <string name="shop_info_label_total_etalase">Total Etalase</string>
     <string name="shop_info_label_physical_shop">Toko Fisik</string>
