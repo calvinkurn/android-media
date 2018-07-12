@@ -231,7 +231,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
 
     @Override
     public void onSuccessTokenDetail(LuckyEggEntity tokenDetail) {
-        if (tokenDetail != null && tokenDetail.getSumToken() > 0) {
+        if (tokenDetail != null) {
             try {
                 getView().findViewById(R.id.container_fab_egg_token).setVisibility(View.VISIBLE);
                 TextView textCount = getView().findViewById(R.id.text_token_count);
