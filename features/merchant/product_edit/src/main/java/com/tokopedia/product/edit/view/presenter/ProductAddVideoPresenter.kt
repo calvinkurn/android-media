@@ -23,6 +23,10 @@ import rx.Subscriber
 import java.lang.reflect.Type
 import java.util.ArrayList
 import java.util.HashMap
+import com.tokopedia.graphql.GraphqlConstant
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.graphql.data.model.CacheType
+
 
 class ProductAddVideoPresenter : BaseDaggerPresenter<ProductAddVideoView>() {
 
@@ -44,6 +48,12 @@ class ProductAddVideoPresenter : BaseDaggerPresenter<ProductAddVideoView>() {
 
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(view.contextView.resources,
                 R.raw.gql_video_recommendation), VideoRecommendationResult::class.java, variables)
+
+        val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
+                .setExpiryTime(GraphqlConstant.ExpiryTimes.HOUR.`val`())
+                .setSessionIncluded(true)
+                .build()
+        graphqlUseCase.setCacheStrategy(graphqlCacheStrategy)
 
         graphqlUseCase.addRequest(graphqlRequest)
 
