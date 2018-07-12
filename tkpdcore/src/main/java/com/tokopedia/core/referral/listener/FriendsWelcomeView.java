@@ -13,7 +13,4 @@ public interface FriendsWelcomeView {
     void showToastMessage(String message);
 
     void closeView();
-
-    void renderReferralCode(String code);
-
 }

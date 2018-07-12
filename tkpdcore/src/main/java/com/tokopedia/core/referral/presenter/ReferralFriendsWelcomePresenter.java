@@ -39,65 +39,24 @@ public class ReferralFriendsWelcomePresenter implements IReferralFriendsWelcomeP
     @Override
     public void initialize() {
 
-            if (view.getActivity().getIntent() != null && view.getActivity().getIntent().getExtras() != null) {
-                String code = view.getActivity().getIntent().getExtras().getString(CODE_KEY);
-                owner = view.getActivity().getIntent().getExtras().getString(OWNER_KEY);
+        if (view.getActivity().getIntent() != null && view.getActivity().getIntent().getExtras() != null) {
+            String code = view.getActivity().getIntent().getExtras().getString(CODE_KEY);
+            owner = view.getActivity().getIntent().getExtras().getString(OWNER_KEY);
 
-                LocalCacheHandler localCacheHandler = new LocalCacheHandler(view.getActivity(), TkpdCache.REFERRAL);
-                if (code == null || code.equalsIgnoreCase(localCacheHandler.getString(TkpdCache.Key.REFERRAL_CODE, ""))) {
-                    if(sessionHandler.isV4Login()) {
-                        view.getActivity().startActivity(ReferralActivity.getCallingIntent(view.getActivity()));
-                    }
-                    view.closeView();
+            LocalCacheHandler localCacheHandler = new LocalCacheHandler(view.getActivity(), TkpdCache.REFERRAL);
+            if (code == null || code.equalsIgnoreCase(localCacheHandler.getString(TkpdCache.Key.REFERRAL_CODE, ""))) {
+                if (sessionHandler.isV4Login()) {
+                    view.getActivity().startActivity(ReferralActivity.getCallingIntent(view.getActivity()));
                 }
-                BranchSdkUtils.REFERRAL_ADVOCATE_PROMO_CODE = code;
-                view.renderReferralCode(code);
+                view.closeView();
             }
-
-    }
-
-    @Override
-    public void copyVoucherCode(String voucherCode) {
-        ClipboardManager clipboard = (ClipboardManager)
-                view.getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-        ClipData clip = ClipData.newPlainText(
-                view.getActivity().getString(R.string.copy_coupon_code_text), voucherCode
-        );
-        clipboard.setPrimaryClip(clip);
-        if (TextUtils.isEmpty(voucherCode)) {
-            view.showToastMessage(view.getActivity().getString(R.string.no_coupon_to_copy_text));
-        } else {
-            view.showToastMessage(view.getActivity().getString(R.string.copy_coupon_code_text) + " " + voucherCode);
+            BranchSdkUtils.REFERRAL_ADVOCATE_PROMO_CODE = code;
         }
-
-        UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_COPY_REFERRAL_CODE, voucherCode);
-
-    }
-
-    @Override
-    public String getReferralWelcomeMsg() {
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(view.getActivity());
-        String welcomeMessage = remoteConfig.getString(TkpdCache.RemoteConfigKey.APP_SHARE_WELCOME_MESSAGE,view.getActivity().getString(R.string.referral_welcome_desc));
-        String username = SessionHandler.getLoginName(view.getActivity());
-        username = username == null ? "" : " " + username;
-        try {
-            owner = URLDecoder.decode(owner, "UTF-8");// here is double encoding characters that's why i am decoding it twice.
-            owner = URLDecoder.decode(owner, "UTF-8");
-
-            welcomeMessage = welcomeMessage.replaceFirst("%s", username);
-            welcomeMessage = welcomeMessage.replaceFirst("%s", owner);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return welcomeMessage;
 
     }
 
     public String getHowItWorks() {
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(view.getActivity());
-        return remoteConfig.getString(TkpdCache.RemoteConfigKey.APP_REFERRAL_HOWITWORKS, view.getActivity().getString(R.string.title_app_referral_howitworks));
+        return view.getActivity().getString(R.string.cashback_enter_tokocash);
     }
 
 }

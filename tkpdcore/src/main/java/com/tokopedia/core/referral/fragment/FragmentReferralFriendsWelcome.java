@@ -29,10 +29,6 @@ public class FragmentReferralFriendsWelcome extends BasePresenterFragment<IRefer
 
     @BindView(R2.id.btn_referral_explore)
     TextView btnReferralExplore;
-    @BindView(R2.id.tv_referral_code)
-    TextView referralCodeTextView;
-    @BindView(R2.id.btn_copy_referral_code)
-    TextView copyReferralCodeButton;
     @BindView(R2.id.tv_app_share_desc)
     TextView welcomeMessageTextView;
     @BindView(R2.id.tv_referral_help_link)
@@ -91,33 +87,18 @@ public class FragmentReferralFriendsWelcome extends BasePresenterFragment<IRefer
     @Override
     protected void initView(View view) {
         presenter.initialize();
-        copyReferralCodeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                presenter.copyVoucherCode(referralCodeTextView.getText().toString());
-            }
-        });
 
-        btnReferralExplore.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_EXPLORE_TOKOPEDIA, AppEventTracking.EventLabel.HOME);
-                closeView();
-            }
+        btnReferralExplore.setOnClickListener(v -> {
+            UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_EXPLORE_TOKOPEDIA, AppEventTracking.EventLabel.HOME);
+            closeView();
         });
-        String msg = presenter.getReferralWelcomeMsg();
-        if (!TextUtils.isEmpty(msg))
-            welcomeMessageTextView.setText(msg);
 
         TextViewHelpLink.setText(presenter.getHowItWorks());
-        TextViewHelpLink.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_KNOW_MORE,"");
+        TextViewHelpLink.setOnClickListener(view1 -> {
+            UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_KNOW_MORE,"");
 
-                startActivity(ManageWebViewActivity.getCallingIntent(getActivity(), TkpdUrl.REFERRAL_URL, getString(R.string.app_name)));
+            startActivity(ManageWebViewActivity.getCallingIntent(getActivity(), TkpdUrl.REFERRAL_URL, getString(R.string.app_name)));
 
-            }
         });
     }
 
@@ -144,11 +125,6 @@ public class FragmentReferralFriendsWelcome extends BasePresenterFragment<IRefer
     @Override
     public void closeView() {
         getActivity().finish();
-    }
-
-    @Override
-    public void renderReferralCode(String code) {
-        referralCodeTextView.setText(code);
     }
 
     @Override
