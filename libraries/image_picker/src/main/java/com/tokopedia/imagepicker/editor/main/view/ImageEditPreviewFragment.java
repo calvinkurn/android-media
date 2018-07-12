@@ -23,6 +23,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
 import com.tokopedia.imagepicker.editor.presenter.ImageEditPreviewPresenter;
+import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
 import com.yalantis.ucrop.callback.BitmapCropCallback;
 import com.yalantis.ucrop.view.CropImageView;
 import com.yalantis.ucrop.view.GestureCropImageView;
@@ -45,14 +46,11 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     public static final String ARG_IMAGE_INDEX = "arg_img_index";
     public static final String ARG_IMAGE_PATH = "arg_img_path";
     public static final String ARG_MIN_RESOLUTION = "arg_min_resolution";
-    public static final String ARG_EXPECTED_RATIO_X = "arg_expected_ratio_x";
-    public static final String ARG_EXPECTED_RATIO_Y = "arg_expected_ratio_y";
     public static final String ARG_CIRCLE_PREVIEW = "arg_circle_preview";
     public static final int ROTATE_WIDGET_SENSITIVITY = 1;
 
     private String edittedImagePath;
     private int minResolution = 0;
-    private int expectedRatioX, expectedRatioY;
     private boolean isCirclePreview;
     private float brightness = 0, contrast = INITIAL_CONTRAST_VALUE;
 
@@ -71,6 +69,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
 
     private ImageEditPreviewPresenter imageEditPreviewPresenter;
     private int imageIndex;
+    private int[] widthHeight;
 
     public interface OnImageEditPreviewFragmentListener {
         boolean isInEditCropMode();
@@ -92,18 +91,17 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         boolean canUndo(int imageIndex);
 
         boolean canRedo(int imageIndex);
+
+        ImageRatioTypeDef getCurrentRatio();
     }
 
     public static ImageEditPreviewFragment newInstance(int imageIndex,
                                                        String imagePath, int minResolution,
-                                                       int ratioX, int ratioY,
                                                        boolean isCirclePreview) {
         Bundle args = new Bundle();
         args.putInt(ARG_IMAGE_INDEX, imageIndex);
         args.putString(ARG_IMAGE_PATH, imagePath);
         args.putInt(ARG_MIN_RESOLUTION, minResolution);
-        args.putInt(ARG_EXPECTED_RATIO_X, ratioX);
-        args.putInt(ARG_EXPECTED_RATIO_Y, ratioY);
         args.putBoolean(ARG_CIRCLE_PREVIEW, isCirclePreview);
         ImageEditPreviewFragment fragment = new ImageEditPreviewFragment();
         fragment.setArguments(args);
@@ -129,8 +127,6 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         imageIndex = bundle.getInt(ARG_IMAGE_INDEX);
         minResolution = bundle.getInt(ARG_MIN_RESOLUTION);
         edittedImagePath = bundle.getString(ARG_IMAGE_PATH);
-        expectedRatioX = bundle.getInt(ARG_EXPECTED_RATIO_X);
-        expectedRatioY = bundle.getInt(ARG_EXPECTED_RATIO_Y);
         isCirclePreview = bundle.getBoolean(ARG_CIRCLE_PREVIEW);
 
         initUCrop(view);
@@ -388,7 +384,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
 
         // set max scale so it cannnot be zoomed under min resolution
         // same logic with the calculateInSampleSize;
-        int[] widthHeight = ImageUtils.getWidthAndHeight(edittedImagePath);
+        widthHeight = ImageUtils.getWidthAndHeight(edittedImagePath);
         int maxWidthHeight = Math.max(widthHeight[0], widthHeight[1]);
         while (maxWidthHeight > maxPreviewWidth) {
             maxWidthHeight = maxWidthHeight / 2;
@@ -420,7 +416,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         overlayView.setCropGridColor(getResources().getColor(R.color.white_65));
         overlayView.setCropGridStrokeWidth(getResources().getDimensionPixelSize(R.dimen.dp_1));
 
-        gestureCropImageView.setTargetAspectRatio((float) expectedRatioX / expectedRatioY);
+        setToInitialRatio();
 
         int maxSizeX = ImageUtils.DEF_WIDTH;
         int maxSizeY = ImageUtils.DEF_HEIGHT;
@@ -428,9 +424,9 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         gestureCropImageView.setMaxResultImageSizeY(maxSizeY);
     }
 
-    public void resetRotation() {
-        gestureCropImageView.postRotate(-gestureCropImageView.getCurrentAngle());
-        gestureCropImageView.setImageToWrapCropBounds();
+    private void setToInitialRatio(){
+        ImageRatioTypeDef imageRatioTypeDef = onImageEditPreviewFragmentListener.getCurrentRatio();
+        setPreviewCropTo(imageRatioTypeDef);
     }
 
     public void rotateByAngle(float angle) {
@@ -443,12 +439,24 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     }
 
     public void onEndEditScrolled() {
-        gestureCropImageView.zoomOutImage(gestureCropImageView.getMinScale() + 0.01f);
+        resetZoom();
         gestureCropImageView.setImageToWrapCropBounds(false);
     }
 
     public void editRotateScrolled(float delta) {
         gestureCropImageView.postRotate(delta / ROTATE_WIDGET_SENSITIVITY);
+    }
+
+    public void setPreviewCropTo(ImageRatioTypeDef imageRatioTypeDef){
+        int ratioX = imageRatioTypeDef.getRatioX();
+        int ratioY = imageRatioTypeDef.getRatioY();
+        if (ratioX <= 0 || ratioY <= 0) { // original ratio
+            gestureCropImageView.setTargetAspectRatio((float) widthHeight[0] / widthHeight[1]);
+        } else {
+            gestureCropImageView.setTargetAspectRatio((float) ratioX / ratioY);
+        }
+        resetZoom();
+        gestureCropImageView.setImageToWrapCropBounds(false);
     }
 
     private void showLoadingAndHidePreview() {
@@ -478,8 +486,18 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
 
     public void cancelCropRotateImage() {
         gestureCropImageView.postRotate(-gestureCropImageView.getCurrentAngle());
-        gestureCropImageView.zoomOutImage(gestureCropImageView.getMinScale() + 0.01f);
+        resetZoom();
         gestureCropImageView.setImageToWrapCropBounds(false);
+    }
+
+    public void cancelCropImage() {
+        setToInitialRatio();
+    }
+
+    public void resetZoom(){
+        if (gestureCropImageView.getMinScale() > 0) {
+            gestureCropImageView.zoomOutImage(gestureCropImageView.getMinScale() + 0.01f);
+        }
     }
 
     public void cancelBrightness() {

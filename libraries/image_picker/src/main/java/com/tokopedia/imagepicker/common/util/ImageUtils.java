@@ -56,12 +56,13 @@ public class ImageUtils {
     public static final String JPG_EXT = ".jpg";
     public static final String PNG = "png";
     public static final String TOKOPEDIA_FOLDER_PREFIX = "Tokopedia";
+    public static final String TOKOPEDIA_DIRECTORY = "Tokopedia/";
 
     @StringDef({DIRECTORY_TOKOPEDIA_CACHE, DIRECTORY_TOKOPEDIA_CACHE_CAMERA, DIRECTORY_TOKOPEDIA_EDIT_RESULT})
     public @interface DirectoryDef {
-        String DIRECTORY_TOKOPEDIA_CACHE = "Tokopedia/"+TOKOPEDIA_FOLDER_PREFIX+" Cache/";
-        String DIRECTORY_TOKOPEDIA_CACHE_CAMERA = "Tokopedia/"+TOKOPEDIA_FOLDER_PREFIX+" Camera/";
-        String DIRECTORY_TOKOPEDIA_EDIT_RESULT = "Tokopedia/"+TOKOPEDIA_FOLDER_PREFIX+" Edit/";
+        String DIRECTORY_TOKOPEDIA_CACHE = TOKOPEDIA_DIRECTORY + TOKOPEDIA_FOLDER_PREFIX + " Cache/";
+        String DIRECTORY_TOKOPEDIA_CACHE_CAMERA = TOKOPEDIA_DIRECTORY + TOKOPEDIA_FOLDER_PREFIX + " Camera/";
+        String DIRECTORY_TOKOPEDIA_EDIT_RESULT = TOKOPEDIA_DIRECTORY + TOKOPEDIA_FOLDER_PREFIX + " Edit/";
     }
 
     public static File getTokopediaPublicDirectory(@DirectoryDef String directoryType) {
@@ -99,6 +100,9 @@ public class ImageUtils {
         File directory = getTokopediaPublicDirectory(directoryString);
         if (directory.exists()) {
             File[] files = directory.listFiles();
+            if (files == null) {
+                return;
+            }
             for (int i = 0; i < files.length; i++) {
                 if (!files[i].isDirectory()) {
                     files[i].delete();
@@ -106,6 +110,37 @@ public class ImageUtils {
             }
             directory.delete();
         }
+    }
+
+    public static void deleteFileInTokopediaFolder(String filesToDelete) {
+        if (TextUtils.isEmpty(filesToDelete)) {
+            return;
+        }
+        File fileToDelete = new File(filesToDelete);
+        if (isInTokopediaDirectory(fileToDelete)) {
+            fileToDelete.delete();
+        }
+    }
+
+    public static void deleteFilesInTokopediaFolder(ArrayList<String> filesToDelete) {
+        if (filesToDelete == null || filesToDelete.size() == 0) {
+            return;
+        }
+        for (int i = 0, sizei = filesToDelete.size(); i < sizei; i++) {
+            String filePathToDelete = filesToDelete.get(i);
+            deleteFileInTokopediaFolder(filePathToDelete);
+        }
+    }
+
+    /**
+     * check if the file is in Tokopedia directory.
+     */
+    private static boolean isInTokopediaDirectory(File file) {
+        return file.exists() && file.getAbsolutePath().contains(TOKOPEDIA_DIRECTORY);
+    }
+
+    private static boolean isInTokopediaDirectory(String filePath, @DirectoryDef String directory) {
+        return filePath.contains(directory);
     }
 
     public static boolean isPng(String referencePath) {
@@ -137,7 +172,7 @@ public class ImageUtils {
         try {
             file = getTokopediaPhotoPath(directoryDef, galleryOrCameraPath);
             copyFile(galleryOrCameraPath, file.getAbsolutePath());
-        } catch (IOException e) {
+        } catch (Throwable e) {
             return null;
         }
         if (file.exists()) {
@@ -169,12 +204,22 @@ public class ImageUtils {
                                               @DirectoryDef String directoryDef) throws IOException {
         ArrayList<String> resultList = new ArrayList<>();
         for (String imagePathFrom : cropppedImagePaths) {
-            File outputFile = getTokopediaPhotoPath(directoryDef, imagePathFrom);
-            String resultPath = outputFile.getAbsolutePath();
-            copyFile(imagePathFrom, resultPath);
+            String resultPath = copyFileToDirectory(imagePathFrom, directoryDef);
             resultList.add(resultPath);
         }
         return resultList;
+    }
+
+    public static String copyFileToDirectory(String imagePathFrom,
+                                             @DirectoryDef String directoryDef) throws IOException {
+        if (isInTokopediaDirectory(imagePathFrom, directoryDef)) {
+            return imagePathFrom;
+        } else {
+            File outputFile = getTokopediaPhotoPath(directoryDef, imagePathFrom);
+            String resultPath = outputFile.getAbsolutePath();
+            copyFile(imagePathFrom, resultPath);
+            return resultPath;
+        }
     }
 
     public static void deleteFile(String path) {
@@ -199,7 +244,7 @@ public class ImageUtils {
             bitmap.compress(isPng ? Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG, 100, out);
             out.flush();
             out.close();
-        } catch (Exception e) {
+        } catch (Throwable e) {
             e.printStackTrace();
         }
         return file;
@@ -231,7 +276,7 @@ public class ImageUtils {
                 return null;
             }
             return attach.getAbsolutePath();
-        } catch (Exception e) {
+        } catch (Throwable e) {
             return null;
         }
     }
@@ -285,7 +330,7 @@ public class ImageUtils {
                 } else {
                     return null;
                 }
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 e.printStackTrace();
             } finally {
                 try {
@@ -384,7 +429,8 @@ public class ImageUtils {
         return res;
     }
 
-    public static String trimBitmap(String imagePath, float expectedRatio, float currentRatio, boolean needCheckRotate) {
+    public static String trimBitmap(String imagePath, float expectedRatio, float currentRatio, boolean needCheckRotate,
+                                    @DirectoryDef String targetDirectory) {
         Bitmap bitmapToEdit = ImageUtils.getBitmapFromPath(imagePath, ImageUtils.DEF_WIDTH,
                 ImageUtils.DEF_HEIGHT, needCheckRotate);
         int width = bitmapToEdit.getWidth();
@@ -403,19 +449,24 @@ public class ImageUtils {
 
         boolean isPng = ImageUtils.isPng(imagePath);
 
-        Bitmap outputBitmap;
-        outputBitmap = Bitmap.createBitmap(expectedWidth, expectedHeight, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(outputBitmap);
-        canvas.drawBitmap(bitmapToEdit, new Rect(left, top, right, bottom),
-                new Rect(0, 0, expectedWidth, expectedHeight), null);
-        File file = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE,
-                outputBitmap, isPng);
-        bitmapToEdit.recycle();
-        outputBitmap.recycle();
+        Bitmap outputBitmap = null;
+        try {
+            outputBitmap = Bitmap.createBitmap(expectedWidth, expectedHeight, bitmapToEdit.getConfig());
+            Canvas canvas = new Canvas(outputBitmap);
+            canvas.drawBitmap(bitmapToEdit, new Rect(left, top, right, bottom),
+                    new Rect(0, 0, expectedWidth, expectedHeight), null);
+            File file = ImageUtils.writeImageToTkpdPath(targetDirectory, outputBitmap, isPng);
+            bitmapToEdit.recycle();
+            outputBitmap.recycle();
+            System.gc();
 
-        System.gc();
-
-        return file.getAbsolutePath();
+            return file.getAbsolutePath();
+        }catch (Throwable e) {
+            if (outputBitmap!=null &&!outputBitmap.isRecycled()) {
+                outputBitmap.recycle();
+            }
+            return imagePath;
+        }
     }
 
     public static String resizeBitmap(String imagePath, int maxWidth, int maxHeight, boolean needCheckRotate,
@@ -584,7 +635,7 @@ public class ImageUtils {
             fos.write(buffer);
             fos.close();
             return true;
-        } catch (java.io.IOException e) {
+        } catch (Throwable e) {
             return false;
         }
 
@@ -605,7 +656,7 @@ public class ImageUtils {
             source.close();
             outStream.close();
             return true;
-        } catch (java.io.IOException e) {
+        } catch (Throwable e) {
             return false;
         }
     }
@@ -634,7 +685,7 @@ public class ImageUtils {
             if (tempPic != null) {
                 try {
                     return rotate(tempPic, imagePath);
-                } catch (IOException e1) {
+                } catch (Throwable e1) {
                     return tempPic;
                 }
             }
@@ -671,7 +722,7 @@ public class ImageUtils {
             if (orientation == ExifInterface.ORIENTATION_NORMAL) {
                 return bitmap;
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
 
         } finally {
             if (inputStream != null) {
@@ -693,11 +744,15 @@ public class ImageUtils {
     }
 
     public static int getOrientation(String path) throws IOException {
-        ExifInterface exif = new ExifInterface(path);
-        return exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+        try {
+            ExifInterface exif = new ExifInterface(path);
+            return exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+        } catch (Throwable e) {
+            return ExifInterface.ORIENTATION_NORMAL;
+        }
     }
 
-    public static int getOrientation(ExifInterface exif)  {
+    public static int getOrientation(ExifInterface exif) {
         return exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
     }
 
@@ -784,13 +839,17 @@ public class ImageUtils {
         Paint paint = new Paint();
         paint.setColorFilter(colorFilter);
 
-        Bitmap resultBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
-        Canvas canvas = new Canvas(resultBitmap);
-        canvas.drawBitmap(resultBitmap, 0, 0, paint);
+        try {
+            Bitmap resultBitmap = bitmap.copy(bitmap.getConfig(), true);
+            Canvas canvas = new Canvas(resultBitmap);
+            canvas.drawBitmap(resultBitmap, 0, 0, paint);
 
-        bitmap.recycle();
+            bitmap.recycle();
 
-        return resultBitmap;
+            return resultBitmap;
+        } catch (OutOfMemoryError error) {
+            return bitmap;
+        }
     }
 
     public static Bitmap contrastBitmap(Bitmap bitmap, float contrast) {
@@ -808,13 +867,17 @@ public class ImageUtils {
         Paint paint = new Paint();
         paint.setColorFilter(colorFilter);
 
-        Bitmap resultBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
-        Canvas canvas = new Canvas(resultBitmap);
-        canvas.drawBitmap(resultBitmap, 0, 0, paint);
+        try {
+            Bitmap resultBitmap = bitmap.copy(bitmap.getConfig(), true);
+            Canvas canvas = new Canvas(resultBitmap);
+            canvas.drawBitmap(resultBitmap, 0, 0, paint);
 
-        bitmap.recycle();
+            bitmap.recycle();
+            return resultBitmap;
+        } catch (OutOfMemoryError outOfMemoryError) {
+            return bitmap;
+        }
 
-        return resultBitmap;
     }
 
     public static Bitmap convertToMutable(Bitmap imgIn) throws Exception {

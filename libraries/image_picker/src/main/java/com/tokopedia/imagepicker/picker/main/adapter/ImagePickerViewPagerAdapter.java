@@ -22,8 +22,8 @@ import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
 public class ImagePickerViewPagerAdapter extends FragmentStatePagerAdapter {
 
     private SparseArrayCompat<Fragment> registeredFragments = new SparseArrayCompat<>();
-    private ImagePickerBuilder imagePickerBuilder;
-    private Context context;
+    protected ImagePickerBuilder imagePickerBuilder;
+    protected Context context;
 
     public ImagePickerViewPagerAdapter(Context context, FragmentManager fm, ImagePickerBuilder imagePickerBuilder) {
         super(fm);
@@ -31,27 +31,40 @@ public class ImagePickerViewPagerAdapter extends FragmentStatePagerAdapter {
         this.context = context;
     }
 
-    // Note: camera permission will be handled in activity, before the adapter is attached.
-    @SuppressLint("MissingPermission")
+    // Note: permission will be handled in activity, before the adapter is attached.
     @Override
     public Fragment getItem(int position) {
         switch (imagePickerBuilder.getTabTypeDef(position)) {
             case ImagePickerTabTypeDef.TYPE_GALLERY:
-                return ImagePickerGalleryFragment.newInstance(
-                        imagePickerBuilder.getGalleryType(),
-                        imagePickerBuilder.supportMultipleSelection() ,
-                        imagePickerBuilder.getMinResolution());
+                return createGalleryFragment();
             case ImagePickerTabTypeDef.TYPE_CAMERA:
-                return ImagePickerCameraFragment.newInstance();
+                return createCameraFragment();
             case ImagePickerTabTypeDef.TYPE_INSTAGRAM:
-                return ImagePickerInstagramFragment.newInstance(
-                        imagePickerBuilder.getGalleryType(),
-                        imagePickerBuilder.supportMultipleSelection() ,
-                        imagePickerBuilder.getMinResolution()
-                );
+                return createInstagramFragment();
             default:
                 return new Fragment();
         }
+    }
+
+    @SuppressLint("MissingPermission")
+    protected Fragment createGalleryFragment(){
+        return ImagePickerGalleryFragment.newInstance(
+                imagePickerBuilder.getGalleryType(),
+                imagePickerBuilder.supportMultipleSelection() ,
+                imagePickerBuilder.getMinResolution());
+    }
+
+    @SuppressLint("MissingPermission")
+    protected Fragment createCameraFragment(){
+        return ImagePickerCameraFragment.newInstance();
+    }
+
+    @SuppressLint("MissingPermission")
+    protected Fragment createInstagramFragment(){
+        return ImagePickerInstagramFragment.newInstance(
+                imagePickerBuilder.getGalleryType(),
+                imagePickerBuilder.supportMultipleSelection() ,
+                imagePickerBuilder.getMinResolution());
     }
 
     @Override

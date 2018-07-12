@@ -4,21 +4,24 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
-import com.tokopedia.imagepicker.picker.instagram.InstagramConstant;
+import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
+import com.tokopedia.imagepicker.picker.instagram.domain.interactor.ClearCacheMediaInstagramUseCase;
+import com.tokopedia.imagepicker.picker.instagram.util.InstagramConstant;
 import com.tokopedia.imagepicker.picker.instagram.data.InstagramRepositoryImpl;
 import com.tokopedia.imagepicker.picker.instagram.data.source.InstagramDataSourceFactory;
 import com.tokopedia.imagepicker.picker.instagram.data.source.cloud.InstagramApi;
 import com.tokopedia.imagepicker.picker.instagram.domain.InstagramRepository;
 import com.tokopedia.imagepicker.picker.instagram.domain.interactor.GetListMediaInstagramUseCase;
 import com.tokopedia.imagepicker.picker.instagram.domain.interactor.SaveCookiesInstagramUseCase;
+import com.tokopedia.imagepicker.picker.instagram.view.fragment.InstagramLoginFragment;
 import com.tokopedia.imagepicker.picker.instagram.view.presenter.ImagePickerInstagramPresenter;
+import com.tokopedia.imagepicker.picker.instagram.view.presenter.InstagramLoginPresenter;
 
 import java.util.concurrent.TimeUnit;
 
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 
 /**
@@ -34,8 +37,14 @@ public class InstagramModule {
     @InstagramScope
     @Provides
     ImagePickerInstagramPresenter provideImagePickerInstagramPresenter(GetListMediaInstagramUseCase getListMediaInstagramUseCase,
-                                                                       SaveCookiesInstagramUseCase saveCookiesInstagramUseCase) {
-        return new ImagePickerInstagramPresenter(getListMediaInstagramUseCase, saveCookiesInstagramUseCase);
+                                                                       ClearCacheMediaInstagramUseCase clearCacheMediaInstagramUseCase) {
+        return new ImagePickerInstagramPresenter(getListMediaInstagramUseCase, clearCacheMediaInstagramUseCase);
+    }
+
+    @InstagramScope
+    @Provides
+    InstagramLoginPresenter provideInstagramLoginFragment(SaveCookiesInstagramUseCase saveCookiesInstagramUseCase){
+        return new InstagramLoginPresenter(saveCookiesInstagramUseCase);
     }
 
     @InstagramScope
@@ -54,6 +63,7 @@ public class InstagramModule {
     @Provides
     InstagramApi provideInstagramApi(Retrofit.Builder retrofit) {
         return retrofit.client(new OkHttpClient.Builder()
+                .addInterceptor(new CacheApiInterceptor())
                 .writeTimeout(TIMEOUT, TimeUnit.SECONDS)
                 .readTimeout(TIMEOUT, TimeUnit.SECONDS)
                 .connectTimeout(TIMEOUT, TimeUnit.SECONDS)
