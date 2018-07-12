@@ -125,8 +125,7 @@ public class ProductListFragment extends SearchSectionFragment
         quickFilterOptions = savedInstanceState.getParcelableArrayList(EXTRA_QUICK_FILTER_LIST);
         setSearchParameter((SearchParameter) savedInstanceState.getParcelable(EXTRA_SEARCH_PARAMETER));
         setForceSearch(savedInstanceState.getBoolean(EXTRA_FORCE_SEARCH));
-        setFilterData(productViewModel.getFilter());
-        setSortData(productViewModel.getSort());
+        renderDynamicFilter(productViewModel.getDynamicFilterModel());
     }
 
     private void loadDataFromArguments() {
@@ -136,8 +135,7 @@ public class ProductListFragment extends SearchSectionFragment
             if (productViewModel.getSearchParameter() != null)
                 setSearchParameter(productViewModel.getSearchParameter());
             setForceSearch(productViewModel.isForceSearch());
-            setFilterData(productViewModel.getFilter());
-            setSortData(productViewModel.getSort());
+            renderDynamicFilter(productViewModel.getDynamicFilterModel());
         }
     }
 

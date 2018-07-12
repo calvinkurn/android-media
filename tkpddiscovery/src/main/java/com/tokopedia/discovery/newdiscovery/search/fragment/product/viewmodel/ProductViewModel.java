@@ -3,6 +3,7 @@ package com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.core.discovery.model.DynamicFilterModel;
 import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.discovery.model.Sort;
 import com.tokopedia.discovery.newdiscovery.search.model.OfficialStoreBannerModel;
@@ -27,8 +28,7 @@ public class ProductViewModel implements Parcelable {
     private SearchParameter searchParameter;
     private boolean forceSearch;
     private boolean imageSearch;
-    private List<Filter> filter;
-    private List<Sort> sort;
+    private DynamicFilterModel dynamicFilterModel;
 
     public boolean isImageSearch() {
         return imageSearch;
@@ -38,20 +38,12 @@ public class ProductViewModel implements Parcelable {
         this.imageSearch = imageSearch;
     }
 
-    public List<Filter> getFilter() {
-        return filter;
+    public DynamicFilterModel getDynamicFilterModel() {
+        return dynamicFilterModel;
     }
 
-    public void setFilter(List<Filter> filter) {
-        this.filter = filter;
-    }
-
-    public List<Sort> getSort() {
-        return sort;
-    }
-
-    public void setSort(List<Sort> sort) {
-        this.sort = sort;
+    public void setDynamicFilterModel(DynamicFilterModel dynamicFilterModel) {
+        this.dynamicFilterModel = dynamicFilterModel;
     }
 
     public ProductViewModel() {
@@ -156,8 +148,7 @@ public class ProductViewModel implements Parcelable {
         dest.writeParcelable(this.searchParameter, flags);
         dest.writeByte(this.forceSearch ? (byte) 1 : (byte) 0);
         dest.writeByte(this.imageSearch ? (byte) 1 : (byte) 0);
-        dest.writeTypedList(this.filter);
-        dest.writeTypedList(this.sort);
+        dest.writeParcelable(this.dynamicFilterModel, flags);
     }
 
     protected ProductViewModel(Parcel in) {
@@ -172,8 +163,7 @@ public class ProductViewModel implements Parcelable {
         this.searchParameter = in.readParcelable(SearchParameter.class.getClassLoader());
         this.forceSearch = in.readByte() != 0;
         this.imageSearch = in.readByte() != 0;
-        this.filter = in.createTypedArrayList(Filter.CREATOR);
-        this.sort = in.createTypedArrayList(Sort.CREATOR);
+        this.dynamicFilterModel = in.readParcelable(DynamicFilterModel.class.getClassLoader());
     }
 
     public static final Creator<ProductViewModel> CREATOR = new Creator<ProductViewModel>() {

@@ -2,6 +2,7 @@ package com.tokopedia.core.network.entity.discovery.gql;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.core.discovery.model.DynamicFilterModel;
 import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.discovery.model.Sort;
 
@@ -16,42 +17,14 @@ public class SearchProductGqlResponse {
 
     @SerializedName("dynamicAttribute")
     @Expose
-    private DynamicAttribute dynamicAttribute;
+    private DynamicFilterModel dynamicFilterModel;
 
     public SearchProduct getSearchProduct() {
         return searchProduct;
     }
 
-    public DynamicAttribute getDynamicAttribute() {
-        return dynamicAttribute;
-    }
-
-    public static class DynamicAttribute {
-        @SerializedName("data")
-        @Expose
-        private Data data;
-
-        public Data getData() {
-            return data;
-        }
-    }
-
-    public static class Data {
-        @SerializedName("filter")
-        @Expose
-        private List<Filter> filter = new ArrayList<>();
-
-        @SerializedName("sort")
-        @Expose
-        private List<Sort> sort = new ArrayList<>();
-
-        public List<Filter> getFilter() {
-            return filter;
-        }
-
-        public List<Sort> getSort() {
-            return sort;
-        }
+    public DynamicFilterModel getDynamicFilterModel() {
+        return dynamicFilterModel;
     }
 
     public static class SearchProduct {

@@ -54,8 +54,9 @@ public class ProductViewModelHelper {
         productViewModel.setHasCatalog(ListHelper.isContainItems(searchProductResponse.getCatalogs()));
         productViewModel.setSuggestionModel(createSuggestionModel(searchProductResponse));
         productViewModel.setTotalData(searchProductResponse.getCount());
-        productViewModel.setFilter(gqlResponse.getDynamicAttribute().getData().getFilter());
-        productViewModel.setSort(gqlResponse.getDynamicAttribute().getData().getSort());
+        if (gqlResponse.getDynamicFilterModel() != null) {
+            productViewModel.setDynamicFilterModel(gqlResponse.getDynamicFilterModel());
+        }
         return productViewModel;
     }
 

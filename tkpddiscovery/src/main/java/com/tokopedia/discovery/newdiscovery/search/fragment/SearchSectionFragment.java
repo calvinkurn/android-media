@@ -308,7 +308,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         }
     }
 
-    protected void setFilterData(List<Filter> filters) {
+    private void setFilterData(List<Filter> filters) {
         this.filters = new ArrayList<>();
         if (filters == null) {
             return;
@@ -435,7 +435,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
             requestDynamicFilter();
         }
     }
-
+g
     protected void requestDynamicFilter() {
         getPresenter().requestDynamicFilter();
     }
