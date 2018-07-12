@@ -166,6 +166,11 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
         return false;
     }
 
+    @Override
+    protected boolean callInitialLoadAutomatically() {
+        return false;
+    }
+
     @NonNull
     @Override
     protected BaseListAdapter<TrainScheduleViewModel, TrainSearchAdapterTypeFactory> createAdapterInstance() {
