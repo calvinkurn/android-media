@@ -26,6 +26,7 @@ import com.tokopedia.feedplus.data.mapper.CheckNewFeedMapper;
 import com.tokopedia.feedplus.data.mapper.FeedDetailListMapper;
 import com.tokopedia.feedplus.data.mapper.FeedListMapper;
 import com.tokopedia.feedplus.data.mapper.FeedResultMapper;
+import com.tokopedia.feedplus.data.mapper.FollowKolMapper;
 import com.tokopedia.feedplus.data.mapper.RecentProductMapper;
 import com.tokopedia.feedplus.data.repository.FavoriteShopRepository;
 import com.tokopedia.feedplus.data.repository.FavoriteShopRepositoryImpl;
@@ -178,6 +179,14 @@ public class FeedPlusModule {
     @Provides
     RecentProductMapper provideRecentProductMapper(Gson gson) {
         return new RecentProductMapper(gson);
+    }
+
+    @FeedPlusScope
+    @Provides
+    KolSource providesKolSource(@ApplicationContext Context context,
+                                FeedApi feedApi,
+                                FollowKolMapper followKolMapper) {
+        return new KolSource(context, feedApi, followKolMapper);
     }
 
     @FeedPlusScope
