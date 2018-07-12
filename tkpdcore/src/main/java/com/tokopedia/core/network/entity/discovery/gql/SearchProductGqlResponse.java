@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.discovery.model.Sort;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SearchProductGqlResponse {
@@ -38,17 +39,17 @@ public class SearchProductGqlResponse {
     public static class Data {
         @SerializedName("filter")
         @Expose
-        private Filter filter;
+        private List<Filter> filter = new ArrayList<>();
 
         @SerializedName("sort")
         @Expose
-        private Sort sort;
+        private List<Sort> sort = new ArrayList<>();
 
-        public Filter getFilter() {
+        public List<Filter> getFilter() {
             return filter;
         }
 
-        public Sort getSort() {
+        public List<Sort> getSort() {
             return sort;
         }
     }
@@ -384,13 +385,13 @@ public class SearchProductGqlResponse {
         private String redirectUrl;
         @SerializedName("departmentId")
         @Expose
-        private long departmentId;
+        private String departmentId;
 
         public String getRedirectUrl() {
             return redirectUrl;
         }
 
-        public long getDepartmentId() {
+        public String getDepartmentId() {
             return departmentId;
         }
     }

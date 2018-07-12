@@ -3,6 +3,8 @@ package com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.core.discovery.model.Filter;
+import com.tokopedia.core.discovery.model.Sort;
 import com.tokopedia.discovery.newdiscovery.search.model.OfficialStoreBannerModel;
 import com.tokopedia.discovery.newdiscovery.search.model.SuggestionModel;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
@@ -25,6 +27,8 @@ public class ProductViewModel implements Parcelable {
     private SearchParameter searchParameter;
     private boolean forceSearch;
     private boolean imageSearch;
+    private List<Filter> filter;
+    private List<Sort> sort;
 
     public boolean isImageSearch() {
         return imageSearch;
@@ -32,6 +36,22 @@ public class ProductViewModel implements Parcelable {
 
     public void setImageSearch(boolean imageSearch) {
         this.imageSearch = imageSearch;
+    }
+
+    public List<Filter> getFilter() {
+        return filter;
+    }
+
+    public void setFilter(List<Filter> filter) {
+        this.filter = filter;
+    }
+
+    public List<Sort> getSort() {
+        return sort;
+    }
+
+    public void setSort(List<Sort> sort) {
+        this.sort = sort;
     }
 
     public ProductViewModel() {
@@ -136,6 +156,8 @@ public class ProductViewModel implements Parcelable {
         dest.writeParcelable(this.searchParameter, flags);
         dest.writeByte(this.forceSearch ? (byte) 1 : (byte) 0);
         dest.writeByte(this.imageSearch ? (byte) 1 : (byte) 0);
+        dest.writeTypedList(this.filter);
+        dest.writeTypedList(this.sort);
     }
 
     protected ProductViewModel(Parcel in) {
@@ -150,6 +172,8 @@ public class ProductViewModel implements Parcelable {
         this.searchParameter = in.readParcelable(SearchParameter.class.getClassLoader());
         this.forceSearch = in.readByte() != 0;
         this.imageSearch = in.readByte() != 0;
+        this.filter = in.createTypedArrayList(Filter.CREATOR);
+        this.sort = in.createTypedArrayList(Sort.CREATOR);
     }
 
     public static final Creator<ProductViewModel> CREATOR = new Creator<ProductViewModel>() {

@@ -39,7 +39,7 @@ public class CategoryPresenter extends DiscoveryPresenter<CategoryContract.View,
     GCMHandler gcmHandler;
 
     public CategoryPresenter(Context context, GetProductUseCase getProductUseCase, GetImageSearchUseCase getImageSearchUseCase) {
-        super(getProductUseCase, getImageSearchUseCase);
+        super(context, getProductUseCase, getImageSearchUseCase);
         this.getProductUseCase = getProductUseCase;
         this.sessionHandler = new SessionHandler(context);
         this.gcmHandler = new GCMHandler(context);

@@ -37,8 +37,8 @@ public class HotlistModule {
 
     @HotlistScope
     @Provides
-    HotlistPresenter provideHotlistPresenter(GetProductUseCase getProductUseCase, GetImageSearchUseCase getImageSearchUseCase) {
-        return new HotlistPresenter(getProductUseCase, getImageSearchUseCase);
+    HotlistPresenter provideHotlistPresenter(@ApplicationContext Context context, GetProductUseCase getProductUseCase, GetImageSearchUseCase getImageSearchUseCase) {
+        return new HotlistPresenter(context, getProductUseCase, getImageSearchUseCase);
     }
 
     @HotlistScope

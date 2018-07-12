@@ -307,7 +307,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
 
                     @Override
                     public void onCompleted() {
-                        getView().getDynamicFilter();
+                        //getView().getDynamicFilter();
                         getView().getQuickFilter();
                         getView().hideRefreshLayout();
                     }
