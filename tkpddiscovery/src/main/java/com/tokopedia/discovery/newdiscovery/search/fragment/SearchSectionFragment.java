@@ -435,7 +435,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
             requestDynamicFilter();
         }
     }
-g
+    
     protected void requestDynamicFilter() {
         getPresenter().requestDynamicFilter();
     }
