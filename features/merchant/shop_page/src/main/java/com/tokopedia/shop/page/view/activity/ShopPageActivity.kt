@@ -18,19 +18,21 @@ import com.tokopedia.shop.page.di.module.ShopPageModule
 import com.tokopedia.shop.page.view.adapter.ShopPageViewPagerAdapter
 import com.tokopedia.shop.page.view.holder.ShopPageHeaderViewHolder
 import com.tokopedia.shop.page.view.listener.ShopPageView
-import com.tokopedia.shop.page.view.presenter.ShopPagePresenter
+import com.tokopedia.shop.page.view.presenter.ShopPagePresenterNew
+import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedFragment
 import com.tokopedia.shop.product.view.widget.ShopPagePromoWebView
 import kotlinx.android.synthetic.main.activity_shop_page.*
 import javax.inject.Inject
 
-class ShopPageActivity: BaseSimpleActivity(), ShopPagePromoWebView.Listener, HasComponent<ShopComponent>, ShopPageView {
+class ShopPageActivity: BaseSimpleActivity(), ShopPagePromoWebView.Listener, HasComponent<ShopComponent>,
+        ShopPageView {
 
     var shopId: String? = null
     var shopDomain: String? = null
     var shopAttribution: String? = null
     var shopInfo: ShopInfo? = null
 
-    @Inject lateinit var presenter: ShopPagePresenter
+    @Inject lateinit var presenter: ShopPagePresenterNew
     lateinit var shopPageViewHolder: ShopPageHeaderViewHolder
 
     lateinit var shopPageViewPagerAdapter: ShopPageViewPagerAdapter;
@@ -68,9 +70,9 @@ class ShopPageActivity: BaseSimpleActivity(), ShopPagePromoWebView.Listener, Has
 
     private fun getShopInfo() {
         if (!TextUtils.isEmpty(shopId)){
-            presenter.getShopInfo(shopId)
+            presenter.getShopInfo(shopId!!)
         } else {
-            presenter.getShopInfoByDomain(shopDomain)
+            presenter.getShopInfoByDomain(shopDomain!!)
         }
     }
 
@@ -91,8 +93,8 @@ class ShopPageActivity: BaseSimpleActivity(), ShopPagePromoWebView.Listener, Has
     fun initAdapter(){
         val titles = arrayOf(getString(R.string.shop_info_title_tab_product),
                 getString(R.string.shop_info_title_tab_info))
-        shopPageViewPagerAdapter = ShopPageViewPagerAdapter(supportFragmentManager, titles, shopId,
-                shopDomain, shopAttribution)
+        shopPageViewPagerAdapter = ShopPageViewPagerAdapter(supportFragmentManager, titles, this,
+                shopId, shopAttribution)
     }
 
     override fun onSuccessGetShopInfo(shopInfo: ShopInfo?) {
@@ -100,7 +102,10 @@ class ShopPageActivity: BaseSimpleActivity(), ShopPagePromoWebView.Listener, Has
             this@ShopPageActivity.shopInfo = this
             shopId = info.shopId
             shopDomain = info.shopDomain
-            shopPageViewHolder.bind(this, presenter.isMyShop(shopId))
+            shopPageViewHolder.bind(this, presenter.isMyShop(shopId!!))
+
+            (shopPageViewPagerAdapter.getRegisteredFragment(0) as ShopProductListLimitedFragment)
+                    .displayProduct(this)
         }
     }
 
