@@ -21,6 +21,7 @@ import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
 import com.tokopedia.train.reviewdetail.presentation.activity.TrainReviewDetailActivity;
 import com.tokopedia.train.search.presentation.model.TrainScheduleBookingPassData;
 import com.tokopedia.train.seat.di.TrainSeatComponent;
+import com.tokopedia.train.seat.presentation.activity.TrainSeatActivity;
 import com.tokopedia.train.seat.presentation.contract.TrainSeatContract;
 import com.tokopedia.train.seat.presentation.fragment.listener.TrainSeatListener;
 import com.tokopedia.train.seat.presentation.fragment.viewpager.TrainWagonsPagerAdapter;
@@ -40,6 +41,7 @@ import javax.inject.Inject;
 public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatContract.View, TrainSeatPassengerAndWagonView.TrainSeatActionListener {
     private static final String EXTRA_SOFTBOOK = "EXTRA_SOFTBOOK";
     private static final String EXTRA_PASSDATA = "EXTRA_PASSDATA";
+    private static final String EXTRA_DEPARTURE_STATE = "EXTRA_DEPARTURE_STATE";
     @Inject
     TrainSeatPresenter presenter;
 
@@ -58,6 +60,7 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
 
     private TrainSoftbook trainSoftbook;
     private TrainScheduleBookingPassData passData;
+    private boolean isDeparture;
 
     private InteractionListener interactionListener;
 
@@ -65,11 +68,14 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
         void setToolbar(String subtitle);
     }
 
-    public static Fragment newInstance(TrainSoftbook trainSoftbook, TrainScheduleBookingPassData passData) {
+    public static Fragment newInstance(TrainSoftbook trainSoftbook,
+                                       TrainScheduleBookingPassData passData,
+                                       boolean isDeparture) {
         Fragment fragment = new TrainSeatFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_SOFTBOOK, trainSoftbook);
         bundle.putParcelable(EXTRA_PASSDATA, passData);
+        bundle.putBoolean(EXTRA_DEPARTURE_STATE, isDeparture);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -78,6 +84,7 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
     public void onCreate(Bundle savedInstanceState) {
         trainSoftbook = getArguments().getParcelable(EXTRA_SOFTBOOK);
         passData = getArguments().getParcelable(EXTRA_PASSDATA);
+        isDeparture = getArguments().getBoolean(EXTRA_DEPARTURE_STATE);
         super.onCreate(savedInstanceState);
     }
 
@@ -270,9 +277,13 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
     @Override
     public void navigateToReview(TrainSoftbook trainSoftbook) {
         if (!isReturning()) {
-            startActivity(TrainReviewDetailActivity.createIntent(getActivity(), trainSoftbook, passData));
+            if (trainSoftbook.getReturnTrips() != null && trainSoftbook.getReturnTrips().size() > 0) {
+                startActivity(TrainSeatActivity.getCallingIntent(getActivity(), trainSoftbook, passData, false));
+            } else {
+                startActivity(TrainReviewDetailActivity.createIntent(getActivity(), trainSoftbook, passData));
+            }
         } else {
-
+            startActivity(TrainReviewDetailActivity.createIntent(getActivity(), trainSoftbook, passData));
         }
     }
 
@@ -283,7 +294,7 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
 
     @Override
     public boolean isReturning() {
-        return false;
+        return !isDeparture;
     }
 
     @Override
