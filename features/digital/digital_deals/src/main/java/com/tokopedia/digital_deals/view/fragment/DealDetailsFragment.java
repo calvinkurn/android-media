@@ -444,7 +444,6 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     public RequestParams getParams() {
         String url = getArguments().getString(DealDetailsPresenter.HOME_DATA);
         RequestParams requestParams = RequestParams.create();
-        Log.d("Myurllll", " " + url);
         requestParams.putString(DealDetailsPresenter.TAG, url);
         return requestParams;
     }

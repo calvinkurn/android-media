@@ -159,12 +159,10 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
 
             @Override
             public void onError(Throwable e) {
-                Log.d("inOnErrrror", e.getMessage());
             }
 
             @Override
             public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
-                Log.d("inOnNext", "ds");
 
                 Type token = new TypeToken<DataResponse<SearchResponse>>() {
                 }.getType();

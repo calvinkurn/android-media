@@ -66,7 +66,6 @@ public class Utils {
     }
 
     private Utils() {
-        Log.d("UTILS", "Utils Instance created");
     }
 
     public ArrayList<CategoryItem> convertIntoCategoryListViewModel(DealsResponse dealsResponse) {

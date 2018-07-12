@@ -277,9 +277,13 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             } else {
                 hotDeal.setVisibility(View.GONE);
             }
-            Location location = Utils.getSingletonInstance().getLocation(context);
-            if (location != null) {
-                dealavailableLocations.setText(location.getName());
+            if(TextUtils.isEmpty(productItem.getCityName())) {
+                Location location = Utils.getSingletonInstance().getLocation(context);
+                if (location != null) {
+                    dealavailableLocations.setText(location.getName());
+                }
+            }else{
+                dealavailableLocations.setText(productItem.getCityName());
             }
             if(productItem.getMrp()!=0){
                 dealListPrice.setVisibility(View.VISIBLE);

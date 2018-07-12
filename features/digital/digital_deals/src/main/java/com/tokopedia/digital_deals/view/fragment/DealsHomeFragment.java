@@ -25,6 +25,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -72,6 +73,9 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     private RecyclerView rvTrendingDeals;
     private RecyclerView rvBrandItems;
     private CoordinatorLayout baseMainContent;
+    private LinearLayout noContent;
+    private ConstraintLayout clBrands;
+    private ConstraintLayout clBanners;
     private TextView searchInputView;
     private final boolean IS_SHORT_LAYOUT = false;
 
@@ -132,6 +136,9 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         searchInputView = view.findViewById(R.id.search_input_view);
         tvLocationName = view.findViewById(R.id.tv_location_name);
         tvSeeAllPromo = view.findViewById(R.id.see_all_promo);
+        clBrands = view.findViewById(R.id.cl_brands);
+        clBanners = view.findViewById(R.id.cl_banners);
+        noContent = view.findViewById(R.id.no_content);
         clSearch = view.findViewById(R.id.cl_search_view);
         tvSeeAllBrands = view.findViewById(R.id.tv_see_all_brands);
         tvSeeAllBrands.setOnClickListener(this);
@@ -199,9 +206,8 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
                         boolean isLocationUpdated = data.getBooleanExtra(SelectLocationFragment.EXTRA_CALLBACK_LOCATION, true);
                         if (isLocationUpdated) {
                             Utils.getSingletonInstance().setSnackBarLocationChange(location.getName(), getActivity(), mainContent);
-                            mPresenter.getDealsList(true);
-
                         }
+                        mPresenter.getDealsList(true);
                     }
                     tvLocationName.setText(location.getName());
                 }
@@ -224,7 +230,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
                     if (!tvLocationName.getText().equals(location1.getName())) {
                         tvLocationName.setText(location1.getName());
                         mPresenter.getDealsList(true);
-                    }else{
+                    } else {
                         mPresenter.getDealsList(false);
                     }
 
@@ -238,15 +244,22 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     @Override
     public void renderCategoryList(List<CategoryItem> categoryList, CategoryItem carousel, CategoryItem top) {
 
-        if (top.getItems() != null) {
+        if (top.getItems() != null && carousel.getItems().size() > 0) {
+            rvTrendingDeals.setVisibility(View.VISIBLE);
+            noContent.setVisibility(View.GONE);
             DealsCategoryAdapter categoryAdapter = new DealsCategoryAdapter(getActivity(), top.getItems(), this, IS_SHORT_LAYOUT);
             rvTrendingDeals.setAdapter(categoryAdapter);
+        } else {
+            rvTrendingDeals.setVisibility(View.GONE);
+            noContent.setVisibility(View.VISIBLE);
         }
-        if (carousel.getItems() != null) {
+        if (carousel.getItems() != null && carousel.getItems().size() > 0) {
+            clBanners.setVisibility(View.VISIBLE);
             setViewPagerListener(new SlidingImageAdapter(getActivity(), mPresenter.getCarouselImages(carousel.getItems()), mPresenter));
-
             circlePageIndicator.setViewPager(viewPager);
             mPresenter.startBannerSlide(viewPager);
+        } else {
+            clBanners.setVisibility(View.GONE);
         }
         if (categoryList != null) {
             rvCatItems.setAdapter(new DealsCategoryItemAdapter(getActivity(), categoryList));
@@ -257,7 +270,10 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     @Override
     public void renderBrandList(List<Brand> brandList) {
         if (brandList != null) {
+            clBrands.setVisibility(View.VISIBLE);
             rvBrandItems.setAdapter(new DealsBrandAdapter(getActivity(), brandList, true));
+        } else {
+            clBrands.setVisibility(View.GONE);
         }
     }
 
@@ -406,7 +422,8 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     }
 
     @Override
-    public void onClick(View v) { ;
+    public void onClick(View v) {
+        ;
         mPresenter.onOptionMenuClick(v.getId());
     }
 

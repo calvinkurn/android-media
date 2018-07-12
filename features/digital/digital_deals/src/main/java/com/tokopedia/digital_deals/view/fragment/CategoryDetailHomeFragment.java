@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -51,6 +52,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     private ProgressBar progBar;
     private CoordinatorLayout mainContent;
     private CoordinatorLayout baseMainContent;
+    private ConstraintLayout clBrands;
     private Menu mMenu;
     private TextView seeAllBrands;
     private TextView popularLocation;
@@ -109,6 +111,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
         baseMainContent = view.findViewById(R.id.base_main_content);
         progressBarLayout = view.findViewById(R.id.progress_bar_layout);
         progBar = view.findViewById(R.id.prog_bar);
+        clBrands=view.findViewById(R.id.cl_brands);
         noContent = view.findViewById(R.id.scroll_view_no_content);
         seeAllBrands.setOnClickListener(this);
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
@@ -135,7 +138,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
 
     @Override
     public void renderCategoryList(List<ProductItem> deals, int count) {
-        if (deals.size() > 0) {
+        if (deals != null && deals.size() > 0) {
             if (count == 0)
                 numberOfDeals.setText(String.format(getResources().getString(R.string.number_of_items), deals.size()));
             else
@@ -157,7 +160,10 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     @Override
     public void renderBrandList(List<Brand> brandList) {
         if (brandList != null) {
+            clBrands.setVisibility(View.VISIBLE);
             recyclerViewBrands.setAdapter(new DealsBrandAdapter(getActivity(), brandList, true));
+        }else{
+            clBrands.setVisibility(View.GONE);
         }
     }
 
@@ -292,7 +298,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
                     if (!locationName.equals(location1.getName())) {
                         mPresenter.getCategoryDetails(true);
                         mPresenter.getBrandsList(true);
-                    }else {
+                    } else {
                         mPresenter.getCategoryDetails(false);
                         mPresenter.getBrandsList(false);
                     }
