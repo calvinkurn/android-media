@@ -2,7 +2,6 @@ package com.tokopedia.checkout.view.view.shippingoptions;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
@@ -21,6 +20,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.checkout.R;
+import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.view.di.component.CartComponent;
@@ -29,7 +29,8 @@ import com.tokopedia.checkout.view.view.shippingoptions.di.CourierComponent;
 import com.tokopedia.checkout.view.view.shippingoptions.di.CourierModule;
 import com.tokopedia.checkout.view.view.shippingoptions.di.DaggerCourierComponent;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
-import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -53,6 +54,7 @@ public class CourierBottomsheet extends BottomSheetDialog implements CourierCont
     private ActionListener actionListener;
     private int cartItemPosition;
     private ShipmentDetailData shipmentDetailData;
+    private List<ShopShipment> shopShipmentList;
     private Activity activity;
 
     @Inject
@@ -66,12 +68,15 @@ public class CourierBottomsheet extends BottomSheetDialog implements CourierCont
     private BottomSheetBehavior behavior;
     private boolean actionDismiss;
 
-    public CourierBottomsheet(@NonNull Activity activity, @NonNull ShipmentDetailData shipmentDetailData,
+    public CourierBottomsheet(@NonNull Activity activity,
+                              @NonNull ShipmentDetailData shipmentDetailData,
+                              @NonNull List<ShopShipment> shopShipmentList,
                               @NonNull int cartItemPosition) {
         super(activity);
         this.activity = activity;
         this.cartItemPosition = cartItemPosition;
         this.shipmentDetailData = shipmentDetailData;
+        this.shopShipmentList = shopShipmentList;
         setCancelable(false);
         initializeInjector();
         initializeView(activity);
@@ -135,7 +140,7 @@ public class CourierBottomsheet extends BottomSheetDialog implements CourierCont
 
     private void initializeData(ShipmentDetailData shipmentDetailData) {
         presenter.attachView(this);
-        presenter.loadCourier(shipmentDetailData);
+        presenter.loadCourier(shipmentDetailData, shopShipmentList);
         setupRecyclerView();
     }
 
@@ -182,7 +187,7 @@ public class CourierBottomsheet extends BottomSheetDialog implements CourierCont
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
-                        presenter.loadCourier(shipmentDetailData);
+                        presenter.loadCourier(shipmentDetailData, shopShipmentList);
                     }
                 });
     }
