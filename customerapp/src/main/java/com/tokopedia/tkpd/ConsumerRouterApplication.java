@@ -53,6 +53,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
+import com.tokopedia.core.drawer2.data.viewmodel.PopUpNotif;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
@@ -100,7 +101,7 @@ import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartS
 import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartShipmentResult;
 import com.tokopedia.core.router.transactionmodule.sharedata.CouponListResult;
 import com.tokopedia.core.router.wallet.IWalletRouter;
-import com.tokopedia.core.share.ShareBottomSheet;
+import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.core.shopinfo.limited.fragment.ShopTalkLimitedFragment;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.BranchSdkUtils;
@@ -1267,12 +1268,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         } else {
             actionApplink(activity, appLinkScheme);
         }
-
-    }
-
-    @Override
-    public Observable<Boolean> setCashBack(String productId, int cashback) {
-        return Observable.just(false);
     }
 
     @Override
@@ -1534,7 +1529,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public DialogFragment getLoyaltyTokoPointNotificationDialogFragment(TokoPointDrawerData.PopUpNotif popUpNotif) {
+    public DialogFragment getLoyaltyTokoPointNotificationDialogFragment(PopUpNotif popUpNotif) {
         return LoyaltyNotifFragmentDialog.newInstance(popUpNotif);
     }
 
@@ -1721,7 +1716,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
         requestParams.putObject(CheckPromoCodeCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING_CHECK_PROMO,
                 com.tokopedia.abstraction.common.utils.network.AuthUtil.generateParamsNetwork(
-                        this, paramCheckPromo, userSession.getUserId(), userSession.getDeviceId()
+                        this, paramCheckPromo, getSession().getUserId(), getSession().getDeviceId()
                 ));
 
 
@@ -1856,7 +1851,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void goToShareShop(FragmentManager fragmentManager, String shopId, String shopUrl, String shareLabel) {
+    public void goToShareShop(Activity activity, String shopId, String shopUrl, String shareLabel) {
         ShareData shareData = ShareData.Builder.aShareData()
                 .setType(ShareData.SHOP_TYPE)
                 .setName(getString(R.string.message_share_shop))
@@ -1864,7 +1859,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 .setUri(shopUrl)
                 .setId(shopId)
                 .build();
-        ShareBottomSheet.show(fragmentManager, shareData);
+        new DefaultShare(activity, shareData).show();
     }
 
     @Override
@@ -2132,7 +2127,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
 
     @Override
-    public void shareGroupChat(FragmentManager fragmentManager, String channelId, String title, String contentMessage, String imgUrl,
+    public void shareGroupChat(Activity activity, String channelId, String title, String contentMessage, String imgUrl,
                                String shareUrl) {
         ShareData shareData = ShareData.Builder.aShareData()
                 .setId(channelId)
@@ -2143,8 +2138,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 .setUri(shareUrl)
                 .setType(ShareData.GROUPCHAT_TYPE)
                 .build();
-
-        ShareBottomSheet.show(fragmentManager, shareData);
+        new DefaultShare(activity, shareData).show();
     }
 
     @Override
@@ -2172,7 +2166,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void goToCreateTopadsPromo(Context context, String productId, String shopId, String source) {
-
         Intent topadsIntent = context.getPackageManager()
                 .getLaunchIntentForPackage(DrawerBuyerHelper.TOP_SELLER_APPLICATION_PACKAGE);
         if (topadsIntent != null) {

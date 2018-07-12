@@ -79,6 +79,8 @@ public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
         int getStockType();
 
         boolean isOfficialStore();
+
+        boolean hasWholesale();
     }
 
     public static ProductVariantDetailLeafFragment newInstance() {
@@ -153,6 +155,10 @@ public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
         }
         counterInputPrice.addTextChangedListener(numberTextWatcher);
         counterInputPrice.setCounterValue(productVariantCombinationViewModel.getPriceVar());
+        if(listener.hasWholesale()){
+            counterInputPrice.setEnabled(false);
+        }
+
 
         lvTitle.setTitle(listener.getVariantName());
         lvTitle.setSummary(productVariantCombinationViewModel.getLeafString());

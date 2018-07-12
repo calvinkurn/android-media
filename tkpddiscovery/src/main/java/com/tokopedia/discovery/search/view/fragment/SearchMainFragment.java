@@ -198,18 +198,29 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
         presenter.deleteRecentSearchItem(keyword);
     }
 
+    private void dropKeyBoard() {
+        if (getActivity() != null && getActivity() instanceof DiscoveryActivity) {
+            ((DiscoveryActivity) getActivity()).dropKeyboard();
+        }
+    }
+
     @Override
     public void onItemClicked(String applink, String webUrl) {
+        dropKeyBoard();
+
         if (getActivity() != null
                 && getActivity().getApplicationContext() instanceof ApplinkRouter) {
             ApplinkRouter router = ((ApplinkRouter) getActivity().getApplicationContext());
             if (router.isSupportApplink(applink)) {
+                getActivity().finish();
                 router.goToApplinkActivity(getActivity(), applink);
             } else {
                 openWebViewURL(webUrl, getActivity());
+                getActivity().finish();
             }
         } else {
             openWebViewURL(webUrl, getActivity());
+            getActivity().finish();
         }
     }
 
@@ -223,8 +234,7 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
 
     @Override
     public void onItemSearchClicked(String keyword, String categoryId) {
-        ((DiscoveryActivity) getActivity()).dropKeyboard();
-
+        dropKeyBoard();
         if (!TextUtils.isEmpty(categoryId)) {
             ((DiscoveryActivity) getActivity()).onSuggestionProductClick(keyword, categoryId);
         } else {

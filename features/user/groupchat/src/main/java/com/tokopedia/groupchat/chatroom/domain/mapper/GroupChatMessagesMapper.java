@@ -1,5 +1,7 @@
 package com.tokopedia.groupchat.chatroom.domain.mapper;
 
+import android.text.TextUtils;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.sendbird.android.AdminMessage;
@@ -139,12 +141,18 @@ public class GroupChatMessagesMapper {
     }
 
     private Visitable mapToAds(UserMessage message, String json) {
+        if(TextUtils.isEmpty(json)){
+            return new AdsViewModel("","","");
+        }
         Gson gson = new Gson();
         AdsViewModel adsViewModel = gson.fromJson(json, AdsViewModel.class);
         return adsViewModel;
     }
 
     private Visitable mapToPinnedMessage(UserMessage message, String json) {
+        if(TextUtils.isEmpty(json)){
+            return new PinnedMessageViewModel("","","","");
+        }
         Gson gson = new Gson();
         PinnedMessagePojo pinnedMessage = gson.fromJson(json, PinnedMessagePojo.class);
         return new PinnedMessageViewModel(pinnedMessage.getMessage(), pinnedMessage.getTitle(), pinnedMessage.getRedirectUrl(), pinnedMessage.getImageUrl());

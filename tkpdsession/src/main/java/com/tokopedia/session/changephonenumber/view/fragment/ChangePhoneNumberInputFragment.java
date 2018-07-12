@@ -20,8 +20,10 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
+import com.tokopedia.analytics.ChangePhoneNumberAnalytics;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
@@ -131,6 +133,8 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                UnifyTracking.eventTracking(ChangePhoneNumberAnalytics.
+                        getEventChangePhoneNumberClickOnNext());
                 presenter.validateNumber(cleanPhoneNumber(newPhoneNumber));
             }
         });
@@ -149,6 +153,8 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_info) {
+            UnifyTracking.eventTracking(ChangePhoneNumberAnalytics.
+                    getEventChangePhoneNumberClickOnInfo());
             bottomSheetInfo.show();
         }
         return true;

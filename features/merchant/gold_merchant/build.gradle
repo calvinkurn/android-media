@@ -2,23 +2,12 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
-android {
-    defaultConfig {
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments = ['targetModuleName': 'TkpdGM']
-            }
-        }
-    }
-}
-
 project.ext {
     artifactId = 'gold_merchant'
     groupId = 'com.tokopedia.gm'
     versionName = "${tkpdGoldMerchantVersion}"
     artifactName ="gold_merchant-release"
 }
-
 buildscript {
     repositories {
         mavenCentral()

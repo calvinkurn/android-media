@@ -150,10 +150,13 @@ android {
         }
         release {
             signingConfig signingConfigs.debug
+            ext.enableHansel=false
             minifyEnabled true
             zipAlignEnabled true
             shrinkResources true
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
+            multiDexKeepFile file('multidex-config.txt')
+            multiDexKeepProguard file('multidex-config.pro')
             if (allowProguard()) {
                 proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
             } else {
@@ -202,7 +205,7 @@ android {
         applicationId "com.tokopedia.tkpd"
         versionCode getTkpdVersionCode()
         versionName getTkpdVersionName()
-        vectorDrawables.useSupportLibrary = true
+        vectorDrawables.useSupportLibrary = false
         testInstrumentationRunner 'com.tokopedia.tkpd.MyRunner'
         ndk {
             abiFilters "x86", "armeabi-v7a"
@@ -274,7 +277,7 @@ dependencies {
     implementation project(rootProject.ext.features.districtRecommendation)
     implementation project(rootProject.ext.features.contactUs)
     implementation project(rootProject.ext.features.otp)
-    implementation project(rootProject.ext.features.topAdsCommon)
+    implementation project(rootProject.ext.features.goldMerchantCommon)
     implementation project(rootProject.ext.features.topAdsSourceTagging)
     implementation project(rootProject.ext.features.checkout)
     implementation project(rootProject.ext.features.logisticdata)
@@ -291,6 +294,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.fingerprint)
+    implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.imageuploader)
 
     implementation rootProject.ext.miscDependencies.bcaOneClick

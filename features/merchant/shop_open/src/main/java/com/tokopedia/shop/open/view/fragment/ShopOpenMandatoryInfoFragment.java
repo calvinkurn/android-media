@@ -34,6 +34,10 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerEditorBuilder;
+import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
+import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.listener.StepperListener;
 import com.tokopedia.seller.common.gallery.GalleryCropActivity;
@@ -52,22 +56,24 @@ import com.tokopedia.shop.open.util.ShopErrorHandler;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnNeverAskAgain;
-import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.OnShowRationale;
-import permissions.dispatcher.PermissionRequest;
-import permissions.dispatcher.RuntimePermissions;
+import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_BRIGHTNESS;
+import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CONTRAST;
+import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CROP;
+import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_ROTATE;
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB;
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MIN_RESOLUTION;
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_CAMERA;
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_GALLERY;
+import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
+
 
 /**
  * Created by Nathaniel on 3/16/2017.
  */
 
-@RuntimePermissions
 public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements ShopOpenInfoView {
 
     public static final int REQUEST_CODE_IMAGE_PICKER = 532;
@@ -158,7 +164,16 @@ public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements
         containerImagePicker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onClickBrowseImage();
+                ImagePickerBuilder builder = new ImagePickerBuilder(getString(R.string.choose_shop_picture),
+                        new int[]{TYPE_GALLERY, TYPE_CAMERA}, com.tokopedia.imagepicker.picker.gallery.type.GalleryType.IMAGE_ONLY, DEFAULT_MAX_IMAGE_SIZE_IN_KB,
+                        DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.RATIO_1_1, true,
+                        new ImagePickerEditorBuilder(
+                                new int[]{ACTION_BRIGHTNESS, ACTION_CONTRAST, ACTION_CROP, ACTION_ROTATE},
+                                false,
+                                null)
+                        ,null);
+                Intent intent = ImagePickerActivity.getIntent(getContext(), builder);
+                startActivityForResult(intent, REQUEST_CODE_IMAGE_PICKER);
             }
         });
         buttonNext.setOnClickListener(new View.OnClickListener() {
@@ -238,48 +253,21 @@ public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements
         NetworkErrorHelper.showSnackbar(getActivity(), ShopErrorHandler.getErrorMessage(getActivity(), e));
     }
 
-    private void onClickBrowseImage() {
-        CommonUtils.hideKeyboard(getActivity(), getView());
-        FragmentManager fm = getActivity().getSupportFragmentManager();
-        ShopOpenMandatoryImageDialogFragment dialogFragment = ShopOpenMandatoryImageDialogFragment.newInstance(0);
-        dialogFragment.show(fm, ProductAddImageEditDialogFragment.FRAGMENT_TAG);
-        dialogFragment.setOnImageEditListener(new ProductAddImageEditDialogFragment.OnImageEditListener() {
-
-            @Override
-            public void clickEditProductFromCamera(int position) {
-                ShopOpenMandatoryInfoFragmentPermissionsDispatcher.goToCameraWithCheck(ShopOpenMandatoryInfoFragment.this);
-            }
-
-            @Override
-            public void clickEditProductFromGallery(int position) {
-                ShopOpenMandatoryInfoFragmentPermissionsDispatcher.goToGalleryWithCheck(ShopOpenMandatoryInfoFragment.this);
-            }
-        });
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-            switch (requestCode) {
-                case REQUEST_CODE_IMAGE_PICKER:
-                    if (resultCode == Activity.RESULT_OK) {
-                        if (data != null && data.getStringExtra(GalleryCropActivity.RESULT_IMAGE_CROPPED) != null) {
-                            uriPathImage = data.getStringExtra(GalleryCropActivity.RESULT_IMAGE_CROPPED);
-                            ImageHandler.loadImageFromFile(getActivity(), imagePicker, new File(uriPathImage));
-                        }
+        switch (requestCode) {
+            case REQUEST_CODE_IMAGE_PICKER:
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    ArrayList<String> imageUrlOrPathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS);
+                    if (imageUrlOrPathList != null && imageUrlOrPathList.size() > 0) {
+                        uriPathImage = imageUrlOrPathList.get(0);
+                        ImageHandler.loadImageFromFile(getActivity(), imagePicker, new File(uriPathImage));
                     }
-                    break;
-                case com.tokopedia.core.ImageGallery.TOKOPEDIA_GALLERY:
-                    if(data != null) {
-                        String imageUrl = data.getStringExtra(GalleryActivity.IMAGE_URL);
-                        if (!TextUtils.isEmpty(imageUrl)) {
-                            uriPathImage = imageUrl;
-                            ImageHandler.loadImageFromFile(getActivity(), imagePicker, new File(uriPathImage));
-                        }
-                    }
-                    break;
-                default:
-                    break;
-            }
+                }
+                break;
+            default:
+                break;
+        }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -305,61 +293,6 @@ public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements
         onAttachListener(context);
     }
 
-    // Permission part
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        // NOTE: delegate the permission handling to generated method
-        ShopOpenMandatoryInfoFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
-    }
-
-    @TargetApi(16)
-    @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showDeniedForExternalStorage() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
-    }
-
-    @TargetApi(16)
-    @OnPermissionDenied(Manifest.permission.CAMERA)
-    void showDeniedForCamera() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.CAMERA);
-    }
-
-    @TargetApi(16)
-    @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showNeverAskForExternalStorage() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
-    }
-
-    @TargetApi(16)
-    @OnNeverAskAgain(Manifest.permission.CAMERA)
-    void showNeverAskForCamera() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.CAMERA);
-    }
-
-    @TargetApi(16)
-    @OnShowRationale({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    void showRationale(final PermissionRequest request) {
-        List<String> listPermission = new ArrayList<>();
-        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        listPermission.add(Manifest.permission.CAMERA);
-        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-        RequestPermissionUtil.onShowRationale(getActivity(), request, listPermission);
-    }
-
-    @TargetApi(16)
-    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-    public void goToGallery() {
-        startActivityForResult(GalleryCropActivity.createIntent(getActivity(), GalleryType.ofImageOnly(), true), REQUEST_CODE_IMAGE_PICKER);
-    }
-
-    @TargetApi(16)
-    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    public void goToCamera() {
-        startActivityForResult(com.tokopedia.seller.common.imageeditor.GalleryCropActivity.createIntent(getActivity(), 1, true, 1,true),
-                com.tokopedia.core.ImageGallery.TOKOPEDIA_GALLERY);
-    }
 
     protected void onAttachListener(Context context) {
         onShopStepperListener = (StepperListener<ShopOpenStepperModel>) context;
