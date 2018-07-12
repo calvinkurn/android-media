@@ -63,6 +63,8 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
     private ProgressDialog progressDialog;
     private String finalCameraResultFilePath;
     private ImageRatioCropPresenter imageRatioCropPresenter;
+    private boolean isCameraOpen;
+    private CameraListener cameraListener;
 
     public interface OnImagePickerCameraFragmentListener {
         void onImageTaken(String filePath);
@@ -115,12 +117,14 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
         View useImageLayout = view.findViewById(R.id.layout_use);
         View recaptureLayout = view.findViewById(R.id.layout_recapture);
 
-        cameraView.addCameraListener(new CameraListener() {
+        //noinspection SuspiciousNameCombination
+        cameraListener = new CameraListener() {
 
             @Override
             public void onCameraOpened(CameraOptions options) {
                 initialFlash();
                 setPreviewCameraLayout();
+                isCameraOpen = true;
             }
 
             private void initialFlash() {
@@ -174,10 +178,17 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
             }
 
             @Override
+            public void onCameraClosed() {
+                super.onCameraClosed();
+                isCameraOpen = false;
+            }
+
+            @Override
             public void onPictureTaken(byte[] imageByte) {
                 generateImage(imageByte);
             }
-        });
+        };
+        cameraView.addCameraListener(cameraListener);
 
         flashImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -196,10 +207,8 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
             }
 
             private void capturePhoto() {
-                if (mCapturingPicture) {
-                    return;
-                }
-                if (onImagePickerCameraFragmentListener.isMaxImageReached()) {
+                if (mCapturingPicture || onImagePickerCameraFragmentListener.isMaxImageReached() ||
+                        !isCameraOpen) {
                     return;
                 }
                 showLoading();
@@ -347,6 +356,29 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
         reset();
     }
 
+    public void onVisible(){
+        // This is to prevent bug in cameraview library
+        // https://github.com/natario1/CameraView/issues/154
+        if (onImagePickerCameraFragmentListener.isFinishEditting()) {
+            return;
+        }
+        if (getActivity().isFinishing()) {
+            return;
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            String permission = Manifest.permission.CAMERA;
+            if (ActivityCompat.checkSelfPermission(getContext(), permission) == PackageManager.PERMISSION_GRANTED) {
+                startCamera();
+            }
+        } else {
+            startCamera();
+        }
+    }
+
+    public void onInvisible(){
+        destroyCamera();
+    }
+
     private void showLoading(){
         if (isAdded()) {
             progressDialog.show();
@@ -397,23 +429,7 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
     @Override
     public void onResume() {
         super.onResume();
-
-        // This is to prevent bug in cameraview library
-        // https://github.com/natario1/CameraView/issues/154
-        if (onImagePickerCameraFragmentListener.isFinishEditting()) {
-            return;
-        }
-        if (getActivity().isFinishing()) {
-            return;
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            String permission = Manifest.permission.CAMERA;
-            if (ActivityCompat.checkSelfPermission(getContext(), permission) == PackageManager.PERMISSION_GRANTED) {
-                startCamera();
-            }
-        } else {
-            startCamera();
-        }
+        onVisible();
     }
 
     @Override
@@ -432,6 +448,8 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
     private void startCamera() {
         try {
             showCameraView();
+            cameraView.clearCameraListeners();
+            cameraView.addCameraListener(cameraListener);
             cameraView.start();
         } catch (Throwable e) {
             // no-op
@@ -448,7 +466,9 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
 
     private void destroyCamera() {
         try {
+            hideLoading();
             cameraView.destroy();
+            isCameraOpen = false;
         } catch (Throwable e) {
             // no-op
         }
