@@ -73,7 +73,7 @@ public class CartListModule {
     @CartListScope
     RecyclerView.ItemDecoration provideCartItemDecoration(Context context) {
         return new CartItemDecoration(
-                (int) context.getResources().getDimension(R.dimen.new_margin_med),
+                (int) context.getResources().getDimension(R.dimen.dp_4),
                 false, 0);
     }
 

@@ -15,6 +15,7 @@ import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartShipmentData
 import com.tokopedia.checkout.view.view.shipment.converter.ShipmentDataConverter;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCheckoutButtonModel;
+import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentSellerCashbackModel;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;

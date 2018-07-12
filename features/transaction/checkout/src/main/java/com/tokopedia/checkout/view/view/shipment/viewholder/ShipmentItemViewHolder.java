@@ -64,7 +64,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
     private static final String PHONE_NUMBER_REGEX_PATTERN = "[0-9]+";
 
     private ShipmentAdapterActionListener mActionListener;
-    private ShipmentAdapter shipmentAdapter;
 
     private TextViewCompat tvError;
     private FrameLayout layoutError;
@@ -147,11 +146,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         super(itemView);
     }
 
-    public ShipmentItemViewHolder(View itemView, ShipmentAdapterActionListener actionListener,
-                                  ShipmentAdapter shipmentAdapter) {
+    public ShipmentItemViewHolder(View itemView, ShipmentAdapterActionListener actionListener) {
         super(itemView);
         this.mActionListener = actionListener;
-        this.shipmentAdapter = shipmentAdapter;
         bindViewIds(itemView);
     }
 

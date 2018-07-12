@@ -23,9 +23,6 @@ import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressMo
 import com.tokopedia.checkout.domain.datamodel.cartcheckout.CheckoutData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
-import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShipProd;
-import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
-import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
@@ -215,7 +212,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         rvShipment = view.findViewById(R.id.rv_shipment);
         progressDialogNormal = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         ((SimpleItemAnimator) rvShipment.getItemAnimator()).setSupportsChangeAnimations(false);
-        if (getArguments().getBoolean(ARG_EXTRA_NAVIGATE_TO_ADDRESS_CHOICE, false)) {
+        if (getArguments() != null && getArguments().getBoolean(ARG_EXTRA_NAVIGATE_TO_ADDRESS_CHOICE, false)) {
             onAddOrChangeAddress();
         }
     }
@@ -246,7 +243,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         rvShipment.setAdapter(shipmentAdapter);
         if (isInitialRender) {
             rvShipment.addItemDecoration(
-                    new CartItemDecoration((int) getResources().getDimension(R.dimen.dp_12), false, 0));
+                    new CartItemDecoration((int) getResources().getDimension(R.dimen.dp_4), false, 0));
         }
         CartItemPromoHolderData cartItemPromoHolderData =
                 CartItemPromoHolderData.createInstanceFromAppliedPromo(promoCodeAppliedData);
@@ -263,6 +260,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
         shipmentAdapter.addCartItemDataList(shipmentCartItemModelList);
         shipmentAdapter.addShipmentCostData(shipmentCostModel);
+        shipmentAdapter.updateShipmentSellerCashbackVisibility();
         shipmentAdapter.addShipmentCheckoutButtonModel(shipmentCheckoutButtonModel);
         if (isInitialRender) {
             if (!shipmentSelectionStateDataHashSet.isEmpty()) {

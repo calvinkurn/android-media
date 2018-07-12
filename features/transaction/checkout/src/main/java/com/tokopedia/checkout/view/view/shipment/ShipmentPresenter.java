@@ -34,6 +34,7 @@ import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.domain.usecase.GetThanksToppayUseCase;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCheckoutButtonModel;
+import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentSellerCashbackModel;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.util.SessionHandler;
@@ -119,6 +120,98 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     public void detachView() {
         super.detachView();
         compositeSubscription.unsubscribe();
+    }
+
+    @Override
+    public RecipientAddressModel getRecipientAddressModel() {
+        return recipientAddressModel;
+    }
+
+    @Override
+    public void setRecipientAddressModel(RecipientAddressModel recipientAddressModel) {
+        this.recipientAddressModel = recipientAddressModel;
+    }
+
+    @Override
+    public List<ShipmentCartItemModel> getShipmentCartItemModelList() {
+        return shipmentCartItemModelList;
+    }
+
+    @Override
+    public void setShipmentCartItemModelList(List<ShipmentCartItemModel> recipientCartItemList) {
+        if (shipmentCartItemModelList != null) {
+            this.shipmentCartItemModelList.clear();
+            this.shipmentCartItemModelList.addAll(recipientCartItemList);
+        } else {
+            this.shipmentCartItemModelList = recipientCartItemList;
+        }
+    }
+
+    @Override
+    public PromoCodeAppliedData getPromoCodeAppliedData() {
+        return promoCodeAppliedData;
+    }
+
+    @Override
+    public void setPromoCodeAppliedData(PromoCodeAppliedData promoCodeAppliedData) {
+        this.promoCodeAppliedData = promoCodeAppliedData;
+    }
+
+    @Override
+    public CartPromoSuggestion getCartPromoSuggestion() {
+        return cartPromoSuggestion;
+    }
+
+    @Override
+    public void setCartPromoSuggestion(CartPromoSuggestion cartPromoSuggestion) {
+        this.cartPromoSuggestion = cartPromoSuggestion;
+    }
+
+    @Override
+    public CheckoutData getCheckoutData() {
+        return checkoutData;
+    }
+
+    @Override
+    public void setCheckoutData(CheckoutData checkoutData) {
+        this.checkoutData = checkoutData;
+    }
+
+    @Override
+    public void setDataCheckoutRequestList(List<DataCheckoutRequest> dataCheckoutRequestList) {
+        this.dataCheckoutRequestList = dataCheckoutRequestList;
+    }
+
+    @Override
+    public void setPromoCodeCartShipmentRequestData(
+            List<CheckPromoCodeCartShipmentRequest.Data> promoCodeCartShipmentRequestData
+    ) {
+        this.promoCodeCartShipmentRequestDataList = promoCodeCartShipmentRequestData;
+    }
+
+    @Override
+    public void setDataChangeAddressRequestList(List<DataChangeAddressRequest> dataChangeAddressRequestList) {
+        this.changeAddressRequestList = dataChangeAddressRequestList;
+    }
+
+    @Override
+    public ShipmentCostModel getShipmentCostModel() {
+        return shipmentCostModel;
+    }
+
+    @Override
+    public void setShipmentCostModel(ShipmentCostModel shipmentCostModel) {
+        this.shipmentCostModel = shipmentCostModel;
+    }
+
+    @Override
+    public ShipmentCheckoutButtonModel getShipmentCheckoutButtonModel() {
+        return shipmentCheckoutButtonModel;
+    }
+
+    @Override
+    public void setShipmentCheckoutButtonModel(ShipmentCheckoutButtonModel shipmentCheckoutButtonModel) {
+        this.shipmentCheckoutButtonModel = shipmentCheckoutButtonModel;
     }
 
     @Override
@@ -602,98 +695,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 .isDonation(isDonation)
                 .data(dataCheckoutRequestList)
                 .build();
-    }
-
-    @Override
-    public RecipientAddressModel getRecipientAddressModel() {
-        return recipientAddressModel;
-    }
-
-    @Override
-    public void setRecipientAddressModel(RecipientAddressModel recipientAddressModel) {
-        this.recipientAddressModel = recipientAddressModel;
-    }
-
-    @Override
-    public List<ShipmentCartItemModel> getShipmentCartItemModelList() {
-        return shipmentCartItemModelList;
-    }
-
-    @Override
-    public void setShipmentCartItemModelList(List<ShipmentCartItemModel> recipientCartItemList) {
-        if (shipmentCartItemModelList != null) {
-            this.shipmentCartItemModelList.clear();
-            this.shipmentCartItemModelList.addAll(recipientCartItemList);
-        } else {
-            this.shipmentCartItemModelList = recipientCartItemList;
-        }
-    }
-
-    @Override
-    public PromoCodeAppliedData getPromoCodeAppliedData() {
-        return promoCodeAppliedData;
-    }
-
-    @Override
-    public void setPromoCodeAppliedData(PromoCodeAppliedData promoCodeAppliedData) {
-        this.promoCodeAppliedData = promoCodeAppliedData;
-    }
-
-    @Override
-    public CartPromoSuggestion getCartPromoSuggestion() {
-        return cartPromoSuggestion;
-    }
-
-    @Override
-    public void setCartPromoSuggestion(CartPromoSuggestion cartPromoSuggestion) {
-        this.cartPromoSuggestion = cartPromoSuggestion;
-    }
-
-    @Override
-    public CheckoutData getCheckoutData() {
-        return checkoutData;
-    }
-
-    @Override
-    public void setCheckoutData(CheckoutData checkoutData) {
-        this.checkoutData = checkoutData;
-    }
-
-    @Override
-    public void setDataCheckoutRequestList(List<DataCheckoutRequest> dataCheckoutRequestList) {
-        this.dataCheckoutRequestList = dataCheckoutRequestList;
-    }
-
-    @Override
-    public void setPromoCodeCartShipmentRequestData(
-            List<CheckPromoCodeCartShipmentRequest.Data> promoCodeCartShipmentRequestData
-    ) {
-        this.promoCodeCartShipmentRequestDataList = promoCodeCartShipmentRequestData;
-    }
-
-    @Override
-    public void setDataChangeAddressRequestList(List<DataChangeAddressRequest> dataChangeAddressRequestList) {
-        this.changeAddressRequestList = dataChangeAddressRequestList;
-    }
-
-    @Override
-    public ShipmentCostModel getShipmentCostModel() {
-        return shipmentCostModel;
-    }
-
-    @Override
-    public void setShipmentCostModel(ShipmentCostModel shipmentCostModel) {
-        this.shipmentCostModel = shipmentCostModel;
-    }
-
-    @Override
-    public ShipmentCheckoutButtonModel getShipmentCheckoutButtonModel() {
-        return shipmentCheckoutButtonModel;
-    }
-
-    @Override
-    public void setShipmentCheckoutButtonModel(ShipmentCheckoutButtonModel shipmentCheckoutButtonModel) {
-        this.shipmentCheckoutButtonModel = shipmentCheckoutButtonModel;
     }
 
     @Override
