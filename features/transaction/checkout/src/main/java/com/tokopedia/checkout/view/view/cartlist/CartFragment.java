@@ -990,6 +990,11 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     }
 
     @Override
+    public void onAddWishList(int position, Data data) {
+        //TODO: next implement wishlist action
+    }
+
+    @Override
     public void onRefresh(View view) {
         cartListAdapter.resetData();
         dPresenter.processInitialGetCartData();

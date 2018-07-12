@@ -150,12 +150,13 @@ import com.tokopedia.groupchat.chatroom.view.activity.GroupChatActivity;
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics;
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.imageuploader.ImageUploaderRouter;
-import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
-import com.tokopedia.inbox.inboxchat.activity.InboxChatActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
 import com.tokopedia.kol.KolComponentInstance;
+import com.tokopedia.instantloan.di.module.InstantLoanChuckRouter;
+import com.tokopedia.instantloan.router.InstantLoanRouter;
+import com.tokopedia.instantloan.view.activity.InstantLoanActivity;
 import com.tokopedia.kol.KolRouter;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
@@ -265,9 +266,13 @@ import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.WalletUserSession;
 import com.tokopedia.tokocash.di.DaggerTokoCashComponent;
 import com.tokopedia.tokocash.di.TokoCashComponent;
+import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
+import com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity;
+import com.tokopedia.topchat.common.TopChatRouter;
 import com.tokopedia.tokocash.historytokocash.presentation.model.PeriodRangeModelData;
 import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 import com.tokopedia.tokocash.pendingcashback.receiver.TokocashPendingDataBroadcastReceiver;
+import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.topads.sourcetagging.util.TopAdsAppLinkUtil;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.bcaoneklik.usecase.CreditCardFingerPrintUseCase;
@@ -343,7 +348,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ContactUsModuleRouter,
         ITransactionOrderDetailRouter,
         ILogisticUploadAwbRouter,
-        NetworkRouter {
+        NetworkRouter,
+        InstantLoanChuckRouter,
+        InstantLoanRouter,
+        TopChatRouter,
+        TokopointRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -1895,8 +1904,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void registerShake(String screenName) {
-        ShakeDetectManager.getShakeDetectManager().registerShake(screenName);
+    public void registerShake(String screenName,Activity activity) {
+        ShakeDetectManager.getShakeDetectManager().registerShake(screenName,activity);
     }
 
     @Override
@@ -1989,6 +1998,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId) {
         return ShopProductListActivity.createIntent(context, shopId, keyword, etalaseId, "");
+    }
+
+    @Override
+    public Intent getInstantLoanIntent(Context context) {
+        return InstantLoanActivity.createIntent(context);
     }
 
     public void showForceHockeyAppDialog() {
@@ -2233,6 +2247,16 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return new Intent(context, ContactUsActivity.class);
     }
 
+
+    @Override
+    public Intent getHelpPageActivity(Context context, String url, boolean isFromChatBot) {
+        Intent intent = new Intent(context, ContactUsActivity.class);
+        intent.putExtra(ContactUsConstant.PARAM_URL, URLGenerator.generateURLContactUs(
+                TextUtils.isEmpty(url) ? TkpdBaseURL.BASE_CONTACT_US : url, context
+        ));
+        intent.putExtra(ContactUsConstant.IS_CHAT_BOT, isFromChatBot);
+        return intent;
+    }
 
     @Override
     public Intent transactionOrderDetailRouterGetIntentUploadAwb(String urlUpload) {

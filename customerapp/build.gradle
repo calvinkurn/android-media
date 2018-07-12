@@ -281,14 +281,17 @@ dependencies {
     implementation project(rootProject.ext.features.districtRecommendation)
     implementation project(rootProject.ext.features.contactUs)
     implementation project(rootProject.ext.features.otp)
+    implementation project(rootProject.ext.features.instantLoan)
     implementation project(rootProject.ext.features.topAdsCommon)
     implementation project(rootProject.ext.features.topAdsSourceTagging)
     implementation project(rootProject.ext.features.checkout)
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.tracking)
     implementation project(rootProject.ext.features.logisticuploadawb)
+    implementation project(rootProject.ext.features.topchat)
     implementation project(rootProject.ext.features.nps)
     implementation project(rootProject.ext.features.transactionanalytics)
+    implementation project(rootProject.ext.features.tokopoints)
 
 
     implementation project(rootProject.ext.libraries.pushNotif)
