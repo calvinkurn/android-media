@@ -27,7 +27,7 @@ import com.tokopedia.shop.page.view.widget.ShopWarningTickerView;
  * Created by nathan on 3/10/18.
  */
 
-public class ShopPageHeaderViewHolder {
+public class OldShopPageHeaderViewHolder {
 
     public interface Listener {
 
@@ -104,7 +104,7 @@ public class ShopPageHeaderViewHolder {
         favouriteShop = !favouriteShop;
     }
 
-    public ShopPageHeaderViewHolder(View view, final Listener listener) {
+    public OldShopPageHeaderViewHolder(View view, final Listener listener) {
         this.listener = listener;
 
         shopWarningTickerView = view.findViewById(R.id.shop_warning_ticker_view);

@@ -11,40 +11,31 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.reputation.common.data.source.cloud.model.ReputationSpeed
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentInstance
-import com.tokopedia.shop.ShopModuleRouter
-import com.tokopedia.shop.analytic.ShopPageTracking
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.page.di.component.DaggerShopPageComponent
 import com.tokopedia.shop.page.di.module.ShopPageModule
 import com.tokopedia.shop.page.view.adapter.ShopPageViewPagerAdapter
+import com.tokopedia.shop.page.view.holder.ShopPageHeaderViewHolder
 import com.tokopedia.shop.page.view.listener.ShopPageView
-import com.tokopedia.shop.page.view.presenter.ShopPagePresenter
 import com.tokopedia.shop.page.view.presenter.ShopPagePresenterNew
 import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedFragment
 import com.tokopedia.shop.product.view.widget.ShopPagePromoWebView
 import kotlinx.android.synthetic.main.activity_shop_page.*
 import javax.inject.Inject
 
-class ShopPageActivity: BaseSimpleActivity(), ShopPagePromoWebView.Listener, HasComponent<ShopComponent>, ShopPageView {
-
-
-    override fun getComponent() = ShopComponentInstance.getComponent(application)
-
-    override fun webViewTouched(touched: Boolean) {}
+class ShopPageActivity: BaseSimpleActivity(), ShopPagePromoWebView.Listener, HasComponent<ShopComponent>,
+        ShopPageView {
 
     var shopId: String? = null
     var shopDomain: String? = null
     var shopAttribution: String? = null
+    var shopInfo: ShopInfo? = null
+
+    @Inject lateinit var presenter: ShopPagePresenterNew
+    lateinit var shopPageViewHolder: ShopPageHeaderViewHolder
 
     lateinit var shopPageViewPagerAdapter: ShopPageViewPagerAdapter;
-
-    var shopInfo: ShopInfo? = null;
-
-    @Inject
-    lateinit var shopPagePresenter: ShopPagePresenterNew
-    @Inject
-    lateinit var shopPageTracking: ShopPageTracking
 
     companion object {
         const val SHOP_ID = "EXTRA_SHOP_ID"
@@ -60,14 +51,13 @@ class ShopPageActivity: BaseSimpleActivity(), ShopPagePromoWebView.Listener, Has
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        initInjector()
         shopId = intent.getStringExtra(SHOP_ID)
         shopDomain = intent.getStringExtra(SHOP_DOMAIN)
         shopAttribution = intent.getStringExtra(SHOP_ATTRIBUTION)
-        updateShopDiscussionIntent()
         super.onCreate(savedInstanceState)
-        initInjector()
-
-        initAdapter();
+        shopPageViewHolder = ShopPageHeaderViewHolder(shopPageHeader)
+        initAdapter()
         viewPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
         viewPager.adapter = shopPageViewPagerAdapter
 
@@ -75,40 +65,25 @@ class ShopPageActivity: BaseSimpleActivity(), ShopPagePromoWebView.Listener, Has
         tabLayout.setupWithViewPager(viewPager)
 
         getShopInfo()
+
     }
 
     private fun getShopInfo() {
-        showFullPageLoading()
-        if (!TextUtils.isEmpty(shopId)) {
-            shopPagePresenter.getShopInfo(shopId!!)
-        } else if (!TextUtils.isEmpty(shopId)){
-            shopPagePresenter.getShopInfoByDomain(shopDomain!!)
+        if (!TextUtils.isEmpty(shopId)){
+            presenter.getShopInfo(shopId!!)
         } else {
-            throw RuntimeException("Shop ID or Shop Domain null")
+            presenter.getShopInfoByDomain(shopDomain!!)
         }
-    }
-
-    private fun showFullPageLoading(){
-        //TODO show full page loading
-    }
-
-    private fun hideFullPageLoading(){
-        //TODO hide full page loading
-    }
-
-
-    /**
-     * Old Discussion fragment need this intent, need updated code
-     * com.tokopedia.core.shopInfo.presenter.ShopTalkPresenterImpl
-     */
-    @Deprecated("")
-    private fun updateShopDiscussionIntent() {
-        intent.putExtra("shop_id", shopId)
-        intent.putExtra("shop_domain", shopDomain)
     }
 
     override fun getLayoutRes(): Int {
         return R.layout.activity_shop_page
+    }
+
+    private fun initInjector(){
+        DaggerShopPageComponent.builder().shopPageModule(ShopPageModule())
+                .shopComponent(component).build().inject(this)
+        presenter.attachView(this)
     }
 
     override fun getNewFragment(): Fragment? {
@@ -122,36 +97,39 @@ class ShopPageActivity: BaseSimpleActivity(), ShopPagePromoWebView.Listener, Has
                 shopId, shopAttribution)
     }
 
-    private fun initInjector() {
-        DaggerShopPageComponent
-                .builder()
-                .shopPageModule(ShopPageModule())
-                .shopComponent(component)
-                .build()
-                .inject(this)
-        shopPagePresenter.attachView(this)
-    }
-
     override fun onSuccessGetShopInfo(shopInfo: ShopInfo?) {
-        hideFullPageLoading();
-        this.shopInfo = shopInfo
+        shopInfo?.run {
+            this@ShopPageActivity.shopInfo = this
+            shopId = info.shopId
+            shopDomain = info.shopDomain
+            shopPageViewHolder.bind(this, presenter.isMyShop(shopId!!))
 
-        (shopPageViewPagerAdapter.getRegisteredFragment(0) as ShopProductListLimitedFragment).displayProduct(shopInfo)
-
+            (shopPageViewPagerAdapter.getRegisteredFragment(0) as ShopProductListLimitedFragment)
+                    .displayProduct(this)
+        }
     }
 
     override fun onErrorGetShopInfo(e: Throwable?) {
+
     }
 
     override fun onSuccessGetReputation(reputationSpeed: ReputationSpeed?) {
+
     }
 
     override fun onErrorGetReputation(e: Throwable?) {
+
     }
 
     override fun onSuccessToggleFavourite(successValue: Boolean) {
+
     }
 
     override fun onErrorToggleFavourite(e: Throwable?) {
+
     }
+
+    override fun getComponent() = ShopComponentInstance.getComponent(application)
+
+    override fun webViewTouched(touched: Boolean) {}
 }

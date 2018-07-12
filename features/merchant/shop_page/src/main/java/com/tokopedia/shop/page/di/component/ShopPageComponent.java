@@ -17,5 +17,6 @@ public interface ShopPageComponent {
 
     void inject(ShopPageActivity shopInfoActivity);
     void inject(OldShopPageActivity shopInfoActivity);
+    void inject(ShopPageActivity shopPageActivity);
 
 }
