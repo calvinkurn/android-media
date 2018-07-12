@@ -19,7 +19,7 @@ import com.tokopedia.shop.R;
 import com.tokopedia.shop.product.util.ShopProductOfficialStoreUtils;
 import com.tokopedia.shop.product.view.listener.ShopProductUserVisibleHintListener;
 import com.tokopedia.shop.product.view.model.ShopProductLimitedPromoViewModel;
-import com.tokopedia.shop.product.view.widget.ShopPagePromoWebView;
+import com.tokopedia.shop.product.view.widget.NestedWebView;
 
 /**
  * @author by alvarisi on 12/12/17.
@@ -35,25 +35,21 @@ public class ShopProductLimitedPromoViewHolder extends AbstractViewHolder<ShopPr
     public static final int LAYOUT = R.layout.item_shop_product_limited_promo;
 
     private final PromoViewHolderListener promoViewHolderListener;
-    private final ShopPagePromoWebView.Listener promoWebViewListener;
 
     private View loadingLayout;
-    private ShopPagePromoWebView shopPagePromoWebView;
+    private NestedWebView shopPagePromoWebView;
     private boolean binded;
     private boolean isLogin;
 
-    public ShopProductLimitedPromoViewHolder(View itemView, PromoViewHolderListener promoViewHolderListener,
-                                             ShopPagePromoWebView.Listener promoWebViewListener) {
+    public ShopProductLimitedPromoViewHolder(View itemView, PromoViewHolderListener promoViewHolderListener) {
         super(itemView);
         this.promoViewHolderListener = promoViewHolderListener;
-        this.promoWebViewListener = promoWebViewListener;
         findViews(itemView);
     }
 
     private void findViews(View view) {
         loadingLayout = view.findViewById(R.id.layout_loading);
         shopPagePromoWebView = view.findViewById(R.id.web_view);
-        shopPagePromoWebView.setListener(promoWebViewListener);
         shopPagePromoWebView.setWebViewClient(new OfficialStoreWebViewClient());
         shopPagePromoWebView.setWebChromeClient(new OfficialStoreWebChromeClient());
 

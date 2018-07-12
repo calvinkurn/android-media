@@ -91,7 +91,6 @@ public class ShopProductListLimitedNewFragment extends BaseListFragment<ShopProd
     private String attribution;
     private ShopInfo shopInfo;
     private ShopModuleRouter shopModuleRouter;
-    private ShopPagePromoWebView.Listener promoWebViewListener;
     private BottomActionView bottomActionView;
     private SearchInputView searchInputView;
     private RecyclerView.ItemDecoration itemDecoration;
@@ -112,16 +111,11 @@ public class ShopProductListLimitedNewFragment extends BaseListFragment<ShopProd
         return fragment;
     }
 
-    public void setPromoWebViewListener(ShopPagePromoWebView.Listener promoWebViewListener) {
-        this.promoWebViewListener = promoWebViewListener;
-    }
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context != null && context.getApplicationContext() instanceof ShopModuleRouter) {
             shopModuleRouter = ((ShopModuleRouter) context.getApplicationContext());
-            promoWebViewListener = (ShopPagePromoWebView.Listener) context;
         }
     }
 
@@ -255,7 +249,7 @@ public class ShopProductListLimitedNewFragment extends BaseListFragment<ShopProd
     @NonNull
     @Override
     protected ShopProductLimitedAdapterTypeFactory getAdapterTypeFactory() {
-        return new ShopProductLimitedAdapterTypeFactory(this, this, this, promoWebViewListener, this,
+        return new ShopProductLimitedAdapterTypeFactory(this, this, this, this,
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {

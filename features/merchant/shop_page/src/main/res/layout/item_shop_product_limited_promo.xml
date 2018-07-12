@@ -16,7 +16,7 @@
 
     </FrameLayout>
 
-    <com.tokopedia.shop.product.view.widget.ShopPagePromoWebView
+    <com.tokopedia.shop.product.view.widget.NestedWebView
         android:id="@+id/web_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

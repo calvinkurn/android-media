@@ -19,12 +19,13 @@ import com.tokopedia.shop.page.view.adapter.ShopPageViewPagerAdapter
 import com.tokopedia.shop.page.view.holder.ShopPageHeaderViewHolder
 import com.tokopedia.shop.page.view.listener.ShopPageView
 import com.tokopedia.shop.page.view.presenter.ShopPagePresenterNew
-import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedFragment
-import com.tokopedia.shop.product.view.widget.ShopPagePromoWebView
+import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedNewFragment
 import kotlinx.android.synthetic.main.activity_shop_page.*
 import javax.inject.Inject
+import android.support.design.widget.AppBarLayout
 
-class ShopPageActivity: BaseSimpleActivity(), ShopPagePromoWebView.Listener, HasComponent<ShopComponent>,
+
+class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         ShopPageView {
 
     var shopId: String? = null
@@ -32,7 +33,8 @@ class ShopPageActivity: BaseSimpleActivity(), ShopPagePromoWebView.Listener, Has
     var shopAttribution: String? = null
     var shopInfo: ShopInfo? = null
 
-    @Inject lateinit var presenter: ShopPagePresenterNew
+    @Inject
+    lateinit var presenter: ShopPagePresenterNew
     lateinit var shopPageViewHolder: ShopPageHeaderViewHolder
 
     lateinit var shopPageViewPagerAdapter: ShopPageViewPagerAdapter;
@@ -61,15 +63,28 @@ class ShopPageActivity: BaseSimpleActivity(), ShopPagePromoWebView.Listener, Has
         viewPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
         viewPager.adapter = shopPageViewPagerAdapter
 
-        tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE)
         tabLayout.setupWithViewPager(viewPager)
+        onProductListDetailFullyHide();
 
         getShopInfo()
 
     }
 
+    private fun onProductListDetailStartShow() {
+        //hide tabs
+        val params = tabLayout.layoutParams as AppBarLayout.LayoutParams
+        params.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or
+                AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS
+    }
+
+    private fun onProductListDetailFullyHide() {
+        //show tabs
+        val params = tabLayout.layoutParams as AppBarLayout.LayoutParams
+        params.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS
+    }
+
     private fun getShopInfo() {
-        if (!TextUtils.isEmpty(shopId)){
+        if (!TextUtils.isEmpty(shopId)) {
             presenter.getShopInfo(shopId!!)
         } else {
             presenter.getShopInfoByDomain(shopDomain!!)
@@ -80,7 +95,7 @@ class ShopPageActivity: BaseSimpleActivity(), ShopPagePromoWebView.Listener, Has
         return R.layout.activity_shop_page
     }
 
-    private fun initInjector(){
+    private fun initInjector() {
         DaggerShopPageComponent.builder().shopPageModule(ShopPageModule())
                 .shopComponent(component).build().inject(this)
         presenter.attachView(this)
@@ -90,10 +105,10 @@ class ShopPageActivity: BaseSimpleActivity(), ShopPagePromoWebView.Listener, Has
         return null
     }
 
-    fun initAdapter(){
+    fun initAdapter() {
         val titles = arrayOf(getString(R.string.shop_info_title_tab_product),
                 getString(R.string.shop_info_title_tab_info))
-        shopPageViewPagerAdapter = ShopPageViewPagerAdapter(supportFragmentManager, titles, this,
+        shopPageViewPagerAdapter = ShopPageViewPagerAdapter(supportFragmentManager, titles,
                 shopId, shopAttribution)
     }
 
@@ -104,7 +119,7 @@ class ShopPageActivity: BaseSimpleActivity(), ShopPagePromoWebView.Listener, Has
             shopDomain = info.shopDomain
             shopPageViewHolder.bind(this, presenter.isMyShop(shopId!!))
 
-            (shopPageViewPagerAdapter.getRegisteredFragment(0) as ShopProductListLimitedFragment)
+            (shopPageViewPagerAdapter.getRegisteredFragment(0) as ShopProductListLimitedNewFragment)
                     .displayProduct(this)
         }
     }
@@ -131,5 +146,4 @@ class ShopPageActivity: BaseSimpleActivity(), ShopPagePromoWebView.Listener, Has
 
     override fun getComponent() = ShopComponentInstance.getComponent(application)
 
-    override fun webViewTouched(touched: Boolean) {}
 }

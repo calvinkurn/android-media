@@ -70,12 +70,12 @@ public class BaseListAdapter<T, F extends AdapterTypeFactory> extends BaseAdapte
 
     @SuppressWarnings("unchecked")
     public List<T> getData() {
-        List<T> list = new ArrayList<>();
         boolean hasNonDataElement = hasNonDataElementAtLastIndex();
         if (hasNonDataElement) {
-            return (List<T>) (visitables.subList(0, visitables.size() - 1));
+            return new ArrayList((visitables.subList(0, visitables.size() - 1)));
+        } else {
+            return (ArrayList<T>) visitables;
         }
-        return list;
     }
 
     private boolean hasNonDataElementAtLastIndex() {
