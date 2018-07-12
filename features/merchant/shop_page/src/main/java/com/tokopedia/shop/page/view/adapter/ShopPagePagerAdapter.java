@@ -5,8 +5,6 @@ import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.util.SparseArrayCompat;
-import android.view.ViewGroup;
 
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedFragment;
@@ -18,6 +16,7 @@ import java.util.Arrays;
  * Created by normansyahputa on 3/13/18.
  */
 
+@Deprecated
 public class ShopPagePagerAdapter extends FragmentStatePagerAdapter {
     public static final String STATES = "states";
     private final String[] title;
