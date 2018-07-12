@@ -114,7 +114,7 @@ public class PaymentListViewHolder extends AbstractViewHolder<PaymentListModel> 
         }
 
         if(element.isShowCancelTransaction()){
-            cancelTransaction.setVisibility(View.VISIBLE);
+            cancelTransaction.setVisibility(View.GONE);
             howToPay.setVisibility(View.GONE);
         }else if(element.isShowHowToPay()){
             cancelTransaction.setVisibility(View.GONE);
