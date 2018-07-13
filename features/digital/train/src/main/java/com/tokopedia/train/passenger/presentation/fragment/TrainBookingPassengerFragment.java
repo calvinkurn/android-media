@@ -10,6 +10,7 @@ import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -101,17 +102,24 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if (savedInstanceState != null) {
-            trainParamPassenger = savedInstanceState.getParcelable(TRAIN_PARAM_PASSENGER);
-        } else {
-            trainParamPassenger = new TrainParamPassenger();
-        }
-
         initializeBuyerInfo();
         initializeTripInfo();
         initializeCheckboxSameAsBuyer();
-        initializePassenger();
+        initializePassengerLayout();
         initializeActionButton();
+
+        if (savedInstanceState == null) {
+            trainParamPassenger = new TrainParamPassenger();
+            initializedDataPassenger();
+        } else {
+            trainParamPassenger = savedInstanceState.getParcelable(TRAIN_PARAM_PASSENGER);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(TRAIN_PARAM_PASSENGER, trainParamPassenger);
     }
 
     private void initializeCheckboxSameAsBuyer() {
@@ -148,12 +156,6 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
         presenter.getProfilBuyer();
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putParcelable(TRAIN_PARAM_PASSENGER, trainParamPassenger);
-    }
-
     private void initializeTripInfo() {
         trainScheduleBookingPassData = getArguments().getParcelable(TrainBookingPassengerActivity.TRAIN_SCHEDULE_BOOKING);
         presenter.getDetailSchedule(trainScheduleBookingPassData.getDepartureScheduleId(), cardActionDeparture);
@@ -178,7 +180,7 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
         });
     }
 
-    private void initializePassenger() {
+    private void initializePassengerLayout() {
         TrainBookingPassengerAdapterTypeFactory adapterTypeFactory = new TrainBookingPassengerAdapterTypeFactory(new TrainBookingPassengerAdapterListener() {
             @Override
             public void onChangePassengerData(TrainPassengerViewModel trainPassengerViewModel) {
@@ -191,7 +193,11 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
         recyclerViewPassenger.setHasFixedSize(true);
         recyclerViewPassenger.setNestedScrollingEnabled(false);
         recyclerViewPassenger.setAdapter(adapter);
-        presenter.processInitPassengers(trainScheduleBookingPassData.getAdultPassenger(), trainScheduleBookingPassData.getInfantPassenger());
+    }
+
+    private void initializedDataPassenger() {
+        presenter.processInitPassengers(trainScheduleBookingPassData.getAdultPassenger(),
+                trainScheduleBookingPassData.getInfantPassenger());
     }
 
     @Override
@@ -303,12 +309,6 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
     public void loadPassengerSameAsBuyer(TrainPassengerViewModel trainPassengerViewModel) {
         buyerViewModel = trainPassengerViewModel;
         startActivityForResult(TrainBookingAddPassengerActivity.callingIntent(getActivity(), trainPassengerViewModel), ADD_PASSENGER_REQUEST_CODE);
-    }
-
-    //TODO delete this after do softbooking finish
-    @Override
-    public void toastValidityData() {
-        Toast.makeText(getActivity(), "All data valid", Toast.LENGTH_SHORT).show();
     }
 
     @SuppressWarnings("Range")
