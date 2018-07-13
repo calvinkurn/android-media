@@ -152,6 +152,8 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     private static final String DIGITAL_SMARTCARD = "mainapp_digital_smartcard";
 
+    private static final int DEFAULT_POST_DELAYED_VALUE = 1000;
+
     @BindView(R2.id.main_container)
     NestedScrollView mainHolderContainer;
     @BindView(R2.id.pb_main_loading)
@@ -404,7 +406,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                 promoViewPager.setCurrentItem(0);
                 promoViewPager.measureCurrentView(promoViewPager.getChildAt(0));
             }
-        }, 1000);
+        }, DEFAULT_POST_DELAYED_VALUE);
     }
 
     @Override
