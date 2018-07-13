@@ -67,6 +67,7 @@ import com.tokopedia.discovery.intermediary.view.adapter.IntermediaryBrandsAdapt
 import com.tokopedia.discovery.intermediary.view.adapter.IntermediaryCategoryAdapter;
 import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryActivity;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategoryHeaderModel;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.listener.WishlistActionListener;
 import com.tokopedia.discovery.view.CategoryHeaderTransformation;
 import com.tokopedia.tkpdpdp.customview.YoutubeWebViewThumbnail;
 import com.tokopedia.topads.sdk.base.Config;
@@ -98,11 +99,14 @@ import static com.tokopedia.topads.sdk.domain.TopAdsParams.SRC_INTERMEDIARY_VALU
 
 public class IntermediaryFragment extends BaseDaggerFragment implements IntermediaryContract.View,
         CuratedProductAdapter.OnItemClickListener, TopAdsItemClickListener, TopAdsListener,
-        IntermediaryCategoryAdapter.CategoryListener, IntermediaryBrandsAdapter.BrandListener, BannerPagerAdapter.OnPromoClickListener {
+        IntermediaryCategoryAdapter.CategoryListener, IntermediaryBrandsAdapter.BrandListener,
+        BannerPagerAdapter.OnPromoClickListener,
+        WishlistActionListener {
 
     public static final String TAG = "INTERMEDIARY_FRAGMENT";
     private static final long SLIDE_DELAY = 8000;
     public static final String DEFAULT_ITEM_VALUE = "1";
+    public static final int REQUEST_CODE_LOGIN = 561;
 
     @BindView(R2.id.nested_intermediary)
     NestedScrollView nestedScrollView;
@@ -209,8 +213,28 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
         presenter.attachView(this);
         presenter.getIntermediaryCategory(departmentId);
-
+        presenter.setWishlishListener(this);
         return parentView;
+    }
+
+    @Override
+    public void onErrorAddWishList(String errorMessage, int adapterPosition) {
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
+    public void onSuccessAddWishlist(int adapterPosition) {
+        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_add_wishlist));
+    }
+
+    @Override
+    public void onErrorRemoveWishlist(String errorMessage, int adapterPosition) {
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
+    public void onSuccessRemoveWishlist(int adapterPosition) {
+        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_remove_wishlist));
     }
 
     YoutubeViewHolder.YouTubeThumbnailLoadInProcess youTubeThumbnailLoadInProcessListener;
@@ -647,6 +671,11 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     }
 
     @Override
+    public void onAddWishList(int position, Data data) {
+        presenter.addWishLish(position, data);
+    }
+
+    @Override
     public void onCategoryRevampClick(ChildCategoryModel child) {
         CategoryActivity.moveToDestroyIntermediary(
                 getActivity(),
@@ -673,6 +702,24 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     public String getTrackerAttribution() {
         if (trackerAttribution == null || trackerAttribution.isEmpty()) return "none/other";
         else return trackerAttribution;
+    }
+
+    @Override
+    public boolean isUserHasLogin() {
+        return SessionHandler.isV4Login(getContext());
+    }
+
+    @Override
+    public void launchLoginActivity(Bundle extras) {
+        Intent intent = ((DiscoveryRouter) MainApplication.getAppContext()).getLoginIntent
+                (getActivity());
+        intent.putExtras(extras);
+        startActivityForResult(intent, REQUEST_CODE_LOGIN);
+    }
+
+    @Override
+    public String getUserId() {
+        return SessionHandler.getLoginID(getContext());
     }
 
     private GridLayoutManager.SpanSizeLookup onSpanSizeLookup() {

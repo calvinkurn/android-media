@@ -115,21 +115,17 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
     override fun initInjector() {}
 
     override fun loadData(page: Int) {
-        if(videoViewModelList.isEmpty())
+        if(videoRecommendationViewModelList.isEmpty())
             productAddVideoPresenter.getYoutubeDataVideoChosen(videoIDs)
         else {
             renderListData(videoViewModelList)
-            if(videoRecommendationViewModelList.isEmpty()){
-                if(adapter.data[0] is SectionVideoRecommendationViewModel){
-                    adapter.clearElement(adapter.data[0])
-                }
-            }
         }
 
         setButtonAddVideoUrl()
     }
 
     private fun renderListData(VideoViewModelList: List<VideoViewModel>) {
+        adapter.clearAllElements()
         val productAddVideoBaseViewModelList : ArrayList<ProductAddVideoBaseViewModel> = ArrayList()
         if(!VideoViewModelList.isEmpty()){
             productAddVideoBaseViewModelList.addAll(VideoViewModelList)

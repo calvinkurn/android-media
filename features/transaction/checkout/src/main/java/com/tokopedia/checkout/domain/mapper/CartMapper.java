@@ -157,14 +157,6 @@ public class CartMapper implements ICartMapper {
         cartPromoSuggestion.setText(cartDataListResponse.getPromoSuggestion().getText());
         cartPromoSuggestion.setVisible(cartDataListResponse.getPromoSuggestion().getIsVisible() == 1);
 
-
-//        cartPromoSuggestion.setCta("Gunakan Sekarang!");
-//        cartPromoSuggestion.setCtaColor("#42b549");
-//        cartPromoSuggestion.setPromoCode("ajicash");
-//        cartPromoSuggestion.setText("[iOS] Cashback hingga 25% menggunakan Promo <b>TOKOCASH</b> !");
-//        cartPromoSuggestion.setVisible(true);
-
-
         cartListData.setCartItemDataList(cartItemDataList);
         cartListData.setPromoCouponActive(cartDataListResponse.getIsCouponActive() == 1);
         cartListData.setCartPromoSuggestion(cartPromoSuggestion);
