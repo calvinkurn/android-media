@@ -1,5 +1,6 @@
 package com.tokopedia.events.di;
 
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.events.di.scope.EventScope;
 import com.tokopedia.events.domain.postusecase.VerifyCartUseCase;
@@ -12,6 +13,7 @@ import com.tokopedia.events.view.activity.EventsHomeActivity;
 import com.tokopedia.events.view.activity.ReviewTicketActivity;
 import com.tokopedia.events.view.activity.SeatSelectionActivity;
 import com.tokopedia.events.view.fragment.FragmentAddTickets;
+import com.tokopedia.oms.di.OmsModule;
 
 import dagger.Component;
 
@@ -20,7 +22,7 @@ import dagger.Component;
  */
 
 @EventScope
-@Component(modules = EventModule.class, dependencies = AppComponent.class)
+@Component(modules = {EventModule.class, OmsModule.class}, dependencies = BaseAppComponent.class)
 public interface EventComponent {
 
     VerifyCartUseCase getPostVerifyCartUseCase();

@@ -166,7 +166,7 @@ public class EventModule {
 
     @Provides
     @EventScope
-    VerifyCartUseCase providesPostVerifyCartUseCase(ThreadExecutor threadExecutor,
+    VerifyCartUseCase providesVerifyCartUseCase(ThreadExecutor threadExecutor,
                                                     PostExecutionThread postExecutionThread,
                                                     EventRepository eventRepository) {
         return new VerifyCartUseCase(threadExecutor, postExecutionThread, eventRepository);
