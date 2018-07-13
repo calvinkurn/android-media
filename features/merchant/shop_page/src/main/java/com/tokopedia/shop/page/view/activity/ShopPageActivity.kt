@@ -6,8 +6,10 @@ import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.text.TextUtils
+import android.view.Menu
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.reputation.common.data.source.cloud.model.ReputationSpeed
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentInstance
@@ -22,6 +24,7 @@ import com.tokopedia.shop.page.view.presenter.ShopPagePresenterNew
 import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedFragment
 import com.tokopedia.shop.product.view.widget.ShopPagePromoWebView
 import kotlinx.android.synthetic.main.activity_shop_page.*
+import kotlinx.android.synthetic.main.partial_shop_page_searchview.*
 import javax.inject.Inject
 
 class ShopPageActivity: BaseSimpleActivity(), ShopPagePromoWebView.Listener, HasComponent<ShopComponent>,
@@ -58,6 +61,7 @@ class ShopPageActivity: BaseSimpleActivity(), ShopPagePromoWebView.Listener, Has
         super.onCreate(savedInstanceState)
         shopPageViewHolder = ShopPageHeaderViewHolder(shopPageHeader, this)
         initAdapter()
+        supportActionBar?.setDisplayShowTitleEnabled(false)
         viewPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
         viewPager.adapter = shopPageViewPagerAdapter
 
@@ -97,12 +101,19 @@ class ShopPageActivity: BaseSimpleActivity(), ShopPagePromoWebView.Listener, Has
                 shopId, shopAttribution)
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_shop_page, menu)
+        return true
+    }
+
     override fun onSuccessGetShopInfo(shopInfo: ShopInfo?) {
         shopInfo?.run {
             this@ShopPageActivity.shopInfo = this
             shopId = info.shopId
             shopDomain = info.shopDomain
             shopPageViewHolder.bind(this, presenter.isMyShop(shopId!!))
+            searchViewText.text = getString(R.string.shop_product_search_hint_2,
+                    MethodChecker.fromHtml(info.shopName).toString())
 
             (shopPageViewPagerAdapter.getRegisteredFragment(0) as ShopProductListLimitedFragment)
                     .displayProduct(this)
