@@ -103,7 +103,7 @@ import io.branch.referral.BranchError;
         KolApplinkModule.class,
         TrackingAppLinkModule.class,
         CheckoutAppLinkModule.class,
-        HowtopayApplinkModule.class
+        HowtopayApplinkModule.class,
         CustomerCareApplinkModule.class,
         TopChatAppLinkModule.class,
         TokopointApplinkModule.class
