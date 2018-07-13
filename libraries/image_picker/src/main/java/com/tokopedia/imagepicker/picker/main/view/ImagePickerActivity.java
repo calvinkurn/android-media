@@ -187,6 +187,16 @@ public class ImagePickerActivity extends BaseSimpleActivity
 
             @Override
             public void onPageSelected(int position) {
+                if(selectedTab!= position) {
+                    Fragment previousFragment = imagePickerViewPagerAdapter.getRegisteredFragment(selectedTab);
+                    if (previousFragment!= null && previousFragment instanceof ImagePickerCameraFragment) {
+                        ((ImagePickerCameraFragment) previousFragment).onInvisible();
+                    }
+                    Fragment fragment = imagePickerViewPagerAdapter.getRegisteredFragment(position);
+                    if (fragment!= null && fragment instanceof ImagePickerCameraFragment) {
+                        ((ImagePickerCameraFragment) fragment).onVisible();
+                    }
+                }
                 selectedTab = position;
             }
 
@@ -194,6 +204,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
             public void onPageScrollStateChanged(int state) {
 
             }
+
         });
     }
 

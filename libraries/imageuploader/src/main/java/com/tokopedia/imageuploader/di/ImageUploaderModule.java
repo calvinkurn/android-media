@@ -48,7 +48,7 @@ public class ImageUploaderModule {
     private static final int NET_WRITE_TIMEOUT = 100;
     private static final int NET_CONNECT_TIMEOUT = 100;
     private static final int NET_RETRY = 1;
-    private static String LIVE_DOMAIN = "https://ws.tokopedia.com/";
+    public static String LIVE_DOMAIN = "https://ws.tokopedia.com/";
 
 
     @ImageUploaderQualifier

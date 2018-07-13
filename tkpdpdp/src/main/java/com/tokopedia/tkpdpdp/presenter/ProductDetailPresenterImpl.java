@@ -174,8 +174,84 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     @Override
     public void processToCart(@NonNull Activity context, @NonNull ProductCartPass data) {
         sendAppsFlyerCheckout(context, data);
-        routeToNewCheckout(context, data);
+        routeToNewCheckout(context, data, data.isSkipToCart() ? getBuySubscriber(data.getSourceAtc()) : getCartSubscriber(data.getSourceAtc()));
         UnifyTracking.eventPDPCart();
+    }
+
+    private Subscriber getCartSubscriber(String sourceAtc) {
+        return new Subscriber<AddToCartResult>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                onAtcError(e);
+            }
+
+            @Override
+            public void onNext(AddToCartResult addToCartResult) {
+                viewListener.hideProgressLoading();
+                if (addToCartResult.isSuccess()) {
+                    addToCartResult.setSource(sourceAtc);
+                    viewListener.renderAddToCartSuccess(addToCartResult);
+                } else {
+                    viewListener.showToastMessage(addToCartResult.getMessage());
+                }
+            }
+        };
+    }
+
+    private void onAtcError(Throwable e) {
+        viewListener.hideProgressLoading();
+        e.printStackTrace();
+        if (e instanceof UnknownHostException) {
+            /* Ini kalau ga ada internet */
+            viewListener.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
+        } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
+            /* Ini kalau timeout */
+            viewListener.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+        } else if (e instanceof ResponseErrorException) {
+            /* Ini kalau error dari API kasih message error */
+            viewListener.showToastMessage(e.getMessage());
+        } else if (e instanceof ResponseDataNullException) {
+            /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
+            viewListener.showToastMessage(e.getMessage());
+        } else if (e instanceof HttpErrorException) {
+                                /* Ini Http error, misal 403, 500, 404,
+                                code http errornya bisa diambil
+                                e.getErrorCode */
+            viewListener.showToastMessage(e.getMessage());
+        } else {
+            /* Ini diluar dari segalanya hahahaha */
+            viewListener.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+        }
+    }
+
+    private Subscriber getBuySubscriber(String sourceAtc) {
+        return new Subscriber<AddToCartResult>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                onAtcError(e);
+            }
+
+            @Override
+            public void onNext(AddToCartResult addToCartResult) {
+                viewListener.hideProgressLoading();
+                if (addToCartResult.isSuccess()) {
+                    addToCartResult.setSource(sourceAtc);
+                    viewListener.renderAddToCartSuccessOpenCart(addToCartResult);
+                } else {
+                    viewListener.showToastMessage(addToCartResult.getMessage());
+                }
+            }
+        };
     }
 
     private void routeToOldCheckout(@NonNull Activity context, @NonNull ProductCartPass data) {
@@ -184,14 +260,14 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         );
     }
 
-    private void routeToNewCheckout(@NonNull Activity context, @NonNull ProductCartPass data) {
+    private void routeToNewCheckout(@NonNull Activity context, @NonNull ProductCartPass data, Subscriber subscriber) {
         if (context.getApplication() instanceof PdpRouter) {
             viewListener.showProgressLoading();
             ((PdpRouter) context.getApplication()).addToCartProduct(
                     new AddToCartRequest.Builder()
                             .productId(Integer.parseInt(data.getProductId()))
                             .notes(data.getNotes())
-                            .quantity(data.getMinOrder())
+                            .quantity(data.getOrderQuantity())
                             .trackerAttribution(data.getTrackerAttribution())
                             .trackerListName(data.getListName())
                             .shopId(Integer.parseInt(data.getShopId()))
@@ -199,28 +275,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
             ).subscribeOn(Schedulers.newThread())
                     .unsubscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Subscriber<AddToCartResult>() {
-                        @Override
-                        public void onCompleted() {
-
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            viewListener.hideProgressLoading();
-                            e.printStackTrace();
-                            handleCheckoutError(e);
-                        }
-
-                        @Override
-                        public void onNext(AddToCartResult addToCartResult) {
-                            viewListener.hideProgressLoading();
-                            if (addToCartResult.isSuccess())
-                                viewListener.renderAddToCartSuccess(addToCartResult);
-                            else
-                                viewListener.showToastMessage(addToCartResult.getMessage());
-                        }
-                    });
+                    .subscribe(subscriber);
         }
     }
 

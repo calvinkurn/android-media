@@ -97,6 +97,7 @@ public class ShipmentDataConverter {
             shipmentCartItemModel.setRecipientAddressModel(getRecipientAddressModel(userAddress));
         }
 
+        shipmentCartItemModel.setShopShipmentList(groupShop.getShopShipments());
         shipmentCartItemModel.setError(groupShop.isError());
         if (shipmentCartItemModel.isError()) {
             shipmentCartItemModel.setAllItemError(true);

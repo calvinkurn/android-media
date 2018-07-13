@@ -17,4 +17,5 @@ public class Constant {
     public static final String INVOICE_URL_EXTRA = "invoice_url_extra";
     public static final String USER_ID_KLIK_BCA = "user_id_klik_bca";
     public static final String PAGE = "page";
+    public static final String CURSOR = "cursor";
 }

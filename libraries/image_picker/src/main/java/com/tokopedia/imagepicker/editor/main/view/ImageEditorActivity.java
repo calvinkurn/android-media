@@ -763,7 +763,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
         try {
             resultList = ImageUtils.copyFiles(cropppedImagePaths, ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_EDIT_RESULT);
             onFinishWithMultipleImageValidateFileSize(resultList);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             NetworkErrorHelper.showRedCloseSnackbar(this, ErrorHandler.getErrorMessage(this, e));
         }
     }

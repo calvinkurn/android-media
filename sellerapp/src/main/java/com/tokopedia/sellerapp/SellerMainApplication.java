@@ -282,4 +282,5 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
     public Intent getWebviewActivityWithIntent(Context context, String url) {
         return null;
     }
+
 }

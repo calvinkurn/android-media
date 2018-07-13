@@ -277,6 +277,11 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
         public void onAddFavorite(int position, com.tokopedia.topads.sdk.domain.model.Data data) {
 
         }
+
+        @Override
+        public void onAddWishList(int position, com.tokopedia.topads.sdk.domain.model.Data data) {
+            //TODO: next implement wishlist action
+        }
     }
 
     private BannerHotListViewHolder onCreateBannerHotList(ViewGroup parent) {
