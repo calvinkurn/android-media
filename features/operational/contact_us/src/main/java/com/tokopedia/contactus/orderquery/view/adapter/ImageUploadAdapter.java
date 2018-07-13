@@ -72,7 +72,7 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
     }
 
     public void addImage(ImageUpload image) {
-        imageUpload.add(0, image);
+        imageUpload.add(imageUpload.size()-1, image);
         notifyDataSetChanged();
     }
 
