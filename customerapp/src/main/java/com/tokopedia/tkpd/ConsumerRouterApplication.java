@@ -2044,6 +2044,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public boolean isIndicatorVisible() {
+        return remoteConfig.getBoolean(TkpdInboxRouter.INDICATOR_VISIBILITY);
+    }
+
+    @Override
     public boolean isEnabledGroupChat() {
         return remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_GROUPCHAT);
     }
