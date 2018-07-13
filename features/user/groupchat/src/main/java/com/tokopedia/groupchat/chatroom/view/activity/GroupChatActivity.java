@@ -126,8 +126,9 @@ public class GroupChatActivity extends BaseSimpleActivity
 
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         taskStackBuilder.addNextIntent(homeIntent);
-
-        taskStackBuilder.addNextIntent(detailsIntent);
+        if (((GroupChatModuleRouter) context.getApplicationContext()).isEnabledGroupChatRoom()) {
+            taskStackBuilder.addNextIntent(detailsIntent);
+        }
         return taskStackBuilder;
     }
 
