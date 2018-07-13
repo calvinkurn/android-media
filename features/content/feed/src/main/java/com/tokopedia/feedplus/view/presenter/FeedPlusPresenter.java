@@ -9,11 +9,14 @@ import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.domain.usecase.CheckNewFeedUseCase;
 import com.tokopedia.feedplus.domain.usecase.FavoriteShopUseCase;
+import com.tokopedia.feedplus.domain.usecase.FollowKolPostGqlUseCase;
 import com.tokopedia.feedplus.domain.usecase.FollowKolPostUseCase;
 import com.tokopedia.feedplus.domain.usecase.GetFeedsUseCase;
 import com.tokopedia.feedplus.domain.usecase.GetFirstPageFeedsCloudUseCase;
 import com.tokopedia.feedplus.domain.usecase.GetFirstPageFeedsUseCase;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
+import com.tokopedia.feedplus.view.subscriber.FollowUnfollowKolGqlSubscriber;
+import com.tokopedia.feedplus.view.subscriber.FollowUnfollowKolRecommendationGqlSubscriber;
 import com.tokopedia.feedplus.view.subscriber.FollowUnfollowKolRecommendationSubscriber;
 import com.tokopedia.feedplus.view.subscriber.FollowUnfollowKolSubscriber;
 import com.tokopedia.feedplus.view.subscriber.GetFeedsSubscriber;
@@ -46,6 +49,7 @@ public class FeedPlusPresenter
     private final CheckNewFeedUseCase checkNewFeedUseCase;
     private final LikeKolPostUseCase likeKolPostUseCase;
     private final FollowKolPostUseCase followKolPostUseCase;
+    private final FollowKolPostGqlUseCase followKolPostGqlUseCase;
     private final SendVoteUseCase sendVoteUseCase;
     private String currentCursor = "";
     private FeedPlus.View viewListener;
@@ -60,6 +64,7 @@ public class FeedPlusPresenter
                       CheckNewFeedUseCase checkNewFeedUseCase,
                       LikeKolPostUseCase likeKolPostUseCase,
                       FollowKolPostUseCase followKolPostUseCase,
+                      FollowKolPostGqlUseCase followKolPostGqlUseCase,
                       SendVoteUseCase sendVoteUseCase) {
         this.userSession = userSession;
         this.pagingHandler = new PagingHandler();
@@ -70,6 +75,7 @@ public class FeedPlusPresenter
         this.checkNewFeedUseCase = checkNewFeedUseCase;
         this.likeKolPostUseCase = likeKolPostUseCase;
         this.followKolPostUseCase = followKolPostUseCase;
+        this.followKolPostGqlUseCase = followKolPostGqlUseCase;
         this.sendVoteUseCase = sendVoteUseCase;
     }
 
@@ -89,6 +95,7 @@ public class FeedPlusPresenter
         checkNewFeedUseCase.unsubscribe();
         likeKolPostUseCase.unsubscribe();
         followKolPostUseCase.unsubscribe();
+        followKolPostGqlUseCase.unsubscribe();
         sendVoteUseCase.unsubscribe();
     }
 
@@ -204,19 +211,24 @@ public class FeedPlusPresenter
 
     @Override
     public void followKol(int id, int rowNumber, FeedPlus.View.Kol kolListener) {
-        followKolPostUseCase.execute(
-                FollowKolPostUseCase.getParam(id,
-                        FollowKolPostUseCase.PARAM_FOLLOW),
-                new FollowUnfollowKolSubscriber(id, FollowKolPostUseCase.PARAM_FOLLOW, rowNumber, getView(), kolListener));
+//        followKolPostUseCase.execute(
+//                FollowKolPostUseCase.getParam(id,
+//                        FollowKolPostUseCase.PARAM_FOLLOW),
+//                new FollowUnfollowKolSubscriber(id, FollowKolPostUseCase.PARAM_FOLLOW, rowNumber, getView(), kolListener));
+        followKolPostGqlUseCase.addRequest(followKolPostGqlUseCase.getRequest(id, FollowKolPostGqlUseCase.PARAM_FOLLOW));
+        followKolPostGqlUseCase.execute(new FollowUnfollowKolGqlSubscriber(id, FollowKolPostGqlUseCase.PARAM_FOLLOW, rowNumber, getView(), kolListener));
     }
 
     @Override
     public void unfollowKol(int id, int rowNumber, FeedPlus.View.Kol kolListener) {
-        followKolPostUseCase.execute(
-                FollowKolPostUseCase.getParam(id,
-                        FollowKolPostUseCase.PARAM_UNFOLLOW),
-                new FollowUnfollowKolSubscriber(id, FollowKolPostUseCase.PARAM_UNFOLLOW,
-                        rowNumber, getView(), kolListener));
+//        followKolPostUseCase.execute(
+//                FollowKolPostUseCase.getParam(id,
+//                        FollowKolPostUseCase.PARAM_UNFOLLOW),
+//                new FollowUnfollowKolSubscriber(id, FollowKolPostUseCase.PARAM_UNFOLLOW,
+//                        rowNumber, getView(), kolListener));
+
+        followKolPostGqlUseCase.addRequest(followKolPostGqlUseCase.getRequest(id, FollowKolPostGqlUseCase.PARAM_UNFOLLOW));
+        followKolPostGqlUseCase.execute(new FollowUnfollowKolGqlSubscriber(id, FollowKolPostGqlUseCase.PARAM_UNFOLLOW, rowNumber, getView(), kolListener));
     }
 
     @Override
@@ -236,25 +248,33 @@ public class FeedPlusPresenter
 
     @Override
     public void followKolFromRecommendation(int id, int rowNumber, int position, FeedPlus.View.Kol kolListener) {
-        followKolPostUseCase.execute(
-                FollowKolPostUseCase.getParam(id,
-                        FollowKolPostUseCase.PARAM_FOLLOW),
-                new FollowUnfollowKolRecommendationSubscriber(id, FollowKolPostUseCase
-                        .PARAM_FOLLOW, rowNumber, position, getView(),
-                        kolListener));
+//        followKolPostUseCase.execute(
+//                FollowKolPostUseCase.getParam(id,
+//                        FollowKolPostUseCase.PARAM_FOLLOW),
+//                new FollowUnfollowKolRecommendationSubscriber(id, FollowKolPostUseCase
+//                        .PARAM_FOLLOW, rowNumber, position, getView(),
+//                        kolListener));
 
+        followKolPostGqlUseCase.addRequest(followKolPostGqlUseCase.getRequest(id,
+                FollowKolPostGqlUseCase.PARAM_FOLLOW));
+        followKolPostGqlUseCase.execute(new FollowUnfollowKolRecommendationGqlSubscriber(id,
+                FollowKolPostGqlUseCase.PARAM_FOLLOW, rowNumber, position, getView(), kolListener));
 
     }
 
     @Override
     public void unfollowKolFromRecommendation(int id, int rowNumber, int position, FeedPlus.View.Kol kolListener) {
-        followKolPostUseCase.execute(
-                FollowKolPostUseCase.getParam(id,
-                        FollowKolPostUseCase.PARAM_UNFOLLOW),
-                new FollowUnfollowKolRecommendationSubscriber(id,FollowKolPostUseCase
-                        .PARAM_UNFOLLOW, rowNumber, position, getView(),
-                        kolListener));
+//        followKolPostUseCase.execute(
+//                FollowKolPostUseCase.getParam(id,
+//                        FollowKolPostUseCase.PARAM_UNFOLLOW),
+//                new FollowUnfollowKolRecommendationSubscriber(id,FollowKolPostUseCase
+//                        .PARAM_UNFOLLOW, rowNumber, position, getView(),
+//                        kolListener));
 
+        followKolPostGqlUseCase.addRequest(followKolPostGqlUseCase.getRequest(id,
+                FollowKolPostGqlUseCase.PARAM_UNFOLLOW));
+        followKolPostGqlUseCase.execute(new FollowUnfollowKolRecommendationGqlSubscriber(id,
+                FollowKolPostGqlUseCase.PARAM_UNFOLLOW, rowNumber, position, getView(), kolListener));
     }
 
     @Override

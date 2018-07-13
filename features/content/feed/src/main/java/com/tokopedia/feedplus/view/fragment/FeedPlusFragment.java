@@ -67,6 +67,7 @@ import com.tokopedia.feedplus.view.viewmodel.kol.PollOptionViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
 import com.tokopedia.feedplus.view.viewmodel.topads.FeedTopAdsViewModel;
+import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
@@ -220,6 +221,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         newFeed = parentView.findViewById(R.id.layout_new_feed);
 
         prepareView();
+        GraphqlClient.init(getActivity());
         presenter.attachView(this);
         return parentView;
 
