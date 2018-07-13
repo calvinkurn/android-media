@@ -41,9 +41,9 @@ public class PaymentListPresenter extends BaseDaggerPresenter<PaymentListContrac
         this.cancelPaymentUseCase = cancelPaymentUseCase;
     }
 
-    public void getPaymentList(Resources resources, Context context, int page) {
+    public void getPaymentList(Resources resources, Context context, String cursor) {
         Map<String, Object> variables = new HashMap<>();
-        variables.put(Constant.PAGE, page);
+        variables.put(Constant.CURSOR, cursor);
         GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(resources,
                 R.raw.payment_list_query), DataPaymentList.class, variables);
         getPaymentListUseCase.clearRequest();
@@ -62,7 +62,8 @@ public class PaymentListPresenter extends BaseDaggerPresenter<PaymentListContrac
             @Override
             public void onNext(GraphqlResponse objects) {
                 DataPaymentList paymentList = objects.getData(DataPaymentList.class);
-                getView().renderList(paymentListMapper.map(paymentList.getPaymentList().getPaymentList(), context), paymentList.getPaymentList().isHasNextPage());
+                getView().renderList(paymentListMapper.map(paymentList.getPaymentList().getPaymentList(), context),
+                        paymentList.getPaymentList().isHasNextPage(), paymentList.getPaymentList().getLastCursor());
             }
         });
     }

@@ -33,6 +33,8 @@ import com.tokopedia.paymentmanagementsystem.payment.view.presenter.PaymentListP
 import com.tokopedia.paymentmanagementsystem.payment.di.DaggerPaymentListComponent;
 import com.tokopedia.paymentmanagementsystem.proof.view.UploadProofPaymentActivity;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 /**
@@ -47,6 +49,8 @@ public class PaymentListFragment extends BaseListFragment<PaymentListModel, Paym
     @Inject
     PaymentListPresenter paymentListPresenter;
     private ProgressDialog progressDialog;
+
+    String cursor = "";
 
     @Override
     protected String getScreenName() {
@@ -135,8 +139,20 @@ public class PaymentListFragment extends BaseListFragment<PaymentListModel, Paym
     }
 
     @Override
+    public void renderList(List<PaymentListModel> map, boolean hasNextPage, String lastCursor) {
+        renderList(map, hasNextPage);
+        this.cursor = lastCursor;
+    }
+
+    @Override
     public void loadData(int page) {
-        paymentListPresenter.getPaymentList(getResources(), getContext(), page);
+        paymentListPresenter.getPaymentList(getResources(), getContext(), cursor);
+    }
+
+    @Override
+    protected void loadInitialData() {
+        cursor = "";
+        super.loadInitialData();
     }
 
     @Override

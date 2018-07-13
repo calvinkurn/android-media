@@ -1,5 +1,6 @@
-query paymentList($page : Int!){
-    paymentList(lang: "ID", page:$page, perPage:10) {
+query paymentList($cursor : String!){
+    paymentList(lang: "ID", cursor:$cursor, perPage:10) {
+        last_cursor
         has_next_page
         payment_list {
           transaction_id

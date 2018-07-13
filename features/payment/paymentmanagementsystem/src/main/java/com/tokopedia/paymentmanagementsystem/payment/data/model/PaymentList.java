@@ -11,6 +11,10 @@ public class PaymentList {
     @Expose
     private boolean hasNextPage;
 
+    @SerializedName("last_cursor")
+    @Expose
+    private String lastCursor;
+
     @SerializedName("payment_list")
     @Expose
     private List<PaymentListInside> paymentList = null;
@@ -31,4 +35,11 @@ public class PaymentList {
         this.hasNextPage = hasNextPage;
     }
 
+    public String getLastCursor() {
+        return lastCursor;
+    }
+
+    public void setLastCursor(String lastCursor) {
+        this.lastCursor = lastCursor;
+    }
 }

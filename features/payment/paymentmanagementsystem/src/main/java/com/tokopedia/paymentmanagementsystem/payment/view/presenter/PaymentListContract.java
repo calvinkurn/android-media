@@ -7,6 +7,8 @@ import com.tokopedia.abstraction.base.view.listener.BaseListViewListener;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.paymentmanagementsystem.payment.view.model.PaymentListModel;
 
+import java.util.List;
+
 /**
  * Created by zulfikarrahman on 6/21/18.
  */
@@ -25,11 +27,13 @@ public interface PaymentListContract {
         void showDialogLoading();
 
         void hideDialogLoading();
+
+        void renderList(List<PaymentListModel> map, boolean hasNextPage, String lastCursor);
     }
 
     interface Presenter extends CustomerPresenter<View>{
 
-        void getPaymentList(Resources resources, Context context, int page);
+        void getPaymentList(Resources resources, Context context, String cursor);
 
         void getCancelDetail(Resources resources, String transactionID, String merchantCode);
 
