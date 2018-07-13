@@ -89,10 +89,10 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
         Paint paint = new Paint();
         paint.setColor(color);
 
-        int childCount = parent.getAdapter().getItemCount();
+        int childCount = parent.getChildCount();
         for (int absolutePos = 0; absolutePos < childCount; absolutePos++) {
             View child = parent.getChildAt(absolutePos);
-            if (!isProductItem(parent, absolutePos)) {
+            if (!isProductItem(parent, absolutePos) || child == null) {
                 continue;
             }
             canvas.drawRect(child.getLeft() - spacing, child.getTop() - spacing, child.getRight() + spacing, child.getTop(), paint);
