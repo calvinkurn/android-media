@@ -69,23 +69,18 @@ public class BranchSdkUtils {
     public static void generateBranchLink(final ShareData data, final Activity activity, final GenerateShareContents ShareContentsCreateListener) {
 
         if (isBranchUrlActivated(activity, data.getType()) && !ShareData.RIDE_TYPE.equalsIgnoreCase(data.getType())) {
-            if (ShareData.REFERRAL_TYPE.equalsIgnoreCase(data.getType()) && !TextUtils.isEmpty(data.getProductUrl())) {
-                ShareContentsCreateListener.onCreateShareContents(data.getTextContentForBranch(""), data.getTextContentForBranch(""), data.getId());
-            } else {
-                BranchUniversalObject branchUniversalObject = createBranchUniversalObject(data);
-                LinkProperties linkProperties = createLinkProperties(data, data.getSource(), activity);
-                branchUniversalObject.generateShortUrl(activity, linkProperties, new Branch.BranchLinkCreateListener() {
-                    @Override
-                    public void onLinkCreate(String url, BranchError error) {
-                        if (error == null) {
-                            ShareContentsCreateListener.onCreateShareContents(data.getTextContentForBranch(url), url, url);
-                        } else {
-                            ShareContentsCreateListener.onCreateShareContents(data.getTextContent(activity), data.renderShareUri(), url);
-                        }
+            BranchUniversalObject branchUniversalObject = createBranchUniversalObject(data);
+            LinkProperties linkProperties = createLinkProperties(data, data.getSource(), activity);
+            branchUniversalObject.generateShortUrl(activity, linkProperties, new Branch.BranchLinkCreateListener() {
+                @Override
+                public void onLinkCreate(String url, BranchError error) {
+                    if (error == null) {
+                        ShareContentsCreateListener.onCreateShareContents(data.getTextContentForBranch(url), url, url);
+                    } else {
+                        ShareContentsCreateListener.onCreateShareContents(data.getTextContent(activity), data.renderShareUri(), url);
                     }
-                });
-            }
-
+                }
+            });
         } else {
             ShareContentsCreateListener.onCreateShareContents(data.getTextContent(activity), data.renderShareUri(), data.renderShareUri());
 

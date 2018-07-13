@@ -642,6 +642,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         adapter.addReply(viewModel);
         adapter.notifyDataSetChanged();
         replyEditText.setText("");
+        quickReplyRecyclerView.setVisibility(View.GONE);
         scrollToBottom();
         setSendButtonEnabled(true);
     }
