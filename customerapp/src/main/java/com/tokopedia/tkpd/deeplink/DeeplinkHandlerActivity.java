@@ -139,7 +139,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new TrackingAppLinkModuleLoader(),
                 new CheckoutAppLinkModuleLoader(),
                 new CustomerCareApplinkModuleLoader(),
-                new HowtopayApplinkModuleLoader()
+                new HowtopayApplinkModuleLoader(),
                 new TopChatAppLinkModuleLoader(),
                 new TokopointApplinkModuleLoader()
         );
