@@ -26,11 +26,9 @@ import com.tokopedia.core.network.entity.variant.Variant;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.design.component.EditTextCompat;
 import com.tokopedia.design.component.NumberPickerWithCounterView;
-import com.tokopedia.design.utils.CurrencyFormatHelper;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.tkpdpdp.adapter.VariantOptionAdapter;
 
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,6 +61,8 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
     public static final int STATE_BUTTON_BUY = 1123;
     public static final int STATE_BUTTON_CART = 2234;
     public static final int STATE_VARIANT_DEFAULT = 0;
+    public static final int DEFAULT_MAXIMUM_STOCK_PICKER = 99999;
+    public static final int DEFAULT_MINIMUM_STOCK_PICKER = 1;
 
     private TextView topBarTitle;
     private ImageView productImage;
@@ -222,8 +222,10 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
         });
         try {
             widgetQty.setMinValue(Integer.parseInt(productDetailData.getInfo().getProductMinOrder()));
+            widgetQty.setMaxValue(DEFAULT_MAXIMUM_STOCK_PICKER);
         } catch (NumberFormatException e) {
-            widgetQty.setMinValue(1);
+            widgetQty.setMinValue(DEFAULT_MINIMUM_STOCK_PICKER);
+            widgetQty.setMaxValue(DEFAULT_MAXIMUM_STOCK_PICKER);
         }
         if(isCampaign()) {
             textOriginalPrice.setText(productDetailData.getCampaign().getOriginalPriceFmt());
