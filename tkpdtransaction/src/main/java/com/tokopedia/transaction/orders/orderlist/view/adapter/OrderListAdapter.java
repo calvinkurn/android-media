@@ -126,7 +126,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     newUri = newUri.replace(url.getQueryParameter("idem_potency_key"), "");
                     newUri = newUri.replace("idem_potency_key=", "");
                     RouteManager.route(context, newUri);
-                } else {
+                } else if (newUri != null && !newUri.equals("")) {
                     TransactionPurchaseRouter.startWebViewActivity(context, newUri);
                 }
             });
@@ -284,7 +284,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             } else if (item.getItemId() == R.id.action_order_detail) {
                 if (!orderData.get(1).uri().equals("")) {
                     menuListener.startUri(orderData.get(1).uri());
-                } else {
+                } else if (appLink != null && !appLink.equals("")) {
                     RouteManager.route(context, appLink);
                 }
                 return true;
@@ -348,7 +348,8 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         @Override
         public void onClick(View view) {
-            RouteManager.route(context, appLink);
+            if (appLink != null && !appLink.equals(""))
+                RouteManager.route(context, appLink);
         }
 
         public void bindData(Order order, int position) {
