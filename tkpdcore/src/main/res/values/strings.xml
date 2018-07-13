@@ -2222,6 +2222,7 @@ di Tokopedia Sekarang!</string>
     <string name="dapatkan_cashback_dalam">Dapatkan Cashback dalam 3 Langkah:</string>
     <string name="bagi_kode_referral">Bagi kode referral-mu</string>
     <string name="apa_itu_tokocash">Apa itu TokoCash?</string>
-    <string name="cashback_enter_tokocash"><p>Cashback akan masuk ke TokoCash. <br /><span style="color: #399c3f;">Apa itu TokoCash?</span></p></string>
+    <string name="cashback_enter_tokocash"><![CDATA[<font color=\'#8a000000\'>Cashback akan masuk ke TokoCash.</font> <br /><font color=\'#399c3f\'>Apa itu TokoCash?</font>]]></string>
+    <string name="referral_welcome_header"><![CDATA[<font color=\'#399c3f\'>Givana</font> memberi kamu Promo Referral.]]></string>
 
 </resources>

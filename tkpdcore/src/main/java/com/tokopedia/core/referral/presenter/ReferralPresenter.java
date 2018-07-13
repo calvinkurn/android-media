@@ -63,7 +63,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
     private TokoCashUseCase tokoCashUseCase;
     private SessionHandler sessionHandler;
     private final static int MAX_APPS = 4;
-    private String url;
+    private String url = "";
 
     @Inject
     public ReferralPresenter(GetReferralDataUseCase getReferralDataUseCase, TokoCashUseCase tokoCashUseCase, SessionHandler sessionHandler) {
@@ -93,16 +93,15 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
 
     @Override
     public void shareApp(FragmentManager fragmentManager) {
-        formatSharingContents();
-        String type= ShareData.APP_SHARE_TYPE;
-        if(isAppShowReferralButtonActivated()){
-            type= ShareData.REFERRAL_TYPE;
+        String type = ShareData.APP_SHARE_TYPE;
+        if (isAppShowReferralButtonActivated()) {
+            type = ShareData.REFERRAL_TYPE;
         }
         ShareData shareData = ShareData.Builder.aShareData()
                 .setType(type)
                 .setId(getView().getReferralCodeFromTextView())
                 .setName(activity.getString(R.string.app_share_title))
-                .setTextContent(contents)
+                .setTextContent(formatSharingContents())
                 .setUri(Constants.WEB_PLAYSTORE_BUYER_APP_URL)
                 .setShareUrl(url)
                 .build();
@@ -111,16 +110,16 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
         TrackingUtils.sendMoEngageReferralScreenOpen(activity.getString(R.string.referral_share_screen_name));
     }
 
-    private void formatSharingContents() {
+    private String formatSharingContents() {
         if (!isAppShowReferralButtonActivated()) {
             contents = getAppShareDescription();
         } else if (TextUtils.isEmpty(contents)) {
             contents = getAppShareDefaultMessage();
         }
-        if(!contents.contains(activity.getString(R.string.cek_label))){
-            contents = contents + activity.getString(R.string.cek_label);
+        if (url != null && !contents.contains(url)) {
+            contents = contents + url;
         }
-
+        return contents;
     }
 
     @Override
@@ -134,7 +133,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
 
             @Override
             public void onError(Throwable e) {
-                if(!isViewAttached()){
+                if (!isViewAttached()) {
                     return;
                 }
                 getView().hideProcessDialog();
@@ -157,7 +156,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
 
             @Override
             public void onNext(ReferralCodeEntity referralCodeEntity) {
-                if(!isViewAttached()){
+                if (!isViewAttached()) {
                     return;
                 }
                 if (referralCodeEntity.getErorMessage() == null) {
@@ -178,7 +177,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
     @Override
     public void copyVoucherCode(String voucherCode) {
         android.content.ClipboardManager clipboard = (android.content.ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
-        android.content.ClipData clip = android.content.ClipData.newPlainText(getView().getActivity().getString(R.string.copy_coupon_code_text), voucherCode);
+        android.content.ClipData clip = android.content.ClipData.newPlainText(getView().getActivity().getString(R.string.copy_coupon_code_text), formatSharingContents());
         clipboard.setPrimaryClip(clip);
         if (TextUtils.isEmpty(voucherCode)) {
             getView().showToastMessage(getView().getActivity().getString(R.string.no_coupon_to_copy_text));
@@ -250,7 +249,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
 
             @Override
             public void onNext(TokoCashData tokoCashData) {
-                if(!isViewAttached()){
+                if (!isViewAttached()) {
                     return;
                 }
 
@@ -379,7 +378,6 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
     }
 
     public void appShare(ShareApps shareApp, FragmentManager fragmentManager) {
-        formatSharingContents();
         String type = ShareData.APP_SHARE_TYPE;
         if (isAppShowReferralButtonActivated()) {
             type = ShareData.REFERRAL_TYPE;
@@ -388,7 +386,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
                 .setType(type)
                 .setId(getView().getReferralCodeFromTextView())
                 .setName(activity.getString(R.string.app_share_title))
-                .setTextContent(contents)
+                .setTextContent(formatSharingContents())
                 .setUri(Constants.WEB_PLAYSTORE_BUYER_APP_URL)
                 .setShareUrl(url)
                 .build();

@@ -2,6 +2,7 @@ package com.tokopedia.core.referral.fragment;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
@@ -29,8 +30,8 @@ public class FragmentReferralFriendsWelcome extends BasePresenterFragment<IRefer
 
     @BindView(R2.id.btn_referral_explore)
     TextView btnReferralExplore;
-    @BindView(R2.id.tv_app_share_desc)
-    TextView welcomeMessageTextView;
+    @BindView(R2.id.tv_referral_header)
+    TextView welcomeMessageHearer;
     @BindView(R2.id.tv_referral_help_link)
     TextView TextViewHelpLink;
 
@@ -93,13 +94,12 @@ public class FragmentReferralFriendsWelcome extends BasePresenterFragment<IRefer
             closeView();
         });
 
-        TextViewHelpLink.setText(presenter.getHowItWorks());
+        TextViewHelpLink.setText(Html.fromHtml(presenter.getHowItWorks()));
         TextViewHelpLink.setOnClickListener(view1 -> {
             UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_KNOW_MORE,"");
-
             startActivity(ManageWebViewActivity.getCallingIntent(getActivity(), TkpdUrl.REFERRAL_URL, getString(R.string.app_name)));
-
         });
+        welcomeMessageHearer.setText(Html.fromHtml(getString(R.string.referral_welcome_header)));
     }
 
     @Override
