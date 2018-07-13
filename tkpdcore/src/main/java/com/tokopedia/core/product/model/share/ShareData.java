@@ -333,7 +333,6 @@ public class ShareData implements Parcelable {
             shareData.setSource(source);
             shareData.setId(id);
             shareData.setPathSticker(pathSticker);
-            shareData.setProductUrl(productUrl);
             return shareData;
         }
 
