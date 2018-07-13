@@ -14,7 +14,7 @@
     <string name="payment_label_back">Kembali</string>
     <string name="payment_title_yes">Ya</string>
     <string name="payment_label_no">Tidak</string>
-    <string name="payment_title_payment_status">Status Pembayaran</string>
+    <string name="payment_title_payment_status">Menunggu Pembayaran</string>
     <string name="payment_label_helper_change_click_bca">User ID KlikBCA Anda saat ini adalah %1$s</string>
     <string name="payment_label_hint_click_bca_user_id">klikbca User ID</string>
     <string name="payment_label_use">Terapkan</string>

@@ -4,9 +4,9 @@
         android:drawable="@drawable/circle_white"
         android:gravity="fill" />
     <item
-        android:bottom="@dimen/dp_5"
+        android:bottom="@dimen/dp_10"
         android:drawable="@drawable/ic_check_green_payment"
-        android:end="@dimen/dp_5"
-        android:left="@dimen/dp_5"
-        android:top="@dimen/dp_5" />
+        android:end="@dimen/dp_10"
+        android:left="@dimen/dp_10"
+        android:top="@dimen/dp_10" />
 </layer-list>
