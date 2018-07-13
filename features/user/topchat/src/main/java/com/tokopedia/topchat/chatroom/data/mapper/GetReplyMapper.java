@@ -286,7 +286,7 @@ public class GetReplyMapper extends BaseChatApiCallMapper<ReplyData,ChatRoomView
 
         for (Contact contact : contacts) {
             boolean isShopOwner = String.valueOf(contact.getShopId()).equals(sessionHandler
-                    .getShopID());
+                    .getShopID()) && contact.getShopId() != 0;
             String allowedOpponentRole = "";
             if(isShopOwner) allowedOpponentRole = USER_ROLE;
             else if(contact.getRole().equals(TOKOPEDIA_ADMIN_ROLE)) allowedOpponentRole = TOKOPEDIA_ADMIN_ROLE;
