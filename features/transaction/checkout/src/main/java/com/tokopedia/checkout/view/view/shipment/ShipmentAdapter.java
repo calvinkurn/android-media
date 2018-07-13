@@ -52,8 +52,6 @@ import javax.inject.Inject;
 public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public static final int DEFAULT_ERROR_POSITION = -1;
-    private static final int SHIPMENT_COST_POSITION_INDEX_GAP_WITHOUT_INSURANCE = 2;
-    private static final int SHIPMENT_COST_POSITION_INDEX_GAP_WITH_INSURANCE = 3;
 
     private ArrayList<ShowCaseObject> showCaseObjectList;
     private ShipmentAdapterActionListener shipmentAdapterActionListener;
@@ -71,7 +69,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private ShipmentDataRequestConverter shipmentDataRequestConverter;
 
-    //    private int shipmentCostItemPosition;
     private boolean hasShownShowCase;
     private int lastChooseCourierItemPosition;
 

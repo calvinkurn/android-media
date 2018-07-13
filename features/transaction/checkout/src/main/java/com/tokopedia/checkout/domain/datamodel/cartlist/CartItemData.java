@@ -104,6 +104,7 @@ public class CartItemData implements Parcelable {
         private boolean isFreeReturn;
         private boolean isCashBack;
         private boolean isFavorite;
+        private String productCashBack;
         private String cashBackInfo;
         private String freeReturnLogo;
         private String category;
@@ -380,6 +381,14 @@ public class CartItemData implements Parcelable {
             this.isOfficialStore = officialStore;
         }
 
+        public String getProductCashBack() {
+            return productCashBack;
+        }
+
+        public void setProductCashBack(String productCashBack) {
+            this.productCashBack = productCashBack;
+        }
+
         public OriginData() {
         }
 
@@ -423,6 +432,7 @@ public class CartItemData implements Parcelable {
             dest.writeString(this.shopType);
             dest.writeByte(this.isGoldMerchant ? (byte) 1 : (byte) 0);
             dest.writeByte(this.isOfficialStore ? (byte) 1 : (byte) 0);
+            dest.writeString(this.productCashBack);
         }
 
         protected OriginData(Parcel in) {
@@ -459,6 +469,7 @@ public class CartItemData implements Parcelable {
             this.shopType = in.readString();
             this.isGoldMerchant = in.readByte() != 0;
             this.isOfficialStore = in.readByte() != 0;
+            this.productCashBack = in.readString();
         }
 
         public static final Creator<OriginData> CREATOR = new Creator<OriginData>() {
