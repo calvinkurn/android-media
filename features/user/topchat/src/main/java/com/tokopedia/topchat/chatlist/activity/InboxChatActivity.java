@@ -147,7 +147,7 @@ public class InboxChatActivity extends DrawerPresenterActivity
         indicator.addItemDecoration(new SpaceItemDecoration((int) getActivity().getResources().getDimension(R.dimen.step_size_nob)));
         indicator.setAdapter(indicatorAdapter);
 
-        if (isEnabledGroupChat()) {
+        if (isIndicatorVisible()) {
             indicatorLayout.setVisibility(View.VISIBLE);
         } else {
             indicatorLayout.setVisibility(View.GONE);
