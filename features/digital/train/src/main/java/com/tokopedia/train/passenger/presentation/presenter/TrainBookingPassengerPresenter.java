@@ -131,54 +131,52 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
         if (indexPassenger != -1) {
             passengerViewModels.set(indexPassenger, trainPassengerViewModel);
         }
+        getView().setCurrentListPassenger(passengerViewModels);
         getView().renderPassengers(passengerViewModels);
     }
 
     @Override
     public void onSubmitButtonClicked() {
-        //TODO delete this after softbooking finish
         if (isAllDataValid()) {
-            getView().toastValidityData();
+            trainSoftBookingUseCase.execute(trainSoftBookingUseCase.create(), new Subscriber<TrainSoftbook>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+
+                }
+
+                @Override
+                public void onNext(TrainSoftbook trainSoftbook) {
+                    getView().navigateToReview(trainSoftbook);
+                }
+            });
         }
-        trainSoftBookingUseCase.execute(trainSoftBookingUseCase.create(), new Subscriber<TrainSoftbook>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(TrainSoftbook trainSoftbook) {
-                getView().navigateToReview(trainSoftbook);
-            }
-        });
     }
 
     @Override
     public void onChooseSeatButtonClicked() {
-//        if (isAllDataValid()) {
-            getView().navigateToChooseSeat(null);
-//        }
-//        trainSoftBookingUseCase.execute(trainSoftBookingUseCase.create(), new Subscriber<TrainSoftbook>() {
-//            @Override
-//            public void onCompleted() {
-//
-//            }
-//
-//            @Override
-//            public void onError(Throwable e) {
-//
-//            }
-//
-//            @Override
-//            public void onNext(TrainSoftbook trainSoftbook) {
-//                getView().navigateToChooseSeat(trainSoftbook);
-//            }
-//        });
+        if (isAllDataValid()) {
+            trainSoftBookingUseCase.execute(trainSoftBookingUseCase.create(), new Subscriber<TrainSoftbook>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+
+                }
+
+                @Override
+                public void onNext(TrainSoftbook trainSoftbook) {
+                    getView().navigateToChooseSeat(null);
+                }
+            });
+        }
     }
 
     private boolean isAllDataValid() {
