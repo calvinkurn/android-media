@@ -30,9 +30,23 @@ public class ShopProductNewAdapter extends BaseListAdapter<BaseShopProductViewMo
     }
 
     public void setShopProductPromoViewModel(ShopProductPromoViewModel shopProductPromoViewModel) {
-        this.shopProductPromoViewModel = shopProductPromoViewModel;
+        if (shopProductPromoViewModel == null) {
+            this.shopProductPromoViewModel = new ShopProductPromoViewModel();
+        } else {
+            this.shopProductPromoViewModel = shopProductPromoViewModel;
+        }
         visitables.set(DEFAULT_PROMO_POSITION, this.shopProductPromoViewModel);
         notifyItemChanged(DEFAULT_PROMO_POSITION);
+    }
+
+    public void setShopProductFeaturedViewModel(ShopProductFeaturedViewModel shopProductFeaturedViewModel) {
+        if (shopProductFeaturedViewModel == null) {
+            this.shopProductFeaturedViewModel = new ShopProductFeaturedViewModel();
+        } else {
+            this.shopProductFeaturedViewModel = shopProductFeaturedViewModel;
+        }
+        visitables.set(DEFAULT_FEATURED_POSITION, this.shopProductFeaturedViewModel);
+        notifyItemChanged(DEFAULT_FEATURED_POSITION);
     }
 
     @Override
@@ -51,6 +65,13 @@ public class ShopProductNewAdapter extends BaseListAdapter<BaseShopProductViewMo
 
     public void addProductList(List<ShopProductViewModel> shopProductViewModelArrayList) {
         this.shopProductViewModelList = shopProductViewModelArrayList;
+    }
+
+    @Override
+    public void clearAllElements() {
+        setShopProductPromoViewModel(null);
+        setShopProductFeaturedViewModel(null);
+        clearProductList();
     }
 
     public List<ShopProductViewModel> getShopProductViewModelList() {
