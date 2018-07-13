@@ -17,7 +17,10 @@
         app:contentInsetStartWithNavigation="0dp"
         app:subtitleTextAppearance="?subtitleTextAppearance"
         app:titleTextAppearance="?titleTextAppearance"
-        app:elevation="0dp" />
+        app:elevation="0dp" >
+
+        <include layout="@layout/partial_shop_page_searchview"/>
+    </android.support.v7.widget.Toolbar>
 
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
