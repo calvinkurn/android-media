@@ -293,6 +293,8 @@ dependencies {
     implementation project(rootProject.ext.features.transactionanalytics)
     implementation project(rootProject.ext.features.tokopoints)
 
+    implementation project(rootProject.ext.features.searchbar)
+    implementation project(rootProject.ext.features.notification)
     implementation project(rootProject.ext.features.navigation)
 
     implementation project(rootProject.ext.libraries.pushNotif)

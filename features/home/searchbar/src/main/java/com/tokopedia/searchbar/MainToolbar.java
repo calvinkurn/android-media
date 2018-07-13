@@ -7,9 +7,6 @@ import android.util.AttributeSet;
 import android.view.Gravity;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.Toast;
-
-import com.tokopedia.notification.presentation.activity.NotificationActivity;
 
 import q.rorbin.badgeview.QBadgeView;
 
@@ -20,6 +17,7 @@ public class MainToolbar extends Toolbar {
 
     private ImageButton btnQrCode;
     private ImageButton btnNotification;
+    private ImageButton btnWishlist;
     private EditText editTextSearch;
 
     private QBadgeView badgeView;
@@ -43,6 +41,7 @@ public class MainToolbar extends Toolbar {
         inflate(getContext(), R.layout.main_toolbar, this);
         btnQrCode = findViewById(R.id.btn_qrcode);
         btnNotification = findViewById(R.id.btn_notification);
+        btnWishlist = findViewById(R.id.btn_wishlist);
         editTextSearch = findViewById(R.id.et_search);
 
         badgeView = new QBadgeView(getContext());
@@ -51,9 +50,15 @@ public class MainToolbar extends Toolbar {
         badgeView.setBadgeNumber(2);
 
         btnQrCode.setOnClickListener(v ->
-                Toast.makeText(getContext(), "QR Code things", Toast.LENGTH_SHORT).show());
+                getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
+                        .gotoQrScannerPage(getContext())));
+
+        btnWishlist.setOnClickListener(v ->
+                getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
+                        .gotoWishlistPage(getContext())));
 
         btnNotification.setOnClickListener(v ->
-                NotificationActivity.start(getContext()));
+                getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
+                        .gotoNotificationPage(getContext())));
     }
 }

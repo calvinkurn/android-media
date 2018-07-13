@@ -25,9 +25,8 @@ import java.util.List;
  */
 public class NotificationActivity extends AppCompatActivity {
 
-    public static void start(Context context) {
-        Intent intent = new Intent(context, NotificationActivity.class);
-        context.startActivity(intent);
+    public static Intent start(Context context) {
+        return new Intent(context, NotificationActivity.class);
     }
 
     @Override

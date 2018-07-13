@@ -177,6 +177,7 @@ import com.tokopedia.loyalty.view.fragment.LoyaltyNotifFragmentDialog;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.network.service.AccountsService;
+import com.tokopedia.notification.presentation.activity.NotificationActivity;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationProfileActivity;
 import com.tokopedia.otp.phoneverification.view.activity.ReferralPhoneNumberVerificationActivity;
@@ -192,6 +193,7 @@ import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
+import com.tokopedia.searchbar.SearchBarRouter;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.TkpdSeller;
@@ -247,6 +249,8 @@ import com.tokopedia.tkpd.flight.presentation.FlightPhoneVerificationActivity;
 import com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity;
 import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.home.ReactNativeOfficialStoreActivity;
+import com.tokopedia.tkpd.home.SimpleHomeActivity;
+import com.tokopedia.tkpd.qrscanner.QrScannerActivity;
 import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
 import com.tokopedia.tkpd.react.ReactNativeComponent;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
@@ -352,7 +356,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         InstantLoanChuckRouter,
         InstantLoanRouter,
         TopChatRouter,
-        TokopointRouter {
+        TokopointRouter,
+        SearchBarRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -2288,4 +2293,20 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         }
     }
 
+    @Override
+    public Intent gotoWishlistPage(Context context) {
+        Intent intent = new Intent(context, SimpleHomeActivity.class);
+        intent.putExtra(SimpleHomeActivity.FRAGMENT_TYPE, SimpleHomeActivity.WISHLIST_FRAGMENT);
+        return intent;
+    }
+
+    @Override
+    public Intent gotoNotificationPage(Context context) {
+        return NotificationActivity.start(context);
+    }
+
+    @Override
+    public Intent gotoQrScannerPage(Context context) {
+        return QrScannerActivity.newInstance(this);
+    }
 }

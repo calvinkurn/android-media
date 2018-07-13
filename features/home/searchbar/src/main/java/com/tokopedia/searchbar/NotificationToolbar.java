@@ -8,8 +8,6 @@ import android.view.Gravity;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.tokopedia.notification.presentation.activity.NotificationActivity;
-
 import q.rorbin.badgeview.QBadgeView;
 
 /**
@@ -47,7 +45,8 @@ public class NotificationToolbar extends Toolbar {
         badgeView.setBadgeNumber(2);
 
         btnNotification.setOnClickListener(v ->
-                NotificationActivity.start(getContext()));
+                getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
+                        .gotoNotificationPage(getContext())));
     }
 
     @Override
