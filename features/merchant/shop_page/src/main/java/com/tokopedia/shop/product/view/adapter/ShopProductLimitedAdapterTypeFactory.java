@@ -34,20 +34,17 @@ public class ShopProductLimitedAdapterTypeFactory extends BaseAdapterTypeFactory
     private final ShopProductLimitedPromoViewHolder.PromoViewHolderListener promoViewHolderListener;
     private final ShopProductClickedListener shopProductClickedListener;
     private final EmptyViewHolder.Callback emptyProductOnClickListener;
-    private final ShopPagePromoWebView.Listener promoWebViewListener;
     private final ShopProductFeaturedViewHolder.ShopProductFeaturedListener shopProductFeaturedListener;
     private final View.OnClickListener onClickViewMoreListener;
 
     public ShopProductLimitedAdapterTypeFactory(ShopProductLimitedPromoViewHolder.PromoViewHolderListener promoViewHolderListener,
                                                 ShopProductClickedListener shopProductClickedListener,
                                                 EmptyViewHolder.Callback emptyProductOnClickListener,
-                                                ShopPagePromoWebView.Listener promoWebViewListener,
                                                 ShopProductFeaturedViewHolder.ShopProductFeaturedListener shopProductFeaturedListener,
                                                 View.OnClickListener onClickViewMoreListener) {
         this.promoViewHolderListener = promoViewHolderListener;
         this.shopProductClickedListener = shopProductClickedListener;
         this.emptyProductOnClickListener = emptyProductOnClickListener;
-        this.promoWebViewListener = promoWebViewListener;
         this.shopProductFeaturedListener = shopProductFeaturedListener;
         this.onClickViewMoreListener = onClickViewMoreListener;
     }
@@ -99,7 +96,7 @@ public class ShopProductLimitedAdapterTypeFactory extends BaseAdapterTypeFactory
         } else if (type == ShopProductLimitedEtalaseTitleViewHolder.LAYOUT) {
             return new ShopProductLimitedEtalaseTitleViewHolder(parent);
         } else if (type == ShopProductLimitedPromoViewHolder.LAYOUT) {
-            return new ShopProductLimitedPromoViewHolder(parent, promoViewHolderListener, promoWebViewListener);
+            return new ShopProductLimitedPromoViewHolder(parent, promoViewHolderListener);
         } else if (type == ShopProductFeaturedViewHolder.LAYOUT) {
             return new ShopProductFeaturedViewHolder(parent, shopProductClickedListener, shopProductFeaturedListener);
         } else if(type == ShopProductTitleFeaturedViewHolder.LAYOUT){

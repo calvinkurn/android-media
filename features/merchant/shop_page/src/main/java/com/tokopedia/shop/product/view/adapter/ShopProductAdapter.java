@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by zulfikarrahman on 1/22/18.
@@ -17,7 +18,8 @@ public class ShopProductAdapter extends BaseListAdapter<ShopProductViewModel, Sh
 
     public void updateWishListStatus(String productId, boolean wishList) {
         int i = 0;
-        for (ShopProductViewModel shopProductViewModel: getData()) {
+        List<ShopProductViewModel> shopProductViewModelList = getData();
+        for (ShopProductViewModel shopProductViewModel: shopProductViewModelList) {
             if (shopProductViewModel.getId().equalsIgnoreCase(productId)) {
                 shopProductViewModel.setWishList(wishList);
                 notifyItemChanged(i);

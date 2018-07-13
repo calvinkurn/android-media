@@ -6,11 +6,9 @@ import android.support.v4.app.FragmentStatePagerAdapter
 import android.support.v4.util.SparseArrayCompat
 import android.view.ViewGroup
 import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedNewFragment
-import com.tokopedia.shop.product.view.widget.ShopPagePromoWebView
 
 class ShopPageViewPagerAdapter(val fragmentManager: FragmentManager,
                                val titles: Array<String>,
-                               val webViewListener: ShopPagePromoWebView.Listener,
                                val shopId: String?,
                                val shopAttribution: String?) : FragmentStatePagerAdapter(fragmentManager) {
 
@@ -20,7 +18,6 @@ class ShopPageViewPagerAdapter(val fragmentManager: FragmentManager,
         when (position) {
             0 -> {
                 val shopProductListLimitedNewFragment = ShopProductListLimitedNewFragment.createInstance(shopAttribution)
-                shopProductListLimitedNewFragment.setPromoWebViewListener(webViewListener)
                 return shopProductListLimitedNewFragment
             }
             else -> {

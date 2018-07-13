@@ -7,6 +7,8 @@ import com.tokopedia.shop.product.view.model.ShopProductLimitedFeaturedViewModel
 import com.tokopedia.shop.product.view.model.ShopProductLimitedPromoViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 
+import java.util.List;
+
 /**
  * Created by zulfikarrahman on 3/1/18.
  */
@@ -18,8 +20,9 @@ public class ShopProductLimitedAdapter extends BaseListAdapter<ShopProductBaseVi
     }
 
     public void updateWishListStatus(String productId, boolean wishList) {
-        for (int i = 0; i < getData().size(); i++) {
-            ShopProductBaseViewModel shopProductViewModel = getData().get(i);
+        List<ShopProductBaseViewModel> shopProductBaseViewModelList = getData();
+        for (int i = 0; i < shopProductBaseViewModelList.size(); i++) {
+            ShopProductBaseViewModel shopProductViewModel = shopProductBaseViewModelList.get(i);
             if (shopProductViewModel instanceof ShopProductViewModel) {
                 if (((ShopProductViewModel)shopProductViewModel).getId().equalsIgnoreCase(productId)) {
                     ((ShopProductViewModel)shopProductViewModel).setWishList(wishList);
@@ -31,8 +34,9 @@ public class ShopProductLimitedAdapter extends BaseListAdapter<ShopProductBaseVi
     }
 
     public void updateVisibleStatus(boolean visible) {
-        for (int i = 0; i < getData().size(); i++) {
-            ShopProductBaseViewModel shopProductViewModel = getData().get(i);
+        List<ShopProductBaseViewModel> shopProductBaseViewModelList = getData();
+        for (int i = 0; i < shopProductBaseViewModelList.size(); i++) {
+            ShopProductBaseViewModel shopProductViewModel = shopProductBaseViewModelList.get(i);
             if (shopProductViewModel instanceof ShopProductLimitedPromoViewModel) {
                 ShopProductLimitedPromoViewModel shopProductLimitedPromoViewModel = ((ShopProductLimitedPromoViewModel) shopProductViewModel);
                 if (shopProductLimitedPromoViewModel.getShopProductUserVisibleHintListener() != null) {
