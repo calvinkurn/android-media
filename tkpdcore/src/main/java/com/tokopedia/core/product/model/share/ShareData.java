@@ -170,14 +170,6 @@ public class ShareData implements Parcelable {
         this.id = id;
     }
 
-    public String getProductUrl() {
-        return productUrl;
-    }
-
-    public void setProductUrl(String productUrl) {
-        this.productUrl = productUrl;
-    }
-
     public String renderShareUri() {
         if (getUri() == null) {
             return "";
@@ -326,7 +318,7 @@ public class ShareData implements Parcelable {
         }
 
         public Builder but() {
-            return aShareData().setName(name).setPrice(price).setUri(uri).setDescription(description).setImgUri(imgUri).setProductUrl(productUrl);
+            return aShareData().setName(name).setPrice(price).setUri(uri).setDescription(description).setImgUri(imgUri);
         }
 
         public ShareData build() {

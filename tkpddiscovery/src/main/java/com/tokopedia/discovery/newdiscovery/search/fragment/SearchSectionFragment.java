@@ -286,7 +286,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         if(getActivity() instanceof HotlistActivity){
             shareData.setType(ShareData.HOTLIST_TYPE);
         } else {
-            SearchTracking.eventSearchResultShare(getScreenName());
+            SearchTracking.eventSearchResultShare(getActivity(), getScreenName());
         }
         ShareBottomSheet.show(getChildFragmentManager(), shareData);
     }
