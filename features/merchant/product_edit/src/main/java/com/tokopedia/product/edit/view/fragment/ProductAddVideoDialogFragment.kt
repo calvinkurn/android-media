@@ -13,7 +13,7 @@ import com.tokopedia.product.edit.util.YoutubeUtil
 class ProductAddVideoDialogFragment : BaseTextPickerDialogFragment() {
 
     private var isErrorReturn: Boolean = false
-    private val youtubeUtil : YoutubeUtil by lazy { YoutubeUtil(context!!) }
+    private val youtubeUtil : YoutubeUtil by lazy { YoutubeUtil() }
     private var videoID : String? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

@@ -10,6 +10,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
@@ -23,6 +24,7 @@ import com.tokopedia.tkpdreactnative.react.fingerprint.view.FingerPrintUIHelper;
 import com.tokopedia.tkpdreactnative.react.fingerprint.view.FingerprintDialogConfirmation;
 import com.tokopedia.tkpdreactnative.react.singleauthpayment.view.SingleAuthPaymentDialog;
 import com.tokopedia.tkpdreactnative.router.ReactNativeRouter;
+import com.tokopedia.core.util.GlobalConfig;
 
 import java.util.HashMap;
 
@@ -175,6 +177,14 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule implements
     }
 
     @ReactMethod
+    public void trackScreenName(String name) {
+        if(context.getApplicationContext() instanceof AbstractionRouter) {
+            AnalyticTracker analyticTracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+            analyticTracker.sendScreen(getCurrentActivity(), name);
+        }
+    }
+
+    @ReactMethod
     public void getGraphQLRequestHeader(Promise promise) {
         promise.resolve(AuthUtil.getHeaderRequestReactNative(context));
     }
@@ -197,6 +207,15 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule implements
     public void hideProgressDialog() {
         if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();
+        }
+    }
+
+    @ReactMethod
+    public void getDebuggingMode(Promise promise){
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            promise.resolve("debug");
+        } else {
+            promise.resolve("release");
         }
     }
 }

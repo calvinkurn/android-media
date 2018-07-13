@@ -4,12 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-
 import android.support.v4.app.Fragment;
-import android.net.Uri;
-import android.os.Bundle;
 
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+
+import java.util.ArrayList;
 
 /**
  * @author by nisie on 9/14/17.
@@ -73,4 +72,6 @@ public interface TkpdInboxRouter {
     Intent getWebviewActivityWithIntent(Context context, String url);
 
     boolean isEnabledGroupChat();
+
+    Intent getChatBotIntent(Context context, String messageId);
 }

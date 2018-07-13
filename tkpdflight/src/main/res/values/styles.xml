@@ -159,4 +159,9 @@
         <item name="android:textStyle">normal</item>
         <item name="footerIndicatorHeight">3dp</item>
     </style>
+
+    <style name="TextView.Micro.OrangeRed">
+        <item name="android:textColor">@color/tkpd_main_orange</item>
+    </style>
+
 </resources>

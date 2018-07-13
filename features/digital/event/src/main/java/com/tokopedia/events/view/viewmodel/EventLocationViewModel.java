@@ -91,7 +91,7 @@ public class EventLocationViewModel implements Parcelable {
         this.icon = in.readString();
     }
 
-    public static final Parcelable.Creator<EventLocationViewModel> CREATOR = new Parcelable.Creator<EventLocationViewModel>() {
+    public static final Creator<EventLocationViewModel> CREATOR = new Creator<EventLocationViewModel>() {
         @Override
         public EventLocationViewModel createFromParcel(Parcel source) {
             return new EventLocationViewModel(source);

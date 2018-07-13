@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.view.view.shippingoptions.viewmodel.ShipmentOptionData;
 
@@ -28,7 +29,7 @@ public interface CourierContract {
     }
 
     interface Presenter extends CustomerPresenter<View> {
-        void loadCourier(ShipmentDetailData shipmentDetailData);
+        void loadCourier(ShipmentDetailData shipmentDetailData, List<ShopShipment> shopShipmentList);
 
         String getShipmentTickerInfo();
 

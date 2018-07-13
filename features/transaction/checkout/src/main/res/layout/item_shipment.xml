@@ -45,6 +45,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
+        android:layout_marginBottom="@dimen/dp_16"
         android:background="#e0e0e0" />
 
     <include layout="@layout/item_cart_product" />
@@ -181,7 +182,7 @@
             android:paddingLeft="@dimen/dp_16"
             android:paddingStart="@dimen/dp_16"
             android:paddingTop="@dimen/dp_8"
-            tools:visibility="gone">
+            tools:visibility="visible">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -227,6 +228,7 @@
                         tools:text="JNE Reg (Reguler)" />
 
                     <TextView
+                        android:id="@+id/tv_dash"
                         style="@style/TextSmallNormalBlack54"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -290,6 +292,7 @@
                 android:theme="@style/TransactionCheckboxDisabled" />
 
             <TextView
+                android:id="@+id/tv_label_insurance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/label_shipment_insurance" />
@@ -412,7 +415,7 @@
 
             <TextView
                 android:id="@+id/tv_cart_sub_total"
-                style="@style/TextSmallNormalBlack70"
+                style="@style/TextSmallMediumBlack54"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -433,7 +436,7 @@
 
             <TextView
                 android:id="@+id/tv_sub_total_price"
-                style="@style/TextMidNormalBlack70"
+                style="@style/TextSmallMediumBlack70"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -470,7 +473,7 @@
 
             <TextView
                 android:id="@+id/tv_total_item"
-                style="@style/TextSmallNormalBlack70"
+                style="@style/TextSmallNormalBlack54"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_16"
@@ -478,7 +481,7 @@
 
             <TextView
                 android:id="@+id/tv_total_item_price"
-                style="@style/TextMidNormalBlack70"
+                style="@style/TextSmallMediumBlack70"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -490,7 +493,7 @@
 
             <TextView
                 android:id="@+id/tv_shipping_fee"
-                style="@style/TextSmallNormalBlack70"
+                style="@style/TextSmallNormalBlack54"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tv_total_item"
@@ -499,7 +502,7 @@
 
             <TextView
                 android:id="@+id/tv_shipping_fee_price"
-                style="@style/TextMidNormalBlack70"
+                style="@style/TextSmallMediumBlack70"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -510,7 +513,7 @@
 
             <TextView
                 android:id="@+id/tv_insurance_fee"
-                style="@style/TextSmallNormalBlack70"
+                style="@style/TextSmallNormalBlack54"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tv_shipping_fee"
@@ -519,7 +522,7 @@
 
             <TextView
                 android:id="@+id/tv_insurance_fee_price"
-                style="@style/TextMidNormalBlack70"
+                style="@style/TextSmallMediumBlack70"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -530,7 +533,7 @@
 
             <TextView
                 android:id="@+id/tv_additional_fee"
-                style="@style/TextSmallNormalBlack70"
+                style="@style/TextSmallNormalBlack54"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tv_insurance_fee"
@@ -539,7 +542,7 @@
 
             <TextView
                 android:id="@+id/tv_additional_fee_price"
-                style="@style/TextMidNormalBlack70"
+                style="@style/TextSmallMediumBlack70"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -550,7 +553,7 @@
 
             <TextView
                 android:id="@+id/tv_promo_text"
-                style="@style/TextSmallNormal"
+                style="@style/TextSmallNormalBlack54"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tv_additional_fee"
@@ -561,7 +564,7 @@
 
             <TextView
                 android:id="@+id/tv_promo_price"
-                style="@style/TextMidNormal"
+                style="@style/TextSmallMediumBlack70"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
