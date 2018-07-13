@@ -19,6 +19,11 @@
             android:theme="@style/Theme.White"
             android:name=".bankaccount.view.ChangeBankAccountActivity"/>
         <activity
+            android:label="@string/payment_title_activity_howtopay"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:name=".howtopay.ReactNativeHowToPayActivity" />
+        <activity
             android:label="@string/payment_title_activity_dest_bank"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
