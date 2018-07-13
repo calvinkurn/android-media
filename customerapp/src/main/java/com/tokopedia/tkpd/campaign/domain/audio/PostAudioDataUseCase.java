@@ -1,18 +1,11 @@
 package com.tokopedia.tkpd.campaign.domain.audio;
 
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.network.ErrorMessageException;
-import com.tokopedia.inbox.inboxchat.util.ImageUploadHandlerChat;
 import com.tokopedia.tkpd.campaign.data.entity.CampaignResponseEntity;
 import com.tokopedia.tkpd.campaign.domain.CampaignDataRepository;
 import com.tokopedia.tkpd.campaign.domain.shake.ShakeUseCase;
 import com.tokopedia.usecase.RequestParams;
-import com.tokopedia.usecase.UseCase;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 
 import okhttp3.MediaType;

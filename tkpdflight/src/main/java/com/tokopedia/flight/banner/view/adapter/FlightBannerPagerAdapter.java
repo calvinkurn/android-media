@@ -29,11 +29,10 @@ public class FlightBannerPagerAdapter extends BannerPagerAdapter {
             Glide.with(holder.itemView.getContext())
                     .load(bannerImageUrls.get(position))
                     .dontAnimate()
-                    .centerCrop()
                     .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                     .placeholder(com.tokopedia.design.R.drawable.ic_loading_image)
                     .error(com.tokopedia.design.R.drawable.ic_loading_image)
-                    .override(BANNER_WIDTH, Target.SIZE_ORIGINAL)
+                    .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
                     .into(holder.getBannerImage());
         } catch (Exception e) {
             e.printStackTrace();

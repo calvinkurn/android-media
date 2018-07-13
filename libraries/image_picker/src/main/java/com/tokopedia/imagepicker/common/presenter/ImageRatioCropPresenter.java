@@ -67,7 +67,7 @@ public class ImageRatioCropPresenter extends BaseDaggerPresenter<ImageRatioCropP
                                 if (needCheckRotate) {
                                     try {
                                         defaultOrientation = ImageUtils.getOrientation(imagePath);
-                                    } catch (IOException e) {
+                                    } catch (Throwable e) {
                                         defaultOrientation = ExifInterface.ORIENTATION_NORMAL;
                                     }
                                 } else {

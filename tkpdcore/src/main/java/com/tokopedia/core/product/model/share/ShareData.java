@@ -40,6 +40,7 @@ public class ShareData implements Parcelable {
     private String source;
     private String id = "";
     private String pathSticker;
+    private String productUrl;
 
     public ShareData() {
     }
@@ -55,6 +56,7 @@ public class ShareData implements Parcelable {
         source = in.readString();
         id = in.readString();
         pathSticker = in.readString();
+        productUrl = in.readString();
     }
 
     @Override
@@ -69,6 +71,7 @@ public class ShareData implements Parcelable {
         dest.writeString(source);
         dest.writeString(id);
         dest.writeString(pathSticker);
+        dest.writeString(productUrl);
     }
 
     @Override
@@ -167,6 +170,14 @@ public class ShareData implements Parcelable {
         this.id = id;
     }
 
+    public String getProductUrl() {
+        return productUrl;
+    }
+
+    public void setProductUrl(String productUrl) {
+        this.productUrl = productUrl;
+    }
+
     public String renderShareUri() {
         if (getUri() == null) {
             return "";
@@ -250,6 +261,7 @@ public class ShareData implements Parcelable {
         private String source;
         private String id;
         private String pathSticker;
+        private String productUrl;
 
         private Builder() {
         }
@@ -308,8 +320,13 @@ public class ShareData implements Parcelable {
             return this;
         }
 
+        public Builder setProductUrl(String productUrl) {
+            this.productUrl = productUrl;
+            return this;
+        }
+
         public Builder but() {
-            return aShareData().setName(name).setPrice(price).setUri(uri).setDescription(description).setImgUri(imgUri);
+            return aShareData().setName(name).setPrice(price).setUri(uri).setDescription(description).setImgUri(imgUri).setProductUrl(productUrl);
         }
 
         public ShareData build() {
@@ -324,6 +341,7 @@ public class ShareData implements Parcelable {
             shareData.setSource(source);
             shareData.setId(id);
             shareData.setPathSticker(pathSticker);
+            shareData.setProductUrl(productUrl);
             return shareData;
         }
 

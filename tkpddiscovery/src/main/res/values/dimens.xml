@@ -28,4 +28,5 @@
     <dimen name="quick_filter_padding_vertical">12dp</dimen>
     <dimen name="quick_filter_padding_horizontal">20dp</dimen>
     <dimen name="chip_rating_icon_size">13dp</dimen>
+    <dimen name="dp_51">51dp</dimen>
 </resources>

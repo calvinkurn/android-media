@@ -112,6 +112,7 @@ public class GetHotlistInitializeUseCase extends UseCase<HotlistModel> {
                     new Func2<HotlistModel, SearchResultModel, HotlistModel>() {
                         @Override
                         public HotlistModel call(HotlistModel hotlistModel, SearchResultModel searchResultModel) {
+                            hotlistModel.setTotalDataText(searchResultModel.getTotalDataText());
                             hotlistModel.setTotalData(searchResultModel.getTotalData());
                             hotlistModel.setProductList(searchResultModel.getProductList());
                             hotlistModel.setShareURL(searchResultModel.getShareUrl());

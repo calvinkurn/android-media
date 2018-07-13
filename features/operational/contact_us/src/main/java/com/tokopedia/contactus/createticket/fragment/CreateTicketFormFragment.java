@@ -60,19 +60,13 @@ import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
-import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB;
-import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MIN_RESOLUTION;
-import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_CAMERA;
-import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_GALLERY;
-import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
-
 /**
  * Created by Tkpd_Eka on 8/13/2015.
  */
+@RuntimePermissions
 public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicketFormFragmentPresenter>
         implements CreateTicketFormFragmentView, ContactUsConstant {
 
-    private static final int REQUEST_CODE_IMAGE_TICKET = 4231;
     @BindView(R2.id.main_category)
     EditText mainCategory;
     @BindView(R2.id.detail)
@@ -240,7 +234,8 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
                 return new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        openImagePicker();
+                        showImagePickerDialog();
+
                     }
                 };
             }
@@ -259,14 +254,38 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
 
     }
 
-    private void openImagePicker() {
-        ImagePickerBuilder builder = new ImagePickerBuilder(getString(R.string.choose_image),
-                new int[]{TYPE_GALLERY, TYPE_CAMERA}, com.tokopedia.imagepicker.picker.gallery.type.GalleryType.IMAGE_ONLY, DEFAULT_MAX_IMAGE_SIZE_IN_KB,
-                DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.ORIGINAL, true,
-                null
-                , null);
-        Intent intent = ImagePickerActivity.getIntent(getActivity(), builder);
-        startActivityForResult(intent, REQUEST_CODE_IMAGE_TICKET);
+    private void showImagePickerDialog() {
+        AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(context);
+        myAlertDialog.setMessage(context.getString(R.string.dialog_upload_option));
+        myAlertDialog.setPositiveButton(context.getString(R.string.title_gallery), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                CreateTicketFormFragmentPermissionsDispatcher.actionImagePickerWithCheck(
+                        CreateTicketFormFragment.this);
+            }
+        });
+        myAlertDialog.setNegativeButton(context.getString(R.string.title_camera), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                CreateTicketFormFragmentPermissionsDispatcher.actionCameraWithCheck(
+                        CreateTicketFormFragment.this);
+            }
+
+
+        });
+        Dialog dialog = myAlertDialog.create();
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.show();
+    }
+
+    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
+    public void actionCamera() {
+        imageUploadHandler.actionCamera();
+    }
+
+    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+    public void actionImagePicker() {
+        imageUploadHandler.actionImagePicker();
     }
 
     @Override
@@ -381,18 +400,90 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == REQUEST_CODE_IMAGE_TICKET && resultCode == Activity.RESULT_OK && data!= null) {
+        if ((requestCode == ImageUploadHandler.REQUEST_CODE)
+                && (resultCode == Activity.RESULT_OK || resultCode == GalleryBrowser.RESULT_CODE)) {
+
             int position = imageAdapter.getList().size();
             ImageUpload image = new ImageUpload();
             image.setPosition(position);
             image.setImageId("image" + UUID.randomUUID().toString());
-            ArrayList<String> imageUrlOrPathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS);
-            if (imageUrlOrPathList!= null && imageUrlOrPathList.size() > 0) {
-                image.setFileLoc(imageUrlOrPathList.get(0));
+
+            switch (resultCode) {
+                case GalleryBrowser.RESULT_CODE:
+                    image.setFileLoc(data.getStringExtra(ImageGallery.EXTRA_URL));
+                    break;
+                case Activity.RESULT_OK:
+                    image.setFileLoc(imageUploadHandler.getCameraFileloc());
+                    break;
+                default:
+                    break;
             }
             imageAdapter.addImage(image);
+
         }
 
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        CreateTicketFormFragmentPermissionsDispatcher.onRequestPermissionsResult(
+                CreateTicketFormFragment.this, requestCode, grantResults);
+    }
+
+    @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
+    void showRationaleForStorageAndCamera(final PermissionRequest request) {
+        List<String> listPermission = new ArrayList<>();
+        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        listPermission.add(Manifest.permission.CAMERA);
+        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        RequestPermissionUtil.onShowRationale(getActivity(), request, listPermission);
+    }
+
+    @OnShowRationale(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void showRationaleForStorage(final PermissionRequest request) {
+        RequestPermissionUtil.onShowRationale(getActivity(), request, Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    @OnPermissionDenied(Manifest.permission.CAMERA)
+    void showDeniedForCamera() {
+        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.CAMERA);
+    }
+
+    @OnNeverAskAgain(Manifest.permission.CAMERA)
+    void showNeverAskForCamera() {
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.CAMERA);
+    }
+
+    @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void showDeniedForStorage() {
+        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void showNeverAskForStorage() {
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    @OnPermissionDenied({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
+    void showDeniedForStorageAndCamera() {
+        List<String> listPermission = new ArrayList<>();
+        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        listPermission.add(Manifest.permission.CAMERA);
+        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        RequestPermissionUtil.onPermissionDenied(getActivity(), listPermission);
+    }
+
+    @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
+    void showNeverAskForStorageAndCamera() {
+        List<String> listPermission = new ArrayList<>();
+        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        listPermission.add(Manifest.permission.CAMERA);
+        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), listPermission);
     }
 
     public void setFinishContactUsListener(FinishContactUsListener finishContactUsListener) {

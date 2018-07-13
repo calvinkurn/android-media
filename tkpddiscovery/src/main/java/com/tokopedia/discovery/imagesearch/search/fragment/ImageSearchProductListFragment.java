@@ -11,7 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.analytics.SearchTracking;
+import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.Visitable;
@@ -386,7 +386,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
                     }
                     j++;
                 }
-                SearchTracking.eventImpressionImageSearchResultProduct(dataLayerList);
+                SearchTracking.eventImpressionImageSearchResultProduct(getActivity(), dataLayerList);
             }
         }
     }
@@ -558,6 +558,14 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     }
 
     @Override
+    public void onAddWishList(int position, Data data) {
+        ProductItem productItem = new ProductItem();
+        productItem.setWishlisted(data.isWislished());
+        productItem.setProductID(data.getProduct().getId());
+        presenter.handleWishlistButtonClicked(productItem, topAdsRecyclerAdapter.getOriginalPosition(position));
+    }
+
+    @Override
     public void onItemClicked(ProductItem item, int adapterPosition) {
         com.tokopedia.core.var.ProductItem data = new com.tokopedia.core.var.ProductItem();
         data.setId(item.getProductID());
@@ -604,7 +612,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
                 SessionHandler.getLoginID(getContext()) : "";
 
         SearchTracking.trackEventClickImageSearchResultProduct(
-                item.getProductAsObjectDataLayerForImageSearch(userId), (item.getPosition() + 1) / 2);
+                getActivity(), item.getProductAsObjectDataLayerForImageSearch(userId), (item.getPosition() + 1) / 2);
     }
 
     @Override

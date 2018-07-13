@@ -32,7 +32,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.features.core)
-    implementation project(rootProject.ext.features.inbox)
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.imagePicker)
 

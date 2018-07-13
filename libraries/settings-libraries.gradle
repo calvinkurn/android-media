@@ -11,6 +11,7 @@ include "libraries:network"
 include "libraries:bottom_sheet_builder"
 include "libraries:williamchart"
 include "libraries:user_session"
+include "libraries:camera_view"
 include "libraries:image_picker"
 include 'libraries:imageuploader'
 include "libraries:YouTubeAndroidPlayerApi"

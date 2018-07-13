@@ -55,7 +55,7 @@ public class SessionHandler {
     private static final String STATE_BROWSE = "STATE_BROWSE";
     private static final String FULL_NAME = "FULL_NAME";
     private static final String IS_GOLD_MERCHANT = "IS_GOLD_MERCHANT";
-    private static final String LOGIN_SESSION = "LOGIN_SESSION";
+    protected static final String LOGIN_SESSION = "LOGIN_SESSION";
     private static final String USER_AVATAR_URI = "USER_AVATAR_URI";
     private static final String SHOP_DOMAIN = "SHOP_DOMAIN";
     private static final String IS_FIRST_TIME_USER = "IS_FIRST_TIME";
@@ -66,6 +66,7 @@ public class SessionHandler {
     private static final String REFRESH_TOKEN_KEY = "REFRESH_TOKEN_KEY";
     private static final String WALLET_REFRESH_TOKEN = "WALLET_REFRESH_TOKEN";
     private static final String TOKEN_TYPE = "TOKEN_TYPE";
+    private static final String USER_SCOPE = "USER_SCOPE";
     private static final String IS_FIRST_TIME_STORAGE = "IS_FIRST_TIME_STORAGE";
     private static final String LOGIN_UUID_KEY = "LOGIN_UUID";
     private static final String UUID_KEY = "uuid";
@@ -134,11 +135,13 @@ public class SessionHandler {
         editor.putString(FULL_NAME, null);
         editor.putString(SHOP_DOMAIN, null);
         editor.putString(SHOP_ID, null);
+        editor.putString(SHOP_NAME, null);
         editor.putBoolean(IS_LOGIN, false);
         editor.putBoolean(IS_MSISDN_VERIFIED, false);
         editor.putString(PHONE_NUMBER, null);
         editor.putString(USER_DATA, null);
         editor.putString(REFRESH_TOKEN, null);
+        editor.putString(USER_SCOPE, null);
         editor.putString(ACCESS_TOKEN_TOKOCASH, null);
         editor.putString(TOKEN_TYPE, null);
         editor.putString(ACCESS_TOKEN, null);
@@ -279,6 +282,16 @@ public class SessionHandler {
             shopId = DEFAULT_EMPTY_SHOP_ID;
         }
         return shopId;
+    }
+
+    public void setShopName(String name) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        sharedPrefs.edit().putString(SHOP_NAME, name).apply();
+    }
+
+    public static String getShopName(Context context) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        return sharedPrefs.getString(SHOP_NAME, "");
     }
 
     public static String getLoginName(Context context) {
@@ -641,6 +654,18 @@ public class SessionHandler {
         setToken(accessToken, tokenType);
         saveToSharedPref(editor, REFRESH_TOKEN, refreshToken);
         editor.apply();
+    }
+
+    public void setScope(String scopeName) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        Editor editor = sharedPrefs.edit();
+        saveToSharedPref(editor, USER_SCOPE, scopeName);
+        editor.apply();
+    }
+
+    public static String getUserScope() {
+        SharedPreferences sharedPrefs = MainApplication.getAppContext().getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        return sharedPrefs.getString(USER_SCOPE, "");
     }
 
     public void setToken(String accessToken, String tokenType) {

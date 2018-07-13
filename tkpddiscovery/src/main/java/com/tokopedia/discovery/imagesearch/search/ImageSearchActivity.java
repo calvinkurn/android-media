@@ -74,12 +74,6 @@ public class ImageSearchActivity extends DiscoveryActivity
             onProductQuerySubmit(searchQuery);
         } else {
             searchView.showSearch(true, false);
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    KeyboardHandler.showSoftKeyboard(ImageSearchActivity.this);
-                }
-            }, 200);
         }
 
         super.initView();

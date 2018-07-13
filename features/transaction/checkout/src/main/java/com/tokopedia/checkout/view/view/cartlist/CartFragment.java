@@ -73,6 +73,7 @@ import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.TopAdsView;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart;
+import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 import com.tokopedia.transactionanalytics.EnhancedECommerceCartMapData;
 import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
 
@@ -989,6 +990,11 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     }
 
     @Override
+    public void onAddWishList(int position, Data data) {
+        //TODO: next implement wishlist action
+    }
+
+    @Override
     public void onRefresh(View view) {
         cartListAdapter.resetData();
         dPresenter.processInitialGetCartData();
@@ -1108,4 +1114,14 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
 
     }
 
+    @Override
+    protected String getScreenName() {
+        return ConstantTransactionAnalytics.ScreenName.CART;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        cartPageAnalytics.sendScreenName(getActivity(), getScreenName());
+    }
 }

@@ -48,6 +48,7 @@
                             <com.tokopedia.design.label.LabelView
                                 android:id="@+id/label_view_group_summary"
                                 style="@style/LabelLayout.TopAdsLabelView"
+                                android:layout_height="@dimen/dp_64"
                                 app:lv_content="@string/top_ads_statistic_info_default_value"
                                 app:lv_content_color="@color/tkpd_main_green"
                                 app:lv_image="@drawable/ic_top_ads_grup_promo"
@@ -65,6 +66,7 @@
                                 <com.tokopedia.design.label.LabelView
                                     android:id="@+id/label_view_item_summary"
                                     style="@style/LabelLayout.TopAdsLabelView"
+                                    android:layout_height="@dimen/dp_64"
                                     app:lv_content="@string/top_ads_statistic_info_default_value"
                                     app:lv_content_color="@color/tkpd_main_green"
                                     app:lv_image="@drawable/ic_top_ads_produk"
@@ -73,6 +75,7 @@
                                 <com.tokopedia.design.label.LabelView
                                     android:id="@+id/label_view_keyword"
                                     style="@style/LabelLayout.TopAdsLabelView"
+                                    android:layout_height="@dimen/dp_64"
                                     app:lv_content="@string/top_ads_statistic_info_default_value"
                                     app:lv_content_color="@color/tkpd_main_green"
                                     app:lv_image="@drawable/ic_top_ads_keyword"
@@ -81,6 +84,7 @@
                                 <com.tokopedia.design.label.LabelView
                                     android:id="@+id/label_view_shop"
                                     style="@style/LabelLayout.TopAdsLabelView"
+                                    android:layout_height="@dimen/dp_64"
                                     app:lv_image="@drawable/ic_top_ads_toko"
                                     app:lv_title="@string/title_top_ads_store"/>
 

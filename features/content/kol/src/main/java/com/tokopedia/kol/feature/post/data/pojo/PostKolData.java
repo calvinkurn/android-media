@@ -26,6 +26,10 @@ public final class PostKolData {
   @Expose
   public Boolean showComment;
 
+  @SerializedName("showLike")
+  @Expose
+  public Boolean showLike;
+
   @SerializedName("likeCount")
   @Expose
   public Integer likeCount;
