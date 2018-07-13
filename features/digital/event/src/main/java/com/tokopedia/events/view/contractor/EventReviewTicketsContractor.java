@@ -57,7 +57,7 @@ public class EventReviewTicketsContractor {
         boolean isEventOmsEnabled();
     }
 
-    public interface Presenter extends CustomerPresenter<EventReviewTicketsContractor.EventReviewTicketsView> {
+    public interface Presenter extends CustomerPresenter<EventReviewTicketsView> {
 
         void onDestroy();
 

@@ -33,6 +33,7 @@ import com.tokopedia.core.manage.people.address.model.Destination;
 import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsMultipleAddress;
+import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -80,6 +81,7 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
 
     private int formMode;
     private int itemPosition;
+    private boolean hasSelectRecipientAddress;
     ArrayList<MultipleAddressAdapterData> dataList;
     MultipleAddressAdapterData multipleAddressAdapterData;
     MultipleAddressItemData multipleAddressItemData;
@@ -203,6 +205,7 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
                             data.getParcelableExtra(
                                     CartAddressChoiceActivity.EXTRA_SELECTED_ADDRESS_DATA
                             );
+                    hasSelectRecipientAddress = true;
                     presenter.setEditableModel(addressModel);
                     showAddressLayout();
                     updateAddressView(presenter.getEditableModel());
@@ -468,7 +471,15 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
             notesErrorWarningTextView.setVisibility(View.GONE);
             if (quantityErrorLayout.getVisibility() != View.VISIBLE &&
                     addAddressErrorTextView.getVisibility() != View.VISIBLE) {
-                saveChangesButton.setVisibility(View.VISIBLE);
+                if (formMode == ADD_MODE) {
+                    if (hasSelectRecipientAddress) {
+                        saveChangesButton.setVisibility(View.VISIBLE);
+                    } else {
+                        saveChangesButton.setVisibility(View.GONE);
+                    }
+                } else {
+                    saveChangesButton.setVisibility(View.VISIBLE);
+                }
             }
         }
     }
@@ -626,4 +637,14 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
         checkoutAnalyticsMultipleAddress.eventClickMultipleAddressClickXFromUbahFromKirimKeBeberapaAlamat();
     }
 
+    @Override
+    protected String getScreenName() {
+        return ConstantTransactionAnalytics.ScreenName.EDIT_MULTIPLE_ADDRESS_PAGE;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        checkoutAnalyticsChangeAddress.sendScreenName(getActivity(), getScreenName());
+    }
 }

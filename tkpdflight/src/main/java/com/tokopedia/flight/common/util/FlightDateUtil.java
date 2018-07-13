@@ -27,6 +27,9 @@ public class FlightDateUtil {
     public static final String FORMAT_TIME_DETAIL = "HH:mm";
     public static final String FORMAT_DATE_LOCAL_DETAIL = "EEEE, dd LLLL yyyy";
     public static final String FORMAT_DATE_LOCAL_DETAIL_ORDER = "dd MMM yyyy, HH:mm";
+    private static final int DEFAULT_LAST_HOUR_IN_DAY = 23;
+    private static final int DEFAULT_LAST_MIN_IN_DAY = 59;
+    private static final int DEFAULT_LAST_SEC_IN_DAY = 59;
 
     public static String formatDate(String currentFormat, String newFormat, String dateString) {
         return formatDate(currentFormat, newFormat, dateString, DEFAULT_LOCALE);
@@ -126,8 +129,16 @@ public class FlightDateUtil {
     }
 
     public static Calendar getCurrentCalendar() {
-//        return new GregorianCalendar(TimeZone.getTimeZone("Asia/Jakarta"));
         return Calendar.getInstance();
+    }
+
+    public static Date trimDate(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.set(Calendar.HOUR_OF_DAY, DEFAULT_LAST_HOUR_IN_DAY);
+        calendar.set(Calendar.MINUTE, DEFAULT_LAST_MIN_IN_DAY);
+        calendar.set(Calendar.SECOND, DEFAULT_LAST_SEC_IN_DAY);
+        return calendar.getTime();
     }
 
     public static Date addTimeToCurrentDate(int field, int value) {
