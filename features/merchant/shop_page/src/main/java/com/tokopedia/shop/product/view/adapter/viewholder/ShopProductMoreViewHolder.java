@@ -11,7 +11,7 @@ import com.tokopedia.shop.product.view.model.ShopProductMoreViewModel;
 /**
  * Created by zulfikarrahman on 6/4/18.
  */
-
+@Deprecated
 public class ShopProductMoreViewHolder extends AbstractViewHolder<ShopProductMoreViewModel> {
     public static final int LAYOUT = R.layout.item_shop_product_view_more;
     private final View.OnClickListener onClickViewMoreListener;

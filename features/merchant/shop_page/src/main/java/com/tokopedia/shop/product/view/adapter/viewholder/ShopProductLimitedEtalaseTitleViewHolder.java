@@ -13,7 +13,7 @@ import com.tokopedia.shop.product.view.model.ShopProductLimitedSearchViewModel;
 /**
  * @author by alvarisi on 12/12/17.
  */
-
+@Deprecated
 public class ShopProductLimitedEtalaseTitleViewHolder extends AbstractViewHolder<ShopProductLimitedEtalaseTitleViewModel> {
 
     @LayoutRes

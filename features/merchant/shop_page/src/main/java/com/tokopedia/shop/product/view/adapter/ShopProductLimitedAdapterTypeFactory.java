@@ -8,39 +8,38 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingShimmeringGridViewHolder;
-import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductFeaturedViewHolder;
+import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductFeaturedViewHolderOld;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductLimitedEtalaseTitleViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductLimitedPromoViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductLimitedSearchViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductMoreViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductTitleFeaturedViewHolder;
-import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolder;
+import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolderOld;
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener;
-import com.tokopedia.shop.product.view.model.ShopProductHomeViewModel;
+import com.tokopedia.shop.product.view.model.ShopProductHomeViewModelOld;
 import com.tokopedia.shop.product.view.model.ShopProductLimitedEtalaseTitleViewModel;
-import com.tokopedia.shop.product.view.model.ShopProductLimitedFeaturedViewModel;
+import com.tokopedia.shop.product.view.model.ShopProductLimitedFeaturedViewModelOld;
 import com.tokopedia.shop.product.view.model.ShopProductLimitedPromoViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductLimitedSearchViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductMoreViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductTitleFeaturedViewModel;
-import com.tokopedia.shop.product.view.widget.ShopPagePromoWebView;
 
 /**
  * Created by alvarisi on 12/7/17.
  */
-
+@Deprecated
 public class ShopProductLimitedAdapterTypeFactory extends BaseAdapterTypeFactory {
 
     private final ShopProductLimitedPromoViewHolder.PromoViewHolderListener promoViewHolderListener;
     private final ShopProductClickedListener shopProductClickedListener;
     private final EmptyViewHolder.Callback emptyProductOnClickListener;
-    private final ShopProductFeaturedViewHolder.ShopProductFeaturedListener shopProductFeaturedListener;
+    private final ShopProductFeaturedViewHolderOld.ShopProductFeaturedListener shopProductFeaturedListener;
     private final View.OnClickListener onClickViewMoreListener;
 
     public ShopProductLimitedAdapterTypeFactory(ShopProductLimitedPromoViewHolder.PromoViewHolderListener promoViewHolderListener,
                                                 ShopProductClickedListener shopProductClickedListener,
                                                 EmptyViewHolder.Callback emptyProductOnClickListener,
-                                                ShopProductFeaturedViewHolder.ShopProductFeaturedListener shopProductFeaturedListener,
+                                                ShopProductFeaturedViewHolderOld.ShopProductFeaturedListener shopProductFeaturedListener,
                                                 View.OnClickListener onClickViewMoreListener) {
         this.promoViewHolderListener = promoViewHolderListener;
         this.shopProductClickedListener = shopProductClickedListener;
@@ -71,16 +70,16 @@ public class ShopProductLimitedAdapterTypeFactory extends BaseAdapterTypeFactory
         return ShopProductLimitedPromoViewHolder.LAYOUT;
     }
 
-    public int type(ShopProductLimitedFeaturedViewModel shopProductLimitedFeaturedViewModel) {
-        return ShopProductFeaturedViewHolder.LAYOUT;
+    public int type(ShopProductLimitedFeaturedViewModelOld shopProductLimitedFeaturedViewModel) {
+        return ShopProductFeaturedViewHolderOld.LAYOUT;
     }
 
     public int type(ShopProductTitleFeaturedViewModel shopProductTitleFeaturedViewModel) {
         return ShopProductTitleFeaturedViewHolder.LAYOUT;
     }
 
-    public int type(ShopProductHomeViewModel shopProductHomeViewModel) {
-        return ShopProductViewHolder.LAYOUT;
+    public int type(ShopProductHomeViewModelOld shopProductHomeViewModel) {
+        return ShopProductViewHolderOld.LAYOUT;
     }
 
     public int type(ShopProductMoreViewModel shopProductMoreViewModel) {
@@ -97,12 +96,12 @@ public class ShopProductLimitedAdapterTypeFactory extends BaseAdapterTypeFactory
             return new ShopProductLimitedEtalaseTitleViewHolder(parent);
         } else if (type == ShopProductLimitedPromoViewHolder.LAYOUT) {
             return new ShopProductLimitedPromoViewHolder(parent, promoViewHolderListener);
-        } else if (type == ShopProductFeaturedViewHolder.LAYOUT) {
-            return new ShopProductFeaturedViewHolder(parent, shopProductClickedListener, shopProductFeaturedListener);
+        } else if (type == ShopProductFeaturedViewHolderOld.LAYOUT) {
+            return new ShopProductFeaturedViewHolderOld(parent, shopProductClickedListener, shopProductFeaturedListener);
         } else if(type == ShopProductTitleFeaturedViewHolder.LAYOUT){
             return new ShopProductTitleFeaturedViewHolder(parent);
-        } else if(type == ShopProductViewHolder.LAYOUT){
-            return new ShopProductViewHolder(parent, shopProductClickedListener);
+        } else if(type == ShopProductViewHolderOld.LAYOUT){
+            return new ShopProductViewHolderOld(parent, shopProductClickedListener);
         } else if(type == ShopProductMoreViewHolder.LAYOUT){
             return new ShopProductMoreViewHolder(parent, onClickViewMoreListener);
         } else {

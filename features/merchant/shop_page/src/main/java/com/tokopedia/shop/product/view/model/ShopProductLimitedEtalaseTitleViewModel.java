@@ -5,7 +5,7 @@ import com.tokopedia.shop.product.view.adapter.ShopProductLimitedAdapterTypeFact
 /**
  * Created by zulfikarrahman on 1/16/18.
  */
-
+@Deprecated
 public class ShopProductLimitedEtalaseTitleViewModel implements ShopProductBaseViewModel {
 
     @Override

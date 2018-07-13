@@ -193,26 +193,38 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
         hideLoading();
         // remove all unneeded element (empty/retry/loading/etc)
         if (isLoadingInitialData) {
-            adapter.clearAllElements();
-            if (endlessRecyclerViewScrollListener != null) {
-                endlessRecyclerViewScrollListener.resetState();
-            }
+            clearAllData();
         } else {
             adapter.clearAllNonDataElement();
         }
         adapter.addElement(list);
         // update the load more state (paging/can loadmore)
-        if (endlessRecyclerViewScrollListener != null) {
-            endlessRecyclerViewScrollListener.updateStateAfterGetData();
-            endlessRecyclerViewScrollListener.setHasNextPage(hasNextPage);
-        }
+        updateScrollListenerState(hasNextPage);
 
-        if (adapter.getItemCount() == 0) {
+        if (isListEmpty()) {
             // Note: add element should be the last in line.
             adapter.addElement(getEmptyDataViewModel());
         } else {
             //set flag to false, indicate that the initial data has been set.
             isLoadingInitialData = false;
+        }
+    }
+
+    public boolean isListEmpty(){
+        return adapter.getItemCount() == 0;
+    }
+
+    public void updateScrollListenerState(boolean hasNextPage){
+        if (endlessRecyclerViewScrollListener != null) {
+            endlessRecyclerViewScrollListener.updateStateAfterGetData();
+            endlessRecyclerViewScrollListener.setHasNextPage(hasNextPage);
+        }
+    }
+
+    public void clearAllData(){
+        adapter.clearAllElements();
+        if (endlessRecyclerViewScrollListener != null) {
+            endlessRecyclerViewScrollListener.resetState();
         }
     }
 

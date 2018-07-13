@@ -1,4 +1,4 @@
-package com.tokopedia.shop.product.view.presenter;
+package com.tokopedia.shop.product.view.presenter.newpresenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.response.PagingList;
@@ -11,17 +11,20 @@ import com.tokopedia.shop.common.util.PagingListUtils;
 import com.tokopedia.shop.common.util.TextApiUtils;
 import com.tokopedia.shop.product.domain.interactor.GetShopProductLimitedUseCase;
 import com.tokopedia.shop.product.util.ShopProductOfficialStoreUtils;
-import com.tokopedia.shop.product.view.listener.ShopProductListLimitedView;
+import com.tokopedia.shop.product.view.listener.newlistener.ShopProductListView;
 import com.tokopedia.shop.product.view.model.ShopProductBaseViewModel;
-import com.tokopedia.shop.product.view.model.ShopProductHomeViewModel;
+import com.tokopedia.shop.product.view.model.ShopProductHomeViewModelOld;
 import com.tokopedia.shop.product.view.model.ShopProductLimitedEtalaseTitleViewModel;
-import com.tokopedia.shop.product.view.model.ShopProductLimitedFeaturedViewModel;
+import com.tokopedia.shop.product.view.model.ShopProductLimitedFeaturedViewModelOld;
 import com.tokopedia.shop.product.view.model.ShopProductLimitedPromoViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductMoreViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductTitleFeaturedViewModel;
+import com.tokopedia.shop.product.view.model.newmodel.ShopProductPromoViewModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.wishlist.common.domain.interactor.AddToWishListUseCase;
 import com.tokopedia.wishlist.common.domain.interactor.RemoveFromWishListUseCase;
+
+import java.util.ArrayList;
 
 import javax.inject.Inject;
 
@@ -31,7 +34,7 @@ import rx.Subscriber;
  * Created by nathan on 2/6/18.
  */
 
-public class ShopProductListLimitedPresenter extends BaseDaggerPresenter<ShopProductListLimitedView> {
+public class ShopProductListNewPresenter extends BaseDaggerPresenter<ShopProductListView> {
 
     private final GetShopProductLimitedUseCase getShopProductLimitedUseCase;
     private final AddToWishListUseCase addToWishListUseCase;
@@ -42,10 +45,10 @@ public class ShopProductListLimitedPresenter extends BaseDaggerPresenter<ShopPro
     private static final int FIRST_LOAD = 1;
 
     @Inject
-    public ShopProductListLimitedPresenter(GetShopProductLimitedUseCase getShopProductLimitedUseCase,
-                                           AddToWishListUseCase addToWishListUseCase,
-                                           RemoveFromWishListUseCase removeFromWishListUseCase,
-                                           UserSession userSession) {
+    public ShopProductListNewPresenter(GetShopProductLimitedUseCase getShopProductLimitedUseCase,
+                                       AddToWishListUseCase addToWishListUseCase,
+                                       RemoveFromWishListUseCase removeFromWishListUseCase,
+                                       UserSession userSession) {
         this.getShopProductLimitedUseCase = getShopProductLimitedUseCase;
         this.addToWishListUseCase = addToWishListUseCase;
         this.removeFromWishListUseCase = removeFromWishListUseCase;
@@ -68,7 +71,7 @@ public class ShopProductListLimitedPresenter extends BaseDaggerPresenter<ShopPro
         return userSession.getUserId();
     }
 
-    public void getProductLimitedList(String shopId, boolean goldMerchantStore, boolean officialStore, final String promotionWebViewUrl, final int page) {
+    public void getDataPromoFeatureProductList(String shopId, boolean goldMerchantStore, boolean officialStore, final int page) {
         getShopProductLimitedUseCase.execute(GetShopProductLimitedUseCase.createRequestParam(shopId, goldMerchantStore, officialStore, page),
                 new Subscriber<PagingList<ShopProductBaseViewModel>>() {
                     @Override
@@ -86,27 +89,28 @@ public class ShopProductListLimitedPresenter extends BaseDaggerPresenter<ShopPro
                     @Override
                     public void onNext(PagingList<ShopProductBaseViewModel> shopProductBaseViewModelList) {
                         boolean hasNextPage;
-                        if(GlobalConfig.isSellerApp()){
-                            hasNextPage = false;
-                        }else{
-                            hasNextPage = PagingListUtils.checkNextPage(shopProductBaseViewModelList);
-                        }
+//                        if(GlobalConfig.isSellerApp()){
+//                            hasNextPage = false;
+//                        }else{
+                        hasNextPage = PagingListUtils.checkNextPage(shopProductBaseViewModelList);
+//                        }
                         if (page == FIRST_LOAD) {
                             boolean shopHasProduct = shopProductBaseViewModelList.getList().size() > 0;
-                            if (!TextApiUtils.isTextEmpty(promotionWebViewUrl)) {
-                                shopProductBaseViewModelList.getList().add(0, getProductPromoModel());
-                            }
+//                            ShopProductPromoViewModel shopProductPromoViewModel = getProductPromoModel(officialWebViewUrl);
+//                            if (shopProductPromoViewModel!=null){
+//                                shopProductBaseViewModelList.getList().add(0, shopProductPromoViewModel);
+//                            }
                             if (shopHasProduct) {
                                 for(int i = 0; i < shopProductBaseViewModelList.getList().size(); i++){
                                     ShopProductBaseViewModel shopProductBaseViewModel = shopProductBaseViewModelList.getList().get(i);
-                                    if(shopProductBaseViewModel instanceof ShopProductHomeViewModel) {
+                                    if(shopProductBaseViewModel instanceof ShopProductHomeViewModelOld) {
                                         shopProductBaseViewModelList.getList().add(i, new ShopProductLimitedEtalaseTitleViewModel());
                                         break;
                                     }
                                 }
                                 for(int i = 0; i < shopProductBaseViewModelList.getList().size(); i++){
                                     ShopProductBaseViewModel shopProductBaseViewModel = shopProductBaseViewModelList.getList().get(i);
-                                    if(shopProductBaseViewModel instanceof ShopProductLimitedFeaturedViewModel) {
+                                    if(shopProductBaseViewModel instanceof ShopProductLimitedFeaturedViewModelOld) {
                                         shopProductBaseViewModelList.getList().add(i, new ShopProductTitleFeaturedViewModel());
                                         break;
                                     }
@@ -116,25 +120,47 @@ public class ShopProductListLimitedPresenter extends BaseDaggerPresenter<ShopPro
                                     shopProductBaseViewModelList.getList().add(new ShopProductMoreViewModel());
                                 }
                             }
-                            getView().renderList(shopProductBaseViewModelList.getList(), hasNextPage, shopHasProduct);
+                            //TODO
+                            getView().renderList(new ArrayList<>(), hasNextPage, shopHasProduct);
                         } else {
-                            getView().renderList(shopProductBaseViewModelList.getList(), hasNextPage);
+                            //TODO
+                            getView().renderList(new ArrayList<>(), hasNextPage);
                         }
                     }
 
-                    private ShopProductLimitedPromoViewModel getProductPromoModel() {
-                        ShopProductLimitedPromoViewModel shopProductLimitedPromoViewModel = new ShopProductLimitedPromoViewModel();
-                        shopProductLimitedPromoViewModel.setUserId(userSession.getUserId());
-                        shopProductLimitedPromoViewModel.setLogin(userSession.isLoggedIn());
-                        String url = promotionWebViewUrl;
-                        if (userSession.isLoggedIn()) {
-                            url = ShopProductOfficialStoreUtils.getLogInUrl(url, userSession.getDeviceId(), userSession.getUserId());
-                        }
-                        CommonUtils.dumper(url);
-                        shopProductLimitedPromoViewModel.setUrl(url);
-                        return shopProductLimitedPromoViewModel;
-                    }
+                    /**
+                     * Use Presenter.getProductPromoModel() instead.
+                     */
+//                    @Deprecated
+//                    private ShopProductLimitedPromoViewModel getProductPromoModel() {
+//                        ShopProductLimitedPromoViewModel shopProductLimitedPromoViewModel = new ShopProductLimitedPromoViewModel();
+//                        shopProductLimitedPromoViewModel.setUserId(userSession.getUserId());
+//                        shopProductLimitedPromoViewModel.setLogin(userSession.isLoggedIn());
+//                        String url = promotionWebViewUrl;
+//                        if (userSession.isLoggedIn()) {
+//                            url = ShopProductOfficialStoreUtils.getLogInUrl(url, userSession.getDeviceId(), userSession.getUserId());
+//                        }
+//                        CommonUtils.dumper(url);
+//                        shopProductLimitedPromoViewModel.setUrl(url);
+//                        return shopProductLimitedPromoViewModel;
+//                    }
                 });
+    }
+
+    public void loadProductPromoModel(String promotionWebViewUrl){
+        if (!TextApiUtils.isTextEmpty(promotionWebViewUrl)) {
+            ShopProductPromoViewModel shopProductPromoViewModel = new ShopProductPromoViewModel();
+            shopProductPromoViewModel.setUserId(userSession.getUserId());
+            shopProductPromoViewModel.setLogin(userSession.isLoggedIn());
+            String url = promotionWebViewUrl;
+            if (userSession.isLoggedIn()) {
+                url = ShopProductOfficialStoreUtils.getLogInUrl(url, userSession.getDeviceId(), userSession.getUserId());
+            }
+            shopProductPromoViewModel.setUrl(url);
+            getView().renderShopProductPromo(shopProductPromoViewModel);
+        } else {
+            getView().renderShopProductPromo(null);
+        }
     }
 
     public void addToWishList(final String productId) {

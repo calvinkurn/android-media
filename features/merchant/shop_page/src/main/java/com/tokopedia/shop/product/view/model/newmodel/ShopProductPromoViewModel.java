@@ -1,13 +1,15 @@
-package com.tokopedia.shop.product.view.model;
+package com.tokopedia.shop.product.view.model.newmodel;
 
 import com.tokopedia.shop.product.view.adapter.ShopProductLimitedAdapterTypeFactory;
+import com.tokopedia.shop.product.view.adapter.newadapter.ShopProductAdapterTypeFactory;
 import com.tokopedia.shop.product.view.listener.ShopProductUserVisibleHintListener;
+import com.tokopedia.shop.product.view.model.ShopProductBaseViewModel;
 
 /**
  * Created by zulfikarrahman on 1/16/18.
  */
-@Deprecated
-public class ShopProductLimitedPromoViewModel implements ShopProductBaseViewModel {
+
+public class ShopProductPromoViewModel implements BaseShopProductViewModel {
 
     private String url;
     private boolean login;
@@ -47,7 +49,7 @@ public class ShopProductLimitedPromoViewModel implements ShopProductBaseViewMode
     }
 
     @Override
-    public int type(ShopProductLimitedAdapterTypeFactory typeFactory) {
+    public int type(ShopProductAdapterTypeFactory typeFactory) {
         return typeFactory.type(this);
     }
 }

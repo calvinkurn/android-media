@@ -20,14 +20,13 @@ import com.tokopedia.shop.product.domain.interactor.DeleteShopProductUseCase;
 import com.tokopedia.shop.product.domain.interactor.GetShopProductListWithAttributeUseCase;
 import com.tokopedia.shop.product.domain.model.ShopProductRequestModel;
 import com.tokopedia.shop.product.view.listener.ShopProductListView;
-import com.tokopedia.shop.product.view.model.ShopProductViewModel;
+import com.tokopedia.shop.product.view.model.ShopProductViewModelOld;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.wishlist.common.domain.interactor.AddToWishListUseCase;
 import com.tokopedia.wishlist.common.domain.interactor.RemoveFromWishListUseCase;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
@@ -36,8 +35,8 @@ import rx.Subscriber;
 /**
  * Created by nathan on 2/6/18.
  */
-
-public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductListView> {
+@Deprecated
+public class ShopProductListPresenterOld extends BaseDaggerPresenter<ShopProductListView> {
 
     private final GetShopProductListWithAttributeUseCase getShopProductListWithAttributeUseCase;
     private final AddToWishListUseCase addToWishListUseCase;
@@ -49,13 +48,13 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductLis
     private final static int USE_ACE = 1;
 
     @Inject
-    public ShopProductListPresenter(GetShopProductListWithAttributeUseCase getShopProductListWithAttributeUseCase,
-                                    AddToWishListUseCase addToWishListUseCase,
-                                    RemoveFromWishListUseCase removeFromWishListUseCase,
-                                    DeleteShopProductUseCase deleteShopProductUseCase,
-                                    GetShopInfoUseCase getShopInfoUseCase,
-                                    GetShopEtalaseUseCase getShopEtalaseUseCase,
-                                    UserSession userSession) {
+    public ShopProductListPresenterOld(GetShopProductListWithAttributeUseCase getShopProductListWithAttributeUseCase,
+                                       AddToWishListUseCase addToWishListUseCase,
+                                       RemoveFromWishListUseCase removeFromWishListUseCase,
+                                       DeleteShopProductUseCase deleteShopProductUseCase,
+                                       GetShopInfoUseCase getShopInfoUseCase,
+                                       GetShopEtalaseUseCase getShopEtalaseUseCase,
+                                       UserSession userSession) {
         this.getShopProductListWithAttributeUseCase = getShopProductListWithAttributeUseCase;
         this.addToWishListUseCase = addToWishListUseCase;
         this.removeFromWishListUseCase = removeFromWishListUseCase;
@@ -173,7 +172,7 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductLis
     }
 
     private void getShopProductWithWishList(ShopProductRequestModel shopProductRequestModel) {
-        getShopProductListWithAttributeUseCase.execute(GetShopProductListWithAttributeUseCase.createRequestParam(shopProductRequestModel), new Subscriber<PagingList<ShopProductViewModel>>() {
+        getShopProductListWithAttributeUseCase.execute(GetShopProductListWithAttributeUseCase.createRequestParam(shopProductRequestModel), new Subscriber<PagingList<ShopProductViewModelOld>>() {
             @Override
             public void onCompleted() {
 
@@ -187,7 +186,7 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductLis
             }
 
             @Override
-            public void onNext(PagingList<ShopProductViewModel> shopProductList) {
+            public void onNext(PagingList<ShopProductViewModelOld> shopProductList) {
                 getView().renderList(shopProductList.getList(), PagingListUtils.checkNextPage(shopProductList));
             }
         });

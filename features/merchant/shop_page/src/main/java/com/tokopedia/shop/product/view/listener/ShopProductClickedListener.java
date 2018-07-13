@@ -1,6 +1,6 @@
 package com.tokopedia.shop.product.view.listener;
 
-import com.tokopedia.shop.product.view.model.ShopProductViewModel;
+import com.tokopedia.shop.product.view.model.ShopProductViewModelOld;
 
 /**
  * Created by normansyahputa on 2/24/18.
@@ -8,7 +8,7 @@ import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 
 public interface ShopProductClickedListener {
 
-    void onWishListClicked(ShopProductViewModel shopProductViewModel);
+    void onWishListClicked(ShopProductViewModelOld shopProductViewModelOld);
 
-    void onProductClicked(ShopProductViewModel shopProductViewModel);
+    void onProductClicked(ShopProductViewModelOld shopProductViewModelOld);
 }

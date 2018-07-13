@@ -1,4 +1,4 @@
-package com.tokopedia.shop.product.view.adapter.viewholder;
+package com.tokopedia.shop.product.view.adapter.newadapter.viewholder;
 
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -18,14 +18,14 @@ import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.product.util.ShopProductOfficialStoreUtils;
 import com.tokopedia.shop.product.view.listener.ShopProductUserVisibleHintListener;
-import com.tokopedia.shop.product.view.model.ShopProductLimitedPromoViewModel;
+import com.tokopedia.shop.product.view.model.newmodel.ShopProductPromoViewModel;
 import com.tokopedia.shop.product.view.widget.NestedWebView;
 
 /**
  * @author by alvarisi on 12/12/17.
  */
-@Deprecated
-public class ShopProductLimitedPromoViewHolder extends AbstractViewHolder<ShopProductLimitedPromoViewModel> implements
+
+public class ShopProductWebViewHolder extends AbstractViewHolder<ShopProductPromoViewModel> implements
         ShopProductUserVisibleHintListener {
 
     private static final String SHOP_STATIC_URL = "shop-static";
@@ -41,7 +41,7 @@ public class ShopProductLimitedPromoViewHolder extends AbstractViewHolder<ShopPr
     private boolean binded;
     private boolean isLogin;
 
-    public ShopProductLimitedPromoViewHolder(View itemView, PromoViewHolderListener promoViewHolderListener) {
+    public ShopProductWebViewHolder(View itemView, PromoViewHolderListener promoViewHolderListener) {
         super(itemView);
         this.promoViewHolderListener = promoViewHolderListener;
         findViews(itemView);
@@ -77,7 +77,7 @@ public class ShopProductLimitedPromoViewHolder extends AbstractViewHolder<ShopPr
     }
 
     @Override
-    public void bind(ShopProductLimitedPromoViewModel shopProductLimitedPromoViewModel) {
+    public void bind(ShopProductPromoViewModel shopProductLimitedPromoViewModel) {
         if (binded && isLogin == shopProductLimitedPromoViewModel.isLogin()) {
             return;
         }

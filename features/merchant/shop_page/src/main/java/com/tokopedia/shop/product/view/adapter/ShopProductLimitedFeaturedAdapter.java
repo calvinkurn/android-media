@@ -5,9 +5,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductFeaturedViewHolder;
+import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductFeaturedViewHolderOld;
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener;
-import com.tokopedia.shop.product.view.model.ShopProductViewModel;
+import com.tokopedia.shop.product.view.model.ShopProductViewModelOld;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,36 +15,36 @@ import java.util.List;
 /**
  * @author by alvarisi on 11/21/17.
  */
-
-public class ShopProductLimitedFeaturedAdapter extends RecyclerView.Adapter<ShopProductFeaturedViewHolder> {
+@Deprecated
+public class ShopProductLimitedFeaturedAdapter extends RecyclerView.Adapter<ShopProductFeaturedViewHolderOld> {
 
     private final ShopProductClickedListener shopProductClickedListener;
-    private ShopProductFeaturedViewHolder.ShopProductFeaturedListener shopProductFeaturedListener;
-    private List<ShopProductViewModel> list;
+    private ShopProductFeaturedViewHolderOld.ShopProductFeaturedListener shopProductFeaturedListener;
+    private List<ShopProductViewModelOld> list;
 
-    public List<ShopProductViewModel> getList() {
+    public List<ShopProductViewModelOld> getList() {
         return list;
     }
 
-    public void setList(List<ShopProductViewModel> list) {
+    public void setList(List<ShopProductViewModelOld> list) {
         this.list = list;
     }
 
     public ShopProductLimitedFeaturedAdapter(ShopProductClickedListener shopProductClickedListener,
-                                             ShopProductFeaturedViewHolder.ShopProductFeaturedListener shopProductFeaturedListener) {
+                                             ShopProductFeaturedViewHolderOld.ShopProductFeaturedListener shopProductFeaturedListener) {
         this.shopProductClickedListener = shopProductClickedListener;
         this.shopProductFeaturedListener = shopProductFeaturedListener;
         list = new ArrayList<>();
     }
 
     @Override
-    public ShopProductFeaturedViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(ShopProductFeaturedViewHolder.LAYOUT, parent, false);
-        return new ShopProductFeaturedViewHolder(view, shopProductClickedListener, shopProductFeaturedListener);
+    public ShopProductFeaturedViewHolderOld onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(ShopProductFeaturedViewHolderOld.LAYOUT, parent, false);
+        return new ShopProductFeaturedViewHolderOld(view, shopProductClickedListener, shopProductFeaturedListener);
     }
 
     @Override
-    public void onBindViewHolder(ShopProductFeaturedViewHolder holder, int position) {
+    public void onBindViewHolder(ShopProductFeaturedViewHolderOld holder, int position) {
         holder.bind(list.get(holder.getAdapterPosition()));
     }
 

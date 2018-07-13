@@ -1,28 +1,27 @@
 package com.tokopedia.shop.product.view.adapter.viewholder;
 
 import android.support.annotation.LayoutRes;
-import android.text.TextUtils;
 import android.view.View;
 
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener;
-import com.tokopedia.shop.product.view.model.ShopProductViewModel;
+import com.tokopedia.shop.product.view.model.ShopProductViewModelOld;
 
 /**
  * Created by normansyahputa on 2/22/18.
  */
-
-public class ShopProductListViewHolder extends ShopProductViewHolder {
+@Deprecated
+public class ShopProductListViewHolderOld extends ShopProductViewHolderOld {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.item_shop_product_list;
 
-    public ShopProductListViewHolder(View itemView, ShopProductClickedListener shopProductClickedListener) {
+    public ShopProductListViewHolderOld(View itemView, ShopProductClickedListener shopProductClickedListener) {
         super(itemView, shopProductClickedListener);
     }
 
     @Override
-    protected String getImageUrl(ShopProductViewModel shopProductViewModel) {
-        return super.getImageUrl(shopProductViewModel);
+    protected String getImageUrl(ShopProductViewModelOld shopProductViewModelOld) {
+        return super.getImageUrl(shopProductViewModelOld);
     }
 }
