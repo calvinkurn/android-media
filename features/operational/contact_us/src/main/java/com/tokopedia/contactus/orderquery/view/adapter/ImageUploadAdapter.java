@@ -33,7 +33,11 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
     private int maxPicUpload = 5;
 
     public ArrayList<ImageUpload> getImageUpload() {
-        return imageUpload;
+        ArrayList<ImageUpload> imageList = new ArrayList<>();
+        for(int i =0 ;i< imageUpload.size()-1;i++) {
+            imageList.add(imageUpload.get(i));
+        }
+        return imageList;
     }
 
     ArrayList<ImageUpload> imageUpload = new ArrayList<>();
