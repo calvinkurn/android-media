@@ -51,6 +51,10 @@ public class OrderListActivity extends DrawerPresenterActivity<OrderListInitCont
                 .putExtras(bundle);
     }
 
+    public static Intent getInstance(Context context){
+        return new Intent(context, OrderListActivity.class);
+    }
+
     @Override
     protected void setupURIPass(Uri data) {
 

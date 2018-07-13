@@ -23,6 +23,7 @@ import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.events.R;
 import com.tokopedia.events.R2;
@@ -137,6 +138,7 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
     public static final int PAYMENT_REQUEST_CODE = 65000;
     private ImageTextViewHolder timeHolder;
     private ImageTextViewHolder addressHolder;
+    FirebaseRemoteConfigImpl remoteConfig;
 
 
     @Override
@@ -148,6 +150,7 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
         timeHolder = new ImageTextViewHolder();
         addressHolder = new ImageTextViewHolder();
 
+        remoteConfig = new FirebaseRemoteConfigImpl(this);
         ButterKnife.bind(timeHolder, eventTimeTv);
         ButterKnife.bind(addressHolder, eventAddressTv);
 
@@ -353,6 +356,11 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
         if (edForm4.getVisibility() == View.VISIBLE)
             result = result && mPresenter.validateEditText(edForm4);
         return result;
+    }
+
+    @Override
+    public boolean isEventOmsEnabled() {
+        return remoteConfig.getBoolean("event_oms_android", false);
     }
 
     @OnClick(R2.id.btn_go_to_payment)

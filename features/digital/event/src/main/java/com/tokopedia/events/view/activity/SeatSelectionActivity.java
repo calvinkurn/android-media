@@ -20,6 +20,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.events.R;
 import com.tokopedia.events.R2;
 import com.tokopedia.events.di.DaggerEventComponent;
@@ -99,6 +100,7 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
     List<String> actualseat = new ArrayList<>();
     String areaId;
     private int quantity;
+    FirebaseRemoteConfigImpl remoteConfig;
 
 
     @Override
@@ -109,6 +111,7 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
         executeInjector();
         selectedSeatViewModel = new SelectedSeatViewModel();
         seatLayoutViewModel = new SeatLayoutViewModel();
+        remoteConfig = new FirebaseRemoteConfigImpl(this);
 
         mPresenter.attachView(this);
         mPresenter.initialize();
@@ -317,6 +320,11 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
     }
 
     @Override
+    public boolean isEventOmsEnabled() {
+        return remoteConfig.getBoolean("event_oms_android", false);
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         mPresenter.onActivityResult(requestCode);
@@ -332,4 +340,5 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
     public String getScreenName() {
         return mPresenter.getSCREEN_NAME();
     }
+
 }

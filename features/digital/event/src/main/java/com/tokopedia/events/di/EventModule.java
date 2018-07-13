@@ -32,7 +32,7 @@ import com.tokopedia.events.domain.GetEventsLocationListRequestUseCase;
 import com.tokopedia.events.domain.GetSearchEventsListRequestUseCase;
 import com.tokopedia.events.domain.GetSearchNextUseCase;
 import com.tokopedia.events.domain.postusecase.PostValidateShowUseCase;
-import com.tokopedia.events.domain.postusecase.PostVerifyCartUseCase;
+import com.tokopedia.events.domain.postusecase.VerifyCartUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -166,10 +166,10 @@ public class EventModule {
 
     @Provides
     @EventScope
-    PostVerifyCartUseCase providesPostVerifyCartUseCase(ThreadExecutor threadExecutor,
-                                                        PostExecutionThread postExecutionThread,
-                                                        EventRepository eventRepository) {
-        return new PostVerifyCartUseCase(threadExecutor, postExecutionThread, eventRepository);
+    VerifyCartUseCase providesPostVerifyCartUseCase(ThreadExecutor threadExecutor,
+                                                    PostExecutionThread postExecutionThread,
+                                                    EventRepository eventRepository) {
+        return new VerifyCartUseCase(threadExecutor, postExecutionThread, eventRepository);
     }
 
     @Provides

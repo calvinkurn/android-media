@@ -21,12 +21,12 @@ import rx.Observable;
  * Created by pranaymohapatra on 07/12/17.
  */
 
-public class PostVerifyCartUseCase extends UseCase<VerifyCartResponse> {
+public class VerifyCartUseCase extends UseCase<VerifyCartResponse> {
 
     private final EventRepository eventRepository;
 
     @Inject
-    public PostVerifyCartUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, EventRepository eventRepository) {
+    public VerifyCartUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, EventRepository eventRepository) {
         super(threadExecutor, postExecutionThread);
         this.eventRepository = eventRepository;
     }

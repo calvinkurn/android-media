@@ -25,13 +25,16 @@ import com.tokopedia.events.domain.model.request.cart.EntityPassengerItem;
 import com.tokopedia.events.domain.model.request.cart.MetaData;
 import com.tokopedia.events.domain.model.request.cart.OtherChargesItem;
 import com.tokopedia.events.domain.model.request.cart.TaxPerQuantityItem;
-import com.tokopedia.events.domain.postusecase.PostVerifyCartUseCase;
+import com.tokopedia.events.domain.postusecase.VerifyCartUseCase;
 import com.tokopedia.events.view.activity.ReviewTicketActivity;
 import com.tokopedia.events.view.contractor.SeatSelectionContract;
 import com.tokopedia.events.view.utils.EventsGAConst;
+import com.tokopedia.events.view.viewmodel.EventsDetailsViewModel;
 import com.tokopedia.events.view.viewmodel.PackageViewModel;
 import com.tokopedia.events.view.viewmodel.SeatLayoutViewModel;
 import com.tokopedia.events.view.viewmodel.SelectedSeatViewModel;
+import com.tokopedia.oms.data.entity.response.verifyresponse.VerifyMyCartResponse;
+import com.tokopedia.oms.domain.postusecase.PostVerifyCartUseCase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +54,9 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
     private static String EXTRA_PACKAGEVIEWMODEL = "packageviewmodel";
     public static String EXTRA_SEATSELECTEDMODEL = "selectedseatviewmodel";
 
+    private EventsDetailsViewModel eventsDetailsViewModel;
     private SeatLayoutViewModel seatLayoutViewModel;
+    private VerifyCartUseCase verifyCartUseCase;
     private PostVerifyCartUseCase postVerifyCartUseCase;
     private PackageViewModel selectedpkgViewModel;
     private ProfileUseCase profileUseCase;
@@ -64,9 +69,10 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
 
 
     @Inject
-    public SeatSelectionPresenter(PostVerifyCartUseCase postVerifyCartUseCase, ProfileUseCase profileCase) {
-        this.postVerifyCartUseCase = postVerifyCartUseCase;
+    public SeatSelectionPresenter(VerifyCartUseCase verifyCartUseCase, ProfileUseCase profileCase, PostVerifyCartUseCase postVerifyCartUseCase) {
+        this.verifyCartUseCase = verifyCartUseCase;
         this.profileUseCase = profileCase;
+        this.postVerifyCartUseCase = postVerifyCartUseCase;
     }
 
     public void getProfile() {
@@ -119,6 +125,7 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
     @Override
     public void attachView(SeatSelectionContract.SeatSelectionView view) {
         super.attachView(view);
+        eventsDetailsViewModel = getView().getActivity().getIntent().getParcelableExtra("event_detail");
         selectedpkgViewModel = getView().getActivity().getIntent().getParcelableExtra(EventBookTicketPresenter.EXTRA_PACKAGEVIEWMODEL);
         seatLayoutViewModel = getView().getActivity().getIntent().getParcelableExtra(EventBookTicketPresenter.EXTRA_SEATLAYOUTVIEWMODEL);
         getView().setEventTitle(getView().getActivity().getIntent().getStringExtra("EventTitle"));
@@ -172,36 +179,79 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
         RequestParams params = RequestParams.create();
         params.putObject("checkoutdata", convertPackageToCartItem(selectedpkgViewModel));
         params.putBoolean("ispromocodecase", true);
-        postVerifyCartUseCase.execute(params, new Subscriber<VerifyCartResponse>() {
-            @Override
-            public void onCompleted() {
-                Intent reviewTicketIntent = new Intent(getView().getActivity(), ReviewTicketActivity.class);
-                mSelectedSeatViewModel.setQuantity(quantity);
-                selectedpkgViewModel.setSelectedQuantity(quantity);
-                reviewTicketIntent.putExtra(EXTRA_PACKAGEVIEWMODEL, selectedpkgViewModel);
-                reviewTicketIntent.putExtra(EXTRA_SEATSELECTEDMODEL, mSelectedSeatViewModel);
-                getView().navigateToActivityRequest(reviewTicketIntent, 100);
+        com.tokopedia.usecase.RequestParams useParams = com.tokopedia.usecase.RequestParams.create();
+        useParams.putObject("checkoutdata", convertPackageToCartItem(selectedpkgViewModel));
+        useParams.putBoolean("ispromocodecase", true);
+        if (getView().isEventOmsEnabled()) {
+            postVerifyCartUseCase.execute(useParams, new Subscriber<VerifyMyCartResponse>() {
+                @Override
+                public void onCompleted() {
 
-            }
+                }
 
-            @Override
-            public void onError(Throwable throwable) {
-                Log.d("Naveen", " On Error" + throwable.getMessage());
-                getView().hideProgressBar();
-                NetworkErrorHelper.showEmptyState(getView().getActivity(),
-                        getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
-                            @Override
-                            public void onRetryClicked() {
-                                verifySeatSelection(mSelectedSeatViewModel);
-                            }
-                        });
-            }
+                @Override
+                public void onError(Throwable throwable) {
+                    Log.d("ReviewTicketPresenter", "onError");
+                    throwable.printStackTrace();
+                    getView().hideProgressBar();
+                    NetworkErrorHelper.showEmptyState(getView().getActivity(),
+                            getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
+                                @Override
+                                public void onRetryClicked() {
+                                    verifySeatSelection(mSelectedSeatViewModel);
+                                }
+                            });
+                }
 
-            @Override
-            public void onNext(VerifyCartResponse verifyCartResponse) {
-                Log.d("Naveen", "on Next" + verifyCartResponse.getStatus().getMessage().getMessage());
-            }
-        });
+                @Override
+                public void onNext(VerifyMyCartResponse verifyCartResponse) {
+                    Log.d("ReviewTicketPresenter", verifyCartResponse.toString());
+
+
+                    Intent reviewTicketIntent = new Intent(getView().getActivity(), ReviewTicketActivity.class);
+                    mSelectedSeatViewModel.setQuantity(quantity);
+                    selectedpkgViewModel.setSelectedQuantity(quantity);
+                    reviewTicketIntent.putExtra("event_detail", eventsDetailsViewModel);
+                    reviewTicketIntent.putExtra(EXTRA_PACKAGEVIEWMODEL, selectedpkgViewModel);
+                    reviewTicketIntent.putExtra(EXTRA_SEATSELECTEDMODEL, mSelectedSeatViewModel);
+                    getView().navigateToActivityRequest(reviewTicketIntent, 100);
+                    getView().hideProgressBar();
+
+
+                }
+            });
+        } else {
+            verifyCartUseCase.execute(params, new Subscriber<VerifyCartResponse>() {
+                @Override
+                public void onCompleted() {
+                    Intent reviewTicketIntent = new Intent(getView().getActivity(), ReviewTicketActivity.class);
+                    mSelectedSeatViewModel.setQuantity(quantity);
+                    selectedpkgViewModel.setSelectedQuantity(quantity);
+                    reviewTicketIntent.putExtra(EXTRA_PACKAGEVIEWMODEL, selectedpkgViewModel);
+                    reviewTicketIntent.putExtra(EXTRA_SEATSELECTEDMODEL, mSelectedSeatViewModel);
+                    getView().navigateToActivityRequest(reviewTicketIntent, 100);
+
+                }
+
+                @Override
+                public void onError(Throwable throwable) {
+                    Log.d("Naveen", " On Error" + throwable.getMessage());
+                    getView().hideProgressBar();
+                    NetworkErrorHelper.showEmptyState(getView().getActivity(),
+                            getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
+                                @Override
+                                public void onRetryClicked() {
+                                    verifySeatSelection(mSelectedSeatViewModel);
+                                }
+                            });
+                }
+
+                @Override
+                public void onNext(VerifyCartResponse verifyCartResponse) {
+                    Log.d("Naveen", "on Next" + verifyCartResponse.getStatus().getMessage().getMessage());
+                }
+            });
+        }
     }
 
 

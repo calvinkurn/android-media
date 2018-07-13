@@ -53,6 +53,8 @@ public class EventReviewTicketsContractor {
         void hideTooltip();
 
         boolean validateAllFields();
+
+        boolean isEventOmsEnabled();
     }
 
     public interface Presenter extends CustomerPresenter<EventReviewTicketsContractor.EventReviewTicketsView> {
