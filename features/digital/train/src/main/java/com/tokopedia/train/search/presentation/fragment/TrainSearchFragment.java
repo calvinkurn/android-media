@@ -505,7 +505,6 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
                     public void onBottomSheetItemClick(MenuItem item) {
                         getAdapter().showLoading();
                         selectedSortOption = item.getItemId();
-                        resetFilterParam();
                         presenter.getFilteredAndSortedSchedules();
                     }
                 })
