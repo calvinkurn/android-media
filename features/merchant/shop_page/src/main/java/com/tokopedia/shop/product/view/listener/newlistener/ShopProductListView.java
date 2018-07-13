@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.listener.BaseListViewListener;
 import com.tokopedia.shop.product.view.model.ShopProductBaseViewModel;
 import com.tokopedia.shop.product.view.model.newmodel.BaseShopProductViewModel;
 import com.tokopedia.shop.product.view.model.newmodel.ShopProductPromoViewModel;
+import com.tokopedia.shop.product.view.model.newmodel.ShopProductViewModel;
 
 import java.util.List;
 
@@ -25,6 +26,6 @@ public interface ShopProductListView extends BaseListViewListener<BaseShopProduc
 
     void renderShopProductPromo(ShopProductPromoViewModel shopProductPromoViewModel);
 
-    void renderList(@NonNull List<BaseShopProductViewModel> list, boolean hasNextPage, boolean hasProduct);
+    void renderProductList(@NonNull List<ShopProductViewModel> list, boolean hasNextPage);
 }
 

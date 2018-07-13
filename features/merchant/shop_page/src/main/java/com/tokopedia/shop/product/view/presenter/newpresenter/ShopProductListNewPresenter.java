@@ -41,9 +41,6 @@ public class ShopProductListNewPresenter extends BaseDaggerPresenter<ShopProduct
     private final RemoveFromWishListUseCase removeFromWishListUseCase;
     private final UserSession userSession;
 
-    private static final String TAG = "ShopProductListLimitedP";
-    private static final int FIRST_LOAD = 1;
-
     @Inject
     public ShopProductListNewPresenter(GetShopProductLimitedUseCase getShopProductLimitedUseCase,
                                        AddToWishListUseCase addToWishListUseCase,
@@ -71,7 +68,7 @@ public class ShopProductListNewPresenter extends BaseDaggerPresenter<ShopProduct
         return userSession.getUserId();
     }
 
-    public void getDataPromoFeatureProductList(String shopId, boolean goldMerchantStore, boolean officialStore, final int page) {
+    public void getProductList(String shopId, boolean goldMerchantStore, boolean officialStore, final int page) {
         getShopProductLimitedUseCase.execute(GetShopProductLimitedUseCase.createRequestParam(shopId, goldMerchantStore, officialStore, page),
                 new Subscriber<PagingList<ShopProductBaseViewModel>>() {
                     @Override
@@ -88,44 +85,49 @@ public class ShopProductListNewPresenter extends BaseDaggerPresenter<ShopProduct
 
                     @Override
                     public void onNext(PagingList<ShopProductBaseViewModel> shopProductBaseViewModelList) {
-                        boolean hasNextPage;
-//                        if(GlobalConfig.isSellerApp()){
-//                            hasNextPage = false;
-//                        }else{
-                        hasNextPage = PagingListUtils.checkNextPage(shopProductBaseViewModelList);
-//                        }
-                        if (page == FIRST_LOAD) {
-                            boolean shopHasProduct = shopProductBaseViewModelList.getList().size() > 0;
-//                            ShopProductPromoViewModel shopProductPromoViewModel = getProductPromoModel(officialWebViewUrl);
-//                            if (shopProductPromoViewModel!=null){
-//                                shopProductBaseViewModelList.getList().add(0, shopProductPromoViewModel);
-//                            }
-                            if (shopHasProduct) {
-                                for(int i = 0; i < shopProductBaseViewModelList.getList().size(); i++){
-                                    ShopProductBaseViewModel shopProductBaseViewModel = shopProductBaseViewModelList.getList().get(i);
-                                    if(shopProductBaseViewModel instanceof ShopProductHomeViewModelOld) {
-                                        shopProductBaseViewModelList.getList().add(i, new ShopProductLimitedEtalaseTitleViewModel());
-                                        break;
-                                    }
-                                }
-                                for(int i = 0; i < shopProductBaseViewModelList.getList().size(); i++){
-                                    ShopProductBaseViewModel shopProductBaseViewModel = shopProductBaseViewModelList.getList().get(i);
-                                    if(shopProductBaseViewModel instanceof ShopProductLimitedFeaturedViewModelOld) {
-                                        shopProductBaseViewModelList.getList().add(i, new ShopProductTitleFeaturedViewModel());
-                                        break;
-                                    }
-                                }
 
-                                if(GlobalConfig.isSellerApp() && shopProductBaseViewModelList.getList().size() >= ShopPageTrackingConstant.DEFAULT_PER_PAGE){
-                                    shopProductBaseViewModelList.getList().add(new ShopProductMoreViewModel());
-                                }
-                            }
-                            //TODO
-                            getView().renderList(new ArrayList<>(), hasNextPage, shopHasProduct);
-                        } else {
-                            //TODO
-                            getView().renderList(new ArrayList<>(), hasNextPage);
-                        }
+                        getView().showGetListError(new RuntimeException());
+
+//                        boolean hasNextPage;
+////                        if(GlobalConfig.isSellerApp()){
+////                            hasNextPage = false;
+////                        }else{
+//                        hasNextPage = PagingListUtils.checkNextPage(shopProductBaseViewModelList);
+////                        }
+//                        if (page == FIRST_LOAD) {
+//                            boolean shopHasProduct = shopProductBaseViewModelList.getList().size() > 0;
+////                            ShopProductPromoViewModel shopProductPromoViewModel = getProductPromoModel(officialWebViewUrl);
+////                            if (shopProductPromoViewModel!=null){
+////                                shopProductBaseViewModelList.getList().add(0, shopProductPromoViewModel);
+////                            }
+//                            if (shopHasProduct) {
+//                                for(int i = 0; i < shopProductBaseViewModelList.getList().size(); i++){
+//                                    ShopProductBaseViewModel shopProductBaseViewModel = shopProductBaseViewModelList.getList().get(i);
+//                                    if(shopProductBaseViewModel instanceof ShopProductHomeViewModelOld) {
+//                                        shopProductBaseViewModelList.getList().add(i, new ShopProductLimitedEtalaseTitleViewModel());
+//                                        break;
+//                                    }
+//                                }
+//                                for(int i = 0; i < shopProductBaseViewModelList.getList().size(); i++){
+//                                    ShopProductBaseViewModel shopProductBaseViewModel = shopProductBaseViewModelList.getList().get(i);
+//                                    if(shopProductBaseViewModel instanceof ShopProductLimitedFeaturedViewModelOld) {
+//                                        shopProductBaseViewModelList.getList().add(i, new ShopProductTitleFeaturedViewModel());
+//                                        break;
+//                                    }
+//                                }
+//
+//                                if(GlobalConfig.isSellerApp() && shopProductBaseViewModelList.getList().size() >= ShopPageTrackingConstant.DEFAULT_PER_PAGE){
+//                                    shopProductBaseViewModelList.getList().add(new ShopProductMoreViewModel());
+//                                }
+//                            }
+//                            //TODO
+//                            hasNextPage = false;
+//                            getView().renderProductList(new ArrayList<>(), hasNextPage);
+//                        } else {
+//                            //TODO
+//                            hasNextPage = false;
+//                            getView().renderProductList(new ArrayList<>(), hasNextPage);
+//                        }
                     }
 
                     /**

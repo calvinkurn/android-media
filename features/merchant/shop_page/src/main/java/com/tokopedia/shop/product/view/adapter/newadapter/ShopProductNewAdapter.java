@@ -1,26 +1,60 @@
 package com.tokopedia.shop.product.view.adapter.newadapter;
 
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
+import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModelOld;
 import com.tokopedia.shop.product.view.model.newmodel.BaseShopProductViewModel;
+import com.tokopedia.shop.product.view.model.newmodel.ShopProductFeaturedViewModel;
 import com.tokopedia.shop.product.view.model.newmodel.ShopProductPromoViewModel;
+import com.tokopedia.shop.product.view.model.newmodel.ShopProductViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
-
-/**
- * Created by hendry on 12/07/18.
- */
 
 public class ShopProductNewAdapter extends BaseListAdapter<BaseShopProductViewModel, ShopProductAdapterTypeFactory> {
 
+    private static final int DEFAULT_PROMO_POSITION = 0;
+    private static final int DEFAULT_FEATURED_POSITION = 1;
+
     private ShopProductPromoViewModel shopProductPromoViewModel;
+    private List<ShopProductViewModel> shopProductViewModelList;
+    private ShopProductFeaturedViewModel shopProductFeaturedViewModel;
 
     public ShopProductNewAdapter(ShopProductAdapterTypeFactory baseListAdapterTypeFactory) {
         super(baseListAdapterTypeFactory, null);
+        shopProductPromoViewModel = new ShopProductPromoViewModel();
+        shopProductViewModelList = new ArrayList<>();
+        shopProductFeaturedViewModel = new ShopProductFeaturedViewModel();
+        visitables.add(shopProductPromoViewModel);
+        visitables.add(shopProductFeaturedViewModel);
     }
 
-    public void setShopProductPromoViewModel(ShopProductPromoViewModel shopProductPromoViewModel){
+    public void setShopProductPromoViewModel(ShopProductPromoViewModel shopProductPromoViewModel) {
         this.shopProductPromoViewModel = shopProductPromoViewModel;
+        visitables.set(DEFAULT_PROMO_POSITION, this.shopProductPromoViewModel);
+        notifyItemChanged(DEFAULT_PROMO_POSITION);
+    }
+
+    @Override
+    public void showErrorNetwork(String message, ErrorNetworkModel.OnRetryListener onRetryListener) {
+        errorNetworkModel.setErrorMessage(message);
+        errorNetworkModel.setOnRetryListener(onRetryListener);
+        this.shopProductViewModelList.clear();
+        clearAllNonDataElement();
+        visitables.add(errorNetworkModel);
+        notifyDataSetChanged();
+    }
+
+    public void clearProductList() {
+        shopProductViewModelList.clear();
+    }
+
+    public void addProductList(List<ShopProductViewModel> shopProductViewModelArrayList) {
+        this.shopProductViewModelList = shopProductViewModelArrayList;
+    }
+
+    public List<ShopProductViewModel> getShopProductViewModelList() {
+        return shopProductViewModelList;
     }
 
     public void updateWishListStatus(String productId, boolean wishList) {
@@ -28,8 +62,8 @@ public class ShopProductNewAdapter extends BaseListAdapter<BaseShopProductViewMo
         for (int i = 0; i < shopProductBaseViewModelList.size(); i++) {
             BaseShopProductViewModel shopProductViewModel = shopProductBaseViewModelList.get(i);
             if (shopProductViewModel instanceof ShopProductViewModelOld) {
-                if (((ShopProductViewModelOld)shopProductViewModel).getId().equalsIgnoreCase(productId)) {
-                    ((ShopProductViewModelOld)shopProductViewModel).setWishList(wishList);
+                if (((ShopProductViewModelOld) shopProductViewModel).getId().equalsIgnoreCase(productId)) {
+                    ((ShopProductViewModelOld) shopProductViewModel).setWishList(wishList);
                     notifyItemChanged(i);
                     return;
                 }
@@ -55,4 +89,5 @@ public class ShopProductNewAdapter extends BaseListAdapter<BaseShopProductViewMo
     protected boolean isItemClickableByDefault() {
         return false;
     }
+
 }

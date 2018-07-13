@@ -4,14 +4,16 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
+import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingShimmeringGridViewHolder;
+import com.tokopedia.shop.product.view.adapter.newadapter.viewholder.EmptyWrapViewHolder;
+import com.tokopedia.shop.product.view.adapter.newadapter.viewholder.ErrorNetworkWrapViewHolder;
 import com.tokopedia.shop.product.view.adapter.newadapter.viewholder.ShopProductEtalaseTitleViewHolder;
 import com.tokopedia.shop.product.view.adapter.newadapter.viewholder.ShopProductFeaturedViewHolder;
 import com.tokopedia.shop.product.view.adapter.newadapter.viewholder.ShopProductViewHolder;
-import com.tokopedia.shop.product.view.adapter.newadapter.viewholder.ShopProductWebViewHolder;
+import com.tokopedia.shop.product.view.adapter.newadapter.viewholder.ShopProductPromoViewHolder;
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener;
 import com.tokopedia.shop.product.view.model.newmodel.ShopProductEtalaseTitleViewModel;
 import com.tokopedia.shop.product.view.model.newmodel.ShopProductFeaturedViewModel;
@@ -20,13 +22,13 @@ import com.tokopedia.shop.product.view.model.newmodel.ShopProductPromoViewModel;
 
 public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
 
-    private final ShopProductWebViewHolder.PromoViewHolderListener promoViewHolderListener;
+    private final ShopProductPromoViewHolder.PromoViewHolderListener promoViewHolderListener;
     private final ShopProductClickedListener shopProductClickedListener;
-    private final EmptyViewHolder.Callback emptyProductOnClickListener;
+    private final EmptyWrapViewHolder.Callback emptyProductOnClickListener;
 
-    public ShopProductAdapterTypeFactory(ShopProductWebViewHolder.PromoViewHolderListener promoViewHolderListener,
+    public ShopProductAdapterTypeFactory(ShopProductPromoViewHolder.PromoViewHolderListener promoViewHolderListener,
                                          ShopProductClickedListener shopProductClickedListener,
-                                         EmptyViewHolder.Callback emptyProductOnClickListener) {
+                                         EmptyWrapViewHolder.Callback emptyProductOnClickListener) {
         this.promoViewHolderListener = promoViewHolderListener;
         this.shopProductClickedListener = shopProductClickedListener;
         this.emptyProductOnClickListener = emptyProductOnClickListener;
@@ -39,7 +41,7 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
 
     @Override
     public int type(EmptyModel viewModel) {
-        return EmptyViewHolder.LAYOUT;
+        return EmptyWrapViewHolder.LAYOUT;
     }
 
     public int type(ShopProductEtalaseTitleViewModel shopProductLimitedEtalaseTitleViewHolder) {
@@ -47,7 +49,7 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
     }
 
     public int type(ShopProductPromoViewModel shopProductPromoViewModel) {
-        return ShopProductWebViewHolder.LAYOUT;
+        return ShopProductPromoViewHolder.LAYOUT;
     }
 
     public int type(ShopProductFeaturedViewModel shopProductFeaturedViewModel) {
@@ -58,16 +60,22 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
         return ShopProductViewHolder.LAYOUT;
     }
 
+    public int type(ErrorNetworkModel errorNetworkModel) {
+        return ErrorNetworkWrapViewHolder.LAYOUT;
+    }
+
     @Override
     public AbstractViewHolder createViewHolder(View parent, int type) {
         if (type == LoadingShimmeringGridViewHolder.LAYOUT) {
             return new LoadingShimmeringGridViewHolder(parent);
-        } else if (type == EmptyViewHolder.LAYOUT) {
-            return new EmptyViewHolder(parent, emptyProductOnClickListener);
+        } else if (type == EmptyWrapViewHolder.LAYOUT) {
+            return new EmptyWrapViewHolder(parent, emptyProductOnClickListener);
+        } else if (type == ErrorNetworkWrapViewHolder.LAYOUT){
+            return new ErrorNetworkWrapViewHolder(parent);
         } else if (type == ShopProductEtalaseTitleViewHolder.LAYOUT) {
             return new ShopProductEtalaseTitleViewHolder(parent);
-        } else if (type == ShopProductWebViewHolder.LAYOUT) {
-            return new ShopProductWebViewHolder(parent, promoViewHolderListener);
+        } else if (type == ShopProductPromoViewHolder.LAYOUT) {
+            return new ShopProductPromoViewHolder(parent, promoViewHolderListener);
         } else if(type == ShopProductFeaturedViewHolder .LAYOUT){
             return new ShopProductFeaturedViewHolder(parent);
         } else if(type == ShopProductViewHolder.LAYOUT){

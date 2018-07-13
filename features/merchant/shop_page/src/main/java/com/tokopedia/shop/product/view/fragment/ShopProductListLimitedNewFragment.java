@@ -20,7 +20,6 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.button.BottomActionView;
@@ -39,12 +38,13 @@ import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
 import com.tokopedia.shop.product.view.adapter.newadapter.ShopProductAdapterTypeFactory;
 import com.tokopedia.shop.product.view.adapter.newadapter.ShopProductNewAdapter;
 import com.tokopedia.shop.product.view.adapter.newadapter.viewholder.ShopProductViewHolder;
-import com.tokopedia.shop.product.view.adapter.newadapter.viewholder.ShopProductWebViewHolder;
+import com.tokopedia.shop.product.view.adapter.newadapter.viewholder.ShopProductPromoViewHolder;
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener;
 import com.tokopedia.shop.product.view.listener.newlistener.ShopProductListView;
 import com.tokopedia.shop.product.view.model.ShopProductViewModelOld;
 import com.tokopedia.shop.product.view.model.newmodel.BaseShopProductViewModel;
 import com.tokopedia.shop.product.view.model.newmodel.ShopProductPromoViewModel;
+import com.tokopedia.shop.product.view.model.newmodel.ShopProductViewModel;
 import com.tokopedia.shop.product.view.presenter.newpresenter.ShopProductListNewPresenter;
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity;
 
@@ -58,7 +58,7 @@ import javax.inject.Inject;
 
 public class ShopProductListLimitedNewFragment extends BaseListFragment<BaseShopProductViewModel, ShopProductAdapterTypeFactory>
         implements ShopProductListView, BaseEmptyViewHolder.Callback,
-        ShopProductWebViewHolder.PromoViewHolderListener, ShopProductClickedListener {
+        ShopProductPromoViewHolder.PromoViewHolderListener, ShopProductClickedListener {
 
     private static final int REQUEST_CODE_USER_LOGIN = 100;
     private static final int REQUEST_CODE_USER_LOGIN_FOR_WEBVIEW = 101;
@@ -75,8 +75,6 @@ public class ShopProductListLimitedNewFragment extends BaseListFragment<BaseShop
     ShopProductListNewPresenter shopProductListNewPresenter;
     @Inject
     ShopPageTracking shopPageTracking;
-    @Inject
-    UserSession userSession;
 
     private ProgressDialog progressDialog;
     private String urlNeedTobBeProceed;
@@ -197,7 +195,7 @@ public class ShopProductListLimitedNewFragment extends BaseListFragment<BaseShop
 //                }
 //            }
 //        };
-        if (shopInfo!= null) {
+        if (shopInfo != null) {
             loadInitialData();
         }
     }
@@ -216,7 +214,7 @@ public class ShopProductListLimitedNewFragment extends BaseListFragment<BaseShop
                 officialWebViewUrl = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT ? officialWebViewUrl : "";
                 shopProductListNewPresenter.loadProductPromoModel(officialWebViewUrl);
             }
-            shopProductListNewPresenter.getDataPromoFeatureProductList(
+            shopProductListNewPresenter.getProductList(
                     shopInfo.getInfo().getShopId(),
                     TextApiUtils.isValueTrue(shopInfo.getInfo().getShopIsGold()),
                     TextApiUtils.isValueTrue(shopInfo.getInfo().getShopIsOfficial()),
@@ -252,8 +250,15 @@ public class ShopProductListLimitedNewFragment extends BaseListFragment<BaseShop
         return gridLayoutManager;
     }
 
+    // load data after get shop info
     @Override
     protected boolean callInitialLoadAutomatically() {
+        return false;
+    }
+
+    // We have multiple views, endless scroll listener will be custom.
+    @Override
+    protected boolean isLoadMoreEnabledByDefault() {
         return false;
     }
 
@@ -366,16 +371,12 @@ public class ShopProductListLimitedNewFragment extends BaseListFragment<BaseShop
 
     @Override
     public void onErrorAddToWishList(Throwable e) {
-        if (isNotLoginYet()) {
+        if (!shopProductListNewPresenter.isLogin()) {
             Intent intent = ((ShopModuleRouter) getActivity().getApplication()).getLoginIntent(getActivity());
             startActivityForResult(intent, REQUEST_CODE_USER_LOGIN);
             return;
         }
         NetworkErrorHelper.showCloseSnackbar(getActivity(), ErrorHandler.getErrorMessage(getActivity(), e));
-    }
-
-    private boolean isNotLoginYet() {
-        return userSession != null && !userSession.isLoggedIn();
     }
 
     @Override
@@ -394,14 +395,42 @@ public class ShopProductListLimitedNewFragment extends BaseListFragment<BaseShop
     }
 
     @Override
-    public void renderList(@NonNull List<BaseShopProductViewModel> list, boolean hasNextPage, boolean hasProduct) {
-        renderList(list, hasNextPage);
+    public void renderProductList(@NonNull List<ShopProductViewModel> list, boolean hasNextPage) {
+        // trackingImpressionFeatureProduct(list);
+        hideLoading();
+        // remove all unneeded element (empty/retry/loading/etc)
+        if (isLoadingInitialData) {
+            shopProductNewAdapter.clearProductList();
+        } else {
+            shopProductNewAdapter.clearAllNonDataElement();
+        }
+        shopProductNewAdapter.addProductList(list);
+        // update the load more state (paging/can loadmore)
+        updateScrollListenerState(hasNextPage);
+
+        if (shopProductNewAdapter.getShopProductViewModelList().size() == 0) {
+            // Note: add element should be the last in line.
+            shopProductNewAdapter.addElement(getEmptyDataViewModel());
+        } else {
+            //set flag to false, indicate that the initial data has been set.
+            isLoadingInitialData = false;
+        }
+        shopProductNewAdapter.notifyDataSetChanged();
     }
 
     @Override
-    public void renderList(@NonNull List<BaseShopProductViewModel> list, boolean hasNextPage) {
-        // trackingImpressionFeatureProduct(list);
-        super.renderList(list, hasNextPage);
+    public void showGetListError(Throwable throwable) {
+        hideLoading();
+
+        updateStateScrollListener();
+
+        // Note: add element should be the last in line.
+        if (shopProductNewAdapter.getShopProductViewModelList().size() > 0) {
+            onGetListErrorWithExistingData(throwable);
+        } else {
+            String message = getMessageFromThrowable(getContext(), throwable);
+            shopProductNewAdapter.showErrorNetwork(message, this);
+        }
     }
 
     @Override

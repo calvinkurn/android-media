@@ -58,15 +58,15 @@ public class GetShopProductLimitedUseCase extends UseCase<PagingList<ShopProduct
         shopProductRequestModel.setUseAce(true);
         List<ShopProductLimitedFeaturedViewModelOld> defaultFeaturedProductList = new ArrayList<>();
         Observable<List<ShopProductLimitedFeaturedViewModelOld>> featuredProductObservable = Observable.just(defaultFeaturedProductList);
-        if ((goldMerchantStore || officialStore) && page == 1) {
-            featuredProductObservable = getShopProductFeaturedUseCase.createObservable(GetShopProductFeaturedUseCase.createRequestParam(shopId, officialStore))
-                    .flatMap(new Func1<List<ShopProductViewModelOld>, Observable<List<ShopProductLimitedFeaturedViewModelOld>>>() {
-                        @Override
-                        public Observable<List<ShopProductLimitedFeaturedViewModelOld>> call(List<ShopProductViewModelOld> shopProductViewModelOlds) {
-                            return Observable.just(shopProductMapper.convertFromProductViewModelFeatured(shopProductViewModelOlds));
-                        }
-                    });
-        }
+//        if ((goldMerchantStore || officialStore) && page == 1) {
+//            featuredProductObservable = getShopProductFeaturedUseCase.createObservable(GetShopProductFeaturedUseCase.createRequestParam(shopId, officialStore))
+//                    .flatMap(new Func1<List<ShopProductViewModelOld>, Observable<List<ShopProductLimitedFeaturedViewModelOld>>>() {
+//                        @Override
+//                        public Observable<List<ShopProductLimitedFeaturedViewModelOld>> call(List<ShopProductViewModelOld> shopProductViewModelOlds) {
+//                            return Observable.just(shopProductMapper.convertFromProductViewModelFeatured(shopProductViewModelOlds));
+//                        }
+//                    });
+//        }
         Observable<PagingList<ShopProductHomeViewModelOld>> shopProductObservable =
                 getShopProductListWithAttributeUseCase.createObservable(GetShopProductListUseCase.createRequestParam(shopProductRequestModel))
                         .flatMap(new Func1<PagingList<ShopProductViewModelOld>, Observable<PagingList<ShopProductHomeViewModelOld>>>() {
