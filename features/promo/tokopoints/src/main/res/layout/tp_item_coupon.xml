@@ -57,7 +57,7 @@
             android:layout_marginTop="@dimen/tp_padding_xsmall"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/button_continue"
-            app:srcCompat="@drawable/ic_time" />
+            app:srcCompat="@drawable/ic_tp_time" />
 
         <TextView
             android:id="@+id/text_point_value"
