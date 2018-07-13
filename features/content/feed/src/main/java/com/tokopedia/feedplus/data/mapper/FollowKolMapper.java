@@ -53,6 +53,6 @@ public class FollowKolMapper implements Func1<Response<GraphqlResponse<FollowKol
 
 
     private FollowKolDomain convertToDomain(FollowKol data) {
-        return new FollowKolDomain(data.getStatus());
+        return new FollowKolDomain(data.getData().getStatus());
     }
 }

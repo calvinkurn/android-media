@@ -6,14 +6,14 @@ import com.google.gson.annotations.SerializedName;
  * @author by yfsx on 12/07/18.
  */
 public class FollowKolQuery {
-    @SerializedName("data")
-    private FollowKol data;
+    @SerializedName("do_follow_kol")
+    private FollowKol doFollowKol;
 
     public FollowKol getData() {
-        return data;
+        return doFollowKol;
     }
 
-    public void setData(FollowKol data) {
-        this.data = data;
+    public void setData(FollowKol doFollowKol) {
+        this.doFollowKol = doFollowKol;
     }
 }

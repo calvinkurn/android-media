@@ -58,7 +58,7 @@ public class KolSource {
 //    }
 
     public Observable<FollowKolDomain> followKolPost(RequestParams requestParams) {
-        return feedApi.followKol(getRequestPayload(requestParams, R.raw.query_feed))
+        return feedApi.followKol(getRequestPayload(requestParams, R.raw.query_follow_kol))
                 .map(followKolMapper);
     }
 
@@ -68,7 +68,7 @@ public class KolSource {
 
         HashMap<String, Object> params = new HashMap<>();
         params.put(PARAM_USER_ID, userId);
-        params.put(PARAM_ACTION, FollowKolPostUseCase.PARAM_ACTION);
+        params.put(PARAM_ACTION, action);
 
         return new GraphqlRequest(
                 loadRawString(context.getResources(), rawResourceId),
