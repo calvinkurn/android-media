@@ -220,6 +220,15 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         infoValue.addView(doubleTextView);
 
     }
+    @Override
+    public void setPayMethodInfo(PayMethod payMethod) {
+        DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
+        doubleTextView.setTopText(payMethod.getLabel());
+        doubleTextView.setBottomText(payMethod.getValue());
+        doubleTextView.setBottomGravity(Gravity.RIGHT);
+        infoValue.addView(doubleTextView);
+
+    }
 
     @Override
     public void setPaymentData(PaymentData paymentData) {
@@ -284,7 +293,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     private View.OnClickListener getActionButtonClickListener(final String uri) {
         return view -> {
             String newUri = uri;
-            if (uri.startsWith("tokopedia")) {
+            if (uri != null && uri.startsWith("tokopedia")) {
                 Uri url = Uri.parse(newUri);
                 newUri = newUri.replace(url.getQueryParameter("idem_potency_key"), "");
                 newUri = newUri.replace("idem_potency_key=", "");
@@ -309,11 +318,6 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     @Override
     public Context getAppContext() {
         return getActivity().getApplicationContext();
-    }
-
-    @Override
-    public void setPayMethodInfo(PayMethod payMethod) {
-
     }
 
     @Override

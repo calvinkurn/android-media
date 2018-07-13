@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.TaskStackBuilder;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
@@ -15,8 +14,6 @@ import com.tokopedia.transaction.applink.TransactionAppLink;
 import com.tokopedia.transaction.orders.orderdetails.view.fragment.OmsDetailFragment;
 import com.tokopedia.transaction.orders.orderdetails.view.fragment.OrderListDetailFragment;
 import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
-import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
-import com.tokopedia.transaction.router.UnifiedOrderRouter;
 
 /**
  * Created by baghira on 09/05/18.
@@ -30,20 +27,11 @@ public class OrderListDetailActivity extends BaseSimpleActivity {
     private String orderId;
 
     @DeepLink({TransactionAppLink.ORDER_DETAIL, TransactionAppLink.ORDER_OMS_DETAIL})
-    public static TaskStackBuilder getOrderDetailIntent(Context context, Bundle bundle) {
+    public static Intent getOrderDetailIntent(Context context, Bundle bundle) {
         Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
-        Intent intent =  new Intent(context, OrderListDetailActivity.class)
+        return new Intent(context, OrderListDetailActivity.class)
                 .setData(uri.build())
                 .putExtras(bundle);
-        Intent homeIntent = ((UnifiedOrderRouter) context.getApplicationContext()).getHomeIntent
-                (context);
-        Intent parentIntent = OrderListActivity.getInstance(context);
-
-        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
-        taskStackBuilder.addNextIntent(homeIntent);
-        taskStackBuilder.addNextIntent(parentIntent);
-        taskStackBuilder.addNextIntent(intent);
-        return taskStackBuilder;
     }
 
     @Override

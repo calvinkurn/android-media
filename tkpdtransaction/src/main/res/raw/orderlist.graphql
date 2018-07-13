@@ -1,6 +1,7 @@
-query ($orderCategory: OrderCategory, $Page: Int, $PerPage: Int) {
-  orders(orderCategory: $orderCategory, Page: $Page, PerPage: $PerPage) {
+query ($orderCategory: OrderCategory, $Page: Int, $PerPage: Int, $orderId: Int) {
+  orders(orderCategory: $orderCategory, Page: $Page, PerPage: $PerPage, ID: $orderId) {
     categoryName
+    beforeOrderId
     category
     id
     createdAt
@@ -59,6 +60,7 @@ query ($orderCategory: OrderCategory, $Page: Int, $PerPage: Int) {
       color {
         border
         background
+        textColor
       }
       popup {
         title

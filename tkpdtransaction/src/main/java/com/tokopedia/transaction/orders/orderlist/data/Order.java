@@ -66,13 +66,16 @@ public class Order {
     @SerializedName("items")
     @Expose
     private List<Item> items;
+    @SerializedName("beforeOrderId")
+    @Expose
+    private int orderId;
 
 
     public Order(ConditionalInfo conditionalInfo, PaymentData paymentData, String paymentID,
                  String categoryName, String appLink, String upstream, String category, String id,
                  String createdAt, int status, String statusStr, String statusColor, String invoiceRefNum,
                  String title, List<MetaData> metaData, List<DotMenuList> dotMenuList,
-                 List<ActionButton> actionButtons, String totalInvoices, String itemCount, List<Item> items) {
+                 List<ActionButton> actionButtons, String totalInvoices, String itemCount, List<Item> items, int orderId) {
         this.conditionalInfo = conditionalInfo;
         this.paymentData = paymentData;
         this.paymentID = paymentID;
@@ -93,6 +96,7 @@ public class Order {
         this.totalInvoices = totalInvoices;
         this.itemCount = itemCount;
         this.items = items;
+        this.orderId= orderId;
     }
 
     public ConditionalInfo conditionalInfo() {
@@ -169,6 +173,14 @@ public class Order {
 
     public List<Item> items() {
         return items;
+    }
+
+    public int getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(int orderId) {
+        this.orderId = orderId;
     }
 
     @Override

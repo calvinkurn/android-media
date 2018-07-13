@@ -33,9 +33,11 @@ public class OrderListContract {
         void renderEmptyList(int typeRequest);
 
         Context getAppContext();
+
+        void setLastOrderId(int orderid);
     }
 
     public interface Presenter extends CustomerPresenter<View> {
-        void getAllOrderData(Context context, String orderCategory, int typeRequest, int page);
+        void getAllOrderData(Context context, String orderCategory, int typeRequest, int page, int orerId);
     }
 }

@@ -21,6 +21,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.common.view.DoubleTextView;
+import com.tokopedia.transaction.orders.orderlist.data.ActionButton;
 import com.tokopedia.transaction.orders.orderlist.data.Color;
 import com.tokopedia.transaction.orders.orderlist.data.DotMenuList;
 import com.tokopedia.transaction.orders.orderlist.data.MetaData;
@@ -100,33 +101,35 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     @Override
-    public void setButtonData(int leftVisibility, int rightVisibility, String leftText, String rightText,
-                              final String leftButtonUri, final String rightButtonUri,
-                              Popup leftPopup, Popup rightPopup,
-                              Color leftButtonColor, Color rightButtonColor) {
-        setButtonData(currentHolder.leftButton, leftText, leftVisibility, leftButtonUri, leftPopup, leftButtonColor);
-        setButtonData(currentHolder.rightButton, rightText, rightVisibility, rightButtonUri, rightPopup, rightButtonColor);
+    public void setActionButtonData(ActionButton leftActionButton, ActionButton rightActionButton, int leftVisibility, int rightVisibility) {
+        setButtonData(currentHolder.leftButton, leftVisibility, leftActionButton);
+        setButtonData(currentHolder.rightButton, rightVisibility, rightActionButton);
+
     }
 
-    private void setButtonData(TextView button, String text, int visibility, final String buttonUri, Popup popup, Color bgColor) {
+    private void setButtonData(TextView button, int visibility, ActionButton actionButton) {
         button.setVisibility(visibility);
-        button.setText(text);
-
-        if (bgColor != null && !bgColor.background().equals("")) {
-            button.setBackgroundColor(android.graphics.Color.parseColor(bgColor.background()));
-        }
-        button.setOnClickListener(view -> {
-            String newUri = buttonUri;
-            if (buttonUri.startsWith("tokopedia")) {
-                Uri url = Uri.parse(newUri);
-                newUri = newUri.replace(url.getQueryParameter("idem_potency_key"), "");
-                newUri = newUri.replace("idem_potency_key=", "");
-                RouteManager.route(context, newUri);
-            } else {
-                TransactionPurchaseRouter.startWebViewActivity(context, buttonUri);
+        if (actionButton != null && !actionButton.label().equals("")) {
+            button.setText(actionButton.label());
+            if (actionButton.color() != null) {
+                if (!actionButton.color().background().equals("")) {
+                    button.setBackgroundColor(android.graphics.Color.parseColor(actionButton.color().background()));
+                }
+                if (!actionButton.color().textColor().equals("")) {
+                    button.setTextColor(android.graphics.Color.parseColor(actionButton.color().textColor()));
+                }
             }
-        });
-        if (popup != null) {
+            button.setOnClickListener(view -> {
+                String newUri = actionButton.uri();
+                if (newUri.startsWith("tokopedia")) {
+                    Uri url = Uri.parse(newUri);
+                    newUri = newUri.replace(url.getQueryParameter("idem_potency_key"), "");
+                    newUri = newUri.replace("idem_potency_key=", "");
+                    RouteManager.route(context, newUri);
+                } else {
+                    TransactionPurchaseRouter.startWebViewActivity(context, newUri);
+                }
+            });
         }
     }
 
@@ -225,11 +228,6 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     }
 
-    public void clearItems() {
-        mOrderList.clear();
-        notifyDataSetChanged();
-    }
-
     public boolean getLoading() {
         return loading;
     }
@@ -253,14 +251,14 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private void showPopup(View v, final Order order) {
         PopupMenu popup = new PopupMenu(context, v);
         addCancelReplacementMenu(order.dotMenuList(), popup);
-        popup.setOnMenuItemClickListener(new OnMenuPopupClicked(order.dotMenuList(), order.id(), order.category()));
+        popup.setOnMenuItemClickListener(new OnMenuPopupClicked(order.dotMenuList(), order.getAppLink()));
         popup.show();
     }
 
     private void addCancelReplacementMenu(List<DotMenuList> item, PopupMenu popup) {
         if (true) {
-            popup.getMenu().add(Menu.NONE, R.id.action_cancel_replacement, Menu.NONE, item.get(0).name());
-            popup.getMenu().add(Menu.NONE, R.id.action_next_replacement, Menu.NONE, item.get(1).name());
+            popup.getMenu().add(Menu.NONE, R.id.action_bantuan, Menu.NONE, item.get(0).name());
+            popup.getMenu().add(Menu.NONE, R.id.action_order_detail, Menu.NONE, item.get(1).name());
         }
     }
 
@@ -271,25 +269,23 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     private class OnMenuPopupClicked implements PopupMenu.OnMenuItemClickListener {
         private final List<DotMenuList> orderData;
-        private String orderId;
-        private String orderCategory;
+        private final String appLink;
 
-        OnMenuPopupClicked(List<DotMenuList> item, String id, String category) {
+        OnMenuPopupClicked(List<DotMenuList> item, String appLink) {
             this.orderData = item;
-            this.orderId = id;
-            this.orderCategory = category;
+            this.appLink = appLink;
         }
 
         @Override
         public boolean onMenuItemClick(MenuItem item) {
-            if (item.getItemId() == R.id.action_cancel_replacement) {
+            if (item.getItemId() == R.id.action_bantuan) {
                 menuListener.startUri(orderData.get(0).uri());
                 return true;
-            } else if (item.getItemId() == R.id.action_next_replacement) {
+            } else if (item.getItemId() == R.id.action_order_detail) {
                 if (!orderData.get(1).uri().equals("")) {
                     menuListener.startUri(orderData.get(1).uri());
                 } else {
-                    RouteManager.route(context, currentHolder.appLink);
+                    RouteManager.route(context, appLink);
                 }
                 return true;
             } else {
@@ -303,7 +299,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         public ProgressViewHolder(View v) {
             super(v);
-            progressBar = (ProgressBar) v.findViewById(R.id.progressBar1);
+            progressBar = v.findViewById(R.id.progressBar1);
         }
     }
 
@@ -335,33 +331,19 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
             status = itemView.findViewById(R.id.list_element_status);
             date = itemView.findViewById(R.id.date);
-            ;
             invoice = itemView.findViewById(R.id.invoice);
-            ;
             orderListBtnOverflow = itemView.findViewById(R.id.order_list_but_overflow);
-            ;
             conditionalInfoLayout = itemView.findViewById(R.id.conditional_info_layout);
-            ;
             conditionalInfoText = itemView.findViewById(R.id.conditional_info);
-            ;
             imgShopAvatar = itemView.findViewById(R.id.shop_avatar);
-            ;
             categoryName = itemView.findViewById(R.id.category_name);
-            ;
             title = itemView.findViewById(R.id.title);
-            ;
             paymentAvatar = itemView.findViewById(R.id.status_shop_avatar);
-            ;
             totalLabel = itemView.findViewById(R.id.total_price_label);
-            ;
             total = itemView.findViewById(R.id.total);
-            ;
             leftButton = itemView.findViewById(R.id.left_button);
-            ;
             rightButton = itemView.findViewById(R.id.right_button);
-            ;
             parentMetadataLayout = itemView.findViewById(R.id.metadata);
-            ;
         }
 
         @Override
@@ -374,7 +356,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 orderId = order.id();
                 orderCategory = order.category();
                 appLink = order.getAppLink();
-                if(!(orderCategory.equals(OrderCategory.DIGITAL) || orderCategory.equals(OrderCategory.FLIGHTS))){
+                if (!(orderCategory.equals(OrderCategory.DIGITAL) || orderCategory.equals(OrderCategory.FLIGHTS))) {
                     appLink = appLink + "?from_payment=false";
 
                 }
