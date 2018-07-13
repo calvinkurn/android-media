@@ -16,7 +16,7 @@
     <item
         android:id="@+id/menu_inbox"
         android:enabled="true"
-        android:icon="@drawable/ic_menu_home"
+        android:icon="@drawable/ic_menu_inbox"
         android:title="Inbox"
         app:showAsAction="ifRoom" />
     <item
@@ -28,7 +28,7 @@
     <item
         android:id="@+id/menu_account"
         android:enabled="true"
-        android:icon="@drawable/ic_menu_feed"
+        android:icon="@drawable/ic_menu_profile"
         android:title="Akun"
         app:showAsAction="ifRoom" />
 </menu>

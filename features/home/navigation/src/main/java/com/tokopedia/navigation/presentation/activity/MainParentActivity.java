@@ -45,7 +45,6 @@ public class MainParentActivity extends AppCompatActivity implements
 
         FragmentAdapter adapterViewPager = new FragmentAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapterViewPager);
-        viewPager.setOffscreenPageLimit(5);
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             public void onPageScrollStateChanged(int state) {
