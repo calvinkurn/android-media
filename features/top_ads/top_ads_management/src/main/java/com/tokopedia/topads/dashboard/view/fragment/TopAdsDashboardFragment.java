@@ -530,7 +530,7 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
         } else if (requestCode == REQUEST_CODE_ADD_PRODUCT && data != null){
             checkAdChanged(data);
             onSummaryProductClicked();
-        } else if (requestCode == REQUEST_CODE_ADD_KEYWORD){
+        } else if (requestCode == REQUEST_CODE_ADD_KEYWORD && data != null){
             checkAdChanged(data);
             onSummaryKeywordClicked();
         }
