@@ -8,6 +8,10 @@ import android.widget.TextView;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentSellerCashbackModel;
 
+/**
+ * @author Irfan Khoirul on 12/07/18.
+ */
+
 public class ShipmentSellerCashbackViewHolder extends RecyclerView.ViewHolder {
 
     public static final int ITEM_VIEW_SELLER_CASHBACK = R.layout.item_seller_cashback;

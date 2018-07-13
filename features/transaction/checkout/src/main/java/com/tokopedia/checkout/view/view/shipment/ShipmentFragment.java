@@ -44,6 +44,7 @@ import com.tokopedia.checkout.view.view.shipment.di.ShipmentComponent;
 import com.tokopedia.checkout.view.view.shipment.di.ShipmentModule;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCheckoutButtonModel;
+import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentDonationModel;
 import com.tokopedia.checkout.view.view.shippingoptions.CourierBottomsheet;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
@@ -187,6 +188,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         shipmentDataConverter.getRecipientAddressModel(cartShipmentAddressFormData));
             }
 
+            if (cartShipmentAddressFormData.getDonation() != null) {
+                shipmentPresenter.setShipmentDonationModel(shipmentDataConverter.getShipmentDonationModel(cartShipmentAddressFormData));
+            }
+
             shipmentPresenter.setShipmentCartItemModelList(shipmentDataConverter.getShipmentItems(
                     cartShipmentAddressFormData));
 
@@ -223,17 +228,22 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         CartPromoSuggestion cartPromoSuggestion = shipmentPresenter.getCartPromoSuggestion();
         RecipientAddressModel recipientAddressModel = shipmentPresenter.getRecipientAddressModel();
         List<ShipmentCartItemModel> shipmentCartItemModelList = shipmentPresenter.getShipmentCartItemModelList();
+        ShipmentDonationModel shipmentDonationModel = shipmentPresenter.getShipmentDonationModel();
         ShipmentCostModel shipmentCostModel = shipmentPresenter.getShipmentCostModel();
         ShipmentCheckoutButtonModel shipmentCheckoutButtonModel = shipmentPresenter.getShipmentCheckoutButtonModel();
 
-        initRecyclerViewData(promoCodeAppliedData, cartPromoSuggestion, recipientAddressModel,
-                shipmentCartItemModelList, shipmentCostModel, shipmentCheckoutButtonModel, true);
+        initRecyclerViewData(
+                promoCodeAppliedData, cartPromoSuggestion, recipientAddressModel,
+                shipmentCartItemModelList, shipmentDonationModel, shipmentCostModel,
+                shipmentCheckoutButtonModel, true
+        );
     }
 
     private void initRecyclerViewData(PromoCodeAppliedData promoCodeAppliedData,
                                       CartPromoSuggestion cartPromoSuggestion,
                                       RecipientAddressModel recipientAddressModel,
                                       List<ShipmentCartItemModel> shipmentCartItemModelList,
+                                      ShipmentDonationModel shipmentDonationModel,
                                       ShipmentCostModel shipmentCostModel,
                                       ShipmentCheckoutButtonModel shipmentCheckoutButtonModel,
                                       boolean isInitialRender) {
@@ -259,6 +269,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             shipmentAdapter.addAddressShipmentData(recipientAddressModel);
         }
         shipmentAdapter.addCartItemDataList(shipmentCartItemModelList);
+        shipmentAdapter.addShipmentDonationModel(shipmentDonationModel);
         shipmentAdapter.addShipmentCostData(shipmentCostModel);
         shipmentAdapter.updateShipmentSellerCashbackVisibility();
         shipmentAdapter.addShipmentCheckoutButtonModel(shipmentCheckoutButtonModel);
@@ -350,9 +361,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 shipmentPresenter.getCartPromoSuggestion(),
                 shipmentPresenter.getRecipientAddressModel(),
                 oldShipmentCartItemModelList,
+                shipmentPresenter.getShipmentDonationModel(),
                 shipmentPresenter.getShipmentCostModel(),
                 shipmentPresenter.getShipmentCheckoutButtonModel(),
-                false);
+                false
+        );
     }
 
     @Override
@@ -906,4 +919,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void onChoosePaymentMethodButtonClicked(boolean ableToCheckout) {
         shipmentAdapter.checkDropshipperValidation();
     }
+
+    @Override
+    public void onDonationChecked(boolean checked) {
+        shipmentAdapter.updateDonation(checked);
+    }
+
 }

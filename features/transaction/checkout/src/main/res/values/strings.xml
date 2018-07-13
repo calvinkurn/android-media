@@ -169,5 +169,6 @@
     <string name="label_courier_etd">Perkiraan tiba dihitung sejak pesanan dikirim</string>
     <string name="error_message_checkout_failed">Gagal memproses pembayaran. Silakan coba lagi.</string>
     <string name="label_selller_cashback">Potensi Cashback Penjual</string>
+    <string name="label_donation">Donasi</string>
 
 </resources>

@@ -12,6 +12,7 @@ import com.tokopedia.checkout.domain.datamodel.cartshipmentform.Shop;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.UserAddress;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItemModel;
+import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentDonationModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +33,14 @@ public class ShipmentDataConverter {
 
     public RecipientAddressModel getRecipientAddressModel(UserAddress userAddress) {
         return createRecipientAddressModel(userAddress);
+    }
+
+    public ShipmentDonationModel getShipmentDonationModel(CartShipmentAddressFormData cartShipmentAddressFormData) {
+        ShipmentDonationModel shipmentDonationModel = new ShipmentDonationModel();
+        shipmentDonationModel.setChecked(false);
+        shipmentDonationModel.setDonation(cartShipmentAddressFormData.getDonation());
+
+        return shipmentDonationModel;
     }
 
     @NonNull

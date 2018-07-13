@@ -34,6 +34,7 @@ import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.domain.usecase.GetThanksToppayUseCase;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCheckoutButtonModel;
+import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentDonationModel;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentSellerCashbackModel;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
@@ -83,6 +84,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private CartPromoSuggestion cartPromoSuggestion;
     private ShipmentCostModel shipmentCostModel;
     private ShipmentCheckoutButtonModel shipmentCheckoutButtonModel;
+    private ShipmentDonationModel shipmentDonationModel;
 
     private List<DataCheckoutRequest> dataCheckoutRequestList;
     private List<CheckPromoCodeCartShipmentRequest.Data> promoCodeCartShipmentRequestDataList;
@@ -212,6 +214,16 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public void setShipmentCheckoutButtonModel(ShipmentCheckoutButtonModel shipmentCheckoutButtonModel) {
         this.shipmentCheckoutButtonModel = shipmentCheckoutButtonModel;
+    }
+
+    @Override
+    public ShipmentDonationModel getShipmentDonationModel() {
+        return shipmentDonationModel;
+    }
+
+    @Override
+    public void setShipmentDonationModel(ShipmentDonationModel shipmentDonationModel) {
+        this.shipmentDonationModel = shipmentDonationModel;
     }
 
     @Override
@@ -434,7 +446,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         CheckoutRequest checkoutRequest = generateCheckoutRequest(
                 promoCodeAppliedData != null && promoCodeAppliedData.getPromoCode() != null ?
-                        promoCodeAppliedData.getPromoCode() : "", 0
+                        promoCodeAppliedData.getPromoCode() : "",
+                shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0
         );
 
         if (checkoutRequest != null) {
