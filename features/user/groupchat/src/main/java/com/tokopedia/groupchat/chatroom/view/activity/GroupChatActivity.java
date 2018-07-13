@@ -127,24 +127,8 @@ public class GroupChatActivity extends BaseSimpleActivity
 
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         taskStackBuilder.addNextIntent(homeIntent);
-        if (((GroupChatModuleRouter) context.getApplicationContext()).isEnabledGroupChat()) {
-            taskStackBuilder.addNextIntent(parentIntent);
-        }
+
         taskStackBuilder.addNextIntent(detailsIntent);
-        return taskStackBuilder;
-    }
-
-    @DeepLink(ApplinkConstant.GROUPCHAT_LIST)
-    public static TaskStackBuilder getCallingTaskStackList(Context context, Bundle extras) {
-        Intent homeIntent = ((GroupChatModuleRouter) context.getApplicationContext()).getHomeIntent(context);
-        Intent parentIntent = ((GroupChatModuleRouter) context.getApplicationContext())
-                .getInboxChannelsIntent(context);
-
-        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
-        taskStackBuilder.addNextIntent(homeIntent);
-        if (((GroupChatModuleRouter) context.getApplicationContext()).isEnabledGroupChat()) {
-            taskStackBuilder.addNextIntent(parentIntent);
-        }
         return taskStackBuilder;
     }
 
