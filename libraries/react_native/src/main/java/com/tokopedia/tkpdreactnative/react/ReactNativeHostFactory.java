@@ -24,9 +24,7 @@ public class ReactNativeHostFactory {
     protected ReactNativeHostFactory() {}
 
     public static ReactNativeHost init(Application application) {
-<<<<<<< Updated upstream
         if(instance == null) instance = new ReactNativeHostFactory();
-=======
         /*reactInstanceManager = ReactInstanceManager.builder()
                 .setApplication(application)
                 .setBundleAssetName("index.android.bundle")
@@ -36,9 +34,6 @@ public class ReactNativeHostFactory {
                 .setUseDeveloperSupport(true)
                 .setInitialLifecycleState(LifecycleState.RESUMED)
                 .build();*/
-
-        return createReactNativeHostDev(application);
->>>>>>> Stashed changes
 
         return instance.createReactNativeHost(application);
     }
