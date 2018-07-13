@@ -40,7 +40,6 @@ public class ShareData implements Parcelable {
     private String source;
     private String id = "";
     private String pathSticker;
-    private String productUrl;
 
     public ShareData() {
     }
@@ -56,7 +55,6 @@ public class ShareData implements Parcelable {
         source = in.readString();
         id = in.readString();
         pathSticker = in.readString();
-        productUrl = in.readString();
     }
 
     @Override
@@ -71,7 +69,6 @@ public class ShareData implements Parcelable {
         dest.writeString(source);
         dest.writeString(id);
         dest.writeString(pathSticker);
-        dest.writeString(productUrl);
     }
 
     @Override
@@ -253,7 +250,6 @@ public class ShareData implements Parcelable {
         private String source;
         private String id;
         private String pathSticker;
-        private String productUrl;
 
         private Builder() {
         }
@@ -309,11 +305,6 @@ public class ShareData implements Parcelable {
 
         public Builder setPathSticker(String pathSticker) {
             this.pathSticker = pathSticker;
-            return this;
-        }
-
-        public Builder setProductUrl(String productUrl) {
-            this.productUrl = productUrl;
             return this;
         }
 

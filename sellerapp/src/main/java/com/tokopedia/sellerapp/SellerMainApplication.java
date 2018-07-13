@@ -283,8 +283,4 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         return null;
     }
 
-    @Override
-    public Intent getOrderListIntent(Context context) {
-        return null;
-    }
 }
