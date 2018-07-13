@@ -1,9 +1,6 @@
 package com.tokopedia.imagepicker.picker.main.view;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.webkit.URLUtil;
 
@@ -11,6 +8,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.FutureTarget;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.imagepicker.common.exception.FileSizeAboveMaximumException;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
 
 import java.io.File;
@@ -48,10 +46,6 @@ public class ImagePickerPresenter extends BaseDaggerPresenter<ImagePickerPresent
         if (compositeSubscription != null) {
             compositeSubscription.unsubscribe();
         }
-    }
-
-    public static class FileSizeAboveMaximumException extends RuntimeException{
-
     }
 
     public void resizeImage(List<String> imagePath, final long maxFileSize) {

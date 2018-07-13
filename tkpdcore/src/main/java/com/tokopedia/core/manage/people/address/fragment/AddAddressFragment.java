@@ -253,7 +253,7 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
         districtLayout = view.findViewById(R.id.district_layout);
         districtEditText = view.findViewById(R.id.district);
         zipCodeLayout = view.findViewById(R.id.postal_code_layout);
-        zipCodeTextView = view.findViewById(R.id.postal_code);
+        zipCodeTextView = view.findViewById(R.id.autocomplete_postal_code);
 
         postCodeLayout = view.findViewById(R.id.post_code_layout);
         postCodeEditText = view.findViewById(R.id.post_code);
@@ -284,7 +284,8 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
     }
 
     private void selectLayout() {
-        if (isDistrictRecommendation()) {
+        // TODO ATTENTION: when new checkout flow is fully released, please refactor (remove) this part immediately
+        if (isDistrictRecommendation() && token != null) {
             addressSpinerLayout.setVisibility(View.GONE);
             postCodeLayout.setVisibility(View.GONE);
             districtLayout.setVisibility(View.VISIBLE);
@@ -330,7 +331,8 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
                             address.setProvinceId(province.getProvinceId());
                         }
 
-                        if (!isEdit()) presenter.onProvinceSelected(pos);
+                        if(isEdit()) presenter.onEditProvinceSelected(pos);
+                        else presenter.onProvinceSelected(pos);
                     }
 
                     @Override
@@ -350,6 +352,7 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
                     City city = cityList.get(pos - 1);
                     address.setCityName(city.getCityName());
                     address.setCityId(city.getCityId());
+                    presenter.onRegencySelected(pos);
                 }
 
                 if (!isEdit()) presenter.onRegencySelected(pos);
@@ -558,7 +561,9 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
             )));
 
             zipCodeTextView.setText(address.getPostalCode());
+            postCodeEditText.setText(address.getPostalCode());
             receiverPhoneEditText.setText(address.getReceiverPhone());
+            locationEditText.setText(address.getGeoLocation(getActivity()));
         } else if (address == null) {
             address = new Destination();
         }
@@ -819,6 +824,19 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
             spinnerRegency.setSelection(regencyAdapter.getPositionFromName(addressModel.getCityName()));
             presenter.getListDistrict(regencyAdapter.getList().get(spinnerRegency.getSelectedItemPosition() - 1));
         }
+        this.mCities = new ArrayList<>(cities);
+    }
+
+    @Override
+    public void changeProvince(List<City> cities){
+        progressRegency.setVisibility(View.GONE);
+        regencyTitle.setVisibility(View.VISIBLE);
+        spinnerRegency.setVisibility(View.VISIBLE);
+        regencyAdapter.setList(cities);
+        Destination addressModel = getArguments().getParcelable(EDIT_PARAM);
+        if(addressModel != null)
+            spinnerRegency
+                    .setSelection(regencyAdapter.getPositionFromName(addressModel.getCityName()));
         this.mCities = new ArrayList<>(cities);
     }
 

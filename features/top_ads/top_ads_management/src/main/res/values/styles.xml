@@ -44,4 +44,8 @@
     <style name="LabelLayout.TopAdsLabelView.BorderBottom">
         <item name="android:background">@drawable/bg_border_bottom</item>
     </style>
+
+    <style name="LabelLayout.TopAdsLabelView.BorderBottom">
+        <item name="android:background">@drawable/bg_border_bottom</item>
+    </style>
 </resources>

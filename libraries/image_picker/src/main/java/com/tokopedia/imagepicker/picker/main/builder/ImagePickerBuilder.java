@@ -30,8 +30,7 @@ public class ImagePickerBuilder implements Parcelable {
     int galleryType;
     private int minResolution;
 
-    private int ratioX;
-    private int ratioY;
+    private ImageRatioTypeDef imageRatioTypeDef;
     private boolean moveImageResultToLocal;
 
     private long maxFileSizeInKB;
@@ -43,7 +42,7 @@ public class ImagePickerBuilder implements Parcelable {
         return new ImagePickerBuilder(context.getString(R.string.choose_image),
                 new int[]{TYPE_GALLERY, TYPE_CAMERA, TYPE_INSTAGRAM}, GalleryType.IMAGE_ONLY,
                 DEFAULT_MAX_IMAGE_SIZE_IN_KB,
-                DEFAULT_MIN_RESOLUTION, 1, 1, true,
+                DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.RATIO_1_1, true,
                 ImagePickerEditorBuilder.getDefaultBuilder(),
                 ImagePickerMultipleSelectionBuilder.getDefaultBuilder());
     }
@@ -53,7 +52,7 @@ public class ImagePickerBuilder implements Parcelable {
                               @GalleryType int galleryType,
                               int maxFileSizeInKB,
                               int minResolution,
-                              int ratioX, int ratioY,
+                              ImageRatioTypeDef imageRatioTypeDef,
                               boolean moveImageResultToLocal,
                               @Nullable ImagePickerEditorBuilder imagePickerEditorBuilder,
                               @Nullable ImagePickerMultipleSelectionBuilder imagePickerMultipleSelectionBuilder) {
@@ -62,8 +61,9 @@ public class ImagePickerBuilder implements Parcelable {
         this.galleryType = galleryType;
         this.maxFileSizeInKB = maxFileSizeInKB;
         this.minResolution = minResolution;
-        this.ratioX = ratioX;
-        this.ratioY = ratioY;
+        this.imageRatioTypeDef = imageRatioTypeDef == null ?
+                ImageRatioTypeDef.ORIGINAL :
+                imageRatioTypeDef;
         this.moveImageResultToLocal = moveImageResultToLocal;
         this.imagePickerEditorBuilder = imagePickerEditorBuilder;
         this.imagePickerMultipleSelectionBuilder = imagePickerMultipleSelectionBuilder;
@@ -108,11 +108,11 @@ public class ImagePickerBuilder implements Parcelable {
     }
 
     public int getRatioX() {
-        return ratioX;
+        return imageRatioTypeDef.getRatioX();
     }
 
     public int getRatioY() {
-        return ratioY;
+        return imageRatioTypeDef.getRatioY();
     }
 
     public boolean isContinueToEditAfterPick() {
@@ -124,6 +124,10 @@ public class ImagePickerBuilder implements Parcelable {
             return imagePickerEditorBuilder.getImageEditActionType();
         }
         return null;
+    }
+
+    public ImageRatioTypeDef getImageRatioTypeDef() {
+        return imageRatioTypeDef;
     }
 
     public boolean isCirclePreview() {
@@ -156,8 +160,12 @@ public class ImagePickerBuilder implements Parcelable {
         return imagePickerMultipleSelectionBuilder;
     }
 
-    public ImagePickerEditorBuilder getImagePickerEditorBuilder() {
-        return imagePickerEditorBuilder;
+    public @Nullable ArrayList<ImageRatioTypeDef> getRatioOptionList() {
+        if (imagePickerEditorBuilder != null){
+            return imagePickerEditorBuilder.getImageRatioTypeDefs();
+        } else {
+            return null;
+        }
     }
 
     public long getMaxFileSizeInKB() {
@@ -175,8 +183,7 @@ public class ImagePickerBuilder implements Parcelable {
         dest.writeIntArray(this.tabTypeDef);
         dest.writeInt(this.galleryType);
         dest.writeInt(this.minResolution);
-        dest.writeInt(this.ratioX);
-        dest.writeInt(this.ratioY);
+        dest.writeInt(this.imageRatioTypeDef == null ? -1 : this.imageRatioTypeDef.ordinal());
         dest.writeByte(this.moveImageResultToLocal ? (byte) 1 : (byte) 0);
         dest.writeLong(this.maxFileSizeInKB);
         dest.writeParcelable(this.imagePickerEditorBuilder, flags);
@@ -188,8 +195,8 @@ public class ImagePickerBuilder implements Parcelable {
         this.tabTypeDef = in.createIntArray();
         this.galleryType = in.readInt();
         this.minResolution = in.readInt();
-        this.ratioX = in.readInt();
-        this.ratioY = in.readInt();
+        int tmpImageRatioTypeDef = in.readInt();
+        this.imageRatioTypeDef = tmpImageRatioTypeDef == -1 ? null : ImageRatioTypeDef.values()[tmpImageRatioTypeDef];
         this.moveImageResultToLocal = in.readByte() != 0;
         this.maxFileSizeInKB = in.readLong();
         this.imagePickerEditorBuilder = in.readParcelable(ImagePickerEditorBuilder.class.getClassLoader());

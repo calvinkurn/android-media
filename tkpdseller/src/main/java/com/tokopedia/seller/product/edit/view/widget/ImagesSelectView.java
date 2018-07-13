@@ -10,6 +10,7 @@ import android.support.v7.widget.SimpleItemAnimator;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
+import android.webkit.URLUtil;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
@@ -156,6 +157,9 @@ public class ImagesSelectView extends BaseCustomView {
     }
 
     public boolean successHandleResolution(String localUri) {
+        if (URLUtil.isNetworkUrl(localUri)) {
+            return true;
+        }
         if (onCheckResolutionListener == null || onCheckResolutionListener.isResolutionCorrect(localUri)) {
             return true;
         } else { // resolution is not correct
@@ -192,8 +196,12 @@ public class ImagesSelectView extends BaseCustomView {
         }
     }
 
+    public void setImagesString(List<String> imageStringList) {
+        imageSelectorAdapter.setImageString(imageStringList);
+    }
+
     public void setImage(ArrayList<ImageSelectModel> imageSelectModelList) {
-//        handleResolutionFromList(imageSelectModelList);
+        handleResolutionFromList(imageSelectModelList);
 
         if (imageSelectModelList.size() > 0) {
             imageSelectorAdapter.setImage(imageSelectModelList);
@@ -261,6 +269,10 @@ public class ImagesSelectView extends BaseCustomView {
 
     public ArrayList<ImageSelectModel> getImageList() {
         return imageSelectorAdapter.getImageSelectModelList();
+    }
+
+    public ArrayList<String> getImageStringList() {
+        return imageSelectorAdapter.getImageStringList();
     }
 
     public int getSelectedImageIndex() {

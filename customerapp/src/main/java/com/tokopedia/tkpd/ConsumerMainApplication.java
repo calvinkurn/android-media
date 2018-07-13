@@ -51,6 +51,7 @@ import com.tokopedia.payment.fingerprint.util.PaymentFingerprintConstant;
 import com.tokopedia.profile.data.network.ProfileUrl;
 import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.reputation.common.constant.ReputationCommonUrl;
+import com.tokopedia.seller.product.imagepicker.util.CatalogConstant;
 import com.tokopedia.shop.common.constant.ShopCommonUrl;
 import com.tokopedia.shop.common.constant.ShopUrl;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
@@ -206,6 +207,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         FingerprintConstantRegister.TOP_PAY_DOMAIN = ConsumerAppBaseUrl.TOP_PAY_DOMAIN;
         LogisticDataConstantUrl.BASE_DOMAIN = ConsumerAppBaseUrl.BASE_DOMAIN;
         GMCommonUrl.BASE_URL = ConsumerAppBaseUrl.BASE_GOLD_MERCHANT_DOMAIN;
+        CatalogConstant.URL_HADES = ConsumerAppBaseUrl.BASE_HADES_DOMAIN;
 
         generateTransactionDataModuleBaseUrl();
         generateLogisticDataModuleBaseUrl();

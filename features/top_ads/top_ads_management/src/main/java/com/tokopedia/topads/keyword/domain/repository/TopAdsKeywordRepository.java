@@ -11,7 +11,6 @@ import com.tokopedia.usecase.RequestParams;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-
 import rx.Observable;
 
 /**

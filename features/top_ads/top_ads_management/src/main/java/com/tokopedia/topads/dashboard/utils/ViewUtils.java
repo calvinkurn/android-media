@@ -9,7 +9,6 @@ import com.tokopedia.seller.common.exception.TomeException;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.topads.common.data.exception.ResponseErrorException;
-
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;

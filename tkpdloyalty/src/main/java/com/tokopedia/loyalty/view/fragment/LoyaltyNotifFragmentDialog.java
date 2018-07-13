@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.drawer2.data.viewmodel.PopUpNotif;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.loyalty.R;
 
@@ -32,7 +33,7 @@ public class LoyaltyNotifFragmentDialog extends DialogFragment {
     TextView tvAction;
     ImageView ivPic;
 
-    public static DialogFragment newInstance(TokoPointDrawerData.PopUpNotif popUpNotifData) {
+    public static DialogFragment newInstance(PopUpNotif popUpNotifData) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARG_EXTRA_POP_UP_NOTIFICATION, popUpNotifData);
         DialogFragment fragment = new LoyaltyNotifFragmentDialog();
@@ -40,7 +41,7 @@ public class LoyaltyNotifFragmentDialog extends DialogFragment {
         return fragment;
     }
 
-    private TokoPointDrawerData.PopUpNotif popUpNotifData;
+    private PopUpNotif popUpNotifData;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

@@ -41,6 +41,7 @@ import com.tokopedia.otp.cotp.data.SQLoginUrl;
 import com.tokopedia.payment.fingerprint.util.PaymentFingerprintConstant;
 import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.reputation.common.constant.ReputationCommonUrl;
+import com.tokopedia.seller.product.imagepicker.util.CatalogConstant;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
@@ -194,6 +195,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         ShopCommonUrl.BASE_WS_URL = SellerAppBaseUrl.BASE_DOMAIN;
         ReputationCommonUrl.BASE_URL = SellerAppBaseUrl.BASE_DOMAIN;
         AbstractionBaseURL.JS_DOMAIN = SellerAppBaseUrl.BASE_JS_DOMAIN;
+        CatalogConstant.URL_HADES = SellerAppBaseUrl.BASE_HADES_DOMAIN;
 
         MitraToppersBaseURL.WEB_DOMAIN = SellerAppBaseUrl.BASE_WEB_DOMAIN;
         MitraToppersBaseURL.PATH_MITRA_TOPPERS = SellerAppBaseUrl.PATH_MITRA_TOPPERS;

@@ -1,5 +1,6 @@
 package com.tokopedia.imagepicker.picker.instagram.domain.mapper;
 
+import com.tokopedia.imagepicker.picker.instagram.data.model.Images;
 import com.tokopedia.imagepicker.picker.instagram.view.model.InstagramMediaModel;
 import com.tokopedia.imagepicker.picker.instagram.view.model.InstagramMediaResponse;
 import com.tokopedia.imagepicker.picker.instagram.data.model.MediaInstagram;
@@ -24,12 +25,14 @@ public class InstagramMediaMapper  {
         InstagramMediaResponse instagramMediaResponse = new InstagramMediaResponse();
         List<InstagramMediaModel> instagramMediaModels = new ArrayList<>();
         for(MediaInstagram mediaInstagram : responseListMediaInstagram.getData()){
+            Images instagramImage = mediaInstagram.getImages();
             InstagramMediaModel instagramMediaModel = new InstagramMediaModel(
                     mediaInstagram.getId(),
-                    mediaInstagram.getImages().getThumbnail().getUrl(),
-                    mediaInstagram.getImages().getStandardResolution().getUrl(),
-                    mediaInstagram.getImages().getStandardResolution().getWidth(),
-                    mediaInstagram.getImages().getStandardResolution().getHeight());
+                    instagramImage.getThumbnail().getUrl(),
+                    instagramImage.getStandardResolution().getUrl(),
+                    instagramImage.getStandardResolution().getWidth(),
+                    instagramImage.getStandardResolution().getHeight(),
+                    mediaInstagram.getCaption() == null? "" : mediaInstagram.getCaption().getText());
             instagramMediaModels.add(instagramMediaModel);
         }
         instagramMediaResponse.setInstagramMediaModels(instagramMediaModels);
