@@ -26,24 +26,24 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
     GraphqlUseCase getOrderListUseCase;
 
     @Inject
-    public OrderListPresenterImpl(GraphqlUseCase getOrderListUseCase) {
-        this.getOrderListUseCase = getOrderListUseCase;
+    public OrderListPresenterImpl() {
 
     }
 
     @Override
-    public void getAllOrderData(Context context, String orderCategory, final int typeRequest, int page) {
+    public void getAllOrderData(Context context, String orderCategory, final int typeRequest, int page, int orderId) {
         getView().showProcessGetData(orderCategory);
         Map<String, Object> variables = new HashMap<>();
         variables.put("orderCategory", orderCategory);
         variables.put("Page", page);
         variables.put("PerPage", 10);
+        variables.put("orderId", orderId);
 
         GraphqlRequest graphqlRequest = new
                 GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
                 R.raw.orderlist), Data.class, variables);
-
-
+        getOrderListUseCase = new GraphqlUseCase();
+        getOrderListUseCase.clearRequest();
         getOrderListUseCase.setRequest(graphqlRequest);
 
         getOrderListUseCase.execute(new Subscriber<GraphqlResponse>() {
@@ -53,7 +53,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
 
             @Override
             public void onError(Throwable e) {
-                CommonUtils.dumper(e.toString());
+                CommonUtils.dumper("error ="+e.toString());
                 getView().removeProgressBarView();
                 getView().unregisterScrollListener();
                 if (e instanceof UnknownHostException || e instanceof ConnectException) {
@@ -70,6 +70,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                     Data data = response.getData(Data.class);
                     if (!data.orders().isEmpty()) {
                         getView().renderDataList(data.orders());
+                        getView().setLastOrderId(data.orders().get(0).getOrderId());
                     } else {
                         getView().unregisterScrollListener();
                         getView().renderEmptyList(typeRequest);

@@ -211,11 +211,8 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             if (payMethod.getValue() != null && !payMethod.getValue().equals(""))
                 getView().setPayMethodInfo(payMethod);
         }
-        for (Pricing pricing : details.pricing()) {
-            if (pricing.value() != null && !pricing.value().equals(""))
-                getView().setPricing(pricing);
-        }
         getView().setPaymentData(details.paymentData());
+        getView().setContactUs(details.contactUs());
 
         if (details.actionButtons().size() == 2) {
             ActionButton leftActionButton = details.actionButtons().get(0);

@@ -17,8 +17,6 @@ import java.util.List;
 
 public class ListAdapterContract {
     public interface View extends CustomerView {
-        void setButtonData(int leftVisibility, int rightVisibility, String leftText, String rightText, String leftButtonUri, String rightButtonUri, Popup leftPopup, Popup rightPopup, Color leftButtonColor, Color rightButtonColor);
-
         void setDotMenuVisibility(int visibility);
 
         void setCategoryAndTitle(String categoryName, String title);
@@ -39,7 +37,9 @@ public class ListAdapterContract {
 
         void setPaymentAvatar(String imgUrl);
 
+        void setActionButtonData(ActionButton leftActionButton, ActionButton rightActionButton, int leftVisibility, int rightVisibility);
     }
+
     public interface Presenter extends CustomerPresenter<View> {
         void setActionButtonData(List<ActionButton> actionButtons);
 

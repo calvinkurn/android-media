@@ -50,6 +50,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
     private int visibleThreshold = 2;
     private int lastVisibleItem;
     private Bundle savedState;
+    private int orderId = 1;
 
     @Inject
     OrderListPresenterImpl presenter;
@@ -240,7 +241,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
             mOrderDataList.clear();
 
         }
-        presenter.getAllOrderData(getActivity(), mOrderCategory, TxOrderNetInteractor.TypeRequest.INITIAL, page_num);
+        presenter.getAllOrderData(getActivity(), mOrderCategory, TxOrderNetInteractor.TypeRequest.INITIAL, page_num, 1);
     }
 
     void onLoadMore() {
@@ -249,7 +250,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
         orderListAdapter.addItemAtLast(null);
         if (!isLoading) {
             isLoading = true;
-            presenter.getAllOrderData(getActivity(), mOrderCategory, TxOrderNetInteractor.TypeRequest.LOAD_MORE, page_num);
+            presenter.getAllOrderData(getActivity(), mOrderCategory, TxOrderNetInteractor.TypeRequest.LOAD_MORE, page_num, orderId);
         }
     }
 
@@ -293,11 +294,16 @@ public class OrderListFragment extends BaseDaggerFragment implements
         return getActivity().getApplicationContext();
     }
 
+    @Override
+    public void setLastOrderId(int orderid) {
+        this.orderId = orderid;
+    }
+
     private NetworkErrorHelper.RetryClickedListener getEditShipmentRetryListener() {
         return new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
-                presenter.getAllOrderData(getActivity(), mOrderCategory, TxOrderNetInteractor.TypeRequest.INITIAL, page_num);
+                presenter.getAllOrderData(getActivity(), mOrderCategory, TxOrderNetInteractor.TypeRequest.INITIAL, page_num, 1);
             }
         };
     }
