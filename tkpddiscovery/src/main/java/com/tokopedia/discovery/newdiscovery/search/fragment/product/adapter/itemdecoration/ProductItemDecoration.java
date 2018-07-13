@@ -85,13 +85,14 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
     }
 
     @Override
-    public void onDraw(Canvas canvas, RecyclerView parent, RecyclerView.State state) {
+    public void onDrawOver(Canvas canvas, RecyclerView parent, RecyclerView.State state) {
         Paint paint = new Paint();
         paint.setColor(color);
 
         int childCount = parent.getChildCount();
-        for (int absolutePos = 0; absolutePos < childCount; absolutePos++) {
-            View child = parent.getChildAt(absolutePos);
+        for (int i = 0; i < childCount; i++) {
+            View child = parent.getChildAt(i);
+            int absolutePos = parent.getChildAdapterPosition(child);
             if (!isProductItem(parent, absolutePos) || child == null) {
                 continue;
             }
