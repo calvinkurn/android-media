@@ -1,13 +1,12 @@
 package com.tokopedia.shop.product.view.model;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory;
 
 /**
  * Created by nathan on 2/6/18.
  */
 
-public abstract class ShopProductViewModel<T> implements Visitable<T> {
+public abstract class ShopProductViewModelOld<T> implements Visitable<T> {
 
     private String id;
     private String name;
@@ -29,7 +28,7 @@ public abstract class ShopProductViewModel<T> implements Visitable<T> {
     private boolean isSoldOut;
     private int positionTracking;
 
-    public ShopProductViewModel() {
+    public ShopProductViewModelOld() {
     }
 
     public String getOriginalPrice() {

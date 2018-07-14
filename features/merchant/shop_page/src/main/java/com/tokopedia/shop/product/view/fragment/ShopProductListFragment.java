@@ -43,14 +43,14 @@ import com.tokopedia.shop.etalase.view.activity.ShopEtalaseActivity;
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
 import com.tokopedia.shop.product.di.module.ShopProductModule;
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapter;
-import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory;
-import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductListViewHolder;
-import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductSingleViewHolder;
-import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolder;
+import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactoryOld;
+import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductListViewHolderOld;
+import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductSingleViewHolderOld;
+import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolderOld;
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener;
 import com.tokopedia.shop.product.view.listener.ShopProductListView;
-import com.tokopedia.shop.product.view.model.ShopProductViewModel;
-import com.tokopedia.shop.product.view.presenter.ShopProductListPresenter;
+import com.tokopedia.shop.product.view.model.ShopProductViewModelOld;
+import com.tokopedia.shop.product.view.presenter.ShopProductListPresenterOld;
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity;
 
 import java.util.List;
@@ -60,8 +60,8 @@ import javax.inject.Inject;
 /**
  * Created by nathan on 2/15/18.
  */
-
-public class ShopProductListFragment extends BaseSearchListFragment<ShopProductViewModel, ShopProductAdapterTypeFactory> implements ShopProductListView, ShopProductClickedListener, ShopProductAdapterTypeFactory.TypeFactoryListener {
+@Deprecated
+public class ShopProductListFragment extends BaseSearchListFragment<ShopProductViewModelOld, ShopProductAdapterTypeFactoryOld> implements ShopProductListView, ShopProductClickedListener, ShopProductAdapterTypeFactoryOld.TypeFactoryListener {
 
     public static final int SPAN_COUNT = 2;
     private static final int REQUEST_CODE_USER_LOGIN = 100;
@@ -71,9 +71,9 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     private static final int LAYOUT_GRID_TYPE = 65;
     private static final int LAYOUT_LIST_TYPE = 97;
     private static final Pair<Integer, Integer>[] layoutType = new Pair[]{
-            new Pair<>(ShopProductViewHolder.LAYOUT, LAYOUT_GRID_TYPE),
-            new Pair<>(ShopProductSingleViewHolder.LAYOUT, LAYOUT_LIST_TYPE),
-            new Pair<>(ShopProductListViewHolder.LAYOUT, LAYOUT_LIST_TYPE)
+            new Pair<>(ShopProductViewHolderOld.LAYOUT, LAYOUT_GRID_TYPE),
+            new Pair<>(ShopProductSingleViewHolderOld.LAYOUT, LAYOUT_LIST_TYPE),
+            new Pair<>(ShopProductListViewHolderOld.LAYOUT, LAYOUT_LIST_TYPE)
     };
 
     private static final int[] LAYOUT_IMAGE_DRAWABLE_LIST = new int[]{
@@ -82,7 +82,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
             R.drawable.ic_see_list};
 
     @Inject
-    ShopProductListPresenter shopProductListPresenter;
+    ShopProductListPresenterOld shopProductListPresenterOld;
     @Inject
     ShopPageTracking shopPageTracking;
     private LabelView etalaseLabelView;
@@ -94,7 +94,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     private String keyword;
     private String sortName = Integer.toString(Integer.MIN_VALUE);
     private String attribution;
-    private Pair<Integer, Integer> currentLayoutType = new Pair<>(ShopProductViewHolder.LAYOUT, 65);
+    private Pair<Integer, Integer> currentLayoutType = new Pair<>(ShopProductViewHolderOld.LAYOUT, 65);
     private int currentIndex = 0, currentImgBottomNav = 0;
     private String sortId;
     private RecyclerView recyclerViews;
@@ -114,13 +114,13 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     }
 
     @Override
-    protected ShopProductAdapterTypeFactory getAdapterTypeFactory() {
-        return new ShopProductAdapterTypeFactory(this, this);
+    protected ShopProductAdapterTypeFactoryOld getAdapterTypeFactory() {
+        return new ShopProductAdapterTypeFactoryOld(this, this);
     }
 
     @NonNull
     @Override
-    protected BaseListAdapter<ShopProductViewModel, ShopProductAdapterTypeFactory> createAdapterInstance() {
+    protected BaseListAdapter<ShopProductViewModelOld, ShopProductAdapterTypeFactoryOld> createAdapterInstance() {
         return new ShopProductAdapter(getAdapterTypeFactory());
     }
 
@@ -155,7 +155,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
         etalaseId = getArguments().getString(ShopParamConstant.EXTRA_ETALASE_ID, "");
         sortName = getArguments().getString(ShopParamConstant.EXTRA_SORT_ID, Integer.toString(Integer.MIN_VALUE));
         attribution = getArguments().getString(ShopParamConstant.EXTRA_ATTRIBUTION, "");
-        shopProductListPresenter.attachView(this);
+        shopProductListPresenterOld.attachView(this);
     }
 
     @Nullable
@@ -189,7 +189,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
                 if (shopModuleRouter != null) {
                     if (shopInfo != null) {
                         shopPageTracking.eventClickEtalaseShop(getString(R.string.shop_info_title_tab_product), false, shopId,
-                                shopProductListPresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
+                                shopProductListPresenterOld.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
                     }
                     Intent etalaseIntent = ShopEtalaseActivity.createIntent(getActivity(), shopId, etalaseId);
                     startActivityForResult(etalaseIntent, REQUEST_CODE_ETALASE);
@@ -206,7 +206,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
                 setBottomActionViewImage(++currentImgBottomNav);
                 if (shopInfo != null) {
                     shopPageTracking.eventClickViewTypeProduct(getString(R.string.shop_info_title_tab_product),
-                            currentImgBottomNav, shopId, shopProductListPresenter.isMyShop(shopId),
+                            currentImgBottomNav, shopId, shopProductListPresenterOld.isMyShop(shopId),
                             ShopPageTracking.getShopType(shopInfo.getInfo()));
                 }
             }
@@ -217,7 +217,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
             public void onClick(View view) {
                 if (shopInfo != null) {
                     shopPageTracking.eventClickSortProductList(getString(R.string.shop_info_title_tab_product), shopId,
-                            shopProductListPresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
+                            shopProductListPresenterOld.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
                 }
                 ShopProductListFragment.this.startActivityForResult(ShopProductSortActivity.createIntent(getActivity(), sortName, shopId), REQUEST_CODE_SORT);
             }
@@ -229,7 +229,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
 
     @Override
     public void onSwipeRefresh() {
-        shopProductListPresenter.clearProductCache();
+        shopProductListPresenterOld.clearProductCache();
         super.onSwipeRefresh();
     }
 
@@ -255,8 +255,8 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
                 ((GridLayoutManager) layoutManager).setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
                     @Override
                     public int getSpanSize(int position) {
-                        if (recyclerView.getAdapter().getItemViewType(position) == ShopProductViewHolder.LAYOUT) {
-                            return ShopProductViewHolder.SPAN_LOOK_UP;
+                        if (recyclerView.getAdapter().getItemViewType(position) == ShopProductViewHolderOld.LAYOUT) {
+                            return ShopProductViewHolderOld.SPAN_LOOK_UP;
                         }
                         return SPAN_COUNT;
                     }
@@ -281,12 +281,12 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     }
 
     @Override
-    public void renderList(@NonNull List<ShopProductViewModel> list, boolean hasNextPage) {
+    public void renderList(@NonNull List<ShopProductViewModelOld> list, boolean hasNextPage) {
         super.renderList(list, hasNextPage);
         showBottomActionView();
         if (shopInfo != null) {
             shopPageTracking.eventViewProductImpression(getString(R.string.shop_info_title_tab_product),
-                    list, attribution, false, shopProductListPresenter.isMyShop(shopId),
+                    list, attribution, false, shopProductListPresenterOld.isMyShop(shopId),
                     ShopPageTracking.getShopType(shopInfo.getInfo()), (currentLayoutType.second == LAYOUT_GRID_TYPE));
         }
     }
@@ -311,39 +311,39 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
 
     @Override
     public void loadData(int page) {
-        shopProductListPresenter.getShopPageList(shopId, keyword, etalaseId, 0, page, Integer.valueOf(sortName));
+        shopProductListPresenterOld.getShopPageList(shopId, keyword, etalaseId, 0, page, Integer.valueOf(sortName));
     }
 
     @Override
-    public void onItemClicked(ShopProductViewModel shopProductViewModel) {
+    public void onItemClicked(ShopProductViewModelOld shopProductViewModelOld) {
 
     }
 
     @Override
-    public void onWishListClicked(ShopProductViewModel shopProductViewModel) {
+    public void onWishListClicked(ShopProductViewModelOld shopProductViewModelOld) {
         if (shopInfo != null) {
             shopPageTracking.eventClickWishlistShop(getString(R.string.shop_info_title_tab_product),
-                    shopProductViewModel.isWishList(), false, shopId, shopProductListPresenter.isMyShop(shopId),
+                    shopProductViewModelOld.isWishList(), false, shopId, shopProductListPresenterOld.isMyShop(shopId),
                     ShopPageTracking.getShopType(shopInfo.getInfo()));
         }
-        if (shopProductViewModel.isWishList()) {
-            shopProductListPresenter.removeFromWishList(shopProductViewModel.getId());
+        if (shopProductViewModelOld.isWishList()) {
+            shopProductListPresenterOld.removeFromWishList(shopProductViewModelOld.getId());
         } else {
-            shopProductListPresenter.addToWishList(shopProductViewModel.getId());
+            shopProductListPresenterOld.addToWishList(shopProductViewModelOld.getId());
         }
     }
 
     @Override
-    public void onProductClicked(ShopProductViewModel shopProductViewModel) {
+    public void onProductClicked(ShopProductViewModelOld shopProductViewModelOld) {
         if (shopInfo != null) {
             shopPageTracking.eventClickProductImpression(getString(R.string.shop_info_title_tab_product),
-                    shopProductViewModel.getName(), shopProductViewModel.getId(), shopProductViewModel.getDisplayedPrice(), attribution,
-                    shopProductViewModel.getPositionTracking(), false, shopProductListPresenter.isMyShop(shopId),
+                    shopProductViewModelOld.getName(), shopProductViewModelOld.getId(), shopProductViewModelOld.getDisplayedPrice(), attribution,
+                    shopProductViewModelOld.getPositionTracking(), false, shopProductListPresenterOld.isMyShop(shopId),
                     ShopPageTracking.getShopType(shopInfo.getInfo()), (currentLayoutType.second == LAYOUT_GRID_TYPE));
         }
-        shopModuleRouter.goToProductDetail(getActivity(), shopProductViewModel.getId(),
-                shopProductViewModel.getName(), shopProductViewModel.getDisplayedPrice(), shopProductViewModel.getImageUrl(),
-                attribution, shopPageTracking.getListNameOfProduct(shopProductViewModel.getPositionTracking(), (currentLayoutType.second == LAYOUT_GRID_TYPE),
+        shopModuleRouter.goToProductDetail(getActivity(), shopProductViewModelOld.getId(),
+                shopProductViewModelOld.getName(), shopProductViewModelOld.getDisplayedPrice(), shopProductViewModelOld.getImageUrl(),
+                attribution, shopPageTracking.getListNameOfProduct(shopProductViewModelOld.getPositionTracking(), (currentLayoutType.second == LAYOUT_GRID_TYPE),
                         ShopPageTrackingConstant.PRODUCT_ETALASE));
     }
 
@@ -399,7 +399,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
             this.etalaseId = etalaseId;
         }
         if (TextUtils.isEmpty(etalaseName)) {
-            if (shopProductListPresenter.isMyShop(shopId)) {
+            if (shopProductListPresenterOld.isMyShop(shopId)) {
                 etalaseLabelView.setContent(getString(R.string.shop_info_filter_all_showcase));
             } else {
                 etalaseLabelView.setContent(getString(R.string.shop_info_filter_menu_etalase_all));
@@ -433,7 +433,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
                     String etalaseName = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_NAME);
                     if (shopInfo != null) {
                         shopPageTracking.eventClickEtalaseShopChoose(getString(R.string.shop_info_title_tab_product),
-                                false, etalaseName, shopId, shopProductListPresenter.isMyShop(shopId),
+                                false, etalaseName, shopId, shopProductListPresenterOld.isMyShop(shopId),
                                 ShopPageTracking.getShopType(shopInfo.getInfo()));
                     }
                     this.isLoadingInitialData = true;
@@ -487,8 +487,8 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (shopProductListPresenter != null) {
-            shopProductListPresenter.detachView();
+        if (shopProductListPresenterOld != null) {
+            shopProductListPresenterOld.detachView();
         }
     }
 

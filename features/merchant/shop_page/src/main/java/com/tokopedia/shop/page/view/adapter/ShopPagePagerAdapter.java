@@ -7,10 +7,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.tokopedia.shop.ShopModuleRouter;
-import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedFragment;
+import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedFragmentOld;
 import com.tokopedia.shop.product.view.widget.ShopPagePromoWebView;
-
-import java.util.Arrays;
 
 /**
  * Created by normansyahputa on 3/13/18.
@@ -53,9 +51,9 @@ public class ShopPagePagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                ShopProductListLimitedFragment shopProductListLimitedFragment =  ShopProductListLimitedFragment.createInstance(shopAttribution);
-                shopProductListLimitedFragment.setPromoWebViewListener(listener);
-                return shopProductListLimitedFragment;
+                ShopProductListLimitedFragmentOld shopProductListLimitedFragmentOld =  ShopProductListLimitedFragmentOld.createInstance(shopAttribution);
+                shopProductListLimitedFragmentOld.setPromoWebViewListener(listener);
+                return shopProductListLimitedFragmentOld;
             case 1:
                 if (shopModuleRouter != null) {
                     return shopModuleRouter.getShopReputationFragmentShop(shopId, shopDomain);

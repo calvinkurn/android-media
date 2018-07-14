@@ -1,10 +1,11 @@
-package com.tokopedia.shop.product.view.adapter.viewholder;
+package com.tokopedia.shop.product.view.adapter.newadapter.viewholder;
 
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.support.annotation.LayoutRes;
+import android.text.TextUtils;
 import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.SslErrorHandler;
@@ -18,14 +19,10 @@ import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.product.util.ShopProductOfficialStoreUtils;
 import com.tokopedia.shop.product.view.listener.ShopProductUserVisibleHintListener;
-import com.tokopedia.shop.product.view.model.ShopProductLimitedPromoViewModel;
+import com.tokopedia.shop.product.view.model.newmodel.ShopProductPromoViewModel;
 import com.tokopedia.shop.product.view.widget.NestedWebView;
 
-/**
- * @author by alvarisi on 12/12/17.
- */
-@Deprecated
-public class ShopProductLimitedPromoViewHolder extends AbstractViewHolder<ShopProductLimitedPromoViewModel> implements
+public class ShopProductPromoViewHolder extends AbstractViewHolder<ShopProductPromoViewModel> implements
         ShopProductUserVisibleHintListener {
 
     private static final String SHOP_STATIC_URL = "shop-static";
@@ -38,10 +35,10 @@ public class ShopProductLimitedPromoViewHolder extends AbstractViewHolder<ShopPr
 
     private View loadingLayout;
     private NestedWebView shopPagePromoWebView;
-    private boolean binded;
+
     private boolean isLogin;
 
-    public ShopProductLimitedPromoViewHolder(View itemView, PromoViewHolderListener promoViewHolderListener) {
+    public ShopProductPromoViewHolder(View itemView, PromoViewHolderListener promoViewHolderListener) {
         super(itemView);
         this.promoViewHolderListener = promoViewHolderListener;
         findViews(itemView);
@@ -77,8 +74,13 @@ public class ShopProductLimitedPromoViewHolder extends AbstractViewHolder<ShopPr
     }
 
     @Override
-    public void bind(ShopProductLimitedPromoViewModel shopProductLimitedPromoViewModel) {
-        if (binded && isLogin == shopProductLimitedPromoViewModel.isLogin()) {
+    public void bind(ShopProductPromoViewModel shopProductLimitedPromoViewModel) {
+        if (TextUtils.isEmpty(shopProductLimitedPromoViewModel.getUrl())){
+            itemView.setVisibility(View.GONE);
+        } else {
+            itemView.setVisibility(View.VISIBLE);
+        }
+        if (isLogin == shopProductLimitedPromoViewModel.isLogin()) {
             return;
         }
         if (shopProductLimitedPromoViewModel.isLogin()) {
@@ -89,8 +91,12 @@ public class ShopProductLimitedPromoViewHolder extends AbstractViewHolder<ShopPr
             shopPagePromoWebView.loadUrl(shopProductLimitedPromoViewModel.getUrl());
         }
         shopProductLimitedPromoViewModel.setShopProductUserVisibleHintListener(this);
-        binded = true;
+
         isLogin = shopProductLimitedPromoViewModel.isLogin();
+
+        //https://stackoverflow.com/questions/36313079/
+        //to prevent the webview to recycled by recyclerview.
+        setIsRecyclable(false);
     }
 
     private void showLoading() {

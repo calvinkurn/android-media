@@ -5,9 +5,9 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant;
 import com.tokopedia.shop.product.domain.model.ShopProductRequestModel;
 import com.tokopedia.shop.product.view.mapper.ShopProductMapper;
 import com.tokopedia.shop.product.view.model.ShopProductBaseViewModel;
-import com.tokopedia.shop.product.view.model.ShopProductHomeViewModel;
-import com.tokopedia.shop.product.view.model.ShopProductLimitedFeaturedViewModel;
-import com.tokopedia.shop.product.view.model.ShopProductViewModel;
+import com.tokopedia.shop.product.view.model.ShopProductHomeViewModelOld;
+import com.tokopedia.shop.product.view.model.ShopProductLimitedFeaturedViewModelOld;
+import com.tokopedia.shop.product.view.model.ShopProductViewModelOld;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -56,31 +56,31 @@ public class GetShopProductLimitedUseCase extends UseCase<PagingList<ShopProduct
         shopProductRequestModel.setOfficialStore(officialStore);
         shopProductRequestModel.setPage(page);
         shopProductRequestModel.setUseAce(true);
-        List<ShopProductLimitedFeaturedViewModel> defaultFeaturedProductList = new ArrayList<>();
-        Observable<List<ShopProductLimitedFeaturedViewModel>> featuredProductObservable = Observable.just(defaultFeaturedProductList);
-        if ((goldMerchantStore || officialStore) && page == 1) {
-            featuredProductObservable = getShopProductFeaturedUseCase.createObservable(GetShopProductFeaturedUseCase.createRequestParam(shopId, officialStore))
-                    .flatMap(new Func1<List<ShopProductViewModel>, Observable<List<ShopProductLimitedFeaturedViewModel>>>() {
-                        @Override
-                        public Observable<List<ShopProductLimitedFeaturedViewModel>> call(List<ShopProductViewModel> shopProductViewModels) {
-                            return Observable.just(shopProductMapper.convertFromProductViewModelFeatured(shopProductViewModels));
-                        }
-                    });
-        }
-        Observable<PagingList<ShopProductHomeViewModel>> shopProductObservable =
+        List<ShopProductLimitedFeaturedViewModelOld> defaultFeaturedProductList = new ArrayList<>();
+        Observable<List<ShopProductLimitedFeaturedViewModelOld>> featuredProductObservable = Observable.just(defaultFeaturedProductList);
+//        if ((goldMerchantStore || officialStore) && page == 1) {
+//            featuredProductObservable = getShopProductFeaturedUseCase.createObservable(GetShopProductFeaturedUseCase.createRequestParam(shopId, officialStore))
+//                    .flatMap(new Func1<List<ShopProductViewModelOld>, Observable<List<ShopProductLimitedFeaturedViewModelOld>>>() {
+//                        @Override
+//                        public Observable<List<ShopProductLimitedFeaturedViewModelOld>> call(List<ShopProductViewModelOld> shopProductViewModelOlds) {
+//                            return Observable.just(shopProductMapper.convertFromProductViewModelFeatured(shopProductViewModelOlds));
+//                        }
+//                    });
+//        }
+        Observable<PagingList<ShopProductHomeViewModelOld>> shopProductObservable =
                 getShopProductListWithAttributeUseCase.createObservable(GetShopProductListUseCase.createRequestParam(shopProductRequestModel))
-                        .flatMap(new Func1<PagingList<ShopProductViewModel>, Observable<PagingList<ShopProductHomeViewModel>>>() {
+                        .flatMap(new Func1<PagingList<ShopProductViewModelOld>, Observable<PagingList<ShopProductHomeViewModelOld>>>() {
                             @Override
-                            public Observable<PagingList<ShopProductHomeViewModel>> call(PagingList<ShopProductViewModel> shopProductViewModelPagingList) {
+                            public Observable<PagingList<ShopProductHomeViewModelOld>> call(PagingList<ShopProductViewModelOld> shopProductViewModelPagingList) {
                                 return Observable.just(shopProductMapper.convertFromProductViewModel(shopProductViewModelPagingList, page, ShopPageTrackingConstant.DEFAULT_PER_PAGE));
                             }
                         });
 
         return Observable.zip(
                 featuredProductObservable.subscribeOn(Schedulers.io()), shopProductObservable.subscribeOn(Schedulers.io()),
-                new Func2<List<ShopProductLimitedFeaturedViewModel>, PagingList<ShopProductHomeViewModel>, PagingList<ShopProductBaseViewModel>>() {
+                new Func2<List<ShopProductLimitedFeaturedViewModelOld>, PagingList<ShopProductHomeViewModelOld>, PagingList<ShopProductBaseViewModel>>() {
                     @Override
-                    public PagingList<ShopProductBaseViewModel> call(List<ShopProductLimitedFeaturedViewModel> shopProductFeatured, PagingList<ShopProductHomeViewModel> shopProductList) {
+                    public PagingList<ShopProductBaseViewModel> call(List<ShopProductLimitedFeaturedViewModelOld> shopProductFeatured, PagingList<ShopProductHomeViewModelOld> shopProductList) {
                         PagingList<ShopProductBaseViewModel> shopProductBaseViewModelPagingList = new PagingList<>();
                         shopProductBaseViewModelPagingList.setPaging(shopProductList.getPaging());
                         shopProductBaseViewModelPagingList.setTotalData(shopProductList.getTotalData());

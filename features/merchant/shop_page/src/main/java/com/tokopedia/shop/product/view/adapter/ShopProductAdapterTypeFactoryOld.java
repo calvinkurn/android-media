@@ -7,23 +7,23 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingShimmeringGridViewHolder;
-import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductListViewHolder;
-import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductSingleViewHolder;
-import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolder;
+import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductListViewHolderOld;
+import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductSingleViewHolderOld;
+import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolderOld;
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener;
-import com.tokopedia.shop.product.view.model.ShopProductViewModel;
+import com.tokopedia.shop.product.view.model.ShopProductViewModelOld;
 
 /**
  * Created by alvarisi on 12/7/17.
  */
-
-public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
+@Deprecated
+public class ShopProductAdapterTypeFactoryOld extends BaseAdapterTypeFactory {
 
     private final ShopProductClickedListener shopProductClickedListener;
     private TypeFactoryListener typeFactoryListener;
 
-    public ShopProductAdapterTypeFactory(@Nullable TypeFactoryListener typeFactoryListener,
-                                         ShopProductClickedListener shopProductClickedListener) {
+    public ShopProductAdapterTypeFactoryOld(@Nullable TypeFactoryListener typeFactoryListener,
+                                            ShopProductClickedListener shopProductClickedListener) {
         this.typeFactoryListener = typeFactoryListener;
         this.shopProductClickedListener = shopProductClickedListener;
     }
@@ -33,23 +33,23 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
         return LoadingShimmeringGridViewHolder.LAYOUT;
     }
 
-    public int type(ShopProductViewModel shopProductViewModel) {
+    public int type(ShopProductViewModelOld shopProductViewModelOld) {
         if (typeFactoryListener != null) {
-            return typeFactoryListener.getType(shopProductViewModel);
+            return typeFactoryListener.getType(shopProductViewModelOld);
         }
-        return ShopProductViewHolder.LAYOUT;
+        return ShopProductViewHolderOld.LAYOUT;
     }
 
     @Override
     public AbstractViewHolder createViewHolder(View view, int viewType) {
         if (viewType == LoadingShimmeringGridViewHolder.LAYOUT) {
             return new LoadingShimmeringGridViewHolder(view);
-        } else if (viewType == ShopProductViewHolder.LAYOUT) {
-            return new ShopProductViewHolder(view, shopProductClickedListener);
-        } else if (viewType == ShopProductListViewHolder.LAYOUT) {
-            return new ShopProductListViewHolder(view, shopProductClickedListener);
-        } else if (viewType == ShopProductSingleViewHolder.LAYOUT) {
-            return new ShopProductSingleViewHolder(view, shopProductClickedListener);
+        } else if (viewType == ShopProductViewHolderOld.LAYOUT) {
+            return new ShopProductViewHolderOld(view, shopProductClickedListener);
+        } else if (viewType == ShopProductListViewHolderOld.LAYOUT) {
+            return new ShopProductListViewHolderOld(view, shopProductClickedListener);
+        } else if (viewType == ShopProductSingleViewHolderOld.LAYOUT) {
+            return new ShopProductSingleViewHolderOld(view, shopProductClickedListener);
         } else {
             return super.createViewHolder(view, viewType);
         }

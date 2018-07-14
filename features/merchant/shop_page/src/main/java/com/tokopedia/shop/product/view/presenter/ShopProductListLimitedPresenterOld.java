@@ -13,9 +13,9 @@ import com.tokopedia.shop.product.domain.interactor.GetShopProductLimitedUseCase
 import com.tokopedia.shop.product.util.ShopProductOfficialStoreUtils;
 import com.tokopedia.shop.product.view.listener.ShopProductListLimitedView;
 import com.tokopedia.shop.product.view.model.ShopProductBaseViewModel;
-import com.tokopedia.shop.product.view.model.ShopProductHomeViewModel;
+import com.tokopedia.shop.product.view.model.ShopProductHomeViewModelOld;
 import com.tokopedia.shop.product.view.model.ShopProductLimitedEtalaseTitleViewModel;
-import com.tokopedia.shop.product.view.model.ShopProductLimitedFeaturedViewModel;
+import com.tokopedia.shop.product.view.model.ShopProductLimitedFeaturedViewModelOld;
 import com.tokopedia.shop.product.view.model.ShopProductLimitedPromoViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductMoreViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductTitleFeaturedViewModel;
@@ -30,8 +30,8 @@ import rx.Subscriber;
 /**
  * Created by nathan on 2/6/18.
  */
-
-public class ShopProductListLimitedPresenter extends BaseDaggerPresenter<ShopProductListLimitedView> {
+@Deprecated
+public class ShopProductListLimitedPresenterOld extends BaseDaggerPresenter<ShopProductListLimitedView> {
 
     private final GetShopProductLimitedUseCase getShopProductLimitedUseCase;
     private final AddToWishListUseCase addToWishListUseCase;
@@ -42,10 +42,10 @@ public class ShopProductListLimitedPresenter extends BaseDaggerPresenter<ShopPro
     private static final int FIRST_LOAD = 1;
 
     @Inject
-    public ShopProductListLimitedPresenter(GetShopProductLimitedUseCase getShopProductLimitedUseCase,
-                                           AddToWishListUseCase addToWishListUseCase,
-                                           RemoveFromWishListUseCase removeFromWishListUseCase,
-                                           UserSession userSession) {
+    public ShopProductListLimitedPresenterOld(GetShopProductLimitedUseCase getShopProductLimitedUseCase,
+                                              AddToWishListUseCase addToWishListUseCase,
+                                              RemoveFromWishListUseCase removeFromWishListUseCase,
+                                              UserSession userSession) {
         this.getShopProductLimitedUseCase = getShopProductLimitedUseCase;
         this.addToWishListUseCase = addToWishListUseCase;
         this.removeFromWishListUseCase = removeFromWishListUseCase;
@@ -99,14 +99,14 @@ public class ShopProductListLimitedPresenter extends BaseDaggerPresenter<ShopPro
                             if (shopHasProduct) {
                                 for(int i = 0; i < shopProductBaseViewModelList.getList().size(); i++){
                                     ShopProductBaseViewModel shopProductBaseViewModel = shopProductBaseViewModelList.getList().get(i);
-                                    if(shopProductBaseViewModel instanceof ShopProductHomeViewModel) {
+                                    if(shopProductBaseViewModel instanceof ShopProductHomeViewModelOld) {
                                         shopProductBaseViewModelList.getList().add(i, new ShopProductLimitedEtalaseTitleViewModel());
                                         break;
                                     }
                                 }
                                 for(int i = 0; i < shopProductBaseViewModelList.getList().size(); i++){
                                     ShopProductBaseViewModel shopProductBaseViewModel = shopProductBaseViewModelList.getList().get(i);
-                                    if(shopProductBaseViewModel instanceof ShopProductLimitedFeaturedViewModel) {
+                                    if(shopProductBaseViewModel instanceof ShopProductLimitedFeaturedViewModelOld) {
                                         shopProductBaseViewModelList.getList().add(i, new ShopProductTitleFeaturedViewModel());
                                         break;
                                     }

@@ -1,0 +1,21 @@
+package com.tokopedia.shop.product.view.adapter.newadapter.viewholder;
+
+
+import android.support.annotation.LayoutRes;
+import android.view.View;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.ErrorNetworkViewHolder;
+import com.tokopedia.shop.R;
+
+
+/**
+ * @author by erry on 02/02/17.
+ */
+
+public class ErrorNetworkWrapViewHolder extends ErrorNetworkViewHolder {
+    @LayoutRes
+    public final static int LAYOUT = R.layout.partial_empty_wrap_page_error;
+
+    public ErrorNetworkWrapViewHolder(View itemView) {
+        super(itemView);
+    }
+}

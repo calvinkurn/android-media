@@ -41,7 +41,7 @@ public class BaseListAdapter<T, F extends AdapterTypeFactory> extends BaseAdapte
 
     @Override
     public void onBindViewHolder(final AbstractViewHolder holder, int position) {
-        if (onAdapterInteractionListener != null) {
+        if (onAdapterInteractionListener != null && isItemClickableByDefault()) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -57,6 +57,10 @@ public class BaseListAdapter<T, F extends AdapterTypeFactory> extends BaseAdapte
             });
         }
         super.onBindViewHolder(holder, position);
+    }
+
+    protected boolean isItemClickableByDefault(){
+        return true;
     }
 
     /**

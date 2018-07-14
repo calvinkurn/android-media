@@ -52,7 +52,7 @@ import com.tokopedia.shop.page.view.listener.ShopPageView;
 import com.tokopedia.shop.page.view.presenter.ShopPagePresenter;
 import com.tokopedia.shop.page.view.widget.ShopPageViewPager;
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
-import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedFragment;
+import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedFragmentOld;
 import com.tokopedia.shop.product.view.widget.ShopPagePromoWebView;
 
 import javax.inject.Inject;
@@ -257,8 +257,8 @@ public class OldShopPageActivity extends BaseTabActivity implements ShopPageProm
         if (viewPager.getAdapter() instanceof ShopPagePagerAdapter) {
             ShopPagePagerAdapter adapter = (ShopPagePagerAdapter) viewPager.getAdapter();
             Fragment fragment = (Fragment) adapter.instantiateItem(viewPager, 0);
-            if(fragment instanceof ShopProductListLimitedFragment){
-                ((ShopProductListLimitedFragment) fragment).resetRecyclerview();
+            if(fragment instanceof ShopProductListLimitedFragmentOld){
+                ((ShopProductListLimitedFragmentOld) fragment).resetRecyclerview();
             }
         }
         getShopInfo();
@@ -559,8 +559,8 @@ public class OldShopPageActivity extends BaseTabActivity implements ShopPageProm
         if (viewPager.getAdapter() instanceof ShopPagePagerAdapter) {
             ShopPagePagerAdapter adapter = (ShopPagePagerAdapter) viewPager.getAdapter();
             Fragment fragment = (Fragment) adapter.instantiateItem(viewPager, 0);
-            if(fragment instanceof ShopProductListLimitedFragment){
-                ((ShopProductListLimitedFragment) fragment).displayProduct(this.shopInfo);
+            if(fragment instanceof ShopProductListLimitedFragmentOld){
+                ((ShopProductListLimitedFragmentOld) fragment).displayProduct(this.shopInfo);
             }
         }
         shopPageViewHolder.renderData(shopInfo, shopPagePresenter.isMyShop(shopId));

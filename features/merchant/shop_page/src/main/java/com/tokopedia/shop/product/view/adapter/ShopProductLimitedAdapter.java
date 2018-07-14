@@ -2,17 +2,15 @@ package com.tokopedia.shop.product.view.adapter;
 
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.shop.product.view.model.ShopProductBaseViewModel;
-import com.tokopedia.shop.product.view.model.ShopProductHomeViewModel;
-import com.tokopedia.shop.product.view.model.ShopProductLimitedFeaturedViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductLimitedPromoViewModel;
-import com.tokopedia.shop.product.view.model.ShopProductViewModel;
+import com.tokopedia.shop.product.view.model.ShopProductViewModelOld;
 
 import java.util.List;
 
 /**
  * Created by zulfikarrahman on 3/1/18.
  */
-
+@Deprecated
 public class ShopProductLimitedAdapter extends BaseListAdapter<ShopProductBaseViewModel, ShopProductLimitedAdapterTypeFactory> {
 
     public ShopProductLimitedAdapter(ShopProductLimitedAdapterTypeFactory adapterTypeFactory) {
@@ -23,9 +21,9 @@ public class ShopProductLimitedAdapter extends BaseListAdapter<ShopProductBaseVi
         List<ShopProductBaseViewModel> shopProductBaseViewModelList = getData();
         for (int i = 0; i < shopProductBaseViewModelList.size(); i++) {
             ShopProductBaseViewModel shopProductViewModel = shopProductBaseViewModelList.get(i);
-            if (shopProductViewModel instanceof ShopProductViewModel) {
-                if (((ShopProductViewModel)shopProductViewModel).getId().equalsIgnoreCase(productId)) {
-                    ((ShopProductViewModel)shopProductViewModel).setWishList(wishList);
+            if (shopProductViewModel instanceof ShopProductViewModelOld) {
+                if (((ShopProductViewModelOld)shopProductViewModel).getId().equalsIgnoreCase(productId)) {
+                    ((ShopProductViewModelOld)shopProductViewModel).setWishList(wishList);
                     notifyItemChanged(i);
                     return;
                 }

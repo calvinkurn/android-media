@@ -1,10 +1,9 @@
-package com.tokopedia.shop.product.view.adapter.viewholder;
+package com.tokopedia.shop.product.view.adapter.newadapter.viewholder;
 
 import android.graphics.Paint;
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.AppCompatRatingBar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -14,13 +13,13 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener;
-import com.tokopedia.shop.product.view.model.ShopProductViewModel;
+import com.tokopedia.shop.product.view.model.ShopProductViewModelOld;
 
 /**
  * @author by alvarisi on 12/12/17.
  */
 
-public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewModel> {
+public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewModelOld> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.item_shop_product_grid;
@@ -69,99 +68,99 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
     }
 
     @Override
-    public void bind(final ShopProductViewModel shopProductViewModel) {
-        updateDisplayGeneralView(shopProductViewModel);
-        updateDisplayPrice(shopProductViewModel);
-        updateDisplayRating(shopProductViewModel);
-        updateDisplayBadges(shopProductViewModel);
-        updateDisplayWishList(shopProductViewModel);
+    public void bind(final ShopProductViewModelOld shopProductViewModelOld) {
+        updateDisplayGeneralView(shopProductViewModelOld);
+        updateDisplayPrice(shopProductViewModelOld);
+        updateDisplayRating(shopProductViewModelOld);
+        updateDisplayBadges(shopProductViewModelOld);
+        updateDisplayWishList(shopProductViewModelOld);
     }
 
-    private void updateDisplayGeneralView(final ShopProductViewModel shopProductViewModel) {
+    private void updateDisplayGeneralView(final ShopProductViewModelOld shopProductViewModelOld) {
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onProductClicked(shopProductViewModel);
+                onProductClicked(shopProductViewModelOld);
             }
         });
 
-        titleTextView.setText(shopProductViewModel.getName());
-        ImageHandler.LoadImage(productImageView, getImageUrl(shopProductViewModel));
+        titleTextView.setText(shopProductViewModelOld.getName());
+        ImageHandler.LoadImage(productImageView, getImageUrl(shopProductViewModelOld));
 
         if (soldOutView == null) return;
 
-        if (shopProductViewModel.isSoldOut()) {
+        if (shopProductViewModelOld.isSoldOut()) {
             soldOutView.setVisibility(View.VISIBLE);
         } else {
             soldOutView.setVisibility(View.GONE);
         }
     }
 
-    protected void onProductClicked(ShopProductViewModel shopProductViewModel) {
-        shopProductClickedListener.onProductClicked(shopProductViewModel);
+    protected void onProductClicked(ShopProductViewModelOld shopProductViewModelOld) {
+        shopProductClickedListener.onProductClicked(shopProductViewModelOld);
     }
 
-    private void updateDisplayRating(final ShopProductViewModel shopProductViewModel) {
-        if (totalReview != null && qualityRatingBar != null && !TextUtils.isEmpty(shopProductViewModel.getTotalReview())) {
+    private void updateDisplayRating(final ShopProductViewModelOld shopProductViewModelOld) {
+        if (totalReview != null && qualityRatingBar != null && !TextUtils.isEmpty(shopProductViewModelOld.getTotalReview())) {
             totalReview.setText(itemView.getResources().getString(R.string.total_point_format,
-                    String.valueOf(shopProductViewModel.getTotalReview())));
+                    String.valueOf(shopProductViewModelOld.getTotalReview())));
             totalReview.setVisibility(View.VISIBLE);
             if (qualityRatingBar != null) {
-                qualityRatingBar.setRating((float) shopProductViewModel.getRating());
+                qualityRatingBar.setRating((float) shopProductViewModelOld.getRating());
                 qualityRatingBar.setVisibility(View.VISIBLE);
             }
         }
     }
 
-    private void updateDisplayPrice(final ShopProductViewModel shopProductViewModel) {
-        if (!TextUtils.isEmpty(shopProductViewModel.getOriginalPrice())) {
+    private void updateDisplayPrice(final ShopProductViewModelOld shopProductViewModelOld) {
+        if (!TextUtils.isEmpty(shopProductViewModelOld.getOriginalPrice())) {
             originalPriceTextView.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
             originalPriceTextView.setVisibility(View.VISIBLE);
-            originalPriceTextView.setText(shopProductViewModel.getOriginalPrice());
+            originalPriceTextView.setText(shopProductViewModelOld.getOriginalPrice());
         } else {
             originalPriceTextView.setVisibility(View.GONE);
         }
-        if (!TextUtils.isEmpty(shopProductViewModel.getDiscountPercentage())) {
+        if (!TextUtils.isEmpty(shopProductViewModelOld.getDiscountPercentage())) {
             discountPercentageTextView.setVisibility(View.VISIBLE);
             discountPercentageTextView.setText(discountPercentageTextView.getContext().
-                    getString(R.string.shop_product_discount_percentage_format, shopProductViewModel.getDiscountPercentage()));
+                    getString(R.string.shop_product_discount_percentage_format, shopProductViewModelOld.getDiscountPercentage()));
         } else {
             discountPercentageTextView.setVisibility(View.GONE);
         }
         if (displayedPriceTextView != null) {
-            displayedPriceTextView.setText(shopProductViewModel.getDisplayedPrice());
+            displayedPriceTextView.setText(shopProductViewModelOld.getDisplayedPrice());
         }
     }
 
-    private void updateDisplayBadges(final ShopProductViewModel shopProductViewModel) {
-        if (shopProductViewModel.getCashback() > 0) {
+    private void updateDisplayBadges(final ShopProductViewModelOld shopProductViewModelOld) {
+        if (shopProductViewModelOld.getCashback() > 0) {
             cashBackTextView.setText(cashBackTextView.getContext().getString(
-                    R.string.shop_product_manage_item_cashback, (int) shopProductViewModel.getCashback()));
+                    R.string.shop_product_manage_item_cashback, (int) shopProductViewModelOld.getCashback()));
             cashBackTextView.setVisibility(View.VISIBLE);
         } else {
             cashBackTextView.setVisibility(View.GONE);
         }
-        freeReturnImageView.setVisibility(shopProductViewModel.isFreeReturn() ? View.VISIBLE : View.GONE);
-        preOrderTextView.setVisibility(shopProductViewModel.isPo() ? View.VISIBLE : View.GONE);
-        wholesaleTextView.setVisibility(shopProductViewModel.isWholesale() ? View.VISIBLE : View.GONE);
+        freeReturnImageView.setVisibility(shopProductViewModelOld.isFreeReturn() ? View.VISIBLE : View.GONE);
+        preOrderTextView.setVisibility(shopProductViewModelOld.isPo() ? View.VISIBLE : View.GONE);
+        wholesaleTextView.setVisibility(shopProductViewModelOld.isWholesale() ? View.VISIBLE : View.GONE);
     }
 
-    private void updateDisplayWishList(final ShopProductViewModel shopProductViewModel) {
-        wishlistContainer.setVisibility(shopProductViewModel.isShowWishList() ? View.VISIBLE : View.GONE);
-        wishlistImageView.setImageResource(shopProductViewModel.isWishList() ? R.drawable.ic_wishlist_checked : R.drawable.ic_wishlist_unchecked);
+    private void updateDisplayWishList(final ShopProductViewModelOld shopProductViewModelOld) {
+        wishlistContainer.setVisibility(shopProductViewModelOld.isShowWishList() ? View.VISIBLE : View.GONE);
+        wishlistImageView.setImageResource(shopProductViewModelOld.isWishList() ? R.drawable.ic_wishlist_checked : R.drawable.ic_wishlist_unchecked);
         wishlistContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onWishlistClicked(shopProductViewModel);
+                onWishlistClicked(shopProductViewModelOld);
             }
         });
     }
 
-    protected void onWishlistClicked(ShopProductViewModel shopProductViewModel) {
-        shopProductClickedListener.onWishListClicked(shopProductViewModel);
+    protected void onWishlistClicked(ShopProductViewModelOld shopProductViewModelOld) {
+        shopProductClickedListener.onWishListClicked(shopProductViewModelOld);
     }
 
-    protected String getImageUrl(ShopProductViewModel shopProductViewModel) {
-        return shopProductViewModel.getImageUrl();
+    protected String getImageUrl(ShopProductViewModelOld shopProductViewModelOld) {
+        return shopProductViewModelOld.getImageUrl();
     }
 }
