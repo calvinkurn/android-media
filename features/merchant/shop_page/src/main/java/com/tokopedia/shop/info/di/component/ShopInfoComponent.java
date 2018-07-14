@@ -6,6 +6,7 @@ import com.tokopedia.shop.info.di.module.ShopInfoModule;
 import com.tokopedia.shop.info.di.scope.ShopInfoScope;
 import com.tokopedia.shop.info.view.activity.ShopInfoActivity;
 import com.tokopedia.shop.info.view.fragment.ShopInfoFragment;
+import com.tokopedia.shop.info.view.fragment.ShopInfoFragmentNew;
 
 import dagger.Component;
 
@@ -21,4 +22,6 @@ public interface ShopInfoComponent {
     void inject(ShopInfoFragment shopInfoDetailFragment);
 
     void inject(ShopAddressListFragment shopAddressListFragment);
+
+    void inject(ShopInfoFragmentNew shopInfoFragmentNew);
 }

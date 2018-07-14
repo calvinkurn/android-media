@@ -28,7 +28,7 @@ import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.network.entity.home.recentView.RecentView;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.shop.page.view.activity.OldShopPageActivity;
+import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.Badge;
 import com.tokopedia.core.var.Label;
@@ -230,7 +230,7 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
 
         @Override
         public void onShopItemClicked(int position, Shop shop) {
-            Intent intent = OldShopPageActivity.createIntent(context, shop.getId());
+            Intent intent = ShopPageActivity.createIntent(context, shop.getId());
             context.startActivity(intent);
         }
 

@@ -33,6 +33,7 @@ import com.tokopedia.shop.ShopModuleRouter
 import com.tokopedia.shop.analytic.ShopPageTracking
 import com.tokopedia.shop.common.constant.ShopAppLink
 import com.tokopedia.shop.favourite.view.activity.ShopFavouriteListActivity
+import com.tokopedia.shop.info.view.fragment.ShopInfoFragmentNew
 
 class ShopPageActivity: BaseSimpleActivity(), HasComponent<ShopComponent>,
         ShopPageView, ShopPageHeaderViewHolder.ShopPageHeaderListener {
@@ -63,9 +64,11 @@ class ShopPageActivity: BaseSimpleActivity(), HasComponent<ShopComponent>,
         const val TAB_POSITION_HOME = 0
         const val TAB_POSITION_INFO = 1
 
+        @JvmStatic
         fun createIntent(context: Context, shopId: String) = Intent(context, ShopPageActivity::class.java)
                 .apply { putExtra(SHOP_ID, shopId) }
 
+        @JvmStatic
         fun createIntentWithDomain(context: Context, shopDomain: String) = Intent(context, ShopPageActivity::class.java)
                 .apply { putExtra(SHOP_DOMAIN, shopDomain) }
     }
@@ -84,7 +87,7 @@ class ShopPageActivity: BaseSimpleActivity(), HasComponent<ShopComponent>,
 
         @DeepLink(ShopAppLink.SHOP_INFO)
         @JvmStatic
-        fun getCallingIntentInfo(context: Context, extras: Bundle): Intent{
+        fun getCallingIntentInfoSelected(context: Context, extras: Bundle): Intent{
             return Intent(context, ShopPageActivity::class.java)
                     .setData(Uri.parse(extras.getString(DeepLink.URI)).buildUpon().build())
                     .putExtra(SHOP_ID, extras.getString(APP_LINK_EXTRA_SHOP_ID))
@@ -199,6 +202,9 @@ class ShopPageActivity: BaseSimpleActivity(), HasComponent<ShopComponent>,
 
             (shopPageViewPagerAdapter.getRegisteredFragment(0) as ShopProductListLimitedNewFragment)
                     .displayProduct(this)
+
+            (shopPageViewPagerAdapter.getRegisteredFragment(1) as ShopInfoFragmentNew)
+                    .updateShopInfo(this)
         }
     }
 

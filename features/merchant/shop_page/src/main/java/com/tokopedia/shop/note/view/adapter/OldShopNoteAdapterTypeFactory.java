@@ -6,18 +6,19 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyViewHolder;
-import com.tokopedia.shop.note.view.adapter.viewholder.ShopNoteViewHolder;
+import com.tokopedia.shop.note.view.adapter.viewholder.OldShopNoteViewHolder;
 import com.tokopedia.shop.note.view.model.ShopNoteViewModel;
 
 /**
  * Created by alvarisi on 12/7/17.
  */
 
-public class ShopNoteAdapterTypeFactory extends BaseAdapterTypeFactory {
+@Deprecated
+public class OldShopNoteAdapterTypeFactory extends BaseAdapterTypeFactory {
 
     private final EmptyViewHolder.Callback emptyNoteOnClickListener;
 
-    public ShopNoteAdapterTypeFactory(EmptyViewHolder.Callback emptyNoteOnClickListener) {
+    public OldShopNoteAdapterTypeFactory(EmptyViewHolder.Callback emptyNoteOnClickListener) {
         this.emptyNoteOnClickListener = emptyNoteOnClickListener;
     }
 
@@ -27,15 +28,15 @@ public class ShopNoteAdapterTypeFactory extends BaseAdapterTypeFactory {
     }
 
     public int type(ShopNoteViewModel shopNoteViewModel) {
-        return ShopNoteViewHolder.LAYOUT;
+        return OldShopNoteViewHolder.LAYOUT;
     }
 
     @Override
     public AbstractViewHolder createViewHolder(View view, int viewType) {
         if (viewType == EmptyViewHolder.LAYOUT) {
             return new EmptyViewHolder(view, emptyNoteOnClickListener);
-        }  else if (viewType == ShopNoteViewHolder.LAYOUT) {
-            return new ShopNoteViewHolder(view);
+        }  else if (viewType == OldShopNoteViewHolder.LAYOUT) {
+            return new OldShopNoteViewHolder(view);
         } else {
             return super.createViewHolder(view, viewType);
         }
