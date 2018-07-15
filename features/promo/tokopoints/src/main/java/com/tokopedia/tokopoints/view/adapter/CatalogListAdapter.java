@@ -17,6 +17,7 @@ import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.view.contract.CatalogPurchaseRedemptionPresenter;
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
+import com.tokopedia.tokopoints.view.util.ImageUtil;
 
 import java.util.List;
 
@@ -72,6 +73,12 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
         holder.btnContinue.setText(R.string.tp_label_exchange);
         ImageHandler.loadImageFit2(holder.imgBanner.getContext(), holder.imgBanner, item.getImageUrlMobile());
         holder.imgLabel.setImageResource(R.drawable.ic_tp_point_stack);
+
+        if (item.isDisabled()) {
+            ImageUtil.dimImage(holder.imgBanner);
+        } else {
+            ImageUtil.unDimImage(holder.imgBanner);
+        }
 
         if (item.getQuota() != null && item.getQuota() > 0) {
             String firstSpan = holder.quota.getResources().getString(R.string.tp_label_remaining_exchange);

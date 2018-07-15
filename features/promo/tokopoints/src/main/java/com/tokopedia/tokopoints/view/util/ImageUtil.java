@@ -11,4 +11,11 @@ public class ImageUtil {
         ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
         imageView.setColorFilter(filter);
     }
+
+    public static void unDimImage(ImageView imageView) {
+        ColorMatrix matrix = new ColorMatrix();
+        matrix.setSaturation(0);
+        ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
+        imageView.setColorFilter(filter);
+    }
 }

@@ -66,6 +66,18 @@ public class CatalogsValueEntity implements Serializable {
     @SerializedName("title")
     private String title;
 
+    @Expose
+    @SerializedName("isDisabled")
+    private boolean isDisabled;
+
+    public boolean isDisabled() {
+        return isDisabled;
+    }
+
+    public void setDisabled(boolean disabled) {
+        isDisabled = disabled;
+    }
+
     public String getBaseCode() {
         return baseCode;
     }
@@ -187,7 +199,8 @@ public class CatalogsValueEntity implements Serializable {
     }
 
     @Override
-    public String toString() {
+    public String
+    toString() {
         return "CatalogsValueEntity{" +
                 "baseCode='" + baseCode + '\'' +
                 ", expired='" + expired + '\'' +
@@ -198,12 +211,13 @@ public class CatalogsValueEntity implements Serializable {
                 ", points='" + points + '\'' +
                 ", pointsStr='" + pointsStr + '\'' +
                 ", promoId=" + promoId +
-                ", quota='" + quota + '\'' +
+                ", quota=" + quota +
                 ", slug='" + slug + '\'' +
                 ", subTitle='" + subTitle + '\'' +
                 ", thumbnailUrl='" + thumbnailUrl + '\'' +
                 ", thumbnailUrlMobile='" + thumbnailUrlMobile + '\'' +
                 ", title='" + title + '\'' +
+                ", isDisabled='" + isDisabled + '\'' +
                 '}';
     }
 }
