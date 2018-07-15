@@ -28,12 +28,20 @@ public class ChatGlideImageRequestListener implements RequestListener<String, Gl
             if (width >= height) {
                 if (targetImageView.getLayoutParams().width != ViewGroup.LayoutParams.MATCH_PARENT) {
                     targetImageView.getLayoutParams().width = targetImageView.getMaxWidth();
+                    if(targetImageView.getMaxWidth() == 0 || targetImageView.getMaxWidth() ==
+                            Integer.MAX_VALUE){
+                        targetImageView.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
+                    }
                 }
                 targetImageView.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
             } else {
                 targetImageView.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
                 if(targetImageView.getLayoutParams().height != ViewGroup.LayoutParams.MATCH_PARENT) {
                     targetImageView.getLayoutParams().height = targetImageView.getMaxHeight();
+                    if(targetImageView.getMaxHeight() == 0 || targetImageView.getMaxHeight() ==
+                            Integer.MAX_VALUE){
+                        targetImageView.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                    }
                 }
             }
             targetImageView.requestLayout();
