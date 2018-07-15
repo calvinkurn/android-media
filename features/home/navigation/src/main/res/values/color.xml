@@ -1,0 +1,6 @@
+<resources>
+    <color name="grey_title">#b3000000</color>
+    <color name="grey_subtitle">#61000000</color>
+
+    <color name="grey_border">#e0e0e0</color>
+</resources>
