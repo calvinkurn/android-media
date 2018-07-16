@@ -24,7 +24,7 @@ import com.tokopedia.feedplus.view.listener.RecentView;
 import com.tokopedia.feedplus.view.presenter.RecentViewPresenter;
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailViewModel;
 import com.tokopedia.kol.KolComponentInstance;
-import com.tokopedia.wishlist.common.listener.TkpdWishListActionListener;
+import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import java.util.ArrayList;
 
@@ -35,7 +35,7 @@ import javax.inject.Inject;
  */
 
 public class RecentViewFragment extends BaseDaggerFragment
-        implements RecentView.View, TkpdWishListActionListener {
+        implements RecentView.View, WishListActionListener {
 
     private RecyclerView recyclerView;
     private RecentViewDetailAdapter adapter;

@@ -3,28 +3,27 @@ package com.tokopedia.wishlist.common.response;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class TkpdAddWishListResponse {
+public class RemoveWishListResponse {
 
-
-    @SerializedName("wishlist_add")
+    @SerializedName("wishlist_remove")
     @Expose
-    private Wishlist_add wishlist_add;
+    private WishlistRemove wishlist_remove;
 
-    public Wishlist_add getWishlist_add() {
-        return wishlist_add;
+    public WishlistRemove getWishlistRemove() {
+        return wishlist_remove;
     }
 
-    public void setWishlist_add(Wishlist_add wishlist_add) {
-        this.wishlist_add = wishlist_add;
+    public void setWishlist_add(WishlistRemove wishlist_add) {
+        this.wishlist_remove = wishlist_add;
     }
 
     @Override
     public String toString() {
-        return "ClassPojo [wishlist_add = " + wishlist_add + "]";
+        return "ClassPojo [wishlist_add = " + wishlist_remove + "]";
     }
 
 
-    public class Wishlist_add {
+    public class WishlistRemove {
 
         @SerializedName("id")
         @Expose
@@ -67,6 +66,6 @@ public class TkpdAddWishListResponse {
             return "ClassPojo [id = " + id + ", __typename = " + __typename + ", success = " + success + "]";
         }
     }
-}
 
+}
 

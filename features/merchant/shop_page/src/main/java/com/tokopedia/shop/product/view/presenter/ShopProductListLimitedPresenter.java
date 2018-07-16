@@ -18,10 +18,10 @@ import com.tokopedia.shop.product.view.model.ShopProductLimitedEtalaseTitleViewM
 import com.tokopedia.shop.product.view.model.ShopProductLimitedFeaturedViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductLimitedPromoViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductTitleFeaturedViewModel;
-import com.tokopedia.wishlist.common.response.TkpdAddWishListResponse;
-import com.tokopedia.wishlist.common.response.TkpdRemoveWishListResponse;
-import com.tokopedia.wishlist.common.usecase.TkpdAddWishListUseCase;
-import com.tokopedia.wishlist.common.usecase.TkpdRemoveWishListUseCase;
+import com.tokopedia.wishlist.common.response.AddWishListResponse;
+import com.tokopedia.wishlist.common.response.RemoveWishListResponse;
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
 import java.util.List;
 
@@ -36,8 +36,8 @@ import rx.Subscriber;
 public class ShopProductListLimitedPresenter extends BaseDaggerPresenter<ShopProductListLimitedView> {
 
     private final GetShopProductLimitedUseCase getShopProductLimitedUseCase;
-    private final TkpdAddWishListUseCase tkpdAddWishListUseCase;
-    private final TkpdRemoveWishListUseCase tkpdRemoveWishListUseCase;
+    private final AddWishListUseCase addWishListUseCase;
+    private final RemoveWishListUseCase removeWishListUseCase;
     private final UserSession userSession;
 
     private static final String TAG = "ShopProductListLimitedP";
@@ -45,12 +45,12 @@ public class ShopProductListLimitedPresenter extends BaseDaggerPresenter<ShopPro
 
     @Inject
     public ShopProductListLimitedPresenter(GetShopProductLimitedUseCase getShopProductLimitedUseCase,
-                                           TkpdAddWishListUseCase tkpdAddWishListUseCase,
-                                           TkpdRemoveWishListUseCase tkpdRemoveWishListUseCase,
+                                           AddWishListUseCase addWishListUseCase,
+                                           RemoveWishListUseCase removeWishListUseCase,
                                            UserSession userSession) {
         this.getShopProductLimitedUseCase = getShopProductLimitedUseCase;
-        this.tkpdAddWishListUseCase = tkpdAddWishListUseCase;
-        this.tkpdRemoveWishListUseCase = tkpdRemoveWishListUseCase;
+        this.addWishListUseCase = addWishListUseCase;
+        this.removeWishListUseCase = removeWishListUseCase;
         this.userSession = userSession;
     }
 
@@ -135,7 +135,7 @@ public class ShopProductListLimitedPresenter extends BaseDaggerPresenter<ShopPro
             return;
         }
 
-        tkpdAddWishListUseCase.createObservable(productId, userSession.getUserId(), new Subscriber<GraphqlResponse>() {
+        addWishListUseCase.createObservable(productId, userSession.getUserId(), new Subscriber<GraphqlResponse>() {
             @Override
             public void onCompleted() {
 
@@ -151,16 +151,16 @@ public class ShopProductListLimitedPresenter extends BaseDaggerPresenter<ShopPro
             @Override
             public void onNext(GraphqlResponse graphqlResponse) {
 
-                if (graphqlResponse.getData(TkpdRemoveWishListResponse.class) == null) {
+                if (graphqlResponse.getData(RemoveWishListResponse.class) == null) {
                     List<GraphqlError> graphqlError = graphqlResponse.getError(GraphqlError.class);
                     getView().onErrorAddToWishList(new RuntimeException(graphqlError.get(0).getMessage()));
 
                 } else {
-                    TkpdAddWishListResponse tkpdAddWishListResponse =
-                            graphqlResponse.getData(TkpdAddWishListResponse.class);
+                    AddWishListResponse addWishListResponse =
+                            graphqlResponse.getData(AddWishListResponse.class);
 
                     getView().onSuccessAddToWishList(productId,
-                            tkpdAddWishListResponse.getWishlist_add().getSuccess());
+                            addWishListResponse.getWishlist_add().getSuccess());
                 }
 
             }
@@ -173,7 +173,7 @@ public class ShopProductListLimitedPresenter extends BaseDaggerPresenter<ShopPro
             return;
         }
 
-        tkpdRemoveWishListUseCase.createObservable(productId, userSession.getUserId(), new Subscriber<GraphqlResponse>() {
+        removeWishListUseCase.createObservable(productId, userSession.getUserId(), new Subscriber<GraphqlResponse>() {
             @Override
             public void onCompleted() {
 
@@ -189,16 +189,16 @@ public class ShopProductListLimitedPresenter extends BaseDaggerPresenter<ShopPro
             @Override
             public void onNext(GraphqlResponse graphqlResponse) {
 
-                if (graphqlResponse.getData(TkpdRemoveWishListResponse.class) == null) {
+                if (graphqlResponse.getData(RemoveWishListResponse.class) == null) {
                     List<GraphqlError> graphqlError = graphqlResponse.getError(GraphqlError.class);
                     getView().onErrorRemoveFromWishList(new RuntimeException(graphqlError.get(0).getMessage()));
 
                 } else {
-                    TkpdRemoveWishListResponse tkpdRemoveWishListResponse =
-                            graphqlResponse.getData(TkpdRemoveWishListResponse.class);
+                    RemoveWishListResponse removeWishListResponse =
+                            graphqlResponse.getData(RemoveWishListResponse.class);
 
                     getView().onSuccessRemoveFromWishList(productId,
-                            tkpdRemoveWishListResponse.getWishlistRemove().getSuccess());
+                            removeWishListResponse.getWishlistRemove().getSuccess());
                 }
 
             }
@@ -211,11 +211,11 @@ public class ShopProductListLimitedPresenter extends BaseDaggerPresenter<ShopPro
         if (getShopProductLimitedUseCase != null) {
             getShopProductLimitedUseCase.unsubscribe();
         }
-        if (tkpdRemoveWishListUseCase != null) {
-            tkpdRemoveWishListUseCase.unsubscribe();
+        if (removeWishListUseCase != null) {
+            removeWishListUseCase.unsubscribe();
         }
-        if (tkpdAddWishListUseCase != null) {
-            tkpdAddWishListUseCase.unsubscribe();
+        if (addWishListUseCase != null) {
+            addWishListUseCase.unsubscribe();
         }
     }
 }

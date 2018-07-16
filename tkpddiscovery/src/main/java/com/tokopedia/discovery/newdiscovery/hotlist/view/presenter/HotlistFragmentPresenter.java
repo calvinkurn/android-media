@@ -19,9 +19,9 @@ import com.tokopedia.discovery.newdiscovery.hotlist.view.subscriber.RefreshHotli
 import com.tokopedia.discovery.newdiscovery.search.fragment.GetDynamicFilterSubscriber;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenterImpl;
 import com.tokopedia.discovery.newdiscovery.util.HotlistParameter;
-import com.tokopedia.wishlist.common.listener.TkpdWishListActionListener;
-import com.tokopedia.wishlist.common.usecase.TkpdAddWishListUseCase;
-import com.tokopedia.wishlist.common.usecase.TkpdRemoveWishListUseCase;
+import com.tokopedia.wishlist.common.listener.WishListActionListener;
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
 import javax.inject.Inject;
 
@@ -30,7 +30,7 @@ import javax.inject.Inject;
  */
 
 public class HotlistFragmentPresenter extends SearchSectionFragmentPresenterImpl<HotlistFragmentContract.View>
-        implements HotlistFragmentContract.Presenter, TkpdWishListActionListener {
+        implements HotlistFragmentContract.Presenter, WishListActionListener {
 
     @Inject
     GetHotlistInitializeUseCase getHotlistInitializeUseCase;
@@ -45,10 +45,10 @@ public class HotlistFragmentPresenter extends SearchSectionFragmentPresenterImpl
     GetProductUseCase getProductUseCase;
 
     @Inject
-    TkpdAddWishListUseCase addWishlistActionUseCase;
+    AddWishListUseCase addWishlistActionUseCase;
 
     @Inject
-    TkpdRemoveWishListUseCase removeWishlistActionUseCase;
+    RemoveWishListUseCase removeWishlistActionUseCase;
 
     private final Context context;
 

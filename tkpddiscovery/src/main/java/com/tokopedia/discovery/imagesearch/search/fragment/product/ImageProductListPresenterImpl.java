@@ -17,9 +17,9 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.Pr
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 import com.tokopedia.graphql.data.GraphqlClient;
-import com.tokopedia.wishlist.common.listener.TkpdWishListActionListener;
-import com.tokopedia.wishlist.common.usecase.TkpdAddWishListUseCase;
-import com.tokopedia.wishlist.common.usecase.TkpdRemoveWishListUseCase;
+import com.tokopedia.wishlist.common.listener.WishListActionListener;
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,10 +39,10 @@ public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProd
     @Inject
     GetProductUseCase getProductUseCase;
     @Inject
-    TkpdAddWishListUseCase addWishlistActionUseCase;
+    AddWishListUseCase addWishlistActionUseCase;
     @Inject
-    TkpdRemoveWishListUseCase removeWishlistActionUseCase;
-    private TkpdWishListActionListener tkpdWishListActionListener;
+    RemoveWishListUseCase removeWishlistActionUseCase;
+    private WishListActionListener wishListActionListener;
     private Context context;
 
 
@@ -57,9 +57,9 @@ public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProd
 
     @Override
     public void attachView(ImageProductListFragmentView viewListener,
-                           TkpdWishListActionListener wishlistActionListener) {
+                           WishListActionListener wishlistActionListener) {
         super.attachView(viewListener);
-        this.tkpdWishListActionListener = wishlistActionListener;
+        this.wishListActionListener = wishlistActionListener;
     }
 
 
@@ -136,11 +136,11 @@ public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProd
     }
 
     private void addWishlist(String productId, String userId) {
-        addWishlistActionUseCase.createObservable(productId, userId, tkpdWishListActionListener);
+        addWishlistActionUseCase.createObservable(productId, userId, wishListActionListener);
     }
 
     private void removeWishlist(String productId, String userId) {
-        removeWishlistActionUseCase.createObservable(productId, userId, tkpdWishListActionListener);
+        removeWishlistActionUseCase.createObservable(productId, userId, wishListActionListener);
     }
 
     private void removeDefaultCategoryParam(RequestParams params) {

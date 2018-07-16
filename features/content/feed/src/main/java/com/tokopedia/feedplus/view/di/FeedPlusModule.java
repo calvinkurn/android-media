@@ -34,8 +34,8 @@ import com.tokopedia.feedplus.data.source.KolSource;
 import com.tokopedia.feedplus.domain.model.feed.FeedResult;
 import com.tokopedia.vote.di.VoteModule;
 import com.tokopedia.wishlist.common.data.interceptor.MojitoInterceptor;
-import com.tokopedia.wishlist.common.usecase.TkpdAddWishListUseCase;
-import com.tokopedia.wishlist.common.usecase.TkpdRemoveWishListUseCase;
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
 import java.util.concurrent.TimeUnit;
 
@@ -248,14 +248,14 @@ public class FeedPlusModule {
 
     @FeedPlusScope
     @Provides
-    TkpdAddWishListUseCase providesTkpTkpdAddWishListUseCase(@ApplicationContext Context context){
-        return new TkpdAddWishListUseCase(context);
+    AddWishListUseCase providesTkpTkpdAddWishListUseCase(@ApplicationContext Context context){
+        return new AddWishListUseCase(context);
     }
 
     @FeedPlusScope
     @Provides
-    TkpdRemoveWishListUseCase providesTkpdRemoveWishListUseCase(@ApplicationContext Context context){
-        return new TkpdRemoveWishListUseCase(context);
+    RemoveWishListUseCase providesTkpdRemoveWishListUseCase(@ApplicationContext Context context){
+        return new RemoveWishListUseCase(context);
     }
 
     /*@FeedPlusScope

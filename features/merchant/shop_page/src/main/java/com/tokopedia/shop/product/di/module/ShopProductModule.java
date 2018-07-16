@@ -43,8 +43,8 @@ import com.tokopedia.wishlist.common.data.source.cloud.api.WishListCommonApi;
 import com.tokopedia.wishlist.common.data.source.cloud.mapper.WishListProductListMapper;
 import com.tokopedia.wishlist.common.domain.interactor.GetWishListUseCase;
 import com.tokopedia.wishlist.common.domain.repository.WishListCommonRepository;
-import com.tokopedia.wishlist.common.usecase.TkpdAddWishListUseCase;
-import com.tokopedia.wishlist.common.usecase.TkpdRemoveWishListUseCase;
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -181,14 +181,14 @@ public class ShopProductModule {
 
     @ShopProductScope
     @Provides
-    public TkpdAddWishListUseCase provideAddToWishListUseCase(@ApplicationContext Context context) {
-        return new TkpdAddWishListUseCase(context);
+    public AddWishListUseCase provideAddToWishListUseCase(@ApplicationContext Context context) {
+        return new AddWishListUseCase(context);
     }
 
     @ShopProductScope
     @Provides
-    public TkpdRemoveWishListUseCase provideRemoveFromWishListUseCase(@ApplicationContext Context context) {
-        return new TkpdRemoveWishListUseCase(context);
+    public RemoveWishListUseCase provideRemoveFromWishListUseCase(@ApplicationContext Context context) {
+        return new RemoveWishListUseCase(context);
     }
 
     // Product

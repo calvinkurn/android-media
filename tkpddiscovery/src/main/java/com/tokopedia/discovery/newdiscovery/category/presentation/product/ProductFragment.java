@@ -58,7 +58,7 @@ import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
-import com.tokopedia.wishlist.common.listener.TkpdWishListActionListener;
+import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,7 +75,7 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.EXTRA_
 
 public class ProductFragment extends SearchSectionFragment
         implements SearchSectionGeneralAdapter.OnItemChangeView, ProductContract.View,
-        ItemClickListener, TkpdWishListActionListener, TopAdsItemClickListener, TopAdsListener,
+        ItemClickListener, WishListActionListener, TopAdsItemClickListener, TopAdsListener,
         DefaultCategoryAdapter.CategoryListener, RevampCategoryAdapter.CategoryListener {
 
     public static final int REQUEST_CODE_LOGIN = 1;

@@ -15,8 +15,8 @@ import com.tokopedia.discovery.newdiscovery.data.repository.ProductRepository;
 import com.tokopedia.discovery.newdiscovery.data.repository.ProductRepositoryImpl;
 import com.tokopedia.discovery.newdiscovery.data.source.ProductDataSource;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
-import com.tokopedia.wishlist.common.usecase.TkpdAddWishListUseCase;
-import com.tokopedia.wishlist.common.usecase.TkpdRemoveWishListUseCase;
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -46,16 +46,16 @@ public class ProductModule {
     }
 
     @Provides
-    TkpdAddWishListUseCase providesTkpdAddWishListUseCase(
+    AddWishListUseCase providesTkpdAddWishListUseCase(
             @ApplicationContext Context context) {
-        return new TkpdAddWishListUseCase(context);
+        return new AddWishListUseCase(context);
     }
 
 
     @Provides
-    TkpdRemoveWishListUseCase providesTkpdRemoveWishListUseCase(
+    RemoveWishListUseCase providesTkpdRemoveWishListUseCase(
             @ApplicationContext Context context) {
-        return new TkpdRemoveWishListUseCase(context);
+        return new RemoveWishListUseCase(context);
     }
 
     @Provides

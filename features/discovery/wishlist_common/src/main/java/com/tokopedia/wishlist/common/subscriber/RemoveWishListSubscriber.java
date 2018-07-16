@@ -5,20 +5,20 @@ import android.content.Context;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.wishlist.common.R;
-import com.tokopedia.wishlist.common.listener.TkpdWishListActionListener;
-import com.tokopedia.wishlist.common.response.TkpdRemoveWishListResponse;
+import com.tokopedia.wishlist.common.listener.WishListActionListener;
+import com.tokopedia.wishlist.common.response.RemoveWishListResponse;
 
 import rx.Subscriber;
 
-public class TkpdRemoveWishlistSubscriber extends Subscriber<GraphqlResponse> {
+public class RemoveWishListSubscriber extends Subscriber<GraphqlResponse> {
 
-    private TkpdWishListActionListener viewListener;
+    private WishListActionListener viewListener;
     private String productId;
     private Context context;
 
-    public TkpdRemoveWishlistSubscriber(TkpdWishListActionListener viewListener,
-                                        Context context,
-                                        String productId) {
+    public RemoveWishListSubscriber(WishListActionListener viewListener,
+                                    Context context,
+                                    String productId) {
 
         this.viewListener = viewListener;
         this.productId = productId;
@@ -40,7 +40,7 @@ public class TkpdRemoveWishlistSubscriber extends Subscriber<GraphqlResponse> {
     public void onNext(GraphqlResponse graphqlResponse) {
 
         if (graphqlResponse != null) {
-            TkpdRemoveWishListResponse removeWishListResponse = graphqlResponse.getData(TkpdRemoveWishListResponse.class);
+            RemoveWishListResponse removeWishListResponse = graphqlResponse.getData(RemoveWishListResponse.class);
             if (removeWishListResponse.getWishlistRemove().getSuccess()) {
                 viewListener.onSuccessRemoveWishlist(productId);
             } else {

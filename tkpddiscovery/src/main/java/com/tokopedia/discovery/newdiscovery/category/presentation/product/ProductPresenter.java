@@ -20,9 +20,9 @@ import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
 import com.tokopedia.discovery.newdiscovery.search.fragment.GetDynamicFilterSubscriber;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenterImpl;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
-import com.tokopedia.wishlist.common.listener.TkpdWishListActionListener;
-import com.tokopedia.wishlist.common.usecase.TkpdAddWishListUseCase;
-import com.tokopedia.wishlist.common.usecase.TkpdRemoveWishListUseCase;
+import com.tokopedia.wishlist.common.listener.WishListActionListener;
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,12 +40,12 @@ public class ProductPresenter extends SearchSectionFragmentPresenterImpl<Product
     @Inject
     GetProductUseCase getProductUseCase;
     @Inject
-    TkpdAddWishListUseCase tkpdAddWishListUseCase;
+    AddWishListUseCase addWishListUseCase;
     @Inject
-    TkpdRemoveWishListUseCase tkpdRemoveWishListUseCase;
+    RemoveWishListUseCase removeWishListUseCase;
     @Inject
     GetDynamicFilterUseCase getDynamicFilterUseCase;
-    private TkpdWishListActionListener wishlistActionListener;
+    private WishListActionListener wishlistActionListener;
     private ProductContract.View viewListener;
     private Context context;
 
@@ -59,7 +59,7 @@ public class ProductPresenter extends SearchSectionFragmentPresenterImpl<Product
 
     @Override
     public void attachView(ProductContract.View viewListener,
-                           TkpdWishListActionListener wishlistActionListener) {
+                           WishListActionListener wishlistActionListener) {
         super.attachView(viewListener);
         this.viewListener = viewListener;
         this.wishlistActionListener = wishlistActionListener;
@@ -86,11 +86,11 @@ public class ProductPresenter extends SearchSectionFragmentPresenterImpl<Product
     }
 
     private void addWishlist(String productId, String userId) {
-        tkpdAddWishListUseCase.createObservable(productId, userId, wishlistActionListener);
+        addWishListUseCase.createObservable(productId, userId, wishlistActionListener);
     }
 
     private void removeWishlist(String productId, String userId) {
-        tkpdRemoveWishListUseCase.createObservable(productId, userId, wishlistActionListener);
+        removeWishListUseCase.createObservable(productId, userId, wishlistActionListener);
     }
 
     @Override
@@ -210,11 +210,11 @@ public class ProductPresenter extends SearchSectionFragmentPresenterImpl<Product
     public void detachView() {
         super.detachView();
         getProductUseCase.unsubscribe();
-        if (tkpdAddWishListUseCase != null) {
-            tkpdAddWishListUseCase.unsubscribe();
+        if (addWishListUseCase != null) {
+            addWishListUseCase.unsubscribe();
         }
-        if (tkpdRemoveWishListUseCase != null) {
-            tkpdRemoveWishListUseCase.unsubscribe();
+        if (removeWishListUseCase != null) {
+            removeWishListUseCase.unsubscribe();
         }
         getDynamicFilterUseCase.unsubscribe();
     }

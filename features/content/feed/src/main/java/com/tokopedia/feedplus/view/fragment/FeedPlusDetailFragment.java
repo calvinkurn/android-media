@@ -42,7 +42,7 @@ import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailHeaderViewMode
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailViewModel;
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.SingleFeedDetailViewModel;
 import com.tokopedia.kol.KolComponentInstance;
-import com.tokopedia.wishlist.common.listener.TkpdWishListActionListener;
+import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import java.util.ArrayList;
 
@@ -53,7 +53,7 @@ import javax.inject.Inject;
  */
 
 public class FeedPlusDetailFragment extends BaseDaggerFragment
-        implements FeedPlusDetail.View, TkpdWishListActionListener {
+        implements FeedPlusDetail.View, WishListActionListener {
 
     private static final String ARGS_DETAIL_ID = "DETAIL_ID";
     private static final int REQUEST_OPEN_PDP = 111;

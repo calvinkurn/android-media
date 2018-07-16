@@ -3,7 +3,7 @@ package com.tokopedia.discovery.imagesearch.search.fragment.product;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
-import com.tokopedia.wishlist.common.listener.TkpdWishListActionListener;
+import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import java.util.HashMap;
 
@@ -17,6 +17,6 @@ public interface ImageProductListPresenter extends CustomerPresenter<ImageProduc
 
     void handleWishlistButtonClicked(ProductItem productItem);
 
-    void attachView(ImageProductListFragmentView viewListener, TkpdWishListActionListener wishlistActionListener);
+    void attachView(ImageProductListFragmentView viewListener, WishListActionListener wishlistActionListener);
 
 }

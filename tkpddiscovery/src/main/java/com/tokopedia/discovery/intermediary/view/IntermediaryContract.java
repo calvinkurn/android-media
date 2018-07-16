@@ -13,7 +13,7 @@ import com.tokopedia.discovery.intermediary.domain.model.HeaderModel;
 import com.tokopedia.discovery.intermediary.domain.model.HotListModel;
 import com.tokopedia.discovery.intermediary.domain.model.VideoModel;
 import com.tokopedia.topads.sdk.domain.model.Data;
-import com.tokopedia.wishlist.common.listener.TkpdWishListActionListener;
+import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import java.util.List;
 import java.util.Map;
@@ -75,6 +75,6 @@ public interface IntermediaryContract {
 
         void addWishLish(int position, Data data);
 
-        void setWishlishListener(TkpdWishListActionListener tkpdWishListActionListener);
+        void setWishlishListener(WishListActionListener wishListActionListener);
     }
 }

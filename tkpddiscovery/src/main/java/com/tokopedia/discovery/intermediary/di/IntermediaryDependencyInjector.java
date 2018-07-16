@@ -17,8 +17,8 @@ import com.tokopedia.discovery.intermediary.domain.IntermediaryRepository;
 import com.tokopedia.discovery.intermediary.domain.interactor.GetCategoryHeaderUseCase;
 import com.tokopedia.discovery.intermediary.domain.interactor.GetIntermediaryCategoryUseCase;
 import com.tokopedia.discovery.intermediary.view.IntermediaryPresenter;
-import com.tokopedia.wishlist.common.usecase.TkpdAddWishListUseCase;
-import com.tokopedia.wishlist.common.usecase.TkpdRemoveWishListUseCase;
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
 /**
  * Created by alifa on 3/27/17.
@@ -47,8 +47,8 @@ public class IntermediaryDependencyInjector {
         GetCategoryHeaderUseCase getCategoryHeaderUseCase = new GetCategoryHeaderUseCase(threadExecutor, postExecutionThread, repository);
 
         return new IntermediaryPresenter(getIntermediaryCategoryUseCase, getCategoryHeaderUseCase,
-                new TkpdAddWishListUseCase(context),
-                new TkpdRemoveWishListUseCase(context));
+                new AddWishListUseCase(context),
+                new RemoveWishListUseCase(context));
 
     }
 }

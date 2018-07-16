@@ -80,7 +80,7 @@ import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.view.TopAdsBannerView;
 import com.tokopedia.topads.sdk.view.TopAdsView;
-import com.tokopedia.wishlist.common.listener.TkpdWishListActionListener;
+import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,7 +101,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         CuratedProductAdapter.OnItemClickListener, TopAdsItemClickListener, TopAdsListener,
         IntermediaryCategoryAdapter.CategoryListener, IntermediaryBrandsAdapter.BrandListener,
         BannerPagerAdapter.OnPromoClickListener,
-        TkpdWishListActionListener {
+        WishListActionListener {
 
     public static final String TAG = "INTERMEDIARY_FRAGMENT";
     private static final long SLIDE_DELAY = 8000;

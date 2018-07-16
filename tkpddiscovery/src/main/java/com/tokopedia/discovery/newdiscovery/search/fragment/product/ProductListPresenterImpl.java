@@ -26,9 +26,9 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.Pr
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 import com.tokopedia.graphql.data.GraphqlClient;
-import com.tokopedia.wishlist.common.listener.TkpdWishListActionListener;
-import com.tokopedia.wishlist.common.usecase.TkpdAddWishListUseCase;
-import com.tokopedia.wishlist.common.usecase.TkpdRemoveWishListUseCase;
+import com.tokopedia.wishlist.common.listener.WishListActionListener;
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,14 +50,14 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
     @Inject
     GetSearchGuideUseCase getSearchGuideUseCase;
     @Inject
-    TkpdAddWishListUseCase addWishlistActionUseCase;
+    AddWishListUseCase addWishlistActionUseCase;
     @Inject
-    TkpdRemoveWishListUseCase removeWishlistActionUseCase;
+    RemoveWishListUseCase removeWishlistActionUseCase;
     @Inject
     GetDynamicFilterUseCase getDynamicFilterUseCase;
     @Inject
     GetDynamicFilterV4UseCase getDynamicFilterV4UseCase;
-    private TkpdWishListActionListener wishlistActionListener;
+    private WishListActionListener wishlistActionListener;
     private Context context;
     private boolean isUsingFilterV4;
 
@@ -72,7 +72,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
 
     @Override
     public void attachView(ProductListFragmentView viewListener,
-                           TkpdWishListActionListener wishlistActionListener) {
+                           WishListActionListener wishlistActionListener) {
         super.attachView(viewListener);
         this.wishlistActionListener = wishlistActionListener;
     }

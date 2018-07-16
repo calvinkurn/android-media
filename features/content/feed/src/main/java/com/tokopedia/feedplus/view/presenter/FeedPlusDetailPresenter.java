@@ -5,11 +5,11 @@ import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.feedplus.domain.usecase.GetFeedsDetailUseCase;
 import com.tokopedia.feedplus.view.listener.FeedPlusDetail;
 import com.tokopedia.feedplus.view.subscriber.FeedDetailSubscriber;
-import com.tokopedia.wishlist.common.listener.TkpdWishListActionListener;
-import com.tokopedia.wishlist.common.subscriber.TkpdAddWishlistSubscriber;
-import com.tokopedia.wishlist.common.subscriber.TkpdRemoveWishlistSubscriber;
-import com.tokopedia.wishlist.common.usecase.TkpdAddWishListUseCase;
-import com.tokopedia.wishlist.common.usecase.TkpdRemoveWishListUseCase;
+import com.tokopedia.wishlist.common.listener.WishListActionListener;
+import com.tokopedia.wishlist.common.subscriber.AddWishListSubscriber;
+import com.tokopedia.wishlist.common.subscriber.RemoveWishListSubscriber;
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
 import javax.inject.Inject;
 
@@ -21,9 +21,9 @@ public class FeedPlusDetailPresenter extends BaseDaggerPresenter<FeedPlusDetail.
         implements FeedPlusDetail.Presenter {
 
 
-    private final TkpdAddWishListUseCase tkpdAddWishListUseCase;
-    private final TkpdRemoveWishListUseCase tkpdRemoveWishListUseCase;
-    private TkpdWishListActionListener tkpdWishListActionListener;
+    private final AddWishListUseCase addWishListUseCase;
+    private final RemoveWishListUseCase removeWishListUseCase;
+    private WishListActionListener wishListActionListener;
 
     private final GetFeedsDetailUseCase getFeedsDetailUseCase;
     private final UserSession userSession;
@@ -32,18 +32,18 @@ public class FeedPlusDetailPresenter extends BaseDaggerPresenter<FeedPlusDetail.
 
     @Inject
     FeedPlusDetailPresenter(GetFeedsDetailUseCase getFeedsDetailUseCase,
-                            TkpdAddWishListUseCase addWishlistUseCase,
-                            TkpdRemoveWishListUseCase removeWishlistUseCase,
+                            AddWishListUseCase addWishlistUseCase,
+                            RemoveWishListUseCase removeWishlistUseCase,
                             UserSession userSession) {
         this.getFeedsDetailUseCase = getFeedsDetailUseCase;
-        this.tkpdAddWishListUseCase = addWishlistUseCase;
-        this.tkpdRemoveWishListUseCase = removeWishlistUseCase;
+        this.addWishListUseCase = addWishlistUseCase;
+        this.removeWishListUseCase = removeWishlistUseCase;
         this.userSession = userSession;
     }
 
-    public void attachView(FeedPlusDetail.View view, TkpdWishListActionListener wishlistListener) {
+    public void attachView(FeedPlusDetail.View view, WishListActionListener wishlistListener) {
         this.viewListener = view;
-        this.tkpdWishListActionListener = wishlistListener;
+        this.wishListActionListener = wishlistListener;
         super.attachView(view);
     }
 
@@ -51,12 +51,12 @@ public class FeedPlusDetailPresenter extends BaseDaggerPresenter<FeedPlusDetail.
     public void detachView() {
         super.detachView();
         getFeedsDetailUseCase.unsubscribe();
-        if (tkpdRemoveWishListUseCase != null) {
-            tkpdRemoveWishListUseCase.unsubscribe();
+        if (removeWishListUseCase != null) {
+            removeWishListUseCase.unsubscribe();
         }
 
-        if (tkpdAddWishListUseCase != null) {
-            tkpdAddWishListUseCase.unsubscribe();
+        if (addWishListUseCase != null) {
+            addWishListUseCase.unsubscribe();
         }
     }
 
@@ -73,8 +73,8 @@ public class FeedPlusDetailPresenter extends BaseDaggerPresenter<FeedPlusDetail.
     public void addToWishlist(int adapterPosition, String productId) {
         viewListener.showLoadingProgress();
 
-        tkpdAddWishListUseCase.createObservable(productId, userSession.getUserId(),
-                new TkpdAddWishlistSubscriber(tkpdWishListActionListener,
+        addWishListUseCase.createObservable(productId, userSession.getUserId(),
+                new AddWishListSubscriber(wishListActionListener,
                         getView().getContext(), productId));
     }
 
@@ -83,8 +83,8 @@ public class FeedPlusDetailPresenter extends BaseDaggerPresenter<FeedPlusDetail.
     public void removeFromWishlist(int adapterPosition, String productId) {
         viewListener.showLoadingProgress();
 
-        tkpdRemoveWishListUseCase.createObservable(productId, userSession.getUserId(),
-                new TkpdRemoveWishlistSubscriber(tkpdWishListActionListener,
+        removeWishListUseCase.createObservable(productId, userSession.getUserId(),
+                new RemoveWishListSubscriber(wishListActionListener,
                         getView().getContext(), productId));
     }
 }
