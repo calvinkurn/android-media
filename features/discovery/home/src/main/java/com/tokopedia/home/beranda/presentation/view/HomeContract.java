@@ -66,7 +66,7 @@ public interface HomeContract {
 
         void openProductPageIfValid(String url, String shopDomain);
 
-        void onHeaderTokocashErrorFromBroadcast();
+        void onHeaderTokocashError();
 
         void onHeaderTokopointErrorFromBroadcast();
 

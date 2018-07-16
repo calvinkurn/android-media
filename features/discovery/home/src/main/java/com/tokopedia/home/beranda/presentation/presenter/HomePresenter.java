@@ -7,11 +7,14 @@ import android.support.annotation.NonNull;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.constants.DrawerActivityBroadcastReceiverConstant;
 import com.tokopedia.core.constants.TokoPointDrawerBroadcastReceiverConstant;
+import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.data.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
+import com.tokopedia.core.drawer2.domain.interactor.TokoCashUseCase;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.shopinfo.facades.GetShopInfoRetrofit;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
@@ -29,6 +32,8 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BannerView
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.subscriber.GetHomeFeedsSubscriber;
+import com.tokopedia.home.beranda.presentation.view.subscriber.TokocashHomeSubscriber;
+import com.tokopedia.tokocash.balance.domain.GetBalanceTokoCashUseCase;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
@@ -61,6 +66,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     GetHomeDataUseCase getHomeDataUseCase;
     @Inject
     GetHomeFeedsUseCase getHomeFeedsUseCase;
+
     private SessionHandler sessionHandler;
     private GetShopInfoRetrofit getShopInfoRetrofit;
     private String currentCursor = "";
@@ -184,7 +190,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     }
 
     @Override
-    public void onHeaderTokocashErrorFromBroadcast() {
+    public void onHeaderTokocashError() {
         if (headerViewModel == null) {
             headerViewModel = new HeaderViewModel();
         }
@@ -240,9 +246,6 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     @Override
     public void onRefreshTokoCash() {
         if (!SessionHandler.isV4Login(context)) return;
-        Intent intentGetTokocash = new Intent(DrawerActivityBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP);
-        intentGetTokocash.putExtra(DrawerActivityBroadcastReceiverConstant.EXTRA_ACTION_RECEIVER,
-                DrawerActivityBroadcastReceiverConstant.ACTION_RECEIVER_GET_TOKOCASH_DATA);
 
         if (headerViewModel == null) {
             headerViewModel = new HeaderViewModel();
@@ -250,7 +253,8 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         headerViewModel.setWalletDataSuccess();
         headerViewModel.setHomeHeaderWalletActionData(null);
         getView().updateHeaderItem(headerViewModel);
-        context.sendBroadcast(intentGetTokocash);
+
+        getTokocashBalance();
     }
 
     @Override
@@ -331,19 +335,15 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
     public void getHeaderData(boolean initialStart) {
         if (!SessionHandler.isV4Login(context)) return;
-        Intent intentGetTokocash = new Intent(DrawerActivityBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP);
-        intentGetTokocash.putExtra(DrawerActivityBroadcastReceiverConstant.EXTRA_ACTION_RECEIVER,
-                DrawerActivityBroadcastReceiverConstant.ACTION_RECEIVER_GET_TOKOCASH_DATA);
-
         Intent intentGetTokoPoint = new Intent(TokoPointDrawerBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP);
 
         if (initialStart && headerViewModel != null) {
             if (headerViewModel.getHomeHeaderWalletActionData() == null)
-                context.sendBroadcast(intentGetTokocash);
+                getTokocashBalance();
             if (headerViewModel.getTokoPointDrawerData() == null)
                 context.sendBroadcast(intentGetTokoPoint);
         } else {
-            context.sendBroadcast(intentGetTokocash);
+            getTokocashBalance();
             context.sendBroadcast(intentGetTokoPoint);
         }
     }
@@ -491,5 +491,16 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         if (subscription != null) {
             subscription.unsubscribe();
         }
+    }
+
+    /**
+     * Tokocash
+     */
+    private void getTokocashBalance() {
+        Observable<TokoCashData> observable = ((TkpdCoreRouter) context).getTokoCashBalance();
+        compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new TokocashHomeSubscriber(this)));
     }
 }

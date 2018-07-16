@@ -842,11 +842,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                         presenter.updateHeaderTokoPointData(tokoPointDrawerData);
                     break;
                 case HomeFragmentBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOCASH_DATA:
-                    HomeHeaderWalletAction homeHeaderWalletAction = intent.getParcelableExtra(
-                            HomeFragmentBroadcastReceiverConstant.EXTRA_TOKOCASH_DRAWER_DATA
-                    );
-                    if (homeHeaderWalletAction != null)
-                        presenter.updateHeaderTokoCashData(homeHeaderWalletAction);
+//                    HomeHeaderWalletAction homeHeaderWalletAction = intent.getParcelableExtra(
+//                            HomeFragmentBroadcastReceiverConstant.EXTRA_TOKOCASH_DRAWER_DATA
+//                    );
+//                    if (homeHeaderWalletAction != null)
+//                        presenter.updateHeaderTokoCashData(homeHeaderWalletAction);
                     break;
                 case HomeFragmentBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOCASH_PENDING_DATA:
                     int amount = intent.getIntExtra(
@@ -862,7 +862,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                         presenter.updateHeaderTokoCashPendingData(cashBackData);
                     break;
                 case HomeFragmentBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOCASH_DATA_ERROR:
-                    presenter.onHeaderTokocashErrorFromBroadcast();
+                    presenter.onHeaderTokocashError();
                     break;
                 case HomeFragmentBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOPOINT_DATA_ERROR:
                     presenter.onHeaderTokopointErrorFromBroadcast();
