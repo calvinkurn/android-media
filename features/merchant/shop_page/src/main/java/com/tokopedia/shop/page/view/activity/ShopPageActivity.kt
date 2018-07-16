@@ -1,5 +1,6 @@
 package com.tokopedia.shop.page.view.activity
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -29,6 +30,9 @@ import javax.inject.Inject
 import android.support.design.widget.AppBarLayout
 import android.view.MenuItem
 import com.airbnb.deeplinkdispatch.DeepLink
+import com.tokopedia.abstraction.common.network.exception.UserNotLoginException
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.shop.ShopModuleRouter
 import com.tokopedia.shop.analytic.ShopPageTracking
 import com.tokopedia.shop.common.constant.ShopAppLink
@@ -63,6 +67,8 @@ class ShopPageActivity: BaseSimpleActivity(), HasComponent<ShopComponent>,
         const val EXTRA_STATE_TAB_POSITION = "EXTRA_STATE_TAB_POSITION"
         const val TAB_POSITION_HOME = 0
         const val TAB_POSITION_INFO = 1
+        const val SHOP_STATUS_FAVOURITE = "SHOP_STATUS_FAVOURITE"
+        private const val REQUEST_CODER_USER_LOGIN = 100
 
         @JvmStatic
         fun createIntent(context: Context, shopId: String) = Intent(context, ShopPageActivity::class.java)
@@ -221,11 +227,27 @@ class ShopPageActivity: BaseSimpleActivity(), HasComponent<ShopComponent>,
     }
 
     override fun onSuccessToggleFavourite(successValue: Boolean) {
-
+        if (successValue) {
+            shopPageViewHolder.toggleFavourite()
+            updateFavouriteResult()
+        }
+        shopPageViewHolder.updateFavoriteButton()
     }
 
-    override fun onErrorToggleFavourite(e: Throwable?) {
+    private fun updateFavouriteResult() {
+        setResult(Activity.RESULT_OK, Intent().apply {
+            putExtra(SHOP_STATUS_FAVOURITE, shopPageViewHolder.isShopFavourited())
+        })
+    }
 
+    override fun onErrorToggleFavourite(e: Throwable) {
+        shopPageViewHolder.updateFavoriteButton()
+        if (e is UserNotLoginException) {
+            val intent = (application as ShopModuleRouter).getLoginIntent(this)
+            startActivityForResult(intent, REQUEST_CODER_USER_LOGIN)
+            return
+        }
+        NetworkErrorHelper.showCloseSnackbar(this, ErrorHandler.getErrorMessage(this, e))
     }
 
     override fun getComponent() = ShopComponentInstance.getComponent(application)
@@ -256,8 +278,12 @@ class ShopPageActivity: BaseSimpleActivity(), HasComponent<ShopComponent>,
         (application as ShopModuleRouter).goToManageShop(this)
     }
 
-    override fun toggleFavorite() {
-
+    override fun toggleFavorite(isFavourite: Boolean) {
+        shopInfo?.run {
+            shopPageTracking.eventClickFavouriteShop(titles[viewPager.currentItem], shopId, isFavourite,
+                    presenter.isMyShop(shopId!!), ShopPageTracking.getShopType(info))
+        }
+        shopId?.run {presenter.toggleFavouriteShop(this)}
     }
 
     override fun goToAddProduct() {

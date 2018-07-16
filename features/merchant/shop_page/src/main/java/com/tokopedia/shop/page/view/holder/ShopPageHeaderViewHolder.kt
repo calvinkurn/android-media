@@ -1,5 +1,6 @@
 package com.tokopedia.shop.page.view.holder
 
+import android.graphics.drawable.GradientDrawable
 import android.support.annotation.DrawableRes
 import android.support.v4.content.ContextCompat
 import android.view.View
@@ -10,12 +11,13 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
 import com.tokopedia.shop.common.util.TextApiUtils
-import com.tokopedia.shop.extension.formatToSimpleNumber
 import kotlinx.android.synthetic.main.partial_shop_page_header_2.view.*
 
 class ShopPageHeaderViewHolder(private val view: View, private val listener: ShopPageHeaderListener){
+    private var isShopFavourited = false
 
     fun bind(shopInfo: ShopInfo, isMyShop: Boolean) {
+        isShopFavourited = TextApiUtils.isValueTrue(shopInfo.getInfo().getShopAlreadyFavorited())
         view.shopName.text = MethodChecker.fromHtml(shopInfo.info.shopName).toString()
         view.shopFollower.text = view.context.getString(R.string.shop_page_header_total_follower,
                 shopInfo.info.shopTotalFavorit.toString())
@@ -43,7 +45,7 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
     }
 
     private fun updateViewShopStatus(shopInfo: ShopInfo, isMyShop: Boolean) {
-        view.buttonManageShop.visibility = if (isMyShop) View.VISIBLE else View.GONE
+        view.buttonActionAbnormal.visibility = if (isMyShop) View.VISIBLE else View.GONE
         when (shopInfo.info.shopStatus){
             ShopStatusDef.CLOSED -> showShopClosed(shopInfo)
             ShopStatusDef.MODERATED -> showShopModerated(shopInfo,false)
@@ -51,7 +53,7 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
             ShopStatusDef.NOT_ACTIVE -> showShopNotActive(isMyShop)
             else -> {
                 view.shopWarningTickerView.visibility = View.GONE
-                view.buttonManageShop.visibility = View.GONE
+                view.buttonActionAbnormal.visibility = View.GONE
             }
         }
     }
@@ -66,7 +68,7 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
                 view.context.getString(R.string.shop_page_header_shop_not_active_title),
                 description,
                 R.color.yellow_ticker)
-        view.buttonManageShop.apply {
+        view.buttonActionAbnormal.apply {
             text = view.context.getString(R.string.shop_info_label_see_how_to_open)
             setOnClickListener { listener.goToHowActivate() }
         }
@@ -79,7 +81,7 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
                 } else {R.string.shop_page_header_shop_in_moderation} ),
                 view.context.getString(R.string.shop_page_header_closed_reason, shopInfo.closedInfo.reason),
                 R.color.yellow_ticker)
-        view.buttonManageShop.apply {
+        view.buttonActionAbnormal.apply {
             text = view.context.getString(R.string.shop_info_label_open_request)
             setOnClickListener { listener.requestOpenShop() }
         }
@@ -91,7 +93,7 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
         showShopStatusTicker(R.drawable.ic_shop_label_closed,
                 view.context.getString(R.string.shop_page_header_shop_closed_info, shopCloseUntilString),
                 shopInfo.closedInfo.note, R.color.green_ticker)
-        view.buttonManageShop.apply {
+        view.buttonActionAbnormal.apply {
             text = view.context.getString(R.string.shop_info_label_open_action)
             setOnClickListener { listener.openShop() }
         }
@@ -107,28 +109,43 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
             setAction(null, null)
             visibility = View.VISIBLE
         }
+        val color = ContextCompat.getColor(view.context, backgroundColor)
+        view.shopImageView.foreground = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,
+                intArrayOf(color, color, color))
     }
 
     private fun displayAsBuyer(shopInfo: ShopInfo) {
-        view.chatButtonText.text = view.context.getString(R.string.shop_page_chat_label)
-        view.chatButton.setOnClickListener { listener.goToChatSeller() }
-        updateFavoriteButton(shopInfo)
+        view.buttonManageShop.visibility = View.GONE
+        view.buttonChat.visibility = View.VISIBLE
+        view.buttonChat.setOnClickListener { listener.goToChatSeller() }
+        updateFavoriteButton()
     }
 
-    private fun updateFavoriteButton(shopInfo: ShopInfo) {
-        if (TextApiUtils.isValueTrue(shopInfo.getInfo().getShopAlreadyFavorited())){
-            view.favButtonText.setText(view.context.getString(R.string.shop_info_label_favourite))
+    fun isShopFavourited() = isShopFavourited
+
+    fun updateFavoriteButton() {
+        view.buttonFollow.isEnabled = true
+        view.buttonFollowed.isEnabled = true
+        if (isShopFavourited){
+            view.buttonFollow.visibility = View.GONE
+            view.buttonFollowed.visibility = View.VISIBLE
+            view.buttonFollowed.setOnClickListener{ listener.toggleFavorite(true)}
         } else {
-            view.favButtonText.setText(view.context.getString(R.string.shop_page_label_favorite))
+            view.buttonFollowed.visibility = View.GONE
+            view.buttonFollow.visibility = View.VISIBLE
+            view.buttonFollow.setText(view.context.getString(R.string.shop_page_label_favorite))
+            view.buttonFollow.setOnClickListener{ listener.toggleFavorite(false)}
         }
-        view.favButton.setOnClickListener { listener.toggleFavorite() }
     }
 
     private fun displayAsSeller(shopInfo: ShopInfo) {
-        view.chatButtonText.text = view.context.getString(R.string.shop_page_label_manage_shop)
-        view.chatButton.setOnClickListener { listener.goToManageShop() }
-        view.favButtonText.text = view.context.getString(R.string.shop_page_label_add_product)
-        view.favButton.setOnClickListener { listener.goToAddProduct() }
+        view.buttonChat.visibility = View.GONE
+        view.buttonManageShop.visibility = View.VISIBLE
+        view.buttonManageShop.setOnClickListener { listener.goToManageShop() }
+        view.buttonFollowed.visibility = View.GONE
+        view.buttonFollow.visibility = View.VISIBLE
+        view.buttonFollow.text = view.context.getString(R.string.shop_page_label_add_product)
+        view.buttonFollow.setOnClickListener { listener.goToAddProduct() }
     }
 
     private fun displayGeneral(shopInfo: ShopInfo) {
@@ -153,11 +170,15 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
         view.shopLabel.visibility = View.VISIBLE
     }
 
+    fun toggleFavourite() {
+        isShopFavourited = !isShopFavourited
+    }
+
     interface ShopPageHeaderListener {
         fun onFollowerTextClicked()
         fun goToChatSeller()
         fun goToManageShop()
-        fun toggleFavorite()
+        fun toggleFavorite(isFavourite: Boolean)
         fun goToAddProduct()
         fun openShop()
         fun requestOpenShop()
