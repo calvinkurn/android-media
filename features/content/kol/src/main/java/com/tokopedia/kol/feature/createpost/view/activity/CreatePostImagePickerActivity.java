@@ -27,7 +27,8 @@ import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDe
  */
 public class CreatePostImagePickerActivity extends ImagePickerActivity {
 
-    public static Intent getInstance(Context context) {
+
+    public static Intent getInstance(Context context, String urlForm) {
         ImagePickerBuilder builder = new ImagePickerBuilder(context.getString(R.string.title_post),
                 new int[]{TYPE_GALLERY, TYPE_CAMERA}, GalleryType.IMAGE_ONLY, DEFAULT_MAX_IMAGE_SIZE_IN_KB,
                 DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.RATIO_1_1, true,
@@ -40,6 +41,7 @@ public class CreatePostImagePickerActivity extends ImagePickerActivity {
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_IMAGE_PICKER_BUILDER, builder);
         intent.putExtra(EXTRA_IMAGE_PICKER_BUILDER, bundle);
+        intent.putExtra(CreatePostActivity.FORM_URL, urlForm);
         return intent;
     }
 
@@ -56,7 +58,8 @@ public class CreatePostImagePickerActivity extends ImagePickerActivity {
                 imagePickerBuilder.getImageRatioTypeDef(),
                 imagePickerBuilder.isCirclePreview(),
                 imagePickerBuilder.getMaxFileSizeInKB(),
-                imagePickerBuilder.getRatioOptionList());
+                imagePickerBuilder.getRatioOptionList(),
+                getIntent().getExtras().getString(CreatePostActivity.FORM_URL));
     }
 
 }

@@ -1250,7 +1250,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onWhitelistClicked(String url) {
-        startActivityForResult(CreatePostImagePickerActivity.getInstance(getActivity()), CREATE_POST);
+        url = "https://m.tokopedia.com/content/new/";
+        startActivityForResult(CreatePostImagePickerActivity.getInstance(getActivity(), url), CREATE_POST);
     }
 
     @Override

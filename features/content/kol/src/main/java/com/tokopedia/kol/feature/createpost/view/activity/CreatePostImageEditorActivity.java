@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.imagepicker.common.util.ImageUtils;
 import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity;
 import com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef;
 import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
@@ -67,13 +68,14 @@ public class CreatePostImageEditorActivity extends ImageEditorActivity {
     private static final int CREATE_FORM_REQUEST = 1234;
 
     public static Intent getInstance(Context context, ArrayList<String> imageUrls,
-                                   ArrayList<String> imageDescription,
-                                   int minResolution,
-                                   @ImageEditActionTypeDef int[] imageEditActionType,
-                                   ImageRatioTypeDef defaultRatio,
-                                   boolean isCirclePreview,
-                                   long maxFileSize,
-                                   ArrayList<ImageRatioTypeDef> ratioOptionList) {
+                                    ArrayList<String> imageDescription,
+                                    int minResolution,
+                                    @ImageEditActionTypeDef int[] imageEditActionType,
+                                    ImageRatioTypeDef defaultRatio,
+                                    boolean isCirclePreview,
+                                    long maxFileSize,
+                                    ArrayList<ImageRatioTypeDef> ratioOptionList,
+                                     String urlForm) {
         Intent intent = new Intent(context, CreatePostImageEditorActivity.class);
         intent.putExtra(EXTRA_IMAGE_URLS, imageUrls);
         intent.putExtra(EXTRA_IMAGE_DESCRIPTION_LIST, imageDescription);
@@ -83,6 +85,7 @@ public class CreatePostImageEditorActivity extends ImageEditorActivity {
         intent.putExtra(EXTRA_IS_CIRCLE_PREVIEW, isCirclePreview);
         intent.putExtra(EXTRA_MAX_FILE_SIZE, maxFileSize);
         intent.putExtra(EXTRA_RATIO_OPTION_LIST, ratioOptionList);
+        intent.putExtra(CreatePostActivity.FORM_URL, urlForm);
         return intent;
     }
 
@@ -115,11 +118,9 @@ public class CreatePostImageEditorActivity extends ImageEditorActivity {
 
     @Override
     protected Intent getFinishIntent(ArrayList<String> imageUrlOrPathList){
-        Intent intent = CreatePostActivity.getInstanceWebView(this,"");
-        intent.putStringArrayListExtra(PICKER_RESULT_PATHS, imageUrlOrPathList);
-        intent.putStringArrayListExtra(RESULT_PREVIOUS_IMAGE, extraImageUrls);
-        intent.putStringArrayListExtra(RESULT_IMAGE_DESCRIPTION_LIST, imageDescriptionList);
-        intent.putExtra(RESULT_IS_EDITTED, isEdittedList);
+        String fullPathUrl = getIntent().getStringExtra(CreatePostActivity.FORM_URL) + imageUrlOrPathList.get(0);
+        Intent intent = CreatePostActivity.getInstanceWebView(
+                this, fullPathUrl);
         return intent;
     }
 
@@ -178,7 +179,7 @@ public class CreatePostImageEditorActivity extends ImageEditorActivity {
                     @Override
                     public void onNext(List<MediaUploadViewModel> mediaUploadViewModels) {
                         progressDialog.dismiss();
-                        Intent intent = getFinishIntent(imageUrlOrPathList);
+                        Intent intent = getFinishIntent(getResult(mediaUploadViewModels));
                         startActivityForResult(intent, CREATE_FORM_REQUEST);
                     }
                 }));
@@ -209,5 +210,11 @@ public class CreatePostImageEditorActivity extends ImageEditorActivity {
         maps.put(PARAM_ID, id);
         maps.put(PARAM_RESOLUTION, resolution);
         return uploadImageUseCase.createRequestParam(cameraLoc, DEFAULT_UPLOAD_PATH, DEFAULT_UPLOAD_TYPE, maps);
+    }
+
+    private ArrayList<String> getResult(List<MediaUploadViewModel> mediaUploadViewModels) {
+        ArrayList<String> resultString = new ArrayList<>();
+        resultString.add(mediaUploadViewModels.get(0).getMediaPath());
+        return resultString;
     }
 }
