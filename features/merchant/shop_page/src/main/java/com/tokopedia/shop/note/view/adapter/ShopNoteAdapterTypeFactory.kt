@@ -10,7 +10,7 @@ import com.tokopedia.shop.info.view.adapter.viewholder.ShopNoteEmptyViewHolder
 import com.tokopedia.shop.note.view.adapter.viewholder.ShopNoteViewHolder
 import com.tokopedia.shop.note.view.model.ShopNoteViewModel
 
-class ShopNoteAdapterTypeFactory: BaseAdapterTypeFactory(){
+class ShopNoteAdapterTypeFactory(val onNoteClicked: ShopNoteViewHolder.OnNoteClicked): BaseAdapterTypeFactory(){
 
     fun type(shopNoteViewModel: ShopNoteViewModel?) = ShopNoteViewHolder.LAYOUT
 
@@ -19,7 +19,7 @@ class ShopNoteAdapterTypeFactory: BaseAdapterTypeFactory(){
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type){
             ShopNoteEmptyViewHolder.LAYOUT -> ShopNoteEmptyViewHolder(parent)
-            ShopNoteViewHolder.LAYOUT -> ShopNoteViewHolder(parent)
+            ShopNoteViewHolder.LAYOUT -> ShopNoteViewHolder(parent, onNoteClicked)
             else -> super.createViewHolder(parent, type)
         }
     }

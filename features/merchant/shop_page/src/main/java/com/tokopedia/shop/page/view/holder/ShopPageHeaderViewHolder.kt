@@ -3,6 +3,7 @@ package com.tokopedia.shop.page.view.holder
 import android.graphics.drawable.GradientDrawable
 import android.support.annotation.DrawableRes
 import android.support.v4.content.ContextCompat
+import android.support.v7.content.res.AppCompatResources
 import android.view.View
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
@@ -19,8 +20,8 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
     fun bind(shopInfo: ShopInfo, isMyShop: Boolean) {
         isShopFavourited = TextApiUtils.isValueTrue(shopInfo.getInfo().getShopAlreadyFavorited())
         view.shopName.text = MethodChecker.fromHtml(shopInfo.info.shopName).toString()
-        view.shopFollower.text = view.context.getString(R.string.shop_page_header_total_follower,
-                shopInfo.info.shopTotalFavorit.toString())
+        view.shopFollower.text = MethodChecker.fromHtml(view.context.getString(R.string.shop_page_header_total_follower,
+                shopInfo.info.shopTotalFavorit.toString()))
         view.shopFollower.setOnClickListener { listener.onFollowerTextClicked() }
         ImageHandler.loadImageCircle2(view.context, view.shopImageView, shopInfo.info.shopAvatar)
         when {
@@ -64,10 +65,10 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
         } else {
             view.context.getString(R.string.shop_page_header_shop_not_active_description_buyer)
         }
-        showShopStatusTicker(R.drawable.ic_info_inactive,
+        showShopStatusTicker(R.drawable.ic_shop_deactivate,
                 view.context.getString(R.string.shop_page_header_shop_not_active_title),
                 description,
-                R.color.yellow_ticker)
+                R.color.yellow_ticker, R.color.grey_overlay_inactive)
         view.buttonActionAbnormal.apply {
             text = view.context.getString(R.string.shop_info_label_see_how_to_open)
             setOnClickListener { listener.goToHowActivate() }
@@ -75,12 +76,12 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
     }
 
     private fun showShopModerated(shopInfo: ShopInfo, isPermanent: Boolean) {
-        showShopStatusTicker(R.drawable.ic_info_moderation,
+        showShopStatusTicker(R.drawable.ic_shop_moderated_v3,
                 view.context.getString(if (isPermanent) {
                     R.string.shop_page_header_shop_in_permanent_moderation
                 } else {R.string.shop_page_header_shop_in_moderation} ),
                 view.context.getString(R.string.shop_page_header_closed_reason, shopInfo.closedInfo.reason),
-                R.color.yellow_ticker)
+                R.color.yellow_ticker, R.color.red_overlay_moderated)
         view.buttonActionAbnormal.apply {
             text = view.context.getString(R.string.shop_info_label_open_request)
             setOnClickListener { listener.requestOpenShop() }
@@ -90,9 +91,9 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
     private fun showShopClosed(shopInfo: ShopInfo) {
         val shopCloseUntilString = DateFormatUtils.formatDate(DateFormatUtils.FORMAT_DD_MM_YYYY,
                 DateFormatUtils.FORMAT_D_MMMM_YYYY, shopInfo.closedInfo.until)
-        showShopStatusTicker(R.drawable.ic_shop_label_closed,
+        showShopStatusTicker(R.drawable.ic_shop_close_v3,
                 view.context.getString(R.string.shop_page_header_shop_closed_info, shopCloseUntilString),
-                shopInfo.closedInfo.note, R.color.green_ticker)
+                shopInfo.closedInfo.note, R.color.green_ticker, R.color.green_overlay_closed)
         view.buttonActionAbnormal.apply {
             text = view.context.getString(R.string.shop_info_label_open_action)
             setOnClickListener { listener.openShop() }
@@ -100,18 +101,24 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
 
     }
 
-    private fun showShopStatusTicker(@DrawableRes iconRes: Int, title: String, description: String, backgroundColor: Int) {
+    private fun showShopStatusTicker(@DrawableRes iconRes: Int, title: String, description: String,
+                                     backgroundTickerColor: Int, backgoundStatusColor: Int = backgroundTickerColor) {
         view.shopWarningTickerView.run {
-            setIcon(iconRes)
             setTitle(title)
             setDescription(description)
-            setTickerColor(ContextCompat.getColor(context, backgroundColor))
+            setTickerColor(ContextCompat.getColor(context, backgroundTickerColor))
             setAction(null, null)
             visibility = View.VISIBLE
         }
-        val color = ContextCompat.getColor(view.context, backgroundColor)
-        view.shopImageView.foreground = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,
-                intArrayOf(color, color, color))
+
+        view.shopStatusImageView.background = GradientDrawable().apply {
+            setColor(ContextCompat.getColor(view.context, backgoundStatusColor))
+            shape = GradientDrawable.OVAL
+            setStroke(view.context.resources.getDimension(R.dimen.dp_half).toInt(),
+                    ContextCompat.getColor(view.context, R.color.grey_status_stroke))
+        }
+
+        view.shopStatusImageView.setImageDrawable(AppCompatResources.getDrawable(view.context, iconRes))
     }
 
     private fun displayAsBuyer(shopInfo: ShopInfo) {

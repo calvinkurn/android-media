@@ -32,9 +32,9 @@
                 android:id="@+id/shopStatusImageView"
                 android:layout_width="@dimen/dp_72"
                 android:layout_height="@dimen/dp_72"
-                android:background="@color/tkpd_main_green"
+                tools:background="@color/tkpd_main_green"
                 android:padding="@dimen/dp_12"
-                app:srcCompat="@drawable/ic_shop_close_v3"/>
+                tools:srcCompat="@drawable/ic_shop_close_v3"/>
 
         </FrameLayout>
 
