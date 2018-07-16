@@ -24,7 +24,9 @@ import retrofit2.Response;
 
 /**
  * Created by Angga.Prasetiyo on 01/12/2015.
+ * Use ErrorHandler from abstraction
  */
+@Deprecated
 public class ErrorHandler {
     private static final String TAG = ErrorHandler.class.getSimpleName();
     private static final String SERVER_INFO = "Network Server Error";
