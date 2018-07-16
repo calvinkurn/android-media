@@ -476,17 +476,20 @@ public class ImageUtils {
         boolean isPng = ImageUtils.isPng(imagePath);
 
         Bitmap outputBitmap;
-        outputBitmap = Bitmap.createBitmap(bitmapToEdit.getWidth(), bitmapToEdit.getHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(outputBitmap);
-        canvas.drawBitmap(bitmapToEdit, 0, 0, null);
-        File file = ImageUtils.writeImageToTkpdPath(resultDirectory,
-                outputBitmap, isPng);
-        bitmapToEdit.recycle();
-        outputBitmap.recycle();
+        try {
+            outputBitmap = Bitmap.createBitmap(bitmapToEdit.getWidth(), bitmapToEdit.getHeight(), bitmapToEdit.getConfig());
+            Canvas canvas = new Canvas(outputBitmap);
+            canvas.drawBitmap(bitmapToEdit, 0, 0, null);
+            File file = ImageUtils.writeImageToTkpdPath(resultDirectory,
+                    outputBitmap, isPng);
+            bitmapToEdit.recycle();
+            outputBitmap.recycle();
 
-        System.gc();
-
-        return file.getAbsolutePath();
+            System.gc();
+            return file.getAbsolutePath();
+        } catch (Throwable e) {
+            return imagePath;
+        }
     }
 
     /**

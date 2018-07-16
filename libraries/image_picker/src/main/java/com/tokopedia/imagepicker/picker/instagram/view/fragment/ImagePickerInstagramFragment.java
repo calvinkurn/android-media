@@ -212,6 +212,12 @@ public class ImagePickerInstagramFragment extends BaseListFragment<InstagramMedi
     }
 
     @Override
+    protected void loadInitialData() {
+        nextMediaId = "";
+        super.loadInitialData();
+    }
+
+    @Override
     public void renderList(List<InstagramMediaModel> instagramMediaModels, boolean hasNextPage, String nextMaxIdPage) {
         code = "";
         this.nextMediaId = nextMaxIdPage;
