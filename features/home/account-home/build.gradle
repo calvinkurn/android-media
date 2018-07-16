@@ -12,16 +12,10 @@ buildscript {
     }
 }
 
-dependencies {
 
+dependencies {
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
-
-    implementation project(rootProject.ext.features.core) // for tokopoint purpose
-    implementation project(rootProject.ext.features.home)
-    implementation project(rootProject.ext.features.accountHome)
-    implementation project(rootProject.ext.features.feed)
-    implementation project(rootProject.ext.features.searchbar)
 
     implementation rootProject.ext.miscDependencies.multiDex
 }

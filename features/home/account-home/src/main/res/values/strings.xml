@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">account-home</string>
+    <string name="label_account_buyer">Beli</string>
+    <string name="label_account_seller">Jual</string>
+    <string name="title_account">Akun Saya</string>
+    <string name="label_menu_setting">Pengaturan</string>
+    <string name="label_menu_notification">Feed</string>
+</resources>

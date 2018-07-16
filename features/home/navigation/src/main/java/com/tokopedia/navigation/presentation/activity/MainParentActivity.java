@@ -22,9 +22,9 @@ import com.tokopedia.core.router.loyaltytokopoint.ILoyaltyRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.component.BottomNavigation;
 import com.tokopedia.feedplus.view.fragment.FeedPlusFragment;
+import com.tokopedia.home.account.presentation.fragment.AccountHomeFragment;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;
 import com.tokopedia.navigation.R;
-import com.tokopedia.navigation.presentation.fragment.AccountFragment;
 import com.tokopedia.navigation.presentation.fragment.CartFragment;
 import com.tokopedia.navigation.presentation.fragment.InboxFragment;
 
@@ -36,6 +36,7 @@ public class MainParentActivity extends AppCompatActivity implements
 
     private BottomNavigation bottomNavigation;
     private TouchViewPager viewPager;
+    private FragmentAdapter adapterViewPager;
 
     private boolean isUserFirstTimeLogin = false;
 
@@ -47,7 +48,7 @@ public class MainParentActivity extends AppCompatActivity implements
         bottomNavigation = findViewById(R.id.bottomnav);
         viewPager = findViewById(R.id.container);
 
-        FragmentAdapter adapterViewPager = new FragmentAdapter(getSupportFragmentManager());
+        adapterViewPager = new FragmentAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapterViewPager);
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -141,7 +142,7 @@ public class MainParentActivity extends AppCompatActivity implements
                 case 3:
                     return CartFragment.newInstance();
                 case 4:
-                    return AccountFragment.newInstance();
+                    return AccountHomeFragment.newInstance();
                 default:
                     return null;
             }
