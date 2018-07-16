@@ -10,6 +10,8 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant;
 import com.tokopedia.shop.common.util.PagingListUtils;
 import com.tokopedia.shop.common.util.TextApiUtils;
 import com.tokopedia.shop.product.domain.interactor.GetShopProductLimitedUseCase;
+import com.tokopedia.shop.product.domain.interactor.GetShopProductListWithAttributeNewUseCase;
+import com.tokopedia.shop.product.domain.model.ShopProductRequestModel;
 import com.tokopedia.shop.product.util.ShopProductOfficialStoreUtils;
 import com.tokopedia.shop.product.view.listener.newlistener.ShopProductListView;
 import com.tokopedia.shop.product.view.model.ShopProductBaseViewModel;
@@ -20,6 +22,7 @@ import com.tokopedia.shop.product.view.model.ShopProductLimitedPromoViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductMoreViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductTitleFeaturedViewModel;
 import com.tokopedia.shop.product.view.model.newmodel.ShopProductPromoViewModel;
+import com.tokopedia.shop.product.view.model.newmodel.ShopProductViewModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.wishlist.common.domain.interactor.AddToWishListUseCase;
 import com.tokopedia.wishlist.common.domain.interactor.RemoveFromWishListUseCase;
@@ -36,17 +39,18 @@ import rx.Subscriber;
 
 public class ShopProductListNewPresenter extends BaseDaggerPresenter<ShopProductListView> {
 
-    private final GetShopProductLimitedUseCase getShopProductLimitedUseCase;
+//    private final GetShopProductLimitedUseCase getShopProductLimitedUseCase;
+    private final GetShopProductListWithAttributeNewUseCase productListWithAttributeNewUseCase;
     private final AddToWishListUseCase addToWishListUseCase;
     private final RemoveFromWishListUseCase removeFromWishListUseCase;
     private final UserSession userSession;
 
     @Inject
-    public ShopProductListNewPresenter(GetShopProductLimitedUseCase getShopProductLimitedUseCase,
+    public ShopProductListNewPresenter(GetShopProductListWithAttributeNewUseCase productListWithAttributeNewUseCase,
                                        AddToWishListUseCase addToWishListUseCase,
                                        RemoveFromWishListUseCase removeFromWishListUseCase,
                                        UserSession userSession) {
-        this.getShopProductLimitedUseCase = getShopProductLimitedUseCase;
+        this.productListWithAttributeNewUseCase = productListWithAttributeNewUseCase;
         this.addToWishListUseCase = addToWishListUseCase;
         this.removeFromWishListUseCase = removeFromWishListUseCase;
         this.userSession = userSession;
@@ -68,8 +72,37 @@ public class ShopProductListNewPresenter extends BaseDaggerPresenter<ShopProduct
         return userSession.getUserId();
     }
 
-    public void getProductList(String shopId, boolean goldMerchantStore, boolean officialStore, final int page) {
-        getShopProductLimitedUseCase.execute(GetShopProductLimitedUseCase.createRequestParam(shopId, goldMerchantStore, officialStore, page),
+    public void getProductListWithAttributes(String shopId, boolean isShopClosed,
+                                             boolean isOfficialStore, int page, boolean useAce,
+                                             int itemPerPage){
+        ShopProductRequestModel shopProductRequestModel = new ShopProductRequestModel(shopId, isShopClosed,
+                isOfficialStore, page, useAce, itemPerPage);
+        //TODO etalaseid, look up here ShopProductListPresenterOld
+        productListWithAttributeNewUseCase.execute(
+                GetShopProductListWithAttributeNewUseCase.createRequestParam(shopProductRequestModel),
+                new Subscriber<PagingList<ShopProductViewModel>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (isViewAttached()) {
+                            getView().showGetListError(e);
+                        }
+                    }
+
+                    @Override
+                    public void onNext(PagingList<ShopProductViewModel> shopProductViewModelPagingList) {
+                        boolean hasNextPage = PagingListUtils.checkNextPage(shopProductViewModelPagingList);
+                        getView().renderProductList(shopProductViewModelPagingList.getList(), hasNextPage);
+                    }
+                });
+    }
+/*
+    public void getProductList(String shopId, boolean goldMerchantStore, boolean officialStore, final int page, boolean isShopClosed) {
+        getShopProductLimitedUseCase.execute(GetShopProductLimitedUseCase.createRequestParam(shopId, goldMerchantStore, officialStore, page, isShopClosed),
                 new Subscriber<PagingList<ShopProductBaseViewModel>>() {
                     @Override
                     public void onCompleted() {
@@ -130,9 +163,9 @@ public class ShopProductListNewPresenter extends BaseDaggerPresenter<ShopProduct
 //                        }
                     }
 
-                    /**
-                     * Use Presenter.getProductPromoModel() instead.
-                     */
+
+                     // Use Presenter.getProductPromoModel() instead.
+
 //                    @Deprecated
 //                    private ShopProductLimitedPromoViewModel getProductPromoModel() {
 //                        ShopProductLimitedPromoViewModel shopProductLimitedPromoViewModel = new ShopProductLimitedPromoViewModel();
@@ -148,6 +181,7 @@ public class ShopProductListNewPresenter extends BaseDaggerPresenter<ShopProduct
 //                    }
                 });
     }
+*/
 
     public void loadProductPromoModel(String promotionWebViewUrl){
         if (!TextApiUtils.isTextEmpty(promotionWebViewUrl)) {
@@ -220,8 +254,8 @@ public class ShopProductListNewPresenter extends BaseDaggerPresenter<ShopProduct
     @Override
     public void detachView() {
         super.detachView();
-        if (getShopProductLimitedUseCase != null) {
-            getShopProductLimitedUseCase.unsubscribe();
+        if (productListWithAttributeNewUseCase != null) {
+            productListWithAttributeNewUseCase.unsubscribe();
         }
     }
 }

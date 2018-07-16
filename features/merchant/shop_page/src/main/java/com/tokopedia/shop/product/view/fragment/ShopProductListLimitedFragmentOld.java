@@ -243,7 +243,9 @@ public class ShopProductListLimitedFragmentOld extends BaseListFragment<ShopProd
                     TextApiUtils.isValueTrue(shopInfo.getInfo().getShopIsGold()),
                     TextApiUtils.isValueTrue(shopInfo.getInfo().getShopIsOfficial()),
                     officialWebViewUrl,
-                    i);
+                    i,
+                    !shopInfo.getInfo().isOpen(),
+                    ShopPageTrackingConstant.DEFAULT_PER_PAGE);
         }
     }
 

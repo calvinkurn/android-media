@@ -68,8 +68,10 @@ public class ShopProductListLimitedPresenterOld extends BaseDaggerPresenter<Shop
         return userSession.getUserId();
     }
 
-    public void getProductLimitedList(String shopId, boolean goldMerchantStore, boolean officialStore, final String promotionWebViewUrl, final int page) {
-        getShopProductLimitedUseCase.execute(GetShopProductLimitedUseCase.createRequestParam(shopId, goldMerchantStore, officialStore, page),
+    public void getProductLimitedList(String shopId, boolean goldMerchantStore, boolean officialStore, final String promotionWebViewUrl, final int page,
+                                      boolean isShopClosed, int perPage) {
+        getShopProductLimitedUseCase.execute(GetShopProductLimitedUseCase.createRequestParam(shopId, goldMerchantStore, officialStore, page, isShopClosed,
+                perPage),
                 new Subscriber<PagingList<ShopProductBaseViewModel>>() {
                     @Override
                     public void onCompleted() {

@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 /**
  * Created by nathan on 2/6/18.
  */
-
+@Deprecated
 public abstract class ShopProductViewModelOld<T> implements Visitable<T> {
 
     private String id;

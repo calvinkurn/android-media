@@ -311,7 +311,15 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
 
     @Override
     public void loadData(int page) {
-        shopProductListPresenterOld.getShopPageList(shopId, keyword, etalaseId, 0, page, Integer.valueOf(sortName));
+        if (shopInfo == null) {
+            shopProductListPresenterOld.getShopInfo(shopId);
+        } else {
+            loadShopPageList(shopInfo, page);
+        }
+    }
+
+    private void loadShopPageList(ShopInfo shopInfo, int page){
+        shopProductListPresenterOld.getShopPageList(shopInfo, keyword, etalaseId, 0, page, Integer.valueOf(sortName));
     }
 
     @Override
@@ -386,11 +394,12 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     }
 
     @Override
-    public void onSuccessGetShopName(ShopInfo shopInfo) {
+    public void onSuccessGetShopInfo(ShopInfo shopInfo) {
         this.shopInfo = shopInfo;
         if (getActivity() instanceof BaseSimpleActivity) {
             ((BaseSimpleActivity) getActivity()).updateTitle(MethodChecker.fromHtml(shopInfo.getInfo().getShopName()).toString());
         }
+        loadInitialData();
     }
 
     @Override

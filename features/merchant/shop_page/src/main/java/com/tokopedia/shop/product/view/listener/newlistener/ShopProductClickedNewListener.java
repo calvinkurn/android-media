@@ -1,0 +1,15 @@
+package com.tokopedia.shop.product.view.listener.newlistener;
+
+import com.tokopedia.shop.product.view.model.ShopProductViewModelOld;
+import com.tokopedia.shop.product.view.model.newmodel.ShopProductViewModel;
+
+/**
+ * Created by normansyahputa on 2/24/18.
+ */
+
+public interface ShopProductClickedNewListener {
+
+    void onWishListClicked(ShopProductViewModel shopProductViewModelOld);
+
+    void onProductClicked(ShopProductViewModel shopProductViewModelOld);
+}

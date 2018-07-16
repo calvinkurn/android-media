@@ -17,7 +17,7 @@ import rx.schedulers.Schedulers;
 /**
  * Created by normansyahputa on 2/23/18.
  */
-
+@Deprecated
 public abstract class GetShopProductAttributeUseCase<T> extends UseCase<T> {
 
     private final GetWishListUseCase getWishListUseCase;
@@ -51,7 +51,8 @@ public abstract class GetShopProductAttributeUseCase<T> extends UseCase<T> {
             campaignListObservable = getProductCampaignsUseCase.createObservable(GetProductCampaignsUseCase.createRequestParam(productIdList));
         }
 
-        return Observable.zip(wishlistObservable.subscribeOn(Schedulers.io()), campaignListObservable.subscribeOn(Schedulers.io()), new Func2<List<String>, List<ShopProductCampaign>, List<ShopProductViewModelOld>>() {
+        return Observable.zip(wishlistObservable.subscribeOn(Schedulers.io()),
+                campaignListObservable.subscribeOn(Schedulers.io()), new Func2<List<String>, List<ShopProductCampaign>, List<ShopProductViewModelOld>>() {
             @Override
             public List<ShopProductViewModelOld> call(List<String> wishList, List<ShopProductCampaign> shopProductCampaignList) {
                 shopProductMapper.mergeShopProductViewModelWithWishList(shopProductViewModelOldList, wishList, !isShopOwner);

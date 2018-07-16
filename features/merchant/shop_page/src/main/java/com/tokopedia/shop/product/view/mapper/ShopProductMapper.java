@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * Created by nathan on 2/25/18.
  */
-
+@Deprecated
 public class ShopProductMapper {
 
     private static final String BADGE_FREE_RETURN = "Free Return";

@@ -26,11 +26,11 @@ public class ShopProductFeaturedViewHolder extends AbstractViewHolder<ShopProduc
 
     @Override
     public void bind(ShopProductFeaturedViewModel shopProductFeaturedViewModel) {
-        if (shopProductFeaturedViewModel.getShopProductFeaturedViewModelList().size() == 0) {
-            itemView.setVisibility(View.GONE);
-        } else {
-            itemView.setVisibility(View.VISIBLE);
-        }
+//        if (shopProductFeaturedViewModel.getShopProductFeaturedViewModelList().size() == 0) {
+//            itemView.setVisibility(View.GONE);
+//        } else {
+//            itemView.setVisibility(View.VISIBLE);
+//        }
     }
 
     private void findViews(View view) {

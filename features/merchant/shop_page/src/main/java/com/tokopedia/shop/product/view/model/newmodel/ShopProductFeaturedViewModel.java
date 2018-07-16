@@ -13,10 +13,10 @@ public class ShopProductFeaturedViewModel implements BaseShopProductViewModel{
 
     //TODO feature model
 
-    private List<ShopProductFeaturedViewModel> shopProductFeaturedViewModelList;
+    private List<ShopProductViewModel> shopProductViewModelList;
 
     public ShopProductFeaturedViewModel(){
-        shopProductFeaturedViewModelList = new ArrayList<>();
+        shopProductViewModelList = new ArrayList<>();
     }
 
     @Override
@@ -24,15 +24,15 @@ public class ShopProductFeaturedViewModel implements BaseShopProductViewModel{
         return typeFactory.type(this);
     }
 
-    public void setShopProductFeaturedViewModelList(List<ShopProductFeaturedViewModel> shopProductFeaturedViewModelList) {
-        if (shopProductFeaturedViewModelList == null) {
-            this.shopProductFeaturedViewModelList = new ArrayList<>();
+    public void setShopProductFeaturedViewModelList(List<ShopProductViewModel> shopProductViewModelList) {
+        if (shopProductViewModelList == null) {
+            this.shopProductViewModelList = new ArrayList<>();
         } else {
-            this.shopProductFeaturedViewModelList = shopProductFeaturedViewModelList;
+            this.shopProductViewModelList = shopProductViewModelList;
         }
     }
 
-    public List<ShopProductFeaturedViewModel> getShopProductFeaturedViewModelList() {
-        return shopProductFeaturedViewModelList;
+    public List<ShopProductViewModel> getShopProductFeaturedViewModelList() {
+        return shopProductViewModelList;
     }
 }

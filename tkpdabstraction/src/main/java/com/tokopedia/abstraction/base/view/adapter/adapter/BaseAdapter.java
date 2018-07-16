@@ -39,9 +39,12 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
 
     @Override
     public AbstractViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
-        View view = LayoutInflater.from(context).inflate(viewType, parent, false);
+        View view = onCreateViewItem(parent, viewType);
         return adapterTypeFactory.createViewHolder(view, viewType);
+    }
+
+    protected View onCreateViewItem(ViewGroup parent, int viewType) {
+        return LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
     }
 
     @SuppressWarnings("unchecked")

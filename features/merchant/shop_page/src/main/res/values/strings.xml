@@ -122,6 +122,7 @@
     <string name="shop_info_label_process_time">Waktu Proses</string>
     <string name="read">Baca</string>
     <string name="shop_page_label_follow">Follow</string>
+    <string name="shop_etalase">Etalase</string>
 
 
 </resources>

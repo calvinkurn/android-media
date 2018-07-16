@@ -37,6 +37,7 @@ public class ShopProductPromoViewHolder extends AbstractViewHolder<ShopProductPr
     private NestedWebView shopPagePromoWebView;
 
     private boolean isLogin;
+    private boolean isBind;
 
     public ShopProductPromoViewHolder(View itemView, PromoViewHolderListener promoViewHolderListener) {
         super(itemView);
@@ -74,29 +75,22 @@ public class ShopProductPromoViewHolder extends AbstractViewHolder<ShopProductPr
     }
 
     @Override
-    public void bind(ShopProductPromoViewModel shopProductLimitedPromoViewModel) {
-        if (TextUtils.isEmpty(shopProductLimitedPromoViewModel.getUrl())){
-            itemView.setVisibility(View.GONE);
-        } else {
-            itemView.setVisibility(View.VISIBLE);
-        }
-        if (isLogin == shopProductLimitedPromoViewModel.isLogin()) {
+    public void bind(ShopProductPromoViewModel shopProductPromoViewModel) {
+        if (isBind || isLogin == shopProductPromoViewModel.isLogin()) {
             return;
         }
-        if (shopProductLimitedPromoViewModel.isLogin()) {
+        if (shopProductPromoViewModel.isLogin()) {
             clearCache(shopPagePromoWebView);
-            shopPagePromoWebView.loadAuthUrl(shopProductLimitedPromoViewModel.getUrl(), shopProductLimitedPromoViewModel.getUserId());
+            shopPagePromoWebView.loadAuthUrl(shopProductPromoViewModel.getUrl(), shopProductPromoViewModel.getUserId());
         } else {
             clearCache(shopPagePromoWebView);
-            shopPagePromoWebView.loadUrl(shopProductLimitedPromoViewModel.getUrl());
+            shopPagePromoWebView.loadUrl(shopProductPromoViewModel.getUrl());
         }
-        shopProductLimitedPromoViewModel.setShopProductUserVisibleHintListener(this);
+        shopProductPromoViewModel.setShopProductUserVisibleHintListener(this);
 
-        isLogin = shopProductLimitedPromoViewModel.isLogin();
+        isLogin = shopProductPromoViewModel.isLogin();
 
-        //https://stackoverflow.com/questions/36313079/
-        //to prevent the webview to recycled by recyclerview.
-        setIsRecyclable(false);
+        isBind = true;
     }
 
     private void showLoading() {
