@@ -179,7 +179,7 @@ abstract class CameraController implements
                 LOG.i("Start:", "about to call onStart()", ss());
                 try {
                     onStart();
-                } catch (Exception e) {
+                } catch (Throwable e) {
                     mCameraCallbacks.dispatchError(new CameraException(e));
                     LOG.e("Error:", "returned from onStart() with Exception.", "Dispatching.", ss());
                     mState = STATE_STOPPED;
