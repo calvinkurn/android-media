@@ -99,6 +99,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         initializeDatabase();
         super.onCreate();
         initReact();
+
         MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
         InAppManager.getInstance().setInAppListener(this);
 
