@@ -5,7 +5,10 @@
     android:id="@+id/main_view"
     android:layout_width="match_parent"
     android:layout_height="130dp"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground">
 
     <com.tokopedia.feedplus.view.customview.RoundedCornerImageView
         android:id="@+id/product_image"

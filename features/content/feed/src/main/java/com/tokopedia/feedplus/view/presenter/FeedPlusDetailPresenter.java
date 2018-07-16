@@ -1,7 +1,7 @@
 package com.tokopedia.feedplus.view.presenter;
 
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.feedplus.domain.usecase.AddWishlistUseCase;
 import com.tokopedia.feedplus.domain.usecase.GetFeedsDetailUseCase;
 import com.tokopedia.feedplus.domain.usecase.RemoveWishlistUseCase;
