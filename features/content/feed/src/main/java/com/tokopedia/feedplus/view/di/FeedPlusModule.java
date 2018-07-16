@@ -23,7 +23,6 @@ import com.tokopedia.feedplus.data.factory.FavoriteShopFactory;
 import com.tokopedia.feedplus.data.factory.FeedFactory;
 import com.tokopedia.feedplus.data.factory.WishlistFactory;
 import com.tokopedia.feedplus.data.mapper.CheckNewFeedMapper;
-import com.tokopedia.feedplus.data.mapper.FeedDetailListMapper;
 import com.tokopedia.feedplus.data.mapper.FeedListMapper;
 import com.tokopedia.feedplus.data.mapper.FeedResultMapper;
 import com.tokopedia.feedplus.data.mapper.RecentProductMapper;
@@ -195,7 +194,6 @@ public class FeedPlusModule {
                                    FeedListMapper feedListMapper,
                                    @Named(NAME_LOCAL) FeedResultMapper feedResultMapperLocal,
                                    @Named(NAME_CLOUD) FeedResultMapper feedResultMapperCloud,
-                                   FeedDetailListMapper feedDetailListMapper,
                                    GlobalCacheManager globalCacheManager,
                                    MojitoService mojitoService,
                                    RecentProductMapper recentProductMapper,
@@ -208,7 +206,6 @@ public class FeedPlusModule {
                 feedResultMapperLocal,
                 feedResultMapperCloud,
                 globalCacheManager,
-                feedDetailListMapper,
                 mojitoService,
                 recentProductMapper,
                 checkNewFeedMapper
