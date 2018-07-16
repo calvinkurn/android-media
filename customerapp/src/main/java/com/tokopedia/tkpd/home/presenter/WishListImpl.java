@@ -59,7 +59,6 @@ import rx.subscriptions.CompositeSubscription;
  */
 public class WishListImpl implements WishList {
     private static final String TAG = WishListImpl.class.getSimpleName();
-
     WishListView wishListView;
 
     List<RecyclerViewItem> data = new ArrayList<>();
@@ -195,7 +194,6 @@ public class WishListImpl implements WishList {
 
     @Override
     public void fetchDataFromInternet(final Context context) {
-
         Observable<Response<WishlistData>> observable = mojitoAuthService.getApi().getWishlist(
                 SessionHandler.getLoginID(context),
                 10,
