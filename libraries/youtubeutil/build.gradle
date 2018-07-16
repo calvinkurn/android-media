@@ -21,6 +21,7 @@ buildscript {
 
 dependencies {
 
+    implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
