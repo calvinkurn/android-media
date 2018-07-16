@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
-import com.tokopedia.shop.info.view.listener.ShopInfoView;
+import com.tokopedia.shop.info.view.listener.OldShopInfoView;
 
 import javax.inject.Inject;
 
@@ -14,13 +14,13 @@ import rx.Subscriber;
  * Created by nathan on 2/6/18.
  */
 
-public class ShopInfoPresenter extends BaseDaggerPresenter<ShopInfoView> {
+public class OldShopInfoPresenter extends BaseDaggerPresenter<OldShopInfoView> {
 
     private final GetShopInfoUseCase getShopInfoUseCase;
     private final UserSession userSession;
 
     @Inject
-    public ShopInfoPresenter(GetShopInfoUseCase getShopInfoUseCase, UserSession userSession) {
+    public OldShopInfoPresenter(GetShopInfoUseCase getShopInfoUseCase, UserSession userSession) {
         this.getShopInfoUseCase = getShopInfoUseCase;
         this.userSession = userSession;
     }

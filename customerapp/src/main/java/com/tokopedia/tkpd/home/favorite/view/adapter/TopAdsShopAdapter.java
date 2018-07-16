@@ -20,7 +20,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.shop.page.view.activity.OldShopPageActivity;
+import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.core.util.TopAdsUtil;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.favorite.view.viewlistener.FavoriteClickListener;
@@ -149,7 +149,7 @@ public class TopAdsShopAdapter extends RecyclerView.Adapter<TopAdsShopAdapter.Vi
                 Context context = view.getContext();
                 TopAdsUtil.clickTopAdsAction(context, item.getShopClickUrl());
                 UnifyTracking.eventFavoriteViewRecommendation();
-                Intent intent = OldShopPageActivity.createIntent(context, item.getShopId());
+                Intent intent = ShopPageActivity.createIntent(context, item.getShopId());
                 context.startActivity(intent);
             }
         };

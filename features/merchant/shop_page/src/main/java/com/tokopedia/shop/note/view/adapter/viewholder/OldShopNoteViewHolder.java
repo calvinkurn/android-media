@@ -13,14 +13,14 @@ import com.tokopedia.shop.note.view.model.ShopNoteViewModel;
  * @author by alvarisi on 12/12/17.
  */
 
-public class ShopNoteViewHolder extends AbstractViewHolder<ShopNoteViewModel> {
+public class OldShopNoteViewHolder extends AbstractViewHolder<ShopNoteViewModel> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.item_shop_info_note;
 
     private LabelView shopNoteLabelView;
 
-    public ShopNoteViewHolder(View itemView) {
+    public OldShopNoteViewHolder(View itemView) {
         super(itemView);
         findViews(itemView);
     }

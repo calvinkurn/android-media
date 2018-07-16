@@ -31,9 +31,8 @@ import com.tokopedia.shop.info.di.component.DaggerShopInfoComponent;
 import com.tokopedia.shop.info.di.module.ShopInfoModule;
 import com.tokopedia.shop.info.view.adapter.ShopInfoPagerAdapter;
 import com.tokopedia.shop.info.view.fragment.ShopInfoFragment;
-import com.tokopedia.shop.info.view.listener.ShopInfoView;
-import com.tokopedia.shop.info.view.presenter.ShopInfoPresenter;
-import com.tokopedia.shop.note.data.source.cloud.model.ShopNoteList;
+import com.tokopedia.shop.info.view.listener.OldShopInfoView;
+import com.tokopedia.shop.info.view.presenter.OldShopInfoPresenter;
 import com.tokopedia.shop.note.view.fragment.ShopNoteListFragment;
 
 import javax.inject.Inject;
@@ -42,7 +41,7 @@ import javax.inject.Inject;
  * Created by nathan on 2/6/18.
  */
 
-public class ShopInfoActivity extends BaseTabActivity implements ShopInfoView, HasComponent<ShopComponent> {
+public class ShopInfoActivity extends BaseTabActivity implements OldShopInfoView, HasComponent<ShopComponent> {
 
     private static final int VIEW_CONTENT = 1;
     private static final int VIEW_LOADING = 2;
@@ -61,7 +60,7 @@ public class ShopInfoActivity extends BaseTabActivity implements ShopInfoView, H
     private TextView buttonRetryError;
 
     @Inject
-    ShopInfoPresenter shopInfoPresenter;
+    OldShopInfoPresenter oldShopInfoPresenter;
 
     @Inject
     ShopPageTracking shopPageTracking;
@@ -81,7 +80,6 @@ public class ShopInfoActivity extends BaseTabActivity implements ShopInfoView, H
                 .putExtra(ShopParamConstant.EXTRA_SHOP_ID, extras.getString(ShopParamConstant.KEY_SHOP_ID));
     }
 
-    @DeepLink(ShopAppLink.SHOP_INFO)
     public static Intent getCallingIntentInfoSelected(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, ShopInfoActivity.class)
@@ -97,7 +95,7 @@ public class ShopInfoActivity extends BaseTabActivity implements ShopInfoView, H
         tabPosition = getIntent().getIntExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_INFO);
         viewPager.setCurrentItem(tabPosition);
         initInjector();
-        shopInfoPresenter.attachView(this);
+        oldShopInfoPresenter.attachView(this);
         getShopInfo();
     }
 
@@ -131,7 +129,7 @@ public class ShopInfoActivity extends BaseTabActivity implements ShopInfoView, H
     public void onBackPressed() {
         super.onBackPressed();
         if(shopInfo != null) {
-            shopPageTracking.eventBackPressedShopInfo(shopId, shopInfoPresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
+            shopPageTracking.eventBackPressedShopInfo(shopId, oldShopInfoPresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
         }
     }
 
@@ -142,7 +140,7 @@ public class ShopInfoActivity extends BaseTabActivity implements ShopInfoView, H
             public void onTabSelected(TabLayout.Tab tab) {
                 if(shopPageTracking != null && shopInfo != null) {
                     shopPageTracking.eventClickTabShopInfo(getTitlePage(tab.getPosition()), shopId,
-                            shopInfoPresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
+                            oldShopInfoPresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
                 }
             }
 
@@ -165,7 +163,7 @@ public class ShopInfoActivity extends BaseTabActivity implements ShopInfoView, H
 
     private void getShopInfo() {
         setViewState(VIEW_LOADING);
-        shopInfoPresenter.getShopInfo(shopId);
+        oldShopInfoPresenter.getShopInfo(shopId);
     }
 
     @Override
@@ -200,7 +198,7 @@ public class ShopInfoActivity extends BaseTabActivity implements ShopInfoView, H
 
     private void onShareShop() {
         if (shopInfo != null) {
-            shopPageTracking.eventClickShareShopNotePage(shopId, shopInfoPresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
+            shopPageTracking.eventClickShareShopNotePage(shopId, oldShopInfoPresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
             ((ShopModuleRouter) getApplication()).goToShareShop(this, shopId, shopInfo.getInfo().getShopUrl(),
                     getString(R.string.shop_label_share_formatted, shopInfo.getInfo().getShopName(), shopInfo.getInfo().getShopLocation()));
         }
@@ -272,8 +270,8 @@ public class ShopInfoActivity extends BaseTabActivity implements ShopInfoView, H
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (shopInfoPresenter != null) {
-            shopInfoPresenter.detachView();
+        if (oldShopInfoPresenter != null) {
+            oldShopInfoPresenter.detachView();
         }
     }
 }

@@ -120,7 +120,6 @@ public class OldShopPageActivity extends BaseTabActivity implements ShopPageProm
         return intent;
     }
 
-    @DeepLink(ShopAppLink.SHOP)
     public static Intent getCallingIntent(Context context, Bundle extras) {
 
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
