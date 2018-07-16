@@ -102,7 +102,7 @@ public class ImageSearchActivity extends DiscoveryActivity
 
     @Override
     protected int getLayoutRes() {
-        return R.layout.activity_image_search;
+        return super.getLayoutRes();
     }
 
     @Override
