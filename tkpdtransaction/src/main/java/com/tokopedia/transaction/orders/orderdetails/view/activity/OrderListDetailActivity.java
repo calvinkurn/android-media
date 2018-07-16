@@ -62,14 +62,9 @@ public class OrderListDetailActivity extends BaseSimpleActivity {
             }
         }
         super.onCreate(arg);
-        toolbar.setBackgroundColor(getResources().getColor(R.color.white));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            toolbar.getNavigationIcon().setTint(getResources().getColor(R.color.black));
-        }
-        toolbar.setTitleTextAppearance(this, R.style.ToolbarText_SansSerifMedium);
         if (fromPayment != null) {
             if (fromPayment.equalsIgnoreCase("true")) {
-                toolbar.setTitle(getResources().getString(R.string.thank_you));
+                updateTitle(getResources().getString(R.string.thank_you));
             }
         }
 

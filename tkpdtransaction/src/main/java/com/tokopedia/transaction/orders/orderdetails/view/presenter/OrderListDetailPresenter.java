@@ -16,9 +16,6 @@ import com.tokopedia.transaction.orders.orderdetails.data.Detail;
 import com.tokopedia.transaction.orders.orderdetails.data.DetailsData;
 import com.tokopedia.transaction.orders.orderdetails.data.OrderDetails;
 import com.tokopedia.transaction.orders.orderdetails.data.PayMethod;
-import com.tokopedia.transaction.orders.orderdetails.data.Pricing;
-import com.tokopedia.transaction.orders.orderdetails.data.TapActionList;
-import com.tokopedia.transaction.orders.orderdetails.data.TapActions;
 import com.tokopedia.transaction.orders.orderdetails.data.Title;
 import com.tokopedia.usecase.RequestParams;
 
@@ -44,9 +41,8 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     private static final String UPSTREAM = "upstream";
     private static final String PARAM = "param";
     GraphqlUseCase orderDetailsUseCase;
-    List<TapActions> tapActionsList;
     List<ActionButton> actionButtonList;
-    OrderListDetailContract.TapActionInterface view;
+    OrderListDetailContract.ActionInterface view;
 
     @Inject
     public OrderListDetailPresenter(GraphqlUseCase orderDetailsUseCase) {
@@ -98,48 +94,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     }
 
     @Override
-    public void setTapActionButton(List<TapActions> tapActionButton, OrderListDetailContract.TapActionInterface view, int position) {
-        Map<String, Object> variables = new HashMap<>();
-        this.view = view;
-        variables.put(PARAM, tapActionButton);
-
-       orderDetailsUseCase = new GraphqlUseCase();
-
-
-        GraphqlRequest graphqlRequest = new
-                GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
-                R.raw.tapactions), TapActionList.class, variables);
-
-        orderDetailsUseCase.clearRequest();
-        orderDetailsUseCase.setRequest(graphqlRequest);
-        orderDetailsUseCase.createObservable(RequestParams.EMPTY).subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<GraphqlResponse>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        CommonUtils.dumper("error occured"+e);
-                    }
-
-                    @Override
-                    public void onNext(GraphqlResponse response) {
-
-                        if (response != null) {
-                            TapActionList data = response.getData(TapActionList.class);
-                            tapActionsList = data.getTapActionsList();
-                            if (tapActionsList != null)
-                                view.setTapActionButton(position, tapActionsList);
-                        }
-                    }
-                });
-    }
-
-    @Override
-    public void setActionButton(List<ActionButton> actionButtons, OrderListDetailContract.TapActionInterface view, int position) {
+    public void setActionButton(List<ActionButton> actionButtons, OrderListDetailContract.ActionInterface view, int position) {
         Map<String, Object> variables = new HashMap<>();
         this.view = view;
         variables.put(PARAM, actionButtons);
@@ -180,8 +135,8 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     }
 
     @Override
-    public List<TapActions> getTapActionList() {
-        return tapActionsList;
+    public List<ActionButton> getActionList() {
+        return actionButtonList;
     }
 
     private void setDetailsData(OrderDetails details) {

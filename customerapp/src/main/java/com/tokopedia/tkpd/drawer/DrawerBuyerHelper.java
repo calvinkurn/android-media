@@ -559,14 +559,14 @@ public class DrawerBuyerHelper extends DrawerHelper
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.DIGITAL_TRANSACTION_LIST);
                     AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(),AppEventTracking.EventLabel.DIGITAL_TRANSACTION_LIST, AppEventTracking.EventLabel.PURCHASE);
                     break;
-                case TkpdState.DrawerPosition.PEOPLE_DEALS_TRANSACTION_LIST:
-                    intent = RouteManager.getIntent(context, "tokopedia://deals/order");
+                case TkpdState.DrawerPosition.PEOPLE_EVENTS_TRANSACTION_LIST:
+                    intent = RouteManager.getIntent(context, "tokopedia://events/order");
                     context.startActivity(intent);
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.DIGITAL_TRANSACTION_LIST);
                     AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(),AppEventTracking.EventLabel.DIGITAL_TRANSACTION_LIST, AppEventTracking.EventLabel.PURCHASE);
                     break;
-                case TkpdState.DrawerPosition.PEOPLE_EVENTS_TRANSACTION_LIST:
-                    intent = RouteManager.getIntent(context, "tokopedia://events/order");
+                case TkpdState.DrawerPosition.PEOPLE_DEALS_TRANSACTION_LIST:
+                    intent = RouteManager.getIntent(context, "tokopedia://deals/order");
                     context.startActivity(intent);
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.DIGITAL_TRANSACTION_LIST);
                     AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(),AppEventTracking.EventLabel.DIGITAL_TRANSACTION_LIST, AppEventTracking.EventLabel.PURCHASE);

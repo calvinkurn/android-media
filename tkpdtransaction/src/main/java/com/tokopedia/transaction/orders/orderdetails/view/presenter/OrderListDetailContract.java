@@ -14,7 +14,6 @@ import com.tokopedia.transaction.orders.orderdetails.data.OrderToken;
 import com.tokopedia.transaction.orders.orderdetails.data.PayMethod;
 import com.tokopedia.transaction.orders.orderdetails.data.Pricing;
 import com.tokopedia.transaction.orders.orderdetails.data.Status;
-import com.tokopedia.transaction.orders.orderdetails.data.TapActions;
 import com.tokopedia.transaction.orders.orderdetails.data.Title;
 import com.tokopedia.transaction.orders.orderlist.data.ConditionalInfo;
 import com.tokopedia.transaction.orders.orderlist.data.PaymentData;
@@ -69,16 +68,12 @@ public interface OrderListDetailContract {
     public interface Presenter extends CustomerPresenter<View>{
         void setOrderDetailsContent(String orderId, String orderCategory, String fromPayment);
 
-        void setTapActionButton(List<TapActions> tapActionButton, TapActionInterface view, int position);
+       void setActionButton(List<ActionButton> actionButtons, ActionInterface view, int position);
 
-        void setActionButton(List<ActionButton> actionButtons, TapActionInterface view, int position);
-
-        List<TapActions> getTapActionList();
+        List<ActionButton> getActionList();
     }
 
-    interface TapActionInterface {
-        void setTapActionButton(int position, List<TapActions> tapActions);
-
+    interface ActionInterface {
         void setActionButton(int position, List<ActionButton> actionButtons);
 
     }

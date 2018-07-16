@@ -298,7 +298,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
                 newUri = newUri.replace(url.getQueryParameter("idem_potency_key"), "");
                 newUri = newUri.replace("idem_potency_key=", "");
                 RouteManager.route(getActivity(), newUri);
-            } else {
+            } else if (uri != null && !uri.equals("")){
                 TransactionPurchaseRouter.startWebViewActivity(getActivity(), uri);
             }
         };
