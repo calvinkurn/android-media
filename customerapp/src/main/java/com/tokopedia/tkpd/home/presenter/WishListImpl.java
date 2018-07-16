@@ -69,9 +69,6 @@ import rx.subscriptions.CompositeSubscription;
  */
 public class WishListImpl implements WishList {
     private static final String TAG = WishListImpl.class.getSimpleName();
-    private static final String PARAM_USER_ID = "user_id";
-    private static final String PAGE_NO = "page";
-    private static final String ITEM_COUNT = "count";
 
     WishListView wishListView;
 
@@ -209,37 +206,13 @@ public class WishListImpl implements WishList {
     @Override
     public void fetchDataFromInternet(final Context context) {
 
-        Map<String, Object> variables = new HashMap<>();
-
-        variables.put(PARAM_USER_ID, Integer.parseInt(SessionHandler.getLoginID(context)));
-        variables.put(PAGE_NO, mPaging.getPage());
-        variables.put(ITEM_COUNT, 10);
-
-        GraphqlRequest graphqlRequest = new GraphqlRequest(
-                GraphqlHelper.loadRawString(context.getResources(), R.raw.query_get_wishlist),
-                WishlistData.class,
-                variables);
-
-        List<GraphqlRequest> graphqlRequestList = new ArrayList<>();
-        graphqlRequestList.add(graphqlRequest);
-
-        GraphqlCacheStrategy graphqlCacheStrategy =
-                new GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build();
-
-        Observable<GraphqlResponse> observable = ObservableFactory.create(graphqlRequestList,
-                graphqlCacheStrategy);
-
-
-//        graphqlUseCase.execute(new AddWishlistActionSubscriber(wishlistActionListener, productId));
-
-
-        /*Observable<Response<WishlistData>> observable = mojitoAuthService.getApi().getWishlist(
+        Observable<Response<WishlistData>> observable = mojitoAuthService.getApi().getWishlist(
                 SessionHandler.getLoginID(context),
                 10,
                 mPaging.getPage()
-        );*/
+        );
 
-        Subscriber<GraphqlResponse> subscriber = new Subscriber<GraphqlResponse>() {
+        Subscriber<Response<WishlistData>> subscriber = new Subscriber<Response<WishlistData>>() {
             @Override
             public void onCompleted() {
 
@@ -254,14 +227,8 @@ public class WishListImpl implements WishList {
             }
 
             @Override
-            public void onNext(GraphqlResponse graphqlResponse) {
-                if (graphqlResponse != null) {
-                    WishlistData wishlistData = graphqlResponse.getData(WishlistData.class);
-                    setData(wishlistData);
-                } else {
-                    setData();
-                }
-//                setData(response.body());
+            public void onNext(Response<WishlistData> response) {
+                setData(response.body());
             }
         };
 
