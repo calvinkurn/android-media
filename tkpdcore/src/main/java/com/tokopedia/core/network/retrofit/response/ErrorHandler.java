@@ -86,6 +86,9 @@ public class ErrorHandler {
     }
 
     public static String getErrorMessage(Throwable e, final Context context) {
+        if (context == null) {
+            return "";
+        }
         if (e instanceof UnknownHostException) {
             return context.getString(R.string.msg_no_connection);
         } else if (e instanceof SocketTimeoutException) {
