@@ -17,8 +17,11 @@ import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.constants.DrawerActivityBroadcastReceiverConstant;
 import com.tokopedia.core.constants.TokoPointDrawerBroadcastReceiverConstant;
+import com.tokopedia.core.constants.TokocashPendingDataBroadcastReceiverConstant;
 import com.tokopedia.core.router.loyaltytokopoint.ILoyaltyRouter;
+import com.tokopedia.core.router.wallet.TokoCashCoreRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.component.BottomNavigation;
 import com.tokopedia.feedplus.view.fragment.FeedPlusFragment;
@@ -74,6 +77,8 @@ public class MainParentActivity extends AppCompatActivity implements
         bottomNavigation.setNotification(1200, 3);
 
         registerBroadcastReceiverHeaderTokoPoint();
+        registerBroadcastReceiverHeaderTokoCash();
+        registerBroadcastReceiverHeaderTokoCashPending();
     }
 
     @Override
@@ -158,7 +163,32 @@ public class MainParentActivity extends AppCompatActivity implements
         }
     }
 
+    /**
+     * Tokocash & Tokopoints
+     */
     private BroadcastReceiver broadcastReceiverTokoPoint;
+    private BroadcastReceiver broadcastReceiverTokocash;
+    private BroadcastReceiver broadcastReceiverPendingTokocash;
+
+    protected void registerBroadcastReceiverHeaderTokoCash() {
+        if (getApplication() instanceof TokoCashCoreRouter) {
+            broadcastReceiverTokocash = ((TokoCashCoreRouter) getApplication()).getBroadcastReceiverTokocash();
+            registerReceiver(
+                    broadcastReceiverTokocash,
+                    new IntentFilter(DrawerActivityBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP)
+            );
+        }
+    }
+
+    protected void registerBroadcastReceiverHeaderTokoCashPending() {
+        if (getApplication() instanceof TokoCashCoreRouter) {
+            broadcastReceiverPendingTokocash = ((TokoCashCoreRouter) getApplication()).getBroadcastReceiverTokocashPending();
+            registerReceiver(
+                    broadcastReceiverPendingTokocash,
+                    new IntentFilter(TokocashPendingDataBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP)
+            );
+        }
+    }
 
     protected void registerBroadcastReceiverHeaderTokoPoint() {
         if (getApplication() instanceof ILoyaltyRouter) {
@@ -174,9 +204,19 @@ public class MainParentActivity extends AppCompatActivity implements
         unregisterReceiver(broadcastReceiverTokoPoint);
     }
 
+    protected void unregisterBroadcastReceiverHeaderTokoCash() {
+        unregisterReceiver(broadcastReceiverTokocash);
+    }
+
+    protected void unregisterBroadcastReceiverHeaderTokoCashPending() {
+        unregisterReceiver(broadcastReceiverPendingTokocash);
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         unregisterBroadcastReceiverHeaderTokoPoint();
+        unregisterBroadcastReceiverHeaderTokoCash();
+        unregisterBroadcastReceiverHeaderTokoCashPending();
     }
 }

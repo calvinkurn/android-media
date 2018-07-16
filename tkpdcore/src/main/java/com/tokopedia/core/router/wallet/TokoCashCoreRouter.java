@@ -11,5 +11,7 @@ public interface TokoCashCoreRouter {
      *
      * @return BroadcastReceiver for pending cashback
      */
+    BroadcastReceiver getBroadcastReceiverTokocash();
+
     BroadcastReceiver getBroadcastReceiverTokocashPending();
 }

@@ -270,6 +270,7 @@ import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.WalletUserSession;
 import com.tokopedia.tokocash.di.DaggerTokoCashComponent;
 import com.tokopedia.tokocash.di.TokoCashComponent;
+import com.tokopedia.tokocash.pendingcashback.receiver.TokocashDataBroadcastReceiver;
 import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
 import com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity;
 import com.tokopedia.topchat.common.TopChatRouter;
@@ -1645,6 +1646,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public BroadcastReceiver getTokoPointBroadcastReceiver() {
         return new TokoPointDrawerBroadcastReceiver();
+    }
+
+    @Override
+    public BroadcastReceiver getBroadcastReceiverTokocash() {
+        return new TokocashDataBroadcastReceiver();
     }
 
     @Override
