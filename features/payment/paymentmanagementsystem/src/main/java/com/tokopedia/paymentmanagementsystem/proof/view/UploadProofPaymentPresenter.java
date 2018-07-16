@@ -42,4 +42,10 @@ public class UploadProofPaymentPresenter extends BaseDaggerPresenter<UploadProof
             }
         });
     }
+
+    @Override
+    public void detachView() {
+        super.detachView();
+        uploadProofPaymentUseCase.unsubscribe();
+    }
 }

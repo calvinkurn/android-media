@@ -67,6 +67,12 @@ public class ChangeClickBcaFragment extends BaseDaggerFragment implements Change
     }
 
     @Override
+    public void onDestroy() {
+        changeClickBcaPresenter.detachView();
+        super.onDestroy();
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         transactionId = getArguments().getString(Constant.TRANSACTION_ID, "");

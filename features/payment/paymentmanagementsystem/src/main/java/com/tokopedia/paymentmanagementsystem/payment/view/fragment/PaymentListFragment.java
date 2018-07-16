@@ -63,6 +63,12 @@ public class PaymentListFragment extends BaseListFragment<PaymentListModel, Paym
         super.onCreate(savedInstanceState);
     }
 
+    @Override
+    public void onDestroy() {
+        paymentListPresenter.detachView();
+        super.onDestroy();
+    }
+
     @Nullable
     @Override
     public SwipeRefreshLayout getSwipeRefreshLayout(View view) {

@@ -40,6 +40,7 @@ public class ChangeClickBcaPresenter extends BaseDaggerPresenter<ChangeClickBcaC
 
         GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(resources,
                 R.raw.change_click_bca), DataEditKlikBca.class, variables);
+        changeClickBcaUseCase.clearRequest();
         changeClickBcaUseCase.setRequest(graphqlRequest);
         changeClickBcaUseCase.execute(RequestParams.create(), new Subscriber<GraphqlResponse>() {
             @Override
@@ -62,5 +63,11 @@ public class ChangeClickBcaPresenter extends BaseDaggerPresenter<ChangeClickBcaC
                 getView().onResultChangeClickBcaUserId(editKlikbca.getEditKlikbca().isSuccess(), editKlikbca.getEditKlikbca().getMessage());
             }
         });
+    }
+
+    @Override
+    public void detachView() {
+        changeClickBcaUseCase.unsubscribe();
+        super.detachView();
     }
 }

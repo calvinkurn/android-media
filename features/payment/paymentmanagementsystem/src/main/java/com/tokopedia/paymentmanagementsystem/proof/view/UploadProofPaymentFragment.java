@@ -83,6 +83,12 @@ public class UploadProofPaymentFragment extends BaseDaggerFragment implements Up
     }
 
     @Override
+    public void onDestroy() {
+        uploadProofPaymentPresenter.detachView();
+        super.onDestroy();
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         paymentListModel = getArguments().getParcelable(Constant.PAYMENT_LIST_MODEL_EXTRA);
         super.onCreate(savedInstanceState);

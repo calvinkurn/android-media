@@ -41,6 +41,7 @@ public class ChangeBankAccountPresenter extends BaseDaggerPresenter<ChangeBankAc
 
         GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(resources,
                 R.raw.edit_account_detail), DataEditTransfer.class, variables);
+        saveDetailAccountUseCase.clearRequest();
         saveDetailAccountUseCase.setRequest(graphqlRequest);
         saveDetailAccountUseCase.execute(RequestParams.create(), new Subscriber<GraphqlResponse>() {
             @Override
@@ -63,5 +64,11 @@ public class ChangeBankAccountPresenter extends BaseDaggerPresenter<ChangeBankAc
                 getView().onResultEditDetailAccount(editTransfer.getEditTransfer().isSuccess(), editTransfer.getEditTransfer().getMessage());
             }
         });
+    }
+
+    @Override
+    public void detachView() {
+        saveDetailAccountUseCase.unsubscribe();
+        super.detachView();
     }
 }

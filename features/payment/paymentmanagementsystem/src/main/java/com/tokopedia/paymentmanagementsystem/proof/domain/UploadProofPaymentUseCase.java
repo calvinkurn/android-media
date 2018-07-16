@@ -58,6 +58,7 @@ public class UploadProofPaymentUseCase extends UseCase<UploadProof> {
 
                             GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(resources,
                                     R.raw.upload_proof), DataUploadProof.class, variables);
+                            uploadProofUseCase.clearRequest();
                             uploadProofUseCase.addRequest(graphqlRequest);
                             return uploadProofUseCase.createObservable(requestParams)
                                     .map(graphqlResponse -> {

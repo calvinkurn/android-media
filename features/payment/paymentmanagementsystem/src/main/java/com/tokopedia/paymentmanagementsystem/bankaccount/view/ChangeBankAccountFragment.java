@@ -118,8 +118,8 @@ public class ChangeBankAccountFragment extends BaseDaggerFragment implements Cha
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         changeBankAccountPresenter.detachView();
+        super.onDestroy();
     }
 
     @Override
