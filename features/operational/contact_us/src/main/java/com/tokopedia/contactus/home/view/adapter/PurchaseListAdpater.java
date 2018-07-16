@@ -25,7 +25,7 @@ public class PurchaseListAdpater extends RecyclerView.Adapter<ContactUsPurchaseV
 
     @Override
     public ContactUsPurchaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ContactUsPurchaseViewHolder(LayoutInflater.from(context).inflate(R.layout.order_vertical_list_item, parent, false));
+        return new ContactUsPurchaseViewHolder(LayoutInflater.from(context).inflate(R.layout.order_vertical_list_item, parent, false), "Riwayat");
     }
 
     @Override

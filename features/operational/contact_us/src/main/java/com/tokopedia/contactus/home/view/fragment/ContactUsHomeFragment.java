@@ -23,6 +23,8 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.R2;
+import com.tokopedia.contactus.common.analytics.ContactUsEventTracking;
+import com.tokopedia.contactus.common.analytics.ContactUsTracking;
 import com.tokopedia.contactus.common.api.ContactUsURL;
 import com.tokopedia.contactus.common.customview.ShadowTransformer;
 import com.tokopedia.contactus.common.data.BuyerPurchaseList;
@@ -111,6 +113,7 @@ public class ContactUsHomeFragment extends BaseDaggerFragment
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == R.id.action_inbox) {
+            ContactUsTracking.eventInboxClick("Inbox");
             startActivity(new Intent(getContext(), InboxTicketActivity.class));
             return true;
         }
@@ -191,17 +194,20 @@ public class ContactUsHomeFragment extends BaseDaggerFragment
 
     @OnClick(R2.id.btn_view_more)
     public void onViewClicked() {
+        ContactUsTracking.eventLihatBantuanClick("Bantuan", "");
         RouteManager.route(getContext(), ContactUsURL.ARTICLE_POPULAR_URL);
     }
 
     @OnClick(R2.id.view_full_purchaselist)
     public void onViewFullClicked() {
+        ContactUsTracking.eventLihatTransaksiClick("Transaksi", "");
         startActivity(BuyerPurchaseListActivity.getInstance(getContext()));
     }
 
 
     @OnClick(R2.id.btn_contact_us)
     public void onBtnContactUsClicked() {
+        ContactUsTracking.eventHomeHubungiKamiClick();
         startActivity(((ContactUsModuleRouter) (getContext().getApplicationContext())).getWebviewActivityWithIntent(getContext(), ContactUsURL.NAVIGATE_NEXT_URL, "Hubungi Kami"));
     }
 
