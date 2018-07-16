@@ -1,6 +1,7 @@
 package com.tokopedia.wishlist.common.subscriber;
 
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import android.content.Context;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.wishlist.common.R;
 import com.tokopedia.wishlist.common.listener.TkpdWishListActionListener;
@@ -11,10 +12,13 @@ import rx.Subscriber;
 public class TkpdAddWishlistSubscriber extends Subscriber<GraphqlResponse> {
     private final TkpdWishListActionListener viewListener;
     private String productId;
+    private Context context;
 
-    public TkpdAddWishlistSubscriber(TkpdWishListActionListener viewListener, String productId) {
+    public TkpdAddWishlistSubscriber(TkpdWishListActionListener viewListener, Context context,
+                                     String productId) {
         this.viewListener = viewListener;
         this.productId = productId;
+        this.context = context;
     }
 
     @Override
@@ -25,14 +29,15 @@ public class TkpdAddWishlistSubscriber extends Subscriber<GraphqlResponse> {
     @Override
     public void onError(Throwable e) {
         viewListener.onErrorAddWishList(
-                ErrorHandler.getErrorMessage(e), productId);
+                ErrorHandler.getErrorMessage(context, e), productId);
     }
 
     @Override
     public void onNext(GraphqlResponse graphqlResponse) {
 
         if (graphqlResponse != null) {
-            TkpdAddWishListResponse addWishListResponse = graphqlResponse.getData(TkpdAddWishListResponse.class);
+            TkpdAddWishListResponse addWishListResponse = graphqlResponse
+                    .getData(TkpdAddWishListResponse.class);
             if (addWishListResponse.getWishlist_add().getSuccess())
                 viewListener.onSuccessAddWishlist(productId);
             else

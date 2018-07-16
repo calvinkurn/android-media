@@ -42,7 +42,7 @@ public class TkpdRemoveWishListUseCase {
 
         graphqlUseCase.addRequest(graphqlRequest);
 
-        graphqlUseCase.execute(new TkpdRemoveWishlistSubscriber(wishlistActionListener, productId));
+        graphqlUseCase.execute(new TkpdRemoveWishlistSubscriber(wishlistActionListener, context, productId));
 
     }
 

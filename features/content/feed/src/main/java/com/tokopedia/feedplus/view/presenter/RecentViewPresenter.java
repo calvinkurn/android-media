@@ -72,7 +72,8 @@ public class RecentViewPresenter extends BaseDaggerPresenter<RecentView.View>
         viewListener.showLoadingProgress();
 
         tkpdAddWishListUseCase.createObservable(productId, userSession.getUserId(),
-                new TkpdAddWishlistSubscriber(tkpdWishListActionListener, productId));
+                new TkpdAddWishlistSubscriber(tkpdWishListActionListener,
+                        getView().getContext(), productId));
 
     }
 
@@ -81,7 +82,8 @@ public class RecentViewPresenter extends BaseDaggerPresenter<RecentView.View>
         viewListener.showLoadingProgress();
 
         tkpdRemoveWishListUseCase.createObservable(productId, userSession.getUserId(),
-                new TkpdRemoveWishlistSubscriber(tkpdWishListActionListener, productId));
+                new TkpdRemoveWishlistSubscriber(tkpdWishListActionListener,
+                        getView().getContext(), productId));
 
     }
 }

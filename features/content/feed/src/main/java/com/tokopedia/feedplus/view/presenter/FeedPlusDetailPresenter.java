@@ -74,7 +74,8 @@ public class FeedPlusDetailPresenter extends BaseDaggerPresenter<FeedPlusDetail.
         viewListener.showLoadingProgress();
 
         tkpdAddWishListUseCase.createObservable(productId, userSession.getUserId(),
-                new TkpdAddWishlistSubscriber(tkpdWishListActionListener, productId));
+                new TkpdAddWishlistSubscriber(tkpdWishListActionListener,
+                        getView().getContext(), productId));
     }
 
 
@@ -83,6 +84,7 @@ public class FeedPlusDetailPresenter extends BaseDaggerPresenter<FeedPlusDetail.
         viewListener.showLoadingProgress();
 
         tkpdRemoveWishListUseCase.createObservable(productId, userSession.getUserId(),
-                new TkpdRemoveWishlistSubscriber(tkpdWishListActionListener, productId));
+                new TkpdRemoveWishlistSubscriber(tkpdWishListActionListener,
+                        getView().getContext(), productId));
     }
 }

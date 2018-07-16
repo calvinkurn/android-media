@@ -1,6 +1,8 @@
 package com.tokopedia.wishlist.common.subscriber;
 
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import android.content.Context;
+
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.wishlist.common.R;
 import com.tokopedia.wishlist.common.listener.TkpdWishListActionListener;
@@ -12,12 +14,15 @@ public class TkpdRemoveWishlistSubscriber extends Subscriber<GraphqlResponse> {
 
     private TkpdWishListActionListener viewListener;
     private String productId;
+    private Context context;
 
     public TkpdRemoveWishlistSubscriber(TkpdWishListActionListener viewListener,
-                                          String productId) {
+                                        Context context,
+                                        String productId) {
 
         this.viewListener = viewListener;
         this.productId = productId;
+        this.context = context;
     }
 
     @Override
@@ -28,7 +33,7 @@ public class TkpdRemoveWishlistSubscriber extends Subscriber<GraphqlResponse> {
     @Override
     public void onError(Throwable e) {
         viewListener.onErrorRemoveWishlist(
-                ErrorHandler.getErrorMessage(e), productId);
+                ErrorHandler.getErrorMessage(context, e), productId);
     }
 
     @Override
