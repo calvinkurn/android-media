@@ -92,6 +92,7 @@ public class FeedPlusPresenter
         getFirstPageFeedsCloudUseCase.unsubscribe();
         likeKolPostUseCase.unsubscribe();
         followKolPostUseCase.unsubscribe();
+        getWhitelistUseCase.unsubscribe();
     }
 
 
