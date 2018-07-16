@@ -86,7 +86,9 @@ abstract class BaseToolbarActivity extends BaseActivity {
         int textColor = ContextCompat.getColor(this, TEXT_COLOR_BACKGROUND_WHITE);
         toolbar.setTitleTextColor(textColor);
         toolbar.setSubtitleTextColor(textColor);
-        toolbar.setOverflowIcon(ContextCompat.getDrawable(this, R.drawable.overflow_btn));
+        int height = dpToPx(getResources().getDimensionPixelSize(R.dimen.abc_action_button_min_height_material));
+        int width = dpToPx(getResources().getDimensionPixelSize(R.dimen.abc_action_button_min_width_material));
+        toolbar.setOverflowIcon(resize(ContextCompat.getDrawable(this, R.drawable.overflow_btn), width, height));
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(this, R.color.white)));
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -101,6 +103,12 @@ abstract class BaseToolbarActivity extends BaseActivity {
     public int dpToPx(int dp) {
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
         return (int) ((dp * displayMetrics.density) + 0.5);
+    }
+
+    private Drawable resize(Drawable image, int width, int height) {
+        Bitmap b = ((BitmapDrawable) image).getBitmap();
+        Bitmap bitmapResized = Bitmap.createScaledBitmap(b, 50, 50, false);
+        return new BitmapDrawable(getResources(), bitmapResized);
     }
 
     protected boolean isShowCloseButton() {
