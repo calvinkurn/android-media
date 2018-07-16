@@ -85,7 +85,7 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
     }
 
     @Override
-    public void onDrawOver(Canvas canvas, RecyclerView parent, RecyclerView.State state) {
+    public void onDraw(Canvas canvas, RecyclerView parent, RecyclerView.State state) {
         Paint paint = new Paint();
         paint.setColor(color);
 
