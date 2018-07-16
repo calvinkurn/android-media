@@ -9,24 +9,17 @@ import java.util.List;
  * Created by nabillasabbaha on 26/06/18.
  */
 public class TrainParamPassenger implements Parcelable {
-    
+
+    private boolean checkedSameAsBuyer;
     private List<TrainPassengerViewModel> trainPassengerViewModelList;
 
     public TrainParamPassenger() {
     }
 
+
     protected TrainParamPassenger(Parcel in) {
+        checkedSameAsBuyer = in.readByte() != 0;
         trainPassengerViewModelList = in.createTypedArrayList(TrainPassengerViewModel.CREATOR);
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeTypedList(trainPassengerViewModelList);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
     }
 
     public static final Creator<TrainParamPassenger> CREATOR = new Creator<TrainParamPassenger>() {
@@ -41,11 +34,30 @@ public class TrainParamPassenger implements Parcelable {
         }
     };
 
+    public boolean isCheckedSameAsBuyer() {
+        return checkedSameAsBuyer;
+    }
+
+    public void setCheckedSameAsBuyer(boolean checkedSameAsBuyer) {
+        this.checkedSameAsBuyer = checkedSameAsBuyer;
+    }
+
     public List<TrainPassengerViewModel> getTrainPassengerViewModelList() {
         return trainPassengerViewModelList;
     }
 
     public void setTrainPassengerViewModelList(List<TrainPassengerViewModel> trainPassengerViewModelList) {
         this.trainPassengerViewModelList = trainPassengerViewModelList;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeByte((byte) (checkedSameAsBuyer ? 1 : 0));
+        parcel.writeTypedList(trainPassengerViewModelList);
     }
 }

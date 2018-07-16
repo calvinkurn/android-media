@@ -10,12 +10,10 @@ import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
-import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -110,9 +108,11 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
 
         if (savedInstanceState == null) {
             trainParamPassenger = new TrainParamPassenger();
+            trainParamPassenger.setCheckedSameAsBuyer(true);
             initializedDataPassenger();
         } else {
             trainParamPassenger = savedInstanceState.getParcelable(TRAIN_PARAM_PASSENGER);
+            renderPassengers(trainParamPassenger.getTrainPassengerViewModelList());
         }
     }
 
@@ -127,10 +127,13 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
                 if (checked) {
-                    presenter.wrapPassengerSameAsBuyer();
+                    if (trainParamPassenger.isCheckedSameAsBuyer()) {
+                        presenter.wrapPassengerSameAsBuyer();
+                    }
                 } else {
                     adapter.clearElement(buyerViewModel);
                     presenter.removePassengerSameAsBuyer();
+                    trainParamPassenger.setCheckedSameAsBuyer(true);
                 }
             }
         });
@@ -308,6 +311,7 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
     @Override
     public void loadPassengerSameAsBuyer(TrainPassengerViewModel trainPassengerViewModel) {
         buyerViewModel = trainPassengerViewModel;
+        trainParamPassenger.setCheckedSameAsBuyer(false);
         startActivityForResult(TrainBookingAddPassengerActivity.callingIntent(getActivity(), trainPassengerViewModel), ADD_PASSENGER_REQUEST_CODE);
     }
 
@@ -349,7 +353,7 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK && requestCode == ADD_PASSENGER_REQUEST_CODE) {
+        if (requestCode == ADD_PASSENGER_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             TrainPassengerViewModel trainPassengerViewModel = data.getParcelableExtra(TrainBookingAddPassengerActivity.PASSENGER_DATA);
             presenter.updateDataPassengers(trainPassengerViewModel);
         }
