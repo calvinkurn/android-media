@@ -497,10 +497,12 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
      * Tokocash
      */
     private void getTokocashBalance() {
-        Observable<TokoCashData> observable = ((TkpdCoreRouter) context).getTokoCashBalance();
-        compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
-                .unsubscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new TokocashHomeSubscriber(this)));
+        if (getView().getTokocashBalance() != null) {
+            compositeSubscription.add(getView().getTokocashBalance().subscribeOn(Schedulers.newThread())
+                    .unsubscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new TokocashHomeSubscriber(this)));
+        }
+
     }
 }

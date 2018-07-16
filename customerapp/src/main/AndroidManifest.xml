@@ -76,6 +76,7 @@
             android:name="HANSEL_APP_KEY"
             android:value="8CDH74MC9EZLPFIHNNJPT39ERKS5BODETYX2LBFQ83ECSV86WY"/>
 
+        <!--android:name=".ConsumerSplashScreen"-->
 
         <activity
             android:name="com.tokopedia.navigation.presentation.activity.MainParentActivity"

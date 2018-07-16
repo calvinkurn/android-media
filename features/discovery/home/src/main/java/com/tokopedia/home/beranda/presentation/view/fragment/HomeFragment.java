@@ -34,6 +34,7 @@ import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.constants.HomeFragmentBroadcastReceiverConstant;
 import com.tokopedia.core.constants.TokocashPendingDataBroadcastReceiverConstant;
 import com.tokopedia.core.drawer.listener.TokoCashUpdateListener;
+import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
 import com.tokopedia.core.drawer2.data.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
@@ -87,6 +88,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import rx.Observable;
 
 import static com.tokopedia.core.constants.HomeFragmentBroadcastReceiverConstant.EXTRA_ACTION_RECEIVER;
 import static com.tokopedia.tokopoints.ApplinkConstant.HOMEPAGE;
@@ -169,6 +172,14 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         } else {
             floatingTextButton.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public Observable<TokoCashData> getTokocashBalance() {
+        if (getActivity() instanceof TkpdCoreRouter) {
+            return ((TkpdCoreRouter) getActivity()).getTokoCashBalance();
+        }
+        return null;
     }
 
     @Nullable

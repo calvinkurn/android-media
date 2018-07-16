@@ -31,8 +31,6 @@ import com.tokopedia.navigation.presentation.fragment.AccountFragment;
 import com.tokopedia.navigation.presentation.fragment.CartFragment;
 import com.tokopedia.navigation.presentation.fragment.InboxFragment;
 
-import javax.inject.Inject;
-
 /**
  * Created by meta on 19/06/18.
  */
@@ -83,7 +81,6 @@ public class MainParentActivity extends AppCompatActivity implements
         bottomNavigation.setNotification(1200, 3);
 
         registerBroadcastReceiverHeaderTokoPoint();
-//        registerBroadcastReceiverHeaderTokoCash();
         registerBroadcastReceiverHeaderTokoCashPending();
     }
 
@@ -173,18 +170,7 @@ public class MainParentActivity extends AppCompatActivity implements
      * Tokocash & Tokopoints
      */
     private BroadcastReceiver broadcastReceiverTokoPoint;
-//    private BroadcastReceiver broadcastReceiverTokocash;
     private BroadcastReceiver broadcastReceiverPendingTokocash;
-
-//    protected void registerBroadcastReceiverHeaderTokoCash() {
-//        if (getApplication() instanceof TokoCashCoreRouter) {
-//            broadcastReceiverTokocash = ((TokoCashCoreRouter) getApplication()).getBroadcastReceiverTokocash();
-//            registerReceiver(
-//                    broadcastReceiverTokocash,
-//                    new IntentFilter(DrawerActivityBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP)
-//            );
-//        }
-//    }
 
     protected void registerBroadcastReceiverHeaderTokoCashPending() {
         if (getApplication() instanceof TokoCashCoreRouter) {
@@ -210,10 +196,6 @@ public class MainParentActivity extends AppCompatActivity implements
         unregisterReceiver(broadcastReceiverTokoPoint);
     }
 
-//    protected void unregisterBroadcastReceiverHeaderTokoCash() {
-//        unregisterReceiver(broadcastReceiverTokocash);
-//    }
-
     protected void unregisterBroadcastReceiverHeaderTokoCashPending() {
         unregisterReceiver(broadcastReceiverPendingTokocash);
     }
@@ -222,7 +204,6 @@ public class MainParentActivity extends AppCompatActivity implements
     protected void onDestroy() {
         super.onDestroy();
         unregisterBroadcastReceiverHeaderTokoPoint();
-//        unregisterBroadcastReceiverHeaderTokoCash();
         unregisterBroadcastReceiverHeaderTokoCashPending();
     }
 }
