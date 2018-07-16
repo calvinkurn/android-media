@@ -57,7 +57,7 @@ public class ShipmentDonationViewHolder extends RecyclerView.ViewHolder {
                         .BottomSheetFieldBuilder()
                         .setTitle(shipmentDonationModel.getDonation().getTitle())
                         .setBody(shipmentDonationModel.getDonation().getDescription())
-                        .setImg(R.drawable.ic_dropshipper)
+                        .setImg(R.drawable.ic_donation)
                         .build());
 
                 bottomSheetView.show();

@@ -530,7 +530,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
             }
         }
-        totalPrice = totalItemPrice + shippingFee + insuranceFee + additionalFee + shipmentDonationModel.getDonation().getNominal() - shipmentCostModel.getPromoPrice();
+        totalPrice = totalItemPrice + shippingFee + insuranceFee + additionalFee - shipmentCostModel.getPromoPrice();
         shipmentCostModel.setTotalWeight(totalWeight);
         shipmentCostModel.setAdditionalFee(additionalFee);
         shipmentCostModel.setTotalItemPrice(totalItemPrice);
@@ -539,12 +539,12 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         shipmentCostModel.setInsuranceFee(insuranceFee);
         if (shipmentDonationModel.isChecked()) {
             shipmentCostModel.setDonation(shipmentDonationModel.getDonation().getNominal());
-            totalPrice += shipmentCostModel.getDonation();
         } else {
             if (shipmentCostModel.getDonation() > 0) {
                 shipmentCostModel.setDonation(0);
             }
         }
+        totalPrice += shipmentCostModel.getDonation();
         shipmentCostModel.setTotalPrice(totalPrice);
         shipmentAdapterActionListener.onTotalPaymentChange(shipmentCostModel);
     }
