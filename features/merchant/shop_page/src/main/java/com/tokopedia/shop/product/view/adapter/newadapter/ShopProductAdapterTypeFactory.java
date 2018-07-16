@@ -1,5 +1,6 @@
 package com.tokopedia.shop.product.view.adapter.newadapter;
 
+import android.text.TextUtils;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
@@ -10,12 +11,17 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingShimmeringGridViewHolder;
 import com.tokopedia.shop.product.view.adapter.newadapter.viewholder.EmptyWrapViewHolder;
 import com.tokopedia.shop.product.view.adapter.newadapter.viewholder.ErrorNetworkWrapViewHolder;
+import com.tokopedia.shop.product.view.adapter.newadapter.viewholder.HideViewHolder;
+import com.tokopedia.shop.product.view.adapter.newadapter.viewholder.ShopProductEtalaseLabelViewHolder;
 import com.tokopedia.shop.product.view.adapter.newadapter.viewholder.ShopProductEtalaseTitleViewHolder;
 import com.tokopedia.shop.product.view.adapter.newadapter.viewholder.ShopProductFeaturedViewHolder;
+import com.tokopedia.shop.product.view.adapter.newadapter.viewholder.ShopProductNewViewHolder;
 import com.tokopedia.shop.product.view.adapter.newadapter.viewholder.ShopProductViewHolder;
 import com.tokopedia.shop.product.view.adapter.newadapter.viewholder.ShopProductPromoViewHolder;
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener;
-import com.tokopedia.shop.product.view.model.newmodel.ShopProductEtalaseTitleViewModel;
+import com.tokopedia.shop.product.view.listener.newlistener.ShopProductClickedNewListener;
+import com.tokopedia.shop.product.view.model.newmodel.HideViewModel;
+import com.tokopedia.shop.product.view.model.newmodel.ShopProductEtalaseLabelViewModel;
 import com.tokopedia.shop.product.view.model.newmodel.ShopProductFeaturedViewModel;
 import com.tokopedia.shop.product.view.model.newmodel.ShopProductViewModel;
 import com.tokopedia.shop.product.view.model.newmodel.ShopProductPromoViewModel;
@@ -23,11 +29,11 @@ import com.tokopedia.shop.product.view.model.newmodel.ShopProductPromoViewModel;
 public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
 
     private final ShopProductPromoViewHolder.PromoViewHolderListener promoViewHolderListener;
-    private final ShopProductClickedListener shopProductClickedListener;
+    private final ShopProductClickedNewListener shopProductClickedListener;
     private final EmptyWrapViewHolder.Callback emptyProductOnClickListener;
 
     public ShopProductAdapterTypeFactory(ShopProductPromoViewHolder.PromoViewHolderListener promoViewHolderListener,
-                                         ShopProductClickedListener shopProductClickedListener,
+                                         ShopProductClickedNewListener shopProductClickedListener,
                                          EmptyWrapViewHolder.Callback emptyProductOnClickListener) {
         this.promoViewHolderListener = promoViewHolderListener;
         this.shopProductClickedListener = shopProductClickedListener;
@@ -44,24 +50,36 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
         return EmptyWrapViewHolder.LAYOUT;
     }
 
-    public int type(ShopProductEtalaseTitleViewModel shopProductLimitedEtalaseTitleViewHolder) {
-        return ShopProductEtalaseTitleViewHolder.LAYOUT;
-    }
-
     public int type(ShopProductPromoViewModel shopProductPromoViewModel) {
-        return ShopProductPromoViewHolder.LAYOUT;
+        if (TextUtils.isEmpty(shopProductPromoViewModel.getUrl())) {
+            return HideViewHolder.LAYOUT;
+        } else {
+            return ShopProductPromoViewHolder.LAYOUT;
+        }
     }
 
     public int type(ShopProductFeaturedViewModel shopProductFeaturedViewModel) {
-        return ShopProductFeaturedViewHolder.LAYOUT;
+        if (shopProductFeaturedViewModel.getShopProductFeaturedViewModelList().size() == 0) {
+            return HideViewHolder.LAYOUT;
+        } else {
+            return ShopProductFeaturedViewHolder.LAYOUT;
+        }
     }
 
     public int type(ShopProductViewModel shopProductViewModel) {
-        return ShopProductViewHolder.LAYOUT;
+        return ShopProductNewViewHolder.LAYOUT;
     }
 
     public int type(ErrorNetworkModel errorNetworkModel) {
         return ErrorNetworkWrapViewHolder.LAYOUT;
+    }
+
+    public int type(ShopProductEtalaseLabelViewModel etalaseLabelViewModel) {
+        return ShopProductEtalaseLabelViewHolder.LAYOUT;
+    }
+
+    public int type(HideViewModel viewModel) {
+        return HideViewHolder.LAYOUT;
     }
 
     @Override
@@ -72,14 +90,16 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
             return new EmptyWrapViewHolder(parent, emptyProductOnClickListener);
         } else if (type == ErrorNetworkWrapViewHolder.LAYOUT){
             return new ErrorNetworkWrapViewHolder(parent);
-        } else if (type == ShopProductEtalaseTitleViewHolder.LAYOUT) {
-            return new ShopProductEtalaseTitleViewHolder(parent);
+        } else if (type == ShopProductEtalaseLabelViewHolder.LAYOUT) {
+            return new ShopProductEtalaseLabelViewHolder(parent);
         } else if (type == ShopProductPromoViewHolder.LAYOUT) {
             return new ShopProductPromoViewHolder(parent, promoViewHolderListener);
         } else if(type == ShopProductFeaturedViewHolder .LAYOUT){
             return new ShopProductFeaturedViewHolder(parent);
-        } else if(type == ShopProductViewHolder.LAYOUT){
-            return new ShopProductViewHolder(parent, shopProductClickedListener);
+        } else if(type == ShopProductNewViewHolder.LAYOUT){
+            return new ShopProductNewViewHolder(parent, shopProductClickedListener);
+        } if (type == HideViewHolder.LAYOUT) {
+            return new HideViewHolder(parent);
         } else {
             return super.createViewHolder(parent, type);
         }

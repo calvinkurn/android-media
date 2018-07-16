@@ -5,8 +5,8 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant;
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct;
 import com.tokopedia.shop.product.domain.model.ShopProductRequestModel;
-import com.tokopedia.shop.product.view.mapper.ShopProductMapper;
-import com.tokopedia.shop.product.view.model.ShopProductViewModelOld;
+import com.tokopedia.shop.product.view.mapper.ShopProductMapperNew;
+import com.tokopedia.shop.product.view.model.newmodel.ShopProductViewModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.wishlist.common.domain.interactor.GetWishListUseCase;
 
@@ -17,22 +17,18 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.functions.Func1;
 
-/**
- * Created by normansyahputa on 2/23/18.
- */
-@Deprecated
-public class GetShopProductListWithAttributeUseCase extends GetShopProductAttributeUseCase<PagingList<ShopProductViewModelOld>> {
+public class GetShopProductListWithAttributeNewUseCase extends BaseGetShopProductAttributeNewUseCase<PagingList<ShopProductViewModel>> {
 
     private final static String SHOP_REQUEST = "SHOP_REQUEST";
 
     private final GetShopProductListUseCase getShopProductListUseCase;
 
     @Inject
-    public GetShopProductListWithAttributeUseCase(GetShopProductListUseCase getShopProductListUseCase,
-                                                  GetWishListUseCase getWishListUseCase,
-                                                  GetProductCampaignsUseCase getProductCampaignsUseCase,
-                                                  UserSession userSession,
-                                                  ShopProductMapper shopProductMapper) {
+    public GetShopProductListWithAttributeNewUseCase(GetShopProductListUseCase getShopProductListUseCase,
+                                                     GetWishListUseCase getWishListUseCase,
+                                                     GetProductCampaignsUseCase getProductCampaignsUseCase,
+                                                     UserSession userSession,
+                                                     ShopProductMapperNew shopProductMapper) {
         super(getWishListUseCase, getProductCampaignsUseCase, userSession, shopProductMapper);
         this.getShopProductListUseCase = getShopProductListUseCase;
     }
@@ -44,31 +40,38 @@ public class GetShopProductListWithAttributeUseCase extends GetShopProductAttrib
     }
 
     @Override
-    public Observable<PagingList<ShopProductViewModelOld>> createObservable(RequestParams requestParams) {
+    public Observable<PagingList<ShopProductViewModel>> createObservable(RequestParams requestParams) {
         final ShopProductRequestModel shopProductRequestModel = (ShopProductRequestModel) requestParams.getObject(SHOP_REQUEST);
         return getShopProductListUseCase.createObservable(GetShopProductListUseCase.createRequestParam(shopProductRequestModel))
-                .flatMap(new Func1<PagingList<ShopProduct>, Observable<PagingList<ShopProductViewModelOld>>>() {
+                .flatMap(new Func1<PagingList<ShopProduct>, Observable<PagingList<ShopProductViewModel>>>() {
             @Override
-            public Observable<PagingList<ShopProductViewModelOld>> call(final PagingList<ShopProduct> shopProductPagingList) {
+            public Observable<PagingList<ShopProductViewModel>> call(final PagingList<ShopProduct> shopProductPagingList) {
                 return getShopProductViewModelList(shopProductRequestModel, shopProductPagingList);
             }
         });
     }
 
-    private Observable<PagingList<ShopProductViewModelOld>> getShopProductViewModelList(
+    private Observable<PagingList<ShopProductViewModel>> getShopProductViewModelList(
             final ShopProductRequestModel shopProductRequestModel, final PagingList<ShopProduct> shopProductPagingList) {
-        List<ShopProductViewModelOld> shopProductViewModelOldList = shopProductMapper.convertFromShopProduct(shopProductPagingList.getList(), shopProductRequestModel.getPage(), ShopPageTrackingConstant.DEFAULT_PER_PAGE);
-        return getShopProductViewModelList(isShopOwner(shopProductRequestModel.getShopId()),
-                shopProductRequestModel.isOfficialStore(), shopProductViewModelOldList)
-                .flatMap(new Func1<List<ShopProductViewModelOld>, Observable<PagingList<ShopProductViewModelOld>>>() {
+        List<ShopProductViewModel> shopProductViewModelList = shopProductMapper.convertFromShopProduct(
+                shopProductPagingList.getList(), shopProductRequestModel.getPage(), ShopPageTrackingConstant.DEFAULT_PER_PAGE);
+        return super.getShopProductViewModelList(isShopOwner(shopProductRequestModel.getShopId()),
+                shopProductRequestModel.isOfficialStore(), shopProductViewModelList)
+                .flatMap(new Func1<List<ShopProductViewModel>, Observable<PagingList<ShopProductViewModel>>>() {
                     @Override
-                    public Observable<PagingList<ShopProductViewModelOld>> call(List<ShopProductViewModelOld> shopProductViewModelOldList) {
-                        PagingList<ShopProductViewModelOld> pagingList = new PagingList<>();
+                    public Observable<PagingList<ShopProductViewModel>> call(List<ShopProductViewModel> shopProductViewModelOldList) {
+                        PagingList<ShopProductViewModel> pagingList = new PagingList<>();
                         pagingList.setTotalData(shopProductPagingList.getTotalData());
                         pagingList.setPaging(shopProductPagingList.getPaging());
                         pagingList.setList(shopProductViewModelOldList);
                         return Observable.just(pagingList);
                     }
                 });
+    }
+
+    @Override
+    public void unsubscribe() {
+        super.unsubscribe();
+        getShopProductListUseCase.unsubscribe();
     }
 }

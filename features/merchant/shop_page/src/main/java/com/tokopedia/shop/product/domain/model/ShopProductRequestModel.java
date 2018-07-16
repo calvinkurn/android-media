@@ -26,13 +26,18 @@ public class ShopProductRequestModel {
     private boolean officialStore;
 
     private boolean useAce;
+    public ShopProductRequestModel(String shopId, boolean isShopClosed, boolean isOfficialStore, int page, boolean useAce,
+                                   int itemPerPage){
+        this.shopId = shopId;
+        this.shopClosed = isShopClosed;
+        this.officialStore = isOfficialStore;
+        this.page =page;
+        this.useAce = useAce;
+        this.perPage = itemPerPage;
+    }
 
     public String getShopId() {
         return shopId;
-    }
-
-    public void setShopId(String shopId) {
-        this.shopId = shopId;
     }
 
     public String getKeyword() {
@@ -55,10 +60,6 @@ public class ShopProductRequestModel {
         return page;
     }
 
-    public void setPage(int page) {
-        this.page = page;
-    }
-
     public int getOrderBy() {
         return orderBy;
     }
@@ -69,10 +70,6 @@ public class ShopProductRequestModel {
 
     public int getPerPage() {
         return perPage;
-    }
-
-    public void setPerPage(int perPage) {
-        this.perPage = perPage;
     }
 
     public int getWholesale() {
@@ -87,16 +84,8 @@ public class ShopProductRequestModel {
         return shopClosed;
     }
 
-    public void setShopClosed(boolean shopClosed) {
-        this.shopClosed = shopClosed;
-    }
-
     public boolean isOfficialStore() {
         return officialStore;
-    }
-
-    public void setOfficialStore(boolean officialStore) {
-        this.officialStore = officialStore;
     }
 
     public HashMap<String, String> getHashMap() {

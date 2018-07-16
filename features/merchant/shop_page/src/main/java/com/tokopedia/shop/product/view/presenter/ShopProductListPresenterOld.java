@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.response.PagingList;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.network.exception.UserNotLoginException;
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant;
 import com.tokopedia.shop.common.constant.ShopStatusDef;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
@@ -70,10 +71,17 @@ public class ShopProductListPresenterOld extends BaseDaggerPresenter<ShopProduct
 
     @NonNull
     private static ShopProductRequestModel getShopProductRequestModel(
-            String shopId, String keyword, String etalaseId, int wholesale, int page, int orderBy) {
-        ShopProductRequestModel shopProductRequestModel = new ShopProductRequestModel();
-        shopProductRequestModel.setShopId(shopId);
-        shopProductRequestModel.setPage(page);
+            String shopId,
+            boolean isShopClosed, boolean isOfficialStore, boolean useAce, int itemPerPage,
+            String keyword, String etalaseId, int wholesale, int page, int orderBy) {
+        ShopProductRequestModel shopProductRequestModel = new ShopProductRequestModel(
+                shopId,
+                isShopClosed,
+                isOfficialStore,
+                page,
+                useAce,
+                itemPerPage
+        );
         if (etalaseId != null)
             shopProductRequestModel.setEtalaseId(etalaseId);
 
@@ -89,8 +97,19 @@ public class ShopProductListPresenterOld extends BaseDaggerPresenter<ShopProduct
         return shopProductRequestModel;
     }
 
-    public void getShopPageList(final String shopId, final String keyword, final String etalaseId, final int wholesale, final int page, final int orderBy) {
-        final ShopProductRequestModel shopProductRequestModel = getShopProductRequestModel(shopId, keyword, etalaseId, wholesale, page, orderBy);
+    public void getShopPageList(final ShopInfo shopInfo, final String keyword, final String etalaseId,
+                                final int wholesale, final int page, final int orderBy) {
+        ShopProductRequestModel shopProductRequestModel = getShopProductRequestModel(
+                shopInfo.getInfo().getShopId(),
+                !shopInfo.getInfo().isOpen(),
+                shopInfo.getInfo().isShopOfficial(),
+                true,
+                ShopPageTrackingConstant.DEFAULT_PER_PAGE,
+                keyword, etalaseId, wholesale, page, orderBy);
+        getShopProductWithEtalase(shopProductRequestModel);
+    }
+
+    public void getShopInfo(final String shopId) {
         getShopInfoUseCase.execute(GetShopInfoUseCase.createRequestParam(shopId), new Subscriber<ShopInfo>() {
             @Override
             public void onCompleted() {
@@ -106,17 +125,14 @@ public class ShopProductListPresenterOld extends BaseDaggerPresenter<ShopProduct
 
             @Override
             public void onNext(ShopInfo shopInfo) {
-                getView().onSuccessGetShopName(shopInfo);
-                shopProductRequestModel.setShopClosed((int) shopInfo.getInfo().getShopStatus() == ShopStatusDef.CLOSED);
-                shopProductRequestModel.setOfficialStore(TextApiUtils.isValueTrue(shopInfo.getInfo().getShopIsOfficial()));
-                getShopProductWithEtalase(shopProductRequestModel);
+                getView().onSuccessGetShopInfo(shopInfo);
             }
         });
     }
 
     private void getShopProductWithEtalase(final ShopProductRequestModel shopProductRequestModel) {
         if (TextUtils.isEmpty(shopProductRequestModel.getEtalaseId())) {
-            getView().onSuccessGetEtalase("","");
+            getView().onSuccessGetEtalase("", "");
             getShopProductWithWishList(shopProductRequestModel);
             return;
         }
@@ -154,8 +170,8 @@ public class ShopProductListPresenterOld extends BaseDaggerPresenter<ShopProduct
                 // If etalase Id not found, then reset etalaseId
                 if (TextUtils.isEmpty(etalaseName)) {
                     for (EtalaseModel etalaseModel : etalaseModelListTemp) {
-                        if (shopProductRequestModel.getEtalaseId().replaceAll("[\\W_]","")
-                                .equalsIgnoreCase(etalaseModel.getEtalaseName().replaceAll("[\\W_]",""))) {
+                        if (shopProductRequestModel.getEtalaseId().replaceAll("[\\W_]", "")
+                                .equalsIgnoreCase(etalaseModel.getEtalaseName().replaceAll("[\\W_]", ""))) {
                             shopProductRequestModel.setEtalaseId(etalaseModel.getEtalaseId());
                             etalaseName = etalaseModel.getEtalaseName();
                             shopProductRequestModel.setUseAce((etalaseModel.getUseAce() == USE_ACE));

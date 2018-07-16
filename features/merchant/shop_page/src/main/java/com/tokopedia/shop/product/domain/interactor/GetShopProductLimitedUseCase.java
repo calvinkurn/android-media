@@ -24,13 +24,15 @@ import rx.schedulers.Schedulers;
 /**
  * Created by normansyahputa on 2/23/18.
  */
-
+@Deprecated
 public class GetShopProductLimitedUseCase extends UseCase<PagingList<ShopProductBaseViewModel>> {
 
     private static final String SHOP_ID = "SHOP_ID";
     private static final String GOLD_MERCHANT_STORE = "GOLD_MERCHANT";
     private static final String OFFICIAL_STORE = "OFFICIAL_STORE";
     private static final String PAGE = "PAGE";
+    private static final String IS_SHOP_CLOSED = "IS_SHOP_CLOSED";
+    private static final String PER_PAGE = "PER_PAGE";
 
     private final GetShopProductFeaturedUseCase getShopProductFeaturedUseCase;
     private final GetShopProductListWithAttributeUseCase getShopProductListWithAttributeUseCase;
@@ -51,11 +53,11 @@ public class GetShopProductLimitedUseCase extends UseCase<PagingList<ShopProduct
         final boolean goldMerchantStore = requestParams.getBoolean(GOLD_MERCHANT_STORE, false);
         final boolean officialStore = requestParams.getBoolean(OFFICIAL_STORE, false);
         final int page = requestParams.getInt(PAGE, 0);
-        final ShopProductRequestModel shopProductRequestModel = new ShopProductRequestModel();
-        shopProductRequestModel.setShopId(shopId);
-        shopProductRequestModel.setOfficialStore(officialStore);
-        shopProductRequestModel.setPage(page);
-        shopProductRequestModel.setUseAce(true);
+        final int perPage = requestParams.getInt(PER_PAGE, ShopPageTrackingConstant.DEFAULT_PER_PAGE);
+        final boolean isShopClosed = requestParams.getBoolean(IS_SHOP_CLOSED, false);
+        final ShopProductRequestModel shopProductRequestModel = new ShopProductRequestModel(
+                shopId,isShopClosed, officialStore, page, true, perPage
+        );
         List<ShopProductLimitedFeaturedViewModelOld> defaultFeaturedProductList = new ArrayList<>();
         Observable<List<ShopProductLimitedFeaturedViewModelOld>> featuredProductObservable = Observable.just(defaultFeaturedProductList);
 //        if ((goldMerchantStore || officialStore) && page == 1) {
@@ -94,12 +96,15 @@ public class GetShopProductLimitedUseCase extends UseCase<PagingList<ShopProduct
         );
     }
 
-    public static RequestParams createRequestParam(String shopId, boolean goldMerchantStore, boolean officialStore, int page) {
+    public static RequestParams createRequestParam(String shopId, boolean goldMerchantStore, boolean officialStore, int page,
+                                                   boolean isShopClosed, int perPage) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(SHOP_ID, shopId);
         requestParams.putBoolean(GOLD_MERCHANT_STORE, goldMerchantStore);
         requestParams.putBoolean(OFFICIAL_STORE, officialStore);
         requestParams.putInt(PAGE, page);
+        requestParams.putBoolean(IS_SHOP_CLOSED, isShopClosed);
+        requestParams.putInt(PER_PAGE, perPage);
         return requestParams;
     }
 }

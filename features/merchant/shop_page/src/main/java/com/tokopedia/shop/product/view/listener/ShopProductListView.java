@@ -14,7 +14,7 @@ public interface ShopProductListView extends BaseListViewListener<ShopProductVie
 
     void onErrorRemoveFromWishList(Throwable e);
 
-    void onSuccessGetShopName(ShopInfo shopName);
+    void onSuccessGetShopInfo(ShopInfo shopName);
 
     void onSuccessGetEtalase(String etalaseId, String etalaseName);
 

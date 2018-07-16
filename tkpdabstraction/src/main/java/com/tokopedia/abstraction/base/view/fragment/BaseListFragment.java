@@ -140,16 +140,20 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
 
     public void enableLoadMore() {
         if (endlessRecyclerViewScrollListener == null) {
-            endlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(recyclerView.getLayoutManager()) {
-                @Override
-                public void onLoadMore(int page, int totalItemsCount) {
-                    showLoading();
-                    loadData(page);
-                }
-            };
+            endlessRecyclerViewScrollListener = createEndlessRecyclerViewListener();
             endlessRecyclerViewScrollListener.setEndlessLayoutManagerListener(getEndlessLayoutManagerListener());
         }
         recyclerView.addOnScrollListener(endlessRecyclerViewScrollListener);
+    }
+
+    protected EndlessRecyclerViewScrollListener createEndlessRecyclerViewListener(){
+        return new EndlessRecyclerViewScrollListener(recyclerView.getLayoutManager()) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                showLoading();
+                loadData(page);
+            }
+        };
     }
 
     @Nullable protected EndlessLayoutManagerListener getEndlessLayoutManagerListener(){
