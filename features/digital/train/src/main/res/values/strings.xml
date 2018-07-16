@@ -99,6 +99,10 @@
     <string name="train_passenger_contact_phone_max_length_error">Telepon Kontak maksimal 13 digit</string>
     <string name="train_passenger_contact_phone_min_length_error">Telepon Kontak minimal 9 digit</string>
     <string name="train_passenger_passenger_not_fullfilled_error">Info penumpang tidak boleh ada yang kosong</string>
+    <string name="train_dialog_booking_passanger_title">Batalkan Pengisian Data</string>
+    <string name="train_dialog_booking_passanger_desc">Anda akan kembali ke halaman awal. Anda yakin?</string>
+    <string name="train_dialog_booking_passanger_no">Ya,batalkan</string>
+    <string name="train_dialog_booking_passanger_yes">Lanjut Isi</string>
 
     <!-- sort -->
     <string name="train_sort_label_min_price">Harga Minimum</string>
