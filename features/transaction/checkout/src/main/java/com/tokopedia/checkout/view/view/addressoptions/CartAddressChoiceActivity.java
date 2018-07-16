@@ -42,7 +42,7 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     private int typeRequest;
     private Token token;
 
-    private CartAddressChoiceFragment defaultFragment;
+    private ShipmentAddressListFragment defaultFragment;
 
     public static Intent createInstance(Activity activity, RecipientAddressModel currentAddress, int typeRequest) {
         Intent intent = new Intent(activity, CartAddressChoiceActivity.class);
@@ -131,18 +131,6 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     @Override
     public void finishSendResultActionSelectedAddress(RecipientAddressModel selectedAddressResult) {
         switch (typeRequest) {
-            case TYPE_REQUEST_SELECT_ADDRESS_FROM_SHORT_LIST:
-                Bundle bundle = new Bundle();
-                bundle.putParcelable(EXTRA_DEFAULT_SELECTED_ADDRESS, selectedAddressResult);
-                bundle.putBoolean(EXTRA_NAVIGATION_FROM_ADDRESS_LIST, true);
-
-                Fragment fragment = CartAddressChoiceFragment.newInstance(selectedAddressResult);
-                fragment.setArguments(bundle);
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.parent_view, fragment, fragment.getClass().getSimpleName())
-                        .commit();
-                break;
-
             case TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST:
                 Intent resultIntent = new Intent();
                 resultIntent.putExtra(EXTRA_SELECTED_ADDRESS_DATA, selectedAddressResult);
@@ -167,29 +155,18 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
                 return ShipmentAddressListFragment.newInstance(
                         (RecipientAddressModel) getIntent().getParcelableExtra(EXTRA_CURRENT_ADDRESS));
             default:
-                defaultFragment = CartAddressChoiceFragment.newInstance(
-                        getIntent().getParcelableExtra(EXTRA_CURRENT_ADDRESS));
+                defaultFragment = ShipmentAddressListFragment.newInstance(
+                        (RecipientAddressModel) getIntent().getParcelableExtra(EXTRA_CURRENT_ADDRESS));
                 return defaultFragment;
         }
     }
 
     @Override
     public void onBackPressed() {
-        if (getSupportFragmentManager() != null && getSupportFragmentManager().getBackStackEntryCount() > 0) {
-            setToolbarTitle(getString(R.string.checkout_module_title_shipping_dest));
-        }
-        if (getCurrentFragment() instanceof CartAddressChoiceFragment) {
-            ((CartAddressChoiceFragment) getCurrentFragment())
+        if (getCurrentFragment() instanceof ShipmentAddressListFragment) {
+            ((ShipmentAddressListFragment) getCurrentFragment())
                     .checkoutAnalyticsChangeAddress.eventClickChangeAddressClickArrowBackFromChangeAddress();
             super.onBackPressed();
-        } else if (getCurrentFragment() instanceof ShipmentAddressListFragment) {
-            if (defaultFragment != null) {
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.parent_view, defaultFragment, defaultFragment.getClass().getSimpleName())
-                        .commit();
-            } else {
-                super.onBackPressed();
-            }
         }
     }
 }

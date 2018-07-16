@@ -665,11 +665,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onChangeAddress() {
-        // Todo : change navigation
         checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickGantiAlamatAtauKirimKeBeberapaAlamat();
         Intent intent = CartAddressChoiceActivity.createInstance(getActivity(),
                 shipmentPresenter.getRecipientAddressModel(),
-                CartAddressChoiceActivity.TYPE_REQUEST_SELECT_ADDRESS_FROM_SHORT_LIST);
+                CartAddressChoiceActivity.TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST);
         startActivityForResult(intent, CartAddressChoiceActivity.REQUEST_CODE);
     }
 
