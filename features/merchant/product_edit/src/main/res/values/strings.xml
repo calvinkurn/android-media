@@ -40,4 +40,17 @@
     <string name="product_video_same_warn">Anda sudah menambahkan video ini</string>
     <string name="product_url_video">URL Video</string>
     <string name="product_error_no_video_url_name">Url Video harus diisi</string>
+
+    <string name="product_currency_value_idr">1</string>
+    <string name="product_currency_value_usd">2</string>
+
+    <string name="product_grosir_not_available_if_has_variant">Harga grosir tidak berlaku jika memiliki varian produk.</string>
+
+    <string name="product_label_recommendation_price">Rekomendasi Harga Pasar Rp 1.150.000. Gunakan</string>
+    <string name="product_label_product_price">Harga Produk</string>
+    <string name="product_label_wholesale_price">Harga Grosir</string>
+    <string name="product_label_additional_info">Info Lanjutan</string>
+    <string name="product_label_minimum_buy">Pemesanan Minimum</string>
+    <string name="product_label_maksimum_buy">Pemesanan Maksimum</string>
+    <string name="product_label_add_maksimum_buy">+Tambah Pemesanan Maksimum</string>
 </resources>
