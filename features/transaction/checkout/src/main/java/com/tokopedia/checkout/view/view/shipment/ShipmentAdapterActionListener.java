@@ -15,7 +15,9 @@ import java.util.List;
 
 public interface ShipmentAdapterActionListener extends CartAdapterActionListener {
 
-    void onAddOrChangeAddress();
+    void onChangeAddress();
+
+    void onSendToMultipleAddress();
 
     void onChooseShipment(int position, ShipmentCartItemModel shipmentCartItemModel,
                           RecipientAddressModel recipientAddressModel);

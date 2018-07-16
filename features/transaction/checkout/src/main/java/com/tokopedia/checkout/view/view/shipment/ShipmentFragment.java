@@ -218,7 +218,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         progressDialogNormal = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         ((SimpleItemAnimator) rvShipment.getItemAnimator()).setSupportsChangeAnimations(false);
         if (getArguments() != null && getArguments().getBoolean(ARG_EXTRA_NAVIGATE_TO_ADDRESS_CHOICE, false)) {
-            onAddOrChangeAddress();
+            onChangeAddress();
         }
     }
 
@@ -664,12 +664,18 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onAddOrChangeAddress() {
+    public void onChangeAddress() {
+        // Todo : change navigation
         checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickGantiAlamatAtauKirimKeBeberapaAlamat();
         Intent intent = CartAddressChoiceActivity.createInstance(getActivity(),
                 shipmentPresenter.getRecipientAddressModel(),
                 CartAddressChoiceActivity.TYPE_REQUEST_SELECT_ADDRESS_FROM_SHORT_LIST);
         startActivityForResult(intent, CartAddressChoiceActivity.REQUEST_CODE);
+    }
+
+    @Override
+    public void onSendToMultipleAddress() {
+        // Todo : change navigation
     }
 
     @Override

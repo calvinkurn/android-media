@@ -5,11 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v4.content.ContextCompat;
 import android.text.Spannable;
 import android.text.SpannableString;
-import android.text.TextPaint;
-import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
-import android.text.style.StyleSpan;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
@@ -42,7 +38,8 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
     private TextView tvRecipientName;
     private TextView tvRecipientAddress;
     private TextView tvRecipientPhone;
-    private TextView tvAddOrChangeAddress;
+    private TextView tvRecipientChangeAddress;
+    private TextView tvSendToMultipleAddress;
     private PickupPointLayout pickupPointLayout;
     private TextViewCompat tvChangeAddress;
 
@@ -59,7 +56,8 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
         tvRecipientName = itemView.findViewById(R.id.tv_recipient_name);
         tvRecipientAddress = itemView.findViewById(R.id.tv_recipient_address);
         tvRecipientPhone = itemView.findViewById(R.id.tv_recipient_phone);
-        tvAddOrChangeAddress = itemView.findViewById(R.id.tv_add_or_change_address);
+        tvRecipientChangeAddress = itemView.findViewById(R.id.tv_change_recipient_address);
+        tvSendToMultipleAddress = itemView.findViewById(R.id.tv_send_to_multiple_address);
         pickupPointLayout = itemView.findViewById(R.id.pickup_point_layout);
         tvChangeAddress = itemView.findViewById(R.id.tv_change_address);
     }
@@ -67,24 +65,35 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
     public void bindViewHolder(RecipientAddressModel recipientAddress,
                                ArrayList<ShowCaseObject> showCaseObjectList) {
 
+        tvChangeAddress.setVisibility(View.GONE);
         tvAddressStatus.setVisibility(View.GONE);
         tvAddressName.setVisibility(View.GONE);
         formatAddressName(tvRecipientName, recipientAddress.getRecipientName(), recipientAddress.getAddressName());
         tvRecipientAddress.setText(getFullAddress(recipientAddress));
         tvRecipientPhone.setVisibility(View.GONE);
 
-        tvAddOrChangeAddress.setOnClickListener(addOrChangeAddressListener());
+        tvRecipientChangeAddress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                shipmentAdapterActionListener.onChangeAddress();
+            }
+        });
+
+        tvSendToMultipleAddress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                shipmentAdapterActionListener.onSendToMultipleAddress();
+            }
+        });
 
         renderPickupPoint(pickupPointLayout, recipientAddress);
-        tvChangeAddress.setVisibility(View.GONE);
-
         setShowCase(rlRecipientAddressLayout, showCaseObjectList);
     }
 
     private void setShowCase(ViewGroup viewGroup, ArrayList<ShowCaseObject> showCaseObjectList) {
         showCaseObjectList.add(new ShowCaseObject(viewGroup,
-                "Alamat Pengiriman",
-                "Pastikan alamat pengiriman sudah sesuai dengan\nyang kamu inginkan",
+                viewGroup.getContext().getString(R.string.label_showcase_address_title),
+                viewGroup.getContext().getString(R.string.label_showcase_address_message),
                 ShowCaseContentPosition.UNDEFINED)
         );
     }
@@ -110,15 +119,6 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
                     recipientAddress.getStore().getStoreName(), recipientAddress.getStore().getAddress());
         }
 
-    }
-
-    private View.OnClickListener addOrChangeAddressListener() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                shipmentAdapterActionListener.onAddOrChangeAddress();
-            }
-        };
     }
 
     private PickupPointLayout.ViewListener pickupPointListener(
