@@ -16,8 +16,7 @@
         android:layout_weight="1"
         android:clickable="false">
 
-        <TextView
-            style="@style/TextView.Title.BlackPrimary"
+        <TextView style="@style/TextView.Title.BlackPrimary"
             android:textSize="@dimen/sp_18"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginStart="@dimen/dp_16"
@@ -25,8 +24,7 @@
             android:layout_marginRight="@dimen/dp_16"
             android:text="@string/top_ads_title_keyword_add_keyword"/>
 
-        <TextView
-            style="@style/TextView.Micro.BlackDisabled"
+        <TextView style="@style/TextView.Micro.BlackDisabled"
             android:id="@+id/bidInfoTextView"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginStart="@dimen/dp_16"
