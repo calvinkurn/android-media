@@ -42,6 +42,7 @@ import com.tokopedia.feedplus.view.presenter.FeedPlusDetailPresenter;
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailHeaderViewModel;
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailViewModel;
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.SingleFeedDetailViewModel;
+import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.kol.KolComponentInstance;
 
 import java.util.ArrayList;
@@ -101,6 +102,7 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
         initVar(savedInstanceState);
     }
 
+    @SuppressWarnings("ConstantConditions")
     private void initVar(Bundle savedInstanceState) {
         if (savedInstanceState != null)
             detailId = savedInstanceState.getString(ARGS_DETAIL_ID);
@@ -113,14 +115,16 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
         recyclerviewScrollListener = onRecyclerViewListener();
         FeedPlusDetailTypeFactory typeFactory = new FeedPlusDetailTypeFactoryImpl(this);
         adapter = new DetailFeedAdapter(typeFactory);
+        GraphqlClient.init(getContext());
         FacebookSdk.sdkInitialize(getActivity().getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
         pagingHandler = new PagingHandler();
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater,
+    public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View parentView = inflater.inflate(R.layout.fragment_feed_plus_detail, container, false);

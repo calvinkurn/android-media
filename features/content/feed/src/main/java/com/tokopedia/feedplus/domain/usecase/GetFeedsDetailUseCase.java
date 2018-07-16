@@ -33,7 +33,7 @@ public class GetFeedsDetailUseCase extends UseCase<List<DataFeedDetailDomain>> {
         return feedRepository.getFeedsDetail(requestParams);
     }
 
-    public RequestParams getFeedDetailParam(String loginID, String detailId, int page) {
+    public static RequestParams getFeedDetailParam(String loginID, String detailId, int page) {
         RequestParams params = RequestParams.create();
         params.putString(GetFeedsDetailUseCase.PARAM_USER_ID, loginID);
         params.putString(GetFeedsDetailUseCase.PARAM_DETAIL_ID, detailId);

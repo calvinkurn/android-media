@@ -3,14 +3,16 @@ package com.tokopedia.feedplus.view.subscriber;
 import com.apollographql.apollo.exception.ApolloNetworkException;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.feedplus.R;
-import com.tokopedia.feedplus.view.listener.FeedPlusDetail;
+import com.tokopedia.feedplus.data.pojo.FeedQuery;
 import com.tokopedia.feedplus.domain.model.feeddetail.DataFeedDetailDomain;
 import com.tokopedia.feedplus.domain.model.feeddetail.FeedDetailProductDomain;
 import com.tokopedia.feedplus.domain.model.feeddetail.FeedDetailShopDomain;
 import com.tokopedia.feedplus.domain.model.feeddetail.FeedDetailWholesaleDomain;
-import com.tokopedia.feedplus.view.viewmodel.feeddetail.SingleFeedDetailViewModel;
+import com.tokopedia.feedplus.view.listener.FeedPlusDetail;
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailHeaderViewModel;
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailViewModel;
+import com.tokopedia.feedplus.view.viewmodel.feeddetail.SingleFeedDetailViewModel;
+import com.tokopedia.graphql.data.model.GraphqlResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,10 +23,10 @@ import rx.Subscriber;
  * @author by nisie on 5/24/17.
  */
 
-public class FeedDetailSubscriber extends Subscriber<List<DataFeedDetailDomain>> {
-    private final FeedPlusDetail.View viewListener;
+public class FeedDetailSubscriber extends Subscriber<GraphqlResponse> {
     private static final int MAX_RATING = 100;
     private static final int NUM_STARS = 5;
+    private final FeedPlusDetail.View viewListener;
 
     public FeedDetailSubscriber(FeedPlusDetail.View viewListener) {
         this.viewListener = viewListener;
@@ -42,39 +44,48 @@ public class FeedDetailSubscriber extends Subscriber<List<DataFeedDetailDomain>>
         else viewListener.onErrorGetFeedDetail(e.toString());
     }
 
-    @Override
-    public void onNext(List<DataFeedDetailDomain> dataFeedDetailDomains) {
-        if (hasFeed(dataFeedDetailDomains)
-                && dataFeedDetailDomains.get(0).getContent().getProducts().size() == 1) {
-            DataFeedDetailDomain dataFeedDetailDomain = dataFeedDetailDomains.get(0);
-            viewListener.onSuccessGetSingleFeedDetail(
-                    createHeaderViewModel(
-                            dataFeedDetailDomain.getCreate_time(),
-                            dataFeedDetailDomain.getSource().getShop(),
-                            dataFeedDetailDomain.getContent().getStatus_activity()),
-                    convertToSingleViewModel(dataFeedDetailDomain));
-        } else if (hasFeed(dataFeedDetailDomains)) {
-            DataFeedDetailDomain dataFeedDetailDomain = dataFeedDetailDomains.get(0);
-            viewListener.onSuccessGetFeedDetail(
-                    createHeaderViewModel(
-                            dataFeedDetailDomain.getCreate_time(),
-                            dataFeedDetailDomain.getSource().getShop(),
-                            dataFeedDetailDomain.getContent().getStatus_activity()),
-                    convertToViewModel(dataFeedDetailDomain),
-                    checkHasNextPage(dataFeedDetailDomains));
-        } else {
-            viewListener.onEmptyFeedDetail();
-        }
+//    @Override
+//    public void onNext(List<DataFeedDetailDomain> dataFeedDetailDomains) {
+//        if (hasFeed(dataFeedDetailDomains)
+//                && dataFeedDetailDomains.get(0).getContent().getProducts().size() == 1) {
+//            DataFeedDetailDomain dataFeedDetailDomain = dataFeedDetailDomains.get(0);
+//            viewListener.onSuccessGetSingleFeedDetail(
+//                    createHeaderViewModel(
+//                            dataFeedDetailDomain.getCreate_time(),
+//                            dataFeedDetailDomain.getSource().getShop(),
+//                            dataFeedDetailDomain.getContent().getStatus_activity()),
+//                    convertToSingleViewModel(dataFeedDetailDomain));
+//        } else if (hasFeed(dataFeedDetailDomains)) {
+//            DataFeedDetailDomain dataFeedDetailDomain = dataFeedDetailDomains.get(0);
+//            viewListener.onSuccessGetFeedDetail(
+//                    createHeaderViewModel(
+//                            dataFeedDetailDomain.getCreate_time(),
+//                            dataFeedDetailDomain.getSource().getShop(),
+//                            dataFeedDetailDomain.getContent().getStatus_activity()),
+//                    convertToViewModel(dataFeedDetailDomain),
+//                    checkHasNextPage(dataFeedDetailDomains));
+//        } else {
+//            viewListener.onEmptyFeedDetail();
+//        }
+//
+//    }
 
+
+    @Override
+    public void onNext(GraphqlResponse graphqlResponse) {
+        //TODO milhamj consume the data
+        FeedQuery feedQuery = graphqlResponse.getData(FeedQuery.class);
     }
 
-    private SingleFeedDetailViewModel convertToSingleViewModel(DataFeedDetailDomain dataFeedDetailDomain) {
+    private SingleFeedDetailViewModel convertToSingleViewModel(DataFeedDetailDomain
+                                                                       dataFeedDetailDomain) {
         FeedDetailProductDomain productDomain = dataFeedDetailDomain.getContent().getProducts()
                 .get(0);
         return createSingleProductViewModel(productDomain);
     }
 
-    private SingleFeedDetailViewModel createSingleProductViewModel(FeedDetailProductDomain productDomain) {
+    private SingleFeedDetailViewModel createSingleProductViewModel(FeedDetailProductDomain
+                                                                           productDomain) {
         return new SingleFeedDetailViewModel(
                 productDomain.getId(),
                 productDomain.getName(),
@@ -110,8 +121,10 @@ public class FeedDetailSubscriber extends Subscriber<List<DataFeedDetailDomain>>
 
         ArrayList<Visitable> listDetail = new ArrayList<>();
 
-        if (dataFeedDetailDomain.getContent() != null && dataFeedDetailDomain.getContent().getProducts() != null)
-            for (FeedDetailProductDomain productDomain : dataFeedDetailDomain.getContent().getProducts()) {
+        if (dataFeedDetailDomain.getContent() != null && dataFeedDetailDomain.getContent()
+                .getProducts() != null)
+            for (FeedDetailProductDomain productDomain : dataFeedDetailDomain.getContent()
+                    .getProducts()) {
                 listDetail.add(createProductViewModel(productDomain));
             }
         return listDetail;

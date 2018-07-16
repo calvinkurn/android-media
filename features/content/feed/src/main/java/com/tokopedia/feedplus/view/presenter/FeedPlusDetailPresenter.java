@@ -1,7 +1,10 @@
 package com.tokopedia.feedplus.view.presenter;
 
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.feedplus.R;
+import com.tokopedia.feedplus.data.pojo.FeedQuery;
 import com.tokopedia.feedplus.domain.usecase.AddWishlistUseCase;
 import com.tokopedia.feedplus.domain.usecase.GetFeedsDetailUseCase;
 import com.tokopedia.feedplus.domain.usecase.RemoveWishlistUseCase;
@@ -10,6 +13,10 @@ import com.tokopedia.feedplus.view.listener.WishlistListener;
 import com.tokopedia.feedplus.view.subscriber.AddWishlistSubscriber;
 import com.tokopedia.feedplus.view.subscriber.FeedDetailSubscriber;
 import com.tokopedia.feedplus.view.subscriber.RemoveWishlistSubscriber;
+import com.tokopedia.graphql.data.model.GraphqlRequest;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
+
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -20,15 +27,14 @@ import javax.inject.Inject;
 public class FeedPlusDetailPresenter extends BaseDaggerPresenter<FeedPlusDetail.View>
         implements FeedPlusDetail.Presenter {
 
-    private final GetFeedsDetailUseCase getFeedsDetailUseCase;
+    private final GraphqlUseCase getFeedsDetailUseCase;
     private final AddWishlistUseCase addWishlistUseCase;
     private final RemoveWishlistUseCase removeWishlistUseCase;
     private final UserSession userSession;
-    private FeedPlusDetail.View viewListener;
     private WishlistListener wishlistListener;
 
     @Inject
-    FeedPlusDetailPresenter(GetFeedsDetailUseCase getFeedsDetailUseCase,
+    FeedPlusDetailPresenter(GraphqlUseCase getFeedsDetailUseCase,
                             AddWishlistUseCase addWishlistUseCase,
                             RemoveWishlistUseCase removeWishlistUseCase,
                             UserSession userSession) {
@@ -39,9 +45,8 @@ public class FeedPlusDetailPresenter extends BaseDaggerPresenter<FeedPlusDetail.
     }
 
     public void attachView(FeedPlusDetail.View view, WishlistListener wishlistListener) {
-        this.viewListener = view;
-        this.wishlistListener = wishlistListener;
         super.attachView(view);
+        this.wishlistListener = wishlistListener;
     }
 
     @Override
@@ -53,17 +58,29 @@ public class FeedPlusDetailPresenter extends BaseDaggerPresenter<FeedPlusDetail.
     }
 
     public void getFeedDetail(String detailId, int page) {
-        viewListener.showLoading();
-        getFeedsDetailUseCase.execute(
-                getFeedsDetailUseCase.getFeedDetailParam(
-                        userSession.getUserId(),
-                        detailId,
-                        page),
-                new FeedDetailSubscriber(viewListener));
+        getView().showLoading();
+
+        getFeedsDetailUseCase.clearRequest();
+
+        String query = GraphqlHelper.loadRawString(
+                getView().getResources(),
+                R.raw.query_feed_detail);
+
+        Map<String, Object> variables = GetFeedsDetailUseCase
+                .getFeedDetailParam(userSession.getUserId(), detailId, page)
+                .getParameters();
+
+        GraphqlRequest feedDetailGraphqlRequest =
+                new GraphqlRequest(query,
+                        FeedQuery.class,
+                        variables);
+
+        getFeedsDetailUseCase.addRequest(feedDetailGraphqlRequest);
+        getFeedsDetailUseCase.execute(new FeedDetailSubscriber(getView()));
     }
 
     public void addToWishlist(int adapterPosition, String productId) {
-        viewListener.showLoadingProgress();
+        getView().showLoadingProgress();
         addWishlistUseCase.execute(
                 AddWishlistUseCase.generateParam(productId, userSession),
                 new AddWishlistSubscriber(wishlistListener, adapterPosition));
@@ -72,7 +89,7 @@ public class FeedPlusDetailPresenter extends BaseDaggerPresenter<FeedPlusDetail.
 
     @Override
     public void removeFromWishlist(int adapterPosition, String productId) {
-        viewListener.showLoadingProgress();
+        getView().showLoadingProgress();
         removeWishlistUseCase.execute(
                 RemoveWishlistUseCase.generateParam(productId, userSession),
                 new RemoveWishlistSubscriber(wishlistListener, adapterPosition));
