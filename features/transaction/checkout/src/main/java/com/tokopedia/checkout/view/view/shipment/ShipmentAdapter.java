@@ -542,7 +542,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             totalPrice += shipmentCostModel.getDonation();
         } else {
             if (shipmentCostModel.getDonation() > 0) {
-                totalPrice -= shipmentCostModel.getDonation();
                 shipmentCostModel.setDonation(0);
             }
         }
