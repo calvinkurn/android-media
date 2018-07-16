@@ -6,7 +6,6 @@ import com.tokopedia.feedplus.domain.usecase.GetFeedsDetailUseCase;
 import com.tokopedia.feedplus.view.listener.FeedPlusDetail;
 import com.tokopedia.feedplus.view.subscriber.FeedDetailSubscriber;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
-import com.tokopedia.wishlist.common.subscriber.AddWishListSubscriber;
 import com.tokopedia.wishlist.common.subscriber.RemoveWishListSubscriber;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
@@ -73,9 +72,8 @@ public class FeedPlusDetailPresenter extends BaseDaggerPresenter<FeedPlusDetail.
     public void addToWishlist(int adapterPosition, String productId) {
         viewListener.showLoadingProgress();
 
-        addWishListUseCase.createObservable(productId, userSession.getUserId(),
-                new AddWishListSubscriber(wishListActionListener,
-                        getView().getContext(), productId));
+        addWishListUseCase.createObservable(productId,
+                userSession.getUserId(), wishListActionListener);
     }
 
 
@@ -83,8 +81,7 @@ public class FeedPlusDetailPresenter extends BaseDaggerPresenter<FeedPlusDetail.
     public void removeFromWishlist(int adapterPosition, String productId) {
         viewListener.showLoadingProgress();
 
-        removeWishListUseCase.createObservable(productId, userSession.getUserId(),
-                new RemoveWishListSubscriber(wishListActionListener,
-                        getView().getContext(), productId));
+        removeWishListUseCase.createObservable(productId,
+                userSession.getUserId(), wishListActionListener);
     }
 }

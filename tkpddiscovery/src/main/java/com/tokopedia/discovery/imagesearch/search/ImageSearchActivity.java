@@ -3,12 +3,10 @@ package com.tokopedia.discovery.imagesearch.search;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 
-import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.imagesearch.search.fragment.ImageSearchProductListFragment;
@@ -18,7 +16,6 @@ import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
-import com.tokopedia.graphql.data.GraphqlClient;
 
 import javax.inject.Inject;
 
@@ -85,7 +82,6 @@ public class ImageSearchActivity extends DiscoveryActivity
                 DaggerSearchComponent.builder()
                         .appComponent(getApplicationComponent())
                         .build();
-        GraphqlClient.init(this);
 
         searchComponent.inject(this);
     }

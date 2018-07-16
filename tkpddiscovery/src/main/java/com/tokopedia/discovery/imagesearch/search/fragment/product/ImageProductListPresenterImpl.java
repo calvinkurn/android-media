@@ -16,7 +16,6 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.Produ
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
-import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
@@ -51,7 +50,6 @@ public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProd
         SearchComponent component = DaggerSearchComponent.builder()
                 .appComponent(getComponent(context))
                 .build();
-        GraphqlClient.init(context);
         component.inject(this);
     }
 

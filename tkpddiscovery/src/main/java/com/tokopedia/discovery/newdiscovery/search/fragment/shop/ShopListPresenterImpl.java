@@ -18,7 +18,6 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.shop.listener.Favori
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.subscriber.ToggleFavoriteActionSubscriber;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.viewmodel.ShopViewModel;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
-import com.tokopedia.graphql.data.GraphqlClient;
 
 import java.util.List;
 
@@ -47,7 +46,6 @@ public class ShopListPresenterImpl extends SearchSectionFragmentPresenterImpl<Sh
         SearchComponent component = DaggerSearchComponent.builder()
                 .appComponent(getComponent(context))
                 .build();
-        GraphqlClient.init(context);
         component.inject(this);
     }
 
@@ -132,6 +130,7 @@ public class ShopListPresenterImpl extends SearchSectionFragmentPresenterImpl<Sh
 
     public interface LoadMoreListener {
         void onSuccess(List<ShopViewModel.ShopItem> shopItemList, boolean isHasNextPage);
+
         void onFailed();
     }
 

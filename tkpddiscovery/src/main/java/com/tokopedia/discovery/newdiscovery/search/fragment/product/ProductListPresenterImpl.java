@@ -25,7 +25,6 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.He
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
-import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
@@ -66,7 +65,6 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
         SearchComponent component = DaggerSearchComponent.builder()
                 .appComponent(getComponent(context))
                 .build();
-        GraphqlClient.init(context);
         component.inject(this);
     }
 

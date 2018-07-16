@@ -6,8 +6,6 @@ import com.tokopedia.feedplus.domain.usecase.GetRecentViewUseCase;
 import com.tokopedia.feedplus.view.listener.RecentView;
 import com.tokopedia.feedplus.view.subscriber.RecentViewSubscriber;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
-import com.tokopedia.wishlist.common.subscriber.AddWishListSubscriber;
-import com.tokopedia.wishlist.common.subscriber.RemoveWishListSubscriber;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
@@ -71,9 +69,8 @@ public class RecentViewPresenter extends BaseDaggerPresenter<RecentView.View>
     public void addToWishlist(int adapterPosition, String productId) {
         viewListener.showLoadingProgress();
 
-        addWishListUseCase.createObservable(productId, userSession.getUserId(),
-                new AddWishListSubscriber(wishListActionListener,
-                        getView().getContext(), productId));
+        addWishListUseCase.createObservable(productId,
+                userSession.getUserId(), wishListActionListener);
 
     }
 
@@ -81,9 +78,8 @@ public class RecentViewPresenter extends BaseDaggerPresenter<RecentView.View>
     public void removeFromWishlist(int adapterPosition, String productId) {
         viewListener.showLoadingProgress();
 
-        removeWishListUseCase.createObservable(productId, userSession.getUserId(),
-                new RemoveWishListSubscriber(wishListActionListener,
-                        getView().getContext(), productId));
+        removeWishListUseCase.createObservable(productId,
+                userSession.getUserId(), wishListActionListener);
 
     }
 }
