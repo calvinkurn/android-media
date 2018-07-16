@@ -24,7 +24,9 @@ import retrofit2.Response;
 
 /**
  * Created by Angga.Prasetiyo on 01/12/2015.
+ * Use ErrorHandler from abstraction
  */
+@Deprecated
 public class ErrorHandler {
     private static final String TAG = ErrorHandler.class.getSimpleName();
     private static final String SERVER_INFO = "Network Server Error";
@@ -86,6 +88,9 @@ public class ErrorHandler {
     }
 
     public static String getErrorMessage(Throwable e, final Context context) {
+        if (context == null) {
+            return "";
+        }
         if (e instanceof UnknownHostException) {
             return context.getString(R.string.msg_no_connection);
         } else if (e instanceof SocketTimeoutException) {

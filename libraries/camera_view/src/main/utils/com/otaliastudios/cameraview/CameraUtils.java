@@ -164,7 +164,7 @@ public class CameraUtils {
                     exifOrientation == ExifInterface.ORIENTATION_TRANSPOSE ||
                     exifOrientation == ExifInterface.ORIENTATION_TRANSVERSE;
 
-        } catch (IOException e) {
+        } catch (Throwable e) {
             e.printStackTrace();
             orientation = 0;
             flip = false;
