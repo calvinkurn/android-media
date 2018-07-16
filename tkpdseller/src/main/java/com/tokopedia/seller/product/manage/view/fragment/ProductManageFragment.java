@@ -781,7 +781,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
                     newImage.recycle();
                     goToShareProduct(shareData);
-                } catch (OutOfMemoryError e) {
+                } catch (Throwable e) {
                     NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_network_error));
                 }
 
