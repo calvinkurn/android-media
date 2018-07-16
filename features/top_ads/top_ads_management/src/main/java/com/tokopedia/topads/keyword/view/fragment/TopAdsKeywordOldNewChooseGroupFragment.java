@@ -227,7 +227,7 @@ public class TopAdsKeywordOldNewChooseGroupFragment extends TopAdsBaseStepperFra
         if(groupId != null){
             autoCompleteChooseGroup.setText(groupId);
             autoCompleteChooseGroup.lockView();
-            topAdsKeywordOldNewChooseGroupPresenter.searchGroupName("");
+            topAdsKeywordOldNewChooseGroupPresenter.searchGroupName(groupId);
         }
 
         adapterChooseGroup.setListenerGetData(new TopAdsAutoCompleteAdapter.ListenerGetData() {
@@ -336,6 +336,7 @@ public class TopAdsKeywordOldNewChooseGroupFragment extends TopAdsBaseStepperFra
             if(groupId != null) {
                 if (groupAd.getName().equals(groupId)) {
                     chosenId = groupAd.getId();
+                    checkButtonNextEnabled();
                 }
                 groupId = null; // this is just for the first time only
             }
