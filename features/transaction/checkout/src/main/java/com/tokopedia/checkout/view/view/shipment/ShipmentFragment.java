@@ -187,16 +187,15 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         cartShipmentAddressFormData = arguments.getParcelable(ARG_EXTRA_SHIPMENT_FORM_DATA);
         if (cartShipmentAddressFormData != null) {
             if (!cartShipmentAddressFormData.isMultiple()) {
-                shipmentPresenter.setRecipientAddressModel(
-                        shipmentDataConverter.getRecipientAddressModel(cartShipmentAddressFormData));
+                RecipientAddressModel recipientAddressModel =
+                        shipmentDataConverter.getRecipientAddressModel(cartShipmentAddressFormData);
+                if (recipientAddressModel != null) {
+                    shipmentPresenter.setRecipientAddressModel(recipientAddressModel);
+                }
             }
 
             shipmentPresenter.setShipmentCartItemModelList(shipmentDataConverter.getShipmentItems(
                     cartShipmentAddressFormData));
-
-            Token token = new Token();
-            token.setDistrictRecommendation(cartShipmentAddressFormData.getKeroDiscomToken());
-            token.setUt(cartShipmentAddressFormData.getKeroUnixTime());
         }
 
         PromoCodeAppliedData promoCodeAppliedData = arguments.getParcelable(ARG_EXTRA_PROMO_CODE_APPLIED_DATA);
