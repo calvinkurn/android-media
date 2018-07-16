@@ -56,10 +56,10 @@ public class InboxFragment extends ParentFragment {
 
     private List<Inbox> data() {
         List<Inbox> data = new ArrayList<>();
-        data.add(new Inbox(R.drawable.ic_menu_profile, "Chat", "Percakapan pribadi Anda"));
-        data.add(new Inbox(R.drawable.ic_menu_cart, "Diskusi", "Tanya jawab seputar produk"));
-        data.add(new Inbox(R.drawable.ic_menu_home, "Ulasan", "Berikan penilaian dan ulasan produk"));
-        data.add(new Inbox(R.drawable.ic_menu_inbox, "Pesan Bantuan", "Pantau status bantuan dari Tokopedia"));
+        data.add(new Inbox(R.drawable.ic_topchat, "Chat", "Percakapan pribadi Anda"));
+        data.add(new Inbox(R.drawable.ic_tanyajawab, "Diskusi", "Tanya jawab seputar produk"));
+        data.add(new Inbox(R.drawable.ic_ulasan, "Ulasan", "Berikan penilaian dan ulasan produk"));
+        data.add(new Inbox(R.drawable.ic_pesan_bantuan, "Pesan Bantuan", "Pantau status bantuan dari Tokopedia"));
         return data;
     }
 

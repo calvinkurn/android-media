@@ -176,8 +176,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public Observable<TokoCashData> getTokocashBalance() {
-        if (getActivity() instanceof TkpdCoreRouter) {
-            return ((TkpdCoreRouter) getActivity()).getTokoCashBalance();
+        if (getActivity() != null && getActivity().getApplication() instanceof TkpdCoreRouter) {
+            return ((TkpdCoreRouter) getActivity().getApplication()).getTokoCashBalance();
         }
         return null;
     }
@@ -851,13 +851,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                     );
                     if (tokoPointDrawerData != null)
                         presenter.updateHeaderTokoPointData(tokoPointDrawerData);
-                    break;
-                case HomeFragmentBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOCASH_DATA:
-//                    HomeHeaderWalletAction homeHeaderWalletAction = intent.getParcelableExtra(
-//                            HomeFragmentBroadcastReceiverConstant.EXTRA_TOKOCASH_DRAWER_DATA
-//                    );
-//                    if (homeHeaderWalletAction != null)
-//                        presenter.updateHeaderTokoCashData(homeHeaderWalletAction);
                     break;
                 case HomeFragmentBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOCASH_PENDING_DATA:
                     int amount = intent.getIntExtra(
