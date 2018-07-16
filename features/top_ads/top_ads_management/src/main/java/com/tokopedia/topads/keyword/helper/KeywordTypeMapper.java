@@ -16,13 +16,13 @@ public class KeywordTypeMapper {
     public static String mapToKeywordName(Context context, @KeywordTypeDef int keywordType) {
         switch (keywordType) {
             case KeywordTypeDef.KEYWORD_TYPE_PHRASE:
-                return context.getString(R.string.top_ads_keyword_phrase_match_3);
+                return context.getString(R.string.top_ads_keyword_phrase_match);
             case KeywordTypeDef.KEYWORD_TYPE_EXACT:
-                return context.getString(R.string.top_ads_keyword_exact_match_3);
+                return context.getString(R.string.top_ads_keyword_exact_match);
             case KeywordTypeDef.KEYWORD_TYPE_NEGATIVE_PHRASE:
-                return context.getString(R.string.top_ads_keyword_phrase_match_3);
+                return context.getString(R.string.top_ads_keyword_phrase_match);
             case KeywordTypeDef.KEYWORD_TYPE_NEGATIVE_EXACT:
-                return context.getString(R.string.top_ads_keyword_exact_match_3);
+                return context.getString(R.string.top_ads_keyword_exact_match);
             default:
                 return "";
         }

@@ -209,8 +209,8 @@
     <string name="top_ads_keyword_search_group">Cari Grup</string>
     <string name="top_ads_keyword_title_add">Tambah Kata Kunci</string>
     <string name="top_ads_keyword_broad_match">Broad Match</string>
-    <string name="top_ads_keyword_phrase_match">Phrase Match</string>
-    <string name="top_ads_keyword_exact_match">Exact Match</string>
+    <string name="top_ads_keyword_phrase_match">Pencarian Luas</string>
+    <string name="top_ads_keyword_exact_match">Pencarian Spesifik</string>
     <string name="top_ads_keyword_phrase_match_3">Pencarian Luas</string>
     <string name="top_ads_keyword_exact_match_3">Pencarian Spesifik</string>
     <string name="top_ads_keyword_phrase_match_2">Pencarian Luas</string>

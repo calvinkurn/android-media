@@ -101,7 +101,7 @@
                     android:gravity="center_horizontal"
                     android:layout_marginEnd="@dimen/dp_4"
                     android:layout_marginRight="@dimen/dp_4"
-                    android:text="@string/top_ads_keyword_phrase_match_2"/>
+                    android:text="@string/top_ads_keyword_phrase_match"/>
 
                 <RadioButton
                     android:id="@+id/keywordExactRadioButton"
@@ -113,7 +113,7 @@
                     android:gravity="center_horizontal"
                     android:layout_marginStart="@dimen/dp_4"
                     android:layout_marginLeft="@dimen/dp_4"
-                    android:text="@string/top_ads_keyword_exact_match_2"/>
+                    android:text="@string/top_ads_keyword_exact_match"/>
 
             </RadioGroup>
 
