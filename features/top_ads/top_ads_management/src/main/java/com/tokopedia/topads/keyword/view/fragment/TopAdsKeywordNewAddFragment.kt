@@ -108,6 +108,7 @@ class TopAdsKeywordNewAddFragment : TopAdsNewBaseStepperFragment<TopAdsKeywordNe
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        stepperModel?.run { bidInfoTextView.visibility = if (isPositive) View.VISIBLE else View.GONE }
         buttonSave.setOnClickListener { gotoNextPage() }
         initEmptyStateView()
         checkButtonEnabled()
