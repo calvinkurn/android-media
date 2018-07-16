@@ -32,6 +32,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BannerView
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.subscriber.GetHomeFeedsSubscriber;
+import com.tokopedia.home.beranda.presentation.view.subscriber.PendingCashbackHomeSubscriber;
 import com.tokopedia.home.beranda.presentation.view.subscriber.TokocashHomeSubscriber;
 import com.tokopedia.tokocash.balance.domain.GetBalanceTokoCashUseCase;
 import com.tokopedia.usecase.RequestParams;
@@ -503,6 +504,14 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new TokocashHomeSubscriber(this)));
         }
+    }
 
+    public void getTokocashPendingBalance() {
+        if (getView().getTokocashPendingCashback() != null) {
+            compositeSubscription.add(getView().getTokocashPendingCashback().subscribeOn(Schedulers.newThread())
+                    .unsubscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new PendingCashbackHomeSubscriber(this)));
+        }
     }
 }

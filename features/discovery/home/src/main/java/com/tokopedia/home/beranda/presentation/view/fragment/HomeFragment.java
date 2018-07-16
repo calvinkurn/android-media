@@ -79,6 +79,8 @@ import com.tokopedia.home.beranda.presentation.view.compoundview.CountDownView;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewModel;
 import com.tokopedia.home.widget.FloatingTextButton;
 import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
+import com.tokopedia.tokocash.TokoCashRouter;
+import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 import com.tokopedia.tokopoints.ApplinkConstant;
 import com.tokopedia.tokopoints.view.activity.TokoPointsHomeActivity;
 
@@ -178,6 +180,14 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public Observable<TokoCashData> getTokocashBalance() {
         if (getActivity() != null && getActivity().getApplication() instanceof TkpdCoreRouter) {
             return ((TkpdCoreRouter) getActivity().getApplication()).getTokoCashBalance();
+        }
+        return null;
+    }
+
+    @Override
+    public Observable<PendingCashback> getTokocashPendingCashback() {
+        if (getActivity() != null && getActivity().getApplication() instanceof TokoCashRouter) {
+            return ((TokoCashRouter) getActivity().getApplication()).getPendingCashbackUseCase();
         }
         return null;
     }
@@ -445,7 +455,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onRequestPendingCashBack() {
-        getActivity().sendBroadcast(new Intent(TokocashPendingDataBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP));
+        presenter.getTokocashPendingBalance();
     }
 
     @Override
@@ -851,22 +861,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                     );
                     if (tokoPointDrawerData != null)
                         presenter.updateHeaderTokoPointData(tokoPointDrawerData);
-                    break;
-                case HomeFragmentBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOCASH_PENDING_DATA:
-                    int amount = intent.getIntExtra(
-                            HomeFragmentBroadcastReceiverConstant.EXTRA_TOKOCASH_PENDING_AMOUNT, 0);
-                    String amountText = intent.getStringExtra(
-                            HomeFragmentBroadcastReceiverConstant.EXTRA_TOKOCASH_PENDING__AMOUNT_TEXT);
-
-                    CashBackData cashBackData = new CashBackData();
-                    cashBackData.setAmount(amount);
-                    cashBackData.setAmountText(amountText);
-
-                    if (cashBackData != null)
-                        presenter.updateHeaderTokoCashPendingData(cashBackData);
-                    break;
-                case HomeFragmentBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOCASH_DATA_ERROR:
-                    presenter.onHeaderTokocashError();
                     break;
                 case HomeFragmentBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOPOINT_DATA_ERROR:
                     presenter.onHeaderTokopointErrorFromBroadcast();
