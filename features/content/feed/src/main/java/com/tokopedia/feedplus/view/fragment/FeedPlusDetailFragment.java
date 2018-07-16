@@ -358,10 +358,6 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
             }
         }
 
-        /*if (adapter.getList().get(adapterPosition) instanceof FeedDetailViewModel) {
-            ((FeedDetailViewModel) adapter.getList().get(adapterPosition)).setWishlist(true);
-            adapter.notifyItemChanged(adapterPosition);
-        }*/
         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_add_wishlist));
     }
 
@@ -387,10 +383,6 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
             }
         }
 
-        /*if (adapter.getList().get(adapterPosition) instanceof FeedDetailViewModel) {
-            ((FeedDetailViewModel) adapter.getList().get(adapterPosition)).setWishlist(false);
-            adapter.notifyItemChanged(adapterPosition);
-        }*/
         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_remove_wishlist));
     }
 

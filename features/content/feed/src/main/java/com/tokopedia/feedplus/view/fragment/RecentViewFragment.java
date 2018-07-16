@@ -191,10 +191,6 @@ public class RecentViewFragment extends BaseDaggerFragment
             }
         }
 
-        /*((FeedDetailViewModel) adapter.getList().get(adapterPosition)).setWishlist(true);
-        adapter.notifyItemChanged(adapterPosition);*/
-
-
         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_add_wishlist));
     }
 
@@ -219,8 +215,6 @@ public class RecentViewFragment extends BaseDaggerFragment
             }
         }
 
-        /*((FeedDetailViewModel) adapter.getList().get(adapterPosition)).setWishlist(false);
-        adapter.notifyItemChanged(adapterPosition);*/
         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_remove_wishlist));
     }
 

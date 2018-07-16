@@ -52,7 +52,6 @@ import com.tokopedia.shop.product.view.listener.ShopProductListView;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.shop.product.view.presenter.ShopProductListPresenter;
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity;
-import com.tokopedia.wishlist.common.listener.TkpdWishListActionListener;
 
 import java.util.List;
 
@@ -63,7 +62,7 @@ import javax.inject.Inject;
  */
 
 public class ShopProductListFragment extends BaseSearchListFragment<ShopProductViewModel, ShopProductAdapterTypeFactory> implements
-        ShopProductListView, ShopProductClickedListener, TkpdWishListActionListener, ShopProductAdapterTypeFactory.TypeFactoryListener {
+        ShopProductListView, ShopProductClickedListener, ShopProductAdapterTypeFactory.TypeFactoryListener {
 
     public static final int SPAN_COUNT = 2;
     private static final int REQUEST_CODE_USER_LOGIN = 100;
@@ -499,23 +498,4 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
         return currentLayoutType.first;
     }
 
-    @Override
-    public void onErrorAddWishList(String errorMessage, String productId) {
-
-    }
-
-    @Override
-    public void onSuccessAddWishlist(String productId) {
-
-    }
-
-    @Override
-    public void onErrorRemoveWishlist(String errorMessage, String productId) {
-
-    }
-
-    @Override
-    public void onSuccessRemoveWishlist(String productId) {
-
-    }
 }

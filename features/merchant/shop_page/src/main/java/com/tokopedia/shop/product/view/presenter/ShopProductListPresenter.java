@@ -42,8 +42,6 @@ import rx.Subscriber;
 public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductListView> {
 
     private final GetShopProductListWithAttributeUseCase getShopProductListWithAttributeUseCase;
-    //    private final AddToWishListUseCase addToWishListUseCase;
-    //    private final RemoveFromWishListUseCase removeFromWishListUseCase;
     private final TkpdRemoveWishListUseCase tkpdRemoveWishListUseCase;
     private final TkpdAddWishListUseCase tkpdAddWishListUseCase;
     private final DeleteShopProductUseCase deleteShopProductUseCase;
@@ -54,10 +52,8 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductLis
 
     @Inject
     public ShopProductListPresenter(GetShopProductListWithAttributeUseCase getShopProductListWithAttributeUseCase,
-//                                    AddToWishListUseCase addToWishListUseCase,
                                     TkpdAddWishListUseCase tkpdAddWishListUseCase,
                                     TkpdRemoveWishListUseCase tkpdRemoveWishListUseCase,
-//                                    RemoveFromWishListUseCase removeFromWishListUseCase,
                                     DeleteShopProductUseCase deleteShopProductUseCase,
                                     GetShopInfoUseCase getShopInfoUseCase,
                                     GetShopEtalaseUseCase getShopEtalaseUseCase,
@@ -235,26 +231,6 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductLis
 
             }
         });
-
-        /*RequestParams requestParam = AddToWishListUseCase.createRequestParam(userSession.getUserId(), productId);
-        addToWishListUseCase.execute(requestParam, new Subscriber<Boolean>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (isViewAttached()) {
-                    getView().onErrorAddToWishList(e);
-                }
-            }
-
-            @Override
-            public void onNext(Boolean aBoolean) {
-                getView().onSuccessAddToWishList(productId, aBoolean);
-            }
-        });*/
     }
 
     public void removeFromWishList(final String productId) {

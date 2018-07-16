@@ -23,8 +23,6 @@ public class FeedPlusDetailPresenter extends BaseDaggerPresenter<FeedPlusDetail.
 
     private final TkpdAddWishListUseCase tkpdAddWishListUseCase;
     private final TkpdRemoveWishListUseCase tkpdRemoveWishListUseCase;
-    //    private final AddWishlistUseCase addWishlistUseCase;
-//    private final RemoveWishlistUseCase removeWishlistUseCase;
     private TkpdWishListActionListener tkpdWishListActionListener;
 
     private final GetFeedsDetailUseCase getFeedsDetailUseCase;
@@ -60,8 +58,6 @@ public class FeedPlusDetailPresenter extends BaseDaggerPresenter<FeedPlusDetail.
         if (tkpdAddWishListUseCase != null) {
             tkpdAddWishListUseCase.unsubscribe();
         }
-        /*addWishlistUseCase.unsubscribe();
-        removeWishlistUseCase.unsubscribe();*/
     }
 
     public void getFeedDetail(String detailId, int page) {
@@ -79,10 +75,6 @@ public class FeedPlusDetailPresenter extends BaseDaggerPresenter<FeedPlusDetail.
 
         tkpdAddWishListUseCase.createObservable(productId, userSession.getUserId(),
                 new TkpdAddWishlistSubscriber(tkpdWishListActionListener, productId));
-
-        /*addWishlistUseCase.execute(
-                AddWishlistUseCase.generateParam(productId, userSession),
-                new AddWishlistSubscriber(wishlistListener, adapterPosition));*/
     }
 
 
@@ -92,9 +84,5 @@ public class FeedPlusDetailPresenter extends BaseDaggerPresenter<FeedPlusDetail.
 
         tkpdRemoveWishListUseCase.createObservable(productId, userSession.getUserId(),
                 new TkpdRemoveWishlistSubscriber(tkpdWishListActionListener, productId));
-
-        /*removeWishlistUseCase.execute(
-                RemoveWishlistUseCase.generateParam(productId, userSession),
-                new RemoveWishlistSubscriber(wishlistListener, adapterPosition));*/
     }
 }

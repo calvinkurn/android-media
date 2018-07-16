@@ -36,8 +36,6 @@ import rx.Subscriber;
 public class ShopProductListLimitedPresenter extends BaseDaggerPresenter<ShopProductListLimitedView> {
 
     private final GetShopProductLimitedUseCase getShopProductLimitedUseCase;
-    /*private final AddToWishListUseCase addToWishListUseCase;
-    private final RemoveFromWishListUseCase removeFromWishListUseCase;*/
     private final TkpdAddWishListUseCase tkpdAddWishListUseCase;
     private final TkpdRemoveWishListUseCase tkpdRemoveWishListUseCase;
     private final UserSession userSession;
@@ -167,26 +165,6 @@ public class ShopProductListLimitedPresenter extends BaseDaggerPresenter<ShopPro
 
             }
         });
-
-        /*RequestParams requestParam = AddToWishListUseCase.createRequestParam(userSession.getUserId(), productId);
-        addToWishListUseCase.execute(requestParam, new Subscriber<Boolean>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (isViewAttached()) {
-                    getView().onErrorAddToWishList(e);
-                }
-            }
-
-            @Override
-            public void onNext(Boolean aBoolean) {
-                getView().onSuccessAddToWishList(productId, aBoolean);
-            }
-        });*/
     }
 
     public void removeFromWishList(final String productId) {
@@ -225,26 +203,6 @@ public class ShopProductListLimitedPresenter extends BaseDaggerPresenter<ShopPro
 
             }
         });
-
-        /*RequestParams requestParam = AddToWishListUseCase.createRequestParam(userSession.getUserId(), productId);
-        removeFromWishListUseCase.execute(requestParam, new Subscriber<Boolean>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (isViewAttached()) {
-                    getView().onErrorRemoveFromWishList(e);
-                }
-            }
-
-            @Override
-            public void onNext(Boolean value) {
-                getView().onSuccessRemoveFromWishList(productId, value);
-            }
-        });*/
     }
 
     @Override

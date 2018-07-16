@@ -58,7 +58,8 @@ public class TkpdAddWishListUseCase {
 
         graphqlUseCase.addRequest(graphqlRequest);
 
-        graphqlUseCase.execute(subscriber);
+        if (subscriber instanceof TkpdAddWishlistSubscriber)
+            graphqlUseCase.execute(subscriber);
 
     }
 

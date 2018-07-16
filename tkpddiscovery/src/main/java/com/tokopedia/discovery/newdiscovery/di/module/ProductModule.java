@@ -45,12 +45,6 @@ public class ProductModule {
                 postExecutionThread, productRepository, bannerRepository, service);
     }
 
-    /*@Provides
-    AddWishlistActionUseCase addWishlistActionUseCase(
-            @ApplicationContext Context context) {
-        return new AddWishlistActionUseCase(context);
-    }*/
-
     @Provides
     TkpdAddWishListUseCase providesTkpdAddWishListUseCase(
             @ApplicationContext Context context) {
@@ -63,22 +57,6 @@ public class ProductModule {
             @ApplicationContext Context context) {
         return new TkpdRemoveWishListUseCase(context);
     }
-
-    /*@Provides
-    RemoveWishlistActionUseCase removeWishlistActionUseCase(
-            @ApplicationContext Context context) {
-        return new RemoveWishlistActionUseCase(context);
-    }*/
-
-    /*@Provides
-    AddWishlistActionMapper addWishlistActionMapper() {
-        return new AddWishlistActionMapper();
-    }*/
-
-    /*@Provides
-    RemoveWishlistActionMapper removeWishlistActionMapper() {
-        return new RemoveWishlistActionMapper();
-    }*/
 
     @Provides
     ProductDataSource productDataSource(BrowseApi searchApi, ProductMapper productMapper) {
