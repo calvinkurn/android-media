@@ -39,7 +39,6 @@ import com.tokopedia.digital.common.constant.DigitalUrl;
 import com.tokopedia.flight.TkpdFlight;
 import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.gamification.GamificationUrl;
-import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.groupchat.common.data.GroupChatUrl;
 import com.tokopedia.groupchat.common.data.SendbirdKey;
 import com.tokopedia.instantloan.network.InstantLoanUrl;
@@ -100,7 +99,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         initializeDatabase();
         super.onCreate();
         initReact();
-        initGraphqlLib();
         MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
         InAppManager.getInstance().setInAppListener(this);
 
@@ -110,10 +108,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         initSendbird();
         createCustomSoundNotificationChannel();
         Hansel.init(this);
-    }
-
-    private void initGraphqlLib() {
-        GraphqlClient.init(this);
     }
 
     private void createCustomSoundNotificationChannel() {

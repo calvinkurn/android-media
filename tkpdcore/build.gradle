@@ -54,8 +54,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.design)
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
 
-    api project(rootProject.ext.libraries.graphql)
-
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
         exclude group: 'com.android.support'

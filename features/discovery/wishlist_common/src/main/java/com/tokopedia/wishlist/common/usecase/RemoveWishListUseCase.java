@@ -3,6 +3,7 @@ package com.tokopedia.wishlist.common.usecase;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.wishlist.common.R;
@@ -26,6 +27,7 @@ public class RemoveWishListUseCase {
     public RemoveWishListUseCase(Context context) {
         graphqlUseCase = new GraphqlUseCase();
         this.context = context;
+        GraphqlClient.init(context);
     }
 
     public void createObservable(String productId, String userId, WishListActionListener wishlistActionListener) {
