@@ -1,5 +1,7 @@
 package com.tokopedia.navigation.presentation.activity;
 
+import android.content.BroadcastReceiver;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -15,6 +17,8 @@ import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.constants.TokoPointDrawerBroadcastReceiverConstant;
+import com.tokopedia.core.router.loyaltytokopoint.ILoyaltyRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.component.BottomNavigation;
 import com.tokopedia.feedplus.view.fragment.FeedPlusFragment;
@@ -68,6 +72,8 @@ public class MainParentActivity extends AppCompatActivity implements
 
         bottomNavigation.setNotification(2000, 2);
         bottomNavigation.setNotification(1200, 3);
+
+        registerBroadcastReceiverHeaderTokoPoint();
     }
 
     @Override
@@ -150,5 +156,27 @@ public class MainParentActivity extends AppCompatActivity implements
         public void destroyItem(ViewGroup container, int position, Object object) {
             super.destroyItem(container, position, object);
         }
+    }
+
+    private BroadcastReceiver broadcastReceiverTokoPoint;
+
+    protected void registerBroadcastReceiverHeaderTokoPoint() {
+        if (getApplication() instanceof ILoyaltyRouter) {
+            broadcastReceiverTokoPoint = ((ILoyaltyRouter) getApplication()).getTokoPointBroadcastReceiver();
+            registerReceiver(
+                    broadcastReceiverTokoPoint,
+                    new IntentFilter(TokoPointDrawerBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP)
+            );
+        }
+    }
+
+    protected void unregisterBroadcastReceiverHeaderTokoPoint() {
+        unregisterReceiver(broadcastReceiverTokoPoint);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterBroadcastReceiverHeaderTokoPoint();
     }
 }
