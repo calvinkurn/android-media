@@ -229,6 +229,7 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     }
 
     private void finishLoading() {
+        footer.setVisibility(View.VISIBLE);
         adapter.dismissLoading();
     }
 
@@ -329,6 +330,7 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
 
     @Override
     public void showLoading() {
+        footer.setVisibility(View.GONE);
         adapter.showLoading();
     }
 
