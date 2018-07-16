@@ -107,6 +107,12 @@ public class PaymentListViewHolder extends AbstractViewHolder<PaymentListModel> 
             }
         });
 
+        if(element.getListOfAction().size() > 0){
+            imageOverflow.setVisibility(View.VISIBLE);
+        }else{
+            imageOverflow.setVisibility(View.GONE);
+        }
+
         if(element.isShowSeeDetail()){
             seeDetail.setVisibility(View.VISIBLE);
         }else{

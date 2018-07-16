@@ -135,22 +135,15 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     }
 
     protected boolean isForbiddenRequest(String bodyResponse, int code) {
-
-        if(bodyResponse.contains(RESPONSE_STATUS_FORBIDDEN)){
+        JSONObject json;
+        try {
+            json = new JSONObject(bodyResponse);
+            String status = json.optString(RESPONSE_PARAM_STATUS, RESPONSE_STATUS_OK);
+            return status.equals(RESPONSE_STATUS_FORBIDDEN) && code == ERROR_FORBIDDEN_REQUEST;
+        } catch (Exception e) {
+            e.printStackTrace();
             return false;
-        }else{
-            return true;
         }
-////        JSONObject json;
-//        try {
-////            json = new JSONObject(bodyResponse);
-////            String status = json.optString(RESPONSE_PARAM_STATUS, RESPONSE_STATUS_OK);
-//            return ;
-////            return status.equals(RESPONSE_STATUS_FORBIDDEN) && code == ERROR_FORBIDDEN_REQUEST;
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return false;
-//        }
     }
 
     protected void generateHmacAuthRequest(Request originRequest, Request.Builder newRequest)
