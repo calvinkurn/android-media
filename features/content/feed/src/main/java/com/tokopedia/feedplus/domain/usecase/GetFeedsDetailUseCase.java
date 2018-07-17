@@ -37,14 +37,12 @@ public class GetFeedsDetailUseCase {
         this.graphqlUseCase = graphqlUseCase;
     }
 
-    public void execute(String userId, String detailId, int page, FeedDetailSubscriber subscriber) {
+    public void execute(RequestParams requestParams, FeedDetailSubscriber subscriber) {
         graphqlUseCase.clearRequest();
 
         String query = GraphqlHelper.loadRawString(context.getResources(), R.raw.query_feed_detail);
 
-        Map<String, Object> variables = GetFeedsDetailUseCase
-                .getFeedDetailParam(userId, detailId, page)
-                .getParameters();
+        Map<String, Object> variables = requestParams.getParameters();
 
         GraphqlRequest feedDetailGraphqlRequest =
                 new GraphqlRequest(query,
@@ -61,7 +59,7 @@ public class GetFeedsDetailUseCase {
         }
     }
 
-    private static RequestParams getFeedDetailParam(String loginID, String detailId, int page) {
+    public static RequestParams getFeedDetailParam(String loginID, String detailId, int page) {
         RequestParams params = RequestParams.create();
         params.putString(GetFeedsDetailUseCase.PARAM_USER_ID, loginID);
         params.putString(GetFeedsDetailUseCase.PARAM_DETAIL_ID, detailId);
