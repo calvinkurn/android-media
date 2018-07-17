@@ -72,12 +72,12 @@ public class ContactUsTracking extends UnifyTracking {
         ).getEvent());
     }
 
-    public static void eventSuccessClick(String action, String labelInvoice, String category) {
+    public static void eventSuccessClick(String action, String labelInvoice) {
         sendGTMEvent(new EventTracking(
                 ContactUsEventTracking.Event.GenericClickBantuanEvent,
                 ContactUsEventTracking.Category.EventNewBantuan,
                 String.format(ContactUsEventTracking.Action.EventClickTicket, action),
-                String.format(ContactUsEventTracking.Label.LabelFormList, labelInvoice, category)
+                String.format(ContactUsEventTracking.Label.LabelFormList, labelInvoice)
         ).getEvent());
     }
 

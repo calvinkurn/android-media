@@ -89,7 +89,7 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
     ConstraintLayout toolTipLayout;
     @BindView(R2.id.submit_success)
     ConstraintLayout submitSuccess;
-
+    String mInvoiceNumber;
 
     OrderQueryComponent orderQueryComponent;
     @Inject
@@ -187,6 +187,7 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
 
     @Override
     public void setInvoiceNumber(String number) {
+        mInvoiceNumber = number;
         txtInvoiceNo.setText(number);
     }
 
@@ -414,7 +415,11 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
 
     @OnClick(R2.id.btn_send)
     public void onSendClick() {
-        ContactUsTracking.eventSuccessClick("Submit","","");
+        String invoiceLabel = "With Invoice";
+        if(mInvoiceNumber.equals("")){
+            invoiceLabel = "Without Invoice";
+        }
+        ContactUsTracking.eventSuccessClick("Submit", invoiceLabel);
         presenter.onSendButtonClick();
     }
 

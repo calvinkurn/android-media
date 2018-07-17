@@ -29,7 +29,7 @@ public class ContactUsEventTracking implements AppEventTracking {
         String LabelGeneric = "%s";
         String LabelArticle = "Article";
         String LabelSubmitTicket = "After Submit Ticket";
-        String LabelFormList = "%s - %s";
+        String LabelFormList = "%s - Barang yang diterima tidak sesuai";
 
     }
 }
