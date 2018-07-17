@@ -1418,5 +1418,8 @@ public abstract class SellerRouterApplication extends MainApplication
         goToWebview(activity,url);
     }
 
-
+    @Override
+    public boolean isIndicatorVisible() {
+        return false; //Sellerapp dont have groupchat therefore always set false to indicator
+    }
 }

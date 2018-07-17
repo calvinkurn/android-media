@@ -11,6 +11,8 @@ public interface ConstantTransactionAnalytics {
         String VIEW_ATC = "viewATC";
         String REMOVE_FORM_CART = "removeFromCart";
         String ADD_TO_CART = "addToCart";
+        String CLICK_COURIER = "clickCourier";
+        String VIEW_COURIER = "viewCourier";
     }
 
     interface EventCategory {
@@ -115,6 +117,9 @@ public interface ConstantTransactionAnalytics {
         String CLICK_HAPUS_DAN_TAMBAH_WISHLIST_FrOM_HaPUS_PRODUK_BERKENDALA = "click hapus dan tambah wishlist from hapus produk berkendala";
         String CLICK_HAPUS_FROM_HAPUS_PRODUK_BERKENDALA = "click hapus from hapus produk berkendala";
         String CLICK_BELI = "click beli";
+
+        String CLICK_SELECT_COURIER = "click select courier";
+        String CLICK_COURIER_OPTION = "click courier option";
     }
 
     interface EventLabel {
