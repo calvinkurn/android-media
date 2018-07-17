@@ -15,11 +15,11 @@ import rx.Observable;
 
 public interface OmsApi {
 
-    @POST(OmsUrl.OMS_VERIFY)
-    Observable<VerifyMyCartResponse> postCartVerify(@Body JsonObject requestBody);
+    @POST(OmsUrl.HelperUrl.OMS_VERIFY)
+    Observable<Response<DataResponse<VerifyMyCartResponse>>> postCartVerify(@Body JsonObject requestBody);
 
 
-    @POST(OmsUrl.OMS_CHECKOUT)
-    Observable<JsonObject> checkoutCart(@Body JsonObject requestBody, @Query("client") String client, @Query("version") String version);
+    @POST(OmsUrl.HelperUrl.OMS_CHECKOUT)
+    Observable<Response<DataResponse<JsonObject>>> checkoutCart(@Body JsonObject requestBody, @Query("client") String client, @Query("version") String version);
 
 }

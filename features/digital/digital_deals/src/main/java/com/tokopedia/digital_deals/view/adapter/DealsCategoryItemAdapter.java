@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.view.activity.CategoryDetailActivity;
 import com.tokopedia.digital_deals.view.model.CategoriesModel;
@@ -23,8 +23,7 @@ public class DealsCategoryItemAdapter extends RecyclerView.Adapter<DealsCategory
     private List<CategoryItem> categoryItems;
     private Context context;
 
-    public DealsCategoryItemAdapter(Context context, List<CategoryItem> categoryItems) {
-        this.context = context;
+    public DealsCategoryItemAdapter(List<CategoryItem> categoryItems) {
         this.categoryItems = new ArrayList<>();
         this.categoryItems = categoryItems;
 
@@ -83,6 +82,7 @@ public class DealsCategoryItemAdapter extends RecyclerView.Adapter<DealsCategory
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        this.context = parent.getContext();
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.category_item, parent, false);
 

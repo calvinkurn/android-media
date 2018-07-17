@@ -78,7 +78,7 @@ public class SelectLocationFragment extends BaseDaggerFragment implements
         llTopEvents = view.findViewById(R.id.ll_topcities);
         noContent = view.findViewById(R.id.no_content);
         baseMainContent = view.findViewById(R.id.base_main_content);
-        dealsCategoryAdapter = new DealsLocationAdapter(getActivity(), null, this);
+        dealsCategoryAdapter = new DealsLocationAdapter(null, this);
         llSearchView = view.findViewById(R.id.ll_search);
         rvSearchResults.setAdapter(dealsCategoryAdapter);
         searchInputView.setSearchHint(getResources().getString(R.string.search_input_hint_location));

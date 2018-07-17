@@ -30,7 +30,7 @@ public class GetAllBrandsUseCase extends RestRequestUseCase {
         List<RestRequest> tempRequest = new ArrayList<>();
 
         HashMap<String, Object> map = params.getParameters();
-        String url = DealsUrl.DEALS_DOMAIN + DealsUrl.DEALS_LIST_SEARCH;
+        String url = DealsUrl.DEALS_DOMAIN + DealsUrl.HelperUrl.DEALS_LIST_SEARCH;
         //Request 1
         Type token = new TypeToken<DataResponse<AllBrandsResponse>>() {
         }.getType();

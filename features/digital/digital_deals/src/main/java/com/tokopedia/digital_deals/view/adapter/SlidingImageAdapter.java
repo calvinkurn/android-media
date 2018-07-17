@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.view.presenter.DealsHomePresenter;
 
@@ -21,16 +21,13 @@ public class SlidingImageAdapter extends PagerAdapter {
 
 
     private List<String> IMAGES;
-    private LayoutInflater inflater;
     private Context context;
     private DealsHomePresenter mPresenter;
 
 
-    public SlidingImageAdapter(Context context, List<String> IMAGES, DealsHomePresenter presenter) {
-        this.context = context;
+    public SlidingImageAdapter(List<String> IMAGES, DealsHomePresenter presenter) {
         this.IMAGES = IMAGES;
         this.mPresenter = presenter;
-        inflater = LayoutInflater.from(context);
     }
 
     @Override
@@ -45,7 +42,8 @@ public class SlidingImageAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup view, int position) {
-        View imageLayout = inflater.inflate(R.layout.deals_banner_item, view, false);
+        this.context=view.getContext();
+        View imageLayout = LayoutInflater.from(context).inflate(R.layout.deals_banner_item, view, false);
 
         assert imageLayout != null;
         final ImageView imageView = imageLayout.findViewById(R.id.banner_item);

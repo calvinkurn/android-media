@@ -53,7 +53,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginRight="@dimen/dp_16"
                         android:text="@string/see_all"
-                        android:textColor="@color/green_nob"
+                        android:textColor="@color/green_250"
                         android:textSize="@dimen/sp_12"
                         android:textStyle="normal"
                         app:layout_constraintBottom_toBottomOf="@+id/tv_popular_brand"

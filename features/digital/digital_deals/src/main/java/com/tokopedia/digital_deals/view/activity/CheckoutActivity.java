@@ -52,7 +52,7 @@ public class CheckoutActivity extends DealsBaseActivity implements DealFragmentC
         if (data != null) {
             if (requestCode == ScroogePGUtil.REQUEST_CODE_OPEN_SCROOGE_PAGE) {
                 String orderId = Utils.fetchOrderId(data.getStringExtra(ScroogePGUtil.SUCCESS_MSG_URL));
-                String url = data.getStringExtra(ScroogePGUtil.SUCCESS_MSG_URL) ;
+                String url = data.getStringExtra(ScroogePGUtil.SUCCESS_MSG_URL) + "?from_payment=true" ;
                 RouteManager.route(this, url);
                 this.finish();
             }

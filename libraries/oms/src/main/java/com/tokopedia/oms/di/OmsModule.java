@@ -5,14 +5,16 @@ import android.content.Context;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
-import com.tokopedia.core.network.retrofit.interceptors.OmsInterceptor;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.network.NetworkRouter;
+import com.tokopedia.network.interceptor.FingerprintInterceptor;
+import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.oms.OmsModuleRouter;
 import com.tokopedia.oms.data.CloudOmsDataStore;
 import com.tokopedia.oms.data.OmsRepositoryData;
 import com.tokopedia.oms.data.source.OmsApi;
-import com.tokopedia.oms.data.source.OmsBaseURL;
+import com.tokopedia.oms.data.source.OmsUrl;
 import com.tokopedia.oms.domain.postusecase.PostVerifyCartUseCase;
+import com.tokopedia.user.session.UserSession;
 
 import dagger.Module;
 import dagger.Provides;
@@ -33,24 +35,19 @@ public class OmsModule {
     @OmsQualifier
     Retrofit provideOmsRetrofit(@OmsQualifier OkHttpClient okHttpClient,
                                 Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(OmsBaseURL.OMS_DOMAIN).client(okHttpClient).build();
-    }
-
-    @OmsQualifier
-    @Provides
-    OmsInterceptor provideRideInterCeptor(@ApplicationContext Context context) {
-        String oAuthString = "Bearer " + SessionHandler.getAccessToken();
-        return new OmsInterceptor(oAuthString, context);
+        return retrofitBuilder.baseUrl(OmsUrl.OMS_DOMAIN).client(okHttpClient).build();
     }
 
     @OmsQualifier
     @Provides
     public OkHttpClient provideOkHttpClient(@ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
-                                            HeaderErrorResponseInterceptor errorResponseInterceptor, @OmsQualifier OmsInterceptor authInterceptor, @ApplicationContext Context context) {
+                                            HeaderErrorResponseInterceptor errorResponseInterceptor, @ApplicationContext Context context) {
+        UserSession userSession=new UserSession(context);
         return new OkHttpClient.Builder()
-                .addInterceptor(authInterceptor)
-                .addInterceptor(errorResponseInterceptor)
                 .addInterceptor(httpLoggingInterceptor)
+                .addInterceptor(errorResponseInterceptor)
+                .addInterceptor(new TkpdAuthInterceptor(context, (NetworkRouter) context, userSession))
+                .addInterceptor(new FingerprintInterceptor((NetworkRouter) context, userSession))
                 .addInterceptor(((OmsModuleRouter) context).getChuckInterceptor())
                 .build();
     }

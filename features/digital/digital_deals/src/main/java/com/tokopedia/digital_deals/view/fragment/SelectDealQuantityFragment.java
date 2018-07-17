@@ -17,7 +17,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -132,7 +132,7 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
     void setButtons() {
 
         if (CURRENT_QUANTITY > 1) {
-            ivSubtract.setColorFilter(ContextCompat.getColor(getContext(), R.color.green_nob), android.graphics.PorterDuff.Mode.SRC_IN);
+            ivSubtract.setColorFilter(ContextCompat.getColor(getContext(), R.color.green_250), android.graphics.PorterDuff.Mode.SRC_IN);
             ivSubtract.setClickable(true);
 
         } else {
@@ -140,7 +140,7 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
             ivSubtract.setClickable(false);
         }
         if (CURRENT_QUANTITY < MAX_QUANTITY) {
-            ivAdd.setColorFilter(ContextCompat.getColor(getContext(), R.color.green_nob), android.graphics.PorterDuff.Mode.SRC_IN);
+            ivAdd.setColorFilter(ContextCompat.getColor(getContext(), R.color.green_250), android.graphics.PorterDuff.Mode.SRC_IN);
             ivAdd.setClickable(true);
 
         } else {

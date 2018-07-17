@@ -85,5 +85,8 @@
     <string name="deals_brand_detail_location">Deals di %s\u0020</string>
     <string name="phone_number">Nomor Telepon</string>
     <string name="text_discount_promo">Diskon Promo</string>
+    <string name="title_activity_login">Masuk</string>
+    <string name="see_all">Lihat Semua</string>
+    <string name="button_continue">Lanjutkan</string>
 
 </resources>

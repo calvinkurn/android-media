@@ -33,8 +33,8 @@ import android.widget.Toast;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
 import com.tokopedia.common.network.util.NetworkClient;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.design.viewpagerindicator.CirclePageIndicator;
+import com.tokopedia.digital_deals.DealsModuleRouter;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.digital_deals.view.activity.DealsHomeActivity;
@@ -247,7 +247,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         if (top.getItems() != null && carousel.getItems().size() > 0) {
             rvTrendingDeals.setVisibility(View.VISIBLE);
             noContent.setVisibility(View.GONE);
-            DealsCategoryAdapter categoryAdapter = new DealsCategoryAdapter(getActivity(), top.getItems(), this, IS_SHORT_LAYOUT);
+            DealsCategoryAdapter categoryAdapter = new DealsCategoryAdapter(top.getItems(), this, IS_SHORT_LAYOUT);
             rvTrendingDeals.setAdapter(categoryAdapter);
         } else {
             rvTrendingDeals.setVisibility(View.GONE);
@@ -255,14 +255,14 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         }
         if (carousel.getItems() != null && carousel.getItems().size() > 0) {
             clBanners.setVisibility(View.VISIBLE);
-            setViewPagerListener(new SlidingImageAdapter(getActivity(), mPresenter.getCarouselImages(carousel.getItems()), mPresenter));
+            setViewPagerListener(new SlidingImageAdapter(mPresenter.getCarouselImages(carousel.getItems()), mPresenter));
             circlePageIndicator.setViewPager(viewPager);
             mPresenter.startBannerSlide(viewPager);
         } else {
             clBanners.setVisibility(View.GONE);
         }
         if (categoryList != null) {
-            rvCatItems.setAdapter(new DealsCategoryItemAdapter(getActivity(), categoryList));
+            rvCatItems.setAdapter(new DealsCategoryItemAdapter(categoryList));
         }
 
     }
@@ -271,7 +271,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     public void renderBrandList(List<Brand> brandList) {
         if (brandList != null) {
             clBrands.setVisibility(View.VISIBLE);
-            rvBrandItems.setAdapter(new DealsBrandAdapter(getActivity(), brandList, true));
+            rvBrandItems.setAdapter(new DealsBrandAdapter(brandList, true));
         } else {
             clBrands.setVisibility(View.GONE);
         }
@@ -392,10 +392,8 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
 
     @Override
     public void startGeneralWebView(String url) {
-        if (getActivity().getApplication() instanceof TkpdCoreRouter) {
-            ((TkpdCoreRouter) getActivity().getApplication())
-                    .actionOpenGeneralWebView(getActivity(), url);
-        }
+        ((DealsModuleRouter) getActivity().getApplication())
+                .actionOpenGeneralWebView(getActivity(), url);
     }
 
     @Override

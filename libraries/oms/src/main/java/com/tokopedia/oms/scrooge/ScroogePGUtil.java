@@ -4,7 +4,8 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
 
-import com.tkpd.library.utils.CommonUtils;
+
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 
 import java.net.URLEncoder;
 import java.util.Iterator;

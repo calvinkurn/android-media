@@ -10,7 +10,7 @@ import android.support.v4.app.TaskStackBuilder;
 import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.digital_deals.DealsModuleRouter;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.view.fragment.DealDetailsAllRedeemLocationsFragment;
 import com.tokopedia.digital_deals.view.fragment.DealDetailsFragment;
@@ -37,7 +37,7 @@ public class DealDetailsActivity extends DealsBaseActivity implements DealFragme
 
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
 
-        Intent homeIntent = ((TkpdCoreRouter) context.getApplicationContext()).getHomeIntent(context);
+        Intent homeIntent = ((DealsModuleRouter) context.getApplicationContext()).getHomeIntent(context);
         taskStackBuilder.addNextIntent(homeIntent);
         taskStackBuilder.addNextIntent(new Intent(context, DealsHomeActivity.class));
 

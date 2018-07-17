@@ -53,7 +53,7 @@ public class DealDetailsAllRedeemLocationsFragment extends BaseDaggerFragment {
         setViewIds(view);
 
         if (fragmentCallbacks.getOutlets() != null) {
-            DealDetailsAllLocationsAdapter adapter = new DealDetailsAllLocationsAdapter(getActivity(), fragmentCallbacks.getOutlets());
+            DealDetailsAllLocationsAdapter adapter = new DealDetailsAllLocationsAdapter(fragmentCallbacks.getOutlets());
             recyclerView.setAdapter(adapter);
         }
         return view;

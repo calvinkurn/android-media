@@ -64,7 +64,6 @@ public class DealsSearchActivity extends DealsBaseActivity implements
     private android.view.View progressBarLayout;
     private SearchInputView searchInputView;
     private RecyclerView rvDeals;
-    private TextView tvTopDeals;
     private ImageView back;
     private TextView tvCityName;
     private TextView tvChangeCity;
@@ -94,7 +93,6 @@ public class DealsSearchActivity extends DealsBaseActivity implements
         searchInputView = findViewById(R.id.search_input_view);
         progressBarLayout = findViewById(R.id.progress_bar_layout);
         mainContent = findViewById(R.id.main_content);
-        tvTopDeals = findViewById(R.id.tv_topevents);
         back = findViewById(R.id.imageViewBack);
         noContent = findViewById(R.id.no_content);
         llDeals = findViewById(R.id.ll_deals);
@@ -161,12 +159,11 @@ public class DealsSearchActivity extends DealsBaseActivity implements
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
 
         if (productItems != null && productItems.size() > 0) {
-            DealsCategoryAdapter dealsCategoryAdapter = new DealsCategoryAdapter(getActivity(), productItems, this,  !IS_SHORT_LAYOUT);
+            DealsCategoryAdapter dealsCategoryAdapter = new DealsCategoryAdapter(productItems, this, !IS_SHORT_LAYOUT);
             rvDeals.addOnScrollListener(rvOnScrollListener);
             rvDeals.setAdapter(dealsCategoryAdapter);
             llDeals.setVisibility(View.VISIBLE);
             noContent.setVisibility(View.GONE);
-            tvTopDeals.setVisibility(View.GONE);
             if (productItems.size() > 0) {
                 if (count == 0)
                     count = productItems.size();
@@ -242,11 +239,12 @@ public class DealsSearchActivity extends DealsBaseActivity implements
 
 
         if (searchViewModels != null && !searchViewModels.isEmpty()) {
-            TopDealsSuggestionsAdapter adapter = new TopDealsSuggestionsAdapter(this, searchViewModels, mPresenter);
+            TopDealsSuggestionsAdapter adapter = new TopDealsSuggestionsAdapter(searchViewModels, mPresenter);
             llDeals.setVisibility(View.VISIBLE);
             rvDeals.setAdapter(adapter);
+
             rvDeals.removeOnScrollListener(rvOnScrollListener);
-            tvTopDeals.setVisibility(View.VISIBLE);
+            adapter.addHeader();
             noContent.setVisibility(View.GONE);
             clLocation.setVisibility(View.GONE);
 
@@ -265,12 +263,11 @@ public class DealsSearchActivity extends DealsBaseActivity implements
     public void setSuggestions(List<ProductItem> suggestions, String highlight) {
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
         if (suggestions != null && !suggestions.isEmpty()) {
-            TopDealsSuggestionsAdapter adapter = new TopDealsSuggestionsAdapter(this, suggestions, mPresenter);
+            TopDealsSuggestionsAdapter adapter = new TopDealsSuggestionsAdapter(suggestions, mPresenter);
             adapter.setHighLightText(highlight);
             llDeals.setVisibility(View.VISIBLE);
             rvDeals.setAdapter(adapter);
             rvDeals.addOnScrollListener(rvOnScrollListener);
-            tvTopDeals.setVisibility(View.GONE);
             noContent.setVisibility(View.GONE);
             clLocation.setVisibility(View.GONE);
         } else {
@@ -284,28 +281,36 @@ public class DealsSearchActivity extends DealsBaseActivity implements
     @Override
     public void removeFooter(boolean searchSubmitted) {
         if (searchSubmitted) {
-            ((DealsCategoryAdapter) rvDeals.getAdapter()).removeFooter();
-        } else
-            ((TopDealsSuggestionsAdapter) rvDeals.getAdapter()).removeFooter();
+            if (rvDeals.getAdapter() instanceof DealsCategoryAdapter)
+                ((DealsCategoryAdapter) rvDeals.getAdapter()).removeFooter();
+        } else {
+            if (rvDeals.getAdapter() instanceof TopDealsSuggestionsAdapter)
+                ((TopDealsSuggestionsAdapter) rvDeals.getAdapter()).removeFooter();
+        }
     }
 
     @Override
     public void addFooter(boolean searchSubmitted) {
-        if (searchSubmitted)
-            ((DealsCategoryAdapter) rvDeals.getAdapter()).addFooter();
-        else
-            ((TopDealsSuggestionsAdapter) rvDeals.getAdapter()).addFooter();
+        if (searchSubmitted) {
+            if (rvDeals.getAdapter() instanceof DealsCategoryAdapter)
+                ((DealsCategoryAdapter) rvDeals.getAdapter()).addFooter();
+        } else {
+            if (rvDeals.getAdapter() instanceof TopDealsSuggestionsAdapter)
+                ((TopDealsSuggestionsAdapter) rvDeals.getAdapter()).addFooter();
+        }
     }
 
     @Override
     public void addDealsToCards(List<ProductItem> productItems) {
-        ((DealsCategoryAdapter) rvDeals.getAdapter()).addAll(productItems);
+        if (rvDeals.getAdapter() instanceof DealsCategoryAdapter)
+            ((DealsCategoryAdapter) rvDeals.getAdapter()).addAll(productItems);
     }
 
 
     @Override
     public void addDeals(List<ProductItem> searchViewModels) {
-        ((TopDealsSuggestionsAdapter) rvDeals.getAdapter()).addAll(searchViewModels);
+        if (rvDeals.getAdapter() instanceof TopDealsSuggestionsAdapter)
+            ((TopDealsSuggestionsAdapter) rvDeals.getAdapter()).addAll(searchViewModels);
     }
 
     @Override
@@ -357,7 +362,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
                                 Utils.getSingletonInstance().setSnackBarLocationChange(location.getName(), getActivity(), mainContent);
                         }
                         tvCityName.setText(location.getName());
-                        if (searchInputView.getSearchText() != null && searchInputView.getSearchText() != "")
+                        if (!TextUtils.isEmpty(searchInputView.getSearchText()))
                             mPresenter.getDealsListBySearch(searchInputView.getSearchText());
 
                     }
@@ -369,7 +374,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
                     if (!tvCityName.getText().equals(location1.getName())) {
                         tvCityName.setText(location1.getName());
                     }
-                    if (searchInputView.getSearchText() != null && searchInputView.getSearchText() != "")
+                    if (!TextUtils.isEmpty(searchInputView.getSearchText()))
                         mPresenter.getDealsListBySearch(searchInputView.getSearchText());
 
                 }

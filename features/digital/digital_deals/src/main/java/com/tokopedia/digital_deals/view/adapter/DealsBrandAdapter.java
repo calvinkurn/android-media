@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.view.activity.BrandDetailsActivity;
 import com.tokopedia.digital_deals.view.presenter.BrandDetailsPresenter;
@@ -29,8 +29,7 @@ public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private boolean isShortLayout;
 
 
-    public DealsBrandAdapter(Context context, List<Brand> brandItems, boolean isShortLayout) {
-        this.context = context;
+    public DealsBrandAdapter(List<Brand> brandItems, boolean isShortLayout) {
         this.brandItems = new ArrayList<>();
         this.isShortLayout = isShortLayout;
         if (isShortLayout) {
@@ -147,7 +146,7 @@ public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-
+        this.context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(
                 parent.getContext());
         RecyclerView.ViewHolder holder = null;

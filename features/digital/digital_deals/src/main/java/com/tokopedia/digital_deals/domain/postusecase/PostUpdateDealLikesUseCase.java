@@ -35,7 +35,7 @@ public class PostUpdateDealLikesUseCase extends RestRequestUseCase {
         List<RestRequest> tempRequest = new ArrayList<>();
 
         LikeUpdateModel requestModel = (LikeUpdateModel) params.getObject(PostUpdateDealLikesUseCase.REQUEST_BODY);
-        String url = DealsUrl.DEALS_DOMAIN + DealsUrl.DEALS_LIKES;
+        String url = DealsUrl.DEALS_DOMAIN + DealsUrl.HelperUrl.DEALS_LIKES;
         Type token = new TypeToken<DataResponse<LikeUpdateResult>>() {
         }.getType();
 

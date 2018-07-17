@@ -309,6 +309,7 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FROM_DEEPLINK;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PARAM_PRODUCT_PASS_DATA;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.SHARE_DATA;
+import static com.tokopedia.digital_deals.view.utils.Utils.Constants.DIGITAL_DEALS;
 
 /**
  * @author normansyahputa on 12/15/16.
@@ -2134,6 +2135,31 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public Observable<TKPDMapParam<String, Object>> verifyDealPromo(com.tokopedia.usecase.RequestParams requestParams) {
         return new PostVerifyCartWrapper(this, dealsComponent.getPostVerifyCartUseCase())
                 .verifyDealPromo(requestParams);
+    }
+
+    @Override
+    public void shareDeal(Context context, String uri, String name, String imageUrl) {
+        ShareData shareData = ShareData.Builder.aShareData()
+                .setType("")
+                .setName(name)
+                .setUri(uri)
+                .setImgUri(imageUrl)
+                .build();
+        BranchSdkUtils.generateBranchLink(shareData, (Activity) context, new BranchSdkUtils.GenerateShareContents() {
+            @Override
+            public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
+                Intent share = new Intent(android.content.Intent.ACTION_SEND);
+                share.setType("text/plain");
+                share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+                share.putExtra(Intent.EXTRA_TEXT, branchUrl);
+                context.startActivity(Intent.createChooser(share, "Share link!"));
+            }
+        });
+    }
+
+    @Override
+    public String getUserPhoneNumber(){
+        return SessionHandler.getPhoneNumber();
     }
 
     @Override

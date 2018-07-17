@@ -1,20 +1,20 @@
 package com.tokopedia.digital_deals.view.presenter;
 
 import android.content.Intent;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.digital_deals.DealsModuleRouter;
 import com.tokopedia.digital_deals.view.activity.CheckoutActivity;
 import com.tokopedia.digital_deals.view.contractor.SelectQuantityContract;
-import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse;
 import com.tokopedia.digital_deals.view.model.PackageViewModel;
+import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse;
 import com.tokopedia.oms.data.entity.response.verifyresponse.VerifyMyCartResponse;
 import com.tokopedia.oms.domain.model.request.cart.CartItem;
 import com.tokopedia.oms.domain.model.request.cart.CartItems;
@@ -40,6 +40,7 @@ public class SelectQuantityPresenter
     private String promocode="";
     private PackageViewModel checkoutData;
     private DealsDetailsResponse dealDetails;
+    UserSession userSession;
 
 
     @Inject
@@ -49,6 +50,7 @@ public class SelectQuantityPresenter
 
     @Override
     public void initialize(DealsDetailsResponse detailsViewModel) {
+       userSession =((AbstractionRouter) getView().getActivity().getApplication()).getSession();
         this.dealDetails=detailsViewModel;
         getView().renderFromDetails(dealDetails);
     }
@@ -61,7 +63,8 @@ public class SelectQuantityPresenter
     @Override
     public void onActivityResult(int requestCode) {
         if (requestCode == getView().getRequestCode()) {
-            if (SessionHandler.isV4Login(getView().getActivity())) {
+
+            if (userSession.isLoggedIn()) {
                 getProfile();
             } else {
                 getView().hideProgressBar();
@@ -103,8 +106,8 @@ public class SelectQuantityPresenter
 
 
     private void getProfile() {
-        if (!SessionHandler.isV4Login(getView().getActivity())) {
-            Intent intent = ((TkpdCoreRouter) getView().getActivity().getApplication()).
+        if (!userSession.isLoggedIn()) {
+            Intent intent = ((DealsModuleRouter) getView().getActivity().getApplication()).
                     getLoginIntent(getView().getActivity());
             getView().navigateToActivityRequest(intent, getView().getRequestCode());
         } else {

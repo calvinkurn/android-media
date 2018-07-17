@@ -21,7 +21,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -34,34 +33,33 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;;
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
-import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.viewpagerindicator.CirclePageIndicator;
+import com.tokopedia.digital_deals.DealsModuleRouter;
 import com.tokopedia.digital_deals.R;
-import com.tokopedia.digital_deals.di.DaggerDealsComponent;
 import com.tokopedia.digital_deals.di.DealsComponent;
-import com.tokopedia.digital_deals.di.DealsModule;
 import com.tokopedia.digital_deals.view.activity.BrandDetailsActivity;
 import com.tokopedia.digital_deals.view.activity.DealDetailsActivity;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
 import com.tokopedia.digital_deals.view.adapter.SlidingImageAdapterDealDetails;
 import com.tokopedia.digital_deals.view.contractor.DealCategoryAdapterContract;
 import com.tokopedia.digital_deals.view.contractor.DealDetailsContract;
+import com.tokopedia.digital_deals.view.customview.ExpandableTextView;
 import com.tokopedia.digital_deals.view.model.Media;
+import com.tokopedia.digital_deals.view.model.Outlet;
+import com.tokopedia.digital_deals.view.model.ProductItem;
+import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse;
 import com.tokopedia.digital_deals.view.presenter.BrandDetailsPresenter;
 import com.tokopedia.digital_deals.view.presenter.DealCategoryAdapterPresenter;
 import com.tokopedia.digital_deals.view.presenter.DealDetailsPresenter;
 import com.tokopedia.digital_deals.view.utils.DealFragmentCallbacks;
 import com.tokopedia.digital_deals.view.utils.Utils;
-import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse;
-import com.tokopedia.digital_deals.view.model.ProductItem;
-import com.tokopedia.digital_deals.view.model.Outlet;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
@@ -72,8 +70,8 @@ import javax.inject.Inject;
 public class DealDetailsFragment extends BaseDaggerFragment implements DealDetailsContract.View, View.OnClickListener, DealCategoryAdapterContract.View, DealsCategoryAdapter.INavigateToActivityRequest {
 
     private CollapsingToolbarLayout collapsingToolbarLayout;
-    private at.blogc.android.views.ExpandableTextView tvExpandableDesc;
-    private at.blogc.android.views.ExpandableTextView tvExpandableTC;
+    private ExpandableTextView tvExpandableDesc;
+    private ExpandableTextView tvExpandableTC;
     private LinearLayout seeMoreButtonDesc;
     private LinearLayout seeMoreButtonTC;
 
@@ -208,7 +206,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         tvExpandableTC.setInterpolator(new OvershootInterpolator());
         mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         recyclerViewDeals.setLayoutManager(mLayoutManager);
-        recyclerViewDeals.setAdapter(new DealsCategoryAdapter(getActivity(), new ArrayList<ProductItem>(), this, IS_SHORT_LAYOUT));
+        recyclerViewDeals.setAdapter(new DealsCategoryAdapter(new ArrayList<ProductItem>(), this, IS_SHORT_LAYOUT));
         recyclerViewDeals.addOnScrollListener(rvOnScrollListener);
     }
 
@@ -218,6 +216,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         getComponent(DealsComponent.class).inject(this);
         mPresenter.attachView(this);
         mPresenter2.attachView(this);
+        mPresenter2.initialize();
     }
 
     @Override
@@ -239,16 +238,16 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         tvDealDetails.setVisibility(View.VISIBLE);
 
 
-        if(detailsViewModel.getMrp()!=0){
+        if (detailsViewModel.getMrp() != 0) {
             tvMrp.setVisibility(View.VISIBLE);
             tvMrp.setText(Utils.convertToCurrencyString(detailsViewModel.getMrp()));
             tvMrp.setPaintFlags(tvMrp.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-        }else{
+        } else {
             tvMrp.setVisibility(View.GONE);
         }
-        if(TextUtils.isEmpty(detailsViewModel.getSavingPercentage())){
+        if (TextUtils.isEmpty(detailsViewModel.getSavingPercentage())) {
             tvOff.setVisibility(View.GONE);
-        }else{
+        } else {
             tvOff.setVisibility(View.VISIBLE);
             tvOff.setText(detailsViewModel.getSavingPercentage());
         }
@@ -287,7 +286,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         if (detailsViewModel.getMediaUrl() != null && detailsViewModel.getMediaUrl().size() > 0) {
             if (detailsViewModel.getMediaUrl().size() == 1)
                 circlePageIndicator.setVisibility(View.GONE);
-            setViewPagerListener(new SlidingImageAdapterDealDetails(getActivity(), detailsViewModel.getMediaUrl()));
+            setViewPagerListener(new SlidingImageAdapterDealDetails(detailsViewModel.getMediaUrl()));
             circlePageIndicator.setViewPager(viewPager);
             mPresenter.startBannerSlide(viewPager);
         } else {
@@ -295,10 +294,10 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
             circlePageIndicator.setVisibility(View.GONE);
             if (detailsViewModel.getImageWeb() != null) {
                 List<Media> images = new ArrayList<>();
-                Media media=new Media();
+                Media media = new Media();
                 media.setUrl(detailsViewModel.getImageWeb());
                 images.add(media);
-                setViewPagerListener(new SlidingImageAdapterDealDetails(getActivity(), images));
+                setViewPagerListener(new SlidingImageAdapterDealDetails(images));
             }
             circlePageIndicator.setViewPager(viewPager);
             mPresenter.startBannerSlide(viewPager);
@@ -414,10 +413,9 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     }
 
     public void startGeneralWebView(String url) {
-        if (getActivity().getApplication() instanceof TkpdCoreRouter) {
-            ((TkpdCoreRouter) getActivity().getApplication())
-                    .actionOpenGeneralWebView(getActivity(), url);
-        }
+
+        ((DealsModuleRouter) getActivity().getApplication())
+                .actionOpenGeneralWebView(getActivity(), url);
     }
 
     @Override
@@ -458,7 +456,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
 
         SnackbarManager.make(getActivity(), message, Snackbar.LENGTH_LONG).setAction(
                 getResources().getString(R.string.title_activity_login), (View.OnClickListener) v -> {
-                    Intent intent = ((TkpdCoreRouter) getActivity().getApplication()).
+                    Intent intent = ((DealsModuleRouter) getActivity().getApplication()).
                             getLoginIntent(getActivity());
                     getActivity().startActivityForResult(intent, LIKE_REQUEST_CODE);
                 }
@@ -571,7 +569,8 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == LIKE_REQUEST_CODE) {
-            if (SessionHandler.isV4Login(getActivity())) {
+            UserSession userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
+            if (userSession.isLoggedIn()) {
                 mPresenter2.setDealLike(dealDetail, 0);
             }
         }

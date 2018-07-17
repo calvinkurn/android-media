@@ -16,8 +16,9 @@ import com.tokopedia.digital_deals.view.presenter.DealsSearchPresenter;
 import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.digital_deals.view.model.ProductItem;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-
 
 
 public class TopDealsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -32,15 +33,19 @@ public class TopDealsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVie
 
     private static final int ITEM = 1;
     private static final int FOOTER = 2;
+    private final int HEADER = 3;
+    private boolean isHeaderAdded = false;
 
-    public TopDealsSuggestionsAdapter(Context context, List<ProductItem> categoryItems, DealsSearchPresenter presenter) {
-        this.mContext = context;
+    public TopDealsSuggestionsAdapter(List<ProductItem> categoryItems, DealsSearchPresenter presenter) {
         this.mPresenter = presenter;
-        this.categoryItems = categoryItems;
+        if (categoryItems != null) {
+            this.categoryItems=new ArrayList<ProductItem>(categoryItems);
+        }
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        mContext = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(
                 parent.getContext());
         RecyclerView.ViewHolder holder = null;
@@ -53,6 +58,10 @@ public class TopDealsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVie
             case FOOTER:
                 v = inflater.inflate(R.layout.footer_layout, parent, false);
                 holder = new FooterViewHolder(v);
+                break;
+            case HEADER:
+                v = inflater.inflate(R.layout.header_layout_trending_deals, parent, false);
+                holder = new HeaderViewHolder(v);
                 break;
             default:
                 break;
@@ -68,8 +77,18 @@ public class TopDealsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVie
                 break;
             case FOOTER:
                 break;
+            case HEADER:
+                break;
             default:
                 break;
+        }
+    }
+
+    public void addHeader() {
+        if (!isHeaderAdded) {
+            isHeaderAdded = true;
+            categoryItems.add(0, new ProductItem());
+            notifyItemInserted(0);
         }
     }
 
@@ -148,7 +167,7 @@ public class TopDealsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVie
 
     @Override
     public int getItemViewType(int position) {
-        return (isLastPosition(position) && isFooterAdded) ? FOOTER : ITEM;
+        return (position == 0 && isHeaderAdded) ? HEADER : (isLastPosition(position) && isFooterAdded) ? FOOTER : ITEM;
     }
 
 
@@ -162,10 +181,10 @@ public class TopDealsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVie
 
         private DealsTitleHolder(View itemView) {
             super(itemView);
-            this.itemView=itemView;
+            this.itemView = itemView;
             itemView.setOnClickListener(this);
-            tvDealTitle =itemView.findViewById(R.id.tv_simple_item);
-            tvBrandName =itemView.findViewById(R.id.tv_brand_name);
+            tvDealTitle = itemView.findViewById(R.id.tv_simple_item);
+            tvBrandName = itemView.findViewById(R.id.tv_brand_name);
         }
 
         private void setDealTitle(int position, ProductItem value) {
@@ -202,8 +221,17 @@ public class TopDealsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVie
 
         private FooterViewHolder(View itemView) {
             super(itemView);
-            loadingLayout=itemView.findViewById(R.id.loading_fl);
+            loadingLayout = itemView.findViewById(R.id.loading_fl);
         }
+    }
+
+    public class HeaderViewHolder extends RecyclerView.ViewHolder {
+
+
+        private HeaderViewHolder(View itemView) {
+            super(itemView);
+        }
+
     }
 
 }

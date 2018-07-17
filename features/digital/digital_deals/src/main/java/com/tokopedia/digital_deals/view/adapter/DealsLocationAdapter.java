@@ -21,8 +21,7 @@ public class DealsLocationAdapter extends RecyclerView.Adapter<DealsLocationAdap
     private List<Location> locations;
     private ActionListener actionListener;
 
-    public DealsLocationAdapter(Context context, List<Location> locations, ActionListener actionListener) {
-        this.context = context;
+    public DealsLocationAdapter(List<Location> locations, ActionListener actionListener) {
         this.locations = new ArrayList<>();
         this.locations = locations;
         this.actionListener=actionListener;
@@ -35,6 +34,7 @@ public class DealsLocationAdapter extends RecyclerView.Adapter<DealsLocationAdap
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+        this.context = viewGroup.getContext();
         return new ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.location_item, viewGroup, false));
     }
 

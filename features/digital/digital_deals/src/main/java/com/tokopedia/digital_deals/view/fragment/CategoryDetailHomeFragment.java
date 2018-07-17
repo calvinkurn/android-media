@@ -143,7 +143,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
                 numberOfDeals.setText(String.format(getResources().getString(R.string.number_of_items), deals.size()));
             else
                 numberOfDeals.setText(String.format(getResources().getString(R.string.number_of_items), count));
-            recyclerViewDeals.setAdapter(new DealsCategoryAdapter(getActivity(), deals, this, !IS_SHORT_LAYOUT));
+            recyclerViewDeals.setAdapter(new DealsCategoryAdapter(deals, this, !IS_SHORT_LAYOUT));
             recyclerViewDeals.setVisibility(View.VISIBLE);
             recyclerViewDeals.addOnScrollListener(rvOnScrollListener);
             noContent.setVisibility(View.GONE);
@@ -161,7 +161,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     public void renderBrandList(List<Brand> brandList) {
         if (brandList != null) {
             clBrands.setVisibility(View.VISIBLE);
-            recyclerViewBrands.setAdapter(new DealsBrandAdapter(getActivity(), brandList, true));
+            recyclerViewBrands.setAdapter(new DealsBrandAdapter(brandList, true));
         }else{
             clBrands.setVisibility(View.GONE);
         }

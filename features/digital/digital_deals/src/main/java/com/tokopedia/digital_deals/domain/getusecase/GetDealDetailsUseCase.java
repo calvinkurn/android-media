@@ -31,7 +31,7 @@ public class GetDealDetailsUseCase extends RestRequestUseCase {
         List<RestRequest> tempRequest = new ArrayList<>();
 
         HashMap<String, Object> map = params.getParameters();
-        String url = DealsUrl.DEALS_DOMAIN + DealsUrl.DEALS_PRODUCT +"/" + map.get(DealDetailsPresenter.TAG);
+        String url = DealsUrl.DEALS_DOMAIN + DealsUrl.HelperUrl.DEALS_PRODUCT +"/" + map.get(DealDetailsPresenter.TAG);
         //Request 1
         Type token = new TypeToken<DataResponse<DealsDetailsResponse>>() {
         }.getType();

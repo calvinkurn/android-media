@@ -12,7 +12,6 @@ import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,16 +20,14 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
-import com.tokopedia.core.product.model.share.ShareData;
-import com.tokopedia.core.util.BranchSdkUtils;
-import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.abstraction.constant.TkpdCache;
+import com.tokopedia.digital_deals.DealsModuleRouter;
 import com.tokopedia.digital_deals.R;
-import com.tokopedia.digital_deals.view.model.response.DealsResponse;
-import com.tokopedia.digital_deals.view.model.FilterItem;
-import com.tokopedia.digital_deals.view.model.ValuesItem;
 import com.tokopedia.digital_deals.view.model.CategoryItem;
+import com.tokopedia.digital_deals.view.model.FilterItem;
 import com.tokopedia.digital_deals.view.model.Location;
-
+import com.tokopedia.digital_deals.view.model.ValuesItem;
+import com.tokopedia.digital_deals.view.model.response.DealsResponse;
 
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -257,27 +254,9 @@ public class Utils {
     }
 
     public void shareDeal(String deeplinkSlug, Context context, String name, String imageUrl) {
-
-        ShareData shareData = ShareData.Builder.aShareData()
-                .setType("")
-                .setName(name)
-                .setUri(DIGITAL_DEALS + "/" + deeplinkSlug)
-                .setImgUri(imageUrl)
-                .build();
-        BranchSdkUtils.generateBranchLink(shareData, (Activity) context, new BranchSdkUtils.GenerateShareContents() {
-            @Override
-            public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
-                Intent share = new Intent(android.content.Intent.ACTION_SEND);
-                share.setType("text/plain");
-                share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-                share.putExtra(Intent.EXTRA_TEXT, branchUrl);
-                context.startActivity(Intent.createChooser(share, "Share link!"));
-            }
-        });
+        String uri=DIGITAL_DEALS + "/" + deeplinkSlug;
+        ((DealsModuleRouter)((Activity) context).getApplication()).shareDeal(context, uri, name, imageUrl);
     }
-
-
-
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public Bitmap setBlur(Bitmap smallBitmap, float radius, Context context) {

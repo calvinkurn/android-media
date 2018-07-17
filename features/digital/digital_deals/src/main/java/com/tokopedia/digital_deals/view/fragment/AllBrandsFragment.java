@@ -95,14 +95,18 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
         searchInputView.setSearchImageViewDimens(getResources().getDimensionPixelSize(R.dimen.dp_24), getResources().getDimensionPixelSize(R.dimen.dp_24));
         layoutManager = new GridLayoutManager(getContext(), SPAN_COUNT_3, GridLayoutManager.VERTICAL, false);
         recyclerview.setLayoutManager(layoutManager);
-        recyclerview.setAdapter(new DealsBrandAdapter(getContext(), null, !IS_SHORT_LAYOUT));
+        recyclerview.setAdapter(new DealsBrandAdapter(null, !IS_SHORT_LAYOUT));
         searchInputView.setListener(this);
+        hideKeyboard();
+
+    }
+
+    private void hideKeyboard() {
         InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         if (imm != null) {
             imm.hideSoftInputFromWindow(searchInputView.getSearchTextView().getWindowToken(), 0);
             baseMainContent.requestFocus();
         }
-
     }
 
     @Override
@@ -160,11 +164,7 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
             recyclerview.addOnScrollListener(rvOnScrollListener);
             noContent.setVisibility(View.GONE);
             if (isSearchSubmitted) {
-                InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                if (imm != null) {
-                    imm.hideSoftInputFromWindow(searchInputView.getSearchTextView().getWindowToken(), 0);
-                    recyclerview.requestFocus();
-                }
+                hideKeyboard();
             }
         } else {
             recyclerview.setVisibility(View.GONE);

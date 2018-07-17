@@ -13,27 +13,28 @@ import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
-import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.digital_deals.DealsModuleRouter;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DaggerDealsComponent;
-import com.tokopedia.digital_deals.di.DealsModule;
 import com.tokopedia.digital_deals.view.activity.BrandDetailsActivity;
 import com.tokopedia.digital_deals.view.activity.DealDetailsActivity;
 import com.tokopedia.digital_deals.view.activity.DealsHomeActivity;
 import com.tokopedia.digital_deals.view.contractor.DealCategoryAdapterContract;
-import com.tokopedia.digital_deals.view.fragment.DealsHomeFragment;
+import com.tokopedia.digital_deals.view.customview.ExpandableTextView;
+import com.tokopedia.digital_deals.view.model.Location;
+import com.tokopedia.digital_deals.view.model.ProductItem;
 import com.tokopedia.digital_deals.view.presenter.BrandDetailsPresenter;
 import com.tokopedia.digital_deals.view.presenter.DealCategoryAdapterPresenter;
 import com.tokopedia.digital_deals.view.presenter.DealDetailsPresenter;
 import com.tokopedia.digital_deals.view.utils.Utils;
-import com.tokopedia.digital_deals.view.model.ProductItem;
-import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
@@ -56,9 +57,9 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     @Inject
     DealCategoryAdapterPresenter mPresenter;
     private String headerText;
+    private int productCount;
 
-    public DealsCategoryAdapter(Context context, List<ProductItem> categoryItems, INavigateToActivityRequest toActivityRequest, Boolean... layoutType) {
-        this.context = context;
+    public DealsCategoryAdapter(List<ProductItem> categoryItems, INavigateToActivityRequest toActivityRequest, Boolean... layoutType) {
         this.categoryItems = categoryItems;
         if (layoutType[0] != null) {
             this.isShortLayout = layoutType[0];
@@ -68,7 +69,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 brandPageCard = layoutType[1];
             }
         }
-        this.toActivityRequest=toActivityRequest;
+        this.toActivityRequest = toActivityRequest;
 
     }
 
@@ -82,7 +83,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
+        this.context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(
                 parent.getContext());
         RecyclerView.ViewHolder holder = null;
@@ -103,6 +104,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             case HEADER:
                 v = inflater.inflate(R.layout.header_layout, parent, false);
                 holder = new HeaderViewHolder(v);
+                break;
             default:
                 break;
         }
@@ -111,6 +113,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
                 .build().inject(this);
         mPresenter.attachView(this);
+        mPresenter.initialize();
         return holder;
     }
 
@@ -140,8 +143,12 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     @Override
     public int getItemViewType(int position) {
 
-        return (isShortLayout ? (isLastPosition(position) && isFooterAdded) ? FOOTER : (position == 0 && isHeaderAdded) ? HEADER : ITEM2
-                : (isLastPosition(position) && isFooterAdded) ? FOOTER : (position == 0 && isHeaderAdded) ? HEADER : ITEM);
+        return (isShortLayout ? (isLastPosition(position) && isFooterAdded) ? FOOTER : (position == 0 && isHeaderAdded)
+                ? HEADER : ITEM2
+                :
+                (isLastPosition(position) && isFooterAdded)
+                        ? FOOTER : (position == 0 && isHeaderAdded)
+                        ? HEADER : ITEM);
     }
 
     private boolean isLastPosition(int position) {
@@ -163,6 +170,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             notifyItemInserted(0);
         }
     }
+
 
     public void add(ProductItem item) {
         categoryItems.add(item);
@@ -210,7 +218,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     public void showLoginSnackbar(String message) {
         SnackbarManager.make(getActivity(), message, Snackbar.LENGTH_LONG).setAction(
                 getActivity().getResources().getString(R.string.title_activity_login), (View.OnClickListener) v -> {
-                    Intent intent = ((TkpdCoreRouter) getActivity().getApplication()).
+                    Intent intent = ((DealsModuleRouter) getActivity().getApplication()).
                             getLoginIntent(getActivity());
                     toActivityRequest.onNavigateToActivityRequest(intent, DealsHomeActivity.REQUEST_CODE_LOGIN);
                 }
@@ -277,24 +285,24 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             } else {
                 hotDeal.setVisibility(View.GONE);
             }
-            if(TextUtils.isEmpty(productItem.getCityName())) {
+            if (TextUtils.isEmpty(productItem.getCityName())) {
                 Location location = Utils.getSingletonInstance().getLocation(context);
                 if (location != null) {
                     dealavailableLocations.setText(location.getName());
                 }
-            }else{
+            } else {
                 dealavailableLocations.setText(productItem.getCityName());
             }
-            if(productItem.getMrp()!=0){
+            if (productItem.getMrp() != 0) {
                 dealListPrice.setVisibility(View.VISIBLE);
                 dealListPrice.setText(Utils.convertToCurrencyString(productItem.getMrp()));
                 dealListPrice.setPaintFlags(dealListPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            }else{
+            } else {
                 dealListPrice.setVisibility(View.INVISIBLE);
             }
-            if(TextUtils.isEmpty(productItem.getSavingPercentage())){
+            if (TextUtils.isEmpty(productItem.getSavingPercentage())) {
                 discount.setVisibility(View.INVISIBLE);
-            }else{
+            } else {
                 discount.setVisibility(View.VISIBLE);
                 discount.setText(productItem.getSavingPercentage());
             }
@@ -404,16 +412,16 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             if (productItem.getBrand().getUrl() != null) {
                 cvBrand.setOnClickListener(this);
             }
-            if(productItem.getMrp()!=0){
+            if (productItem.getMrp() != 0) {
                 dealListPrice.setVisibility(View.VISIBLE);
                 dealListPrice.setText(Utils.convertToCurrencyString(productItem.getMrp()));
                 dealListPrice.setPaintFlags(dealListPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            }else{
+            } else {
                 dealListPrice.setVisibility(View.INVISIBLE);
             }
-            if(TextUtils.isEmpty(productItem.getSavingPercentage())){
+            if (TextUtils.isEmpty(productItem.getSavingPercentage())) {
                 discount.setVisibility(View.INVISIBLE);
-            }else{
+            } else {
                 discount.setVisibility(View.VISIBLE);
                 discount.setText(productItem.getSavingPercentage());
             }
@@ -468,11 +476,12 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
     }
 
+
     public void unsubscribeUseCase() {
         mPresenter.onDestroy();
     }
 
-    public interface INavigateToActivityRequest{
+    public interface INavigateToActivityRequest {
         void onNavigateToActivityRequest(Intent intent, int requestCode);
     }
 }

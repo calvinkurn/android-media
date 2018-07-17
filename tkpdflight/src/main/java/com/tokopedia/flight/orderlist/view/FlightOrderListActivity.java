@@ -27,14 +27,14 @@ public class FlightOrderListActivity extends BaseSimpleActivity implements HasCo
         return new Intent(activity, FlightOrderListActivity.class);
     }
 
-//    @DeepLink(ApplinkConstant.FLIGHT_ORDER)
-//    public static Intent getCallingApplinkIntent(Context context, Bundle extras) {
-//        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-//        Intent intent = new Intent(context, FlightOrderListActivity.class);
-//        return intent
-//                .setData(uri.build())
-//                .putExtras(extras);
-//    }
+    @DeepLink(ApplinkConstant.FLIGHT_ORDER)
+    public static Intent getCallingApplinkIntent(Context context, Bundle extras) {
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        Intent intent = new Intent(context, FlightOrderListActivity.class);
+        return intent
+                .setData(uri.build())
+                .putExtras(extras);
+    }
 
     @Override
     protected Fragment getNewFragment() {
