@@ -5,11 +5,9 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.design.bottomsheet.BottomSheetView
 import com.tokopedia.product.edit.R
-import kotlinx.android.synthetic.main.fragment_product_add_price.*
 
-class ProductAddDescriptionFragment : Fragment() {
+class ProductEditNameFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -17,7 +15,7 @@ class ProductAddDescriptionFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        return inflater.inflate(R.layout.fragment_product_add_description, container, false)
+        return inflater.inflate(R.layout.fragment_product_edit_name, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -27,7 +25,7 @@ class ProductAddDescriptionFragment : Fragment() {
     companion object {
 
         fun createInstance(): Fragment {
-            return ProductAddDescriptionFragment()
+            return ProductEditNameFragment()
         }
     }
 }

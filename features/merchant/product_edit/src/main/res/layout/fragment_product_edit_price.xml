@@ -7,7 +7,7 @@
     android:background="@color/white">
 
     <android.support.v7.widget.AppCompatTextView
-        style="@style/TextView.Small.BlackSecondary"
+        style="@style/TextView.Small"
         android:text="@string/product_label_product_price"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
@@ -26,7 +26,7 @@
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/textRecommendationPrice"
-        style="@style/TextView.Title.BlackSecondary"
+        style="@style/TextView.Title"
         android:layout_width="match_parent"
         android:text="@string/product_label_recommendation_price"
         android:background="@drawable/rounded_yellow"
@@ -61,23 +61,20 @@
         android:background="@drawable/line_divider"
         android:layout_marginLeft="@dimen/dp_16" />
 
-    <android.support.v7.widget.AppCompatTextView
+    <com.tokopedia.design.text.TkpdHintTextInputLayout
+        style="@style/HintTextInputLayout"
         android:layout_marginTop="@dimen/dp_16"
-        style="@style/TextView.Small.BlackSecondary"
-        android:text="@string/product_label_minimum_buy"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"/>
-
-    <EditText
-        android:id="@+id/edit_text_minimum_buy"
-        style="@style/GreenEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_12"
+        android:hint="@string/product_label_minimum_buy"
         android:layout_marginRight="@dimen/dp_12"
-        android:hint="1"
-        android:imeOptions="actionDone"
-        android:inputType="number" />
+        android:layout_marginLeft="@dimen/dp_12">
+
+        <EditText
+            style="@style/EditText"
+            android:layout_width="match_parent"
+            android:imeOptions="actionDone"
+            android:inputType="number" />
+
+    </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -86,26 +83,21 @@
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16">
 
-        <LinearLayout
-            android:id="@+id/llMaksimumEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
+        <com.tokopedia.design.text.TkpdHintTextInputLayout
+            android:id="@+id/textInputLayoutMaksimumBuy"
+            style="@style/HintTextInputLayout"
+            android:hint="@string/product_label_maksimum_buy"
+            android:layout_marginRight="@dimen/dp_minus4"
+            android:layout_marginLeft="@dimen/dp_minus4"
             android:visibility="gone">
-            <android.support.v7.widget.AppCompatTextView
-                style="@style/TextView.Small.BlackSecondary"
-                android:text="@string/product_label_maksimum_buy" />
+
             <EditText
-                android:id="@+id/edit_text_maksimum_buy"
-                style="@style/GreenEditText"
+                style="@style/EditText"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_minus4"
-                android:layout_marginStart="@dimen/dp_minus4"
-                android:hint="1"
                 android:imeOptions="actionDone"
                 android:inputType="number" />
-        </LinearLayout>
+
+        </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
         <android.support.v7.widget.AppCompatTextView
             style="@style/TextView.Small.Green"

@@ -7,9 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.design.bottomsheet.BottomSheetView
 import com.tokopedia.product.edit.R
-import kotlinx.android.synthetic.main.fragment_product_add_price.*
+import kotlinx.android.synthetic.main.fragment_product_edit_price.*
 
-class ProductAddPriceFragment : Fragment() {
+class ProductEditPriceFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -17,7 +17,7 @@ class ProductAddPriceFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        return inflater.inflate(R.layout.fragment_product_add_price, container, false)
+        return inflater.inflate(R.layout.fragment_product_edit_price, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -34,7 +34,7 @@ class ProductAddPriceFragment : Fragment() {
         })
 
         textAddMaksimumBuy.setOnClickListener({
-            llMaksimumEditText.visibility = View.VISIBLE
+            textInputLayoutMaksimumBuy.visibility = View.VISIBLE
             textAddMaksimumBuy.visibility = View.GONE
         })
     }
@@ -42,7 +42,7 @@ class ProductAddPriceFragment : Fragment() {
     companion object {
 
         fun createInstance(): Fragment {
-            return ProductAddPriceFragment()
+            return ProductEditPriceFragment()
         }
     }
 }

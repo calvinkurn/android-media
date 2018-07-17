@@ -6,43 +6,43 @@
     android:orientation="vertical"
     android:background="@color/white">
 
-    <android.support.v7.widget.AppCompatTextView
+    <com.tokopedia.design.text.TkpdHintTextInputLayout
+        style="@style/HintTextInputLayout"
         android:layout_marginTop="@dimen/dp_16"
-        style="@style/TextView.Small.BlackSecondary"
-        android:text="@string/product_label_description_product"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16" />
-
-    <EditText
-        style="@style/GreenEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_12"
-        android:layout_marginRight="@dimen/dp_12"
         android:hint="@string/product_label_description_product"
-        android:imeOptions="actionDone" />
-
-    <android.support.v7.widget.AppCompatTextView
-        android:layout_marginTop="@dimen/dp_16"
-        style="@style/TextView.Small.BlackSecondary"
-        android:text="@string/product_label_feature_product"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16" />
-
-    <EditText
-        style="@style/GreenEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_12"
         android:layout_marginRight="@dimen/dp_12"
-        android:hint="@string/product_hint_feature_product"
-        android:imeOptions="actionDone" />
+        android:layout_marginLeft="@dimen/dp_12">
+
+        <EditText
+            style="@style/EditText"
+            android:layout_width="match_parent"
+            android:imeOptions="actionDone"
+            android:inputType="textMultiLine" />
+
+    </com.tokopedia.design.text.TkpdHintTextInputLayout>
+
+    <com.tokopedia.design.text.TkpdHintTextInputLayout
+        android:id="@+id/product_label_feature_product"
+        style="@style/HintTextInputLayout"
+        android:layout_marginTop="@dimen/dp_24"
+        android:hint="@string/product_label_feature_product"
+        android:layout_marginRight="@dimen/dp_12"
+        android:layout_marginLeft="@dimen/dp_12">
+
+        <EditText
+            style="@style/EditText"
+            android:hint="@string/product_hint_feature_product"
+            android:layout_width="match_parent"
+            android:imeOptions="actionDone"
+            android:inputType="textMultiLine" />
+
+    </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_24"
         android:gravity="center_vertical"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16" >
@@ -51,7 +51,7 @@
             android:layout_marginTop="@dimen/dp_16"
             android:layout_marginBottom="@dimen/dp_16"
             android:layout_weight="1"
-            style="@style/TextView.Title.BlackSecondary"
+            style="@style/TextView.Title"
             android:text="@string/product_label_condition_product" />
 
         <android.support.v7.widget.SwitchCompat

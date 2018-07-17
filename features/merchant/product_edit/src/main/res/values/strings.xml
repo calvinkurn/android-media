@@ -46,6 +46,13 @@
 
     <string name="product_grosir_not_available_if_has_variant">Harga grosir tidak berlaku jika memiliki varian produk.</string>
 
+    <string name="product_label_product_name">Nama Produk</string>
+    <string name="product_hint_product_name">Tulis Nama Produk</string>
+
+    <string name="product_label_product_brand">Merek</string>
+    <string name="product_hint_product_brand">Tulis Merek Produk</string>
+    <string name="product_helper_product_brand">Nama merek membantu pembeli mencari produk Anda</string>
+
     <string name="product_label_recommendation_price">Rekomendasi Harga Pasar Rp 1.150.000. Gunakan</string>
     <string name="product_label_product_price">Harga Produk</string>
     <string name="product_label_wholesale_price">Harga Grosir</string>
