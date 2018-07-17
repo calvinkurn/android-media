@@ -14,7 +14,7 @@ public class DealsUrl {
         String DEALS_BRAND = "v1/api/b";
         String DEALS_PRODUCT = "v1/api/p";
         String DEALS_LIKES = "v1/api/deal/rating";
-        String DEALS_LIKES_PRODUCT = "/v1/api/deal/rating/product";
+        String DEALS_LIKES_PRODUCT = "v1/api/deal/rating/product";
     }
 
 
