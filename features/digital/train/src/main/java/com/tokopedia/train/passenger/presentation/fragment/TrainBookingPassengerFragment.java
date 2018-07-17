@@ -10,6 +10,7 @@ import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,12 +26,12 @@ import com.tokopedia.train.common.di.utils.TrainComponentUtils;
 import com.tokopedia.train.common.util.TrainDateUtil;
 import com.tokopedia.train.passenger.di.DaggerTrainBookingPassengerComponent;
 import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
-import com.tokopedia.train.passenger.presentation.adapter.TrainFullDividerItemDecoration;
 import com.tokopedia.train.passenger.presentation.activity.TrainBookingAddPassengerActivity;
 import com.tokopedia.train.passenger.presentation.activity.TrainBookingPassengerActivity;
 import com.tokopedia.train.passenger.presentation.adapter.TrainBookingPassengerAdapter;
 import com.tokopedia.train.passenger.presentation.adapter.TrainBookingPassengerAdapterListener;
 import com.tokopedia.train.passenger.presentation.adapter.TrainBookingPassengerAdapterTypeFactory;
+import com.tokopedia.train.passenger.presentation.adapter.TrainFullDividerItemDecoration;
 import com.tokopedia.train.passenger.presentation.contract.TrainBookingPassengerContract;
 import com.tokopedia.train.passenger.presentation.presenter.TrainBookingPassengerPresenter;
 import com.tokopedia.train.passenger.presentation.viewmodel.ProfileBuyerInfo;
@@ -110,12 +111,13 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
 
         if (savedInstanceState == null) {
             trainParamPassenger = new TrainParamPassenger();
-            trainParamPassenger.setCheckedSameAsBuyer(true);
             initializedDataPassenger();
+            trainParamPassenger.setCheckedSameAsBuyer(true);
         } else {
             trainParamPassenger = savedInstanceState.getParcelable(TRAIN_PARAM_PASSENGER);
             renderPassengers(trainParamPassenger.getTrainPassengerViewModelList());
         }
+
     }
 
     @Override
@@ -133,8 +135,10 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
                         presenter.wrapPassengerSameAsBuyer();
                     }
                 } else {
-                    adapter.clearElement(buyerViewModel);
-                    presenter.removePassengerSameAsBuyer();
+                    if (!TextUtils.isEmpty(getCurrentPassengerList().get(0).getName())) {
+                        adapter.clearElement(buyerViewModel);
+                        presenter.removePassengerSameAsBuyer();
+                    }
                     trainParamPassenger.setCheckedSameAsBuyer(true);
                 }
             }
@@ -320,6 +324,7 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
     public void loadPassengerSameAsBuyer(TrainPassengerViewModel trainPassengerViewModel) {
         buyerViewModel = trainPassengerViewModel;
         trainParamPassenger.setCheckedSameAsBuyer(false);
+        sameAsBuyerCheckbox.setChecked(false);
         startActivityForResult(TrainBookingAddPassengerActivity.callingIntent(getActivity(), trainPassengerViewModel), ADD_PASSENGER_REQUEST_CODE);
     }
 
@@ -364,6 +369,10 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
         if (requestCode == ADD_PASSENGER_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             TrainPassengerViewModel trainPassengerViewModel = data.getParcelableExtra(TrainBookingAddPassengerActivity.PASSENGER_DATA);
             presenter.updateDataPassengers(trainPassengerViewModel);
+
+            if (!trainParamPassenger.isCheckedSameAsBuyer() && trainPassengerViewModel.getPassengerId() == 1) {
+                sameAsBuyerCheckbox.setChecked(true);
+            }
         }
     }
 }
