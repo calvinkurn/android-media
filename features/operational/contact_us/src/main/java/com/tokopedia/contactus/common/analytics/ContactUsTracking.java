@@ -54,15 +54,6 @@ public class ContactUsTracking extends UnifyTracking {
         ).getEvent());
     }
 
-    public static void eventListInvoiceClick(String action, String label) {
-        sendGTMEvent(new EventTracking(
-                ContactUsEventTracking.Event.GenericClickBantuanEvent,
-                ContactUsEventTracking.Category.EventNewBantuan,
-                String.format(ContactUsEventTracking.Action.EventClickInvoice, action),
-                String.format(ContactUsEventTracking.Label.LabelFormList, label)
-        ).getEvent());
-    }
-
     public static void eventHomeHubungiKamiClick() {
         sendGTMEvent(new EventTracking(
                 ContactUsEventTracking.Event.GenericClickBantuanEvent,
@@ -96,6 +87,15 @@ public class ContactUsTracking extends UnifyTracking {
                 ContactUsEventTracking.Category.EventNewBantuan,
                 String.format(ContactUsEventTracking.Action.EventClickTicket, action),
                 ContactUsEventTracking.Label.LabelSubmitTicket
+        ).getEvent());
+    }
+
+    public static void eventChatBotOkClick(String label) {
+        sendGTMEvent(new EventTracking(
+                ContactUsEventTracking.Event.GenericClickBantuanEvent,
+                ContactUsEventTracking.Category.EventNewBantuan,
+                ContactUsEventTracking.Action.EventClickChatBot,
+                String.format(ContactUsEventTracking.Label.LabelGeneric, label)
         ).getEvent());
     }
 }

@@ -21,7 +21,7 @@ public class ContactUsEventTracking implements AppEventTracking {
         String EventClickLihat = "Click Lihat Selengkapnya %s";
         String EventClickInvoice = "Click Invoice - %s";
         String EventClickHubungi = "Click Hubungi Kami";
-
+        String EventClickChatBot = "Click Chat dengan Bot";
     }
 
     interface Label {

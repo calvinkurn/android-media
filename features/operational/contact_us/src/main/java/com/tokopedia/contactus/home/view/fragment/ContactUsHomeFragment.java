@@ -213,6 +213,7 @@ public class ContactUsHomeFragment extends BaseDaggerFragment
 
     @OnClick(R2.id.btn_chat_toped)
     public void onBtnChatClicked() {
+        ContactUsTracking.eventChatBotOkClick("");
         startActivity(((ContactUsModuleRouter)(getContext().getApplicationContext()))
                 .getChatBotIntent(getContext(),msgId));
     }
