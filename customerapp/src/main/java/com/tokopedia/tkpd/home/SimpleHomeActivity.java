@@ -22,6 +22,7 @@ import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.fragment.ProductHistoryFragment;
 import com.tokopedia.tkpd.home.fragment.WishListFragment;
@@ -83,6 +84,7 @@ public class SimpleHomeActivity extends TActivity
         }
         setContentView(R.layout.activity_simple_home);
         initToolbar();
+        initGraphqlLib();
 
         supportFragmentManager = getSupportFragmentManager();
         supportFragmentManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
@@ -99,6 +101,10 @@ public class SimpleHomeActivity extends TActivity
         simpleHome.fetchExtras(getIntent());
         simpleHome.fetchDataAfterRotate(savedInstanceState);
 
+    }
+
+    private void initGraphqlLib() {
+        GraphqlClient.init(this);
     }
 
     @Override

@@ -1,35 +1,58 @@
 query wishlist($user_id: Int, $page: Int, $count: Int){
   wishlist(user_id: $user_id, page: $page, count: $count){
-    count
-    total_data
-    has_next_page
-    items{
-      id
-      name
-      url
-      image_url
-      raw_price
-      price
-      prev_price
-      available
-      status
-      condition
-      preorder
-      rating
-      review_count
-      minimum_order
-      shop {
+
+      count
+      has_next_page
+      total_data
+      items {
         id
-        shop_name
-        shop_url
         name
         url
-        location
-        official_store
-        gold_merchant
+        image
+        price
+        price_formatted
+        prev_price
+        minimum_order
+        wholesale_price {
+          minimum
+          maximum
+          price
+        }
+        condition
+        shop {
+          id
+          name
+          url
+          reputation {
+            score
+            set
+            level
+            image
+          }
+          official_store
+          gold_merchant
+          status
+          location
+        }
+        badges {
+          title
+          image_url
+        }
+        labels {
+          title
+          color
+        }
+        available
         status
+        preorder
+        rating
+        review_count
+        wishlist
+        default_child_id
+        is_ncf
       }
-      wishlist
-    }
+      pagination {
+        next_url
+      }
   }
 }

@@ -16,6 +16,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.CacheDuration;
 import com.tokopedia.core.network.apiservices.mojito.MojitoAuthService;
 import com.tokopedia.core.network.apiservices.mojito.MojitoService;
+import com.tokopedia.core.network.entity.wishlist.GqlWishListDataResponse;
 import com.tokopedia.core.network.entity.wishlist.Pagination;
 import com.tokopedia.core.network.entity.wishlist.Wishlist;
 import com.tokopedia.core.network.entity.wishlist.WishlistData;
@@ -68,9 +69,9 @@ import rx.subscriptions.CompositeSubscription;
  */
 public class WishListImpl implements WishList {
     private static final String TAG = WishListImpl.class.getSimpleName();
-    private static final String PARAM_USER_ID = "user_id";
-    private static final String PAGE_NO = "page";
-    private static final String ITEM_COUNT = "count";
+    public static final String PARAM_USER_ID = "user_id";
+    public static final String PAGE_NO = "page";
+    public static final String ITEM_COUNT = "count";
     WishListView wishListView;
 
     List<RecyclerViewItem> data = new ArrayList<>();
@@ -207,27 +208,6 @@ public class WishListImpl implements WishList {
     @Override
     public void fetchDataFromInternet(final Context context) {
 
-        Map<String, Object> variables = new HashMap<>();
-
-        variables.put(PARAM_USER_ID, Integer.parseInt(SessionHandler.getLoginID(context)));
-        variables.put(PAGE_NO, mPaging.getPage());
-        variables.put(ITEM_COUNT, 10);
-
-        GraphqlRequest graphqlRequest = new GraphqlRequest(
-                GraphqlHelper.loadRawString(context.getResources(), R.raw.query_get_wishlist),
-                WishlistData.class,
-                variables);
-
-        List<GraphqlRequest> graphqlRequestList = new ArrayList<>();
-        graphqlRequestList.add(graphqlRequest);
-
-        GraphqlCacheStrategy graphqlCacheStrategy =
-                new GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build();
-
-        Observable<GraphqlResponse> observable = ObservableFactory.create(graphqlRequestList,
-                graphqlCacheStrategy);
-
-
         Subscriber<GraphqlResponse> subscriber = new Subscriber<GraphqlResponse>() {
             @Override
             public void onCompleted() {
@@ -244,65 +224,59 @@ public class WishListImpl implements WishList {
 
             @Override
             public void onNext(GraphqlResponse graphqlResponse) {
-                if (graphqlResponse != null) {
-                    WishlistData wishlistData = graphqlResponse.getData(WishlistData.class);
-                    setData(wishlistData);
+                if (graphqlResponse != null && graphqlResponse.getData(GqlWishListDataResponse.class) != null) {
+                    GqlWishListDataResponse gqlWishListDataResponse = graphqlResponse.getData(GqlWishListDataResponse.class);
+                    setData(gqlWishListDataResponse.getGqlWishList());
                 } else {
                     setData();
                 }
-//                setData(response.body());
             }
         };
+
+        getWishListData(context, subscriber);
+    }
+
+    private void getWishListData(Context context, Subscriber subscriber) {
+
+        Map<String, Object> variables = new HashMap<>();
+
+        variables.put(PARAM_USER_ID, Integer.parseInt(SessionHandler.getLoginID(context)));
+        variables.put(PAGE_NO, mPaging.getPage());
+        variables.put(ITEM_COUNT, 10);
+
+        GraphqlRequest graphqlRequest = new GraphqlRequest(
+                GraphqlHelper.loadRawString(context.getResources(), R.raw.query_get_wishlist),
+                GqlWishListDataResponse.class,
+                variables);
+
+        List<GraphqlRequest> graphqlRequestList = new ArrayList<>();
+        graphqlRequestList.add(graphqlRequest);
+
+        GraphqlCacheStrategy graphqlCacheStrategy =
+                new GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build();
+
+        Observable<GraphqlResponse> observable = ObservableFactory.create(graphqlRequestList,
+                graphqlCacheStrategy);
+
 
         compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(subscriber));
 
-       /* Observable<Response<WishlistData>> observable = mojitoAuthService.getApi().getWishlist(
-                SessionHandler.getLoginID(context),
-                10,
-                mPaging.getPage()
-        );
-
-        Subscriber<Response<WishlistData>> subscriber = new Subscriber<Response<WishlistData>>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (mPaging.getPage() == 1 && wishListView.isPullToRefresh()) {
-                    wishListView.displayPull(false);
-                }
-                wishListView.displayErrorNetwork(false);
-            }
-
-            @Override
-            public void onNext(Response<WishlistData> response) {
-                setData(response.body());
-            }
-        };
-
-        compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
-                .unsubscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(subscriber));*/
-
     }
 
     @Override
-    public void setData(com.tokopedia.core.network.entity.wishlist.WishlistData wishlistData) {
+    public void setData(GqlWishListDataResponse.GqlWishList wishlistData) {
         if (mPaging.getPage() == 1) {
             data.clear();
-            if (wishlistData.getWishlist().size() == 0)
+            if (wishlistData.getWishlistDataList().size() == 0)
                 wishListView.setSearchNotFound();
         }
         wishListView.displayPull(false);
-        dataWishlist.addAll(wishlistData.getWishlist());
-        data.addAll(convertToProductItemList(wishlistData.getWishlist()));
-        mPaging.setPagination(wishlistData.getPaging());
+        dataWishlist.addAll(wishlistData.getWishlistDataList());
+        data.addAll(convertToProductItemList(wishlistData.getWishlistDataList()));
+        mPaging.setPagination(wishlistData.getPagination());
 
         if (mPaging.CheckNextPage()) {
             wishListView.displayLoadMore(true);
@@ -418,11 +392,6 @@ public class WishListImpl implements WishList {
     public void fetchDataAfterClearSearch(Context context) {
         mPaging.resetPage();
         params = RequestParams.create();
-        Observable<Response<WishlistData>> observable = mojitoAuthService.getApi().getWishlist(
-                SessionHandler.getLoginID(context),
-                10,
-                mPaging.getPage()
-        );
 
         Subscriber<Response<WishlistData>> subscriber = new Subscriber<Response<WishlistData>>() {
             @Override
@@ -460,10 +429,7 @@ public class WishListImpl implements WishList {
             }
         };
 
-        compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
-                .unsubscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(subscriber));
+        getWishListData(context, subscriber);
     }
 
     @Override
