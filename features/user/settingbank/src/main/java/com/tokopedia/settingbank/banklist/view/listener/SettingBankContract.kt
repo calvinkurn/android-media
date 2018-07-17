@@ -25,18 +25,20 @@ interface SettingBankContract {
 
         fun onSuccessSetDefault(adapterPosition: Int, statusMessage: String)
 
-        fun onSuccessDeleteAccount(adapterPosition: Int, statusMessage: String)
+        fun onSuccessDeleteAccount(adapterPosition: Int)
 
         fun onErrorSetDefaultBank(errorMessage: String)
 
         fun onErrorDeleteAccount(errorMessage: String)
 
-        fun onEmptyList()
+        fun onEmptyList(enableAddButton: Boolean, reason: String)
 
         fun showLoadingDialog()
 
         fun hideLoadingDialog()
+
         fun showLoadingList()
+
         fun hideLoadingList()
 
         fun onErrorGetListBank(errorMessage: String)

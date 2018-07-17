@@ -1,6 +1,8 @@
 package com.tokopedia.settingbank.addeditaccount.view.listener
 
 import android.content.Context
+import android.content.Intent
+import android.support.v4.app.FragmentActivity
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.settingbank.addeditaccount.view.viewmodel.BankFormModel
@@ -28,6 +30,14 @@ interface AddEditBankContract {
 
         fun onErrorGeneral(errorMessage: String?)
 
+        fun onGoToCOTP()
+
+        fun onCloseForm()
+
+        fun onErrorAddBank(errorMessage: String)
+
+        fun onErrorEditBank(errorMessage: String)
+
     }
 
     interface Presenter : CustomerPresenter<View> {
@@ -37,6 +47,10 @@ interface AddEditBankContract {
         fun editBank(bankFormModel: BankFormModel)
 
         fun isValidForm(accountName: String, accountNumber: String, bankName: String): Boolean
+
+        fun validateBank(bankFormModel: BankFormModel)
+
+        fun getCotpIntent(context: Context?): Intent
 
 
     }

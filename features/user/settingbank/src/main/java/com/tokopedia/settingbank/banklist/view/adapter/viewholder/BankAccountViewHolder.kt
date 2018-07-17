@@ -45,7 +45,7 @@ class BankAccountViewHolder(val v: View, val listener: BankAccountPopupListener)
             accountName.text = MethodChecker.fromHtml(element.accountName)
             accountNumber.text = element.accountNumber
 
-            if (element.isDefaultBank) {
+            if (element.isDefaultBank != null && element.isDefaultBank!!) {
                 mainAccount.visibility = View.VISIBLE
             } else {
                 mainAccount.visibility = View.GONE
@@ -109,7 +109,7 @@ class BankAccountViewHolder(val v: View, val listener: BankAccountPopupListener)
 
             popupMenu.menu.clear()
 
-            if (!element.isDefaultBank) {
+            if (element.isDefaultBank != null && !element.isDefaultBank!!) {
                 popupMenu.menu.add(1, MENU_MAKE_DEFAULT, 1, MainApplication.getAppContext()
                         .getString(R.string.menu_make_main_account))
             }

@@ -1,10 +1,8 @@
 package com.tokopedia.settingbank.banklist.domain.mapper
 
-import com.tkpd.library.utils.network.MessageErrorException
-import com.tokopedia.abstraction.common.data.model.response.ResponseV4ErrorException
+import com.tokopedia.abstraction.common.data.model.response.DataResponse
 import com.tokopedia.settingbank.banklist.domain.pojo.BankAccount
 import com.tokopedia.settingbank.banklist.domain.pojo.BankAccountListPojo
-import com.tokopedia.settingbank.banklist.domain.pojo.GetListBankAccountData
 import com.tokopedia.settingbank.banklist.view.viewmodel.BankAccountListViewModel
 import com.tokopedia.settingbank.banklist.view.viewmodel.BankAccountViewModel
 import retrofit2.Response
@@ -13,42 +11,30 @@ import rx.functions.Func1
 /**
  * @author by nisie on 6/8/18.
  */
-class GetBankAccountListMapper : Func1<Response<BankAccountListPojo>,
+class GetBankAccountListMapper : Func1<Response<DataResponse<BankAccountListPojo>>,
         BankAccountListViewModel> {
 
 
-    override fun call(response: Response<BankAccountListPojo>): BankAccountListViewModel {
-        var messageError: String
-
-        if (response.isSuccessful) {
-
-            val pojo: BankAccountListPojo = response.body().copy()
-
-            if (pojo.data != null
-                    && pojo.message_error?.isEmpty()!!) {
-
-                return mapToViewModel(pojo)
-
-            } else if (pojo.message_error?.isNotEmpty()!!) {
-                throw ResponseV4ErrorException(response.body().message_error)
-            } else {
-                throw MessageErrorException("")
-            }
-
-        } else {
-            messageError = response.code().toString()
-            throw RuntimeException(messageError)
-        }
+    override fun call(response: Response<DataResponse<BankAccountListPojo>>):
+            BankAccountListViewModel {
+        val pojo: BankAccountListPojo = response.body().data
+        return mapToViewModel(pojo)
 
     }
 
     private fun mapToViewModel(pojo: BankAccountListPojo): BankAccountListViewModel {
         return BankAccountListViewModel(
-                mapToList(pojo.data)
+                mapToList(pojo),
+                checkEnableButton(pojo),
+                pojo.user_info.messages ?: ""
         )
     }
 
-    private fun mapToList(data: GetListBankAccountData?): ArrayList<BankAccountViewModel>? {
+    private fun checkEnableButton(data: BankAccountListPojo?): Boolean {
+        return if (data?.user_info?.is_verified != null) data.user_info.is_verified else false
+    }
+
+    private fun mapToList(data: BankAccountListPojo?): ArrayList<BankAccountViewModel>? {
         val accountBankList: ArrayList<BankAccountViewModel> = ArrayList()
 
         for (bankAccount in data?.bank_accounts!!) {
@@ -58,17 +44,15 @@ class GetBankAccountListMapper : Func1<Response<BankAccountListPojo>,
     }
 
     private fun mapToBankAccountViewModel(bankAccount: BankAccount): BankAccountViewModel {
-        val IS_TRUE = 1
         return BankAccountViewModel(
                 bankAccount.bank_account_id,
-                bankAccount.bank_branch,
-                bankAccount.bank_account_name,
-                bankAccount.bank_account_number,
-                bankAccount.is_verified_account == IS_TRUE,
+                bankAccount.branch,
+                bankAccount.acc_name,
+                bankAccount.acc_number,
                 bankAccount.bank_account_id,
                 bankAccount.bank_name,
-                bankAccount.is_default_bank == IS_TRUE,
-                bankAccount.bank_logo
+                bankAccount.primary,
+                bankAccount.bank_image_url
         )
     }
 

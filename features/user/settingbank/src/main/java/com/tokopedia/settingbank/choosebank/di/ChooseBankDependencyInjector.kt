@@ -5,7 +5,9 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.readystatesoftware.chuck.ChuckInterceptor
 import com.tokopedia.abstraction.AbstractionRouter
+import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse
 import com.tokopedia.abstraction.common.network.interceptor.DebugInterceptor
+import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
@@ -84,8 +86,12 @@ class ChooseBankDependencyInjector {
                 builder.addInterceptor(httpLoggingInterceptor)
             }
 
+            val headerResponseInterceptor =
+                    HeaderErrorResponseInterceptor(HeaderErrorListResponse::class.java)
+
             builder.addInterceptor(fingerprintInterceptor)
             builder.addInterceptor(tkpdAuthInterceptor)
+            builder.addInterceptor(headerResponseInterceptor)
 
             val okHttpClient: OkHttpClient = builder.build()
 

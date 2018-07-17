@@ -10,19 +10,13 @@ data class BankListPojo(
 )
 
 data class GetListBankData(
-        val paging: PagingModel? = PagingModel(),
-        val list: List<BankAccount> = ArrayList()
-)
-
-data class PagingModel(
-        val uri_next: String? = "",
-        val uri_previous: String? = "",
-        val current: String? = ""
+        val has_next_page: Boolean? = false,
+        val banks: List<BankAccount> = ArrayList()
 )
 
 data class BankAccount(
         val bank_id: String? = "",
         val bank_name: String? = "",
-        val bank_clearing_code: String? = "",
-        val bank_abbreviation: String? = ""
+        val clearing_code: String? = "",
+        val abbreviation: String? = ""
 )

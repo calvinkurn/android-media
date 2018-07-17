@@ -1,0 +1,46 @@
+package com.tokopedia.settingbank.addeditaccount.domain.usecase
+
+import com.tokopedia.settingbank.addeditaccount.domain.mapper.ValidateBankMapper
+import com.tokopedia.settingbank.addeditaccount.view.viewmodel.ValidateBankViewModel
+import com.tokopedia.settingbank.banklist.data.SettingBankApi
+import com.tokopedia.usecase.RequestParams
+import com.tokopedia.usecase.UseCase
+import rx.Observable
+
+/**
+ * @author by nisie on 7/13/18.
+ */
+
+class ValidateBankUseCase(val api: SettingBankApi,
+                          val mapper: ValidateBankMapper) : UseCase<ValidateBankViewModel>() {
+
+    override fun createObservable(requestParams: RequestParams): Observable<ValidateBankViewModel> {
+
+        return api.validateBankAccount(requestParams.parameters).map(mapper)
+    }
+
+    companion object {
+
+        private val PARAM_ACCOUNT_ID = "account_id"
+        private val PARAM_ACCOUNT_NAME = "acc_name"
+        private val PARAM_ACCOUNT_NUMBER = "acc_no"
+        private val PARAM_BANK_ID = "bank_id"
+
+        fun getParamEdit(
+                accountId: String,
+                accountName: String,
+                accountNumber: String,
+                bankId: String): RequestParams {
+
+            val requestParams: RequestParams = RequestParams.create()
+
+            if (!accountId.isEmpty()) requestParams.putString(PARAM_ACCOUNT_ID, accountId)
+            requestParams.putString(PARAM_ACCOUNT_NAME, accountName)
+            requestParams.putString(PARAM_ACCOUNT_NUMBER, accountNumber)
+            requestParams.putString(PARAM_BANK_ID, bankId)
+
+            return requestParams
+        }
+    }
+
+}

@@ -13,9 +13,9 @@ import java.util.*
  */
 
 class DeleteBankAccountUseCase(val api: SettingBankApi,
-                               val mapper: DeleteBankAccountMapper) : UseCase<String>() {
+                               val mapper: DeleteBankAccountMapper) : UseCase<Boolean>() {
 
-    override fun createObservable(requestParams: RequestParams): Observable<String> {
+    override fun createObservable(requestParams: RequestParams): Observable<Boolean> {
 
         return api.deleteBank(requestParams.parameters).map(mapper)
     }

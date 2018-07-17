@@ -41,16 +41,18 @@ class GetBankListWSMapper : Func1<Response<BankListPojo>,
 
     private fun mapToViewModel(pojo: BankListPojo): BankListViewModel {
         val listBank = ArrayList<BankViewModel>()
-        for (data: BankAccount in pojo.data!!.list) {
+        for (data: BankAccount in pojo.data!!.banks) {
             listBank.add(BankViewModel(
                     data.bank_id,
                     data.bank_name,
                     false
             ))
         }
-        return BankListViewModel(listBank,
-                !pojo.data.paging!!.uri_next.isNullOrBlank()
-                        && !pojo.data.paging.uri_next.equals("0"))
+        return BankListViewModel(listBank, hasNextPage(pojo))
+    }
+
+    private fun hasNextPage(pojo: BankListPojo): Boolean {
+        return pojo.data?.has_next_page != null && pojo.data.has_next_page
     }
 
 }

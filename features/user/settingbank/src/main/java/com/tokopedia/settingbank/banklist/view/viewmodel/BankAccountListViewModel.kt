@@ -5,5 +5,7 @@ package com.tokopedia.settingbank.banklist.view.viewmodel
  */
 
 data class BankAccountListViewModel(
-        val list: ArrayList<BankAccountViewModel>? = ArrayList()
+        val list: ArrayList<BankAccountViewModel>? = ArrayList(),
+        val enableAddButton: Boolean = false,
+        val reason: String = ""
 )

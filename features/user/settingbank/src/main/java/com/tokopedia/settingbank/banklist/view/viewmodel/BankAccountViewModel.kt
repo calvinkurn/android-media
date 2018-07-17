@@ -12,15 +12,13 @@ data class BankAccountViewModel(
         var branchName: String? = "",
         var accountName: String? = "",
         var accountNumber: String? = "",
-        var isVerifiedAccount: Boolean = false,
         var accountId: String? = "",
         var bankName: String? = "",
-        var isDefaultBank: Boolean = false,
+        var isDefaultBank: Boolean? = false,
         var bankLogo: String? = "")
     : Visitable<BankAccountTypeFactory> {
     override fun type(typeFactory: BankAccountTypeFactory): Int {
         return typeFactory.type(this)
     }
-
 
 }

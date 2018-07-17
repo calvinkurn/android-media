@@ -4,14 +4,9 @@ package com.tokopedia.settingbank.banklist.domain.pojo
  * @author by nisie on 6/8/18.
  */
 data class BankAccountListPojo(
-        val data: GetListBankAccountData? = null,
-        val message_error: List<String>? = ArrayList(),
-        val message_status: List<String>? = ArrayList()
-)
-
-data class GetListBankAccountData(
         val paging: PagingModel? = PagingModel(),
-        val bank_accounts: List<BankAccount> = ArrayList()
+        val bank_accounts: List<BankAccount> = ArrayList(),
+        val user_info: UserInfo = UserInfo()
 )
 
 data class PagingModel(
@@ -21,15 +16,19 @@ data class PagingModel(
 )
 
 data class BankAccount(
-        val bank_id: Int = 0,
-        val bank_branch: String? = "",
-        val bank_account_name: String? = "",
-        val bank_account_number: String? = "",
-        val is_verified_account: Int = 0,
-        val bank_account_id: String? = "",
+        val bank_id: Int? = 0,
+        val acc_id: Int? = 0,
+        val acc_name: String? = "",
+        val branch: String? = "",
         val bank_name: String? = "",
-        val is_default_bank: Int = 0,
-        val bank_logo: String? = ""
+        val acc_number: String? = "",
+        val bank_account_id: String? = "",
+        val primary: Boolean? = false,
+        val bank_image_url: String? = "",
+        val type: Int? = 0
 )
 
-
+data class UserInfo(
+        val is_verified: Boolean? = false,
+        val messages: String? = ""
+)

@@ -9,32 +9,13 @@ import rx.functions.Func1
 /**
  * @author by nisie on 6/20/18.
  */
-class DeleteBankAccountMapper : Func1<Response<DeleteBankAccountPojo>, String> {
+class DeleteBankAccountMapper : Func1<Response<DeleteBankAccountPojo>, Boolean> {
 
-    override fun call(response: Response<DeleteBankAccountPojo>): String {
-        var messageError: String
+    override fun call(response: Response<DeleteBankAccountPojo>): Boolean {
 
-        if (response.isSuccessful) {
+        val pojo: DeleteBankAccountPojo = response.body().copy()
+        return pojo.is_success ?: false
 
-            val pojo: DeleteBankAccountPojo = response.body().copy()
-
-            if (pojo.data != null
-                    && pojo.message_error?.isEmpty()!!
-                    && !pojo.message_status?.isEmpty()!!) {
-
-                return pojo.message_status[0]
-
-            } else if (pojo.message_error?.isNotEmpty()!!) {
-                throw ResponseV4ErrorException(response.body().message_error)
-            } else {
-                throw MessageErrorException("")
-            }
-
-        } else {
-            messageError = response.code().toString()
-            throw RuntimeException(messageError)
-        }
     }
-
 
 }

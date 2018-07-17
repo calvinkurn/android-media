@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.design.component.Dialog
+import com.tokopedia.design.component.ToasterError
 import com.tokopedia.settingbank.R
 import com.tokopedia.settingbank.addeditaccount.view.activity.AddEditBankActivity
 import com.tokopedia.settingbank.addeditaccount.view.viewmodel.BankFormModel
@@ -26,7 +27,6 @@ import com.tokopedia.settingbank.banklist.view.listener.SettingBankContract
 import com.tokopedia.settingbank.banklist.view.presenter.SettingBankPresenter
 import com.tokopedia.settingbank.banklist.view.viewmodel.BankAccountListViewModel
 import com.tokopedia.settingbank.banklist.view.viewmodel.BankAccountViewModel
-import com.tokopedia.settingbank.choosebank.view.activity.ChooseBankActivity
 import kotlinx.android.synthetic.main.fragment_setting_bank.*
 
 /**
@@ -44,6 +44,9 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
     lateinit var alertDialog: Dialog
     lateinit var linearLayoutManager: LinearLayoutManager
     lateinit var progressDialog: TkpdProgressDialog
+
+    private var enableAddButton = false
+    private var reason = ""
 
     companion object {
 
@@ -100,7 +103,7 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
     }
 
     override fun onErrorGetListBankFirstTime(errorMessage: String) {
-        NetworkErrorHelper.showEmptyState(activity, view) {
+        NetworkErrorHelper.showEmptyState(activity, view, errorMessage) {
             getBankList()
         }
     }
@@ -114,9 +117,26 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
         adapter.addList(bankAccountList.list!!)
         account_list_rv.visibility = View.VISIBLE
         add_account_button.visibility = View.VISIBLE
+
+        enableAddButton = bankAccountList.enableAddButton
+        reason = bankAccountList.reason
+
     }
 
-    override fun onEmptyList() {
+    private fun showErrorAddAccount(reason: String) {
+        var errorMessage = reason
+        if (errorMessage.isEmpty()) {
+            errorMessage = activity.getString(R.string.default_request_error_unknown)
+        }
+        ToasterError.make(view, errorMessage, 5000)
+                .setAction(activity.getString(R.string.close)) { }
+                .show()
+    }
+
+    override fun onEmptyList(enableAddButton: Boolean, reason: String) {
+        this.enableAddButton = enableAddButton
+        this.reason = reason
+
         adapter.showEmpty()
         account_list_rv.visibility = View.VISIBLE
         add_account_button.visibility = View.GONE
@@ -172,6 +192,7 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
                     , BankFormModel(
                     BankFormModel.Companion.STATUS_EDIT,
                     element.bankId!!,
+                    element.accountId!!,
                     element.accountName!!,
                     element.accountNumber!!,
                     element.bankName!!,
@@ -212,23 +233,34 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
         }
     }
 
-    override fun onSuccessDeleteAccount(adapterPosition: Int, statusMessage: String) {
+    override fun onSuccessDeleteAccount(adapterPosition: Int) {
+        this.enableAddButton = true
+        this.reason = ""
+
         adapter.remove(adapterPosition)
         if (adapter.getList()!!.size > 0) {
             adapter.setMain(0)
         } else {
-            onEmptyList()
+            onEmptyList(true, "")
         }
     }
 
     override fun onErrorDeleteAccount(errorMessage: String) {
-        NetworkErrorHelper.showSnackbar(activity, errorMessage)
+
+        if (errorMessage.isNullOrEmpty())
+            NetworkErrorHelper.showSnackbar(activity)
+        else
+            NetworkErrorHelper.showSnackbar(activity, errorMessage)
     }
 
 
     override fun addNewAccount() {
-        val intentBankForm = AddEditBankActivity.createIntentAddBank(activity)
-        startActivityForResult(intentBankForm, REQUEST_ADD_BANK)
+        if (enableAddButton) {
+            val intentBankForm = AddEditBankActivity.createIntentAddBank(activity)
+            startActivityForResult(intentBankForm, REQUEST_ADD_BANK)
+        } else {
+            showErrorAddAccount(reason)
+        }
     }
 
     override fun showLoadingFull() {

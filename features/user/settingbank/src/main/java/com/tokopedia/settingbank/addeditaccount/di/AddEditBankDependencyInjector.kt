@@ -5,7 +5,10 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.readystatesoftware.chuck.ChuckInterceptor
 import com.tokopedia.abstraction.AbstractionRouter
+import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse
+import com.tokopedia.abstraction.common.network.exception.HeaderErrorResponse
 import com.tokopedia.abstraction.common.network.interceptor.DebugInterceptor
+import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.core.network.retrofit.coverters.GeneratedHostConverter
@@ -14,8 +17,10 @@ import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor
 import com.tokopedia.settingbank.addeditaccount.domain.mapper.AddBankMapper
 import com.tokopedia.settingbank.addeditaccount.domain.mapper.EditBankMapper
+import com.tokopedia.settingbank.addeditaccount.domain.mapper.ValidateBankMapper
 import com.tokopedia.settingbank.addeditaccount.domain.usecase.AddBankUseCase
 import com.tokopedia.settingbank.addeditaccount.domain.usecase.EditBankUseCase
+import com.tokopedia.settingbank.addeditaccount.domain.usecase.ValidateBankUseCase
 import com.tokopedia.settingbank.addeditaccount.view.presenter.AddEditBankPresenter
 import com.tokopedia.settingbank.banklist.data.SettingBankApi
 import com.tokopedia.settingbank.banklist.data.SettingBankUrl
@@ -81,8 +86,12 @@ class AddEditBankDependencyInjector {
                 builder.addInterceptor(httpLoggingInterceptor)
             }
 
+            val headerResponseInterceptor =
+                    HeaderErrorResponseInterceptor(HeaderErrorListResponse::class.java)
+
             builder.addInterceptor(fingerprintInterceptor)
             builder.addInterceptor(tkpdAuthInterceptor)
+            builder.addInterceptor(headerResponseInterceptor)
 
             val okHttpClient: OkHttpClient = builder.build()
 
@@ -100,7 +109,11 @@ class AddEditBankDependencyInjector {
 
             val editBankUseCase = EditBankUseCase(settingBankApi, editBankMapper)
 
-            return AddEditBankPresenter(session, addBankUseCase, editBankUseCase)
+            val validateBankMapper = ValidateBankMapper()
+
+            val validateBankUserCase = ValidateBankUseCase(settingBankApi, validateBankMapper)
+
+            return AddEditBankPresenter(session, addBankUseCase, editBankUseCase, validateBankUserCase)
         }
     }
 }

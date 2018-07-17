@@ -33,7 +33,9 @@ import kotlinx.android.synthetic.main.fragment_add_edit_bank_form.*
 class AddEditBankFormFragment : AddEditBankContract.View,
         BaseDaggerFragment() {
 
-    private val REQUEST_CHOOSE_BANK: Int = 101
+    private val REQUEST_CHOOSE_BANK_FIRST_TIME: Int = 101
+    private val REQUEST_CHOOSE_BANK: Int = 102
+    private val REQUEST_OTP: Int = 103
 
     lateinit var presenter: AddEditBankPresenter
     lateinit var progressDialog: TkpdProgressDialog
@@ -41,10 +43,10 @@ class AddEditBankFormFragment : AddEditBankContract.View,
     private var bankFormModel = BankFormModel()
 
     override fun getScreenName(): String {
-        if (activity.intent.getStringExtra(AddEditBankActivity.Companion.PARAM_ACTION) == BankFormModel.Companion.STATUS_ADD) {
-            return AddEditBankAnalytics.SCREEN_NAME_ADD
+        return if (activity.intent.getStringExtra(AddEditBankActivity.Companion.PARAM_ACTION) == BankFormModel.Companion.STATUS_ADD) {
+            AddEditBankAnalytics.SCREEN_NAME_ADD
         } else {
-            return AddEditBankAnalytics.SCREEN_NAME_EDIT
+            AddEditBankAnalytics.SCREEN_NAME_EDIT
         }
     }
 
@@ -66,10 +68,7 @@ class AddEditBankFormFragment : AddEditBankContract.View,
         submit_button.setOnClickListener({
             setupBankFormModel()
             if (!bankFormModel.status.isBlank()) {
-                if (bankFormModel.status == BankFormModel.Companion.STATUS_ADD)
-                    presenter.addBank(bankFormModel)
-                else
-                    presenter.editBank(bankFormModel)
+                presenter.validateBank(bankFormModel)
             }
         })
 
@@ -117,9 +116,14 @@ class AddEditBankFormFragment : AddEditBankContract.View,
         startActivityForResult(intentChooseBank, REQUEST_CHOOSE_BANK)
     }
 
+    private fun goToAddBankFirstTime() {
+        val intentChooseBank = ChooseBankActivity.createIntentChooseBank(activity)
+        startActivityForResult(intentChooseBank, REQUEST_CHOOSE_BANK_FIRST_TIME)
+    }
+
     private fun setMode() {
         if (activity.intent.getStringExtra(AddEditBankActivity.Companion.PARAM_ACTION) == BankFormModel.Companion.STATUS_ADD) {
-            goToAddBank()
+            goToAddBankFirstTime()
         } else {
             activity.title = getString(R.string.title_edit_bank)
             bankFormModel = activity.intent.getParcelableExtra(AddEditBankActivity.Companion.PARAM_DATA)
@@ -129,6 +133,7 @@ class AddEditBankFormFragment : AddEditBankContract.View,
             checkIsValidForm()
         }
     }
+
 
     private fun setupBankFormModel() {
         bankFormModel.accountName = account_name_edit_text.text.toString()
@@ -269,28 +274,78 @@ class AddEditBankFormFragment : AddEditBankContract.View,
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            REQUEST_CHOOSE_BANK_FIRST_TIME -> onResultChooseBankFirstTime(resultCode, data)
+            REQUEST_CHOOSE_BANK -> onResultChooseBank(resultCode, data)
+            REQUEST_OTP -> onResultRequestOtp(resultCode)
+        }
+    }
+
+    private fun onResultRequestOtp(resultCode: Int) {
+        if (resultCode == Activity.RESULT_OK) {
+            when (bankFormModel.status) {
+                BankFormModel.Companion.STATUS_ADD -> presenter.addBank(bankFormModel)
+                BankFormModel.Companion.STATUS_EDIT -> presenter.editBank(bankFormModel)
+            }
+        }
+    }
+
+    private fun onResultChooseBankFirstTime(resultCode: Int, data: Intent?) {
         try {
-            if (requestCode == REQUEST_CHOOSE_BANK) {
+            if (successRetrieveBank(resultCode, data)) {
                 activity.title = getString(R.string.title_add_bank)
                 bankFormModel.status = BankFormModel.Companion.STATUS_ADD
                 disableSubmitButton()
-
-                if (resultCode == Activity.RESULT_OK
-                        && data != null
-                        && data.extras != null
-                        && data.extras.getParcelable<BankViewModel>(ChooseBankActivity.PARAM_RESULT_DATA) != null
-                ) {
-                    val selectedModel = data.extras.getParcelable<BankViewModel>(ChooseBankActivity
-                            .PARAM_RESULT_DATA)
-                    bankFormModel.bankId = selectedModel.bankId!!
-                    bankFormModel.bankName = selectedModel.bankName!!
-                    bank_name_edit_text.setText(selectedModel.bankName)
-                    checkIsValidForm()
-                }
+                onResultChooseBank(resultCode, data)
+            } else {
+                activity.finish()
             }
+
         } catch (e: NullPointerException) {
             e.printStackTrace()
         }
+    }
+
+    private fun onResultChooseBank(resultCode: Int, data: Intent?) {
+
+        if (successRetrieveBank(resultCode, data)) {
+            val selectedModel = data!!.extras.getParcelable<BankViewModel>(ChooseBankActivity
+                    .PARAM_RESULT_DATA)
+            bankFormModel.bankId = selectedModel.bankId!!
+            bankFormModel.bankName = selectedModel.bankName!!
+            bank_name_edit_text.setText(selectedModel.bankName)
+            checkIsValidForm()
+        }
+    }
+
+    private fun successRetrieveBank(resultCode: Int, data: Intent?): Boolean {
+        return resultCode == Activity.RESULT_OK
+                && data != null
+                && data.extras != null
+                && data.extras.getParcelable<BankViewModel>(ChooseBankActivity.PARAM_RESULT_DATA) != null
+
+    }
+
+    override fun onErrorAddBank(errorMessage: String) {
+        NetworkErrorHelper.createSnackbarWithAction(activity, errorMessage, {
+            presenter.addBank(bankFormModel)
+        }).showRetrySnackbar()
+    }
+
+    override fun onErrorEditBank(errorMessage: String) {
+        NetworkErrorHelper.createSnackbarWithAction(activity, errorMessage, {
+            presenter.editBank(bankFormModel)
+        }).showRetrySnackbar()
+    }
+
+    override fun onGoToCOTP() {
+
+        val intent = presenter.getCotpIntent(activity)
+        startActivityForResult(intent, REQUEST_OTP)
+    }
+
+    override fun onCloseForm() {
+        activity.finish()
     }
 
     override fun onDestroyView() {

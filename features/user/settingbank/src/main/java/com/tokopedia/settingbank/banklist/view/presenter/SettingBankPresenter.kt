@@ -21,7 +21,7 @@ class SettingBankPresenter(private val userSession: UserSession,
         SettingBankContract.Presenter,
         BaseDaggerPresenter<SettingBankContract.View>() {
 
-    var page = 0
+    var page = 1
 
     override fun getBankListFirstTime() {
         view.showLoadingFull()
@@ -44,7 +44,7 @@ class SettingBankPresenter(private val userSession: UserSession,
                     page++
                     view.onSuccessGetListBank(bankAccountList)
                 } else {
-                    view.onEmptyList()
+                    view.onEmptyList(bankAccountList.enableAddButton, bankAccountList.reason)
                 }
             }
         })
@@ -68,7 +68,7 @@ class SettingBankPresenter(private val userSession: UserSession,
             override fun onNext(bankAccountList: BankAccountListViewModel) {
                 view.hideLoadingList()
                 if (bankAccountList.list?.isNotEmpty()!!) {
-                    page++
+                    page += 1
                     view.onSuccessGetListBank(bankAccountList)
                 }
             }
@@ -107,7 +107,7 @@ class SettingBankPresenter(private val userSession: UserSession,
                     userSession.userId,
                     element.accountId!!,
                     userSession.deviceId
-            ), object : Subscriber<String>() {
+            ), object : Subscriber<Boolean>() {
                 override fun onCompleted() {
 
                 }
@@ -117,9 +117,13 @@ class SettingBankPresenter(private val userSession: UserSession,
                     view.onErrorDeleteAccount(ErrorHandler.getErrorMessage(view.getContext(), e))
                 }
 
-                override fun onNext(statusMessage: String) {
+                override fun onNext(isSuccess: Boolean) {
                     view.hideLoadingDialog()
-                    view.onSuccessDeleteAccount(adapterPosition, statusMessage)
+                    if (isSuccess)
+                        view.onSuccessDeleteAccount(adapterPosition)
+                    else
+                        view.onErrorDeleteAccount("")
+
                 }
             })
 

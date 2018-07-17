@@ -5,11 +5,5 @@ package com.tokopedia.settingbank.banklist.domain.pojo
  */
 
 data class DeleteBankAccountPojo(
-        val data: DeleteBankAccountData? = null,
-        val message_error: List<String>? = ArrayList(),
-        val message_status: List<String>? = ArrayList()
-)
-
-data class DeleteBankAccountData(
-        val is_success: Int? = 0
+        val is_success: Boolean? = false
 )

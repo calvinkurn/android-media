@@ -9,6 +9,7 @@ import android.os.Parcelable
 data class BankFormModel(
         var status: String = Companion.STATUS_ADD,
         var bankId: String = "",
+        var accountId: String = "",
         var accountName: String = "",
         var accountNumber: String = "",
         var bankName: String = "",
@@ -20,11 +21,13 @@ data class BankFormModel(
             parcel.readString(),
             parcel.readString(),
             parcel.readString(),
+            parcel.readString(),
             parcel.readInt())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(status)
         parcel.writeString(bankId)
+        parcel.writeString(accountId)
         parcel.writeString(accountName)
         parcel.writeString(accountNumber)
         parcel.writeString(bankName)

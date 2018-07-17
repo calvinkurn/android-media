@@ -10,5 +10,5 @@ data class AddBankAccountPojo(
 )
 
 data class AddBankAccountData(
-        val is_success: Int? = 0
+        val is_success: Boolean? = false
 )
