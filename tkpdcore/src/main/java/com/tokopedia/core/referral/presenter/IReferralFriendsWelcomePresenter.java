@@ -7,4 +7,8 @@ package com.tokopedia.core.referral.presenter;
 public interface IReferralFriendsWelcomePresenter {
 
     void initialize();
+
+    void copyVoucherCode(String voucherCode);
+
+    String getReferralWelcomeMsg();
 }
