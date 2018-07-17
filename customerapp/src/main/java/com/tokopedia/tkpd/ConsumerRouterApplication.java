@@ -281,7 +281,6 @@ import com.tokopedia.transaction.pickuppoint.view.activity.PickupPointActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.transaction.router.ITransactionOrderDetailRouter;
-import com.tokopedia.transaction.router.UnifiedOrderRouter;
 import com.tokopedia.transaction.wallet.WalletActivity;
 import com.tokopedia.transactiondata.entity.response.addtocart.AddToCartDataResponse;
 import com.tokopedia.usecase.UseCase;
@@ -353,8 +352,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         InstantLoanChuckRouter,
         InstantLoanRouter,
         TopChatRouter,
-        TokopointRouter,
-        UnifiedOrderRouter {
+        TokopointRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;

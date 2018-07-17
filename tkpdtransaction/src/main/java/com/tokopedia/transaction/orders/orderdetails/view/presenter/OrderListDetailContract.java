@@ -63,6 +63,7 @@ public interface OrderListDetailContract {
 
         void setPayMethodInfo(PayMethod payMethod);
 
+        void setButtonMargin();
     }
 
     public interface Presenter extends CustomerPresenter<View>{

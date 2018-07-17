@@ -21,12 +21,10 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
-import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.common.view.DoubleTextView;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
@@ -40,7 +38,6 @@ import com.tokopedia.transaction.orders.orderdetails.data.PayMethod;
 import com.tokopedia.transaction.orders.orderdetails.data.Pricing;
 import com.tokopedia.transaction.orders.orderdetails.data.Status;
 import com.tokopedia.transaction.orders.orderdetails.data.Title;
-import com.tokopedia.transaction.orders.orderdetails.di.DaggerOrderDetailsComponent;
 import com.tokopedia.transaction.orders.orderdetails.di.OrderDetailsComponent;
 import com.tokopedia.transaction.orders.orderdetails.view.adapter.ItemsAdapter;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailContract;
@@ -61,6 +58,9 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     public static final String KEY_ORDER_ID = "OrderId";
     public static final String KEY_ORDER_CATEGORY = "OrderCategory";
     private static final String KEY_FROM_PAYMENT = "from_payment";
+    private static final String KEY_URI = "tokopedia";
+    private static final String KEY_URI_PARAMETER = "idem_potency_key";
+    private static final String KEY_URI_PARAMETER_EQUAL = "idem_potency_key=";
     @Inject
     OrderListDetailPresenter presenter;
 
@@ -77,11 +77,12 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     private LinearLayout infoValue;
     private LinearLayout totalPrice;
     private TextView helpLabel;
-    private TextView langannan;
+    private TextView primaryActionBtn;
     private TextView beliLagi;
     private RecyclerView recyclerView;
     private TextView redeemInfo;
     LinearLayout paymentMethodInfo;
+    private boolean isSingleButton;
 
 
     @Override
@@ -91,11 +92,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
 
     @Override
     protected void initInjector() {
-        orderListComponent = DaggerOrderDetailsComponent.builder()
-                .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
-                .build();
-        GraphqlClient.init(getActivity());
-        orderListComponent.inject(this);
+        getComponent(OrderDetailsComponent.class).inject(this);
     }
 
     public static Fragment getInstance(String orderId, String orderCategory, String fromPayment) {
@@ -124,7 +121,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         infoValue = view.findViewById(R.id.info_value);
         totalPrice = view.findViewById(R.id.total_price);
         helpLabel = view.findViewById(R.id.help_label);
-        langannan = view.findViewById(R.id.langannan);
+        primaryActionBtn = view.findViewById(R.id.langannan);
         beliLagi = view.findViewById(R.id.beli_lagi);
         recyclerView = view.findViewById(R.id.recycler_view);
         redeemInfo=view.findViewById(R.id.tv_redeem_info);
@@ -149,6 +146,13 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         statusValue.setText(status.statusText());
         if(!status.textColor().equals(""))
         statusValue.setTextColor(Color.parseColor(status.textColor()));
+        GradientDrawable shape = new GradientDrawable();
+        shape.setShape(GradientDrawable.RECTANGLE);
+        shape.setCornerRadius(4);
+        if (!status.backgroundColor().equals("")) {
+            shape.setColor(Color.parseColor(status.backgroundColor()));
+        }
+        statusValue.setBackground(shape);
     }
 
     @Override
@@ -210,7 +214,12 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
 
     @Override
     public void setPricing(Pricing pricing) {
-
+        DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
+        doubleTextView.setTopText(pricing.label());
+        doubleTextView.setBottomText(pricing.value());
+        doubleTextView.setBottomTextSize(16);
+        doubleTextView.setBottomGravity(Gravity.RIGHT);
+        infoValue.addView(doubleTextView);
     }
 
     @Override
@@ -218,8 +227,9 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(paymentData.label());
         doubleTextView.setBottomText(paymentData.value());
-        if (!paymentData.textColor().equals(""))
-        doubleTextView.setBottomTextColor(Color.parseColor(paymentData.textColor()));
+        if (!paymentData.textColor().equals("")) {
+            doubleTextView.setBottomTextColor(Color.parseColor(paymentData.textColor()));
+        }
         doubleTextView.setBottomTextSize(16);
         doubleTextView.setBottomGravity(Gravity.RIGHT);
         totalPrice.addView(doubleTextView);
@@ -229,7 +239,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     public void setContactUs(final ContactUs contactUs) {
         String text = Html.fromHtml(contactUs.helpText()).toString();
         SpannableString spannableString = new SpannableString(text);
-        int startIndexOfLink = text.indexOf("disini");
+        int startIndexOfLink = text.indexOf(getResources().getString(R.string.help_text));
         if (startIndexOfLink != -1) {
             spannableString.setSpan(new ClickableSpan() {
                 @Override
@@ -243,7 +253,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
                     ds.setUnderlineText(false);
                     ds.setColor(getResources().getColor(R.color.green_250)); // specific color for this link
                 }
-            }, startIndexOfLink, startIndexOfLink + "disini".length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }, startIndexOfLink, startIndexOfLink + getResources().getString(R.string.help_text).length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             helpLabel.setHighlightColor(Color.TRANSPARENT);
             helpLabel.setMovementMethod(LinkMovementMethod.getInstance());
 
@@ -253,14 +263,19 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
 
     @Override
     public void setTopActionButton(ActionButton actionButton) {
-        langannan.setText(actionButton.getLabel());
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.setMargins(getResources().getDimensionPixelSize(R.dimen.dp_0),getResources().getDimensionPixelSize(R.dimen.dp_0),getResources().getDimensionPixelSize(R.dimen.dp_0), getResources().getDimensionPixelSize(R.dimen.dp_24));
+        primaryActionBtn.setText(actionButton.getLabel());
         GradientDrawable shape = new GradientDrawable();
         shape.setShape(GradientDrawable.RECTANGLE);
         shape.setCornerRadius(4);
         shape.setColor(getResources().getColor(R.color.white));
         shape.setStroke(2, getResources().getColor(R.color.grey_300));
-        langannan.setBackground(shape);
-        langannan.setOnClickListener(getActionButtonClickListener(actionButton.getLabel()));
+        primaryActionBtn.setBackground(shape);
+        if (isSingleButton) {
+            primaryActionBtn.setLayoutParams(params);
+        }
+        primaryActionBtn.setOnClickListener(getActionButtonClickListener(actionButton.getLabel()));
     }
 
     @Override
@@ -280,10 +295,10 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
             @Override
             public void onClick(View view) {
                 String newUri = uri;
-                if (uri.startsWith("tokopedia")) {
+                if (uri.startsWith(KEY_URI)) {
                     Uri url = Uri.parse(newUri);
-                    newUri = newUri.replace(url.getQueryParameter("idem_potency_key"), "");
-                    newUri = newUri.replace("idem_potency_key=", "");
+                    newUri = newUri.replace(url.getQueryParameter(KEY_URI_PARAMETER), "");
+                    newUri = newUri.replace(KEY_URI_PARAMETER_EQUAL, "");
                     RouteManager.route(getActivity(), newUri);
                 } else if (uri != null && !uri.equals("")){
                     TransactionPurchaseRouter.startWebViewActivity(getActivity(), uri);
@@ -294,7 +309,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
 
     @Override
     public void setActionButtonsVisibility(int topBtnVisibility, int bottomBtnVisibility) {
-        langannan.setVisibility(topBtnVisibility);
+        primaryActionBtn.setVisibility(topBtnVisibility);
         beliLagi.setVisibility(bottomBtnVisibility);
     }
 
@@ -315,6 +330,11 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         doubleTextView.setBottomText(payMethod.getValue());
         doubleTextView.setBottomGravity(Gravity.RIGHT);
         paymentMethodInfo.addView(doubleTextView);
+    }
+
+    @Override
+    public void setButtonMargin() {
+        isSingleButton = true;
     }
 
     @Override

@@ -271,4 +271,5 @@
     <string name="text_redeem_voucher">Redeem Voucher</string>
     <string name="text_valid_till">Berlaku hingga %s</string>
     <string name="thank_you">Thank You</string>
+    <string name="help_text">disini</string>
 </resources>

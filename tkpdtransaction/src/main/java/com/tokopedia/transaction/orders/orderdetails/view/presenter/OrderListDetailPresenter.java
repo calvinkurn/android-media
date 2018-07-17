@@ -1,5 +1,6 @@
 package com.tokopedia.transaction.orders.orderdetails.view.presenter;
 
+import android.text.TextUtils;
 import android.view.View;
 
 import com.tkpd.library.utils.CommonUtils;
@@ -16,6 +17,7 @@ import com.tokopedia.transaction.orders.orderdetails.data.Detail;
 import com.tokopedia.transaction.orders.orderdetails.data.DetailsData;
 import com.tokopedia.transaction.orders.orderdetails.data.OrderDetails;
 import com.tokopedia.transaction.orders.orderdetails.data.PayMethod;
+import com.tokopedia.transaction.orders.orderdetails.data.Pricing;
 import com.tokopedia.transaction.orders.orderdetails.data.Title;
 import com.tokopedia.usecase.RequestParams;
 
@@ -40,6 +42,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     private static final String ACTION = "action";
     private static final String UPSTREAM = "upstream";
     private static final String PARAM = "param";
+    private static final String INVOICE = "invoice";
     GraphqlUseCase orderDetailsUseCase;
     List<ActionButton> actionButtonList;
     OrderListDetailContract.ActionInterface view;
@@ -163,8 +166,12 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             getView().setAdditionalInfo(additionalInfo);
         }
         for (PayMethod payMethod : details.getPayMethods()) {
-            if (payMethod.getValue() != null && !payMethod.getValue().equals(""))
+            if (TextUtils.isEmpty(payMethod.getValue()))
                 getView().setPayMethodInfo(payMethod);
+        }
+
+        for (Pricing pricing : details.pricing()) {
+            getView().setPricing(pricing);
         }
         getView().setPaymentData(details.paymentData());
         getView().setContactUs(details.contactUs());
@@ -176,7 +183,8 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             getView().setBottomActionButton(rightActionButton);
         } else if (details.actionButtons().size() == 1) {
             ActionButton actionButton = details.actionButtons().get(0);
-            if (actionButton.getLabel().equals("invoice")) {
+            getView().setButtonMargin();
+            if (actionButton.getLabel().equals(INVOICE)) {
                 getView().setBottomActionButton(actionButton);
                 getView().setActionButtonsVisibility(View.GONE, View.VISIBLE);
             } else {

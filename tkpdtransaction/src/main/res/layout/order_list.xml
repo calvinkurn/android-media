@@ -155,9 +155,8 @@
                 android:layout_height="@dimen/dp_35"
                 android:layout_marginEnd="@dimen/dp_8"
                 android:layout_marginRight="@dimen/dp_8"
-                android:visibility="invisible"
-                tools:ignore="ContentDescription"
-                tools:src="@drawable/common_google_signin_btn_icon_dark" />
+                android:visibility="visible"
+                tools:ignore="ContentDescription" />
 
             <LinearLayout
                 android:layout_width="wrap_content"

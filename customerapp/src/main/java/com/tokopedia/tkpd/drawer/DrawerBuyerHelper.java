@@ -330,17 +330,15 @@ public class DrawerBuyerHelper extends DrawerHelper
                         drawerCache.getBoolean(IS_PEOPLE_OPENED, false)
                 )
         );
-
-        buyerMenu.add(new DrawerItem(
-                        context.getString(R.string.drawer_title_deals_transaction_list),
-                        TkpdState.DrawerPosition.PEOPLE_DEALS_TRANSACTION_LIST,
-                        drawerCache.getBoolean(IS_PEOPLE_OPENED, false)
-                )
-        );
-
         buyerMenu.add(new DrawerItem(
                         context.getString(R.string.drawer_title_events_transaction_list),
                         TkpdState.DrawerPosition.PEOPLE_EVENTS_TRANSACTION_LIST,
+                        drawerCache.getBoolean(IS_PEOPLE_OPENED, false)
+                )
+        );
+        buyerMenu.add(new DrawerItem(
+                        context.getString(R.string.drawer_title_deals_transaction_list),
+                        TkpdState.DrawerPosition.PEOPLE_DEALS_TRANSACTION_LIST,
                         drawerCache.getBoolean(IS_PEOPLE_OPENED, false)
                 )
         );

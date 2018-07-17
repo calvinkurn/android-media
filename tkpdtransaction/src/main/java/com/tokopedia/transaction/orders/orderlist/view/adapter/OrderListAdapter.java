@@ -37,6 +37,11 @@ import java.util.List;
 public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements ListAdapterContract.View {
     private final int VIEW_ITEM = 1;
     private final int VIEW_PROG = 0;
+    private static final String KEY_URI = "tokopedia";
+    private static final String KEY_URI_PARAMETER = "idem_potency_key";
+    private static final String KEY_URI_PARAMETER_EQUAL = "idem_potency_key=";
+    private static final String KEY_FROM_PAYMENT = "?from_payment=false";
+    private static final String KEY_META_DATA = "a/n";
 
     private final Context context;
     private ListAdapterContract.Presenter orderListPresenter;
@@ -121,10 +126,10 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             }
             button.setOnClickListener(view -> {
                 String newUri = actionButton.uri();
-                if (newUri.startsWith("tokopedia")) {
+                if (newUri.startsWith(KEY_URI)) {
                     Uri url = Uri.parse(newUri);
-                    newUri = newUri.replace(url.getQueryParameter("idem_potency_key"), "");
-                    newUri = newUri.replace("idem_potency_key=", "");
+                    newUri = newUri.replace(url.getQueryParameter(KEY_URI_PARAMETER), "");
+                    newUri = newUri.replace(KEY_URI_PARAMETER_EQUAL, "");
                     RouteManager.route(context, newUri);
                 } else if (newUri != null && !newUri.equals("")) {
                     TransactionPurchaseRouter.startWebViewActivity(context, newUri);
@@ -184,12 +189,8 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     @Override
-    public void setFailStatusBgColor(boolean statusFail) {
-        if (statusFail) {
-            currentHolder.status.setBackgroundColor(context.getResources().getColor(R.color.colorPink));
-        } else {
-            currentHolder.status.setBackgroundColor(context.getResources().getColor(R.color.green_template));
-        }
+    public void setFailStatusBgColor(String statusColor) {
+            currentHolder.status.setBackgroundColor(android.graphics.Color.parseColor(statusColor));
     }
 
     @Override
@@ -204,8 +205,8 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         childLayout.setTopTextSize(11);
         String value = metaData.value();
         TextView tv = new TextView(context);
-        if (value.contains("a/n")) {
-            String[] values = value.split("a/n");
+        if (value.contains(KEY_META_DATA)) {
+            String[] values = value.split(KEY_META_DATA);
             tv.setLayoutParams(new ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -224,7 +225,9 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public void setPaymentAvatar(String imageUrl) {
-        ImageHandler.loadImageThumbs(context, currentHolder.paymentAvatar, imageUrl);
+        if (!imageUrl.equals("")) {
+            ImageHandler.loadImageThumbs(context, currentHolder.paymentAvatar, imageUrl);
+        }
 
     }
 
@@ -250,13 +253,13 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     private void showPopup(View v, final Order order) {
         PopupMenu popup = new PopupMenu(context, v);
-        addCancelReplacementMenu(order.dotMenuList(), popup);
-        popup.setOnMenuItemClickListener(new OnMenuPopupClicked(order.dotMenuList(), order.getAppLink()));
+        addCancelReplacementMenu(order.dotMenu(), popup);
+        popup.setOnMenuItemClickListener(new OnMenuPopupClicked(order.dotMenu(), order.getAppLink()));
         popup.show();
     }
 
     private void addCancelReplacementMenu(List<DotMenuList> item, PopupMenu popup) {
-        if (true) {
+        if (item.size() > 0) {
             popup.getMenu().add(Menu.NONE, R.id.action_bantuan, Menu.NONE, item.get(0).name());
             popup.getMenu().add(Menu.NONE, R.id.action_order_detail, Menu.NONE, item.get(1).name());
         }
@@ -358,13 +361,13 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 orderCategory = order.category();
                 appLink = order.getAppLink();
                 if (!(orderCategory.equals(OrderCategory.DIGITAL) || orderCategory.equals(OrderCategory.FLIGHTS))) {
-                    appLink = appLink + "?from_payment=false";
+                    appLink = appLink + KEY_FROM_PAYMENT;
 
                 }
                 parentMetadataLayout.removeAllViews();
                 orderListPresenter.setViewData(order);
                 orderListPresenter.setActionButtonData(order.actionButtons());
-                orderListPresenter.setDotMenuVisibility(order.dotMenuList());
+                orderListPresenter.setDotMenuVisibility(order.dotMenu());
                 ImageHandler.loadImageThumbs(context, imgShopAvatar, order.items().get(0).imageUrl());
                 registerViewClickListener(this, order);
                 itemView.setOnClickListener(this);

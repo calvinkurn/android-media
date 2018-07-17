@@ -1,5 +1,6 @@
 package com.tokopedia.transaction.orders.orderdetails.view.activity;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -8,23 +9,32 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.applink.TransactionAppLink;
+import com.tokopedia.transaction.orders.orderdetails.di.DaggerOrderDetailsComponent;
+import com.tokopedia.transaction.orders.orderdetails.di.OrderDetailsComponent;
 import com.tokopedia.transaction.orders.orderdetails.view.fragment.OmsDetailFragment;
 import com.tokopedia.transaction.orders.orderdetails.view.fragment.OrderListDetailFragment;
 import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
+
+import java.util.HashMap;
 
 /**
  * Created by baghira on 09/05/18.
  */
 
-public class OrderListDetailActivity extends BaseSimpleActivity {
+public class OrderListDetailActivity extends BaseSimpleActivity implements HasComponent<OrderDetailsComponent> {
+
 
     private static final String ORDER_ID = "order_id";
     private static final String FROM_PAYMENT = "from_payment";
     private String fromPayment = "false";
     private String orderId;
+    private OrderDetailsComponent orderListComponent;
 
     @DeepLink({TransactionAppLink.ORDER_DETAIL, TransactionAppLink.ORDER_OMS_DETAIL})
     public static Intent getOrderDetailIntent(Context context, Bundle bundle) {
@@ -68,5 +78,18 @@ public class OrderListDetailActivity extends BaseSimpleActivity {
             }
         }
 
+    }
+
+    @Override
+    public OrderDetailsComponent getComponent() {
+        if (orderListComponent == null) initInjector();
+        return orderListComponent;
+    }
+
+    private void initInjector() {
+        orderListComponent = DaggerOrderDetailsComponent.builder()
+                .baseAppComponent(((BaseMainApplication) getApplication()).getBaseAppComponent())
+                .build();
+        GraphqlClient.init(this);
     }
 }
