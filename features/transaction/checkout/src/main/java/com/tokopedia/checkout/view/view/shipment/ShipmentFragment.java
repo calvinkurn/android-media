@@ -837,8 +837,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         shipmentSelectionStateData.setPosition(cartItemPosition);
         shipmentSelectionStateData.setCourierItemData(courierItemData);
         shipmentSelectionStateDataHashSet.add(shipmentSelectionStateData);
-        if (recipientAddressModel.getLatitude() == null || recipientAddressModel.getLatitude() == 0 ||
-                recipientAddressModel.getLongitude() == null || recipientAddressModel.getLongitude() == 0) {
+        if (courierItemData.isUsePinPoint() && (recipientAddressModel.getLatitude() == null ||
+                recipientAddressModel.getLatitude() == 0 || recipientAddressModel.getLongitude() == null ||
+                recipientAddressModel.getLongitude() == 0)) {
             shipmentAdapter.setLastChooseCourierItemPosition(cartItemPosition);
             LocationPass locationPass = new LocationPass();
             if (shipmentAdapter.getAddressShipmentData() != null) {
