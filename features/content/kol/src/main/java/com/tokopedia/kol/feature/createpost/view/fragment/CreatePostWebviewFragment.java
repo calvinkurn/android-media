@@ -1,9 +1,15 @@
 package com.tokopedia.kol.feature.createpost.view.fragment;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.View;
+import android.webkit.WebView;
+import android.widget.Button;
+import android.widget.RelativeLayout;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseWebViewFragment;
+import com.tokopedia.kol.R;
 
 /**
  * @author by yfsx on 07/06/18.
@@ -21,6 +27,13 @@ public class CreatePostWebviewFragment extends BaseWebViewFragment {
     @Override
     protected void initInjector() {
 
+    }
+
+    @Override
+    protected boolean shouldOverrideUrlLoading(WebView webView, String url) {
+        getActivity().setResult(Activity.RESULT_OK);
+        getActivity().finish();
+        return true;
     }
 
     @Override

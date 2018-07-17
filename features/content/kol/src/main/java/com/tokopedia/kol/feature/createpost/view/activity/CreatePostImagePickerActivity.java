@@ -1,5 +1,6 @@
 package com.tokopedia.kol.feature.createpost.view.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -27,6 +28,7 @@ import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDe
  */
 public class CreatePostImagePickerActivity extends ImagePickerActivity {
 
+    private static final int CREATE_FORM_REQUEST = 1234;
 
     public static Intent getInstance(Context context, String urlForm) {
         ImagePickerBuilder builder = new ImagePickerBuilder(context.getString(R.string.title_post),
@@ -48,7 +50,7 @@ public class CreatePostImagePickerActivity extends ImagePickerActivity {
     @Override
     protected void startEditorActivity(ArrayList<String> selectedImagePaths) {
         Intent intent = getEditorIntent(selectedImagePaths);
-        startActivityForResult(intent, REQUEST_CODE_EDITOR);
+        startActivityForResult(intent, CREATE_FORM_REQUEST);
     }
 
     @Override
@@ -62,4 +64,14 @@ public class CreatePostImagePickerActivity extends ImagePickerActivity {
                 getIntent().getExtras().getString(CreatePostActivity.FORM_URL));
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CREATE_FORM_REQUEST) {
+            if (resultCode == Activity.RESULT_OK) {
+                setResult(Activity.RESULT_OK);
+                finish();
+            }
+        }
+    }
 }

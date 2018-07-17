@@ -1,8 +1,10 @@
 package com.tokopedia.kol.feature.createpost.view.activity;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
@@ -11,6 +13,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
 import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity;
 import com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef;
@@ -111,14 +114,12 @@ public class CreatePostImageEditorActivity extends ImageEditorActivity {
 
     @Override
     protected void onFinishEditingImage(ArrayList<String> imageUrlOrPathList) {
-//            ImageUtils.deleteCacheFolder(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE);
-//            ImageUtils.deleteCacheFolder(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA);
         uploadImage(imageUrlOrPathList);
     }
 
     @Override
     protected Intent getFinishIntent(ArrayList<String> imageUrlOrPathList){
-        String fullPathUrl = getIntent().getStringExtra(CreatePostActivity.FORM_URL) + imageUrlOrPathList.get(0);
+        String fullPathUrl = getIntent().getStringExtra(CreatePostActivity.FORM_URL) + Uri.encode(imageUrlOrPathList.get(0));
         Intent intent = CreatePostActivity.getInstanceWebView(
                 this, fullPathUrl);
         return intent;
@@ -127,32 +128,19 @@ public class CreatePostImageEditorActivity extends ImageEditorActivity {
     private void uploadImage(ArrayList<String> imageUrlOrPathList) {
         progressDialog.show();
         List<MediaUploadViewModel> modelList = convertDataToModel(imageUrlOrPathList);
-        compositeSubscription.add(Observable.from(modelList).flatMap(new Func1<MediaUploadViewModel, Observable<MediaUploadViewModel>>() {
-            @Override
-            public Observable<MediaUploadViewModel> call(MediaUploadViewModel mediaUploadViewModel) {
-                return null;
-            }
-        }).toList().subscribe());
+        compositeSubscription.add(Observable.from(modelList).flatMap((Func1<MediaUploadViewModel, Observable<MediaUploadViewModel>>) mediaUploadViewModel -> null).toList().subscribe());
         compositeSubscription.add(Observable.from(modelList)
-                .flatMap(new Func1<MediaUploadViewModel, Observable<MediaUploadViewModel>>() {
-                    @Override
-                    public Observable<MediaUploadViewModel> call(MediaUploadViewModel mediaUploadViewModel) {
-                        return Observable.zip(Observable.just(mediaUploadViewModel),
-                                uploadImageUseCase.createObservable(
-                                        createParam(mediaUploadViewModel.getMediaPath())
-                                ), new Func2<MediaUploadViewModel, ImageUploadDomainModel<AttachmentImageModel>, MediaUploadViewModel>() {
-                                    @Override
-                                    public MediaUploadViewModel call(MediaUploadViewModel mediaUploadViewModel, ImageUploadDomainModel<AttachmentImageModel> uploadDomainModel) {
-                                        String url = uploadDomainModel.getDataResultImageUpload().getData().getPicSrc();
-                                        if (url.contains(DEFAULT_RESOLUTION)) {
-                                            url = url.replaceFirst(DEFAULT_RESOLUTION, RESOLUTION_300);
-                                        }
-                                        mediaUploadViewModel.setMediaPath(url);
-                                        return mediaUploadViewModel;
-                                    }
-                                });
-                    }
-                })
+                .flatMap((Func1<MediaUploadViewModel, Observable<MediaUploadViewModel>>) mediaUploadViewModel -> Observable.zip(Observable.just(mediaUploadViewModel),
+                        uploadImageUseCase.createObservable(
+                                createParam(mediaUploadViewModel.getMediaPath())
+                        ), (mediaUploadViewModel1, uploadDomainModel) -> {
+                            String url = uploadDomainModel.getDataResultImageUpload().getData().getPicSrc();
+                            if (url.contains(DEFAULT_RESOLUTION)) {
+                                url = url.replaceFirst(DEFAULT_RESOLUTION, RESOLUTION_300);
+                            }
+                            mediaUploadViewModel1.setMediaPath(url);
+                            return mediaUploadViewModel1;
+                        }))
                 .toList()
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
@@ -216,5 +204,22 @@ public class CreatePostImageEditorActivity extends ImageEditorActivity {
         ArrayList<String> resultString = new ArrayList<>();
         resultString.add(mediaUploadViewModels.get(0).getMediaPath());
         return resultString;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+        if (requestCode == CREATE_FORM_REQUEST) {
+            if (resultCode == Activity.RESULT_OK) {
+                ImageUtils.deleteCacheFolder(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE);
+                ImageUtils.deleteCacheFolder(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA);
+                setResult(Activity.RESULT_OK);
+                finish();
+            }
+        }
+
     }
 }
