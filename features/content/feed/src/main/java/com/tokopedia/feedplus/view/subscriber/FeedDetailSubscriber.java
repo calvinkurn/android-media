@@ -117,7 +117,7 @@ public class FeedDetailSubscriber extends Subscriber<GraphqlResponse> {
 
     private boolean checkHasNextPage(FeedQuery feedQuery) {
         try {
-            return feedQuery.getFeed().getLinks().getPagination().getHasNextPage();
+            return feedQuery.getFeed().getData().get(0).getMeta().isHasNextPage();
         } catch (NullPointerException e) {
             return false;
         }
