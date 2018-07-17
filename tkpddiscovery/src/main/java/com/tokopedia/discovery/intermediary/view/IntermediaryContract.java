@@ -1,5 +1,7 @@
 package com.tokopedia.discovery.intermediary.view;
 
+import android.os.Bundle;
+
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.core.network.entity.intermediary.CategoryHadesModel;
@@ -11,6 +13,9 @@ import com.tokopedia.discovery.intermediary.domain.model.HeaderModel;
 import com.tokopedia.discovery.intermediary.domain.model.HotListModel;
 import com.tokopedia.discovery.intermediary.domain.model.IntermediaryCategoryDomainModel;
 import com.tokopedia.discovery.intermediary.domain.model.VideoModel;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.ProductListFragmentView;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.listener.WishlistActionListener;
+import com.tokopedia.topads.sdk.domain.model.Data;
 
 import java.util.List;
 import java.util.Map;
@@ -56,6 +61,12 @@ public interface IntermediaryContract {
         void trackEventEnhance(Map<String, Object> dataLayer);
 
         String getTrackerAttribution();
+
+        boolean isUserHasLogin();
+
+        void launchLoginActivity(Bundle extras);
+
+        String getUserId();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -63,5 +74,9 @@ public interface IntermediaryContract {
         void getIntermediaryCategory(String categoryId);
 
         void addFavoriteShop(String categoryId);
+
+        void addWishLish(int position, Data data);
+
+        void setWishlishListener(WishlistActionListener wishlishListener);
     }
 }

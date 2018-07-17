@@ -217,18 +217,31 @@ public class CourierBottomsheet extends BottomSheetDialog implements CourierCont
 
     void onCloseClick() {
         actionDismiss = true;
-        behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        if (behavior != null) {
+            behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        } else {
+            dismiss();
+        }
     }
 
     @Override
     public void onBackPressed() {
         actionDismiss = true;
-        behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        if (behavior != null) {
+            behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        } else {
+            dismiss();
+        }
     }
 
     @Override
     public void onCourierItemClick(CourierItemData courierItemData) {
         actionDismiss = true;
+        if (behavior != null) {
+            behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        } else {
+            dismiss();
+        }
         behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         actionListener.onShipmentItemClick(courierItemData, recipientAddressModel, cartItemPosition);
     }

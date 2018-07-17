@@ -121,4 +121,8 @@ public interface FlightApi {
     @Headers({"Content-Type: application/json"})
     @POST(FlightUrl.FLIGHT_CANCELLATION_REQUEST)
     Observable<Response<DataResponse<CancellationRequestEntity>>> requestCancellation(@Body JsonObject cancellationRequest);
+
+    @Headers({"Content-Type: application/json"})
+    @POST(FlightUrl.FLIGHT_CANCEL_VOUCHER_CODE)
+    Observable<Response<Object>> cancelCoupounVoucher(@Header("x-tkpd-userid") String userId);
 }

@@ -228,4 +228,21 @@ public class CheckoutAnalyticsCourierSelection extends CheckoutAnalytics {
                 ""
         );
     }
+
+    public void eventClickCourierSelectionClickSelectCourier() {
+        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_COURIER,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.CLICK_SELECT_COURIER,
+                ""
+        );
+    }
+
+    public void eventViewCourierSelectionClickCourierOption(String agent, String service) {
+        analyticTracker.sendEventTracking(
+                ConstantTransactionAnalytics.EventName.VIEW_COURIER,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.CLICK_COURIER_OPTION,
+                agent + " - " + service
+        );
+    }
 }
