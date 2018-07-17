@@ -8,7 +8,6 @@ import com.tokopedia.groupchat.chatroom.domain.pojo.ExitMessage;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.ChannelPartnerViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatPointsViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatQuickReplyItemViewModel;
-import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatQuickReplyViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.PinnedMessageViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
 import com.tokopedia.groupchat.vote.view.model.VoteInfoViewModel;
@@ -306,5 +305,9 @@ public class ChannelInfoViewModel implements Parcelable {
     @Override
     public int describeContents() {
         return 0;
+    }
+
+    public void setQuickRepliesViewModel(@Nullable List<GroupChatQuickReplyItemViewModel> quickRepliesViewModel) {
+        this.quickRepliesViewModel = quickRepliesViewModel;
     }
 }

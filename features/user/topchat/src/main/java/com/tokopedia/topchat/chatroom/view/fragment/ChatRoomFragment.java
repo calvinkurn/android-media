@@ -39,7 +39,7 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.core.ImageGallery;
+
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -51,11 +51,14 @@ import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.TkpdInboxRouter;
-import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
+import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.attachinvoice.view.activity.AttachInvoiceActivity;
 import com.tokopedia.topchat.attachinvoice.view.resultmodel.SelectedInvoice;
@@ -113,12 +116,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnNeverAskAgain;
-import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.OnShowRationale;
-import permissions.dispatcher.PermissionRequest;
-import permissions.dispatcher.RuntimePermissions;
 import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
@@ -129,9 +126,10 @@ import static com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity.PARA
  * Created by stevenfredian on 9/19/17.
  */
 
-@RuntimePermissions
 public class ChatRoomFragment extends BaseDaggerFragment
         implements ChatRoomContract.View, InboxMessageConstant, InboxChatConstant, WebSocketInterface {
+
+    private static final int REQUEST_CODE_CHAT_IMAGE = 2325;
     private static final String CONTACT_US_PATH_SEGMENT = "toped-contact-us";
     private static final String BASE_DOMAIN_SHORTENED = "tkp.me";
     private static final String APPLINK_SCHEME = "tokopedia";
@@ -361,27 +359,12 @@ public class ChatRoomFragment extends BaseDaggerFragment
                         TopChatAnalytics.Action.CHAT_DETAIL_ATTACH,
                         TopChatAnalytics.Name.CHAT_DETAIL);
 
-                AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(getActivity());
-                myAlertDialog.setMessage(getActivity().getString(R.string.dialog_upload_option));
-                myAlertDialog.setPositiveButton(getActivity().getString(R.string.title_gallery),
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                ChatRoomFragmentPermissionsDispatcher.actionImagePickerWithCheck
-                                        (ChatRoomFragment.this);
-                            }
-                        });
-                myAlertDialog.setNegativeButton(getActivity().getString(R.string.title_camera),
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                ChatRoomFragmentPermissionsDispatcher.actionCameraWithCheck
-                                        (ChatRoomFragment.this);
-                            }
-                        });
-                Dialog dialog = myAlertDialog.create();
-                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                dialog.show();
+                ImagePickerBuilder builder = new ImagePickerBuilder(getString(R.string.choose_image),
+                        new int[]{ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA}, GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
+                        ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, null, true,
+                        null,null);
+                Intent intent = ImagePickerActivity.getIntent(getContext(), builder);
+                startActivityForResult(intent, REQUEST_CODE_CHAT_IMAGE);
             }
         });
 
@@ -907,22 +890,24 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 }
                 break;
 
-            case ImageGallery.TOKOPEDIA_GALLERY:
-                if (data == null) {
-                    break;
+            case REQUEST_CODE_CHAT_IMAGE:
+                if (resultCode != Activity.RESULT_OK || data == null) {
+                    return;
                 }
-                String imageUrl = data.getStringExtra(GalleryActivity.IMAGE_URL);
+                ArrayList<String> imagePathList = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS);
+                if (imagePathList == null || imagePathList.size() <= 0) {
+                    return;
+                }
+                String imagePath = imagePathList.get(0);
                 List<ImageUploadViewModel> list = new ArrayList<>();
-
-                if (!TextUtils.isEmpty(imageUrl)) {
-                    ImageUploadViewModel temp = generateChatViewModelWithImage(imageUrl);
+                if (!TextUtils.isEmpty(imagePath)) {
+                    ImageUploadViewModel temp = generateChatViewModelWithImage(imagePath);
                     list.add(temp);
                 } else {
-                    ArrayList<String> imageUrls = data.getStringArrayListExtra(GalleryActivity
-                            .IMAGE_URLS);
-                    if (imageUrls != null) {
-                        for (int i = 0; i < imageUrls.size(); i++) {
-                            ImageUploadViewModel temp = generateChatViewModelWithImage(imageUrls.get(i));
+                    ArrayList<String> imagePaths = data.getStringArrayListExtra(GalleryActivity.IMAGE_URLS);
+                    if (imagePaths != null) {
+                        for (int i = 0; i < imagePaths.size(); i++) {
+                            ImageUploadViewModel temp = generateChatViewModelWithImage(imagePaths.get(i));
                             list.add(temp);
                         }
                     }
@@ -985,12 +970,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
         dialog.show();
     }
 
-    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    public void actionCamera() {
-        presenter.openCamera();
-    }
-
     @Override
     public boolean shouldHandleUrlManually(String url) {
         String urlManualHandlingList[] = {CONTACT_US_URL_BASE_DOMAIN};
@@ -1000,78 +979,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
     @Override
     public void showSnackbarError(String string) {
         NetworkErrorHelper.showSnackbar(getActivity(), string);
-    }
-
-    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-    public void actionImagePicker() {
-        Intent intent = ((TkpdInboxRouter) MainApplication.getAppContext())
-                .getGalleryIntent(getActivity(), false, 1, true);
-        startActivityForResult(intent, com.tokopedia.core.ImageGallery.TOKOPEDIA_GALLERY);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[]
-            grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        ChatRoomFragmentPermissionsDispatcher.onRequestPermissionsResult(
-                ChatRoomFragment.this, requestCode, grantResults);
-    }
-
-
-    @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
-    void showRationaleForStorageAndCamera(final PermissionRequest request) {
-        List<String> listPermission = new ArrayList<>();
-        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        listPermission.add(Manifest.permission.CAMERA);
-
-        RequestPermissionUtil.onShowRationale(getActivity(), request, listPermission);
-    }
-
-
-    @OnShowRationale(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showRationaleForStorage(final PermissionRequest request) {
-        RequestPermissionUtil.onShowRationale(getActivity(), request, Manifest.permission
-                .READ_EXTERNAL_STORAGE);
-    }
-
-    @OnPermissionDenied(Manifest.permission.CAMERA)
-    void showDeniedForCamera() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.CAMERA);
-    }
-
-    @OnNeverAskAgain(Manifest.permission.CAMERA)
-    void showNeverAskForCamera() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.CAMERA);
-    }
-
-    @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showDeniedForStorage() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission
-                .READ_EXTERNAL_STORAGE);
-    }
-
-    @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showNeverAskForStorage() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission
-                .READ_EXTERNAL_STORAGE);
-    }
-
-    @OnPermissionDenied({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
-    void showDeniedForStorageAndCamera() {
-        List<String> listPermission = new ArrayList<>();
-        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        listPermission.add(Manifest.permission.CAMERA);
-
-        RequestPermissionUtil.onPermissionDenied(getActivity(), listPermission);
-    }
-
-    @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
-    void showNeverAskForStorageAndCamera() {
-        List<String> listPermission = new ArrayList<>();
-        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        listPermission.add(Manifest.permission.CAMERA);
-
-        RequestPermissionUtil.onNeverAskAgain(getActivity(), listPermission);
     }
 
     //Getter
