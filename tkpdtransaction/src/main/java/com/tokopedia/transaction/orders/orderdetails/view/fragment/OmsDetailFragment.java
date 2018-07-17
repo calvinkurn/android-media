@@ -78,9 +78,8 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     private LinearLayout totalPrice;
     private TextView helpLabel;
     private TextView primaryActionBtn;
-    private TextView beliLagi;
+    private TextView secondaryActionBtn;
     private RecyclerView recyclerView;
-    private TextView redeemInfo;
     LinearLayout paymentMethodInfo;
     private boolean isSingleButton;
 
@@ -122,9 +121,8 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         totalPrice = view.findViewById(R.id.total_price);
         helpLabel = view.findViewById(R.id.help_label);
         primaryActionBtn = view.findViewById(R.id.langannan);
-        beliLagi = view.findViewById(R.id.beli_lagi);
+        secondaryActionBtn = view.findViewById(R.id.beli_lagi);
         recyclerView = view.findViewById(R.id.recycler_view);
-        redeemInfo=view.findViewById(R.id.tv_redeem_info);
         paymentMethodInfo = view.findViewById(R.id.info_payment);
         recyclerView.setNestedScrollingEnabled(false);
 
@@ -280,14 +278,14 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
 
     @Override
     public void setBottomActionButton(ActionButton actionButton) {
-        beliLagi.setText(actionButton.getLabel());
+        secondaryActionBtn.setText(actionButton.getLabel());
         GradientDrawable shape = new GradientDrawable();
         shape.setShape(GradientDrawable.RECTANGLE);
         shape.setCornerRadius(4);
         shape.setColor(getResources().getColor(R.color.deep_orange_500));
-        beliLagi.setBackground(shape);
-        beliLagi.setTextColor(getResources().getColor(R.color.white));
-        beliLagi.setOnClickListener(getActionButtonClickListener(actionButton.getUri()));
+        secondaryActionBtn.setBackground(shape);
+        secondaryActionBtn.setTextColor(getResources().getColor(R.color.white));
+        secondaryActionBtn.setOnClickListener(getActionButtonClickListener(actionButton.getUri()));
     }
 
     private View.OnClickListener getActionButtonClickListener(final String uri) {
@@ -310,7 +308,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     @Override
     public void setActionButtonsVisibility(int topBtnVisibility, int bottomBtnVisibility) {
         primaryActionBtn.setVisibility(topBtnVisibility);
-        beliLagi.setVisibility(bottomBtnVisibility);
+        secondaryActionBtn.setVisibility(bottomBtnVisibility);
     }
 
     @Override

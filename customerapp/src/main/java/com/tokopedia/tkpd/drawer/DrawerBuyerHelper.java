@@ -552,7 +552,6 @@ public class DrawerBuyerHelper extends DrawerHelper
                                 + TkpdBaseURL.DigitalWebsite.PATH_TRANSACTION_LIST);
                         sendGTMNavigationEvent(AppEventTracking.EventLabel.DIGITAL_TRANSACTION_LIST);
                     }
-                    //TransactionPurchaseRouter.createIntentOrderListSummary(context, OrderCategory.DIGITAL);
                     context.startActivity(intent);
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.DIGITAL_TRANSACTION_LIST);
                     AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(),AppEventTracking.EventLabel.DIGITAL_TRANSACTION_LIST, AppEventTracking.EventLabel.PURCHASE);

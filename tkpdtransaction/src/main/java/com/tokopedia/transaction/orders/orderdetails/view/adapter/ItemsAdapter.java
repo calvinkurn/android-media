@@ -277,7 +277,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
             } else {
 
-                shape.setCornerRadius(4);
+                shape.setCornerRadius(context.getResources().getDimension(R.dimen.dp_4));
             }
 
             tapActionTextView.setBackground(shape);

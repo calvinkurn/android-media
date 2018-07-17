@@ -138,8 +138,6 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
     private void restoreState() {
         if (savedState != null) {
-            // For Example
-            //tv1.setText(savedState.getString("text"));
             onRestoreState(savedState);
         }
     }

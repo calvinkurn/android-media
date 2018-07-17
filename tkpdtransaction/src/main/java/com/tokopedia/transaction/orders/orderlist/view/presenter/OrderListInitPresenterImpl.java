@@ -58,13 +58,8 @@ public class OrderListInitPresenterImpl implements OrderListInitContract.Present
                     TabData data = response.getData(TabData.class);
                     if (!data.getOrderLabelList().isEmpty()) {
                         view.renderTabs(data.getOrderLabelList());
-                    } else {
-                        //view.renderEmptyList(typeRequest);
                     }
-                } else {
-                   // view.renderEmptyList(typeRequest);
                 }
-
             }
         });
     }
