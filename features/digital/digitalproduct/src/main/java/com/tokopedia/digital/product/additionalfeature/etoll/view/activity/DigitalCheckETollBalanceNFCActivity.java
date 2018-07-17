@@ -397,8 +397,7 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
         tapETollCardView.setVisibility(View.GONE);
         eTollUpdateBalanceResultView.setVisibility(View.VISIBLE);
         eTollUpdateBalanceResultView.showCardInfoFromApi(inquiryBalanceModel);
-        NetworkErrorHelper.showGreenCloseSnackbar(this,
-                getResources().getString(R.string.success_update_balance));
+        NetworkErrorHelper.showGreenCloseSnackbar(this, inquiryBalanceModel.getErrorMessage());
     }
 
     @Override
@@ -418,8 +417,7 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
         } else {
             tapETollCardView.setVisibility(View.VISIBLE);
             tapETollCardView.showInitialState();
-            NetworkErrorHelper.showRedCloseSnackbar(this,
-                    errorMessage);
+            NetworkErrorHelper.showRedCloseSnackbar(this, errorMessage);
         }
     }
 
