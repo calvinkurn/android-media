@@ -223,12 +223,18 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
     public void loadDetailSchedule(TrainScheduleViewModel trainScheduleViewModel, CardWithAction cardWithAction) {
         cardWithAction.setContentInfo(TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
                 TrainDateUtil.DEFAULT_VIEW_FORMAT, trainScheduleViewModel.getDepartureTimestamp()));
-        cardWithAction.setSubContent(trainScheduleViewModel.getTrainName());
+        cardWithAction.setSubContent(trainScheduleViewModel.getTrainName() + " " + trainScheduleViewModel.getTrainNumber());
         String timeDepartureString = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
                 TrainDateUtil.FORMAT_TIME, trainScheduleViewModel.getDepartureTimestamp());
         String timeArrivalString = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
                 TrainDateUtil.FORMAT_TIME, trainScheduleViewModel.getArrivalTimestamp());
-        cardWithAction.setSubContentInfo(" | " + timeDepartureString + " - " + timeArrivalString);
+        String departureHour = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
+                TrainDateUtil.FORMAT_DAY, trainScheduleViewModel.getDepartureTimestamp());
+        String arrivalHour = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
+                TrainDateUtil.FORMAT_DAY, trainScheduleViewModel.getArrivalTimestamp());
+        int deviationDay = Integer.parseInt(arrivalHour) - Integer.parseInt(departureHour);
+        String deviationDayString = deviationDay > 0 ? " (+" + deviationDay + "h)" : "";
+        cardWithAction.setSubContentInfo(" | " + timeDepartureString + " - " + timeArrivalString + deviationDayString);
     }
 
     @Override
