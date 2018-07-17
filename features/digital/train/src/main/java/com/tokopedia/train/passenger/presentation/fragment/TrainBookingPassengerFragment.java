@@ -25,6 +25,7 @@ import com.tokopedia.train.common.di.utils.TrainComponentUtils;
 import com.tokopedia.train.common.util.TrainDateUtil;
 import com.tokopedia.train.passenger.di.DaggerTrainBookingPassengerComponent;
 import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
+import com.tokopedia.train.passenger.presentation.adapter.TrainFullDividerItemDecoration;
 import com.tokopedia.train.passenger.presentation.activity.TrainBookingAddPassengerActivity;
 import com.tokopedia.train.passenger.presentation.activity.TrainBookingPassengerActivity;
 import com.tokopedia.train.passenger.presentation.adapter.TrainBookingPassengerAdapter;
@@ -87,6 +88,7 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
         cardActionDeparture = view.findViewById(R.id.train_departure_info);
         cardActionReturn = view.findViewById(R.id.train_return_info);
         recyclerViewPassenger = view.findViewById(R.id.rv_passengers);
+        recyclerViewPassenger.addItemDecoration(new TrainFullDividerItemDecoration(recyclerViewPassenger.getContext()));
         contactNameBuyer = view.findViewById(R.id.et_contact_name);
         phoneNumberBuyer = view.findViewById(R.id.et_phone_number);
         emailBuyer = view.findViewById(R.id.et_email);
