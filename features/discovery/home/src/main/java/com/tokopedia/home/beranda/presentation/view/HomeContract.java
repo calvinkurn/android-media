@@ -55,6 +55,8 @@ public interface HomeContract {
         Observable<TokoCashData> getTokocashBalance();
 
         Observable<PendingCashback> getTokocashPendingCashback();
+
+        Observable<TokoPointDrawerData> getTokopoint();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -76,7 +78,7 @@ public interface HomeContract {
 
         void onHeaderTokocashError();
 
-        void onHeaderTokopointErrorFromBroadcast();
+        void onHeaderTokopointError();
 
         void onRefreshTokoPoint();
 

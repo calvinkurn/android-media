@@ -1,7 +1,5 @@
 package com.tokopedia.navigation.presentation.activity;
 
-import android.content.BroadcastReceiver;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -9,20 +7,15 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.activity.BaseAppCompatActivity;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.constants.TokoPointDrawerBroadcastReceiverConstant;
-import com.tokopedia.core.constants.TokocashPendingDataBroadcastReceiverConstant;
-import com.tokopedia.core.router.loyaltytokopoint.ILoyaltyRouter;
-import com.tokopedia.core.router.wallet.TokoCashCoreRouter;
 import com.tokopedia.design.component.BottomNavigation;
 import com.tokopedia.feedplus.view.fragment.FeedPlusFragment;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;
@@ -34,11 +27,11 @@ import com.tokopedia.navigation.presentation.fragment.InboxFragment;
 /**
  * Created by meta on 19/06/18.
  */
-public class MainParentActivity extends AppCompatActivity implements
+public class MainParentActivity extends BaseAppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener, HasComponent {
 
     private BottomNavigation bottomNavigation;
-    private TouchViewPager viewPager;
+    private ViewPager viewPager;
 
     private UserSession userSession;
 
@@ -58,11 +51,9 @@ public class MainParentActivity extends AppCompatActivity implements
         viewPager.setAdapter(adapterViewPager);
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            public void onPageScrollStateChanged(int state) {
-            }
+            public void onPageScrollStateChanged(int state) { }
 
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            }
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) { }
 
             public void onPageSelected(int position) {
                 bottomNavigation.getMenu().getItem(position).setChecked(true);
@@ -79,9 +70,6 @@ public class MainParentActivity extends AppCompatActivity implements
 
         bottomNavigation.setNotification(2000, 2);
         bottomNavigation.setNotification(1200, 3);
-
-        registerBroadcastReceiverHeaderTokoPoint();
-        registerBroadcastReceiverHeaderTokoCashPending();
     }
 
     @Override
@@ -107,7 +95,7 @@ public class MainParentActivity extends AppCompatActivity implements
     }
 
     @Override
-    public AppComponent getComponent() {
+    public BaseAppComponent getComponent() {
         return getApplicationComponent();
     }
 
@@ -127,8 +115,8 @@ public class MainParentActivity extends AppCompatActivity implements
         bottomNavigation.getMenu().getItem(0).setChecked(true);
     }
 
-    public AppComponent getApplicationComponent() {
-        return ((MainApplication) getApplication()).getAppComponent();
+    public BaseAppComponent getApplicationComponent() {
+        return ((BaseMainApplication) getApplication()).getBaseAppComponent();
     }
 
     public class FragmentAdapter extends FragmentPagerAdapter {
@@ -164,46 +152,5 @@ public class MainParentActivity extends AppCompatActivity implements
         public void destroyItem(ViewGroup container, int position, Object object) {
             super.destroyItem(container, position, object);
         }
-    }
-
-    /**
-     * Tokocash & Tokopoints
-     */
-    private BroadcastReceiver broadcastReceiverTokoPoint;
-    private BroadcastReceiver broadcastReceiverPendingTokocash;
-
-    protected void registerBroadcastReceiverHeaderTokoCashPending() {
-        if (getApplication() instanceof TokoCashCoreRouter) {
-            broadcastReceiverPendingTokocash = ((TokoCashCoreRouter) getApplication()).getBroadcastReceiverTokocashPending();
-            registerReceiver(
-                    broadcastReceiverPendingTokocash,
-                    new IntentFilter(TokocashPendingDataBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP)
-            );
-        }
-    }
-
-    protected void registerBroadcastReceiverHeaderTokoPoint() {
-        if (getApplication() instanceof ILoyaltyRouter) {
-            broadcastReceiverTokoPoint = ((ILoyaltyRouter) getApplication()).getTokoPointBroadcastReceiver();
-            registerReceiver(
-                    broadcastReceiverTokoPoint,
-                    new IntentFilter(TokoPointDrawerBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP)
-            );
-        }
-    }
-
-    protected void unregisterBroadcastReceiverHeaderTokoPoint() {
-        unregisterReceiver(broadcastReceiverTokoPoint);
-    }
-
-    protected void unregisterBroadcastReceiverHeaderTokoCashPending() {
-        unregisterReceiver(broadcastReceiverPendingTokocash);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unregisterBroadcastReceiverHeaderTokoPoint();
-        unregisterBroadcastReceiverHeaderTokoCashPending();
     }
 }

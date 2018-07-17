@@ -117,8 +117,10 @@ public abstract class BaseListAdapter<T, VH extends BaseViewHolder> extends Recy
     }
 
     public void clear() {
-        items.clear();
-        notifyItemRangeRemoved(0, getItemCount());
+        if (items != null && !items.isEmpty()) {
+            notifyItemRangeRemoved(0, getItemCount());
+            items.clear();
+        }
     }
 
     public OnItemClickListener getOnItemClickListener() {

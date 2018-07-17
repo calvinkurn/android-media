@@ -25,7 +25,7 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.InboxViewHol
         void onItemClick(View view, int position);
     }
 
-    private List<Inbox> dataList = new ArrayList<>();
+    private List<Inbox> items = new ArrayList<>();
 
     public InboxAdapter() {
     }
@@ -34,8 +34,26 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.InboxViewHol
         this.onItemClickListener = onItemClickListener;
     }
 
-    public void addAll(List<Inbox> dataList) {
-        this.dataList = dataList;
+    public void add(Inbox item) {
+        items.add(item);
+    }
+
+    public void add(Inbox item, int position) {
+        items.add(position, item);
+        notifyItemInserted(position);
+    }
+
+    public void addAll(List<Inbox> items) {
+        for (Inbox item : items) {
+            add(item);
+        }
+    }
+
+    public void clear() {
+        if (items != null && !items.isEmpty()) {
+            notifyItemRangeRemoved(0, getItemCount());
+            items.clear();
+        }
     }
 
     @NonNull
@@ -46,7 +64,7 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.InboxViewHol
 
     @Override
     public void onBindViewHolder(@NonNull InboxViewHolder holder, int position) {
-        Inbox item = dataList.get(position);
+        Inbox item = items.get(position);
         holder.icon.setImageResource(item.getIcon());
         holder.title.setText(item.getTitle());
         holder.subtitle.setText(item.getSubtitle());
@@ -58,7 +76,7 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.InboxViewHol
 
     @Override
     public int getItemCount() {
-        return dataList.size();
+        return items.size();
     }
 
     class InboxViewHolder extends RecyclerView.ViewHolder {

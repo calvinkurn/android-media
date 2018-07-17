@@ -51,6 +51,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.data.viewmodel.PopUpNotif;
+import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gallery.GalleryActivity;
@@ -166,6 +167,10 @@ import com.tokopedia.logisticuploadawb.ILogisticUploadAwbRouter;
 import com.tokopedia.logisticuploadawb.UploadAwbLogisticActivity;
 import com.tokopedia.loyalty.LoyaltyRouter;
 import com.tokopedia.loyalty.broadcastreceiver.TokoPointDrawerBroadcastReceiver;
+import com.tokopedia.loyalty.di.component.DaggerTokopointComponent;
+import com.tokopedia.loyalty.di.component.TokopointComponent;
+import com.tokopedia.loyalty.di.module.ServiceApiModule;
+import com.tokopedia.loyalty.domain.usecase.GetTokopointUseCase;
 import com.tokopedia.loyalty.router.ITkpdLoyaltyModuleRouter;
 import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
 import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
@@ -326,7 +331,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ReactApplication,
         TkpdInboxRouter,
         IWalletRouter,
-        LoyaltyRouter,
+        LoyaltyRouter, // 1 loyalty
         ReputationRouter,
         SessionRouter,
         AbstractionRouter,
@@ -341,8 +346,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         GroupChatModuleRouter,
         ApplinkRouter,
         ShopModuleRouter,
-        LoyaltyModuleRouter,
-        ITkpdLoyaltyModuleRouter,
+        LoyaltyModuleRouter, // 2 loyalty
+        ITkpdLoyaltyModuleRouter, // 3 loyalty
         ICheckoutModuleRouter,
         com.tokopedia.transaction.router.ICartCheckoutModuleRouter,
         GamificationRouter,
@@ -377,6 +382,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private ReactNativeComponent reactNativeComponent;
     private RemoteConfig remoteConfig;
     private TokoCashComponent tokoCashComponent;
+    private TokopointComponent tokopointComponent;
 
     private CacheManager cacheManager;
     private UserSession userSession;
@@ -438,6 +444,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         eventComponent = DaggerEventComponent.builder()
                 .appComponent(getApplicationComponent())
                 .eventModule(new EventModule(this))
+                .build();
+
+        tokopointComponent = DaggerTokopointComponent.builder()
+                .serviceApiModule(new ServiceApiModule())
                 .build();
     }
 
@@ -1645,6 +1655,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public BroadcastReceiver getTokoPointBroadcastReceiver() {
         return new TokoPointDrawerBroadcastReceiver();
+    }
+
+    @Override
+    public Observable<TokoPointDrawerData> getTokopointUseCase() {
+        com.tokopedia.usecase.RequestParams params = com.tokopedia.usecase.RequestParams.create();
+        params.putString(GetTokopointUseCase.KEY_PARAM,
+                CommonUtils.loadRawString(getResources(), com.tokopedia.loyalty.R.raw.tokopoints_query));
+        return this.tokopointComponent.getTokopointUseCase().createObservable(params);
     }
 
     @Override
