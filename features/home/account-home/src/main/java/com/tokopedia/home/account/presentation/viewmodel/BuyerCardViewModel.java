@@ -1,0 +1,61 @@
+package com.tokopedia.home.account.presentation.viewmodel;
+
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.home.account.presentation.adapter.buyer.BuyerAccountTypeFactory;
+
+/**
+ * @author okasurya on 7/17/18.
+ */
+public class BuyerCardViewModel implements Visitable<BuyerAccountTypeFactory> {
+
+    private String name;
+    private String avatarImageUrl;
+    private String tokopoint;
+    private String coupons;
+    private int progress;
+
+    @Override
+    public int type(BuyerAccountTypeFactory typeFactory) {
+        return typeFactory.type(this);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getAvatarImageUrl() {
+        return avatarImageUrl;
+    }
+
+    public void setAvatarImageUrl(String avatarImageUrl) {
+        this.avatarImageUrl = avatarImageUrl;
+    }
+
+    public String getTokopoint() {
+        return tokopoint;
+    }
+
+    public void setTokopoint(String tokopoint) {
+        this.tokopoint = tokopoint;
+    }
+
+    public String getCoupons() {
+        return coupons;
+    }
+
+    public void setCoupons(String coupons) {
+        this.coupons = coupons;
+    }
+
+    public int getProgress() {
+        return progress;
+    }
+
+    public void setProgress(int progress) {
+        this.progress = progress;
+    }
+}

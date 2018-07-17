@@ -18,4 +18,5 @@ dependencies {
     implementation project(rootProject.ext.libraries.design)
 
     implementation rootProject.ext.miscDependencies.multiDex
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
 }

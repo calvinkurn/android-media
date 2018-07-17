@@ -5,4 +5,6 @@
     <string name="title_account">Akun Saya</string>
     <string name="label_menu_setting">Pengaturan</string>
     <string name="label_menu_notification">Feed</string>
+    <string name="label_user_tokopoint">TokoPoints</string>
+    <string name="label_user_voucher">Kupon Saya</string>
 </resources>

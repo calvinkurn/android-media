@@ -39,7 +39,6 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
     }
 
     @Override
@@ -66,7 +65,6 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_account_home, container, false);
-        setHasOptionsMenu(true);
         initView(view);
         return view;
     }
@@ -109,6 +107,8 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment {
     }
 
     private void initView(View view) {
+        setHasOptionsMenu(true);
+        getActivity().invalidateOptionsMenu();
         setToolbar(view);
         tabLayout = view.findViewById(R.id.tab_home_account);
         viewPager = view.findViewById(R.id.pager_home_account);
