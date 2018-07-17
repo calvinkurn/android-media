@@ -2,26 +2,25 @@ package com.tokopedia.train.seat.data;
 
 import android.content.Context;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.train.common.constant.TrainApi;
+import com.tokopedia.train.common.constant.TrainUrl;
+import com.tokopedia.train.common.specification.GqlNetworkSpecification;
 import com.tokopedia.train.common.specification.Specification;
 import com.tokopedia.train.seat.data.entity.TrainSeatMapEntity;
 import com.tokopedia.train.seat.data.entity.TrainSeatsEntity;
+import com.tokopedia.usecase.RequestParams;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Type;
 import java.util.List;
 
 import rx.Observable;
+import rx.functions.Func1;
 
 public class TrainSeatCloudDataStore {
-    private static final String QUERY_GQL = "query";
-    private static final String VARIABLE_GQL = "query";
 
     private TrainApi trainApi;
     private Context context;
@@ -32,18 +31,17 @@ public class TrainSeatCloudDataStore {
     }
 
     public Observable<List<TrainSeatMapEntity>> getData(Specification specification) {
-        Gson g = new Gson();
-        Type dataResponseType = new TypeToken<DataResponse<TrainSeatsEntity>>() {
-        }.getType();
-        DataResponse<TrainSeatsEntity> dataResponse = g.fromJson(loadJSONFromAsset(), dataResponseType);
-
-        return Observable.just(dataResponse.getData().getSeatMapEntities());
-        /*
+//        Gson g = new Gson();
+//        Type dataResponseType = new TypeToken<DataResponse<TrainSeatsEntity>>() {
+//        }.getType();
+//        DataResponse<TrainSeatsEntity> dataResponse = g.fromJson(loadJSONFromAsset(), dataResponseType);
+//
+//        return Observable.just(dataResponse.getData().getSeatMapEntities());
         String jsonQuery = getRequestStationPayload(((GqlNetworkSpecification) specification).rawFileNameQuery());
         RequestParams requestParams = RequestParams.create();
-        requestParams.putString(QUERY_GQL, jsonQuery);
+        requestParams.putString(TrainUrl.QUERY_GQL, jsonQuery);
         if (((GqlNetworkSpecification) specification).mapVariable() != null) {
-            requestParams.putObject(VARIABLE_GQL, ((GqlNetworkSpecification) specification).mapVariable());
+            requestParams.putObject(TrainUrl.VARIABLE_GQL, ((GqlNetworkSpecification) specification).mapVariable());
         }
 
         return trainApi.seats(requestParams.getParameters()).map(new Func1<DataResponse<TrainSeatsEntity>, List<TrainSeatMapEntity>>() {
@@ -51,7 +49,7 @@ public class TrainSeatCloudDataStore {
             public List<TrainSeatMapEntity> call(DataResponse<TrainSeatsEntity> trainSeatEntityDataResponse) {
                 return trainSeatEntityDataResponse.getData().getSeatMapEntities();
             }
-        });*/
+        });
     }
 
     private String getRequestStationPayload(int rawFile) {

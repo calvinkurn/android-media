@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 import java.util.List;
 
-public class TrainTrip implements Parcelable {
+public class TrainTrip implements Parcelable{
 
     private int errCode;
     private String org;
@@ -33,49 +33,8 @@ public class TrainTrip implements Parcelable {
     private String displayTotalPriceInfant;
     private int totalPrice;
     private String displayTotalPrice;
+    private String subclass;
     private List<TrainPaxPassenger> paxPassengers;
-
-    protected TrainTrip(Parcel in) {
-        errCode = in.readInt();
-        org = in.readString();
-        des = in.readString();
-        departureTimestamp = in.readString();
-        arrivalTimestamp = in.readString();
-        trainNo = in.readString();
-        bookCode = in.readString();
-        numCode = in.readString();
-        normalSales = in.readString();
-        displayNormalSales = in.readString();
-        extraFee = in.readInt();
-        displayExtraFee = in.readString();
-        bookBalance = in.readInt();
-        displayBookBalance = in.readString();
-        discount = in.readInt();
-        displayDiscount = in.readString();
-        adultPrice = in.readInt();
-        displayAdultPrice = in.readString();
-        infantPrice = in.readInt();
-        displayInfantPrice = in.readString();
-        totalPriceAdult = in.readInt();
-        displayTotalPriceAdult = in.readString();
-        totalPriceInfant = in.readInt();
-        displayTotalPriceInfant = in.readString();
-        totalPrice = in.readInt();
-        displayTotalPrice = in.readString();
-        paxPassengers = in.createTypedArrayList(TrainPaxPassenger.CREATOR);
-    }
-
-    public static final Creator<TrainTrip> CREATOR = new Creator<TrainTrip>() {
-        @Override
-        public TrainTrip createFromParcel(Parcel in) {
-            return new TrainTrip(in);
-        }
-
-        @Override
-        public TrainTrip[] newArray(int size) {
-            return new TrainTrip[size];
-        }
-    };
 
     public TrainTrip() {
     }
@@ -115,6 +74,49 @@ public class TrainTrip implements Parcelable {
         this.displayTotalPrice = displayTotalPrice;
         this.paxPassengers = paxPassengers;
     }
+
+    protected TrainTrip(Parcel in) {
+        errCode = in.readInt();
+        org = in.readString();
+        des = in.readString();
+        departureTimestamp = in.readString();
+        arrivalTimestamp = in.readString();
+        trainNo = in.readString();
+        bookCode = in.readString();
+        numCode = in.readString();
+        normalSales = in.readString();
+        displayNormalSales = in.readString();
+        extraFee = in.readInt();
+        displayExtraFee = in.readString();
+        bookBalance = in.readInt();
+        displayBookBalance = in.readString();
+        discount = in.readInt();
+        displayDiscount = in.readString();
+        adultPrice = in.readInt();
+        displayAdultPrice = in.readString();
+        infantPrice = in.readInt();
+        displayInfantPrice = in.readString();
+        totalPriceAdult = in.readInt();
+        displayTotalPriceAdult = in.readString();
+        totalPriceInfant = in.readInt();
+        displayTotalPriceInfant = in.readString();
+        totalPrice = in.readInt();
+        displayTotalPrice = in.readString();
+        subclass = in.readString();
+        paxPassengers = in.createTypedArrayList(TrainPaxPassenger.CREATOR);
+    }
+
+    public static final Creator<TrainTrip> CREATOR = new Creator<TrainTrip>() {
+        @Override
+        public TrainTrip createFromParcel(Parcel in) {
+            return new TrainTrip(in);
+        }
+
+        @Override
+        public TrainTrip[] newArray(int size) {
+            return new TrainTrip[size];
+        }
+    };
 
     public int getErrCode() {
         return errCode;
@@ -224,42 +226,6 @@ public class TrainTrip implements Parcelable {
         return displayTotalPrice;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeInt(errCode);
-        parcel.writeString(org);
-        parcel.writeString(des);
-        parcel.writeString(departureTimestamp);
-        parcel.writeString(arrivalTimestamp);
-        parcel.writeString(trainNo);
-        parcel.writeString(bookCode);
-        parcel.writeString(numCode);
-        parcel.writeString(normalSales);
-        parcel.writeString(displayNormalSales);
-        parcel.writeInt(extraFee);
-        parcel.writeString(displayExtraFee);
-        parcel.writeInt(bookBalance);
-        parcel.writeString(displayBookBalance);
-        parcel.writeInt(discount);
-        parcel.writeString(displayDiscount);
-        parcel.writeInt(adultPrice);
-        parcel.writeString(displayAdultPrice);
-        parcel.writeInt(infantPrice);
-        parcel.writeString(displayInfantPrice);
-        parcel.writeInt(totalPriceAdult);
-        parcel.writeString(displayTotalPriceAdult);
-        parcel.writeInt(totalPriceInfant);
-        parcel.writeString(displayTotalPriceInfant);
-        parcel.writeInt(totalPrice);
-        parcel.writeString(displayTotalPrice);
-        parcel.writeTypedList(paxPassengers);
-    }
-
     public void setErrCode(int errCode) {
         this.errCode = errCode;
     }
@@ -366,5 +332,50 @@ public class TrainTrip implements Parcelable {
 
     public void setPaxPassengers(List<TrainPaxPassenger> paxPassengers) {
         this.paxPassengers = paxPassengers;
+    }
+
+    public String getSubclass() {
+        return subclass;
+    }
+
+    public void setSubclass(String subclass) {
+        this.subclass = subclass;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(errCode);
+        parcel.writeString(org);
+        parcel.writeString(des);
+        parcel.writeString(departureTimestamp);
+        parcel.writeString(arrivalTimestamp);
+        parcel.writeString(trainNo);
+        parcel.writeString(bookCode);
+        parcel.writeString(numCode);
+        parcel.writeString(normalSales);
+        parcel.writeString(displayNormalSales);
+        parcel.writeInt(extraFee);
+        parcel.writeString(displayExtraFee);
+        parcel.writeInt(bookBalance);
+        parcel.writeString(displayBookBalance);
+        parcel.writeInt(discount);
+        parcel.writeString(displayDiscount);
+        parcel.writeInt(adultPrice);
+        parcel.writeString(displayAdultPrice);
+        parcel.writeInt(infantPrice);
+        parcel.writeString(displayInfantPrice);
+        parcel.writeInt(totalPriceAdult);
+        parcel.writeString(displayTotalPriceAdult);
+        parcel.writeInt(totalPriceInfant);
+        parcel.writeString(displayTotalPriceInfant);
+        parcel.writeInt(totalPrice);
+        parcel.writeString(displayTotalPrice);
+        parcel.writeString(subclass);
+        parcel.writeTypedList(paxPassengers);
     }
 }
