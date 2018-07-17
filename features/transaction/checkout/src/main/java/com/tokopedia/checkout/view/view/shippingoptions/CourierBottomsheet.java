@@ -165,6 +165,10 @@ public class CourierBottomsheet extends BottomSheetDialog implements CourierCont
         this.actionListener = listener;
     }
 
+    public void setSelectedCourier(CourierItemData selectedCourier) {
+        presenter.setSelectedCourier(selectedCourier);
+    }
+
     private void setupRecyclerView() {
         courierAdapter.setShipmentDataList(presenter.getShipmentDataList());
         courierAdapter.setViewListener(this);

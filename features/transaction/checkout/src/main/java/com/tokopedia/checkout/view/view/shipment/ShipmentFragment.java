@@ -696,6 +696,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             courierBottomsheet = new CourierBottomsheet(getActivity(), shipmentDetailData,
                     shopShipmentList, recipientAddressModel, position);
         }
+        if (shipmentDetailData.getSelectedCourier() != null) {
+            courierBottomsheet.setSelectedCourier(shipmentDetailData.getSelectedCourier());
+        }
         courierBottomsheet.setListener(this);
         courierBottomsheet.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
