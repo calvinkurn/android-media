@@ -130,7 +130,6 @@ public class ShopListPresenterImpl extends SearchSectionFragmentPresenterImpl<Sh
 
     public interface LoadMoreListener {
         void onSuccess(List<ShopViewModel.ShopItem> shopItemList, boolean isHasNextPage);
-
         void onFailed();
     }
 
