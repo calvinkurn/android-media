@@ -38,7 +38,6 @@ import com.tokopedia.feedplus.view.analytics.FeedTrackingEventLabel;
 import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.feedplus.view.listener.FeedPlusDetail;
 import com.tokopedia.feedplus.view.listener.WishlistListener;
-import com.tokopedia.feedplus.view.presenter.FeedPlusDetailPresenter;
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailHeaderViewModel;
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailViewModel;
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.SingleFeedDetailViewModel;
@@ -65,7 +64,7 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     View footer;
 
     @Inject
-    FeedPlusDetailPresenter presenter;
+    FeedPlusDetail.Presenter presenter;
 
 
     private EndlessRecyclerViewScrollListener recyclerviewScrollListener;
@@ -128,9 +127,9 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
                              ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View parentView = inflater.inflate(R.layout.fragment_feed_plus_detail, container, false);
-        recyclerView = (RecyclerView) parentView.findViewById(R.id.detail_list);
-        shareButton = (TextView) parentView.findViewById(R.id.share_button);
-        seeShopButon = (TextView) parentView.findViewById(R.id.see_shop);
+        recyclerView = parentView.findViewById(R.id.detail_list);
+        shareButton = parentView.findViewById(R.id.share_button);
+        seeShopButon = parentView.findViewById(R.id.see_shop);
         footer = parentView.findViewById(R.id.footer);
         prepareView();
         presenter.attachView(this, this);

@@ -34,6 +34,11 @@ import com.tokopedia.feedplus.data.repository.WishlistRepository;
 import com.tokopedia.feedplus.data.repository.WishlistRepositoryImpl;
 import com.tokopedia.feedplus.data.source.KolSource;
 import com.tokopedia.feedplus.domain.model.feed.FeedResult;
+import com.tokopedia.feedplus.domain.usecase.AddWishlistUseCase;
+import com.tokopedia.feedplus.domain.usecase.GetFeedsDetailUseCase;
+import com.tokopedia.feedplus.domain.usecase.RemoveWishlistUseCase;
+import com.tokopedia.feedplus.view.listener.FeedPlusDetail;
+import com.tokopedia.feedplus.view.presenter.FeedPlusDetailPresenter;
 import com.tokopedia.vote.di.VoteModule;
 import com.tokopedia.wishlist.common.data.interceptor.MojitoInterceptor;
 
@@ -248,6 +253,18 @@ public class FeedPlusModule {
     @Provides
     WishlistRepository provideWishlistRepository(WishlistFactory wishlistFactory) {
         return new WishlistRepositoryImpl(wishlistFactory);
+    }
+
+    @FeedPlusScope
+    @Provides
+    FeedPlusDetail.Presenter FeedPlusDetailPresenter(GetFeedsDetailUseCase getFeedsDetailUseCase,
+                                                      AddWishlistUseCase addWishlistUseCase,
+                                                      RemoveWishlistUseCase removeWishlistUseCase,
+                                                      UserSession userSession) {
+        return new FeedPlusDetailPresenter(getFeedsDetailUseCase,
+                addWishlistUseCase,
+                removeWishlistUseCase,
+                userSession);
     }
 
 }

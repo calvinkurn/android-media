@@ -27,7 +27,7 @@ public class FeedPlusDetailPresenter extends BaseDaggerPresenter<FeedPlusDetail.
     private WishlistListener wishlistListener;
 
     @Inject
-    FeedPlusDetailPresenter(GetFeedsDetailUseCase getFeedsDetailUseCase,
+    public FeedPlusDetailPresenter(GetFeedsDetailUseCase getFeedsDetailUseCase,
                             AddWishlistUseCase addWishlistUseCase,
                             RemoveWishlistUseCase removeWishlistUseCase,
                             UserSession userSession) {
@@ -37,6 +37,7 @@ public class FeedPlusDetailPresenter extends BaseDaggerPresenter<FeedPlusDetail.
         this.userSession = userSession;
     }
 
+    @Override
     public void attachView(FeedPlusDetail.View view, WishlistListener wishlistListener) {
         super.attachView(view);
         this.wishlistListener = wishlistListener;
@@ -50,6 +51,7 @@ public class FeedPlusDetailPresenter extends BaseDaggerPresenter<FeedPlusDetail.
         removeWishlistUseCase.unsubscribe();
     }
 
+    @Override
     public void getFeedDetail(String detailId, int page) {
         getView().showLoading();
         getFeedsDetailUseCase.execute(
@@ -58,6 +60,7 @@ public class FeedPlusDetailPresenter extends BaseDaggerPresenter<FeedPlusDetail.
         );
     }
 
+    @Override
     public void addToWishlist(int adapterPosition, String productId) {
         getView().showLoadingProgress();
         addWishlistUseCase.execute(
