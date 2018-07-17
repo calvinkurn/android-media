@@ -352,7 +352,6 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
 
             @Override
             public void onPageScrollStateChanged(int arg0) {
-                // TODO Auto-generated method stub
 
             }
         });

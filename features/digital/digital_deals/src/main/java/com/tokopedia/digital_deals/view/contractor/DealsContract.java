@@ -16,7 +16,6 @@ import java.util.List;
 public class DealsContract {
 
     public interface View extends CustomerView {
-        void showMessage(String message);
 
         Activity getActivity();
 

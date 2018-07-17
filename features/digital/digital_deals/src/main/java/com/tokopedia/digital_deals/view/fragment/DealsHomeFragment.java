@@ -177,12 +177,6 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
 
 
     @Override
-    public void showMessage(String message) {
-
-    }
-
-
-    @Override
     public void navigateToActivityRequest(Intent intent, int requestCode) {
         startActivityForResult(intent, requestCode);
     }
@@ -334,7 +328,6 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
 
             @Override
             public void onPageScrollStateChanged(int arg0) {
-                // TODO Auto-generated method stub
 
             }
         });
