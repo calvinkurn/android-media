@@ -287,7 +287,7 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
 
     private void initInjector() {
         eventComponent = DaggerEventComponent.builder()
-                .appComponent(getApplicationComponent())
+                .baseAppComponent(getBaseAppComponent())
                 .eventModule(new EventModule(this))
                 .build();
     }

@@ -356,7 +356,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             if (order != null) {
                 orderId = order.id();
                 orderCategory = order.category();
-                appLink = order.getAppLink();
+//                appLink = order.getAppLink();
                 parentMetadataLayout.removeAllViews();
                 orderListPresenter.setViewData(order);
                 orderListPresenter.setActionButtonData(order.actionButtons());

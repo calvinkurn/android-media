@@ -362,7 +362,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     }
 
     @Override
-    public Intent getInstantLoanActivityIntent(Context context) {
+    public Intent getInstantLoanIntent(Context context) {
         return null;
     }
 }

@@ -122,6 +122,7 @@ import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.district_recommendation.domain.mapper.TokenMapper;
 import com.tokopedia.district_recommendation.domain.model.Token;
 import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity;
+import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.data.entity.response.verifyresponse.VerifyCartResponse;
 import com.tokopedia.events.di.DaggerEventComponent;
 import com.tokopedia.events.di.EventComponent;
@@ -179,8 +180,6 @@ import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.oms.OmsModuleRouter;
-import com.tokopedia.oms.data.entity.response.verifyresponse.VerifyMyCartResponse;
-import com.tokopedia.oms.domain.PostVerifyCartWrapper;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationProfileActivity;
 import com.tokopedia.otp.phoneverification.view.activity.ReferralPhoneNumberVerificationActivity;
@@ -298,6 +297,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
 import okhttp3.Response;
 import retrofit2.Converter;
 import rx.Observable;
@@ -354,7 +354,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         NetworkRouter,
         TopChatRouter,
         DealsModuleRouter,
-        OmsModuleRouter {
+        OmsModuleRouter,
+        EventModuleRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -434,7 +435,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 .feedPlusComponent(feedPlusComponent);
 
         eventComponent = DaggerEventComponent.builder()
-                .appComponent(getApplicationComponent())
+                .baseAppComponent((this).getBaseAppComponent())
                 .eventModule(new EventModule(this))
                 .build();
         dealsComponent = DaggerDealsComponent.builder()
@@ -817,6 +818,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Interceptor getChuckInterceptor() {
         return getAppComponent().chuckInterceptor();
+    }
+
+    @Override
+    public OkHttpClient getOkHttpClient() {
+        return getAppComponent().okHttpClient();
     }
 
     @Override
@@ -1909,8 +1915,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void registerShake(String screenName) {
-        ShakeDetectManager.getShakeDetectManager().registerShake(screenName);
+    public void registerShake(String screenName, Activity context) {
+        ShakeDetectManager.getShakeDetectManager().registerShake(screenName, context);
     }
 
     @Override
@@ -2115,7 +2121,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Observable<TKPDMapParam<String, Object>> verifyEventPromo(RequestParams requestParams) {
-        return eventComponent.getPostVerifyCartUseCase().getExecuteObservableAsync(requestParams).map(new Func1<VerifyCartResponse, TKPDMapParam<String, Object>>() {
+        com.tokopedia.usecase.RequestParams requestParams1 = com.tokopedia.usecase.RequestParams.create();
+        requestParams1.putAll(requestParams.getParameters());
+        return eventComponent.getVerifyCartUseCase().createObservable(requestParams1).map(new Func1<VerifyCartResponse, TKPDMapParam<String, Object>>() {
             @Override
             public TKPDMapParam<String, Object> call(VerifyCartResponse verifyCartResponse) {
                 TKPDMapParam<String, Object> resultMap = new TKPDMapParam<>();
@@ -2132,8 +2140,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Observable<TKPDMapParam<String, Object>> verifyDealPromo(com.tokopedia.usecase.RequestParams requestParams) {
-        return new PostVerifyCartWrapper(this, dealsComponent.getPostVerifyCartUseCase())
-                .verifyDealPromo(requestParams);
+        return null;
+//        return new PostVerifyCartWrapper(this, dealsComponent.getPostVerifyCartUseCase())
+//                .verifyDealPromo(requestParams);
     }
 
     @Override
@@ -2292,6 +2301,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public SessionHandler getSessionHandler() {
+        SessionHandler sessionHandler = new SessionHandler(this);
+        return sessionHandler;
     }
 
 }

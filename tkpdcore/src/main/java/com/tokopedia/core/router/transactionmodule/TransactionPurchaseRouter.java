@@ -60,10 +60,9 @@ public class TransactionPurchaseRouter {
         return intent;
     }
 
-    public static Intent createIntentOrderListSummary(Context context, String orderCategory) {
+    public static Intent createIntentOrderListSummary(Context context) {
         Intent intent = RouterUtils.getActivityIntent(context, TRANSACTION_ORDER_LIST_ACTIVITY);
         intent.putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_PURCHASE_ALL_ORDER);
-        intent.putExtra(EXTRA_OMS_ORDER_CATEGORY, orderCategory);
         return intent;
     }
 

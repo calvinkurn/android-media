@@ -25,7 +25,7 @@ import dagger.Component;
 @Component(modules = {EventModule.class, OmsModule.class}, dependencies = BaseAppComponent.class)
 public interface EventComponent {
 
-    VerifyCartUseCase getPostVerifyCartUseCase();
+    VerifyCartUseCase getVerifyCartUseCase();
 
     void inject(EventsHomeActivity activity);
 

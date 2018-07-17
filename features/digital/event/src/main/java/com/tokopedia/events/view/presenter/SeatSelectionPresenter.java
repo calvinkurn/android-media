@@ -8,7 +8,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.drawer2.data.pojo.profile.ProfileModel;
 import com.tokopedia.core.drawer2.domain.interactor.ProfileUseCase;
@@ -35,6 +34,7 @@ import com.tokopedia.events.view.viewmodel.SeatLayoutViewModel;
 import com.tokopedia.events.view.viewmodel.SelectedSeatViewModel;
 import com.tokopedia.oms.data.entity.response.verifyresponse.VerifyMyCartResponse;
 import com.tokopedia.oms.domain.postusecase.PostVerifyCartUseCase;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,7 +82,7 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
                     getLoginIntent(getView().getActivity());
             getView().navigateToActivityRequest(intent, 1099);
         } else {
-            profileUseCase.execute(RequestParams.EMPTY, new Subscriber<ProfileModel>() {
+            profileUseCase.execute(com.tokopedia.core.base.domain.RequestParams.EMPTY, new Subscriber<ProfileModel>() {
                 @Override
                 public void onCompleted() {
 

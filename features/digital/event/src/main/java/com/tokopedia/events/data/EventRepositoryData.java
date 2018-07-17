@@ -24,6 +24,8 @@ import com.tokopedia.events.domain.model.searchdomainmodel.SearchDomainModel;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -36,6 +38,7 @@ public class EventRepositoryData implements EventRepository {
 
     private EventsDataStoreFactory eventsDataStoreFactory;
 
+    @Inject
     public EventRepositoryData(EventsDataStoreFactory eventsDataStoreFactory) {
         this.eventsDataStoreFactory = eventsDataStoreFactory;
 

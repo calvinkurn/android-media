@@ -4,14 +4,14 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.events.data.entity.response.verifyresponse.VerifyCartResponse;
 import com.tokopedia.events.domain.EventRepository;
 import com.tokopedia.events.domain.model.request.cart.CartItems;
 import com.tokopedia.events.view.utils.Utils;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import javax.inject.Inject;
 
@@ -26,8 +26,7 @@ public class VerifyCartUseCase extends UseCase<VerifyCartResponse> {
     private final EventRepository eventRepository;
 
     @Inject
-    public VerifyCartUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, EventRepository eventRepository) {
-        super(threadExecutor, postExecutionThread);
+    public VerifyCartUseCase(EventRepository eventRepository) {
         this.eventRepository = eventRepository;
     }
 

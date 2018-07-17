@@ -11,7 +11,6 @@ import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.drawer2.data.pojo.profile.ProfileModel;
 import com.tokopedia.core.drawer2.domain.interactor.ProfileUseCase;
@@ -46,6 +45,7 @@ import com.tokopedia.oms.data.entity.response.verifyresponse.VerifyMyCartRespons
 import com.tokopedia.oms.domain.postusecase.PostPaymentUseCase;
 import com.tokopedia.oms.domain.postusecase.PostVerifyCartUseCase;
 import com.tokopedia.oms.scrooge.ScroogePGUtil;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -148,7 +148,7 @@ public class EventReviewTicketPresenter
     @Override
     public void getProfile() {
         getView().showProgressBar();
-        profileUseCase.execute(RequestParams.EMPTY, new Subscriber<ProfileModel>() {
+        profileUseCase.execute(com.tokopedia.core.base.domain.RequestParams.EMPTY, new Subscriber<ProfileModel>() {
             @Override
             public void onCompleted() {
 
