@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.design.text.SpinnerTextView;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.tkpdtrain.R;
@@ -71,6 +72,7 @@ public class TrainBookingAddPassengerFragment extends BaseDaggerFragment
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                KeyboardHandler.hideSoftKeyboard(getActivity());
                 presenter.submitDataPassenger(trainPassengerViewModel);
             }
         });

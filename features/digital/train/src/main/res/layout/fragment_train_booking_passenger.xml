@@ -44,16 +44,28 @@
 
             <include layout="@layout/view_train_booking_buyer_info" />
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_1"
+                android:background="@drawable/bg_line_separator" />
+
             <include layout="@layout/view_train_booking_passenger_info" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_1"
+                android:background="@drawable/bg_line_separator" />
 
             <android.support.v7.widget.AppCompatButton
                 android:id="@+id/button_submit"
                 style="@style/Button.Submit.Orange"
+                android:layout_marginTop="@dimen/dp_16"
                 android:text="@string/train_booking_passenger_btn_payment" />
 
             <android.support.v7.widget.AppCompatButton
                 android:id="@+id/button_choose_seat"
                 style="@style/Button.Submit.White.Stroke"
+                android:layout_marginTop="@dimen/dp_16"
                 android:text="@string/train_booking_passenger_btn_choose_seat" />
 
         </LinearLayout>
