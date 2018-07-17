@@ -74,10 +74,7 @@ public class DealsCategoryItemAdapter extends RecyclerView.Adapter<DealsCategory
 
     @Override
     public int getItemCount() {
-        if (categoryItems != null) {
-            return categoryItems.size();
-        }
-        return 0;
+        return (categoryItems == null) ? 0 : categoryItems.size();
     }
 
     @Override

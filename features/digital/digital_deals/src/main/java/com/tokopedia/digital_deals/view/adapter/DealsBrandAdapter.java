@@ -92,10 +92,7 @@ public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public int getItemCount() {
-        if (brandItems != null) {
-            return brandItems.size();
-        }
-        return 0;
+        return (brandItems == null) ? 0 : brandItems.size();
     }
 
     @Override

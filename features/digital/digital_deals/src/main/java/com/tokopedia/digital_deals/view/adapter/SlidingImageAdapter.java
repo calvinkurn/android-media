@@ -20,13 +20,13 @@ import java.util.List;
 public class SlidingImageAdapter extends PagerAdapter {
 
 
-    private List<String> IMAGES;
+    private List<String> imagesUrl;
     private Context context;
     private DealsHomePresenter mPresenter;
 
 
-    public SlidingImageAdapter(List<String> IMAGES, DealsHomePresenter presenter) {
-        this.IMAGES = IMAGES;
+    public SlidingImageAdapter(List<String> imagesUrl, DealsHomePresenter presenter) {
+        this.imagesUrl = imagesUrl;
         this.mPresenter = presenter;
     }
 
@@ -37,7 +37,7 @@ public class SlidingImageAdapter extends PagerAdapter {
 
     @Override
     public int getCount() {
-        return IMAGES.size();
+        return (imagesUrl == null) ? 0 : imagesUrl.size();
     }
 
     @Override
@@ -48,7 +48,7 @@ public class SlidingImageAdapter extends PagerAdapter {
         assert imageLayout != null;
         final ImageView imageView = imageLayout.findViewById(R.id.banner_item);
 
-        ImageHandler.loadImage(context, imageView, IMAGES.get(position), R.color.grey_1100, R.color.grey_1100);
+        ImageHandler.loadImage(context, imageView, imagesUrl.get(position), R.color.grey_1100, R.color.grey_1100);
 
         view.addView(imageLayout, 0);
         imageLayout.setOnClickListener(new View.OnClickListener() {

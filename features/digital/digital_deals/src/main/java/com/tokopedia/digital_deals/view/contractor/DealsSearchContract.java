@@ -24,15 +24,9 @@ public class DealsSearchContract {
 
         void renderFromSearchResults(List<ProductItem> productItems, String searchText, int count);
 
-        void showProgressBar();
-
-        void hideProgressBar();
-
         RequestParams getParams();
 
         android.view.View getRootView();
-
-        FragmentManager getFragmentManagerInstance();
 
         void setTrendingDeals(List<ProductItem> searchViewModels, Location location);
 

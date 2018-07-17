@@ -16,13 +16,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DealDetailsAllLocationsAdapter extends RecyclerView.Adapter<DealDetailsAllLocationsAdapter.ViewHolder> {
-
-
     Context context;
     List<Outlet> outlets;
 
     public DealDetailsAllLocationsAdapter(List<Outlet> outlets) {
-
         this.outlets = new ArrayList<>();
         this.outlets = outlets;
     }
@@ -41,23 +38,18 @@ public class DealDetailsAllLocationsAdapter extends RecyclerView.Adapter<DealDet
 
     @Override
     public int getItemCount() {
-        if (outlets != null) {
-            return outlets.size();
-        }
-        return 0;
+        return (outlets == null) ? 0 : outlets.size();
+
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
         private TextView outletAddress;
         private TextView outletName;
-        private View itemView;
         private ImageView viewMap;
         private int index;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            this.itemView = itemView;
             outletName = itemView.findViewById(R.id.tv_location_name);
             outletAddress = itemView.findViewById(R.id.tv_location_address);
             viewMap = itemView.findViewById(R.id.iv_map);

@@ -46,10 +46,7 @@ public class DealsLocationAdapter extends RecyclerView.Adapter<DealsLocationAdap
 
     @Override
     public int getItemCount() {
-        if (locations != null) {
-            return locations.size();
-        }
-        return 0;
+        return (locations == null) ? 0 : locations.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

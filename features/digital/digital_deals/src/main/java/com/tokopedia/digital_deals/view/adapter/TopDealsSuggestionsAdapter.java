@@ -30,7 +30,6 @@ public class TopDealsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVie
     private String lowerhighlight;
     private String upperhighlight;
     private boolean isFooterAdded = false;
-
     private static final int ITEM = 1;
     private static final int FOOTER = 2;
     private final int HEADER = 3;
@@ -94,7 +93,7 @@ public class TopDealsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVie
 
     @Override
     public int getItemCount() {
-        return categoryItems.size();
+        return (categoryItems == null) ? 0 : categoryItems.size();
     }
 
     public void setHighLightText(String text) {

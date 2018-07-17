@@ -27,8 +27,6 @@ public class CheckoutDealContractor {
 
         void setEmailIDPhoneNumber(String emailID, String phoneNumber);
 
-        RequestParams getParams();
-
         android.view.View getRootView();
 
         void showPromoSuccessMessage(String text, String message, long discountAmount);

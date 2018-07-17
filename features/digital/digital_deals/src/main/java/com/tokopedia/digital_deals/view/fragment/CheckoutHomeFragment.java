@@ -210,12 +210,6 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
     }
 
     @Override
-    public RequestParams getParams() {
-
-        return null;
-    }
-
-    @Override
     public View getRootView() {
         return mainContent;
     }

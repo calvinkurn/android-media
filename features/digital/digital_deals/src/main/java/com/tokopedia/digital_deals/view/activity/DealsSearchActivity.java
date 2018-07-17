@@ -210,16 +210,6 @@ public class DealsSearchActivity extends DealsBaseActivity implements
     }
 
     @Override
-    public void showProgressBar() {
-
-    }
-
-    @Override
-    public void hideProgressBar() {
-
-    }
-
-    @Override
     public RequestParams getParams() {
         return RequestParams.EMPTY;
     }
@@ -230,14 +220,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
     }
 
     @Override
-    public FragmentManager getFragmentManagerInstance() {
-        return getSupportFragmentManager();
-    }
-
-    @Override
     public void setTrendingDeals(List<ProductItem> searchViewModels, Location location) {
-
-
         if (searchViewModels != null && !searchViewModels.isEmpty()) {
             TopDealsSuggestionsAdapter adapter = new TopDealsSuggestionsAdapter(searchViewModels, mPresenter);
             llDeals.setVisibility(View.VISIBLE);
@@ -252,9 +235,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
             llDeals.setVisibility(View.GONE);
             noContent.setVisibility(View.VISIBLE);
             clLocation.setVisibility(View.VISIBLE);
-
         }
-
         tvCityName.setText(location.getName());
 
     }
