@@ -5,8 +5,6 @@ import com.tokopedia.abstraction.common.data.model.response.PagingList;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.network.exception.UserNotLoginException;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
-import com.tokopedia.graphql.data.model.GraphqlError;
-import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.shop.common.util.PagingListUtils;
 import com.tokopedia.shop.common.util.TextApiUtils;
 import com.tokopedia.shop.product.domain.interactor.GetShopProductLimitedUseCase;
@@ -18,12 +16,9 @@ import com.tokopedia.shop.product.view.model.ShopProductLimitedEtalaseTitleViewM
 import com.tokopedia.shop.product.view.model.ShopProductLimitedFeaturedViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductLimitedPromoViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductTitleFeaturedViewModel;
-import com.tokopedia.wishlist.common.response.AddWishListResponse;
-import com.tokopedia.wishlist.common.response.RemoveWishListResponse;
+import com.tokopedia.wishlist.common.listener.WishListActionListener;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -42,6 +37,7 @@ public class ShopProductListLimitedPresenter extends BaseDaggerPresenter<ShopPro
 
     private static final String TAG = "ShopProductListLimitedP";
     private static final int FIRST_LOAD = 1;
+    private WishListActionListener wishListActionListener;
 
     @Inject
     public ShopProductListLimitedPresenter(GetShopProductLimitedUseCase getShopProductLimitedUseCase,
@@ -52,6 +48,11 @@ public class ShopProductListLimitedPresenter extends BaseDaggerPresenter<ShopPro
         this.addWishListUseCase = addWishListUseCase;
         this.removeWishListUseCase = removeWishListUseCase;
         this.userSession = userSession;
+    }
+
+    public void attachView(ShopProductListLimitedView view, WishListActionListener wishlistListener) {
+        this.wishListActionListener = wishlistListener;
+        super.attachView(view);
     }
 
     public boolean isMyShop(String shopId) {
@@ -131,78 +132,18 @@ public class ShopProductListLimitedPresenter extends BaseDaggerPresenter<ShopPro
 
     public void addToWishList(final String productId) {
         if (!userSession.isLoggedIn() && isViewAttached()) {
-            getView().onErrorAddToWishList(new UserNotLoginException());
+            getView().onUserNotLoginError(new UserNotLoginException());
             return;
         }
-
-        addWishListUseCase.createObservable(productId, userSession.getUserId(), new Subscriber<GraphqlResponse>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (isViewAttached()) {
-                    getView().onErrorAddToWishList(e);
-                }
-            }
-
-            @Override
-            public void onNext(GraphqlResponse graphqlResponse) {
-
-                if (graphqlResponse.getData(RemoveWishListResponse.class) == null) {
-                    List<GraphqlError> graphqlError = graphqlResponse.getError(GraphqlError.class);
-                    getView().onErrorAddToWishList(new RuntimeException(graphqlError.get(0).getMessage()));
-
-                } else {
-                    AddWishListResponse addWishListResponse =
-                            graphqlResponse.getData(AddWishListResponse.class);
-
-                    getView().onSuccessAddToWishList(productId,
-                            addWishListResponse.getWishlist_add().getSuccess());
-                }
-
-            }
-        });
+        addWishListUseCase.createObservable(productId, userSession.getUserId(), wishListActionListener);
     }
 
     public void removeFromWishList(final String productId) {
         if (!userSession.isLoggedIn() && isViewAttached()) {
-            getView().onErrorAddToWishList(new UserNotLoginException());
+            getView().onUserNotLoginError(new UserNotLoginException());
             return;
         }
-
-        removeWishListUseCase.createObservable(productId, userSession.getUserId(), new Subscriber<GraphqlResponse>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (isViewAttached()) {
-                    getView().onErrorRemoveFromWishList(e);
-                }
-            }
-
-            @Override
-            public void onNext(GraphqlResponse graphqlResponse) {
-
-                if (graphqlResponse.getData(RemoveWishListResponse.class) == null) {
-                    List<GraphqlError> graphqlError = graphqlResponse.getError(GraphqlError.class);
-                    getView().onErrorRemoveFromWishList(new RuntimeException(graphqlError.get(0).getMessage()));
-
-                } else {
-                    RemoveWishListResponse removeWishListResponse =
-                            graphqlResponse.getData(RemoveWishListResponse.class);
-
-                    getView().onSuccessRemoveFromWishList(productId,
-                            removeWishListResponse.getWishlistRemove().getSuccess());
-                }
-
-            }
-        });
+        removeWishListUseCase.createObservable(productId, userSession.getUserId(), wishListActionListener);
     }
 
     @Override

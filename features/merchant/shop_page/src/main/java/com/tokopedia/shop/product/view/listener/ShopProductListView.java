@@ -6,13 +6,7 @@ import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 
 public interface ShopProductListView extends BaseListViewListener<ShopProductViewModel> {
 
-    void onSuccessAddToWishList(String productId, Boolean value);
-
-    void onErrorAddToWishList(Throwable e);
-
-    void onSuccessRemoveFromWishList(String productId, Boolean value);
-
-    void onErrorRemoveFromWishList(Throwable e);
+    void onUserNotLoginError(Throwable e);
 
     void onSuccessGetShopName(ShopInfo shopName);
 

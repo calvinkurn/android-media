@@ -14,12 +14,10 @@ import com.tokopedia.wishlist.common.subscriber.RemoveWishListSubscriber;
 import java.util.HashMap;
 import java.util.Map;
 
-import rx.Subscriber;
-
 public class RemoveWishListUseCase {
 
-    public static final String PARAM_USER_ID = "userID";
-    public static final String PARAM_PRODUCT_ID = "productID";
+    private static final String PARAM_USER_ID = "userID";
+    private static final String PARAM_PRODUCT_ID = "productID";
     private static final String OPERATION_NAME = "removeWishlist";
     private Context context;
     private GraphqlUseCase graphqlUseCase;
@@ -30,40 +28,23 @@ public class RemoveWishListUseCase {
         GraphqlClient.init(context);
     }
 
-    public void createObservable(String productId, String userId, WishListActionListener wishlistActionListener) {
+    public void createObservable(String productId, String userId,
+                                 WishListActionListener wishlistActionListener) {
 
         Map<String, Object> variables = new HashMap<>();
 
         variables.put(PARAM_PRODUCT_ID, Integer.parseInt(productId));
         variables.put(PARAM_USER_ID, Integer.parseInt(userId));
 
-        GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(),
-                R.raw.query_remove_wishlist),
+        GraphqlRequest graphqlRequest = new GraphqlRequest(
+                GraphqlHelper.loadRawString(context.getResources(),
+                        R.raw.query_remove_wishlist),
                 RemoveWishListResponse.class,
                 variables, OPERATION_NAME);
 
         graphqlUseCase.addRequest(graphqlRequest);
 
         graphqlUseCase.execute(new RemoveWishListSubscriber(wishlistActionListener, context, productId));
-
-    }
-
-    public void createObservable(String productId, String userId, Subscriber subscriber) {
-
-
-        Map<String, Object> variables = new HashMap<>();
-
-        variables.put(PARAM_PRODUCT_ID, Integer.parseInt(productId));
-        variables.put(PARAM_USER_ID, Integer.parseInt(userId));
-
-        GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(),
-                R.raw.query_remove_wishlist),
-                RemoveWishListResponse.class,
-                variables, OPERATION_NAME);
-
-        graphqlUseCase.addRequest(graphqlRequest);
-
-        graphqlUseCase.execute(subscriber);
 
     }
 

@@ -26,7 +26,6 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener;
 import com.tokopedia.abstraction.common.network.exception.UserNotLoginException;
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
@@ -52,6 +51,7 @@ import com.tokopedia.shop.product.view.listener.ShopProductListView;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.shop.product.view.presenter.ShopProductListPresenter;
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity;
+import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import java.util.List;
 
@@ -62,7 +62,7 @@ import javax.inject.Inject;
  */
 
 public class ShopProductListFragment extends BaseSearchListFragment<ShopProductViewModel, ShopProductAdapterTypeFactory> implements
-        ShopProductListView, ShopProductClickedListener, ShopProductAdapterTypeFactory.TypeFactoryListener {
+        ShopProductListView, ShopProductClickedListener, WishListActionListener, ShopProductAdapterTypeFactory.TypeFactoryListener {
 
     public static final int SPAN_COUNT = 2;
     private static final int REQUEST_CODE_USER_LOGIN = 100;
@@ -156,7 +156,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
         etalaseId = getArguments().getString(ShopParamConstant.EXTRA_ETALASE_ID, "");
         sortName = getArguments().getString(ShopParamConstant.EXTRA_SORT_ID, Integer.toString(Integer.MIN_VALUE));
         attribution = getArguments().getString(ShopParamConstant.EXTRA_ATTRIBUTION, "");
-        shopProductListPresenter.attachView(this);
+        shopProductListPresenter.attachView(this, this);
     }
 
     @Nullable
@@ -355,36 +355,14 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
         }
     }
 
-
     @Override
-    public void onSuccessAddToWishList(String productId, Boolean value) {
-        ((ShopProductAdapter) getAdapter()).updateWishListStatus(productId, true);
-    }
-
-    @Override
-    public void onErrorAddToWishList(Throwable e) {
-        if (e instanceof UserNotLoginException) {
+    public void onUserNotLoginError(Throwable e) {
+        if (e instanceof UserNotLoginException && getActivity() != null) {
             Intent intent = ((ShopModuleRouter) getActivity().getApplication()).getLoginIntent(getActivity());
             startActivityForResult(intent, REQUEST_CODE_USER_LOGIN);
-            return;
         }
-        NetworkErrorHelper.showCloseSnackbar(getActivity(), ErrorHandler.getErrorMessage(getActivity(), e));
     }
 
-    @Override
-    public void onSuccessRemoveFromWishList(String productId, Boolean value) {
-        ((ShopProductAdapter) getAdapter()).updateWishListStatus(productId, false);
-    }
-
-    @Override
-    public void onErrorRemoveFromWishList(Throwable e) {
-        if (e instanceof UserNotLoginException) {
-            Intent intent = ((ShopModuleRouter) getActivity().getApplication()).getLoginIntent(getActivity());
-            startActivityForResult(intent, REQUEST_CODE_USER_LOGIN);
-            return;
-        }
-        NetworkErrorHelper.showCloseSnackbar(getActivity(), ErrorHandler.getErrorMessage(getActivity(), e));
-    }
 
     @Override
     public void onSuccessGetShopName(ShopInfo shopInfo) {
@@ -496,6 +474,26 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     @Override
     public int getType(Object type) {
         return currentLayoutType.first;
+    }
+
+    @Override
+    public void onErrorAddWishList(String errorMessage, String productId) {
+        NetworkErrorHelper.showCloseSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
+    public void onSuccessAddWishlist(String productId) {
+        ((ShopProductAdapter) getAdapter()).updateWishListStatus(productId, true);
+    }
+
+    @Override
+    public void onErrorRemoveWishlist(String errorMessage, String productId) {
+        NetworkErrorHelper.showCloseSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
+    public void onSuccessRemoveWishlist(String productId) {
+        ((ShopProductAdapter) getAdapter()).updateWishListStatus(productId, false);
     }
 
 }

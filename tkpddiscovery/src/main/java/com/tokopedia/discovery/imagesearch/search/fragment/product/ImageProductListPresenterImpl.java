@@ -32,9 +32,6 @@ import javax.inject.Inject;
 
 public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProductListFragmentView> implements ImageProductListPresenter {
 
-    private static final String PARAM_USER_ID = "userId";
-    private static final String PARAM_PRODUCT_ID = "productId";
-
     @Inject
     GetProductUseCase getProductUseCase;
     @Inject
