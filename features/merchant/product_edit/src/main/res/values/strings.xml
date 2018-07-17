@@ -49,8 +49,15 @@
     <string name="product_label_recommendation_price">Rekomendasi Harga Pasar Rp 1.150.000. Gunakan</string>
     <string name="product_label_product_price">Harga Produk</string>
     <string name="product_label_wholesale_price">Harga Grosir</string>
+    <string name="product_label_video_product">Video Produk</string>
     <string name="product_label_additional_info">Info Lanjutan</string>
     <string name="product_label_minimum_buy">Pemesanan Minimum</string>
     <string name="product_label_maksimum_buy">Pemesanan Maksimum</string>
     <string name="product_label_add_maksimum_buy">+Tambah Pemesanan Maksimum</string>
+
+    <string name="product_label_description_product">Keterangan Produk</string>
+    <string name="product_label_feature_product">Fitur Produk</string>
+    <string name="product_label_condition_product">Kondisi Baru</string>
+    <string name="product_hint_feature_product">Contoh: Tahan air, berbahan alami</string>
+
 </resources>
