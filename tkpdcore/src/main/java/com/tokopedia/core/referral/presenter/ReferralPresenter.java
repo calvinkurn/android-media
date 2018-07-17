@@ -189,9 +189,9 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
     }
 
     @Override
-    public String getReferralContents() {
+    public String getReferralSubHeader() {
         if (isAppShowReferralButtonActivated()) {
-            return remoteConfig.getString(TkpdCache.RemoteConfigKey.APP_REFFERAL_CONTENT, getView().getActivity().getString(R.string.app_share_referral_label_desc));
+            return remoteConfig.getString(TkpdCache.RemoteConfigKey.REFERRAL_SUBHEADER, getView().getActivity().getString(R.string.app_share_referral_label_desc));
         } else {
             return getView().getActivity().getString(R.string.app_share_label_desc);
         }

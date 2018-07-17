@@ -16,7 +16,7 @@ public interface IReferralPresenter {
 
     void copyVoucherCode(String code);
 
-    String getReferralContents();
+    String getReferralSubHeader();
 
     String getHowItWorks();
 

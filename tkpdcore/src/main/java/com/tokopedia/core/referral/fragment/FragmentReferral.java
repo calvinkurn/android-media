@@ -37,7 +37,6 @@ import com.tokopedia.core.referral.presenter.IReferralPresenter;
 import com.tokopedia.core.referral.presenter.ReferralPresenter;
 import com.tokopedia.core.router.OtpRouter;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.utils.CurrencyFormatHelper;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 
@@ -152,7 +151,7 @@ public class FragmentReferral extends BasePresenterFragmentV4<IReferralPresenter
     @Override
     protected void initView(View view) {
         presenter.initialize();
-        referralContentTextView.setText(presenter.getReferralContents());
+        referralContentTextView.setText(presenter.getReferralSubHeader());
         referralTitleTextview.setText(presenter.getReferralTitleDesc());
         if (presenter.isAppShowReferralButtonActivated()) {
             referralCodeLayout.setVisibility(View.VISIBLE);
@@ -222,10 +221,10 @@ public class FragmentReferral extends BasePresenterFragmentV4<IReferralPresenter
         referralCodeTextView.setText(referralData.getPromoContent().getCode());
         referralCount.setText(referralData.getPromoContent().getFriendCount() + " " + getString(R.string.fiends_invited_lable));
         if (referralData.getPromoBenefit() != null) {
-            progressBarReferral.setProgress(referralData.getPromoBenefit().getCurrentBenefit() == 0 ?
+            progressBarReferral.setProgress((referralData.getPromoBenefit().getCurrentBenefit() == 0 ?
                     referralData.getPromoBenefit().getCurrentBenefit() : referralData.getPromoBenefit().getMaxBenefit()
-                    / referralData.getPromoBenefit().getCurrentBenefit());
-            tvPercent.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(referralData.getPromoBenefit().getCurrentBenefit(),false)+ " / " + CurrencyFormatUtil.convertPriceValueToIdrFormat(referralData.getPromoBenefit().getMaxBenefit(),false));
+                    / referralData.getPromoBenefit().getCurrentBenefit()));
+            tvPercent.setText(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(referralData.getPromoBenefit().getCurrentBenefit())+ " / " + CurrencyFormatUtil.convertPriceValue((double) referralData.getPromoBenefit().getMaxBenefit(),false));
         }
     }
 
