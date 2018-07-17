@@ -242,7 +242,6 @@ public class CourierBottomsheet extends BottomSheetDialog implements CourierCont
         } else {
             dismiss();
         }
-        behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         actionListener.onShipmentItemClick(courierItemData, recipientAddressModel, cartItemPosition);
     }
 
