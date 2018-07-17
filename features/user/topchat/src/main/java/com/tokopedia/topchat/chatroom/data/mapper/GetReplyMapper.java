@@ -278,7 +278,7 @@ public class GetReplyMapper extends BaseChatApiCallMapper<ReplyData,ChatRoomView
                     item.getMsg());
             list.add(invoiceSelectionViewModel);
         }
-    }gi
+    }
 
 
     private void setOpponentViewModel(ChatRoomViewModel chatRoomViewModel, List<Contact>
