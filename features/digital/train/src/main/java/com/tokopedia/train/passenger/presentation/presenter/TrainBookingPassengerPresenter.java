@@ -291,7 +291,7 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
             trainPassengerViewModel.setPaxType(TrainBookingPassenger.ADULT);
             trainPassengerViewModel.setHeaderTitle(
                     formatPassengerHeader(getView().getString(R.string.train_passenger_header_title),
-                            i, getView().getString(R.string.train_select_passenger_adult_title)));
+                            passengerId, getView().getString(R.string.train_select_passenger_adult_title)));
             trainPassengerViewModelList.add(trainPassengerViewModel);
             passengerId++;
         }
@@ -302,7 +302,7 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
             trainPassengerViewModel.setPaxType(TrainBookingPassenger.INFANT);
             trainPassengerViewModel.setHeaderTitle(
                     formatPassengerHeader(getView().getString(R.string.train_passenger_header_title),
-                            i, getView().getString(R.string.train_select_passenger_infant_title)));
+                            passengerId, getView().getString(R.string.train_select_passenger_infant_title)));
             trainPassengerViewModelList.add(trainPassengerViewModel);
             passengerId++;
         }
