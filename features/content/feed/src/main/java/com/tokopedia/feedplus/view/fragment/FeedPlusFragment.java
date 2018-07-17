@@ -629,7 +629,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         callbackManager.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (data == null) {
+        if (data == null && requestCode != OPEN_LOGIN) {
             return;
         }
 
