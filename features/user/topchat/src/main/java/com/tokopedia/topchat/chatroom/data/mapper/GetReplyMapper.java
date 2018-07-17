@@ -278,23 +278,23 @@ public class GetReplyMapper extends BaseChatApiCallMapper<ReplyData,ChatRoomView
                     item.getMsg());
             list.add(invoiceSelectionViewModel);
         }
-    }
+    }gi
 
 
     private void setOpponentViewModel(ChatRoomViewModel chatRoomViewModel, List<Contact>
             contacts) {
 
         for (Contact contact : contacts) {
-            boolean isShopOwner = String.valueOf(contact.getShopId()).equals(sessionHandler
-                    .getShopID()) && contact.getShopId() != 0;
-            String allowedOpponentRole = "";
-            if(isShopOwner) allowedOpponentRole = USER_ROLE;
-            else if(contact.getRole().equals(TOKOPEDIA_ADMIN_ROLE)) allowedOpponentRole = TOKOPEDIA_ADMIN_ROLE;
-            else allowedOpponentRole = SHOP_OWNER_ROLE;
+//            boolean isShopOwner = String.valueOf(contact.getShopId()).equals(sessionHandler
+//                    .getShopID()) && contact.getShopId() != 0;
+//            String allowedOpponentRole = "";
+//            if(isShopOwner) allowedOpponentRole = USER_ROLE;
+//            else if(contact.getRole().equals(TOKOPEDIA_ADMIN_ROLE)) allowedOpponentRole = TOKOPEDIA_ADMIN_ROLE;
+//            else allowedOpponentRole = SHOP_OWNER_ROLE;
 
             if (contact.getUserId() != 0
                     && !String.valueOf(contact.getUserId()).equals(sessionHandler.getLoginID())
-                    && contact.getRole().equals(allowedOpponentRole)) {
+                    && contact.isInterlocutor()) {
 
                 if (!TextUtils.isEmpty(contact.getAttributes().getName())) {
                     chatRoomViewModel.setNameHeader(contact.getAttributes().getName());
