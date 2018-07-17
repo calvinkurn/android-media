@@ -686,6 +686,9 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void openVariantPage(int state) {
+        if (productVariant == null) {
+            return;
+        }
         Intent intent = new Intent(getActivity(), VariantActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(VariantActivity.KEY_VARIANT_DATA, productVariant);
