@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseAppCompatActivity;
+import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
@@ -31,7 +32,7 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener, HasComponent {
 
     private BottomNavigation bottomNavigation;
-    private ViewPager viewPager;
+    private TouchViewPager viewPager;
 
     private UserSession userSession;
 
@@ -63,6 +64,7 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         bottomNavigation.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
 
         viewPager.setOnTouchListener((arg0, arg1) -> true);
+        viewPager.SetAllowPageSwitching(false);
 
         if (savedInstanceState == null) {
             onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_home));
@@ -129,7 +131,7 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    return HomeFragment.newInstance();
+                    return new HomeFragment();
                 case 1:
                     return new FeedPlusFragment();
                 case 2:
