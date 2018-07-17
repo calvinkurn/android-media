@@ -139,6 +139,7 @@ import permissions.dispatcher.RuntimePermissions;
 
 import static android.app.Activity.RESULT_OK;
 import static com.tokopedia.core.product.model.productdetail.ProductInfo.PRD_STATE_PENDING;
+import static com.tokopedia.core.product.model.productdetail.ProductInfo.PRD_STATE_WAREHOUSE;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.EXTRA_PRODUCT_ID;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.WIHSLIST_STATUS_IS_WISHLIST;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.WISHLIST_STATUS_UPDATED_POSITION;
@@ -792,7 +793,13 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         } catch (NumberFormatException e) {
             this.selectedQuantity = 1;
         }
-        startShowCase();
+        if (isAllowShowCaseNcf()) {
+            startShowCase();
+        }
+    }
+
+    private boolean isAllowShowCaseNcf() {
+        return buttonBuyView.containerNewButtonBuy.getVisibility() == View.VISIBLE;
     }
 
     @Override
