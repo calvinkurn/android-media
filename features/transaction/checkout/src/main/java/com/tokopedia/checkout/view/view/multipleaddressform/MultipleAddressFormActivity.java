@@ -20,21 +20,16 @@ import com.tokopedia.design.component.Dialog;
 public class MultipleAddressFormActivity extends BaseCheckoutActivity {
     public static final int REQUEST_CODE = 982;
 
-    private static final String EXTRA_CART_LIST_DATA = "EXTRA_CART_LIST_DATA";
     private static final String EXTRA_RECIPIENT_ADDRESS_DATA = "EXTRA_RECIPIENT_ADDRESS_DATA";
     private static final String EXTRA_DISTRICT_RECOMMENDATION_TOKEN = "EXTRA_DISTRICT_RECOMMENDATION_TOKEN";
     public static final int RESULT_CODE_SUCCESS_SET_SHIPPING = 22;
     public static final int RESULT_CODE_FORCE_RESET_CART_ADDRESS_FORM = 23;
 
-    private CartListData cartListData;
     private RecipientAddressModel addressData;
     private MultipleAddressFragment fragment;
 
-    public static Intent createInstance(Context context,
-                                        CartListData cartListData,
-                                        RecipientAddressModel recipientAddressData) {
+    public static Intent createInstance(Context context, RecipientAddressModel recipientAddressData) {
         Intent intent = new Intent(context, MultipleAddressFormActivity.class);
-        intent.putExtra(EXTRA_CART_LIST_DATA, cartListData);
         intent.putExtra(EXTRA_RECIPIENT_ADDRESS_DATA, recipientAddressData);
         return intent;
     }
@@ -51,7 +46,6 @@ public class MultipleAddressFormActivity extends BaseCheckoutActivity {
 
     @Override
     protected void setupBundlePass(Bundle extras) {
-        this.cartListData = extras.getParcelable(EXTRA_CART_LIST_DATA);
         this.addressData = extras.getParcelable(EXTRA_RECIPIENT_ADDRESS_DATA);
     }
 
@@ -110,7 +104,7 @@ public class MultipleAddressFormActivity extends BaseCheckoutActivity {
 
     @Override
     protected android.support.v4.app.Fragment getNewFragment() {
-        fragment = MultipleAddressFragment.newInstance(cartListData, addressData);
+        fragment = MultipleAddressFragment.newInstance(addressData);
         return fragment;
     }
 }

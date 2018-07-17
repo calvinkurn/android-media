@@ -68,39 +68,6 @@
         android:layout_height="wrap_content"
         android:visibility="gone" />
 
-    <LinearLayout
-        android:id="@+id/address_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingBottom="@dimen/padding_small"
-        android:paddingTop="@dimen/padding_small"
-        tools:visibility="gone">
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:background="#e0e0e0" />
-
-        <include
-            layout="@layout/item_recipient_address"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_8" />
-
-    </LinearLayout>
-
-    <com.tokopedia.design.pickuppoint.PickupPointLayout
-        android:id="@+id/pickup_point_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/padding_med"
-        android:paddingLeft="@dimen/padding_med"
-        android:paddingRight="@dimen/padding_med"
-        android:visibility="gone" />
-
     <View
         android:id="@+id/v_separator_multiple_product_same_store"
         android:layout_width="match_parent"
@@ -136,6 +103,38 @@
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:background="@color/grey_300" />
+
+    <LinearLayout
+        android:id="@+id/address_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        tools:visibility="visible">
+
+        <include
+            layout="@layout/item_recipient_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_8" />
+
+        <View
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="#e0e0e0" />
+
+    </LinearLayout>
+
+    <com.tokopedia.design.pickuppoint.PickupPointLayout
+        android:id="@+id/pickup_point_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/padding_med"
+        android:paddingLeft="@dimen/padding_med"
+        android:paddingRight="@dimen/padding_med"
+        android:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/ll_shipment_option_view_layout"

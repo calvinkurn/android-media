@@ -8,6 +8,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressAdapterData;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressItemData;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
@@ -15,10 +16,11 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.domain.datamodel.cartmultipleshipment.SetShippingAddressData;
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressUseCase;
+import com.tokopedia.checkout.domain.usecase.GetCartListUseCase;
 import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
+import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
@@ -32,13 +34,56 @@ import rx.Subscriber;
 
 public class MultipleAddressPresenter implements IMultipleAddressPresenter {
 
-    private ChangeShippingAddressUseCase changeShippingAddressUseCase;
+    private final ChangeShippingAddressUseCase changeShippingAddressUseCase;
+    private final GetCartListUseCase getCartListUseCase;
+    private final CartApiRequestParamGenerator cartApiRequestParamGenerator;
 
     private IMultipleAddressView view;
 
-    public MultipleAddressPresenter(IMultipleAddressView view, ChangeShippingAddressUseCase changeShippingAddressUseCase) {
+    public MultipleAddressPresenter(IMultipleAddressView view,
+                                    GetCartListUseCase getCartListUseCase,
+                                    ChangeShippingAddressUseCase changeShippingAddressUseCase,
+                                    CartApiRequestParamGenerator cartApiRequestParamGenerator) {
         this.changeShippingAddressUseCase = changeShippingAddressUseCase;
+        this.getCartListUseCase = getCartListUseCase;
+        this.cartApiRequestParamGenerator = cartApiRequestParamGenerator;
         this.view = view;
+    }
+
+    @Override
+    public void processGetCartList() {
+        view.showInitialLoading();
+
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putObject(
+                GetCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING,
+                getGeneratedAuthParamNetwork(cartApiRequestParamGenerator.generateParamMapGetCartList())
+        );
+
+        getCartListUseCase.execute(requestParams, new Subscriber<CartListData>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                view.hideInitialLoading();
+                e.printStackTrace();
+                view.showError(ErrorHandler.getErrorMessage(view.getActivityContext(), e));
+            }
+
+            @Override
+            public void onNext(CartListData cartListData) {
+                view.hideInitialLoading();
+                if (!cartListData.isError()) {
+                    view.renderCartData(cartListData);
+                } else {
+                    view.showError(cartListData.getErrorMessage());
+                }
+            }
+        });
+
     }
 
     @Override
@@ -191,6 +236,21 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
                 }
             }
         };
+    }
+
+    private TKPDMapParam<String, String> getGeneratedAuthParamNetwork(TKPDMapParam<String, String> originParams) {
+        return originParams == null
+                ?
+                AuthUtil.generateParamsNetwork(
+                        view.getActivityContext(), SessionHandler.getLoginID(view.getActivityContext()),
+                        GCMHandler.getRegistrationId(view.getActivityContext())
+                )
+                :
+                AuthUtil.generateParamsNetwork(
+                        view.getActivityContext(), originParams,
+                        SessionHandler.getLoginID(view.getActivityContext()),
+                        GCMHandler.getRegistrationId(view.getActivityContext())
+                );
     }
 
 }

@@ -32,6 +32,10 @@ import java.util.List;
 public interface ShipmentContract {
 
     interface View extends CustomerView {
+        void showInitialLoading();
+
+        void hideInitialLoading();
+
         void showLoading();
 
         void hideLoading();
@@ -40,11 +44,15 @@ public interface ShipmentContract {
 
         void showToastError(String message);
 
+        void renderCheckoutPage(CartShipmentAddressFormData cartShipmentAddressFormData);
+
         void renderCheckShipmentPrepareCheckoutSuccess();
 
         void renderErrorDataHasChangedCheckShipmentPrepareCheckout(
                 CartShipmentAddressFormData cartShipmentAddressFormData, boolean needToRefreshItemList
         );
+
+        void renderNoRecipientAddressShipmentForm(CartShipmentAddressFormData cartShipmentAddressFormData);
 
         void renderErrorDataHasChangedAfterCheckout(List<ShipmentCartItemModel> shipmentCartItemModelList);
 
@@ -84,6 +92,8 @@ public interface ShipmentContract {
     }
 
     interface Presenter extends CustomerPresenter<View> {
+
+        void processLoadCheckoutPage(boolean isInitialLoad);
 
         void processReloadCheckoutPageBecauseOfError();
 

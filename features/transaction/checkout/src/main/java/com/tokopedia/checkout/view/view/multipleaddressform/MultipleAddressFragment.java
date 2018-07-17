@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
@@ -58,21 +59,18 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
     public static final int ADD_SHIPMENT_ADDRESS_REQUEST_CODE = 21;
     public static final int EDIT_SHIPMENT_ADDRESS_REQUEST_CODE = 22;
     private static final String ADD_SHIPMENT_FRAGMENT_TAG = "ADD_SHIPMENT_FRAGMENT_TAG";
-    private static final String CART_LIST_DATA = "CART_LIST_DATA";
     private static final String ADDRESS_EXTRA = "ADDRESS_EXTRA";
     private static final String DISTRICT_RECOMMENDATION_TOKEN = "DISTRICT_RECOMMENDATION_TOKEN";
 
     private MultipleAddressAdapter multipleAddressAdapter;
     private RecyclerView orderAddressList;
     private TkpdProgressDialog progressDialogNormal;
+    private SwipeToRefresh swipeToRefresh;
 
-    public static MultipleAddressFragment newInstance(
-            CartListData cartListData,
-            RecipientAddressModel recipientModel) {
+    public static MultipleAddressFragment newInstance(RecipientAddressModel recipientModel) {
         MultipleAddressFragment fragment = new MultipleAddressFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ADDRESS_EXTRA, recipientModel);
-        bundle.putParcelable(CART_LIST_DATA, cartListData);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -112,8 +110,7 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
         return false;
     }
 
-    private List<MultipleAddressAdapterData> initiateAdapterData() {
-        CartListData cartListData = getArguments().getParcelable(CART_LIST_DATA);
+    private List<MultipleAddressAdapterData> initiateAdapterData(CartListData cartListData) {
         RecipientAddressModel recipientAddressModel = getArguments().getParcelable(ADDRESS_EXTRA);
         return presenter.initiateMultipleAddressAdapterData(cartListData, recipientAddressModel);
     }
@@ -189,9 +186,25 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
     }
 
     @Override
+    public void showInitialLoading() {
+        swipeToRefresh.setRefreshing(true);
+    }
+
+    @Override
+    public void hideInitialLoading() {
+        swipeToRefresh.setRefreshing(false);
+        swipeToRefresh.setEnabled(false);
+    }
+
+    @Override
     public void successMakeShipmentData() {
         getActivity().setResult(RESULT_CODE_SUCCESS_SET_SHIPPING);
         getActivity().finish();
+    }
+
+    @Override
+    public void renderCartData(CartListData cartListData) {
+        setRecyclerViewAdapter(initiateAdapterData(cartListData), 0);
     }
 
     @Override
@@ -265,8 +278,9 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
     protected void initView(View view) {
         progressDialogNormal = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         orderAddressList = view.findViewById(R.id.order_address_list);
+        swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
         orderAddressList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        setRecyclerViewAdapter(initiateAdapterData(), 0);
+        presenter.processGetCartList();
     }
 
     private void setRecyclerViewAdapter(List<MultipleAddressAdapterData> addressData, int itemPosition) {

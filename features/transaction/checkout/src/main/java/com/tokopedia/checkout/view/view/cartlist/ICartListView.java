@@ -1,5 +1,7 @@
 package com.tokopedia.checkout.view.view.cartlist;
 
+import android.app.Activity;
+
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
@@ -41,9 +43,9 @@ public interface ICartListView extends IBaseView {
 
     void renderNoRecipientAddressShipmentForm(CartShipmentAddressFormData shipmentAddressFormData);
 
-    void renderToShipmentFormSuccess(CartShipmentAddressFormData shipmentAddressFormData);
+    void renderToShipmentFormSuccess();
 
-    void renderToAddressChoice(CartShipmentAddressFormData cartShipmentAddressFormData);
+    void renderToAddressChoice();
 
     void renderErrorToShipmentForm(String message);
 
@@ -53,7 +55,7 @@ public interface ICartListView extends IBaseView {
 
     void renderErrorTimeoutConnectionToShipmentForm(String message);
 
-    void renderToShipmentMultipleAddressSuccess(CartListData cartListData, RecipientAddressModel selectedAddress);
+//    void renderToShipmentMultipleAddressSuccess(CartListData cartListData, RecipientAddressModel selectedAddress);
 
     void renderErrorToShipmentMultipleAddress(String message);
 
@@ -96,4 +98,6 @@ public interface ICartListView extends IBaseView {
     void renderCancelAutoApplyCouponSuccess();
 
     void renderCancelAutoApplyCouponError();
+
+    Activity getActivity();
 }

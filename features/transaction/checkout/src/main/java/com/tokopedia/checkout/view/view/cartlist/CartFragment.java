@@ -232,9 +232,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                cartListAdapter.notifyDataSetChanged();
-                cartListAdapter.checkForShipmentForm();
-                dPresenter.processToShipmentSingleAddress();
+                dPresenter.processToUpdateCartData();
             }
         };
     }
@@ -712,17 +710,17 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     }
 
     @Override
-    public void renderToShipmentFormSuccess(CartShipmentAddressFormData cartShipmentAddressFormData) {
-        Intent intent = ShipmentActivity.createInstance(getActivity(), cartShipmentAddressFormData,
-                promoCodeAppliedData, cartListData.getCartPromoSuggestion(), cartListData.getDefaultPromoDialogTab(), false
+    public void renderToShipmentFormSuccess() {
+        Intent intent = ShipmentActivity.createInstance(getActivity(), promoCodeAppliedData,
+                cartListData.getCartPromoSuggestion(), cartListData.getDefaultPromoDialogTab()
         );
         startActivityForResult(intent, ShipmentActivity.REQUEST_CODE);
     }
 
     @Override
-    public void renderToAddressChoice(CartShipmentAddressFormData cartShipmentAddressFormData) {
-        Intent intent = ShipmentActivity.createInstance(getActivity(), cartShipmentAddressFormData,
-                promoCodeAppliedData, cartListData.getCartPromoSuggestion(), cartListData.getDefaultPromoDialogTab(), true
+    public void renderToAddressChoice() {
+        Intent intent = ShipmentActivity.createInstance(getActivity(), promoCodeAppliedData,
+                cartListData.getCartPromoSuggestion(), cartListData.getDefaultPromoDialogTab()
         );
         startActivityForResult(intent, ShipmentActivity.REQUEST_CODE);
     }
@@ -747,12 +745,12 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
         showToastMessageRed(message);
     }
 
-    @Override
-    public void renderToShipmentMultipleAddressSuccess(CartListData cartListData, RecipientAddressModel selectedAddress) {
-        startActivityForResult(MultipleAddressFormActivity.createInstance(
-                getActivity(), cartListData, selectedAddress),
-                MultipleAddressFormActivity.REQUEST_CODE);
-    }
+//    @Override
+//    public void renderToShipmentMultipleAddressSuccess(CartListData cartListData, RecipientAddressModel selectedAddress) {
+//        startActivityForResult(MultipleAddressFormActivity.createInstance(
+//                getActivity(), cartListData, selectedAddress),
+//                MultipleAddressFormActivity.REQUEST_CODE);
+//    }
 
     @Override
     public void renderErrorToShipmentMultipleAddress(String message) {
@@ -1004,9 +1002,9 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
         } else if (requestCode == ShipmentActivity.REQUEST_CODE) {
             onResultFromRequestCodeCartShipment(resultCode, data);
         } else if (requestCode == MultipleAddressFormActivity.REQUEST_CODE) {
-            onResultFromRequestCodeMultipleAddressForm(resultCode);
+//            onResultFromRequestCodeMultipleAddressForm(resultCode);
         } else if (requestCode == CartAddressChoiceActivity.REQUEST_CODE) {
-            onResultFromRequestCodeAddressChoiceActivity(resultCode);
+//            onResultFromRequestCodeAddressChoiceActivity(resultCode);
         }
     }
 
@@ -1014,20 +1012,20 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
         return cartPageAnalytics;
     }
 
-    private void onResultFromRequestCodeMultipleAddressForm(int resultCode) {
-        if (resultCode == MultipleAddressFormActivity.RESULT_CODE_SUCCESS_SET_SHIPPING) {
-            dPresenter.processToShipmentForm(false);
-        } else if (resultCode == MultipleAddressFormActivity.RESULT_CODE_FORCE_RESET_CART_ADDRESS_FORM) {
-            dPresenter.processToShipmentForm(true);
-        }
-    }
+//    private void onResultFromRequestCodeMultipleAddressForm(int resultCode) {
+//        if (resultCode == MultipleAddressFormActivity.RESULT_CODE_SUCCESS_SET_SHIPPING) {
+//            dPresenter.processToShipmentForm(false);
+//        } else if (resultCode == MultipleAddressFormActivity.RESULT_CODE_FORCE_RESET_CART_ADDRESS_FORM) {
+//            dPresenter.processToShipmentForm(true);
+//        }
+//    }
 
     private void onResultFromRequestCodeCartShipment(int resultCode, Intent data) {
         if (resultCode == ShipmentActivity.RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM) {
-            RecipientAddressModel selectedAddress = data.getParcelableExtra(
-                    ShipmentActivity.EXTRA_SELECTED_ADDRESS_RECIPIENT_DATA
-            );
-            dPresenter.processToShipmentMultipleAddress(selectedAddress);
+//            RecipientAddressModel selectedAddress = data.getParcelableExtra(
+//                    ShipmentActivity.EXTRA_SELECTED_ADDRESS_RECIPIENT_DATA
+//            );
+//            dPresenter.processToShipmentMultipleAddress(selectedAddress);
         } else if (resultCode == ShipmentActivity.RESULT_CODE_FORCE_RESET_CART_FROM_SINGLE_SHIPMENT ||
                 resultCode == ShipmentActivity.RESULT_CODE_FORCE_RESET_CART_FROM_MULTIPLE_SHIPMENT) {
             dPresenter.processResetAndRefreshCartData();
@@ -1096,11 +1094,11 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
         }
     }
 
-    private void onResultFromRequestCodeAddressChoiceActivity(int resultCode) {
-        if (resultCode == CartAddressChoiceActivity.RESULT_CODE_ACTION_ADD_DEFAULT_ADDRESS) {
-            dPresenter.processToShipmentForm(false);
-        }
-    }
+//    private void onResultFromRequestCodeAddressChoiceActivity(int resultCode) {
+//        if (resultCode == CartAddressChoiceActivity.RESULT_CODE_ACTION_ADD_DEFAULT_ADDRESS) {
+//            dPresenter.processToShipmentForm(false);
+//        }
+//    }
 
     public interface ActionListener {
 

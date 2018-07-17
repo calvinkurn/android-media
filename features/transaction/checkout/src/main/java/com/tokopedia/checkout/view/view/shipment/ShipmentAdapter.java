@@ -206,6 +206,15 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public void clearData() {
         shipmentDataList.clear();
+        cartItemPromoHolderData = null;
+        cartPromoSuggestion = null;
+        shipmentCartItemModelList = null;
+        recipientAddressModel = null;
+        shipmentCostModel = null;
+        shipmentInsuranceTncModel = null;
+        shipmentCheckoutButtonModel = null;
+        shipmentSellerCashbackModel = null;
+        shipmentDonationModel = null;
         notifyDataSetChanged();
     }
 

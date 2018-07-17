@@ -17,7 +17,7 @@ public interface ShipmentAdapterActionListener extends CartAdapterActionListener
 
     void onChangeAddress();
 
-    void onSendToMultipleAddress();
+    void onSendToMultipleAddress(RecipientAddressModel recipientAddressModel);
 
     void onChooseShipment(int position, ShipmentCartItemModel shipmentCartItemModel,
                           RecipientAddressModel recipientAddressModel);

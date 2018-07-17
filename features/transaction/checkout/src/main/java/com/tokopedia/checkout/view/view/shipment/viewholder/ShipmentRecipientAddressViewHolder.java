@@ -82,7 +82,7 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
         tvSendToMultipleAddress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                shipmentAdapterActionListener.onSendToMultipleAddress();
+                shipmentAdapterActionListener.onSendToMultipleAddress(recipientAddress);
             }
         });
 

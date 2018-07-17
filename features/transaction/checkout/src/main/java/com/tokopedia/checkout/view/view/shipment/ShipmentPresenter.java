@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartcheckout.CheckoutData;
@@ -35,7 +36,6 @@ import com.tokopedia.checkout.domain.usecase.GetThanksToppayUseCase;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCheckoutButtonModel;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentDonationModel;
-import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentSellerCashbackModel;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.util.SessionHandler;
@@ -227,6 +227,64 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
+    public void processLoadCheckoutPage(boolean isInitialLoad) {
+        if (isInitialLoad) {
+            getView().showInitialLoading();
+        } else {
+            getView().showLoading();
+        }
+        TKPDMapParam<String, String> paramGetShipmentForm = new TKPDMapParam<>();
+        paramGetShipmentForm.put("lang", "id");
+
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putObject(GetShipmentAddressFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS,
+                getGeneratedAuthParamNetwork(paramGetShipmentForm));
+
+        compositeSubscription.add(
+                getShipmentAddressFormUseCase.createObservable(requestParams)
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .subscribe(new Subscriber<CartShipmentAddressFormData>() {
+                            @Override
+                            public void onCompleted() {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                e.printStackTrace();
+                                if (isInitialLoad) {
+                                    getView().hideInitialLoading();
+                                } else {
+                                    getView().hideLoading();
+                                }
+                                getView().showToastError(ErrorHandler.getErrorMessage(getView().getActivityContext(), e));
+                            }
+
+                            @Override
+                            public void onNext(CartShipmentAddressFormData cartShipmentAddressFormData) {
+                                if (isInitialLoad) {
+                                    getView().hideInitialLoading();
+                                } else {
+                                    getView().hideLoading();
+                                }
+
+                                if (cartShipmentAddressFormData.isError()) {
+                                    getView().showToastError(cartShipmentAddressFormData.getErrorMessage());
+                                } else {
+                                    if (cartShipmentAddressFormData.getGroupAddress() == null || cartShipmentAddressFormData.getGroupAddress().isEmpty()) {
+                                        getView().renderNoRecipientAddressShipmentForm(cartShipmentAddressFormData);
+                                    } else {
+                                        getView().renderCheckoutPage(cartShipmentAddressFormData);
+                                    }
+                                }
+                            }
+                        })
+        );
+    }
+
+    @Override
     public void processReloadCheckoutPageBecauseOfError() {
         getView().showLoading();
         com.tokopedia.abstraction.common.utils.TKPDMapParam<String, String> paramGetShipmentForm = new com.tokopedia.abstraction.common.utils.TKPDMapParam<>();
@@ -355,7 +413,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                         public void onError(Throwable e) {
                                             e.printStackTrace();
                                             getView().hideLoading();
-                                            getView().showToastError(getView().getActivityContext().getString(R.string.default_request_error_unknown_short));
+                                            getView().showToastError(ErrorHandler.getErrorMessage(getView().getActivityContext(), e));
                                         }
 
                                         @Override
@@ -616,7 +674,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             public void onError(Throwable e) {
                 e.printStackTrace();
                 getView().hideLoading();
-                getView().showToastError(getView().getActivityContext().getString(R.string.default_request_error_unknown));
+                getView().showToastError(ErrorHandler.getErrorMessage(getView().getActivityContext(), e));
             }
 
             @Override
@@ -681,7 +739,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             public void onError(Throwable e) {
                                 e.printStackTrace();
                                 getView().hideLoading();
-                                getView().showToastError(getView().getActivityContext().getString(R.string.default_request_error_unknown));
+                                getView().showToastError(ErrorHandler.getErrorMessage(getView().getActivityContext(), e));
                             }
 
                             @Override
@@ -729,7 +787,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             @Override
                             public void onError(Throwable e) {
                                 e.printStackTrace();
-                                getView().showToastError(getView().getActivityContext().getString(R.string.default_request_error_unknown));
+                                getView().showToastError(ErrorHandler.getErrorMessage(getView().getActivityContext(), e));
                             }
 
                             @Override
@@ -839,7 +897,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             @Override
                             public void onError(Throwable e) {
                                 e.printStackTrace();
-                                getView().showToastError(getView().getActivityContext().getString(R.string.default_request_error_unknown));
+                                getView().showToastError(ErrorHandler.getErrorMessage(getView().getActivityContext(), e));
                             }
 
                             @Override
@@ -895,7 +953,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             public void onError(Throwable e) {
                                 getView().hideLoading();
                                 e.printStackTrace();
-                                getView().showToastError(getView().getActivityContext().getString(R.string.default_request_error_unknown));
+                                getView().showToastError(ErrorHandler.getErrorMessage(getView().getActivityContext(), e));
                             }
 
                             @Override
