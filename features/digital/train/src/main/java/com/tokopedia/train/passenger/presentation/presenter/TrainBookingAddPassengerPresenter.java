@@ -17,6 +17,9 @@ import javax.inject.Inject;
 public class TrainBookingAddPassengerPresenter extends BaseDaggerPresenter<TrainBookingAddPassengerContract.View>
         implements TrainBookingAddPassengerContract.Presenter {
 
+    private static final int MAX_CONTACT_NAME = 60;
+    private static final int MAX_IDENTITY_NUMBER = 20;
+
     @Inject
     public TrainBookingAddPassengerPresenter() {
     }
@@ -43,12 +46,18 @@ public class TrainBookingAddPassengerPresenter extends BaseDaggerPresenter<Train
         } else if (TextUtils.isEmpty(getView().getContactName())) {
             allDataValid = false;
             getView().showMessageErrorInSnackBar(R.string.train_passenger_error_contact_name);
+        } else if (getView().getContactName().length() > MAX_CONTACT_NAME) {
+            allDataValid = false;
+            getView().showMessageErrorInSnackBar(R.string.train_passenger_contact_name_max);
         } else if (TextUtils.isEmpty(getView().getPhoneNumber()) && getView().getPaxType() == TrainBookingPassenger.ADULT) {
             allDataValid = false;
             getView().showMessageErrorInSnackBar(R.string.train_passenger_error_phone_number);
         } else if (TextUtils.isEmpty(getView().getIdentityNumber()) && getView().getPaxType() == TrainBookingPassenger.ADULT) {
             allDataValid = false;
             getView().showMessageErrorInSnackBar(R.string.train_passenger_error_identity_number);
+        } else if (getView().getIdentityNumber().length() > MAX_IDENTITY_NUMBER && getView().getPaxType() == TrainBookingPassenger.ADULT) {
+            allDataValid = false;
+            getView().showMessageErrorInSnackBar(R.string.train_passenger_error_identity_number_max);
         }
 
         return allDataValid;

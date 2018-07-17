@@ -43,7 +43,7 @@ public class TrainPassengerViewHolder extends AbstractViewHolder<TrainPassengerV
         headerLabel.setContentColorValue(itemView.getResources().getColor(R.color.colorPrimary));
         if (trainPassengerViewModel.getName() != null) {
             passengerDetailLayout.setVisibility(View.VISIBLE);
-            headerLabel.setContent("Ubah");
+            headerLabel.setContent(getString(R.string.train_btn_change_passenger_data));
             passengerNameTv.setText(trainPassengerViewModel.getSalutationTitle() + " " + trainPassengerViewModel.getName());
 
             if (trainPassengerViewModel.getIdentityNumber() != null) {
@@ -56,7 +56,7 @@ public class TrainPassengerViewHolder extends AbstractViewHolder<TrainPassengerV
 
         } else {
             passengerDetailLayout.setVisibility(View.GONE);
-            headerLabel.setContent("Isi Data");
+            headerLabel.setContent(getString(R.string.train_btn_fill_passenger_data));
         }
 
         headerLabel.setOnClickListener(new View.OnClickListener() {

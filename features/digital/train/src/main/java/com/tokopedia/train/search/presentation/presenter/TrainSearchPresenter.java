@@ -10,7 +10,6 @@ import com.tokopedia.train.search.presentation.model.AvailabilityKeySchedule;
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
 import com.tokopedia.usecase.RequestParams;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -41,6 +40,7 @@ public class TrainSearchPresenter extends BaseDaggerPresenter<TrainSearchContrac
 
     @Override
     public void getTrainSchedules() {
+        getView().showLoadingPage();
         getScheduleUseCase.setScheduleVariant(getView().getScheduleVariantSelected());
         getScheduleUseCase.execute(getView().getRequestParam(),
                 new Subscriber<List<AvailabilityKeySchedule>>() {
@@ -89,26 +89,16 @@ public class TrainSearchPresenter extends BaseDaggerPresenter<TrainSearchContrac
                     getView().addPaddingSortAndFilterSearch();
                     getView().showFilterAndSortButtonAction();
 
-                    getFilteredAndSortedSchedules(Integer.MIN_VALUE, Integer.MAX_VALUE,
-                            new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+                    getFilteredAndSortedSchedules();
                 }
             }
         });
     }
 
     @Override
-    public void getFilteredAndSortedSchedules(long minPrice, long maxPrice, List<String> trainClass,
-                                              List<String> trains, List<String> departureTrains) {
-        FilterParam filterParam = new FilterParam.Builder()
-                .minPrice(minPrice)
-                .maxPrice(maxPrice)
-                .trains(trains)
-                .trainClass(trainClass)
-                .departureTimeList(departureTrains)
-                .scheduleVariant(getView().getScheduleVariantSelected())
-                .arrivalTimestampSelected(getView().getArrivalTimeDepartureTripSelected())
-                .build();
-        RequestParams requestParams = getFilteredAndSortedScheduleUseCase.createRequestParam(filterParam, getView().getSortOptionSelected());
+    public void getFilteredAndSortedSchedules() {
+        RequestParams requestParams = getFilteredAndSortedScheduleUseCase.createRequestParam(
+                getView().getFilterParam(), getView().getSortOptionSelected());
 
         getFilteredAndSortedScheduleUseCase.execute(requestParams, new Subscriber<List<TrainScheduleViewModel>>() {
             @Override

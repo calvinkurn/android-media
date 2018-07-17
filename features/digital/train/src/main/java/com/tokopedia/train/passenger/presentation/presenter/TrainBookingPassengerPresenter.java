@@ -34,6 +34,8 @@ import rx.subscriptions.CompositeSubscription;
 public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBookingPassengerContract.View>
         implements TrainBookingPassengerContract.Presenter {
 
+    private static final int MAX_CONTACT_NAME = 60;
+
     private CompositeSubscription compositeSubscription;
     private GetDetailScheduleUseCase getDetailScheduleUseCase;
     private TrainSoftBookingUseCase trainSoftBookingUseCase;
@@ -129,54 +131,52 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
         if (indexPassenger != -1) {
             passengerViewModels.set(indexPassenger, trainPassengerViewModel);
         }
+        getView().setCurrentListPassenger(passengerViewModels);
         getView().renderPassengers(passengerViewModels);
     }
 
     @Override
     public void onSubmitButtonClicked() {
-        //TODO delete this after softbooking finish
         if (isAllDataValid()) {
-            getView().toastValidityData();
+            trainSoftBookingUseCase.execute(trainSoftBookingUseCase.create(), new Subscriber<TrainSoftbook>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+
+                }
+
+                @Override
+                public void onNext(TrainSoftbook trainSoftbook) {
+                    getView().navigateToReview(trainSoftbook);
+                }
+            });
         }
-        trainSoftBookingUseCase.execute(trainSoftBookingUseCase.create(), new Subscriber<TrainSoftbook>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(TrainSoftbook trainSoftbook) {
-                getView().navigateToReview(trainSoftbook);
-            }
-        });
     }
 
     @Override
     public void onChooseSeatButtonClicked() {
-//        if (isAllDataValid()) {
-            getView().navigateToChooseSeat(null);
-//        }
-//        trainSoftBookingUseCase.execute(trainSoftBookingUseCase.create(), new Subscriber<TrainSoftbook>() {
-//            @Override
-//            public void onCompleted() {
-//
-//            }
-//
-//            @Override
-//            public void onError(Throwable e) {
-//
-//            }
-//
-//            @Override
-//            public void onNext(TrainSoftbook trainSoftbook) {
-//                getView().navigateToChooseSeat(trainSoftbook);
-//            }
-//        });
+        if (isAllDataValid()) {
+            trainSoftBookingUseCase.execute(trainSoftBookingUseCase.create(), new Subscriber<TrainSoftbook>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+
+                }
+
+                @Override
+                public void onNext(TrainSoftbook trainSoftbook) {
+                    getView().navigateToChooseSeat(null);
+                }
+            });
+        }
     }
 
     private boolean isAllDataValid() {
@@ -187,6 +187,9 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
         } else if (!isAlphabetAndSpaceOnly(getView().getContactNameEt())) {
             isValid = false;
             getView().showMessageErrorInSnackBar(R.string.train_passenger_contact_name_alpha_space_error);
+        } else if (getView().getContactNameEt().length() > MAX_CONTACT_NAME) {
+            isValid = false;
+            getView().showMessageErrorInSnackBar(R.string.train_passenger_contact_name_max);
         } else if (TextUtils.isEmpty(getView().getPhoneNumberEt())) {
             isValid = false;
             getView().showMessageErrorInSnackBar(R.string.train_passenger_contact_phone_empty_error);
@@ -288,7 +291,7 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
             trainPassengerViewModel.setPaxType(TrainBookingPassenger.ADULT);
             trainPassengerViewModel.setHeaderTitle(
                     formatPassengerHeader(getView().getString(R.string.train_passenger_header_title),
-                            i, getView().getString(R.string.train_select_passenger_adult_title)));
+                            passengerId, getView().getString(R.string.train_select_passenger_adult_title)));
             trainPassengerViewModelList.add(trainPassengerViewModel);
             passengerId++;
         }
@@ -299,7 +302,7 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
             trainPassengerViewModel.setPaxType(TrainBookingPassenger.INFANT);
             trainPassengerViewModel.setHeaderTitle(
                     formatPassengerHeader(getView().getString(R.string.train_passenger_header_title),
-                            i, getView().getString(R.string.train_select_passenger_infant_title)));
+                            passengerId, getView().getString(R.string.train_select_passenger_infant_title)));
             trainPassengerViewModelList.add(trainPassengerViewModel);
             passengerId++;
         }

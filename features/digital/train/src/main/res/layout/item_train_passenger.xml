@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -10,24 +9,15 @@
         android:id="@+id/label_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/dp_15"
         android:background="@drawable/selectable_background_tokopedia"
         android:paddingBottom="@dimen/dp_16"
-        android:paddingTop="@dimen/dp_16"/>
-
-    <android.support.v7.widget.AppCompatImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignTop="@+id/label_header"
-        android:layout_alignBottom="@+id/label_header"
-        app:srcCompat="@drawable/ic_arrow_right_default" />
+        android:paddingTop="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"/>
 
     <LinearLayout
         android:id="@+id/passenger_detail_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/label_header"
         android:orientation="vertical"
         android:paddingBottom="@dimen/dp_10">
 
@@ -57,12 +47,6 @@
                 tools:text="Nona Aisyah Sarasvati" />
         </LinearLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="@dimen/dp_15"
-            android:background="@color/grey_300" />
-
     </LinearLayout>
 
-</RelativeLayout>
+</LinearLayout>

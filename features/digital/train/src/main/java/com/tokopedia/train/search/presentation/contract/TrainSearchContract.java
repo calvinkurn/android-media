@@ -39,7 +39,11 @@ public interface TrainSearchContract {
 
         int getSortOptionSelected();
 
-        String getArrivalTimeDepartureTripSelected();
+        FilterParam getFilterParam();
+
+        void resetFilterParam();
+
+        void showLoadingPage();
 
         int getScheduleVariantSelected();
 
@@ -48,7 +52,6 @@ public interface TrainSearchContract {
     interface Presenter extends CustomerPresenter<View> {
         void getTrainSchedules();
 
-        void getFilteredAndSortedSchedules(long minPrice, long maxPrice, List<String> trainClass,
-                                           List<String> trains, List<String> departureTrains);
+        void getFilteredAndSortedSchedules();
     }
 }
