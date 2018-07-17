@@ -4,7 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    app:elevation="@dimen/dp_6">
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -14,27 +15,32 @@
             android:id="@+id/image_profile"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            app:layout_constraintBottom_toBottomOf="@+id/text_profile_completion"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/text_username"
             tools:src="@drawable/ic_big_notif_customerapp" />
 
         <TextView
             android:id="@+id/text_username"
+            style="@style/TextView.TitleBig.Bold"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginStart="8dp"
+            android:maxLines="1"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/image_profile"
-            tools:layout_editor_absoluteY="0dp"
-            tools:text="Young Lex" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Young Lex Le Bron James Syaiful Amir Hutagalung" />
 
         <TextView
             android:id="@+id/text_profile_completion"
+            style="@style/TextView.Micro.Green"
             android:layout_width="0dp"
             android:layout_height="19dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginStart="8dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="4dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.025"
             app:layout_constraintStart_toEndOf="@+id/image_profile"
@@ -56,25 +62,29 @@
             android:id="@+id/label_tokopoint"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="16dp"
             android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
+            android:layout_marginRight="16dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             android:text="@string/label_user_tokopoint"
             app:layout_constraintEnd_toStartOf="@+id/divider"
             app:layout_constraintStart_toEndOf="@+id/image_tokopoint"
-            app:layout_constraintTop_toBottomOf="@+id/text_profile_completion" />
+            app:layout_constraintTop_toBottomOf="@+id/text_profile_completion"
+            style="@style/TextView.Micro.BlackDisabled"/>
 
         <TextView
             android:id="@+id/text_tokopoint_amount"
+            style="@style/TextView.Small.Bold"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="2dp"
             app:layout_constraintEnd_toStartOf="@+id/divider"
-            app:layout_constraintStart_toStartOf="@+id/label_tokopoint"
+            app:layout_constraintStart_toEndOf="@+id/image_tokopoint"
             app:layout_constraintTop_toBottomOf="@+id/label_tokopoint"
             tools:text="50.000 pt" />
 
@@ -114,15 +124,19 @@
             android:text="@string/label_user_voucher"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/image_voucher"
-            app:layout_constraintTop_toTopOf="@+id/label_tokopoint" />
+            app:layout_constraintTop_toTopOf="@+id/label_tokopoint"
+            style="@style/TextView.Micro.BlackDisabled"/>
 
         <TextView
             android:id="@+id/text_voucher_amount"
+            style="@style/TextView.Small.Bold"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="2dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/label_voucher"
+            app:layout_constraintStart_toEndOf="@+id/image_voucher"
             app:layout_constraintTop_toBottomOf="@+id/label_voucher"
             tools:text="3 Kupon" />
     </android.support.constraint.ConstraintLayout>

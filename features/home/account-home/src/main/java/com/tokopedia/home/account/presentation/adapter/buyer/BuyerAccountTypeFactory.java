@@ -14,6 +14,9 @@ import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayViewModel;
 public class BuyerAccountTypeFactory extends BaseAdapterTypeFactory {
     @Override
     public AbstractViewHolder createViewHolder(View parent, int type) {
+        if(type == BuyerCardViewHolder.LAYOUT) {
+            return new BuyerCardViewHolder(parent);
+        }
         return super.createViewHolder(parent, type);
     }
 

@@ -9,7 +9,7 @@ import com.tokopedia.home.account.presentation.adapter.buyer.BuyerAccountTypeFac
 public class BuyerCardViewModel implements Visitable<BuyerAccountTypeFactory> {
 
     private String name;
-    private String avatarImageUrl;
+    private String imageUrl;
     private String tokopoint;
     private String coupons;
     private int progress;
@@ -27,12 +27,12 @@ public class BuyerCardViewModel implements Visitable<BuyerAccountTypeFactory> {
         this.name = name;
     }
 
-    public String getAvatarImageUrl() {
-        return avatarImageUrl;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setAvatarImageUrl(String avatarImageUrl) {
-        this.avatarImageUrl = avatarImageUrl;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public String getTokopoint() {
@@ -43,11 +43,11 @@ public class BuyerCardViewModel implements Visitable<BuyerAccountTypeFactory> {
         this.tokopoint = tokopoint;
     }
 
-    public String getCoupons() {
+    public String getVoucher() {
         return coupons;
     }
 
-    public void setCoupons(String coupons) {
+    public void setVoucher(String coupons) {
         this.coupons = coupons;
     }
 

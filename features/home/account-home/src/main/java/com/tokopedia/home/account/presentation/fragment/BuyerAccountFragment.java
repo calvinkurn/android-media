@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import com.tokopedia.home.account.di.component.DaggerBuyerAccountComponent;
 import com.tokopedia.home.account.presentation.BuyerAccount;
 import com.tokopedia.home.account.presentation.adapter.buyer.BuyerAccountAdapter;
 import com.tokopedia.home.account.presentation.adapter.buyer.BuyerAccountTypeFactory;
+import com.tokopedia.home.account.presentation.viewmodel.BuyerCardViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,9 +59,10 @@ public class BuyerAccountFragment extends TkpdBaseV4Fragment implements BuyerAcc
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         adapter = new BuyerAccountAdapter(new BuyerAccountTypeFactory(), new ArrayList<>());
         recyclerView.setAdapter(adapter);
+
+        presenter.getData();
     }
 
     @Override
@@ -68,8 +71,9 @@ public class BuyerAccountFragment extends TkpdBaseV4Fragment implements BuyerAcc
     }
 
     @Override
-    public void loadData(List<Visitable> visitables) {
-
+    public void loadData(List<Visitable> data) {
+        Log.d("okasurya", TAG + ".loadData" + data.get(0).toString());
+        adapter.addMoreData(data);
     }
 
     private void initInjector() {

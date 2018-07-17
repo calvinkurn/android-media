@@ -130,6 +130,6 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment {
         adapter = new AccountHomePagerAdapter(getChildFragmentManager(), titles);
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
     }
 }
-
