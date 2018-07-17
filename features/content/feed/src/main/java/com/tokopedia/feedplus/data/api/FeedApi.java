@@ -3,7 +3,7 @@ package com.tokopedia.feedplus.data.api;
 import com.tokopedia.abstraction.common.data.model.request.GraphqlRequest;
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
 import com.tokopedia.feedplus.data.pojo.FeedQuery;
-import com.tokopedia.feedplus.data.pojo.FollowKolQuery;
+import com.tokopedia.kol.feature.post.data.pojo.FollowKolQuery;
 
 import retrofit2.Response;
 import retrofit2.http.Body;

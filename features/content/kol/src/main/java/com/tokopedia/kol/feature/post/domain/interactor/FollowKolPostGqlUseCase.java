@@ -1,30 +1,27 @@
-package com.tokopedia.feedplus.domain.usecase;
+package com.tokopedia.kol.feature.post.domain.interactor;
 
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
-import com.tokopedia.feedplus.R;
-import com.tokopedia.feedplus.data.pojo.FollowKolQuery;
-import com.tokopedia.feedplus.data.repository.FeedRepository;
-import com.tokopedia.feedplus.domain.model.FollowKolDomain;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.kol.R;
+import com.tokopedia.kol.feature.post.data.pojo.FollowKolQuery;
 import com.tokopedia.usecase.RequestParams;
-import com.tokopedia.usecase.UseCase;
 
 import javax.inject.Inject;
 
 import rx.Observable;
 
 /**
- * @author by nisie on 11/3/17.
+ * @author by yfsx on 11/7/18.
  */
 
 public class FollowKolPostGqlUseCase extends GraphqlUseCase {
 
     private static final String PARAM_USER_ID = "userID";
-    private static final String PARAM_ACTION = "action";
+    public static final String PARAM_ACTION = "action";
     public static final int PARAM_FOLLOW = 1;
     public static final int PARAM_UNFOLLOW = 0;
     public static final int SUCCESS_STATUS = 1;

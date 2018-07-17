@@ -3,10 +3,9 @@ package com.tokopedia.feedplus.view.subscriber;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.feedplus.R;
-import com.tokopedia.feedplus.data.pojo.FollowKolQuery;
-import com.tokopedia.feedplus.domain.model.FollowKolDomain;
-import com.tokopedia.feedplus.domain.usecase.FollowKolPostGqlUseCase;
-import com.tokopedia.feedplus.domain.usecase.FollowKolPostUseCase;
+import com.tokopedia.kol.feature.post.data.pojo.FollowKolQuery;
+import com.tokopedia.kol.feature.post.domain.interactor.FollowKolPostGqlUseCase;
+import com.tokopedia.kol.feature.post.domain.model.FollowKolDomain;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 
@@ -33,14 +32,14 @@ public class FollowUnfollowKolRecommendationGqlSubscriber extends FollowUnfollow
         FollowKolQuery query = response.getData(FollowKolQuery.class);
         if (query.getData() != null) {
             FollowKolDomain followKolDomain = new FollowKolDomain(query.getData().getData().getStatus());
-            if (followKolDomain.getStatus() == FollowKolPostUseCase.SUCCESS_STATUS
-                    && status == FollowKolPostUseCase.PARAM_FOLLOW)
+            if (followKolDomain.getStatus() == FollowKolPostGqlUseCase.SUCCESS_STATUS
+                    && status == FollowKolPostGqlUseCase.PARAM_FOLLOW)
                 kolListener.onSuccessFollowKolFromRecommendation(rowNumber, position);
-            else if (followKolDomain.getStatus() == FollowKolPostUseCase.SUCCESS_STATUS
-                    && status == FollowKolPostUseCase.PARAM_UNFOLLOW){
+            else if (followKolDomain.getStatus() == FollowKolPostGqlUseCase.SUCCESS_STATUS
+                    && status == FollowKolPostGqlUseCase.PARAM_UNFOLLOW){
                 kolListener.onSuccessUnfollowKolFromRecommendation(rowNumber, position);
             }
-            else if(status == FollowKolPostUseCase.PARAM_FOLLOW){
+            else if(status == FollowKolPostGqlUseCase.PARAM_FOLLOW){
                 kolListener.onErrorFollowKol(MainApplication.getAppContext().getString(R.string
                         .failed_to_follow), id, status, rowNumber);
             }else{

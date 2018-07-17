@@ -26,7 +26,6 @@ import com.tokopedia.feedplus.data.mapper.CheckNewFeedMapper;
 import com.tokopedia.feedplus.data.mapper.FeedDetailListMapper;
 import com.tokopedia.feedplus.data.mapper.FeedListMapper;
 import com.tokopedia.feedplus.data.mapper.FeedResultMapper;
-import com.tokopedia.feedplus.data.mapper.FollowKolMapper;
 import com.tokopedia.feedplus.data.mapper.RecentProductMapper;
 import com.tokopedia.feedplus.data.repository.FavoriteShopRepository;
 import com.tokopedia.feedplus.data.repository.FavoriteShopRepositoryImpl;
@@ -34,7 +33,6 @@ import com.tokopedia.feedplus.data.repository.FeedRepository;
 import com.tokopedia.feedplus.data.repository.FeedRepositoryImpl;
 import com.tokopedia.feedplus.data.repository.WishlistRepository;
 import com.tokopedia.feedplus.data.repository.WishlistRepositoryImpl;
-import com.tokopedia.feedplus.data.source.KolSource;
 import com.tokopedia.feedplus.domain.model.feed.FeedResult;
 import com.tokopedia.vote.di.VoteModule;
 import com.tokopedia.wishlist.common.data.interceptor.MojitoInterceptor;
@@ -183,17 +181,8 @@ public class FeedPlusModule {
 
     @FeedPlusScope
     @Provides
-    KolSource providesKolSource(@ApplicationContext Context context,
-                                FeedApi feedApi,
-                                FollowKolMapper followKolMapper) {
-        return new KolSource(context, feedApi, followKolMapper);
-    }
-
-    @FeedPlusScope
-    @Provides
-    FeedRepository provideFeedRepository(FeedFactory feedFactory,
-                                         KolSource kolSource) {
-        return new FeedRepositoryImpl(feedFactory, kolSource);
+    FeedRepository provideFeedRepository(FeedFactory feedFactory) {
+        return new FeedRepositoryImpl(feedFactory);
     }
 
     @FeedPlusScope
