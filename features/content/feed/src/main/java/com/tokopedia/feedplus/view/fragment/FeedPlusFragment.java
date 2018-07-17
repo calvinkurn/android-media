@@ -747,8 +747,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
         super.onResume();
         if (firstCursor == null)
             firstCursor = "";
-        if (getUserVisibleHint() && presenter != null) {
-            loadData(getUserVisibleHint());
+        if (presenter != null) {
+            loadData(true);
         }
     }
 
