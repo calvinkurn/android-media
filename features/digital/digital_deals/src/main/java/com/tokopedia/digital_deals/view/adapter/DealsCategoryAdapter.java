@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableString;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -56,8 +57,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     private INavigateToActivityRequest toActivityRequest;
     @Inject
     DealCategoryAdapterPresenter mPresenter;
-    private String headerText;
-    private int productCount;
+    private SpannableString headerText;
 
     public DealsCategoryAdapter(List<ProductItem> categoryItems, INavigateToActivityRequest toActivityRequest, Boolean... layoutType) {
         this.categoryItems = categoryItems;
@@ -162,7 +162,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
     }
 
-    public void addHeader(String text) {
+    public void addHeader(SpannableString text) {
         if (!isHeaderAdded) {
             isHeaderAdded = true;
             headerText = text;
@@ -471,7 +471,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             dealsInCity = itemView.findViewById(R.id.deals_in_city);
         }
 
-        public void bindData(String headerText) {
+        public void bindData(SpannableString headerText) {
             dealsInCity.setText(headerText);
         }
     }

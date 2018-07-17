@@ -200,14 +200,12 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     public void hideSearchButton() {
         MenuItem item = mMenu.findItem(R.id.action_menu_search);
         item.setVisible(false);
-        item.setEnabled(false);
     }
 
     @Override
     public void showSearchButton() {
         MenuItem item = mMenu.findItem(R.id.action_menu_search);
         item.setVisible(true);
-        item.setEnabled(true);
     }
 
     @Override

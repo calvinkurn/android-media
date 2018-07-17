@@ -380,14 +380,12 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     public void hideFavouriteButton() {
         MenuItem item = mMenu.findItem(R.id.action_menu_favourite);
         item.setVisible(false);
-        item.setEnabled(false);
     }
 
     @Override
     public void showFavouriteButton() {
         MenuItem item = mMenu.findItem(R.id.action_menu_favourite);
         item.setVisible(false);
-        item.setEnabled(false);
     }
 
     @Override

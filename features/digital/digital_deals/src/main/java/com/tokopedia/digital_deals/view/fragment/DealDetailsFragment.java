@@ -428,14 +428,12 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     public void hideShareButton() {
         MenuItem item = mMenu.findItem(R.id.action_menu_share);
         item.setVisible(false);
-        item.setEnabled(false);
     }
 
     @Override
     public void showShareButton() {
         MenuItem item = mMenu.findItem(R.id.action_menu_share);
         item.setVisible(true);
-        item.setEnabled(true);
     }
 
     @Override

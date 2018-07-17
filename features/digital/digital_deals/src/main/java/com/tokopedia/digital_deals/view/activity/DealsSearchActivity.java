@@ -168,7 +168,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
                 if (count == 0)
                     count = productItems.size();
             }
-            String headerString = getHeaderFormattedText(searchText, count);
+            SpannableString headerString = getHeaderFormattedText(searchText, count);
             if (!TextUtils.isEmpty(headerString))
                 dealsCategoryAdapter.addHeader(headerString);
             hideKeyboard();
@@ -189,7 +189,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
         }
     }
 
-    private String getHeaderFormattedText(String searchText, int count) {
+    private SpannableString getHeaderFormattedText(String searchText, int count) {
         String text = String.format(getString(R.string.deals_search_location_result), searchText);
         int startIndexOfLink = text.length();
         text += " " + String.format(getActivity().getResources().getString(R.string.number_of_items), count);
@@ -206,7 +206,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
                 ds.setColor(getResources().getColor(R.color.black_38));
             }
         }, startIndexOfLink, text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        return spannableString.toString();
+        return spannableString;
     }
 
     @Override
