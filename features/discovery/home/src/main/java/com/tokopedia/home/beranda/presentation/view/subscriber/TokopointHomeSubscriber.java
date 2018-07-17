@@ -1,8 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.subscriber;
 
-import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
-import com.tokopedia.core.util.TokoCashUtil;
 import com.tokopedia.home.beranda.presentation.view.HomeContract;
 
 import rx.Subscriber;

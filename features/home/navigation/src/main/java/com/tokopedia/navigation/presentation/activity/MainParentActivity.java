@@ -64,7 +64,7 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         bottomNavigation.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
 
         viewPager.setOnTouchListener((arg0, arg1) -> true);
-        viewPager.SetAllowPageSwitching(false);
+        viewPager.setAllowPageSwitching(false);
 
         if (savedInstanceState == null) {
             onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_home));
