@@ -108,7 +108,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private static final int OPEN_KOL_COMMENT = 101;
     private static final int OPEN_KOL_PROFILE = 13;
     private static final int OPEN_KOL_PROFILE_FROM_RECOMMENDATION = 83;
-    private static final int OPEN_LOGIN = 102;
     private static final int DEFAULT_VALUE = -1;
 
     private static final String TAG = FeedPlusFragment.class.getSimpleName();
@@ -629,15 +628,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
         callbackManager.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (data == null && requestCode != OPEN_LOGIN) {
+        if (data == null) {
             return;
         }
 
         switch (requestCode) {
-            case OPEN_LOGIN:
-                if (resultCode == Activity.RESULT_OK)
-                    forceLoadFirstPage();
-                break;
             case OPEN_DETAIL:
                 if (resultCode == Activity.RESULT_OK)
                     showSnackbar(data.getStringExtra("message"));
@@ -759,6 +754,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
             firstCursor = "";
         if (getUserVisibleHint() && presenter != null) {
             loadData(getUserVisibleHint());
+        }
+        if (!hasFeed()) {
+            forceLoadFirstPage();
         }
     }
 
@@ -1089,7 +1087,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onGoToLogin() {
         Intent intent = feedModuleRouter.getLoginIntent(getContext());
-        startActivityForResult(intent, OPEN_LOGIN);
+        startActivity(intent);
     }
 
     @Override
