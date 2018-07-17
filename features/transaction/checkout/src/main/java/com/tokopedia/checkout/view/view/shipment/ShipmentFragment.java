@@ -682,16 +682,19 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     recipientAddressModel);
         }
         if (shipmentDetailData != null) {
-            showCourierChoiceBottomSheet(shipmentDetailData, shipmentCartItemModel.getShopShipmentList(), position);
+            showCourierChoiceBottomSheet(shipmentDetailData, shipmentCartItemModel.getShopShipmentList(),
+                    recipientAddressModel, position);
         }
     }
 
     private void showCourierChoiceBottomSheet(ShipmentDetailData shipmentDetailData,
                                               List<ShopShipment> shopShipmentList,
+                                              RecipientAddressModel recipientAddressModel,
                                               int position) {
         if (courierBottomsheet == null || position != courierBottomsheet.getLastCartItemPosition() ||
                 shipmentDetailData.getSelectedCourier() == null) {
-            courierBottomsheet = new CourierBottomsheet(getActivity(), shipmentDetailData, shopShipmentList, position);
+            courierBottomsheet = new CourierBottomsheet(getActivity(), shipmentDetailData,
+                    shopShipmentList, recipientAddressModel, position);
         }
         courierBottomsheet.setListener(this);
         courierBottomsheet.setOnShowListener(new DialogInterface.OnShowListener() {
@@ -825,12 +828,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onShipmentItemClick(CourierItemData courierItemData, int cartItemPosition) {
+    public void onShipmentItemClick(CourierItemData courierItemData, RecipientAddressModel recipientAddressModel, int cartItemPosition) {
         ShipmentSelectionStateData shipmentSelectionStateData = new ShipmentSelectionStateData();
         shipmentSelectionStateData.setPosition(cartItemPosition);
         shipmentSelectionStateData.setCourierItemData(courierItemData);
         shipmentSelectionStateDataHashSet.add(shipmentSelectionStateData);
-        if (courierItemData.getEstimatedTimeDelivery().equalsIgnoreCase(NO_PINPOINT_ETD)) {
+        if (recipientAddressModel.getLatitude() == null || recipientAddressModel.getLatitude() == 0 ||
+                recipientAddressModel.getLongitude() == null || recipientAddressModel.getLongitude() == 0) {
             shipmentAdapter.setLastChooseCourierItemPosition(cartItemPosition);
             LocationPass locationPass = new LocationPass();
             if (shipmentAdapter.getAddressShipmentData() != null) {
@@ -839,10 +843,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             } else {
                 ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(cartItemPosition);
                 if (shipmentCartItemModel != null) {
-                    RecipientAddressModel recipientAddressModel = shipmentCartItemModel.getRecipientAddressModel();
-                    if (recipientAddressModel != null) {
-                        locationPass.setCityName(recipientAddressModel.getAddressCityName());
-                        locationPass.setDistrictName(recipientAddressModel.getDestinationDistrictName());
+                    RecipientAddressModel updatedRecipientAddressModel = shipmentCartItemModel.getRecipientAddressModel();
+                    if (updatedRecipientAddressModel != null) {
+                        locationPass.setCityName(updatedRecipientAddressModel.getAddressCityName());
+                        locationPass.setDistrictName(updatedRecipientAddressModel.getDestinationDistrictName());
                     }
                 }
             }
