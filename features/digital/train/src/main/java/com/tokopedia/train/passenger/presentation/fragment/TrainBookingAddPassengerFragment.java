@@ -112,7 +112,11 @@ public class TrainBookingAddPassengerFragment extends BaseDaggerFragment
     }
 
     private void renderPassengerData() {
-        spTitle.setSpinnerValueByEntries(trainPassengerViewModel.getSalutationTitle());
+        if (TextUtils.isEmpty(trainPassengerViewModel.getSalutationTitle())) {
+            spTitle.setSpinnerPosition(0);
+        } else {
+            spTitle.setSpinnerValueByEntries(trainPassengerViewModel.getSalutationTitle());
+        }
         if (!TextUtils.isEmpty(trainPassengerViewModel.getName()))
             contactName.setText(trainPassengerViewModel.getName());
         if (!TextUtils.isEmpty(trainPassengerViewModel.getPhone()))

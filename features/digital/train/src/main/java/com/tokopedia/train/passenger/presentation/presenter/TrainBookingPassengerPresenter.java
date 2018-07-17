@@ -238,7 +238,7 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
     }
 
     private boolean isMaxPhoneNumberValid(String phoneNumber) {
-        return phoneNumber.length() <= 13;
+        return phoneNumber.length() <= 15;
     }
 
     private boolean isNumericOnly(String expression) {
