@@ -17,7 +17,7 @@ import com.tokopedia.seller.base.view.model.StepperModel;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.keyword.view.fragment.TopAdsKeywordAddFragment;
-import com.tokopedia.topads.keyword.view.fragment.TopAdsKeywordNewChooseGroupFragment;
+import com.tokopedia.topads.keyword.view.fragment.TopAdsKeywordOldNewChooseGroupFragment;
 import com.tokopedia.topads.keyword.view.model.TopAdsKeywordStepperModel;
 
 import java.util.ArrayList;
@@ -26,13 +26,13 @@ import java.util.List;
 /**
  * Created by nathan on 5/17/17.
  */
-
-public class TopAdsKeywordNewChooseGroupActivity extends BaseStepperActivity
+@Deprecated
+public class TopAdsKeywordOldNewChooseGroupActivity extends BaseStepperActivity
         implements HasComponent<AppComponent>,
         TopAdsKeywordAddFragment.OnSuccessSaveKeywordListener {
 
     public static final String RESULT_WORDS = "rslt_wrds";
-    public static final String TAG = TopAdsKeywordNewChooseGroupActivity.class.getSimpleName();
+    public static final String TAG = TopAdsKeywordOldNewChooseGroupActivity.class.getSimpleName();
     private static final String EXTRA_IS_POSITIVE = "is_pos";
     private static final String EXTRA_CHOOSEN_GROUP = "EXTRA_CHOOSEN_GROUP";
     List<Fragment> fragmentList;
@@ -62,7 +62,7 @@ public class TopAdsKeywordNewChooseGroupActivity extends BaseStepperActivity
     }
 
     public static Intent createIntent(Context context, boolean isPositive, String groupId) {
-        Intent intent = new Intent(context, TopAdsKeywordNewChooseGroupActivity.class);
+        Intent intent = new Intent(context, TopAdsKeywordOldNewChooseGroupActivity.class);
         Bundle bundle = new Bundle();
         bundle.putBoolean(EXTRA_IS_POSITIVE, isPositive);
         bundle.putString(EXTRA_CHOOSEN_GROUP, groupId);
@@ -89,7 +89,7 @@ public class TopAdsKeywordNewChooseGroupActivity extends BaseStepperActivity
     protected List<Fragment> getListFragment() {
         if (fragmentList == null) {
             fragmentList = new ArrayList<>();
-            fragmentList.add(TopAdsKeywordNewChooseGroupFragment.newInstance());
+            fragmentList.add(TopAdsKeywordOldNewChooseGroupFragment.newInstance());
             fragmentList.add(TopAdsKeywordAddFragment.newInstance());
             return fragmentList;
         } else {
@@ -128,7 +128,7 @@ public class TopAdsKeywordNewChooseGroupActivity extends BaseStepperActivity
                         .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                TopAdsKeywordNewChooseGroupActivity.super.onBackPressed();
+                                TopAdsKeywordOldNewChooseGroupActivity.super.onBackPressed();
                             }
                         }).setNegativeButton(getString(R.string.No), new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface arg0, int arg1) {

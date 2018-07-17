@@ -16,14 +16,14 @@ import rx.android.schedulers.AndroidSchedulers;
  * Created by zulfikarrahman on 5/23/17.
  */
 
-public class TopAdsKeywordNewChooseGroupPresenterImpl extends TopAdsKeywordNewChooseGroupPresenter<TopAdsKeywordNewChooseGroupView> {
+public class TopAdsKeywordOldNewChooseGroupPresenterImpl extends TopAdsKeywordOldNewChooseGroupPresenter<TopAdsKeywordNewChooseGroupView> {
 
     public static final int TIMEOUT = 300;
     private final TopAdsSearchGroupAdsNameUseCase topAdsSearchGroupAdsNameUseCase;
     private final Subscription subscriptionSearchGroupName;
     private QueryListener listenerSearchGroupName;
 
-    public TopAdsKeywordNewChooseGroupPresenterImpl(TopAdsSearchGroupAdsNameUseCase topAdsSearchGroupAdsNameUseCase) {
+    public TopAdsKeywordOldNewChooseGroupPresenterImpl(TopAdsSearchGroupAdsNameUseCase topAdsSearchGroupAdsNameUseCase) {
         this.topAdsSearchGroupAdsNameUseCase = topAdsSearchGroupAdsNameUseCase;
         subscriptionSearchGroupName = Observable.create(new Observable.OnSubscribe<String>() {
             @Override
