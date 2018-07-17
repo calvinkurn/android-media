@@ -33,6 +33,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.R2;
+import com.tokopedia.contactus.common.analytics.ContactUsTracking;
 import com.tokopedia.contactus.inboxticket.activity.InboxTicketActivity;
 import com.tokopedia.contactus.orderquery.data.ImageUpload;
 import com.tokopedia.contactus.orderquery.data.SubmitTicketInvoiceData;
@@ -413,6 +414,7 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
 
     @OnClick(R2.id.btn_send)
     public void onSendClick() {
+        ContactUsTracking.eventSuccessClick("Submit","","");
         presenter.onSendButtonClick();
     }
 
@@ -428,6 +430,7 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
 
     @OnClick(R2.id.btn_ok)
     public void onOkClick() {
+        ContactUsTracking.eventOkClick("Inbox");
         submitSuccess.setVisibility(View.GONE);
         Intent intent = new Intent(getActivity(), InboxTicketActivity.class);
         getActivity().startActivity(new Intent(getActivity(), InboxTicketActivity.class));

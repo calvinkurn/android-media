@@ -80,11 +80,11 @@ public class BuyerPurchaseListActivity extends BaseSimpleActivity {
 
     private void setupViewPager() {
         if (SessionHandler.isUserHasShop(this)) {
-            adapter.addFragment(BuyerPurchaseFragment.newInstance(), getString(R.string.pembelian));
-            adapter.addFragment(SellerPurchaseFragment.newInstance(), getString(R.string.penjualan));
+            adapter.addFragment(BuyerPurchaseFragment.newInstance(getString(R.string.pembelian)), getString(R.string.pembelian));
+            adapter.addFragment(SellerPurchaseFragment.newInstance(getString(R.string.penjualan)), getString(R.string.penjualan));
         } else {
             tab.setVisibility(View.GONE);
-            adapter.addFragment(BuyerPurchaseFragment.newInstance(), getString(R.string.pembelian));
+            adapter.addFragment(BuyerPurchaseFragment.newInstance(getString(R.string.pembelian)), getString(R.string.pembelian));
         }
         viewPagerList.setAdapter(adapter);
     }

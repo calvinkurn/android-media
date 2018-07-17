@@ -31,6 +31,7 @@ import butterknife.ButterKnife;
 
 public class BuyerPurchaseFragment extends BaseDaggerFragment implements PurchaseListContract.View, HasComponent<ContactUsComponent> {
 
+    private static final String TAG_BUYER_SELLER = "BUYER_SELLER";
     @Inject
     PurchaseListPresenter presenter;
     @BindView(R2.id.order_list_full)
@@ -45,16 +46,21 @@ public class BuyerPurchaseFragment extends BaseDaggerFragment implements Purchas
     }
 
 
-    public static BuyerPurchaseFragment newInstance() {
+    public static BuyerPurchaseFragment newInstance(String type) {
         BuyerPurchaseFragment fragment = new BuyerPurchaseFragment();
-
+        Bundle arg = new Bundle();
+        arg.putString(TAG_BUYER_SELLER, type);
+        fragment.setArguments(arg);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        adapter = new PurchaseListAdpater(getContext());
+        String type = "";
+        if(getArguments() != null)
+            type = getArguments().getString(TAG_BUYER_SELLER);
+        adapter = new PurchaseListAdpater(getContext(), type);
         initInjector();
     }
 
