@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.ImageView;
@@ -15,6 +16,7 @@ import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerView;
+import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.tkpd.R;
@@ -78,15 +80,6 @@ public class TkpdYoutubeVideoActivity extends YouTubeBaseActivity implements
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        // Checks the orientation of the screen
-        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            Toast.makeText(this, "landscape", Toast.LENGTH_SHORT).show();
-            // btnCta.setVisibility(View.GONE);
-        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            Toast.makeText(this, "portrait", Toast.LENGTH_SHORT).show();
-            // btnCta.setVisibility(View.VISIBLE);
-
-        }
     }
 
     @Override
@@ -104,14 +97,12 @@ public class TkpdYoutubeVideoActivity extends YouTubeBaseActivity implements
     public void onInitializationSuccess(YouTubePlayer.Provider provider,
                                         YouTubePlayer player, boolean wasRestored) {
         if (!wasRestored) {
-            mPlayer = player;
-            // loadVideo() will auto play video
-            // Use cueVideo() method, if you don't want to play it automatically
-            //  player.loadVideo("tOgX9e75Zvg");
-            player.loadVideo(videoUrl);
-            // Hiding player controls
-            // player.setPlayerStyle(YouTubePlayer.PlayerStyle.CHROMELESS);
-            //player.setShowFullscreenButton(false);
+            if (!TextUtils.isEmpty(videoUrl)) {
+                mPlayer = player;
+                player.loadVideo(videoUrl);
+            }else{
+                SnackbarManager.make(TkpdYoutubeVideoActivity.this,getString(R.string.video_not_play_error),Snackbar.LENGTH_LONG).show();
+            }
         }
     }
 
@@ -128,13 +119,10 @@ public class TkpdYoutubeVideoActivity extends YouTubeBaseActivity implements
     }
 
     private void extractValues(Bundle bundle) {
-        Log.e("bundle", " bundle " + bundle);
-        videoUrl = "tOgX9e75Zvg";
         if (bundle != null) {
-            videoUrl = bundle.getString(videoUrlKey, "tOgX9e75Zvg");
-            Log.e("url", videoUrl);
+            videoUrl = bundle.getString(videoUrlKey);
             String title = bundle.getString(videoDescHeadKey, "");
-            if(!TextUtils.isEmpty(title)){
+            if (!TextUtils.isEmpty(title)) {
                 tvHeadTitle.setText(title);
             }
             tvTitle.setText(bundle.getString(videoTitleKey, ""));

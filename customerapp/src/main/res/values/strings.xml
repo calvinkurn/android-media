@@ -113,4 +113,9 @@
     <string name="shake_lagi">Shake Lagi</string>
     <string name="sepertinya_sistem_shake">Sepertinya sistem Shake di hp-mu sedang lelah. Istirahat dulu yuk!</string>
     <string name="matikan_shake">Matikan Shake</string>
+    <string name="video_not_play_error">Video can not be played.</string>
+    <string name="cta_here">CTA Here</string>
+    <string name="video_title_bar_lable">Tokopedia</string>
+    <string name="loren_impsum">Loren Impsum</string>
+    <string name="video_desc">Loren Impsum Loren Impsum Loren ImpsumLoren Impsum</string>
 </resources>

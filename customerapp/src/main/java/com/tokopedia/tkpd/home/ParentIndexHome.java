@@ -97,6 +97,7 @@ import com.tokopedia.tkpd.home.favorite.view.FragmentFavorite;
 import com.tokopedia.tkpd.home.fragment.FragmentHotListV2;
 import com.tokopedia.tkpd.home.fragment.InappMessageDialogFragment;
 import com.tokopedia.tkpd.home.model.InAppMessageModel;
+import com.tokopedia.tkpd.qrscanner.QrScannerActivity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -586,9 +587,8 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             HomeTrackingUtils.cartIconClicked(intent.getComponent().getClassName());
             return true;
         } else if (item.getItemId() == R.id.action_barcode_scan) {
-           // startActivity(QrScannerActivity.newInstance(this));
+            startActivity(QrScannerActivity.newInstance(this));
             CampaignTracking.eventQRButtonClick();
-            startActivity(new Intent(this,TkpdYoutubeVideoActivity.class));
             return true;
         } else {
             return super.onOptionsItemSelected(item);

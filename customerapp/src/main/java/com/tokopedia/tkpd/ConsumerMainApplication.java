@@ -304,7 +304,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     }
 
     private boolean handleClick(@Nullable String screenName, @Nullable Bundle extras, @Nullable Uri deepLinkUri) {
-        Log.e("bundle"," bundle " + extras);
         if (deepLinkUri != null) {
 
             if (deepLinkUri.getScheme().equals(Constants.Schemes.HTTP) || deepLinkUri.getScheme().equals(Constants.Schemes.HTTPS)) {

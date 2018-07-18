@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="top|center_horizontal"
-    android:background="#FFFFFF"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <TextView
@@ -15,7 +15,7 @@
         android:background="@color/green_buy"
         android:gravity="center"
         android:padding="@dimen/padding_small"
-        android:text="CTA Here"
+        android:text="@string/cta_here"
         android:textColor="@color/white"
         android:textSize="@dimen/font_large" />
         <LinearLayout
@@ -50,7 +50,7 @@
                     android:layout_height="wrap_content"
                     android:paddingLeft="@dimen/padding_detail"
                     android:paddingRight="@dimen/padding_detail"
-                    android:text="Tokopedia"
+                    android:text="@string/video_title_bar_lable"
                     android:textColor="@color/grey"
                     android:textSize="@dimen/font_medium"
                     android:textStyle="bold" />
@@ -69,7 +69,7 @@
                 android:layout_marginTop="@dimen/margin_med"
                 android:paddingLeft="@dimen/padding_detail"
                 android:paddingRight="@dimen/padding_detail"
-                android:text="Loren Impsum"
+                android:text="@string/loren_impsum"
                 android:textColor="@color/grey"
                 android:textSize="@dimen/font_medium"
                 android:textStyle="bold" />
@@ -81,7 +81,7 @@
                 android:layout_marginTop="@dimen/margin_3"
                 android:paddingLeft="@dimen/padding_detail"
                 android:paddingRight="@dimen/padding_detail"
-                android:text="Loren Impsum Loren Impsum Loren ImpsumLoren Impsum"
+                android:text="@string/video_desc"
                 android:textColor="@color/grey"
                 android:textSize="@dimen/font_small" />
 
