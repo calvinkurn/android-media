@@ -25,7 +25,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/flash"
-            android:drawablePadding="@dimen/dp_10"
+            android:drawablePadding="@dimen/dp_8"
             android:gravity="center_vertical"
             android:text="@string/title_discount_timer"
             android:textColor="@color/white" />
@@ -60,7 +60,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/condition"
-            android:drawablePadding="@dimen/dp_10"
+            android:drawablePadding="@dimen/dp_8"
             android:gravity="center_vertical"
             android:textColor="@color/white"
             tools:text="Stok tersedia (>100)" />
