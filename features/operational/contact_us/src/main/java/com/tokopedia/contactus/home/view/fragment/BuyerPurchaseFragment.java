@@ -31,7 +31,6 @@ import butterknife.ButterKnife;
 
 public class BuyerPurchaseFragment extends BaseDaggerFragment implements PurchaseListContract.View, HasComponent<ContactUsComponent> {
 
-    private static final String TAG_BUYER_SELLER = "BUYER_SELLER";
     @Inject
     PurchaseListPresenter presenter;
     @BindView(R2.id.order_list_full)

@@ -1,13 +1,11 @@
 package com.tokopedia.contactus.home.view.fragment;
 
-import android.os.Bundle;
-
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.home.di.ContactUsComponent;
+import com.tokopedia.contactus.home.di.DaggerContactUsComponent;
 import com.tokopedia.contactus.home.view.presenter.PurchaseListContract;
 import com.tokopedia.contactus.home.view.presenter.SellerPurchasePresenter;
-import com.tokopedia.contactus.home.di.DaggerContactUsComponent;
 
 import javax.inject.Inject;
 
@@ -16,7 +14,6 @@ import javax.inject.Inject;
  */
 /*Extending BuyerPurchaseFragment as ui is same but usecase diff so presenter change implementaiton*/
 public class SellerPurchaseFragment extends BuyerPurchaseFragment {
-    private static final String TAG_BUYER_SELLER = "BUYER_SELLER";
     @Inject
     SellerPurchasePresenter presenter;
 
