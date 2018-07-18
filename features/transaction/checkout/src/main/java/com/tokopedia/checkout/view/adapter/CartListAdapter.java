@@ -116,10 +116,6 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return cartItemHolderDataList.size();
     }
 
-    public CompositeSubscription getCompositeSubscription() {
-        return compositeSubscription;
-    }
-
     public void unsubscribeSubscription() {
         compositeSubscription.unsubscribe();
     }

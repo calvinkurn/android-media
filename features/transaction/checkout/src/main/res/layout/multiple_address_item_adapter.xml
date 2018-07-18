@@ -53,6 +53,7 @@
         android:layout_marginTop="@dimen/dp_16" />
 
     <TextView
+        android:id="@+id/tv_change_recipient_address"
         style="@style/TextSmallMedium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -67,20 +68,20 @@
         android:layout_marginTop="@dimen/dp_16">
 
         <TextView
-            android:id="@+id/tv_label_form_remark"
+            android:id="@+id/tv_label_note_for_seller"
             style="@style/TextSmallMediumBlack38"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/label_note_for_seller" />
 
         <TextView
-            android:id="@+id/tv_label_remark_option"
+            android:id="@+id/tv_btn_show_notes_for_seller"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_6"
             android:layout_marginStart="@dimen/dp_6"
-            android:layout_toEndOf="@id/tv_label_form_remark"
-            android:layout_toRightOf="@id/tv_label_form_remark"
+            android:layout_toEndOf="@id/tv_label_note_for_seller"
+            android:layout_toRightOf="@id/tv_label_note_for_seller"
             android:fontFamily="sans-serif-medium"
             android:text="@string/label_button_add_note"
             android:textColor="@color/tkpd_main_green"
@@ -88,10 +89,10 @@
             android:textStyle="normal" />
 
         <android.support.v7.widget.AppCompatEditText
-            android:id="@+id/et_remark"
+            android:id="@+id/et_notes_for_seller"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tv_label_form_remark"
+            android:layout_below="@id/tv_label_note_for_seller"
             android:fontFamily="sans-serif"
             android:imeActionLabel="Selesai"
             android:imeOptions="actionDone"
@@ -114,7 +115,7 @@ barangnya gan!" />
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_below="@id/et_remark"
+            android:layout_below="@id/et_notes_for_seller"
             android:fontFamily="sans-serif"
             android:maxLines="1"
             android:paddingLeft="@dimen/dp_4"
@@ -134,7 +135,7 @@ barangnya gan!" />
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_below="@id/et_remark"
+            android:layout_below="@id/et_notes_for_seller"
             android:fontFamily="sans-serif"
             android:lineSpacingExtra="0sp"
             android:visibility="gone"
@@ -143,6 +144,7 @@ barangnya gan!" />
     </RelativeLayout>
 
     <View
+        android:id="@+id/v_notes_separator"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:layout_marginTop="@dimen/dp_8"
@@ -153,8 +155,8 @@ barangnya gan!" />
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingBottom="@dimen/dp_16"
-        android:paddingTop="@dimen/dp_16">
+        android:paddingBottom="@dimen/dp_8"
+        android:paddingTop="@dimen/dp_8">
 
         <TextView
             style="@style/TextSmallMediumBlack54"
@@ -205,7 +207,7 @@ barangnya gan!" />
             </LinearLayout>
 
             <TextView
-                android:id="@+id/tv_error_form_validation"
+                android:id="@+id/tv_error_qty_validation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
@@ -216,7 +218,7 @@ barangnya gan!" />
                 android:visibility="gone"
                 tools:ignore="SmallSp"
                 tools:text="Maksimal 2 broh"
-                tools:visibility="gone" />
+                tools:visibility="visible" />
 
         </LinearLayout>
 

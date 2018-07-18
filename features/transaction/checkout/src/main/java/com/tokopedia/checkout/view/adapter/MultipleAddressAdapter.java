@@ -13,6 +13,8 @@ import com.tokopedia.checkout.view.viewholder.MultipleAddressViewHolder;
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.subscriptions.CompositeSubscription;
+
 /**
  * Created by kris on 1/23/18. Tokopedia
  */
@@ -29,11 +31,13 @@ public class MultipleAddressAdapter
     private ArrayList<MultipleAddressAdapterData> addressData;
     private MultipleAddressAdapterListener listener;
     private List<Object> adapterObjectList;
+    private CompositeSubscription compositeSubscription;
 
     public MultipleAddressAdapter(List<MultipleAddressAdapterData> addressData,
                                   MultipleAddressAdapterListener listener) {
         this.addressData = new ArrayList<>(addressData);
         this.listener = listener;
+        compositeSubscription = new CompositeSubscription();
         adapterObjectList = new ArrayList<>();
         adapterObjectList.addAll(addressData);
         adapterObjectList.add(addressData);
@@ -48,7 +52,6 @@ public class MultipleAddressAdapter
         else
             return super.getItemViewType(position);
     }
-
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -66,7 +69,7 @@ public class MultipleAddressAdapter
             MultipleAddressViewHolder itemViewHolder = (MultipleAddressViewHolder) holder;
             MultipleAddressAdapterData data = (MultipleAddressAdapterData)
                     adapterObjectList.get(position);
-            itemViewHolder.bindAdapterView(addressData, data, this, listener, isFirstItem(data));
+            itemViewHolder.bindAdapterView(addressData, data, this, listener, compositeSubscription, isFirstItem(data));
         } else if (getItemViewType(position) == MULTIPLE_ADDRESS_FOOTER_LAYOUT)
             ((MultipleAddressFooterViewHolder) holder).goToCourierPageButton
                     .setOnClickListener(onGoToCourierPageButtonClicked(addressData));
@@ -85,6 +88,10 @@ public class MultipleAddressAdapter
     @Override
     public void onEditItemChoosen(int parentItemPosotion, MultipleAddressAdapterData productData, MultipleAddressItemData addressData) {
         listener.onItemChoosen(parentItemPosotion, this.addressData, productData, addressData);
+    }
+
+    public void unsubscribeSubscription() {
+        compositeSubscription.unsubscribe();
     }
 
     class MultipleAddressFooterViewHolder extends RecyclerView.ViewHolder {

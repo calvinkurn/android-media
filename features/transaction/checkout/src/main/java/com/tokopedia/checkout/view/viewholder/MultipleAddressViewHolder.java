@@ -5,6 +5,7 @@ import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SimpleItemAnimator;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -25,6 +26,8 @@ import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
 
 import java.util.ArrayList;
+
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by kris on 3/14/18. Tokopedia
@@ -70,6 +73,7 @@ public class MultipleAddressViewHolder extends RecyclerView.ViewHolder {
             MultipleAddressAdapterData data,
             MultipleAddressItemAdapter.MultipleAddressItemAdapterListener listener,
             MultipleAddressAdapter.MultipleAddressAdapterListener addressListener,
+            CompositeSubscription compositeSubscription,
             boolean firstItemPosition
     ) {
         if (data.isOfficialStore()) {
@@ -88,8 +92,10 @@ public class MultipleAddressViewHolder extends RecyclerView.ViewHolder {
         ImageHandler.LoadImage(productImage, data.getProductImageUrl());
         shippingDestinationList.setLayoutManager(new LinearLayoutManager(context));
         shippingDestinationList.setAdapter(
-                new MultipleAddressItemAdapter(getAdapterPosition(), data, data.getItemListData(), listener)
+                new MultipleAddressItemAdapter(
+                        getAdapterPosition(), data, data.getItemListData(), listener, compositeSubscription)
         );
+        ((SimpleItemAnimator) shippingDestinationList.getItemAnimator()).setSupportsChangeAnimations(false);
         btAddNewShipment.setOnClickListener(
                 onAddAddressClickedListener(
                         data.getItemListData().size(),
