@@ -206,13 +206,12 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
 
     @Override
     public void setPricing(Pricing pricing) {
-        DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
-        doubleTextView.setTopText(pricing.label());
-        doubleTextView.setBottomText(pricing.value());
-        doubleTextView.setBottomTextSize(16);
-        doubleTextView.setBottomGravity(Gravity.RIGHT);
-        infoValue.addView(doubleTextView);
-
+//        DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
+//        doubleTextView.setTopText(pricing.label());
+//        doubleTextView.setBottomText(pricing.value());
+//        doubleTextView.setBottomTextSize(16);
+//        doubleTextView.setBottomGravity(Gravity.RIGHT);
+//        infoValue.addView(doubleTextView);
     }
     @Override
     public void setPayMethodInfo(PayMethod payMethod) {
@@ -274,12 +273,13 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         GradientDrawable shape = new GradientDrawable();
         shape.setShape(GradientDrawable.RECTANGLE);
         shape.setCornerRadius(getResources().getDimensionPixelSize(R.dimen.dp_4));
-        shape.setColor(getResources().getColor(R.color.white));
-        shape.setStroke(getResources().getDimensionPixelSize(R.dimen.dp_2), getResources().getColor(R.color.grey_300));
+        shape.setColor((Color.parseColor(actionButton.getActionColor().getBackground())));
+        shape.setStroke(getResources().getDimensionPixelSize(R.dimen.dp_2), Color.parseColor(actionButton.getActionColor().getBorder()));
         langannan.setBackground(shape);
         if (isSingleButton) {
             langannan.setLayoutParams(params);
         }
+        langannan.setTextColor(Color.parseColor(actionButton.getActionColor().getTextColor()));
         langannan.setOnClickListener(getActionButtonClickListener(actionButton.getUri()));
     }
 
@@ -289,7 +289,8 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         GradientDrawable shape = new GradientDrawable();
         shape.setShape(GradientDrawable.RECTANGLE);
         shape.setCornerRadius(getResources().getDimensionPixelSize(R.dimen.dp_4));
-        shape.setColor(getResources().getColor(R.color.deep_orange_500));
+        shape.setColor((Color.parseColor(actionButton.getActionColor().getBackground())));
+        shape.setStroke(getResources().getDimensionPixelSize(R.dimen.dp_2), Color.parseColor(actionButton.getActionColor().getBorder()));
         beliLagi.setBackground(shape);
         beliLagi.setTextColor(getResources().getColor(R.color.white));
         beliLagi.setOnClickListener(getActionButtonClickListener(actionButton.getUri()));

@@ -207,11 +207,6 @@ public class OrderListActivity extends DrawerPresenterActivity<OrderListInitCont
         tabLayout.addOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager));
     }
 
-    @Override
-    public String getFilterCaseAllTransaction() {
-        return null;
-    }
-
     private class OnTabPageChangeListener extends TabLayout.TabLayoutOnPageChangeListener {
 
         OnTabPageChangeListener(TabLayout tabLayout) {

@@ -71,7 +71,6 @@ dependencies {
 
     implementation(group: 'com.bca.widget', name: 'oneclick', version: '1.0', ext: 'aar')
     implementation project(path: ':libraries:applink')
-    implementation project(path: ':tkpdflight')
 }
 
 apply from: '../publish_local.gradle'

@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.facebook.soloader.SoLoader;
@@ -38,6 +39,7 @@ import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.digital.common.constant.DigitalUrl;
 import com.tokopedia.flight.TkpdFlight;
 import com.tokopedia.flight.common.constant.FlightUrl;
+import com.tokopedia.flight.orderlist.view.FlightOrderListFragment;
 import com.tokopedia.gamification.GamificationUrl;
 import com.tokopedia.groupchat.common.data.GroupChatUrl;
 import com.tokopedia.groupchat.common.data.SendbirdKey;
@@ -362,5 +364,10 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     @Override
     public Intent getInstantLoanActivityIntent(Context context) {
         return null;
+    }
+
+    @Override
+    public Fragment getFlightOrderListFragment() {
+        return FlightOrderListFragment.createInstance();
     }
 }
