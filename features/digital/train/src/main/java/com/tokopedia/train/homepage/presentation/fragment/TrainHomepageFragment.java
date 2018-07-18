@@ -117,12 +117,24 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
         buttonOneWayTrip.setOnClickListener(v -> {
             trainHomepagePresenterImpl.singleTrip();
 
-//            abstractionRouter.getAnalyticTracker().sendEventTracking(
-//                    TrainEventTracking.Event.
-//            );
+            abstractionRouter.getAnalyticTracker().sendEventTracking(
+                    TrainEventTracking.Event.GENERIC_TRAIN_EVENT,
+                    TrainEventTracking.Category.DIGITAL_TRAIN,
+                    TrainEventTracking.Action.CHOOSE_SINGLE_TRIP,
+                    ""
+            );
         });
 
-        buttonRoundTrip.setOnClickListener(v -> trainHomepagePresenterImpl.roundTrip());
+        buttonRoundTrip.setOnClickListener(v -> {
+            trainHomepagePresenterImpl.roundTrip();
+
+            abstractionRouter.getAnalyticTracker().sendEventTracking(
+                    TrainEventTracking.Event.GENERIC_TRAIN_EVENT,
+                    TrainEventTracking.Category.DIGITAL_TRAIN,
+                    TrainEventTracking.Action.CHOOSE_SINGLE_TRIP,
+                    ""
+            );
+        });
 
         imageReverseOriginDestitation.setOnClickListener(v -> {
             trainHomepagePresenterImpl.onReverseStationButtonClicked();
@@ -154,7 +166,21 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
                 getHomepageViewModel().getTrainPassengerViewModel()),
                 PASSENGER_REQUEST_CODE));
 
-        buttonSearchTicket.setOnClickListener(view1 -> trainHomepagePresenterImpl.onSubmitButtonClicked());
+        buttonSearchTicket.setOnClickListener(view1 -> {
+            trainHomepagePresenterImpl.onSubmitButtonClicked();
+
+//            String trip = viewModel.isOneWay() ? "single trip" : "round trip";
+//            String origin = viewModel.getOriginStation().getStationCode();
+//            String destination = viewModel.getDestinationStation().getStationCode();
+//            String numOfPassenger = viewModel.getPassengerFmt();
+//
+//            abstractionRouter.getAnalyticTracker().sendEventTracking(
+//                    TrainEventTracking.Event.GENERIC_TRAIN_EVENT,
+//                    TrainEventTracking.Category.DIGITAL_TRAIN,
+//                    TrainEventTracking.Action.CLICK_FIND_TICKET,
+//
+//            );
+        });
 
         return view;
     }

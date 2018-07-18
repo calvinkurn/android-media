@@ -23,12 +23,9 @@ public class TrainHomepageActivity extends TrainBaseActivity implements HasCompo
 
     @SuppressWarnings("unused")
     @DeepLink({ApplinkConst.TRAIN_HOMEPAGE})
-    public static TaskStackBuilder intentForTaskStackBuilderMethods(Context context, Bundle extras) {
-        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
+    public static Intent intentForTaskStackBuilderMethods(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        Intent intent = TrainHomepageActivity.getCallingIntent(context);
-        taskStackBuilder.addNextIntent(intent);
-        return taskStackBuilder;
+        return TrainHomepageActivity.getCallingIntent(context);
     }
 
     public static Intent getCallingIntent(Context context){

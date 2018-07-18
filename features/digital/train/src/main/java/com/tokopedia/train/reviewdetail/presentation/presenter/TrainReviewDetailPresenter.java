@@ -1,6 +1,5 @@
 package com.tokopedia.train.reviewdetail.presentation.presenter;
 
-import android.annotation.SuppressLint;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
@@ -8,9 +7,9 @@ import android.util.Pair;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.train.passenger.domain.model.TrainPaxPassenger;
 import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
+import com.tokopedia.train.reviewdetail.presentation.contract.TrainReviewDetailContract;
 import com.tokopedia.train.reviewdetail.presentation.model.TrainReviewPassengerInfoViewModel;
 import com.tokopedia.train.reviewdetail.presentation.model.TrainReviewPassengerInfoViewModelBuilder;
-import com.tokopedia.train.reviewdetail.presentation.contract.TrainReviewDetailContract;
 import com.tokopedia.train.scheduledetail.domain.GetScheduleDetailUseCase;
 import com.tokopedia.train.scheduledetail.presentation.model.TrainScheduleDetailViewModel;
 import com.tokopedia.train.search.domain.GetDetailScheduleUseCase;
@@ -64,35 +63,53 @@ public class TrainReviewDetailPresenter extends BaseDaggerPresenter<TrainReviewD
         if (returnTrainPaxPassengerObservable != null) {
             observable = Observable.zip(departureTrainPaxPassengerObservable, returnTrainPaxPassengerObservable,
                     (departureTrainPaxPassenger, returnTrainPaxPassenger)
-                            -> new TrainReviewPassengerInfoViewModelBuilder()
-                            .name(departureTrainPaxPassenger.getName())
-                            .noID(departureTrainPaxPassenger.getIdNumber())
-                            .departureTripClass(departureTrainPaxPassenger.getSeat().getKlass())
-                            .returnTripClass(returnTrainPaxPassenger.getSeat().getKlass())
-                            .originStationCode(originStationCode)
-                            .destinationStationCode(destinationStationCode)
-                            .departureSeat(departureTrainPaxPassenger.getSeat().getWagonNo() + "/"
-                                    + departureTrainPaxPassenger.getSeat().getRow()
-                                    + departureTrainPaxPassenger.getSeat().getColumn())
-                            .returnSeat(returnTrainPaxPassenger.getSeat().getWagonNo() + "/"
-                                    + returnTrainPaxPassenger.getSeat().getRow()
-                                    + returnTrainPaxPassenger.getSeat().getColumn())
-                            .createTrainReviewPassengerInfoViewModel())
+                            -> {
+                        String passengerType = null;
+                        if (departureTrainPaxPassenger.getPaxType() == 1) {
+                            passengerType = "Dewasa";
+                        } else if (departureTrainPaxPassenger.getPaxType() == 3) {
+                            passengerType = "Infant";
+                        }
+                        return new TrainReviewPassengerInfoViewModelBuilder()
+                                .name(departureTrainPaxPassenger.getName())
+                                .noID(departureTrainPaxPassenger.getIdNumber())
+                                .departureTripClass(departureTrainPaxPassenger.getSeat().getKlass())
+                                .returnTripClass(returnTrainPaxPassenger.getSeat().getKlass())
+                                .originStationCode(originStationCode)
+                                .destinationStationCode(destinationStationCode)
+                                .departureSeat(departureTrainPaxPassenger.getSeat().getWagonNo() + "/"
+                                        + departureTrainPaxPassenger.getSeat().getRow()
+                                        + departureTrainPaxPassenger.getSeat().getColumn())
+                                .returnSeat(returnTrainPaxPassenger.getSeat().getWagonNo() + "/"
+                                        + returnTrainPaxPassenger.getSeat().getRow()
+                                        + returnTrainPaxPassenger.getSeat().getColumn())
+                                .passengerType(passengerType)
+                                .createTrainReviewPassengerInfoViewModel();
+                    })
                     .toList();
         } else {
             observable = departureTrainPaxPassengerObservable
-                    .map(departureTrainPaxPassenger -> new TrainReviewPassengerInfoViewModelBuilder()
-                            .name(departureTrainPaxPassenger.getName())
-                            .noID(departureTrainPaxPassenger.getIdNumber())
-                            .departureTripClass(departureTrainPaxPassenger.getSeat().getKlass())
-                            .returnTripClass(null)
-                            .originStationCode(originStationCode)
-                            .destinationStationCode(destinationStationCode)
-                            .departureSeat(departureTrainPaxPassenger.getSeat().getWagonNo() + "/"
-                                    + departureTrainPaxPassenger.getSeat().getRow()
-                                    + departureTrainPaxPassenger.getSeat().getColumn())
-                            .returnSeat(null)
-                            .createTrainReviewPassengerInfoViewModel())
+                    .map(departureTrainPaxPassenger -> {
+                        String passengerType = null;
+                        if (departureTrainPaxPassenger.getPaxType() == 1) {
+                            passengerType = "Dewasa";
+                        } else if (departureTrainPaxPassenger.getPaxType() == 3) {
+                            passengerType = "Infant";
+                        }
+                        return new TrainReviewPassengerInfoViewModelBuilder()
+                                .name(departureTrainPaxPassenger.getName())
+                                .noID(departureTrainPaxPassenger.getIdNumber())
+                                .departureTripClass(departureTrainPaxPassenger.getSeat().getKlass())
+                                .returnTripClass(null)
+                                .originStationCode(originStationCode)
+                                .destinationStationCode(destinationStationCode)
+                                .departureSeat(departureTrainPaxPassenger.getSeat().getWagonNo() + "/"
+                                        + departureTrainPaxPassenger.getSeat().getRow()
+                                        + departureTrainPaxPassenger.getSeat().getColumn())
+                                .returnSeat(null)
+                                .passengerType(passengerType)
+                                .createTrainReviewPassengerInfoViewModel();
+                    })
                     .toList();
         }
 
@@ -138,7 +155,12 @@ public class TrainReviewDetailPresenter extends BaseDaggerPresenter<TrainReviewD
 
                     @Override
                     public void onNext(Pair<TrainScheduleViewModel, TrainScheduleViewModel> pairScheduleDetail) {
-                        getView().showScheduleTrips(pairScheduleDetail.first, pairScheduleDetail.second);
+                        getView().showDepartureTrip(pairScheduleDetail.first);
+                        if (pairScheduleDetail.second != null) {
+                            getView().showReturnTrip(pairScheduleDetail.second);
+                        } else {
+                            getView().hideReturnTrip();
+                        }
                     }
                 });
     }

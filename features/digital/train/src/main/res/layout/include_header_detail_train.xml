@@ -55,9 +55,7 @@
             android:paddingRight="@dimen/dp_16"
             android:paddingTop="@dimen/dp_8"
             android:textSize="@dimen/sp_10"
-            android:visibility="gone"
-            tools:text="Jum, 29 Ags 2018"
-            tools:visibility="visible" />
+            tools:text="Jum, 29 Ags 2018" />
 
     </LinearLayout>
 

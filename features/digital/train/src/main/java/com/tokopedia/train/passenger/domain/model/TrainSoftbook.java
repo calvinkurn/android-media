@@ -118,6 +118,7 @@ public class TrainSoftbook implements Parcelable {
         trainTrip.setDiscount(1000);
         trainTrip.setExtraFee(1000);
         trainTrip.setNormalSales("100000");
+        trainTrip.setSubclass("Q");
         trainTrip.setDisplayNormalSales("Rp.1000000");
         trainTrip.setTrainNo("123");
         trainTrip.setArrivalTimestamp("2019-02-20T17:35:00Z");

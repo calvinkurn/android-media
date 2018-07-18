@@ -10,6 +10,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <com.tokopedia.train.seat.presentation.widget.CountdownTimeView
+            android:id="@+id/ct_countdown"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:ctv_hour_title="Jam"
+            app:ctv_minute_title="Detik"
+            app:ctv_second_title="Menit" />
+
         <com.tokopedia.design.component.CardWithAction
             android:id="@+id/train_departure_info"
             android:layout_width="match_parent"
@@ -25,19 +33,19 @@
             android:layout_height="wrap_content"
             android:background="@drawable/bg_card_with_action_main"
             android:visibility="visible"
-            android:layout_marginBottom="@dimen/dp_16"
             app:cmw_action="Detail"
             tools:visibility="visible" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginStart="@dimen/dp_16"
             android:textSize="@dimen/sp_16"
             android:textColor="@color/black"
             android:textStyle="bold"
-            tools:text="Data Penumpang"/>
+            android:text="@string/train_review_label_passengers_data"/>
 
         <android.support.v7.widget.RecyclerView
             tools:visibility="gone"
@@ -70,9 +78,9 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:text="Total Pembayaran"
+                android:text="@string/train_review_label_total_payment"
                 android:textColor="@color/black"
-                android:layout_gravity="center"
+                android:layout_gravity="top"
                 android:layout_weight="1"
                 android:textStyle="bold"
                 android:layout_width="0dp"
@@ -93,12 +101,30 @@
                     android:textStyle="bold"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
-                
-                <TextView
+
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/green_250"
-                    android:text="Lihat Detail"/>
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/train_review_text_label_see_detail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/green_250"
+                        android:text="@string/train_review_label_see_detail"/>
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/train_review_image_arrow"
+                        android:layout_marginLeft="@dimen/dp_8"
+                        android:layout_marginStart="@dimen/dp_8"
+                        android:tint="@color/green_250"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_arrow_down_grey"/>
+
+                </LinearLayout>
 
             </LinearLayout>
             
@@ -146,6 +172,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_8"
                 android:weightSum="2"
                 android:id="@+id/view_total_price_return_trip"
                 android:orientation="horizontal">
@@ -176,8 +203,9 @@
         
         <Button
             style="@style/Button.Submit.Orange"
-            android:text="Pilih Metode Pembayaran"
+            android:text="@string/train_review_button_text_choose_payment_method"
             android:layout_marginTop="@dimen/dp_16"
+            android:paddingBottom="@dimen/dp_16"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 

@@ -39,7 +39,8 @@ public class TrainSeatPresenter extends BaseDaggerPresenter<TrainSeatContract.Vi
     public void getSeatMaps() {
         getView().showLoading();
         getView().hidePage();
-        trainGetSeatsUseCase.execute(RequestParams.create(), new Subscriber<List<TrainWagonViewModel>>() {
+        RequestParams requestParams = buildGetSeatRequests(getView().isReturning(), getView().getTrainSoftbook());
+        trainGetSeatsUseCase.execute(requestParams, new Subscriber<List<TrainWagonViewModel>>() {
             @Override
             public void onCompleted() {
 
@@ -62,6 +63,37 @@ public class TrainSeatPresenter extends BaseDaggerPresenter<TrainSeatContract.Vi
                 getView().renderExpireDateCountdown(TrainDateUtil.stringToDate(TrainDateUtil.FORMAT_DATE_API_DETAIL, getView().getExpireDate()));
             }
         });
+    }
+
+    private RequestParams buildGetSeatRequests(boolean returning, TrainSoftbook trainSoftbook) {
+        if (!returning) {
+            if (trainSoftbook.getDepartureTrips().size() > 0) {
+                TrainTrip trainTrip = trainSoftbook.getDepartureTrips().get(0);
+
+                String departureTime = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API_DETAIL, "yyyyMMdd", trainTrip.getDepartureTimestamp());
+                return trainGetSeatsUseCase.createRequestParam(
+                        departureTime,
+                        trainTrip.getOrg(),
+                        trainTrip.getDes(),
+                        trainTrip.getTrainNo(),
+                        trainTrip.getSubclass()
+                );
+            }
+        } else {
+            if (trainSoftbook.getReturnTrips().size() > 0) {
+                TrainTrip trainTrip = trainSoftbook.getReturnTrips().get(0);
+
+                String departureTime = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API_DETAIL, "yyyyMMdd", trainTrip.getDepartureTimestamp());
+                return trainGetSeatsUseCase.createRequestParam(
+                        departureTime,
+                        trainTrip.getOrg(),
+                        trainTrip.getDes(),
+                        trainTrip.getTrainNo(),
+                        trainTrip.getSubclass()
+                );
+            }
+        }
+        return null;
     }
 
     @Override

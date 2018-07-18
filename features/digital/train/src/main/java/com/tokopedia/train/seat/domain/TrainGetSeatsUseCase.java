@@ -13,11 +13,11 @@ import rx.Observable;
 import rx.functions.Func1;
 
 public class TrainGetSeatsUseCase extends UseCase<List<TrainWagonViewModel>> {
-    private static final String PARAM_DEPARTURE_TIME = "depDate";
-    private static final String PARAM_ORIGIN = "ori";
-    private static final String PARAM_DESTINATION = "dest";
+    private static final String PARAM_DEPARTURE_TIME = "date";
+    private static final String PARAM_ORIGIN = "origin";
+    private static final String PARAM_DESTINATION = "destination";
     private static final String PARAM_TRAIN_NO = "trainNo";
-    private static final String PARAM_TRAIN_SUBCLASS = "subClass";
+    private static final String PARAM_TRAIN_SUBCLASS = "subclass";
 
     private TrainRepository trainRepository;
     private TrainWagonViewModelMapper trainWagonViewModelMapper;

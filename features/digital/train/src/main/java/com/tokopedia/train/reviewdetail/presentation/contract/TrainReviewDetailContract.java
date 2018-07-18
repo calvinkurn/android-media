@@ -13,9 +13,13 @@ public class TrainReviewDetailContract {
 
     public interface View extends BaseListViewListener<TrainReviewPassengerInfoViewModel> {
 
-        void showScheduleTrips(TrainScheduleViewModel first, TrainScheduleViewModel second);
+        void showDepartureTrip(TrainScheduleViewModel departureTrip);
+
+        void showReturnTrip(TrainScheduleViewModel returnTrip);
 
         void showScheduleTripsPrice(TrainScheduleDetailViewModel first, TrainScheduleDetailViewModel second);
+
+        void hideReturnTrip();
 
     }
 
