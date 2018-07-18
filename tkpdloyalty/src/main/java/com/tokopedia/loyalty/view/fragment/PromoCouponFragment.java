@@ -418,7 +418,7 @@ public class PromoCouponFragment extends BasePresenterFragment
                 || getArguments().getString(PLATFORM_KEY).equalsIgnoreCase(
                 IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DEALS_STRING)) {
             String jsonbody = getActivity().getIntent().getStringExtra(CHECKOUT);
-            dPresenter.parseAndSubmitEventVoucher(jsonbody, data, PLATFORM_KEY);
+            dPresenter.parseAndSubmitEventVoucher(jsonbody, data, getArguments().getString(PLATFORM_KEY));
         } else if (getArguments().getString(PLATFORM_KEY).equalsIgnoreCase(
                 IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.FLIGHT_STRING)) {
             dPresenter.submitFlightVoucher(data, getArguments().getString(CART_ID_KEY));

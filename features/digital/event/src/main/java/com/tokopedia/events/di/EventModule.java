@@ -2,7 +2,6 @@ package com.tokopedia.events.di;
 
 import android.content.Context;
 
-import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
@@ -15,12 +14,8 @@ import com.tokopedia.core.drawer2.domain.ProfileRepository;
 import com.tokopedia.core.drawer2.domain.interactor.ProfileUseCase;
 import com.tokopedia.core.network.apiservices.user.PeopleService;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.core.OkHttpRetryPolicy;
-import com.tokopedia.core.network.retrofit.interceptors.DebugInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.EventInerceptors;
-import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.data.EventRepositoryData;
 import com.tokopedia.events.data.EventsDataStoreFactory;
@@ -36,13 +31,9 @@ import com.tokopedia.events.domain.GetSearchEventsListRequestUseCase;
 import com.tokopedia.events.domain.GetSearchNextUseCase;
 import com.tokopedia.events.domain.postusecase.PostValidateShowUseCase;
 import com.tokopedia.events.domain.postusecase.VerifyCartUseCase;
-import com.tokopedia.network.utils.TkpdOkHttpBuilder;
-
-import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
-import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -104,46 +95,14 @@ public class EventModule {
     @Provides
     @EventQualifier
     @EventScope
-    Retrofit provideEventRetrofit(@Named("okhttp") OkHttpClient okHttpClient,
+    Retrofit provideEventRetrofit(OkHttpClient okHttpClient,
                                   Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(TkpdBaseURL.EVENTS_DOMAIN).client(okHttpClient).build();
     }
 
-    @EventQualifier
     @Provides
-    @EventScope
-    OkHttpClient provideOkHttpClientEvent(EventInerceptors eventInerceptors,
-                                          @EventQualifier OkHttpRetryPolicy okHttpRetryPolicy,
-                                          @Named("chuck") Interceptor chuckInterceptor) {
-
-//        return OkHttpFactory.create().buildDaggerClientBearerEvents(
-//                eventInerceptors,
-//                okHttpRetryPolicy,
-//                (ChuckInterceptor) chuckInterceptor,
-//                debugInterceptor,
-//                loggingInterceptor
-//        );
-
-        return new OkHttpClient.Builder()
-                .addInterceptor(eventInerceptors)
-                .addInterceptor(chuckInterceptor)
-//                .addInterceptor(debugInterceptor)
-//                .addInterceptor(loggingInterceptor)
-                .build();
-
-
-    }
-
-    @Provides
-    @Named("chuck")
-    Interceptor provideChuckInterceptor() {
-         return ((EventModuleRouter)thisContext).getChuckInterceptor();
-    }
-
-    @Provides
-    @Named("okhttp")
-    OkHttpClient provideOkHttp() {
-         return ((EventModuleRouter)thisContext).getOkHttpClient();
+    OkHttpClient provideOkHttp(EventInerceptors eventInerceptors, HttpLoggingInterceptor loggingInterceptor) {
+        return ((EventModuleRouter) thisContext.getApplicationContext()).getOkHttpClient(eventInerceptors, loggingInterceptor);
     }
 
     @Provides
@@ -159,7 +118,7 @@ public class EventModule {
     @EventScope
     @Provides
     EventInerceptors provideEventInterCeptor(Context context) {
-        String oAuthString = "Bearer " + ((EventModuleRouter) thisContext).getSession().getAccessToken();
+        String oAuthString = "Bearer " + ((EventModuleRouter) thisContext.getApplicationContext()).getSession().getAccessToken();
         return new EventInerceptors(oAuthString, context);
     }
 
@@ -238,7 +197,7 @@ public class EventModule {
                 new PeopleService(),
                 new ProfileMapper(),
                 new GlobalCacheManager(),
-                ((EventModuleRouter)thisContext).getSessionHandler());
+                ((EventModuleRouter) thisContext.getApplicationContext()).getSessionHandler());
     }
 
     @Provides

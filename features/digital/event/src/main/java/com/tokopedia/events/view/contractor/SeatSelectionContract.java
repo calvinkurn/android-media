@@ -47,8 +47,6 @@ public class SeatSelectionContract {
 
         android.view.View getRootView();
 
-        boolean isEventOmsEnabled();
-
     }
 
     public interface Presenter extends CustomerPresenter<SeatSelectionView> {

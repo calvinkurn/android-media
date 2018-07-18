@@ -358,11 +358,6 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
         return result;
     }
 
-    @Override
-    public boolean isEventOmsEnabled() {
-        return remoteConfig.getBoolean("event_oms_android", false);
-    }
-
     @OnClick(R2.id.btn_go_to_payment)
     void clickPay() {
         mPresenter.updateEmail(tvEmailID.getText().toString());

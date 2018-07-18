@@ -15,6 +15,7 @@ import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.drawer2.data.pojo.profile.ProfileModel;
 import com.tokopedia.core.drawer2.domain.interactor.ProfileUseCase;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.events.R;
 import com.tokopedia.events.data.entity.response.Form;
 import com.tokopedia.events.data.entity.response.checkoutreponse.CheckoutResponse;
@@ -85,6 +86,7 @@ public class EventReviewTicketPresenter
     private RequestParams paymentparams;
     private String INVALID_EMAIL = "Invalid Email";
     private JsonObject cartData;
+    private FirebaseRemoteConfigImpl remoteConfig;
 
     @Inject
     public EventReviewTicketPresenter(VerifyCartUseCase usecase, CheckoutPaymentUseCase payment,
@@ -323,6 +325,7 @@ public class EventReviewTicketPresenter
     public void attachView(EventReviewTicketsContractor.EventReviewTicketsView view) {
         super.attachView(view);
         getView().showProgressBar();
+        remoteConfig = new FirebaseRemoteConfigImpl(view.getActivity());
         Intent intent = view.getActivity().getIntent();
         this.eventsDetailsViewModel = intent.getParcelableExtra("event_detail");
         this.checkoutData = intent.getParcelableExtra(EventBookTicketPresenter.EXTRA_PACKAGEVIEWMODEL);
@@ -339,7 +342,7 @@ public class EventReviewTicketPresenter
         com.tokopedia.usecase.RequestParams useParams = com.tokopedia.usecase.RequestParams.create();
         useParams.putObject(Utils.Constants.CHECKOUTDATA, convertPackageToCartItem(checkoutData));
         useParams.putBoolean("ispromocodecase", !isPromoCodeCase);
-        if (getView().isEventOmsEnabled()) {
+        if (isEventOmsEnabled()) {
             postVerifyCartUseCase.execute(useParams, new Subscriber<VerifyMyCartResponse>() {
                 @Override
                 public void onCompleted() {
@@ -487,7 +490,7 @@ public class EventReviewTicketPresenter
     }
 
     private void getPaymentLink() {
-        if (getView().isEventOmsEnabled()) {
+        if (isEventOmsEnabled()) {
             com.tokopedia.usecase.RequestParams checkoutParams = com.tokopedia.usecase.RequestParams.create();
             try {
                 checkoutParams.putObject(com.tokopedia.oms.view.utils.Utils.Constants.CHECKOUTDATA, convertCartItemToJson(cartData));
@@ -539,7 +542,7 @@ public class EventReviewTicketPresenter
 
                 }
             });
-        } else{
+        } else {
             checkoutPaymentUseCase.execute(paymentparams, new Subscriber<CheckoutResponse>() {
                 @Override
                 public void onCompleted() {
@@ -651,6 +654,10 @@ public class EventReviewTicketPresenter
                 }
             }
         });
+    }
+
+    private boolean isEventOmsEnabled() {
+        return remoteConfig.getBoolean("event_oms_android", false);
     }
 
 

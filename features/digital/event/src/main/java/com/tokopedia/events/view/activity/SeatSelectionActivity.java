@@ -320,11 +320,6 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
     }
 
     @Override
-    public boolean isEventOmsEnabled() {
-        return remoteConfig.getBoolean("event_oms_android", false);
-    }
-
-    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         mPresenter.onActivityResult(requestCode);

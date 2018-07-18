@@ -66,15 +66,13 @@ import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
-import com.tokopedia.digital_deals.DealsModuleRouter;
-import com.tokopedia.digital_deals.di.DaggerDealsComponent;
-import com.tokopedia.digital_deals.di.DealsComponent;
-import com.tokopedia.digital_deals.di.DealsModule;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter;
+import com.tokopedia.core.network.retrofit.interceptors.EventInerceptors;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -117,6 +115,10 @@ import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
 import com.tokopedia.digital.tokocash.TopupTokoCashFragment;
+import com.tokopedia.digital_deals.DealsModuleRouter;
+import com.tokopedia.digital_deals.di.DaggerDealsComponent;
+import com.tokopedia.digital_deals.di.DealsComponent;
+import com.tokopedia.digital_deals.di.DealsModule;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.district_recommendation.domain.mapper.TokenMapper;
@@ -180,6 +182,7 @@ import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.oms.OmsModuleRouter;
+import com.tokopedia.oms.domain.PostVerifyCartWrapper;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationProfileActivity;
 import com.tokopedia.otp.phoneverification.view.activity.ReferralPhoneNumberVerificationActivity;
@@ -269,13 +272,13 @@ import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.WalletUserSession;
 import com.tokopedia.tokocash.di.DaggerTokoCashComponent;
 import com.tokopedia.tokocash.di.TokoCashComponent;
-import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
-import com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity;
-import com.tokopedia.topchat.common.TopChatRouter;
 import com.tokopedia.tokocash.historytokocash.presentation.model.PeriodRangeModelData;
 import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 import com.tokopedia.tokocash.pendingcashback.receiver.TokocashPendingDataBroadcastReceiver;
 import com.tokopedia.topads.sourcetagging.util.TopAdsAppLinkUtil;
+import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
+import com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity;
+import com.tokopedia.topchat.common.TopChatRouter;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.bcaoneklik.usecase.CreditCardFingerPrintUseCase;
 import com.tokopedia.transaction.insurance.view.InsuranceTnCActivity;
@@ -299,6 +302,7 @@ import javax.inject.Inject;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Converter;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -440,6 +444,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 .build();
         dealsComponent = DaggerDealsComponent.builder()
                 .baseAppComponent((this).getBaseAppComponent())
+                .dealsModule(new DealsModule(this))
                 .build();
     }
 
@@ -821,8 +826,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public OkHttpClient getOkHttpClient() {
-        return getAppComponent().okHttpClient();
+    public OkHttpClient getOkHttpClient(EventInerceptors eventInerceptors, HttpLoggingInterceptor loggingInterceptor) {
+        return OkHttpFactory.create().buildDaggerClientBearerEvents(
+                eventInerceptors,
+                getAppComponent().okHttpRetryPolicy(),
+                getAppComponent().chuckInterceptor(),
+                getAppComponent().debugInterceptor(),
+                loggingInterceptor
+        );
     }
 
     @Override
@@ -2120,22 +2131,26 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Observable<TKPDMapParam<String, Object>> verifyEventPromo(RequestParams requestParams) {
-        com.tokopedia.usecase.RequestParams requestParams1 = com.tokopedia.usecase.RequestParams.create();
-        requestParams1.putAll(requestParams.getParameters());
-        return eventComponent.getVerifyCartUseCase().createObservable(requestParams1).map(new Func1<VerifyCartResponse, TKPDMapParam<String, Object>>() {
-            @Override
-            public TKPDMapParam<String, Object> call(VerifyCartResponse verifyCartResponse) {
-                TKPDMapParam<String, Object> resultMap = new TKPDMapParam<>();
-                resultMap.put("promocode", verifyCartResponse.getCart().getPromocode());
-                resultMap.put("promocode_discount", verifyCartResponse.getCart().getPromocodeDiscount());
-                resultMap.put("promocode_cashback", verifyCartResponse.getCart().getPromocodeCashback());
-                resultMap.put("promocode_failure_message", verifyCartResponse.getCart().getPromocodeFailureMessage());
-                resultMap.put("promocode_success_message", verifyCartResponse.getCart().getPromocodeSuccessMessage());
-                resultMap.put("promocode_status", verifyCartResponse.getCart().getPromocodeStatus());
-                return resultMap;
-            }
-        });
+    public Observable<TKPDMapParam<String, Object>> verifyEventPromo(com.tokopedia.usecase.RequestParams requestParams) {
+        boolean isEventOMS = remoteConfig.getBoolean("event_oms_android", false);
+        if (!isEventOMS) {
+            return eventComponent.getVerifyCartUseCase().createObservable(requestParams).map(new Func1<VerifyCartResponse, TKPDMapParam<String, Object>>() {
+                @Override
+                public TKPDMapParam<String, Object> call(VerifyCartResponse verifyCartResponse) {
+                    TKPDMapParam<String, Object> resultMap = new TKPDMapParam<>();
+                    resultMap.put("promocode", verifyCartResponse.getCart().getPromocode());
+                    resultMap.put("promocode_discount", verifyCartResponse.getCart().getPromocodeDiscount());
+                    resultMap.put("promocode_cashback", verifyCartResponse.getCart().getPromocodeCashback());
+                    resultMap.put("promocode_failure_message", verifyCartResponse.getCart().getPromocodeFailureMessage());
+                    resultMap.put("promocode_success_message", verifyCartResponse.getCart().getPromocodeSuccessMessage());
+                    resultMap.put("promocode_status", verifyCartResponse.getCart().getPromocodeStatus());
+                    return resultMap;
+                }
+            });
+        } else {
+            return new PostVerifyCartWrapper(this, eventComponent.getPostVerifyCartUseCase())
+                    .verifyPromo(requestParams);
+        }
     }
 
     @Override

@@ -8,7 +8,6 @@ import android.text.TextUtils;
 import com.google.gson.JsonObject;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.exception.ResponseErrorException;
 import com.tokopedia.core.network.exception.model.UnProcessableHttpException;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -21,6 +20,7 @@ import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
 import com.tokopedia.loyalty.view.interactor.IPromoCodeInteractor;
 import com.tokopedia.loyalty.view.view.IPromoCodeView;
+import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;
 
@@ -126,7 +126,7 @@ public class PromoCodePresenter implements IPromoCodePresenter {
     public void processCheckEventPromoCode(String voucherId, JsonObject requestBody, boolean flag) {
         view.showProgressLoading();
         requestBody.addProperty("promocode", voucherId);
-        RequestParams requestParams = RequestParams.create();
+        RequestParams requestParams = RequestParams.create().create();
         requestParams.putObject("checkoutdata", requestBody);
         requestParams.putBoolean("ispromocodecase", flag);
         ((LoyaltyModuleRouter) view.getContext().getApplicationContext()).verifyEventPromo(requestParams).subscribe(new Subscriber<com.tokopedia.abstraction.common.utils.TKPDMapParam<String, Object>>() {

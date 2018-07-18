@@ -10,7 +10,6 @@ import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseErrorException;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -26,6 +25,7 @@ import com.tokopedia.loyalty.view.data.CouponsDataWrapper;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
 import com.tokopedia.loyalty.view.interactor.IPromoCouponInteractor;
 import com.tokopedia.loyalty.view.view.IPromoCouponView;
+import com.tokopedia.usecase.RequestParams;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
@@ -396,7 +396,7 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
         if (jsonbody != null || jsonbody.length() > 0) {
             JsonElement jsonElement = new JsonParser().parse(jsonbody);
             requestBody = jsonElement.getAsJsonObject();
-            if(platform.equals(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EVENT_STRING))
+            if (platform.equals(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EVENT_STRING))
                 submitEventVoucher(data, requestBody, false);
             else
                 submitDealVoucher(data, requestBody, false);

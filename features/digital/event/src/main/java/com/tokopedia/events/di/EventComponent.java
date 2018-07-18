@@ -14,6 +14,7 @@ import com.tokopedia.events.view.activity.ReviewTicketActivity;
 import com.tokopedia.events.view.activity.SeatSelectionActivity;
 import com.tokopedia.events.view.fragment.FragmentAddTickets;
 import com.tokopedia.oms.di.OmsModule;
+import com.tokopedia.oms.domain.postusecase.PostVerifyCartUseCase;
 
 import dagger.Component;
 
@@ -26,6 +27,8 @@ import dagger.Component;
 public interface EventComponent {
 
     VerifyCartUseCase getVerifyCartUseCase();
+
+    PostVerifyCartUseCase getPostVerifyCartUseCase();
 
     void inject(EventsHomeActivity activity);
 

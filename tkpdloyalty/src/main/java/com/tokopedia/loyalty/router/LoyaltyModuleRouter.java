@@ -1,8 +1,8 @@
 package com.tokopedia.loyalty.router;
 
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
+import com.tokopedia.usecase.RequestParams;
 
 import rx.Observable;
 

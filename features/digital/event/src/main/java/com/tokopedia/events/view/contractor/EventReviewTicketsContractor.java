@@ -53,8 +53,6 @@ public class EventReviewTicketsContractor {
         void hideTooltip();
 
         boolean validateAllFields();
-
-        boolean isEventOmsEnabled();
     }
 
     public interface Presenter extends CustomerPresenter<EventReviewTicketsView> {
@@ -81,6 +79,6 @@ public class EventReviewTicketsContractor {
 
         void clickGoToPromo();
 
-        public String getSCREEN_NAME();
+        String getSCREEN_NAME();
     }
 }
