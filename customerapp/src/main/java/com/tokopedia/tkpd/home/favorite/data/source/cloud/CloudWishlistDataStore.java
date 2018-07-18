@@ -5,6 +5,7 @@ import android.content.Context;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.core.network.entity.wishlist.GqlWishListDataResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.graphql.data.ObservableFactory;
 import com.tokopedia.graphql.data.model.CacheType;
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy;
@@ -36,6 +37,7 @@ public class CloudWishlistDataStore {
 
     public CloudWishlistDataStore(Context context) {
         this.context = context;
+        GraphqlClient.init(context);
     }
 
     public Observable<DomainWishlist> getWishlist(String userId, TKPDMapParam<String, Object> param) {

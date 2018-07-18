@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.core.network.entity.wishlist.GqlWishListDataResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.graphql.data.ObservableFactory;
 import com.tokopedia.graphql.data.model.CacheType;
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy;
@@ -38,6 +39,7 @@ public class LocalWishlistDataSource {
 
     public LocalWishlistDataSource(Context context) {
         this.context = context;
+        GraphqlClient.init(context);
     }
 
     public Observable<DomainWishlist> getWishlist(String userId, TKPDMapParam<String, Object> param) {
@@ -45,8 +47,8 @@ public class LocalWishlistDataSource {
         Map<String, Object> variables = new HashMap<>();
 
         variables.put(PARAM_USER_ID, Integer.parseInt(userId));
-        variables.put(PAGE_NO, Integer.parseInt((String) param.get(KEY_PAGE)));
-        variables.put(ITEM_COUNT, Integer.parseInt((String) param.get(KEY_COUNT)));
+        variables.put(PAGE_NO, param.get(KEY_PAGE));
+        variables.put(ITEM_COUNT, param.get(KEY_COUNT));
 
         GraphqlRequest graphqlRequest = new GraphqlRequest(
                 GraphqlHelper.loadRawString(context.getResources(), R.raw.query_get_wishlist),
