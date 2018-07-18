@@ -200,9 +200,13 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
     }
 
-    public void removeHeaderAndFooter(){
-        this.isHeaderAdded=false;
-        this.isFooterAdded=false;
+    public void removeHeaderAndFooter() {
+        if (isHeaderAdded)
+            categoryItems.remove(0);
+        this.isHeaderAdded = false;
+        if (isFooterAdded)
+            categoryItems.remove(categoryItems.size() - 1);
+        this.isFooterAdded = false;
     }
 
     public void setHighLightText(String text) {

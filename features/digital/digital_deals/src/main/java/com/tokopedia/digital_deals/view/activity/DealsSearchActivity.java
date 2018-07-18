@@ -62,6 +62,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
     private ImageView back;
     private TextView tvCityName;
     private TextView tvChangeCity;
+    private boolean firstTimeRefresh = true;
 
     @Inject
     public DealsSearchPresenter mPresenter;
@@ -114,7 +115,11 @@ public class DealsSearchActivity extends DealsBaseActivity implements
                     back.setImageResource(R.drawable.ic_close_deals);
                     clLocation.setVisibility(View.GONE);
                     dealsCategoryAdapter.setTopDealsLayout(true);
-                    dealsCategoryAdapter.removeHeaderAndFooter();
+                    if (firstTimeRefresh)
+                        firstTimeRefresh = false;
+                    else
+                        dealsCategoryAdapter.removeHeaderAndFooter();
+
                     dealsCategoryAdapter.notifyDataSetChanged();
                 }
             }
@@ -225,11 +230,10 @@ public class DealsSearchActivity extends DealsBaseActivity implements
             dealsCategoryAdapter.addAll(searchViewModels, false);
             dealsCategoryAdapter.setTopDealsLayout(true);
             dealsCategoryAdapter.notifyDataSetChanged();
-            if(isTrendingDeals) {
+            if (isTrendingDeals) {
                 dealsCategoryAdapter.addHeader(new SpannableString(""));
                 rvDeals.removeOnScrollListener(rvOnScrollListener);
-            }
-            else {
+            } else {
                 rvDeals.addOnScrollListener(rvOnScrollListener);
                 dealsCategoryAdapter.setHighLightText(highlight);
             }
