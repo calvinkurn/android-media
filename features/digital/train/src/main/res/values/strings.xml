@@ -63,7 +63,7 @@
     <!-- passenger info -->
     <string name="train_booking_passenger_title">Isi Data Penumpang</string>
     <string name="train_buyer_title">Data Pemesan</string>
-    <string name="train_review_detail_title">Rincian Pemesanan</string>
+    <string name="train_review_detail_title">Rincian Pesanan</string>
     <string name="train_buyer_full_name">Nama Lengkap</string>
     <string name="train_buyer_full_name_hint">Isi Nama Lengkap</string>
     <string name="train_buyer_birthdate">Tanggal Lahir</string>
@@ -137,11 +137,25 @@
     <string name="train_seat_wagon_close_label">Tutup</string>
 
     <!-- review detail -->
+    <string name="train_review_trip">%1$s - %2$s</string>
+    <string name="train_review_trip_date">(%1$s)</string>
+    <string name="train_review_trip_train">%1$s - %2$s</string>
+    <string name="train_review_trip_time_and_duration"> | %1$s - %2$s (%3$s)</string>
+    <string name="train_review_item_label_passengers_no_id">No ID: </string>
+    <string name="train_review_label_passengers_data">Data Penumpang</string>
+    <string name="train_review_label_total_payment">Total Pembayaran</string>
+    <string name="train_review_label_see_detail">Lihat detail</string>
+    <string name="train_review_label_close">Tutup</string>
+    <string name="train_review_button_text_choose_payment_method">Pilih Metode Pembayaran</string>
     <string name="train_review_item_passenger_index">%1$d. </string>
+    <string name="train_review_item_passenger_name">%1$s (%2$s)</string>
     <string name="train_review_item_passenger_seat">%1$s %2$s</string>
-    <string name="train_review_item_passenger_info_seat">Kursi (%1$s -  %2$s)</string>
+    <string name="train_review_item_passenger_info_seat">Kursi (%1$s -  %2$s): </string>
     <string name="train_review_trip_passenger_count">%1$s - %2$s (Dewasa) x %3$d</string>
+
+    <!-- seat -->
     <string name="train_seat_prefix_toolbar_title">Perjalanan Pergi</string>
     <string name="train_seat_toolbar_title">Pilih Kursi</string>
     <string name="train_seat_prefix_toolbar_return_trip_title">Perjalanan Pulang</string>
+
 </resources>

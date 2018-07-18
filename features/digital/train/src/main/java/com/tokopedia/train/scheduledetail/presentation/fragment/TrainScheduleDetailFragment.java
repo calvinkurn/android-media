@@ -72,17 +72,21 @@ public class TrainScheduleDetailFragment extends BaseDaggerFragment {
         trip.setText(trainScheduleDetailViewModel.isReturnTrip() ?
                 getString(R.string.train_search_return_title) :
                 getString(R.string.train_search_departure_title));
-        trainName.setText(trainScheduleDetailViewModel.getTrainName());
-        trainClass.setText(trainScheduleDetailViewModel.getTrainClass());
+        trainName.setText(trainScheduleDetailViewModel.getTrainName() + " " +
+                trainScheduleDetailViewModel.getTrainNumber());
+        trainClass.setText(trainScheduleDetailViewModel.getTrainClass() + " (" +
+                trainScheduleDetailViewModel.getSubclass() + ")");
         date.setText(trainScheduleDetailViewModel.getDepartureDate());
         arrivalTime.setText(trainScheduleDetailViewModel.getArrivalTime());
         arrivalDate.setText(trainScheduleDetailViewModel.getArrivalDate());
         departureTime.setText(trainScheduleDetailViewModel.getDepartureTime());
         departureDate.setText(trainScheduleDetailViewModel.getDepartureDate());
-        originStationName.setText(trainScheduleDetailViewModel.getOriginStationName());
+        originStationName.setText(trainScheduleDetailViewModel.getOriginStationName() + " ("
+                + trainScheduleDetailViewModel.getOriginStationCode() + ")");
         originCityName.setText(trainScheduleDetailViewModel.getOriginCityName());
         tripDuration.setText(trainScheduleDetailViewModel.getDuration());
-        destinationStationName.setText(trainScheduleDetailViewModel.getDestinationStationName());
+        destinationStationName.setText(trainScheduleDetailViewModel.getDestinationStationName() + " ("
+                + trainScheduleDetailViewModel.getDestinationStationCode() + ")");
         destinationCityName.setText(trainScheduleDetailViewModel.getDestinationCityName());
     }
 

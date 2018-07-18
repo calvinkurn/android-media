@@ -24,25 +24,7 @@ public class TrainSoftBookingUseCase extends UseCase<TrainSoftbook> {
 
     @Override
     public Observable<TrainSoftbook> createObservable(RequestParams requestParams) {
-        List<TrainTrip> departureTrainTrips = new ArrayList<>();
-        List<TrainPaxPassenger> departurePaxPassengers = new ArrayList<>();
-
-        TrainSeat departureTrainSeat = new TrainSeat("Ekonomi", "4", "4", "D");
-        departurePaxPassengers.add(new TrainPaxPassenger("Rizky Fadillah", "03910920", 1, departureTrainSeat));
-        TrainTrip departureTrainTrip = new TrainTripBuilder()
-                .paxPassengers(departurePaxPassengers)
-                .createTrainTrip();
-        departureTrainTrips.add(departureTrainTrip);
-
-        TrainSeat departureTrainSeat2 = new TrainSeat("Ekonomi", "4", "4", "E");
-        departurePaxPassengers.add(new TrainPaxPassenger("Sarah Nurlaila", "23456263", 1, departureTrainSeat2));
-        TrainTrip departureTrainTrip2 = new TrainTripBuilder()
-                .paxPassengers(departurePaxPassengers)
-                .createTrainTrip();
-        departureTrainTrips.add(departureTrainTrip2);
-
-        TrainSoftbook trainSoftbook = new TrainSoftbook(null, null,  null,
-                departureTrainTrips, null);
+        TrainSoftbook trainSoftbook = TrainSoftbook.dummy();
 
         return Observable.just(trainSoftbook);
     }
