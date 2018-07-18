@@ -75,8 +75,8 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     LinearLayout infoValue;
     LinearLayout totalPrice;
     TextView helpLabel;
-    TextView langannan;
-    TextView beliLagi;
+    TextView primaryActionBtn;
+    TextView secondaryActionBtn;
     private boolean isSingleButton;
 
 
@@ -118,8 +118,8 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         infoValue = view.findViewById(R.id.info_value);
         totalPrice = view.findViewById(R.id.total_price);
         helpLabel = view.findViewById(R.id.help_label);
-        langannan = view.findViewById(R.id.langannan);
-        beliLagi = view.findViewById(R.id.beli_lagi);
+        primaryActionBtn = view.findViewById(R.id.langannan);
+        secondaryActionBtn = view.findViewById(R.id.beli_lagi);
         setMainViewVisible(View.GONE);
         presenter.attachView(this);
         return view;
@@ -206,13 +206,8 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
 
     @Override
     public void setPricing(Pricing pricing) {
-//        DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
-//        doubleTextView.setTopText(pricing.label());
-//        doubleTextView.setBottomText(pricing.value());
-//        doubleTextView.setBottomTextSize(16);
-//        doubleTextView.setBottomGravity(Gravity.RIGHT);
-//        infoValue.addView(doubleTextView);
     }
+
     @Override
     public void setPayMethodInfo(PayMethod payMethod) {
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
@@ -269,31 +264,43 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     public void setTopActionButton(ActionButton actionButton) {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.setMargins(getResources().getDimensionPixelSize(R.dimen.dp_16),getResources().getDimensionPixelSize(R.dimen.dp_0),getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_24));
-        langannan.setText(actionButton.getLabel());
+        primaryActionBtn.setText(actionButton.getLabel());
         GradientDrawable shape = new GradientDrawable();
         shape.setShape(GradientDrawable.RECTANGLE);
         shape.setCornerRadius(getResources().getDimensionPixelSize(R.dimen.dp_4));
-        shape.setColor((Color.parseColor(actionButton.getActionColor().getBackground())));
-        shape.setStroke(getResources().getDimensionPixelSize(R.dimen.dp_2), Color.parseColor(actionButton.getActionColor().getBorder()));
-        langannan.setBackground(shape);
-        if (isSingleButton) {
-            langannan.setLayoutParams(params);
+        if (!actionButton.getActionColor().getBackground().equals("")) {
+            shape.setColor((Color.parseColor(actionButton.getActionColor().getBackground())));
         }
-        langannan.setTextColor(Color.parseColor(actionButton.getActionColor().getTextColor()));
-        langannan.setOnClickListener(getActionButtonClickListener(actionButton.getUri()));
+        if (!actionButton.getActionColor().getBorder().equals("")) {
+            shape.setStroke(getResources().getDimensionPixelSize(R.dimen.dp_2), Color.parseColor(actionButton.getActionColor().getBorder()));
+        }
+        primaryActionBtn.setBackground(shape);
+        if (isSingleButton) {
+            primaryActionBtn.setLayoutParams(params);
+        }
+        if (!actionButton.getActionColor().getTextColor().equals("")) {
+            primaryActionBtn.setTextColor(Color.parseColor(actionButton.getActionColor().getTextColor()));
+        }
+        primaryActionBtn.setOnClickListener(getActionButtonClickListener(actionButton.getUri()));
     }
 
     @Override
     public void setBottomActionButton(ActionButton actionButton) {
-        beliLagi.setText(actionButton.getLabel());
+        secondaryActionBtn.setText(actionButton.getLabel());
         GradientDrawable shape = new GradientDrawable();
         shape.setShape(GradientDrawable.RECTANGLE);
         shape.setCornerRadius(getResources().getDimensionPixelSize(R.dimen.dp_4));
-        shape.setColor((Color.parseColor(actionButton.getActionColor().getBackground())));
-        shape.setStroke(getResources().getDimensionPixelSize(R.dimen.dp_2), Color.parseColor(actionButton.getActionColor().getBorder()));
-        beliLagi.setBackground(shape);
-        beliLagi.setTextColor(getResources().getColor(R.color.white));
-        beliLagi.setOnClickListener(getActionButtonClickListener(actionButton.getUri()));
+        if (!actionButton.getActionColor().getBackground().equals("")) {
+            shape.setColor((Color.parseColor(actionButton.getActionColor().getBackground())));
+        }
+        if (!actionButton.getActionColor().getBorder().equals("")) {
+            shape.setStroke(getResources().getDimensionPixelSize(R.dimen.dp_2), Color.parseColor(actionButton.getActionColor().getBorder()));
+        }
+        secondaryActionBtn.setBackground(shape);
+        if (!actionButton.getActionColor().getTextColor().equals("")) {
+            secondaryActionBtn.setTextColor(Color.parseColor(actionButton.getActionColor().getTextColor()));
+        }
+        secondaryActionBtn.setOnClickListener(getActionButtonClickListener(actionButton.getUri()));
     }
 
     private View.OnClickListener getActionButtonClickListener(final String uri) {
@@ -312,8 +319,8 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
 
     @Override
     public void setActionButtonsVisibility(int topBtnVisibility, int bottomBtnVisibility) {
-        langannan.setVisibility(topBtnVisibility);
-        beliLagi.setVisibility(bottomBtnVisibility);
+        primaryActionBtn.setVisibility(topBtnVisibility);
+        secondaryActionBtn.setVisibility(bottomBtnVisibility);
     }
 
     @Override

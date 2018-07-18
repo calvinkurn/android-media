@@ -5,6 +5,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -225,7 +226,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public void setPaymentAvatar(String imageUrl) {
-        if (!imageUrl.equals("")) {
+        if (!TextUtils.isEmpty(imageUrl)) {
             ImageHandler.loadImageThumbs(context, currentHolder.paymentAvatar, imageUrl);
         }
 

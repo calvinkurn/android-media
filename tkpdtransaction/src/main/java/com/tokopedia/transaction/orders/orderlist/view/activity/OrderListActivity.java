@@ -238,11 +238,6 @@ public class OrderListActivity extends DrawerPresenterActivity<OrderListInitCont
 
             }
         }
-
-        private void hideKeyboard() {
-            ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
-                    .hideSoftInputFromWindow(viewPager.getWindowToken(), 0);
-        }
     }
 
 }
