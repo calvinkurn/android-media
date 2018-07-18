@@ -21,7 +21,6 @@
             app:expandedTitleMarginBottom="@dimen/dp_8"
             app:expandedTitleMarginStart="@dimen/dp_16"
             app:expandedTitleTextAppearance="@style/ToolbarExpandedTitle2"
-
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <android.support.constraint.ConstraintLayout

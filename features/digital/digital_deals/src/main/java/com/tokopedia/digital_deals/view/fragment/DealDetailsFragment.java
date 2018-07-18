@@ -259,6 +259,11 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
 
         if (detailsViewModel.getOutlets() != null && detailsViewModel.getOutlets().size() > 0) {
             Outlet outlet = detailsViewModel.getOutlets().get(0);
+            if (detailsViewModel.getOutlets().size() == 1) {
+                tvAllLocations.setVisibility(View.GONE);
+            } else {
+                tvAllLocations.setVisibility(View.VISIBLE);
+            }
             latLng = outlet.getCoordinates();
             if (latLng != null && latLng != "") {
                 tvViewMap.setVisibility(View.VISIBLE);
@@ -476,7 +481,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     public void setLikes(int likes, boolean isLiked) {
         dealDetail.setIsLiked(isLiked);
         dealDetail.setLikes(likes);
-        if (dealDetail.getIsLiked()) {
+        if (isLiked) {
             ivFavourite.setBackgroundResource(R.drawable.ic_wishlist_filled);
         } else {
             ivFavourite.setBackgroundResource(R.drawable.ic_wishlist_unfilled);
@@ -542,7 +547,14 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         } else if (v.getId() == R.id.tv_view_map) {
             Utils.getSingletonInstance().openGoogleMapsActivity(getContext(), latLng);
         } else if (v.getId() == R.id.iv_wish_list) {
-            mPresenter2.setDealLike(dealDetail, 0);
+            boolean isLoggedIn = mPresenter2.setDealLike(dealDetail, 0);
+            if (isLoggedIn) {
+                if (dealDetail.getIsLiked()) {
+                    setLikes(dealDetail.getLikes() - 1, !dealDetail.getIsLiked());
+                } else {
+                    setLikes(dealDetail.getLikes() + 1, !dealDetail.getIsLiked());
+                }
+            }
         } else if (v.getId() == R.id.cl_redeem_instructions) {
             startGeneralWebView(REDEEM_URL);
 

@@ -129,7 +129,6 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
                         else if (currentPage + 1 >= totalPages) {
                             currentPage = 0;
                         }
-                        CommonUtils.dumper("in slide on next , currentPage " + currentPage + " , total page" + totalPages);
                         mTouchViewPager.setCurrentItem(currentPage, true);
                     }
                 });

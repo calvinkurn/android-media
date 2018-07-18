@@ -32,8 +32,8 @@ public class DealCategoryAdapterPresenter extends BaseDaggerPresenter<DealCatego
         this.postUpdateDealLikesUseCase = postUpdateDealLikesUseCase;
     }
 
-    public void initialize(){
-        this.userSession=((AbstractionRouter) getView().getActivity().getApplication()).getSession();
+    public void initialize() {
+        this.userSession = ((AbstractionRouter) getView().getActivity().getApplication()).getSession();
 
     }
 
@@ -81,7 +81,7 @@ public class DealCategoryAdapterPresenter extends BaseDaggerPresenter<DealCatego
 
     }
 
-    public void setDealLike(final DealsDetailsResponse model, final int position) {
+    public boolean setDealLike(final DealsDetailsResponse model, final int position) {
         if (userSession.isLoggedIn()) {
             LikeUpdateModel requestModel = new LikeUpdateModel();
             Rating rating = new Rating();
@@ -110,21 +110,14 @@ public class DealCategoryAdapterPresenter extends BaseDaggerPresenter<DealCatego
 
                 @Override
                 public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
-                    Type token = new TypeToken<DataResponse<LikeUpdateResult>>() {
-                    }.getType();
-                    RestResponse restResponse = typeRestResponseMap.get(token);
-                    DataResponse dataResponse = restResponse.getData();
-                    LikeUpdateResult likeUpdateResult = (LikeUpdateResult) dataResponse.getData();
-                    model.setIsLiked(likeUpdateResult.isLiked());
-                    if (likeUpdateResult.isLiked())
-                        model.setLikes(model.getLikes() + 1);
-                    else
-                        model.setLikes(model.getLikes() - 1);
-                    getView().notifyDataSetChanged(position);
+
                 }
             });
+            return true;
+
         } else {
-            getView().showLoginSnackbar("Please Login to like or share deals");
+            getView().showLoginSnackbar("Please Login to like deals");
+            return false;
         }
     }
 }

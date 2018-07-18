@@ -14,12 +14,12 @@ import com.tokopedia.digital_deals.DealsModuleRouter;
 import com.tokopedia.digital_deals.view.activity.CheckoutActivity;
 import com.tokopedia.digital_deals.view.contractor.SelectQuantityContract;
 import com.tokopedia.digital_deals.view.model.PackageViewModel;
+import com.tokopedia.digital_deals.view.model.cart.CartItem;
+import com.tokopedia.digital_deals.view.model.cart.CartItems;
+import com.tokopedia.digital_deals.view.model.cart.Configuration;
+import com.tokopedia.digital_deals.view.model.cart.MetaData;
 import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse;
 import com.tokopedia.oms.data.entity.response.verifyresponse.VerifyMyCartResponse;
-import com.tokopedia.oms.domain.model.request.cart.CartItem;
-import com.tokopedia.oms.domain.model.request.cart.CartItems;
-import com.tokopedia.oms.domain.model.request.cart.Configuration;
-import com.tokopedia.oms.domain.model.request.cart.MetaData;
 import com.tokopedia.oms.domain.postusecase.PostVerifyCartUseCase;
 import com.tokopedia.oms.view.utils.Utils;
 import com.tokopedia.usecase.RequestParams;
@@ -40,8 +40,7 @@ public class SelectQuantityPresenter
     private String promocode="";
     private PackageViewModel checkoutData;
     private DealsDetailsResponse dealDetails;
-    UserSession userSession;
-
+    private UserSession userSession;
 
     @Inject
     public SelectQuantityPresenter(PostVerifyCartUseCase postVerifyCartUseCase) {
@@ -81,29 +80,21 @@ public class SelectQuantityPresenter
         meta.setEntityProductId(packageViewModel.getProductId());
         meta.setTotalTicketCount(packageViewModel.getSelectedQuantity());
         meta.setTotalTicketPrice(packageViewModel.getSalesPrice());
-
-
         meta.setEntityStartTime("");
-
-
         List<CartItem> cartItems = new ArrayList<>();
         CartItem cartItem = new CartItem();
         cartItem.setMetaData(meta);
         cartItem.setConfiguration(config);
         cartItem.setQuantity(packageViewModel.getSelectedQuantity());
         cartItem.setProductId(packageViewModel.getDigitalProductID());
-
-
         cartItems.add(cartItem);
         CartItems cart = new CartItems();
         cart.setCartItems(cartItems);
         cart.setPromocode(promocode);
-
         JsonElement jsonElement = new JsonParser().parse(new Gson().toJson(cart));
         JsonObject requestBody = jsonElement.getAsJsonObject();
         return requestBody;
     }
-
 
     private void getProfile() {
         if (!userSession.isLoggedIn()) {
@@ -113,7 +104,6 @@ public class SelectQuantityPresenter
         } else {
             verifyMyCart();
         }
-
     }
 
     public void verifyCart(PackageViewModel checkoutData) {
@@ -147,8 +137,6 @@ public class SelectQuantityPresenter
 
             @Override
             public void onNext(VerifyMyCartResponse verifyCartResponse) {
-
-
                 Intent intent=new Intent(getView().getActivity(), CheckoutActivity.class);
                 intent.putExtra(CheckoutDealPresenter.EXTRA_PACKAGEVIEWMODEL, checkoutData);
                 intent.putExtra(CheckoutDealPresenter.EXTRA_CART, verifyCartResponse.getCart().toString());

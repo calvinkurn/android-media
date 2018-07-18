@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -26,20 +25,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DaggerDealsComponent;
-import com.tokopedia.digital_deals.di.DealsComponent;
-import com.tokopedia.digital_deals.di.DealsModule;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
-import com.tokopedia.digital_deals.view.adapter.TopDealsSuggestionsAdapter;
 import com.tokopedia.digital_deals.view.contractor.DealsSearchContract;
 import com.tokopedia.digital_deals.view.customview.SearchInputView;
 import com.tokopedia.digital_deals.view.fragment.SelectLocationFragment;
+import com.tokopedia.digital_deals.view.model.Location;
+import com.tokopedia.digital_deals.view.model.ProductItem;
 import com.tokopedia.digital_deals.view.presenter.DealsSearchPresenter;
 import com.tokopedia.digital_deals.view.utils.Utils;
-import com.tokopedia.digital_deals.view.model.ProductItem;
-import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
@@ -70,6 +65,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
 
     @Inject
     public DealsSearchPresenter mPresenter;
+    private DealsCategoryAdapter dealsCategoryAdapter;
 
     @Override
     public int getLayoutRes() {
@@ -109,12 +105,17 @@ public class DealsSearchActivity extends DealsBaseActivity implements
         EditText etSearch = searchInputView.findViewById(R.id.edit_text_search);
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         rvDeals.setLayoutManager(layoutManager);
+        dealsCategoryAdapter = new DealsCategoryAdapter(null, this, !IS_SHORT_LAYOUT);
+        rvDeals.setAdapter(dealsCategoryAdapter);
         etSearch.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
                     back.setImageResource(R.drawable.ic_close_deals);
-                    mPresenter.searchTextChanged(etSearch.getText().toString());
+                    clLocation.setVisibility(View.GONE);
+                    dealsCategoryAdapter.setTopDealsLayout(true);
+                    dealsCategoryAdapter.removeHeaderAndFooter();
+                    dealsCategoryAdapter.notifyDataSetChanged();
                 }
             }
         });
@@ -132,11 +133,6 @@ public class DealsSearchActivity extends DealsBaseActivity implements
     public void onSearchTextChanged(String text) {
         back.setImageResource(R.drawable.ic_close_deals);
         mPresenter.searchTextChanged(text);
-    }
-
-    @Override
-    public void showMessage(String message) {
-
     }
 
     @Override
@@ -159,11 +155,13 @@ public class DealsSearchActivity extends DealsBaseActivity implements
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
 
         if (productItems != null && productItems.size() > 0) {
-            DealsCategoryAdapter dealsCategoryAdapter = new DealsCategoryAdapter(productItems, this, !IS_SHORT_LAYOUT);
-            rvDeals.addOnScrollListener(rvOnScrollListener);
-            rvDeals.setAdapter(dealsCategoryAdapter);
             llDeals.setVisibility(View.VISIBLE);
             noContent.setVisibility(View.GONE);
+            dealsCategoryAdapter.clearList();
+            dealsCategoryAdapter.addAll(productItems, false);
+            dealsCategoryAdapter.setTopDealsLayout(false);
+            dealsCategoryAdapter.notifyDataSetChanged();
+            rvDeals.addOnScrollListener(rvOnScrollListener);
             if (productItems.size() > 0) {
                 if (count == 0)
                     count = productItems.size();
@@ -220,78 +218,48 @@ public class DealsSearchActivity extends DealsBaseActivity implements
     }
 
     @Override
-    public void setTrendingDeals(List<ProductItem> searchViewModels, Location location) {
-        if (searchViewModels != null && !searchViewModels.isEmpty()) {
-            TopDealsSuggestionsAdapter adapter = new TopDealsSuggestionsAdapter(searchViewModels, mPresenter);
-            llDeals.setVisibility(View.VISIBLE);
-            rvDeals.setAdapter(adapter);
-
-            rvDeals.removeOnScrollListener(rvOnScrollListener);
-            adapter.addHeader();
-            noContent.setVisibility(View.GONE);
-            clLocation.setVisibility(View.GONE);
-
-        } else {
-            llDeals.setVisibility(View.GONE);
-            noContent.setVisibility(View.VISIBLE);
-            clLocation.setVisibility(View.VISIBLE);
-        }
-        tvCityName.setText(location.getName());
-
-    }
-
-    @Override
-    public void setSuggestions(List<ProductItem> suggestions, String highlight) {
+    public void setTrendingDealsOrSuggestions(List<ProductItem> searchViewModels, boolean isTrendingDeals, String highlight) {
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
-        if (suggestions != null && !suggestions.isEmpty()) {
-            TopDealsSuggestionsAdapter adapter = new TopDealsSuggestionsAdapter(suggestions, mPresenter);
-            adapter.setHighLightText(highlight);
+        if (searchViewModels != null && !searchViewModels.isEmpty()) {
+            dealsCategoryAdapter.clearList();
+            dealsCategoryAdapter.addAll(searchViewModels, false);
+            dealsCategoryAdapter.setTopDealsLayout(true);
+            dealsCategoryAdapter.notifyDataSetChanged();
+            if(isTrendingDeals) {
+                dealsCategoryAdapter.addHeader(new SpannableString(""));
+                rvDeals.removeOnScrollListener(rvOnScrollListener);
+            }
+            else {
+                rvDeals.addOnScrollListener(rvOnScrollListener);
+                dealsCategoryAdapter.setHighLightText(highlight);
+            }
             llDeals.setVisibility(View.VISIBLE);
-            rvDeals.setAdapter(adapter);
-            rvDeals.addOnScrollListener(rvOnScrollListener);
+
             noContent.setVisibility(View.GONE);
             clLocation.setVisibility(View.GONE);
+
         } else {
             llDeals.setVisibility(View.GONE);
             noContent.setVisibility(View.VISIBLE);
             clLocation.setVisibility(View.VISIBLE);
         }
         tvCityName.setText(location.getName());
+
     }
 
     @Override
-    public void removeFooter(boolean searchSubmitted) {
-        if (searchSubmitted) {
-            if (rvDeals.getAdapter() instanceof DealsCategoryAdapter)
-                ((DealsCategoryAdapter) rvDeals.getAdapter()).removeFooter();
-        } else {
-            if (rvDeals.getAdapter() instanceof TopDealsSuggestionsAdapter)
-                ((TopDealsSuggestionsAdapter) rvDeals.getAdapter()).removeFooter();
-        }
+    public void removeFooter() {
+        ((DealsCategoryAdapter) rvDeals.getAdapter()).removeFooter();
     }
 
     @Override
-    public void addFooter(boolean searchSubmitted) {
-        if (searchSubmitted) {
-            if (rvDeals.getAdapter() instanceof DealsCategoryAdapter)
-                ((DealsCategoryAdapter) rvDeals.getAdapter()).addFooter();
-        } else {
-            if (rvDeals.getAdapter() instanceof TopDealsSuggestionsAdapter)
-                ((TopDealsSuggestionsAdapter) rvDeals.getAdapter()).addFooter();
-        }
+    public void addFooter() {
+        ((DealsCategoryAdapter) rvDeals.getAdapter()).addFooter();
     }
 
     @Override
     public void addDealsToCards(List<ProductItem> productItems) {
-        if (rvDeals.getAdapter() instanceof DealsCategoryAdapter)
-            ((DealsCategoryAdapter) rvDeals.getAdapter()).addAll(productItems);
-    }
-
-
-    @Override
-    public void addDeals(List<ProductItem> searchViewModels) {
-        if (rvDeals.getAdapter() instanceof TopDealsSuggestionsAdapter)
-            ((TopDealsSuggestionsAdapter) rvDeals.getAdapter()).addAll(searchViewModels);
+        ((DealsCategoryAdapter) rvDeals.getAdapter()).addAll(productItems);
     }
 
     @Override

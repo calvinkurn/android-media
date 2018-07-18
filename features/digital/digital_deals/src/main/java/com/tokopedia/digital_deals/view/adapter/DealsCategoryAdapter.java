@@ -4,12 +4,15 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.style.StyleSpan;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,11 +38,10 @@ import com.tokopedia.digital_deals.view.presenter.DealDetailsPresenter;
 import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.usecase.RequestParams;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-
-;
 
 public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements DealCategoryAdapterContract.View {
 
@@ -49,19 +51,30 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     private final int FOOTER = 2;
     private final int ITEM2 = 3;
     private final int HEADER = 4;
-    private boolean isFooterAdded = false;
-    private boolean isHeaderAdded = false;
-    private boolean isShortLayout;
-    private boolean brandPageCard = false;
+    private final int ITEM3 = 5;
+    private final int HEADER2 = 6;
+    private boolean isFooterAdded;
+    private boolean isHeaderAdded;
+    private boolean shortLayout;
+    private boolean brandPageCard;
+    private boolean topDealsLayout;
+    private String highLightText;
+    private String lowerhighlight;
+    private String upperhighlight;
     private INavigateToActivityRequest toActivityRequest;
     @Inject
     DealCategoryAdapterPresenter mPresenter;
     private SpannableString headerText;
 
     public DealsCategoryAdapter(List<ProductItem> categoryItems, INavigateToActivityRequest toActivityRequest, Boolean... layoutType) {
-        this.categoryItems = categoryItems;
-        if (layoutType[0] != null) {
-            this.isShortLayout = layoutType[0];
+        if (categoryItems == null)
+            this.categoryItems = new ArrayList<>();
+        else
+            this.categoryItems = categoryItems;
+        if (layoutType.length > 0) {
+            if (layoutType[0] != null) {
+                this.shortLayout = layoutType[0];
+            }
         }
         if (layoutType.length > 1) {
             if (layoutType[1] != null) {
@@ -70,6 +83,10 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
         this.toActivityRequest = toActivityRequest;
 
+    }
+
+    public void setTopDealsLayout(boolean isTopDealsLayout) {
+        topDealsLayout = isTopDealsLayout;
     }
 
     @Override
@@ -101,6 +118,14 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 v = inflater.inflate(R.layout.header_layout, parent, false);
                 holder = new HeaderViewHolder(v);
                 break;
+            case ITEM3:
+                v = inflater.inflate(R.layout.item_top_suggestions, parent, false);
+                holder = new TopSuggestionHolder(v);
+                break;
+            case HEADER2:
+                v = inflater.inflate(R.layout.header_layout_trending_deals, parent, false);
+                holder = new HeaderViewHolder(v);
+                break;
             default:
                 break;
         }
@@ -130,6 +155,12 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             case HEADER:
                 ((HeaderViewHolder) holder).bindData(headerText);
                 break;
+            case ITEM3:
+                ((TopSuggestionHolder) holder).setIndex(position);
+                ((TopSuggestionHolder) holder).setDealTitle(position, categoryItems.get(position));
+                break;
+            case HEADER2:
+                break;
             default:
                 break;
         }
@@ -138,13 +169,15 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     @Override
     public int getItemViewType(int position) {
-
-        return (isShortLayout ? (isLastPosition(position) && isFooterAdded) ? FOOTER : (position == 0 && isHeaderAdded)
+        return (shortLayout ? (isLastPosition(position) && isFooterAdded) ? FOOTER : (position == 0 && isHeaderAdded)
                 ? HEADER : ITEM2
                 :
-                (isLastPosition(position) && isFooterAdded)
-                        ? FOOTER : (position == 0 && isHeaderAdded)
-                        ? HEADER : ITEM);
+                (topDealsLayout ? (isLastPosition(position) && isFooterAdded) ? FOOTER : (position == 0 && isHeaderAdded)
+                        ? HEADER2 : ITEM3
+                        :
+                        (isLastPosition(position) && isFooterAdded)
+                                ? FOOTER : (position == 0 && isHeaderAdded)
+                                ? HEADER : ITEM));
     }
 
     private boolean isLastPosition(int position) {
@@ -154,7 +187,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     public void addFooter() {
         if (!isFooterAdded) {
             isFooterAdded = true;
-            add(new ProductItem());
+            add(new ProductItem(), true);
         }
     }
 
@@ -167,18 +200,43 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
     }
 
-
-    public void add(ProductItem item) {
-        categoryItems.add(item);
-        notifyItemInserted(categoryItems.size() - 1);
+    public void removeHeaderAndFooter(){
+        this.isHeaderAdded=false;
+        this.isFooterAdded=false;
     }
 
-    public void addAll(List<ProductItem> items) {
-        for (ProductItem item : items) {
-            add(item);
+    public void setHighLightText(String text) {
+        if (text != null && text.length() > 0) {
+            String first = text.substring(0, 1).toUpperCase();
+            lowerhighlight = text.toLowerCase();
+            upperhighlight = text.toUpperCase();
+            highLightText = first + text.substring(1).toLowerCase();
         }
     }
 
+
+    public void add(ProductItem item, boolean refreshItem) {
+        categoryItems.add(item);
+        if (refreshItem)
+            notifyItemInserted(categoryItems.size() - 1);
+    }
+
+    public void clearList() {
+        isHeaderAdded = false;
+        isFooterAdded = false;
+        categoryItems.clear();
+    }
+
+    public void addAll(List<ProductItem> items, Boolean... refreshItems) {
+        boolean refreshItem = true;
+        if (refreshItems.length > 0)
+            refreshItem = refreshItems[0];
+        if (items != null) {
+            for (ProductItem item : items) {
+                add(item, refreshItem);
+            }
+        }
+    }
 
     public void removeFooter() {
         if (isFooterAdded) {
@@ -472,6 +530,56 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
     }
 
+    public class TopSuggestionHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+        private TextView tvDealTitle;
+        private TextView tvBrandName;
+        private View itemView;
+        private ProductItem valueItem;
+        private int index;
+
+        private TopSuggestionHolder(View itemView) {
+            super(itemView);
+            this.itemView = itemView;
+            itemView.setOnClickListener(this);
+            tvDealTitle = itemView.findViewById(R.id.tv_simple_item);
+            tvBrandName = itemView.findViewById(R.id.tv_brand_name);
+        }
+
+        private void setDealTitle(int position, ProductItem value) {
+            this.valueItem = value;
+            SpannableString spannableString = new SpannableString(valueItem.getDisplayName());
+            if (highLightText != null && !highLightText.isEmpty() && Utils.containsIgnoreCase(valueItem.getDisplayName(), highLightText)) {
+                StyleSpan styleSpan = new StyleSpan(Typeface.BOLD);
+                int fromindex = valueItem.getDisplayName().toLowerCase().indexOf(highLightText.toLowerCase());
+                if (fromindex == -1) {
+                    fromindex = valueItem.getDisplayName().toLowerCase().indexOf(lowerhighlight.toLowerCase());
+                }
+                if (fromindex == -1) {
+                    fromindex = valueItem.getDisplayName().toLowerCase().indexOf(upperhighlight.toLowerCase());
+                }
+                int toIndex = fromindex + highLightText.length();
+                spannableString.setSpan(styleSpan, fromindex, toIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+            tvDealTitle.setText(spannableString);
+            tvBrandName.setText(value.getBrand().getTitle());
+        }
+
+        public void setIndex(int position) {
+            this.index = position;
+        }
+
+        public int getIndex() {
+            return this.index;
+        }
+
+        @Override
+        public void onClick(View v) {
+            Intent detailsIntent = new Intent(context, DealDetailsActivity.class);
+            detailsIntent.putExtra(DealDetailsPresenter.HOME_DATA, categoryItems.get(getIndex()).getSeoUrl());
+            context.startActivity(detailsIntent);
+        }
+    }
 
     public void unsubscribeUseCase() {
         mPresenter.onDestroy();

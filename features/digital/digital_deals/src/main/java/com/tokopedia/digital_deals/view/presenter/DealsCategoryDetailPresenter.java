@@ -88,12 +88,6 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
             }
             searchIntent.putParcelableArrayListExtra("TOPDEALS", searchItems);
             getView().navigateToActivityRequest(searchIntent, DealsHomeActivity.REQUEST_CODE_DEALSSEARCHACTIVITY);
-        } else if (id == R.id.action_promo) {
-            getView().startGeneralWebView(PROMOURL);
-        } else if (id == R.id.action_booked_history) {
-            getView().startGeneralWebView(TRANSATIONSURL);
-        } else if (id == R.id.action_faq) {
-            getView().startGeneralWebView(FAQURL);
         } else {
             getView().getActivity().onBackPressed();
         }

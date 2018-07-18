@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.view.activity.BrandDetailsActivity;
+import com.tokopedia.digital_deals.view.model.ProductItem;
 import com.tokopedia.digital_deals.view.presenter.BrandDetailsPresenter;
 import com.tokopedia.digital_deals.view.model.Brand;
 
@@ -109,18 +110,24 @@ public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     public void addFooter() {
         if (!isFooterAdded) {
             isFooterAdded = true;
-            add(new Brand());
+            add(new Brand(), true);
         }
     }
 
-    public void add(Brand item) {
+    public void add(Brand item, boolean refreshItem) {
         brandItems.add(item);
-        notifyItemInserted(brandItems.size() - 1);
+        if (refreshItem)
+            notifyItemInserted(brandItems.size() - 1);
     }
 
-    public void addAll(List<Brand> items) {
-        for (Brand item : items) {
-            add(item);
+    public void addAll(List<Brand> items, Boolean... refreshItems) {
+        boolean refreshItem = true;
+        if (refreshItems.length > 0)
+            refreshItem = refreshItems[0];
+        if (items != null) {
+            for (Brand item : items) {
+                add(item, refreshItem);
+            }
         }
     }
 

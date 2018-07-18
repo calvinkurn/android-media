@@ -65,6 +65,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     private CategoriesModel categoriesModel;
     private CategoryDetailCallbacks fragmentCallbacks;
     private String locationName;
+    private DealsCategoryAdapter dealsAdapter;
 
 
     @Override
@@ -116,6 +117,8 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
         seeAllBrands.setOnClickListener(this);
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerViewDeals.setLayoutManager(layoutManager);
+        dealsAdapter=new DealsCategoryAdapter(null, this, !IS_SHORT_LAYOUT);
+        recyclerViewDeals.setAdapter(dealsAdapter);
 
     }
 
@@ -143,7 +146,8 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
                 numberOfDeals.setText(String.format(getResources().getString(R.string.number_of_items), deals.size()));
             else
                 numberOfDeals.setText(String.format(getResources().getString(R.string.number_of_items), count));
-            recyclerViewDeals.setAdapter(new DealsCategoryAdapter(deals, this, !IS_SHORT_LAYOUT));
+            dealsAdapter.addAll(deals, false);
+            dealsAdapter.notifyDataSetChanged();
             recyclerViewDeals.setVisibility(View.VISIBLE);
             recyclerViewDeals.addOnScrollListener(rvOnScrollListener);
             noContent.setVisibility(View.GONE);
@@ -206,10 +210,6 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     public void showSearchButton() {
         MenuItem item = mMenu.findItem(R.id.action_menu_search);
         item.setVisible(true);
-    }
-
-    @Override
-    public void startGeneralWebView(String url) {
 
     }
 

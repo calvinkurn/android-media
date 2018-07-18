@@ -16,8 +16,6 @@ import java.util.List;
 
 public class DealsSearchContract {
     public interface View extends CustomerView {
-        void showMessage(String message);
-
         Activity getActivity();
 
         void navigateToActivityRequest(Intent intent, int requestCode);
@@ -28,17 +26,13 @@ public class DealsSearchContract {
 
         android.view.View getRootView();
 
-        void setTrendingDeals(List<ProductItem> searchViewModels, Location location);
+        void setTrendingDealsOrSuggestions(List<ProductItem> searchViewModels, boolean isTrendingDeals, String highlight);
 
-        void setSuggestions(List<ProductItem> suggestions, String highlight);
+        void removeFooter();
 
-        void removeFooter(boolean searchSubmitted);
-
-        void addFooter(boolean searchSubmitted);
+        void addFooter();
 
         void addDealsToCards(List<ProductItem> productItems);
-
-        void addDeals(List<ProductItem> searchViewModels);
 
         LinearLayoutManager getLayoutManager();
 
@@ -60,8 +54,6 @@ public class DealsSearchContract {
         void searchSubmitted(String searchText);
 
         boolean onItemClick(int id);
-
-        void onSearchResultClick(ProductItem searchViewModel);
 
         void onRecyclerViewScrolled(LinearLayoutManager layoutManager);
     }

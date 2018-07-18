@@ -75,7 +75,7 @@ public class DealsSearchPresenter
 
             @Override
             public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
-                Type token = new TypeToken<DataResponse<SearchResponse>>(){
+                Type token = new TypeToken<DataResponse<SearchResponse>>() {
                 }.getType();
                 RestResponse restResponse = typeRestResponseMap.get(token);
                 DataResponse dataResponse = restResponse.getData();
@@ -83,7 +83,7 @@ public class DealsSearchPresenter
                 if (SEARCH_SUBMITTED)
                     getView().renderFromSearchResults(processSearchResponse(searchResponse), searchText, searchResponse.getCount());
                 else
-                    getView().setSuggestions(processSearchResponse(searchResponse), highlight);
+                    getView().setTrendingDealsOrSuggestions(processSearchResponse(searchResponse), false, highlight);
                 checkIfToLoad(getView().getLayoutManager());
                 CommonUtils.dumper("enter onNext");
             }
@@ -93,8 +93,7 @@ public class DealsSearchPresenter
     @Override
     public void initialize() {
         mTopDeals = getView().getActivity().getIntent().getParcelableArrayListExtra("TOPDEALS");
-        Location location=Utils.getSingletonInstance().getLocation(getView().getActivity());
-        getView().setTrendingDeals(mTopDeals, location);
+        getView().setTrendingDealsOrSuggestions(mTopDeals, true, null);
     }
 
     @Override
@@ -111,10 +110,10 @@ public class DealsSearchPresenter
                 getDealsListBySearch(searchText);
             }
             if (searchText.length() == 0) {
-                getView().setTrendingDeals(mTopDeals, Utils.getSingletonInstance().getLocation(getView().getActivity()));
+                getView().setTrendingDealsOrSuggestions(mTopDeals, true, null);
             }
         } else {
-            getView().setTrendingDeals(mTopDeals, Utils.getSingletonInstance().getLocation(getView().getActivity()));
+            getView().setTrendingDealsOrSuggestions(mTopDeals, true, null);
         }
     }
 
@@ -129,20 +128,13 @@ public class DealsSearchPresenter
     public boolean onItemClick(int id) {
         if (id == R.id.tv_change_city) {
             getView().navigateToActivityRequest(new Intent(getView().getActivity(), DealsLocationActivity.class), DealsHomeActivity.REQUEST_CODE_DEALSLOCATIONACTIVITY);
-            getView().getActivity().overridePendingTransition( R.anim.slide_in_up, R.anim.hold );
-        }else if (id == R.id.imageViewBack) {
+            getView().getActivity().overridePendingTransition(R.anim.slide_in_up, R.anim.hold);
+        } else if (id == R.id.imageViewBack) {
             getView().goBack();
         }
         return true;
     }
 
-
-    @Override
-    public void onSearchResultClick(ProductItem searchViewModel) {
-        Intent detailsIntent = new Intent(getView().getActivity(), DealDetailsActivity.class);
-        detailsIntent.putExtra(DealDetailsPresenter.HOME_DATA, searchViewModel.getSeoUrl());
-        getView().navigateToActivity(detailsIntent);
-    }
 
     @Override
     public void onRecyclerViewScrolled(LinearLayoutManager layoutManager) {
@@ -172,11 +164,8 @@ public class DealsSearchPresenter
                 DataResponse dataResponse = restResponse.getData();
                 SearchResponse searchResponse = (SearchResponse) dataResponse.getData();
                 isLoading = false;
-                getView().removeFooter(SEARCH_SUBMITTED);
-                if (SEARCH_SUBMITTED)
-                    getView().addDealsToCards(processSearchResponse(searchResponse));
-                else
-                    getView().addDeals(processSearchResponse(searchResponse));
+                getView().removeFooter();
+                getView().addDealsToCards(processSearchResponse(searchResponse));
                 checkIfToLoad(getView().getLayoutManager());
             }
         });
@@ -192,7 +181,7 @@ public class DealsSearchPresenter
                     && firstVisibleItemPosition >= 0) {
                 loadMoreItems();
             } else {
-                getView().addFooter(SEARCH_SUBMITTED);
+                getView().addFooter();
             }
         }
     }
@@ -206,7 +195,7 @@ public class DealsSearchPresenter
         } else {
             isLastPage = true;
         }
-        List<ProductItem> productItems= searchResponse.getDeals();
+        List<ProductItem> productItems = searchResponse.getDeals();
         return productItems;
     }
 
