@@ -2,7 +2,6 @@ package com.tokopedia.tkpd.home.favorite.data.source.cloud;
 
 import android.test.mock.MockContext;
 
-import com.tokopedia.core.base.common.service.MojitoService;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.tkpd.home.favorite.domain.model.DomainWishlist;
@@ -24,8 +23,6 @@ import static org.mockito.Mockito.verify;
 public class CloudWishlistDataStoreTest {
     @Mock
     private MockContext context;
-    @Mock
-    private MojitoService mojitoService;
     @Mock
     private RequestParams requestParams;
 
