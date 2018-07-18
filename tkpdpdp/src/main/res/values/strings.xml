@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">tkpdpdp</string>
     <string name="title_send_message">Kirim Pesan</string>
-    <string name="title_sold">Terjual</string>
+    <string name="title_sold">Terkirim</string>
     <string name="title_seen">Dilihat</string>
     <string name="title_other_shop_product">Produk Lainnya dari Toko Ini</string>
     <string name="dapatkan">Dapatkan</string>
