@@ -131,7 +131,6 @@ public class OldShopPageActivity extends BaseTabActivity implements ShopPageProm
                 .putExtras(extras);
     }
 
-    @DeepLink(ShopAppLink.SHOP_TALK)
     public static Intent getCallingIntentTalkSelected(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, OldShopPageActivity.class)
@@ -142,7 +141,6 @@ public class OldShopPageActivity extends BaseTabActivity implements ShopPageProm
                 .putExtras(extras);
     }
 
-    @DeepLink(ShopAppLink.SHOP_REVIEW)
     public static Intent getCallingIntentReviewSelected(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, OldShopPageActivity.class)
