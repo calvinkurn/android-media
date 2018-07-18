@@ -11,7 +11,7 @@ import java.util.Map;
  */
 public abstract class TransactionAnalytics {
 
-    protected final AnalyticTracker analyticTracker;
+    private final AnalyticTracker analyticTracker;
 
     TransactionAnalytics(AnalyticTracker analyticTracker) {
         this.analyticTracker = analyticTracker;
@@ -21,18 +21,18 @@ public abstract class TransactionAnalytics {
         if (analyticTracker != null) analyticTracker.sendScreen(activity, screenName);
     }
 
-    protected void sendEventCategoryActionLabel(String event, String eventCategory,
-                                                String eventAction, String eventLabel) {
+    void sendEventCategoryActionLabel(String event, String eventCategory,
+                                      String eventAction, String eventLabel) {
         if (analyticTracker != null)
             analyticTracker.sendEventTracking(event, eventCategory, eventAction, eventLabel);
     }
 
-    protected void sendEventCategoryAction(String event, String eventCategory,
-                                           String eventAction) {
+    void sendEventCategoryAction(String event, String eventCategory,
+                                 String eventAction) {
         sendEventCategoryActionLabel(event, eventCategory, eventAction, "");
     }
 
-    protected void sendEnhancedEcommerce(Map<String, Object> dataLayer) {
+    void sendEnhancedEcommerce(Map<String, Object> dataLayer) {
         if (analyticTracker != null)
             analyticTracker.sendEnhancedEcommerce(dataLayer);
     }
