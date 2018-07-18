@@ -155,7 +155,7 @@ public class RemoveCartItemFragment extends BaseCheckoutFragment
             @Override
             public void onClick(View view) {
                 if (removeCartItemAdapter.getCheckedItemCount() > 0) {
-                    cartPageAnalytics.eventClickCartClickHapusFormHapus();
+                    cartPageAnalytics.eventClickAtcCartClickHapusFromHapus();
                     showDeleteCartItemDialog(removeCartItemAdapter.getCheckedItemCount());
                 }
             }
@@ -217,7 +217,7 @@ public class RemoveCartItemFragment extends BaseCheckoutFragment
         dialog.setOnOkClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                cartPageAnalytics.enhanceECommerceCartClickHapusDanTambahWishlistFromClickHapus(
+                cartPageAnalytics.enhanceECommerceRemoveFromCartClickHapusDanTambahWishlistFromClickHapus(
                         removeCartItemPresenter.generateCartDataAnalytics(
                                 removeCartItemAdapter.getCheckedCartIds(), EnhancedECommerceCartMapData.REMOVE_ACTION
                         )
@@ -229,7 +229,7 @@ public class RemoveCartItemFragment extends BaseCheckoutFragment
         dialog.setOnCancelClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                cartPageAnalytics.enhanceECommerceCartClickHapusFromClickHapus(
+                cartPageAnalytics.enhanceECommerceRemoveFromCartClickHapusFromClickHapus(
                         removeCartItemPresenter.generateCartDataAnalytics(
                                 removeCartItemAdapter.getCheckedCartIds(), EnhancedECommerceCartMapData.REMOVE_ACTION
                         )
@@ -256,7 +256,7 @@ public class RemoveCartItemFragment extends BaseCheckoutFragment
     @Override
     public void onSingleItemCheckChanged(boolean checked, final int position) {
         if (checked) {
-            cartPageAnalytics.eventClickCartClickChecklistBoxFormHapus();
+            cartPageAnalytics.eventClickAtcCartClickChecklistBoxFromHapus();
         }
         if (rvCartRemoveProduct.isComputingLayout()) {
             rvCartRemoveProduct.post(new Runnable() {
@@ -285,7 +285,7 @@ public class RemoveCartItemFragment extends BaseCheckoutFragment
     @Override
     public void onAllItemCheckChanged(final boolean checked) {
         if (checked) {
-            cartPageAnalytics.eventClickCartClickPilihSemuaFormHapus();
+            cartPageAnalytics.eventClickAtcCartClickPilihSemuaFromHapus();
         }
         if (rvCartRemoveProduct.isComputingLayout()) {
             rvCartRemoveProduct.post(new Runnable() {

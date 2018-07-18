@@ -101,7 +101,7 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_add_address) {
-            checkoutAnalyticsChangeAddress.eventClickChangeAddressClickAddNewAddressFromChangeAddress();
+            checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressClickTambahAlamatBaruFromGantiAlamat();
             startActivityForResult(AddAddressActivity.createInstance(getActivity(), token),
                     ManageAddressConstant.REQUEST_CODE_PARAM_CREATE);
             return true;
@@ -317,11 +317,11 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
         getFragmentManager().beginTransaction()
                 .replace(R.id.parent_view, fragment, fragment.getClass().getSimpleName())
                 .commit();
-        checkoutAnalyticsChangeAddress.eventClickChangeAddressClickChooseOtherAddressFromChangeAddress();
+        checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressClickPilihAlamatLainnyaFromGantiAlamat();
     }
 
     private void onSendToMultipleAddress() {
-        checkoutAnalyticsChangeAddress.eventClickChangeAddressClickSendToMultipleAddressFromChangeAddress();
+        checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressClickKirimKeBeberapaAlamatFromGantiAlamat();
         mCartAddressChoiceListener.finishSendResultActionToMultipleAddressForm();
     }
 
@@ -338,7 +338,7 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
         } else {
             getActivity().finish();
         }
-        checkoutAnalyticsChangeAddress.eventClickChangeAddressClickSendToThisAddressFromChangeAddress();
+        checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressClickKirimKeAlamatIniFromGantiAlamat();
     }
 
     @Override
@@ -348,7 +348,7 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
 
     @Override
     public void onEditClick(RecipientAddressModel model) {
-        checkoutAnalyticsChangeAddress.eventClickChangeAddressClickEditFromChooseOtherAddress();
+        checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressClickUbahFromPilihAlamatLainnya();
         AddressModelMapper mapper = new AddressModelMapper();
 
         Intent intent = AddAddressActivity.createInstance(getActivity(), mapper.transform(model), token);

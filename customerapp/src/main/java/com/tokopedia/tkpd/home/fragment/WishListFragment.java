@@ -262,7 +262,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
         enhancedECommerceCartMapData.addProduct(enhancedECommerceProductCartMapData.getProduct());
         enhancedECommerceCartMapData.setCurrencyCode(EnhancedECommerceCartMapData.VALUE_CURRENCY_IDR);
         enhancedECommerceCartMapData.setAction(EnhancedECommerceCartMapData.ADD_ACTION);
-        checkoutAnalyticsAddToCart.enhancedECommerceAddToCart(
+        checkoutAnalyticsAddToCart.enhancedECommerceAddToCartClickBeli(
                 enhancedECommerceCartMapData.getCartMap(), dataDetail.getName());
     }
 

@@ -320,9 +320,9 @@ public class LoyaltyActivity extends BasePresenterActivity
     @Override
     public void onUsePromoCodeClicked() {
         if (platformPageString.equalsIgnoreCase(PLATFORM_PAGE_MARKETPLACE_CART_LIST)) {
-            checkoutAnalyticsCart.eventClickCartClickGunakanKodeFormGunakanKodePromoAtauKupon();
+            checkoutAnalyticsCart.eventClickAtcCartClickGunakanKodeFormGunakanKodePromoAtauKupon();
         } else {
-            checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickGunakanKodeFormGunakanKodePromoAtauKupon();
+            checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickGunakanKodeFormGunakanKodePromoAtauKupon();
         }
 
     }
@@ -366,22 +366,22 @@ public class LoyaltyActivity extends BasePresenterActivity
 
     @Override
     public void sendAnalyticsOnCouponItemClickedCartListPage() {
-        checkoutAnalyticsCart.eventClickCartClickKuponFromGunakanPromoAtauKupon();
+        checkoutAnalyticsCart.eventClickAtcCartClickKuponFromGunakanKodePromoAtauKupon();
     }
 
     @Override
     public void sendAnalyticsOnCouponItemClickedCartShipmentPage() {
-        checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickKuponFromGunakanKodePromoAtauKupon();
+        checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickKuponFromGunakanKodePromoAtauKupon();
     }
 
     @Override
     public void sendAnalyticsImpressionCouponEmptyCartListPage() {
-        checkoutAnalyticsCart.eventImpressionCartImpressionOnPopUpKupon();
+        checkoutAnalyticsCart.eventViewAtcCartImpressionOnPopUpKupon();
     }
 
     @Override
     public void sendAnalyticsImpressionCouponEmptyShipmentPage() {
-        checkoutAnalyticsCourierSelection.eventImpressionCourierSelectionImpressionOnPopUpKupon();
+        checkoutAnalyticsCourierSelection.eventViewAtcCourierSelectionImpressionOnPopUpKupon();
     }
 
     @Override
@@ -626,19 +626,19 @@ public class LoyaltyActivity extends BasePresenterActivity
                 if (tab.getPosition() == 1) {
                     switch (platformPageString) {
                         case PLATFORM_PAGE_MARKETPLACE_CART_LIST:
-                            checkoutAnalyticsCart.eventClickCartClickKuponSayaFromGunakanPromoAtauKupon();
+                            checkoutAnalyticsCart.eventClickAtcCartClickKuponSayaFromGunakanPromoAtauKupon();
                             break;
                         case PLATFORM_PAGE_MARKETPLACE_CART_SHIPMENT:
-                            checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickKuponSayaFromGunakanKodePromoAtauKupon();
+                            checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickKuponSayaFromGunakanKodePromoAtauKupon();
                             break;
                     }
                 } else {
                     switch (platformPageString) {
                         case PLATFORM_PAGE_MARKETPLACE_CART_LIST:
-                            checkoutAnalyticsCart.eventClickCartClickKodePromoFromGunakanPromoAtauKupon();
+                            checkoutAnalyticsCart.eventClickAtcCartClickKodePromoFromGunakanPromoAtauKupon();
                             break;
                         case PLATFORM_PAGE_MARKETPLACE_CART_SHIPMENT:
-                            checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickKodePromoFromGunakanKodePromoAtauKupon();
+                            checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickKodePromoFromGunakanKodePromoAtauKupon();
                             break;
                     }
                 }
@@ -646,10 +646,10 @@ public class LoyaltyActivity extends BasePresenterActivity
                 if (tab.getPosition() == 0) {
                     switch (platformPageString) {
                         case PLATFORM_PAGE_MARKETPLACE_CART_LIST:
-                            checkoutAnalyticsCart.eventClickCartClickKodePromoFromGunakanPromoAtauKupon();
+                            checkoutAnalyticsCart.eventClickAtcCartClickKodePromoFromGunakanPromoAtauKupon();
                             break;
                         case PLATFORM_PAGE_MARKETPLACE_CART_SHIPMENT:
-                            checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickKodePromoFromGunakanKodePromoAtauKupon();
+                            checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickKodePromoFromGunakanKodePromoAtauKupon();
                             break;
                     }
                 }

@@ -4,27 +4,32 @@ import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventAction;
+import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventCategory;
+import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventName;
+
 /**
  * @author anggaprasetiyo on 18/07/18.
  */
-public class OrderAnalyticsOrderTracking extends CheckoutAnalytics {
+public class OrderAnalyticsOrderTracking extends TransactionAnalytics {
     @Inject
     public OrderAnalyticsOrderTracking(AnalyticTracker analyticTracker) {
         super(analyticTracker);
     }
 
-    public void eventViewOrderOrderTrackingViewImpressionButtonLiveTracking() {
-        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.VIEW_ORDER,
-                ConstantTransactionAnalytics.EventCategory.ORDER_TRACKING,
-                ConstantTransactionAnalytics.EventAction.VIEW_IMPRESSION_BUTTON_LIVE_TRACKING,
-                "");
+    public void eventViewOrderTrackingImpressionButtonLiveTracking() {
+        sendEventCategoryAction(
+                EventName.VIEW_ORDER,
+                EventCategory.ORDER_TRACKING,
+                EventAction.IMPRESSION_BUTTON_LIVE_TRACKING
+        );
     }
 
-    public void eventClickOrderOrderTrackingClickButtonLiveTracking() {
-        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ORDER,
-                ConstantTransactionAnalytics.EventCategory.ORDER_TRACKING,
-                ConstantTransactionAnalytics.EventAction.CLICK_BUTTON_LIVE_TRACKING,
-                "");
+    public void eventClickOrderTrackingClickButtonLiveTracking() {
+        sendEventCategoryAction(
+                EventName.CLICK_ORDER,
+                EventCategory.ORDER_TRACKING,
+                EventAction.CLICK_BUTTON_LIVE_TRACKING);
     }
 
 }

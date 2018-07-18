@@ -180,7 +180,7 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
         }
         if (getCurrentFragment() instanceof CartAddressChoiceFragment) {
             ((CartAddressChoiceFragment) getCurrentFragment())
-                    .checkoutAnalyticsChangeAddress.eventClickChangeAddressClickArrowBackFromChangeAddress();
+                    .checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressClickArrowBackFromGantiAlamat();
             super.onBackPressed();
         } else if (getCurrentFragment() instanceof ShipmentAddressListFragment) {
             if (defaultFragment != null) {
