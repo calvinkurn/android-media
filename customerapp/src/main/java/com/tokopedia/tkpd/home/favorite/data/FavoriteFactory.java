@@ -4,43 +4,26 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
-import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.core.base.common.service.MojitoService;
 import com.tokopedia.core.base.common.service.ServiceV4;
 import com.tokopedia.core.base.common.service.TopAdsService;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.network.entity.wishlist.GqlWishListDataResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.graphql.data.ObservableFactory;
-import com.tokopedia.graphql.data.model.CacheType;
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy;
-import com.tokopedia.graphql.data.model.GraphqlRequest;
-import com.tokopedia.graphql.data.model.GraphqlResponse;
-import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.favorite.data.source.cloud.CloudFavoriteShopDataSource;
 import com.tokopedia.tkpd.home.favorite.data.source.cloud.CloudTopAdsShopDataSource;
 import com.tokopedia.tkpd.home.favorite.data.source.cloud.CloudWishlistDataStore;
 import com.tokopedia.tkpd.home.favorite.data.source.local.LocalFavoriteShopDataSource;
 import com.tokopedia.tkpd.home.favorite.data.source.local.LocalTopAdsShopDataSource;
 import com.tokopedia.tkpd.home.favorite.data.source.local.LocalWishlistDataSource;
-import com.tokopedia.tkpd.home.favorite.domain.interactor.GetTopAdsShopUseCase;
 import com.tokopedia.tkpd.home.favorite.domain.model.DomainWishlist;
 import com.tokopedia.tkpd.home.favorite.domain.model.FavShop;
 import com.tokopedia.tkpd.home.favorite.domain.model.FavoriteShop;
 import com.tokopedia.tkpd.home.favorite.domain.model.TopAdsShop;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 /**
  * @author Kulomady on 1/18/17.

@@ -21,10 +21,8 @@ import java.util.List;
  */
 public class WishlistMapper implements rx.functions.Func1<GraphqlResponse, DomainWishlist> {
     private final String defaultErrorMessage;
-//    private Gson gson;
 
-    public WishlistMapper(Context context /*Gson gson*/) {
-//        this.gson = gson;
+    public WishlistMapper(Context context) {
         defaultErrorMessage = context.getString(R.string.msg_network_error);
     }
 

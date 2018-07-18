@@ -173,7 +173,7 @@ public class FavoritePresenterTest {
                 = new GetTopAdsShopUseCase(jobExecutor, postExecutionThread, repository);
 
         GetWishlistUsecase getWishlistUsecase
-                = new GetWishlistUsecase(jobExecutor, postExecutionThread, repository);
+                = new GetWishlistUsecase(repository);
 
         addFavoriteShopUseCase
                 = new AddFavoriteShopUseCase(jobExecutor, postExecutionThread, repository);

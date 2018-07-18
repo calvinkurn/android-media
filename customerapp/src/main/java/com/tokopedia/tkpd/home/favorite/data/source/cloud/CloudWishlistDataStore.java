@@ -3,10 +3,8 @@ package com.tokopedia.tkpd.home.favorite.data.source.cloud;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.entity.wishlist.GqlWishListDataResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.graphql.data.ObservableFactory;
 import com.tokopedia.graphql.data.model.CacheType;
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy;
@@ -35,13 +33,9 @@ import static com.tokopedia.tkpd.home.presenter.WishListImpl.PARAM_USER_ID;
 public class CloudWishlistDataStore {
 
     private Context context;
-//    private MojitoService mojitoService;
-//    private Gson gson;
 
-    public CloudWishlistDataStore(Context context/*, Gson gson, MojitoService mojitoService*/) {
+    public CloudWishlistDataStore(Context context) {
         this.context = context;
-        /*this.gson = gson;
-        this.mojitoService = mojitoService;*/
     }
 
     public Observable<DomainWishlist> getWishlist(String userId, TKPDMapParam<String, Object> param) {
@@ -67,20 +61,7 @@ public class CloudWishlistDataStore {
                 graphqlCacheStrategy);
 
         return observable
-                /*.doOnNext(HttpResponseValidator
-                        .validate(new HttpResponseValidator.HttpValidationListener() {
-                            @Override
-                            public void OnPassValidation(GraphqlResponse response) {
-                                saveResponseToCache(response);
-                            }
-                        }))*/
-                .map(new WishlistMapper(context/*, gson*/));
+                .map(new WishlistMapper(context));
     }
 
-    private void saveResponseToCache(GraphqlResponse response) {
-        new GlobalCacheManager()
-                .setKey(TkpdCache.Key.WISHLIST)
-                .setValue(/*response.getData()*/"")
-                .store();
-    }
 }

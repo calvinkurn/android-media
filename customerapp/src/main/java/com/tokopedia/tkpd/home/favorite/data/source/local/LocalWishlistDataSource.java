@@ -3,12 +3,9 @@ package com.tokopedia.tkpd.home.favorite.data.source.local;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.entity.wishlist.GqlWishListDataResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.graphql.data.ObservableFactory;
 import com.tokopedia.graphql.data.model.CacheType;
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy;
@@ -38,22 +35,18 @@ import static com.tokopedia.tkpd.home.presenter.WishListImpl.PARAM_USER_ID;
 public class LocalWishlistDataSource {
 
     private final Context context;
-    /*private final Gson gson;
-    private final GlobalCacheManager cacheManager;*/
 
-    public LocalWishlistDataSource(Context context/*, Gson gson, GlobalCacheManager cacheManager*/) {
+    public LocalWishlistDataSource(Context context) {
         this.context = context;
-//        this.gson = gson;
-//        this.cacheManager = cacheManager;
     }
 
     public Observable<DomainWishlist> getWishlist(String userId, TKPDMapParam<String, Object> param) {
 
         Map<String, Object> variables = new HashMap<>();
 
-        variables.put(PARAM_USER_ID, Integer.parseInt(SessionHandler.getLoginID(context)));
-        variables.put(PAGE_NO, param.get(KEY_PAGE));
-        variables.put(ITEM_COUNT, param.get(KEY_COUNT));
+        variables.put(PARAM_USER_ID, Integer.parseInt(userId));
+        variables.put(PAGE_NO, Integer.parseInt((String) param.get(KEY_PAGE)));
+        variables.put(ITEM_COUNT, Integer.parseInt((String) param.get(KEY_COUNT)));
 
         GraphqlRequest graphqlRequest = new GraphqlRequest(
                 GraphqlHelper.loadRawString(context.getResources(), R.raw.query_get_wishlist),
@@ -71,17 +64,12 @@ public class LocalWishlistDataSource {
 
 
         return observable
-                .map(new WishlistMapper(context/*, gson*/))
+                .map(new WishlistMapper(context))
                 .onErrorReturn(nullResponse());
     }
 
     @NonNull
     private Func1<Throwable, DomainWishlist> nullResponse() {
-        return new Func1<Throwable, DomainWishlist>() {
-            @Override
-            public DomainWishlist call(Throwable throwable) {
-                return null;
-            }
-        };
+        return throwable -> null;
     }
 }
