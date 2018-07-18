@@ -1,11 +1,6 @@
 package com.tokopedia.settingbank.addeditaccount.domain.pojo
 
 data class ValidateBankAccountPojo(
-        val data: ValidateBankAccountData? = null,
-        val messages: List<String>? = ArrayList()
-)
-
-data class ValidateBankAccountData(
         val is_valid: Boolean? = false,
         val is_data_change: Boolean? = false,
         val form_info: FormInfo? = null

@@ -23,28 +23,28 @@ interface SettingBankApi {
     @FormUrlEncoded
     @POST(SettingBankUrl.PATH_SET_DEFAULT_BANK_ACCOUNT)
     fun setDefaultBank(@FieldMap params: HashMap<String, Any>):
-            Observable<Response<SetDefaultBankAccountPojo>>
+            Observable<Response<DataResponse<SetDefaultBankAccountPojo>>>
 
     @FormUrlEncoded
     @POST(SettingBankUrl.PATH_DELETE_BANK_ACCOUNT)
     fun deleteBank(@FieldMap params: HashMap<String, Any>):
-            Observable<Response<DeleteBankAccountPojo>>
+            Observable<Response<DataResponse<DeleteBankAccountPojo>>>
 
     @FormUrlEncoded
     @POST(SettingBankUrl.PATH_VALIDATE_BANK_ACCOUNT)
     fun validateBankAccount(@FieldMap params: HashMap<String, Any>):
-            Observable<Response<ValidateBankAccountPojo>>
+            Observable<Response<DataResponse<ValidateBankAccountPojo>>>
 
 
     @FormUrlEncoded
     @POST(SettingBankUrl.PATH_ADD_BANK_ACCOUNT)
     fun addBankAccount(@FieldMap params: HashMap<String, Any>):
-            Observable<Response<AddBankAccountPojo>>
+            Observable<Response<DataResponse<AddBankAccountPojo>>>
 
     @FormUrlEncoded
     @POST(SettingBankUrl.PATH_EDIT_BANK_ACCOUNT)
     fun editBankAccount(@FieldMap params: HashMap<String, Any>):
-            Observable<Response<EditBankAccountPojo>>
+            Observable<Response<DataResponse<EditBankAccountPojo>>>
 
 
 }

@@ -22,7 +22,7 @@ interface AddEditBankContract {
 
         fun hideLoading()
 
-        fun onSuccessAddEditBank(statusMessage: String)
+        fun onSuccessAddEditBank()
 
         fun onErrorAccountNumber(errorMessage: String)
 

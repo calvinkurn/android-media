@@ -25,12 +25,15 @@ class ValidateBankUseCase(val api: SettingBankApi,
         private val PARAM_ACCOUNT_NAME = "acc_name"
         private val PARAM_ACCOUNT_NUMBER = "acc_no"
         private val PARAM_BANK_ID = "bank_id"
+        private val PARAM_BANK_NAME = "bank_name"
 
-        fun getParamEdit(
+
+        fun getParam(
                 accountId: String,
                 accountName: String,
                 accountNumber: String,
-                bankId: String): RequestParams {
+                bankId: String,
+                bankName : String): RequestParams {
 
             val requestParams: RequestParams = RequestParams.create()
 
@@ -38,6 +41,8 @@ class ValidateBankUseCase(val api: SettingBankApi,
             requestParams.putString(PARAM_ACCOUNT_NAME, accountName)
             requestParams.putString(PARAM_ACCOUNT_NUMBER, accountNumber)
             requestParams.putString(PARAM_BANK_ID, bankId)
+            requestParams.putString(PARAM_BANK_NAME, bankName)
+
 
             return requestParams
         }

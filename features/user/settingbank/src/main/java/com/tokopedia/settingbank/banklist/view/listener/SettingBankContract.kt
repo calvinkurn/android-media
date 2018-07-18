@@ -23,7 +23,7 @@ interface SettingBankContract {
 
         fun onSuccessGetListBank(bankAccountList: BankAccountListViewModel)
 
-        fun onSuccessSetDefault(adapterPosition: Int, statusMessage: String)
+        fun onSuccessSetDefault(adapterPosition: Int)
 
         fun onSuccessDeleteAccount(adapterPosition: Int)
 

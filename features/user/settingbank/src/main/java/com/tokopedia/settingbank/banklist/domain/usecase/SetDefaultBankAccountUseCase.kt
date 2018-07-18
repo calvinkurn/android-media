@@ -12,9 +12,9 @@ import java.util.*
  * @author by nisie on 6/20/18.
  */
 class SetDefaultBankAccountUseCase(val api: SettingBankApi,
-                                   val mapper: SetDefaultBankAccountMapper) : UseCase<String>() {
+                                   val mapper: SetDefaultBankAccountMapper) : UseCase<Boolean>() {
 
-    override fun createObservable(requestParams: RequestParams): Observable<String> {
+    override fun createObservable(requestParams: RequestParams): Observable<Boolean> {
 
         return api.setDefaultBank(requestParams.parameters).map(mapper)
     }

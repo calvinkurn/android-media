@@ -161,13 +161,17 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
 
     }
 
-    override fun onSuccessSetDefault(adapterPosition: Int, statusMessage: String) {
+    override fun onSuccessSetDefault(adapterPosition: Int) {
         adapter.changeMain(adapterPosition)
         linearLayoutManager.scrollToPosition(0)
     }
 
     override fun onErrorSetDefaultBank(errorMessage: String) {
-        NetworkErrorHelper.showSnackbar(activity, errorMessage)
+        if (errorMessage.isEmpty()) {
+            NetworkErrorHelper.showSnackbar(activity)
+        } else {
+            NetworkErrorHelper.showSnackbar(activity, errorMessage)
+        }
     }
 
     private fun composeMakeMainDescription(element: BankAccountViewModel?): String {

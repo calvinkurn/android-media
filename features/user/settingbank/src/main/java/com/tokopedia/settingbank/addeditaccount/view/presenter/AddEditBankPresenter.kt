@@ -29,11 +29,12 @@ class AddEditBankPresenter(private val userSession: UserSession,
         view.showLoading()
         view.resetError()
 
-        validateBankUseCase.execute(ValidateBankUseCase.getParamEdit(
+        validateBankUseCase.execute(ValidateBankUseCase.getParam(
                 bankFormModel.accountId,
                 bankFormModel.accountName,
                 bankFormModel.accountNumber,
-                bankFormModel.bankId
+                bankFormModel.bankId,
+                bankFormModel.bankName
         ), object : Subscriber<ValidateBankViewModel>() {
             override fun onCompleted() {
 
@@ -89,12 +90,11 @@ class AddEditBankPresenter(private val userSession: UserSession,
     override fun addBank(bankFormModel: BankFormModel) {
         view.showLoading()
         addBankUseCase.execute(AddBankUseCase.getParam(
-                userSession.userId,
-                userSession.deviceId,
                 bankFormModel.accountName,
                 bankFormModel.accountNumber,
-                bankFormModel.bankName
-        ), object : Subscriber<String>() {
+                bankFormModel.bankName,
+                bankFormModel.bankId
+        ), object : Subscriber<Boolean>() {
             override fun onCompleted() {
 
             }
@@ -105,9 +105,13 @@ class AddEditBankPresenter(private val userSession: UserSession,
                 view.onErrorAddBank(errorMessage)
             }
 
-            override fun onNext(statusMessage: String) {
+            override fun onNext(isSuccess: Boolean) {
                 view.hideLoading()
-                view.onSuccessAddEditBank(statusMessage)
+                if(isSuccess) {
+                    view.onSuccessAddEditBank()
+                }else{
+                    view.onErrorAddBank("")
+                }
             }
         })
     }
@@ -115,13 +119,13 @@ class AddEditBankPresenter(private val userSession: UserSession,
     override fun editBank(bankFormModel: BankFormModel) {
         view.showLoading()
         view.resetError()
-        editBankUseCase.execute(AddBankUseCase.getParam(
-                userSession.userId,
-                userSession.deviceId,
+        editBankUseCase.execute(EditBankUseCase.getParam(
+                bankFormModel.accountId,
                 bankFormModel.accountName,
                 bankFormModel.accountNumber,
-                bankFormModel.bankName
-        ), object : Subscriber<String>() {
+                bankFormModel.bankName,
+                bankFormModel.bankId
+        ), object : Subscriber<Boolean>() {
             override fun onCompleted() {
 
             }
@@ -132,9 +136,13 @@ class AddEditBankPresenter(private val userSession: UserSession,
                 view.onErrorEditBank(errorMessage)
             }
 
-            override fun onNext(statusMessage: String) {
+            override fun onNext(isSuccess: Boolean) {
                 view.hideLoading()
-                view.onSuccessAddEditBank(statusMessage)
+                if(isSuccess) {
+                    view.onSuccessAddEditBank()
+                }else{
+                    view.onErrorEditBank("")
+                }
             }
         })
     }

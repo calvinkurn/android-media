@@ -250,8 +250,7 @@ class AddEditBankFormFragment : AddEditBankContract.View,
         if (::progressDialog.isInitialized) progressDialog.dismiss()
     }
 
-    override fun onSuccessAddEditBank(statusMessage: String) {
-        NetworkErrorHelper.showSnackbar(activity, statusMessage)
+    override fun onSuccessAddEditBank() {
         val intent = Intent()
         val bundle = Bundle()
         bundle.putParcelable(AddEditBankActivity.PARAM_DATA, bankFormModel)
@@ -327,15 +326,27 @@ class AddEditBankFormFragment : AddEditBankContract.View,
     }
 
     override fun onErrorAddBank(errorMessage: String) {
-        NetworkErrorHelper.createSnackbarWithAction(activity, errorMessage, {
-            presenter.addBank(bankFormModel)
-        }).showRetrySnackbar()
+        if (errorMessage.isEmpty()) {
+            NetworkErrorHelper.createSnackbarWithAction(activity, {
+                presenter.addBank(bankFormModel)
+            }).showRetrySnackbar()
+        } else {
+            NetworkErrorHelper.createSnackbarWithAction(activity, errorMessage, {
+                presenter.addBank(bankFormModel)
+            }).showRetrySnackbar()
+        }
     }
 
     override fun onErrorEditBank(errorMessage: String) {
-        NetworkErrorHelper.createSnackbarWithAction(activity, errorMessage, {
-            presenter.editBank(bankFormModel)
-        }).showRetrySnackbar()
+        if (errorMessage.isEmpty()) {
+            NetworkErrorHelper.createSnackbarWithAction(activity, {
+                presenter.editBank(bankFormModel)
+            }).showRetrySnackbar()
+        } else {
+            NetworkErrorHelper.createSnackbarWithAction(activity, errorMessage, {
+                presenter.editBank(bankFormModel)
+            }).showRetrySnackbar()
+        }
     }
 
     override fun onGoToCOTP() {

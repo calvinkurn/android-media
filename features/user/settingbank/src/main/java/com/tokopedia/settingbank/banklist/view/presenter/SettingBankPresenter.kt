@@ -82,7 +82,7 @@ class SettingBankPresenter(private val userSession: UserSession,
                     userSession.userId,
                     element.accountId!!,
                     userSession.deviceId
-            ), object : Subscriber<String>() {
+            ), object : Subscriber<Boolean>() {
                 override fun onCompleted() {
 
                 }
@@ -92,9 +92,14 @@ class SettingBankPresenter(private val userSession: UserSession,
                     view.onErrorSetDefaultBank(ErrorHandler.getErrorMessage(view.getContext(), e))
                 }
 
-                override fun onNext(statusMessage: String) {
+                override fun onNext(isSuccess: Boolean) {
                     view.hideLoadingDialog()
-                    view.onSuccessSetDefault(adapterPosition, statusMessage)
+                    if(isSuccess) {
+                        view.onSuccessSetDefault(adapterPosition)
+                    }else{
+                        view.onErrorSetDefaultBank("")
+
+                    }
                 }
             })
         }
