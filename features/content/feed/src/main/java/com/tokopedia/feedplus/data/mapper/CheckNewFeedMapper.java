@@ -3,6 +3,8 @@ package com.tokopedia.feedplus.data.mapper;
 import com.tkpdfeed.feeds.FeedCheck;
 import com.tokopedia.feedplus.domain.model.CheckFeedDomain;
 
+import javax.inject.Inject;
+
 import rx.functions.Func1;
 
 /**
@@ -10,6 +12,11 @@ import rx.functions.Func1;
  */
 
 public class CheckNewFeedMapper implements Func1<FeedCheck.Data, CheckFeedDomain> {
+
+    @Inject
+    public CheckNewFeedMapper() {
+    }
+
     @Override
     public CheckFeedDomain call(FeedCheck.Data data) {
         if (data != null

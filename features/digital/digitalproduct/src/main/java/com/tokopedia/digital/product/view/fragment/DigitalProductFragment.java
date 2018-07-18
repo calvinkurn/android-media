@@ -6,9 +6,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.content.ActivityNotFoundException;
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -19,8 +16,9 @@ import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.widget.NestedScrollView;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -35,7 +33,6 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.abstraction.common.utils.view.DateFormatUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
@@ -48,7 +45,6 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
-import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
@@ -66,6 +62,8 @@ import com.tokopedia.digital.common.domain.interactor.GetCategoryByIdUseCase;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.common.view.compoundview.ClientNumberInputView;
+import com.tokopedia.digital.product.additionalfeature.etoll.view.activity.DigitalCheckETollBalanceNFCActivity;
+import com.tokopedia.digital.product.additionalfeature.etoll.view.compoundview.CheckETollBalanceView;
 import com.tokopedia.digital.product.data.mapper.USSDMapper;
 import com.tokopedia.digital.product.data.repository.UssdCheckBalanceRepository;
 import com.tokopedia.digital.product.domain.IUssdCheckBalanceRepository;
@@ -74,20 +72,20 @@ import com.tokopedia.digital.product.domain.interactor.IProductDigitalInteractor
 import com.tokopedia.digital.product.domain.interactor.ProductDigitalInteractor;
 import com.tokopedia.digital.product.receiver.USSDBroadcastReceiver;
 import com.tokopedia.digital.product.service.USSDAccessibilityService;
-import com.tokopedia.digital.product.additionalfeature.etoll.view.activity.DigitalCheckETollBalanceNFCActivity;
 import com.tokopedia.digital.product.view.activity.DigitalChooserActivity;
 import com.tokopedia.digital.product.view.activity.DigitalSearchNumberActivity;
 import com.tokopedia.digital.product.view.activity.DigitalUssdActivity;
 import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
-import com.tokopedia.digital.product.view.adapter.BannerAdapter;
-import com.tokopedia.digital.product.additionalfeature.etoll.view.compoundview.CheckETollBalanceView;
+import com.tokopedia.digital.product.view.adapter.PromoGuidePagerAdapter;
 import com.tokopedia.digital.product.view.compoundview.CheckPulsaBalanceView;
+import com.tokopedia.digital.product.view.compoundview.DigitalWrapContentViewPager;
 import com.tokopedia.digital.product.view.listener.IProductDigitalView;
 import com.tokopedia.digital.product.view.listener.IUssdUpdateListener;
 import com.tokopedia.digital.product.view.model.BannerData;
 import com.tokopedia.digital.product.view.model.CategoryData;
 import com.tokopedia.digital.product.view.model.ClientNumber;
 import com.tokopedia.digital.product.view.model.ContactData;
+import com.tokopedia.digital.product.view.model.GuideData;
 import com.tokopedia.digital.product.view.model.HistoryClientNumber;
 import com.tokopedia.digital.product.view.model.Operator;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
@@ -96,7 +94,6 @@ import com.tokopedia.digital.product.view.model.PulsaBalance;
 import com.tokopedia.digital.product.view.presenter.IProductDigitalPresenter;
 import com.tokopedia.digital.product.view.presenter.ProductDigitalPresenter;
 import com.tokopedia.digital.utils.DeviceUtil;
-import com.tokopedia.digital.utils.LinearLayoutManagerNonScroll;
 import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
@@ -104,9 +101,7 @@ import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -124,8 +119,8 @@ import static com.tokopedia.digital.product.view.activity.DigitalSearchNumberAct
  */
 @RuntimePermissions
 public class DigitalProductFragment extends BasePresenterFragment<IProductDigitalPresenter>
-        implements IProductDigitalView, BannerAdapter.ActionListener,
-        BaseDigitalProductView.ActionListener, IUssdUpdateListener, CheckPulsaBalanceView.ActionListener {
+        implements IProductDigitalView, BaseDigitalProductView.ActionListener, IUssdUpdateListener,
+        CheckPulsaBalanceView.ActionListener {
 
     private static final String ARG_PARAM_EXTRA_CATEGORY_ID = "ARG_PARAM_EXTRA_CATEGORY_ID";
     private static final String ARG_PARAM_EXTRA_OPERATOR_ID = "ARG_PARAM_EXTRA_OPERATOR_ID";
@@ -142,6 +137,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     private static final String EXTRA_STATE_CATEGORY_DATA = "EXTRA_STATE_CATEGORY_DATA";
     private static final String EXTRA_STATE_BANNER_LIST_DATA = "EXTRA_STATE_BANNER_LIST_DATA";
     private static final String EXTRA_STATE_OTHER_BANNER_LIST_DATA = "EXTRA_STATE_OTHER_BANNER_LIST_DATA";
+    private static final String EXTRA_STATE_GUIDE_LIST_DATA = "EXTRA_STATE_GUIDE_LIST_DATA";
     private static final String EXTRA_STATE_CHECKOUT_PASS_DATA = "EXTRA_STATE_CHECKOUT_PASS_DATA";
     private static final String EXTRA_STATE_INSTANT_CHECKOUT_CHECKED =
             "EXTRA_STATE_INSTANT_CHECKOUT_CHECKED";
@@ -156,18 +152,24 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     private static final String DIGITAL_SMARTCARD = "mainapp_digital_smartcard";
 
+    private static final int DEFAULT_POST_DELAYED_VALUE = 1000;
+
     @BindView(R2.id.main_container)
     NestedScrollView mainHolderContainer;
     @BindView(R2.id.pb_main_loading)
     ProgressBar pbMainLoading;
-    @BindView(R2.id.rv_banner)
-    RecyclerView rvBanner;
     @BindView(R2.id.holder_product_detail)
     LinearLayout holderProductDetail;
     @BindView(R2.id.holder_check_balance)
     LinearLayout holderCheckBalance;
     @BindView(R2.id.holder_check_emoney_balance)
     CheckETollBalanceView checkETollBalanceView;
+    @BindView(R2.id.indicator)
+    TabLayout promoTabLayout;
+    @BindView(R2.id.pager)
+    DigitalWrapContentViewPager promoViewPager;
+    @BindView(R2.id.guide_separator)
+    View guideSeparator;
 
     private ProductDigitalPresenter presenter;
 
@@ -177,14 +179,13 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     private CategoryData categoryDataState;
     private List<BannerData> bannerDataListState;
     private List<BannerData> otherBannerDataListState;
+    private List<GuideData> guideDataListState;
     private HistoryClientNumber historyClientNumberState;
     private String voucherCodeCopiedState;
     private DigitalCheckoutPassData digitalCheckoutPassDataState;
     private String digitalHelpUrl;
 
     private boolean isInstantCheckoutChecked;
-
-    private BannerAdapter bannerAdapter;
 
     private String categoryId;
     private String operatorId;
@@ -207,6 +208,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     private ShowCaseDialog showCaseDialog;
     private int selectedSimIndex = 0;//start from 0
     private boolean ussdInProgress = false;
+    private PromoGuidePagerAdapter promoGuidePagerAdapter;
 
     public static Fragment newInstance(
             String categoryId, String operatorId, String productId, String clientNumber,
@@ -264,6 +266,9 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         state.putParcelableArrayList(
                 EXTRA_STATE_OTHER_BANNER_LIST_DATA, (ArrayList<? extends Parcelable>) otherBannerDataListState
         );
+        state.putParcelableArrayList(
+                EXTRA_STATE_GUIDE_LIST_DATA, (ArrayList<? extends Parcelable>) guideDataListState
+        );
         state.putParcelable(EXTRA_STATE_HISTORY_CLIENT_NUMBER, historyClientNumberState);
         state.putString(EXTRA_STATE_VOUCHER_CODE_COPIED, voucherCodeCopiedState);
         state.putParcelable(EXTRA_STATE_CHECKOUT_PASS_DATA, digitalCheckoutPassDataState);
@@ -279,6 +284,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         categoryDataState = savedState.getParcelable(EXTRA_STATE_CATEGORY_DATA);
         bannerDataListState = savedState.getParcelableArrayList(EXTRA_STATE_BANNER_LIST_DATA);
         otherBannerDataListState = savedState.getParcelableArrayList(EXTRA_STATE_OTHER_BANNER_LIST_DATA);
+        guideDataListState = savedState.getParcelableArrayList(EXTRA_STATE_GUIDE_LIST_DATA);
         historyClientNumberState = savedState.getParcelable(EXTRA_STATE_HISTORY_CLIENT_NUMBER);
         voucherCodeCopiedState = savedState.getString(EXTRA_STATE_VOUCHER_CODE_COPIED);
         digitalCheckoutPassDataState = savedState.getParcelable(EXTRA_STATE_CHECKOUT_PASS_DATA);
@@ -293,8 +299,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     protected void initialPresenter() {
-        bannerAdapter = new BannerAdapter(this);
-
         DigitalEndpointService digitalEndpointService = new DigitalEndpointService();
         DigitalGqlApiService digitalGqlEndpointService = new DigitalGqlApiService();
         CategoryDetailDataSource categoryDetailDataSource = new CategoryDetailDataSource(
@@ -345,8 +349,8 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     protected void initView(View view) {
-        rvBanner.setLayoutManager(new LinearLayoutManagerNonScroll(getActivity()));
         mainHolderContainer.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
+        mainHolderContainer.setFillViewport(true);
         mainHolderContainer.setFocusable(true);
         mainHolderContainer.setFocusableInTouchMode(true);
         mainHolderContainer.setOnTouchListener(new View.OnTouchListener() {
@@ -366,7 +370,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     protected void setViewListener() {
-        rvBanner.setAdapter(bannerAdapter);
         checkETollBalanceView.setListener(new CheckETollBalanceView.OnCheckBalanceClickListener() {
             @Override
             public void onClick() {
@@ -395,16 +398,27 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void renderBannerListData(String title, List<BannerData> bannerDataList) {
-        String formattedTitle = getResources().getString(R.string.promo_category, title);
         this.bannerDataListState = getBannerDataWithoutEmptyItem(bannerDataList);
-        bannerAdapter.addBannerDataListAndTitle(bannerDataList, formattedTitle);
+        promoGuidePagerAdapter.setBannerDataList(title, bannerDataList);
+        promoViewPager.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                promoViewPager.setCurrentItem(0);
+                promoViewPager.measureCurrentView(promoViewPager.getChildAt(0));
+            }
+        }, DEFAULT_POST_DELAYED_VALUE);
     }
 
     @Override
     public void renderOtherBannerListData(String title, List<BannerData> otherBannerDataList) {
-        String formattedTitle = getResources().getString(R.string.promo_category, title);
         this.otherBannerDataListState = getBannerDataWithoutEmptyItem(otherBannerDataList);
-        bannerAdapter.addBannerDataListAndTitle(otherBannerDataList, formattedTitle);
+        promoGuidePagerAdapter.setOtherBannerDataList(title, otherBannerDataList);
+    }
+
+    @Override
+    public void renderGuideListData(List<GuideData> guideDataList) {
+        this.guideDataListState = guideDataList;
+        promoGuidePagerAdapter.setGuideDataList(guideDataList);
     }
 
     private List<BannerData> getBannerDataWithoutEmptyItem(List<BannerData> bannerDataList) {
@@ -522,6 +536,11 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     @Override
     public List<BannerData> getOtherBannerDataListState() {
         return otherBannerDataListState;
+    }
+
+    @Override
+    public List<GuideData> getGuideDataListState() {
+        return guideDataListState;
     }
 
     @Override
@@ -779,55 +798,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     public void onProductSelected(String categoryName, String productDesc) {
         UnifyTracking.eventSelectProductOnNativePage(categoryName,
                 productDesc);
-    }
-
-    @Override
-    public void onButtonCopyBannerVoucherCodeClicked(String voucherCode) {
-        this.voucherCodeCopiedState = voucherCode;
-        ClipboardManager clipboard = (ClipboardManager)
-                getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-        ClipData clip = ClipData.newPlainText(
-                CLIP_DATA_LABEL_VOUCHER_CODE_DIGITAL, voucherCode
-        );
-        clipboard.setPrimaryClip(clip);
-        showToastMessage(getString(R.string.message_voucher_code_banner_copied));
-    }
-
-    @Override
-    public void onBannerItemClicked(BannerData bannerData) {
-        if (!TextUtils.isEmpty(bannerData.getLink())) {
-            int deeplinkType = DeepLinkChecker.getDeepLinkType(bannerData.getLink());
-            if (deeplinkType == DeepLinkChecker.PROMO) {
-                Uri uriData = Uri.parse(bannerData.getLink());
-                List<String> linkSegment = uriData.getPathSegments();
-                openPromo(bannerData.getLink(), linkSegment);
-            } else {
-                navigateToActivity(DigitalWebActivity.newInstance(
-                        getActivity(), bannerData.getLink())
-                );
-            }
-        }
-    }
-
-    private void openPromo(String url, List<String> linkSegment) {
-        IDigitalModuleRouter router = ((IDigitalModuleRouter) getActivity().getApplication());
-        if (linkSegment.size() == 2) {
-            Intent intent = router.getPromoDetailIntent(context, linkSegment.get(1));
-            startActivity(intent);
-        } else if (linkSegment.size() == 1) {
-            FirebaseRemoteConfigImpl remoteConfig = new FirebaseRemoteConfigImpl(context);
-            boolean remoteConfigEnable = remoteConfig.getBoolean(
-                    TkpdCache.RemoteConfigKey.MAINAPP_NATIVE_PROMO_LIST
-            );
-            if (remoteConfigEnable) {
-                Intent intent = router.getPromoListIntent(getActivity());
-                startActivity(intent);
-            } else {
-                navigateToActivity(DigitalWebActivity.newInstance(
-                        getActivity(), url)
-                );
-            }
-        }
     }
 
     @Override
@@ -1279,4 +1249,30 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         void updateTitleToolbar(String title);
     }
 
+    @Override
+    public void renderPromoGuideTab(int tabCount, String firstTab) {
+        promoTabLayout.setupWithViewPager(promoViewPager);
+        promoViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(promoTabLayout));
+        promoViewPager.setAdapter(getViewPagerAdapter(tabCount, firstTab));
+    }
+
+    private PagerAdapter getViewPagerAdapter(int tabCount, String firstTab) {
+        promoGuidePagerAdapter = new PromoGuidePagerAdapter(getFragmentManager(), context,
+                tabCount, firstTab);
+        return promoGuidePagerAdapter;
+    }
+
+    @Override
+    public void hidePromoGuideTab() {
+        promoTabLayout.setVisibility(View.GONE);
+        promoViewPager.setVisibility(View.GONE);
+        guideSeparator.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showPromoGuideTab() {
+        promoTabLayout.setVisibility(View.VISIBLE);
+        promoViewPager.setVisibility(View.VISIBLE);
+        guideSeparator.setVisibility(View.VISIBLE);
+    }
 }

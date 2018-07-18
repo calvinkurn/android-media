@@ -26,7 +26,12 @@ import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
+import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.data.mapper.SimpleDataResponseMapper;
+import com.tokopedia.seller.product.picker.data.api.GetProductListSellerApi;
+import com.tokopedia.seller.product.picker.data.repository.GetProductListSellingRepositoryImpl;
+import com.tokopedia.seller.product.picker.data.source.GetProductListSellingDataSource;
+import com.tokopedia.seller.product.picker.domain.GetProductListSellingRepository;
 import com.tokopedia.seller.product.variant.data.cloud.api.TomeProductApi;
 import com.tokopedia.seller.shop.common.data.source.ShopInfoDataSource;
 import com.tokopedia.seller.shop.common.data.source.cloud.api.ShopApi;
@@ -59,6 +64,28 @@ public class SellerDashboardModule {
     @Provides
     ShopScoreRepository provideShopScoreRepository(ShopScoreFactory shopScoreFactory) {
         return new ShopScoreRepositoryImpl(shopScoreFactory);
+    }
+
+    @SellerDashboardScope
+    @Provides
+    GetProductListSellingRepository productListSellingRepository(GetProductListSellingDataSource getProductListSellingDataSource){
+        return new GetProductListSellingRepositoryImpl(getProductListSellingDataSource);
+    }
+
+    @SellerDashboardScope
+    @Provides
+    GetProductListSellerApi provideGetProductListApi(@WsV4QualifierWithErrorHander Retrofit retrofit){
+        return retrofit.create(GetProductListSellerApi.class);
+    }
+
+    @Provides
+    @SellerDashboardScope
+    public SellerModuleRouter provideSellerModuleRouter(@ApplicationContext Context context){
+        if(context instanceof SellerModuleRouter){
+            return ((SellerModuleRouter)context);
+        }else{
+            return null;
+        }
     }
 
     @SellerDashboardScope

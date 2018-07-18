@@ -28,6 +28,7 @@ import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsMultipleAddress;
+import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,7 +80,7 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
 
     @Override
     protected String getScreenName() {
-        return null;
+        return ConstantTransactionAnalytics.ScreenName.MULTI_ADDRESS_PAGE;
     }
 
     @Override
@@ -157,10 +158,14 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
                     data.getParcelableArrayListExtra(AddShipmentAddressActivity.PRODUCT_DATA_LIST_EXTRAS);
             int itemPosition = data.getIntExtra(AddShipmentAddressActivity.ITEM_ADAPTER_POSITION_EXTRA, 0);
             MultipleAddressItemData editedAddressData = data.getParcelableExtra(ADDRESS_DATA_RESULT);
-            if (editedAddressData != null) {
-                adapterDataList.get(editedAddressData.getCartPosition())
-                        .getItemListData()
-                        .set(editedAddressData.getAddressPosition(), editedAddressData);
+            try {
+                if (editedAddressData != null) {
+                    adapterDataList.get(editedAddressData.getCartPosition())
+                            .getItemListData()
+                            .set(editedAddressData.getAddressPosition(), editedAddressData);
+                }
+            } catch (IndexOutOfBoundsException e) {
+                e.printStackTrace();
             }
 
             // Re-setup recycler view adapter to prevent crash if don't keep activities is on
@@ -172,10 +177,14 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
                     data.getParcelableArrayListExtra(AddShipmentAddressActivity.PRODUCT_DATA_LIST_EXTRAS);
             MultipleAddressItemData editedAddressData = data.getParcelableExtra(ADDRESS_DATA_RESULT);
             int itemPosition = data.getIntExtra(AddShipmentAddressActivity.ITEM_ADAPTER_POSITION_EXTRA, 0);
-            if (editedAddressData != null) {
-                adapterDataList.get(editedAddressData.getCartPosition())
-                        .getItemListData()
-                        .add(editedAddressData.getAddressPosition(), editedAddressData);
+            try {
+                if (editedAddressData != null) {
+                    adapterDataList.get(editedAddressData.getCartPosition())
+                            .getItemListData()
+                            .add(editedAddressData.getAddressPosition(), editedAddressData);
+                }
+            } catch (IndexOutOfBoundsException e) {
+                e.printStackTrace();
             }
 
             // Re-setup recycler view adapter to prevent crash if don't keep activities is on
@@ -302,5 +311,11 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
 
     public void stayInPage() {
         checkoutAnalyticsMultipleAddress.eventClickMultipleAddressClickTetapDiHalamanIniFromKirimKeBeberapaAlamat();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        checkoutAnalyticsChangeAddress.sendScreenName(getActivity(), getScreenName());
     }
 }

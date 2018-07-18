@@ -52,6 +52,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.imagePicker)
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
 
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
@@ -137,4 +138,3 @@ dependencies {
 
 apply plugin: 'com.google.gms.google-services'
 apply from: '../publish_local.gradle'
-

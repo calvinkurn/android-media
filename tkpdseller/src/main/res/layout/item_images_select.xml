@@ -12,15 +12,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center_vertical"
-        android:scaleType="fitCenter"
+        android:scaleType="centerCrop"
         tools:src="@mipmap/ic_launcher"
         android:layout_margin="@dimen/padding_vs"/>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="@dimen/padding_vs"
-        android:background="@drawable/bg_rect_stroke_gray_dashed" />
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/text_mainpicture"

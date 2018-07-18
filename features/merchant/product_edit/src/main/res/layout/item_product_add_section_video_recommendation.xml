@@ -15,7 +15,6 @@
             android:layout_height="wrap_content"
             style="@style/TextView.Title.Bold"
             android:text="@string/product_add_title_video_recommendation"
-            android:textStyle="bold"
             android:layout_marginTop="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"/>
 
