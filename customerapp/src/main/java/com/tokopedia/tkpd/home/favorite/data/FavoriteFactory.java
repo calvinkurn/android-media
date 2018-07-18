@@ -50,39 +50,9 @@ public class FavoriteFactory {
     }
 
     Observable<DomainWishlist> getWishlist(TKPDMapParam<String, Object> param) {
-
-
-            /*Map<String, Object> variables = new HashMap<>();
-
-            variables.put(PARAM_USER_ID, Integer.parseInt(SessionHandler.getLoginID(context)));
-            variables.put(PAGE_NO, mPaging.getPage());
-            variables.put(ITEM_COUNT, 10);
-
-            GraphqlRequest graphqlRequest = new GraphqlRequest(
-                    GraphqlHelper.loadRawString(context.getResources(), R.raw.query_get_wishlist),
-                    GqlWishListDataResponse.class,
-                    variables);
-
-            List<GraphqlRequest> graphqlRequestList = new ArrayList<>();
-            graphqlRequestList.add(graphqlRequest);
-
-            GraphqlCacheStrategy graphqlCacheStrategy =
-                    new GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build();
-
-            Observable<GraphqlResponse> observable = ObservableFactory.create(graphqlRequestList,
-                    graphqlCacheStrategy);
-
-
-            compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
-                    .unsubscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(subscriber));*/
-
-
         return cloudWishlistObservable(param)
                 .onExceptionResumeNext(
                         localWishlistObservable(param).doOnNext(setWishlistErrorNetwork()));
-
     }
 
 
