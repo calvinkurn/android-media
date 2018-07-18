@@ -46,22 +46,19 @@ public class BuyerPurchaseFragment extends BaseDaggerFragment implements Purchas
     }
 
 
-    public static BuyerPurchaseFragment newInstance(String type) {
-        BuyerPurchaseFragment fragment = new BuyerPurchaseFragment();
-        Bundle arg = new Bundle();
-        arg.putString(TAG_BUYER_SELLER, type);
-        fragment.setArguments(arg);
-        return fragment;
+    public static BuyerPurchaseFragment newInstance() {
+        return new BuyerPurchaseFragment();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        String type = "";
-        if(getArguments() != null)
-            type = getArguments().getString(TAG_BUYER_SELLER);
-        adapter = new PurchaseListAdpater(getContext(), type);
+        adapter = new PurchaseListAdpater(getContext(), getType());
         initInjector();
+    }
+
+    protected String getType() {
+        return getActivity().getString(R.string.pembelian);
     }
 
     @Override

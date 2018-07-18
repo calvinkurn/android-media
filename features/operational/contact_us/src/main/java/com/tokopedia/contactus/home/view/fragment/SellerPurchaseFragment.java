@@ -3,6 +3,7 @@ package com.tokopedia.contactus.home.view.fragment;
 import android.os.Bundle;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.home.di.ContactUsComponent;
 import com.tokopedia.contactus.home.view.presenter.PurchaseListContract;
 import com.tokopedia.contactus.home.view.presenter.SellerPurchasePresenter;
@@ -20,12 +21,9 @@ public class SellerPurchaseFragment extends BuyerPurchaseFragment {
     SellerPurchasePresenter presenter;
 
     ContactUsComponent contactUsComponent;
-    public static SellerPurchaseFragment newInstance(String type) {
-        SellerPurchaseFragment fragment = new SellerPurchaseFragment();
-        Bundle arg = new Bundle();
-        arg.putString(TAG_BUYER_SELLER, type);
-        fragment.setArguments(arg);
-        return fragment;
+    public static SellerPurchaseFragment newInstance() {
+        return new SellerPurchaseFragment();
+
     }
 
     protected void initInjector() {
@@ -35,6 +33,9 @@ public class SellerPurchaseFragment extends BuyerPurchaseFragment {
         contactUsComponent.inject(this);
     }
 
+    protected String getType() {
+        return getActivity().getString(R.string.penjualan);
+    }
 
     @Override
     public PurchaseListContract.Presenter getPresenter() {
