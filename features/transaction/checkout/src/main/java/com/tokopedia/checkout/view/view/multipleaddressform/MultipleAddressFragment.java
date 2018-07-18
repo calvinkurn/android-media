@@ -25,6 +25,7 @@ import com.tokopedia.checkout.view.di.component.DaggerMultipleAddressComponent;
 import com.tokopedia.checkout.view.di.component.MultipleAddressComponent;
 import com.tokopedia.checkout.view.di.module.MultipleAddressModule;
 import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule;
+import com.tokopedia.checkout.view.view.cartlist.CartItemDecoration;
 import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
@@ -286,6 +287,7 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
     private void setRecyclerViewAdapter(List<MultipleAddressAdapterData> addressData, int itemPosition) {
         multipleAddressAdapter = new MultipleAddressAdapter(addressData, this);
         orderAddressList.setAdapter(multipleAddressAdapter);
+        orderAddressList.addItemDecoration(new CartItemDecoration((int) getResources().getDimension(R.dimen.dp_4), false, 0));
         if (itemPosition != 0) {
             orderAddressList.scrollToPosition(itemPosition);
         }

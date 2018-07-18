@@ -21,18 +21,13 @@ public class MultipleAddressAdapter
         extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         implements MultipleAddressItemAdapter.MultipleAddressItemAdapterListener {
 
-
-    private static final int MULTIPLE_ADDRESS_HEADER_LAYOUT =
-            R.layout.multiple_address_step_1_header;
     private static final int MULTIPLE_ADDRESS_ADAPTER_LAYOUT =
             R.layout.multiple_address_adapter;
     private static final int MULTIPLE_ADDRESS_FOOTER_LAYOUT =
             R.layout.multiple_address_footer;
 
     private ArrayList<MultipleAddressAdapterData> addressData;
-
     private MultipleAddressAdapterListener listener;
-
     private List<Object> adapterObjectList;
 
     public MultipleAddressAdapter(List<MultipleAddressAdapterData> addressData,
@@ -59,9 +54,7 @@ public class MultipleAddressAdapter
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(viewType, parent, false);
-        if (viewType == MULTIPLE_ADDRESS_HEADER_LAYOUT)
-            return new MultipleAddressHeaderViewHolder(itemView);
-        else if (viewType == MULTIPLE_ADDRESS_FOOTER_LAYOUT)
+        if (viewType == MULTIPLE_ADDRESS_FOOTER_LAYOUT)
             return new MultipleAddressFooterViewHolder(itemView);
         else return new MultipleAddressViewHolder(parent.getContext(), itemView);
     }
@@ -94,14 +87,6 @@ public class MultipleAddressAdapter
         listener.onItemChoosen(parentItemPosotion, this.addressData, productData, addressData);
     }
 
-    class MultipleAddressHeaderViewHolder extends RecyclerView.ViewHolder {
-
-        MultipleAddressHeaderViewHolder(View itemView) {
-            super(itemView);
-
-        }
-    }
-
     class MultipleAddressFooterViewHolder extends RecyclerView.ViewHolder {
 
         private ViewGroup goToCourierPageButton;
@@ -110,8 +95,6 @@ public class MultipleAddressAdapter
             super(itemView);
 
             goToCourierPageButton = itemView.findViewById(R.id.go_to_courier_page_button);
-
-
         }
     }
 
@@ -140,9 +123,5 @@ public class MultipleAddressAdapter
                                      ArrayList<MultipleAddressAdapterData> dataList,
                                      MultipleAddressAdapterData data,
                                      MultipleAddressItemData addressData);
-    }
-
-    public List<MultipleAddressAdapterData> getAddressData() {
-        return addressData;
     }
 }

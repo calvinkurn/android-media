@@ -42,7 +42,6 @@ public class MultipleAddressViewHolder extends RecyclerView.ViewHolder {
     private TextView tvFreeReturnLabel;
     private TextView tvPreOrder;
     private TextView tvCashback;
-    private View marginHeader;
     private Button btAddNewShipment;
     private LinearLayout rlProductPoliciesLayout;
     private ImageView imgShopBadge;
@@ -60,7 +59,6 @@ public class MultipleAddressViewHolder extends RecyclerView.ViewHolder {
         tvFreeReturnLabel = itemView.findViewById(R.id.tv_free_return_label);
         tvPreOrder = itemView.findViewById(R.id.tv_pre_order);
         tvCashback = itemView.findViewById(R.id.tv_cashback);
-        marginHeader = itemView.findViewById(R.id.margin_header);
         btAddNewShipment = itemView.findViewById(R.id.bt_add_new_shipment);
         rlProductPoliciesLayout = itemView.findViewById(R.id.rl_product_policies_layout);
         imgShopBadge = itemView.findViewById(R.id.img_shop_badge);
@@ -88,8 +86,7 @@ public class MultipleAddressViewHolder extends RecyclerView.ViewHolder {
         productName.setText(data.getProductName());
         productPrice.setText(data.getProductPrice());
         ImageHandler.LoadImage(productImage, data.getProductImageUrl());
-        shippingDestinationList
-                .setLayoutManager(new LinearLayoutManager(context));
+        shippingDestinationList.setLayoutManager(new LinearLayoutManager(context));
         shippingDestinationList.setAdapter(
                 new MultipleAddressItemAdapter(getAdapterPosition(), data, data.getItemListData(), listener)
         );
@@ -103,10 +100,7 @@ public class MultipleAddressViewHolder extends RecyclerView.ViewHolder {
                 )
         );
         if (firstItemPosition) {
-            marginHeader.setVisibility(View.VISIBLE);
             setShowCase();
-        } else {
-            marginHeader.setVisibility(View.GONE);
         }
 
         if (data.isFreeReturn()) {
