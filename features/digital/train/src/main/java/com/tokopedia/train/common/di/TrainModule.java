@@ -2,14 +2,18 @@ package com.tokopedia.train.common.di;
 
 import android.content.Context;
 
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.train.common.TrainRouter;
 import com.tokopedia.train.common.constant.TrainApi;
 import com.tokopedia.train.common.constant.TrainUrl;
 import com.tokopedia.train.common.data.TrainDataStoreFactory;
 import com.tokopedia.train.common.data.TrainRepositoryImpl;
+import com.tokopedia.train.common.data.interceptor.TrainInterceptor;
 import com.tokopedia.train.common.domain.TrainRepository;
 import com.tokopedia.train.scheduledetail.domain.GetScheduleDetailUseCase;
 import com.tokopedia.train.search.data.TrainScheduleCacheDataStore;
@@ -41,15 +45,25 @@ public class TrainModule {
     }
 
     @Provides
-    public OkHttpClient provideOkHttpClient(@ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor, TrainRouter trainRouter) {
+    @TrainScope
+    public TrainInterceptor provideTrainInterceptor(@ApplicationContext Context context, AbstractionRouter abstractionRouter, UserSession userSession) {
+        return new TrainInterceptor(context, abstractionRouter, userSession);
+    }
+
+    @Provides
+    public OkHttpClient provideOkHttpClient(@ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor, TrainRouter trainRouter, TrainInterceptor trainInterceptor) {
         OkHttpRetryPolicy retryPolicy = OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy();
-        return new OkHttpClient.Builder()
+        OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .readTimeout(retryPolicy.readTimeout, TimeUnit.SECONDS)
                 .writeTimeout(retryPolicy.writeTimeout, TimeUnit.SECONDS)
-                .connectTimeout(retryPolicy.connectTimeout, TimeUnit.SECONDS)
-                .addInterceptor(httpLoggingInterceptor)
-                .addInterceptor(trainRouter.getChuckInterceptor())
-                .build();
+                .connectTimeout(retryPolicy.connectTimeout, TimeUnit.SECONDS);
+        builder.addInterceptor(trainInterceptor);
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            builder.addInterceptor(httpLoggingInterceptor)
+                    .addInterceptor(trainRouter.getChuckInterceptor());
+        }
+
+        return builder.build();
     }
 
     @TrainScope

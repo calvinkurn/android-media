@@ -8,10 +8,8 @@
     android:focusableInTouchMode="true"
     android:orientation="vertical"
     android:paddingBottom="@dimen/dp_10"
-    android:paddingEnd="@dimen/dp_10"
     android:paddingLeft="@dimen/dp_10"
-    android:paddingRight="@dimen/dp_10"
-    android:paddingStart="@dimen/dp_10"
+    android:paddingRight="@dimen/dp_15"
     android:paddingTop="@dimen/dp_10">
 
     <android.support.v7.widget.AppCompatTextView

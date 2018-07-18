@@ -27,6 +27,8 @@ public class TrainSeatAdapterTypeFactory extends BaseAdapterTypeFactory {
         List<TrainSeatViewModel> getSelectedSelected();
 
         void seatClicked(TrainSeatViewModel viewModel, int position, int height);
+
+        String getWagonCode();
     }
 
     private ActionListener listener;

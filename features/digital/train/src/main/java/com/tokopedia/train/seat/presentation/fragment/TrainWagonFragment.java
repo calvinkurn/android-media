@@ -189,6 +189,11 @@ public class TrainWagonFragment extends BaseDaggerFragment implements TrainWagon
         trainPopup.showPopup(viewModel, height, pos[0], top, popupHeight);
     }
 
+    @Override
+    public String getWagonCode() {
+        return trainWagonViewModel.getWagonCode();
+    }
+
 
     public class TrainSeatPopupWindow {
         RecyclerView passengerRecyclerView;

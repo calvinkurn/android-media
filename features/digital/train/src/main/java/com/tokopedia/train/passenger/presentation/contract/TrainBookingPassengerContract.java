@@ -67,8 +67,6 @@ public interface TrainBookingPassengerContract {
 
         void loadPassengerSameAsBuyer(TrainPassengerViewModel trainPassengerViewModel);
 
-        void toastValidityData();
-
         void showMessageErrorInSnackBar(int resId);
     }
 

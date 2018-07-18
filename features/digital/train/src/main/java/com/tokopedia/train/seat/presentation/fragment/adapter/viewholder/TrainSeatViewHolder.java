@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.seat.presentation.fragment.adapter.TrainSeatAdapterTypeFactory;
+import com.tokopedia.train.seat.presentation.viewmodel.TrainSeatPassengerViewModel;
 import com.tokopedia.train.seat.presentation.viewmodel.TrainSeatViewModel;
 
 public class TrainSeatViewHolder extends AbstractViewHolder<TrainSeatViewModel> {
@@ -28,10 +29,12 @@ public class TrainSeatViewHolder extends AbstractViewHolder<TrainSeatViewModel> 
     @Override
     public void bind(TrainSeatViewModel viewModel) {
         item = viewModel;
-        int index = listener.getSelectedSelected().indexOf(viewModel);
-        if (index != -1) {
+
+        int passengerNumber = findPassengerNumber(viewModel);
+
+        if (passengerNumber != -1) {
             if (listener != null) {
-                labelTextView.setText("P" + listener.getPassengers().get(index).getPassengerNumber());
+                labelTextView.setText(String.format("P%d", passengerNumber));
             }
             labelTextView.setTextColor(itemView.getResources().getColor(R.color.white));
             container.setBackground(ContextCompat.getDrawable(itemView.getContext(), R.drawable.bg_train_your_choice));
@@ -61,5 +64,19 @@ public class TrainSeatViewHolder extends AbstractViewHolder<TrainSeatViewModel> 
         } else {
             container.setVisibility(View.VISIBLE);
         }
+    }
+
+    private int findPassengerNumber(TrainSeatViewModel viewModel) {
+        int passengerNumber = -1;
+        String wagonCode = listener.getWagonCode();
+        for (TrainSeatPassengerViewModel trainSeatViewModel : listener.getPassengers()) {
+            if (trainSeatViewModel.getSeatViewModel().getWagonCode().equalsIgnoreCase(wagonCode) &&
+                    trainSeatViewModel.getSeatViewModel().getRow().equalsIgnoreCase(String.valueOf(viewModel.getRow())) &&
+                    trainSeatViewModel.getSeatViewModel().getColumn().equalsIgnoreCase(String.valueOf(viewModel.getColumn()))) {
+                passengerNumber = trainSeatViewModel.getPassengerNumber();
+                break;
+            }
+        }
+        return passengerNumber;
     }
 }

@@ -17,6 +17,7 @@ public class TrainDateUtil {
     public static final String FORMAT_DATE_API = "yyyy-MM-dd'T'HH:mm:ssZ";
     public static final String FORMAT_TIME = "HH:mm";
     public static final String FORMAT_HOUR = "HH";
+    public static final String FORMAT_DAY = "dd";
     public static final String FORMAT_DATE = "EEEE, dd LLLL yyyy";
     public static final String DEFAULT_FORMAT = "yyyy-MM-dd";
     public static final String DEFAULT_TIMESTAMP_FORMAT = "yyyy-MM-dd HH:mm:ss";

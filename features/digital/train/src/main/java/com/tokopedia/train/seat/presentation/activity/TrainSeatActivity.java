@@ -20,14 +20,17 @@ public class TrainSeatActivity extends TrainBaseActivity implements HasComponent
 
     private static final String EXTRA_SOFTBOOK = "EXTRA_SOFTBOOK";
     private static final String EXTRA_PASS_DATA = "EXTRA_PASS_DATA";
+    private static final String EXTRA_DEPARTURE_STATE = "EXTRA_DEPARTURE_STATE";
     private TrainSeatComponent trainSeatComponent;
     private TrainSoftbook trainSoftbook;
-private TrainScheduleBookingPassData passData;
+    private TrainScheduleBookingPassData passData;
+    private boolean isDeparture;
 
-    public static Intent getCallingIntent(Activity activity, TrainSoftbook trainSoftbook, TrainScheduleBookingPassData trainScheduleBookingPassData) {
+    public static Intent getCallingIntent(Activity activity, TrainSoftbook trainSoftbook, TrainScheduleBookingPassData trainScheduleBookingPassData, boolean isDeparture) {
         Intent intent = new Intent(activity, TrainSeatActivity.class);
         intent.putExtra(EXTRA_SOFTBOOK, trainSoftbook);
         intent.putExtra(EXTRA_PASS_DATA, trainScheduleBookingPassData);
+        intent.putExtra(EXTRA_DEPARTURE_STATE, isDeparture);
         return intent;
     }
 
@@ -35,12 +38,13 @@ private TrainScheduleBookingPassData passData;
     protected void onCreate(Bundle savedInstanceState) {
         trainSoftbook = getIntent().getParcelableExtra(EXTRA_SOFTBOOK);
         passData = getIntent().getParcelableExtra(EXTRA_PASS_DATA);
+        isDeparture = getIntent().getBooleanExtra(EXTRA_DEPARTURE_STATE, true);
         super.onCreate(savedInstanceState);
     }
 
     @Override
     protected Fragment getNewFragment() {
-        return TrainSeatFragment.newInstance(trainSoftbook, passData);
+        return TrainSeatFragment.newInstance(trainSoftbook, passData, isDeparture);
     }
 
     @Override
