@@ -7,6 +7,7 @@ import com.tokopedia.core.network.entity.wishlist.Wishlist;
 import com.tokopedia.core.network.entity.wishlist.WishlistData;
 import com.tokopedia.core.var.Badge;
 import com.tokopedia.core.var.Label;
+import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.favorite.domain.model.DataWishlist;
 import com.tokopedia.tkpd.home.favorite.domain.model.DomainWishlist;
@@ -21,7 +22,7 @@ import retrofit2.Response;
 /**
  * @author Kulomady on 1/18/17.
  */
-public class WishlistMapper implements rx.functions.Func1<Response<String>, DomainWishlist> {
+public class WishlistMapper implements rx.functions.Func1<GraphqlResponse, DomainWishlist> {
     private final String defaultErrorMessage;
     private Gson gson;
 
@@ -31,10 +32,10 @@ public class WishlistMapper implements rx.functions.Func1<Response<String>, Doma
     }
 
     @Override
-    public DomainWishlist call(Response<String> response) {
-        if (response != null && response.isSuccessful() && response.body() != null) {
+    public DomainWishlist call(GraphqlResponse response) {
+        /*if (response != null && response.isSuccessful() && response.body() != null) {
             return ValidateResponse(response.body());
-        }
+        }*/
         return invalidResponse(defaultErrorMessage);
     }
 

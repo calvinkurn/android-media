@@ -4,12 +4,20 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.core.base.common.service.MojitoService;
 import com.tokopedia.core.base.common.service.ServiceV4;
 import com.tokopedia.core.base.common.service.TopAdsService;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.network.entity.wishlist.GqlWishListDataResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.graphql.data.ObservableFactory;
+import com.tokopedia.graphql.data.model.CacheType;
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy;
+import com.tokopedia.graphql.data.model.GraphqlRequest;
+import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.favorite.data.source.cloud.CloudFavoriteShopDataSource;
 import com.tokopedia.tkpd.home.favorite.data.source.cloud.CloudTopAdsShopDataSource;
 import com.tokopedia.tkpd.home.favorite.data.source.cloud.CloudWishlistDataStore;
@@ -22,9 +30,17 @@ import com.tokopedia.tkpd.home.favorite.domain.model.FavShop;
 import com.tokopedia.tkpd.home.favorite.domain.model.FavoriteShop;
 import com.tokopedia.tkpd.home.favorite.domain.model.TopAdsShop;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * @author Kulomady on 1/18/17.
@@ -52,12 +68,39 @@ public class FavoriteFactory {
 
     Observable<DomainWishlist> getWishlist(TKPDMapParam<String, Object> param) {
 
+
+            /*Map<String, Object> variables = new HashMap<>();
+
+            variables.put(PARAM_USER_ID, Integer.parseInt(SessionHandler.getLoginID(context)));
+            variables.put(PAGE_NO, mPaging.getPage());
+            variables.put(ITEM_COUNT, 10);
+
+            GraphqlRequest graphqlRequest = new GraphqlRequest(
+                    GraphqlHelper.loadRawString(context.getResources(), R.raw.query_get_wishlist),
+                    GqlWishListDataResponse.class,
+                    variables);
+
+            List<GraphqlRequest> graphqlRequestList = new ArrayList<>();
+            graphqlRequestList.add(graphqlRequest);
+
+            GraphqlCacheStrategy graphqlCacheStrategy =
+                    new GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build();
+
+            Observable<GraphqlResponse> observable = ObservableFactory.create(graphqlRequestList,
+                    graphqlCacheStrategy);
+
+
+            compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
+                    .unsubscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(subscriber));*/
+
+
         return cloudWishlistObservable(param)
                 .onExceptionResumeNext(
                         localWishlistObservable().doOnNext(setWishlistErrorNetwork()));
 
     }
-
 
 
     Observable<DomainWishlist> getFreshWishlist(TKPDMapParam<String, Object> param) {
