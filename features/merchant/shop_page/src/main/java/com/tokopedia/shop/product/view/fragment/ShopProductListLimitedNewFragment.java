@@ -42,6 +42,8 @@ import com.tokopedia.shop.product.util.ShopProductOfficialStoreUtils;
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
 import com.tokopedia.shop.product.view.adapter.newadapter.ShopProductAdapterTypeFactory;
 import com.tokopedia.shop.product.view.adapter.newadapter.ShopProductNewAdapter;
+import com.tokopedia.shop.product.view.adapter.newadapter.viewholder.ShopProductEtalaseListViewHolder;
+import com.tokopedia.shop.product.view.adapter.newadapter.viewholder.ShopProductNewViewHolder;
 import com.tokopedia.shop.product.view.adapter.newadapter.viewholder.ShopProductViewHolder;
 import com.tokopedia.shop.product.view.adapter.newadapter.viewholder.ShopProductPromoViewHolder;
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener;
@@ -66,7 +68,7 @@ import javax.inject.Inject;
 
 public class ShopProductListLimitedNewFragment extends BaseListFragment<BaseShopProductViewModel, ShopProductAdapterTypeFactory>
         implements ShopProductListView, BaseEmptyViewHolder.Callback,
-        ShopProductPromoViewHolder.PromoViewHolderListener, ShopProductClickedNewListener {
+        ShopProductPromoViewHolder.PromoViewHolderListener, ShopProductClickedNewListener, ShopProductEtalaseListViewHolder.OnShopProductEtalaseListViewHolderListener {
 
     private static final int REQUEST_CODE_USER_LOGIN = 100;
     private static final int REQUEST_CODE_USER_LOGIN_FOR_WEBVIEW = 101;
@@ -78,7 +80,8 @@ public class ShopProductListLimitedNewFragment extends BaseListFragment<BaseShop
 
     private static final String SHOP_ATTRIBUTION = "EXTRA_SHOP_ATTRIBUTION";
 
-    public static final String SAVED_SELECTED_ETALASE = "saved_etalase";
+    public static final String SAVED_SELECTED_ETALASE_LIST = "saved_etalase_list";
+    public static final String SAVED_SELECTED_ETALASE_ID = "saved_etalase_id";
     public static final int ETALASE_TO_SHOW = 5;
 
     @Inject
@@ -104,8 +107,9 @@ public class ShopProductListLimitedNewFragment extends BaseListFragment<BaseShop
 //    private int stickyHeight;
 
     // selected is list, because we want to keep the history.
-    // index 0 is the current.
     private ArrayList<ShopEtalaseViewModel> selectedEtalaseList;
+    // selected id of etalase, might not in selectedEtalaseList.
+    private String selectedEtalaseId;
 
     private ShopProductNewAdapter shopProductNewAdapter;
     private GridLayoutManager gridLayoutManager;
@@ -136,8 +140,10 @@ public class ShopProductListLimitedNewFragment extends BaseListFragment<BaseShop
     public void onCreate(Bundle savedInstanceState) {
         if (savedInstanceState == null) {
             selectedEtalaseList = new ArrayList<>();
+            selectedEtalaseId = null;
         } else {
-            selectedEtalaseList = savedInstanceState.getParcelableArrayList(SAVED_SELECTED_ETALASE);
+            selectedEtalaseList = savedInstanceState.getParcelableArrayList(SAVED_SELECTED_ETALASE_LIST);
+            selectedEtalaseId = savedInstanceState.getString(SAVED_SELECTED_ETALASE_ID);
         }
         super.onCreate(savedInstanceState);
         attribution = getArguments().getString(SHOP_ATTRIBUTION, "");
@@ -252,35 +258,47 @@ public class ShopProductListLimitedNewFragment extends BaseListFragment<BaseShop
         loadInitialData();
     }
 
+    // load data promo/featured/etalase
+    protected void loadInitialData() {
+        loadTopData();
+        reloadProductData();
+    }
+
+    // load product list first time
     private void reloadProductData(){
         isLoadingInitialData = true;
         shopProductNewAdapter.clearProductList();
-        shopProductNewAdapter.notifyDataSetChanged();
         showLoading();
         loadData(getDefaultInitialPage());
+    }
+
+    protected void loadTopData(){
+        if (shopInfo!= null) {
+            shopProductNewAdapter.clearDataExceptProduct();
+
+            String officialWebViewUrl = shopInfo.getInfo().getShopOfficialTop();
+            officialWebViewUrl = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT ? officialWebViewUrl : "";
+            shopProductListNewPresenter.loadProductPromoModel(officialWebViewUrl);
+
+            shopProductListNewPresenter.getProductFeatureListWithAttributes(
+                    shopInfo.getInfo().getShopId(),
+                    shopInfo.getInfo().isShopOfficial());
+
+            shopProductListNewPresenter.getShopEtalase(shopInfo.getInfo().getShopId(), selectedEtalaseList, ETALASE_TO_SHOW);
+        }
     }
 
     @Override
     public void loadData(int page) {
         if (shopInfo != null) {
-            if (isLoadingInitialData) {
-                String officialWebViewUrl = shopInfo.getInfo().getShopOfficialTop();
-                officialWebViewUrl = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT ? officialWebViewUrl : "";
-                shopProductListNewPresenter.loadProductPromoModel(officialWebViewUrl);
-
-                shopProductListNewPresenter.getProductFeatureListWithAttributes(
-                        shopInfo.getInfo().getShopId(),
-                        shopInfo.getInfo().isShopOfficial());
-
-                shopProductListNewPresenter.getShopEtalase(shopInfo.getInfo().getShopId(), selectedEtalaseList, ETALASE_TO_SHOW);
-            }
             shopProductListNewPresenter.getProductListWithAttributes(
                     shopInfo.getInfo().getShopId(),
                     TextApiUtils.isValueTrue(shopInfo.getInfo().getShopIsGold()),
                     TextApiUtils.isValueTrue(shopInfo.getInfo().getShopIsOfficial()),
                     page,
                     !shopInfo.getInfo().isOpen(),
-                    ShopPageTrackingConstant.DEFAULT_PER_PAGE);
+                    ShopPageTrackingConstant.DEFAULT_PER_PAGE,
+                    selectedEtalaseId);
         }
     }
 
@@ -302,7 +320,7 @@ public class ShopProductListLimitedNewFragment extends BaseListFragment<BaseShop
         gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                if (shopProductNewAdapter.getItemViewType(position) == ShopProductViewHolder.LAYOUT) {
+                if (shopProductNewAdapter.getItemViewType(position) == ShopProductNewViewHolder.LAYOUT) {
                     return LIST_SPAN_COUNT;
                 } else {
                     return GRID_SPAN_COUNT;
@@ -333,7 +351,7 @@ public class ShopProductListLimitedNewFragment extends BaseListFragment<BaseShop
     @Override
     protected ShopProductAdapterTypeFactory getAdapterTypeFactory() {
         return new ShopProductAdapterTypeFactory(this,
-                this, this, false);
+                this, this, this, false);
     }
 
     @NonNull
@@ -471,6 +489,7 @@ public class ShopProductListLimitedNewFragment extends BaseListFragment<BaseShop
         hideLoading();
         if (isLoadingInitialData) {
             shopProductNewAdapter.clearProductList();
+            endlessRecyclerViewScrollListener.resetState();
         } else {
             shopProductNewAdapter.clearAllNonDataElement();
         }
@@ -516,7 +535,6 @@ public class ShopProductListLimitedNewFragment extends BaseListFragment<BaseShop
     @Override
     public void onSuccessGetEtalaseList(List<ShopEtalaseViewModel> shopEtalaseViewModelList) {
         //TODO success get etalase, show all etalase list
-        String selectedEtalaseId = selectedEtalaseList.size() > 0? selectedEtalaseList.get(0).getEtalaseId() : "";
         shopProductNewAdapter.setShopEtalase(new ShopProductEtalaseListViewModel(shopEtalaseViewModelList, selectedEtalaseId));
     }
 
@@ -547,6 +565,14 @@ public class ShopProductListLimitedNewFragment extends BaseListFragment<BaseShop
             Intent intent = ((ShopModuleRouter) getActivity().getApplication()).getLoginIntent(getActivity());
             startActivityForResult(intent, REQUEST_CODE_USER_LOGIN_FOR_WEBVIEW);
         }
+    }
+
+    @Override
+    public void onEtalaseChipClicked(ShopEtalaseViewModel shopEtalaseViewModel) {
+        selectedEtalaseId = shopEtalaseViewModel.getEtalaseId();
+        shopProductNewAdapter.setSelectedEtalaseId(selectedEtalaseId);
+        // no need ro rearraged, just notify the adapter to reload product list by etalase id
+        reloadProductData();
     }
 
     @Override
@@ -626,6 +652,9 @@ public class ShopProductListLimitedNewFragment extends BaseListFragment<BaseShop
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList(SAVED_SELECTED_ETALASE, selectedEtalaseList);
+        outState.putParcelableArrayList(SAVED_SELECTED_ETALASE_LIST, selectedEtalaseList);
+        outState.putString(SAVED_SELECTED_ETALASE_ID, selectedEtalaseId);
     }
+
+
 }

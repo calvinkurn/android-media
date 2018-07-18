@@ -31,7 +31,8 @@ public class ShopProductFeaturedViewHolder extends AbstractViewHolder<ShopProduc
         super(itemView);
         shopProductNewAdapter = new ShopProductNewAdapter(new ShopProductAdapterTypeFactory(
                 null,
-                shopProductClickedNewListener, null, true));
+                shopProductClickedNewListener, null,
+                null, true ));
         findViews(itemView);
     }
 

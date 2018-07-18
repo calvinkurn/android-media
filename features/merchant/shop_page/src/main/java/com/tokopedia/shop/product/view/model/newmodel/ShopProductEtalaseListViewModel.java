@@ -34,6 +34,14 @@ public class ShopProductEtalaseListViewModel implements BaseShopProductViewModel
         return etalaseModelList;
     }
 
+    public String getSelectedEtalaseId() {
+        return selectedEtalaseId;
+    }
+
+    public void setSelectedEtalaseId(String selectedEtalaseId) {
+        this.selectedEtalaseId = selectedEtalaseId;
+    }
+
     @Override
     public int type(ShopProductAdapterTypeFactory typeFactory) {
         return typeFactory.type(this);

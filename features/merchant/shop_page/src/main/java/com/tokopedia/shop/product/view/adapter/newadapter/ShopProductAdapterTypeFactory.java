@@ -28,15 +28,18 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
     private final ShopProductPromoViewHolder.PromoViewHolderListener promoViewHolderListener;
     private final ShopProductClickedNewListener shopProductClickedListener;
     private final EmptyWrapViewHolder.Callback emptyProductOnClickListener;
+    private final ShopProductEtalaseListViewHolder.OnShopProductEtalaseListViewHolderListener onShopProductEtalaseListViewHolderListener;
     private final boolean isHorizontalLayout;
 
     public ShopProductAdapterTypeFactory(ShopProductPromoViewHolder.PromoViewHolderListener promoViewHolderListener,
                                          ShopProductClickedNewListener shopProductClickedListener,
                                          EmptyWrapViewHolder.Callback emptyProductOnClickListener,
+                                         ShopProductEtalaseListViewHolder.OnShopProductEtalaseListViewHolderListener onShopProductEtalaseListViewHolderListener,
                                          boolean isHorizontalLayout) {
         this.promoViewHolderListener = promoViewHolderListener;
         this.shopProductClickedListener = shopProductClickedListener;
         this.emptyProductOnClickListener = emptyProductOnClickListener;
+        this.onShopProductEtalaseListViewHolderListener = onShopProductEtalaseListViewHolderListener;
         this.isHorizontalLayout = isHorizontalLayout;
     }
 
@@ -95,7 +98,7 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
         } else if (type == ErrorNetworkWrapViewHolder.LAYOUT){
             return new ErrorNetworkWrapViewHolder(parent);
         } else if (type == ShopProductEtalaseListViewHolder.LAYOUT) {
-            return new ShopProductEtalaseListViewHolder(parent);
+            return new ShopProductEtalaseListViewHolder(parent, onShopProductEtalaseListViewHolderListener);
         } else if (type == ShopProductPromoViewHolder.LAYOUT) {
             return new ShopProductPromoViewHolder(parent, promoViewHolderListener);
         } else if(type == ShopProductFeaturedViewHolder .LAYOUT){

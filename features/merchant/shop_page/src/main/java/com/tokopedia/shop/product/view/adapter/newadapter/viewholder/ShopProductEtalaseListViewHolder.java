@@ -8,6 +8,7 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.shop.R;
+import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel;
 import com.tokopedia.shop.product.view.adapter.newadapter.EtalaseChipAdapter;
 import com.tokopedia.shop.product.view.model.newmodel.ShopProductEtalaseListViewModel;
 
@@ -15,16 +16,21 @@ import com.tokopedia.shop.product.view.model.newmodel.ShopProductEtalaseListView
  * @author by alvarisi on 12/12/17.
  */
 
-public class ShopProductEtalaseListViewHolder extends AbstractViewHolder<ShopProductEtalaseListViewModel> {
+public class ShopProductEtalaseListViewHolder extends AbstractViewHolder<ShopProductEtalaseListViewModel> implements EtalaseChipAdapter.OnEtalaseChipAdapterListener {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.item_shop_product_etalase_title_view;
     private RecyclerView recyclerView;
 
+    private OnShopProductEtalaseListViewHolderListener onShopProductEtalaseListViewHolderListener;
+    public interface OnShopProductEtalaseListViewHolderListener{
+        void onEtalaseChipClicked(ShopEtalaseViewModel shopEtalaseViewModel);
+    }
     private EtalaseChipAdapter etalaseChipAdapter;
-    public ShopProductEtalaseListViewHolder(View itemView) {
+    public ShopProductEtalaseListViewHolder(View itemView, OnShopProductEtalaseListViewHolderListener onShopProductEtalaseListViewHolderListener) {
         super(itemView);
-        etalaseChipAdapter = new EtalaseChipAdapter(null);
+        this.onShopProductEtalaseListViewHolderListener = onShopProductEtalaseListViewHolderListener;
+        etalaseChipAdapter = new EtalaseChipAdapter(null, null, this);
         findViews(itemView);
     }
 
@@ -42,6 +48,16 @@ public class ShopProductEtalaseListViewHolder extends AbstractViewHolder<ShopPro
     @Override
     public void bind(ShopProductEtalaseListViewModel shopProductEtalaseListViewModel) {
         etalaseChipAdapter.setEtalaseViewModelList(shopProductEtalaseListViewModel.getEtalaseModelList());
+        String selectedEtalaseId = shopProductEtalaseListViewModel.getSelectedEtalaseId();
+        etalaseChipAdapter.setSelectedEtalaseId(selectedEtalaseId);
         etalaseChipAdapter.notifyDataSetChanged();
     }
+
+    @Override
+    public void onEtalaseChipClicked(ShopEtalaseViewModel shopEtalaseViewModel) {
+        if (onShopProductEtalaseListViewHolderListener!= null) {
+            onShopProductEtalaseListViewHolderListener.onEtalaseChipClicked(shopEtalaseViewModel);
+        }
+    }
+
 }

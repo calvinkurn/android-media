@@ -1,5 +1,7 @@
 package com.tokopedia.shop.product.view.presenter.newpresenter;
 
+import android.text.TextUtils;
+
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.response.PagingList;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
@@ -87,10 +89,13 @@ public class ShopProductListNewPresenter extends BaseDaggerPresenter<ShopProduct
 
     public void getProductListWithAttributes(String shopId, boolean isShopClosed,
                                              boolean isOfficialStore, int page, boolean useAce,
-                                             int itemPerPage) {
+                                             int itemPerPage,
+                                             String etalaseId) {
         ShopProductRequestModel shopProductRequestModel = new ShopProductRequestModel(shopId, isShopClosed,
                 isOfficialStore, page, useAce, itemPerPage);
-        //TODO etalaseid, look up here ShopProductListPresenterOld
+        if (!TextUtils.isEmpty(etalaseId)) {
+            shopProductRequestModel.setEtalaseId(etalaseId);
+        }
         productListWithAttributeNewUseCase.execute(
                 GetShopProductListWithAttributeNewUseCase.createRequestParam(shopProductRequestModel),
                 new Subscriber<PagingList<ShopProductViewModel>>() {

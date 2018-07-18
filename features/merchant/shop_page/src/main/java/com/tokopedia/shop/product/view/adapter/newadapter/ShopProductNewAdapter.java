@@ -34,7 +34,6 @@ public class ShopProductNewAdapter extends BaseListAdapter<BaseShopProductViewMo
 
     private View promoView;
     private String promoUrl;
-    private RecyclerView recyclerView;
     private View etalaseView;
 
     public ShopProductNewAdapter(ShopProductAdapterTypeFactory baseListAdapterTypeFactory) {
@@ -75,9 +74,18 @@ public class ShopProductNewAdapter extends BaseListAdapter<BaseShopProductViewMo
         setVisitable(DEFAULT_ETALASE_POSITION, this.shopProductEtalaseListViewModel);
     }
 
+    public void setSelectedEtalaseId(String etalaseId){
+        shopProductEtalaseListViewModel.setSelectedEtalaseId(etalaseId);
+        notifyItemChanged(DEFAULT_ETALASE_POSITION);
+    }
+
     private void setVisitable(int position, Visitable visitable) {
         visitables.set(position, visitable);
         notifyItemChanged(position);
+    }
+
+    public ShopProductEtalaseListViewModel getShopProductEtalaseListViewModel() {
+        return shopProductEtalaseListViewModel;
     }
 
     @Override
@@ -94,6 +102,7 @@ public class ShopProductNewAdapter extends BaseListAdapter<BaseShopProductViewMo
         int productSize = shopProductViewModelList.size();
         if (visitables.size() > ITEM_OFFSET) {
             visitables.subList(ITEM_OFFSET, ITEM_OFFSET + productSize).clear();
+            notifyItemRangeRemoved(ITEM_OFFSET, ITEM_OFFSET + productSize);
         }
         shopProductViewModelList.clear();
     }
@@ -133,9 +142,14 @@ public class ShopProductNewAdapter extends BaseListAdapter<BaseShopProductViewMo
 
     @Override
     public void clearAllElements() {
+        clearDataExceptProduct();
+        clearProductList();
+    }
+
+    public void clearDataExceptProduct(){
         setShopProductPromoViewModel(null);
         setShopProductFeaturedViewModel(null);
-        clearProductList();
+        setShopEtalase(null);
     }
 
     public List<ShopProductViewModel> getShopProductViewModelList() {
@@ -186,16 +200,5 @@ public class ShopProductNewAdapter extends BaseListAdapter<BaseShopProductViewMo
         return shopProductViewModelList.size();
     }
 
-    @Override
-    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
-        super.onAttachedToRecyclerView(recyclerView);
-        this.recyclerView = recyclerView;
-    }
-
-    @Override
-    public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
-        super.onDetachedFromRecyclerView(recyclerView);
-        this.recyclerView = null;
-    }
 
 }

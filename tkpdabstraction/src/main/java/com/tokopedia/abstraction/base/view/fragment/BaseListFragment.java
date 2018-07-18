@@ -36,7 +36,7 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
     private BaseListAdapter<T, F> adapter;
     private SwipeRefreshLayout swipeToRefresh;
     private SnackbarRetry snackBarRetry;
-    private EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
+    protected EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
     private RecyclerView recyclerView;
 
     protected boolean isLoadingInitialData;
