@@ -9,11 +9,11 @@ import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 
 public class ContactUsTracking extends UnifyTracking {
 
-    public static void eventInboxClick(String action) {
+    public static void eventInboxClick() {
         sendGTMEvent(new EventTracking(
                 ContactUsEventTracking.Event.GenericClickBantuanEvent,
                 ContactUsEventTracking.Category.EventNewBantuan,
-                String.format(ContactUsEventTracking.Action.EventClickTicket, action),
+                String.format(ContactUsEventTracking.Action.EventClickTicket, "Inbox"),
                 ContactUsEventTracking.Label.LabelHome
         ).getEvent());
     }
@@ -27,12 +27,12 @@ public class ContactUsTracking extends UnifyTracking {
         ).getEvent());
     }
 
-    public static void eventLihatBantuanClick(String action, String label) {
+    public static void eventLihatBantuanClick() {
         sendGTMEvent(new EventTracking(
                 ContactUsEventTracking.Event.GenericClickBantuanEvent,
                 ContactUsEventTracking.Category.EventNewBantuan,
-                String.format(ContactUsEventTracking.Action.EventClickLihat, action),
-                String.format(ContactUsEventTracking.Label.LabelGeneric, label)
+                String.format(ContactUsEventTracking.Action.EventClickLihat, "Bantuan"),
+                String.format(ContactUsEventTracking.Label.LabelGeneric, "")
         ).getEvent());
     }
 
@@ -45,12 +45,12 @@ public class ContactUsTracking extends UnifyTracking {
         ).getEvent());
     }
 
-    public static void eventLihatTransaksiClick(String action, String label) {
+    public static void eventLihatTransaksiClick() {
         sendGTMEvent(new EventTracking(
                 ContactUsEventTracking.Event.GenericClickBantuanEvent,
                 ContactUsEventTracking.Category.EventNewBantuan,
-                String.format(ContactUsEventTracking.Action.EventClickLihat, action),
-                String.format(ContactUsEventTracking.Label.LabelGeneric, label)
+                String.format(ContactUsEventTracking.Action.EventClickLihat, "Transaksi"),
+                String.format(ContactUsEventTracking.Label.LabelGeneric, "")
         ).getEvent());
     }
 
@@ -72,30 +72,30 @@ public class ContactUsTracking extends UnifyTracking {
         ).getEvent());
     }
 
-    public static void eventSuccessClick(String action, String labelInvoice) {
+    public static void eventSuccessClick(String labelInvoice) {
         sendGTMEvent(new EventTracking(
                 ContactUsEventTracking.Event.GenericClickBantuanEvent,
                 ContactUsEventTracking.Category.EventNewBantuan,
-                String.format(ContactUsEventTracking.Action.EventClickTicket, action),
+                String.format(ContactUsEventTracking.Action.EventClickTicket, "Submit"),
                 String.format(ContactUsEventTracking.Label.LabelFormList, labelInvoice)
         ).getEvent());
     }
 
-    public static void eventOkClick(String action) {
+    public static void eventOkClick() {
         sendGTMEvent(new EventTracking(
                 ContactUsEventTracking.Event.GenericClickBantuanEvent,
                 ContactUsEventTracking.Category.EventNewBantuan,
-                String.format(ContactUsEventTracking.Action.EventClickTicket, action),
+                String.format(ContactUsEventTracking.Action.EventClickTicket, "Inbox"),
                 ContactUsEventTracking.Label.LabelSubmitTicket
         ).getEvent());
     }
 
-    public static void eventChatBotOkClick(String label) {
+    public static void eventChatBotOkClick() {
         sendGTMEvent(new EventTracking(
                 ContactUsEventTracking.Event.GenericClickBantuanEvent,
                 ContactUsEventTracking.Category.EventNewBantuan,
                 ContactUsEventTracking.Action.EventClickChatBot,
-                String.format(ContactUsEventTracking.Label.LabelGeneric, label)
+                String.format(ContactUsEventTracking.Label.LabelGeneric, "")
         ).getEvent());
     }
 }

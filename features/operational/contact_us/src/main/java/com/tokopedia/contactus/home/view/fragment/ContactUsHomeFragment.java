@@ -113,7 +113,7 @@ public class ContactUsHomeFragment extends BaseDaggerFragment
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == R.id.action_inbox) {
-            ContactUsTracking.eventInboxClick("Inbox");
+            ContactUsTracking.eventInboxClick();
             startActivity(new Intent(getContext(), InboxTicketActivity.class));
             return true;
         }
@@ -194,13 +194,13 @@ public class ContactUsHomeFragment extends BaseDaggerFragment
 
     @OnClick(R2.id.btn_view_more)
     public void onViewClicked() {
-        ContactUsTracking.eventLihatBantuanClick("Bantuan", "");
+        ContactUsTracking.eventLihatBantuanClick();
         RouteManager.route(getContext(), ContactUsURL.ARTICLE_POPULAR_URL);
     }
 
     @OnClick(R2.id.view_full_purchaselist)
     public void onViewFullClicked() {
-        ContactUsTracking.eventLihatTransaksiClick("Transaksi", "");
+        ContactUsTracking.eventLihatTransaksiClick();
         startActivity(BuyerPurchaseListActivity.getInstance(getContext()));
     }
 
@@ -213,7 +213,7 @@ public class ContactUsHomeFragment extends BaseDaggerFragment
 
     @OnClick(R2.id.btn_chat_toped)
     public void onBtnChatClicked() {
-        ContactUsTracking.eventChatBotOkClick("");
+        ContactUsTracking.eventChatBotOkClick();
         startActivity(((ContactUsModuleRouter)(getContext().getApplicationContext()))
                 .getChatBotIntent(getContext(),msgId));
     }

@@ -419,7 +419,7 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
         if(mInvoiceNumber.equals("")){
             invoiceLabel = "Without Invoice";
         }
-        ContactUsTracking.eventSuccessClick("Submit", invoiceLabel);
+        ContactUsTracking.eventSuccessClick(invoiceLabel);
         presenter.onSendButtonClick();
     }
 
@@ -435,7 +435,7 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
 
     @OnClick(R2.id.btn_ok)
     public void onOkClick() {
-        ContactUsTracking.eventOkClick("Inbox");
+        ContactUsTracking.eventOkClick();
         submitSuccess.setVisibility(View.GONE);
         Intent intent = new Intent(getActivity(), InboxTicketActivity.class);
         getActivity().startActivity(new Intent(getActivity(), InboxTicketActivity.class));

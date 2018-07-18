@@ -31,7 +31,7 @@ public class SellerPurchaseFragment extends BuyerPurchaseFragment {
     }
 
     protected String getType() {
-        return getActivity().getString(R.string.penjualan);
+        return getString(R.string.penjualan);
     }
 
     @Override

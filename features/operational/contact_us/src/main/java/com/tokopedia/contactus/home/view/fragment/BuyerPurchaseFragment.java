@@ -57,7 +57,7 @@ public class BuyerPurchaseFragment extends BaseDaggerFragment implements Purchas
     }
 
     protected String getType() {
-        return getActivity().getString(R.string.pembelian);
+        return getString(R.string.pembelian);
     }
 
     @Override
