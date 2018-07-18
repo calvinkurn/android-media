@@ -5,6 +5,7 @@ package com.tokopedia.paymentmanagementsystem.common;
  */
 
 public class Constant {
+    public static final String PURCHASE_VERIFICATION = "tokopedia://buyer/payment";
     public static final String TRANSACTION_ID = "transactionID";
     public static final String MERCHANT_CODE = "merchantCode";
     public static final String NEW_KLIKBCA_USER_ID = "newKlikbcaUserID";
