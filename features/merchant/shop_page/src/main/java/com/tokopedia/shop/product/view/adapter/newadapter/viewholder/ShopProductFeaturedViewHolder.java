@@ -1,5 +1,6 @@
 package com.tokopedia.shop.product.view.adapter.newadapter.viewholder;
 
+import android.os.Parcelable;
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,6 +24,7 @@ public class ShopProductFeaturedViewHolder extends AbstractViewHolder<ShopProduc
 
     private RecyclerView recyclerView;
     private ShopProductNewAdapter shopProductNewAdapter;
+    private Parcelable recyclerViewState;
 
     @LayoutRes
     public static final int LAYOUT = R.layout.item_shop_product_feature_new;
@@ -32,14 +34,21 @@ public class ShopProductFeaturedViewHolder extends AbstractViewHolder<ShopProduc
         shopProductNewAdapter = new ShopProductNewAdapter(new ShopProductAdapterTypeFactory(
                 null,
                 shopProductClickedNewListener, null,
-                null, true ));
+                null, null, true ));
         findViews(itemView);
     }
 
     @Override
     public void bind(ShopProductFeaturedViewModel shopProductFeaturedViewModel) {
+        recyclerViewState = recyclerView.getLayoutManager().onSaveInstanceState();
+
         shopProductNewAdapter.replaceProductList(shopProductFeaturedViewModel.getShopProductFeaturedViewModelList());
         shopProductNewAdapter.notifyDataSetChanged();
+
+        if (recyclerViewState != null) {
+            recyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
+            recyclerViewState = null;
+        }
     }
 
     private void findViews(View view) {

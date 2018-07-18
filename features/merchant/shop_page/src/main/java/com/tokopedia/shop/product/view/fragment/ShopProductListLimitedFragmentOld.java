@@ -33,6 +33,7 @@ import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.analytic.ShopPageTracking;
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant;
+import com.tokopedia.shop.common.constant.ShopPageConstant;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.di.component.ShopComponent;
@@ -245,7 +246,7 @@ public class ShopProductListLimitedFragmentOld extends BaseListFragment<ShopProd
                     officialWebViewUrl,
                     i,
                     !shopInfo.getInfo().isOpen(),
-                    ShopPageTrackingConstant.DEFAULT_PER_PAGE);
+                    ShopPageConstant.DEFAULT_PER_PAGE);
         }
     }
 

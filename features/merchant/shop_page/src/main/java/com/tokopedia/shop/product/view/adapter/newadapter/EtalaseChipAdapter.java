@@ -46,6 +46,16 @@ public class EtalaseChipAdapter extends RecyclerView.Adapter<EtalaseChipAdapter.
         }
     }
 
+    public int getSelectedPosition(){
+        for (int i = 0, sizei = etalaseViewModelList.size(); i<sizei; i++) {
+            ShopEtalaseViewModel shopEtalaseViewModel = etalaseViewModelList.get(i);
+            if (shopEtalaseViewModel.getEtalaseId().equalsIgnoreCase(selectedEtalaseId)) {
+                return i;
+            }
+        }
+        return 0;
+    }
+
     class ShopProductEtalaseChipViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView textView;

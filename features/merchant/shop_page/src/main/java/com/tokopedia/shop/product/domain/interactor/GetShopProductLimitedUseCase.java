@@ -2,6 +2,7 @@ package com.tokopedia.shop.product.domain.interactor;
 
 import com.tokopedia.abstraction.common.data.model.response.PagingList;
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant;
+import com.tokopedia.shop.common.constant.ShopPageConstant;
 import com.tokopedia.shop.product.domain.model.ShopProductRequestModel;
 import com.tokopedia.shop.product.view.mapper.ShopProductMapper;
 import com.tokopedia.shop.product.view.model.ShopProductBaseViewModel;
@@ -53,7 +54,7 @@ public class GetShopProductLimitedUseCase extends UseCase<PagingList<ShopProduct
         final boolean goldMerchantStore = requestParams.getBoolean(GOLD_MERCHANT_STORE, false);
         final boolean officialStore = requestParams.getBoolean(OFFICIAL_STORE, false);
         final int page = requestParams.getInt(PAGE, 0);
-        final int perPage = requestParams.getInt(PER_PAGE, ShopPageTrackingConstant.DEFAULT_PER_PAGE);
+        final int perPage = requestParams.getInt(PER_PAGE, ShopPageConstant.DEFAULT_PER_PAGE);
         final boolean isShopClosed = requestParams.getBoolean(IS_SHOP_CLOSED, false);
         final ShopProductRequestModel shopProductRequestModel = new ShopProductRequestModel(
                 shopId,isShopClosed, officialStore, page, true, perPage
@@ -74,7 +75,7 @@ public class GetShopProductLimitedUseCase extends UseCase<PagingList<ShopProduct
                         .flatMap(new Func1<PagingList<ShopProductViewModelOld>, Observable<PagingList<ShopProductHomeViewModelOld>>>() {
                             @Override
                             public Observable<PagingList<ShopProductHomeViewModelOld>> call(PagingList<ShopProductViewModelOld> shopProductViewModelPagingList) {
-                                return Observable.just(shopProductMapper.convertFromProductViewModel(shopProductViewModelPagingList, page, ShopPageTrackingConstant.DEFAULT_PER_PAGE));
+                                return Observable.just(shopProductMapper.convertFromProductViewModel(shopProductViewModelPagingList, page, ShopPageConstant.DEFAULT_PER_PAGE));
                             }
                         });
 

@@ -1,5 +1,6 @@
 package com.tokopedia.shop.product.view.adapter.newadapter.viewholder;
 
+import android.os.Parcelable;
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,22 +17,37 @@ import com.tokopedia.shop.product.view.model.newmodel.ShopProductEtalaseListView
  * @author by alvarisi on 12/12/17.
  */
 
-public class ShopProductEtalaseListViewHolder extends AbstractViewHolder<ShopProductEtalaseListViewModel> implements EtalaseChipAdapter.OnEtalaseChipAdapterListener {
+public class ShopProductEtalaseListViewHolder extends AbstractViewHolder<ShopProductEtalaseListViewModel> implements EtalaseChipAdapter.OnEtalaseChipAdapterListener, View.OnClickListener {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.item_shop_product_etalase_title_view;
+    public static final int LAYOUT = R.layout.item_shop_product_etalase_title_view_old;
+
     private RecyclerView recyclerView;
+    private Parcelable recyclerViewState;
 
     private OnShopProductEtalaseListViewHolderListener onShopProductEtalaseListViewHolderListener;
+    private View ivEtalaseMore;
+
     public interface OnShopProductEtalaseListViewHolderListener{
         void onEtalaseChipClicked(ShopEtalaseViewModel shopEtalaseViewModel);
+        void onEtalaseMoreListClicked();
     }
+
     private EtalaseChipAdapter etalaseChipAdapter;
     public ShopProductEtalaseListViewHolder(View itemView, OnShopProductEtalaseListViewHolderListener onShopProductEtalaseListViewHolderListener) {
         super(itemView);
         this.onShopProductEtalaseListViewHolderListener = onShopProductEtalaseListViewHolderListener;
         etalaseChipAdapter = new EtalaseChipAdapter(null, null, this);
         findViews(itemView);
+        ivEtalaseMore.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        // click ivEtalaseMore
+        if (onShopProductEtalaseListViewHolderListener!= null) {
+            onShopProductEtalaseListViewHolderListener.onEtalaseMoreListClicked();
+        }
     }
 
     private void findViews(View view) {
@@ -43,14 +59,38 @@ public class ShopProductEtalaseListViewHolder extends AbstractViewHolder<ShopPro
             ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
         }
         recyclerView.setAdapter(etalaseChipAdapter);
+
+        ivEtalaseMore = view.findViewById(R.id.iv_etalase_more);
     }
 
     @Override
     public void bind(ShopProductEtalaseListViewModel shopProductEtalaseListViewModel) {
+        recyclerViewState = recyclerView.getLayoutManager().onSaveInstanceState();
+
         etalaseChipAdapter.setEtalaseViewModelList(shopProductEtalaseListViewModel.getEtalaseModelList());
         String selectedEtalaseId = shopProductEtalaseListViewModel.getSelectedEtalaseId();
         etalaseChipAdapter.setSelectedEtalaseId(selectedEtalaseId);
         etalaseChipAdapter.notifyDataSetChanged();
+
+        if (recyclerViewState != null) {
+            recyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
+            recyclerViewState = null;
+        }
+
+        goToSelectedPositionIfNeeded();
+    }
+
+    // scroll to selected position (only if the item is not visible)
+    private void goToSelectedPositionIfNeeded(){
+        RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
+        if (layoutManager instanceof LinearLayoutManager) {
+            int firstPosVisible = ((LinearLayoutManager) layoutManager).findFirstCompletelyVisibleItemPosition();
+            int lastPosVisible = ((LinearLayoutManager) layoutManager).findLastCompletelyVisibleItemPosition();
+            int position = etalaseChipAdapter.getSelectedPosition();
+            if (position< firstPosVisible || position > lastPosVisible) {
+                recyclerView.smoothScrollToPosition(position);
+            }
+        }
     }
 
     @Override
