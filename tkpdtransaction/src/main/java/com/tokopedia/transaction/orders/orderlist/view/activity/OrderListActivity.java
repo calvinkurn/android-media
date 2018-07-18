@@ -45,6 +45,7 @@ public class OrderListActivity extends DrawerPresenterActivity<OrderListInitCont
     private ViewPager viewPager;
     private LinearLayout mainLayout;
     private OrderTabAdapter adapter;
+    private OrderListComponent orderListComponent;
 
     @DeepLink({TransactionAppLink.ORDER_LIST_DEALS, TransactionAppLink.ORDER_LIST_DIGITAL,
             TransactionAppLink.ORDER_LIST_EVENTS})
@@ -139,6 +140,19 @@ public class OrderListActivity extends DrawerPresenterActivity<OrderListInitCont
         return drawerPosition;
     }
 
+
+    @Override
+    public OrderListComponent getComponent() {
+        if (orderListComponent == null) initInjector();
+        return orderListComponent;
+    }
+
+    private void initInjector() {
+        orderListComponent = DaggerOrderListComponent.builder()
+                .baseAppComponent(((BaseMainApplication) getApplication()).getBaseAppComponent())
+                .build();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         GraphqlClient.init(this);
@@ -196,13 +210,6 @@ public class OrderListActivity extends DrawerPresenterActivity<OrderListInitCont
     @Override
     public String getFilterCaseAllTransaction() {
         return null;
-    }
-
-    @Override
-    public OrderListComponent getComponent() {
-        return DaggerOrderListComponent.builder()
-                .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
-                .build();
     }
 
     private class OnTabPageChangeListener extends TabLayout.TabLayoutOnPageChangeListener {

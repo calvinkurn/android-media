@@ -178,11 +178,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
     }
 
     protected void initInjector() {
-        orderListComponent = DaggerOrderListComponent.builder()
-                .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
-                .build();
-        GraphqlClient.init(getActivity());
-        orderListComponent.inject(this);
+        getComponent(OrderListComponent.class).inject(this);
     }
 
 
