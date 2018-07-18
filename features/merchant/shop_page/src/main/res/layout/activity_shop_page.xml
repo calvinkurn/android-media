@@ -22,50 +22,69 @@
         <include layout="@layout/partial_shop_page_searchview"/>
     </android.support.v7.widget.Toolbar>
 
-    <android.support.design.widget.CoordinatorLayout
+    <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+        android:id="@+id/swipeToRefresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/white">
+        android:fitsSystemWindows="true">
 
-        <android.support.design.widget.AppBarLayout
-            android:id="@+id/appBarLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/white"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-
-            <include
-                layout="@layout/partial_shop_page_header_2"
-                android:id="@+id/shopPageHeader"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_8"
-                android:gravity="bottom"
-                app:layout_scrollFlags="scroll"/>
-
-            <android.support.design.widget.TabLayout
-                android:id="@+id/tabLayout"
-                style="?tabTheme"
-                app:tabMode="scrollable"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"/>
-
-        </android.support.design.widget.AppBarLayout>
-
-        <RelativeLayout
-            android:id="@+id/container_view_pager"
+        <android.support.design.widget.CoordinatorLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            android:background="@android:color/white">
 
-            <com.tokopedia.abstraction.base.view.widget.TouchViewPager
-                android:id="@+id/viewPager"
+            <include
+                android:id="@+id/shopPageLoadingState"
+                layout="@layout/partial_shop_page_loading_state"
+                android:visibility="gone" />
+
+            <include
+                android:id="@+id/shopPageErrorState"
+                layout="@layout/partial_empty_page_error"
+                android:visibility="gone" />
+
+            <android.support.design.widget.AppBarLayout
+                android:id="@+id/appBarLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+                <include
+                    layout="@layout/partial_shop_page_header_2"
+                    android:id="@+id/shopPageHeader"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dp_8"
+                    android:gravity="bottom"
+                    app:layout_scrollFlags="scroll"/>
+
+                <android.support.design.widget.TabLayout
+                    android:id="@+id/tabLayout"
+                    style="?tabTheme"
+                    app:tabMode="scrollable"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginRight="@dimen/dp_16"/>
+
+            </android.support.design.widget.AppBarLayout>
+
+            <RelativeLayout
+                android:id="@+id/container"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:can_swipe="false" />
-        </RelativeLayout>
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    </android.support.design.widget.CoordinatorLayout>
+                <com.tokopedia.abstraction.base.view.widget.TouchViewPager
+                    android:id="@+id/viewPager"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:can_swipe="false" />
+            </RelativeLayout>
+
+
+
+        </android.support.design.widget.CoordinatorLayout>
+    </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 </android.support.v7.widget.LinearLayoutCompat>

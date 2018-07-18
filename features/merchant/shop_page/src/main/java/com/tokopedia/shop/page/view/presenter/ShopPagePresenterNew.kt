@@ -35,15 +35,11 @@ constructor(private val getShopInfoUseCase: GetShopInfoUseCase,
             private val deleteShopNoteUseCase: DeleteShopNoteUseCase,
             private val userSession: UserSession) : BaseDaggerPresenter<ShopPageView>() {
 
-    fun isMyShop(shopId: String): Boolean {
-        return userSession.shopId == shopId
-    }
+    fun isMyShop(shopId: String) = (userSession.shopId == shopId)
 
     fun getShopInfo(shopId: String) {
         getShopInfoUseCase.execute(GetShopInfoUseCase.createRequestParam(shopId), object : Subscriber<ShopInfo>() {
-            override fun onCompleted() {
-
-            }
+            override fun onCompleted() {}
 
             override fun onError(e: Throwable) {
                 e.printStackTrace()
@@ -51,25 +47,21 @@ constructor(private val getShopInfoUseCase: GetShopInfoUseCase,
             }
 
             override fun onNext(shopInfo: ShopInfo) {
-                view.onSuccessGetShopInfo(shopInfo)
+                view?.onSuccessGetShopInfo(shopInfo)
             }
         })
-        getShopReputationSpeed(shopId)
     }
 
     fun getShopInfoByDomain(shopDomain: String) {
         getShopInfoByDomainUseCase.execute(GetShopInfoByDomainUseCase.createRequestParam(shopDomain), object : Subscriber<ShopInfo>() {
-            override fun onCompleted() {
-
-            }
+            override fun onCompleted() {}
 
             override fun onError(e: Throwable) {
                 view?.onErrorGetShopInfo(e)
             }
 
             override fun onNext(shopInfo: ShopInfo) {
-                view.onSuccessGetShopInfo(shopInfo)
-                getShopReputationSpeed(shopInfo.info.shopId)
+                view?.onSuccessGetShopInfo(shopInfo)
             }
         })
     }
@@ -95,18 +87,17 @@ constructor(private val getShopInfoUseCase: GetShopInfoUseCase,
             view?.onErrorToggleFavourite(UserNotLoginException())
             return
         }
-        toggleFavouriteShopAndDeleteCacheUseCase.execute(ToggleFavouriteShopUseCase.createRequestParam(shopId), object : Subscriber<Boolean>() {
-            override fun onCompleted() {
+        toggleFavouriteShopAndDeleteCacheUseCase.execute(
+                ToggleFavouriteShopUseCase.createRequestParam(shopId), object : Subscriber<Boolean>() {
+                    override fun onCompleted() {}
 
-            }
+                    override fun onError(e: Throwable) {
+                        view?.onErrorToggleFavourite(e)
+                    }
 
-            override fun onError(e: Throwable) {
-                view?.onErrorToggleFavourite(e)
-            }
-
-            override fun onNext(success: Boolean?) {
-                view.onSuccessToggleFavourite(success!!)
-            }
+                    override fun onNext(success: Boolean) {
+                        view?.onSuccessToggleFavourite(success)
+                    }
         })
     }
 

@@ -51,7 +51,7 @@
 
         <TextView style="@style/TextView.Small.Green"
             android:id="@+id/textSeeRating"
-            android:text="@string/shop_info_label_manage_note"/>
+            android:text="@string/see_label"/>
 
     </LinearLayout>
 
@@ -66,7 +66,7 @@
         android:layout_height="@dimen/dp_64"
         android:paddingRight="@dimen/dp_8"
         android:paddingEnd="@dimen/dp_8"
-        app:lv_content="@string/shop_info_label_manage_note"
+        app:lv_content="@string/see_label"
         app:lv_title="@string/app_name"
         app:lv_title_text_size="@dimen/sp_14"
         app:lv_content_text_size="@dimen/sp_14"
@@ -83,7 +83,7 @@
         android:layout_height="@dimen/dp_64"
         android:paddingRight="@dimen/dp_8"
         android:paddingEnd="@dimen/dp_8"
-        app:lv_content="@string/shop_info_label_manage_note"
+        app:lv_content="@string/see_label"
         app:lv_title="@string/shop_info_label_process_time"
         app:lv_title_text_size="@dimen/sp_14"
         app:lv_content_text_size="@dimen/sp_14"

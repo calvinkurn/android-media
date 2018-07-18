@@ -36,6 +36,10 @@ public interface ShopModuleRouter {
 
     void goToProfileShop(Context context, String userId);
 
+    void goToShopReview(Context context, String shopId, String shopDomain);
+
+    void goToShopDiscussion(Context context, String shopId);
+
     Intent getLoginIntent(Context context);
 
     void sendEventTrackingShopPage(Map<String, Object> eventTracking);

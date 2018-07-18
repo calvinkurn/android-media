@@ -11,6 +11,7 @@
         android:id="@+id/packageIcon"
         android:layout_width="@dimen/dp_80"
         android:layout_height="@dimen/dp_48"
+        android:padding="@dimen/dp_8"
         tools:src="@drawable/ic_smiley_good"/>
 
     <LinearLayout

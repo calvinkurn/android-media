@@ -13,8 +13,11 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.shop.R
+import com.tokopedia.shop.ShopModuleRouter
+import com.tokopedia.shop.analytic.ShopPageTracking
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
 import com.tokopedia.shop.common.di.component.ShopComponent
+import com.tokopedia.shop.common.util.TextHtmlUtils
 import com.tokopedia.shop.extension.transformToVisitable
 import com.tokopedia.shop.info.di.component.DaggerShopInfoComponent
 import com.tokopedia.shop.info.di.module.ShopInfoModule
@@ -22,7 +25,9 @@ import com.tokopedia.shop.info.view.adapter.ShopInfoLogisticAdapter
 import com.tokopedia.shop.info.view.adapter.ShopInfoLogisticAdapterTypeFactory
 import com.tokopedia.shop.info.view.listener.ShopInfoView
 import com.tokopedia.shop.info.view.presenter.ShopInfoPresenter
+import com.tokopedia.shop.note.view.activity.ShopNoteDetailActivity
 import com.tokopedia.shop.note.view.adapter.ShopNoteAdapterTypeFactory
+import com.tokopedia.shop.note.view.adapter.viewholder.ShopNoteViewHolder
 import com.tokopedia.shop.note.view.model.ShopNoteViewModel
 import kotlinx.android.synthetic.main.fragment_shop_info_v3.*
 import kotlinx.android.synthetic.main.partial_shop_info_description.*
@@ -31,15 +36,21 @@ import kotlinx.android.synthetic.main.partial_shop_info_note.*
 import kotlinx.android.synthetic.main.partial_shop_info_statistics.*
 import javax.inject.Inject
 
-class ShopInfoFragmentNew: BaseDaggerFragment(), ShopInfoView, BaseEmptyViewHolder.Callback {
+class ShopInfoFragmentNew: BaseDaggerFragment(), ShopInfoView, BaseEmptyViewHolder.Callback,
+        ShopNoteViewHolder.OnNoteClicked {
 
     companion object {
         @JvmStatic fun createInstance(): Fragment = ShopInfoFragmentNew()
     }
 
     @Inject lateinit var presenter: ShopInfoPresenter
-    private val noteAdapter = BaseListAdapter<ShopNoteViewModel, ShopNoteAdapterTypeFactory>(ShopNoteAdapterTypeFactory())
+    @Inject lateinit var shopPageTracking: ShopPageTracking
+    lateinit var shopInfo: ShopInfo
+    private val noteAdapter by lazy {
+        BaseListAdapter<ShopNoteViewModel, ShopNoteAdapterTypeFactory>(ShopNoteAdapterTypeFactory(this))
+    }
     private var shopId: String = "0"
+    private var shopDomain: String? = null
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater?.inflate(R.layout.fragment_shop_info_v3, container, false)
@@ -67,6 +78,8 @@ class ShopInfoFragmentNew: BaseDaggerFragment(), ShopInfoView, BaseEmptyViewHold
 
     fun updateShopInfo(shopInfo: ShopInfo){
         shopId = shopInfo.info.shopId
+        shopDomain = shopInfo.info.shopDomain
+        this.shopInfo = shopInfo
         displayImageBackground(shopInfo)
         displayShopDescription(shopInfo)
         displayShopStatistics(shopInfo)
@@ -106,10 +119,19 @@ class ShopInfoFragmentNew: BaseDaggerFragment(), ShopInfoView, BaseEmptyViewHold
         }
         totalReview.text = getString(R.string.shop_info_content_total_review, shopInfo.ratings.quality.countTotal)
         textSeeRating.setOnClickListener { goToReviewQualityDetail() }
+        labelViewDiscussion.setOnClickListener { gotoShopDiscussion() }
+    }
+
+    private fun gotoShopDiscussion() {
+        if (activity.application is ShopModuleRouter){
+            (activity.application as ShopModuleRouter).goToShopDiscussion(activity, shopId)
+        }
     }
 
     private fun displayShopDescription(shopInfo: ShopInfo) {
-        shopInfoDescription.text = shopInfo.info.shopDescription
+        shopInfoDescription.text = TextHtmlUtils
+                .getTextFromHtml("${shopInfo.info.shopTagline}<br/><br/>${shopInfo.info.shopDescription}")
+
         shopInfoLocation.text = shopInfo.info.shopLocation
         shopInfoOpenSince.text = getString(R.string.shop_info_label_open_since_v3, shopInfo.info.shopOpenSince)
 
@@ -130,7 +152,9 @@ class ShopInfoFragmentNew: BaseDaggerFragment(), ShopInfoView, BaseEmptyViewHold
     }
 
     private fun goToReviewQualityDetail() {
-
+        if (activity.application is ShopModuleRouter){
+            (activity.application as ShopModuleRouter).goToShopReview(activity, shopId, shopDomain)
+        }
     }
 
     override fun getScreenName(): String? = null
@@ -156,16 +180,30 @@ class ShopInfoFragmentNew: BaseDaggerFragment(), ShopInfoView, BaseEmptyViewHold
                 }
             })
             noteLabelView.setContent("")
+        } else {
+            noteLabelView.setOnClickListener { onEmptyButtonClicked() }
         }
     }
 
     override fun showListNoteError(throwable: Throwable?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
     override fun onEmptyContentItemTextClicked() {}
 
     override fun onEmptyButtonClicked() {
+        val app = activity.application
+        if (app is ShopModuleRouter){
+            app.goToEditShopNote(activity)
+        }
+    }
 
+    override fun onNoteClicked(position: Long, shopNoteViewModel: ShopNoteViewModel) {
+        shopInfo.run {
+            shopPageTracking.eventClickNoteList(position, shopId,
+                    presenter.isMyshop(shopId), ShopPageTracking.getShopType(shopInfo.info))
+        }
+
+        startActivity(ShopNoteDetailActivity.createIntent(activity, shopNoteViewModel.getShopNoteId().toString()))
     }
 }

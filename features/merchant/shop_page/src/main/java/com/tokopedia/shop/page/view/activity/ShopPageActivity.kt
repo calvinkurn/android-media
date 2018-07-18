@@ -1,5 +1,6 @@
 package com.tokopedia.shop.page.view.activity
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -28,7 +29,13 @@ import kotlinx.android.synthetic.main.partial_shop_page_searchview.*
 import javax.inject.Inject
 import android.support.design.widget.AppBarLayout
 import android.view.MenuItem
+import android.view.View
+import android.widget.Button
+import android.widget.TextView
 import com.airbnb.deeplinkdispatch.DeepLink
+import com.tokopedia.abstraction.common.network.exception.UserNotLoginException
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.shop.ShopModuleRouter
 import com.tokopedia.shop.analytic.ShopPageTracking
 import com.tokopedia.shop.common.constant.ShopAppLink
@@ -54,6 +61,14 @@ class ShopPageActivity: BaseSimpleActivity(), HasComponent<ShopComponent>,
 
     private var tabPosition = 0
 
+    private val errorTextView by lazy {
+        findViewById<TextView>(R.id.message_retry)
+    }
+
+    private val errorButton by lazy {
+        findViewById<Button>(R.id.button_retry)
+    }
+
     companion object {
         const val SHOP_ID = "EXTRA_SHOP_ID"
         const val SHOP_DOMAIN = "EXTRA_SHOP_DOMAIN"
@@ -63,6 +78,11 @@ class ShopPageActivity: BaseSimpleActivity(), HasComponent<ShopComponent>,
         const val EXTRA_STATE_TAB_POSITION = "EXTRA_STATE_TAB_POSITION"
         const val TAB_POSITION_HOME = 0
         const val TAB_POSITION_INFO = 1
+        const val SHOP_STATUS_FAVOURITE = "SHOP_STATUS_FAVOURITE"
+        private const val REQUEST_CODER_USER_LOGIN = 100
+        private const val VIEW_CONTENT = 1
+        private const val VIEW_LOADING = 2
+        private const val VIEW_ERROR = 3
 
         @JvmStatic
         fun createIntent(context: Context, shopId: String) = Intent(context, ShopPageActivity::class.java)
@@ -109,14 +129,17 @@ class ShopPageActivity: BaseSimpleActivity(), HasComponent<ShopComponent>,
         shopPageViewHolder = ShopPageHeaderViewHolder(shopPageHeader, this)
         initAdapter()
         supportActionBar?.setDisplayShowTitleEnabled(false)
+
+        appBarLayout.addOnOffsetChangedListener { _, verticalOffset -> swipeToRefresh.isEnabled = (verticalOffset == 0) }
+
         viewPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
         viewPager.adapter = shopPageViewPagerAdapter
 
         tabLayout.setupWithViewPager(viewPager)
-        onProductListDetailFullyHide();
-        viewPager.setCurrentItem(tabPosition)
+        onProductListDetailFullyHide()
+        viewPager.currentItem = tabPosition
+        swipeToRefresh.setOnRefreshListener { refreshData() }
         getShopInfo()
-
     }
 
     private fun onProductListDetailStartShow() {
@@ -133,10 +156,31 @@ class ShopPageActivity: BaseSimpleActivity(), HasComponent<ShopComponent>,
     }
 
     private fun getShopInfo() {
+        setViewState(VIEW_LOADING)
         if (!TextUtils.isEmpty(shopId)) {
             presenter.getShopInfo(shopId!!)
         } else {
             presenter.getShopInfoByDomain(shopDomain!!)
+        }
+    }
+
+    private fun setViewState(viewState: Int) {
+        when(viewState){
+            VIEW_LOADING -> {   shopPageLoadingState.visibility = View.VISIBLE
+                                shopPageErrorState.visibility = View.GONE
+                                appBarLayout.visibility = View.INVISIBLE
+                                container.visibility = View.INVISIBLE
+            }
+            VIEW_ERROR -> { shopPageLoadingState.visibility = View.GONE
+                            shopPageErrorState.visibility = View.VISIBLE
+                            appBarLayout.visibility = View.INVISIBLE
+                            container.visibility = View.INVISIBLE
+            }
+            else -> {   shopPageLoadingState.visibility = View.GONE
+                        shopPageErrorState.visibility = View.GONE
+                        appBarLayout.visibility = View.VISIBLE
+                        container.visibility = View.VISIBLE
+            }
         }
     }
 
@@ -150,9 +194,7 @@ class ShopPageActivity: BaseSimpleActivity(), HasComponent<ShopComponent>,
         presenter.attachView(this)
     }
 
-    override fun getNewFragment(): Fragment? {
-        return null
-    }
+    override fun getNewFragment(): Fragment? = null
 
     fun initAdapter() {
         shopPageViewPagerAdapter = ShopPageViewPagerAdapter(supportFragmentManager, titles,
@@ -192,6 +234,7 @@ class ShopPageActivity: BaseSimpleActivity(), HasComponent<ShopComponent>,
     }
 
     override fun onSuccessGetShopInfo(shopInfo: ShopInfo?) {
+        setViewState(VIEW_CONTENT)
         shopInfo?.run {
             this@ShopPageActivity.shopInfo = this
             shopId = info.shopId
@@ -206,10 +249,14 @@ class ShopPageActivity: BaseSimpleActivity(), HasComponent<ShopComponent>,
             (shopPageViewPagerAdapter.getRegisteredFragment(1) as ShopInfoFragmentNew)
                     .updateShopInfo(this)
         }
+        swipeToRefresh.isRefreshing = false
     }
 
     override fun onErrorGetShopInfo(e: Throwable?) {
-
+        setViewState(VIEW_ERROR)
+        errorTextView.text = ErrorHandler.getErrorMessage(this, e)
+        errorButton.setOnClickListener{ getShopInfo() }
+        swipeToRefresh.isRefreshing = false
     }
 
     override fun onSuccessGetReputation(reputationSpeed: ReputationSpeed?) {
@@ -221,11 +268,40 @@ class ShopPageActivity: BaseSimpleActivity(), HasComponent<ShopComponent>,
     }
 
     override fun onSuccessToggleFavourite(successValue: Boolean) {
-
+        if (successValue) {
+            shopPageViewHolder.toggleFavourite()
+            updateFavouriteResult()
+        }
+        shopPageViewHolder.updateFavoriteButton()
     }
 
-    override fun onErrorToggleFavourite(e: Throwable?) {
+    private fun updateFavouriteResult() {
+        setResult(Activity.RESULT_OK, Intent().apply {
+            putExtra(SHOP_STATUS_FAVOURITE, shopPageViewHolder.isShopFavourited())
+        })
+    }
 
+    override fun onErrorToggleFavourite(e: Throwable) {
+        shopPageViewHolder.updateFavoriteButton()
+        if (e is UserNotLoginException) {
+            val intent = (application as ShopModuleRouter).getLoginIntent(this)
+            startActivityForResult(intent, REQUEST_CODER_USER_LOGIN)
+            return
+        }
+        NetworkErrorHelper.showCloseSnackbar(this, ErrorHandler.getErrorMessage(this, e))
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CODER_USER_LOGIN){
+            refreshData()
+        }
+    }
+
+    private fun refreshData() {
+        presenter.clearCache()
+        getShopInfo()
+        swipeToRefresh.isRefreshing = true
     }
 
     override fun getComponent() = ShopComponentInstance.getComponent(application)
@@ -256,8 +332,12 @@ class ShopPageActivity: BaseSimpleActivity(), HasComponent<ShopComponent>,
         (application as ShopModuleRouter).goToManageShop(this)
     }
 
-    override fun toggleFavorite() {
-
+    override fun toggleFavorite(isFavourite: Boolean) {
+        shopInfo?.run {
+            shopPageTracking.eventClickFavouriteShop(titles[viewPager.currentItem], shopId, isFavourite,
+                    presenter.isMyShop(shopId!!), ShopPageTracking.getShopType(info))
+        }
+        shopId?.run {presenter.toggleFavouriteShop(this)}
     }
 
     override fun goToAddProduct() {
