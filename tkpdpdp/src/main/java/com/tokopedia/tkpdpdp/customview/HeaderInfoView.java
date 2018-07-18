@@ -215,7 +215,7 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
             long delta = sf.parse(campaign.getEndDate()).getTime() - now.getTimeInMillis();
             if (TimeUnit.MILLISECONDS.toDays(delta) < 1) {
                 linearDiscountTimerHolder.setVisibility(VISIBLE);
-                countDownView.setup(new Date(delta), new CountDownView.CountDownListener() {
+                countDownView.setup(sf.parse(campaign.getEndDate()), new CountDownView.CountDownListener() {
                     @Override
                     public void onCountDownFinished() {
                         hideProductCampaign(campaign);
