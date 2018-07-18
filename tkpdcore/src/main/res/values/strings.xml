@@ -2216,11 +2216,13 @@ di Tokopedia Sekarang!</string>
     <string name="perolehan_referral">Perolehan Referral:</string>
     <string name="cara_kerja">Cara Kerja</string>
     <string name="ketentuan">Ketentuan</string>
-    <string name="what_is_referral_tokocash"><p>Cashback dari program Referral akan masuk ke TokoCash Anda.</p><p>TokoCash adalah uang elektronik yang hanya bisa Anda gunakan untuk</p><p><strong>bertransaksi di Tokopedia</strong>. TokoCash tidak dapat diuangkan.</p></string>
+    <string name="what_is_referral_tokocash">Cashback dari program Referral akan masuk ke TokoCash Anda. \n TokoCash adalah uang elektronik yang hanya bisa Anda gunakan untuk <b> bertransaksi di Tokopedia</b>. TokoCash tidak dapat diuangkan.</string>
     <string name="acquisition_referral">Perolehan Referral</string>
     <string name="bagikan_ke">Bagikan ke</string>
     <string name="dapatkan_cashback_dalam">Dapatkan Cashback dalam 3 Langkah:</string>
     <string name="bagi_kode_referral">Bagi kode referral-mu</string>
     <string name="apa_itu_tokocash">Apa itu TokoCash?</string>
+    <string name="referral_percent_label">Rp 0 / Rp 1.000.000</string>
+    <string name="referral_count_label">0 teman diajak</string>
 
 </resources>

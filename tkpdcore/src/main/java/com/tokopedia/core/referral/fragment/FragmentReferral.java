@@ -224,7 +224,7 @@ public class FragmentReferral extends BasePresenterFragmentV4<IReferralPresenter
             progressBarReferral.setProgress((referralData.getPromoBenefit().getCurrentBenefit() == 0 ?
                     referralData.getPromoBenefit().getCurrentBenefit() : referralData.getPromoBenefit().getMaxBenefit()
                     / referralData.getPromoBenefit().getCurrentBenefit()));
-            tvPercent.setText(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(referralData.getPromoBenefit().getCurrentBenefit())+ " / " + CurrencyFormatUtil.convertPriceValue((double) referralData.getPromoBenefit().getMaxBenefit(),false));
+            tvPercent.setText("Rp "+CurrencyFormatUtil.convertPriceValue((double) referralData.getPromoBenefit().getCurrentBenefit(),false)+ " / Rp " + CurrencyFormatUtil.convertPriceValue((double) referralData.getPromoBenefit().getMaxBenefit(),false));
         }
     }
 

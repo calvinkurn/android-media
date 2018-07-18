@@ -184,6 +184,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black_70"
+                    android:text="@string/referral_count_label"
                     android:textSize="18sp" />
             </LinearLayout>
 
@@ -208,6 +209,7 @@
                 android:layout_below="@+id/progress_bar_referral"
                 android:layout_marginBottom="@dimen/margin_sm"
                 android:textColor="@color/black_38"
+                android:text="@string/referral_percent_label"
                 android:textSize="@dimen/fonts" />
 
         </LinearLayout>
