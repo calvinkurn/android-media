@@ -181,7 +181,6 @@ import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.oms.OmsModuleRouter;
-import com.tokopedia.oms.data.entity.response.verifyresponse.VerifyMyCartResponse;
 import com.tokopedia.oms.domain.PostVerifyCartWrapper;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationProfileActivity;
@@ -2145,7 +2144,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Observable<TKPDMapParam<String, Object>> verifyDealPromo(com.tokopedia.usecase.RequestParams requestParams) {
         return new PostVerifyCartWrapper(this, dealsComponent.getPostVerifyCartUseCase())
-                .verifyDealPromo(requestParams);
+                .verifyPromo(requestParams);
     }
 
     @Override

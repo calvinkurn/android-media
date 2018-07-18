@@ -19,7 +19,7 @@ public class PostVerifyCartWrapper {
         this.context = context;
     }
 
-    public Observable<TKPDMapParam<String, Object>> verifyDealPromo(com.tokopedia.usecase.RequestParams requestParams) {
+    public Observable<TKPDMapParam<String, Object>> verifyPromo(com.tokopedia.usecase.RequestParams requestParams) {
         return postVerifyCartUseCase.getExecuteObservable(requestParams).map(new Func1<VerifyMyCartResponse, TKPDMapParam<String, Object>>() {
             @Override
             public TKPDMapParam<String, Object> call(VerifyMyCartResponse verifyCartResponse) {
