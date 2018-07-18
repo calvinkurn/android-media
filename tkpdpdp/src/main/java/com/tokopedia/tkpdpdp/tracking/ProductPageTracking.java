@@ -3,10 +3,15 @@ package com.tokopedia.tkpdpdp.tracking;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.appsflyer.AFInAppEventParameterName;
 import com.google.android.gms.tagmanager.DataLayer;
+import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import com.tokopedia.core.analytics.PaymentTracking;
+import com.tokopedia.core.analytics.appsflyer.Jordan;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -187,5 +192,18 @@ public class ProductPageTracking {
                 USER_CLICK_ON_COPY_CODE,
                 promoCode
         );
+    }
+
+    public static void eventAppsFlyer(String productId, String priceItem, int quantity) {
+        Map<String, Object> values = new HashMap<>();
+
+        values.put(AFInAppEventParameterName.CONTENT_ID, productId);
+        values.put(AFInAppEventParameterName.CONTENT_TYPE, Jordan.AF_VALUE_PRODUCTTYPE);
+        values.put(AFInAppEventParameterName.CURRENCY, "IDR");
+        values.put(AFInAppEventParameterName.PRICE,
+                CurrencyFormatHelper.convertRupiahToInt(priceItem));
+        values.put(AFInAppEventParameterName.QUANTITY, quantity);
+
+        PaymentTracking.atcAF(values);
     }
 }

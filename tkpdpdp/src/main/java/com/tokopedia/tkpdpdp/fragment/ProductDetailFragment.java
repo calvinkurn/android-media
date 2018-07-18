@@ -1715,6 +1715,11 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     public void renderAddToCartSuccessOpenCart(AddToCartResult addToCartResult) {
         buttonBuyView.removeLoading();
         checkoutAnalyticsAddToCart.eventClickAddToCartImpressionAtcSuccess();
+        ProductPageTracking.eventAppsFlyer(
+                String.valueOf(productData.getInfo().getProductId()),
+                productData.getInfo().getProductPrice(),
+                selectedQuantity
+        );
         updateCartNotification();
         enhanceEcommerceAtc(addToCartResult);
         if (getActivity() != null && getActivity().getApplicationContext() instanceof PdpRouter) {
@@ -1728,6 +1733,11 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     public void renderAddToCartSuccess(AddToCartResult addToCartResult) {
         buttonBuyView.removeLoading();
         checkoutAnalyticsAddToCart.eventClickAddToCartImpressionAtcSuccess();
+        ProductPageTracking.eventAppsFlyer(
+                String.valueOf(productData.getInfo().getProductId()),
+                productData.getInfo().getProductPrice(),
+                selectedQuantity
+        );
         updateCartNotification();
         enhanceEcommerceAtc(addToCartResult);
         showSnackbarSuccessAtc(addToCartResult.getMessage());
