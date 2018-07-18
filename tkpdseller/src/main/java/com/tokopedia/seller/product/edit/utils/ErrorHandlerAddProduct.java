@@ -22,10 +22,7 @@ import java.net.UnknownHostException;
 public class ErrorHandlerAddProduct {
 
     public static String getErrorMessage(Context context, Throwable e) {
-        if (e instanceof ImageUploadErrorException &&
-                e.getLocalizedMessage() != null &&
-                !e.getLocalizedMessage().equals("") &&
-                e.getLocalizedMessage().length() <= 3) {
+        if (e instanceof ImageUploadErrorException) {
             return context.getString(R.string.product_label_message_error_upload_image);
         }else{
             return ErrorHandler.getErrorMessage(context, e);

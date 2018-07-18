@@ -2,6 +2,7 @@ package com.tokopedia.seller.product.edit.domain.interactor.uploadproduct;
 
 import android.text.TextUtils;
 
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.seller.product.edit.data.exception.ImageUploadErrorException;
 import com.tokopedia.seller.product.edit.domain.interactor.GetProductDetailUseCase;
@@ -13,6 +14,8 @@ import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -119,7 +122,9 @@ public class SubmitProductUseCase extends UseCase<Boolean> {
         }).doOnError(new Action1<Throwable>() {
             @Override
             public void call(Throwable throwable) {
-                throw new ImageUploadErrorException();
+                if (!(throwable instanceof SocketTimeoutException) && !(throwable instanceof UnknownHostException)) {
+                    throw new ImageUploadErrorException();
+                }
             }
         });
     }
