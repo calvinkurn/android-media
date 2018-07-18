@@ -117,7 +117,6 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
             trainParamPassenger = savedInstanceState.getParcelable(TRAIN_PARAM_PASSENGER);
             renderPassengers(trainParamPassenger.getTrainPassengerViewModelList());
         }
-
     }
 
     @Override
@@ -366,12 +365,16 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == ADD_PASSENGER_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            TrainPassengerViewModel trainPassengerViewModel = data.getParcelableExtra(TrainBookingAddPassengerActivity.PASSENGER_DATA);
-            presenter.updateDataPassengers(trainPassengerViewModel);
+        if (requestCode == ADD_PASSENGER_REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                TrainPassengerViewModel trainPassengerViewModel = data.getParcelableExtra(TrainBookingAddPassengerActivity.PASSENGER_DATA);
+                presenter.updateDataPassengers(trainPassengerViewModel);
 
-            if (!trainParamPassenger.isCheckedSameAsBuyer() && trainPassengerViewModel.getPassengerId() == 1) {
-                sameAsBuyerCheckbox.setChecked(true);
+                if (!trainParamPassenger.isCheckedSameAsBuyer() && trainPassengerViewModel.getPassengerId() == 1) {
+                    sameAsBuyerCheckbox.setChecked(true);
+                }
+            } else if (resultCode == Activity.RESULT_CANCELED){
+                trainParamPassenger.setCheckedSameAsBuyer(true);
             }
         }
     }
