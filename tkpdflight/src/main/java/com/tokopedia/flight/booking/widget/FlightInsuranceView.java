@@ -160,7 +160,7 @@ public class FlightInsuranceView extends LinearLayout {
                 ContextCompat.getDrawable(getContext(), R.drawable.ic_airline_default)
         );
         if (insuranceViewModel.getBenefits().size() > 1) {
-            renderMoreBenefit(insuranceViewModel.getBenefits().subList(1, insuranceViewModel.getBenefits().size() - 1));
+            renderMoreBenefit(insuranceViewModel.getBenefits().subList(1, insuranceViewModel.getBenefits().size()));
         }
     }
 
