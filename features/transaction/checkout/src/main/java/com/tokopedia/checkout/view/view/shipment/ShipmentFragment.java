@@ -668,7 +668,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onChooseShipment(int position, ShipmentCartItemModel shipmentCartItemModel,
                                  RecipientAddressModel recipientAddressModel) {
-        checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickSelectCourier();
+        checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickSelectCourier();
         ShipmentDetailData shipmentDetailData;
         if (shipmentCartItemModel.getSelectedShipmentDetailData() != null &&
                 shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {

@@ -122,7 +122,7 @@ public class CheckoutAnalyticsChangeAddress extends TransactionAnalytics {
         );
     }
 
-    public void eventClickAtcCartChangeAddressClickPlusIconFromTujuanPengiriman() {
+    public void eventClickShippingCartChangeAddressClickPlusIconFromTujuanPengiriman() {
         sendEventCategoryAction(
                 EventName.CLICK_SHIPPING,
                 EventCategory.CART_CHANGE_ADDRESS,

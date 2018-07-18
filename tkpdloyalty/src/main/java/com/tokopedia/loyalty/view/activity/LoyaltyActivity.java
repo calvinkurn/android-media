@@ -370,6 +370,11 @@ public class LoyaltyActivity extends BasePresenterActivity
     }
 
     @Override
+    public void sendAnalyticsOnCouponItemClicked(String couponName) {
+        checkoutAnalyticsCourierSelection.eventClickCouponCourierSelectionClickKuponFromKuponSaya(couponName);
+    }
+
+    @Override
     public void sendAnalyticsOnCouponItemClickedCartShipmentPage() {
         checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickKuponFromGunakanKodePromoAtauKupon();
     }
@@ -424,6 +429,11 @@ public class LoyaltyActivity extends BasePresenterActivity
                     break;
             }
         }
+    }
+
+    @Override
+    public void sendAnalyticsOnErrorGetPromoCode(String errorMessage) {
+        checkoutAnalyticsCourierSelection.eventViewPromoCourierSelectionValidationErrorVoucherPromoFromGunakanKodePromoAtauKupon(errorMessage);
     }
 
     public static Intent newInstanceCouponActive(Activity activity, String platform, String categoryId, String cartId) {
@@ -609,6 +619,8 @@ public class LoyaltyActivity extends BasePresenterActivity
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        if (platformString.equalsIgnoreCase(MARKETPLACE_STRING))
+            checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickBackArrowFromGunakanKodePromoAtauKupon();
         UnifyTracking.eventCouponPageClosed();
     }
 

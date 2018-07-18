@@ -240,7 +240,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         );
     }
 
-    public void eventClickAtcCourierSelectionClickSelectCourier() {
+    public void eventClickCourierSelectionClickSelectCourier() {
         sendEventCategoryAction(
                 EventName.CLICK_COURIER,
                 EventCategory.COURIER_SELECTION,
@@ -284,11 +284,19 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         );
     }
 
-    public void eventClickCourierCourierSelectionClickBackArrowFromGunakanKodePromoAtauKupon() {
+    public void eventClickCourierSelectionClickBackArrowFromGunakanKodePromoAtauKupon() {
         sendEventCategoryAction(
                 EventName.CLICK_COURIER,
                 EventCategory.COURIER_SELECTION,
                 EventAction.CLICK_BACK_ARROW_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON
+        );
+    }
+
+    public void eventClickCourierSelectionClickSelectCourierOnCart() {
+        sendEventCategoryAction(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_SELECT_COURIER_ON_CART
         );
     }
 

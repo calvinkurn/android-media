@@ -402,9 +402,11 @@ public class PromoCouponFragment extends BasePresenterFragment
         switch (getArguments().getString(PLATFORM_PAGE_KEY, "")) {
             case IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.PLATFORM_PAGE_MARKETPLACE_CART_LIST:
                 listener.sendAnalyticsOnCouponItemClickedCartListPage();
+                listener.sendAnalyticsOnCouponItemClicked(data.getTitle());
                 break;
             case IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.PLATFORM_PAGE_MARKETPLACE_CART_SHIPMENT:
                 listener.sendAnalyticsOnCouponItemClickedCartShipmentPage();
+                listener.sendAnalyticsOnCouponItemClicked(data.getTitle());
                 break;
         }
 
@@ -499,6 +501,8 @@ public class PromoCouponFragment extends BasePresenterFragment
                 long cashbackAmount);
 
         void sendAnalyticsOnCouponItemClickedCartListPage();
+
+        void sendAnalyticsOnCouponItemClicked(String couponName);
 
         void sendAnalyticsOnCouponItemClickedCartShipmentPage();
 

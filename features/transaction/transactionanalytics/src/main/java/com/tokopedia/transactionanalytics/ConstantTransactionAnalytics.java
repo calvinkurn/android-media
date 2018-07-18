@@ -116,6 +116,7 @@ public interface ConstantTransactionAnalytics {
         String CLICK_HAPUS_FROM_HAPUS_PRODUK_BERKENDALA = "click hapus from hapus produk berkendala";
         String CLICK_BELI = "click beli";
         String CLICK_SELECT_COURIER = "click select courier";
+        String CLICK_SELECT_COURIER_ON_CART = "click select courier on cart";
         String CLICK_COURIER_OPTION = "click courier option";
         String IMPRESSION_COURIER_OPTION = "impression courier option";
         String CLICK_PLUS_ICON_FROM_TUJUAN_PENGIRIMAN = "click + from tujuan pengiriman";
