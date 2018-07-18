@@ -1,4 +1,4 @@
-package com.tokopedia.home.beranda.presentation.view.compoundview;
+package com.tokopedia.design.countdown;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -15,7 +15,8 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.tokopedia.home.R;
+
+import com.tokopedia.design.R;
 
 import java.util.Date;
 import java.util.Locale;
@@ -56,7 +57,7 @@ public class CountDownView extends FrameLayout {
     }
 
     private void init(Context context, AttributeSet attrs) {
-        rootView = inflate(context, R.layout.count_down_view, this);
+        rootView = inflate(context, R.layout.widget_count_down_view, this);
         hourView = (TextView) rootView.findViewById(R.id.hourView);
         minuteView = (TextView) rootView.findViewById(R.id.minuteView);
         secondView = (TextView) rootView.findViewById(R.id.secondView);

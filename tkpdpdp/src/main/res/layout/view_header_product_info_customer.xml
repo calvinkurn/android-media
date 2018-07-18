@@ -1,145 +1,139 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:background="@android:color/background_light">
+    android:background="@android:color/background_light"
+    android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/linear_discount_timer_holder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/red_500"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:background="@color/red_500"
-        android:paddingRight="@dimen/dp_16"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingTop="@dimen/dp_8"
         android:paddingBottom="@dimen/dp_4"
-        android:visibility="gone">
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_8"
+        android:visibility="visible">
 
         <TextView
             android:id="@+id/text_title_discount_timer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"
             android:drawableLeft="@drawable/flash"
             android:drawablePadding="@dimen/dp_10"
             android:gravity="center_vertical"
-            android:text="@string/title_discount_timer" />
+            android:text="@string/title_discount_timer"
+            android:textColor="@color/white" />
 
-        <FrameLayout
+        <com.tokopedia.design.countdown.CountDownView
+            android:id="@+id/count_down"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_5"
-            android:background="@drawable/bg_stroke_rounded_corners"
-            android:paddingBottom="@dimen/dp_5"
-            android:paddingLeft="@dimen/dp_8"
-            android:paddingRight="@dimen/dp_8"
-            android:paddingTop="@dimen/dp_5">
-
-            <TextView
-                android:id="@+id/text_discount_timer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/medium_green"/>
-
-        </FrameLayout>
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/dp_8"
+            app:coundDownBackgroud="@drawable/pdp_countdown_white"
+            app:countDownSparatorColor="@color/white"
+            app:countDownTxtColor="@color/red_500" />
 
     </LinearLayout>
+
     <LinearLayout
         android:id="@+id/linear_stock_available"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:background="@color/red_500"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/dp_8"
         android:paddingLeft="@dimen/dp_16"
         android:paddingRight="@dimen/dp_16"
         android:paddingTop="@dimen/dp_4"
-        android:paddingBottom="@dimen/dp_8"
-        android:gravity="center_vertical"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <TextView
             android:id="@+id/text_stock_available"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="Stok tersedia (>100)"
-            android:gravity="center_vertical"
             android:drawableLeft="@drawable/condition"
             android:drawablePadding="@dimen/dp_10"
-            android:textColor="@color/white"/>
+            android:gravity="center_vertical"
+            android:textColor="@color/white"
+            tools:text="Stok tersedia (>100)" />
 
     </LinearLayout>
+
     <TextView
         android:id="@+id/tv_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ellipsize="end"
-        android:paddingTop="@dimen/dp_16"
-        android:paddingBottom="@dimen/dp_5"
         android:layout_marginRight="80dp"
-        tools:text="Product Name"
-        android:textColor="#b3000000"
-        android:paddingRight="@dimen/dp_16"
+        android:ellipsize="end"
+        android:paddingBottom="@dimen/dp_5"
         android:paddingLeft="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_16"
+        android:textColor="#b3000000"
         android:textSize="@dimen/text_size_l_medium"
-        tools:ignore="HardcodedText" />
+        tools:ignore="HardcodedText"
+        tools:text="Product Name" />
 
     <TextView
         android:id="@+id/text_original_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
         android:textColor="@color/warm_grey"
         android:textSize="@dimen/text_size_medium"
-        android:paddingRight="@dimen/dp_16"
-        android:paddingLeft="@dimen/dp_16"
-        tools:text="Rp 0,00,-"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        tools:text="Rp 0,00,-" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:gravity="center_vertical"
-        android:paddingRight="@dimen/dp_16"
+        android:orientation="horizontal"
         android:paddingLeft="@dimen/dp_16"
-        android:orientation="horizontal">
+        android:paddingRight="@dimen/dp_16">
+
         <TextView
             android:id="@+id/tv_price_pdp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="Rp 0,00,-"
             android:textColor="@color/price_pdp"
             android:textSize="@dimen/font_large"
-            tools:ignore="HardcodedText" />
+            tools:ignore="HardcodedText"
+            tools:text="Rp 0,00,-" />
 
         <TextView
             android:id="@+id/text_discount"
             style="@style/TextView.Micro"
-            android:textStyle="bold"
-            android:textColor="@color/pdp_discount_color_selector"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginStart="@dimen/dp_10"
             android:background="@drawable/pdp_discount_bg"
-            android:paddingTop="@dimen/dp_2"
+            android:gravity="center"
             android:paddingBottom="@dimen/dp_2"
             android:paddingLeft="@dimen/dp_8"
             android:paddingRight="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_10"
-            android:layout_marginStart="@dimen/dp_10"
-            android:layout_gravity="center_vertical"
-            android:gravity="center"
-            android:visibility="gone"
+            android:paddingTop="@dimen/dp_2"
+            android:text="50% OFF"
+            android:textColor="@color/pdp_discount_color_selector"
             android:textIsSelectable="true"
-            android:text="50% OFF"/>
+            android:textStyle="bold"
+            android:visibility="gone" />
 
 
         <TextView
             android:id="@+id/label_cashback"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
             android:layout_marginLeft="@dimen/dp_10"
             android:layout_marginTop="2dp"
             android:background="@drawable/bg_label"
@@ -149,27 +143,29 @@
             android:paddingTop="2dp"
             android:text="Label"
             android:textColor="@color/label_text_color"
-            android:textSize="10sp" />
+            android:textSize="10sp"
+            android:visibility="gone" />
 
     </LinearLayout>
-    
+
     <LinearLayout
         android:id="@+id/text_official_store"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
         android:layout_marginTop="@dimen/dp_5"
-        android:paddingRight="@dimen/dp_16"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
         android:paddingLeft="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
         android:visibility="visible">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/blue_official_store"
             android:layout_marginRight="@dimen/dp_5"
-            android:textSize="@dimen/text_size_xsmall"
-            android:text="@string/headerview_label_official_store" />
+            android:text="@string/headerview_label_official_store"
+            android:textColor="@color/blue_official_store"
+            android:textSize="@dimen/text_size_xsmall" />
 
         <ImageView
             android:id="@+id/iv_official"
