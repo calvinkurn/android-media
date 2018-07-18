@@ -509,7 +509,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     @Override
     public void onBuyClick(String source) {
         if (productData.getInfo().getHasVariant()) {
-            if (!onClickBuyWhileRequestingVariant) {
+            if (!onClickBuyWhileRequestingVariant && productVariant != null) {
                 openVariantPage(generateStateVariant(source));
             } else {
                 onClickBuyWhileRequestingVariant = true;
@@ -594,6 +594,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     public void updateButtonBuyListener() {
         buttonBuyView.removeLoading();
         if (onClickBuyWhileRequestingVariant) {
+            onClickBuyWhileRequestingVariant = false;
             onBuyClick(lastStateOnClickBuyWhileRequestVariant);
         }
     }
