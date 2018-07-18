@@ -245,4 +245,36 @@ public class CheckoutAnalyticsCourierSelection extends CheckoutAnalytics {
                 agent + " - " + service
         );
     }
+
+    public void eventViewCourierSelectionImpressionCourierOption(String agent, String service) {
+        analyticTracker.sendEventTracking(
+                ConstantTransactionAnalytics.EventName.VIEW_COURIER,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.IMPRESSION_COURIER_OPTION,
+                agent + " - " + service
+        );
+    }
+
+    public void eventViewPromoCourierSelectionValidationErrorVoucherPromoFromGunakanKodePromoAtauKupon(String errorMessage){
+        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.VIEW_PROMO,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.VALIDATION_ERROR_VOUCHER_PROMO_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON,
+                errorMessage);
+    }
+
+    public void eventClickCouponCourierSelectionClickKuponFromKuponSaya(String couponName){
+        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_COUPON,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.CLICK_KUPON_FROM_KUPON_SAYA,
+                couponName);
+    }
+
+    public void eventClickCourierCourierSelectionClickBackArrowFromGunakanKodePromoAtauKupon(){
+        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_COURIER,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.CLICK_BACK_ARROW_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON,
+                "");
+    }
+
+
 }

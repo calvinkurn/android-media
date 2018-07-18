@@ -12,7 +12,13 @@ public interface ConstantTransactionAnalytics {
         String REMOVE_FORM_CART = "removeFromCart";
         String ADD_TO_CART = "addToCart";
         String CLICK_COURIER = "clickCourier";
+        String CLICK_COUPON = "clickCoupon";
         String VIEW_COURIER = "viewCourier";
+        String CLICK_SHIPPING = "clickShipping";
+        String VIEW_SHIPPING = "viewShipping";
+        String VIEW_PROMO = "viewPromo";
+        String VIEW_ORDER = "viewOrder";
+        String CLICK_ORDER = "clickOrder";
     }
 
     interface EventCategory {
@@ -21,6 +27,7 @@ public interface ConstantTransactionAnalytics {
         String ADD_TO_CART = "add to cart";
         String CART_CHANGE_ADDRESS = "Cart Change Address";
         String CART_MULTIPLE_ADDRESS = "Cart Multiple Address";
+        String ORDER_TRACKING = "order tracking";
     }
 
     interface EventAction {
@@ -120,6 +127,31 @@ public interface ConstantTransactionAnalytics {
 
         String CLICK_SELECT_COURIER = "click select courier";
         String CLICK_COURIER_OPTION = "click courier option";
+        String IMPRESSION_COURIER_OPTION = "impression courier option";
+        String CLICK_PLUS_ICON_FROM_TUJUAN_PENGIRIMAN = "click + from tujuan pengiriman";
+        String CLICK_SIMPAN_FROM_TAMBAH_ALAMAT = "click simpan from tambah alamat";
+        String VALIDATION_ERROR_VOUCHER_PROMO_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON = "validation error voucher promo from gunakan kode promo atau kupon";
+        String CLICK_KUPON_FROM_KUPON_SAYA = "click kupon from kupon saya";
+        String CLICK_BACK_ARROW_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON = "click back arrow from gunakan kode promo atau kupon";
+        String CLICK_RADIO_BUTTON_FROM_TUJUAN_PENGIRIMAN = "click radio button from tujuan pengiriman";
+        String CLICK_KOTA_ATAU_KECAMATAN_PADA_TAMBAH_ADDRESS = "click kota atau kecamatan pada + address";
+        String CLICK_KODE_POS_PADA_TAMBAH_ADDRESS = "click kode pos pada + address";
+        String CLICK_TANDAI_LOKASI_PADA_TAMBAH_ADDRESS = "click tandai lokasi pada + address";
+        String CLICK_TAMBAH_ALAMAT_FROM_TAMBAH = "click tambah alamat from +";
+        String CLICK_CHECKLIST_KOTA_ATAU_KECAMATAN_PADA_TAMBAH_ADDRESS = "click checklist kota atau kecamatan pada + address";
+        String CLICK_X_POJOK_KANAN_KOTA_ATAU_KECAMATAN_PADA_TAMBAH_ADDRESS = "click x pojok kanan kota atau kecamatan pada + address";
+        String CLICK_X_POJOK_KIRI_KOTA_ATAU_KECAMATAN_PADA_TAMBAH_ADDRESS = "click x pojok kiri kota atau kecamatan pada + address";
+        String CLICK_CHECKLIST_KODE_POS_PADA_TAMBAH_ADDRESS = "click checklist kode pos pada + address";
+        String CLICK_FILL_KODE_POS_PADA_TAMBAH_ADDRESS = "click fill kode pos pada + address";
+        String VIEW_VALIDATION_ERROR_NOT_FILL ="validation error not fill";
+        String CLICK_DROPDOWN_SUGGESTION_TANDAI_LOKASI_PADA_TAMBAH_ADDRESS ="click dropdown suggestion tandai lokasi pada + address";
+        String CLICK_V_TANDAI_LOKASI_PADA_TAMBAH_ADDRESS = "click v tandai lokasi pada + address";
+        String CLICK_BACK_ARROW_TANDAI_LOKASI_PADA_TAMBAH_ADDRESS = "click back arrow tandai lokasi pada + address";
+        String CLICK_PIN_BUTTON_FROM_TANDAI_LOKASI = "click pin button from tandai lokasi";
+        String VIEW_VALIDATION_ERROR_TANDAI_LOKASI ="validation error tandai lokasi";
+        String CLICK_RADIO_BUTTON_FROM_PILIH_ALAMAT_LAINNYA="click radio button from pilih alamat lainnya";
+        String VIEW_IMPRESSION_BUTTON_LIVE_TRACKING ="impression button live tracking";
+        String CLICK_BUTTON_LIVE_TRACKING ="click button live tracking";
     }
 
     interface EventLabel {

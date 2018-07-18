@@ -125,4 +125,151 @@ public class CheckoutAnalyticsChangeAddress extends CheckoutAnalytics {
                 "");
     }
 
+    public void eventClickShippingChangeAddressClickPlusIconFromTujuanPengiriman() {
+        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_SHIPPING,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_PLUS_ICON_FROM_TUJUAN_PENGIRIMAN,
+                "");
+    }
+
+    public void eventClickShippingChangeAddressClickSimpanFromTambahAlamat() {
+        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_SHIPPING,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_SIMPAN_FROM_TAMBAH_ALAMAT,
+                "");
+    }
+
+    public void eventClickShippingChangeAddressClickRadioButtonFromTujuanPengiriman() {
+        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_SHIPPING,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_RADIO_BUTTON_FROM_TUJUAN_PENGIRIMAN,
+                "");
+    }
+
+    public void eventClickShippingChangeAddressClickKotaAtauKecamatanPadaTambahAddress() {
+        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_SHIPPING,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_KOTA_ATAU_KECAMATAN_PADA_TAMBAH_ADDRESS,
+                "");
+    }
+
+    public void eventClickShippingChangeAddressClickKodePosPadaTambahAddress() {
+        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_SHIPPING,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_KODE_POS_PADA_TAMBAH_ADDRESS,
+                "");
+    }
+
+    public void eventClickShippingChangeAddressClickTandaiLokasiPadaTambahAddress() {
+        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_SHIPPING,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_TANDAI_LOKASI_PADA_TAMBAH_ADDRESS,
+                "");
+    }
+
+    public void eventClickShippingChangeAddressClickTambahAlamatFromTambah() {
+        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_SHIPPING,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_TAMBAH_ALAMAT_FROM_TAMBAH,
+                "");
+    }
+
+    public void eventClickShippingChangeAddressClickChecklistKotaAtauKecamatanPadaTambahAddress(String kotaAtauKecamatan) {
+        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_SHIPPING,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_CHECKLIST_KOTA_ATAU_KECAMATAN_PADA_TAMBAH_ADDRESS,
+                kotaAtauKecamatan);
+    }
+
+    public void eventClickShippingChangeAddressClickXPojokKananKotaAtauKecamatanPadaTambahAddress() {
+        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_SHIPPING,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_X_POJOK_KANAN_KOTA_ATAU_KECAMATAN_PADA_TAMBAH_ADDRESS,
+                "");
+    }
+
+    public void eventClickShippingChangeAddressClickXPojokKiriKotaAtauKecamatanPadaTambahAddress() {
+        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_SHIPPING,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_X_POJOK_KIRI_KOTA_ATAU_KECAMATAN_PADA_TAMBAH_ADDRESS,
+                "");
+    }
+
+    public void eventClickShippingChangeAddressClickChecklistKodePosPAdaTambahAddress() {
+        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_SHIPPING,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_CHECKLIST_KODE_POS_PADA_TAMBAH_ADDRESS,
+                "");
+    }
+
+    public void eventClickShippingChangeAddressClickFillKodePosPadaTambahAddress() {
+        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_SHIPPING,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_FILL_KODE_POS_PADA_TAMBAH_ADDRESS,
+                "");
+    }
+
+    public void eventViewShippingChangeAddressViewValidationErrorNotFill(String errorMessage) {
+        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.VIEW_SHIPPING,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.VIEW_VALIDATION_ERROR_NOT_FILL,
+                errorMessage);
+    }
+
+    public void eventClickShippingChangeAddressClickDropdownSuggestionTandaiLokasiPadaTambahAddress() {
+        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_SHIPPING,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_DROPDOWN_SUGGESTION_TANDAI_LOKASI_PADA_TAMBAH_ADDRESS,
+                "");
+    }
+
+    public void eventClickShippingChangeAddressClickVTandaiLokasiPadaTambahAddress() {
+        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_SHIPPING,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_V_TANDAI_LOKASI_PADA_TAMBAH_ADDRESS,
+                "");
+    }
+
+    public void eventClickShippingChangeAddressClickBackArrowTandaiLokasiPadaTambahAddress() {
+        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_SHIPPING,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_BACK_ARROW_TANDAI_LOKASI_PADA_TAMBAH_ADDRESS,
+                "");
+    }
+
+    public void eventClickShippingChangeAddressClickPinButtonFromTandaiLokasi() {
+        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_SHIPPING,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_PIN_BUTTON_FROM_TANDAI_LOKASI,
+                "");
+    }
+
+    public void eventViewShippingChangeAddressViewValidationErrorTandaiLokasi(String errorMessage) {
+        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.VIEW_SHIPPING,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.VIEW_VALIDATION_ERROR_TANDAI_LOKASI,
+                errorMessage);
+    }
+
+    public void eventClickShippingChangeAddressClickRadioButtonFromPilihAlamatLainnya() {
+        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_SHIPPING,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_RADIO_BUTTON_FROM_PILIH_ALAMAT_LAINNYA,
+                "");
+    }
+
+    public void eventViewOrderOrderTrackingViewImpressionButtonLiveTracking() {
+        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.VIEW_ORDER,
+                ConstantTransactionAnalytics.EventCategory.ORDER_TRACKING,
+                ConstantTransactionAnalytics.EventAction.VIEW_IMPRESSION_BUTTON_LIVE_TRACKING,
+                "");
+    }
+
+    public void eventClickOrderOrderTrackingClickButtonLiveTracking() {
+        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ORDER,
+                ConstantTransactionAnalytics.EventCategory.ORDER_TRACKING,
+                ConstantTransactionAnalytics.EventAction.CLICK_BUTTON_LIVE_TRACKING,
+                "");
+    }
+
 }
