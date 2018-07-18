@@ -8,19 +8,6 @@ import java.util.List;
 
 public class GqlWishListDataResponse {
 
-    /*@SerializedName("data")
-    @Expose
-    GqlWishListData gqlWishListData;
-
-    public GqlWishListData getGqlWishListData() {
-        return gqlWishListData;
-    }
-
-    public void setWishlist(GqlWishListData gqlWishListData) {
-        this.gqlWishListData = gqlWishListData;
-    }*/
-
-
     @SerializedName("wishlist")
     @Expose
     GqlWishList gqlWishList;
