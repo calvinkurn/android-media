@@ -80,6 +80,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof OrderListViewHolder) {
             currentHolder = (OrderListViewHolder) holder;
+            currentHolder.paymentAvatar.setVisibility(View.INVISIBLE);
             if (mOrderList != null) {
                 currentHolder.bindData(mOrderList.get(position), position);
             }
@@ -228,6 +229,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     public void setPaymentAvatar(String imageUrl) {
         if (!TextUtils.isEmpty(imageUrl)) {
             ImageHandler.loadImageThumbs(context, currentHolder.paymentAvatar, imageUrl);
+            currentHolder.paymentAvatar.setVisibility(View.VISIBLE);
         }
 
     }
