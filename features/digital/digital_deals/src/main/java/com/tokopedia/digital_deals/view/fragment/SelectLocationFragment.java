@@ -17,6 +17,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.digital_deals.view.adapter.DealsLocationAdapter;
@@ -121,11 +122,8 @@ public class SelectLocationFragment extends BaseDaggerFragment implements
             noContent.setVisibility(View.GONE);
             llTopEvents.setVisibility(View.VISIBLE);
             if (isTopLocations) {
-                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                if (imm != null) {
-                    imm.hideSoftInputFromWindow(searchInputView.getSearchTextView().getWindowToken(), 0);
-                    rvSearchResults.requestFocus();
-                }
+                KeyboardHandler.DropKeyboard(getContext(), searchInputView);
+//                rvSearchResults.requestFocus();
             }
 
         } else {

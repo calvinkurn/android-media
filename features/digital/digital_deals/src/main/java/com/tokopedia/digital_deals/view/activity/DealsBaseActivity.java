@@ -2,11 +2,10 @@ package com.tokopedia.digital_deals.view.activity;
 
 import android.support.v4.app.Fragment;
 
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.digital_deals.di.DaggerDealsComponent;
 import com.tokopedia.digital_deals.di.DealsComponent;
+import com.tokopedia.digital_deals.di.DealsComponentInstance;
 
 public class DealsBaseActivity extends BaseSimpleActivity implements HasComponent<DealsComponent> {
 
@@ -17,8 +16,6 @@ public class DealsBaseActivity extends BaseSimpleActivity implements HasComponen
 
     @Override
     public DealsComponent getComponent() {
-        return  DaggerDealsComponent.builder()
-                .baseAppComponent(((BaseMainApplication)getApplication()).getBaseAppComponent())
-                .build();
+        return DealsComponentInstance.getDealsComponent(getApplication());
     }
 }
