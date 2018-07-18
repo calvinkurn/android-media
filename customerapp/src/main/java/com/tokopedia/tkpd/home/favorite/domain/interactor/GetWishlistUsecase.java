@@ -30,7 +30,6 @@ public class GetWishlistUsecase {
         this.favoriteRepository = favoriteRepository;
     }
 
-    //    @Override
     public Observable<DomainWishlist> createObservable(RequestParams requestParams) {
         boolean isForceRefresh = requestParams.getBoolean(KEY_IS_FORCE_REFRESH, false);
         requestParams.clearValue(KEY_IS_FORCE_REFRESH);
