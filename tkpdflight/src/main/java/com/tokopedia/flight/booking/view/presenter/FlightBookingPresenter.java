@@ -412,10 +412,17 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
                                 e.printStackTrace();
                                 if (isViewAttached()) {
                                     getView().hideFullPageLoading();
-                                    if (e instanceof FlightException && ((FlightException) e).getErrorList().contains(new FlightError(FlightErrorConstant.ADD_TO_CART))) {
-                                        getView().showExpireTransactionDialog(e.getMessage());
-                                    } else if (e instanceof FlightException && ((FlightException) e).getErrorList().contains(new FlightError(FlightErrorConstant.FLIGHT_SOLD_OUT))) {
-                                        getView().showSoldOutDialog();
+                                    if (e instanceof FlightException) {
+                                        List<FlightError> errors = ((FlightException) e).getErrorList();
+                                        if (errors.contains(new FlightError(FlightErrorConstant.ADD_TO_CART))) {
+                                            getView().showExpireTransactionDialog(e.getMessage());
+                                        } else if (errors.contains(new FlightError(FlightErrorConstant.FLIGHT_SOLD_OUT))) {
+                                            getView().showSoldOutDialog();
+                                        } else if (errors.contains(new FlightError(FlightErrorConstant.FLIGHT_EXPIRED))) {
+                                            getView().showExpireTransactionDialog(e.getMessage());
+                                        } else {
+                                            getView().showGetCartDataErrorStateLayout(e);
+                                        }
                                     } else {
                                         getView().showGetCartDataErrorStateLayout(e);
                                     }

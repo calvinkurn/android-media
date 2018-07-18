@@ -6,6 +6,8 @@ import com.google.gson.annotations.SerializedName;
 import com.tokopedia.groupchat.chatroom.domain.pojo.ExitMessage;
 import com.tokopedia.groupchat.chatroom.domain.pojo.PinnedMessagePojo;
 import com.tokopedia.groupchat.chatroom.domain.pojo.poll.ActivePollPojo;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatQuickReplyItemViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatQuickReplyViewModel;
 
 import java.util.List;
 
@@ -95,6 +97,10 @@ public class Channel {
     @SerializedName("exit_msg")
     @Expose
     private ExitMessage exitMessage;
+    @SerializedName("quick_reply")
+    @Expose
+    private List<String> listQuickReply = null;
+
 
     public int getChannelId() {
         return channelId;
@@ -263,4 +269,9 @@ public class Channel {
     public ExitMessage getExitMessage() {
         return exitMessage;
     }
+
+    public List<String> getListQuickReply() {
+        return listQuickReply;
+    }
+
 }

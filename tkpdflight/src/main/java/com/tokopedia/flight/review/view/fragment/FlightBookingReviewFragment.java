@@ -37,6 +37,7 @@ import com.tokopedia.flight.booking.view.viewmodel.BaseCartData;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingVoucherViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.booking.widget.CountdownTimeView;
 import com.tokopedia.flight.common.constant.FlightFlowConstant;
@@ -80,6 +81,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
 
     public static final String HACHIKO_FLIGHT_KEY = "flight";
     public static final String EXTRA_NEED_TO_REFRESH = "EXTRA_NEED_TO_REFRESH";
+    public static final String EXTRA_COUPON_CHANGED = "EXTRA_COUPON_CHANGED";
     public static final String EXTRA_DATA_REVIEW = "EXTRA_DATA_REVIEW";
     public static final int RESULT_ERROR_VERIFY = 874;
     public static final String RESULT_ERROR_CODE = "RESULT_ERROR_CODE";
@@ -87,6 +89,8 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
     private static final int REQUEST_CODE_NEW_PRICE_DIALOG = 3;
     private static final int REQUEST_CODE_TOPPAY = 100;
     private static final int REQUEST_CODE_LOYALTY = 200;
+    public static final int DEFAULT_IS_COUPON_ZERO = 0;
+    public static final int DEFAULT_IS_COUPON_ONE = 1;
     @Inject
     FlightBookingReviewPresenter flightBookingReviewPresenter;
     @Inject
@@ -112,6 +116,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
     private ProgressDialog progressDialog;
     private FlightSimpleAdapter flightBookingReviewPriceAdapter;
     private boolean isPassengerInfoPageNeedToRefresh = false;
+    private boolean isCouponVoucherChanged = false;
 
 
     public static FlightBookingReviewFragment createInstance(FlightBookingReviewModel flightBookingReviewModel) {
@@ -137,7 +142,22 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        flightBookingReviewModel = getArguments().getParcelable(EXTRA_DATA_REVIEW);
+
+        if (savedInstanceState != null) {
+            isPassengerInfoPageNeedToRefresh = savedInstanceState.getBoolean(EXTRA_NEED_TO_REFRESH);
+            isCouponVoucherChanged = savedInstanceState.getBoolean(EXTRA_COUPON_CHANGED);
+            flightBookingReviewModel = savedInstanceState.getParcelable(EXTRA_DATA_REVIEW);
+        } else {
+            flightBookingReviewModel = getArguments().getParcelable(EXTRA_DATA_REVIEW);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(EXTRA_NEED_TO_REFRESH, isPassengerInfoPageNeedToRefresh);
+        outState.putBoolean(EXTRA_COUPON_CHANGED, isCouponVoucherChanged);
+        outState.putParcelable(EXTRA_DATA_REVIEW, flightBookingReviewModel);
     }
 
     @Nullable
@@ -265,6 +285,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initView();
+        flightBookingReviewPresenter.onViewCreated();
     }
 
     @Override
@@ -312,6 +333,10 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
                         attributesVoucher.setMessage(voucherMessage);
                         attributesVoucher.setDiscountAmountPlain(voucherDiscountAmount);
                         updateFinalTotal(attributesVoucher, getCurrentBookingReviewModel());
+                        getCurrentBookingReviewModel().getVoucherViewModel()
+                                .setAutoapplySuccess(true);
+                        setVoucherValue(attributesVoucher, DEFAULT_IS_COUPON_ZERO, "");
+                        isCouponVoucherChanged = true;
                     }
                 } else if (resultCode == codeWrapper.couponResultCode()) {
                     Bundle bundle = data.getExtras();
@@ -327,6 +352,10 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
                         attributesVoucher.setDiscountAmountPlain(couponDiscountAmount);
                         updateFinalTotal(attributesVoucher, getCurrentBookingReviewModel());
                         voucherCartView.setCoupon(couponTitle, couponMessage, couponCode);
+                        getCurrentBookingReviewModel().getVoucherViewModel()
+                                .setAutoapplySuccess(true);
+                        setVoucherValue(attributesVoucher, DEFAULT_IS_COUPON_ONE, couponTitle);
+                        isCouponVoucherChanged = true;
                     }
                 }
                 break;
@@ -354,6 +383,18 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
     }
 
     @Override
+    public void renderCouponInfoData() {
+        FlightBookingVoucherViewModel voucherViewModel = flightBookingReviewModel.getVoucherViewModel();
+        voucherCartView.setCoupon(voucherViewModel.getTitleDescription(), voucherViewModel.getMessageSuccess(), voucherViewModel.getCode());
+    }
+
+    @Override
+    public void renderVoucherInfoData() {
+        FlightBookingVoucherViewModel voucherViewModel = flightBookingReviewModel.getVoucherViewModel();
+        voucherCartView.setVoucher(voucherViewModel.getCode(), voucherViewModel.getMessageSuccess());
+    }
+
+    @Override
     public void onErrorSubmitData(Throwable e) {
 
     }
@@ -366,13 +407,21 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
     @Override
     public void onClickUseVoucher() {
         if (getActivity() != null && getActivity().getApplication() instanceof FlightModuleRouter) {
-            Intent intent = ((FlightModuleRouter) getActivity().getApplication()).getLoyaltyWithCoupon(getActivity(), HACHIKO_FLIGHT_KEY, FlightUrl.CATEGORY_ID, getCurrentCartData().getId());
+            Intent intent;
+
+            if (getCurrentBookingReviewModel().getVoucherViewModel().getDefaultPromoTab().equals(FlightBookingVoucherViewModel.COUPON)) {
+                intent = ((FlightModuleRouter) getActivity().getApplication()).getLoyaltyWithCouponTabSelected(getActivity(), HACHIKO_FLIGHT_KEY, FlightUrl.CATEGORY_ID, getCurrentCartData().getId());
+            } else {
+                intent = ((FlightModuleRouter) getActivity().getApplication()).getLoyaltyWithCoupon(getActivity(), HACHIKO_FLIGHT_KEY, FlightUrl.CATEGORY_ID, getCurrentCartData().getId());
+            }
             startActivityForResult(intent, REQUEST_CODE_LOYALTY);
         }
     }
 
     @Override
     public void disableVoucherDiscount() {
+        isCouponVoucherChanged = true;
+        flightBookingReviewPresenter.onCancelAppliedVoucher();
         updateFinalTotal(null, getCurrentBookingReviewModel());
     }
 
@@ -653,6 +702,15 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
         );
     }
 
+    @Override
+    public void showVoucherContainer() {
+        voucherCartView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideVoucherContainer() {
+        voucherCartView.setVisibility(View.GONE);
+    }
 
     @Override
     public void onDestroy() {
@@ -662,14 +720,19 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
 
     @Override
     public void onBackPressed() {
+        Intent intent = getActivity().getIntent();
+
         if (isPassengerInfoPageNeedToRefresh) {
-            Intent intent = getActivity().getIntent();
             intent.putExtra(EXTRA_NEED_TO_REFRESH, isPassengerInfoPageNeedToRefresh);
-            getActivity().setResult(Activity.RESULT_CANCELED, intent);
-            getActivity().finish();
-        } else {
-            getActivity().onBackPressed();
         }
+
+        if (isCouponVoucherChanged) {
+            intent.putExtra(EXTRA_COUPON_CHANGED, flightBookingReviewModel.getVoucherViewModel());
+        }
+
+        getActivity().setResult(Activity.RESULT_CANCELED, intent);
+        getActivity().finish();
+
     }
 
     @Override
@@ -680,5 +743,20 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
     @Override
     public void setNeedToRefreshOnPassengerInfo() {
         isPassengerInfoPageNeedToRefresh = true;
+    }
+
+    private void setVoucherValue(AttributesVoucher voucherValue, int isCoupon, String couponTitle) {
+        FlightBookingVoucherViewModel voucherViewModel = getCurrentBookingReviewModel().getVoucherViewModel();
+
+        voucherViewModel.setCode(voucherValue.getVoucherCode());
+        voucherViewModel.setIsCoupon(isCoupon);
+        voucherViewModel.setDiscountAmount(voucherValue.getDiscountAmountPlain());
+        voucherViewModel.setDiscountPrice(voucherValue.getDiscountAmount());
+        voucherViewModel.setDiscountedAmount(voucherValue.getDiscountedPricePlain());
+        voucherViewModel.setDiscountedPrice(voucherValue.getDiscountedPrice());
+        voucherViewModel.setTitleDescription(couponTitle);
+        voucherViewModel.setMessageSuccess(voucherValue.getMessage());
+
+        getCurrentBookingReviewModel().setVoucherViewModel(voucherViewModel);
     }
 }

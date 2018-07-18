@@ -26,8 +26,11 @@ public class ShipmentDataConverter {
     private static final int PRIME_ADDRESS = 2;
 
     public RecipientAddressModel getRecipientAddressModel(CartShipmentAddressFormData cartShipmentAddressFormData) {
-        UserAddress userAddress = cartShipmentAddressFormData.getGroupAddress().get(0).getUserAddress();
-        return createRecipientAddressModel(userAddress);
+        if (cartShipmentAddressFormData.getGroupAddress() != null && cartShipmentAddressFormData.getGroupAddress().size() > 0) {
+            UserAddress userAddress = cartShipmentAddressFormData.getGroupAddress().get(0).getUserAddress();
+            return createRecipientAddressModel(userAddress);
+        }
+        return null;
     }
 
     public RecipientAddressModel getRecipientAddressModel(UserAddress userAddress) {
@@ -97,10 +100,27 @@ public class ShipmentDataConverter {
             shipmentCartItemModel.setRecipientAddressModel(getRecipientAddressModel(userAddress));
         }
 
+        shipmentCartItemModel.setShopShipmentList(groupShop.getShopShipments());
         shipmentCartItemModel.setError(groupShop.isError());
+        if (shipmentCartItemModel.isError()) {
+            shipmentCartItemModel.setAllItemError(true);
+        }
         shipmentCartItemModel.setErrorMessage(groupShop.getErrorMessage());
         shipmentCartItemModel.setWarning(groupShop.isWarning());
         shipmentCartItemModel.setWarningMessage(groupShop.getWarningMessage());
+
+        if (!shipmentCartItemModel.isError()) {
+            int productErrorCounter = 0;
+            for (Product product : groupShop.getProducts()) {
+                if (product.isError()) {
+                    productErrorCounter++;
+                }
+            }
+            if (productErrorCounter > 0) {
+                shipmentCartItemModel.setError(true);
+                shipmentCartItemModel.setErrorMessage("Terdapat kendala pada " + productErrorCounter + " produk");
+            }
+        }
 
         Shop shop = groupShop.getShop();
         shipmentCartItemModel.setShopId(shop.getShopId());
@@ -153,6 +173,8 @@ public class ShipmentDataConverter {
         cartItemModel.setFreeReturnLogo(product.getFreeReturnLogo());
         cartItemModel.setfInsurance(product.isProductFcancelPartial());
         cartItemModel.setfCancelPartial(product.isProductFinsurance());
+        cartItemModel.setError(product.isError());
+        cartItemModel.setErrorMessage(product.getErrorMessage());
 
         return cartItemModel;
     }

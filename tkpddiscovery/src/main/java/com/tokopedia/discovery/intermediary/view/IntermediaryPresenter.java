@@ -1,5 +1,8 @@
 package com.tokopedia.discovery.intermediary.view;
 
+import android.os.Bundle;
+import android.util.Log;
+
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.core.base.domain.DefaultSubscriber;
 import com.tokopedia.core.base.domain.RequestParams;
@@ -10,10 +13,18 @@ import com.tokopedia.discovery.intermediary.domain.interactor.GetIntermediaryCat
 import com.tokopedia.discovery.intermediary.domain.model.CuratedSectionModel;
 import com.tokopedia.discovery.intermediary.domain.model.IntermediaryCategoryDomainModel;
 import com.tokopedia.discovery.intermediary.domain.model.ProductModel;
+import com.tokopedia.discovery.newdiscovery.domain.usecase.AddWishlistActionUseCase;
+import com.tokopedia.discovery.newdiscovery.domain.usecase.RemoveWishlistActionUseCase;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.listener.WishlistActionListener;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.subscriber.AddWishlistActionSubscriber;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.subscriber.RemoveWishlistActionSubscriber;
+import com.tokopedia.topads.sdk.domain.model.Data;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import javax.inject.Inject;
 
 import retrofit2.Response;
 
@@ -26,11 +37,18 @@ public class IntermediaryPresenter extends BaseDaggerPresenter<IntermediaryContr
 
     private final GetIntermediaryCategoryUseCase getIntermediaryCategoryUseCase;
     private final GetCategoryHeaderUseCase getCategoryHeaderUseCase;
+    private final AddWishlistActionUseCase addWishlistActionUseCase;
+    private final RemoveWishlistActionUseCase removeWishlistActionUseCase;
+    private WishlistActionListener wishlistActionListener;
 
     public IntermediaryPresenter(GetIntermediaryCategoryUseCase getIntermediaryCategoryUseCase,
-                                 GetCategoryHeaderUseCase getCategoryHeaderUseCase) {
+                                 GetCategoryHeaderUseCase getCategoryHeaderUseCase,
+                                 AddWishlistActionUseCase addWishlistActionUseCase,
+                                 RemoveWishlistActionUseCase removeWishlistActionUseCase) {
         this.getIntermediaryCategoryUseCase = getIntermediaryCategoryUseCase;
         this.getCategoryHeaderUseCase = getCategoryHeaderUseCase;
+        this.addWishlistActionUseCase = addWishlistActionUseCase;
+        this.removeWishlistActionUseCase = removeWishlistActionUseCase;
     }
 
     @Override
@@ -46,6 +64,42 @@ public class IntermediaryPresenter extends BaseDaggerPresenter<IntermediaryContr
     @Override
     public void addFavoriteShop(String categoryId) {
 
+    }
+
+    @Override
+    public void addWishLish(int position, Data data) {
+        if (getView().isUserHasLogin()) {
+            if (data.isWislished()) {
+                removeWishlist(data.getProduct().getId(), getView().getUserId(), position);
+            } else {
+                addWishlist(data.getProduct().getId(), getView().getUserId(), position);
+            }
+        } else {
+            launchLoginActivity(data.getProduct().getId());
+        }
+    }
+
+    @Override
+    public void setWishlishListener(WishlistActionListener wishlishListener) {
+        this.wishlistActionListener = wishlishListener;
+    }
+
+    private void addWishlist(String productId, String userId, int adapterPosition) {
+        Log.d(this.toString(), "Add Wishlist " + productId);
+        addWishlistActionUseCase.execute(AddWishlistActionUseCase.generateParam(productId, userId),
+                new AddWishlistActionSubscriber(wishlistActionListener, adapterPosition));
+    }
+
+    private void removeWishlist(String productId, String userId, int adapterPosition) {
+        Log.d(this.toString(), "Remove Wishlist " + productId);
+        removeWishlistActionUseCase.execute(RemoveWishlistActionUseCase.generateParam(productId, userId),
+                new RemoveWishlistActionSubscriber(wishlistActionListener, adapterPosition));
+    }
+
+    private void launchLoginActivity(String productId) {
+        Bundle extras = new Bundle();
+        extras.putString("product_id", productId);
+        getView().launchLoginActivity(extras);
     }
 
     private class CategoryHeaderSubscirber extends DefaultSubscriber<Response<CategoryHadesModel>> {

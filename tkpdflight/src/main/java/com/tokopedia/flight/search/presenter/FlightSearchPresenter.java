@@ -1,5 +1,7 @@
 package com.tokopedia.flight.search.presenter;
 
+import android.support.annotation.NonNull;
+
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.domain.FlightBookingGetSingleResultUseCase;
@@ -140,8 +142,13 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
         addSubscription(subscription);
     }
 
-    public void deleteFlightCache(boolean isReturning) {
-        deleteFlightCacheUseCase.execute(DeleteFlightCacheUseCase.createRequestParam(isReturning), new Subscriber<Boolean>() {
+    private void deleteFlightCache(boolean isReturning, Subscriber<Boolean> subscriber) {
+        deleteFlightCacheUseCase.execute(DeleteFlightCacheUseCase.createRequestParam(isReturning), subscriber);
+    }
+
+    @NonNull
+    private Subscriber<Boolean> getDeleteFlightAfterChangeDateSubscriber() {
+        return new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {
 
@@ -158,7 +165,29 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
             public void onNext(Boolean aBoolean) {
                 getView().onSuccessDeleteFlightCache();
             }
-        });
+        };
+    }
+
+    @NonNull
+    private Subscriber<Boolean> getDeleteFlightReturnSubscriber() {
+        return new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (isViewAttached()) {
+                    getView().onErrorDeleteFlightCache(e);
+                }
+            }
+
+            @Override
+            public void onNext(Boolean aBoolean) {
+                getView().actionFetchFlightSearchData();
+            }
+        };
     }
 
     public void checkCacheExpired() {
@@ -254,7 +283,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
             } else {
                 flightSearchPassDataViewModel.setDepartureDate(dateString);
             }
-            deleteFlightCache(getView().isReturning());
+            deleteFlightCache(getView().isReturning(), getDeleteFlightAfterChangeDateSubscriber());
 
             getView().setFlightSearchPassData(flightSearchPassDataViewModel);
         }
@@ -385,7 +414,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
                 }
             });
         } else {
-            getView().actionFetchFlightSearchData();
+            deleteFlightCache(getView().isReturning(), getDeleteFlightReturnSubscriber());
         }
 
     }

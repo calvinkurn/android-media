@@ -1,6 +1,5 @@
 package com.tokopedia.checkout.domain.usecase;
 
-import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.checkout.domain.datamodel.cartmultipleshipment.SetShippingAddressData;
 import com.tokopedia.transactiondata.entity.response.shippingaddress.ShippingAddressDataResponse;
 import com.tokopedia.transactiondata.repository.ICartRepository;
@@ -35,6 +34,7 @@ public class ChangeShippingAddressUseCase extends UseCase<SetShippingAddressData
                     public SetShippingAddressData call(ShippingAddressDataResponse shippingAddressDataResponse) {
                         return new SetShippingAddressData.Builder()
                                 .success(shippingAddressDataResponse.getSuccess() == 1)
+                                .messages(shippingAddressDataResponse.getMessages())
                                 .build();
                     }
                 });

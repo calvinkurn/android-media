@@ -67,12 +67,22 @@ public interface FlightBookingReviewContract {
 
         void showErrorInEmptyState(String message);
 
+        void showVoucherContainer();
+
+        void hideVoucherContainer();
+
         void setNeedToRefreshOnPassengerInfo();
 
         void updateFinalTotal(AttributesVoucher attributesVoucher, FlightBookingReviewModel currentBookingReviewModel);
+
+        void renderCouponInfoData();
+
+        void renderVoucherInfoData();
     }
 
     interface Presenter extends FlightBaseBookingContact.Presenter<View>{
+
+        void onViewCreated();
 
         void verifyBooking(String promoCode, int price, int adult, String cartId,
                            List<FlightBookingPassengerViewModel> flightPassengerViewModels,
@@ -83,5 +93,7 @@ public interface FlightBookingReviewContract {
         void onPaymentFailed();
 
         void onPaymentCancelled();
+
+        void onCancelAppliedVoucher();
     }
 }

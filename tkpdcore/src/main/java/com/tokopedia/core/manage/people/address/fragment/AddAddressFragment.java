@@ -34,6 +34,7 @@ import com.tokopedia.core.database.model.District;
 import com.tokopedia.core.database.model.Province;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
+import com.tokopedia.core.geolocation.utils.GeoLocationUtils;
 import com.tokopedia.core.manage.people.address.fragment.adapter.ProvinceAdapter;
 import com.tokopedia.core.manage.people.address.fragment.adapter.RegencyAdapter;
 import com.tokopedia.core.manage.people.address.fragment.adapter.SubDistrictAdapter;
@@ -60,7 +61,7 @@ import static com.tokopedia.core.manage.people.address.ManageAddressConstant.REQ
  * Created by nisie on 9/6/16.
  */
 public class AddAddressFragment extends BasePresenterFragment<AddAddressPresenter>
-        implements AddAddressFragmentView {
+        implements AddAddressFragmentView, GeoLocationUtils.GeoLocationListener {
 
     private static final int DISTRICT_RECOMMENDATION_REQUEST_CODE = 130715;
     private static final String ADDRESS = "district_recommendation_address";
@@ -253,7 +254,7 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
         districtLayout = view.findViewById(R.id.district_layout);
         districtEditText = view.findViewById(R.id.district);
         zipCodeLayout = view.findViewById(R.id.postal_code_layout);
-        zipCodeTextView = view.findViewById(R.id.postal_code);
+        zipCodeTextView = view.findViewById(R.id.autocomplete_postal_code);
 
         postCodeLayout = view.findViewById(R.id.post_code_layout);
         postCodeEditText = view.findViewById(R.id.post_code);
@@ -284,7 +285,8 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
     }
 
     private void selectLayout() {
-        if (isDistrictRecommendation()) {
+        // TODO ATTENTION: when new checkout flow is fully released, please refactor (remove) this part immediately
+        if (isDistrictRecommendation() && token != null) {
             addressSpinerLayout.setVisibility(View.GONE);
             postCodeLayout.setVisibility(View.GONE);
             districtLayout.setVisibility(View.VISIBLE);
@@ -330,7 +332,8 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
                             address.setProvinceId(province.getProvinceId());
                         }
 
-                        if (!isEdit()) presenter.onProvinceSelected(pos);
+                        if(isEdit()) presenter.onEditProvinceSelected(pos);
+                        else presenter.onProvinceSelected(pos);
                     }
 
                     @Override
@@ -350,6 +353,7 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
                     City city = cityList.get(pos - 1);
                     address.setCityName(city.getCityName());
                     address.setCityId(city.getCityId());
+                    presenter.onRegencySelected(pos);
                 }
 
                 if (!isEdit()) presenter.onRegencySelected(pos);
@@ -428,6 +432,20 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
                 address.setPostalCode(zipCodeTextView.getText().toString());
             }
         };
+    }
+
+    private void setPinpointAddress(Destination address) {
+        if (address.getLatitude() != null &&
+                address.getLongitude() != null &&
+                !address.getLatitude().equals("") &&
+                !address.getLongitude().equals("")
+                ) {
+            GeoLocationUtils.reverseGeoCodeParallel(
+                    getActivity(),
+                    address.getLatitude(),
+                    address.getLongitude(), this
+            );
+        }
     }
 
     public void initializeZipCodes() {
@@ -558,7 +576,9 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
             )));
 
             zipCodeTextView.setText(address.getPostalCode());
+            postCodeEditText.setText(address.getPostalCode());
             receiverPhoneEditText.setText(address.getReceiverPhone());
+            setPinpointAddress(address);
         } else if (address == null) {
             address = new Destination();
         }
@@ -823,6 +843,19 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
     }
 
     @Override
+    public void changeProvince(List<City> cities){
+        progressRegency.setVisibility(View.GONE);
+        regencyTitle.setVisibility(View.VISIBLE);
+        spinnerRegency.setVisibility(View.VISIBLE);
+        regencyAdapter.setList(cities);
+        Destination addressModel = getArguments().getParcelable(EDIT_PARAM);
+        if(addressModel != null)
+            spinnerRegency
+                    .setSelection(regencyAdapter.getPositionFromName(addressModel.getCityName()));
+        this.mCities = new ArrayList<>(cities);
+    }
+
+    @Override
     public void showLoadingDistrict() {
         progressDistrict.setVisibility(View.VISIBLE);
         districtTitle.setVisibility(View.GONE);
@@ -843,5 +876,10 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
 //                isEdit = false;
         }
         this.mDistricts = new ArrayList<>(districts);
+    }
+
+    @Override
+    public void getGeoCode(String resultAddress) {
+        locationEditText.setText(resultAddress);
     }
 }

@@ -43,14 +43,15 @@
                 style="@style/TextView.Small.Bold"
                 android:layout_width="130dp"
                 android:paddingTop="@dimen/dp_10"
-                android:text="Fasilitas" />
+                android:text="@string/flight_detail_facility_label" />
 
             <TextView
+                android:id="@+id/tv_facility_separator"
                 style="@style/TextView.Small.Bold"
                 android:layout_marginLeft="@dimen/dp_3"
                 android:layout_marginRight="@dimen/dp_3"
                 android:paddingTop="@dimen/dp_10"
-                android:text=":" />
+                android:text="@string/flight_detail_facility_separator" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recycler_view_amenity"
