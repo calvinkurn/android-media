@@ -18,7 +18,9 @@ public class TrainScheduleDetailViewModel implements Parcelable {
     private String destinationStationName;
     private String duration;
     private String trainName;
+    private String trainNumber;
     private String trainClass;
+    private String subclass;
     private String departureDate;
     private String arrivalDate;
     private String departureTime;
@@ -45,7 +47,9 @@ public class TrainScheduleDetailViewModel implements Parcelable {
         this.destinationStationName = builder.destinationStationName;
         this.duration = builder.duration;
         this.trainName = builder.trainName;
+        this.trainNumber = builder.trainNumber;
         this.trainClass = builder.trainClass;
+        this.subclass = builder.subclass;
         this.departureDate = builder.departureDate;
         this.arrivalDate = builder.arrivalDate;
         this.departureTime = builder.departureTime;
@@ -73,7 +77,9 @@ public class TrainScheduleDetailViewModel implements Parcelable {
         destinationStationName = in.readString();
         duration = in.readString();
         trainName = in.readString();
+        trainNumber = in.readString();
         trainClass = in.readString();
+        subclass = in.readString();
         departureDate = in.readString();
         arrivalDate = in.readString();
         departureTime = in.readString();
@@ -142,8 +148,16 @@ public class TrainScheduleDetailViewModel implements Parcelable {
         return trainName;
     }
 
+    public String getTrainNumber() {
+        return trainNumber;
+    }
+
     public String getTrainClass() {
         return trainClass;
+    }
+
+    public String getSubclass() {
+        return subclass;
     }
 
     public String getDepartureDate() {
@@ -219,7 +233,9 @@ public class TrainScheduleDetailViewModel implements Parcelable {
         dest.writeString(destinationStationName);
         dest.writeString(duration);
         dest.writeString(trainName);
+        dest.writeString(trainNumber);
         dest.writeString(trainClass);
+        dest.writeString(subclass);
         dest.writeString(departureDate);
         dest.writeString(arrivalDate);
         dest.writeString(departureTime);
@@ -247,7 +263,9 @@ public class TrainScheduleDetailViewModel implements Parcelable {
         private String destinationStationName;
         private String duration;
         private String trainName;
+        private String trainNumber;
         private String trainClass;
+        private String subclass;
         private String departureDate;
         private String arrivalDate;
         private String departureTime;
@@ -313,8 +331,18 @@ public class TrainScheduleDetailViewModel implements Parcelable {
             return this;
         }
 
+        public Builder trainNumber(String val) {
+            this.trainNumber = val;
+            return this;
+        }
+
         public Builder trainClass(String val) {
             this.trainClass = val;
+            return this;
+        }
+
+        public Builder subclass(String val) {
+            this.subclass = val;
             return this;
         }
 

@@ -20,7 +20,6 @@ public interface IRouterConstant {
             String EXTRA_PRODUCTID = "EXTRA_PRODUCTID";
             String EXTRA_CATEGORYID = "EXTRA_CATEGORYID";
 
-
             String MARKETPLACE_STRING = "marketplace";
             String PLATFORM_PAGE_MARKETPLACE_CART_LIST = "PLATFORM_PAGE_MARKETPLACE_CART_LIST";
             String PLATFORM_PAGE_MARKETPLACE_CART_SHIPMENT = "PLATFORM_PAGE_MARKETPLACE_CART_SHIPMENT";
@@ -41,9 +40,9 @@ public interface IRouterConstant {
             String COUPON_DISCOUNT_AMOUNT = "COUPON_DISCOUNT_AMOUNT";
             String COUPON_CASHBACK_AMOUNT = "COUPON_CASHBACK_AMOUNT";
 
-
             String FLIGHT_STRING = "flight";
             String EVENT_STRING = "events";
+            String TRAIN_STRING = "train";
 
             String COUPON_STATE = "coupon";
             int VOUCHER_TAB = 0;

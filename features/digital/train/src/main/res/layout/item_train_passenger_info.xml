@@ -52,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
                 android:layout_weight="1"
-                android:text="No ID: "/>
+                android:text="@string/train_review_item_label_passengers_no_id"/>
 
             <TextView
                 android:layout_width="0dp"

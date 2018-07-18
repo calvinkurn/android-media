@@ -52,16 +52,18 @@ public class GetScheduleDetailUseCase extends UseCase<TrainScheduleDetailViewMod
                                             .destinationStationName(destination.getStationName())
                                             .destinationStationCode(destination.getStationCode())
                                             .arrivalDate(TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
-                                                    TrainDateUtil.DEFAULT_VIEW_LOCAL_DETAIL, trainScheduleViewModel.getArrivalTimestamp()))
+                                                    TrainDateUtil.FORMAT_DATE_LOCAL_DETAIL, trainScheduleViewModel.getArrivalTimestamp()))
                                             .arrivalTime(TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
                                                     TrainDateUtil.FORMAT_TIME, trainScheduleViewModel.getArrivalTimestamp()))
                                             .departureDate(TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
-                                                    TrainDateUtil.DEFAULT_VIEW_LOCAL_DETAIL, trainScheduleViewModel.getDepartureTimestamp()))
+                                                    TrainDateUtil.FORMAT_DATE_LOCAL_DETAIL, trainScheduleViewModel.getDepartureTimestamp()))
                                             .departureTime(TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
                                                     TrainDateUtil.FORMAT_TIME, trainScheduleViewModel.getDepartureTimestamp()))
                                             .duration(trainScheduleViewModel.getDisplayDuration())
                                             .trainClass(trainScheduleViewModel.getDisplayClass())
+                                            .subclass(trainScheduleViewModel.getSubclass())
                                             .trainName(trainScheduleViewModel.getTrainName())
+                                            .trainNumber(trainScheduleViewModel.getTrainNumber())
                                             .displayAdultFare(trainScheduleViewModel.getDisplayAdultFare())
                                             .adultFare(trainScheduleViewModel.getAdultFare())
                                             .totalAdultFare(totalAdultFare)

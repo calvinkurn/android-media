@@ -16,10 +16,12 @@ public class TrainReviewPassengerInfoViewModel implements Visitable<TrainPasseng
     private String returnTripClass;
     private String departureSeat;
     private String returnSeat;
+    private String passengerType;
 
     public TrainReviewPassengerInfoViewModel(String name, String noID, String departureTripClass,
                                              String originStationCode, String destinationStationCode,
-                                             String returnTripClass, String departureSeat, String returnSeat) {
+                                             String returnTripClass, String departureSeat,
+                                             String returnSeat, String passengerType) {
         this.name = name;
         this.noID = noID;
         this.departureTripClass = departureTripClass;
@@ -28,6 +30,7 @@ public class TrainReviewPassengerInfoViewModel implements Visitable<TrainPasseng
         this.destinationStationCode = destinationStationCode;
         this.departureSeat = departureSeat;
         this.returnSeat = returnSeat;
+        this.passengerType = passengerType;
     }
 
     public String getName() {
@@ -60,6 +63,10 @@ public class TrainReviewPassengerInfoViewModel implements Visitable<TrainPasseng
 
     public String getReturnSeat() {
         return returnSeat;
+    }
+
+    public String getPassengerType() {
+        return passengerType;
     }
 
     @Override

@@ -1,6 +1,9 @@
 package com.tokopedia.train.common;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.support.v4.app.FragmentActivity;
 
 import com.tokopedia.train.passenger.presentation.viewmodel.ProfileBuyerInfo;
 
@@ -17,5 +20,7 @@ public interface TrainRouter {
     Interceptor getChuckInterceptor();
 
     void goToTrainOrderList(Context context);
+
+    Intent getIntentOfLoyaltyActivityWithoutCoupon(Activity activity, String platform);
 
 }
