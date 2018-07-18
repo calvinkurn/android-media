@@ -803,7 +803,8 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     }
 
     private boolean isAllowShowCaseNcf() {
-        return buttonBuyView.containerNewButtonBuy.getVisibility() == View.VISIBLE;
+        return buttonBuyView.getVisibility() == View.VISIBLE
+                && buttonBuyView.containerNewButtonBuy.getVisibility() == View.VISIBLE;
     }
 
     @Override
