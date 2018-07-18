@@ -3,10 +3,15 @@ package com.tokopedia.tkpdpdp.tracking;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.appsflyer.AFInAppEventParameterName;
 import com.google.android.gms.tagmanager.DataLayer;
+import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import com.tokopedia.core.analytics.PaymentTracking;
+import com.tokopedia.core.analytics.appsflyer.Jordan;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -24,6 +29,7 @@ public class ProductPageTracking {
     public static final String POSITION_PDP_WIDGET = "PDP - Widget";
     public static final String CREATIVE_URL_PROMO_WIDGET = "tokopedia.com/creative.png";
     public static final String PDP_PROMO_CLICK_ON_PROMO_SHORT_DESC = "user click on promo short desc";
+    public static final String PDP_PROMO_IMPRESSION_EVENT_ACTION = "user impression on promo";
     public static final String EVENT_CATEGORY_PROMO_PDP = "pdp promo widget - promo";
 
     public static void eventEnhanceProductDetail(Context context, Map<String, Object> maps) {
@@ -123,7 +129,7 @@ public class ProductPageTracking {
         tracker.sendEnhancedEcommerce(
                 DataLayer.mapOf("event", "promoView",
                         "eventCategory", EVENT_CATEGORY_PROMO_PDP,
-                        "eventAction", PDP_PROMO_CLICK_ON_PROMO_SHORT_DESC,
+                        "eventAction", PDP_PROMO_IMPRESSION_EVENT_ACTION,
                         "eventLabel", promoCode,
                         "ecommerce", DataLayer.mapOf("promoView",
                                 DataLayer.mapOf("promotions",
@@ -186,5 +192,18 @@ public class ProductPageTracking {
                 USER_CLICK_ON_COPY_CODE,
                 promoCode
         );
+    }
+
+    public static void eventAppsFlyer(String productId, String priceItem, int quantity) {
+        Map<String, Object> values = new HashMap<>();
+
+        values.put(AFInAppEventParameterName.CONTENT_ID, productId);
+        values.put(AFInAppEventParameterName.CONTENT_TYPE, Jordan.AF_VALUE_PRODUCTTYPE);
+        values.put(AFInAppEventParameterName.CURRENCY, "IDR");
+        values.put(AFInAppEventParameterName.PRICE,
+                CurrencyFormatHelper.convertRupiahToInt(priceItem));
+        values.put(AFInAppEventParameterName.QUANTITY, quantity);
+
+        PaymentTracking.atcAF(values);
     }
 }
