@@ -93,8 +93,6 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
         recyclerview.setAdapter(new DealsBrandAdapter(null, !IS_SHORT_LAYOUT));
         searchInputView.setListener(this);
         KeyboardHandler.DropKeyboard(getContext(), searchInputView);
-//        baseMainContent.requestFocus();
-
     }
 
     @Override
@@ -113,7 +111,6 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
     public void onSearchTextChanged(String text) {
 
         mPresenter.searchTextChanged(text);
-
     }
 
 
@@ -153,7 +150,6 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
             noContent.setVisibility(View.GONE);
             if (isSearchSubmitted) {
                 KeyboardHandler.DropKeyboard(getContext(), searchInputView);
-//                baseMainContent.requestFocus();
             }
         } else {
             recyclerview.setVisibility(View.GONE);

@@ -123,7 +123,6 @@ public class SelectLocationFragment extends BaseDaggerFragment implements
             llTopEvents.setVisibility(View.VISIBLE);
             if (isTopLocations) {
                 KeyboardHandler.DropKeyboard(getContext(), searchInputView);
-//                rvSearchResults.requestFocus();
             }
 
         } else {
