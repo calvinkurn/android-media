@@ -24,17 +24,23 @@ public class TrainScheduleMapper implements Func1<List<TrainScheduleDbTable>, Li
 
     public List<TrainScheduleViewModel> transform(List<TrainScheduleDbTable> trainScheduleDbTables) {
         List<TrainScheduleViewModel> trainScheduleViewModelList = new ArrayList<>();
+        List<TrainScheduleViewModel> trainScheduleNotAvailable = new ArrayList<>();
         TrainScheduleViewModel trainScheduleViewModel = null;
         if (trainScheduleDbTables != null) {
             for (TrainScheduleDbTable trainScheduleDbTable : trainScheduleDbTables) {
                 if (trainScheduleDbTable != null) {
                     trainScheduleViewModel = transform(trainScheduleDbTable);
                     if (trainScheduleViewModel != null) {
-                        trainScheduleViewModelList.add(trainScheduleViewModel);
+                        if (trainScheduleViewModel.getAvailableSeat() > 0) {
+                            trainScheduleViewModelList.add(trainScheduleViewModel);
+                        } else {
+                            trainScheduleNotAvailable.add(trainScheduleViewModel);
+                        }
                     }
                 }
             }
         }
+        trainScheduleViewModelList.addAll(trainScheduleNotAvailable);
         return trainScheduleViewModelList;
     }
 

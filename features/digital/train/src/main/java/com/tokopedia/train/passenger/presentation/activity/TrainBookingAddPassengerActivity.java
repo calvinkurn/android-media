@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.train.common.presentation.TrainBaseActivity;
 import com.tokopedia.train.passenger.presentation.fragment.TrainBookingAddPassengerFragment;
 import com.tokopedia.train.passenger.presentation.viewmodel.TrainPassengerViewModel;
@@ -42,5 +43,11 @@ public class TrainBookingAddPassengerActivity extends TrainBaseActivity implemen
         intent.putExtra(TrainBookingAddPassengerActivity.PASSENGER_DATA, trainPassengerViewModel);
         setResult(Activity.RESULT_OK, intent);
         finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        KeyboardHandler.hideSoftKeyboard(this);
+        super.onBackPressed();
     }
 }
