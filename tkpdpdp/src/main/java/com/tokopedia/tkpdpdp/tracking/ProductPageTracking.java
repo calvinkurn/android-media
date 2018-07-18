@@ -23,6 +23,8 @@ public class ProductPageTracking {
     public static final String NAME_PRODUCT_PROMO_WIDGET = "/product - promo widget";
     public static final String POSITION_PDP_WIDGET = "PDP - Widget";
     public static final String CREATIVE_URL_PROMO_WIDGET = "tokopedia.com/creative.png";
+    public static final String PDP_PROMO_CLICK_ON_PROMO_SHORT_DESC = "user click on promo short desc";
+    public static final String EVENT_CATEGORY_PROMO_PDP = "pdp promo widget - promo";
 
     public static void eventEnhanceProductDetail(Context context, Map<String, Object> maps) {
         if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
@@ -120,9 +122,9 @@ public class ProductPageTracking {
         AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
         tracker.sendEnhancedEcommerce(
                 DataLayer.mapOf("event", "promoView",
-                        "eventCategory", "",
-                        "eventAction", "",
-                        "eventLabel", "",
+                        "eventCategory", EVENT_CATEGORY_PROMO_PDP,
+                        "eventAction", PDP_PROMO_CLICK_ON_PROMO_SHORT_DESC,
+                        "eventLabel", promoCode,
                         "ecommerce", DataLayer.mapOf("promoView",
                                 DataLayer.mapOf("promotions",
                                         DataLayer.listOf(
@@ -151,9 +153,9 @@ public class ProductPageTracking {
         AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
         tracker.sendEnhancedEcommerce(
                 DataLayer.mapOf("event", "promoClick",
-                        "eventCategory", "",
-                        "eventAction", "",
-                        "eventLabel", "",
+                        "eventCategory", EVENT_CATEGORY_PROMO_PDP,
+                        "eventAction", PDP_PROMO_CLICK_ON_PROMO_SHORT_DESC,
+                        "eventLabel", promoCode,
                         "ecommerce", DataLayer.mapOf("promoClick",
                                 DataLayer.mapOf("promotions",
                                         DataLayer.listOf(
