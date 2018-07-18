@@ -17,6 +17,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.Em
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GuidedSearchViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
+import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -102,9 +103,10 @@ public class ProductListAdapter extends SearchSectionGeneralAdapter {
         }
     }
 
-    public void showEmpty(String query) {
+    public void showEmpty(String query, boolean isFilterActive,
+                          FilterFlagSelectedModel filterFlagSelectedModel) {
         clearData();
-        list.add(mappingEmptySearch(query));
+        list.add(mappingEmptySearch(query, isFilterActive, filterFlagSelectedModel));
         notifyDataSetChanged();
     }
 
@@ -124,12 +126,19 @@ public class ProductListAdapter extends SearchSectionGeneralAdapter {
         return emptySearchModel;
     }
 
-    private EmptySearchModel mappingEmptySearch(String query) {
+    private EmptySearchModel mappingEmptySearch(String query, boolean isFilterActive,
+                                                FilterFlagSelectedModel filterFlagSelectedModel) {
         emptySearchModel = new EmptySearchModel();
         emptySearchModel.setImageRes(R.drawable.ic_empty_search);
-        emptySearchModel.setTitle(context.getString(R.string.msg_empty_search_1));
-        emptySearchModel.setContent(String.format(context.getString(R.string.empty_search_content_template), query));
-        emptySearchModel.setButtonText(context.getString(R.string.empty_search_button_text));
+        if (isFilterActive) {
+            emptySearchModel.setTitle(context.getString(R.string.msg_empty_search_with_filter_1));
+            emptySearchModel.setContent(String.format(context.getString(R.string.msg_empty_search_with_filter_2), query));
+            emptySearchModel.setFilterFlagSelectedModel(filterFlagSelectedModel);
+        } else {
+            emptySearchModel.setTitle(context.getString(R.string.msg_empty_search_1));
+            emptySearchModel.setContent(context.getString(R.string.empty_search_content_template));
+            emptySearchModel.setButtonText(context.getString(R.string.empty_search_button_text));
+        }
         return emptySearchModel;
     }
 

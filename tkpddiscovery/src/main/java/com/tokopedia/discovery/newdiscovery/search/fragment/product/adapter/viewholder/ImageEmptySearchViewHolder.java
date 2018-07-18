@@ -4,19 +4,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.util.SessionHandler;
@@ -24,8 +19,6 @@ import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ItemClickListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.EmptySearchModel;
-import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
-import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
@@ -39,17 +32,7 @@ import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.TopAdsBannerView;
 import com.tokopedia.topads.sdk.view.TopAdsView;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-/**
- * Created by henrypriyono on 10/31/17.
- */
-
-public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> implements TopAdsItemClickListener {
-
+public class ImageEmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> implements TopAdsItemClickListener {
     public static final String SEARCH_NF_VALUE = "1";
     private final int MAX_TOPADS = 4;
     private TopAdsView topAdsView;
@@ -61,12 +44,10 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
     private Button emptyButtonItemButton;
     private final ItemClickListener clickListener;
     private TopAdsBannerView topAdsBannerView;
-    private RecyclerView selectedFilterRecyclerView;
-    private SelectedFilterAdapter selectedFilterAdapter;
     @LayoutRes
-    public static final int LAYOUT = R.layout.list_empty_search_product;
+    public static final int LAYOUT = R.layout.list_empty_image_search_product;
 
-    public EmptySearchViewHolder(View view, ItemClickListener clickListener, Config topAdsConfig) {
+    public ImageEmptySearchViewHolder(View view, ItemClickListener clickListener, Config topAdsConfig) {
         super(view);
         noResultImage = (ImageView) view.findViewById(R.id.no_result_image);
         emptyTitleTextView = (TextView) view.findViewById(R.id.text_view_empty_title_text);
@@ -76,17 +57,9 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
         context = itemView.getContext();
         topAdsView = (TopAdsView) itemView.findViewById(R.id.topads);
         topAdsBannerView = (TopAdsBannerView) itemView.findViewById(R.id.banner_ads);
-        selectedFilterRecyclerView = itemView.findViewById(R.id.selectedFilterRecyclerView);
 
         params = topAdsConfig.getTopAdsParams();
         params.getParam().put(TopAdsParams.KEY_SEARCH_NF, SEARCH_NF_VALUE);
-        initSelectedFilterRecyclerView();
-    }
-
-    private void initSelectedFilterRecyclerView() {
-        selectedFilterAdapter = new SelectedFilterAdapter(clickListener);
-        selectedFilterRecyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
-        selectedFilterRecyclerView.setAdapter(selectedFilterAdapter);
     }
 
     private void loadProductAds() {
@@ -189,119 +162,6 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
             });
             emptyButtonItemButton.setVisibility(View.VISIBLE);
         }
-        if (model.getFilterFlagSelectedModel() != null) {
-            selectedFilterRecyclerView.setVisibility(View.VISIBLE);
-            selectedFilterAdapter.setOptionList(convertToOptionList(model.getFilterFlagSelectedModel()));
-        } else {
-            selectedFilterRecyclerView.setVisibility(View.GONE);
-        }
         loadBannerAds();
-    }
-
-    private List<Option> convertToOptionList(FilterFlagSelectedModel filterFlagSelectedModel) {
-        List<Option> optionList = new ArrayList<>();
-        if (filterFlagSelectedModel.getSavedTextInput() != null) {
-            if (!TextUtils.isEmpty(filterFlagSelectedModel.getSavedTextInput().get(Option.KEY_PRICE_MIN))
-                || !TextUtils.isEmpty(filterFlagSelectedModel.getSavedTextInput().get(Option.KEY_PRICE_MAX))) {
-                optionList.add(generatePriceOption());
-            }
-        }
-
-        if (!TextUtils.isEmpty(filterFlagSelectedModel.getCategoryId())) {
-            optionList.add(generateCategoryOption(filterFlagSelectedModel));
-        }
-
-        if (filterFlagSelectedModel.getSavedCheckedState() != null) {
-            optionList.addAll(generateCheckedOptionList(filterFlagSelectedModel.getSavedCheckedState()));
-        }
-
-        return optionList;
-    }
-
-    private List<Option> generateCheckedOptionList(HashMap<String, Boolean> savedCheckedState) {
-        List<Option> optionList = new ArrayList<>();
-        for (HashMap.Entry<String, Boolean> entry : savedCheckedState.entrySet()) {
-            optionList.add(generateOptionFromUniqueId(entry.getKey()));
-        }
-        return optionList;
-    }
-
-    private Option generateOptionFromUniqueId(String uniqueId) {
-        Option option = new Option();
-        option.setName(OptionHelper.parseNameFromUniqueId(uniqueId));
-        option.setKey(OptionHelper.parseKeyFromUniqueId(uniqueId));
-        option.setValue(OptionHelper.parseValueFromUniqueId(uniqueId));
-        return option;
-    }
-
-    private Option generateCategoryOption(FilterFlagSelectedModel filterFlagSelectedModel) {
-        Option option = new Option();
-        option.setName(filterFlagSelectedModel.getSelectedCategoryName());
-        option.setKey(Option.KEY_CATEGORY);
-        option.setValue(filterFlagSelectedModel.getCategoryId());
-        return option;
-    }
-
-    private Option generatePriceOption() {
-        Option option = new Option();
-        option.setName(context.getResources().getString(R.string.empty_state_selected_filter_price_name));
-        option.setKey(Option.KEY_PRICE_MIN);
-        option.setValue("0");
-        return option;
-    }
-
-    private static class SelectedFilterAdapter extends RecyclerView.Adapter<SelectedFilterItemViewHolder> {
-
-        private List<Option> optionList = new ArrayList<>();
-        private ItemClickListener clickListener;
-
-        public SelectedFilterAdapter(ItemClickListener clickListener) {
-            this.clickListener = clickListener;
-        }
-
-        public void setOptionList(List<Option> optionList) {
-            this.optionList.clear();
-            this.optionList.addAll(optionList);
-            notifyDataSetChanged();
-        }
-
-        @Override
-        public SelectedFilterItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.empty_state_selected_filter_item, parent, false);
-            return new SelectedFilterItemViewHolder(view, clickListener);
-        }
-
-        @Override
-        public void onBindViewHolder(SelectedFilterItemViewHolder holder, int position) {
-            holder.bind(optionList.get(position));
-        }
-
-        @Override
-        public int getItemCount() {
-            return optionList.size();
-        }
-    }
-
-    private static class SelectedFilterItemViewHolder extends RecyclerView.ViewHolder {
-        private TextView filterText;
-        private final ItemClickListener clickListener;
-        private View container;
-
-        public SelectedFilterItemViewHolder(View itemView, ItemClickListener clickListener) {
-            super(itemView);
-            container = itemView;
-            filterText = itemView.findViewById(R.id.filter_text);
-            this.clickListener = clickListener;
-        }
-
-        public void bind(final Option option) {
-            filterText.setText(option.getName());
-            container.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    clickListener.onSelectedFilterRemoved(option.getUniqueId());
-                }
-            });
-        }
     }
 }
