@@ -132,7 +132,7 @@ public class ProductPageTracking {
                                                         "creative_url", CREATIVE_URL_PROMO_WIDGET,
                                                         "position", POSITION_PDP_WIDGET,
                                                         "promo_id", promoId,
-                                                        "promo_code", TextUtils.isEmpty(promoCode) ? promoCode : "NoPromoCode"
+                                                        "promo_code", !TextUtils.isEmpty(promoCode) ? promoCode : "NoPromoCode"
                                                 )
                                         )
                                 )
@@ -163,7 +163,7 @@ public class ProductPageTracking {
                                                         "creative_url", CREATIVE_URL_PROMO_WIDGET,
                                                         "position", POSITION_PDP_WIDGET,
                                                         "promo_id", promoId,
-                                                        "promo_code", TextUtils.isEmpty(promoCode) ? promoCode : "NoPromoCode"
+                                                        "promo_code", !TextUtils.isEmpty(promoCode) ? promoCode : "NoPromoCode"
                                                 )
                                         )
                                 )
