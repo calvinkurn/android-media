@@ -123,6 +123,7 @@
     <string name="read">Baca</string>
     <string name="shop_page_label_follow">Follow</string>
     <string name="shop_etalase">Etalase</string>
+    <string name="max_rating_value">/ 5</string>
 
 
 </resources>

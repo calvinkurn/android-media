@@ -29,6 +29,9 @@ import kotlinx.android.synthetic.main.partial_shop_page_searchview.*
 import javax.inject.Inject
 import android.support.design.widget.AppBarLayout
 import android.view.MenuItem
+import android.view.View
+import android.widget.Button
+import android.widget.TextView
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.common.network.exception.UserNotLoginException
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
@@ -58,6 +61,14 @@ class ShopPageActivity: BaseSimpleActivity(), HasComponent<ShopComponent>,
 
     private var tabPosition = 0
 
+    private val errorTextView by lazy {
+        findViewById<TextView>(R.id.message_retry)
+    }
+
+    private val errorButton by lazy {
+        findViewById<Button>(R.id.button_retry)
+    }
+
     companion object {
         const val SHOP_ID = "EXTRA_SHOP_ID"
         const val SHOP_DOMAIN = "EXTRA_SHOP_DOMAIN"
@@ -69,6 +80,9 @@ class ShopPageActivity: BaseSimpleActivity(), HasComponent<ShopComponent>,
         const val TAB_POSITION_INFO = 1
         const val SHOP_STATUS_FAVOURITE = "SHOP_STATUS_FAVOURITE"
         private const val REQUEST_CODER_USER_LOGIN = 100
+        private const val VIEW_CONTENT = 1
+        private const val VIEW_LOADING = 2
+        private const val VIEW_ERROR = 3
 
         @JvmStatic
         fun createIntent(context: Context, shopId: String) = Intent(context, ShopPageActivity::class.java)
@@ -115,14 +129,17 @@ class ShopPageActivity: BaseSimpleActivity(), HasComponent<ShopComponent>,
         shopPageViewHolder = ShopPageHeaderViewHolder(shopPageHeader, this)
         initAdapter()
         supportActionBar?.setDisplayShowTitleEnabled(false)
+
+        appBarLayout.addOnOffsetChangedListener { _, verticalOffset -> swipeToRefresh.isEnabled = (verticalOffset == 0) }
+
         viewPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
         viewPager.adapter = shopPageViewPagerAdapter
 
         tabLayout.setupWithViewPager(viewPager)
-        onProductListDetailFullyHide();
-        viewPager.setCurrentItem(tabPosition)
+        onProductListDetailFullyHide()
+        viewPager.currentItem = tabPosition
+        swipeToRefresh.setOnRefreshListener { refreshData() }
         getShopInfo()
-
     }
 
     private fun onProductListDetailStartShow() {
@@ -139,10 +156,31 @@ class ShopPageActivity: BaseSimpleActivity(), HasComponent<ShopComponent>,
     }
 
     private fun getShopInfo() {
+        setViewState(VIEW_LOADING)
         if (!TextUtils.isEmpty(shopId)) {
             presenter.getShopInfo(shopId!!)
         } else {
             presenter.getShopInfoByDomain(shopDomain!!)
+        }
+    }
+
+    private fun setViewState(viewState: Int) {
+        when(viewState){
+            VIEW_LOADING -> {   shopPageLoadingState.visibility = View.VISIBLE
+                                shopPageErrorState.visibility = View.GONE
+                                appBarLayout.visibility = View.INVISIBLE
+                                container.visibility = View.INVISIBLE
+            }
+            VIEW_ERROR -> { shopPageLoadingState.visibility = View.GONE
+                            shopPageErrorState.visibility = View.VISIBLE
+                            appBarLayout.visibility = View.INVISIBLE
+                            container.visibility = View.INVISIBLE
+            }
+            else -> {   shopPageLoadingState.visibility = View.GONE
+                        shopPageErrorState.visibility = View.GONE
+                        appBarLayout.visibility = View.VISIBLE
+                        container.visibility = View.VISIBLE
+            }
         }
     }
 
@@ -156,9 +194,7 @@ class ShopPageActivity: BaseSimpleActivity(), HasComponent<ShopComponent>,
         presenter.attachView(this)
     }
 
-    override fun getNewFragment(): Fragment? {
-        return null
-    }
+    override fun getNewFragment(): Fragment? = null
 
     fun initAdapter() {
         shopPageViewPagerAdapter = ShopPageViewPagerAdapter(supportFragmentManager, titles,
@@ -198,6 +234,7 @@ class ShopPageActivity: BaseSimpleActivity(), HasComponent<ShopComponent>,
     }
 
     override fun onSuccessGetShopInfo(shopInfo: ShopInfo?) {
+        setViewState(VIEW_CONTENT)
         shopInfo?.run {
             this@ShopPageActivity.shopInfo = this
             shopId = info.shopId
@@ -212,10 +249,14 @@ class ShopPageActivity: BaseSimpleActivity(), HasComponent<ShopComponent>,
             (shopPageViewPagerAdapter.getRegisteredFragment(1) as ShopInfoFragmentNew)
                     .updateShopInfo(this)
         }
+        swipeToRefresh.isRefreshing = false
     }
 
     override fun onErrorGetShopInfo(e: Throwable?) {
-
+        setViewState(VIEW_ERROR)
+        errorTextView.text = ErrorHandler.getErrorMessage(this, e)
+        errorButton.setOnClickListener{ getShopInfo() }
+        swipeToRefresh.isRefreshing = false
     }
 
     override fun onSuccessGetReputation(reputationSpeed: ReputationSpeed?) {
@@ -248,6 +289,19 @@ class ShopPageActivity: BaseSimpleActivity(), HasComponent<ShopComponent>,
             return
         }
         NetworkErrorHelper.showCloseSnackbar(this, ErrorHandler.getErrorMessage(this, e))
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CODER_USER_LOGIN){
+            refreshData()
+        }
+    }
+
+    private fun refreshData() {
+        presenter.clearCache()
+        getShopInfo()
+        swipeToRefresh.isRefreshing = true
     }
 
     override fun getComponent() = ShopComponentInstance.getComponent(application)

@@ -44,6 +44,7 @@ import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.share.DefaultShare;
+import com.tokopedia.core.shopinfo.activity.ShopDiscussionActivity;
 import com.tokopedia.district_recommendation.domain.model.Token;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
@@ -152,7 +153,9 @@ import com.tokopedia.session.register.view.activity.RegisterInitialActivity;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
 import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
+import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
+import com.tokopedia.tkpd.tkpdreputation.review.shop.view.ReviewShopInfoActivity;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.topads.TopAdsComponentInstance;
@@ -1371,5 +1374,18 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getOrderListIntent(Context context) {
         return OrderListActivity.getInstance(context);
+    }
+
+    @Override
+    public void goToShopReview(Context context, String shopId, String shopDomain) {
+        SessionHandler sessionHandler = new SessionHandler(this);
+        ReputationTracking tracking = new ReputationTracking(this);
+        tracking.eventClickSeeMoreReview(getString(R.string.review), shopId, sessionHandler.getShopID().equals(shopId));
+        startActivity(ReviewShopInfoActivity.createIntent(context, shopId, shopDomain));
+    }
+
+    @Override
+    public void goToShopDiscussion(Context context, String shopId) {
+        startActivity(ShopDiscussionActivity.createIntent(context, shopId));
     }
 }

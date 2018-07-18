@@ -100,6 +100,7 @@ import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartS
 import com.tokopedia.core.router.transactionmodule.sharedata.CouponListResult;
 import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.share.DefaultShare;
+import com.tokopedia.core.shopinfo.activity.ShopDiscussionActivity;
 import com.tokopedia.core.shopinfo.limited.fragment.ShopTalkLimitedFragment;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.BranchSdkUtils;
@@ -256,7 +257,9 @@ import com.tokopedia.tkpd.react.ReactNativeComponent;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
+import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
+import com.tokopedia.tkpd.tkpdreputation.review.shop.view.ReviewShopInfoActivity;
 import com.tokopedia.tkpd.tokocash.GetBalanceTokoCashWrapper;
 import com.tokopedia.tkpd.tokocash.datepicker.DatePickerUtil;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
@@ -2279,5 +2282,17 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getDistrictRecommendationIntent(Activity activity, com.tokopedia.core.manage.people.address.model.Token token) {
         return DistrictRecommendationActivity.createInstance(activity, new TokenMapper().convertTokenModel(token));
+    }
+
+    @Override
+    public void goToShopReview(Context context, String shopId, String shopDomain) {
+        ReputationTracking tracking = new ReputationTracking(this);
+        tracking.eventClickSeeMoreReview(getString(R.string.review), shopId, userSession.getShopId().equals(shopId));
+        startActivity(ReviewShopInfoActivity.createIntent(context, shopId, shopDomain));
+    }
+
+    @Override
+    public void goToShopDiscussion(Context context, String shopId) {
+        startActivity(ShopDiscussionActivity.createIntent(context, shopId));
     }
 }

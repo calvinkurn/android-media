@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.shop.R
+import com.tokopedia.shop.ShopModuleRouter
 import com.tokopedia.shop.analytic.ShopPageTracking
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
 import com.tokopedia.shop.common.di.component.ShopComponent
@@ -49,6 +50,7 @@ class ShopInfoFragmentNew: BaseDaggerFragment(), ShopInfoView, BaseEmptyViewHold
         BaseListAdapter<ShopNoteViewModel, ShopNoteAdapterTypeFactory>(ShopNoteAdapterTypeFactory(this))
     }
     private var shopId: String = "0"
+    private var shopDomain: String? = null
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater?.inflate(R.layout.fragment_shop_info_v3, container, false)
@@ -76,6 +78,7 @@ class ShopInfoFragmentNew: BaseDaggerFragment(), ShopInfoView, BaseEmptyViewHold
 
     fun updateShopInfo(shopInfo: ShopInfo){
         shopId = shopInfo.info.shopId
+        shopDomain = shopInfo.info.shopDomain
         this.shopInfo = shopInfo
         displayImageBackground(shopInfo)
         displayShopDescription(shopInfo)
@@ -120,7 +123,9 @@ class ShopInfoFragmentNew: BaseDaggerFragment(), ShopInfoView, BaseEmptyViewHold
     }
 
     private fun gotoShopDiscussion() {
-
+        if (activity.application is ShopModuleRouter){
+            (activity.application as ShopModuleRouter).goToShopDiscussion(activity, shopId)
+        }
     }
 
     private fun displayShopDescription(shopInfo: ShopInfo) {
@@ -147,7 +152,9 @@ class ShopInfoFragmentNew: BaseDaggerFragment(), ShopInfoView, BaseEmptyViewHold
     }
 
     private fun goToReviewQualityDetail() {
-
+        if (activity.application is ShopModuleRouter){
+            (activity.application as ShopModuleRouter).goToShopReview(activity, shopId, shopDomain)
+        }
     }
 
     override fun getScreenName(): String? = null
@@ -173,17 +180,22 @@ class ShopInfoFragmentNew: BaseDaggerFragment(), ShopInfoView, BaseEmptyViewHold
                 }
             })
             noteLabelView.setContent("")
+        } else {
+            noteLabelView.setOnClickListener { onEmptyButtonClicked() }
         }
     }
 
     override fun showListNoteError(throwable: Throwable?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
     override fun onEmptyContentItemTextClicked() {}
 
     override fun onEmptyButtonClicked() {
-
+        val app = activity.application
+        if (app is ShopModuleRouter){
+            app.goToEditShopNote(activity)
+        }
     }
 
     override fun onNoteClicked(position: Long, shopNoteViewModel: ShopNoteViewModel) {
