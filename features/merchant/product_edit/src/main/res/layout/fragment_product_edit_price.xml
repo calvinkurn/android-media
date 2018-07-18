@@ -45,7 +45,7 @@
     <com.tokopedia.design.label.LabelView
         android:id="@+id/label_view_wholesale"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="@dimen/dp_60"
         android:layout_marginTop="@dimen/dp_8"
         android:clickable="true"
         android:foreground="?android:attr/selectableItemBackground"

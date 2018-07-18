@@ -18,10 +18,6 @@ class ProductEditNameFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_product_edit_name, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-    }
-
     companion object {
 
         fun createInstance(): Fragment {

@@ -8,6 +8,7 @@
     <string name="label_add">Tambah</string>
     <string name="label_delete">Delete</string>
     <string name="label_cancel">Batal</string>
+    <string name="label_always_available">Selalu Tersedia</string>
 
     <string name="product_add_tag_video_recommendation">rekomendasi</string>
     <string name="product_add_information_video_recommendation">Pilih rekomendasi video untuk menjelaskan dan mendemokan produk Anda.</string>
@@ -62,9 +63,21 @@
     <string name="product_label_maksimum_buy">Pemesanan Maksimum</string>
     <string name="product_label_add_maksimum_buy">+Tambah Pemesanan Maksimum</string>
 
-    <string name="product_label_description_product">Keterangan Produk</string>
+    <string name="product_label_description_product">Deskripsi Produk</string>
+    <string name="product_label_information_product">Keterangan Produk</string>
     <string name="product_label_feature_product">Fitur Produk</string>
     <string name="product_label_condition_product">Kondisi Baru</string>
     <string name="product_hint_feature_product">Contoh: Tahan air, berbahan alami</string>
+
+    <string name="product_label_product_stock">Status Stock</string>
+    <string name="product_label_shipping_product">Berat &amp; Pengiriman</string>
+    <string name="product_label_product_etalase">Etalase</string>
+    <string name="product_label_product_variant">Varian</string>
+
+    <string name="product_subtitle_product_price">Isi harga satuan, grosir, dan min. pesanan</string>
+    <string name="product_subtitle_product_description">Tambah keterangan produk dan pengaturan pengiriman</string>
+    <string name="product_subtitle_product_shipping">Tulis berat produk dan pengaturan pengiriman</string>
+    <string name="product_subtitle_product_etalase">Atur produk di etalase yang sesuai</string>
+    <string name="product_subtitle_product_variant">Tambah jika produk memiliki berbagai variasi</string>
 
 </resources>

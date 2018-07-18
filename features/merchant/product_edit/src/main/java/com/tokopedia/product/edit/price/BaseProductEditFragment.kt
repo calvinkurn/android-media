@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.product.edit.R
 
-class ProductEditDescriptionFragment : Fragment() {
+class BaseProductEditFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -15,13 +15,13 @@ class ProductEditDescriptionFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        return inflater.inflate(R.layout.fragment_product_edit_description, container, false)
+        return inflater.inflate(R.layout.fragment_base_product_edit, container, false)
     }
 
     companion object {
 
         fun createInstance(): Fragment {
-            return ProductEditDescriptionFragment()
+            return BaseProductEditFragment()
         }
     }
 }

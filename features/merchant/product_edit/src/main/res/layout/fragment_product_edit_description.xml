@@ -9,7 +9,7 @@
     <com.tokopedia.design.text.TkpdHintTextInputLayout
         style="@style/HintTextInputLayout"
         android:layout_marginTop="@dimen/dp_16"
-        android:hint="@string/product_label_description_product"
+        android:hint="@string/product_label_information_product"
         android:layout_marginRight="@dimen/dp_12"
         android:layout_marginLeft="@dimen/dp_12">
 
@@ -70,7 +70,7 @@
     <com.tokopedia.design.label.LabelView
         android:id="@+id/label_view_video_product"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="@dimen/dp_60"
         android:clickable="true"
         android:foreground="?android:attr/selectableItemBackground"
         app:lv_content="@string/label_add"
