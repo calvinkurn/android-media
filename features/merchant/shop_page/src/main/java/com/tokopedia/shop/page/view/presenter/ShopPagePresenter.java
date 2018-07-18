@@ -24,6 +24,7 @@ import rx.Subscriber;
  * Created by normansyahputa on 2/13/18.
  */
 
+@Deprecated
 public class ShopPagePresenter extends BaseDaggerPresenter<ShopPageView> {
 
     private final GetShopInfoUseCase getShopInfoUseCase;

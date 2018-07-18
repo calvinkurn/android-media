@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.listener.BaseListViewListener;
 import com.tokopedia.shop.product.view.model.ShopProductBaseViewModel;
 
 import java.util.List;
-
+@Deprecated
 public interface ShopProductListLimitedView extends BaseListViewListener<ShopProductBaseViewModel> {
 
     void onErrorRemoveFromWishList(Throwable e);

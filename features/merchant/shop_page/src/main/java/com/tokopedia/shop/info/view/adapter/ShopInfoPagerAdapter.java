@@ -5,15 +5,9 @@ import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.util.SparseArrayCompat;
-import android.view.ViewGroup;
 
-import com.tokopedia.shop.R;
-import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.info.view.fragment.ShopInfoFragment;
 import com.tokopedia.shop.note.view.fragment.ShopNoteListFragment;
-import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedFragment;
-import com.tokopedia.shop.product.view.widget.ShopPagePromoWebView;
 
 import java.util.Arrays;
 

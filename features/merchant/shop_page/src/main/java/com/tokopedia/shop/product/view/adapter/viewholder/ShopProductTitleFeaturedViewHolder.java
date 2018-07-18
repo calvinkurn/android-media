@@ -10,7 +10,7 @@ import com.tokopedia.shop.product.view.model.ShopProductTitleFeaturedViewModel;
 /**
  * Created by zulfikarrahman on 3/30/18.
  */
-
+@Deprecated
 public class ShopProductTitleFeaturedViewHolder extends AbstractViewHolder<ShopProductTitleFeaturedViewModel> {
 
     @LayoutRes

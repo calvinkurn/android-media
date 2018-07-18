@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 
@@ -54,7 +53,6 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.data.viewmodel.PopUpNotif;
-import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gallery.GalleryActivity;
@@ -102,6 +100,7 @@ import com.tokopedia.core.router.transactionmodule.sharedata.CheckPromoCodeCartS
 import com.tokopedia.core.router.transactionmodule.sharedata.CouponListResult;
 import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.share.DefaultShare;
+import com.tokopedia.core.shopinfo.activity.ShopDiscussionActivity;
 import com.tokopedia.core.shopinfo.limited.fragment.ShopTalkLimitedFragment;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.BranchSdkUtils;
@@ -258,7 +257,9 @@ import com.tokopedia.tkpd.react.ReactNativeComponent;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
+import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
+import com.tokopedia.tkpd.tkpdreputation.review.shop.view.ReviewShopInfoActivity;
 import com.tokopedia.tkpd.tokocash.GetBalanceTokoCashWrapper;
 import com.tokopedia.tkpd.tokocash.datepicker.DatePickerUtil;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
@@ -1768,7 +1769,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent checkoutModuleRouterGetShopInfoIntent(Context context, String shopId) {
-        return ShopPageActivity.createIntent(context, shopId);
+        return ShopPageActivity.Companion.createIntent(context, shopId);
     }
 
     @Override
@@ -2019,12 +2020,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getShopPageIntent(Context context, String shopId) {
-        return ShopPageActivity.createIntent(context, shopId);
+        return ShopPageActivity.Companion.createIntent(context, shopId);
     }
 
     @Override
     public Intent getShopPageIntentByDomain(Context context, String domain) {
-        return ShopPageActivity.createIntentWithDomain(context, domain);
+        return ShopPageActivity.Companion.createIntentWithDomain(context, domain);
     }
 
     @Override
@@ -2281,5 +2282,17 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getDistrictRecommendationIntent(Activity activity, com.tokopedia.core.manage.people.address.model.Token token) {
         return DistrictRecommendationActivity.createInstance(activity, new TokenMapper().convertTokenModel(token));
+    }
+
+    @Override
+    public void goToShopReview(Context context, String shopId, String shopDomain) {
+        ReputationTracking tracking = new ReputationTracking(this);
+        tracking.eventClickSeeMoreReview(getString(R.string.review), shopId, userSession.getShopId().equals(shopId));
+        startActivity(ReviewShopInfoActivity.createIntent(context, shopId, shopDomain));
+    }
+
+    @Override
+    public void goToShopDiscussion(Context context, String shopId) {
+        startActivity(ShopDiscussionActivity.createIntent(context, shopId));
     }
 }

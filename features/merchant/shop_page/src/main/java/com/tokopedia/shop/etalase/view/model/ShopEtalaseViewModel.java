@@ -1,13 +1,17 @@
 package com.tokopedia.shop.etalase.view.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.shop.etalase.data.source.cloud.model.EtalaseModel;
 import com.tokopedia.shop.etalase.view.adapter.ShopEtalaseAdapterTypeFactory;
 
 /**
  * Created by normansyahputa on 2/28/18.
  */
 
-public class ShopEtalaseViewModel implements Visitable<ShopEtalaseAdapterTypeFactory>{
+public class ShopEtalaseViewModel implements Visitable<ShopEtalaseAdapterTypeFactory>,Parcelable{
 
     private long useAce;
     private String etalaseId;
@@ -17,6 +21,15 @@ public class ShopEtalaseViewModel implements Visitable<ShopEtalaseAdapterTypeFac
     private String etalaseBadge;
 
     private boolean isSelected;
+
+    public ShopEtalaseViewModel(EtalaseModel etalaseModel) {
+        setEtalaseBadge(etalaseModel.getEtalaseBadge());
+        setEtalaseId(etalaseModel.getEtalaseId());
+        setEtalaseName(etalaseModel.getEtalaseName());
+        setEtalaseNumProduct(etalaseModel.getEtalaseNumProduct());
+        setEtalaseTotalProduct(etalaseModel.getEtalaseTotalProduct());
+        setUseAce(etalaseModel.getUseAce());
+    }
 
 
     public boolean isSelected() {
@@ -79,4 +92,42 @@ public class ShopEtalaseViewModel implements Visitable<ShopEtalaseAdapterTypeFac
     public int type(ShopEtalaseAdapterTypeFactory shopEtalaseAdapterTypeFactory) {
         return shopEtalaseAdapterTypeFactory.type(this);
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.useAce);
+        dest.writeString(this.etalaseId);
+        dest.writeString(this.etalaseName);
+        dest.writeLong(this.etalaseNumProduct);
+        dest.writeLong(this.etalaseTotalProduct);
+        dest.writeString(this.etalaseBadge);
+        dest.writeByte(this.isSelected ? (byte) 1 : (byte) 0);
+    }
+
+    protected ShopEtalaseViewModel(Parcel in) {
+        this.useAce = in.readLong();
+        this.etalaseId = in.readString();
+        this.etalaseName = in.readString();
+        this.etalaseNumProduct = in.readLong();
+        this.etalaseTotalProduct = in.readLong();
+        this.etalaseBadge = in.readString();
+        this.isSelected = in.readByte() != 0;
+    }
+
+    public static final Creator<ShopEtalaseViewModel> CREATOR = new Creator<ShopEtalaseViewModel>() {
+        @Override
+        public ShopEtalaseViewModel createFromParcel(Parcel source) {
+            return new ShopEtalaseViewModel(source);
+        }
+
+        @Override
+        public ShopEtalaseViewModel[] newArray(int size) {
+            return new ShopEtalaseViewModel[size];
+        }
+    };
 }

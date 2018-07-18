@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 
@@ -20,7 +19,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
-import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.contact_us.createticket.activity.ContactUsActivity;
@@ -46,6 +44,7 @@ import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.share.DefaultShare;
+import com.tokopedia.core.shopinfo.activity.ShopDiscussionActivity;
 import com.tokopedia.district_recommendation.domain.model.Token;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
@@ -71,6 +70,7 @@ import com.tokopedia.seller.common.imageeditor.GalleryCropActivity;
 import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.sellerapp.onboarding.activity.OnboardingSellerActivity;
 import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
+import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.shopinfo.limited.fragment.ShopTalkLimitedFragment;
@@ -86,8 +86,6 @@ import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
 import com.tokopedia.district_recommendation.domain.mapper.TokenMapper;
-import com.tokopedia.district_recommendation.domain.model.Token;
-import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity;
 import com.tokopedia.fingerprint.util.FingerprintConstant;
 import com.tokopedia.gm.GMModuleRouter;
 import com.tokopedia.gm.cashback.domain.GetCashbackUseCase;
@@ -153,10 +151,11 @@ import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.session.register.view.activity.RegisterInitialActivity;
 import com.tokopedia.shop.ShopModuleRouter;
-import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
 import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
+import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
+import com.tokopedia.tkpd.tkpdreputation.review.shop.view.ReviewShopInfoActivity;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.topads.TopAdsComponentInstance;
@@ -1202,12 +1201,12 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getShopPageIntent(Context context, String shopId) {
-        return ShopPageActivity.createIntent(context, shopId);
+        return ShopPageActivity.Companion.createIntent(context, shopId);
     }
 
     @Override
     public Intent getShopPageIntentByDomain(Context context, String domain) {
-        return ShopPageActivity.createIntentWithDomain(context, domain);
+        return ShopPageActivity.Companion.createIntentWithDomain(context, domain);
     }
 
     @Override
@@ -1375,5 +1374,18 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getOrderListIntent(Context context) {
         return OrderListActivity.getInstance(context);
+    }
+
+    @Override
+    public void goToShopReview(Context context, String shopId, String shopDomain) {
+        SessionHandler sessionHandler = new SessionHandler(this);
+        ReputationTracking tracking = new ReputationTracking(this);
+        tracking.eventClickSeeMoreReview(getString(R.string.review), shopId, sessionHandler.getShopID().equals(shopId));
+        startActivity(ReviewShopInfoActivity.createIntent(context, shopId, shopDomain));
+    }
+
+    @Override
+    public void goToShopDiscussion(Context context, String shopId) {
+        startActivity(ShopDiscussionActivity.createIntent(context, shopId));
     }
 }

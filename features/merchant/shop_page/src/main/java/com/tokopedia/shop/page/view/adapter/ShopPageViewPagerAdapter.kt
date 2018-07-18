@@ -1,0 +1,44 @@
+package com.tokopedia.shop.page.view.adapter
+
+import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentManager
+import android.support.v4.app.FragmentStatePagerAdapter
+import android.support.v4.util.SparseArrayCompat
+import android.view.ViewGroup
+import com.tokopedia.shop.info.view.fragment.ShopInfoFragmentNew
+import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedNewFragment
+
+class ShopPageViewPagerAdapter(val fragmentManager: FragmentManager,
+                               val titles: Array<String>,
+                               val shopId: String?,
+                               val shopAttribution: String?) : FragmentStatePagerAdapter(fragmentManager) {
+
+    private val registeredFragments = SparseArrayCompat<Fragment>()
+
+    override fun getItem(position: Int): Fragment {
+        return when (position) {
+            0 -> ShopProductListLimitedNewFragment.createInstance(shopAttribution)
+            1 -> ShopInfoFragmentNew.createInstance()
+            else -> Fragment()
+        }
+    }
+
+    override fun getPageTitle(position: Int) = titles[position]
+
+    override fun getCount() = titles.size
+
+    override fun instantiateItem(container: ViewGroup, position: Int): Any {
+        val o = super.instantiateItem(container, position)
+        registeredFragments.put(position, o as Fragment)
+        return o
+    }
+
+    override fun destroyItem(container: ViewGroup?, position: Int, `object`: Any) {
+        registeredFragments.remove(position)
+        super.destroyItem(container, position, `object`)
+    }
+
+    fun getRegisteredFragment(position: Int): Fragment? {
+        return registeredFragments.get(position)
+    }
+}

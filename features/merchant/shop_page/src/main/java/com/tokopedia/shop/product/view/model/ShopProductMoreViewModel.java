@@ -5,7 +5,7 @@ import com.tokopedia.shop.product.view.adapter.ShopProductLimitedAdapterTypeFact
 /**
  * Created by zulfikarrahman on 6/4/18.
  */
-
+@Deprecated
 public class ShopProductMoreViewModel implements ShopProductBaseViewModel {
     @Override
     public int type(ShopProductLimitedAdapterTypeFactory typeFactory) {

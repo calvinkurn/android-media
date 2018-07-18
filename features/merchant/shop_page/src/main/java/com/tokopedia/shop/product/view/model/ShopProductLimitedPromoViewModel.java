@@ -6,7 +6,7 @@ import com.tokopedia.shop.product.view.listener.ShopProductUserVisibleHintListen
 /**
  * Created by zulfikarrahman on 1/16/18.
  */
-
+@Deprecated
 public class ShopProductLimitedPromoViewModel implements ShopProductBaseViewModel {
 
     private String url;

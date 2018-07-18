@@ -25,7 +25,7 @@ import com.tokopedia.shop.product.view.widget.ShopPagePromoWebView;
 /**
  * @author by alvarisi on 12/12/17.
  */
-
+@Deprecated
 public class ShopProductLimitedSearchViewHolder extends AbstractViewHolder<ShopProductLimitedSearchViewModel> {
 
     @LayoutRes

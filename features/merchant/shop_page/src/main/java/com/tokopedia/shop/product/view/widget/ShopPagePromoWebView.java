@@ -9,8 +9,9 @@ import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 
 /**
  * Created by nathan on 3/10/18.
+ * TODO to be deleted
  */
-
+@Deprecated
 public class ShopPagePromoWebView extends NestedWebView {
 
     public interface Listener {
