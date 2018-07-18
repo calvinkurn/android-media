@@ -286,7 +286,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 return true;
             } else if (item.getItemId() == R.id.action_order_detail) {
                 if (!orderData.get(1).uri().equals("")) {
-                    menuListener.startUri(orderData.get(1).uri());
+                    RouteManager.route(context, appLink);
                 } else if (appLink != null && !appLink.equals("")) {
                     RouteManager.route(context, appLink);
                 }
