@@ -133,14 +133,14 @@
 
 
         <com.tokopedia.design.label.LabelView
-            android:id="@+id/labelViewShippingProduct"
+            android:id="@+id/labelViewLogisticProduct"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_72"
             android:clickable="true"
             android:foreground="?android:attr/selectableItemBackground"
             app:lv_content_color="@color/tkpd_main_green"
-            app:lv_title="@string/product_label_shipping_product"
-            app:lv_sub_title="@string/product_subtitle_product_shipping"
+            app:lv_title="@string/product_label_logistic_product"
+            app:lv_sub_title="@string/product_subtitle_product_logistic"
             android:paddingLeft="@dimen/dp_16"
             android:paddingRight="@dimen/dp_16"/>
 

@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="GreenCheckbox" parent="Theme.AppCompat.Light">
+    <style name="ProductAddEditSwitchCheckbox" parent="Theme.AppCompat.Light">
         <item name="colorAccent">#42b549</item>
         <item name="android:textColorSecondary">#bfbfbf</item>
     </style>
 
-    <style name="SwitchGreen" >
-        <item name="thumbTint">@drawable/switch_color</item>
-        <item name="trackTint">@drawable/switch_color</item>
+    <style name="ProductAddEditSwitch" >
+        <item name="colorControlActivated">@color/tkpd_main_green</item>
     </style>
 
+    <style name="ProductAddEditRadioButton">
+        <item name="colorControlNormal">#bfbfbf</item>
+        <item name="colorControlActivated">@color/colorPrimary</item>
+        <item name="colorControlHighlight">@color/colorPrimary</item>
+    </style>
 </resources>

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/dp_24"
+        android:gravity="center_vertical"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16" >
+
+        <android.support.v7.widget.AppCompatTextView
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_16"
+            android:layout_weight="1"
+            style="@style/TextView.Title"
+            android:text="@string/product_label_stock_always_available" />
+
+        <android.support.v7.widget.AppCompatRadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/ProductAddEditRadioButton" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/line_divider"
+        android:layout_marginLeft="@dimen/dp_16" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/dp_24"
+        android:gravity="center_vertical"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16" >
+
+        <android.support.v7.widget.AppCompatTextView
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_16"
+            android:layout_weight="1"
+            style="@style/TextView.Title"
+            android:text="@string/product_label_stock_limited" />
+
+        <android.support.v7.widget.AppCompatRadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/ProductAddEditRadioButton" />
+
+    </LinearLayout>
+
+    <com.tokopedia.design.text.TkpdHintTextInputLayout
+        android:id="@+id/textInputLayoutStock"
+        style="@style/HintTextInputLayout"
+        android:layout_marginTop="@dimen/dp_16"
+        android:hint="@string/product_label_stock_count"
+        android:layout_marginRight="@dimen/dp_12"
+        android:layout_marginLeft="@dimen/dp_12"
+        app:helper="@string/product_helper_product_stock"
+        android:visibility="gone">
+
+        <EditText
+            style="@style/EditText"
+            android:layout_width="match_parent"
+            android:imeOptions="actionDone"
+            android:inputType="number" />
+
+    </com.tokopedia.design.text.TkpdHintTextInputLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/line_divider"
+        android:layout_marginLeft="@dimen/dp_16" />
+
+
+    <android.support.v7.widget.AppCompatTextView
+        style="@style/TextView.TitleBig.Bold"
+        android:text="@string/product_label_additional_info"
+        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"/>
+
+
+    <com.tokopedia.design.text.TkpdHintTextInputLayout
+        style="@style/HintTextInputLayout"
+        android:layout_marginTop="@dimen/dp_16"
+        android:hint="@string/product_label_product_sku"
+        android:layout_marginRight="@dimen/dp_12"
+        android:layout_marginLeft="@dimen/dp_12">
+
+        <EditText
+            style="@style/EditText"
+            android:layout_width="match_parent"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            android:hint="@string/product_hint_product_sku"/>
+
+    </com.tokopedia.design.text.TkpdHintTextInputLayout>
+
+</LinearLayout>

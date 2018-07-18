@@ -91,7 +91,7 @@
                 android:id="@+id/checkboxChosen"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:theme="@style/GreenCheckbox"/>
+                android:theme="@style/ProductAddEditSwitchCheckbox"/>
 
         </LinearLayout>
     </LinearLayout>
