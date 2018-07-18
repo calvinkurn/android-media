@@ -1,7 +1,5 @@
 package com.tokopedia.core.base.utils;
 
-import com.tokopedia.graphql.data.model.GraphqlResponse;
-
 import retrofit2.Response;
 import rx.functions.Action1;
 
