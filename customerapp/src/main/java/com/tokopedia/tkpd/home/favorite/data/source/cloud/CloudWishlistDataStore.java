@@ -2,14 +2,10 @@ package com.tokopedia.tkpd.home.favorite.data.source.cloud;
 
 import android.content.Context;
 
-import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
-import com.tokopedia.core.base.common.service.MojitoService;
-import com.tokopedia.core.base.utils.HttpResponseValidator;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.entity.wishlist.GqlWishListDataResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.graphql.data.ObservableFactory;
 import com.tokopedia.graphql.data.model.CacheType;
@@ -25,7 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import retrofit2.Response;
 import rx.Observable;
 
 import static com.tokopedia.tkpd.home.favorite.domain.interactor.GetWishlistUsecase.KEY_COUNT;
@@ -40,22 +35,20 @@ import static com.tokopedia.tkpd.home.presenter.WishListImpl.PARAM_USER_ID;
 public class CloudWishlistDataStore {
 
     private Context context;
-    private MojitoService mojitoService;
-    private Gson gson;
+//    private MojitoService mojitoService;
+//    private Gson gson;
 
-    public CloudWishlistDataStore(Context context, Gson gson, MojitoService mojitoService) {
+    public CloudWishlistDataStore(Context context/*, Gson gson, MojitoService mojitoService*/) {
         this.context = context;
-        this.gson = gson;
-        this.mojitoService = mojitoService;
+        /*this.gson = gson;
+        this.mojitoService = mojitoService;*/
     }
 
     public Observable<DomainWishlist> getWishlist(String userId, TKPDMapParam<String, Object> param) {
 
-        // TODO: 7/17/18 use graphql
-
         Map<String, Object> variables = new HashMap<>();
 
-        variables.put(PARAM_USER_ID, Integer.parseInt(SessionHandler.getLoginID(context)));
+        variables.put(PARAM_USER_ID, Integer.parseInt(userId));
         variables.put(PAGE_NO, param.get(KEY_PAGE));
         variables.put(ITEM_COUNT, param.get(KEY_COUNT));
 
@@ -74,14 +67,14 @@ public class CloudWishlistDataStore {
                 graphqlCacheStrategy);
 
         return observable
-                .doOnNext(HttpResponseValidator
+                /*.doOnNext(HttpResponseValidator
                         .validate(new HttpResponseValidator.HttpValidationListener() {
                             @Override
                             public void OnPassValidation(GraphqlResponse response) {
                                 saveResponseToCache(response);
                             }
-                        }))
-                .map(new WishlistMapper(context, gson));
+                        }))*/
+                .map(new WishlistMapper(context/*, gson*/));
     }
 
     private void saveResponseToCache(GraphqlResponse response) {

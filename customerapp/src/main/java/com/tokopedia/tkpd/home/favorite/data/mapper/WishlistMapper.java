@@ -2,9 +2,8 @@ package com.tokopedia.tkpd.home.favorite.data.mapper;
 
 import android.content.Context;
 
-import com.google.gson.Gson;
+import com.tokopedia.core.network.entity.wishlist.GqlWishListDataResponse;
 import com.tokopedia.core.network.entity.wishlist.Wishlist;
-import com.tokopedia.core.network.entity.wishlist.WishlistData;
 import com.tokopedia.core.var.Badge;
 import com.tokopedia.core.var.Label;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
@@ -17,37 +16,36 @@ import com.tokopedia.tkpd.home.favorite.domain.model.WishListLabel;
 import java.util.ArrayList;
 import java.util.List;
 
-import retrofit2.Response;
-
 /**
  * @author Kulomady on 1/18/17.
  */
 public class WishlistMapper implements rx.functions.Func1<GraphqlResponse, DomainWishlist> {
     private final String defaultErrorMessage;
-    private Gson gson;
+//    private Gson gson;
 
-    public WishlistMapper(Context context, Gson gson) {
-        this.gson = gson;
+    public WishlistMapper(Context context /*Gson gson*/) {
+//        this.gson = gson;
         defaultErrorMessage = context.getString(R.string.msg_network_error);
     }
 
     @Override
     public DomainWishlist call(GraphqlResponse response) {
-        /*if (response != null && response.isSuccessful() && response.body() != null) {
-            return ValidateResponse(response.body());
-        }*/
+
+        GqlWishListDataResponse gqlWishListDataResponse = response.getData(GqlWishListDataResponse.class);
+
+        if (gqlWishListDataResponse != null) {
+            return ValidateResponse(gqlWishListDataResponse);
+        }
         return invalidResponse(defaultErrorMessage);
     }
 
-    private DomainWishlist ValidateResponse(String repsonseBody) {
-        WishlistData wishlistResponse = gson.fromJson(repsonseBody, WishlistData.class);
-        if (wishlistResponse != null) {
-            if (wishlistResponse.getWishlist() != null && wishlistResponse.getWishlist().size() > 0) {
-                return mappingValidResponse(wishlistResponse.getWishlist());
-            } else {
-                return invalidResponse(defaultErrorMessage);
-            }
+    private DomainWishlist ValidateResponse(GqlWishListDataResponse gqlWishListDataResponse) {
 
+        if (gqlWishListDataResponse.getGqlWishList().getWishlistDataList() != null &&
+                gqlWishListDataResponse.getGqlWishList().getWishlistDataList().size() > 0) {
+
+            return mappingValidResponse(
+                    gqlWishListDataResponse.getGqlWishList().getWishlistDataList());
         } else {
             return invalidResponse(defaultErrorMessage);
         }

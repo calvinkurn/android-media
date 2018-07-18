@@ -98,7 +98,7 @@ public class FavoriteFactory {
 
         return cloudWishlistObservable(param)
                 .onExceptionResumeNext(
-                        localWishlistObservable().doOnNext(setWishlistErrorNetwork()));
+                        localWishlistObservable(param).doOnNext(setWishlistErrorNetwork()));
 
     }
 
@@ -106,7 +106,7 @@ public class FavoriteFactory {
     Observable<DomainWishlist> getFreshWishlist(TKPDMapParam<String, Object> param) {
         return cloudWishlistObservable(param)
                 .onExceptionResumeNext(
-                        localWishlistObservable().doOnNext(setWishlistErrorNetwork()));
+                        localWishlistObservable(param).doOnNext(setWishlistErrorNetwork()));
     }
 
     Observable<FavoriteShop> getFavoriteShop(TKPDMapParam<String, String> param) {
@@ -167,12 +167,13 @@ public class FavoriteFactory {
 
     private Observable<DomainWishlist> cloudWishlistObservable(TKPDMapParam<String, Object> param) {
         String userId = SessionHandler.getLoginID(context);
-        return new CloudWishlistDataStore(context, gson, mojitoService)
+        return new CloudWishlistDataStore(context/*, gson, mojitoService*/)
                 .getWishlist(userId, param);
     }
 
-    private Observable<DomainWishlist> localWishlistObservable() {
-        return new LocalWishlistDataSource(context, gson, cacheManager).getWishlist();
+    private Observable<DomainWishlist> localWishlistObservable(TKPDMapParam<String, Object> param) {
+        String userId = SessionHandler.getLoginID(context);
+        return new LocalWishlistDataSource(context/*, gson, cacheManager*/).getWishlist(userId, param);
     }
 
     private Action1<DomainWishlist> setWishlistErrorNetwork() {
