@@ -96,7 +96,7 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
                 MultipleAddressItemData itemData = dataList.get(i).getItemListData().get(j);
                 request.setCartId(Integer.parseInt(itemData.getCartId()));
                 request.setProductId(Integer.parseInt(itemData.getProductId()));
-                request.setAddressId(Integer.parseInt(itemData.getAddressId()));
+                request.setAddressId(Integer.parseInt(itemData.getRecipientAddressModel().getId()));
                 request.setNotes(itemData.getProductNotes());
                 request.setQuantity(Integer.parseInt(itemData.getProductQty()));
                 JsonElement cartData = new JsonParser().parse(new Gson().toJson(request));
@@ -166,6 +166,7 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
 
         List<MultipleAddressItemData> initialItemData = new ArrayList<>();
         MultipleAddressItemData addressData = new MultipleAddressItemData();
+        addressData.setRecipientAddressModel(shipmentRecipientModel);
         addressData.setCartPosition(cartPosition);
         addressData.setAddressPosition(0);
         addressData.setCartId(String.valueOf(originData.getCartId()));
@@ -174,17 +175,6 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
         addressData.setProductQty(String.valueOf(updatedData.getQuantity()));
         addressData.setProductWeightFmt(String.valueOf(originData.getWeightFormatted()));
         addressData.setProductNotes(updatedData.getRemark());
-        addressData.setAddressId(shipmentRecipientModel.getId());
-        addressData.setAddressTitle(shipmentRecipientModel.getAddressName());
-        addressData.setAddressReceiverName(shipmentRecipientModel.getRecipientName());
-        addressData.setAddressProvinceName(shipmentRecipientModel.getAddressProvinceName());
-        addressData.setAddressPostalCode(shipmentRecipientModel.getAddressPostalCode());
-        addressData.setAddressCityName(shipmentRecipientModel.getAddressCityName());
-        addressData.setAddressStreet(shipmentRecipientModel.getAddressStreet());
-        addressData.setAddressCountryName(shipmentRecipientModel.getAddressCountryName());
-        addressData.setRecipientPhoneNumber(shipmentRecipientModel.getRecipientPhoneNumber());
-        addressData.setDestinationDistrictId(shipmentRecipientModel.getDestinationDistrictId());
-        addressData.setDestinationDistrictName(shipmentRecipientModel.getDestinationDistrictName());
         addressData.setMaxQuantity(originData.getInvenageValue() != 0 ? originData.getInvenageValue() : updatedData.getMaxQuantity());
         addressData.setMinQuantity(originData.getMinimalQtyOrder());
         addressData.setErrorCheckoutPriceLimit(messageErrorData.getErrorCheckoutPriceLimit());

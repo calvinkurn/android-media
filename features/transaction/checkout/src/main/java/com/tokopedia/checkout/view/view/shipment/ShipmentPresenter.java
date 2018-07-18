@@ -842,8 +842,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         if (recipientAddressModel == null && shipmentCartItemModel != null) {
             addressId = shipmentCartItemModel.getRecipientAddressModel().getId();
             addressName = shipmentCartItemModel.getRecipientAddressModel().getAddressName();
-            addressStreet = shipmentCartItemModel.getRecipientAddressModel().getAddressStreet();
-            postalCode = shipmentCartItemModel.getRecipientAddressModel().getAddressPostalCode();
+            addressStreet = shipmentCartItemModel.getRecipientAddressModel().getStreet();
+            postalCode = shipmentCartItemModel.getRecipientAddressModel().getPostalCode();
             districtId = shipmentCartItemModel.getRecipientAddressModel().getDestinationDistrictId();
             cityId = shipmentCartItemModel.getRecipientAddressModel().getCityId();
             provinceId = shipmentCartItemModel.getRecipientAddressModel().getProvinceId();
@@ -852,8 +852,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         } else {
             addressId = recipientAddressModel.getId();
             addressName = recipientAddressModel.getAddressName();
-            addressStreet = recipientAddressModel.getAddressStreet();
-            postalCode = recipientAddressModel.getAddressPostalCode();
+            addressStreet = recipientAddressModel.getStreet();
+            postalCode = recipientAddressModel.getPostalCode();
             districtId = recipientAddressModel.getDestinationDistrictId();
             cityId = recipientAddressModel.getCityId();
             provinceId = recipientAddressModel.getProvinceId();

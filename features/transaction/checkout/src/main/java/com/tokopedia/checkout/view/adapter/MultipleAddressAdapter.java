@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.view.adapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressAdapterData;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressItemData;
+import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.view.viewholder.MultipleAddressViewHolder;
 
 import java.util.ArrayList;
@@ -86,8 +88,23 @@ public class MultipleAddressAdapter
     }
 
     @Override
-    public void onEditItemChoosen(int parentItemPosotion, MultipleAddressAdapterData productData, MultipleAddressItemData addressData) {
+    public void onEditItemChoosen(int parentItemPosotion, MultipleAddressAdapterData productData,
+                                  MultipleAddressItemData addressData) {
         listener.onItemChoosen(parentItemPosotion, this.addressData, productData, addressData);
+    }
+
+    @Override
+    public void onDeleteItem(MultipleAddressItemAdapter adapter, int position,
+                             List<MultipleAddressItemData> multipleAddressItemDataList) {
+        listener.onDeleteItem(position, multipleAddressItemDataList);
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onChangeAddress(MultipleAddressItemAdapter adapter, int position,
+                                List<MultipleAddressItemData> multipleAddressItemDataList,
+                                RecipientAddressModel recipientAddressModel) {
+        listener.onChangeAddress(adapter, position, multipleAddressItemDataList, recipientAddressModel);
     }
 
     public void unsubscribeSubscription() {
@@ -130,5 +147,10 @@ public class MultipleAddressAdapter
                                      ArrayList<MultipleAddressAdapterData> dataList,
                                      MultipleAddressAdapterData data,
                                      MultipleAddressItemData addressData);
+
+        void onDeleteItem(int position, List<MultipleAddressItemData> multipleAddressItemDataList);
+
+        void onChangeAddress(MultipleAddressItemAdapter adapter, int position,
+                             List<MultipleAddressItemData> multipleAddressItemDataList, RecipientAddressModel recipientAddressModel);
     }
 }

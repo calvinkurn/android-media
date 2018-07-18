@@ -433,8 +433,8 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                         newRecipientAddressModel.setProvinceId(newAddress.getProvinceId());
                         newRecipientAddressModel.setRecipientName(newAddress.getReceiverName());
                         newRecipientAddressModel.setRecipientPhoneNumber(newAddress.getReceiverPhone());
-                        newRecipientAddressModel.setAddressStreet(newAddress.getAddressStreet());
-                        newRecipientAddressModel.setAddressPostalCode(newAddress.getPostalCode());
+                        newRecipientAddressModel.setStreet(newAddress.getAddressStreet());
+                        newRecipientAddressModel.setPostalCode(newAddress.getPostalCode());
                         mShipmentAddressListPresenter.getAddressFromNewCreated(getActivity(), newRecipientAddressModel);
                     }
                     onSearchReset();

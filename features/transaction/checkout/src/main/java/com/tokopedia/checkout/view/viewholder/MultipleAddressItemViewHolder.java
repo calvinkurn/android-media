@@ -94,11 +94,11 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
 
     public void bindItemAdapterAddress(MultipleAddressItemData itemData,
                                        List<MultipleAddressItemData> itemDataList,
-                                       View.OnClickListener onDeleteClicekdListener,
+                                       MultipleAddressItemAdapter.MultipleAddressItemAdapterListener listener,
                                        int position) {
         multipleAddressItemData = itemData;
-        renderHeader(itemData, onDeleteClicekdListener, itemDataList, position);
-        renderAddress(itemData);
+        renderHeader(itemData, listener, itemDataList, position);
+        renderAddress(itemData, listener, itemDataList, position);
         renderNotes(itemData);
 
         btnQtyPlus.setOnClickListener(new View.OnClickListener() {
@@ -109,7 +109,6 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
                     qty = qty + 1;
                     multipleAddressItemData.setProductQty(String.valueOf(qty));
                     multipleAddressItemAdapter.notifyItemChanged(position);
-//                    validateWithAvailableQuantity(multipleAddressItemData, qty);
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
                 }
@@ -124,7 +123,6 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
                     qty = qty - 1;
                     multipleAddressItemData.setProductQty(String.valueOf(qty));
                     multipleAddressItemAdapter.notifyItemChanged(position);
-//                    validateWithAvailableQuantity(multipleAddressItemData, qty);
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
                 }
@@ -174,6 +172,7 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void itemQuantityTextWatcherAction(QuantityWrapper quantity, MultipleAddressItemData data) {
+        boolean needToUpdateView = !String.valueOf(quantity.getQtyBefore()).equals(quantity.getEditable().toString());
         if (quantity.getEditable().length() != 0) {
             int zeroCount = 0;
             for (int i = 0; i < quantity.getEditable().length(); i++) {
@@ -189,6 +188,7 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
                 etQty.setText(quantity.getEditable().toString()
                         .substring(zeroCount, quantity.getEditable().toString().length()));
                 etQty.setSelection(etQty.length());
+                needToUpdateView = true;
             }
         } else if (TextUtils.isEmpty(etQty.getText())) {
             data.setProductQty("0");
@@ -203,7 +203,9 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
         checkQtyMustDisabled(data, qty);
         data.setProductQty(String.valueOf(qty));
         validateWithAvailableQuantity(data, qty);
-        multipleAddressItemAdapter.notifyItemChanged(getAdapterPosition());
+        if (needToUpdateView) {
+            multipleAddressItemAdapter.notifyItemChanged(getAdapterPosition());
+        }
     }
 
     private void validateWithAvailableQuantity(MultipleAddressItemData data, int qty) {
@@ -258,19 +260,27 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
         }
     }
 
-    private void renderAddress(MultipleAddressItemData itemData) {
-        addressTitle.setText(itemData.getAddressTitle());
-        addressReceiverName.setText(itemData.getAddressReceiverName());
-        address.setText(itemData.getAddressStreet()
-                + ", " + itemData.getAddressCityName()
-                + ", " + itemData.getAddressProvinceName()
-                + ", " + itemData.getRecipientPhoneNumber());
+    private void renderAddress(MultipleAddressItemData itemData,
+                               MultipleAddressItemAdapter.MultipleAddressItemAdapterListener listener,
+                               List<MultipleAddressItemData> itemDataList,
+                               int position) {
+        addressTitle.setText(itemData.getRecipientAddressModel().getAddressName());
+        addressReceiverName.setText(itemData.getRecipientAddressModel().getRecipientName());
+        address.setText(itemData.getRecipientAddressModel().getStreet()
+                + ", " + itemData.getRecipientAddressModel().getCityName()
+                + ", " + itemData.getRecipientAddressModel().getProvinceName()
+                + ", " + itemData.getRecipientAddressModel().getRecipientPhoneNumber());
         pseudoEditButton.setVisibility(View.GONE);
-        addressLayout.setOnClickListener(onAddressLayoutClickedListener(itemData));
+        tvChangeRecipientAddress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onChangeAddress(multipleAddressItemAdapter, position, itemDataList, itemData.getRecipientAddressModel());
+            }
+        });
     }
 
     private void renderHeader(MultipleAddressItemData itemData,
-                              View.OnClickListener onDeleteClicekdListener,
+                              MultipleAddressItemAdapter.MultipleAddressItemAdapterListener listener,
                               List<MultipleAddressItemData> itemDataList,
                               int position) {
         shippingIndex.setText(
@@ -278,7 +288,12 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
                         "#", String.valueOf(itemData.getAddressPosition() + 1)
                 )
         );
-        deleteButton.setOnClickListener(onDeleteClicekdListener);
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onDeleteItem(multipleAddressItemAdapter, position, itemDataList);
+            }
+        });
         if (itemDataList.size() == SINGLE_DATA_SIZE) deleteButton.setVisibility(View.GONE);
         else deleteButton.setVisibility(View.VISIBLE);
         if (position == itemDataList.size() - 1) borderLine.setVisibility(View.GONE);
@@ -292,6 +307,7 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
                 etNotesForSeller.setVisibility(View.VISIBLE);
                 tvBtnShowNotesForSeller.setVisibility(View.GONE);
                 vNotesSeparator.setVisibility(View.GONE);
+                itemData.setStateNotesOpen(true);
             }
         });
 
@@ -306,15 +322,14 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
             etNotesForSeller.setText(itemData.getProductNotes());
             etNotesForSeller.setSelection(etNotesForSeller.length());
             vNotesSeparator.setVisibility(View.GONE);
+            itemData.setStateNotesOpen(true);
         }
+
+        if (itemData.isStateNotesOpen()) {
+            etNotesForSeller.setVisibility(View.VISIBLE);
+            tvLabelNoteForSeller.setVisibility(View.GONE);
+        }
+
     }
 
-    private View.OnClickListener onAddressLayoutClickedListener(MultipleAddressItemData data) {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        };
-    }
 }

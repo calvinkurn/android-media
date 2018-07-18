@@ -99,10 +99,10 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
     }
 
     private String getFullAddress(RecipientAddressModel recipientAddress) {
-        return recipientAddress.getAddressStreet() + ", "
+        return recipientAddress.getStreet() + ", "
                 + recipientAddress.getDestinationDistrictName() + ", "
-                + recipientAddress.getAddressCityName() + ", "
-                + recipientAddress.getAddressProvinceName() + ", "
+                + recipientAddress.getCityName() + ", "
+                + recipientAddress.getProvinceName() + ", "
                 + recipientAddress.getRecipientPhoneNumber();
     }
 

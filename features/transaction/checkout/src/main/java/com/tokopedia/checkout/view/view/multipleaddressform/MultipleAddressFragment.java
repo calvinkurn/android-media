@@ -19,6 +19,7 @@ import com.tokopedia.checkout.domain.datamodel.MultipleAddressItemData;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.view.adapter.MultipleAddressAdapter;
+import com.tokopedia.checkout.view.adapter.MultipleAddressItemAdapter;
 import com.tokopedia.checkout.view.base.BaseCheckoutFragment;
 import com.tokopedia.checkout.view.di.component.CartComponent;
 import com.tokopedia.checkout.view.di.component.DaggerMultipleAddressComponent;
@@ -36,8 +37,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.checkout.view.view.multipleaddressform.AddShipmentAddressActivity.ADDRESS_DATA_RESULT;
-import static com.tokopedia.checkout.view.view.multipleaddressform.AddShipmentAddressActivity.ADD_MODE;
 import static com.tokopedia.checkout.view.view.multipleaddressform.AddShipmentAddressActivity.EDIT_MODE;
 import static com.tokopedia.checkout.view.view.multipleaddressform.MultipleAddressFormActivity.RESULT_CODE_SUCCESS_SET_SHIPPING;
 
@@ -130,10 +129,34 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
                                         MultipleAddressAdapterData data,
                                         MultipleAddressItemData addressData) {
         checkoutAnalyticsMultipleAddress.eventClickMultipleAddressClickTambahPengirimanBaruFromKirimKeBeberapaAlamat();
-//        startActivityForResult(AddShipmentAddressActivity
-//                        .createIntent(getActivity(), itemPosition, dataList, data, addressData, ADD_MODE),
-//                ADD_SHIPMENT_ADDRESS_REQUEST_CODE);
         Intent intent = CartAddressChoiceActivity.createInstance(getActivity(), null,
+                CartAddressChoiceActivity.TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST);
+        startActivityForResult(intent, CartAddressChoiceActivity.REQUEST_CODE);
+    }
+
+    @Override
+    public void onDeleteItem(int position, List<MultipleAddressItemData> multipleAddressItemDataList) {
+        String defaultCartId = null;
+        for (MultipleAddressItemData multipleAddressItemData : multipleAddressItemDataList) {
+            if (!TextUtils.isEmpty(multipleAddressItemData.getCartId()) &&
+                    !multipleAddressItemData.getCartId().equals("0")) {
+                defaultCartId = multipleAddressItemData.getCartId();
+            } else {
+                if (!TextUtils.isEmpty(defaultCartId) ||
+                        multipleAddressItemData.getCartId().equals("0")) {
+                    multipleAddressItemData.setCartId(defaultCartId);
+                    break;
+                }
+            }
+        }
+        multipleAddressItemDataList.remove(position);
+    }
+
+    @Override
+    public void onChangeAddress(MultipleAddressItemAdapter adapter, int position,
+                                List<MultipleAddressItemData> multipleAddressItemDataList,
+                                RecipientAddressModel recipientAddressModel) {
+        Intent intent = CartAddressChoiceActivity.createInstance(getActivity(), recipientAddressModel,
                 CartAddressChoiceActivity.TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST);
         startActivityForResult(intent, CartAddressChoiceActivity.REQUEST_CODE);
     }
@@ -157,9 +180,6 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
                 && resultCode == CartAddressChoiceActivity.RESULT_CODE_ACTION_SELECT_ADDRESS) {
             RecipientAddressModel addressModel = data.getParcelableExtra(
                     CartAddressChoiceActivity.EXTRA_SELECTED_ADDRESS_DATA);
-//            presenter.setEditableModel(addressModel);
-//            showAddressLayout();
-//            updateAddressView(presenter.getEditableModel());
         }
 
 

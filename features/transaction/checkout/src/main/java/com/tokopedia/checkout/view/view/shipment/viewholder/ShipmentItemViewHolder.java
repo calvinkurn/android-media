@@ -28,7 +28,6 @@ import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.view.adapter.InnerProductListAdapter;
-import com.tokopedia.checkout.view.view.shipment.ShipmentAdapter;
 import com.tokopedia.checkout.view.view.shipment.ShipmentAdapterActionListener;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
@@ -665,9 +664,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
 
     private void renderAddress(RecipientAddressModel recipientAddressModel) {
         if (recipientAddressModel != null) {
-            String fullAddress = recipientAddressModel.getAddressStreet()
-                    + ", " + recipientAddressModel.getAddressCityName()
-                    + ", " + recipientAddressModel.getAddressProvinceName();
+            String fullAddress = recipientAddressModel.getStreet()
+                    + ", " + recipientAddressModel.getCityName()
+                    + ", " + recipientAddressModel.getProvinceName();
             tvAddressName.setText(recipientAddressModel.getAddressName());
             tvRecipientName.setText(recipientAddressModel.getRecipientName());
             tvRecipientAddress.setText(fullAddress);

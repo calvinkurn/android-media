@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressAdapterData;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressItemData;
+import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.view.viewholder.MultipleAddressItemViewHolder;
 
 import java.util.List;
@@ -53,7 +54,7 @@ public class MultipleAddressItemAdapter extends RecyclerView.Adapter
         holder.bindItemAdapterAddress(
                 itemData,
                 itemDataList,
-                onDeleteOrderClickedListener(position),
+                listener,
                 position);
     }
 
@@ -62,25 +63,14 @@ public class MultipleAddressItemAdapter extends RecyclerView.Adapter
         return itemDataList.size();
     }
 
-    private View.OnClickListener onDeleteOrderClickedListener(final int position) {
+    public List<MultipleAddressItemData> getItemDataList() {
+        return itemDataList;
+    }
+
+    private View.OnClickListener onDeleteOrderClickedListener(int position) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String defaultCartId = null;
-                for (MultipleAddressItemData multipleAddressItemData : itemDataList) {
-                    if (!TextUtils.isEmpty(multipleAddressItemData.getCartId()) &&
-                            !multipleAddressItemData.getCartId().equals("0")) {
-                        defaultCartId = multipleAddressItemData.getCartId();
-                    } else {
-                        if (!TextUtils.isEmpty(defaultCartId) ||
-                                multipleAddressItemData.getCartId().equals("0")) {
-                            multipleAddressItemData.setCartId(defaultCartId);
-                            break;
-                        }
-                    }
-                }
-                itemDataList.remove(position);
-                notifyDataSetChanged();
             }
         };
     }
@@ -91,6 +81,12 @@ public class MultipleAddressItemAdapter extends RecyclerView.Adapter
                                MultipleAddressAdapterData productData,
                                MultipleAddressItemData addressData);
 
+        void onDeleteItem(MultipleAddressItemAdapter adapter, int position,
+                          List<MultipleAddressItemData> multipleAddressItemDataList);
+
+        void onChangeAddress(MultipleAddressItemAdapter adapter, int position,
+                             List<MultipleAddressItemData> multipleAddressItemDataList,
+                             RecipientAddressModel recipientAddressModel);
     }
 
 }

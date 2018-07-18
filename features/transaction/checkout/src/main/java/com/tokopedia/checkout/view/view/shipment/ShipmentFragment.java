@@ -672,12 +672,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
                 if (!currentAddress.getId().equals(newAddress.getId()) ||
                         !currentAddress.getAddressName().equals(newAddress.getAddressName()) ||
-                        !currentAddress.getAddressStreet().equals(newAddress.getAddressStreet()) ||
+                        !currentAddress.getStreet().equals(newAddress.getStreet()) ||
                         !currentAddress.getRecipientName().equals(newAddress.getRecipientName()) ||
                         !currentAddress.getRecipientPhoneNumber().equals(newAddress.getRecipientPhoneNumber()) ||
                         !String.valueOf(currentAddress.getLatitude()).equals(String.valueOf(newAddress.getLatitude())) ||
                         !String.valueOf(currentAddress.getLongitude()).equals(String.valueOf(newAddress.getLongitude())) ||
-                        !currentAddress.getAddressPostalCode().equals(newAddress.getAddressPostalCode()) ||
+                        !currentAddress.getPostalCode().equals(newAddress.getPostalCode()) ||
                         !currentAddress.getDestinationDistrictId().equals(newAddress.getDestinationDistrictId()) ||
                         !currentAddress.getCityId().equals(newAddress.getCityId()) ||
                         !currentAddress.getProvinceId().equals(newAddress.getProvinceId())) {
@@ -885,14 +885,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             shipmentAdapter.setLastChooseCourierItemPosition(cartItemPosition);
             LocationPass locationPass = new LocationPass();
             if (shipmentAdapter.getAddressShipmentData() != null) {
-                locationPass.setCityName(shipmentAdapter.getAddressShipmentData().getAddressCityName());
+                locationPass.setCityName(shipmentAdapter.getAddressShipmentData().getCityName());
                 locationPass.setDistrictName(shipmentAdapter.getAddressShipmentData().getDestinationDistrictName());
             } else {
                 ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(cartItemPosition);
                 if (shipmentCartItemModel != null) {
                     RecipientAddressModel recipientAddressModel = shipmentCartItemModel.getRecipientAddressModel();
                     if (recipientAddressModel != null) {
-                        locationPass.setCityName(recipientAddressModel.getAddressCityName());
+                        locationPass.setCityName(recipientAddressModel.getCityName());
                         locationPass.setDistrictName(recipientAddressModel.getDestinationDistrictName());
                     }
                 }

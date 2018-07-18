@@ -50,13 +50,13 @@ public class ShipmentDataConverter {
         recipientAddress.setId(String.valueOf(userAddress.getAddressId()));
         recipientAddress.setAddressStatus(userAddress.getStatus());
         recipientAddress.setAddressName(userAddress.getAddressName());
-        recipientAddress.setAddressCountryName(userAddress.getCountry());
-        recipientAddress.setAddressProvinceName(userAddress.getProvinceName());
+        recipientAddress.setCountryName(userAddress.getCountry());
+        recipientAddress.setProvinceName(userAddress.getProvinceName());
         recipientAddress.setDestinationDistrictName(userAddress.getDistrictName());
-        recipientAddress.setAddressCityName(userAddress.getCityName());
+        recipientAddress.setCityName(userAddress.getCityName());
         recipientAddress.setDestinationDistrictId(String.valueOf(userAddress.getDistrictId()));
-        recipientAddress.setAddressStreet(userAddress.getAddress());
-        recipientAddress.setAddressPostalCode(userAddress.getPostalCode());
+        recipientAddress.setStreet(userAddress.getAddress());
+        recipientAddress.setPostalCode(userAddress.getPostalCode());
         recipientAddress.setCityId(String.valueOf(userAddress.getCityId()));
         recipientAddress.setProvinceId(String.valueOf(userAddress.getProvinceId()));
 
