@@ -1,7 +1,9 @@
 package com.tokopedia.tkpdpdp.tracking;
 
 import android.content.Context;
+import android.text.TextUtils;
 
+import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 
@@ -15,6 +17,12 @@ public class ProductPageTracking {
 
     public static final String CLICK_PDP = "clickPDP";
     public static final String PRODUCT_DETAIL_PAGE = "product detail page";
+    public static final String CLICK_OS_PROMO = "clickOSPromo";
+    public static final String PDP_PROMO_WIDGET_PROMO = "pdp promo widget - promo";
+    public static final String USER_CLICK_ON_COPY_CODE = "user click on copy code";
+    public static final String NAME_PRODUCT_PROMO_WIDGET = "/product - promo widget";
+    public static final String POSITION_PDP_WIDGET = "PDP - Widget";
+    public static final String CREATIVE_URL_PROMO_WIDGET = "tokopedia.com/creative.png";
 
     public static void eventEnhanceProductDetail(Context context, Map<String, Object> maps) {
         if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
@@ -99,6 +107,82 @@ public class ProductPageTracking {
                 PRODUCT_DETAIL_PAGE,
                 "click - tambah ke keranjang - redirect to variants page",
                 productId
+        );
+    }
+
+    public static void eventImpressionWidgetPromo(Context context,
+                                                  String creative,
+                                                  String promoId,
+                                                  String promoCode) {
+        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+            return;
+        }
+        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+        tracker.sendEnhancedEcommerce(
+                DataLayer.mapOf("event", "promoView",
+                        "eventCategory", "",
+                        "eventAction", "",
+                        "eventLabel", "",
+                        "ecommerce", DataLayer.mapOf("promoView",
+                                DataLayer.mapOf("promotions",
+                                        DataLayer.listOf(
+                                                DataLayer.mapOf(
+                                                        "name", NAME_PRODUCT_PROMO_WIDGET,
+                                                        "creative", creative,
+                                                        "creative_url", CREATIVE_URL_PROMO_WIDGET,
+                                                        "position", POSITION_PDP_WIDGET,
+                                                        "promo_id", promoId,
+                                                        "promo_code", TextUtils.isEmpty(promoCode) ? promoCode : "NoPromoCode"
+                                                )
+                                        )
+                                )
+                        )
+                )
+        );
+    }
+
+    public static void eventClickWidgetPromo(Context context,
+                                             String creative,
+                                             String promoId,
+                                             String promoCode) {
+        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+            return;
+        }
+        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+        tracker.sendEnhancedEcommerce(
+                DataLayer.mapOf("event", "promoClick",
+                        "eventCategory", "",
+                        "eventAction", "",
+                        "eventLabel", "",
+                        "ecommerce", DataLayer.mapOf("promoClick",
+                                DataLayer.mapOf("promotions",
+                                        DataLayer.listOf(
+                                                DataLayer.mapOf(
+                                                        "name", NAME_PRODUCT_PROMO_WIDGET,
+                                                        "creative", creative,
+                                                        "creative_url", CREATIVE_URL_PROMO_WIDGET,
+                                                        "position", POSITION_PDP_WIDGET,
+                                                        "promo_id", promoId,
+                                                        "promo_code", TextUtils.isEmpty(promoCode) ? promoCode : "NoPromoCode"
+                                                )
+                                        )
+                                )
+                        )
+                )
+        );
+    }
+
+    public static void eventClickCopyWidgetPromo(Context context,
+                                                 String promoCode) {
+        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+            return;
+        }
+        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+        tracker.sendEventTracking(
+                CLICK_OS_PROMO,
+                PDP_PROMO_WIDGET_PROMO,
+                USER_CLICK_ON_COPY_CODE,
+                promoCode
         );
     }
 }
