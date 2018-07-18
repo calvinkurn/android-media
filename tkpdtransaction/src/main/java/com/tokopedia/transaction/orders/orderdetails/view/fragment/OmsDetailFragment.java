@@ -235,14 +235,14 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
 
     @Override
     public void setContactUs(final ContactUs contactUs) {
-        String text = Html.fromHtml(contactUs.helpText()).toString();
+        String text = getResources().getString(R.string.contact_us_text);
         SpannableString spannableString = new SpannableString(text);
         int startIndexOfLink = text.indexOf(getResources().getString(R.string.help_text));
         if (startIndexOfLink != -1) {
             spannableString.setSpan(new ClickableSpan() {
                 @Override
                 public void onClick(View view) {
-                    TransactionPurchaseRouter.startWebViewActivity(getContext(), contactUs.helpUrl());
+                    TransactionPurchaseRouter.startWebViewActivity(getContext(), getResources().getString(R.string.contact_us_applink));
                 }
 
                 @Override

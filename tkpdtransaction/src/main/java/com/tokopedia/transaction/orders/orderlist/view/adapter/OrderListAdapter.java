@@ -190,7 +190,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public void setFailStatusBgColor(String statusColor) {
-            currentHolder.status.setBackgroundColor(android.graphics.Color.parseColor(statusColor));
+        currentHolder.status.setBackgroundColor(android.graphics.Color.parseColor(statusColor));
     }
 
     @Override
@@ -259,9 +259,9 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     private void addCancelReplacementMenu(List<DotMenuList> item, PopupMenu popup) {
-        if (item.size() > 0) {
-            popup.getMenu().add(Menu.NONE, R.id.action_bantuan, Menu.NONE, item.get(0).name());
-            popup.getMenu().add(Menu.NONE, R.id.action_order_detail, Menu.NONE, item.get(1).name());
+        if (true) {
+            popup.getMenu().add(Menu.NONE, R.id.action_bantuan, Menu.NONE, "Bantuan");
+            popup.getMenu().add(Menu.NONE, R.id.action_order_detail, Menu.NONE, "Lihat Order Detail");
         }
     }
 
@@ -282,12 +282,10 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         @Override
         public boolean onMenuItemClick(MenuItem item) {
             if (item.getItemId() == R.id.action_bantuan) {
-                menuListener.startUri(orderData.get(0).uri());
+                menuListener.startUri(context.getResources().getString(R.string.contact_us_applink));
                 return true;
             } else if (item.getItemId() == R.id.action_order_detail) {
-                if (!orderData.get(1).uri().equals("")) {
-                    RouteManager.route(context, appLink);
-                } else if (appLink != null && !appLink.equals("")) {
+                if (appLink != null && !appLink.equals("")) {
                     RouteManager.route(context, appLink);
                 }
                 return true;

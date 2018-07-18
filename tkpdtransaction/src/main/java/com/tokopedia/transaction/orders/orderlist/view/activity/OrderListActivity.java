@@ -47,16 +47,23 @@ public class OrderListActivity extends DrawerPresenterActivity<OrderListInitCont
     private OrderTabAdapter adapter;
 
     @DeepLink({TransactionAppLink.ORDER_LIST_DEALS, TransactionAppLink.ORDER_LIST_DIGITAL,
-            TransactionAppLink.ORDER_LIST_EVENTS, TransactionAppLink.ORDER_LIST_FLIGHTS})
+            TransactionAppLink.ORDER_LIST_EVENTS})
     public static Intent getOrderListIntent(Context context, Bundle bundle){
 
         Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
         String link = bundle.getString(DeepLink.URI);
         String category = link.substring(link.indexOf("//")+2, link.lastIndexOf("/")).toUpperCase();
-        if(category.equals("PESAWAT")){
-            category = OrderCategory.FLIGHTS;
-        }
         bundle.putString(ORDER_CATEGORY, category);
+        return new Intent(context, OrderListActivity.class)
+                .setData(uri.build())
+                .putExtras(bundle);
+    }
+
+    @DeepLink(TransactionAppLink.ORDER_LIST_FLIGHTS)
+    public static Intent getFlightOrderListIntent(Context context, Bundle bundle){
+
+        Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
+        bundle.putString(ORDER_CATEGORY, OrderCategory.FLIGHTS);
         return new Intent(context, OrderListActivity.class)
                 .setData(uri.build())
                 .putExtras(bundle);

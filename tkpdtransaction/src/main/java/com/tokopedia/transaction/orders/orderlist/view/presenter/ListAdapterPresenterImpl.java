@@ -53,7 +53,7 @@ public class ListAdapterPresenterImpl extends BaseDaggerPresenter<ListAdapterCon
     @Override
     public void setDotMenuVisibility(List<DotMenuList> dotMenuLists) {
         if (dotMenuLists != null) {
-            view.setDotMenuVisibility(dotMenuLists.size() > 0 ? View.VISIBLE : View.GONE);
+            view.setDotMenuVisibility(View.VISIBLE);
         }
     }
 
