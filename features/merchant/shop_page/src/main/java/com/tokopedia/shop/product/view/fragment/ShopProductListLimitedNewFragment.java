@@ -10,7 +10,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SimpleItemAnimator;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +34,8 @@ import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.common.util.TextApiUtils;
+import com.tokopedia.shop.etalase.view.activity.ShopEtalaseActivity;
+import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel;
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
 import com.tokopedia.shop.product.di.module.ShopProductModule;
 import com.tokopedia.shop.product.util.ShopProductOfficialStoreUtils;
@@ -41,16 +45,17 @@ import com.tokopedia.shop.product.view.adapter.newadapter.ShopProductNewAdapter;
 import com.tokopedia.shop.product.view.adapter.newadapter.viewholder.ShopProductViewHolder;
 import com.tokopedia.shop.product.view.adapter.newadapter.viewholder.ShopProductPromoViewHolder;
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener;
-import com.tokopedia.shop.product.view.listener.ShopProductClickedListener;
 import com.tokopedia.shop.product.view.listener.newlistener.ShopProductClickedNewListener;
 import com.tokopedia.shop.product.view.listener.newlistener.ShopProductListView;
-import com.tokopedia.shop.product.view.model.ShopProductViewModelOld;
 import com.tokopedia.shop.product.view.model.newmodel.BaseShopProductViewModel;
+import com.tokopedia.shop.product.view.model.newmodel.ShopProductEtalaseListViewModel;
+import com.tokopedia.shop.product.view.model.newmodel.ShopProductFeaturedViewModel;
 import com.tokopedia.shop.product.view.model.newmodel.ShopProductPromoViewModel;
 import com.tokopedia.shop.product.view.model.newmodel.ShopProductViewModel;
 import com.tokopedia.shop.product.view.presenter.newpresenter.ShopProductListNewPresenter;
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -68,11 +73,13 @@ public class ShopProductListLimitedNewFragment extends BaseListFragment<BaseShop
     private static final int REQUEST_CODE_ETALASE = 200;
 
     private static final int REQUEST_CODE_SORT = 300;
-    private static final int ANIMATION_DURATION = 400;
     private static final int LIST_SPAN_COUNT = 1;
     private static final int GRID_SPAN_COUNT = 2;
 
     private static final String SHOP_ATTRIBUTION = "EXTRA_SHOP_ATTRIBUTION";
+
+    public static final String SAVED_SELECTED_ETALASE = "saved_etalase";
+    public static final int ETALASE_TO_SHOW = 5;
 
     @Inject
     ShopProductListNewPresenter shopProductListNewPresenter;
@@ -96,7 +103,12 @@ public class ShopProductListLimitedNewFragment extends BaseListFragment<BaseShop
 //    protected int mTotalDyDistance;
 //    private int stickyHeight;
 
+    // selected is list, because we want to keep the history.
+    // index 0 is the current.
+    private ArrayList<ShopEtalaseViewModel> selectedEtalaseList;
+
     private ShopProductNewAdapter shopProductNewAdapter;
+    private GridLayoutManager gridLayoutManager;
 
     public static ShopProductListLimitedNewFragment createInstance(String shopAttribution) {
         ShopProductListLimitedNewFragment fragment = new ShopProductListLimitedNewFragment();
@@ -122,6 +134,11 @@ public class ShopProductListLimitedNewFragment extends BaseListFragment<BaseShop
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        if (savedInstanceState == null) {
+            selectedEtalaseList = new ArrayList<>();
+        } else {
+            selectedEtalaseList = savedInstanceState.getParcelableArrayList(SAVED_SELECTED_ETALASE);
+        }
         super.onCreate(savedInstanceState);
         attribution = getArguments().getString(SHOP_ATTRIBUTION, "");
         shopProductListNewPresenter.attachView(this);
@@ -164,6 +181,29 @@ public class ShopProductListLimitedNewFragment extends BaseListFragment<BaseShop
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
         recyclerView = getRecyclerView(view);
+        RecyclerView.ItemAnimator animator = recyclerView.getItemAnimator();
+        if (animator instanceof SimpleItemAnimator) {
+            ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
+        }
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (dy == 0) {
+                    return;
+                }
+                if (dy < 0) { // going up
+                    //determine to remove view of etalase.
+                } else { // going down
+                    // determine to add view of etalase
+                }
+            }
+        });
 //        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
 //            @Override
 //            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -212,6 +252,14 @@ public class ShopProductListLimitedNewFragment extends BaseListFragment<BaseShop
         loadInitialData();
     }
 
+    private void reloadProductData(){
+        isLoadingInitialData = true;
+        shopProductNewAdapter.clearProductList();
+        shopProductNewAdapter.notifyDataSetChanged();
+        showLoading();
+        loadData(getDefaultInitialPage());
+    }
+
     @Override
     public void loadData(int page) {
         if (shopInfo != null) {
@@ -219,6 +267,12 @@ public class ShopProductListLimitedNewFragment extends BaseListFragment<BaseShop
                 String officialWebViewUrl = shopInfo.getInfo().getShopOfficialTop();
                 officialWebViewUrl = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT ? officialWebViewUrl : "";
                 shopProductListNewPresenter.loadProductPromoModel(officialWebViewUrl);
+
+                shopProductListNewPresenter.getProductFeatureListWithAttributes(
+                        shopInfo.getInfo().getShopId(),
+                        shopInfo.getInfo().isShopOfficial());
+
+                shopProductListNewPresenter.getShopEtalase(shopInfo.getInfo().getShopId(), selectedEtalaseList, ETALASE_TO_SHOW);
             }
             shopProductListNewPresenter.getProductListWithAttributes(
                     shopInfo.getInfo().getShopId(),
@@ -244,7 +298,7 @@ public class ShopProductListLimitedNewFragment extends BaseListFragment<BaseShop
 
     @Override
     protected RecyclerView.LayoutManager getRecyclerViewLayoutManager() {
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), GRID_SPAN_COUNT);
+        gridLayoutManager = new GridLayoutManager(getActivity(), GRID_SPAN_COUNT);
         gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
@@ -264,11 +318,6 @@ public class ShopProductListLimitedNewFragment extends BaseListFragment<BaseShop
         return false;
     }
 
-//    @Override
-//    protected boolean isLoadMoreEnabledByDefault() {
-//        return false;
-//    }
-
     @Override
     protected EndlessRecyclerViewScrollListener createEndlessRecyclerViewListener() {
         return new DataEndlessScrollListener(recyclerView.getLayoutManager(), shopProductNewAdapter) {
@@ -283,7 +332,8 @@ public class ShopProductListLimitedNewFragment extends BaseListFragment<BaseShop
     @NonNull
     @Override
     protected ShopProductAdapterTypeFactory getAdapterTypeFactory() {
-        return new ShopProductAdapterTypeFactory(this, this, this);
+        return new ShopProductAdapterTypeFactory(this,
+                this, this, false);
     }
 
     @NonNull
@@ -400,6 +450,9 @@ public class ShopProductListLimitedNewFragment extends BaseListFragment<BaseShop
     @Override
     public void onSuccessAddToWishList(String productId, Boolean value) {
         shopProductNewAdapter.updateWishListStatus(productId, true);
+
+        //TEST
+        startActivityForResult(ShopEtalaseActivity.createIntent(getActivity(), shopInfo.getInfo().getShopId(), null), REQUEST_CODE_ETALASE);
     }
 
     @Override
@@ -414,41 +467,57 @@ public class ShopProductListLimitedNewFragment extends BaseListFragment<BaseShop
 
     @Override
     public void renderProductList(@NonNull List<ShopProductViewModel> list, boolean hasNextPage) {
-        // trackingImpressionFeatureProduct(list);
+        // TODO trackingImpressionFeatureProduct(list);
         hideLoading();
-        // remove all unneeded element (empty/retry/loading/etc)
         if (isLoadingInitialData) {
             shopProductNewAdapter.clearProductList();
         } else {
             shopProductNewAdapter.clearAllNonDataElement();
         }
         shopProductNewAdapter.addProductList(list);
-        // update the load more state (paging/can loadmore)
         updateScrollListenerState(hasNextPage);
 
         if (shopProductNewAdapter.getShopProductViewModelList().size() == 0) {
-            // Note: add element should be the last in line.
             shopProductNewAdapter.addElement(getEmptyDataViewModel());
         } else {
-            //set flag to false, indicate that the initial data has been set.
             isLoadingInitialData = false;
         }
         shopProductNewAdapter.notifyDataSetChanged();
     }
 
     @Override
+    public void onErrorGetProductFeature(Throwable e) {
+        //TODO on get product feature error
+        shopProductNewAdapter.setShopProductFeaturedViewModel(null);
+    }
+
+    @Override
+    public void onSuccessGetProductFeature(@NonNull List<ShopProductViewModel> list) {
+        shopProductNewAdapter.setShopProductFeaturedViewModel(new ShopProductFeaturedViewModel(list));
+    }
+
+    @Override
     public void showGetListError(Throwable throwable) {
         hideLoading();
-
         updateStateScrollListener();
-
-        // Note: add element should be the last in line.
         if (shopProductNewAdapter.getShopProductViewModelList().size() > 0) {
             onGetListErrorWithExistingData(throwable);
         } else {
-            String message = getMessageFromThrowable(getContext(), throwable);
-            shopProductNewAdapter.showErrorNetwork(message, this);
+            onGetListErrorWithEmptyData(throwable);
         }
+    }
+
+    @Override
+    public void onErrorGetEtalaseList(Throwable e) {
+        //TODO error get etalase, will show all product instead.
+        Log.i("Test", "Test");
+    }
+
+    @Override
+    public void onSuccessGetEtalaseList(List<ShopEtalaseViewModel> shopEtalaseViewModelList) {
+        //TODO success get etalase, show all etalase list
+        String selectedEtalaseId = selectedEtalaseList.size() > 0? selectedEtalaseList.get(0).getEtalaseId() : "";
+        shopProductNewAdapter.setShopEtalase(new ShopProductEtalaseListViewModel(shopEtalaseViewModelList, selectedEtalaseId));
     }
 
     @Override
@@ -554,5 +623,9 @@ public class ShopProductListLimitedNewFragment extends BaseListFragment<BaseShop
         }
     }
 
-
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList(SAVED_SELECTED_ETALASE, selectedEtalaseList);
+    }
 }

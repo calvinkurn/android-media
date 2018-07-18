@@ -155,7 +155,9 @@ public class ShopProductPromoViewHolder extends AbstractViewHolder<ShopProductPr
             if (url.contains(SHOP_STATIC_URL)) {
                 view.loadUrl(url);
             } else if (uri.getScheme().equals(ShopProductOfficialStoreUtils.TOKOPEDIA_HOST) || uri.getScheme().startsWith(ShopProductOfficialStoreUtils.HTTP)) {
-                promoViewHolderListener.promoClicked(url);
+                if (promoViewHolderListener!=null) {
+                    promoViewHolderListener.promoClicked(url);
+                }
             }
             return true;
         }

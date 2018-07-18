@@ -1,15 +1,17 @@
 package com.tokopedia.shop.product.view.adapter.newadapter;
 
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
+import com.tokopedia.shop.product.view.adapter.newadapter.viewholder.ShopProductEtalaseListViewHolder;
 import com.tokopedia.shop.product.view.adapter.newadapter.viewholder.ShopProductPromoViewHolder;
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener;
 import com.tokopedia.shop.product.view.model.newmodel.BaseShopProductViewModel;
-import com.tokopedia.shop.product.view.model.newmodel.ShopProductEtalaseLabelViewModel;
+import com.tokopedia.shop.product.view.model.newmodel.ShopProductEtalaseListViewModel;
 import com.tokopedia.shop.product.view.model.newmodel.ShopProductFeaturedViewModel;
 import com.tokopedia.shop.product.view.model.newmodel.ShopProductPromoViewModel;
 import com.tokopedia.shop.product.view.model.newmodel.ShopProductViewModel;
@@ -17,30 +19,33 @@ import com.tokopedia.shop.product.view.model.newmodel.ShopProductViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ShopProductNewAdapter extends BaseListAdapter<BaseShopProductViewModel, ShopProductAdapterTypeFactory> implements DataEndlessScrollListener.OnDataEndlessScrollListener {
+public class ShopProductNewAdapter extends BaseListAdapter<BaseShopProductViewModel, ShopProductAdapterTypeFactory>
+        implements DataEndlessScrollListener.OnDataEndlessScrollListener {
 
     private static final int DEFAULT_PROMO_POSITION = 0;
     private static final int DEFAULT_FEATURED_POSITION = 1;
     private static final int DEFAULT_ETALASE_POSITION = 2;
-    public static final int DATA_OFFSET = 3; // PROMO + FEATURED + ETALASE
+    private static final int ITEM_OFFSET = 3;
 
     private ShopProductPromoViewModel shopProductPromoViewModel;
     private List<ShopProductViewModel> shopProductViewModelList;
     private ShopProductFeaturedViewModel shopProductFeaturedViewModel;
-    private ShopProductEtalaseLabelViewModel shopProductEtalaseLabelViewModel;
+    private ShopProductEtalaseListViewModel shopProductEtalaseListViewModel;
 
     private View promoView;
     private String promoUrl;
+    private RecyclerView recyclerView;
+    private View etalaseView;
 
     public ShopProductNewAdapter(ShopProductAdapterTypeFactory baseListAdapterTypeFactory) {
         super(baseListAdapterTypeFactory, null);
         shopProductPromoViewModel = new ShopProductPromoViewModel();
         shopProductViewModelList = new ArrayList<>();
         shopProductFeaturedViewModel = new ShopProductFeaturedViewModel();
-        shopProductEtalaseLabelViewModel = new ShopProductEtalaseLabelViewModel();
+        shopProductEtalaseListViewModel = new ShopProductEtalaseListViewModel();
         visitables.add(shopProductPromoViewModel);
         visitables.add(shopProductFeaturedViewModel);
-        visitables.add(shopProductEtalaseLabelViewModel);
+        visitables.add(shopProductEtalaseListViewModel);
     }
 
     public void setShopProductPromoViewModel(ShopProductPromoViewModel shopProductPromoViewModel) {
@@ -61,13 +66,13 @@ public class ShopProductNewAdapter extends BaseListAdapter<BaseShopProductViewMo
         setVisitable(DEFAULT_FEATURED_POSITION, this.shopProductFeaturedViewModel);
     }
 
-    public void setShopProductEtalaseLabelViewModel(ShopProductEtalaseLabelViewModel shopProductEtalaseLabelViewModel) {
-        if (shopProductEtalaseLabelViewModel == null) {
-            this.shopProductEtalaseLabelViewModel = new ShopProductEtalaseLabelViewModel();
+    public void setShopEtalase(ShopProductEtalaseListViewModel shopProductEtalaseListViewModel) {
+        if (shopProductEtalaseListViewModel == null) {
+            this.shopProductEtalaseListViewModel = new ShopProductEtalaseListViewModel();
         } else {
-            this.shopProductEtalaseLabelViewModel = shopProductEtalaseLabelViewModel;
+            this.shopProductEtalaseListViewModel = shopProductEtalaseListViewModel;
         }
-        setVisitable(DEFAULT_ETALASE_POSITION, this.shopProductEtalaseLabelViewModel);
+        setVisitable(DEFAULT_ETALASE_POSITION, this.shopProductEtalaseListViewModel);
     }
 
     private void setVisitable(int position, Visitable visitable) {
@@ -86,12 +91,26 @@ public class ShopProductNewAdapter extends BaseListAdapter<BaseShopProductViewMo
     }
 
     public void clearProductList() {
+        int productSize = shopProductViewModelList.size();
+        if (visitables.size() > ITEM_OFFSET) {
+            visitables.subList(ITEM_OFFSET, ITEM_OFFSET + productSize).clear();
+        }
         shopProductViewModelList.clear();
     }
 
     public void addProductList(List<ShopProductViewModel> shopProductViewModelArrayList) {
-        this.shopProductViewModelList = shopProductViewModelArrayList;
-        visitables.addAll(this.shopProductViewModelList);
+        this.shopProductViewModelList.addAll(shopProductViewModelArrayList);
+        visitables.addAll(shopProductViewModelArrayList);
+    }
+
+    public void replaceProductList(List<ShopProductViewModel> shopProductViewModelArrayList) {
+        if (this.shopProductViewModelList == shopProductViewModelArrayList) {
+            return;
+        }
+        if (this.shopProductViewModelList.size() > 0) {
+            clearProductList();
+        }
+        addProductList(shopProductViewModelArrayList);
     }
 
     // this is to maintain promo view in recyclerview.
@@ -101,9 +120,13 @@ public class ShopProductNewAdapter extends BaseListAdapter<BaseShopProductViewMo
             if (promoView == null || !promoUrl.equals(shopProductPromoViewModel.getUrl())) {
                 promoView = super.onCreateViewItem(parent, viewType);
                 promoUrl = shopProductPromoViewModel.getUrl();
+                return promoView;
             } else {
                 return promoView;
             }
+        } else if (viewType == ShopProductEtalaseListViewHolder.LAYOUT) {
+            etalaseView = super.onCreateViewItem(parent, viewType);
+            return etalaseView;
         }
         return super.onCreateViewItem(parent, viewType);
     }
@@ -120,13 +143,17 @@ public class ShopProductNewAdapter extends BaseListAdapter<BaseShopProductViewMo
     }
 
     public void updateWishListStatus(String productId, boolean wishList) {
-        for (int i = 0; i < shopProductViewModelList.size(); i++) {
+        for (int i = 0, sizei = shopProductViewModelList.size(); i < sizei; i++) {
             ShopProductViewModel shopProductViewModel = shopProductViewModelList.get(i);
             if (shopProductViewModel.getId().equalsIgnoreCase(productId)) {
                 shopProductViewModel.setWishList(wishList);
-                notifyItemChanged(i);
-                return;
+                notifyItemChanged(ITEM_OFFSET + i);
+                break;
             }
+        }
+        boolean isFeaturedChanged = shopProductFeaturedViewModel.updateWishListStatus(productId, wishList);
+        if (isFeaturedChanged) {
+            notifyItemChanged(DEFAULT_FEATURED_POSITION);
         }
     }
 
@@ -145,15 +172,8 @@ public class ShopProductNewAdapter extends BaseListAdapter<BaseShopProductViewMo
     }
 
     @Override
-    public void showLoading(){
-        if (!isLoading()) {
-            if (shopProductViewModelList.size() == 0) {
-                visitables.add(loadingModel);
-            } else {
-                visitables.add(loadingMoreModel);
-            }
-            notifyItemInserted(visitables.size());
-        }
+    protected boolean isShowLoadingMore() {
+        return shopProductViewModelList.size() > 0;
     }
 
     @Override
@@ -166,5 +186,16 @@ public class ShopProductNewAdapter extends BaseListAdapter<BaseShopProductViewMo
         return shopProductViewModelList.size();
     }
 
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        this.recyclerView = recyclerView;
+    }
+
+    @Override
+    public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView);
+        this.recyclerView = null;
+    }
 
 }

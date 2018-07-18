@@ -136,10 +136,8 @@ public class ShopProductListPresenterOld extends BaseDaggerPresenter<ShopProduct
             getShopProductWithWishList(shopProductRequestModel);
             return;
         }
-        ShopEtalaseRequestModel shopEtalaseRequestModel = new ShopEtalaseRequestModel();
-        shopEtalaseRequestModel.setShopId(shopProductRequestModel.getShopId());
-        shopEtalaseRequestModel.setUserId(userSession.getUserId());
-        shopEtalaseRequestModel.setDeviceId(userSession.getDeviceId());
+        ShopEtalaseRequestModel shopEtalaseRequestModel = new ShopEtalaseRequestModel(shopProductRequestModel.getShopId(),
+                userSession.getUserId(), userSession.getDeviceId());
         getShopEtalaseUseCase.execute(GetShopEtalaseUseCase.createParams(shopEtalaseRequestModel), new Subscriber<PagingListOther<EtalaseModel>>() {
             @Override
             public void onCompleted() {

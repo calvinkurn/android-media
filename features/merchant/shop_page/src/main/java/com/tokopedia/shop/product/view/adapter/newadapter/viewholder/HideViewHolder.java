@@ -6,7 +6,6 @@ import android.view.View;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.product.view.model.newmodel.BaseShopProductViewModel;
-import com.tokopedia.shop.product.view.model.newmodel.ShopProductEtalaseLabelViewModel;
 
 /**
  * @author by alvarisi on 12/12/17.

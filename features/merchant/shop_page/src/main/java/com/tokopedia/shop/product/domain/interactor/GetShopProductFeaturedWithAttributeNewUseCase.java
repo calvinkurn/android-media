@@ -59,4 +59,10 @@ public class GetShopProductFeaturedWithAttributeNewUseCase extends BaseGetShopPr
         requestParams.putBoolean(OFFICIAL_STORE, officialStore);
         return requestParams;
     }
+
+    @Override
+    public void unsubscribe() {
+        getFeatureProductListUseCase.unsubscribe();
+        super.unsubscribe();
+    }
 }

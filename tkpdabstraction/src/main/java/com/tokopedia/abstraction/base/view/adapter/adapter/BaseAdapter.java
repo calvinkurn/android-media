@@ -76,13 +76,17 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
 
     public void showLoading() {
         if (!isLoading()) {
-            if (visitables.size() == 0) {
-                visitables.add(loadingModel);
-            } else {
+            if (isShowLoadingMore()) {
                 visitables.add(loadingMoreModel);
+            } else {
+                visitables.add(loadingModel);
             }
             notifyItemInserted(visitables.size());
         }
+    }
+
+    protected boolean isShowLoadingMore(){
+        return visitables.size() > 0;
     }
 
     public int getFirstIndex() {

@@ -1,9 +1,12 @@
 package com.tokopedia.shop.product.view.adapter.newadapter.viewholder;
 
+import android.app.Activity;
 import android.graphics.Paint;
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.AppCompatRatingBar;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -23,7 +26,7 @@ public class ShopProductNewViewHolder extends AbstractViewHolder<ShopProductView
 
     @LayoutRes
     public static final int LAYOUT = R.layout.item_shop_product_grid;
-    public static final int SPAN_LOOK_UP = 1;
+    public static final double RATIO_WITH_RELATIVE_TO_SCREEN = 2.3;
 
     private final ShopProductClickedNewListener shopProductClickedListener;
     private ImageView wishlistImageView;
@@ -41,8 +44,12 @@ public class ShopProductNewViewHolder extends AbstractViewHolder<ShopProductView
     private TextView totalReview;
     private View soldOutView;
 
-    public ShopProductNewViewHolder(View itemView, ShopProductClickedNewListener shopProductClickedListener) {
+    private boolean isFixWidth;
+
+    public ShopProductNewViewHolder(View itemView, ShopProductClickedNewListener shopProductClickedListener,
+                                    boolean isFixWidth) {
         super(itemView);
+        this.isFixWidth = isFixWidth;
         this.shopProductClickedListener = shopProductClickedListener;
         findViews(itemView);
     }
@@ -69,6 +76,12 @@ public class ShopProductNewViewHolder extends AbstractViewHolder<ShopProductView
 
     @Override
     public void bind(final ShopProductViewModel shopProductViewModel) {
+        if (isFixWidth) {
+            DisplayMetrics displaymetrics = new DisplayMetrics();
+            ((Activity) productImageView.getContext()).getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+            itemView.getLayoutParams().width = (int) (displaymetrics.widthPixels / RATIO_WITH_RELATIVE_TO_SCREEN);
+        }
+
         updateDisplayGeneralView(shopProductViewModel);
         updateDisplayPrice(shopProductViewModel);
         updateDisplayRating(shopProductViewModel);

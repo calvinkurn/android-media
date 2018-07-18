@@ -3,6 +3,7 @@ package com.tokopedia.shop.product.view.listener.newlistener;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener;
+import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductBaseViewModel;
 import com.tokopedia.shop.product.view.model.newmodel.BaseShopProductViewModel;
 import com.tokopedia.shop.product.view.model.newmodel.ShopProductPromoViewModel;
@@ -27,5 +28,13 @@ public interface ShopProductListView extends BaseListViewListener<BaseShopProduc
     void renderShopProductPromo(ShopProductPromoViewModel shopProductPromoViewModel);
 
     void renderProductList(@NonNull List<ShopProductViewModel> list, boolean hasNextPage);
+
+    void onErrorGetProductFeature(Throwable e);
+
+    void onSuccessGetProductFeature(@NonNull List<ShopProductViewModel> list);
+
+    void onSuccessGetEtalaseList(List<ShopEtalaseViewModel> shopEtalaseViewModelList);
+
+    void onErrorGetEtalaseList(Throwable e);
 }
 

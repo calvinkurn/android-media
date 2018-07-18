@@ -7,8 +7,14 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:descendantFocusability="blocksDescendants"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingLeft="@dimen/dp_8"
+        android:paddingRight="@dimen/dp_8"/>
 
     <com.tokopedia.design.button.BottomActionView
         android:id="@+id/bottom_action_view"
