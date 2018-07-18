@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,9 +32,9 @@ import javax.inject.Inject;
  */
 public class BuyerAccountFragment extends TkpdBaseV4Fragment implements BuyerAccount.View {
     public static final String TAG = BuyerAccountFragment.class.getSimpleName();
-
-    private RecyclerView recyclerView;
-    private BuyerAccountAdapter adapter;
+//
+//    private RecyclerView recyclerView;
+//    private BuyerAccountAdapter adapter;
 
     @Inject
     BuyerAccount.Presenter presenter;
@@ -52,15 +53,16 @@ public class BuyerAccountFragment extends TkpdBaseV4Fragment implements BuyerAcc
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_buyer_account, container, false);
-        recyclerView = view.findViewById(R.id.recycler_buyer);
+//        recyclerView = view.findViewById(R.id.recycler_buyer);
+//        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        adapter = new BuyerAccountAdapter(new BuyerAccountTypeFactory(), new ArrayList<>());
-        recyclerView.setAdapter(adapter);
+//        adapter = new BuyerAccountAdapter(new BuyerAccountTypeFactory(), new ArrayList<>());
+//        recyclerView.setAdapter(adapter);
 
         presenter.getData();
     }
@@ -73,7 +75,7 @@ public class BuyerAccountFragment extends TkpdBaseV4Fragment implements BuyerAcc
     @Override
     public void loadData(List<Visitable> data) {
         Log.d("okasurya", TAG + ".loadData" + data.get(0).toString());
-        adapter.addMoreData(data);
+//        adapter.addMoreData(data);
     }
 
     private void initInjector() {

@@ -26,8 +26,8 @@ import com.tokopedia.home.account.presentation.adapter.AccountHomePagerAdapter;
  */
 public class AccountHomeFragment extends TkpdBaseV4Fragment {
     private Toolbar toolbar;
-    private TabLayout tabLayout;
-    private ViewPager viewPager;
+//    private TabLayout tabLayout;
+//    private ViewPager viewPager;
     private PagerAdapter adapter;
 
     private boolean isLoaded = false;
@@ -110,8 +110,8 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment {
         setHasOptionsMenu(true);
         getActivity().invalidateOptionsMenu();
         setToolbar(view);
-        tabLayout = view.findViewById(R.id.tab_home_account);
-        viewPager = view.findViewById(R.id.pager_home_account);
+//        tabLayout = view.findViewById(R.id.tab_home_account);
+//        viewPager = view.findViewById(R.id.pager_home_account);
     }
 
     private void setToolbar(View view) {
@@ -128,8 +128,8 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment {
                 getContext().getString(R.string.label_account_seller)
         };
         adapter = new AccountHomePagerAdapter(getChildFragmentManager(), titles);
-        viewPager.setAdapter(adapter);
-        tabLayout.setupWithViewPager(viewPager);
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+//        viewPager.setAdapter(adapter);
+//        tabLayout.setupWithViewPager(viewPager);
+//        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
     }
 }
