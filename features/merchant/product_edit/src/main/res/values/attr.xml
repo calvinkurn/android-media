@@ -19,4 +19,14 @@
         <attr name="lc_content_color" format="color" />
         <attr name="lc_content_text_size" format="dimension"/>
     </declare-styleable>
+
+    <declare-styleable name="LabelRadioButton">
+        <attr name="lr_radiobutton_enable" format="boolean" />
+        <attr name="lr_title" format="string" />
+        <attr name="lr_title_text_size" format="dimension" />
+        <attr name="lr_title_color" format="color" />
+        <attr name="lr_content" format="string" />
+        <attr name="lr_content_color" format="color" />
+        <attr name="lr_content_text_size" format="dimension"/>
+    </declare-styleable>
 </resources>
