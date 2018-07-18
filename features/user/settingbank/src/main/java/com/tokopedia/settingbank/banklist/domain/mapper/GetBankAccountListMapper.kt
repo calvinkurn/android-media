@@ -45,11 +45,11 @@ class GetBankAccountListMapper : Func1<Response<DataResponse<BankAccountListPojo
 
     private fun mapToBankAccountViewModel(bankAccount: BankAccount): BankAccountViewModel {
         return BankAccountViewModel(
-                bankAccount.bank_account_id,
+                bankAccount.bank_id,
                 bankAccount.branch,
                 bankAccount.acc_name,
                 bankAccount.acc_number,
-                bankAccount.bank_account_id,
+                bankAccount.acc_id,
                 bankAccount.bank_name,
                 bankAccount.primary,
                 bankAccount.bank_image_url

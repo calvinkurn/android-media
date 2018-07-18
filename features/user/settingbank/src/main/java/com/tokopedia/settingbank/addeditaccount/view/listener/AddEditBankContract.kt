@@ -14,7 +14,7 @@ import com.tokopedia.settingbank.addeditaccount.view.viewmodel.BankFormModel
 interface AddEditBankContract {
 
     interface View : CustomerView {
-        fun getContext(): Context
+        fun getContext(): Context?
 
         fun showLoading()
 

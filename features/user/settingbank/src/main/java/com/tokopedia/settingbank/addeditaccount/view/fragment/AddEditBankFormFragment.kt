@@ -43,7 +43,8 @@ class AddEditBankFormFragment : AddEditBankContract.View,
     private var bankFormModel = BankFormModel()
 
     override fun getScreenName(): String {
-        return if (activity.intent.getStringExtra(AddEditBankActivity.Companion.PARAM_ACTION) == BankFormModel.Companion.STATUS_ADD) {
+        return if (activity!!.intent.getStringExtra(AddEditBankActivity.Companion.PARAM_ACTION) ==
+                BankFormModel.Companion.STATUS_ADD) {
             AddEditBankAnalytics.SCREEN_NAME_ADD
         } else {
             AddEditBankAnalytics.SCREEN_NAME_EDIT
@@ -51,16 +52,17 @@ class AddEditBankFormFragment : AddEditBankContract.View,
     }
 
     override fun initInjector() {
-        presenter = AddEditBankDependencyInjector.Companion.inject(activity.applicationContext)
+        presenter = AddEditBankDependencyInjector.Companion.inject(activity!!.applicationContext)
         presenter.attachView(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        return inflater!!.inflate(R.layout.fragment_add_edit_bank_form, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_add_edit_bank_form, container, false)
+
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
         setMode()
@@ -77,7 +79,6 @@ class AddEditBankFormFragment : AddEditBankContract.View,
         })
     }
 
-
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_info_add_bank_account, menu)
         super.onCreateOptionsMenu(menu, inflater)
@@ -93,9 +94,9 @@ class AddEditBankFormFragment : AddEditBankContract.View,
     }
 
     private fun onInfoClicked() {
-        if (!::bottomInfoDialog.isInitialized) {
-            bottomInfoDialog = BottomSheetDialog(context)
-            val bottomLayout: View = activity.layoutInflater.inflate(R.layout
+        if (!::bottomInfoDialog.isInitialized && context != null) {
+            bottomInfoDialog = BottomSheetDialog(context!!)
+            val bottomLayout: View = activity!!.layoutInflater.inflate(R.layout
                     .bottom_sheet_info_add_bank_account, null)
             bottomInfoDialog.setContentView(bottomLayout)
 
@@ -112,21 +113,23 @@ class AddEditBankFormFragment : AddEditBankContract.View,
 
 
     private fun goToAddBank() {
-        val intentChooseBank = ChooseBankActivity.createIntentChooseBank(activity)
+        val intentChooseBank = ChooseBankActivity.createIntentChooseBank(activity!!)
         startActivityForResult(intentChooseBank, REQUEST_CHOOSE_BANK)
     }
 
     private fun goToAddBankFirstTime() {
-        val intentChooseBank = ChooseBankActivity.createIntentChooseBank(activity)
+        val intentChooseBank = ChooseBankActivity.createIntentChooseBank(activity!!)
         startActivityForResult(intentChooseBank, REQUEST_CHOOSE_BANK_FIRST_TIME)
     }
 
     private fun setMode() {
-        if (activity.intent.getStringExtra(AddEditBankActivity.Companion.PARAM_ACTION) == BankFormModel.Companion.STATUS_ADD) {
+        if (activity!!.intent.getStringExtra(AddEditBankActivity.Companion.PARAM_ACTION) ==
+                BankFormModel.Companion.STATUS_ADD) {
             goToAddBankFirstTime()
         } else {
-            activity.title = getString(R.string.title_edit_bank)
-            bankFormModel = activity.intent.getParcelableExtra(AddEditBankActivity.Companion.PARAM_DATA)
+            (activity!! as AddEditBankActivity).setTitle(getString(R.string.title_edit_bank))
+            bankFormModel = activity!!.intent.getParcelableExtra(AddEditBankActivity.Companion
+                    .PARAM_DATA)
             account_name_edit_text.setText(bankFormModel.accountName)
             account_number_edit_text.setText(bankFormModel.accountNumber)
             bank_name_edit_text.setText(bankFormModel.bankName)
@@ -255,8 +258,8 @@ class AddEditBankFormFragment : AddEditBankContract.View,
         val bundle = Bundle()
         bundle.putParcelable(AddEditBankActivity.PARAM_DATA, bankFormModel)
         intent.putExtras(bundle)
-        activity.setResult(Activity.RESULT_OK, intent)
-        activity.finish()
+        activity?.setResult(Activity.RESULT_OK, intent)
+        activity?.finish()
     }
 
     override fun onErrorAccountNumber(errorMessage: String) {
@@ -292,12 +295,13 @@ class AddEditBankFormFragment : AddEditBankContract.View,
     private fun onResultChooseBankFirstTime(resultCode: Int, data: Intent?) {
         try {
             if (successRetrieveBank(resultCode, data)) {
-                activity.title = getString(R.string.title_add_bank)
+
+                (activity!! as AddEditBankActivity).setTitle(getString(R.string.title_add_bank))
                 bankFormModel.status = BankFormModel.Companion.STATUS_ADD
                 disableSubmitButton()
                 onResultChooseBank(resultCode, data)
             } else {
-                activity.finish()
+                activity!!.finish()
             }
 
         } catch (e: NullPointerException) {
@@ -356,7 +360,7 @@ class AddEditBankFormFragment : AddEditBankContract.View,
     }
 
     override fun onCloseForm() {
-        activity.finish()
+        if (activity != null) activity!!.finish()
     }
 
     override fun onDestroyView() {

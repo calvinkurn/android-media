@@ -42,16 +42,16 @@ class ChooseBankFragment : ChooseBankContract.View, BankListener, SearchInputVie
     }
 
     override fun initInjector() {
-        presenter = ChooseBankDependencyInjector.Companion.inject(activity.applicationContext)
+        presenter = ChooseBankDependencyInjector.Companion.inject(activity!!.applicationContext)
         presenter.attachView(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater!!.inflate(R.layout.fragment_choose_bank, container, false)
+        return inflater.inflate(R.layout.fragment_choose_bank, container, false)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView()
         presenter.getBankList()
@@ -76,8 +76,8 @@ class ChooseBankFragment : ChooseBankContract.View, BankListener, SearchInputVie
         val bundle = Bundle()
         bundle.putParcelable(ChooseBankActivity.Companion.PARAM_RESULT_DATA, element)
         intent.putExtras(bundle)
-        activity.setResult(Activity.RESULT_OK, intent)
-        activity.finish()
+        activity!!.setResult(Activity.RESULT_OK, intent)
+        activity!!.finish()
     }
 
 

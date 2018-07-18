@@ -46,4 +46,8 @@ class AddEditBankActivity : BaseSimpleActivity() {
             return intent
         }
     }
+
+    fun setTitle(title : String){
+        toolbar.title = title
+    }
 }

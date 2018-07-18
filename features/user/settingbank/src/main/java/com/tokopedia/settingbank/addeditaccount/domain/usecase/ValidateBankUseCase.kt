@@ -21,7 +21,7 @@ class ValidateBankUseCase(val api: SettingBankApi,
 
     companion object {
 
-        private val PARAM_ACCOUNT_ID = "account_id"
+        private val PARAM_ACCOUNT_ID = "acc_id"
         private val PARAM_ACCOUNT_NAME = "acc_name"
         private val PARAM_ACCOUNT_NUMBER = "acc_no"
         private val PARAM_BANK_ID = "bank_id"

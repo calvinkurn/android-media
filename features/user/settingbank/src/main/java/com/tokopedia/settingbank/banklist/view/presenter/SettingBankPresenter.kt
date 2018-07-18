@@ -24,6 +24,7 @@ class SettingBankPresenter(private val userSession: UserSession,
     var page = 1
 
     override fun getBankListFirstTime() {
+        page = 1
         view.showLoadingFull()
         getBankAccountUseCase.execute(GetBankAccountListUseCase.getParam(
                 userSession.userId,
@@ -79,9 +80,7 @@ class SettingBankPresenter(private val userSession: UserSession,
         view.showLoadingDialog()
         if (element != null) {
             setDefaultBankAccountUseCase.execute(SetDefaultBankAccountUseCase.getParam(
-                    userSession.userId,
-                    element.accountId!!,
-                    userSession.deviceId
+                    element.accountId!!
             ), object : Subscriber<Boolean>() {
                 override fun onCompleted() {
 
@@ -109,9 +108,7 @@ class SettingBankPresenter(private val userSession: UserSession,
         view.showLoadingDialog()
         if (element != null) {
             deleteBankAccountUseCase.execute(DeleteBankAccountUseCase.getParam(
-                    userSession.userId,
-                    element.accountId!!,
-                    userSession.deviceId
+                    element.accountId!!
             ), object : Subscriber<Boolean>() {
                 override fun onCompleted() {
 

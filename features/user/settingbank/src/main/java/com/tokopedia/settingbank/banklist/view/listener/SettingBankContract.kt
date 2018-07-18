@@ -13,7 +13,7 @@ import com.tokopedia.settingbank.banklist.view.viewmodel.BankAccountViewModel
 interface SettingBankContract {
 
     interface View : CustomerView {
-        fun getContext(): Context
+        fun getContext(): Context?
 
         fun showLoadingFull()
 

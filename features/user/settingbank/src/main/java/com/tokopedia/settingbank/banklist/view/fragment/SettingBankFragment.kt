@@ -12,6 +12,7 @@ import com.tkpd.library.ui.view.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.settingbank.R
@@ -61,17 +62,17 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
     }
 
     override fun initInjector() {
-        presenter = SettingBankDependencyInjector.Companion.inject(activity.applicationContext)
+        presenter = SettingBankDependencyInjector.Companion.inject(activity!!.applicationContext)
         presenter.attachView(this)
     }
 
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater!!.inflate(R.layout.fragment_setting_bank, container, false)
+        return inflater.inflate(R.layout.fragment_setting_bank, container, false)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView()
         getBankList()
@@ -114,7 +115,7 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
 
 
     override fun onSuccessGetListBank(bankAccountList: BankAccountListViewModel) {
-        adapter.addList(bankAccountList.list!!)
+        adapter.setList(bankAccountList.list!!)
         account_list_rv.visibility = View.VISIBLE
         add_account_button.visibility = View.VISIBLE
 
@@ -126,10 +127,10 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
     private fun showErrorAddAccount(reason: String) {
         var errorMessage = reason
         if (errorMessage.isEmpty()) {
-            errorMessage = activity.getString(R.string.default_request_error_unknown)
+            errorMessage = activity!!.getString(R.string.default_request_error_unknown)
         }
-        ToasterError.make(view, errorMessage, 5000)
-                .setAction(activity.getString(R.string.close)) { }
+        ToasterError.make(view, errorMessage, BaseToaster.LENGTH_LONG)
+                .setAction(activity!!.getString(R.string.close)) { }
                 .show()
     }
 
@@ -192,7 +193,7 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
     override fun editBankAccount(adapterPosition: Int, element: BankAccountViewModel?) {
         if (element != null) {
             startActivityForResult(AddEditBankActivity.createIntentEditBank(
-                    activity
+                    activity!!
                     , BankFormModel(
                     BankFormModel.Companion.STATUS_EDIT,
                     element.bankId!!,
@@ -251,7 +252,7 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
 
     override fun onErrorDeleteAccount(errorMessage: String) {
 
-        if (errorMessage.isNullOrEmpty())
+        if (errorMessage.isEmpty())
             NetworkErrorHelper.showSnackbar(activity)
         else
             NetworkErrorHelper.showSnackbar(activity, errorMessage)
@@ -260,7 +261,7 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
 
     override fun addNewAccount() {
         if (enableAddButton) {
-            val intentBankForm = AddEditBankActivity.createIntentAddBank(activity)
+            val intentBankForm = AddEditBankActivity.createIntentAddBank(activity!!)
             startActivityForResult(intentBankForm, REQUEST_ADD_BANK)
         } else {
             showErrorAddAccount(reason)
@@ -297,9 +298,10 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == REQUEST_ADD_BANK && resultCode == Activity.RESULT_OK) {
-            //TODO : Add activity result add bank
-
+        if (requestCode == REQUEST_ADD_BANK
+                && resultCode == Activity.RESULT_OK) {
+            //Refresh data to renew validation and because there is no bank logo from form
+            getBankList()
         }
 
     }

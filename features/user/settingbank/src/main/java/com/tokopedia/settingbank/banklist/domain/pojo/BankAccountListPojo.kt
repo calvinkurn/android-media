@@ -16,13 +16,12 @@ data class PagingModel(
 )
 
 data class BankAccount(
-        val bank_id: Int? = 0,
-        val acc_id: Int? = 0,
+        val bank_id: String? = "",
+        val acc_id: String? = "",
         val acc_name: String? = "",
         val branch: String? = "",
         val bank_name: String? = "",
         val acc_number: String? = "",
-        val bank_account_id: String? = "",
         val primary: Boolean? = false,
         val bank_image_url: String? = "",
         val type: Int? = 0

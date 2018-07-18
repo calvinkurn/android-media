@@ -737,4 +737,10 @@ public class PosRouterApplication extends MainApplication implements
 
         return posAppComponent;
     }
+
+    @Override
+    public Intent getSettingBankIntent(Context context) {
+//        There is no setting bank in pos
+        return null;
+    }
 }

@@ -17,8 +17,7 @@ class SettingBankUrl {
         const val PATH_EDIT_BANK_ACCOUNT: String = "api/v2/bank-account/edit"
 
         const val IMAGE_EMPTY_BANK_LIST: String = "https://ecs7.tokopedia.net/img/android/others/page_1.png"
-        const val IMAGE_BOTTOM_DIALOG_ADD_ACCOUNT: String = "https://ecs7.tokopedia" +
-                ".net/img/android/others/Passbook@2x.jpg"
+        const val IMAGE_BOTTOM_DIALOG_ADD_ACCOUNT: String = "https://ecs7.tokopedia.net/img/android/others/Passbook@2x.jpg"
 
     }
 

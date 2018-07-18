@@ -16,10 +16,10 @@ class BankAccountAdapter(adapterTypeFactory: BankAccountTypeFactoryImpl,
 
     val emptyModel: EmptyModel = EmptyModel()
 
-    fun addList(list: ArrayList<BankAccountViewModel>) {
-        val lastPosition = this.visitables.size
+    fun setList(list: ArrayList<BankAccountViewModel>) {
+        this.visitables.clear()
         this.visitables.addAll(list)
-        notifyItemRangeInserted(lastPosition, list.size)
+        notifyDataSetChanged()
     }
 
     fun changeMain(adapterPosition: Int) {
