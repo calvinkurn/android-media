@@ -134,7 +134,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
 
         FeedDomain feedDomain = feedResult.getFeedDomain();
         ArrayList<Visitable> listFeedView = new ArrayList<>();
-        if (feedDomain.getWhitelist() != null) {
+        if (feedDomain.getWhitelist() != null && feedDomain.getWhitelist().isWhitelist()) {
             addWhitelistData(listFeedView, feedDomain.getWhitelist());
         }
         if (hasRecentView(feedDomain) && hasFeed(feedDomain)) {

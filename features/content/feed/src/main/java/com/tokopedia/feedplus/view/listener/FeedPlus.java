@@ -28,6 +28,8 @@ public interface FeedPlus {
 
         void finishLoadingProgress();
 
+        UserSession getUserSession();
+
         interface Kol {
             void onGoToKolProfileFromRecommendation(int position, int itemPosition, String userId);
 
@@ -216,8 +218,6 @@ public interface FeedPlus {
         int getAdapterListSize();
 
         void onWhitelistClicked(String url);
-
-        UserSession getUserSession();
     }
 
     interface Presenter extends CustomerPresenter<View> {
