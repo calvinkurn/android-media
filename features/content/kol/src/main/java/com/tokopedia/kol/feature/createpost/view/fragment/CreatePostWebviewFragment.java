@@ -17,6 +17,7 @@ import com.tokopedia.kol.R;
 public class CreatePostWebviewFragment extends BaseWebViewFragment {
 
     public static final String FORM_URL = "form_url";
+    public static final String SUCCESS_URL_PATH = "/content/new/success";
 
     public static CreatePostWebviewFragment newInstance(Bundle bundle) {
         CreatePostWebviewFragment fragment = new CreatePostWebviewFragment();
@@ -31,9 +32,12 @@ public class CreatePostWebviewFragment extends BaseWebViewFragment {
 
     @Override
     protected boolean shouldOverrideUrlLoading(WebView webView, String url) {
-        getActivity().setResult(Activity.RESULT_OK);
-        getActivity().finish();
-        return true;
+        if (url.contains(SUCCESS_URL_PATH)) {
+            getActivity().setResult(Activity.RESULT_OK);
+            getActivity().finish();
+            return true;
+        }
+        return false;
     }
 
     @Override
