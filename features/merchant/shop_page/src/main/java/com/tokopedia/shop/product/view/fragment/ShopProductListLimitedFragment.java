@@ -135,7 +135,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<ShopProduct
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         attribution = getArguments().getString(SHOP_ATTRIBUTION, "");
-        shopProductListLimitedPresenter.attachView(this);
+        shopProductListLimitedPresenter.attachView(this, this);
     }
 
     @Override
