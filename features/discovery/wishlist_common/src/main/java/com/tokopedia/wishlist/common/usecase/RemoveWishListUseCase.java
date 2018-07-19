@@ -31,6 +31,8 @@ public class RemoveWishListUseCase {
     public void createObservable(String productId, String userId,
                                  WishListActionListener wishlistActionListener) {
 
+        graphqlUseCase.clearRequest();
+
         Map<String, Object> variables = new HashMap<>();
 
         variables.put(PARAM_PRODUCT_ID, Integer.parseInt(productId));
