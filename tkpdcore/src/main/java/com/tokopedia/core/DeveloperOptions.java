@@ -1,6 +1,7 @@
 package com.tokopedia.core;
 
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatEditText;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -28,6 +29,9 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
     private TextView testOnBoarding;
     private TextView vForceCrash;
     private View vMaintenance;
+    private AppCompatEditText remoteConfigKeyEditText;
+    private AppCompatEditText remoteConfigValueEditText;
+    private AppCompatEditText remoteConfigValueEditText;
 
     private TextView vGoTochuck;
     private CheckBox toggleChuck;

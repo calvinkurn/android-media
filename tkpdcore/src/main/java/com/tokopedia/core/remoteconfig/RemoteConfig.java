@@ -79,6 +79,10 @@ public interface RemoteConfig {
      * @return value as string
      */
     String getString(String key, String defaultValue);
+    /**
+    * This is for debugging only please use this only for debug, please
+    */
+    void putString(String key, String value);
 
     /**
      * Fetch key value data

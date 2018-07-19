@@ -62,59 +62,109 @@
             android:text="Test OnBoarding"
             android:textColor="@color/white" />
 
-            <TextView
-                android:id="@+id/force_crash"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="@dimen/margin_small"
-                android:background="@drawable/btn_share"
-                android:gravity="center"
-                android:padding="@dimen/margin_small"
-                android:text="Force Crash"
-                android:textColor="@color/white" />
+        <TextView
+            android:id="@+id/force_crash"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:background="@drawable/btn_share"
+            android:gravity="center"
+            android:padding="@dimen/margin_small"
+            android:text="Force Crash"
+            android:textColor="@color/white" />
 
-            <CheckBox
-                android:id="@+id/toggle_chuck"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="@dimen/margin_small"
-                android:padding="@dimen/margin_small"
-                android:text="Enable Network Log on Notification" />
+        <CheckBox
+            android:id="@+id/toggle_chuck"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:padding="@dimen/margin_small"
+            android:text="Enable Network Log on Notification" />
 
-            <TextView
-                android:id="@+id/goto_chuck"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="@dimen/margin_small"
-                android:background="@drawable/btn_share"
-                android:gravity="center"
-                android:padding="@dimen/margin_small"
-                android:text="View Network Log"
-                android:textColor="@color/white" />
+        <TextView
+            android:id="@+id/goto_chuck"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:background="@drawable/btn_share"
+            android:gravity="center"
+            android:padding="@dimen/margin_small"
+            android:text="View Network Log"
+            android:textColor="@color/white" />
 
-            <CheckBox
-                android:id="@+id/toggle_analytics"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="@dimen/margin_small"
-                android:padding="@dimen/margin_small"
-                android:text="Enable Analytics Log on Notification" />
+        <CheckBox
+            android:id="@+id/toggle_analytics"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:padding="@dimen/margin_small"
+            android:text="Enable Analytics Log on Notification" />
 
-            <TextView
-                android:id="@+id/goto_analytics"
+        <TextView
+            android:id="@+id/goto_analytics"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:background="@drawable/btn_share"
+            android:gravity="center"
+            android:padding="@dimen/margin_small"
+            android:text="View Analytics Log"
+            android:textColor="@color/white" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_10"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.AppCompatEditText
+                android:id="@+id/et_remote_config_key"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="@dimen/margin_small"
-                android:background="@drawable/btn_share"
-                android:gravity="center"
-                android:padding="@dimen/margin_small"
-                android:text="View Analytics Log"
-                android:textColor="@color/white" />
+                android:layout_marginBottom="@dimen/dp_4"
+                android:hint="Remote Config Key" />
+
+            <android.support.v7.widget.AppCompatEditText
+                android:id="@+id/et_remote_config_value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_4"
+                android:hint="Remote Config Value" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/btn_check"
+                    style="@style/Button.Submit.Green"
+                    android:layout_width="@dimen/dp_0"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Check" />
+
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/btn_save"
+                    style="@style/Button.Submit.Green"
+                    android:layout_width="@dimen/dp_0"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Save" />
+            </LinearLayout>
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/tv_remote_config_value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+        </LinearLayout>
 
     </LinearLayout>
 </ScrollView>
