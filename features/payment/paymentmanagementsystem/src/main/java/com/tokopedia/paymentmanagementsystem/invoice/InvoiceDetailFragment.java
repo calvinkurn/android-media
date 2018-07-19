@@ -9,6 +9,9 @@ import com.tokopedia.abstraction.base.view.fragment.BaseWebViewFragment;
 import com.tokopedia.abstraction.common.utils.network.URLGenerator;
 import com.tokopedia.paymentmanagementsystem.common.Constant;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 /**
  * Created by zulfikarrahman on 7/9/18.
  */
@@ -20,7 +23,17 @@ public class InvoiceDetailFragment extends BaseWebViewFragment {
         if(getActivity().getApplication() instanceof AbstractionRouter){
             accessToken =  ((AbstractionRouter)getActivity().getApplication()).getSession().getAccessToken();
         }
-        return URLGenerator.generateURLSessionLogin(getArguments().getString(Constant.INVOICE_URL_EXTRA), accessToken, getUserIdForHeader());
+        return URLGenerator.generateURLSessionLogin(encodeUrl(getArguments().getString(Constant.INVOICE_URL_EXTRA)), accessToken, getUserIdForHeader());
+    }
+
+    private static String encodeUrl(String url) {
+        try {
+            return URLEncoder.encode(url, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        return url;
     }
 
     @Nullable
