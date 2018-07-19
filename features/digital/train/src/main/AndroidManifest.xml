@@ -44,7 +44,7 @@
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name="com.tokopedia.train.scheduledetail.presentation.activity.TrainScheduleDetailActivity"
-            android:label=""
+            android:label="@string/train_schedule_detail_toolbar_title"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
         <activity

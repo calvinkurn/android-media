@@ -56,6 +56,7 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
     private static final int DATE_PICKER_DEPARTURE_REQUEST_CODE = 1005;
     private static final int DATE_PICKER_RETURN_REQUEST_CODE = 1006;
     private static final int DEPARTURE_SCHEDULE_REQUEST_CODE = 1007;
+    private static final int REQUEST_CODE_LOGIN = 2008;
 
     private AppCompatButton buttonOneWayTrip;
     private AppCompatButton buttonRoundTrip;
@@ -355,6 +356,9 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
                             calendarSelected.get(Calendar.MONTH), calendarSelected.get(Calendar.DATE));
                 }
                 break;
+            case REQUEST_CODE_LOGIN:
+                trainHomepagePresenterImpl.onLoginRecieved();
+                break;
         }
     }
 
@@ -376,6 +380,19 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
     @Override
     public void getShowOriginAndDestinationShouldNotSameError(int resId) {
         showMessageErrorInSnackBar(resId);
+    }
+
+    @Override
+    public void navigateToLoginPage() {
+        if (getActivity().getApplication() instanceof TrainRouter
+                && ((TrainRouter) getActivity().getApplication()).getLoginIntent() != null) {
+            startActivityForResult(((TrainRouter) getActivity().getApplication()).getLoginIntent(), REQUEST_CODE_LOGIN);
+        }
+    }
+
+    @Override
+    public void closePage() {
+        getActivity().finish();
     }
 
     @Override

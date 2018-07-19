@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.TaskStackBuilder;
 import android.view.Menu;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
@@ -25,11 +24,8 @@ public class TrainHomepageActivity extends TrainBaseActivity implements HasCompo
     @DeepLink({ApplinkConst.TRAIN_HOMEPAGE})
     public static Intent intentForTaskStackBuilderMethods(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return TrainHomepageActivity.getCallingIntent(context);
-    }
-
-    public static Intent getCallingIntent(Context context){
-        return new Intent(context, TrainHomepageActivity.class);
+        Intent intent = new Intent(context, TrainHomepageActivity.class);
+        return intent.setData(uri.build()).putExtras(extras);
     }
 
     @Override

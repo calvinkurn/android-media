@@ -23,4 +23,6 @@ public interface TrainRouter {
 
     Intent getIntentOfLoyaltyActivityWithoutCoupon(Activity activity, String platform);
 
+    Intent getLoginIntent();
+
 }
