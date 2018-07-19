@@ -38,6 +38,15 @@ public interface DistrictRecommendationContract {
         void showNoConnection(@NonNull String message);
     }
 
+    interface IAnalyticsDistrictRecommendation{
+
+        void sendAnalyticsOnBackPressClicked();
+
+        void sendAnalyticsOnDistrictDropdownSelectionItemClicked(String districtName);
+
+        void sendAnalyticsOnClearTextDistrictRecommendationInput();
+    }
+
     interface Presenter extends CustomerPresenter<View> {
         void setToken(Token token);
 
@@ -54,5 +63,6 @@ public interface DistrictRecommendationContract {
         String INTENT_DISTRICT_RECOMMENDATION_ADDRESS = "district_recommendation_address";
         String INTENT_DATA_ADDRESS = "address";
         String ARGUMENT_DATA_TOKEN = "token";
+        String ARGUMENT_IS_FROM_MARKETPLACE_CART = "ARGUMENT_IS_FROM_MARKETPLACE_CART";
     }
 }

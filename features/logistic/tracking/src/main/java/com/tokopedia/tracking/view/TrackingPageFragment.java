@@ -27,6 +27,7 @@ import com.tokopedia.tracking.di.TrackingPageModule;
 import com.tokopedia.tracking.presenter.ITrackingPagePresenter;
 import com.tokopedia.tracking.utils.DateUtil;
 import com.tokopedia.tracking.viewmodel.TrackingViewModel;
+import com.tokopedia.transactionanalytics.OrderAnalyticsOrderTracking;
 
 import javax.inject.Inject;
 
@@ -37,7 +38,8 @@ import static com.tokopedia.tracking.view.TrackingPageActivity.URL_LIVE_TRACKING
  * Created by kris on 5/9/18. Tokopedia
  */
 
-public class TrackingPageFragment extends BaseDaggerFragment implements ITrackingPageFragment {
+public class TrackingPageFragment extends BaseDaggerFragment implements
+        ITrackingPageFragment, IAnalyticsTrackingPageFragment {
 
     private static final String ADDITIONAL_INFO_URL = "https://m.tokopedia.com/bantuan/217217126-agen-logistik-di-tokopedia";
     private static final String INVALID_REFERENCE_STATUS = "resi tidak valid";
@@ -66,6 +68,8 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
     ITrackingPagePresenter presenter;
     @Inject
     DateUtil dateUtil;
+    @Inject
+    OrderAnalyticsOrderTracking orderAnalyticsOrderTracking;
 
     public static TrackingPageFragment createFragment(String orderId, String liveTrackingUrl) {
         TrackingPageFragment fragment = new TrackingPageFragment();
@@ -117,7 +121,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
     public void populateView(TrackingViewModel model) {
         referenceNumber.setText(model.getReferenceNumber());
         ImageHandler.LoadImage(courierLogo, model.getCourierLogoUrl());
-        if(TextUtils.isEmpty(model.getServiceCode())) descriptionLayout.setVisibility(View.GONE);
+        if (TextUtils.isEmpty(model.getServiceCode())) descriptionLayout.setVisibility(View.GONE);
         if (!TextUtils.isEmpty(model.getDeliveryDate()))
             deliveryDate.setText(dateUtil.getFormattedDate(model.getDeliveryDate()));
 
@@ -131,7 +135,15 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
         trackingHistory.setAdapter(new TrackingHistoryAdapter(model.getHistoryList(), dateUtil));
         setEmptyHistoryView(model);
         setLiveTrackingButton();
+        sendAnalyticsOnViewTrackingRendered();
+    }
 
+    public void sendAnalyticsOnViewTrackingRendered() {
+        orderAnalyticsOrderTracking.eventViewOrderTrackingImpressionButtonLiveTracking();
+    }
+
+    public void sendAnalyticsOnButtonLiveTrackingClicked() {
+        orderAnalyticsOrderTracking.eventClickOrderTrackingClickButtonLiveTracking();
     }
 
     @Override
@@ -223,6 +235,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                sendAnalyticsOnButtonLiveTrackingClicked();
                 startActivity(
                         SimpleWebViewActivity.createIntent(getActivity(),
                                 getArguments().getString(URL_LIVE_TRACKING)));

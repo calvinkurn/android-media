@@ -9,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -18,13 +19,13 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.UIThread;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.district_recommendation.R;
 import com.tokopedia.district_recommendation.di.DaggerDistrictRecommendationComponent;
 import com.tokopedia.district_recommendation.di.DistrictRecommendationComponent;
 import com.tokopedia.district_recommendation.domain.mapper.AddressMapper;
 import com.tokopedia.district_recommendation.domain.model.Address;
 import com.tokopedia.district_recommendation.domain.model.Token;
-import com.tokopedia.core.network.NetworkErrorHelper;
 
 import java.util.concurrent.TimeUnit;
 
@@ -40,8 +41,9 @@ import static com.tokopedia.district_recommendation.view.DistrictRecommendationC
 import static com.tokopedia.district_recommendation.view.DistrictRecommendationContract.Constant.INTENT_DISTRICT_RECOMMENDATION_ADDRESS;
 
 public class DistrictRecommendationFragment
-        extends BasePresenterFragment<DistrictRecommendationContract.Presenter>
-        implements DistrictRecommendationContract.View, DistrictRecommendationAdapter.Listener {
+        extends BasePresenterFragment<DistrictRecommendationContract.Presenter> implements
+        DistrictRecommendationContract.View,
+        DistrictRecommendationAdapter.Listener {
 
     private static final int THRESHOLD = 3;
 
@@ -55,6 +57,8 @@ public class DistrictRecommendationFragment
     private OnQueryListener queryListener;
     private DistrictRecommendationAdapter adapter;
     private CompositeSubscription compositeSubscription;
+
+    private DistrictRecommendationContract.IAnalyticsDistrictRecommendation analyticsListener;
 
     @Inject
     DistrictRecommendationContract.Presenter presenter;
@@ -117,7 +121,7 @@ public class DistrictRecommendationFragment
 
     @Override
     protected void initialListener(Activity activity) {
-
+        analyticsListener = (DistrictRecommendationContract.IAnalyticsDistrictRecommendation) activity;
     }
 
     @Override
@@ -178,6 +182,12 @@ public class DistrictRecommendationFragment
 
     @Override
     protected void setViewListener() {
+        int searchCloseButtonId = searchAddress.getContext().getResources()
+                .getIdentifier("android:id/search_close_btn", null, null);
+        ImageView closeButton = this.searchAddress.findViewById(searchCloseButtonId);
+        if (closeButton != null)
+            closeButton.setOnClickListener(v ->
+                    analyticsListener.sendAnalyticsOnClearTextDistrictRecommendationInput());
 
     }
 
@@ -329,6 +339,7 @@ public class DistrictRecommendationFragment
 
     @Override
     public void onItemClick(Address address) {
+        analyticsListener.sendAnalyticsOnDistrictDropdownSelectionItemClicked(address.getDistrictName());
         Intent resultIntent = new Intent();
         resultIntent.putExtra(INTENT_DATA_ADDRESS, address);
         resultIntent.putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS, addressMapper.convertAddress(address));

@@ -7,17 +7,31 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.district_recommendation.R;
 import com.tokopedia.district_recommendation.domain.model.Token;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 
 import static com.tokopedia.district_recommendation.view.DistrictRecommendationContract.Constant.ARGUMENT_DATA_TOKEN;
+import static com.tokopedia.district_recommendation.view.DistrictRecommendationContract.Constant.ARGUMENT_IS_FROM_MARKETPLACE_CART;
 
-public class DistrictRecommendationActivity extends BasePresenterActivity {
+public class DistrictRecommendationActivity extends BasePresenterActivity implements
+        DistrictRecommendationContract.IAnalyticsDistrictRecommendation {
+
+    private CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
 
     public static Intent createInstance(Activity activity, Token token) {
         Intent intent = new Intent(activity, DistrictRecommendationActivity.class);
         intent.putExtra(ARGUMENT_DATA_TOKEN, token);
+        intent.putExtra(ARGUMENT_IS_FROM_MARKETPLACE_CART, false);
+        return intent;
+    }
+
+    public static Intent createInstanceFromMarketplaceCart(Activity activity, Token token) {
+        Intent intent = new Intent(activity, DistrictRecommendationActivity.class);
+        intent.putExtra(ARGUMENT_DATA_TOKEN, token);
+        intent.putExtra(ARGUMENT_IS_FROM_MARKETPLACE_CART, true);
         return intent;
     }
 
@@ -67,7 +81,11 @@ public class DistrictRecommendationActivity extends BasePresenterActivity {
 
     @Override
     protected void initVar() {
-
+        if (getApplication() instanceof AbstractionRouter) {
+            checkoutAnalyticsChangeAddress = new CheckoutAnalyticsChangeAddress(
+                    ((AbstractionRouter) getApplication()).getAnalyticTracker()
+            );
+        }
     }
 
     @Override
@@ -84,5 +102,26 @@ public class DistrictRecommendationActivity extends BasePresenterActivity {
     @Override
     protected boolean isLightToolbarThemes() {
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        sendAnalyticsOnBackPressClicked();
+        super.onBackPressed();
+    }
+
+    @Override
+    public void sendAnalyticsOnBackPressClicked() {
+        checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickXPojokKiriKotaAtauKecamatanPadaTambahAddress();
+    }
+
+    @Override
+    public void sendAnalyticsOnDistrictDropdownSelectionItemClicked(String districtName) {
+        checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickChecklistKotaAtauKecamatanPadaTambahAddress(districtName);
+    }
+
+    @Override
+    public void sendAnalyticsOnClearTextDistrictRecommendationInput() {
+        checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickXPojokKananKotaAtauKecamatanPadaTambahAddress();
     }
 }

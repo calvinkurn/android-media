@@ -211,11 +211,12 @@ public class CheckoutAnalyticsChangeAddress extends TransactionAnalytics {
         );
     }
 
-    public void eventClickShippingCartChangeAddressClickFillKodePosPadaTambahAddress() {
-        sendEventCategoryAction(
+    public void eventClickShippingCartChangeAddressClickFillKodePosPadaTambahAddress(String eventLabel) {
+        sendEventCategoryActionLabel(
                 EventName.CLICK_SHIPPING,
                 EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.CLICK_FILL_KODE_POS_PADA_TAMBAH_ADDRESS
+                EventAction.CLICK_FILL_KODE_POS_PADA_TAMBAH_ADDRESS,
+                eventLabel
         );
     }
 

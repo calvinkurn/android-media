@@ -405,9 +405,14 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     public void onAddressContainerClicked(RecipientAddressModel model) {
         if (mCartAddressChoiceActivityListener != null) {
             KeyboardHandler.hideSoftKeyboard(getActivity());
-            checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressClickChecklistAlamatFromPilihAlamatLainnya();
+            sendAnalyticsOnAddressSelectionClicked();
             mCartAddressChoiceActivityListener.finishSendResultActionSelectedAddress(model);
         }
+    }
+
+    private void sendAnalyticsOnAddressSelectionClicked() {
+        checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressClickChecklistAlamatFromPilihAlamatLainnya();
+        checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickRadioButtonFromPilihAlamatLainnya();
     }
 
     @Override
@@ -415,7 +420,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressClickUbahFromPilihAlamatLainnya();
         AddressModelMapper mapper = new AddressModelMapper();
 
-        Intent intent = AddAddressActivity.createInstance(getActivity(), mapper.transform(model), token);
+        Intent intent = AddAddressActivity.createInstanceFromCartCheckout(getActivity(), mapper.transform(model), token);
         startActivityForResult(intent, ManageAddressConstant.REQUEST_CODE_PARAM_EDIT);
     }
 
@@ -449,7 +454,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         }
 
     }
-    
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);

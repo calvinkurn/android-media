@@ -345,6 +345,11 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
     @Override
     public void onAddressContainerClicked(RecipientAddressModel model) {
         mCartAddressChoicePresenter.setSelectedRecipientAddress(model);
+        sendAnalyticsOnAddressSelectionClicked();
+    }
+
+    private void sendAnalyticsOnAddressSelectionClicked() {
+        checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickRadioButtonFromTujuanPengiriman();
     }
 
     @Override
@@ -352,7 +357,7 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
         checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressClickUbahFromPilihAlamatLainnya();
         AddressModelMapper mapper = new AddressModelMapper();
 
-        Intent intent = AddAddressActivity.createInstance(getActivity(), mapper.transform(model), token);
+        Intent intent = AddAddressActivity.createInstanceFromCartCheckout(getActivity(), mapper.transform(model), token);
         startActivityForResult(intent, ManageAddressConstant.REQUEST_CODE_PARAM_EDIT);
     }
 

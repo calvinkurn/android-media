@@ -15,9 +15,11 @@ import com.tokopedia.core.manage.people.address.model.AddressModel;
 import com.tokopedia.core.manage.people.address.model.Token;
 
 import static com.tokopedia.core.manage.people.address.ManageAddressConstant.EDIT_PARAM;
+import static com.tokopedia.core.manage.people.address.ManageAddressConstant.EXTRA_PLATFORM_PAGE;
 import static com.tokopedia.core.manage.people.address.ManageAddressConstant.IS_DISTRICT_RECOMMENDATION;
 import static com.tokopedia.core.manage.people.address.ManageAddressConstant.IS_EDIT;
 import static com.tokopedia.core.manage.people.address.ManageAddressConstant.KERO_TOKEN;
+import static com.tokopedia.core.manage.people.address.ManageAddressConstant.PLATFORM_MARKETPLACE_CART;
 
 /**
  * Created by nisie on 9/6/16.
@@ -97,6 +99,18 @@ public class AddAddressActivity extends BasePresenterActivity {
         Intent intent = new Intent(activity, AddAddressActivity.class);
         Bundle bundle = new Bundle();
         bundle.putBoolean(IS_DISTRICT_RECOMMENDATION, true);
+        bundle.putParcelable(EDIT_PARAM, data.convertToDestination());
+        bundle.putBoolean(IS_EDIT, true);
+        bundle.putParcelable(KERO_TOKEN, token);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    public static Intent createInstanceFromCartCheckout(Activity activity, AddressModel data, Token token) {
+        Intent intent = new Intent(activity, AddAddressActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(IS_DISTRICT_RECOMMENDATION, true);
+        bundle.putString(EXTRA_PLATFORM_PAGE, PLATFORM_MARKETPLACE_CART);
         bundle.putParcelable(EDIT_PARAM, data.convertToDestination());
         bundle.putBoolean(IS_EDIT, true);
         bundle.putParcelable(KERO_TOKEN, token);
