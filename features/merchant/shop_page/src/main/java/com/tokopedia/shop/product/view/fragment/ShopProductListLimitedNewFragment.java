@@ -218,7 +218,9 @@ public class ShopProductListLimitedNewFragment extends BaseListFragment<BaseShop
                 }
                 if (lastCompleteVisiblePosition > -1) {
                     if (lastCompleteVisiblePosition >= ShopPageConstant.ITEM_OFFSET) {
-                        bottomActionView.show();
+                        if (shopProductNewAdapter.getShopProductViewModelList().size() > 0) {
+                            bottomActionView.show();
+                        }
                     } else {
                         bottomActionView.hide();
                     }
