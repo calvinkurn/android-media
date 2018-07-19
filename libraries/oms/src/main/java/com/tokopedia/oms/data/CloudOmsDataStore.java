@@ -24,8 +24,8 @@ public class CloudOmsDataStore implements OmsDataStore {
     }
 
     @Override
-    public Observable<VerifyMyCartResponse> verifyCart(JsonObject requestBody) {
-        return omsApi.postCartVerify(requestBody);
+    public Observable<VerifyMyCartResponse> verifyCart(JsonObject requestBody,boolean flag) {
+        return omsApi.postCartVerify(requestBody,flag);
     }
 
     @Override

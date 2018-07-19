@@ -308,7 +308,7 @@ public class EventReviewTicketPresenter
         cartItem.setMetaData(meta);
         cartItem.setConfiguration(config);
         cartItem.setQuantity(packageViewModel.getSelectedQuantity());
-        cartItem.setProductId(packageViewModel.getProductId());
+        cartItem.setProductId(packageViewModel.getDigitalProductID());
 
 
         cartItems.add(cartItem);
@@ -339,11 +339,8 @@ public class EventReviewTicketPresenter
         final RequestParams params = RequestParams.create();
         params.putObject(Utils.Constants.CHECKOUTDATA, convertPackageToCartItem(checkoutData));
         params.putBoolean("ispromocodecase", !isPromoCodeCase);
-        com.tokopedia.usecase.RequestParams useParams = com.tokopedia.usecase.RequestParams.create();
-        useParams.putObject(Utils.Constants.CHECKOUTDATA, convertPackageToCartItem(checkoutData));
-        useParams.putBoolean("ispromocodecase", !isPromoCodeCase);
         if (isEventOmsEnabled()) {
-            postVerifyCartUseCase.execute(useParams, new Subscriber<VerifyMyCartResponse>() {
+            postVerifyCartUseCase.execute(params, new Subscriber<VerifyMyCartResponse>() {
                 @Override
                 public void onCompleted() {
 

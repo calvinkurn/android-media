@@ -137,7 +137,9 @@ public class EventInerceptors extends TkpdAuthInterceptor {
                 || chainURL.contains(TkpdBaseURL.EVENTS_DOMAIN + "v1/api/expresscart/checkout")
                 || chainURL.contains(TkpdBaseURL.EVENTS_DOMAIN + "v1/api/expresscart/init")
                 || chainURL.contains(TkpdBaseURL.EVENTS_DOMAIN + "v1/api/rating")
-                || chainURL.contains(TkpdBaseURL.EVENTS_DOMAIN + "v1/api/rating/user")) {
+                || chainURL.contains(TkpdBaseURL.EVENTS_DOMAIN + "v1/api/rating/user")
+                || chainURL.contains(TkpdBaseURL.OMS_DOMAIN + "v1/api/expresscart/verify?")
+                || chainURL.contains(TkpdBaseURL.OMS_DOMAIN + "v1/api/expresscart/checkout")) {
             final Request originRequest = chain.request();
             Request.Builder newRequest = chain.request().newBuilder();
 

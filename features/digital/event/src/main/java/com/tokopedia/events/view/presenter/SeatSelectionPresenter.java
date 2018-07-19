@@ -182,11 +182,8 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
         RequestParams params = RequestParams.create();
         params.putObject("checkoutdata", convertPackageToCartItem(selectedpkgViewModel));
         params.putBoolean("ispromocodecase", true);
-        com.tokopedia.usecase.RequestParams useParams = com.tokopedia.usecase.RequestParams.create();
-        useParams.putObject("checkoutdata", convertPackageToCartItem(selectedpkgViewModel));
-        useParams.putBoolean("ispromocodecase", true);
         if (isEventOmsEnabled()) {
-            postVerifyCartUseCase.execute(useParams, new Subscriber<VerifyMyCartResponse>() {
+            postVerifyCartUseCase.execute(params, new Subscriber<VerifyMyCartResponse>() {
                 @Override
                 public void onCompleted() {
 

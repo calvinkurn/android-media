@@ -6,7 +6,9 @@ import com.tokopedia.oms.data.entity.response.verifyresponse.VerifyMyCartRespons
 import com.tokopedia.oms.view.utils.Utils;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
+
 import javax.inject.Inject;
+
 import rx.Observable;
 
 public class PostVerifyCartUseCase extends UseCase<VerifyMyCartResponse> {
@@ -21,6 +23,7 @@ public class PostVerifyCartUseCase extends UseCase<VerifyMyCartResponse> {
     @Override
     public Observable<VerifyMyCartResponse> createObservable(RequestParams requestParams) {
         JsonObject requestBody = (JsonObject) requestParams.getObject(Utils.Constants.CHECKOUTDATA);
-        return omsRepository.verifyCard(requestBody);
+        boolean flag = requestParams.getBoolean("ispromocodecase", false);
+        return omsRepository.verifyCard(requestBody, flag);
     }
 }

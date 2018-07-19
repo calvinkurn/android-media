@@ -9,7 +9,7 @@ import rx.Observable;
 
 public interface OmsRepository {
 
-    Observable<VerifyMyCartResponse> verifyCard(JsonObject requestBody);
+    Observable<VerifyMyCartResponse> verifyCard(JsonObject requestBody,boolean flag);
 
     Observable<JsonObject> checkoutCart(JsonObject requestBody);
 
