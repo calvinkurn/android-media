@@ -5,10 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingEnd="@dimen/dp_20"
-    android:paddingLeft="@dimen/dp_20"
-    android:paddingRight="@dimen/dp_20"
-    android:paddingStart="@dimen/dp_20">
+    android:paddingEnd="@dimen/dp_16"
+    android:paddingLeft="@dimen/dp_16"
+    android:paddingRight="@dimen/dp_16"
+    android:paddingStart="@dimen/dp_16">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -57,15 +57,16 @@
         style="@style/TextSmallMedium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_4"
         android:gravity="end"
+        android:paddingBottom="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_4"
         android:text="@string/label_change_address"
         android:textColor="@color/tkpd_main_green" />
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16">
+        android:layout_height="wrap_content">
 
         <TextView
             android:id="@+id/tv_label_note_for_seller"

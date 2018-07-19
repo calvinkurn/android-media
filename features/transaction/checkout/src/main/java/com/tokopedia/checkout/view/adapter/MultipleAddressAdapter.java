@@ -21,8 +21,7 @@ import rx.subscriptions.CompositeSubscription;
  * Created by kris on 1/23/18. Tokopedia
  */
 
-public class MultipleAddressAdapter
-        extends RecyclerView.Adapter<RecyclerView.ViewHolder>
+public class MultipleAddressAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         implements MultipleAddressItemAdapter.MultipleAddressItemAdapterListener {
 
     private static final int MULTIPLE_ADDRESS_ADAPTER_LAYOUT =
@@ -101,10 +100,10 @@ public class MultipleAddressAdapter
     }
 
     @Override
-    public void onChangeAddress(MultipleAddressItemAdapter adapter, int position,
-                                List<MultipleAddressItemData> multipleAddressItemDataList,
-                                RecipientAddressModel recipientAddressModel) {
-        listener.onChangeAddress(adapter, position, multipleAddressItemDataList, recipientAddressModel);
+    public void onChangeAddress(MultipleAddressItemAdapter adapter,
+                                RecipientAddressModel recipientAddressModel,
+                                int childPosition, int parentPosition) {
+        listener.onChangeAddress(adapter, addressData, recipientAddressModel, childPosition, parentPosition);
     }
 
     public void unsubscribeSubscription() {
@@ -150,7 +149,10 @@ public class MultipleAddressAdapter
 
         void onDeleteItem(int position, List<MultipleAddressItemData> multipleAddressItemDataList);
 
-        void onChangeAddress(MultipleAddressItemAdapter adapter, int position,
-                             List<MultipleAddressItemData> multipleAddressItemDataList, RecipientAddressModel recipientAddressModel);
+        void onChangeAddress(MultipleAddressItemAdapter adapter,
+                             ArrayList<MultipleAddressAdapterData> dataList,
+                             RecipientAddressModel recipientAddressModel,
+                             int childPosition,
+                             int parentPosition);
     }
 }

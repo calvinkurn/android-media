@@ -37,6 +37,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceActivity.TYPE_REQUEST_MULTIPLE_ADDRESS_CHANGE_ADDRESS;
 import static com.tokopedia.checkout.view.view.multipleaddressform.AddShipmentAddressActivity.EDIT_MODE;
 import static com.tokopedia.checkout.view.view.multipleaddressform.MultipleAddressFormActivity.RESULT_CODE_SUCCESS_SET_SHIPPING;
 
@@ -129,8 +130,7 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
                                         MultipleAddressAdapterData data,
                                         MultipleAddressItemData addressData) {
         checkoutAnalyticsMultipleAddress.eventClickMultipleAddressClickTambahPengirimanBaruFromKirimKeBeberapaAlamat();
-        Intent intent = CartAddressChoiceActivity.createInstance(getActivity(), null,
-                CartAddressChoiceActivity.TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST);
+        Intent intent = CartAddressChoiceActivity.createInstance(getActivity());
         startActivityForResult(intent, CartAddressChoiceActivity.REQUEST_CODE);
     }
 
@@ -153,12 +153,13 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
     }
 
     @Override
-    public void onChangeAddress(MultipleAddressItemAdapter adapter, int position,
-                                List<MultipleAddressItemData> multipleAddressItemDataList,
-                                RecipientAddressModel recipientAddressModel) {
+    public void onChangeAddress(MultipleAddressItemAdapter adapter,
+                                ArrayList<MultipleAddressAdapterData> dataList,
+                                RecipientAddressModel recipientAddressModel,
+                                int childPosition, int parentPosition) {
         Intent intent = CartAddressChoiceActivity.createInstance(getActivity(), recipientAddressModel,
-                CartAddressChoiceActivity.TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST);
-        startActivityForResult(intent, CartAddressChoiceActivity.REQUEST_CODE);
+                dataList, childPosition, parentPosition);
+        startActivityForResult(intent, TYPE_REQUEST_MULTIPLE_ADDRESS_CHANGE_ADDRESS);
     }
 
     @Override
@@ -175,13 +176,37 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == CartAddressChoiceActivity.REQUEST_CODE
-                && resultCode == CartAddressChoiceActivity.RESULT_CODE_ACTION_SELECT_ADDRESS) {
-            RecipientAddressModel addressModel = data.getParcelableExtra(
-                    CartAddressChoiceActivity.EXTRA_SELECTED_ADDRESS_DATA);
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case TYPE_REQUEST_MULTIPLE_ADDRESS_CHANGE_ADDRESS:
+                    ArrayList<MultipleAddressAdapterData> dataList = data.getParcelableArrayListExtra(CartAddressChoiceActivity.EXTRA_MULTIPLE_ADDRESS_DATA_LIST);
+                    RecipientAddressModel newAddress = data.getParcelableExtra(CartAddressChoiceActivity.EXTRA_SELECTED_ADDRESS_DATA);
+                    int childPosition = data.getIntExtra(CartAddressChoiceActivity.EXTRA_MULTIPLE_ADDRESS_CHILD_INDEX, -1);
+                    int parentPosition = data.getIntExtra(CartAddressChoiceActivity.EXTRA_MULTIPLE_ADDRESS_PARENT_INDEX, -1);
+                    if (newAddress != null && dataList != null && childPosition != -1 && parentPosition != -1) {
+                        if (dataList.size() > 0) {
+                            for (int i = 0; i < dataList.size(); i++) {
+                                if (i == parentPosition && dataList.get(i).getItemListData().size() > 0) {
+                                    boolean findItem = false;
+                                    for (int j = 0; j < dataList.get(i).getItemListData().size(); j++) {
+                                        if (j == childPosition) {
+                                            dataList.get(i).getItemListData().get(j).setRecipientAddressModel(newAddress);
+                                            findItem = true;
+                                            break;
+                                        }
+                                    }
+                                    if (findItem) {
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    // Re-setup recycler view adapter to prevent crash if don't keep activities is on
+                    setRecyclerViewAdapter(dataList, parentPosition);
+                    break;
+            }
         }
-
 
 //        if (requestCode == EDIT_SHIPMENT_ADDRESS_REQUEST_CODE
 //                && resultCode == Activity.RESULT_OK) {

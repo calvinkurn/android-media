@@ -101,12 +101,12 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
     public void bindItemAdapterAddress(MultipleAddressItemData itemData,
                                        List<MultipleAddressItemData> itemDataList,
                                        MultipleAddressItemAdapter.MultipleAddressItemAdapterListener listener,
-                                       int position) {
+                                       int parentPosition) {
         multipleAddressItemData = itemData;
-        renderHeader(itemData, listener, itemDataList, position);
-        renderAddress(itemData, listener, itemDataList, position);
+        renderHeader(itemData, listener, itemDataList, getAdapterPosition());
+        renderAddress(itemData, listener, itemDataList, parentPosition);
         renderNotes(itemData);
-        renderQuantity(itemData, position);
+        renderQuantity(itemData, getAdapterPosition());
     }
 
     private void initTextWatcherDebouncer(CompositeSubscription compositeSubscription) {
@@ -279,7 +279,7 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
     private void renderAddress(MultipleAddressItemData itemData,
                                MultipleAddressItemAdapter.MultipleAddressItemAdapterListener listener,
                                List<MultipleAddressItemData> itemDataList,
-                               int position) {
+                               int parentPosition) {
         addressTitle.setText(itemData.getRecipientAddressModel().getAddressName());
         addressReceiverName.setText(itemData.getRecipientAddressModel().getRecipientName());
         address.setText(itemData.getRecipientAddressModel().getStreet()
@@ -290,7 +290,8 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
         tvChangeRecipientAddress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onChangeAddress(multipleAddressItemAdapter, position, itemDataList, itemData.getRecipientAddressModel());
+                listener.onChangeAddress(multipleAddressItemAdapter, itemData.getRecipientAddressModel(),
+                        getAdapterPosition(), parentPosition);
             }
         });
     }
@@ -343,7 +344,7 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
 
         if (itemData.isStateNotesOpen()) {
             etNotesForSeller.setVisibility(View.VISIBLE);
-            tvLabelNoteForSeller.setVisibility(View.GONE);
+            tvBtnShowNotesForSeller.setVisibility(View.GONE);
         }
 
         etNotesForSeller.addTextChangedListener(new NoteTextWatcher(noteTextwatcherListener));

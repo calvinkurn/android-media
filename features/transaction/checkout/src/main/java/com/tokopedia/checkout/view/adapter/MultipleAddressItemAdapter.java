@@ -50,11 +50,7 @@ public class MultipleAddressItemAdapter extends RecyclerView.Adapter
     @Override
     public void onBindViewHolder(MultipleAddressItemViewHolder holder, int position) {
         MultipleAddressItemData itemData = itemDataList.get(position);
-        holder.bindItemAdapterAddress(
-                itemData,
-                itemDataList,
-                listener,
-                position);
+        holder.bindItemAdapterAddress(itemData, itemDataList, listener, parentItemPosition);
     }
 
     @Override
@@ -83,9 +79,9 @@ public class MultipleAddressItemAdapter extends RecyclerView.Adapter
         void onDeleteItem(MultipleAddressItemAdapter adapter, int position,
                           List<MultipleAddressItemData> multipleAddressItemDataList);
 
-        void onChangeAddress(MultipleAddressItemAdapter adapter, int position,
-                             List<MultipleAddressItemData> multipleAddressItemDataList,
-                             RecipientAddressModel recipientAddressModel);
+        void onChangeAddress(MultipleAddressItemAdapter adapter,
+                             RecipientAddressModel recipientAddressModel,
+                             int childPosition, int parentPosition);
     }
 
 }
