@@ -143,4 +143,22 @@ public class CourierPresenter extends BaseDaggerPresenter<CourierContract.View>
     public List<ShipmentOptionData> getShipmentDataList() {
         return shipmentDataList;
     }
+
+    @Override
+    public void setSelectedCourier(CourierItemData selectedCourier) {
+        if (shipmentDetailData != null && shipmentDetailData.getShipmentItemData() != null) {
+            for (ShipmentItemData shipmentItemData : shipmentDetailData.getShipmentItemData()) {
+                if (shipmentItemData.getCourierItemData() != null) {
+                    for (CourierItemData courierItemData : shipmentItemData.getCourierItemData()) {
+                        if (courierItemData.getShipperProductId() == selectedCourier.getShipperProductId() &&
+                                courierItemData.getShipperId() == selectedCourier.getShipperId()) {
+                            courierItemData.setSelected(true);
+                        } else {
+                            courierItemData.setSelected(false);
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

@@ -93,7 +93,7 @@ public class ShopPageHeaderViewHolder {
     private Button buttonAlreadyFavouriteShop;
     private ImageView shopInfo;
 
-    private boolean favouriteShop;
+    private boolean favouriteShop, myShop;
     private Listener listener;
 
     public boolean isFavouriteShop() {
@@ -223,6 +223,7 @@ public class ShopPageHeaderViewHolder {
     }
 
     public void updateShopInfo(ShopInfo shopInfo, boolean myShop) {
+        this.myShop = myShop;
         favouriteShop = TextApiUtils.isValueTrue(shopInfo.getInfo().getShopAlreadyFavorited());
         shopNameTextView.setText(MethodChecker.fromHtml(shopInfo.getInfo().getShopName()).toString());
 
@@ -390,9 +391,15 @@ public class ShopPageHeaderViewHolder {
     }
 
     private void showShopNotActive(ShopInfo shopInfo) {
+        String description;
+        if (myShop) {
+            description = shopWarningTickerView.getContext().getString(R.string.shop_page_header_shop_not_active_description_seller);
+        } else {
+            description = shopWarningTickerView.getContext().getString(R.string.shop_page_header_shop_not_active_description_buyer);
+        }
         showShopStatusTicker(R.drawable.ic_info_inactive,
                 shopWarningTickerView.getContext().getString(R.string.shop_page_header_shop_not_active_title),
-                shopWarningTickerView.getContext().getString(R.string.shop_page_header_shop_not_active_description),
+                description,
                 R.color.yellow_ticker);
     }
 

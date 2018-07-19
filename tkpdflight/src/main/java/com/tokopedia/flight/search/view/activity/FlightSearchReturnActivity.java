@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 
-import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
 import com.tokopedia.flight.booking.view.activity.FlightBookingActivity;
 import com.tokopedia.flight.common.constant.FlightFlowExtraConstant;
@@ -25,11 +24,6 @@ public class FlightSearchReturnActivity extends FlightSearchActivity implements 
     private static final int REQUEST_CODE_BOOKING = 13;
 
     private String selectedDepartureID;
-
-    public static void start(Context context, FlightSearchPassDataViewModel passDataViewModel, String selectedDepartureID) {
-        Intent intent = getCallingIntent(context, passDataViewModel, selectedDepartureID);
-        context.startActivity(intent);
-    }
 
     public static Intent getCallingIntent(Context context, FlightSearchPassDataViewModel passDataViewModel, String selectedDepartureID) {
         Intent intent = new Intent(context, FlightSearchReturnActivity.class);
