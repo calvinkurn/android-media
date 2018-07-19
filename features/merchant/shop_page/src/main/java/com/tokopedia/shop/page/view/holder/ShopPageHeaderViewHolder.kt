@@ -4,6 +4,7 @@ import android.graphics.drawable.GradientDrawable
 import android.support.annotation.DrawableRes
 import android.support.v4.content.ContextCompat
 import android.support.v7.content.res.AppCompatResources
+import android.text.TextPaint
 import android.text.style.ClickableSpan
 import android.view.View
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -26,7 +27,7 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
         view.shopFollower.setOnClickListener { listener.onFollowerTextClicked() }
         ImageHandler.loadImageCircle2(view.context, view.shopImageView, shopInfo.info.shopAvatar)
         when {
-            TextApiUtils.isValueTrue(shopInfo.info.getShopIsOfficial()) -> displayOfficial()
+            TextApiUtils.isValueTrue(shopInfo.info.shopIsOfficial) -> displayOfficial()
             shopInfo.info.isShopIsGoldBadge -> {
                 displayGoldenShop()
                 displayGeneral(shopInfo)
@@ -119,6 +120,11 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
             setTickerColor(ContextCompat.getColor(context, backgroundTickerColor))
             setAction(if (isMyShop){
                 object: ClickableSpan() {
+                    override fun updateDrawState(ds: TextPaint?) {
+                        super.updateDrawState(ds)
+                        ds?.isUnderlineText = false
+                    }
+
                     override fun onClick(p0: View?) {
 
                     }

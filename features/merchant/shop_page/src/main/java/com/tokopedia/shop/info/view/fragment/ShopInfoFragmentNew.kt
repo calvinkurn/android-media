@@ -19,6 +19,7 @@ import com.tokopedia.shop.ShopModuleRouter
 import com.tokopedia.shop.analytic.ShopPageTracking
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
 import com.tokopedia.shop.common.di.component.ShopComponent
+import com.tokopedia.shop.common.util.TextApiUtils
 import com.tokopedia.shop.common.util.TextHtmlUtils
 import com.tokopedia.shop.extension.transformToVisitable
 import com.tokopedia.shop.info.di.component.DaggerShopInfoComponent
@@ -165,7 +166,13 @@ class ShopInfoFragmentNew: BaseDaggerFragment(), ShopInfoView, BaseEmptyViewHold
     }
 
     private fun displayImageBackground(shopInfo: ShopInfo) {
-        ImageHandler.LoadImage(shopBackgroundImageView, shopInfo.info.shopCover)
+        if (TextApiUtils.isValueTrue(shopInfo.info.shopIsOfficial) || shopInfo.info.isShopIsGoldBadge){
+            shopBackgroundImageView.visibility = View.GONE
+        } else {
+            shopBackgroundImageView.visibility = View.VISIBLE
+            ImageHandler.LoadImage(shopBackgroundImageView, shopInfo.info.shopCover)
+        }
+
     }
 
     private fun goToReviewQualityDetail() {
