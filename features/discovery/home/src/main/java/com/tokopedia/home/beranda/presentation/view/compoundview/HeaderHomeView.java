@@ -51,6 +51,25 @@ public class HeaderHomeView extends BaseCustomView {
         super(context);
         this.headerViewModel = headerViewModel;
         this.listener = listener;
+        notifyHeader();
+    }
+
+    public HeaderHomeView(@NonNull Context context, @Nullable AttributeSet attrs) {
+        super(context, attrs);
+        notifyHeader();
+    }
+
+    public HeaderHomeView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        notifyHeader();
+    }
+
+    public void notifyHeader() {
+        if (headerViewModel == null)
+            return;
+        if (listener == null)
+            return;
+
         if (headerViewModel.getTokoPointDrawerData() != null && headerViewModel.getTokoPointDrawerData().getOffFlag() == 1) {
             renderHeaderOnlyTokocash();
         } else {
@@ -58,32 +77,36 @@ public class HeaderHomeView extends BaseCustomView {
         }
     }
 
-    public HeaderHomeView(@NonNull Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
+    public void setHeaderViewModel(HeaderViewModel headerViewModel) {
+        this.headerViewModel = headerViewModel;
     }
 
-    public HeaderHomeView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
+    public void setListener(HomeCategoryListener listener) {
+        this.listener = listener;
     }
+
+    private View view;
 
     private void renderHeaderTokocashWithTokopoint() {
-        View view = inflate(getContext(), R.layout.layout_item_header_home_with_tokopoint, this);
-        tokoCashHolder = view.findViewById(R.id.container_tokocash);
-        tvActionTokocash = view.findViewById(R.id.tv_btn_action_tokocash);
-        tvTitleTokocash = view.findViewById(R.id.tv_title_tokocash);
-        tvBalanceTokocash = view.findViewById(R.id.tv_balance_tokocash);
-        ivLogoTokocash = view.findViewById(R.id.iv_logo_tokocash);
-        tokocashProgressBar = view.findViewById(R.id.progress_bar_tokocash);
-        tokocashActionContainer = view.findViewById(R.id.container_action_tokocash);
-        imageInfoBtn = view.findViewById(R.id.info_button);
+        if (view == null) {
+            view = inflate(getContext(), R.layout.layout_header_home_with_tokopoint, this);
+            tokoCashHolder = view.findViewById(R.id.container_tokocash);
+            tvActionTokocash = view.findViewById(R.id.tv_btn_action_tokocash);
+            tvTitleTokocash = view.findViewById(R.id.tv_title_tokocash);
+            tvBalanceTokocash = view.findViewById(R.id.tv_balance_tokocash);
+            ivLogoTokocash = view.findViewById(R.id.iv_logo_tokocash);
+            tokocashProgressBar = view.findViewById(R.id.progress_bar_tokocash);
+            tokocashActionContainer = view.findViewById(R.id.container_action_tokocash);
+            imageInfoBtn = view.findViewById(R.id.info_button);
 
-        tokoPointHolder = view.findViewById(R.id.container_tokopoint);
-        tvTitleTokoPoint = view.findViewById(R.id.tv_title_tokopoint);
-        tvBalanceTokoPoint = view.findViewById(R.id.tv_balance_tokopoint);
-        tvActionTokopoint = view.findViewById(R.id.tv_btn_action_tokopoint);
-        ivLogoTokoPoint = view.findViewById(R.id.iv_logo_tokopoint);
-        tokopointProgressBarLayout = view.findViewById(R.id.progress_bar_tokopoint_layout);
-        tokopointActionContainer = view.findViewById(R.id.container_action_tokopoint);
+            tokoPointHolder = view.findViewById(R.id.container_tokopoint);
+            tvTitleTokoPoint = view.findViewById(R.id.tv_title_tokopoint);
+            tvBalanceTokoPoint = view.findViewById(R.id.tv_balance_tokopoint);
+            tvActionTokopoint = view.findViewById(R.id.tv_btn_action_tokopoint);
+            ivLogoTokoPoint = view.findViewById(R.id.iv_logo_tokopoint);
+            tokopointProgressBarLayout = view.findViewById(R.id.progress_bar_tokopoint_layout);
+            tokopointActionContainer = view.findViewById(R.id.container_action_tokopoint);
+        }
         renderTokocashLayoutListener();
         renderTokoPointLayoutListener();
     }
@@ -111,7 +134,8 @@ public class HeaderHomeView extends BaseCustomView {
             tokopointActionContainer.setVisibility(VISIBLE);
             tvActionTokopoint.setVisibility(GONE);tvTitleTokoPoint.setVisibility(VISIBLE);
         tvBalanceTokoPoint.setVisibility(VISIBLE);
-        tvTitleTokoPoint.setText(headerViewModel.getTokoPointDrawerData().getUserTier().getTierNameDesc());
+        //tvTitleTokoPoint.setText(headerViewModel.getTokoPointDrawerData().getUserTier().getTierNameDesc());
+        tvTitleTokoPoint.setText(TITLE_HEADER_WEBSITE);
         tvBalanceTokoPoint.setText(headerViewModel.getTokoPointDrawerData().getUserTier().getRewardPointsStr());
         tokoPointHolder.setOnClickListener(new OnClickListener() {
             @Override

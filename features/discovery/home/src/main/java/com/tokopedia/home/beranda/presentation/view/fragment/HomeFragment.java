@@ -74,6 +74,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CashBackDa
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsViewModel;
 import com.tokopedia.home.beranda.presentation.view.compoundview.CountDownView;
+import com.tokopedia.home.beranda.presentation.view.compoundview.HeaderHomeView;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewModel;
 import com.tokopedia.home.widget.FloatingTextButton;
 import com.tokopedia.loyalty.LoyaltyRouter;
@@ -118,6 +119,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private boolean showRecomendation;
     private boolean mShowTokopointNative;
     private RecyclerView.OnScrollListener onEggScrollListener;
+
+    private HeaderHomeView headerHomeView;
 
     public static HomeFragment newInstance() {
 
@@ -173,6 +176,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         tabContainer = view.findViewById(R.id.tab_container);
         floatingTextButton = view.findViewById(R.id.recom_action_button);
         root = view.findViewById(R.id.root);
+        headerHomeView = view.findViewById(R.id.headerview);
+
         presenter.attachView(this);
         presenter.setFeedListener(this);
         return view;
@@ -570,10 +575,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void updateHeaderItem(HeaderViewModel headerViewModel) {
-        if (adapter.getItemCount() > 0 && adapter.getItem(0) instanceof HeaderViewModel) {
-            adapter.getItems().set(0, headerViewModel);
-            adapter.notifyItemChanged(0);
-        }
+        headerHomeView.setHeaderViewModel(headerViewModel);
+        headerHomeView.setListener(this);
+        headerHomeView.notifyHeader();
     }
 
     @Override

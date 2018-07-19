@@ -18,8 +18,7 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.design.component.BottomNavigation;
-import com.tokopedia.feedplus.view.fragment.FeedPlusFragment;
-import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;
+import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
 import com.tokopedia.navigation.presentation.fragment.AccountFragment;
 import com.tokopedia.navigation.presentation.fragment.CartFragment;
@@ -131,13 +130,19 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    return new HomeFragment();
+                    if (MainParentActivity.this.getApplication() instanceof GlobalNavRouter) {
+                        return ((GlobalNavRouter)MainParentActivity.this.getApplication()).getHomeFragment();
+                    }
                 case 1:
-                    return new FeedPlusFragment();
+                    if (MainParentActivity.this.getApplication() instanceof GlobalNavRouter) {
+                        return ((GlobalNavRouter)MainParentActivity.this.getApplication()).getFeedPlusFragment();
+                    }
                 case 2:
                     return InboxFragment.newInstance();
                 case 3:
-                    return CartFragment.newInstance();
+                    if (MainParentActivity.this.getApplication() instanceof GlobalNavRouter) {
+                        return ((GlobalNavRouter)MainParentActivity.this.getApplication()).getCartFragment();
+                    }
                 case 4:
                     return AccountFragment.newInstance();
                 default:
@@ -155,4 +160,6 @@ public class MainParentActivity extends BaseAppCompatActivity implements
             super.destroyItem(container, position, object);
         }
     }
+
+
 }

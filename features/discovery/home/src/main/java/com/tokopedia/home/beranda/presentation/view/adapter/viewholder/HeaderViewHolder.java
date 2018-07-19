@@ -30,7 +30,7 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
 
     @Override
     public void bind(HeaderViewModel element) {
-        mainContainer.removeAllViews();
-        mainContainer.addView(new HeaderHomeView(itemView.getContext(), element, listener), 0);
+        //mainContainer.removeAllViews();
+        //mainContainer.addView(new HeaderHomeView(itemView.getContext(), element, listener), 0);
     }
 }
