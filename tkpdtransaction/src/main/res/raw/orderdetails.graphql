@@ -23,6 +23,7 @@ query OMSDETAILS($orderCategoryStr: String, $upstream:String, $orderId: String, 
     items {
       id
       imageUrl
+      category
       title
       quantity
       price
