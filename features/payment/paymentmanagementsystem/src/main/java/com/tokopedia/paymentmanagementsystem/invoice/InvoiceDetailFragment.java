@@ -17,13 +17,14 @@ import java.net.URLEncoder;
  */
 
 public class InvoiceDetailFragment extends BaseWebViewFragment {
+
     @Override
     protected String getUrl() {
-        String accessToken = "";
+        String deviceId = "";
         if(getActivity().getApplication() instanceof AbstractionRouter){
-            accessToken =  ((AbstractionRouter)getActivity().getApplication()).getSession().getAccessToken();
+            deviceId =  ((AbstractionRouter)getActivity().getApplication()).getSession().getDeviceId();
         }
-        return URLGenerator.generateURLSessionLogin(encodeUrl(getArguments().getString(Constant.INVOICE_URL_EXTRA)), accessToken, getUserIdForHeader());
+        return URLGenerator.generateURLSessionLogin(encodeUrl(getArguments().getString(Constant.INVOICE_URL_EXTRA)), deviceId, getUserIdForHeader());
     }
 
     private static String encodeUrl(String url) {
