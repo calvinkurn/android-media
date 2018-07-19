@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.URLUtil;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -13,11 +14,9 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.adapter.BaseViewHolder;
-import com.tokopedia.seller.product.common.utils.UrlUtils;
 import com.tokopedia.seller.product.draft.view.model.ProductDraftViewModel;
 
 import java.io.File;
-import java.net.URI;
 
 /**
  * @author hendry on 5/19/17.
@@ -93,7 +92,7 @@ public class ProductDraftAdapter extends BaseListAdapter<ProductDraftViewModel> 
 
             if (TextUtils.isEmpty(model.getPrimaryImageUrl())) {
                 ivProduct.setImageResource(R.drawable.ic_image_unavailable);
-            } else if (UrlUtils.isValidURL(model.getPrimaryImageUrl())) {
+            } else if (URLUtil.isNetworkUrl(model.getPrimaryImageUrl())) {
                 ImageHandler.loadImageFitCenter(
                         ivProduct.getContext(),
                         ivProduct,

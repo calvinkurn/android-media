@@ -19,12 +19,9 @@ import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.seller.base.view.dialog.BaseTextPickerDialogFragment;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
-import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
-import com.tokopedia.seller.product.edit.view.dialog.ProductAddWholesaleDialogFragment;
 import com.tokopedia.seller.product.edit.view.dialog.ProductChangeVariantPriceDialogFragment;
 import com.tokopedia.seller.product.edit.view.fragment.BaseProductAddEditFragment;
 import com.tokopedia.seller.product.edit.view.fragment.ProductAddFragment;
-import com.tokopedia.seller.product.edit.view.model.wholesale.WholesaleModel;
 import com.tokopedia.seller.product.edit.view.presenter.ProductAddPresenter;
 import com.tokopedia.seller.product.edit.view.service.UploadProductService;
 
@@ -35,7 +32,6 @@ import com.tokopedia.seller.product.edit.view.service.UploadProductService;
 public abstract class BaseProductAddEditActivity extends BaseSimpleActivity
     implements HasComponent<ProductComponent>,
         BaseTextPickerDialogFragment.Listener,
-        ProductAddWholesaleDialogFragment.WholeSaleDialogListener,
         ProductAddFragment.Listener,
         ProductChangeVariantPriceDialogFragment.OnProductChangeVariantPriceFragmentListener{
     public static final int MAX_IMAGES = 5;
@@ -78,34 +74,6 @@ public abstract class BaseProductAddEditActivity extends BaseSimpleActivity
     @Override
     public void onTextPickerSubmitted(String text) {
 
-    }
-
-    @Override
-    public void addWholesaleItem(WholesaleModel item) {
-        if (getBaseProductAddFragment() != null && getBaseProductAddFragment().isVisible()) {
-            getBaseProductAddFragment().addWholesaleItem(item);
-        }
-    }
-
-    @Override
-    public void startAddWholeSaleDialog(@CurrencyTypeDef int currencyType, WholesaleModel previousWholesalePrice, boolean officialStore) {
-        ProductAddWholesaleDialogFragment addWholeSaleDialog = ProductAddWholesaleDialogFragment.newInstance(currencyType, previousWholesalePrice, officialStore);
-        addWholeSaleDialog.show(getSupportFragmentManager(), ProductAddWholesaleDialogFragment.TAG);
-        addWholeSaleDialog.setOnDismissListener(new ProductAddWholesaleDialogFragment.OnDismissListener() {
-            @Override
-            public void onDismiss() {
-                new Handler().post(new Runnable() {
-                    @Override
-                    public void run() {
-                        View view = getCurrentFocus();
-                        if (view != null) {
-                            CommonUtils.hideSoftKeyboard(view);
-                            view.clearFocus();
-                        }
-                    }
-                });
-            }
-        });
     }
 
     public void startUploadProduct(long productId) {
