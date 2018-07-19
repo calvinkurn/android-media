@@ -2,16 +2,12 @@ package com.tokopedia.transaction.orders.orderlist.view.presenter;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
-import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.orderlist.data.TabData;
-
-import java.net.ConnectException;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
 
 import rx.Subscriber;
 
@@ -44,11 +40,8 @@ public class OrderListInitPresenterImpl implements OrderListInitContract.Present
             public void onError(Throwable e) {
                 CommonUtils.dumper(e.toString());
                 view.removeProgressBarView();
-                if (e instanceof UnknownHostException || e instanceof ConnectException) {
-                    view.showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
-                } else if (e instanceof SocketTimeoutException) {
-                    view.showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
-                }
+                view.showErrorNetwork(
+                        ErrorHandler.getErrorMessage(view.getAppContext(), e));
             }
 
             @Override
