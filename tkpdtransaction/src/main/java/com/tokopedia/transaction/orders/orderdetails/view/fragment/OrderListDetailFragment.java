@@ -21,11 +21,9 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
-import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
 import com.tokopedia.transaction.orders.orderdetails.data.AdditionalInfo;
@@ -38,7 +36,6 @@ import com.tokopedia.transaction.orders.orderdetails.data.PayMethod;
 import com.tokopedia.transaction.orders.orderdetails.data.Pricing;
 import com.tokopedia.transaction.orders.orderdetails.data.Status;
 import com.tokopedia.transaction.orders.orderdetails.data.Title;
-import com.tokopedia.transaction.orders.orderdetails.di.DaggerOrderDetailsComponent;
 import com.tokopedia.transaction.orders.orderdetails.di.OrderDetailsComponent;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailContract;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailPresenter;
@@ -58,6 +55,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
 
     public static final String KEY_ORDER_ID = "OrderId";
     public static final String KEY_ORDER_CATEGORY = "OrderCategory";
+    public static final String KEY_FROM_PAYMENT = "from_payment";
     @Inject
     OrderListDetailPresenter presenter;
     OrderDetailsComponent orderListComponent;
@@ -77,9 +75,9 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     LinearLayout infoValue;
     LinearLayout totalPrice;
     TextView helpLabel;
-    TextView langannan;
-    TextView beliLagi;
-
+    TextView primaryActionBtn;
+    TextView secondaryActionBtn;
+    private boolean isSingleButton;
 
 
     @Override
@@ -89,11 +87,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
 
     @Override
     protected void initInjector() {
-        orderListComponent = DaggerOrderDetailsComponent.builder()
-                .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
-                .build();
-        GraphqlClient.init(getActivity());
-        orderListComponent.inject(this);
+        getComponent(OrderDetailsComponent.class).inject(this);
     }
 
     public static Fragment getInstance(String orderId, String orderCategory) {
@@ -124,9 +118,8 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         infoValue = view.findViewById(R.id.info_value);
         totalPrice = view.findViewById(R.id.total_price);
         helpLabel = view.findViewById(R.id.help_label);
-        langannan = view.findViewById(R.id.langannan);
-        beliLagi = view.findViewById(R.id.beli_lagi);
-        initInjector();
+        primaryActionBtn = view.findViewById(R.id.langannan);
+        secondaryActionBtn = view.findViewById(R.id.beli_lagi);
         setMainViewVisible(View.GONE);
         presenter.attachView(this);
         return view;
@@ -135,7 +128,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        presenter.setOrderDetailsContent((String) getArguments().get(KEY_ORDER_ID), (String) getArguments().get(KEY_ORDER_CATEGORY), getArguments().getString("from_payment"));
+        presenter.setOrderDetailsContent((String) getArguments().get(KEY_ORDER_ID), (String) getArguments().get(KEY_ORDER_CATEGORY), getArguments().getString(KEY_FROM_PAYMENT));
     }
 
     @Override
@@ -152,11 +145,11 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         conditionalInfoText.setVisibility(View.VISIBLE);
         GradientDrawable shape = new GradientDrawable();
         shape.setShape(GradientDrawable.RECTANGLE);
-        shape.setCornerRadius(9);
+        shape.setCornerRadius(getResources().getDimensionPixelSize(R.dimen.dp_9));
         shape.setColor(android.graphics.Color.parseColor(conditionalInfo.color().background()));
-        shape.setStroke(1, android.graphics.Color.parseColor(conditionalInfo.color().border()));
+        shape.setStroke(getResources().getDimensionPixelOffset(R.dimen.dp_1), android.graphics.Color.parseColor(conditionalInfo.color().border()));
         conditionalInfoText.setBackground(shape);
-        conditionalInfoText.setPadding(16, 16, 16, 16);
+        conditionalInfoText.setPadding(getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_16));
         conditionalInfoText.setText(conditionalInfo.text());
 
     }
@@ -213,21 +206,22 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
 
     @Override
     public void setPricing(Pricing pricing) {
-        DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
-        doubleTextView.setTopText(pricing.label());
-        doubleTextView.setBottomText(pricing.value());
-        doubleTextView.setBottomGravity(Gravity.RIGHT);
-        infoValue.addView(doubleTextView);
-
     }
+
     @Override
     public void setPayMethodInfo(PayMethod payMethod) {
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(payMethod.getLabel());
         doubleTextView.setBottomText(payMethod.getValue());
+        doubleTextView.setBottomTextSize(16);
         doubleTextView.setBottomGravity(Gravity.RIGHT);
         infoValue.addView(doubleTextView);
 
+    }
+
+    @Override
+    public void setButtonMargin() {
+        this.isSingleButton = true;
     }
 
     @Override
@@ -268,26 +262,45 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
 
     @Override
     public void setTopActionButton(ActionButton actionButton) {
-        langannan.setText(actionButton.getLabel());
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.setMargins(getResources().getDimensionPixelSize(R.dimen.dp_16),getResources().getDimensionPixelSize(R.dimen.dp_0),getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_24));
+        primaryActionBtn.setText(actionButton.getLabel());
         GradientDrawable shape = new GradientDrawable();
         shape.setShape(GradientDrawable.RECTANGLE);
-        shape.setCornerRadius(4);
-        shape.setColor(getResources().getColor(R.color.white));
-        shape.setStroke(2, getResources().getColor(R.color.grey_300));
-        langannan.setBackground(shape);
-        langannan.setOnClickListener(getActionButtonClickListener(actionButton.getUri()));
+        shape.setCornerRadius(getResources().getDimensionPixelSize(R.dimen.dp_4));
+        if (!actionButton.getActionColor().getBackground().equals("")) {
+            shape.setColor((Color.parseColor(actionButton.getActionColor().getBackground())));
+        }
+        if (!actionButton.getActionColor().getBorder().equals("")) {
+            shape.setStroke(getResources().getDimensionPixelSize(R.dimen.dp_2), Color.parseColor(actionButton.getActionColor().getBorder()));
+        }
+        primaryActionBtn.setBackground(shape);
+        if (isSingleButton) {
+            primaryActionBtn.setLayoutParams(params);
+        }
+        if (!actionButton.getActionColor().getTextColor().equals("")) {
+            primaryActionBtn.setTextColor(Color.parseColor(actionButton.getActionColor().getTextColor()));
+        }
+        primaryActionBtn.setOnClickListener(getActionButtonClickListener(actionButton.getUri()));
     }
 
     @Override
     public void setBottomActionButton(ActionButton actionButton) {
-        beliLagi.setText(actionButton.getLabel());
+        secondaryActionBtn.setText(actionButton.getLabel());
         GradientDrawable shape = new GradientDrawable();
         shape.setShape(GradientDrawable.RECTANGLE);
-        shape.setCornerRadius(4);
-        shape.setColor(getResources().getColor(R.color.deep_orange_500));
-        beliLagi.setBackground(shape);
-        beliLagi.setTextColor(getResources().getColor(R.color.white));
-        beliLagi.setOnClickListener(getActionButtonClickListener(actionButton.getUri()));
+        shape.setCornerRadius(getResources().getDimensionPixelSize(R.dimen.dp_4));
+        if (!actionButton.getActionColor().getBackground().equals("")) {
+            shape.setColor((Color.parseColor(actionButton.getActionColor().getBackground())));
+        }
+        if (!actionButton.getActionColor().getBorder().equals("")) {
+            shape.setStroke(getResources().getDimensionPixelSize(R.dimen.dp_2), Color.parseColor(actionButton.getActionColor().getBorder()));
+        }
+        secondaryActionBtn.setBackground(shape);
+        if (!actionButton.getActionColor().getTextColor().equals("")) {
+            secondaryActionBtn.setTextColor(Color.parseColor(actionButton.getActionColor().getTextColor()));
+        }
+        secondaryActionBtn.setOnClickListener(getActionButtonClickListener(actionButton.getUri()));
     }
 
     private View.OnClickListener getActionButtonClickListener(final String uri) {
@@ -298,7 +311,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
                 newUri = newUri.replace(url.getQueryParameter("idem_potency_key"), "");
                 newUri = newUri.replace("idem_potency_key=", "");
                 RouteManager.route(getActivity(), newUri);
-            } else {
+            } else if (uri != null && !uri.equals("")){
                 TransactionPurchaseRouter.startWebViewActivity(getActivity(), uri);
             }
         };
@@ -306,8 +319,8 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
 
     @Override
     public void setActionButtonsVisibility(int topBtnVisibility, int bottomBtnVisibility) {
-        langannan.setVisibility(topBtnVisibility);
-        beliLagi.setVisibility(bottomBtnVisibility);
+        primaryActionBtn.setVisibility(topBtnVisibility);
+        secondaryActionBtn.setVisibility(bottomBtnVisibility);
     }
 
     @Override

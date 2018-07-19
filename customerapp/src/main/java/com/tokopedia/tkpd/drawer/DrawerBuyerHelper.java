@@ -330,17 +330,15 @@ public class DrawerBuyerHelper extends DrawerHelper
                         drawerCache.getBoolean(IS_PEOPLE_OPENED, false)
                 )
         );
-
-        buyerMenu.add(new DrawerItem(
-                        context.getString(R.string.drawer_title_deals_transaction_list),
-                        TkpdState.DrawerPosition.PEOPLE_DEALS_TRANSACTION_LIST,
-                        drawerCache.getBoolean(IS_PEOPLE_OPENED, false)
-                )
-        );
-
         buyerMenu.add(new DrawerItem(
                         context.getString(R.string.drawer_title_events_transaction_list),
                         TkpdState.DrawerPosition.PEOPLE_EVENTS_TRANSACTION_LIST,
+                        drawerCache.getBoolean(IS_PEOPLE_OPENED, false)
+                )
+        );
+        buyerMenu.add(new DrawerItem(
+                        context.getString(R.string.drawer_title_deals_transaction_list),
+                        TkpdState.DrawerPosition.PEOPLE_DEALS_TRANSACTION_LIST,
                         drawerCache.getBoolean(IS_PEOPLE_OPENED, false)
                 )
         );
@@ -554,19 +552,18 @@ public class DrawerBuyerHelper extends DrawerHelper
                                 + TkpdBaseURL.DigitalWebsite.PATH_TRANSACTION_LIST);
                         sendGTMNavigationEvent(AppEventTracking.EventLabel.DIGITAL_TRANSACTION_LIST);
                     }
-                    //TransactionPurchaseRouter.createIntentOrderListSummary(context, OrderCategory.DIGITAL);
-                    context.startActivity(intent);
-                    sendGTMNavigationEvent(AppEventTracking.EventLabel.DIGITAL_TRANSACTION_LIST);
-                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(),AppEventTracking.EventLabel.DIGITAL_TRANSACTION_LIST, AppEventTracking.EventLabel.PURCHASE);
-                    break;
-                case TkpdState.DrawerPosition.PEOPLE_DEALS_TRANSACTION_LIST:
-                    intent = RouteManager.getIntent(context, "tokopedia://deals/order");
                     context.startActivity(intent);
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.DIGITAL_TRANSACTION_LIST);
                     AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(),AppEventTracking.EventLabel.DIGITAL_TRANSACTION_LIST, AppEventTracking.EventLabel.PURCHASE);
                     break;
                 case TkpdState.DrawerPosition.PEOPLE_EVENTS_TRANSACTION_LIST:
                     intent = RouteManager.getIntent(context, "tokopedia://events/order");
+                    context.startActivity(intent);
+                    sendGTMNavigationEvent(AppEventTracking.EventLabel.DIGITAL_TRANSACTION_LIST);
+                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(),AppEventTracking.EventLabel.DIGITAL_TRANSACTION_LIST, AppEventTracking.EventLabel.PURCHASE);
+                    break;
+                case TkpdState.DrawerPosition.PEOPLE_DEALS_TRANSACTION_LIST:
+                    intent = RouteManager.getIntent(context, "tokopedia://deals/order");
                     context.startActivity(intent);
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.DIGITAL_TRANSACTION_LIST);
                     AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(),AppEventTracking.EventLabel.DIGITAL_TRANSACTION_LIST, AppEventTracking.EventLabel.PURCHASE);

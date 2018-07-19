@@ -54,6 +54,9 @@ public class Order {
     @SerializedName("dotMenuList")
     @Expose
     private List<DotMenuList> dotMenuList;
+    @SerializedName("dotMenu")
+    @Expose
+    private List<DotMenuList> dotMenu;
     @SerializedName("actionButtons")
     @Expose
     private List<ActionButton> actionButtons;
@@ -74,7 +77,7 @@ public class Order {
     public Order(ConditionalInfo conditionalInfo, PaymentData paymentData, String paymentID,
                  String categoryName, String appLink, String upstream, String category, String id,
                  String createdAt, int status, String statusStr, String statusColor, String invoiceRefNum,
-                 String title, List<MetaData> metaData, List<DotMenuList> dotMenuList,
+                 String title, List<MetaData> metaData, List<DotMenuList> dotMenuList, List<DotMenuList> dotMenu,
                  List<ActionButton> actionButtons, String totalInvoices, String itemCount, List<Item> items, int orderId) {
         this.conditionalInfo = conditionalInfo;
         this.paymentData = paymentData;
@@ -92,6 +95,7 @@ public class Order {
         this.title = title;
         this.metaData = metaData;
         this.dotMenuList = dotMenuList;
+        this.dotMenu = dotMenu;
         this.actionButtons = actionButtons;
         this.totalInvoices = totalInvoices;
         this.itemCount = itemCount;
@@ -161,6 +165,10 @@ public class Order {
 
     public List<DotMenuList> dotMenuList() {
         return dotMenuList;
+    }
+
+    public List<DotMenuList> dotMenu() {
+        return dotMenu;
     }
 
     public List<ActionButton> actionButtons() {

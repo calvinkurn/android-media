@@ -5,6 +5,7 @@ import android.content.Context;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
@@ -56,11 +57,8 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                 CommonUtils.dumper("error ="+e.toString());
                 getView().removeProgressBarView();
                 getView().unregisterScrollListener();
-                if (e instanceof UnknownHostException || e instanceof ConnectException) {
-                    getView().showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
-                } else if (e instanceof SocketTimeoutException) {
-                    getView().showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
-                }
+                getView().showErrorNetwork(
+                        ErrorHandler.getErrorMessage(getView().getAppContext(), e));
             }
 
             @Override

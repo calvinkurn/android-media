@@ -12,7 +12,7 @@ public class Items {
 
     @SerializedName("tapActions")
     @Expose
-    private List<TapActions> tapActions;
+    private List<ActionButton> tapActions;
 
     @SerializedName("price")
     @Expose
@@ -51,11 +51,11 @@ public class Items {
         this.title = title;
     }
 
-    public List<TapActions> getTapActions() {
+    public List<ActionButton> getTapActions() {
         return tapActions;
     }
 
-    public void setTapActions(List<TapActions> tapActions) {
+    public void setTapActions(List<ActionButton> tapActions) {
         this.tapActions = tapActions;
     }
 

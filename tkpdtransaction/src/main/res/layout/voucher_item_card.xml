@@ -90,10 +90,8 @@
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginRight="@dimen/margin_small"
             android:fontFamily="sans-serif-medium"
-
             android:lines="2"
             android:maxLines="2"
-            android:text="1 Set Jumbo Bento for 2 persons on Weekdays (Monday - Friday)"
             android:textColor="@color/black_39"
             android:textSize="@dimen/sp_14"
             android:textStyle="normal"
@@ -108,7 +106,6 @@
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_8"
             android:fontFamily="sans-serif"
-            android:text="Bakerzin"
             android:textColor="@color/black_40"
             android:textSize="@dimen/dp_12"
             android:textStyle="normal"
@@ -125,7 +122,6 @@
             android:ellipsize="end"
             android:fontFamily="sans-serif"
             android:maxLines="2"
-            android:text="Dapat ditukar di "
             android:textColor="@color/black_40"
             android:textSize="@dimen/dp_12"
             android:textStyle="normal"
@@ -157,7 +153,6 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
                 android:gravity="center_horizontal"
-                android:text="15 April 2018"
                 android:textColor="@color/black_39"
                 android:textSize="@dimen/dp_12"
                 android:textStyle="bold" />
@@ -210,32 +205,5 @@
         </LinearLayout>
 
     </android.support.constraint.ConstraintLayout>
-
-    <TextView
-        android:id="@+id/tv_voucher_redeemed"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_marginBottom="66dp"
-        android:layout_marginLeft="@dimen/margin_small"
-        android:layout_marginRight="@dimen/margin_small"
-        android:layout_marginTop="@dimen/dp_8"
-        android:background="@drawable/background_rect_black"
-        android:fontFamily="sans-serif"
-        android:gravity="center_horizontal"
-        android:orientation="horizontal"
-        android:paddingBottom="@dimen/dp_8"
-        android:paddingLeft="@dimen/dp_12"
-        android:paddingRight="@dimen/dp_12"
-        android:paddingTop="@dimen/dp_8"
-        android:text="Redeem hanya dapat dilakukan oleh petugas outlet terkait"
-        android:textColor="@color/white"
-        android:textSize="@dimen/dp_12"
-        android:textStyle="normal"
-        android:visibility="gone"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ll_valid"
-        app:layout_constraintWidth_default="wrap" />
 
 </FrameLayout>

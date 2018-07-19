@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.core.app.DrawerPresenterActivity;
@@ -44,18 +45,26 @@ public class OrderListActivity extends DrawerPresenterActivity<OrderListInitCont
     private ViewPager viewPager;
     private LinearLayout mainLayout;
     private OrderTabAdapter adapter;
+    private OrderListComponent orderListComponent;
 
     @DeepLink({TransactionAppLink.ORDER_LIST_DEALS, TransactionAppLink.ORDER_LIST_DIGITAL,
-            TransactionAppLink.ORDER_LIST_EVENTS, TransactionAppLink.ORDER_LIST_FLIGHTS})
+            TransactionAppLink.ORDER_LIST_EVENTS})
     public static Intent getOrderListIntent(Context context, Bundle bundle){
 
         Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
         String link = bundle.getString(DeepLink.URI);
         String category = link.substring(link.indexOf("//")+2, link.lastIndexOf("/")).toUpperCase();
-        if(category.equals("PESAWAT")){
-            category = OrderCategory.FLIGHTS;
-        }
         bundle.putString(ORDER_CATEGORY, category);
+        return new Intent(context, OrderListActivity.class)
+                .setData(uri.build())
+                .putExtras(bundle);
+    }
+
+    @DeepLink(TransactionAppLink.ORDER_LIST_FLIGHTS)
+    public static Intent getFlightOrderListIntent(Context context, Bundle bundle){
+
+        Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
+        bundle.putString(ORDER_CATEGORY, OrderCategory.FLIGHTS);
         return new Intent(context, OrderListActivity.class)
                 .setData(uri.build())
                 .putExtras(bundle);
@@ -131,27 +140,28 @@ public class OrderListActivity extends DrawerPresenterActivity<OrderListInitCont
         return drawerPosition;
     }
 
+
+    @Override
+    public OrderListComponent getComponent() {
+        if (orderListComponent == null) initInjector();
+        return orderListComponent;
+    }
+
+    private void initInjector() {
+        orderListComponent = DaggerOrderListComponent.builder()
+                .baseAppComponent(((BaseMainApplication) getApplication()).getBaseAppComponent())
+                .build();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         GraphqlClient.init(this);
         super.onCreate(savedInstanceState);
-        //presenter.getInitData(orderCategory, 1, 10);
         Bundle bundle = getIntent().getExtras();
         if(bundle != null){
             orderCategory = bundle.getString(ORDER_CATEGORY);
         }
         initTabs();
-
-//        toolbar.setBackgroundColor(getResources().getColor(R.color.white));
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-////            toolbar.getNavigationIcon().setTint(getResources().getColor(R.color.black));
-//        }
-////        toolbar.setTitleTextAppearance(this, R.style.ToolbarText_SansSerifMedium);
-//        if (orderCategory.equals("DIGITAL")) {
-//            toolbar.setTitle("DIGITAL");
-//        } else {
-//            toolbar.setTitle("Entertainment");
-//        }
     }
 
     private void initTabs() {
@@ -195,19 +205,6 @@ public class OrderListActivity extends DrawerPresenterActivity<OrderListInitCont
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new OnTabPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager));
-        //viewPager.setCurrentItem(0);
-    }
-
-    @Override
-    public String getFilterCaseAllTransaction() {
-        return null;
-    }
-
-    @Override
-    public OrderListComponent getComponent() {
-        return DaggerOrderListComponent.builder()
-                .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
-                .build();
     }
 
     private class OnTabPageChangeListener extends TabLayout.TabLayoutOnPageChangeListener {
@@ -219,7 +216,7 @@ public class OrderListActivity extends DrawerPresenterActivity<OrderListInitCont
         @Override
         public void onPageSelected(int position) {
             super.onPageSelected(position);
-            hideKeyboard();
+            KeyboardHandler.hideSoftKeyboard(getActivity());
             drawerPosition = position;
             switch (orderCategory){
                 case OrderCategory.DIGITAL:
@@ -240,11 +237,6 @@ public class OrderListActivity extends DrawerPresenterActivity<OrderListInitCont
                     break;
 
             }
-        }
-
-        private void hideKeyboard() {
-            ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
-                    .hideSoftInputFromWindow(viewPager.getWindowToken(), 0);
         }
     }
 
