@@ -198,6 +198,7 @@
                 android:minHeight="10dip"
                 android:paddingBottom="@dimen/dp_8"
                 android:paddingTop="@dimen/dp_8"
+                android:max="100"
                 android:progress="0"
 
                 android:progressDrawable="@drawable/horizontal_progressbar" />

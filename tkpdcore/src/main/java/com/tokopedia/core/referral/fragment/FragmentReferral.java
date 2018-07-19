@@ -36,6 +36,7 @@ import com.tokopedia.core.referral.model.ShareApps;
 import com.tokopedia.core.referral.presenter.IReferralPresenter;
 import com.tokopedia.core.referral.presenter.ReferralPresenter;
 import com.tokopedia.core.router.OtpRouter;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.utils.CurrencyFormatHelper;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
@@ -222,9 +223,10 @@ public class FragmentReferral extends BasePresenterFragmentV4<IReferralPresenter
         referralCount.setText(referralData.getPromoContent().getFriendCount() + " " + getString(R.string.fiends_invited_lable));
         if (referralData.getPromoBenefit() != null) {
             progressBarReferral.setProgress((referralData.getPromoBenefit().getCurrentBenefit() == 0 ?
-                    referralData.getPromoBenefit().getCurrentBenefit() : referralData.getPromoBenefit().getMaxBenefit()
-                    / referralData.getPromoBenefit().getCurrentBenefit()));
-            tvPercent.setText("Rp "+CurrencyFormatUtil.convertPriceValue((double) referralData.getPromoBenefit().getCurrentBenefit(),false)+ " / Rp " + CurrencyFormatUtil.convertPriceValue((double) referralData.getPromoBenefit().getMaxBenefit(),false));
+                    referralData.getPromoBenefit().getCurrentBenefit() : referralData.getPromoBenefit().getCurrentBenefit() * 100
+                    / referralData.getPromoBenefit().getMaxBenefit()));
+            tvPercent.setText("Rp " + CurrencyFormatUtil.convertPriceValue((double) referralData.getPromoBenefit().getCurrentBenefit(), false) +
+                    " / Rp " + CurrencyFormatUtil.convertPriceValue((double) referralData.getPromoBenefit().getMaxBenefit(), false));
         }
     }
 

@@ -281,7 +281,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
         ShareApps shareApps;
         ShareApps[] selectedApps = new ShareApps[MAX_APPS];
         if (index < MAX_APPS && appInstalledOrNot(TkpdState.PackageName.Whatsapp)) {
-            shareApps = new ShareApps(TkpdState.PackageName.Whatsapp, R.drawable.ic_btn_wa);
+            shareApps = new ShareApps(TkpdState.PackageName.Whatsapp, R.drawable.btn_wa);
             selectedApps[index++] = shareApps;
         }
         if (index < MAX_APPS && appInstalledOrNot(TkpdState.PackageName.Line)) {
