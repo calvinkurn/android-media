@@ -3,7 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/dp_16"
+    android:paddingTop="@dimen/dp_16"
+    android:paddingStart="@dimen/dp_16"
+    android:paddingLeft="@dimen/dp_16"
+    android:paddingEnd="@dimen/dp_16"
+    android:paddingRight="@dimen/dp_16"
     android:background="@color/white"
     android:weightSum="3"
     android:orientation="horizontal">
@@ -62,5 +66,10 @@
         android:textColor="@color/green_300"
         android:textStyle="bold"
         android:text="@string/emoney_button_check_balance"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:background="@color/grey"/>
 
 </LinearLayout>
