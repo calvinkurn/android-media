@@ -14,16 +14,18 @@ import java.util.List;
  */
 class CategoryGridAdapter extends RecyclerView.Adapter<CategoryGridViewHolder> {
     private List<CategoryItem> categories;
+    private CategoryGridView.OnClickListener listener;
 
-    public CategoryGridAdapter() {
-        categories = new ArrayList<>();
+    public CategoryGridAdapter(CategoryGridView.OnClickListener listener) {
+        this.categories = new ArrayList<>();
+        this.listener = listener;
     }
 
     @NonNull
     @Override
     public CategoryGridViewHolder onCreateViewHolder(@NonNull ViewGroup view, int viewType) {
         // todo context from view(?)
-        return new CategoryGridViewHolder(view.getContext(), view);
+        return new CategoryGridViewHolder(view.getContext(), view, listener);
     }
 
     @Override

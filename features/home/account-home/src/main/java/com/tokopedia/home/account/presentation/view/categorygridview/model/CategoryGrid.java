@@ -8,7 +8,7 @@ import java.util.List;
 public class CategoryGrid {
     private String title;
     private String linkText;
-    private String linkUrl;
+    private String applinkUrl;
     private List<CategoryItem> items;
 
     public String getTitle() {
@@ -27,12 +27,12 @@ public class CategoryGrid {
         this.linkText = linkText;
     }
 
-    public String getLinkUrl() {
-        return linkUrl;
+    public String getApplinkUrl() {
+        return applinkUrl;
     }
 
-    public void setLinkUrl(String linkUrl) {
-        this.linkUrl = linkUrl;
+    public void setApplinkUrl(String applinkUrl) {
+        this.applinkUrl = applinkUrl;
     }
 
     public List<CategoryItem> getItems() {

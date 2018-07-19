@@ -8,8 +8,9 @@ import android.support.annotation.DrawableRes;
 public class CategoryItem {
     @DrawableRes
     private int resourceId;
-    private String url;
+    private String imageUrl;
     private String description;
+    private String applink;
 
 
     public int getResourceId() {
@@ -20,12 +21,12 @@ public class CategoryItem {
         this.resourceId = resourceId;
     }
 
-    public String getUrl() {
-        return url;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public String getDescription() {
@@ -34,5 +35,13 @@ public class CategoryItem {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getApplink() {
+        return applink;
+    }
+
+    public void setApplink(String applink) {
+        this.applink = applink;
     }
 }

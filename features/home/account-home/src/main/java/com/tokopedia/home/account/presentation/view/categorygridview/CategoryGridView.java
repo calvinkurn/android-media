@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.presentation.view.categorygridview.model.CategoryGrid;
+import com.tokopedia.home.account.presentation.view.categorygridview.model.CategoryItem;
 
 /**
  * @author okasurya on 7/19/18.
@@ -45,13 +46,10 @@ public class CategoryGridView extends BaseCustomView {
         textTitle = view.findViewById(R.id.text_title);
         textLink = view.findViewById(R.id.text_link);
         recyclerCategory = view.findViewById(R.id.recycler_category);
-
-        adapter = new CategoryGridAdapter();
-        recyclerCategory.setAdapter(adapter);
         recyclerCategory.setLayoutManager(new GridLayoutManager(getContext(), SPAN_COUNT, GridLayoutManager.VERTICAL, false));
     }
 
-    private void setData(CategoryGrid categoryGrid) {
+    private void setData(CategoryGrid categoryGrid, @NonNull OnClickListener listener) {
         if(categoryGrid.getItems() != null && categoryGrid.getItems().size() > 0) {
             if(!TextUtils.isEmpty(categoryGrid.getTitle())) {
                 textTitle.setText(categoryGrid.getTitle());
@@ -59,10 +57,19 @@ public class CategoryGridView extends BaseCustomView {
 
             if(!TextUtils.isEmpty(categoryGrid.getLinkText())) {
                 textLink.setText(categoryGrid.getLinkText());
+                textLink.setOnClickListener(v -> listener.onLinkClicked(categoryGrid.getApplinkUrl()));
             }
 
+            adapter = new CategoryGridAdapter(listener);
+            recyclerCategory.setAdapter(adapter);
             adapter.setNewData(categoryGrid.getItems());
         }
+    }
+
+    interface OnClickListener {
+        void onCategoryItemClicked(CategoryItem categoryItem);
+
+        void onLinkClicked(String url);
     }
 
 }
