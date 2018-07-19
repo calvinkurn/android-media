@@ -71,8 +71,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.checkout.view.view.multipleaddressform.MultipleAddressFormActivity.RESULT_CODE_SUCCESS_SET_SHIPPING;
-
 /**
  * @author Irfan Khoirul on 23/04/18.
  * Originaly authored by Aghny, Angga, Kris
@@ -350,7 +348,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void renderCheckoutPage(CartShipmentAddressFormData cartShipmentAddressFormData) {
+    public void renderCheckoutPage(CartShipmentAddressFormData cartShipmentAddressFormData, boolean isInitialLoad) {
         shipmentAdapter.clearData();
         if (cartShipmentAddressFormData != null) {
             if (!cartShipmentAddressFormData.isMultiple()) {
@@ -379,7 +377,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         initRecyclerViewData(
                 promoCodeAppliedData, cartPromoSuggestion, recipientAddressModel,
                 shipmentCartItemModelList, shipmentDonationModel, shipmentCostModel,
-                shipmentCheckoutButtonModel, true
+                shipmentCheckoutButtonModel, isInitialLoad
         );
     }
 
@@ -614,14 +612,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         } else if (requestCode == REQUEST_CODE_COURIER_PINPOINT) {
             onResultFromCourierPinpoint(resultCode, data);
         } else if (requestCode == REQUEST_CODE_SEND_TO_MULTIPLE_ADDRESS) {
-            onResultFromMultipleAddress(resultCode);
+            onResultFromMultipleAddress();
         }
     }
 
-    private void onResultFromMultipleAddress(int resultCode) {
-        if (resultCode == RESULT_CODE_SUCCESS_SET_SHIPPING) {
-            shipmentPresenter.processLoadCheckoutPage(false);
-        }
+    private void onResultFromMultipleAddress() {
+        shipmentPresenter.processLoadCheckoutPage(false);
     }
 
     private void onResultFromCourierPinpoint(int resultCode, Intent data) {

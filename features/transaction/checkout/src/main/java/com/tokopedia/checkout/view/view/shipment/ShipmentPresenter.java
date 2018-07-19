@@ -277,7 +277,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     if (cartShipmentAddressFormData.getGroupAddress() == null || cartShipmentAddressFormData.getGroupAddress().isEmpty()) {
                                         getView().renderNoRecipientAddressShipmentForm(cartShipmentAddressFormData);
                                     } else {
-                                        getView().renderCheckoutPage(cartShipmentAddressFormData);
+                                        getView().renderCheckoutPage(cartShipmentAddressFormData, isInitialLoad);
                                     }
                                 }
                             }

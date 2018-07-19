@@ -46,7 +46,7 @@ public interface ShipmentContract {
 
         void renderErrorPage(String message);
 
-        void renderCheckoutPage(CartShipmentAddressFormData cartShipmentAddressFormData);
+        void renderCheckoutPage(CartShipmentAddressFormData cartShipmentAddressFormData, boolean isInitialLoad);
 
         void renderCheckShipmentPrepareCheckoutSuccess();
 
