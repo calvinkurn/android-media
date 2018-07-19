@@ -449,11 +449,11 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         }
 
     }
-
+    
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        mCartAddressChoiceListener = (ICartAddressChoiceActivityListener) activity;
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mCartAddressChoiceListener = (ICartAddressChoiceActivityListener) context;
     }
 
     @Override

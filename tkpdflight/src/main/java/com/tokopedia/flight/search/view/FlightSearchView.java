@@ -83,4 +83,6 @@ public interface FlightSearchView extends BaseListViewListener<FlightSearchViewM
     void setNeedRefreshAirline(boolean needRefresh);
 
     boolean isNeedRefreshAirline();
+
+    void navigateToNextPage(String selectedId);
 }

@@ -52,6 +52,7 @@ import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewM
 import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
 import com.tokopedia.core.product.model.productdetail.promowidget.DataPromoWidget;
 import com.tokopedia.core.product.model.productdetail.promowidget.PromoAttributes;
+import com.tokopedia.core.product.model.productdetail.promowidget.PromoWidget;
 import com.tokopedia.core.product.model.productdink.ProductDinkData;
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.router.SellerRouter;
@@ -76,6 +77,7 @@ import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.dialog.DialogToEtalase;
 import com.tokopedia.tkpdpdp.fragment.ProductDetailFragment;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
+import com.tokopedia.tkpdpdp.tracking.ProductPageTracking;
 import com.tokopedia.topads.sourcetagging.data.repository.TopAdsSourceTaggingRepositoryImpl;
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingDataSource;
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingLocal;
@@ -1101,6 +1103,12 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                 if (result.getCode() != null && result.getCodeHtml() != null && result.getShortCondHtml() != null
                         && result.getShortDescHtml() != null) {
                     viewListener.showPromoWidget(result);
+                    ProductPageTracking.eventImpressionWidgetPromo(
+                            context,
+                            result.getShortDesc(),
+                            result.getCustomPromoId(),
+                            result.getCode()
+                    );
                 }
             }
 
@@ -1112,7 +1120,16 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                             public void onSucccess(DataPromoWidget dataPromoWidget) {
                                 cacheInteractor.storePromoWidget(targetType, userId, shopType, dataPromoWidget);
                                 if (!dataPromoWidget.getPromoWidgetList().isEmpty()) {
-                                    viewListener.showPromoWidget(dataPromoWidget.getPromoWidgetList().get(0).getPromoAttributes());
+                                    PromoWidget item = dataPromoWidget.getPromoWidgetList().get(0);
+                                    PromoAttributes attributes = item.getPromoAttributes();
+                                    attributes.setCustomPromoId(item.getId());
+                                    viewListener.showPromoWidget(attributes);
+                                    ProductPageTracking.eventImpressionWidgetPromo(
+                                            context,
+                                            attributes.getShortDesc(),
+                                            attributes.getCustomPromoId(),
+                                            attributes.getCode()
+                                    );
                                 }
                             }
 
