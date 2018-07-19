@@ -157,11 +157,6 @@ public class TrainScheduleDetailActivity extends BaseTabActivity implements Trai
             ((TrainSchedulePriceDetailFragment) fragmentPrice).showPrice(trainScheduleDetailViewModel);
         }
 
-//        String title = trainScheduleDetailViewModel.getOriginCityName() + " ➝ " +
-//                trainScheduleDetailViewModel.getDestinationCityName();
-//
-//        updateTitle(title);
-
         textHeaderOriginStationCode.setText(trainScheduleDetailViewModel.getOriginStationCode());
         textHeaderOriginCityName.setText(trainScheduleDetailViewModel.getOriginCityName());
         textHeaderDestinationStationCode.setText(trainScheduleDetailViewModel.getDestinationStationCode());
