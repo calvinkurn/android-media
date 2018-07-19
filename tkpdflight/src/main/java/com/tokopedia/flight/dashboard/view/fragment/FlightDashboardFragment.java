@@ -508,7 +508,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         this.bannerList = bannerList;
         List<String> promoUrls = new ArrayList<>();
         for (BannerDetail bannerModel : bannerList) {
-            promoUrls.add(bannerModel.getAttributes().getFileName());
+            promoUrls.add(bannerModel.getAttributes().getImageUrl());
         }
         bannerView.setPromoList(promoUrls);
         bannerView.buildView();
@@ -600,7 +600,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
 
     private void bannerClickAction(int position) {
         if (getBannerData(position) != null && getBannerData(position).getAttributes() != null) {
-            String url = getBannerData(position).getAttributes().getImgUrl();
+            String url = getBannerData(position).getAttributes().getLinkUrl();
             Uri uri = Uri.parse(url);
             boolean isPromoNativeActive = isPromoNativeActive();
             if (isPromoNativeActive && uri != null

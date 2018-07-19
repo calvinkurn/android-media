@@ -113,6 +113,8 @@ public class EventDetailsViewModelMapper {
                         packageViewModel.setThumbnailApp(target.getThumbnailApp());
                         packageViewModel.setAddress(schedulesViewModel.getaDdress());
                         packageViewModel.setFetchSectionUrl(aPackage.getFetchSectionUrl());
+                        packageViewModel.setStartDate(aPackage.getStartDate());
+                        packageViewModel.setEndDate(aPackage.getEndDate());
                         try {
                             packageViewModel.setForms(target.getForms());
                         } catch (Exception e) {

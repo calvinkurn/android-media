@@ -674,6 +674,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
         }
     }
 
+    private void forceLoadFirstPage() {
+        hasLoadedOnce = false;
+        loadData(true);
+    }
+
     @Override
     public void onProductItemClicked(int position, Product product) {
         goToProductDetail(product.getId(),
@@ -734,6 +739,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     }
 
+    @Override
+    public void onAddWishList(int position, Data data) {
+        //TODO: next implement wishlist action
+    }
+
     public void scrollToTop() {
         if (recyclerView != null) recyclerView.scrollToPosition(0);
     }
@@ -745,6 +755,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
             firstCursor = "";
         if (getUserVisibleHint() && presenter != null) {
             loadData(getUserVisibleHint());
+        }
+        if (!hasFeed()) {
+            forceLoadFirstPage();
         }
     }
 

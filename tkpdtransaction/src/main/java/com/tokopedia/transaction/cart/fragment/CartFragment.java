@@ -584,6 +584,11 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
+    public void onAddWishList(int position, Data data) {
+        //TODO: next implement wishlist action
+    }
+
+    @Override
     public void renderInvisibleLoading() {
         pbMainLoading.setVisibility(View.GONE);
         tvTotalPayment.setVisibility(View.GONE);

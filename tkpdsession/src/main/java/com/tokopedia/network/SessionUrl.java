@@ -71,6 +71,7 @@ public class SessionUrl {
         public static final String PATH_REGISTER_EMAIL_CHECK = BASE_REGISTER + "/email/check";
         public static final String PATH_UPDATE_ACCOUNT = BASE_UPDATE;
         public static final String PATH_SEND_VERIFICATION_EMAIL = BASE_ACCOUNTS + "/email/verify/send";
+        public static final String PATH_REGISTER_VALIDATION = BASE_REGISTER + "/check";
     }
 
     public static class UpdateProfile {

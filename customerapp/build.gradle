@@ -150,7 +150,7 @@ android {
         }
         release {
             signingConfig signingConfigs.debug
-            ext.enableHansel=false
+            ext.enableHansel=true
             minifyEnabled true
             zipAlignEnabled true
             shrinkResources true
@@ -255,6 +255,7 @@ dependencies {
     implementation project(rootProject.ext.features.gamification)
     implementation project(rootProject.ext.features.kol)
     implementation project(rootProject.ext.features.shopPage)
+    implementation project(rootProject.ext.features.goldMerchantSubscribe)
     implementation project(rootProject.ext.features.home)
     implementation project(rootProject.ext.features.vote)
     implementation project(rootProject.ext.features.groupchat)
@@ -280,13 +281,17 @@ dependencies {
     implementation project(rootProject.ext.features.districtRecommendation)
     implementation project(rootProject.ext.features.contactUs)
     implementation project(rootProject.ext.features.otp)
+    implementation project(rootProject.ext.features.instantLoan)
     implementation project(rootProject.ext.features.topAdsCommon)
     implementation project(rootProject.ext.features.topAdsSourceTagging)
     implementation project(rootProject.ext.features.checkout)
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.tracking)
     implementation project(rootProject.ext.features.logisticuploadawb)
+    implementation project(rootProject.ext.features.topchat)
+    implementation project(rootProject.ext.features.nps)
     implementation project(rootProject.ext.features.transactionanalytics)
+    implementation project(rootProject.ext.features.tokopoints)
 
 
     implementation project(rootProject.ext.libraries.pushNotif)
@@ -417,7 +422,6 @@ dependencies {
     //[END] test and androidTest dependencies
 
     implementation project(rootProject.ext.libraries.analytics)
-
 
 }
 
