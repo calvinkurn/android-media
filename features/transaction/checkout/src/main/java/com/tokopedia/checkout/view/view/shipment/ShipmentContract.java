@@ -44,6 +44,8 @@ public interface ShipmentContract {
 
         void showToastError(String message);
 
+        void renderErrorPage(String message);
+
         void renderCheckoutPage(CartShipmentAddressFormData cartShipmentAddressFormData);
 
         void renderCheckShipmentPrepareCheckoutSuccess();

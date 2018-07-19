@@ -7,12 +7,14 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressAdapterData;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressItemData;
@@ -28,15 +30,14 @@ import com.tokopedia.checkout.view.di.module.MultipleAddressModule;
 import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule;
 import com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceActivity;
 import com.tokopedia.checkout.view.view.cartlist.CartItemDecoration;
+import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsMultipleAddress;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -68,7 +69,8 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
     private static final String DISTRICT_RECOMMENDATION_TOKEN = "DISTRICT_RECOMMENDATION_TOKEN";
 
     private MultipleAddressAdapter multipleAddressAdapter;
-    private RecyclerView orderAddressList;
+    private RecyclerView rvOrderAddressList;
+    private LinearLayout llNetworkErrorView;
     private TkpdProgressDialog progressDialogNormal;
     private SwipeToRefresh swipeToRefresh;
 
@@ -312,19 +314,39 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
 
     @Override
     public void showError(String message) {
-        if (getView() != null) {
+        if (getView() != null && getActivity() != null) {
             if (TextUtils.isEmpty(message)) {
                 message = getActivity().getString(R.string.default_request_error_unknown);
             }
-            ToasterError.make(getView(), message, 5000)
-                    .setAction(getActivity().getString(R.string.label_action_snackbar_close), new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
+            if (multipleAddressAdapter == null || multipleAddressAdapter.getItemCount() == 0) {
+                showErrorLayout(message);
+            } else {
+                ToasterError.make(getView(), message, BaseToaster.LENGTH_SHORT)
+                        .setAction(getActivity().getString(R.string.label_action_snackbar_close), new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
 
-                        }
-                    })
-                    .show();
+                            }
+                        })
+                        .show();
+            }
         }
+    }
+
+    @Override
+    public void showErrorLayout(String message) {
+        rvOrderAddressList.setVisibility(View.GONE);
+        llNetworkErrorView.setVisibility(View.VISIBLE);
+        NetworkErrorHelper.showEmptyState(getActivity(), llNetworkErrorView, message,
+                new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        llNetworkErrorView.setVisibility(View.GONE);
+                        rvOrderAddressList.setVisibility(View.VISIBLE);
+                        swipeToRefresh.setEnabled(true);
+                        presenter.processGetCartList();
+                    }
+                });
     }
 
     @Override
@@ -350,18 +372,19 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
     @Override
     protected void initView(View view) {
         progressDialogNormal = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
-        orderAddressList = view.findViewById(R.id.order_address_list);
+        rvOrderAddressList = view.findViewById(R.id.order_address_list);
+        llNetworkErrorView = view.findViewById(R.id.ll_network_error_view);
         swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
-        orderAddressList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rvOrderAddressList.setLayoutManager(new LinearLayoutManager(getActivity()));
         presenter.processGetCartList();
     }
 
     private void setRecyclerViewAdapter(List<MultipleAddressAdapterData> addressData, int itemPosition) {
         multipleAddressAdapter = new MultipleAddressAdapter(addressData, this);
-        orderAddressList.setAdapter(multipleAddressAdapter);
-        orderAddressList.addItemDecoration(new CartItemDecoration((int) getResources().getDimension(R.dimen.dp_4), false, 0));
+        rvOrderAddressList.setAdapter(multipleAddressAdapter);
+        rvOrderAddressList.addItemDecoration(new CartItemDecoration((int) getResources().getDimension(R.dimen.dp_4), false, 0));
         if (itemPosition != 0) {
-            orderAddressList.scrollToPosition(itemPosition);
+            rvOrderAddressList.scrollToPosition(itemPosition);
         }
     }
 

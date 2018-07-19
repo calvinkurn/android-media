@@ -205,7 +205,7 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
             public void onError(Throwable e) {
                 e.printStackTrace();
                 view.hideLoading();
-                view.showError(null);
+                view.showError(ErrorHandler.getErrorMessage(view.getActivityContext(), e));
             }
 
             @Override

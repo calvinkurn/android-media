@@ -216,7 +216,6 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
-        checkQtyMustDisabled(data, qty);
         data.setProductQty(String.valueOf(qty));
         validateQuantity(data, qty);
         if (needToUpdateView) {
@@ -225,6 +224,7 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void validateQuantity(MultipleAddressItemData data, int qty) {
+        checkQtyMustDisabled(data, qty);
         if (data.getMaxQuantity() != 0 && qty > data.getMaxQuantity()) {
             String errorMessage = data.getErrorProductMaxQuantity();
             NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.US);

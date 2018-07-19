@@ -2,14 +2,12 @@ package com.tokopedia.checkout.view.view.cartlist;
 
 import android.app.Activity;
 
-import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartTickerErrorData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.view.base.IBaseView;
-import com.tokopedia.core.manage.people.address.model.Token;
 
 import java.util.List;
 
@@ -29,7 +27,6 @@ public interface ICartListView extends IBaseView {
 
     void renderErrorTimeoutConnectionInitialGetCartListData(String message);
 
-
     void renderActionDeleteCartDataSuccess(CartItemData cartItemData, String message, boolean addWishList);
 
     void renderErrorActionDeleteCartData(String message);
@@ -39,7 +36,6 @@ public interface ICartListView extends IBaseView {
     void renderErrorNoConnectionActionDeleteCartData(String message);
 
     void renderErrorTimeoutConnectionActionDeleteCartData(String message);
-
 
     void renderNoRecipientAddressShipmentForm(CartShipmentAddressFormData shipmentAddressFormData);
 
@@ -54,8 +50,6 @@ public interface ICartListView extends IBaseView {
     void renderErrorNoConnectionToShipmentForm(String message);
 
     void renderErrorTimeoutConnectionToShipmentForm(String message);
-
-//    void renderToShipmentMultipleAddressSuccess(CartListData cartListData, RecipientAddressModel selectedAddress);
 
     void renderErrorToShipmentMultipleAddress(String message);
 
