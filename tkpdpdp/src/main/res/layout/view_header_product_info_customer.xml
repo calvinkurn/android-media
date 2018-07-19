@@ -15,6 +15,7 @@
         android:gravity="center_vertical"
         android:orientation="vertical"
         android:paddingLeft="@dimen/dp_16"
+        android:animateLayoutChanges="true"
         android:paddingRight="@dimen/dp_16"
         android:paddingTop="@dimen/dp_8"
         android:paddingBottom="@dimen/dp_8"
@@ -48,12 +49,13 @@
 
         <TextView
             android:id="@+id/sale_text_stock_available"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/condition"
             android:drawablePadding="@dimen/dp_8"
             android:paddingTop="@dimen/dp_8"
             android:gravity="center_vertical"
+            android:visibility="gone"
             android:textColor="@color/white"
             tools:text="Stok tersedia (>100)" />
 
