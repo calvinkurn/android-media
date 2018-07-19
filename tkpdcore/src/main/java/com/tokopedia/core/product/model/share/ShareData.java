@@ -40,6 +40,7 @@ public class ShareData implements Parcelable {
     private String source;
     private String id = "";
     private String shareUrl;
+    private String pathSticker;
 
     public ShareData() {
     }
@@ -55,6 +56,7 @@ public class ShareData implements Parcelable {
         source = in.readString();
         id = in.readString();
         shareUrl = in.readString();
+        pathSticker = in.readString();
     }
 
     @Override
@@ -69,6 +71,7 @@ public class ShareData implements Parcelable {
         dest.writeString(source);
         dest.writeString(id);
         dest.writeString(shareUrl);
+        dest.writeString(pathSticker);
     }
 
     @Override
@@ -239,6 +242,14 @@ public class ShareData implements Parcelable {
             return new String[0];
     }
 
+    public String getPathSticker() {
+        return pathSticker;
+    }
+
+    public void setPathSticker(String pathSticker) {
+        this.pathSticker = pathSticker;
+    }
+
     public static class Builder {
         private String name;
         private String price;
@@ -250,6 +261,7 @@ public class ShareData implements Parcelable {
         private String source;
         private String id;
         private String shareUrl;
+        private String pathSticker;
 
         private Builder() {
         }
@@ -307,6 +319,10 @@ public class ShareData implements Parcelable {
             this.shareUrl = shareUrl;
             return this;
         }
+        public Builder setPathSticker(String pathSticker) {
+            this.pathSticker = pathSticker;
+            return this;
+        }
 
         public Builder but() {
             return aShareData().setName(name).setPrice(price).setUri(uri).setDescription(description).setImgUri(imgUri).setShareUrl(shareUrl);
@@ -324,7 +340,7 @@ public class ShareData implements Parcelable {
             shareData.setSource(source);
             shareData.setId(id);
             shareData.setShareUrl(shareUrl);
-
+            shareData.setPathSticker(pathSticker);
             return shareData;
         }
 

@@ -18,6 +18,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.util.RouterUtils;
 import com.tokopedia.gm.subscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.deposit.activity.DepositActivity;
@@ -56,6 +57,7 @@ import com.tokopedia.seller.seller.info.view.activity.SellerInfoActivity;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.ParentIndexHome;
+import com.tokopedia.tokopoints.ApplinkConstant;
 
 import java.util.ArrayList;
 
@@ -86,6 +88,7 @@ public class DrawerBuyerHelper extends DrawerHelper
     private GlobalCacheManager globalCacheManager;
 
     private RemoteConfig remoteConfig;
+    private boolean mShowTokopointNative;
 
     public DrawerBuyerHelper(Activity activity,
                              SessionHandler sessionHandler,
@@ -128,6 +131,7 @@ public class DrawerBuyerHelper extends DrawerHelper
 
     private void initRemoteConfig() {
         remoteConfig = new FirebaseRemoteConfigImpl(context);
+        mShowTokopointNative = remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.APP_SHOW_TOKOPOINT_NATIVE, true);
     }
 
     private void createDataGuest(ArrayList<DrawerItem> data) {
@@ -743,10 +747,15 @@ public class DrawerBuyerHelper extends DrawerHelper
 
     @Override
     public void onTokoPointActionClicked(String mainPageUrl, String title) {
-        if (TextUtils.isEmpty(title))
-            context.startActivity(TokoPointWebviewActivity.getIntent(context, mainPageUrl));
-        else
-            context.startActivity(TokoPointWebviewActivity.getIntentWithTitle(context, mainPageUrl, title));
+        if (mShowTokopointNative) {
+            RouterUtils.getDefaultRouter().actionAppLink(context, ApplinkConstant.HOMEPAGE);
+        } else {
+            if (TextUtils.isEmpty(title))
+                context.startActivity(TokoPointWebviewActivity.getIntent(context, mainPageUrl));
+            else
+                context.startActivity(TokoPointWebviewActivity.getIntentWithTitle(context, mainPageUrl, title));
+        }
+
 
         AnalyticsEventTrackingHelper.hamburgerTokopointsClick(TokoPointWebviewActivity.class.getName());
     }
