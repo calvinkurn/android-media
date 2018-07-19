@@ -41,8 +41,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public static final int ITEM_DEALS_SHORT = 2;
     public static final int ITEM_EVENTS = 3;
     OrderListDetailPresenter presenter;
-    private String categoryDeals = "deals";
-    private String categoryEvents = "events";
+    private String categoryDeals = "deal";
+    private String categoryEvents = "event";
 
 
     public ItemsAdapter(Context context, List<Items> itemsList, boolean isShortLayout, OrderListDetailPresenter presenter) {
@@ -207,10 +207,10 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                             cityName.setText(entityAddress.getName());
                         }
                     if (itemType == ITEM_EVENTS)
-                        if (TextUtils.isEmpty(entityAddress.getAddress())) {
+                        if (TextUtils.isEmpty(metaDataInfo.getEntityPackages().get(0).getAddress())) {
                             itemView.findViewById(R.id.ll_details2).setVisibility(View.GONE);
                         }else{
-                            tvRightAddress.setText(entityAddress.getAddress());
+                            tvRightAddress.setText(metaDataInfo.getEntityPackages().get(0).getAddress());
                         }
                 }
                 if (itemType == ITEM_EVENTS) {
@@ -224,7 +224,11 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     }else{
                         tvRightNumberOfBooking.setText(String.valueOf(item.getQuantity()));
                     }
-                    itemView.findViewById(R.id.ll_details3).setVisibility(View.GONE);
+                    if (TextUtils.isEmpty(metaDataInfo.getEntityPackages().get(0).getDisplayName())) {
+                        itemView.findViewById(R.id.ll_details3).setVisibility(View.GONE);
+                    } else {
+                        tvRightCategoryTicket.setText(metaDataInfo.getEntityPackages().get(0).getDisplayName());
+                    }
                 }
 
             }
