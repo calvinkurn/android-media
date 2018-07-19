@@ -22,6 +22,8 @@ import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.itemdecoration.LinearHorizontalSpacingDecoration;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.itemdecoration.ProductItemDecoration;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ItemClickListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.EmptySearchModel;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
@@ -87,6 +89,10 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
         selectedFilterAdapter = new SelectedFilterAdapter(clickListener);
         selectedFilterRecyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         selectedFilterRecyclerView.setAdapter(selectedFilterAdapter);
+        selectedFilterRecyclerView.addItemDecoration(new LinearHorizontalSpacingDecoration(
+                context.getResources().getDimensionPixelSize(R.dimen.dp_8),
+                context.getResources().getDimensionPixelSize(R.dimen.dp_16)
+        ));
     }
 
     private void loadProductAds() {
