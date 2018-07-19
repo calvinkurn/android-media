@@ -42,7 +42,8 @@ public class TrainPassengerSeatViewHolder extends AbstractViewHolder<TrainReview
     public void bind(TrainReviewPassengerInfoViewModel element) {
         textPassengerIndex.setText(itemView.getContext()
                 .getString(R.string.train_review_item_passenger_index, getAdapterPosition()+1));
-        textPassengerName.setText(element.getName());
+        textPassengerName.setText(itemView.getContext().getString(R.string.train_review_item_passenger_name,
+                element.getName(), element.getPassengerType()));
         textNumberID.setText(element.getNoID());
         textDepartureSeat.setText(itemView.getContext().getString(R.string.train_review_item_passenger_seat,
                 element.getDepartureTripClass(), element.getDepartureSeat()));

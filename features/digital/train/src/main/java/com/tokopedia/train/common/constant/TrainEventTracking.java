@@ -6,7 +6,7 @@ package com.tokopedia.train.common.constant;
 public interface TrainEventTracking {
 
     interface Event {
-        String DIGITAL_TRAIN = "digital - tiket kereta api";
+        String GENERIC_TRAIN_EVENT = "genericTrainEvent";
     }
 
     interface Category {
@@ -14,7 +14,31 @@ public interface TrainEventTracking {
     }
 
     interface Action {
-
+        String CHOOSE_SINGLE_TRIP = "choose single trip";
+        String CHOOSE_ROUND_TRIP = "choose round trip";
+        String CLICK_FIND_TICKET = "click find ticket";
+        String CHECK_ORDER = "check order";
+        String CLICK_PROMO_LIST = "click promo list";
+        String CLICK_HELP = "click help";
+        String CLICK_TRANSACTION_LIST = "click transaction list";
+        String CLICK_PASSENGER_LIST = "click passenger list";
+        String CHECK_MY_TICKET = "check my ticket";
+        String PRODUCT_IMPRESSIONS = "product impressions";
+        String PRODUCT_CLICK = "product click";
+        String CLICK_CHANGE_DATE_ON_BOTTOM_BAR = "click change date on bottom bar";
+        String CLICK_SORT_ON_BOTTOM_BAR = "click sort on bottom bar";
+        String CLICK_FILTER_ON_BOTTOM_BAR = "click filter on bottom bar";
+        String VIEW_ROUTE_NOT_AVAILABLE_PAGE = "view route not available page";
+        String PRODUCT_DETAIL_IMPRESSIONS = "product detail impressions";
+        String ADD_TO_CART = "add to cart";
+        String CLICK_DETAIL = "click detail";
+        String CLICK_NEXT = "click next";
+        String CLICK_USE_VOUCHER = "click gunakan voucher";
+        String VOUCHER_SUCCESS = "voucher success";
+        String VOUCHER_ERROR = "voucher error";
+        String PROCEED_TO_PAYMENT = "proceed to payment";
+        String VIEW_MY_TICKET_PAGE = "view my ticket page";
+        String CLICK_MY_TICKET = "click my ticket";
     }
 
     interface Label {

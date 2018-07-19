@@ -50,11 +50,11 @@ public class TrainSchedulePriceDetailFragment extends Fragment {
 
     public void showPrice(TrainScheduleDetailViewModel trainScheduleDetailViewModel) {
         if (trainScheduleDetailViewModel.isReturnTrip()) {
-            textTrip.setText(getString(R.string.train_departure_trip,
+            textTrip.setText(getString(R.string.train_return_trip,
                     trainScheduleDetailViewModel.getOriginStationCode(),
                     trainScheduleDetailViewModel.getDestinationStationCode()));
         } else {
-            textTrip.setText(getString(R.string.train_return_trip,
+            textTrip.setText(getString(R.string.train_departure_trip,
                     trainScheduleDetailViewModel.getOriginStationCode(),
                     trainScheduleDetailViewModel.getDestinationStationCode()));
 

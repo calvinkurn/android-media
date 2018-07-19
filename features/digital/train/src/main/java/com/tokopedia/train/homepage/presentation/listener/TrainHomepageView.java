@@ -44,4 +44,9 @@ public interface TrainHomepageView extends CustomerView {
     void showDestinationStationEmptyError(@StringRes int resId);
 
     void getShowOriginAndDestinationShouldNotSameError(@StringRes int resId);
+
+    void navigateToLoginPage();
+
+    void closePage();
+
 }

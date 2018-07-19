@@ -812,6 +812,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Intent getIntentOfLoyaltyActivityWithoutCoupon(Activity activity, String platform) {
+        return LoyaltyActivity.newInstanceCouponNotActive(activity, platform, "");
+    }
+
+    @Override
     public Observable<PendingCashback> getPendingCashbackUseCase() {
         SessionHandler sessionHandler = new SessionHandler(this);
         com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();

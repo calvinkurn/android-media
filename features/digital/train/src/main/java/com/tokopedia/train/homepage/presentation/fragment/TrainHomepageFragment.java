@@ -56,6 +56,7 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
     private static final int DATE_PICKER_DEPARTURE_REQUEST_CODE = 1005;
     private static final int DATE_PICKER_RETURN_REQUEST_CODE = 1006;
     private static final int DEPARTURE_SCHEDULE_REQUEST_CODE = 1007;
+    private static final int REQUEST_CODE_LOGIN = 2008;
 
     private AppCompatButton buttonOneWayTrip;
     private AppCompatButton buttonRoundTrip;
@@ -117,12 +118,24 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
         buttonOneWayTrip.setOnClickListener(v -> {
             trainHomepagePresenterImpl.singleTrip();
 
-//            abstractionRouter.getAnalyticTracker().sendEventTracking(
-//                    TrainEventTracking.Event.
-//            );
+            abstractionRouter.getAnalyticTracker().sendEventTracking(
+                    TrainEventTracking.Event.GENERIC_TRAIN_EVENT,
+                    TrainEventTracking.Category.DIGITAL_TRAIN,
+                    TrainEventTracking.Action.CHOOSE_SINGLE_TRIP,
+                    ""
+            );
         });
 
-        buttonRoundTrip.setOnClickListener(v -> trainHomepagePresenterImpl.roundTrip());
+        buttonRoundTrip.setOnClickListener(v -> {
+            trainHomepagePresenterImpl.roundTrip();
+
+            abstractionRouter.getAnalyticTracker().sendEventTracking(
+                    TrainEventTracking.Event.GENERIC_TRAIN_EVENT,
+                    TrainEventTracking.Category.DIGITAL_TRAIN,
+                    TrainEventTracking.Action.CHOOSE_SINGLE_TRIP,
+                    ""
+            );
+        });
 
         imageReverseOriginDestitation.setOnClickListener(v -> {
             trainHomepagePresenterImpl.onReverseStationButtonClicked();
@@ -154,7 +167,21 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
                 getHomepageViewModel().getTrainPassengerViewModel()),
                 PASSENGER_REQUEST_CODE));
 
-        buttonSearchTicket.setOnClickListener(view1 -> trainHomepagePresenterImpl.onSubmitButtonClicked());
+        buttonSearchTicket.setOnClickListener(view1 -> {
+            trainHomepagePresenterImpl.onSubmitButtonClicked();
+
+//            String trip = viewModel.isOneWay() ? "single trip" : "round trip";
+//            String origin = viewModel.getOriginStation().getStationCode();
+//            String destination = viewModel.getDestinationStation().getStationCode();
+//            String numOfPassenger = viewModel.getPassengerFmt();
+//
+//            abstractionRouter.getAnalyticTracker().sendEventTracking(
+//                    TrainEventTracking.Event.GENERIC_TRAIN_EVENT,
+//                    TrainEventTracking.Category.DIGITAL_TRAIN,
+//                    TrainEventTracking.Action.CLICK_FIND_TICKET,
+//
+//            );
+        });
 
         return view;
     }
@@ -329,6 +356,9 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
                             calendarSelected.get(Calendar.MONTH), calendarSelected.get(Calendar.DATE));
                 }
                 break;
+            case REQUEST_CODE_LOGIN:
+                trainHomepagePresenterImpl.onLoginRecieved();
+                break;
         }
     }
 
@@ -350,6 +380,19 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
     @Override
     public void getShowOriginAndDestinationShouldNotSameError(int resId) {
         showMessageErrorInSnackBar(resId);
+    }
+
+    @Override
+    public void navigateToLoginPage() {
+        if (getActivity().getApplication() instanceof TrainRouter
+                && ((TrainRouter) getActivity().getApplication()).getLoginIntent() != null) {
+            startActivityForResult(((TrainRouter) getActivity().getApplication()).getLoginIntent(), REQUEST_CODE_LOGIN);
+        }
+    }
+
+    @Override
+    public void closePage() {
+        getActivity().finish();
     }
 
     @Override

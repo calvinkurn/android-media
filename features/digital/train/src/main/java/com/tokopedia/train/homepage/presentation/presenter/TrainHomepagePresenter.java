@@ -40,4 +40,6 @@ public interface TrainHomepagePresenter extends CustomerPresenter<TrainHomepageV
 
     void saveHomepageViewModelToCache(TrainHomepageViewModel viewModel);
 
+    void onLoginRecieved();
+
 }
