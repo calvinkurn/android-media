@@ -74,9 +74,9 @@ class ShopWarningTickerViewNew: FrameLayout {
 
             val spannableString = SpannableString(text)
             spannableString.setSpan(this, start, end, 0)
-            view.title.text = spannableString
+            view.description.text = spannableString
 
-            view.title.movementMethod = LinkMovementMethod()
+            view.description.movementMethod = LinkMovementMethod.getInstance()
 
         }
     }
