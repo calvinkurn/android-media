@@ -3,7 +3,6 @@ package com.tokopedia.feedplus.view.adapter.typefactory.feed;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.core.base.adapter.model.EmptyModel;
 import com.tokopedia.feedplus.view.viewmodel.EmptyFeedBeforeLoginModel;
 import com.tokopedia.feedplus.view.viewmodel.FavoriteCtaViewModel;
 import com.tokopedia.feedplus.view.viewmodel.RetryModel;
@@ -18,12 +17,10 @@ import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreBrandsVi
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreCampaignViewModel;
 import com.tokopedia.feedplus.view.viewmodel.product.ActivityCardViewModel;
 import com.tokopedia.feedplus.view.viewmodel.product.AddFeedModel;
-import com.tokopedia.feedplus.view.viewmodel.promo.PromoCardViewModel;
 import com.tokopedia.feedplus.view.viewmodel.promo.PromotedProductViewModel;
 import com.tokopedia.feedplus.view.viewmodel.promo.PromotedShopViewModel;
 import com.tokopedia.feedplus.view.viewmodel.recentview.RecentViewViewModel;
 import com.tokopedia.feedplus.view.viewmodel.topads.FeedTopAdsViewModel;
-import com.tokopedia.feedplus.view.viewmodel.toppicks.ToppicksViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 
 /**
@@ -35,8 +32,6 @@ public interface FeedPlusTypeFactory {
     int type(ActivityCardViewModel viewModel);
 
     int type(PromotedShopViewModel viewModel);
-
-    int type(PromoCardViewModel promoCardViewModel);
 
     int type(OfficialStoreBrandsViewModel brandsViewModel);
 
@@ -51,10 +46,6 @@ public interface FeedPlusTypeFactory {
     int type(AddFeedModel addFeedModel);
 
     int type(RecentViewViewModel recentViewViewModel);
-
-    int type(EmptyModel emptyModel);
-
-    int type(ToppicksViewModel toppicksViewModel);
 
     int type(KolPostViewModel kolPostViewModel);
 

@@ -35,6 +35,7 @@ public class ChangePhoneNumberWarningPresenter
     @Override
     public void detachView() {
         getWarningUseCase.unsubscribe();
+        getValidateOtpStatusUseCase.unsubscribe();
         super.detachView();
     }
 

@@ -50,6 +50,8 @@ public interface KolPostListener {
 
             void onGoToKolProfile(int rowNumber, String userId, int postId);
 
+            void onGoToKolProfileUsingApplink(int rowNumber, String applink);
+
             void onOpenKolTooltip(int rowNumber, String url);
 
             void onFollowKolClicked(int rowNumber, int id);

@@ -737,8 +737,6 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
     }
 
     private void onDoneButtonClicked() {
-        blockingView.setVisibility(View.VISIBLE);
-
         ArrayList<String> resultList = new ArrayList<>();
         ArrayList<ImageRatioTypeDef> ratioResultList = new ArrayList<>();
         isEdittedList = new ArrayList<>();
@@ -763,7 +761,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
         try {
             resultList = ImageUtils.copyFiles(cropppedImagePaths, ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_EDIT_RESULT);
             onFinishWithMultipleImageValidateFileSize(resultList);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             NetworkErrorHelper.showRedCloseSnackbar(this, ErrorHandler.getErrorMessage(this, e));
         }
     }
@@ -787,12 +785,14 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
             progressDialog.setMessage(getString(R.string.title_loading));
         }
         progressDialog.show();
+        blockingView.setVisibility(View.VISIBLE);
     }
 
     private void hideDoneLoading() {
         if (progressDialog != null) {
             progressDialog.dismiss();
         }
+        blockingView.setVisibility(View.GONE);
     }
 
     @Override

@@ -23,7 +23,12 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.FeedTracking;
@@ -31,28 +36,12 @@ import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.base.adapter.model.EmptyModel;
-import com.tokopedia.core.base.adapter.model.RetryModel;
-import com.tokopedia.core.base.presentation.BaseDaggerFragment;
-import com.tokopedia.core.customwidget.SwipeToRefresh;
-import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.BrandsWebViewActivity;
-import com.tokopedia.core.home.TopPicksWebView;
-import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.router.productdetail.PdpRouter;
-import com.tokopedia.core.router.productdetail.ProductDetailRouter;
-import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
-import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
-import com.tokopedia.core.util.ClipboardHandler;
-import com.tokopedia.core.util.DeepLinkChecker;
-import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.feedplus.FeedModuleRouter;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.domain.usecase.FollowKolPostUseCase;
@@ -71,13 +60,12 @@ import com.tokopedia.feedplus.view.listener.FeedPlus;
 import com.tokopedia.feedplus.view.presenter.FeedPlusPresenter;
 import com.tokopedia.feedplus.view.util.NpaLinearLayoutManager;
 import com.tokopedia.feedplus.view.util.ShareBottomDialog;
+import com.tokopedia.feedplus.view.viewmodel.RetryModel;
 import com.tokopedia.feedplus.view.viewmodel.inspiration.InspirationViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollOptionViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
-import com.tokopedia.feedplus.view.viewmodel.product.ProductFeedViewModel;
-import com.tokopedia.feedplus.view.viewmodel.promo.PromoCardViewModel;
 import com.tokopedia.feedplus.view.viewmodel.topads.FeedTopAdsViewModel;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.kol.KolComponentInstance;
@@ -112,7 +100,6 @@ import static com.tokopedia.profile.view.activity.TopProfileActivity.IS_FOLLOWIN
 
 public class FeedPlusFragment extends BaseDaggerFragment
         implements FeedPlus.View,
-        FeedPlus.View.Toppicks,
         FeedPlus.View.Kol,
         FeedPlus.View.Polling,
         SwipeRefreshLayout.OnRefreshListener,
@@ -126,13 +113,15 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private static final int CREATE_POST = 888;
     private static final int DEFAULT_VALUE = -1;
 
+    private static final String TAG = FeedPlusFragment.class.getSimpleName();
     private static final String ARGS_ROW_NUMBER = "row_number";
     private static final String ARGS_ITEM_ROW_NUMBER = "item_row_number";
-
     private static final String FIRST_CURSOR = "FIRST_CURSOR";
+
     public static final String KEY_EXPLORE_NATIVE_ENABLE = "mainapp_explore_native_enable";
     public static final String KEY_EXPLORE_URL = "mainapp_explore_url";
     public static final String DEFAULT_EXPLORE_URL = "tokopedia://webview?url=https%3A%2F%2Fm.tokopedia.com%2Fcontent%2Fexplore%3Fwebview%3Dtrue";
+
     RecyclerView recyclerView;
     SwipeToRefresh swipeToRefresh;
     RelativeLayout mainContent;
@@ -142,6 +131,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private TkpdProgressDialog progressDialog;
     private RemoteConfig remoteConfig;
     private AbstractionRouter abstractionRouter;
+    private FeedModuleRouter feedModuleRouter;
 
     @Inject
     FeedPlusPresenter presenter;
@@ -150,8 +140,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private FeedPlusAdapter adapter;
     private CallbackManager callbackManager;
     private TopAdsInfoBottomSheet infoBottomSheet;
-    private static final String TOPADS_ITEM = "4,1";
-    private static final String TAG = FeedPlusFragment.class.getSimpleName();
     private String firstCursor = "";
     private int loginIdInt;
 
@@ -190,25 +178,20 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private void initVar() {
         FeedPlusTypeFactory typeFactory = new FeedPlusTypeFactoryImpl(this);
         adapter = new FeedPlusAdapter(typeFactory);
-        adapter.setOnLoadListener(new FeedPlusAdapter.OnLoadListener() {
-            @Override
-            public void onLoad(int totalCount) {
-                int size = adapter.getlist().size();
-                int lastIndex = size - 1;
-                if (!(adapter.getlist().get(0) instanceof EmptyModel)
-                        && !(adapter.getlist().get(lastIndex) instanceof RetryModel)
-                        && !(adapter.getlist().get(lastIndex) instanceof AddFeedViewHolder)
-                        )
-                    presenter.fetchNextPage();
-            }
+        adapter.setOnLoadListener(totalCount -> {
+            int size = adapter.getlist().size();
+            int lastIndex = size - 1;
+            if (!(adapter.getlist().get(0) instanceof EmptyModel)
+                    && !(adapter.getlist().get(lastIndex) instanceof RetryModel)
+                    && !(adapter.getlist().get(lastIndex) instanceof AddFeedViewHolder)
+                    )
+                presenter.fetchNextPage();
         });
         layoutManager = new NpaLinearLayoutManager(getActivity(),
                 LinearLayoutManager.VERTICAL,
                 false);
         FacebookSdk.sdkInitialize(getActivity().getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
-        String loginIdString = SessionHandler.getLoginID(getActivity());
-        loginIdInt = loginIdString.isEmpty() ? 0 : Integer.valueOf(loginIdString);
 
         if (getActivity().getApplication() instanceof AbstractionRouter) {
             abstractionRouter = (AbstractionRouter) getActivity().getApplication();
@@ -216,6 +199,16 @@ public class FeedPlusFragment extends BaseDaggerFragment
             throw new IllegalStateException("Application must implement " +
                     AbstractionRouter.class.getSimpleName());
         }
+
+        if (getActivity().getApplication() instanceof FeedModuleRouter) {
+            feedModuleRouter = (FeedModuleRouter) getActivity().getApplication();
+        } else {
+            throw new IllegalStateException("Application must implement " +
+                    FeedModuleRouter.class.getSimpleName());
+        }
+
+        String loginIdString = getUserSession().getUserId();
+        loginIdInt = TextUtils.isEmpty(loginIdString) ? 0 : Integer.valueOf(loginIdString);
     }
 
     @Nullable
@@ -225,9 +218,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
                              @Nullable Bundle savedInstanceState) {
         setRetainInstance(true);
         View parentView = inflater.inflate(R.layout.fragment_feed_plus, container, false);
-        recyclerView = (RecyclerView) parentView.findViewById(R.id.recycler_view);
-        swipeToRefresh = (SwipeToRefresh) parentView.findViewById(R.id.swipe_refresh_layout);
-        mainContent = (RelativeLayout) parentView.findViewById(R.id.main);
+        recyclerView = parentView.findViewById(R.id.recycler_view);
+        swipeToRefresh = parentView.findViewById(R.id.swipe_refresh_layout);
+        mainContent = parentView.findViewById(R.id.main);
         newFeed = parentView.findViewById(R.id.layout_new_feed);
 
         prepareView();
@@ -242,13 +235,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
         recyclerView.setAdapter(adapter);
         swipeToRefresh.setOnRefreshListener(this);
         infoBottomSheet = TopAdsInfoBottomSheet.newInstance(getActivity());
-        newFeed.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                scrollToTop();
-                showRefresh();
-                onRefresh();
-            }
+        newFeed.setOnClickListener(v -> {
+            scrollToTop();
+            showRefresh();
+            onRefresh();
         });
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -259,7 +249,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                             && newState == RecyclerView.SCROLL_STATE_IDLE
                             && layoutManager != null) {
                         int position = 0;
-                        Visitable item = null;
+                        Visitable item;
                         if (itemIsFullScreen()) {
                             position = layoutManager.findLastVisibleItemPosition();
                         } else if (layoutManager.findFirstCompletelyVisibleItemPosition() != -1) {
@@ -271,7 +261,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                         item = adapter.getlist().get(position);
 
                         if (position != 0 && item != null && !isTopads(item)) {
-                            trackImpression(item, position);
+                            trackImpression(item);
                         }
                     }
                 } catch (IndexOutOfBoundsException e) {
@@ -283,18 +273,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
         });
     }
 
-    private void trackImpression(Visitable item, int position) {
+    private void trackImpression(Visitable item) {
         if (isInspirationItem(item)) {
             UnifyTracking.eventR3(AppEventTracking.Action.IMPRESSION,
                     FeedTrackingEventLabel.Impression.FEED_RECOMMENDATION);
-        } else if (isPromoItem(item)) {
-            UnifyTracking.eventFeedClick(AppEventTracking.Action.IMPRESSION,
-                    FeedTrackingEventLabel.Impression.FEED_PROMOTION);
         }
-    }
-
-    private boolean isPromoItem(Visitable item) {
-        return item instanceof PromoCardViewModel;
     }
 
     private boolean isInspirationItem(Visitable item) {
@@ -378,19 +361,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     }
 
-    private void goToProductDetail(String productId, String imageSourceSingle, String name, String price) {
-        if (getActivity().getApplication() instanceof PdpRouter) {
-            ((PdpRouter) getActivity().getApplication()).goToProductDetail(
-                    getActivity(),
-                    ProductPass.Builder.aProductPass()
-                            .setProductId(productId)
-                            .setProductImage(imageSourceSingle)
-                            .setProductName(name)
-                            .setProductPrice(price)
-
-                            .build()
-            );
-        }
+    private void goToProductDetail(String productId, String imageSourceSingle, String name,
+                                   String price) {
+        feedModuleRouter.goToProductDetail(getContext(), productId, imageSourceSingle, name, price);
     }
 
     @Override
@@ -420,7 +393,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 productUrl,
                 positionFeedCard,
                 itemPosition,
-                SessionHandler.getLoginID(getContext()),
+                getUserSession().getUserId(),
                 eventLabel
         );
         goToProductDetail(productId, imageSourceSingle, name, price);
@@ -455,7 +428,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 positionFeedCard,
                 itemPosition,
                 source,
-                SessionHandler.getLoginID(getContext()),
+                getUserSession().getUserId(),
                 eventLabel
         );
 
@@ -479,21 +452,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToShopDetail(int page, int rowNumber, Integer shopId, String url) {
-        Intent intent = ((FeedModuleRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), String.valueOf(shopId));
+        Intent intent = feedModuleRouter.getShopPageIntent(getActivity(), String.valueOf(shopId));
         startActivity(intent);
         UnifyTracking.eventFeedViewShop(String.valueOf(shopId), getFeedAnalyticsHeader(page, rowNumber) + FeedTrackingEventLabel.View.FEED_SHOP);
-    }
-
-    @SuppressLint("Range")
-    @Override
-    public void onCopyClicked(int page, int rowNumber, String id, String code, String name) {
-        ClipboardHandler.CopyToClipboard(getActivity(), code);
-        SnackbarManager.make(getActivity(), getResources().getString(R.string.copy_promo_success),
-                Snackbar.LENGTH_SHORT).show();
-        UnifyTracking.eventFeedClickPromo(id, AppEventTracking.Action.COPY_CODE,
-                getFeedAnalyticsHeader(page, rowNumber)
-                        + FeedTrackingEventLabel.Click.PROMO_COPY + name);
-
     }
 
     @Override
@@ -506,21 +467,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void onOpenVideo(String videoUrl, String subtitle) {
         Intent intent = TransparentVideoActivity.getIntent(getActivity(), videoUrl, subtitle);
         startActivity(intent);
-    }
-
-    @Override
-    public void onGoToBuyProduct(ProductFeedViewModel productFeedViewModel) {
-
-        ProductCartPass pass = ProductCartPass.Builder.aProductCartPass()
-                .setProductId(String.valueOf(productFeedViewModel.getProductId()))
-                .setPrice(productFeedViewModel.getPrice())
-                .setImageUri(productFeedViewModel.getImageSource())
-                .build();
-
-        Intent intent = TransactionAddToCartRouter
-                .createInstanceAddToCartActivity(getActivity(), pass);
-        startActivity(intent);
-
     }
 
     @Override
@@ -546,24 +492,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
         data.setFavorit(!currentStatus);
         adapter.notifyItemChanged(adapterPosition);
     }
-
-    @Override
-    public void onViewMorePromoClicked(int page, int rowNumber) {
-        goToAllPromo();
-        UnifyTracking.eventFeedClick(
-                getFeedAnalyticsHeader(page, rowNumber) + FeedTrackingEventLabel.Click.PROMO_MORE);
-
-    }
-
-    private void goToAllPromo() {
-        Intent intent = new Intent(getContext(), BannerWebView.class);
-        intent.putExtra(BannerWebView.EXTRA_TITLE, getContext().getString(R.string.title_activity_promo));
-        intent.putExtra(BannerWebView.EXTRA_URL,
-                TkpdBaseURL.URL_PROMO + TkpdBaseURL.FLAG_APP
-        );
-        startActivity(intent);
-    }
-
 
     @Override
     public void onSuccessGetFeedFirstPage(ArrayList<Visitable> listFeed) {
@@ -611,15 +539,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToPromoPageFromHeader(int page, int rowNumber) {
-        goToAllPromo();
-        UnifyTracking.eventFeedClick(
-                getFeedAnalyticsHeader(page, rowNumber)
-                        + FeedTrackingEventLabel.Click.PROMO_PAGE_HEADER);
-
-    }
-
-    @Override
     public void onHideNewFeed() {
         newFeed.setVisibility(View.GONE);
     }
@@ -634,12 +553,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         finishLoading();
         if (adapter.getItemCount() == 0) {
             NetworkErrorHelper.showEmptyState(getActivity(), mainContent, errorMessage,
-                    new NetworkErrorHelper.RetryClickedListener() {
-                        @Override
-                        public void onRetryClicked() {
-                            presenter.refreshPage();
-                        }
-                    });
+                    () -> presenter.refreshPage());
         } else {
             NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
         }
@@ -648,7 +562,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onSearchShopButtonClicked() {
-        Intent intent = HomeRouter.getHomeActivity(getActivity());
+        Intent intent = feedModuleRouter.getHomeIntent(getContext());
         intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_FAVORITE);
         startActivity(intent);
     }
@@ -705,15 +619,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
         getActivity().startActivity(intent);
     }
 
-
-    @Override
-    public void onSeePromo(int page, int rowNumber, String id, String link, String name) {
-        ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity(), link);
-        UnifyTracking.eventFeedClickPromo(id,
-                getFeedAnalyticsHeader(page, rowNumber)
-                        + FeedTrackingEventLabel.Click.PROMO_SPECIFIC + name);
-    }
-
     @Override
     public void onRetryClicked() {
         adapter.removeRetry();
@@ -726,16 +631,18 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         callbackManager.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
+
+        if (data == null) {
+            return;
+        }
+
         switch (requestCode) {
             case OPEN_DETAIL:
                 if (resultCode == Activity.RESULT_OK)
                     showSnackbar(data.getStringExtra("message"));
                 break;
             case OPEN_KOL_COMMENT:
-                if (resultCode == Activity.RESULT_OK
-                        && data.hasExtra(KolCommentActivity.ARGS_POSITION)
-                        && data.hasExtra(KolCommentFragment.ARGS_TOTAL_COMMENT)) {
-
+                if (resultCode == Activity.RESULT_OK) {
                     onSuccessAddDeleteKolComment(
                             data.getIntExtra(KolCommentActivity.ARGS_POSITION, DEFAULT_VALUE),
                             data.getIntExtra(KolCommentFragment.ARGS_TOTAL_COMMENT, 0)
@@ -743,13 +650,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 }
                 break;
             case OPEN_KOL_PROFILE:
-                if (resultCode == Activity.RESULT_OK
-                        && data.hasExtra(ARGS_ROW_NUMBER)
-                        && data.hasExtra(TopProfileActivity.EXTRA_IS_FOLLOWING)
-                        && data.hasExtra(PARAM_IS_LIKED)
-                        && data.hasExtra(PARAM_TOTAL_LIKES)
-                        && data.hasExtra(PARAM_TOTAL_COMMENTS)) {
-
+                if (resultCode == Activity.RESULT_OK) {
                     onSuccessFollowUnfollowFromProfile(
                             data.getIntExtra(ARGS_ROW_NUMBER, DEFAULT_VALUE),
                             data.getIntExtra(TopProfileActivity.EXTRA_IS_FOLLOWING, DEFAULT_VALUE)
@@ -766,11 +667,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
             case CREATE_POST:
                 break;
             case OPEN_KOL_PROFILE_FROM_RECOMMENDATION:
-                if (resultCode == Activity.RESULT_OK
-                        && data.hasExtra(ARGS_ROW_NUMBER)
-                        && data.hasExtra(ARGS_ITEM_ROW_NUMBER)
-                        && data.hasExtra(TopProfileActivity.EXTRA_IS_FOLLOWING)) {
-
+                if (resultCode == Activity.RESULT_OK) {
                     onSuccessFollowUnfollowFromProfileRecommendation(
                             data.getIntExtra(ARGS_ROW_NUMBER, DEFAULT_VALUE),
                             data.getIntExtra(ARGS_ITEM_ROW_NUMBER, DEFAULT_VALUE),
@@ -782,11 +679,19 @@ public class FeedPlusFragment extends BaseDaggerFragment
         }
     }
 
+    private void forceLoadFirstPage() {
+        hasLoadedOnce = false;
+        loadData(true);
+    }
+
     @Override
     public void onProductItemClicked(int position, Product product) {
-        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity(),
-                product.getId());
-        getActivity().startActivity(intent);
+        goToProductDetail(product.getId(),
+                product.getImage().getS_ecs(),
+                product.getName(),
+                product.getPriceFormat()
+        );
+
         UnifyTracking.eventFeedClickProduct(product.getId(),
                 FeedTrackingEventLabel.Click.TOP_ADS_PRODUCT);
 
@@ -810,7 +715,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onShopItemClicked(int position, Shop shop) {
-        Intent intent = ((FeedModuleRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), shop.getId());
+        Intent intent = feedModuleRouter.getShopPageIntent(getActivity(), shop.getId());
         startActivity(intent);
         UnifyTracking.eventFeedClickShop(shop.getId(), FeedTrackingEventLabel.Click.TOP_ADS_SHOP);
   
@@ -839,6 +744,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     }
 
+    @Override
+    public void onAddWishList(int position, Data data) {
+        //TODO: next implement wishlist action
+    }
+
     public void scrollToTop() {
         if (recyclerView != null) recyclerView.scrollToPosition(0);
     }
@@ -850,6 +760,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
             firstCursor = "";
         if (getUserVisibleHint() && presenter != null) {
             loadData(getUserVisibleHint());
+        }
+        if (!hasFeed()) {
+            forceLoadFirstPage();
         }
     }
 
@@ -895,11 +808,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onEmptyOfficialStoreClicked() {
-        openWebViewBrandsURL(TkpdBaseURL.OfficialStore.URL_WEBVIEW);
-    }
-
-    @Override
     public void onBrandClicked(int page, int rowNumber, OfficialStoreViewModel officialStoreViewModel) {
         UnifyTracking.eventFeedClickShop(
                 String.valueOf(officialStoreViewModel.getShopId()),
@@ -908,7 +816,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                                 .OFFICIAL_STORE_BRAND +
                         officialStoreViewModel.getShopName());
 
-        Intent intent = ((FeedModuleRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), String.valueOf(officialStoreViewModel.getShopId()));
+        Intent intent = feedModuleRouter.getShopPageIntent(getActivity(), String.valueOf(officialStoreViewModel.getShopId()));
         startActivity(intent);
     }
 
@@ -966,38 +874,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onContentProductLinkClicked(String url) {
-        ((FeedModuleRouter) getActivity().getApplication()).openRedirectUrl(getActivity(), url);
-    }
-
-    @Override
-    public void onToppicksClicked(int page, int rowNumber, String name, String url, int itemPosition) {
-        UnifyTracking.eventFeedClick(
-                getFeedAnalyticsHeader(page, rowNumber) +
-                        FeedTrackingEventLabel.Click.TOPPICKS + name);
-        switch ((DeepLinkChecker.getDeepLinkType(url))) {
-            case DeepLinkChecker.BROWSE:
-                DeepLinkChecker.openBrowse(url, getActivity());
-                break;
-            case DeepLinkChecker.HOT:
-                DeepLinkChecker.openHot(url, getActivity());
-                break;
-            case DeepLinkChecker.CATALOG:
-                DeepLinkChecker.openCatalog(url, getActivity());
-                break;
-            default:
-                if (!TextUtils.isEmpty(url)) {
-                    ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity()
-                            , url);
-                }
+        if (!TextUtils.isEmpty(url)) {
+            feedModuleRouter.openRedirectUrl(getActivity(), url);
         }
-    }
-
-    @Override
-    public void onSeeAllToppicks(int page, int rowNumber) {
-        startActivity(TopPicksWebView.newInstance(getActivity(), TkpdBaseURL.URL_TOPPICKS));
-        UnifyTracking.eventFeedClick(
-                getFeedAnalyticsHeader(page, rowNumber) +
-                        FeedTrackingEventLabel.Click.TOPPICKS_SEE_ALL);
     }
 
     @Override
@@ -1014,6 +893,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
         Intent profileIntent = TopProfileActivity.newInstanceFromFeed(getContext(), userId, postId)
                 .putExtra(ARGS_ROW_NUMBER, rowNumber);
         startActivityForResult(profileIntent, OPEN_KOL_PROFILE);
+    }
+
+    @Override
+    public void onGoToKolProfileUsingApplink(int rowNumber, String applink) {
+        feedModuleRouter.openRedirectUrl(getActivity(), applink);
     }
 
     @Override
@@ -1044,16 +928,15 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToKolComment(int rowNumber, int id) {
-        if (getActivity().getApplication() instanceof FeedModuleRouter) {
-            FeedModuleRouter router = ((FeedModuleRouter) getActivity().getApplication());
-            Intent intent = router.getKolCommentActivity(getContext(), id, rowNumber);
-            startActivityForResult(intent, OPEN_KOL_COMMENT);
-        }
+        Intent intent = feedModuleRouter.getKolCommentActivity(getContext(), id, rowNumber);
+        startActivityForResult(intent, OPEN_KOL_COMMENT);
     }
 
     @Override
     public void onGoToLink(String link) {
-        ((FeedModuleRouter) getActivity().getApplication()).openRedirectUrl(getActivity(), link);
+        if (!TextUtils.isEmpty(link)) {
+            feedModuleRouter.openRedirectUrl(getActivity(), link);
+        }
     }
 
     @Override
@@ -1072,15 +955,12 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onErrorFollowKol(String errorMessage, final int id, final int status, final int rowNumber) {
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(), errorMessage, new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                if (status == FollowKolPostUseCase.PARAM_UNFOLLOW)
-                    presenter.unfollowKol(id, rowNumber, FeedPlusFragment.this);
-                else
-                    presenter.followKol(id, rowNumber, FeedPlusFragment.this);
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), errorMessage, () -> {
+            if (status == FollowKolPostUseCase.PARAM_UNFOLLOW)
+                presenter.unfollowKol(id, rowNumber, FeedPlusFragment.this);
+            else
+                presenter.followKol(id, rowNumber, FeedPlusFragment.this);
 
-            }
         }).showRetrySnackbar();
     }
 
@@ -1136,7 +1016,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     private void onSuccessAddDeleteKolComment(int rowNumber, int totalNewComment) {
-        if (adapter.getlist().get(rowNumber) instanceof BaseKolViewModel) {
+        if (adapter.getlist().size() > rowNumber
+                && adapter.getlist().get(rowNumber) instanceof BaseKolViewModel) {
             BaseKolViewModel kolViewModel = (BaseKolViewModel) adapter.getlist().get(rowNumber);
             kolViewModel.setTotalComment((
                     (BaseKolViewModel)
@@ -1147,7 +1028,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     private void onSuccessFollowUnfollowFromProfile(int rowNumber, int isFollowing) {
-        if (rowNumber != DEFAULT_VALUE && adapter.getlist().get(rowNumber) instanceof KolPostViewModel) {
+        if (rowNumber != DEFAULT_VALUE
+                && adapter.getlist().size() > rowNumber
+                && adapter.getlist().get(rowNumber) instanceof KolPostViewModel) {
             KolPostViewModel kolViewModel = (KolPostViewModel) adapter.getlist().get(rowNumber);
 
             if (isFollowing != DEFAULT_VALUE) {
@@ -1159,7 +1042,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     private void updatePostState(int rowNumber, int isLiked, int totalLike, int totalComment) {
-        if (rowNumber != DEFAULT_VALUE && adapter.getlist().get(rowNumber) instanceof BaseKolViewModel) {
+        if (rowNumber != DEFAULT_VALUE
+                && adapter.getlist().size() > rowNumber
+                && adapter.getlist().get(rowNumber) instanceof BaseKolViewModel) {
             BaseKolViewModel kolViewModel = (BaseKolViewModel) adapter.getlist().get(rowNumber);
 
             if (isLiked != DEFAULT_VALUE) {
@@ -1182,6 +1067,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                                                                   int isFollowing) {
         if (rowNumber != DEFAULT_VALUE
                 && itemRowNumber != DEFAULT_VALUE
+                && adapter.getlist().size() > rowNumber
                 && adapter.getlist().get(rowNumber) instanceof KolRecommendationViewModel) {
             KolRecommendationViewModel recommendationViewModel =
                     (KolRecommendationViewModel) adapter.getlist().get(rowNumber);
@@ -1206,14 +1092,15 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToLogin() {
-        Intent intent = ((FeedModuleRouter) getActivity().getApplication()).getLoginIntent(getContext());
+        Intent intent = feedModuleRouter.getLoginIntent(getContext());
         startActivity(intent);
     }
 
     @Override
     public void onSuccessSendVote(int rowNumber, PollOptionViewModel selectedOption,
                                   VoteStatisticDomainModel voteStatisticDomainModel) {
-        if (adapter.getlist().get(rowNumber) instanceof PollViewModel) {
+        if (adapter.getlist().size() > rowNumber
+                && adapter.getlist().get(rowNumber) instanceof PollViewModel) {
             PollViewModel pollViewModel = (PollViewModel) adapter.getlist().get(rowNumber);
             pollViewModel.setVoted(true);
             pollViewModel.setTotalVoter(voteStatisticDomainModel.getTotalParticipants());
@@ -1223,11 +1110,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 PollOptionViewModel pollOptionViewModel
                         = pollViewModel.getOptionViewModels().get(i);
 
-                if (selectedIndex == i) {
-                    pollOptionViewModel.setSelected(PollOptionViewModel.SELECTED);
-                } else {
-                    pollOptionViewModel.setSelected(PollOptionViewModel.UNSELECTED);
-                }
+                pollOptionViewModel.setSelected(selectedIndex == i ?
+                        PollOptionViewModel.SELECTED : PollOptionViewModel.UNSELECTED);
 
                 String newPercentage
                         = voteStatisticDomainModel.getListOptions().get(i).getPercentage();

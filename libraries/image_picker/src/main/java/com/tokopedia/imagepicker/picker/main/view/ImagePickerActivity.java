@@ -187,6 +187,16 @@ public class ImagePickerActivity extends BaseSimpleActivity
 
             @Override
             public void onPageSelected(int position) {
+                if(selectedTab!= position) {
+                    Fragment previousFragment = imagePickerViewPagerAdapter.getRegisteredFragment(selectedTab);
+                    if (previousFragment!= null && previousFragment instanceof ImagePickerCameraFragment) {
+                        ((ImagePickerCameraFragment) previousFragment).onInvisible();
+                    }
+                    Fragment fragment = imagePickerViewPagerAdapter.getRegisteredFragment(position);
+                    if (fragment!= null && fragment instanceof ImagePickerCameraFragment) {
+                        ((ImagePickerCameraFragment) fragment).onVisible();
+                    }
+                }
                 selectedTab = position;
             }
 
@@ -194,6 +204,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
             public void onPageScrollStateChanged(int state) {
 
             }
+
         });
     }
 
@@ -246,7 +257,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (grantResults.length == permissionsToRequest.size()) {
+        if (permissionsToRequest != null && grantResults.length == permissionsToRequest.size()) {
             int grantCount = 0;
             for (int result : grantResults) {
                 if (result == PackageManager.PERMISSION_DENIED) {

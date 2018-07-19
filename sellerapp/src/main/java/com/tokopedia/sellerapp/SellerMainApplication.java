@@ -46,6 +46,7 @@ import com.tokopedia.sellerapp.utils.CacheApiWhiteList;
 import com.tokopedia.shop.common.constant.ShopCommonUrl;
 import com.tokopedia.shop.common.constant.ShopUrl;
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant;
+import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
 
 import rx.Observable;
 
@@ -256,9 +257,29 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
     }
 
     @Override
+    public Intent getOrderListIntent(Context context) {
+        return OrderListActivity.getInstance(context);
+    }
+
+    @Override
     public boolean isSupportApplink(String appLink) {
         DeepLinkDelegate deepLinkDelegate = DeepLinkHandlerActivity.getDelegateInstance();
         return deepLinkDelegate.supportsUri(appLink);
+    }
+
+    @Override
+    public Intent getHelpUsIntent(Context context) {
+        return null;
+    }
+
+    @Override
+    public Intent getWebviewActivityWithIntent(Context context, String url, String title) {
+        return null;
+    }
+
+    @Override
+    public Intent getWebviewActivityWithIntent(Context context, String url) {
+        return null;
     }
 
 }

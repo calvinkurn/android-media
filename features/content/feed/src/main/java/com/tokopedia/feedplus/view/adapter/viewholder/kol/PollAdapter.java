@@ -3,6 +3,7 @@ package com.tokopedia.feedplus.view.adapter.viewholder.kol;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,12 +13,16 @@ import android.widget.TextView;
 
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.design.image.SquareImageView;
 import com.tokopedia.feedplus.R;
+import com.tokopedia.feedplus.view.analytics.FeedEnhancedTracking;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollOptionViewModel;
+import com.tokopedia.feedplus.view.viewmodel.kol.PollViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,15 +33,13 @@ import java.util.List;
 
 public class PollAdapter extends RecyclerView.Adapter<PollAdapter.ViewHolder> {
     private int rowNumber;
-    private String pollId;
-    private boolean voted;
+    private PollViewModel pollViewModel;
     private List<PollOptionViewModel> list;
     private FeedPlus.View.Polling viewListener;
 
-    PollAdapter(int rowNumber, String pollId, boolean voted, FeedPlus.View.Polling viewListener) {
+    PollAdapter(int rowNumber, PollViewModel pollViewModel, FeedPlus.View.Polling viewListener) {
         this.rowNumber = rowNumber;
-        this.pollId = pollId;
-        this.voted = voted;
+        this.pollViewModel = pollViewModel;
         this.list = new ArrayList<>();
         this.viewListener = viewListener;
     }
@@ -62,19 +65,16 @@ public class PollAdapter extends RecyclerView.Adapter<PollAdapter.ViewHolder> {
             holder.progressBar.setProgressDrawable(
                     MethodChecker.getDrawable(context, R.drawable.poll_option_image_default)
             );
-//            holder.icon.setVisibility(View.GONE);
         } else {
             holder.shadowLayer.setVisibility(View.VISIBLE);
             holder.percent.setVisibility(View.VISIBLE);
             holder.percentLayout.setVisibility(View.VISIBLE);
             holder.progressBar.setProgress(element.getPercentageInteger());
             if (element.getSelected() == PollOptionViewModel.SELECTED) {
-//                holder.icon.setVisibility(View.VISIBLE);
                 holder.progressBar.setProgressDrawable(
                         MethodChecker.getDrawable(context, R.drawable.poll_option_image_selected)
                 );
             } else if (element.getSelected() == PollOptionViewModel.UNSELECTED) {
-//                holder.icon.setVisibility(View.GONE);
                 holder.progressBar.setProgressDrawable(
                         MethodChecker.getDrawable(context, R.drawable.poll_option_image_unselected)
                 );
@@ -111,13 +111,42 @@ public class PollAdapter extends RecyclerView.Adapter<PollAdapter.ViewHolder> {
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (voted) {
+                String trackingPromoCode;
+                if (pollViewModel.isVoted()) {
                     viewListener.onGoToLink(element.getRedirectLink());
+                    trackingPromoCode = pollViewModel.getKolProfileUrl();
                 } else {
-                    viewListener.onVoteOptionClicked(rowNumber, pollId, element);
+                    viewListener.onVoteOptionClicked(rowNumber, pollViewModel.getPollId(), element);
+                    trackingPromoCode = FeedEnhancedTracking.Promotion.TRACKING_EMPTY;
                 }
+                doEnhancedTracking(element, trackingPromoCode);
             }
         });
+    }
+
+    private void doEnhancedTracking(PollOptionViewModel element,
+                                    String trackingPromoCode) {
+        UserSession userSession = viewListener.getUserSession();
+        int loginId = Integer.valueOf(
+                !TextUtils.isEmpty(userSession.getUserId()) ? userSession.getUserId() : "0"
+        );
+
+        List<FeedEnhancedTracking.Promotion> list = new ArrayList<>();
+        list.add(new FeedEnhancedTracking.Promotion(
+                Integer.valueOf(element.getOptionId()),
+                FeedEnhancedTracking.Promotion.createContentNameVote(),
+                element.getOption(),
+                rowNumber,
+                pollViewModel.getReview(),
+                Integer.valueOf(pollViewModel.getPollId()),
+                trackingPromoCode
+        ));
+        TrackingUtils.eventTrackingEnhancedEcommerce(
+                FeedEnhancedTracking.getClickTracking(
+                        list,
+                        loginId
+                )
+        );
     }
 
     @Override

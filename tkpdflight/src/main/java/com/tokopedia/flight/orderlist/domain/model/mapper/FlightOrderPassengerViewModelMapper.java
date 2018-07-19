@@ -91,8 +91,10 @@ public class FlightOrderPassengerViewModelMapper {
 
         for (CancellationEntity item : cancellations) {
             for (CancellationDetailsAttribute attribute : item.getDetails()) {
-                if (!cancelledPassengers.contains(attribute.getPassengerId() + item.getRefundId())) {
-                    cancelledPassengers.add(attribute.getPassengerId() + item.getRefundId());
+                if (!cancelledPassengers.contains(attribute.getPassengerId() + attribute.getJourneyId()) && (item.getStatus() == FlightCancellationStatus.PENDING ||
+                        item.getStatus() == FlightCancellationStatus.REFUNDED ||
+                        item.getStatus() == FlightCancellationStatus.REQUESTED)) {
+                    cancelledPassengers.add(attribute.getPassengerId() + attribute.getJourneyId());
                 }
             }
         }

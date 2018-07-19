@@ -6,6 +6,7 @@ import android.view.View;
 
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.view.viewholder.CartPromoSuggestionViewHolder;
+import com.tokopedia.checkout.view.view.shipment.viewholder.ShipmentCheckoutButtonViewHolder;
 
 /**
  * @author anggaprasetiyo on 06/02/18.
@@ -42,6 +43,8 @@ public class CartItemDecoration extends RecyclerView.ItemDecoration {
                 } else {
                     outRect.bottom = 0;
                 }
+            } else if (viewHolder instanceof ShipmentCheckoutButtonViewHolder) {
+                outRect.bottom = 0;
             } else {
                 outRect.bottom = verticalSpaceHeight;
             }

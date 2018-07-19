@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
+import com.tokopedia.checkout.view.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.checkout.view.view.shipment.ShipmentAdapterActionListener;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 
@@ -43,7 +44,7 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
     private TextView mTvSellerCostAdditionLabel;
     private TextView mTvSellerCostAdditionFee;
     private TextView mTvInsuranceFeeLabel;
-    private TextView mTvPromoLabel;
+    private TextView mTvPromoOrCouponLabel;
 
     private TextView mTvPromoMessage;
 
@@ -64,26 +65,32 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         mTvSellerCostAdditionLabel = itemView.findViewById(R.id.tv_seller_cost_addition);
         mTvSellerCostAdditionFee = itemView.findViewById(R.id.tv_seller_cost_addition_fee);
         mTvInsuranceFeeLabel = itemView.findViewById(R.id.tv_insurance_fee_label);
-        mTvPromoLabel = itemView.findViewById(R.id.tv_promo_label);
+        mTvPromoOrCouponLabel = itemView.findViewById(R.id.tv_promo_or_coupon_label);
 
         this.shipmentAdapterActionListener = shipmentAdapterActionListener;
     }
 
-    public void bindViewHolder(ShipmentCostModel shipmentCost) {
+    public void bindViewHolder(ShipmentCostModel shipmentCost, CartItemPromoHolderData promo) {
         mRlShipmentCostLayout.setVisibility(View.VISIBLE);
 
         mTvTotalItemLabel.setText(getTotalItemLabel(mTvTotalItemLabel.getContext(), shipmentCost.getTotalItem()));
         mTvTotalItemPrice.setText(shipmentCost.getTotalItemPrice() == 0 ? "-" :
-                CurrencyFormatUtil.convertPriceValueToIdrFormat((int) shipmentCost.getTotalItemPrice(), true));
+                CurrencyFormatUtil.convertPriceValueToIdrFormat((long) shipmentCost.getTotalItemPrice(), true));
         mTvShippingFeeLabel.setText(mTvShippingFeeLabel.getContext().getString(R.string.label_shipment_fee));
         mTvShippingFee.setText(getPriceFormat(mTvShippingFeeLabel, mTvShippingFee, shipmentCost.getShippingFee()));
         mTvInsuranceFee.setText(getPriceFormat(mTvInsuranceFeeLabel, mTvInsuranceFee, shipmentCost.getInsuranceFee()));
-        mTvPromoDiscount.setText(getPriceFormat(mTvPromoLabel, mTvPromoDiscount, shipmentCost.getPromoPrice()));
+        mTvPromoDiscount.setText(getPriceFormat(mTvPromoOrCouponLabel, mTvPromoDiscount, shipmentCost.getPromoPrice()));
         mTvSellerCostAdditionFee.setText(getPriceFormat(mTvSellerCostAdditionLabel, mTvSellerCostAdditionFee, shipmentCost.getAdditionalFee()));
-
         if (!TextUtils.isEmpty(shipmentCost.getPromoMessage())) {
             formatPromoMessage(mTvPromoMessage, shipmentCost.getPromoMessage());
             mTvPromoMessage.setVisibility(View.VISIBLE);
+            if (promo != null) {
+                if (promo.getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_COUPON) {
+                    mTvPromoOrCouponLabel.setText(mTvPromoOrCouponLabel.getContext().getString(R.string.label_coupon));
+                } else if (promo.getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_VOUCHER) {
+                    mTvPromoOrCouponLabel.setText(mTvPromoOrCouponLabel.getContext().getString(R.string.label_promo));
+                }
+            }
         } else {
             mTvPromoMessage.setVisibility(View.GONE);
         }
@@ -100,7 +107,6 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         formattedPromoMessage.setSpan(new StyleSpan(Typeface.BOLD), startSpan, endSpan,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        textView.setTypeface(Typeface.create(FONT_FAMILY_SANS_SERIF_MEDIUM, Typeface.NORMAL));
         formattedPromoMessage.setSpan(new ClickableSpan() {
             @Override
             public void updateDrawState(TextPaint textPaint) {
@@ -134,7 +140,7 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         } else {
             textViewLabel.setVisibility(View.VISIBLE);
             textViewPrice.setVisibility(View.VISIBLE);
-            return CurrencyFormatUtil.convertPriceValueToIdrFormat((int) price, true);
+            return CurrencyFormatUtil.convertPriceValueToIdrFormat((long) price, true);
         }
     }
 

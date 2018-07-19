@@ -43,4 +43,5 @@ public interface IPromoCouponView extends IBaseView {
     String getCategoryId();
 
     void couponDataNoResult(String title, String subTitle);
+
 }

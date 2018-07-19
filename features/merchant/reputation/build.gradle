@@ -21,9 +21,11 @@ buildscript {
 
 dependencies {
     implementation project(rootProject.ext.features.core)
+    implementation project(rootProject.ext.features.nps)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.useCase)
+    implementation project(rootProject.ext.libraries.imagePicker)
 
     implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.miscDependencies.multiDex

@@ -4,8 +4,6 @@ import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -56,6 +54,7 @@ import com.tokopedia.session.login.loginemail.view.activity.ForbiddenActivity;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.session.register.RegisterConstant;
 import com.tokopedia.session.register.data.model.RegisterViewModel;
+import com.tokopedia.session.register.view.activity.RegisterEmailActivity;
 import com.tokopedia.session.register.view.adapter.AutoCompleteTextAdapter;
 import com.tokopedia.session.register.view.di.RegisterEmailDependencyInjector;
 import com.tokopedia.session.register.view.presenter.RegisterEmailPresenter;
@@ -118,6 +117,12 @@ public class RegisterEmailFragment extends BaseDaggerFragment
         return new RegisterEmailFragment();
     }
 
+    public static RegisterEmailFragment createInstanceWithEmail(Bundle bundle) {
+        RegisterEmailFragment fragment = new RegisterEmailFragment();
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
     @Override
     protected String getScreenName() {
         return RegisterAnalytics.Screen.SCREEN_REGISTER_WITH_EMAIL;
@@ -178,6 +183,10 @@ public class RegisterEmailFragment extends BaseDaggerFragment
     }
 
     private void prepareView(View view) {
+        if (getArguments() != null) {
+            email.setText(getArguments().getString(RegisterEmailActivity.EXTRA_PARAM_EMAIL, ""));
+        }
+
         String joinString = getString(com.tokopedia.core.R.string.detail_term_and_privacy) +
                 "<br>" + getString(com.tokopedia.core.R.string.link_term_condition) +
                 " serta " + getString(com.tokopedia.core.R.string.link_privacy_policy);

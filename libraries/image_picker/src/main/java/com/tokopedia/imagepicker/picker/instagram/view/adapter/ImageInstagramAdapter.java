@@ -41,7 +41,12 @@ public class ImageInstagramAdapter extends BaseListAdapter<InstagramMediaModel, 
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    InstagramMediaModel item = (InstagramMediaModel) visitables.get(holder.getAdapterPosition());
+                    int position = holder.getAdapterPosition();
+                    // fix from fabric error some device, index out of bound, when user multi touch.
+                    if (!isValidPos(position)) {
+                        return;
+                    }
+                    InstagramMediaModel item = (InstagramMediaModel) visitables.get(position);
                     boolean isChecked = true;
 
                     String itemUrl = item.getImageStandardResolutionUrl();
@@ -56,7 +61,7 @@ public class ImageInstagramAdapter extends BaseListAdapter<InstagramMediaModel, 
                     if (isChecked && !listener.isImageValid(item)) {
                         return;
                     }
-                    notifyItemChanged(holder.getAdapterPosition());
+                    notifyItemChanged(position);
 
                     listener.onItemClicked(item, isChecked);
                 }
@@ -65,6 +70,10 @@ public class ImageInstagramAdapter extends BaseListAdapter<InstagramMediaModel, 
             ((ImagePickerInstagramViewHolder)holder).setIsCheck(selectedImagePath.contains(item.getImageStandardResolutionUrl()));
         }
         super.onBindViewHolder(holder, position);
+    }
+
+    private boolean isValidPos(int position){
+        return position >= 0 && position < visitables.size();
     }
 
 }

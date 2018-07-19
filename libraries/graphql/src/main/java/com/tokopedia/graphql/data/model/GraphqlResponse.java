@@ -1,6 +1,7 @@
 package com.tokopedia.graphql.data.model;
 
 import java.lang.reflect.Type;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -8,10 +9,12 @@ import java.util.Map;
  */
 final public class GraphqlResponse {
     private Map<Type, Object> mResults;
+    private Map<Type, List<GraphqlError>> mErrors;
     private final boolean mIsCached;
 
-    public GraphqlResponse(Map<Type, Object> results, boolean isCached) {
+    public GraphqlResponse(Map<Type, Object> results, Map<Type, List<GraphqlError>> errors, boolean isCached) {
         this.mResults = results;
+        this.mErrors = errors;
         this.mIsCached = isCached;
     }
 
@@ -22,6 +25,10 @@ final public class GraphqlResponse {
      */
     public final <T> T getData(Type type) {
         return (T) mResults.get(type);
+    }
+
+    public final List<GraphqlError> getError(Type type) {
+        return mErrors.get(type);
     }
 
     public boolean isCached() {

@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.abstraction.common.data.model.response.BaseResponseError;
 import com.tokopedia.topads.common.data.exception.ResponseErrorException;
+import com.tokopedia.topads.common.data.response.Error;
 
 import java.io.IOException;
 import java.util.List;

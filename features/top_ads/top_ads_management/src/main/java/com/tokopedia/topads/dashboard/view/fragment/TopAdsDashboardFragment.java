@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
@@ -23,9 +22,6 @@ import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder;
-import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
-import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
@@ -43,6 +39,8 @@ import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.data.model.DataDeposit;
+import com.tokopedia.topads.common.view.adapter.TopAdsOptionMenuAdapter;
+import com.tokopedia.topads.common.view.utils.TopAdsMenuBottomSheets;
 import com.tokopedia.topads.dashboard.constant.TopAdsAddingOption;
 import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
@@ -57,15 +55,15 @@ import com.tokopedia.topads.dashboard.view.activity.SellerCenterActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsAddCreditActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsAddingPromoOptionActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDetailShopActivity;
-import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupAdListActivity;
+import com.tokopedia.topads.group.view.activity.TopAdsGroupAdListActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupNewPromoActivity;
-import com.tokopedia.topads.dashboard.view.activity.TopAdsProductAdListActivity;
+import com.tokopedia.topads.product.view.activity.TopAdsProductAdListActivity;
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsStatisticPagerAdapter;
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsTabAdapter;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDashboardView;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter;
-import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordListActivity;
 import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordNewChooseGroupActivity;
+import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordAdListActivity;
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
 
 import java.util.ArrayList;
@@ -386,7 +384,7 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
 
     private void onSummaryKeywordClicked() {
         UnifyTracking.eventTopAdsProductClickKeywordDashboard();
-        Intent intent = new Intent(getActivity(), TopAdsKeywordListActivity.class);
+        Intent intent = new Intent(getActivity(), TopAdsKeywordAdListActivity.class);
         if (totalGroupAd >= 0) {
             intent.putExtra(TopAdsExtraConstant.EXTRA_TOTAL_GROUP_ADS, totalGroupAd);
         }
@@ -666,8 +664,8 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
         boolean isAdExists = dashboardPopulateResponse.getTotalAd() != null && getTotalAd(dashboardPopulateResponse.getTotalAd()) > 0;
         snackbarRetry.hideRetrySnackbar();
         swipeToRefresh.setRefreshing(false);
+        onLoadTopAdsShopDepositSuccess(dashboardPopulateResponse.getDataDeposit());
         if (isUsageExists || isAdExists){
-            onLoadTopAdsShopDepositSuccess(dashboardPopulateResponse.getDataDeposit());
             onSuccessPopulateTotalAds(dashboardPopulateResponse.getTotalAd());
             loadStatisticsData();
             getView().findViewById(R.id.topads_dashboard_empty).setVisibility(View.GONE);
@@ -693,35 +691,34 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
     }
 
     protected void showBottomSheetStatisticTypeOptions(){
-        CheckedBottomSheetBuilder checkedBottomSheetBuilder = new CheckedBottomSheetBuilder(getActivity());
-        checkedBottomSheetBuilder = (CheckedBottomSheetBuilder) checkedBottomSheetBuilder.setMode(BottomSheetBuilder.MODE_LIST)
-                .addTitleItem(R.string.drawer_title_statistic);
+        final TopAdsMenuBottomSheets checkedBottomSheetMenu = new TopAdsMenuBottomSheets()
+                .setMode(TopAdsOptionMenuAdapter.MODE_CHECKABLE)
+                .setTitle(getString(R.string.drawer_title_statistic));
 
-        checkedBottomSheetBuilder.addItem(TopAdsStatisticsType.ALL_ADS, R.string.topads_dashboard_all_promo_menu,
-                null, (selectedStatisticType == TopAdsStatisticsType.ALL_ADS));
-        checkedBottomSheetBuilder.addItem(TopAdsStatisticsType.PRODUCT_ADS, R.string.top_ads_title_product,
-                null, (selectedStatisticType == TopAdsStatisticsType.PRODUCT_ADS));
-        checkedBottomSheetBuilder.addItem(TopAdsStatisticsType.SHOP_ADS, R.string.title_top_ads_store,
-                null, (selectedStatisticType == TopAdsStatisticsType.SHOP_ADS));
-
-        BottomSheetDialog bottomSheetDialog = checkedBottomSheetBuilder.expandOnStart(true)
-                .setItemClickListener(new BottomSheetItemClickListener() {
+        checkedBottomSheetMenu.setMenuItemSelected(new TopAdsMenuBottomSheets.OnMenuItemSelected() {
                     @Override
-                    public void onBottomSheetItemClick(MenuItem item) {
+                    public void onItemSelected(int itemId) {
+                        checkedBottomSheetMenu.dismiss();
                         if (!isAdded()) {
                             return;
                         }
-                        selectedStatisticType = item.getItemId();
+                        selectedStatisticType = itemId;
                         topAdsTabAdapter.setStatisticsType(selectedStatisticType);
                         if (getConversionFragment() != null){
                             getConversionFragment().updateTitle(selectedStatisticType);
                         }
                         loadStatisticsData();
                     }
-                }).createDialog();
-        bottomSheetDialog.show();
+                });
 
+        checkedBottomSheetMenu.addItem(TopAdsStatisticsType.ALL_ADS, getString(R.string.topads_dashboard_all_promo_menu),
+                (selectedStatisticType == TopAdsStatisticsType.ALL_ADS));
+        checkedBottomSheetMenu.addItem(TopAdsStatisticsType.PRODUCT_ADS, getString(R.string.top_ads_title_product),
+                (selectedStatisticType == TopAdsStatisticsType.PRODUCT_ADS));
+        checkedBottomSheetMenu.addItem(TopAdsStatisticsType.SHOP_ADS, getString(R.string.title_top_ads_store),
+                (selectedStatisticType == TopAdsStatisticsType.SHOP_ADS));
 
+        checkedBottomSheetMenu.show(getActivity().getSupportFragmentManager(), getClass().getSimpleName());
     }
 
     public void startShowCase(){

@@ -229,7 +229,7 @@ public class EntityPackageItem implements Parcelable {
         this.scheduleId = in.readInt();
     }
 
-    public static final Parcelable.Creator<EntityPackageItem> CREATOR = new Parcelable.Creator<EntityPackageItem>() {
+    public static final Creator<EntityPackageItem> CREATOR = new Creator<EntityPackageItem>() {
         @Override
         public EntityPackageItem createFromParcel(Parcel source) {
             return new EntityPackageItem(source);

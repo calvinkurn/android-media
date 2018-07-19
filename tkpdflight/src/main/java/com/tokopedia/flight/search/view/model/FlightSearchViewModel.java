@@ -16,9 +16,9 @@ import com.tokopedia.flight.search.view.adapter.FilterSearchAdapterTypeFactory;
 import com.tokopedia.flight.search.view.model.filter.RefundableEnum;
 
 import java.lang.reflect.Type;
+import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by User on 10/30/2017.

@@ -2,13 +2,17 @@ package com.tokopedia.feedplus.view.adapter.viewholder.kol;
 
 import android.content.res.Resources;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.feedplus.R;
+import com.tokopedia.feedplus.view.analytics.FeedEnhancedTracking;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
 import com.tokopedia.feedplus.view.viewmodel.kol.ProductCommunicationItemViewModel;
 
@@ -22,10 +26,12 @@ import java.util.List;
 public class ProductCommunicationAdapter
         extends RecyclerView.Adapter<ProductCommunicationAdapter.ViewHolder> {
 
+    private final int rowNumber;
     private List<ProductCommunicationItemViewModel> itemViewModels;
     private FeedPlus.View viewListener;
 
-    public ProductCommunicationAdapter(FeedPlus.View viewListener) {
+    public ProductCommunicationAdapter(int rowNumber, FeedPlus.View viewListener) {
+        this.rowNumber = rowNumber;
         this.viewListener = viewListener;
         itemViewModels = new ArrayList<>();
     }
@@ -39,17 +45,21 @@ public class ProductCommunicationAdapter
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        if (position == 0) {
-            RecyclerView.LayoutParams layoutParams = new RecyclerView.LayoutParams(
-                    RecyclerView.LayoutParams.WRAP_CONTENT,
-                    RecyclerView.LayoutParams.WRAP_CONTENT);
-
+        if (holder.parentView.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+            ViewGroup.MarginLayoutParams marginLayoutParams =
+                    (ViewGroup.MarginLayoutParams) holder.parentView.getLayoutParams();
             Resources resources = holder.parentView.getContext().getResources();
-            int marginStart = (int) resources.getDimension(R.dimen.dp_20);
-            int marginOthers = (int) resources.getDimension(R.dimen.dp_4);
-            layoutParams.setMargins(marginStart, marginOthers, marginOthers, marginOthers);
 
-            holder.parentView.setLayoutParams(layoutParams);
+            if (holder.getAdapterPosition() == 0) {
+                marginLayoutParams.leftMargin = (int) resources.getDimension(R.dimen.dp_16);
+                marginLayoutParams.rightMargin = 0;
+            } else if (holder.getAdapterPosition() == getItemCount() - 1) {
+                marginLayoutParams.leftMargin = (int) resources.getDimension(R.dimen.dp_8);
+                marginLayoutParams.rightMargin = (int) resources.getDimension(R.dimen.dp_8);
+            } else {
+                marginLayoutParams.leftMargin = (int) resources.getDimension(R.dimen.dp_8);
+                marginLayoutParams.rightMargin = 0;
+            }
         }
 
         ImageHandler.loadImage2(holder.image,
@@ -62,8 +72,32 @@ public class ProductCommunicationAdapter
                 int adapterPosition = holder.getAdapterPosition();
                 viewListener.onContentProductLinkClicked(
                         itemViewModels.get(adapterPosition).getRedirectUrl());
+
+                doEnhancedTracking(itemViewModels.get(adapterPosition));
             }
         });
+    }
+
+    private void doEnhancedTracking(ProductCommunicationItemViewModel item) {
+        UserSession userSession = viewListener.getUserSession();
+        int loginId = Integer.valueOf(
+                !TextUtils.isEmpty(userSession.getUserId()) ? userSession.getUserId() : "0"
+        );
+
+        List<FeedEnhancedTracking.Promotion> list = new ArrayList<>();
+        list.add(new FeedEnhancedTracking.Promotion(
+                item.getActivityId(),
+                FeedEnhancedTracking.Promotion.createContentNameBanner(),
+                item.getImageUrl(),
+                rowNumber,
+                String.valueOf(itemViewModels.size()),
+                item.getActivityId(),
+                item.getRedirectUrl()
+        ));
+
+        TrackingUtils.eventTrackingEnhancedEcommerce(
+                FeedEnhancedTracking.getClickTracking(list, loginId)
+        );
     }
 
     @Override

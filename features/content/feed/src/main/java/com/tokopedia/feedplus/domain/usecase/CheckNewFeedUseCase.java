@@ -1,6 +1,5 @@
 package com.tokopedia.feedplus.domain.usecase;
 
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.feedplus.data.repository.FeedRepository;
 import com.tokopedia.feedplus.domain.model.CheckFeedDomain;
 import com.tokopedia.usecase.RequestParams;
@@ -30,9 +29,9 @@ public class CheckNewFeedUseCase extends UseCase<CheckFeedDomain> {
         return feedRepository.checkNewFeed(requestParams);
     }
 
-    public static RequestParams getParam(SessionHandler sessionHandler, String firstCursor) {
+    public static RequestParams getParam(String userId, String firstCursor) {
         RequestParams params = RequestParams.create();
-        params.putString(PARAM_USER_ID, sessionHandler.getLoginID());
+        params.putString(PARAM_USER_ID, userId);
         params.putString(PARAM_CURSOR, firstCursor);
         return params;
     }

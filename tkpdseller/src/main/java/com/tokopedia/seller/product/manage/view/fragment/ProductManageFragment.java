@@ -764,25 +764,28 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                         .setCashback(cashback)
                         .build();
 
-                Bitmap newImage = productManageImageSticker.processStickerToImage(bitmap, getActivity());
-                File file = FileUtils.writeImageToTkpdPath(newImage);
+                try {
+                    Bitmap newImage = productManageImageSticker.processStickerToImage(bitmap, getActivity());
+                    File file = FileUtils.writeImageToTkpdPath(newImage);
 
-                ShareData shareData = ShareData.Builder.aShareData()
-                        .setName(productManageViewModel.getProductName())
-                        .setTextContent(productManageViewModel.getProductName())
-                        .setDescription(productManageViewModel.getProductName())
-                        .setImgUri(productManageViewModel.getImageFullUrl())
-                        .setPrice(productManageViewModel.getProductPrice())
-                        .setUri(productManageViewModel.getProductUrl())
-                        .setType(ShareData.PRODUCT_TYPE)
-                        .setId(productManageViewModel.getProductId())
-                        .setPathSticker(file.getAbsolutePath())
-                        .build();
+                    ShareData shareData = ShareData.Builder.aShareData()
+                            .setName(productManageViewModel.getProductName())
+                            .setTextContent(productManageViewModel.getProductName())
+                            .setDescription(productManageViewModel.getProductName())
+                            .setImgUri(productManageViewModel.getImageFullUrl())
+                            .setPrice(productManageViewModel.getProductPrice())
+                            .setUri(productManageViewModel.getProductUrl())
+                            .setType(ShareData.PRODUCT_TYPE)
+                            .setId(productManageViewModel.getProductId())
+                            .setPathSticker(file.getAbsolutePath())
+                            .build();
 
-                newImage.recycle();
-        ShareBottomSheet.show(getFragmentManager(), shareData);
+                    newImage.recycle();
+                    goToShareProduct(shareData);
+                } catch (Throwable e) {
+                    NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_network_error));
+                }
 
-                goToShareProduct(shareData);
                 hideLoadingProgress();
             }
 

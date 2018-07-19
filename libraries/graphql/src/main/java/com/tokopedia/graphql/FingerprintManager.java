@@ -1,12 +1,9 @@
 package com.tokopedia.graphql;
 
-import com.tokopedia.CommonUtils;
 import com.tokopedia.user.session.UserSession;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-
-import static com.tokopedia.graphql.GraphqlConstant.LOG_TAG;
 
 /**
  * For generating hashcode primarily use as a key of cache object
@@ -36,7 +33,6 @@ public class FingerprintManager {
             for (int i = 0; i < messageDigest.length; i++) {
                 hexString.append(Integer.toHexString(0xFF & messageDigest[i]));
             }
-            CommonUtils.dumper(LOG_TAG + "Fingerprint gangrened : " + hexString.toString());
             return hexString.toString();
 
         } catch (NoSuchAlgorithmException e) {
