@@ -192,9 +192,10 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
         }
     }
 
-    public void renderStockAvailability(boolean isCampaign, ProductInfo data) {
+    public void renderStockAvailability(boolean campaignActive, ProductInfo data) {
         if(!TextUtils.isEmpty(data.getProductStockWording())) {
-            if(isCampaign){
+            if(campaignActive){
+                campaignStockAvailable.setVisibility(VISIBLE);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     campaignStockAvailable.setText(Html.fromHtml(data.getProductStockWording(),
                             Html.FROM_HTML_MODE_LEGACY));
@@ -210,7 +211,12 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
                     ivStockAvailable.setImageResource(R.drawable.ic_available_stock);
                     textStockAvailable.setTextColor(getContext().getResources().getColor(R.color.black_70));
                 }
-                textStockAvailable.setText(data.getProductStockWording());
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    textStockAvailable.setText(Html.fromHtml(data.getProductStockWording(),
+                            Html.FROM_HTML_MODE_LEGACY));
+                } else {
+                    textStockAvailable.setText(Html.fromHtml(data.getProductStockWording()));
+                }
             }
         }
     }

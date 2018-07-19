@@ -1220,7 +1220,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                         if (productVariant != null) {
                             pictureView.renderData(productData);
                             headerInfoView.renderData(productData);
-                            headerInfoView.renderStockAvailability(productData.getCampaign()!=null,
+                            headerInfoView.renderStockAvailability(productData.getCampaign().getActive(),
                                     productData.getInfo());
                             shopInfoView.renderData(productData);
                             presenter.updateRecentView(getActivity(), productData.getInfo().getProductId());
@@ -1459,7 +1459,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             if (productVariant.getChildFromProductId(defaultChild).isEnabled()) {
                 productData.getInfo().setProductStockWording(productVariant.getChildFromProductId(defaultChild).getStockWording());
                 productData.getInfo().setLimitedStock(productVariant.getChildFromProductId(defaultChild).isLimitedStock());
-                headerInfoView.renderStockAvailability(productData.getCampaign()!=null,
+                headerInfoView.renderStockAvailability(productData.getCampaign().getActive(),
                         productData.getInfo());
             }
 
@@ -1480,7 +1480,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         if (productData != null && productData.getInfo() != null && productStock.isEnabled()) {
             productData.getInfo().setProductStockWording(productStockNonVariant.getStockWording());
             productData.getInfo().setLimitedStock(productStockNonVariant.isLimitedStock());
-            headerInfoView.renderStockAvailability(productData.getCampaign()!=null,
+            headerInfoView.renderStockAvailability(productData.getCampaign().getActive(),
                     productData.getInfo());
         }
     }
