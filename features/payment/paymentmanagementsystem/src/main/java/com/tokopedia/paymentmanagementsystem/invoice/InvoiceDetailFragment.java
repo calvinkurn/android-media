@@ -16,11 +16,11 @@ import com.tokopedia.paymentmanagementsystem.common.Constant;
 public class InvoiceDetailFragment extends BaseWebViewFragment {
     @Override
     protected String getUrl() {
-        String deviceId = "";
+        String accessToken = "";
         if(getActivity().getApplication() instanceof AbstractionRouter){
-            deviceId =  ((AbstractionRouter)getActivity().getApplication()).getSession().getDeviceId();
+            accessToken =  ((AbstractionRouter)getActivity().getApplication()).getSession().getAccessToken();
         }
-        return URLGenerator.generateURLSessionLogin(getArguments().getString(Constant.INVOICE_URL_EXTRA), deviceId, getUserIdForHeader());
+        return URLGenerator.generateURLSessionLogin(getArguments().getString(Constant.INVOICE_URL_EXTRA), accessToken, getUserIdForHeader());
     }
 
     @Nullable
