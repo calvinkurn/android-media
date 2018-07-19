@@ -140,6 +140,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
     private TextView tvAdditionalFeePrice;
     private TextView tvLabelInsurance;
     private ImageView imgShopBadge;
+    private TextView tvDash;
 
     public ShipmentItemViewHolder(View itemView) {
         super(itemView);
@@ -228,6 +229,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         tvAdditionalFeePrice = itemView.findViewById(R.id.tv_additional_fee_price);
         tvLabelInsurance = itemView.findViewById(R.id.tv_label_insurance);
         imgShopBadge = itemView.findViewById(R.id.img_shop_badge);
+        tvDash = itemView.findViewById(R.id.tv_dash);
+
     }
 
     protected void showBottomSheet(Context context, String title, String message, int image) {
@@ -332,7 +335,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
             vSeparatorMultipleProductSameStore.setVisibility(View.GONE);
             tvExpandOtherProduct.setText(R.string.label_hide_other_item);
             tvExpandOtherProduct.setTextColor(ContextCompat.getColor(tvExpandOtherProduct.getContext(), R.color.black_54));
-            tvExpandOtherProduct.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_keyboard_arrow_up_24dp, 0);
+            tvExpandOtherProduct.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_keyboard_arrow_up_grey_24dp, 0);
         } else {
             rvCartItem.setVisibility(View.GONE);
             vSeparatorMultipleProductSameStore.setVisibility(View.GONE);
@@ -354,11 +357,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                 && shipmentDetailData.getSelectedCourier() != null;
 
         if (isCourierSelected) {
-            if (!TextUtils.isEmpty(shipmentDetailData.getSelectedCourier().getShipmentItemDataEtd()) &&
-                    !TextUtils.isEmpty(shipmentDetailData.getSelectedCourier().getShipmentItemDataType())) {
-                if (TextUtils.isEmpty(shipmentDetailData.getSelectedCourier().getEstimatedTimeDelivery()) ||
-                        (shipmentDetailData.getSelectedCourier().getMinEtd() != 0 &&
-                                shipmentDetailData.getSelectedCourier().getMaxEtd() != 0)) {
+            if (!TextUtils.isEmpty(shipmentDetailData.getSelectedCourier().getShipmentItemDataType())) {
+                if (shipmentDetailData.getSelectedCourier().getMinEtd() != 0 &&
+                        shipmentDetailData.getSelectedCourier().getMaxEtd() != 0) {
                     String etd = "(" + shipmentDetailData.getSelectedCourier().getEstimatedTimeDelivery() + ")";
                     tvShippingEtd.setText(etd);
                     tvShippingEtd.setVisibility(View.VISIBLE);
@@ -376,9 +377,16 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                 llShipmpingType.setVisibility(View.GONE);
             }
             tvCourierName.setText(shipmentDetailData.getSelectedCourier().getName());
-            String courierPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                    shipmentDetailData.getSelectedCourier().getShipperPrice(), true);
-            tvCourierPrice.setText(courierPrice);
+            if (shipmentDetailData.getSelectedCourier().getShipperPrice() != 0) {
+                String courierPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                        shipmentDetailData.getSelectedCourier().getShipperPrice(), true);
+                tvCourierPrice.setText(courierPrice);
+                tvCourierPrice.setVisibility(View.VISIBLE);
+                tvDash.setVisibility(View.VISIBLE);
+            } else {
+                tvCourierPrice.setVisibility(View.GONE);
+                tvDash.setVisibility(View.GONE);
+            }
             llShipmentOptionViewLayout.setVisibility(View.GONE);
             llSelectedCourier.setVisibility(View.VISIBLE);
         } else {

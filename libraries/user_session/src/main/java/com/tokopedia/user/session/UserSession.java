@@ -126,7 +126,7 @@ public class UserSession {
     }
 
     public boolean isMsisdnVerified() {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(GCM_STORAGE, Context.MODE_PRIVATE);
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         return sharedPrefs.getBoolean(IS_MSISDN_VERIFIED, false);
     }
 

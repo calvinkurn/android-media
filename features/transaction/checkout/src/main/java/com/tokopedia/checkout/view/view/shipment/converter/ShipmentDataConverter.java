@@ -27,8 +27,11 @@ public class ShipmentDataConverter {
     private static final int PRIME_ADDRESS = 2;
 
     public RecipientAddressModel getRecipientAddressModel(CartShipmentAddressFormData cartShipmentAddressFormData) {
-        UserAddress userAddress = cartShipmentAddressFormData.getGroupAddress().get(0).getUserAddress();
-        return createRecipientAddressModel(userAddress);
+        if (cartShipmentAddressFormData.getGroupAddress() != null && cartShipmentAddressFormData.getGroupAddress().size() > 0) {
+            UserAddress userAddress = cartShipmentAddressFormData.getGroupAddress().get(0).getUserAddress();
+            return createRecipientAddressModel(userAddress);
+        }
+        return null;
     }
 
     public RecipientAddressModel getRecipientAddressModel(UserAddress userAddress) {
@@ -106,6 +109,7 @@ public class ShipmentDataConverter {
             shipmentCartItemModel.setRecipientAddressModel(getRecipientAddressModel(userAddress));
         }
 
+        shipmentCartItemModel.setShopShipmentList(groupShop.getShopShipments());
         shipmentCartItemModel.setError(groupShop.isError());
         if (shipmentCartItemModel.isError()) {
             shipmentCartItemModel.setAllItemError(true);

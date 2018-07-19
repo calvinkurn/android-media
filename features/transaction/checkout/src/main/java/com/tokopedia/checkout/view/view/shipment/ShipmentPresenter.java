@@ -49,6 +49,7 @@ import com.tokopedia.usecase.RequestParams;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -507,6 +508,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         promoCodeAppliedData.getPromoCode() : "",
                 shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0
         );
+
 
         if (checkoutRequest != null) {
             getView().showLoading();

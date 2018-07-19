@@ -220,4 +220,29 @@ public class CheckoutAnalyticsCourierSelection extends CheckoutAnalytics {
                 ConstantTransactionAnalytics.EventLabel.KUOTA_PENUKARAN
         );
     }
+
+    public void eventClickCourierSelectionClickGunakanKodeFormGunakanKodePromoAtauKupon() {
+        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_ATC,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.CLICK_GUNAKAN_KODE_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON,
+                ""
+        );
+    }
+
+    public void eventClickCourierSelectionClickSelectCourier() {
+        analyticTracker.sendEventTracking(ConstantTransactionAnalytics.EventName.CLICK_COURIER,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.CLICK_SELECT_COURIER,
+                ""
+        );
+    }
+
+    public void eventViewCourierSelectionClickCourierOption(String agent, String service) {
+        analyticTracker.sendEventTracking(
+                ConstantTransactionAnalytics.EventName.VIEW_COURIER,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.CLICK_COURIER_OPTION,
+                agent + " - " + service
+        );
+    }
 }

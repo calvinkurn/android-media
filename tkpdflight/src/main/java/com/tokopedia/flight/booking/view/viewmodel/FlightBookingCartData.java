@@ -21,6 +21,8 @@ public class FlightBookingCartData implements Parcelable {
     private List<FlightBookingAmenityMetaViewModel> luggageViewModels;
     private List<FlightBookingAmenityMetaViewModel> mealViewModels;
     private List<NewFarePrice> newFarePrices;
+
+    private FlightBookingVoucherViewModel voucherViewModel;
     private boolean isDomestic;
 
     protected FlightBookingCartData(Parcel in) {
@@ -34,6 +36,7 @@ public class FlightBookingCartData implements Parcelable {
         newFarePrices = in.createTypedArrayList(NewFarePrice.CREATOR);
         isDomestic = in.readByte() != 0;
         insurances = in.createTypedArrayList(FlightInsuranceViewModel.CREATOR);
+        voucherViewModel = in.readParcelable(FlightBookingVoucherViewModel.class.getClassLoader());
     }
 
     @Override
@@ -48,6 +51,7 @@ public class FlightBookingCartData implements Parcelable {
         dest.writeTypedList(newFarePrices);
         dest.writeByte((byte) (isDomestic ? 1 : 0));
         dest.writeTypedList(insurances);
+        dest.writeParcelable(voucherViewModel, flags);
     }
 
     @Override
@@ -144,8 +148,16 @@ public class FlightBookingCartData implements Parcelable {
         this.defaultPhoneCode = defaultPhoneCode;
     }
 
+    public FlightBookingVoucherViewModel getVoucherViewModel() {
+        return voucherViewModel;
+    }
+
     public boolean isDomestic() {
         return isDomestic;
+    }
+
+    public void setVoucherViewModel(FlightBookingVoucherViewModel voucherViewModel) {
+        this.voucherViewModel = voucherViewModel;
     }
 
     public void setDomestic(boolean domestic) {

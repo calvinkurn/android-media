@@ -80,7 +80,9 @@ public class RemoveCartItemPresenter extends BaseDaggerPresenter<RemoveCartItemC
 
     @Override
     public void processRemoveCartItem(List<String> cartIdStringList, boolean addToWishlist) {
-        getView().showLoading();
+        if (isViewAttached()) {
+            getView().showLoading();
+        }
         List<Integer> cartIdIntList = new ArrayList<>();
         for (String cartIdString : cartIdStringList) {
             cartIdIntList.add(Integer.parseInt(cartIdString));
@@ -109,22 +111,26 @@ public class RemoveCartItemPresenter extends BaseDaggerPresenter<RemoveCartItemC
 
                             @Override
                             public void onError(Throwable throwable) {
-                                getView().hideLoading();
                                 throwable.printStackTrace();
-                                getView().showError(getView().getActivity().getString(R.string.default_request_error_unknown));
+                                if (isViewAttached()) {
+                                    getView().hideLoading();
+                                    getView().showError(getView().getActivity().getString(R.string.default_request_error_unknown));
+                                }
                             }
 
                             @Override
                             public void onNext(DeleteCartData deleteCartData) {
-                                getView().hideLoading();
-                                if (deleteCartData.isSuccess()) {
-                                    String messageSuccess = getView().getActivity()
-                                            .getString(R.string.label_delete_cart_item_success);
-                                    getView().renderSuccessDeleteAllCart(messageSuccess);
-                                } else {
-                                    String messageFailed = getView().getActivity().
-                                            getString(R.string.label_delete_cart_item_failed);
-                                    getView().renderOnFailureDeleteCart(messageFailed);
+                                if (isViewAttached()) {
+                                    getView().hideLoading();
+                                    if (deleteCartData.isSuccess()) {
+                                        String messageSuccess = getView().getActivity()
+                                                .getString(R.string.label_delete_cart_item_success);
+                                        getView().renderSuccessDeleteAllCart(messageSuccess);
+                                    } else {
+                                        String messageFailed = getView().getActivity().
+                                                getString(R.string.label_delete_cart_item_failed);
+                                        getView().renderOnFailureDeleteCart(messageFailed);
+                                    }
                                 }
                             }
                         })

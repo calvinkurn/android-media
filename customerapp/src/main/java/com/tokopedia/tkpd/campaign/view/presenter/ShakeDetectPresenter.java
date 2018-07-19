@@ -6,12 +6,15 @@ import android.os.Vibrator;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseDataNullException;
 import com.tokopedia.core.network.exception.ServerErrorException;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.campaign.analytics.CampaignTracking;
 import com.tokopedia.tkpd.campaign.data.entity.CampaignResponseEntity;
@@ -34,7 +37,6 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 import static com.tokopedia.tkpd.campaign.domain.shake.ShakeUseCase.IS_AUDIO;
@@ -52,8 +54,10 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
     protected boolean isFirstShake;
     private RemoteConfig remoteConfig;
     public static final String FIREBASE_DOUBLE_SHAKE_CONFIG_KEY = "app_double_shake_enabled";
+    public static final String SHAKE_SHAKE_ERROR ="Oops! Kejutannya masih dibungkus. Yuk, shake lagi handphone-mu";
 
-
+    public final static int SHAKE_SHAKE_WAIT_TIME_SEC = 5;
+    Subscription subscription = null;
 
     @Inject
     public ShakeDetectPresenter(ShakeUseCase shakeDetectUseCase, @ApplicationContext Context context) {
@@ -74,9 +78,16 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
     volatile boolean secondShakeHappen = false;
     @Override
     public void onShakeDetect() {
-        if (!isFirstShake && isDoubleShakeShakeEnable() && !getView().isLongShakeTriggered()) {
+        if(getView().isLongShakeTriggered()) {
+            getView().setInvisibleCounter();
+            getView().showDisableShakeShakeVisible();
+            vibrate();
+            return;
+        }
+        else if (!isFirstShake && isDoubleShakeShakeEnable()) {
             isFirstShake = true;
             waitForSecondShake();
+            vibrate();
 
         } else {
             if(shakeUseCase != null)
@@ -123,7 +134,8 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
                     } else if (e instanceof ServerErrorException) {
                         ServerErrorHandlerUtil.handleError(e);
                     } else {
-                        getView().showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                        getView().showErrorGetInfo(SHAKE_SHAKE_ERROR);
+                        return;
                     }
 
 
@@ -148,10 +160,10 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
                     Intent intent = new Intent(ShakeDetectManager.ACTION_SHAKE_SHAKE_SYNCED);
                     intent.putExtra("isSuccess", true);
                     intent.putExtra("data", s.getUrl());
-                    Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+
                     // Vibrate for 500 milliseconds
                     if (s.getVibrate() == 1)
-                        v.vibrate(500);
+                        vibrate();
                     getView().sendBroadcast(intent);
                     CampaignTracking.eventShakeShake("success", ShakeDetectManager.sTopActivity, "", s.getUrl());
 
@@ -160,8 +172,7 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
             });
         }
     }
-    public final static int SHAKE_SHAKE_WAIT_TIME_SEC = 3;
-    Subscription subscription = null;
+
     private void waitForSecondShake() {
         subscription = Observable.interval(0,1,  TimeUnit.SECONDS).subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Long>() {
@@ -181,7 +192,6 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
                     finishShake();
                     return;
                 }
-                getView().updateTimer(SHAKE_SHAKE_WAIT_TIME_SEC -l);
 
 
 
@@ -206,6 +216,25 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
     @Override
     public void onRetryClick() {
         getView().finish();
+    }
+
+    @Override
+    public void onDisableShakeShake() {
+        //disable the shake shake
+        ShakeDetectManager.getShakeDetectManager().disableShakeShake();
+        if(SessionHandler.isV4Login(getView().getCurrentActivity())) {
+            getView().getCurrentActivity().startActivity(ManageGeneral.getCallingIntent(getView().getCurrentActivity(), ManageGeneral.TAB_POSITION_MANAGE_APP));
+            getView().finish();
+        }else {
+            getView().makeInvisibleShakeShakeDisableView();
+            getView().setSnackBarErrorMessage();
+        }
+
+    }
+
+    public void vibrate() {
+        Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+        v.vibrate(500);
     }
 
     @Override

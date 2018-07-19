@@ -4,6 +4,7 @@ import com.tokopedia.checkout.domain.mapper.ICheckoutMapper;
 import com.tokopedia.checkout.domain.mapper.ITopPayMapper;
 import com.tokopedia.checkout.domain.usecase.CheckoutUseCase;
 import com.tokopedia.checkout.domain.usecase.GetThanksToppayUseCase;
+import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.transactiondata.repository.ICartRepository;
 import com.tokopedia.transactiondata.repository.ITopPayRepository;
 
@@ -17,8 +18,8 @@ import dagger.Provides;
 public class CheckoutUseCaseModule {
 
     @Provides
-    CheckoutUseCase provideCheckoutUseCase(ICartRepository cartRepository, ICheckoutMapper checkoutMapper) {
-        return new CheckoutUseCase(cartRepository, checkoutMapper);
+    CheckoutUseCase provideCheckoutUseCase(ICheckoutModuleRouter checkoutModuleRouter, ICartRepository cartRepository, ICheckoutMapper checkoutMapper) {
+        return new CheckoutUseCase(cartRepository, checkoutMapper, checkoutModuleRouter);
     }
 
     @Provides
