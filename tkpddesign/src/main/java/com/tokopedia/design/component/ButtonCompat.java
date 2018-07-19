@@ -58,6 +58,17 @@ public class ButtonCompat extends AppCompatButton {
         }
     }
 
+    @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        if (!enabled) {
+            initDraw(R.color.grey_350, R.drawable.bg_button_disabled);
+        } else {
+            defineType();
+        }
+        defineSize();
+    }
+
     protected void initImage(Context context, TypedArray attributeArray) {
         Drawable drawableLeft = null;
         Drawable drawableRight = null;
