@@ -129,6 +129,6 @@ public class ShopPageTrackingConstant {
     public static final String TOP_CONTENT_IMPRESSION = " - top content - impression";
     public static final String PRODUCT_CLICK = "productClick";
     public static final String PRODUCT_VIEW = "productView";
-    public static final int DEFAULT_PER_PAGE = 10;
     public static final String SHOP_PAGE_TYPE = "/shoppage";
+
 }

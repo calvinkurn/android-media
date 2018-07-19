@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.data.model.response.PagingList;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.network.exception.UserNotLoginException;
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant;
+import com.tokopedia.shop.common.constant.ShopPageConstant;
 import com.tokopedia.shop.common.constant.ShopStatusDef;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
@@ -104,7 +105,7 @@ public class ShopProductListPresenterOld extends BaseDaggerPresenter<ShopProduct
                 !shopInfo.getInfo().isOpen(),
                 shopInfo.getInfo().isShopOfficial(),
                 true,
-                ShopPageTrackingConstant.DEFAULT_PER_PAGE,
+                ShopPageConstant.DEFAULT_PER_PAGE,
                 keyword, etalaseId, wholesale, page, orderBy);
         getShopProductWithEtalase(shopProductRequestModel);
     }
