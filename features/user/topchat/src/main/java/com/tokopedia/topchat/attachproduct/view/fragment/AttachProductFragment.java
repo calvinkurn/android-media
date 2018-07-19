@@ -95,6 +95,11 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
     @Override
     public void onStart() {
         super.onStart();
+        if(activityContract == null) {
+            if (getActivity() instanceof AttachProductContract.Activity) {
+                activityContract = (AttachProductContract.Activity) getActivity();
+            }
+        }
     }
 
     public static AttachProductFragment newInstance(AttachProductContract.Activity checkedUIView) {
