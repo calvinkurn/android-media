@@ -33,8 +33,6 @@ public interface FeedPlus {
 
         void finishLoadingProgress();
 
-        UserSession getUserSession();
-
         interface Kol {
 
             UserSession getUserSession();
