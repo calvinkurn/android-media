@@ -331,4 +331,5 @@ public interface ProductDetailView extends ViewListener {
 
     void trackingEnhanceProductDetail();
 
+    void refreshData();
 }

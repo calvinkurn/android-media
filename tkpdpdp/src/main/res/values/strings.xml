@@ -59,4 +59,5 @@
     <string name="exp_dialog_message">Periode promo telah selesai. Harga produk kembali menjadi harga normal</string>
     <string name="exp_dialog_ok">Lihat Produk Lainya</string>
     <string name="exp_dialog_cancel">Tutup</string>
+    <string name="flash_sale_title">Flash Sale</string>
 </resources>

@@ -47,6 +47,7 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
     private TextView textOriginalPrice;
     private TextView textDiscount;
     private TextView textStockAvailable;
+    private TextView textTimerTitle;
     private TextView campaignStockAvailable;
     private LinearLayout linearDiscountTimerHolder;
     private LinearLayout linearStockAvailable;
@@ -84,6 +85,7 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
         textStockAvailable = (TextView) findViewById(R.id.text_stock_available);
         countDownView = findViewById(R.id.count_down);
         campaignStockAvailable = findViewById(R.id.sale_text_stock_available);
+        textTimerTitle = findViewById(R.id.text_title_discount_timer);
         this.context = context;
     }
 
@@ -256,6 +258,7 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
         dialog.setOnCancelClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                listener.refreshData();
                 dialog.dismiss();
             }
         });

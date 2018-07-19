@@ -1899,4 +1899,8 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                 });
     }
 
+    @Override
+    public void refreshData() {
+        presenter.requestProductDetail(getActivity(), productPass, INIT_REQUEST, false, useVariant);
+    }
 }
