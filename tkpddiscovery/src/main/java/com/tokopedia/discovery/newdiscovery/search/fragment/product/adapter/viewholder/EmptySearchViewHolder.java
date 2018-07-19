@@ -285,18 +285,18 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
     private static class SelectedFilterItemViewHolder extends RecyclerView.ViewHolder {
         private TextView filterText;
         private final ItemClickListener clickListener;
-        private View container;
+        private View deleteButton;
 
         public SelectedFilterItemViewHolder(View itemView, ItemClickListener clickListener) {
             super(itemView);
-            container = itemView;
             filterText = itemView.findViewById(R.id.filter_text);
+            deleteButton = itemView.findViewById(R.id.delete_button);
             this.clickListener = clickListener;
         }
 
         public void bind(final Option option) {
             filterText.setText(option.getName());
-            container.setOnClickListener(new View.OnClickListener() {
+            deleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     clickListener.onSelectedFilterRemoved(option.getUniqueId());
