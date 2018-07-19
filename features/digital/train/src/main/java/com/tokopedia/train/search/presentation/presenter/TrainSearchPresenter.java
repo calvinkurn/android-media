@@ -1,7 +1,6 @@
 package com.tokopedia.train.search.presentation.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.train.search.domain.FilterParam;
 import com.tokopedia.train.search.domain.GetAvailabilityScheduleUseCase;
 import com.tokopedia.train.search.domain.GetFilteredAndSortedScheduleUseCase;
 import com.tokopedia.train.search.domain.GetScheduleUseCase;
@@ -78,13 +77,15 @@ public class TrainSearchPresenter extends BaseDaggerPresenter<TrainSearchContrac
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                getView().hideLayoutTripInfo();
-                getView().showGetListError(e);
+                if (isViewAttached()) {
+                    getView().hideLayoutTripInfo();
+                    getView().showGetListError(e);
+                }
             }
 
             @Override
             public void onNext(List<List<TrainScheduleViewModel>> trainScheduleViewModels) {
-                if (trainScheduleViewModels != null) {
+                if (isViewAttached() && trainScheduleViewModels != null) {
                     getView().showLayoutTripInfo();
                     getView().addPaddingSortAndFilterSearch();
                     getView().showFilterAndSortButtonAction();
@@ -108,19 +109,22 @@ public class TrainSearchPresenter extends BaseDaggerPresenter<TrainSearchContrac
 
             @Override
             public void onError(Throwable e) {
-                getView().showGetListError(e);
+                if (isViewAttached())
+                    getView().showGetListError(e);
             }
 
             @Override
             public void onNext(List<TrainScheduleViewModel> trainSchedulesViewModel) {
-                if (trainSchedulesViewModel != null && !trainSchedulesViewModel.isEmpty()) {
-                    getView().showLayoutTripInfo();
-                    getView().showDataScheduleFromCache(trainSchedulesViewModel);
-                } else {
-                    getView().showEmptyResult();
-                    getView().showFilterAndSortButtonAction();
+                if (isViewAttached()) {
+                    if (trainSchedulesViewModel != null && !trainSchedulesViewModel.isEmpty()) {
+                        getView().showLayoutTripInfo();
+                        getView().showDataScheduleFromCache(trainSchedulesViewModel);
+                    } else {
+                        getView().showEmptyResult();
+                        getView().showFilterAndSortButtonAction();
+                    }
+                    getView().markSortOption();
                 }
-                getView().markSortOption();
             }
         });
     }
