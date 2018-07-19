@@ -22,6 +22,8 @@ public interface ShopModuleRouter {
 
     void goToEditShopNote(Context context);
 
+    void goToManageShipping(Context context);
+
     void goToAddProduct(Context context);
 
     void goToChatSeller(Context context, String shopId, String shopName, String avatar);

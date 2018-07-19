@@ -68,6 +68,7 @@ import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivit
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.seller.common.imageeditor.GalleryCropActivity;
 import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
+import com.tokopedia.seller.shopsettings.shipping.EditShippingActivity;
 import com.tokopedia.sellerapp.onboarding.activity.OnboardingSellerActivity;
 import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
 import com.tokopedia.shop.page.view.activity.ShopPageActivity;
@@ -1387,5 +1388,10 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void goToShopDiscussion(Context context, String shopId) {
         startActivity(ShopDiscussionActivity.createIntent(context, shopId));
+    }
+
+    @Override
+    public void goToManageShipping(Context context) {
+        startActivity(new Intent(context, EditShippingActivity.class));
     }
 }
