@@ -22,7 +22,7 @@ class ChooseBankPresenter(private val userSession: UserSession,
         ChooseBankContract.Presenter,
         BaseDaggerPresenter<ChooseBankContract.View>() {
 
-    private val BANK_CACHE_DURATION = 60
+    private val BANK_CACHE_DURATION = 86400
     var currentPage = 1
     var hasNextPage = true
     var listBank = ArrayList<BankViewModel>()
