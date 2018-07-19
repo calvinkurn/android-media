@@ -63,6 +63,10 @@
     <string name="product_label_stock_count">Jumlah Stock</string>
     <string name="product_label_stock_always_available">Stock Selalu Tersedia</string>
     <string name="product_label_stock_limited">Stock Terbatas</string>
+    <string name="product_label_insurance">Asuransi Pengiriman</string>
+    <string name="product_label_free_return">Free Returns</string>
+    <string name="product_label_pre_order">Pre order</string>
+    <string name="product_label_process_time">Waktu Proses</string>
 
 
     <string name="product_label_description_product">Deskripsi Produk</string>
@@ -86,6 +90,7 @@
     <string name="product_subtitle_product_logistic">Tulis berat produk dan pengaturan pengiriman</string>
     <string name="product_subtitle_product_etalase">Atur produk di etalase yang sesuai</string>
     <string name="product_subtitle_product_variant">Tambah jika produk memiliki berbagai variasi</string>
+    <string name="product_subtitle_product_pre_order">Aktifkan untuk memperpanjang waktu pengiriman</string>
 
     <string name="product_helper_product_brand">Nama merek membantu pembeli mencari produk Anda</string>
     <string name="product_helper_product_stock">Stock akan berkurang otomatis jika produk terbeli</string>

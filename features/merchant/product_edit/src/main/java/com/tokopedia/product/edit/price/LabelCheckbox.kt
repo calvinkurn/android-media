@@ -29,6 +29,7 @@ class LabelCheckbox : BaseCustomView {
     private var titleTextColor: Int = 0
     private var contentTextSize: Float = 0.toFloat()
     private var contentTextColor: Int = 0
+    private var contentText: String? = null
 
     var title: String
         get() = titleTextView.text.toString()
@@ -66,6 +67,7 @@ class LabelCheckbox : BaseCustomView {
             checkboxEnable = styledAttributes.getBoolean(R.styleable.LabelCheckbox_lc_checkbox_enable, true)
             titleTextSize = styledAttributes.getDimension(R.styleable.LabelCheckbox_lc_title_text_size, 0f)
             titleTextColor = styledAttributes.getColor(R.styleable.LabelCheckbox_lc_title_color, 0)
+            contentText = styledAttributes.getString(R.styleable.LabelCheckbox_lc_content)
             contentTextSize = styledAttributes.getDimension(R.styleable.LabelCheckbox_lc_content_text_size, 0f)
             contentTextColor = styledAttributes.getColor(R.styleable.LabelCheckbox_lc_content_color, 0)
         } finally {
@@ -90,6 +92,7 @@ class LabelCheckbox : BaseCustomView {
     override fun onFinishInflate() {
         super.onFinishInflate()
         titleTextView.text = titleText
+        setContent(contentText!!)
         checkboxStatus.isEnabled = checkboxEnable
         checkboxStatus.setOnCheckedChangeListener { buttonView, isChecked ->
             if (listener != null) {
@@ -110,7 +113,7 @@ class LabelCheckbox : BaseCustomView {
         checkboxStatus = view.findViewById(R.id.checkbox_status)
     }
 
-    fun setSummary(summaryText: String) {
+    fun setContent(summaryText: String) {
         if (TextUtils.isEmpty(summaryText)) {
             summaryTextView.visibility = View.GONE
         } else {
