@@ -8,9 +8,7 @@ import android.view.View;
 
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
-import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.view.base.BaseCheckoutActivity;
-import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.design.component.Dialog;
 
 /**
@@ -21,7 +19,6 @@ public class MultipleAddressFormActivity extends BaseCheckoutActivity {
     public static final int REQUEST_CODE = 982;
 
     private static final String EXTRA_RECIPIENT_ADDRESS_DATA = "EXTRA_RECIPIENT_ADDRESS_DATA";
-    private static final String EXTRA_DISTRICT_RECOMMENDATION_TOKEN = "EXTRA_DISTRICT_RECOMMENDATION_TOKEN";
     public static final int RESULT_CODE_SUCCESS_SET_SHIPPING = 22;
     public static final int RESULT_CODE_FORCE_RESET_CART_ADDRESS_FORM = 23;
 
@@ -75,7 +72,7 @@ public class MultipleAddressFormActivity extends BaseCheckoutActivity {
         if (fragment != null) {
             fragment.backPressed();
         }
-        dialog.setTitle(getString(R.string.dialog_title_back_to_choose_address));
+        dialog.setTitle(getString(R.string.dialog_title_back_to_cart));
         dialog.setDesc(getString(R.string.dialog_message_back_to_cart));
         dialog.setBtnCancel(getString(R.string.label_dialog_back_to_cart_button_positive));
         dialog.setBtnOk(getString(R.string.label_dialog_back_to_cart_button_negative));

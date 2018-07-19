@@ -30,8 +30,8 @@ import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.view.adapter.InnerProductListAdapter;
 import com.tokopedia.checkout.view.view.shipment.ShipmentAdapterActionListener;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItemModel;
-import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.component.TextViewCompat;
+import com.tokopedia.design.component.Tooltip;
 import com.tokopedia.design.pickuppoint.PickupPointLayout;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.logisticdata.data.constant.InsuranceConstant;
@@ -234,15 +234,18 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     protected void showBottomSheet(Context context, String title, String message, int image) {
-        BottomSheetView bottomSheetView = new BottomSheetView(context);
-        bottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField
-                .BottomSheetFieldBuilder()
-                .setTitle(title)
-                .setBody(message)
-                .setImg(image)
-                .build());
-
-        bottomSheetView.show();
+        Tooltip tooltip = new Tooltip(context);
+        tooltip.setTitle(title);
+        tooltip.setDesc(message);
+        tooltip.setTextButton(context.getString(R.string.label_button_bottomsheet_close));
+        tooltip.setIcon(image);
+        tooltip.getBtnAction().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tooltip.dismiss();
+            }
+        });
+        tooltip.show();
     }
 
     public void bindViewHolder(ShipmentCartItemModel shipmentCartItemModel,
@@ -261,7 +264,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         if (showCaseObjectList.size() == 1) {
             setShowCase(llShipmentOptionViewLayout, showCaseObjectList);
         }
-
     }
 
     private void renderCartItem(ShipmentCartItemModel shipmentCartItemModel) {

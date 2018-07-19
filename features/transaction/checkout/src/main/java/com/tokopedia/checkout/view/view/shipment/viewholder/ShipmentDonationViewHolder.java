@@ -1,6 +1,5 @@
 package com.tokopedia.checkout.view.view.shipment.viewholder;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.CheckBox;
@@ -12,7 +11,7 @@ import android.widget.TextView;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.view.view.shipment.ShipmentAdapterActionListener;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentDonationModel;
-import com.tokopedia.design.bottomsheet.BottomSheetView;
+import com.tokopedia.design.component.Tooltip;
 
 /**
  * @author Irfan Khoirul on 13/07/18.
@@ -52,15 +51,7 @@ public class ShipmentDonationViewHolder extends RecyclerView.ViewHolder {
         imgDonationInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                BottomSheetView bottomSheetView = new BottomSheetView(imgDonationInfo.getContext());
-                bottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField
-                        .BottomSheetFieldBuilder()
-                        .setTitle(shipmentDonationModel.getDonation().getTitle())
-                        .setBody(shipmentDonationModel.getDonation().getDescription())
-                        .setImg(R.drawable.ic_donation)
-                        .build());
-
-                bottomSheetView.show();
+                showBottomSheet(shipmentDonationModel);
             }
         });
 
@@ -70,6 +61,21 @@ public class ShipmentDonationViewHolder extends RecyclerView.ViewHolder {
                 shipmentAdapterActionListener.onDonationChecked(isChecked);
             }
         });
+    }
+
+    private void showBottomSheet(ShipmentDonationModel shipmentDonationModel) {
+        Tooltip tooltip = new Tooltip(imgDonationInfo.getContext());
+        tooltip.setTitle(shipmentDonationModel.getDonation().getTitle());
+        tooltip.setDesc(shipmentDonationModel.getDonation().getDescription());
+        tooltip.setTextButton(imgDonationInfo.getContext().getString(R.string.label_button_bottomsheet_close));
+        tooltip.setIcon(R.drawable.ic_donation);
+        tooltip.getBtnAction().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tooltip.dismiss();
+            }
+        });
+        tooltip.show();
     }
 
 }
