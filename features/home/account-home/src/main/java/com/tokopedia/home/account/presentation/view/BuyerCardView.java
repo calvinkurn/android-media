@@ -1,4 +1,4 @@
-package com.tokopedia.home.account.presentation.component;
+package com.tokopedia.home.account.presentation.view;
 
 import android.content.Context;
 import android.support.annotation.NonNull;

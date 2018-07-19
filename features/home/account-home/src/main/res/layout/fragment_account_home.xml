@@ -25,14 +25,22 @@
         android:background="@color/white"
         android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
-        <com.tokopedia.home.account.presentation.component.BuyerCardView
-            android:layout_margin="16dp"
+        <com.tokopedia.home.account.presentation.view.BuyerCardView
+            android:layout_margin="8dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
-        <com.tokopedia.home.account.presentation.component.TokopediaPayCardView
-            android:layout_margin="16dp"
+        <com.tokopedia.home.account.presentation.view.TokopediaPayCardView
+            android:layout_margin="8dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
+        <com.tokopedia.home.account.presentation.view.AnnouncementCardView
+            android:layout_margin="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <com.tokopedia.home.account.presentation.view.categorygridview.CategoryGridView
+            android:layout_margin="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
         <!--<LinearLayout-->
             <!--android:layout_width="match_parent"-->

@@ -1,4 +1,4 @@
-package com.tokopedia.home.account.presentation.component;
+package com.tokopedia.home.account.presentation.view;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -12,23 +12,23 @@ import com.tokopedia.home.account.R;
 /**
  * @author okasurya on 7/18/18.
  */
-public class AnnouncementCardView extends BaseCustomView {
-    public AnnouncementCardView(@NonNull Context context) {
+public class TokopediaPayCardView extends BaseCustomView {
+    public TokopediaPayCardView(@NonNull Context context) {
         super(context);
         init();
     }
 
-    public AnnouncementCardView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public TokopediaPayCardView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public AnnouncementCardView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public TokopediaPayCardView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
 
     private void init() {
-        View view = inflate(getContext(), R.layout.view_announcement_card, this);
+        View view = inflate(getContext(), R.layout.view_tokopedia_pay_card, this);
     }
 }

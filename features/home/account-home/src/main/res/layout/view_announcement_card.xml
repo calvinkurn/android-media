@@ -4,9 +4,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/dp_8"
+    app:elevation="@dimen/dp_6">
 
-    <android.support.constraint.ConstraintLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/dp_8">
@@ -15,40 +17,42 @@
             android:id="@+id/image_view"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            app:layout_constraintBottom_toBottomOf="@+id/textView3"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/textView2"
-            tools:src="@drawable/ic_big_notif_customerapp" />
+            android:src="@drawable/ic_big_notif_customerapp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/image_view"
+            android:layout_alignTop="@id/image_view"
+            android:layout_toEndOf="@id/image_view"
+            android:layout_alignBottom="@id/image_view"
+            android:orientation="vertical"
+            android:gravity="center_vertical">
+            <TextView
+                android:id="@+id/text_main"
+                style="@style/TextView.Micro.Green.Bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:text="Modal usaha untuk toko Anda"/>
 
-        <TextView
-            android:id="@+id/textView2"
-            style="@style/TextView.Micro.Green"
-            android:layout_width="0dp"
-            android:layout_height="16dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginStart="8dp"
-            app:layout_constraintBottom_toTopOf="@+id/textView3"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/image_view"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed"
-            tools:text="Modal usaha untuk toko Anda" />
-
-        <TextView
-            android:id="@+id/textView3"
-            style="@style/TextView.Micro"
-            android:layout_width="0dp"
-            android:layout_height="19dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginStart="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/image_view"
-            app:layout_constraintTop_toBottomOf="@+id/textView2"
-            tools:text="Potensi pinjaman senilai Rp 1.000.000" />
-    </android.support.constraint.ConstraintLayout>
+            <TextView
+                android:id="@+id/text_secondary"
+                style="@style/TextView.Micro.Bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:text="Potensi pinjaman senilai Rp 1.000.000" />
+        </LinearLayout>
+    </RelativeLayout>
 </android.support.v7.widget.CardView>

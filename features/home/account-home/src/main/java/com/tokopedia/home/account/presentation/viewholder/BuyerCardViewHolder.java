@@ -3,10 +3,9 @@ package com.tokopedia.home.account.presentation.viewholder;
 import android.support.annotation.LayoutRes;
 import android.view.View;
 
-import com.tokopedia.abstraction.base.view.adapter.holder.BaseViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.account.R;
-import com.tokopedia.home.account.presentation.component.BuyerCardView;
+import com.tokopedia.home.account.presentation.view.BuyerCardView;
 import com.tokopedia.home.account.presentation.viewmodel.BuyerCardViewModel;
 
 /**
