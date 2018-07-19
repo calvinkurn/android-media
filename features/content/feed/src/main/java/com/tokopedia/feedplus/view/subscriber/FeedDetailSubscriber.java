@@ -65,7 +65,8 @@ public class FeedDetailSubscriber extends Subscriber<GraphqlResponse> {
                 feedDetail.getSource().getShop(),
                 feedDetail.getContent().getStatusActivity());
 
-        if (feedList.get(0).getContent().getProducts().size() == 1) {
+        if (viewListener.getPagingHandler().getPage() == 1
+                && feedList.get(0).getContent().getProducts().size() == 1) {
             viewListener.onSuccessGetSingleFeedDetail(
                     headerViewModel,
                     convertToSingleViewModel(feedDetail)

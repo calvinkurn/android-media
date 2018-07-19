@@ -6,6 +6,7 @@ import android.content.res.Resources;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailHeaderViewModel;
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.SingleFeedDetailViewModel;
 
@@ -18,6 +19,16 @@ import java.util.ArrayList;
 public interface FeedPlusDetail {
 
     interface View extends CustomerView {
+
+        Activity getActivity();
+
+        String getString(int resId);
+
+        PagingHandler getPagingHandler();
+
+        Resources getResources();
+
+        int getColor(int resId);
 
         void onWishlistClicked(int adapterPosition, Integer productId, boolean wishlist);
 
@@ -33,15 +44,7 @@ public interface FeedPlusDetail {
 
         void showLoadingProgress();
 
-        Activity getActivity();
-
-        String getString(int resId);
-
         void onGoToProductDetail(String productId, boolean wishlist, int adapterPosition);
-
-        int getColor(int resId);
-
-        Resources getResources();
 
         void onEmptyFeedDetail();
 

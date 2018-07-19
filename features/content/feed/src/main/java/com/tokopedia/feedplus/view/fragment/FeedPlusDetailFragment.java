@@ -387,6 +387,11 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     }
 
     @Override
+    public PagingHandler getPagingHandler() {
+        return pagingHandler;
+    }
+
+    @Override
     public int getColor(int resId) {
         return MethodChecker.getColor(getActivity(), resId);
     }
