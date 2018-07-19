@@ -5,13 +5,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
@@ -192,7 +188,7 @@ public class HotlistActivity extends DiscoveryActivity
         hotlistComponent.inject(this);
     }
 
-    private CharSequence getToolbarTitle(){
+    private CharSequence getToolbarTitle() {
         return toolbarLayout.getTitle();
     }
 
