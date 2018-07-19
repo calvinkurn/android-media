@@ -231,7 +231,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
 
     @Override
     public void onSuccessTokenDetail(LuckyEggEntity tokenDetail) {
-        if (tokenDetail != null && tokenDetail.getSumToken() > 0) {
+        if (tokenDetail != null) {
             try {
                 getView().findViewById(R.id.container_fab_egg_token).setVisibility(View.VISIBLE);
                 TextView textCount = getView().findViewById(R.id.text_token_count);
@@ -240,6 +240,14 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
                 textCount.setText(String.valueOf(tokenDetail.getSumToken()));
                 textMessage.setText(tokenDetail.getFloating().getTokenClaimText());
                 ImageHandler.loadImageFit2(getContext(), imgToken, tokenDetail.getFloating().getTokenAsset().getFloatingImgUrl());
+
+                if (tokenDetail.getSumToken() == 0) {
+                    getView().findViewById(R.id.text_token_count).setVisibility(View.GONE);
+                    getView().findViewById(R.id.text_token_title).setPadding(getResources().getDimensionPixelSize(R.dimen.tp_padding_regular),
+                            getResources().getDimensionPixelSize(R.dimen.tp_padding_xsmall),
+                            getResources().getDimensionPixelSize(R.dimen.tp_padding_regular),
+                            getResources().getDimensionPixelSize(R.dimen.tp_padding_xsmall));
+                }
             } catch (Exception e) {
                 e.printStackTrace();
                 //to avoid any accidental crash in order to prevent homepage error

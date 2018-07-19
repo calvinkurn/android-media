@@ -61,7 +61,11 @@ import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartRequest;
+import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
 import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity;
+import com.tokopedia.network.NetworkRouter;
+import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
@@ -195,7 +199,8 @@ public abstract class SellerRouterApplication extends MainApplication
         IPaymentModuleRouter, IDigitalModuleRouter, TkpdInboxRouter, TransactionRouter,
         ReputationRouter, LogisticRouter, SessionRouter, ProfileModuleRouter,
         MitraToppersRouter, AbstractionRouter, DigitalModuleRouter, ShopModuleRouter,
-        ApplinkRouter, OtpModuleRouter, ImageUploaderRouter, ILogisticUploadAwbRouter, TopChatRouter {
+        ApplinkRouter, OtpModuleRouter, ImageUploaderRouter, ILogisticUploadAwbRouter,
+        NetworkRouter, TopChatRouter {
 
     protected RemoteConfig remoteConfig;
     private DaggerProductComponent.Builder daggerProductBuilder;
@@ -1248,10 +1253,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void registerShake(String screenName) {
-    }
-
-    @Override
     public void unregisterShake() {
     }
 
@@ -1381,6 +1382,21 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public FingerprintModel getFingerprintModel() {
+        return null;
+    }
+
+    @Override
+    public void doRelogin(String newAccessToken) {
+        SessionRefresh sessionRefresh = new SessionRefresh(newAccessToken);
+        try {
+            sessionRefresh.gcmUpdate();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public Intent getHelpPageActivity(Context context, String url, boolean isFromChatBot) {
         Intent intent = new Intent(context, ContactUsActivity.class);
         intent.putExtra(ContactUsConstant.PARAM_URL, URLGenerator.generateURLContactUs(
@@ -1395,9 +1411,18 @@ public abstract class SellerRouterApplication extends MainApplication
         return ChatRoomActivity.getChatBotIntent(context, messageId);
     }
 
+    @Override
+    public void registerShake(String screenName, Activity activity) {
+
+    }
 
     @Override
-    public Intent getOrderListIntent(Context context) {
-        return OrderListActivity.getInstance(context);
+    public void openRedirectUrl(Activity activity, String url) {
+        goToWebview(activity,url);
+    }
+
+    @Override
+    public boolean isIndicatorVisible() {
+        return false; //Sellerapp dont have groupchat therefore always set false to indicator
     }
 }

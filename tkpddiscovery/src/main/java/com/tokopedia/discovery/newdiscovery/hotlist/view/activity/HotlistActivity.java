@@ -4,10 +4,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
@@ -46,6 +50,7 @@ public class HotlistActivity extends DiscoveryActivity
     private TextView descriptionTxt;
     private DescriptionView descriptionView;
     public FragmentListener fragmentListener;
+    private CollapsingToolbarLayout toolbarLayout;
 
     @Inject
     HotlistPresenter hotlistPresenter;
@@ -188,6 +193,29 @@ public class HotlistActivity extends DiscoveryActivity
                 .appComponent(getComponent())
                 .build();
         hotlistComponent.inject(this);
+    }
+
+    private CharSequence getToolbarTitle(){
+        return toolbarLayout.getTitle();
+    }
+
+    @Override
+    protected int getLayoutRes() {
+        return R.layout.activity_hotlist;
+    }
+
+    @Override
+    protected void initView() {
+        super.initView();
+        toolbarLayout = findViewById(R.id.toolbar_layout);
+    }
+
+    @Override
+    protected void setToolbarTitle(String query) {
+        if (getSupportActionBar() != null && query != null) {
+            getSupportActionBar().setTitle(query);
+            toolbarLayout.setTitle(query);
+        }
     }
 
     @Override
