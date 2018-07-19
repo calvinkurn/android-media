@@ -37,11 +37,6 @@ import java.util.concurrent.TimeUnit;
  * @author Angga.Prasetiyo on 26/10/2015.
  */
 public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailView> {
-    private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
-
-    private static final String WEEK_TIMER_FORMAT = "%dw : ";
-    private static final String DAY_TIMER_FORMAT = "%dd : ";
-    private static final String HOUR_MIN_SEC_TIMER_FORMAT = "%02dh : %02dm : %02ds";
 
     private TextView tvName;
     private TextView cashbackTextView;
@@ -49,8 +44,10 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
     private TextView textOriginalPrice;
     private TextView textDiscount;
     private TextView textStockAvailable;
+    private TextView campaignStockAvailable;
     private LinearLayout linearDiscountTimerHolder;
     private LinearLayout linearStockAvailable;
+    private ImageView ivStockAvailable;
     private CountDownView countDownView;
     private Context context;
     private LinearLayout textOfficialStore;
@@ -79,12 +76,12 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
         textDiscount = (TextView) findViewById(R.id.text_discount);
         linearDiscountTimerHolder = (LinearLayout) findViewById(R.id.linear_discount_timer_holder);
         linearStockAvailable = (LinearLayout) findViewById(R.id.linear_stock_available);
-        countDownView = findViewById(R.id.count_down);
+        ivStockAvailable = (ImageView) findViewById(R.id.iv_stock_available);
         textOfficialStore = (LinearLayout) findViewById(R.id.text_official_store);
         textStockAvailable = (TextView) findViewById(R.id.text_stock_available);
+        countDownView = findViewById(R.id.count_down);
+        campaignStockAvailable = findViewById(R.id.sale_text_stock_available);
         this.context = context;
-
-
     }
 
     @Override
@@ -195,13 +192,25 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
         }
     }
 
-    public void renderStockAvailability(ProductInfo data) {
+    public void renderStockAvailability(boolean isCampaign, ProductInfo data) {
         if(!TextUtils.isEmpty(data.getProductStockWording())) {
-            linearStockAvailable.setVisibility(VISIBLE);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                textStockAvailable.setText(Html.fromHtml(data.getProductStockWording(), Html.FROM_HTML_MODE_LEGACY));
+            if(isCampaign){
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    campaignStockAvailable.setText(Html.fromHtml(data.getProductStockWording(),
+                            Html.FROM_HTML_MODE_LEGACY));
+                } else {
+                    campaignStockAvailable.setText(Html.fromHtml(data.getProductStockWording()));
+                }
             } else {
-                textStockAvailable.setText(Html.fromHtml(data.getProductStockWording()));
+                linearStockAvailable.setVisibility(VISIBLE);
+                if (data.getLimitedStock()) {
+                    ivStockAvailable.setImageResource(R.drawable.ic_limited_stock);
+                    textStockAvailable.setTextColor(getContext().getResources().getColor(R.color.tkpd_dark_red));
+                } else {
+                    ivStockAvailable.setImageResource(R.drawable.ic_available_stock);
+                    textStockAvailable.setTextColor(getContext().getResources().getColor(R.color.black_70));
+                }
+                textStockAvailable.setText(data.getProductStockWording());
             }
         }
     }
