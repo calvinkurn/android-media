@@ -58,12 +58,7 @@ public class WhitelistViewHolder extends AbstractViewHolder<WhitelistViewModel> 
     }
 
     private void initViewListener(final WhitelistViewModel model) {
-        cardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mainView.onWhitelistClicked(model.getWhitelist().getUrl());
-            }
-        });
+        cardView.setOnClickListener(view -> mainView.onWhitelistClicked(model.getWhitelist().getUrl()));
     }
 
     private String formatName(String nameTemp, String identifier) {
