@@ -3,6 +3,7 @@ package com.tokopedia.shop.page.view.presenter
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.data.model.session.UserSession
 import com.tokopedia.abstraction.common.network.exception.UserNotLoginException
+import com.tokopedia.gm.common.domain.interactor.DeleteFeatureProductListCacheUseCase
 import com.tokopedia.reputation.common.data.source.cloud.model.ReputationSpeed
 import com.tokopedia.reputation.common.domain.interactor.GetReputationSpeedUseCase
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
@@ -29,6 +30,7 @@ constructor(private val getShopInfoUseCase: GetShopInfoUseCase,
             private val getShopInfoByDomainUseCase: GetShopInfoByDomainUseCase,
             private val toggleFavouriteShopAndDeleteCacheUseCase: ToggleFavouriteShopAndDeleteCacheUseCase,
             private val deleteShopProductUseCase: DeleteShopProductUseCase,
+            private val deleteFeatureProductListCacheUseCase: DeleteFeatureProductListCacheUseCase,
             private val deleteShopInfoUseCase: DeleteShopInfoUseCase,
             private val deleteShopEtalaseUseCase: DeleteShopEtalaseUseCase,
             private val deleteShopNoteUseCase: DeleteShopNoteUseCase,
@@ -89,6 +91,7 @@ constructor(private val getShopInfoUseCase: GetShopInfoUseCase,
         deleteShopProductUseCase.executeSync()
         deleteShopEtalaseUseCase.executeSync()
         deleteShopNoteUseCase.executeSync()
+        deleteFeatureProductListCacheUseCase.executeSync()
     }
 
     override fun detachView() {
@@ -100,5 +103,6 @@ constructor(private val getShopInfoUseCase: GetShopInfoUseCase,
         deleteShopProductUseCase.unsubscribe()
         deleteShopEtalaseUseCase.unsubscribe()
         deleteShopNoteUseCase.unsubscribe()
+        deleteFeatureProductListCacheUseCase.unsubscribe()
     }
 }

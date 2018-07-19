@@ -2,6 +2,7 @@ package com.tokopedia.gm.common.util;
 
 import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.gm.common.constant.GMCommonUrl;
 import com.tokopedia.gm.statistic.constant.StatisticConstant;
 
 import java.util.ArrayList;
@@ -35,6 +36,7 @@ public class GMCacheApiWhiteList {
         cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.GOLD_MERCHANT_DOMAIN, StatisticConstant.GET_SHOP_CATEGORY, ONE_DAY, true));
         cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.GOLD_MERCHANT_DOMAIN, StatisticConstant.GET_PRODUCT_TABLE, ONE_DAY, true));
         cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.GOLD_MERCHANT_DOMAIN, StatisticConstant.GET_BUYER_TABLE, ONE_DAY, true));
+        cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.GOLD_MERCHANT_DOMAIN, GMCommonUrl.FEATURED_PRODUCT_URL, ONE_HOUR, true));
         return cacheApiWhiteList;
     }
 }

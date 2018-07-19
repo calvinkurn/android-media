@@ -27,7 +27,7 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
         view.shopFollower.setOnClickListener { listener.onFollowerTextClicked() }
         ImageHandler.loadImageCircle2(view.context, view.shopImageView, shopInfo.info.shopAvatar)
         when {
-            TextApiUtils.isValueTrue(shopInfo.info.getShopIsOfficial()) -> displayOfficial()
+            TextApiUtils.isValueTrue(shopInfo.info.shopIsOfficial) -> displayOfficial()
             shopInfo.info.isShopIsGoldBadge -> {
                 displayGoldenShop()
                 displayGeneral(shopInfo)
