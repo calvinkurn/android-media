@@ -21,14 +21,14 @@ import com.tokopedia.shop.product.view.model.newmodel.ShopProductViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_ETALASE_POSITION;
+import static com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_ETALASE_TITLE_POSITION;
+import static com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_FEATURED_POSITION;
+import static com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_PROMO_POSITION;
+import static com.tokopedia.shop.common.constant.ShopPageConstant.ITEM_OFFSET;
+
 public class ShopProductNewAdapter extends BaseListAdapter<BaseShopProductViewModel, ShopProductAdapterTypeFactory>
         implements DataEndlessScrollListener.OnDataEndlessScrollListener, ShopProductAdapterTypeFactory.OnShopProductAdapterTypeFactoryListener {
-
-    private static final int DEFAULT_PROMO_POSITION = 0;
-    private static final int DEFAULT_FEATURED_POSITION = 1;
-    private static final int DEFAULT_ETALASE_POSITION = 2;
-    private static final int DEFAULT_ETALASE_TITLE_POSITION = 3;
-    private static final int ITEM_OFFSET = 4;
 
     private ShopProductPromoViewModel shopProductPromoViewModel;
     private List<ShopProductViewModel> shopProductViewModelList;
