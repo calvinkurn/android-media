@@ -22,8 +22,8 @@ import java.util.Map;
 
 import rx.Observable;
 
-import static com.tokopedia.tkpd.home.favorite.domain.interactor.GetWishlistUsecase.KEY_COUNT;
-import static com.tokopedia.tkpd.home.favorite.domain.interactor.GetWishlistUsecase.KEY_PAGE;
+import static com.tokopedia.tkpd.home.favorite.domain.interactor.GetWishlistUtil.KEY_COUNT;
+import static com.tokopedia.tkpd.home.favorite.domain.interactor.GetWishlistUtil.KEY_PAGE;
 import static com.tokopedia.tkpd.home.presenter.WishListImpl.ITEM_COUNT;
 import static com.tokopedia.tkpd.home.presenter.WishListImpl.PAGE_NO;
 import static com.tokopedia.tkpd.home.presenter.WishListImpl.PARAM_USER_ID;

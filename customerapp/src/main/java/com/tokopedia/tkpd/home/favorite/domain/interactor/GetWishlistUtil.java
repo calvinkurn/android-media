@@ -14,7 +14,7 @@ import rx.Observable;
  */
 
 @SuppressWarnings("WeakerAccess")
-public class GetWishlistUsecase {
+public class GetWishlistUtil {
 
     public static final String KEY_COUNT = "count";
     public static final String KEY_PAGE = "page";
@@ -26,7 +26,7 @@ public class GetWishlistUsecase {
     private final FavoriteRepository favoriteRepository;
 
     @Inject
-    public GetWishlistUsecase(FavoriteRepository favoriteRepository) {
+    public GetWishlistUtil(FavoriteRepository favoriteRepository) {
         this.favoriteRepository = favoriteRepository;
     }
 
