@@ -380,4 +380,5 @@ class ShopPageActivity: BaseSimpleActivity(), HasComponent<ShopComponent>,
     override fun goToHowActivate() {
 
     }
+
 }

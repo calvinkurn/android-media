@@ -9,8 +9,12 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SimpleItemAnimator;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -28,6 +32,7 @@ import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.analytic.ShopPageTracking;
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant;
+import com.tokopedia.shop.common.constant.ShopPageConstant;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.di.component.ShopComponent;
@@ -92,6 +97,11 @@ public class ShopProductListNewFragment extends BaseListFragment<BaseShopProduct
     private String selectedEtalaseId;
     private String selectedEtalaseName;
 
+    private OnShopProductListFragmentListener onShopProductListFragmentListener;
+    public interface OnShopProductListFragmentListener{
+        void updateUIByShopName(String shopName);
+    }
+
     public static ShopProductListNewFragment createInstance(String shopId,
                                                             String keyword,
                                                             String etalaseId,
@@ -151,6 +161,7 @@ public class ShopProductListNewFragment extends BaseListFragment<BaseShopProduct
         selectedEtalaseId = getArguments().getString(ShopParamConstant.EXTRA_ETALASE_ID, "");
         sortName = getArguments().getString(ShopParamConstant.EXTRA_SORT_ID, Integer.toString(Integer.MIN_VALUE));
         attribution = getArguments().getString(ShopParamConstant.EXTRA_ATTRIBUTION, "");
+        setHasOptionsMenu(true);
         super.onCreate(savedInstanceState);
         shopProductListPresenter.attachView(this);
     }
@@ -164,7 +175,7 @@ public class ShopProductListNewFragment extends BaseListFragment<BaseShopProduct
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_shop_product_list, container, false);
+        return inflater.inflate(R.layout.fragment_shop_product_list_new, container, false);
     }
 
     @Override
@@ -172,9 +183,10 @@ public class ShopProductListNewFragment extends BaseListFragment<BaseShopProduct
         super.onViewCreated(view, savedInstanceState);
 
 //        searchInputView.setSearchHint(getString(R.string.shop_product_search_hint));
-        recyclerView = view.findViewById(R.id.recycler_view);
+//        recyclerView = view.findViewById(R.id.recycler_view);
 //        etalaseLabelView = view.findViewById(R.id.label_view_etalase);
         bottomActionView = view.findViewById(R.id.bottom_action_view);
+        bottomActionView.hide(false);
 
 //        setBottomActionViewImage(currentImgBottomNav);
 //        RecyclerView.LayoutManager layoutManager = iterate(recyclerView);
@@ -222,7 +234,45 @@ public class ShopProductListNewFragment extends BaseListFragment<BaseShopProduct
 //        if (!TextUtils.isEmpty(keyword)) {
 //            searchInputView.getSearchTextView().setText(keyword);
 //        }
+
     }
+
+    @Override
+    public RecyclerView getRecyclerView(View view) {
+        recyclerView = super.getRecyclerView(view);
+        RecyclerView.ItemAnimator animator = recyclerView.getItemAnimator();
+        if (animator instanceof SimpleItemAnimator) {
+            ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
+        }
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                int firstCompletelyVisiblePosition = gridLayoutManager.findFirstVisibleItemPosition();
+                int lastCompleteVisiblePosition = gridLayoutManager.findLastCompletelyVisibleItemPosition();
+                if (firstCompletelyVisiblePosition > -1) {
+                    if (firstCompletelyVisiblePosition > ShopPageConstant.DEFAULT_ETALASE_POSITION) {
+                        // make the etalase label always visible
+                    } else {
+                        // make the etalase label always gone
+                    }
+                }
+
+                if (dy < 0) { // going up
+                    bottomActionView.show();
+                } else if (dy > 0){ // going down
+                    bottomActionView.hide();
+                }
+            }
+        });
+        return recyclerView;
+    }
+
 
     @Override
     protected RecyclerView.LayoutManager getRecyclerViewLayoutManager() {
@@ -242,6 +292,7 @@ public class ShopProductListNewFragment extends BaseListFragment<BaseShopProduct
 
     @Override
     public void onSwipeRefresh() {
+        //TODO need clear etalase?
         shopProductListPresenter.clearProductCache();
         super.onSwipeRefresh();
     }
@@ -267,6 +318,27 @@ public class ShopProductListNewFragment extends BaseListFragment<BaseShopProduct
         shopProductNewAdapter.clearProductList();
         showLoading();
         loadData(getDefaultInitialPage());
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_shop_info, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_share) {
+            onShareShop();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void onShareShop() {
+        if (shopInfo != null) {
+            ((ShopModuleRouter) getActivity().getApplication()).goToShareShop(getActivity(), shopId, shopInfo.getInfo().getShopUrl(),
+                    getString(R.string.shop_label_share_formatted, shopInfo.getInfo().getShopName(), shopInfo.getInfo().getShopLocation()));
+        }
     }
 
 //    private void setBottomActionViewImage(int index) {
@@ -334,6 +406,9 @@ public class ShopProductListNewFragment extends BaseListFragment<BaseShopProduct
         if (shopProductNewAdapter.getShopProductViewModelList().size() == 0) {
             shopProductNewAdapter.addElement(getEmptyDataViewModel());
         } else {
+            if (isLoadingInitialData) {
+                bottomActionView.show();
+            }
             isLoadingInitialData = false;
         }
         shopProductNewAdapter.notifyDataSetChanged();
@@ -370,13 +445,6 @@ public class ShopProductListNewFragment extends BaseListFragment<BaseShopProduct
             onGetListErrorWithEmptyData(throwable);
         }
     }
-
-    // load data after get shop info
-    @Override
-    protected boolean callInitialLoadAutomatically() {
-        return false;
-    }
-
 
 //    private void showBottomActionView() {
 //        bottomActionView.setVisibility(getAdapter().isContainData() ? View.VISIBLE : View.GONE);
@@ -450,13 +518,6 @@ public class ShopProductListNewFragment extends BaseListFragment<BaseShopProduct
                 shopPageTracking.getListNameOfProduct(shopProductViewModel.getPositionTracking(), false, ShopPageTrackingConstant.PRODUCT_ETALASE));
     }
 
-    private void onShareShop() {
-        if (shopInfo != null) {
-            ((ShopModuleRouter) getActivity().getApplication()).goToShareShop(getActivity(), shopId, shopInfo.getInfo().getShopUrl(),
-                    getString(R.string.shop_label_share_formatted, shopInfo.getInfo().getShopName(), shopInfo.getInfo().getShopLocation()));
-        }
-    }
-
 
 //    @Override
 //    public void onSuccessAddToWishList(String productId, Boolean value) {
@@ -520,15 +581,14 @@ public class ShopProductListNewFragment extends BaseListFragment<BaseShopProduct
     @Override
     public void onSuccessGetShopInfo(ShopInfo shopInfo) {
         this.shopInfo = shopInfo;
-//        if (getActivity() instanceof BaseSimpleActivity) {
-//            ((BaseSimpleActivity) getActivity()).updateTitle(MethodChecker.fromHtml(shopInfo.getInfo().getShopName()).toString());
-//        }
+        onShopProductListFragmentListener.updateUIByShopName(shopInfo.getInfo().getShopName());
         loadInitialData();
     }
 
     @Override
     public void onErrorGetShopInfo(Throwable e) {
-        //TODO
+        //TODO check this.
+        showGetListError(e);
     }
 
     @Override
@@ -655,7 +715,13 @@ public class ShopProductListNewFragment extends BaseListFragment<BaseShopProduct
         }
     }
 
-//    @Override
+    @Override
+    protected void onAttachActivity(Context context) {
+        super.onAttachActivity(context);
+        onShopProductListFragmentListener = (OnShopProductListFragmentListener) context;
+    }
+
+    //    @Override
 //    public int getType(Object type) {
 //        return currentLayoutType.first;
 //    }

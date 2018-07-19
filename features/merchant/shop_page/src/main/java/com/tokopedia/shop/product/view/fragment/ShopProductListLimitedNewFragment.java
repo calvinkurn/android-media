@@ -193,7 +193,16 @@ public class ShopProductListLimitedNewFragment extends BaseListFragment<BaseShop
 //        linearHeaderSticky = view.findViewById(R.id.linear_header_sticky);
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
-        recyclerView = getRecyclerView(view);
+        super.onViewCreated(view, savedInstanceState);
+
+        if (shopInfo != null) {
+            loadInitialData();
+        }
+    }
+
+    @Override
+    public RecyclerView getRecyclerView(View view) {
+        recyclerView = super.getRecyclerView(view);
         RecyclerView.ItemAnimator animator = recyclerView.getItemAnimator();
         if (animator instanceof SimpleItemAnimator) {
             ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
@@ -227,12 +236,7 @@ public class ShopProductListLimitedNewFragment extends BaseListFragment<BaseShop
                 }
             }
         });
-
-        super.onViewCreated(view, savedInstanceState);
-
-        if (shopInfo != null) {
-            loadInitialData();
-        }
+        return recyclerView;
     }
 
     public void displayProduct(ShopInfo shopInfo) {
@@ -245,6 +249,8 @@ public class ShopProductListLimitedNewFragment extends BaseListFragment<BaseShop
         loadTopData();
         reloadProductData();
     }
+
+    //TODO on refresh, clear cache
 
     // load product list first time
     private void reloadProductData() {
@@ -605,6 +611,8 @@ public class ShopProductListLimitedNewFragment extends BaseListFragment<BaseShop
                 shopProductViewModel.getDisplayedPrice(), shopProductViewModel.getImageUrl(), attribution,
                 shopPageTracking.getListNameOfProduct(shopProductViewModel.getPositionTracking(), false, ShopPageTrackingConstant.PRODUCT_ETALASE));
     }
+
+    // TODO onActivityResult from ShopProductList will move the cursor to the top
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
