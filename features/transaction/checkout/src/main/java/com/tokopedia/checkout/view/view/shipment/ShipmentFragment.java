@@ -24,6 +24,7 @@ import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressMo
 import com.tokopedia.checkout.domain.datamodel.cartcheckout.CheckoutData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
+import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
