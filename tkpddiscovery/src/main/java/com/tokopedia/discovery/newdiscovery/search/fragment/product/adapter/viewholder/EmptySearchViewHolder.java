@@ -2,11 +2,16 @@ package com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.vie
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -175,7 +180,7 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
         emptyTitleTextView.setText(model.getTitle());
 
         if (!TextUtils.isEmpty(model.getContent())) {
-            emptyContentTextView.setText(model.getContent());
+            emptyContentTextView.setText(boldTextBetweenQuotes(model.getContent()));
             emptyContentTextView.setVisibility(View.VISIBLE);
         } else {
             emptyContentTextView.setVisibility(View.GONE);
@@ -202,6 +207,16 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
             selectedFilterRecyclerView.setVisibility(View.GONE);
         }
         loadBannerAds();
+    }
+
+    private CharSequence boldTextBetweenQuotes(String text) {
+        String quoteSymbol = "\"";
+        int firstQuotePos = text.indexOf(quoteSymbol);
+        int lastQuotePos = text.lastIndexOf(quoteSymbol);
+
+        SpannableStringBuilder str = new SpannableStringBuilder(text);
+        str.setSpan(new StyleSpan(Typeface.BOLD), firstQuotePos, lastQuotePos + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return str;
     }
 
     private List<Option> convertToOptionList(FilterFlagSelectedModel filterFlagSelectedModel) {
