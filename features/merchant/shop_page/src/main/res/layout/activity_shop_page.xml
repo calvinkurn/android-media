@@ -19,7 +19,12 @@
         app:titleTextAppearance="?titleTextAppearance"
         app:elevation="0dp" >
 
-        <include layout="@layout/partial_shop_page_searchview"/>
+        <com.tokopedia.design.text.SearchInputView
+            android:id="@+id/searchInputView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:siv_search_hint="@string/shop_product_search_hint" />
+
     </android.support.v7.widget.Toolbar>
 
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
@@ -66,7 +71,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginRight="@dimen/dp_16"/>
+                    android:layout_marginRight="@dimen/dp_16"
+                    app:layout_scrollFlags="scroll|enterAlways"/>
 
             </android.support.design.widget.AppBarLayout>
 
@@ -81,6 +87,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:can_swipe="false" />
+
             </RelativeLayout>
 
 

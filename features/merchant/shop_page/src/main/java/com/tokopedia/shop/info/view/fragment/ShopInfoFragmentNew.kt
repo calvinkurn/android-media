@@ -3,6 +3,7 @@ package com.tokopedia.shop.info.view.fragment
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +13,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHold
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.reputation.common.data.source.cloud.model.ReputationSpeed
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopModuleRouter
 import com.tokopedia.shop.analytic.ShopPageTracking
@@ -108,9 +110,24 @@ class ShopInfoFragmentNew: BaseDaggerFragment(), ShopInfoView, BaseEmptyViewHold
     private fun displayShopLogistic(shopInfo: ShopInfo) {
         recyclerViewLogistic.adapter = ShopInfoLogisticAdapter(ShopInfoLogisticAdapterTypeFactory(),
                 shopInfo.shipment.map { it.transformToVisitable() })
+
+        if (!presenter.isMyshop(shopId)){
+            labelViewLogisticTitle.setContent("")
+            labelViewLogisticTitle.setOnClickListener {}
+        } else {
+            labelViewLogisticTitle.setOnClickListener { goToManageLogistic()}
+        }
+    }
+
+    private fun goToManageLogistic() {
+        val app = activity.application
+        if (app is ShopModuleRouter){
+            app.goToManageShipping(activity)
+        }
     }
 
     private fun displayShopStatistics(shopInfo: ShopInfo) {
+        presenter.getShopReputationSpeed(shopId)
         productQualityValue.text = shopInfo.ratings.quality.average
         productRating.rating = try {
             shopInfo.ratings.quality.average.toFloat()
@@ -179,8 +196,12 @@ class ShopInfoFragmentNew: BaseDaggerFragment(), ShopInfoView, BaseEmptyViewHold
                     title = getString(R.string.shop_note_empty_note_title_buyer)
                 }
             })
+        }
+
+        if (notes.isEmpty() || !presenter.isMyshop(shopId)){
             noteLabelView.setContent("")
-        } else {
+            noteLabelView.setOnClickListener {}
+        } else if (presenter.isMyshop(shopId)){
             noteLabelView.setOnClickListener { onEmptyButtonClicked() }
         }
     }
@@ -205,5 +226,19 @@ class ShopInfoFragmentNew: BaseDaggerFragment(), ShopInfoView, BaseEmptyViewHold
         }
 
         startActivity(ShopNoteDetailActivity.createIntent(activity, shopNoteViewModel.getShopNoteId().toString()))
+    }
+
+    override fun onErrorGetReputation(throwable: Throwable) {
+        labelViewProcessOrder.setContent(getString(R.string.shop_page_speed_shop_not_available))
+    }
+
+    override fun onSuccessGetReputation(reputationSpeed: ReputationSpeed) {
+        val speedLevelDescription = reputationSpeed.recent12Month.speedLevelDescription
+
+        if (TextUtils.isEmpty(speedLevelDescription)) {
+            labelViewProcessOrder.setContent(getString(R.string.shop_page_speed_shop_not_available))
+        } else {
+            labelViewProcessOrder.setContent(speedLevelDescription)
+        }
     }
 }

@@ -221,6 +221,7 @@ import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.seller.shop.common.di.module.ShopModule;
 import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.seller.shopsettings.notes.activity.ManageShopNotesActivity;
+import com.tokopedia.seller.shopsettings.shipping.EditShippingActivity;
 import com.tokopedia.session.addchangeemail.view.activity.AddEmailActivity;
 import com.tokopedia.session.addchangepassword.view.activity.AddPasswordActivity;
 import com.tokopedia.session.changename.view.activity.ChangeNameActivity;
@@ -2294,5 +2295,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void goToShopDiscussion(Context context, String shopId) {
         startActivity(ShopDiscussionActivity.createIntent(context, shopId));
+    }
+
+    @Override
+    public void goToManageShipping(Context context) {
+        startActivity(new Intent(context, EditShippingActivity.class));
     }
 }

@@ -27,7 +27,6 @@ import rx.Subscriber
 class ShopPagePresenterNew @Inject
 constructor(private val getShopInfoUseCase: GetShopInfoUseCase,
             private val getShopInfoByDomainUseCase: GetShopInfoByDomainUseCase,
-            private val getReputationSpeedUseCase: GetReputationSpeedUseCase,
             private val toggleFavouriteShopAndDeleteCacheUseCase: ToggleFavouriteShopAndDeleteCacheUseCase,
             private val deleteShopProductUseCase: DeleteShopProductUseCase,
             private val deleteShopInfoUseCase: DeleteShopInfoUseCase,
@@ -66,22 +65,6 @@ constructor(private val getShopInfoUseCase: GetShopInfoUseCase,
         })
     }
 
-    fun getShopReputationSpeed(shopId: String) {
-        getReputationSpeedUseCase.execute(GetReputationSpeedUseCase.createRequestParam(shopId), object : Subscriber<ReputationSpeed>() {
-            override fun onCompleted() {
-
-            }
-
-            override fun onError(e: Throwable) {
-                view?.onErrorGetReputation(e)
-            }
-
-            override fun onNext(reputationSpeed: ReputationSpeed) {
-                view.onSuccessGetReputation(reputationSpeed)
-            }
-        })
-    }
-
     fun toggleFavouriteShop(shopId: String) {
         if (!userSession.isLoggedIn) {
             view?.onErrorToggleFavourite(UserNotLoginException())
@@ -112,7 +95,6 @@ constructor(private val getShopInfoUseCase: GetShopInfoUseCase,
         super.detachView()
         getShopInfoUseCase.unsubscribe()
         getShopInfoByDomainUseCase.unsubscribe()
-        getReputationSpeedUseCase.unsubscribe()
         toggleFavouriteShopAndDeleteCacheUseCase.unsubscribe()
         deleteShopInfoUseCase.unsubscribe()
         deleteShopProductUseCase.unsubscribe()

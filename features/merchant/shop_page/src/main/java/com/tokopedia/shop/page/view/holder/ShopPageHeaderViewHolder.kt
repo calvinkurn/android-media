@@ -4,6 +4,7 @@ import android.graphics.drawable.GradientDrawable
 import android.support.annotation.DrawableRes
 import android.support.v4.content.ContextCompat
 import android.support.v7.content.res.AppCompatResources
+import android.text.style.ClickableSpan
 import android.view.View
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
@@ -49,8 +50,8 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
         view.buttonActionAbnormal.visibility = if (isMyShop) View.VISIBLE else View.GONE
         when (shopInfo.info.shopStatus){
             ShopStatusDef.CLOSED -> showShopClosed(shopInfo)
-            ShopStatusDef.MODERATED -> showShopModerated(shopInfo,false)
-            ShopStatusDef.MODERATED_PERMANENTLY -> showShopModerated(shopInfo,true)
+            ShopStatusDef.MODERATED -> showShopModerated(isMyShop,false)
+            ShopStatusDef.MODERATED_PERMANENTLY -> showShopModerated(isMyShop,true)
             ShopStatusDef.NOT_ACTIVE -> showShopNotActive(isMyShop)
             else -> {
                 view.shopWarningTickerView.visibility = View.GONE
@@ -60,28 +61,36 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
     }
 
     private fun showShopNotActive(isMyShop: Boolean) {
-        val description = if (isMyShop) {
-            view.context.getString(R.string.shop_page_header_shop_not_active_description_seller)
-        } else {
-            view.context.getString(R.string.shop_page_header_shop_not_active_description_buyer)
+        var title = view.context.getString(R.string.shop_page_header_shop_not_active_title)
+        var description = view.context.getString(R.string.shop_page_header_shop_not_active_description_seller)
+        if (!isMyShop) {
+            title = view.context.getString(R.string.shop_page_header_shop_not_active_title_buyer)
+            description = view.context.getString(R.string.shop_page_header_shop_not_active_description_buyer)
         }
         showShopStatusTicker(R.drawable.ic_shop_deactivate,
-                view.context.getString(R.string.shop_page_header_shop_not_active_title),
-                description,
-                R.color.yellow_ticker, R.color.grey_overlay_inactive)
+                title, description, R.color.yellow_ticker, R.color.grey_overlay_inactive, isMyShop)
+
         view.buttonActionAbnormal.apply {
             text = view.context.getString(R.string.shop_info_label_see_how_to_open)
             setOnClickListener { listener.goToHowActivate() }
         }
     }
 
-    private fun showShopModerated(shopInfo: ShopInfo, isPermanent: Boolean) {
+    private fun showShopModerated(isMyShop: Boolean, isPermanent: Boolean) {
+        var title = if (isPermanent) { R.string.shop_page_header_shop_in_permanent_moderation }
+        else {R.string.shop_page_header_shop_in_moderation}
+        var description = view.context.getString(R.string.shop_page_header_shop_in_moderation_desc)
+
+        if (!isMyShop) {
+            title = if (isPermanent) { R.string.shop_page_header_shop_in_permanent_moderation_buyer }
+            else {R.string.shop_page_header_shop_in_moderation_buyer}
+            description = view.context.getString(R.string.shop_page_header_shop_in_moderation_desc_buyer)
+        }
+
         showShopStatusTicker(R.drawable.ic_shop_moderated_v3,
-                view.context.getString(if (isPermanent) {
-                    R.string.shop_page_header_shop_in_permanent_moderation
-                } else {R.string.shop_page_header_shop_in_moderation} ),
-                view.context.getString(R.string.shop_page_header_closed_reason, shopInfo.closedInfo.reason),
-                R.color.yellow_ticker, R.color.red_overlay_moderated)
+                view.context.getString(title), description,
+                R.color.yellow_ticker, R.color.red_overlay_moderated, isMyShop)
+
         view.buttonActionAbnormal.apply {
             text = view.context.getString(R.string.shop_info_label_open_request)
             setOnClickListener { listener.requestOpenShop() }
@@ -102,12 +111,19 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
     }
 
     private fun showShopStatusTicker(@DrawableRes iconRes: Int, title: String, description: String,
-                                     backgroundTickerColor: Int, backgoundStatusColor: Int = backgroundTickerColor) {
+                                     backgroundTickerColor: Int, backgoundStatusColor: Int = backgroundTickerColor,
+                                     isMyShop: Boolean = false) {
         view.shopWarningTickerView.run {
             setTitle(title)
             setDescription(description)
             setTickerColor(ContextCompat.getColor(context, backgroundTickerColor))
-            setAction(null, null)
+            setAction(if (isMyShop){
+                object: ClickableSpan() {
+                    override fun onClick(p0: View?) {
+
+                    }
+                }
+            } else null)
             visibility = View.VISIBLE
         }
 
@@ -136,12 +152,16 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
         if (isShopFavourited){
             view.buttonFollow.visibility = View.GONE
             view.buttonFollowed.visibility = View.VISIBLE
-            view.buttonFollowed.setOnClickListener{ listener.toggleFavorite(true)}
+            view.buttonFollowed.setOnClickListener{
+                view.buttonFollowed.isEnabled = false
+                listener.toggleFavorite(true)}
         } else {
             view.buttonFollowed.visibility = View.GONE
             view.buttonFollow.visibility = View.VISIBLE
-            view.buttonFollow.setText(view.context.getString(R.string.shop_page_label_favorite))
-            view.buttonFollow.setOnClickListener{ listener.toggleFavorite(false)}
+            view.buttonFollow.setText(view.context.getString(R.string.shop_page_label_follow))
+            view.buttonFollow.setOnClickListener{
+                view.buttonFollow.isEnabled = false
+                listener.toggleFavorite(false)}
         }
     }
 

@@ -25,7 +25,6 @@ import com.tokopedia.shop.page.view.listener.ShopPageView
 import com.tokopedia.shop.page.view.presenter.ShopPagePresenterNew
 import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedNewFragment
 import kotlinx.android.synthetic.main.activity_shop_page.*
-import kotlinx.android.synthetic.main.partial_shop_page_searchview.*
 import javax.inject.Inject
 import android.support.design.widget.AppBarLayout
 import android.view.MenuItem
@@ -36,11 +35,13 @@ import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.common.network.exception.UserNotLoginException
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.shop.ShopModuleRouter
 import com.tokopedia.shop.analytic.ShopPageTracking
 import com.tokopedia.shop.common.constant.ShopAppLink
 import com.tokopedia.shop.favourite.view.activity.ShopFavouriteListActivity
 import com.tokopedia.shop.info.view.fragment.ShopInfoFragmentNew
+import com.tokopedia.shop.product.view.activity.ShopProductListActivity
 
 class ShopPageActivity: BaseSimpleActivity(), HasComponent<ShopComponent>,
         ShopPageView, ShopPageHeaderViewHolder.ShopPageHeaderListener {
@@ -240,8 +241,28 @@ class ShopPageActivity: BaseSimpleActivity(), HasComponent<ShopComponent>,
             shopId = info.shopId
             shopDomain = info.shopDomain
             shopPageViewHolder.bind(this, presenter.isMyShop(shopId!!))
-            searchViewText.text = getString(R.string.shop_product_search_hint_2,
-                    MethodChecker.fromHtml(info.shopName).toString())
+            searchInputView.setSearchHint(getString(R.string.shop_product_search_hint_2,
+                    MethodChecker.fromHtml(info.shopName).toString()))
+            searchInputView.setListener(object : SearchInputView.Listener {
+                override fun onSearchSubmitted(text: String?) {
+                    if (TextUtils.isEmpty(text)) {
+                        return
+                    }
+                    shopPageTracking.eventTypeKeywordSearchProduct(getString(R.string.shop_info_title_tab_product),
+                            text, info.shopId, presenter.isMyShop(info.shopId), ShopPageTracking.getShopType(info))
+                    startActivity(ShopProductListActivity.createIntent(this@ShopPageActivity, info.shopId,
+                            text, "", shopAttribution))
+                }
+
+                override fun onSearchTextChanged(text: String?) {}
+
+            })
+            searchInputView.setOnClickListener {
+                if (shopInfo != null) {
+                    shopPageTracking.eventClickSearchProduct(getString(R.string.shop_info_title_tab_product),
+                            info.shopId, presenter.isMyShop(info.shopId), ShopPageTracking.getShopType(info))
+                }
+            }
 
             (shopPageViewPagerAdapter.getRegisteredFragment(0) as ShopProductListLimitedNewFragment)
                     .displayProduct(this)
