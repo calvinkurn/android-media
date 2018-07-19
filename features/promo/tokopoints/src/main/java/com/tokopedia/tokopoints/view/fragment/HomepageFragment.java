@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
@@ -22,37 +21,34 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
-import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.design.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.gamification.applink.ApplinkConstant;
-import com.tokopedia.gamification.floating.view.fragment.FloatingEggButtonFragment;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.activity.CatalogListingActivity;
 import com.tokopedia.tokopoints.view.activity.MyCouponListingActivity;
+import com.tokopedia.tokopoints.view.adapter.CatalogBannerPagerAdapter;
 import com.tokopedia.tokopoints.view.adapter.HomepagePagerAdapter;
+import com.tokopedia.tokopoints.view.adapter.TickerPagerAdapter;
 import com.tokopedia.tokopoints.view.contract.HomepageContract;
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
-import com.tokopedia.tokopoints.view.model.CouponExtraInfoEntity;
 import com.tokopedia.tokopoints.view.model.CouponValueEntity;
 import com.tokopedia.tokopoints.view.model.LuckyEggEntity;
+import com.tokopedia.tokopoints.view.model.TickerContainer;
 import com.tokopedia.tokopoints.view.model.TokoPointPromosEntity;
 import com.tokopedia.tokopoints.view.model.TokoPointStatusPointsEntity;
 import com.tokopedia.tokopoints.view.model.TokoPointStatusTierEntity;
 import com.tokopedia.tokopoints.view.presenter.HomepagePresenter;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-
-import static com.tokopedia.gamification.applink.ApplinkConstant.GAMIFICATION;
 
 public class HomepageFragment extends BaseDaggerFragment implements HomepageContract.View, View.OnClickListener {
     private static final int CONTAINER_LOADER = 0;
@@ -63,9 +59,6 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
     private ImageView mImgEgg;
     private TabLayout mTabLayoutPromo;
     private ViewPager mPagerPromos;
-    private AppBarLayout onEggScrollListener;
-    private FloatingEggButtonFragment floatingEggButtonFragment;
-    private TickerView tickerView;
     @Inject
     public HomepagePresenter mPresenter;
 
@@ -115,32 +108,6 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
     @Override
     public void hideLoading() {
         mContainerMain.setDisplayedChild(CONTAINER_DATA);
-    }
-
-    @Override
-    public void onError(String error) {
-        mContainerMain.setDisplayedChild(CONTAINER_ERROR);
-    }
-
-    @Override
-    public void onSuccess(TokoPointStatusTierEntity tierData, TokoPointStatusPointsEntity pointData) {
-        mContainerMain.setDisplayedChild(CONTAINER_DATA);
-        mPresenter.getPromos();
-        mTextMembershipValue.setText(String.valueOf(tierData.getNameDesc()));
-        mTextPoints.setText(CurrencyFormatUtil.convertPriceValue(pointData.getReward(), false));
-        mTextLoyalty.setText(CurrencyFormatUtil.convertPriceValue(pointData.getLoyalty(), false));
-        ImageHandler.loadImageFitCenter(getActivityContext(), mImgEgg, tierData.getEggImageUrl());
-    }
-
-    @Override
-    public void onErrorPromos(String error) {
-
-    }
-
-    @Override
-    public void onSuccessPromos(TokoPointPromosEntity data) {
-        initPromoPager(data.getCatalog().getCatalogs(), data.getCoupon().getCoupons());
-        buildTickerView(data.getCoupon().getExtraInfo());
     }
 
     @Override
@@ -194,8 +161,6 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
         mImgEgg = view.findViewById(R.id.img_egg);
         mTabLayoutPromo = view.findViewById(R.id.tab_layout_promos);
         mPagerPromos = view.findViewById(R.id.view_pager_promos);
-        onEggScrollListener = view.findViewById(R.id.app_bar);
-        tickerView = view.findViewById(R.id.ticker_view);
     }
 
     private void initListener() {
@@ -230,6 +195,21 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
     }
 
     @Override
+    public void onSuccessPromos(TokoPointPromosEntity data) {
+        initPromoPager(data.getCatalog().getCatalogs(), data.getCoupon().getCoupons());
+    }
+
+    @Override
+    public void onSuccess(TokoPointStatusTierEntity tierData, TokoPointStatusPointsEntity pointData) {
+        mContainerMain.setDisplayedChild(CONTAINER_DATA);
+        mPresenter.getPromos();
+        mTextMembershipValue.setText(String.valueOf(tierData.getNameDesc()));
+        mTextPoints.setText(CurrencyFormatUtil.convertPriceValue(pointData.getReward(), false));
+        mTextLoyalty.setText(CurrencyFormatUtil.convertPriceValue(pointData.getLoyalty(), false));
+        ImageHandler.loadImageFitCenter(getActivityContext(), mImgEgg, tierData.getEggImageUrl());
+    }
+
+    @Override
     public void onSuccessTokenDetail(LuckyEggEntity tokenDetail) {
         if (tokenDetail != null) {
             try {
@@ -253,6 +233,37 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
                 //to avoid any accidental crash in order to prevent homepage error
             }
         }
+    }
+
+    @Override
+    public void onSuccessTicker(@NonNull List<TickerContainer> tickers) {
+        if (getView() != null && tickers.size() > 0) {
+            ViewPager pager = getView().findViewById(R.id.view_pager_ticker);
+            pager.setAdapter(new TickerPagerAdapter(getContext(), tickers));
+            //adding bottom dots(Page Indicator)
+            final CirclePageIndicator pageIndicator = getView().findViewById(R.id.page_indicator_ticker);
+            pageIndicator.setFillColor(ContextCompat.getColor(getContext(), R.color.tkpd_main_green));
+            pageIndicator.setPageColor(ContextCompat.getColor(getContext(), R.color.white_two));
+            pageIndicator.setViewPager(pager, 0);
+            getView().findViewById(R.id.cons_ticker_container).setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void onError(String error) {
+        mContainerMain.setDisplayedChild(CONTAINER_ERROR);
+    }
+
+    @Override
+    public void onErrorTicker(String errorMessage) {
+        if (getView() != null) {
+            getView().findViewById(R.id.cons_ticker_container).setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onErrorPromos(String error) {
+
     }
 
     @Override
@@ -397,23 +408,5 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
                 .build());
 
         mToolTip.show();
-    }
-
-    private void buildTickerView(List<CouponExtraInfoEntity> tickers) {
-        if (tickers == null || tickers.isEmpty()) {
-            return;
-        }
-
-        tickerView.setVisibility(View.VISIBLE);
-        ArrayList<String> messages = new ArrayList<>();
-        for (CouponExtraInfoEntity ticker : tickers) {
-            if (ticker == null) {
-                continue;
-            }
-            messages.add(ticker.getInfoHtml());
-        }
-
-        tickerView.setListMessage(messages);
-        tickerView.buildView();
     }
 }

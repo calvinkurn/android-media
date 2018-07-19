@@ -70,6 +70,66 @@ public class CatalogsValueEntity implements Serializable {
     @SerializedName("isDisabled")
     private boolean isDisabled;
 
+    @Expose
+    @SerializedName("isDisabledButton")
+    private boolean isDisabledButton;
+
+    @Expose
+    @SerializedName("upperTextDesc")
+    private String upperTextDesc;
+
+    @Expose
+    @SerializedName("expiredLabel")
+    private String expiredLabel;
+
+    @Expose
+    @SerializedName("disableErrorMessage")
+    private String disableErrorMessage;
+
+    @Expose
+    @SerializedName("expiredStr")
+    private String expiredStr;
+
+    public String getExpiredStr() {
+        return expiredStr;
+    }
+
+    public void setExpiredStr(String expiredStr) {
+        this.expiredStr = expiredStr;
+    }
+
+    public String getExpiredLabel() {
+        return expiredLabel;
+    }
+
+    public void setExpiredLabel(String expiredLabel) {
+        this.expiredLabel = expiredLabel;
+    }
+
+    public String getDisableErrorMessage() {
+        return disableErrorMessage;
+    }
+
+    public void setDisableErrorMessage(String disableErrorMessage) {
+        this.disableErrorMessage = disableErrorMessage;
+    }
+
+    public boolean isDisabledButton() {
+        return isDisabledButton;
+    }
+
+    public void setDisabledButton(boolean disabledButton) {
+        isDisabledButton = disabledButton;
+    }
+
+    public String getUpperTextDesc() {
+        return upperTextDesc;
+    }
+
+    public void setUpperTextDesc(String upperTextDesc) {
+        this.upperTextDesc = upperTextDesc;
+    }
+
     public boolean isDisabled() {
         return isDisabled;
     }
@@ -217,7 +277,12 @@ public class CatalogsValueEntity implements Serializable {
                 ", thumbnailUrl='" + thumbnailUrl + '\'' +
                 ", thumbnailUrlMobile='" + thumbnailUrlMobile + '\'' +
                 ", title='" + title + '\'' +
-                ", isDisabled='" + isDisabled + '\'' +
+                ", isDisabled=" + isDisabled +
+                ", isDisabledButton=" + isDisabledButton +
+                ", upperTextDesc='" + upperTextDesc + '\'' +
+                ", expiredLabel='" + expiredLabel + '\'' +
+                ", disableErrorMessage='" + disableErrorMessage + '\'' +
+                ", expiredStr='" + expiredStr + '\'' +
                 '}';
     }
 }

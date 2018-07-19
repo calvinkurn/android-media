@@ -16,6 +16,12 @@ query CatalogListQuery($category_id: Int, $points_range: Int, $page: Int, $page_
       image_url
       image_url_mobile
       is_gift
+      expiredLabel
+      expiredStr
+      isDisabled
+      disableErrorMessage
+      upperTextDesc
+      isDisabledButton
     }
     has_next
   }

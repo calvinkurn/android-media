@@ -6,6 +6,8 @@
       image_id
       image_url
       index
+      timeRemainingSeconds
+      isSelected
     }
     points_range {
       id

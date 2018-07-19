@@ -14,7 +14,7 @@ public class ImageUtil {
 
     public static void unDimImage(ImageView imageView) {
         ColorMatrix matrix = new ColorMatrix();
-        matrix.setSaturation(0);
+        matrix.setSaturation(1);
         ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
         imageView.setColorFilter(filter);
     }

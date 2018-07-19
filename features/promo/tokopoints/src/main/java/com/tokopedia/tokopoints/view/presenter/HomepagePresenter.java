@@ -107,6 +107,14 @@ public class HomepagePresenter extends BaseDaggerPresenter<HomepageContract.View
                         && tokenDetail.getTokenDetail().getResultStatus().getCode() == CommonConstant.CouponRedemptionCode.SUCCESS) {
                     getView().onSuccessTokenDetail(tokenDetail.getTokenDetail());
                 }
+
+                if (data.getTokoPoints() == null
+                        || data.getTokoPoints().getTicker() == null
+                        || data.getTokoPoints().getTicker().getTickers() == null) {
+                    getView().onErrorTicker(null);
+                } else {
+                    getView().onSuccessTicker(data.getTokoPoints().getTicker().getTickers());
+                }
             }
         });
     }

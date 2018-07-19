@@ -1,35 +1,90 @@
 package com.tokopedia.tokopoints.view.adapter;
 
+import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.view.model.CatalogCategory;
 import com.tokopedia.tokopoints.view.presenter.CatalogListingPresenter;
-import com.tokopedia.tokopoints.view.util.CommonConstant;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class CatalogChipAdapter extends RecyclerView.Adapter<CatalogChipAdapter.ViewHolder> {
     private List<CatalogCategory> mItems;
     private CatalogListingPresenter mPresenter;
 
+    /*This section is exclusively for handling flash-sale timer*/
+    private List<ViewHolder> mViewHolders;
+    private CatalogCategory mItem;
+    private Handler mHandler = new Handler();
+    private Runnable mRunnableUpdateTime = new Runnable() {
+        @Override
+        public void run() {
+            synchronized (mViewHolders) {
+                long currentTime = System.currentTimeMillis();
+                for (ViewHolder holder : mViewHolders) {
+                    holder.updateTimeRemaining(currentTime);
+                }
+            }
+        }
+    };
+
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView label;
+        public TextView label, time;
+        public LinearLayout outer;
 
         public ViewHolder(View view) {
             super(view);
             label = view.findViewById(R.id.text_label);
+            time = view.findViewById(R.id.text_time);
+            outer = view.findViewById(R.id.outer);
+        }
+
+        /*This section is exclusively for handling flash-sale timer*/
+        public void updateTimeRemaining(long currentTime) {
+            long timeDiff = mItem.getTimeRemainingSeconds() - currentTime;
+            if (timeDiff > 0) {
+                int seconds = (int) (timeDiff / 1000) % 60;
+                int minutes = (int) ((timeDiff / (1000 * 60)) % 60);
+                int hours = (int) ((timeDiff / (1000 * 60 * 60)) % 24);
+//                time.setText(hours + " : " + minutes + " : " + seconds);
+                time.setText(String.format(Locale.ENGLISH, "%02d : %02d : %02d", hours, minutes, seconds));
+            } else {
+                //refreshing the homepage for tokopoints
+                mPresenter.getHomePageData();
+                mPresenter.getPointData();
+            }
         }
     }
 
     public CatalogChipAdapter(CatalogListingPresenter presenter, List<CatalogCategory> items) {
         this.mPresenter = presenter;
         this.mItems = items;
+
+        /*This section is exclusively for handling flash-sale timer*/
+        mViewHolders = new ArrayList<>();
+        startUpdateTimer();
+    }
+
+    /*This section is exclusively for handling flash-sale timer*/
+    private void startUpdateTimer() {
+        Timer tmr = new Timer();
+        tmr.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                mHandler.post(mRunnableUpdateTime);
+            }
+        }, 1000, 1000);
     }
 
     @Override
@@ -43,19 +98,29 @@ public class CatalogChipAdapter extends RecyclerView.Adapter<CatalogChipAdapter.
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         final CatalogCategory item = mItems.get(position);
+
+        /*This section is exclusively for handling flash-sale timer*/
+        mItem = item;
+        synchronized (mViewHolders) {
+            mViewHolders.add(holder);
+        }
+
         holder.label.setText(item.getName());
 
         if (mPresenter.getSelectedCategoryId() == item.getId()) {
-            holder.label.setBackground(ContextCompat.getDrawable(holder.label.getContext(), R.drawable.bg_tp_category_bubble_selected));
+            holder.outer.setBackground(ContextCompat.getDrawable(holder.label.getContext(), R.drawable.bg_tp_category_bubble_selected));
         } else {
-            holder.label.setBackground(ContextCompat.getDrawable(holder.label.getContext(), R.drawable.bg_tp_category_bubble_default));
+            holder.outer.setBackground(ContextCompat.getDrawable(holder.label.getContext(), R.drawable.bg_tp_category_bubble_default));
         }
 
-        holder.label.setOnClickListener(v -> {
+        holder.outer.setOnClickListener(v -> {
             mPresenter.getView().updateSelectedCategoryId(item.getId());
             mPresenter.getView().refreshTab(item.getId());
             notifyDataSetChanged();
         });
+
+        /*This section is exclusively for handling flash-sale timer*/
+        holder.updateTimeRemaining(System.currentTimeMillis());
     }
 
     @Override
