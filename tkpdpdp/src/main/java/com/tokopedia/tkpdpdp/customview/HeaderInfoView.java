@@ -31,7 +31,6 @@ import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
@@ -178,7 +177,7 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
 
     public void renderProductCampaign(Campaign campaign) {
         if(campaign != null && campaign.getActive()) {
-            textTimerTitle.setText(campaign.getCampaignTypeName());
+            textTimerTitle.setText(campaign.getCampaignShortName());
             tvPriceFinal.setText(campaign.getDiscountedPriceFmt());
             textOriginalPrice.setText(campaign.getOriginalPriceFmt());
             textOriginalPrice.setPaintFlags(
