@@ -218,7 +218,6 @@ public class ShopPageHeaderViewHolder {
 
     public void renderData(ShopInfo shopInfo, boolean myShop) {
         updateShopInfo(shopInfo, myShop);
-        shopInfo.getInfo().setShopStatus(ShopStatusDef.NOT_ACTIVE);
         updateViewShopOpen(shopInfo, myShop);
     }
 
