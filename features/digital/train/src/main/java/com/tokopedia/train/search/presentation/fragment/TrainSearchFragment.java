@@ -9,7 +9,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -113,7 +112,6 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        presenter.attachView(this);
         View view = inflater.inflate(getLayoutView(), container, false);
         originCodeTv = view.findViewById(R.id.origin_code);
         originCityTv = view.findViewById(R.id.origin_city);
@@ -366,6 +364,7 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
         }
         trainSearchComponent
                 .inject(this);
+        presenter.attachView(this);
     }
 
     @Override
@@ -449,8 +448,7 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
     }
 
     private void removePaddingSortAndFilterSearch() {
-        RecyclerView recyclerView = getRecyclerView(getView());
-        recyclerView.setPadding(
+        getRecyclerView(getView()).setPadding(
                 EMPTY_MARGIN,
                 EMPTY_MARGIN,
                 EMPTY_MARGIN,
