@@ -32,6 +32,8 @@ public class FragmentReferralFriendsWelcome extends BasePresenterFragment<IRefer
     TextView btnReferralExplore;
     @BindView(R2.id.tv_referral_header)
     TextView welcomeMessageHearer;
+    @BindView(R2.id.tv_referral_subheader)
+    TextView welcomeMessageSubHearer;
     @BindView(R2.id.tv_referral_help_link)
     TextView TextViewHelpLink;
 
@@ -100,6 +102,7 @@ public class FragmentReferralFriendsWelcome extends BasePresenterFragment<IRefer
             startActivity(ManageWebViewActivity.getCallingIntent(getActivity(), TkpdUrl.REFERRAL_URL, getString(R.string.app_name)));
         });
         welcomeMessageHearer.setText(Html.fromHtml(getString(R.string.referral_welcome_header)));
+        welcomeMessageSubHearer.setText(presenter.getSubHeaderFromFirebase());
     }
 
     @Override

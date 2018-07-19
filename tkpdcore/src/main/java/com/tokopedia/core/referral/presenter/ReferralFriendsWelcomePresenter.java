@@ -28,6 +28,7 @@ public class ReferralFriendsWelcomePresenter implements IReferralFriendsWelcomeP
     private FriendsWelcomeView view;
     private final String CODE_KEY = "code";
     private SessionHandler sessionHandler;
+    private RemoteConfig remoteConfig;
 
     public ReferralFriendsWelcomePresenter(FriendsWelcomeView view) {
         this.view = view;
@@ -36,7 +37,7 @@ public class ReferralFriendsWelcomePresenter implements IReferralFriendsWelcomeP
 
     @Override
     public void initialize() {
-
+        remoteConfig = new FirebaseRemoteConfigImpl(view.getActivity());
         if (view.getActivity().getIntent() != null && view.getActivity().getIntent().getExtras() != null) {
             String code = view.getActivity().getIntent().getExtras().getString(CODE_KEY);
             LocalCacheHandler localCacheHandler = new LocalCacheHandler(view.getActivity(), TkpdCache.REFERRAL);
@@ -55,4 +56,9 @@ public class ReferralFriendsWelcomePresenter implements IReferralFriendsWelcomeP
         return view.getActivity().getString(R.string.cashback_enter_tokocash);
     }
 
+    @Override
+    public String getSubHeaderFromFirebase() {
+
+        return remoteConfig.getString(TkpdCache.RemoteConfigKey.REFERRAL_WELCOME_MESSAGE, view.getActivity().getString(R.string.referral_welcome_desc));
+    }
 }

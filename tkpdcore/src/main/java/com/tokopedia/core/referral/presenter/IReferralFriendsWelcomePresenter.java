@@ -7,4 +7,6 @@ package com.tokopedia.core.referral.presenter;
 public interface IReferralFriendsWelcomePresenter {
 
     void initialize();
+
+    String getSubHeaderFromFirebase();
 }
