@@ -32,8 +32,8 @@ import java.util.List;
 public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements OrderListDetailContract.ActionInterface {
 
     public static final String KEY_BUTTON = "button";
-    public static final String KEY_TEXT = "button";
-    public static final String KEY_REDIRECT = "button";
+    public static final String KEY_TEXT = "text";
+    public static final String KEY_REDIRECT = "redirect";
     private boolean isShortLayout;
     private List<Items> itemsList;
     private Context context;
@@ -310,7 +310,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             TextView tapActionTextView = new TextView(context);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             params.setMargins(0, (int) context.getResources().getDimension(R.dimen.dp_8), 0, 0);
-            tapActionTextView.setPadding((int) context.getResources().getDimension(R.dimen.dp_24), (int) context.getResources().getDimension(R.dimen.dp_24), (int) context.getResources().getDimension(R.dimen.dp_24), (int) context.getResources().getDimension(R.dimen.dp_24));
+            tapActionTextView.setPadding((int) context.getResources().getDimension(R.dimen.dp_16), (int) context.getResources().getDimension(R.dimen.dp_16), (int) context.getResources().getDimension(R.dimen.dp_16), (int) context.getResources().getDimension(R.dimen.dp_16));
             tapActionTextView.setLayoutParams(params);
             tapActionTextView.setTextColor(Color.WHITE);
             tapActionTextView.setGravity(Gravity.CENTER_HORIZONTAL);

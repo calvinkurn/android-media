@@ -101,6 +101,7 @@ query OMSDETAILS($orderCategoryStr: String, $upstream:String, $orderId: String, 
       weight
       control
       header
+      uri
       color {
         textColor
         border

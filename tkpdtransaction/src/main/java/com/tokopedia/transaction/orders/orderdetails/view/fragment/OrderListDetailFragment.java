@@ -12,6 +12,7 @@ import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
+import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.view.Gravity;
@@ -281,7 +282,9 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         if (!actionButton.getActionColor().getTextColor().equals("")) {
             primaryActionBtn.setTextColor(Color.parseColor(actionButton.getActionColor().getTextColor()));
         }
-        primaryActionBtn.setOnClickListener(getActionButtonClickListener(actionButton.getUri()));
+        if (!TextUtils.isEmpty(actionButton.getUri())) {
+            primaryActionBtn.setOnClickListener(getActionButtonClickListener(actionButton.getUri()));
+        }
     }
 
     @Override
@@ -300,7 +303,9 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         if (!actionButton.getActionColor().getTextColor().equals("")) {
             secondaryActionBtn.setTextColor(Color.parseColor(actionButton.getActionColor().getTextColor()));
         }
-        secondaryActionBtn.setOnClickListener(getActionButtonClickListener(actionButton.getUri()));
+        if (!TextUtils.isEmpty(actionButton.getUri())) {
+            secondaryActionBtn.setOnClickListener(getActionButtonClickListener(actionButton.getUri()));
+        }
     }
 
     private View.OnClickListener getActionButtonClickListener(final String uri) {
