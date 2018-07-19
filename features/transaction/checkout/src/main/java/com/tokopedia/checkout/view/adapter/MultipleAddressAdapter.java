@@ -141,11 +141,7 @@ public class MultipleAddressAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                            MultipleAddressAdapterData productData,
                            MultipleAddressItemData addressData);
 
-        void onAddNewShipmentAddress(int itemPosition,
-                                     int addressPositionToAdd,
-                                     ArrayList<MultipleAddressAdapterData> dataList,
-                                     MultipleAddressAdapterData data,
-                                     MultipleAddressItemData addressData);
+        void onAddNewShipmentAddress(ArrayList<MultipleAddressAdapterData> dataList, int parentPosition);
 
         void onDeleteItem(int position, List<MultipleAddressItemData> multipleAddressItemDataList);
 

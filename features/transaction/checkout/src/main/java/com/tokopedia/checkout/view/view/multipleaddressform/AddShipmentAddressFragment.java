@@ -273,10 +273,9 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
     }
 
     private void openAddressSelectionPage() {
-        Intent intent = CartAddressChoiceActivity.createInstance(getActivity(), null,
+        Intent intent = CartAddressChoiceActivity.createInstance(getActivity(),
                 CartAddressChoiceActivity.TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST);
-        startActivityForResult(
-                intent, CartAddressChoiceActivity.REQUEST_CODE);
+        startActivityForResult(intent, CartAddressChoiceActivity.REQUEST_CODE);
     }
 
     private void setProductView(View view, MultipleAddressAdapterData productData, TextView senderName) {

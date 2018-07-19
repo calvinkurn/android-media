@@ -174,10 +174,10 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
 
     private void itemNoteTextWatcherAction(Editable editable, MultipleAddressItemData data) {
         data.setProductNotes(editable.toString());
-        renderErrorFormItemValidation(data);
+        validateNote(data);
     }
 
-    private void renderErrorFormItemValidation(MultipleAddressItemData data) {
+    private void validateNote(MultipleAddressItemData data) {
         if (data.getProductNotes().length() > data.getMaxRemark()) {
             tvErrorNoteValidation.setText(data.getErrorFieldMaxChar()
                     .replace("{{value}}", String.valueOf(data.getMaxRemark())));
@@ -218,13 +218,13 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
         }
         checkQtyMustDisabled(data, qty);
         data.setProductQty(String.valueOf(qty));
-        validateWithAvailableQuantity(data, qty);
+        validateQuantity(data, qty);
         if (needToUpdateView) {
             multipleAddressItemAdapter.notifyItemChanged(getAdapterPosition());
         }
     }
 
-    private void validateWithAvailableQuantity(MultipleAddressItemData data, int qty) {
+    private void validateQuantity(MultipleAddressItemData data, int qty) {
         if (data.getMaxQuantity() != 0 && qty > data.getMaxQuantity()) {
             String errorMessage = data.getErrorProductMaxQuantity();
             NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.US);
@@ -348,7 +348,7 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
         }
 
         etNotesForSeller.addTextChangedListener(new NoteTextWatcher(noteTextwatcherListener));
-
+        validateNote(itemData);
     }
 
     private void renderQuantity(MultipleAddressItemData itemData, int position) {
@@ -358,8 +358,10 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
                 try {
                     int qty = Integer.parseInt(multipleAddressItemData.getProductQty());
                     qty = qty + 1;
-                    multipleAddressItemData.setProductQty(String.valueOf(qty));
-                    multipleAddressItemAdapter.notifyItemChanged(position);
+                    if (qty <= itemData.getMaxQuantity()) {
+                        multipleAddressItemData.setProductQty(String.valueOf(qty));
+                        multipleAddressItemAdapter.notifyItemChanged(position);
+                    }
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
                 }
@@ -372,21 +374,28 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
                 try {
                     int qty = Integer.parseInt(multipleAddressItemData.getProductQty());
                     qty = qty - 1;
-                    multipleAddressItemData.setProductQty(String.valueOf(qty));
-                    multipleAddressItemAdapter.notifyItemChanged(position);
+                    if (qty >= itemData.getMinQuantity()) {
+                        multipleAddressItemData.setProductQty(String.valueOf(qty));
+                        multipleAddressItemAdapter.notifyItemChanged(position);
+                    }
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
                 }
             }
         });
 
-        String quantity = String.valueOf(itemData.getProductQty());
-        etQty.setText(quantity);
-        if (quantity.length() > 0) {
-            this.etQty.setSelection(quantity.length());
+        etQty.setText(itemData.getProductQty());
+        if (itemData.getProductQty().length() > 0) {
+            this.etQty.setSelection(itemData.getProductQty().length());
         }
 
         etQty.addTextChangedListener(new QuantityTextWatcher(quantityTextwatcherListener));
+        try {
+            int qty = Integer.parseInt(itemData.getProductQty());
+            validateQuantity(itemData, qty);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
     }
 
 }

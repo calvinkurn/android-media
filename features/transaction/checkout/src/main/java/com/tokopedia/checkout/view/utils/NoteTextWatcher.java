@@ -29,7 +29,9 @@ public class NoteTextWatcher implements TextWatcher {
 
     @Override
     public void afterTextChanged(Editable editable) {
-        noteTextwatcherListener.onNoteChanged(editable);
+        if (noteTextwatcherListener != null) {
+            noteTextwatcherListener.onNoteChanged(editable);
+        }
     }
 
     public interface NoteTextwatcherListener {

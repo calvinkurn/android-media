@@ -38,7 +38,9 @@ public class QuantityTextWatcher implements TextWatcher {
     public void afterTextChanged(Editable editable) {
         quantityWrapper.setEditable(editable);
         quantityWrapper.setQtyBefore(qtyBefore);
-        quantityTextwatcherListener.onQuantityChanged(quantityWrapper);
+        if (quantityTextwatcherListener != null) {
+            quantityTextwatcherListener.onQuantityChanged(quantityWrapper);
+        }
     }
 
     public interface QuantityTextwatcherListener {

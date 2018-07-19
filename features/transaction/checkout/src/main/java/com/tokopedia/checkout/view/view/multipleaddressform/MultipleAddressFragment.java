@@ -33,10 +33,13 @@ import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsMultipleAddress;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceActivity.TYPE_REQUEST_MULTIPLE_ADDRESS_ADD_SHIPMENT;
 import static com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceActivity.TYPE_REQUEST_MULTIPLE_ADDRESS_CHANGE_ADDRESS;
 import static com.tokopedia.checkout.view.view.multipleaddressform.AddShipmentAddressActivity.EDIT_MODE;
 import static com.tokopedia.checkout.view.view.multipleaddressform.MultipleAddressFormActivity.RESULT_CODE_SUCCESS_SET_SHIPPING;
@@ -124,14 +127,10 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
     }
 
     @Override
-    public void onAddNewShipmentAddress(int itemPosition,
-                                        int addressPositionToAdd,
-                                        ArrayList<MultipleAddressAdapterData> dataList,
-                                        MultipleAddressAdapterData data,
-                                        MultipleAddressItemData addressData) {
+    public void onAddNewShipmentAddress(ArrayList<MultipleAddressAdapterData> dataList, int parentPosition) {
         checkoutAnalyticsMultipleAddress.eventClickMultipleAddressClickTambahPengirimanBaruFromKirimKeBeberapaAlamat();
-        Intent intent = CartAddressChoiceActivity.createInstance(getActivity());
-        startActivityForResult(intent, CartAddressChoiceActivity.REQUEST_CODE);
+        Intent intent = CartAddressChoiceActivity.createInstance(getActivity(), dataList, parentPosition);
+        startActivityForResult(intent, TYPE_REQUEST_MULTIPLE_ADDRESS_ADD_SHIPMENT);
     }
 
     @Override
@@ -177,34 +176,73 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
-            switch (requestCode) {
-                case TYPE_REQUEST_MULTIPLE_ADDRESS_CHANGE_ADDRESS:
-                    ArrayList<MultipleAddressAdapterData> dataList = data.getParcelableArrayListExtra(CartAddressChoiceActivity.EXTRA_MULTIPLE_ADDRESS_DATA_LIST);
-                    RecipientAddressModel newAddress = data.getParcelableExtra(CartAddressChoiceActivity.EXTRA_SELECTED_ADDRESS_DATA);
-                    int childPosition = data.getIntExtra(CartAddressChoiceActivity.EXTRA_MULTIPLE_ADDRESS_CHILD_INDEX, -1);
-                    int parentPosition = data.getIntExtra(CartAddressChoiceActivity.EXTRA_MULTIPLE_ADDRESS_PARENT_INDEX, -1);
-                    if (newAddress != null && dataList != null && childPosition != -1 && parentPosition != -1) {
-                        if (dataList.size() > 0) {
-                            for (int i = 0; i < dataList.size(); i++) {
-                                if (i == parentPosition && dataList.get(i).getItemListData().size() > 0) {
-                                    boolean findItem = false;
-                                    for (int j = 0; j < dataList.get(i).getItemListData().size(); j++) {
-                                        if (j == childPosition) {
-                                            dataList.get(i).getItemListData().get(j).setRecipientAddressModel(newAddress);
-                                            findItem = true;
-                                            break;
-                                        }
-                                    }
-                                    if (findItem) {
+            if (requestCode == TYPE_REQUEST_MULTIPLE_ADDRESS_CHANGE_ADDRESS) {
+                ArrayList<MultipleAddressAdapterData> dataList = data.getParcelableArrayListExtra(CartAddressChoiceActivity.EXTRA_MULTIPLE_ADDRESS_DATA_LIST);
+                RecipientAddressModel newAddress = data.getParcelableExtra(CartAddressChoiceActivity.EXTRA_SELECTED_ADDRESS_DATA);
+                int childPosition = data.getIntExtra(CartAddressChoiceActivity.EXTRA_MULTIPLE_ADDRESS_CHILD_INDEX, -1);
+                int parentPosition = data.getIntExtra(CartAddressChoiceActivity.EXTRA_MULTIPLE_ADDRESS_PARENT_INDEX, -1);
+                if (newAddress != null && dataList != null && childPosition != -1 && parentPosition != -1) {
+                    if (dataList.size() > 0) {
+                        for (int i = 0; i < dataList.size(); i++) {
+                            if (i == parentPosition && dataList.get(i).getItemListData().size() > 0) {
+                                boolean findItem = false;
+                                for (int j = 0; j < dataList.get(i).getItemListData().size(); j++) {
+                                    if (j == childPosition) {
+                                        dataList.get(i).getItemListData().get(j).setRecipientAddressModel(newAddress);
+                                        findItem = true;
                                         break;
                                     }
+                                }
+                                if (findItem) {
+                                    break;
                                 }
                             }
                         }
                     }
-                    // Re-setup recycler view adapter to prevent crash if don't keep activities is on
-                    setRecyclerViewAdapter(dataList, parentPosition);
-                    break;
+                }
+
+                // Re-setup recycler view adapter to prevent crash if don't keep activities is on
+                setRecyclerViewAdapter(dataList, parentPosition);
+            } else if (requestCode == TYPE_REQUEST_MULTIPLE_ADDRESS_ADD_SHIPMENT) {
+                ArrayList<MultipleAddressAdapterData> dataList = data.getParcelableArrayListExtra(CartAddressChoiceActivity.EXTRA_MULTIPLE_ADDRESS_DATA_LIST);
+                RecipientAddressModel newAddress = data.getParcelableExtra(CartAddressChoiceActivity.EXTRA_SELECTED_ADDRESS_DATA);
+                int parentPosition = data.getIntExtra(CartAddressChoiceActivity.EXTRA_MULTIPLE_ADDRESS_PARENT_INDEX, -1);
+                if (newAddress != null && dataList != null && parentPosition != -1) {
+                    MultipleAddressItemData newShipmentData = null;
+                    for (int i = 0; i < dataList.size(); i++) {
+                        if (i == parentPosition && dataList.get(i).getItemListData().size() > 0) {
+                            MultipleAddressItemData previousShipment = dataList.get(i).getItemListData().get(0);
+                            newShipmentData = new MultipleAddressItemData();
+                            newShipmentData.setRecipientAddressModel(newAddress);
+                            newShipmentData.setCartId("0");
+                            newShipmentData.setProductQty(String.valueOf(previousShipment.getMinQuantity()));
+                            newShipmentData.setProductWeightFmt(previousShipment.getProductWeightFmt());
+                            newShipmentData.setCartPosition(previousShipment.getCartPosition());
+                            newShipmentData.setAddressPosition(previousShipment.getAddressPosition() + 1);
+                            newShipmentData.setParentId(previousShipment.getParentId());
+                            newShipmentData.setProductId(previousShipment.getProductId());
+                            newShipmentData.setProductNotes("");
+                            newShipmentData.setErrorCheckoutPriceLimit(previousShipment.getErrorCheckoutPriceLimit());
+                            newShipmentData.setErrorFieldBetween(previousShipment.getErrorFieldBetween());
+                            newShipmentData.setErrorFieldMaxChar(previousShipment.getErrorFieldMaxChar());
+                            newShipmentData.setErrorFieldRequired(previousShipment.getErrorFieldRequired());
+                            newShipmentData.setErrorProductAvailableStock(previousShipment.getErrorProductAvailableStock());
+                            newShipmentData.setErrorProductAvailableStockDetail(previousShipment.getErrorProductAvailableStockDetail());
+                            newShipmentData.setErrorProductMaxQuantity(previousShipment.getErrorProductMaxQuantity());
+                            newShipmentData.setErrorProductMinQuantity(previousShipment.getErrorProductMinQuantity());
+                            newShipmentData.setMaxQuantity(previousShipment.getMaxQuantity());
+                            newShipmentData.setMinQuantity(previousShipment.getMinQuantity());
+                            newShipmentData.setMaxRemark(previousShipment.getMaxRemark());
+                            break;
+                        }
+                    }
+                    if (newShipmentData != null) {
+                        dataList.get(parentPosition).getItemListData().add(newShipmentData);
+                    }
+                }
+
+                // Re-setup recycler view adapter to prevent crash if don't keep activities is on
+                setRecyclerViewAdapter(dataList, parentPosition);
             }
         }
 
@@ -258,8 +296,10 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
 
     @Override
     public void successMakeShipmentData() {
-        getActivity().setResult(RESULT_CODE_SUCCESS_SET_SHIPPING);
-        getActivity().finish();
+        if (getActivity() != null) {
+            getActivity().setResult(RESULT_CODE_SUCCESS_SET_SHIPPING);
+            getActivity().finish();
+        }
     }
 
     @Override

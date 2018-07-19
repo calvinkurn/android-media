@@ -699,10 +699,10 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
             token.setUt(shipmentAddressFormData.getKeroUnixTime());
             token.setDistrictRecommendation(shipmentAddressFormData.getKeroDiscomToken());
 
-            intent = CartAddressChoiceActivity.createInstance(getActivity(), null,
+            intent = CartAddressChoiceActivity.createInstance(getActivity(),
                     CartAddressChoiceActivity.TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS, token);
         } else {
-            intent = CartAddressChoiceActivity.createInstance(getActivity(), null,
+            intent = CartAddressChoiceActivity.createInstance(getActivity(),
                     CartAddressChoiceActivity.TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS);
         }
 

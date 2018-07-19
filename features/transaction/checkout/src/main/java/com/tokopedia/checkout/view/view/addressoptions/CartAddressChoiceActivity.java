@@ -51,27 +51,33 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
 
     private ShipmentAddressListFragment defaultFragment;
 
-    public static Intent createInstance(Activity activity) {
+    public static Intent createInstance(Activity activity,
+                                        ArrayList<MultipleAddressAdapterData> dataList,
+                                        int parentPosition) {
         Intent intent = new Intent(activity, CartAddressChoiceActivity.class);
-        intent.putExtra(EXTRA_TYPE_REQUEST, TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST);
+        intent.putExtra(EXTRA_TYPE_REQUEST, TYPE_REQUEST_MULTIPLE_ADDRESS_ADD_SHIPMENT);
+        intent.putExtra(EXTRA_MULTIPLE_ADDRESS_DATA_LIST, dataList);
+        intent.putExtra(EXTRA_MULTIPLE_ADDRESS_PARENT_INDEX, parentPosition);
         return intent;
     }
 
-    public static Intent createInstance(Activity activity, RecipientAddressModel currentAddress,
+    public static Intent createInstance(Activity activity,
+                                        RecipientAddressModel currentAddress,
                                         ArrayList<MultipleAddressAdapterData> dataList,
-                                        int childPosition, int parentPosition) {
+                                        int childPosition,
+                                        int parentPosition) {
         Intent intent = new Intent(activity, CartAddressChoiceActivity.class);
         intent.putExtra(EXTRA_TYPE_REQUEST, TYPE_REQUEST_MULTIPLE_ADDRESS_CHANGE_ADDRESS);
         intent.putExtra(EXTRA_MULTIPLE_ADDRESS_DATA_LIST, dataList);
         intent.putExtra(EXTRA_MULTIPLE_ADDRESS_CHILD_INDEX, childPosition);
         intent.putExtra(EXTRA_MULTIPLE_ADDRESS_PARENT_INDEX, parentPosition);
-        if (currentAddress != null) {
-            intent.putExtra(EXTRA_CURRENT_ADDRESS, currentAddress);
-        }
+        intent.putExtra(EXTRA_CURRENT_ADDRESS, currentAddress);
         return intent;
     }
 
-    public static Intent createInstance(Activity activity, RecipientAddressModel currentAddress, int typeRequest) {
+    public static Intent createInstance(Activity activity,
+                                        RecipientAddressModel currentAddress,
+                                        int typeRequest) {
         Intent intent = new Intent(activity, CartAddressChoiceActivity.class);
         intent.putExtra(EXTRA_TYPE_REQUEST, typeRequest);
         if (currentAddress != null) {
@@ -80,13 +86,19 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
         return intent;
     }
 
-    public static Intent createInstance(Activity activity, RecipientAddressModel currentAddress, int typeRequest, Token token) {
+    public static Intent createInstance(Activity activity,
+                                        int typeRequest) {
+        Intent intent = new Intent(activity, CartAddressChoiceActivity.class);
+        intent.putExtra(EXTRA_TYPE_REQUEST, typeRequest);
+        return intent;
+    }
+
+    public static Intent createInstance(Activity activity,
+                                        int typeRequest,
+                                        Token token) {
         Intent intent = new Intent(activity, CartAddressChoiceActivity.class);
         intent.putExtra(EXTRA_TYPE_REQUEST, typeRequest);
         intent.putExtra(EXTRA_DISTRICT_RECOMMENDATION_TOKEN, token);
-        if (currentAddress != null) {
-            intent.putExtra(EXTRA_CURRENT_ADDRESS, currentAddress);
-        }
         return intent;
     }
 
@@ -184,6 +196,18 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
                 finish();
                 break;
             case TYPE_REQUEST_MULTIPLE_ADDRESS_ADD_SHIPMENT:
+                resultIntent = new Intent();
+                resultIntent.putExtra(EXTRA_SELECTED_ADDRESS_DATA, selectedAddressResult);
+                if (getIntent().hasExtra(EXTRA_MULTIPLE_ADDRESS_DATA_LIST)) {
+                    resultIntent.putExtra(EXTRA_MULTIPLE_ADDRESS_DATA_LIST,
+                            getIntent().getParcelableArrayListExtra(EXTRA_MULTIPLE_ADDRESS_DATA_LIST));
+                }
+                if (getIntent().hasExtra(EXTRA_MULTIPLE_ADDRESS_PARENT_INDEX)) {
+                    resultIntent.putExtra(EXTRA_MULTIPLE_ADDRESS_PARENT_INDEX,
+                            getIntent().getIntExtra(EXTRA_MULTIPLE_ADDRESS_PARENT_INDEX, -1));
+                }
+                setResult(Activity.RESULT_OK, resultIntent);
+                finish();
                 break;
             default:
         }
