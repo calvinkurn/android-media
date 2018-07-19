@@ -273,7 +273,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         if (isSingleButton) {
             primaryActionBtn.setLayoutParams(params);
         }
-        primaryActionBtn.setOnClickListener(getActionButtonClickListener(actionButton.getLabel()));
+        primaryActionBtn.setOnClickListener(getActionButtonClickListener(actionButton.getBody().getAppURL()));
     }
 
     @Override
@@ -285,7 +285,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         shape.setColor(getResources().getColor(R.color.deep_orange_500));
         secondaryActionBtn.setBackground(shape);
         secondaryActionBtn.setTextColor(getResources().getColor(R.color.white));
-        secondaryActionBtn.setOnClickListener(getActionButtonClickListener(actionButton.getUri()));
+        secondaryActionBtn.setOnClickListener(getActionButtonClickListener(actionButton.getBody().getAppURL()));
     }
 
     private View.OnClickListener getActionButtonClickListener(final String uri) {
