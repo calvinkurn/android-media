@@ -27,9 +27,9 @@ class LabelSwitch : BaseCustomView {
     private var switchEnable: Boolean = false
     private var titleTextSize: Float = 0.toFloat()
     private var titleTextColor: Int = 0
-    private var contentTextSize: Float = 0.toFloat()
-    private var contentTextColor: Int = 0
-    private var contentText: String? = null
+    private var subTitleTextSize: Float = 0.toFloat()
+    private var subTitleTextColor: Int = 0
+    private var subTitleText: String? = null
 
     var title: String
         get() = titleTextView.text.toString()
@@ -67,9 +67,9 @@ class LabelSwitch : BaseCustomView {
             switchEnable = styledAttributes.getBoolean(R.styleable.LabelSwitch_ls_switch_enable, true)
             titleTextSize = styledAttributes.getDimension(R.styleable.LabelSwitch_ls_title_text_size, 0f)
             titleTextColor = styledAttributes.getColor(R.styleable.LabelSwitch_ls_title_color, 0)
-            contentText = styledAttributes.getString(R.styleable.LabelSwitch_ls_content)
-            contentTextSize = styledAttributes.getDimension(R.styleable.LabelSwitch_ls_content_text_size, 0f)
-            contentTextColor = styledAttributes.getColor(R.styleable.LabelSwitch_ls_content_color, 0)
+            subTitleText = styledAttributes.getString(R.styleable.LabelSwitch_ls_subtitle)
+            subTitleTextSize = styledAttributes.getDimension(R.styleable.LabelSwitch_ls_content_text_size, 0f)
+            subTitleTextColor = styledAttributes.getColor(R.styleable.LabelSwitch_ls_content_color, 0)
         } finally {
             styledAttributes.recycle()
         }
@@ -80,11 +80,11 @@ class LabelSwitch : BaseCustomView {
             titleTextView.setTextColor(titleTextColor)
         }
 
-        if (contentTextSize != 0f) {
-            summaryTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, contentTextSize)
+        if (subTitleTextSize != 0f) {
+            summaryTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, subTitleTextSize)
         }
-        if (contentTextColor != 0) {
-            summaryTextView.setTextColor(contentTextColor)
+        if (subTitleTextColor != 0) {
+            summaryTextView.setTextColor(subTitleTextColor)
         }
 
     }
@@ -92,7 +92,8 @@ class LabelSwitch : BaseCustomView {
     override fun onFinishInflate() {
         super.onFinishInflate()
         titleTextView.text = titleText
-        setContent(contentText!!)
+        if(subTitleText!=null)
+            subTitleText(subTitleText!!)
         switchStatus.isEnabled = switchEnable
         switchStatus.setOnCheckedChangeListener { buttonView, isChecked ->
             if (listener != null) {
@@ -113,7 +114,7 @@ class LabelSwitch : BaseCustomView {
         switchStatus = view.findViewById(R.id.switch_status)
     }
 
-    fun setContent(summaryText: String) {
+    fun subTitleText(summaryText: String) {
         if (TextUtils.isEmpty(summaryText)) {
             summaryTextView.visibility = View.GONE
         } else {

@@ -8,6 +8,7 @@
     <string name="label_add">Tambah</string>
     <string name="label_delete">Delete</string>
     <string name="label_cancel">Batal</string>
+    <string name="label_choose">Pilih</string>
     <string name="label_always_available">Selalu Tersedia</string>
 
     <string name="product_add_tag_video_recommendation">rekomendasi</string>
@@ -47,11 +48,12 @@
 
     <string name="product_grosir_not_available_if_has_variant">Harga grosir tidak berlaku jika memiliki varian produk.</string>
 
-    <string name="product_label_product_name">Nama Produk</string>
-    <string name="product_hint_product_name">Tulis Nama Produk</string>
-
-    <string name="product_label_product_brand">Merek</string>
-
+    <string name="product_label_what_do_you_sell">Apa yang Anda jual?</string>
+    <string name="product_label_choose_product_category">Pilih Kategori Produk</string>
+    <string name="product_label_category_recommendation">Rekomendasi Kategori</string>
+    <string name="product_label_not_find_category">Tidak sesuai kategori diatas?</string>
+    <string name="product_label_choose_another_category">Pilih Kategori Lain</string>
+    <string name="product_label_choose_product_catalog">Pilih Katalog Produk</string>
     <string name="product_label_recommendation_price">Rekomendasi Harga Pasar Rp 1.150.000. Gunakan</string>
     <string name="product_label_product_price">Harga Produk</string>
     <string name="product_label_wholesale_price">Harga Grosir</string>
@@ -67,8 +69,10 @@
     <string name="product_label_free_return">Free Returns</string>
     <string name="product_label_pre_order">Pre order</string>
     <string name="product_label_process_time">Waktu Proses</string>
-
-
+    <string name="product_label_catalog">Katalog</string>
+    <string name="product_label_product_name">Nama Produk</string>
+    <string name="product_label_product_brand">Merek</string>
+    <string name="product_label_product_catalog">Katalog Produk</string>
     <string name="product_label_description_product">Deskripsi Produk</string>
     <string name="product_label_information_product">Keterangan Produk</string>
     <string name="product_label_feature_product">Fitur Produk</string>
@@ -81,6 +85,7 @@
     <string name="product_label_product_etalase">Etalase</string>
     <string name="product_label_product_variant">Varian</string>
 
+    <string name="product_hint_product_name">Tulis Nama Produk</string>
     <string name="product_hint_product_sku">Tulis SKU Produk</string>
     <string name="product_hint_product_brand">Tulis Merek Produk</string>
     <string name="product_hint_feature_product">Contoh: Tahan air, berbahan alami</string>

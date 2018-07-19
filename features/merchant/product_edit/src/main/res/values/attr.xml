@@ -5,7 +5,7 @@
         <attr name="ls_title" format="string" />
         <attr name="ls_title_text_size" format="dimension" />
         <attr name="ls_title_color" format="color" />
-        <attr name="ls_content" format="string" />
+        <attr name="ls_subtitle" format="string" />
         <attr name="ls_content_color" format="color" />
         <attr name="ls_content_text_size" format="dimension"/>
     </declare-styleable>
@@ -15,7 +15,7 @@
         <attr name="lc_title" format="string" />
         <attr name="lc_title_text_size" format="dimension" />
         <attr name="lc_title_color" format="color" />
-        <attr name="lc_content" format="string" />
+        <attr name="lc_subtitle" format="string" />
         <attr name="lc_content_color" format="color" />
         <attr name="lc_content_text_size" format="dimension"/>
     </declare-styleable>
@@ -25,7 +25,7 @@
         <attr name="lr_title" format="string" />
         <attr name="lr_title_text_size" format="dimension" />
         <attr name="lr_title_color" format="color" />
-        <attr name="lr_content" format="string" />
+        <attr name="lr_subtitle" format="string" />
         <attr name="lr_content_color" format="color" />
         <attr name="lr_content_text_size" format="dimension"/>
     </declare-styleable>
