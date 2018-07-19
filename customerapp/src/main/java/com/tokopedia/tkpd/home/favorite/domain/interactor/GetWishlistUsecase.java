@@ -30,7 +30,7 @@ public class GetWishlistUsecase {
         this.favoriteRepository = favoriteRepository;
     }
 
-    public Observable<DomainWishlist> createObservable(RequestParams requestParams) {
+    public Observable<DomainWishlist> getWishListData(RequestParams requestParams) {
         boolean isForceRefresh = requestParams.getBoolean(KEY_IS_FORCE_REFRESH, false);
         requestParams.clearValue(KEY_IS_FORCE_REFRESH);
         TKPDMapParam<String, Object> parameters = requestParams.getParameters();

@@ -99,7 +99,7 @@ public class GetAllDataFavoriteUseCase extends UseCase<DataFavorite> {
     private Observable<DomainWishlist> getWishlist() {
         RequestParams defaultParams = GetWishlistUsecase.getDefaultParams();
         defaultParams.putBoolean(GetWishlistUsecase.KEY_IS_FORCE_REFRESH, true);
-        return getWishlistUsecase.createObservable(defaultParams);
+        return getWishlistUsecase.getWishListData(defaultParams);
     }
 
     private Observable<FavoriteShop> getFavoriteShopList(){

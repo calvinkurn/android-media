@@ -94,7 +94,7 @@ public class GetInitialDataPageUsecase extends UseCase<DataFavorite> {
     public Observable<DomainWishlist> getWishlist() {
         RequestParams params = GetWishlistUsecase.getDefaultParams();
         params.putBoolean(GetWishlistUsecase.KEY_IS_FORCE_REFRESH, false);
-        return getWishlistUsecase.createObservable(params);
+        return getWishlistUsecase.getWishListData(params);
     }
 
     public Observable<TopAdsShop> getTopAdsShop() {
