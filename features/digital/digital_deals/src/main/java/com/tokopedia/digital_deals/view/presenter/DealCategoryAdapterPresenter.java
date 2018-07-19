@@ -1,9 +1,7 @@
 package com.tokopedia.digital_deals.view.presenter;
 
-import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.digital_deals.domain.postusecase.PostUpdateDealLikesUseCase;
@@ -12,7 +10,6 @@ import com.tokopedia.digital_deals.view.model.ProductItem;
 import com.tokopedia.digital_deals.view.model.Rating;
 import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse;
 import com.tokopedia.digital_deals.view.model.response.LikeUpdateModel;
-import com.tokopedia.digital_deals.view.model.response.LikeUpdateResult;
 
 import java.lang.reflect.Type;
 import java.util.Map;

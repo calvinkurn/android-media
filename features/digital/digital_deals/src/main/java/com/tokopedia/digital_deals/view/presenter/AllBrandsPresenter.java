@@ -4,11 +4,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
 
 import com.google.gson.reflect.TypeToken;
-import com.tokopedia.abstraction.common.utils.view.CommonUtils;;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
-import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;
+import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.domain.getusecase.GetAllBrandsUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetNextBrandPageUseCase;
@@ -27,6 +27,8 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import rx.Subscriber;
+
+;
 
 public class AllBrandsPresenter extends BaseDaggerPresenter<AllBrandsContract.View>
         implements AllBrandsContract.Presenter {

@@ -23,6 +23,7 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.constant.TkpdCache;
 import com.tokopedia.digital_deals.DealsModuleRouter;
 import com.tokopedia.digital_deals.R;
+import com.tokopedia.digital_deals.data.source.DealsUrl;
 import com.tokopedia.digital_deals.view.model.CategoryItem;
 import com.tokopedia.digital_deals.view.model.FilterItem;
 import com.tokopedia.digital_deals.view.model.Location;
@@ -40,8 +41,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
-
-import static com.tokopedia.digital_deals.view.utils.Utils.Constants.DIGITAL_DEALS;
 
 
 public class Utils {
@@ -254,17 +253,13 @@ public class Utils {
     }
 
     public void shareDeal(String deeplinkSlug, Context context, String name, String imageUrl) {
-        String uri=DIGITAL_DEALS + "/" + deeplinkSlug;
+        String uri= DealsUrl.AppLink.DIGITAL_DEALS + "/" + deeplinkSlug;
         ((DealsModuleRouter)((Activity) context).getApplication()).shareDeal(context, uri, name, imageUrl);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public Bitmap setBlur(Bitmap smallBitmap, float radius, Context context) {
         if (radius > MIN_RADIUS && radius <= MAX_RADIUS) {
-
-//            int width = Math.round(smallBitmap.getWidth() * defaultBitmapScale);
-//            int height = Math.round(smallBitmap.getHeight() * defaultBitmapScale);
-
             Bitmap inputBitmap = Bitmap.createScaledBitmap(smallBitmap, smallBitmap.getWidth(), smallBitmap.getHeight(), false);
             Bitmap outputBitmap = Bitmap.createBitmap(inputBitmap);
 
@@ -281,14 +276,6 @@ public class Utils {
         }else{
             return smallBitmap;
         }
-    }
-
-
-    public static class Constants {
-
-        public final static String DEALS = "deals";
-        public static final String DIGITAL_DEALS = "tokopedia://deals";
-        public static final String DIGITAL_DEALS_DETAILS = "tokopedia://deals/{slug}";
     }
 
     public static String fetchOrderId(String url) {

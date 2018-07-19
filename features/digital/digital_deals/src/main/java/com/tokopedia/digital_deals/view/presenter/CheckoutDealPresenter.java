@@ -11,14 +11,15 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.digital_deals.DealsModuleRouter;
 import com.tokopedia.digital_deals.R;
+import com.tokopedia.digital_deals.data.source.DealsUrl;
 import com.tokopedia.digital_deals.view.contractor.CheckoutDealContractor;
 import com.tokopedia.digital_deals.view.model.Outlet;
 import com.tokopedia.digital_deals.view.model.PackageViewModel;
-import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse;
 import com.tokopedia.digital_deals.view.model.cart.CartItem;
 import com.tokopedia.digital_deals.view.model.cart.CartItems;
 import com.tokopedia.digital_deals.view.model.cart.Configuration;
 import com.tokopedia.digital_deals.view.model.cart.MetaData;
+import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse;
 import com.tokopedia.oms.domain.postusecase.PostPaymentUseCase;
 import com.tokopedia.oms.scrooge.ScroogePGUtil;
 import com.tokopedia.oms.view.utils.Utils;
@@ -106,8 +107,8 @@ public class CheckoutDealPresenter
         JsonObject requestBody = convertPackageToCartItem(packageViewModel);
         Intent loyaltyIntent = ((DealsModuleRouter) getView().getActivity().getApplication()).
                 tkpdCartCheckoutGetLoyaltyOldCheckoutCouponActiveIntent(getView().getActivity(),
-                        com.tokopedia.digital_deals.view.utils.Utils.Constants.DEALS,
-                        com.tokopedia.digital_deals.view.utils.Utils.Constants.DEALS,
+                        DealsUrl.AppLink.DEALS,
+                        DealsUrl.AppLink.DEALS,
                         "");
         loyaltyIntent.putExtra(com.tokopedia.oms.view.utils.Utils.Constants.CHECKOUTDATA, requestBody.toString());
         loyaltyIntent.putExtra(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PRODUCTID, packageViewModel.getDigitalProductID());

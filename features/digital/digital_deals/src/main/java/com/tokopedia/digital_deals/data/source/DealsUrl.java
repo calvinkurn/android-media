@@ -12,4 +12,17 @@ public class DealsUrl {
         String DEALS_LIKES = "v1/api/deal/rating";
         String DEALS_LIKES_PRODUCT = "v1/api/deal/rating/product";
     }
+
+    public interface WebUrl{
+        String PROMOURL = "https://www.tokopedia.com/promo/produk-digital/entertainment";
+        String FAQURL = "https://www.tokopedia.com/contact-us#step2";
+        String TRANSATIONSURL = "https://pulsa.tokopedia.com/order-list/";
+        String REDEEM_URL = "https://www.tokopedia.com/bantuan/produk-digital/tokopedia_e_voucher/seputar-tokopedia-e-voucher/#cara-menggunakan-e-voucher";
+    }
+
+    public interface AppLink{
+        String DEALS = "deals";
+        String DIGITAL_DEALS = "tokopedia://deals";
+        String DIGITAL_DEALS_DETAILS = "tokopedia://deals/{slug}";
+    }
 }

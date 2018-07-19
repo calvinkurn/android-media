@@ -43,6 +43,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.design.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.digital_deals.DealsModuleRouter;
 import com.tokopedia.digital_deals.R;
+import com.tokopedia.digital_deals.data.source.DealsUrl;
 import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.digital_deals.view.activity.BrandDetailsActivity;
 import com.tokopedia.digital_deals.view.activity.DealDetailsActivity;
@@ -120,8 +121,6 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     private final int LIKE_REQUEST_CODE = 1099;
     private ConstraintLayout clRedeemInstuctns;
     private TextView tvDealDetails;
-    private final String REDEEM_URL = "https://www.tokopedia.com/bantuan/produk-digital/tokopedia_e_voucher/seputar-tokopedia-e-voucher/#cara-menggunakan-e-voucher";
-
 
     public static Fragment createInstance(Bundle bundle) {
         Fragment fragment = new DealDetailsFragment();
@@ -556,7 +555,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
                 }
             }
         } else if (v.getId() == R.id.cl_redeem_instructions) {
-            startGeneralWebView(REDEEM_URL);
+            startGeneralWebView(DealsUrl.WebUrl.REDEEM_URL);
 
         }
     }

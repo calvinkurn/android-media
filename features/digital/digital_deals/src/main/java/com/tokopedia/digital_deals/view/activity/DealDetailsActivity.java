@@ -12,6 +12,7 @@ import android.view.View;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.digital_deals.DealsModuleRouter;
 import com.tokopedia.digital_deals.R;
+import com.tokopedia.digital_deals.data.source.DealsUrl;
 import com.tokopedia.digital_deals.view.fragment.DealDetailsAllRedeemLocationsFragment;
 import com.tokopedia.digital_deals.view.fragment.DealDetailsFragment;
 import com.tokopedia.digital_deals.view.fragment.SelectDealQuantityFragment;
@@ -22,14 +23,12 @@ import com.tokopedia.digital_deals.view.utils.DealFragmentCallbacks;
 
 import java.util.List;
 
-import static com.tokopedia.digital_deals.view.utils.Utils.Constants.DIGITAL_DEALS_DETAILS;
-
 public class DealDetailsActivity extends DealsBaseActivity implements DealFragmentCallbacks {
 
     private List<Outlet> outlets;
     private DealsDetailsResponse dealDetail;
 
-    @DeepLink({DIGITAL_DEALS_DETAILS})
+    @DeepLink({DealsUrl.AppLink.DIGITAL_DEALS_DETAILS})
 
     public static TaskStackBuilder getInstanceIntentAppLinkBackToHome(Context context, Bundle extras) {
         String deepLink = extras.getString(DeepLink.URI);

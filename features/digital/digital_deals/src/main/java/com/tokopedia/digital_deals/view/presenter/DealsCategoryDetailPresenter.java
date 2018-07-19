@@ -37,9 +37,6 @@ import rx.Subscriber;
 public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCategoryDetailContract.View>
         implements DealsCategoryDetailContract.Presenter {
 
-    private String PROMOURL = "https://www.tokopedia.com/promo/tiket/events/";
-    private String FAQURL = "https://www.tokopedia.com/bantuan/faq-tiket-event/";
-    private String TRANSATIONSURL = "https://pulsa.tokopedia.com/order-list/";
     public final static String TAG = "url";
     private boolean isLoading;
     private boolean isLastPage;
