@@ -120,7 +120,7 @@ public class WebSocketMapper {
                 pojo.getMessage().getCensoredReply(),
                 false,
                 false,
-                isSender(String.valueOf(pojo.getFromUid()))
+                !pojo.getIsOpposite()
         );
     }
 
@@ -186,7 +186,7 @@ public class WebSocketMapper {
                 invoiceSentPojo.getInvoiceLink().getAttributes().getDescription(),
                 invoiceSentPojo.getInvoiceLink().getAttributes().getImageUrl(),
                 invoiceSentPojo.getInvoiceLink().getAttributes().getTotalAmount(),
-                isSender(String.valueOf(pojo.getFromUid()))
+                !pojo.getIsOpposite()
         );
 
     }
@@ -204,7 +204,7 @@ public class WebSocketMapper {
                 pojo.getAttachment().getId(),
                 pojo.getAttachment().getType(),
                 pojo.getMessage().getTimeStampUnix(),
-                isSender(String.valueOf(pojo.getFromUid())),
+                !pojo.getIsOpposite(),
                 pojoAttribute.getImageUrl(),
                 pojoAttribute.getThumbnail(),
                 pojo.getStartTime(),
@@ -229,18 +229,10 @@ public class WebSocketMapper {
                 pojoAttribute.getProductProfile().getPrice(),
                 pojoAttribute.getProductProfile().getUrl(),
                 pojoAttribute.getProductProfile().getImageUrl(),
-                isSender(String.valueOf(pojo.getFromUid())),
+                !pojo.getIsOpposite(),
                 pojo.getMessage().getCensoredReply(),
                 pojo.getStartTime()
         );
-    }
-
-    private boolean isSender(String fromUid) {
-        if (sessionHandler != null) {
-            return sessionHandler.getLoginID().equals(fromUid);
-        } else {
-            return false;
-        }
     }
 
     private BaseChatViewModel convertToChatRating(WebSocketResponseData pojo) {

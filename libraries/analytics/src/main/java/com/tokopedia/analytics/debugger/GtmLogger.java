@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.analytics.debugger.data.source.GtmLogDBSource;
 import com.tokopedia.analytics.debugger.domain.model.AnalyticsLogData;
@@ -32,7 +33,11 @@ public class GtmLogger implements AnalyticsLogger {
 
     public static AnalyticsLogger getInstance() {
         if (instance == null) {
-            instance = new GtmLogger();
+            if(GlobalConfig.isAllowDebuggingTools()) {
+                instance = new GtmLogger();
+            } else {
+                instance = emptyInstance();
+            }
         }
 
         return instance;
@@ -99,6 +104,35 @@ public class GtmLogger implements AnalyticsLogger {
             @Override
             public void onNext(Boolean aBoolean) {
                 // no-op
+            }
+        };
+    }
+
+    private static AnalyticsLogger emptyInstance() {
+        return new AnalyticsLogger() {
+            @Override
+            public void save(Context context, String name, Map<String, Object> data) {
+
+            }
+
+            @Override
+            public void wipe() {
+
+            }
+
+            @Override
+            public void openActivity(Context context) {
+
+            }
+
+            @Override
+            public void enableNotification(Context context, boolean status) {
+
+            }
+
+            @Override
+            public boolean isNotificationEnabled(Context context) {
+                return false;
             }
         };
     }
