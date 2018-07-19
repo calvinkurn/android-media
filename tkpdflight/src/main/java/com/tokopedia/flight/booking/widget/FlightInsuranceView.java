@@ -29,6 +29,8 @@ import com.tokopedia.flight.booking.view.adapter.FlightInsuranceBenefitAdapter;
 import com.tokopedia.flight.booking.view.viewmodel.FlightInsuranceBenefitViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightInsuranceViewModel;
 
+import java.util.List;
+
 public class FlightInsuranceView extends LinearLayout {
 
     private AppCompatTextView tvName;
@@ -138,7 +140,6 @@ public class FlightInsuranceView extends LinearLayout {
         cbInsurance.setChecked(flightInsuranceViewModel.isDefaultChecked());
         if (insuranceViewModel.getBenefits() != null && insuranceViewModel.getBenefits().size() > 0) {
             renderHighlightBenefit(insuranceViewModel);
-            renderMoreBenefit(insuranceViewModel);
         } else {
             highlightContainer.setVisibility(GONE);
         }
@@ -153,20 +154,22 @@ public class FlightInsuranceView extends LinearLayout {
     private void renderHighlightBenefit(FlightInsuranceViewModel insuranceViewModel) {
         highlightContainer.setVisibility(VISIBLE);
         FlightInsuranceBenefitViewModel highlightBenefit = insuranceViewModel.getBenefits().get(0);
-        insuranceViewModel.getBenefits().remove(0);
         tvHighlight.setText(highlightBenefit.getTitle());
         tvHighlightDetail.setText(highlightBenefit.getDescription());
         ImageHandler.loadImageWithoutPlaceholder(ivHighlight, highlightBenefit.getIcon(),
                 ContextCompat.getDrawable(getContext(), R.drawable.ic_airline_default)
         );
+        if (insuranceViewModel.getBenefits().size() > 1) {
+            renderMoreBenefit(insuranceViewModel.getBenefits().subList(1, insuranceViewModel.getBenefits().size()));
+        }
     }
 
-    private void renderMoreBenefit(FlightInsuranceViewModel insuranceViewModel) {
-        if (insuranceViewModel.getBenefits().size() > 0) {
+    private void renderMoreBenefit(List<FlightInsuranceBenefitViewModel> benefits) {
+        if (benefits.size() > 0) {
             otherProtection.setVisibility(VISIBLE);
-            protectionLabelTextView.setText(String.format(getContext().getString(R.string.flight_insurance_additional_benefits_prefix), insuranceViewModel.getBenefits().size()));
+            protectionLabelTextView.setText(String.format(getContext().getString(R.string.flight_insurance_additional_benefits_prefix), benefits.size()));
             benefitsRecyclerView.setVisibility(GONE);
-            FlightInsuranceBenefitAdapter benefitAdapter = new FlightInsuranceBenefitAdapter(insuranceViewModel.getBenefits());
+            FlightInsuranceBenefitAdapter benefitAdapter = new FlightInsuranceBenefitAdapter(benefits);
             benefitsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
             benefitsRecyclerView.setAdapter(benefitAdapter);
             dividerBenefit.setVisibility(VISIBLE);

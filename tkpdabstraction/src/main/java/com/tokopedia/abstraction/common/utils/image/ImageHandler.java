@@ -271,6 +271,18 @@ public class ImageHandler {
                 .into(simpleTarget);
     }
 
+    public static void loadImageWithTargetCenterCrop(Context context, String url, SimpleTarget<Bitmap> simpleTarget) {
+        Glide.with(context)
+                .load(url)
+                .asBitmap()
+                .fitCenter()
+                .centerCrop()
+                .dontAnimate()
+                .placeholder(R.drawable.loading_page)
+                .error(R.drawable.error_drawable)
+                .into(simpleTarget);
+    }
+
     public static void loadImage2(ImageView imageview, String url, int resId) {
         if (url != null && !TextUtils.isEmpty(url)) {
             Glide.with(imageview.getContext())
@@ -419,6 +431,10 @@ public class ImageHandler {
     }
 
     public static void loadImageRounded2(Context context, final ImageView imageview, final String url) {
+        loadImageRounded2(context, imageview, url, 5.0f);
+    }
+
+    public static void loadImageRounded2(Context context, final ImageView imageview, final String url, float radius) {
         if (url != null && !url.isEmpty()) {
             Glide.with(context)
                     .load(url)
@@ -426,7 +442,7 @@ public class ImageHandler {
                     .dontAnimate()
                     .placeholder(R.drawable.loading_page)
                     .error(R.drawable.error_drawable)
-                    .into(getRoundedImageViewTarget(imageview, 5.0f));
+                    .into(getRoundedImageViewTarget(imageview, radius));
         }
     }
 

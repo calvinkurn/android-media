@@ -73,7 +73,6 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
 
     private RecyclerView listProduct;
     private SwipeToRefresh swipeToRefresh;
-    private LinearLayoutManager layoutManager;
     private InboxReputationDetailAdapter adapter;
     private ShareReviewDialog shareReviewDialog;
     private CallbackManager callbackManager;
@@ -129,7 +128,6 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
             }
         }
         callbackManager = CallbackManager.Factory.create();
-        layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         InboxReputationDetailTypeFactory typeFactory = new InboxReputationDetailTypeFactoryImpl
                 (this);
         adapter = new InboxReputationDetailAdapter(typeFactory);
@@ -152,7 +150,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     }
 
     private void prepareView() {
-        listProduct.setLayoutManager(layoutManager);
+        listProduct.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         listProduct.setAdapter(adapter);
         swipeToRefresh.setOnRefreshListener(onRefresh());
 
