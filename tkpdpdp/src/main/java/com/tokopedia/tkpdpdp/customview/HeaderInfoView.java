@@ -1,5 +1,6 @@
 package com.tokopedia.tkpdpdp.customview;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Paint;
@@ -12,6 +13,7 @@ import android.support.v4.view.ViewCompat;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -22,6 +24,7 @@ import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.ProductInfo;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
@@ -234,6 +237,7 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
                     @Override
                     public void onCountDownFinished() {
                         hideProductCampaign(campaign);
+                        showAlerDialog();
                     }
                 });
             }
@@ -241,6 +245,27 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
             ex.printStackTrace();
             linearDiscountTimerHolder.setVisibility(GONE);
         }
+    }
+
+    private void showAlerDialog() {
+        Dialog dialog = new Dialog((Activity) context, Dialog.Type.LONG_PROMINANCE);
+        dialog.setTitle(context.getString(R.string.exp_dialog_title));
+        dialog.setDesc(context.getString(R.string.exp_dialog_message));
+        dialog.setBtnOk(context.getString(R.string.exp_dialog_ok));
+        dialog.setBtnCancel(context.getString(R.string.exp_dialog_cancel));
+        dialog.setOnCancelClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.setOnOkClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
     }
 
     private void hideProductCampaign(Campaign campaign) {

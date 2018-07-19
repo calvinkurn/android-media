@@ -14,12 +14,8 @@
         android:background="@color/red_500"
         android:gravity="center_vertical"
         android:orientation="vertical"
-        android:paddingLeft="@dimen/dp_16"
         android:animateLayoutChanges="true"
-        android:paddingRight="@dimen/dp_16"
-        android:paddingTop="@dimen/dp_8"
-        android:paddingBottom="@dimen/dp_8"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -32,8 +28,17 @@
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/flash"
             android:drawablePadding="@dimen/dp_8"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16"
+            android:paddingTop="@dimen/dp_8"
+            android:paddingBottom="@dimen/dp_8"
             android:gravity="center_vertical"
+            android:singleLine="true"
+            android:maxLines="1"
+            android:ellipsize="end"
             android:text="@string/title_discount_timer"
+            android:textSize="@dimen/sp_14"
+            android:background="@drawable/pdp_sale_title"
             android:textColor="@color/white" />
 
         <com.tokopedia.design.countdown.CountDownView
@@ -42,20 +47,24 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="@dimen/dp_8"
-            app:coundDownBackgroud="@drawable/pdp_countdown_white"
+            app:coundDownBackgroud="@android:color/transparent"
             app:countDownSparatorColor="@color/white"
-            app:countDownTxtColor="@color/red_500" />
+            app:countDownTxtColor="@color/white" />
         </LinearLayout>
 
         <TextView
             android:id="@+id/sale_text_stock_available"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/condition"
-            android:drawablePadding="@dimen/dp_8"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16"
+            android:paddingBottom="@dimen/dp_8"
             android:paddingTop="@dimen/dp_8"
             android:gravity="center_vertical"
-            android:visibility="gone"
+            android:visibility="visible"
+            android:singleLine="true"
+            android:maxLines="1"
+            android:ellipsize="end"
             android:textColor="@color/white"
             tools:text="Stok tersedia (>100)" />
 

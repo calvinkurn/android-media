@@ -55,4 +55,8 @@
     <string name="event_action_click_beli_in_variants_page">click - beli on variants page</string>
     <string name="event_action_click_keranjang_in_variants_page">click - tambah ke keranjang on variants page</string>
     <string name="format_notes_variant">Variant : %1$s</string>
+    <string name="exp_dialog_title">Waktu sudah berakhir</string>
+    <string name="exp_dialog_message">Periode promo telah selesai. Harga produk kembali menjadi harga normal</string>
+    <string name="exp_dialog_ok">Lihat Produk Lainya</string>
+    <string name="exp_dialog_cancel">Tutup</string>
 </resources>
