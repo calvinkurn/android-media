@@ -46,8 +46,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-;
-
 public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDetailsContract.View, View.OnClickListener, DealsCategoryAdapter.INavigateToActivityRequest {
     private final boolean isShortLayout = true;
 
