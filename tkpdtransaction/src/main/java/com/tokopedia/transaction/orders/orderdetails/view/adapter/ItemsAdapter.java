@@ -97,6 +97,13 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         notifyItemChanged(position);
     }
 
+    @Override
+    public void setTapActionButton(int position, List<ActionButton> actionButtons) {
+        itemsList.get(position).setTapActions(actionButtons);
+        itemsList.get(position).setTapActionsLoaded(true);
+        notifyItemChanged(position);
+    }
+
     private View.OnClickListener getActionButtonClickListener(final String uri) {
         return new View.OnClickListener() {
             @Override
@@ -170,10 +177,42 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 }
             }
 
+            if (item.getActionButtons() == null || item.getActionButtons().size() == 0) {
+                actionLayout.setVisibility(View.GONE);
+            } else {
+                actionLayout.setVisibility(View.VISIBLE);
+                actionLayout.removeAllViews();
+
+                for (int i = 0; i < item.getActionButtons().size(); i++) {
+                    ActionButton actionButton = item.getActionButtons().get(i);
+
+                    TextView actionTextView = renderActionButtons(i, actionButton, item);
+                    if (!actionButton.getControl().equalsIgnoreCase(KEY_TEXT)) {
+                        if (item.isActionButtonLoaded()) {
+                            setActionButtonClick(null, actionButton);
+                        } else {
+                            actionTextView.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    if (actionButton.getControl().equalsIgnoreCase(KEY_BUTTON)) {
+                                        presenter.setActionButton(item.getActionButtons(), ItemsAdapter.this, getIndex(), false);
+                                    } else {
+                                        setActionButtonClick(actionTextView, actionButton);
+                                    }
+
+                                }
+                            });
+                        }
+                    }
+                    actionLayout.addView(actionTextView);
+                }
+            }
+
+
             if (item.getTapActions() != null && item.getTapActions().size() > 0 && !item.isTapActionsLoaded()) {
                 progressBar.setVisibility(View.VISIBLE);
                 tapActionLayout.setVisibility(View.GONE);
-                presenter.setActionButton(item.getTapActions(), ItemsAdapter.this, getIndex());
+                presenter.setActionButton(item.getTapActions(), ItemsAdapter.this, getIndex(), true);
             }
 
             if (item.isTapActionsLoaded()) {
@@ -182,52 +221,21 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     tapActionLayout.setVisibility(View.GONE);
                 } else {
                     tapActionLayout.setVisibility(View.VISIBLE);
-                }
-                tapActionLayout.removeAllViews();
-                for (int i = 0; i < item.getTapActions().size(); i++) {
-                    ActionButton actionButton = item.getActionButtons().get(i);
-                    TextView tapActionTextView = renderActionButtons(i, actionButton, item);
-                    if (actionButton.getControl().equalsIgnoreCase(KEY_BUTTON)) {
-                        presenter.setActionButton(item.getTapActions(), ItemsAdapter.this, getIndex());
-                    } else {
-                        setActionButtonClick(tapActionTextView, actionButton);
+                    tapActionLayout.removeAllViews();
+                    int size = item.getTapActions().size();
+                    for (int i = 0; i < size; i++) {
+                        ActionButton actionButton = item.getTapActions().get(i);
+                        TextView tapActionTextView = renderActionButtons(i, actionButton, item);
+                        if (actionButton.getControl().equalsIgnoreCase(KEY_BUTTON)) {
+                            presenter.setActionButton(item.getTapActions(), ItemsAdapter.this, getIndex(), true);
+                        } else {
+                            setActionButtonClick(tapActionTextView, actionButton);
+                        }
+                        tapActionLayout.addView(tapActionTextView);
                     }
-                    tapActionLayout.addView(tapActionTextView);
                 }
             } else if (!item.isTapActionsLoaded()) {
                 progressBar.setVisibility(View.GONE);
-            }
-
-
-            if (item.getActionButtons() == null || item.getActionButtons().size() == 0) {
-                actionLayout.setVisibility(View.GONE);
-            } else {
-                actionLayout.setVisibility(View.VISIBLE);
-            }
-            actionLayout.removeAllViews();
-
-            for (int i = 0; i < item.getActionButtons().size(); i++) {
-                ActionButton actionButton = item.getActionButtons().get(i);
-
-                TextView actionTextView = renderActionButtons(i, actionButton, item);
-                if (!actionButton.getControl().equalsIgnoreCase(KEY_TEXT)) {
-                    if (item.isActionButtonLoaded()) {
-                        setActionButtonClick(null, actionButton);
-                    } else {
-                        actionTextView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                if (actionButton.getControl().equalsIgnoreCase(KEY_BUTTON)) {
-                                    presenter.setActionButton(item.getActionButtons(), ItemsAdapter.this, getIndex());
-                                } else {
-                                    setActionButtonClick(actionTextView, actionButton);
-                                }
-
-                            }
-                        });
-                    }
-                }
-                actionLayout.addView(actionTextView);
             }
         }
 

@@ -69,13 +69,13 @@ public interface OrderListDetailContract {
     public interface Presenter extends CustomerPresenter<View>{
         void setOrderDetailsContent(String orderId, String orderCategory, String fromPayment);
 
-       void setActionButton(List<ActionButton> actionButtons, ActionInterface view, int position);
+       void setActionButton(List<ActionButton> actionButtons, ActionInterface view, int position, boolean flag);
 
         List<ActionButton> getActionList();
     }
 
     interface ActionInterface {
         void setActionButton(int position, List<ActionButton> actionButtons);
-
+        void setTapActionButton(int position, List<ActionButton> actionButtons);
     }
 }

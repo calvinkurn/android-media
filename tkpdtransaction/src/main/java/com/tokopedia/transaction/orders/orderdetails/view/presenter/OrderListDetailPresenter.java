@@ -97,7 +97,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     }
 
     @Override
-    public void setActionButton(List<ActionButton> actionButtons, OrderListDetailContract.ActionInterface view, int position) {
+    public void setActionButton(List<ActionButton> actionButtons, OrderListDetailContract.ActionInterface view, int position, boolean flag) {
         Map<String, Object> variables = new HashMap<>();
         this.view = view;
         variables.put(PARAM, actionButtons);
@@ -131,7 +131,11 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                             ActionButtonList data = response.getData(ActionButtonList.class);
                             actionButtonList = data.getActionButtonList();
                             if (actionButtonList != null)
-                                view.setActionButton(position, actionButtonList);
+                                if(flag) {
+                                view.setTapActionButton(position, actionButtonList);
+                                } else {
+                                    view.setActionButton(position, actionButtonList);
+                                }
                         }
                     }
                 });
