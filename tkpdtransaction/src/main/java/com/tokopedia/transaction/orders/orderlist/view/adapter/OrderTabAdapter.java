@@ -31,7 +31,10 @@ public class OrderTabAdapter extends FragmentStatePagerAdapter {
         arg.putString(ORDER_CATEGORY, orderCategory);
         Fragment fragment;
         if(orderCategory.equals(OrderCategory.FLIGHTS)) {
-            fragment = ((UnifiedOrderRouter)listener.getAppContext()).getFlightOrderListFragment();
+            if(listener.getAppContext() instanceof UnifiedOrderRouter)
+                fragment = ((UnifiedOrderRouter)listener.getAppContext()).getFlightOrderListFragment();
+            else
+                fragment = new OrderListFragment();
         } else {
             fragment = new OrderListFragment();
         }

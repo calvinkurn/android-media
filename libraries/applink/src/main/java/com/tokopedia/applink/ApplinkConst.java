@@ -92,6 +92,11 @@ public interface ApplinkConst {
     String PROMO_LIST = "tokopedia://promoNative";
     String EXPLORE = "tokopedia://jump/{section}";
 
+    String DIGITAL_ORDER = "tokopedia://digital/order";
+    String EVENTS_ORDER = "tokopedia://events/order";
+    String DEALS_ORDER = "tokopedia://deals/order";
+    String FLIGHT_ORDER = "tokopedia://pesawat/order";
+
     String SELLER_INFO_DETAIL = "tokopedia://sellerinfo/detail";
 
     String TC_LANDING = "tokopedia://tc-landing";

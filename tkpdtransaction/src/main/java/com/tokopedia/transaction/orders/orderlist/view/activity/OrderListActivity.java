@@ -15,6 +15,7 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
@@ -47,8 +48,8 @@ public class OrderListActivity extends DrawerPresenterActivity<OrderListInitCont
     private OrderTabAdapter adapter;
     private OrderListComponent orderListComponent;
 
-    @DeepLink({TransactionAppLink.ORDER_LIST_DEALS, TransactionAppLink.ORDER_LIST_DIGITAL,
-            TransactionAppLink.ORDER_LIST_EVENTS})
+    @DeepLink({ApplinkConst.DEALS_ORDER, ApplinkConst.DIGITAL_ORDER,
+            ApplinkConst.EVENTS_DETAILS})
     public static Intent getOrderListIntent(Context context, Bundle bundle){
 
         Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
@@ -60,7 +61,7 @@ public class OrderListActivity extends DrawerPresenterActivity<OrderListInitCont
                 .putExtras(bundle);
     }
 
-    @DeepLink(TransactionAppLink.ORDER_LIST_FLIGHTS)
+    @DeepLink(ApplinkConst.FLIGHT_ORDER)
     public static Intent getFlightOrderListIntent(Context context, Bundle bundle){
 
         Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
