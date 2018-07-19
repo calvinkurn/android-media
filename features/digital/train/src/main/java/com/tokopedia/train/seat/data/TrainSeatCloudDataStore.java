@@ -9,8 +9,8 @@ import com.tokopedia.train.common.constant.TrainApi;
 import com.tokopedia.train.common.constant.TrainUrl;
 import com.tokopedia.train.common.specification.GqlNetworkSpecification;
 import com.tokopedia.train.common.specification.Specification;
+import com.tokopedia.train.seat.data.entity.TrainKaiSeatMapEntity;
 import com.tokopedia.train.seat.data.entity.TrainSeatMapEntity;
-import com.tokopedia.train.seat.data.entity.TrainSeatsEntity;
 import com.tokopedia.usecase.RequestParams;
 
 import java.io.IOException;
@@ -31,12 +31,6 @@ public class TrainSeatCloudDataStore {
     }
 
     public Observable<List<TrainSeatMapEntity>> getData(Specification specification) {
-//        Gson g = new Gson();
-//        Type dataResponseType = new TypeToken<DataResponse<TrainSeatsEntity>>() {
-//        }.getType();
-//        DataResponse<TrainSeatsEntity> dataResponse = g.fromJson(loadJSONFromAsset(), dataResponseType);
-//
-//        return Observable.just(dataResponse.getData().getSeatMapEntities());
         String jsonQuery = getRequestStationPayload(((GqlNetworkSpecification) specification).rawFileNameQuery());
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(TrainUrl.QUERY_GQL, jsonQuery);
@@ -44,12 +38,14 @@ public class TrainSeatCloudDataStore {
             requestParams.putObject(TrainUrl.VARIABLE_GQL, ((GqlNetworkSpecification) specification).mapVariable());
         }
 
-        return trainApi.seats(requestParams.getParameters()).map(new Func1<DataResponse<TrainSeatsEntity>, List<TrainSeatMapEntity>>() {
-            @Override
-            public List<TrainSeatMapEntity> call(DataResponse<TrainSeatsEntity> trainSeatEntityDataResponse) {
-                return trainSeatEntityDataResponse.getData().getSeatMapEntities();
-            }
-        });
+        return trainApi
+                .seats(requestParams.getParameters())
+                .map(new Func1<DataResponse<TrainKaiSeatMapEntity>, List<TrainSeatMapEntity>>() {
+                    @Override
+                    public List<TrainSeatMapEntity> call(DataResponse<TrainKaiSeatMapEntity> trainKaiSeatMapEntityDataResponse) {
+                        return trainKaiSeatMapEntityDataResponse.getData().getKaiSeatMap().getSeatMapEntities();
+                    }
+                });
     }
 
     private String getRequestStationPayload(int rawFile) {
