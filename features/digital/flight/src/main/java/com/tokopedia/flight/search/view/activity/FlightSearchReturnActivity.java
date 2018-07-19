@@ -25,11 +25,6 @@ public class FlightSearchReturnActivity extends FlightSearchActivity implements 
 
     private String selectedDepartureID;
 
-    public static void start(Context context, FlightSearchPassDataViewModel passDataViewModel, String selectedDepartureID) {
-        Intent intent = getCallingIntent(context, passDataViewModel, selectedDepartureID);
-        context.startActivity(intent);
-    }
-
     public static Intent getCallingIntent(Context context, FlightSearchPassDataViewModel passDataViewModel, String selectedDepartureID) {
         Intent intent = new Intent(context, FlightSearchReturnActivity.class);
         intent.putExtra(EXTRA_PASS_DATA, passDataViewModel);
