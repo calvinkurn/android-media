@@ -9,7 +9,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -22,6 +21,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.view.adapter.CartListAdapter;
 import com.tokopedia.checkout.view.holderitemdata.CartItemHolderData;
+import com.tokopedia.checkout.view.utils.NoteTextWatcher;
 import com.tokopedia.checkout.view.utils.QuantityTextWatcher;
 import com.tokopedia.checkout.view.utils.QuantityWrapper;
 import com.tokopedia.design.component.TextViewCompat;
@@ -38,6 +38,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
+import static com.tokopedia.checkout.view.utils.NoteTextWatcher.TEXTWATCHER_NOTE_DEBOUNCE_TIME;
 import static com.tokopedia.checkout.view.utils.QuantityTextWatcher.TEXTWATCHER_QUANTITY_DEBOUNCE_TIME;
 
 /**
@@ -47,7 +48,6 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
     public static final int TYPE_VIEW_ITEM_CART = R.layout.holder_item_cart_new;
     private static final int QTY_MIN = 1;
     private static final int QTY_MAX = 10000;
-    private static final int TEXTWATCHER_NOTE_DEBOUNCE_TIME = 100;
 
     private final CartListAdapter.ActionListener actionListener;
     private final Context context;
@@ -76,7 +76,7 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
 
     private CartItemHolderData cartItemHolderData;
     private QuantityTextWatcher.QuantityTextwatcherListener quantityTextwatcherListener;
-    private NoteTextwatcherListener noteTextwatcherListener;
+    private NoteTextWatcher.NoteTextwatcherListener noteTextwatcherListener;
 
     public CartListItemViewHolder(View itemView, CompositeSubscription cadapterCmpositeSubscription,
                                   CartListAdapter.ActionListener actionListener) {
@@ -158,7 +158,7 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
         compositeSubscription.add(Observable.create(new Observable.OnSubscribe<Editable>() {
             @Override
             public void call(final Subscriber<? super Editable> subscriber) {
-                noteTextwatcherListener = new NoteTextwatcherListener() {
+                noteTextwatcherListener = new NoteTextWatcher.NoteTextwatcherListener() {
                     @Override
                     public void onNoteChanged(Editable editable) {
                         subscriber.onNext(editable);
@@ -324,7 +324,7 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
         if (!TextUtils.isEmpty(etQty.getText().toString())) {
             checkQtyMustDisabled(cartItemHolderData, Integer.parseInt(etQty.getText().toString()));
         }
-        this.etRemark.addTextChangedListener(new RemarkTextWatcher());
+        this.etRemark.addTextChangedListener(new NoteTextWatcher(noteTextwatcherListener));
         this.etQty.addTextChangedListener(new QuantityTextWatcher(quantityTextwatcherListener));
 
         if (data.getCartItemData().getOriginData().isFavorite()) {
@@ -392,7 +392,6 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
         }
         actionListener.onCartItemAfterErrorChecked();
     }
-
 
     private void renderErrorItemHeader(CartItemHolderData data) {
         if (data.getCartItemData().isError()) {
@@ -466,24 +465,6 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
         actionListener.onCartItemAfterErrorChecked();
     }
 
-    private class RemarkTextWatcher implements TextWatcher {
-
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-        }
-
-        @Override
-        public void afterTextChanged(Editable editable) {
-            noteTextwatcherListener.onNoteChanged(editable);
-        }
-    }
-
     private void itemNoteTextWatcherAction(Editable editable) {
         cartItemHolderData.getCartItemData().getUpdatedData().setRemark(editable.toString());
         renderErrorFormItemValidation(cartItemHolderData);
@@ -523,10 +504,6 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
         cartItemHolderData.getCartItemData().getUpdatedData().setQuantity(qty);
         validateWithAvailableQuantity(cartItemHolderData, qty);
         actionListener.onCartItemQuantityFormEdited(getAdapterPosition(), needToUpdateView);
-    }
-
-    private interface NoteTextwatcherListener {
-        void onNoteChanged(Editable editable);
     }
 
 }
