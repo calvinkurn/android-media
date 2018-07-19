@@ -246,7 +246,11 @@ public class ShopProductNewAdapter extends BaseListAdapter<BaseShopProductViewMo
 
 
     public void setNeedToShowEtalase(boolean needToShowEtalase) {
-        this.needToShowEtalase = needToShowEtalase;
+        if (this.needToShowEtalase != needToShowEtalase) {
+            this.needToShowEtalase = needToShowEtalase;
+            notifyItemChanged(DEFAULT_ETALASE_POSITION);
+            notifyItemChanged(DEFAULT_ETALASE_TITLE_POSITION);
+        }
     }
 
     @Override

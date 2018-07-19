@@ -15,7 +15,7 @@ import com.tokopedia.shop.common.constant.ShopAppLink;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.page.view.activity.ShopPageActivity;
-import com.tokopedia.shop.product.view.fragment.ShopProductListFragment;
+import com.tokopedia.shop.product.view.fragment.ShopProductListFragmentOld;
 
 /**
  * Created by nathan on 2/15/18.
@@ -88,7 +88,7 @@ public class ShopProductListActivity extends BaseSimpleActivity implements HasCo
 
     @Override
     protected Fragment getNewFragment() {
-        return ShopProductListFragment.createInstance(shopId, keyword, etalaseId, sort, attribution);
+        return ShopProductListFragmentOld.createInstance(shopId, keyword, etalaseId, sort, attribution);
     }
 
     @Override

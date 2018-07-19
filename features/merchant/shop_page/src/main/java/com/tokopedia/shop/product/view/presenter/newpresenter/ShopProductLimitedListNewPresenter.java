@@ -46,7 +46,7 @@ import rx.Subscriber;
  * Created by nathan on 2/6/18.
  */
 
-public class ShopProductListNewPresenter extends BaseDaggerPresenter<ShopProductListView> {
+public class ShopProductLimitedListNewPresenter extends BaseDaggerPresenter<ShopProductListView> {
 
     //    private final GetShopProductLimitedUseCase getShopProductLimitedUseCase;
     private final GetShopProductFeaturedWithAttributeNewUseCase getShopProductFeaturedWithAttributeNewUseCase;
@@ -57,12 +57,12 @@ public class ShopProductListNewPresenter extends BaseDaggerPresenter<ShopProduct
     private final UserSession userSession;
 
     @Inject
-    public ShopProductListNewPresenter(GetShopProductListWithAttributeNewUseCase productListWithAttributeNewUseCase,
-                                       GetShopProductFeaturedWithAttributeNewUseCase getShopProductFeaturedWithAttributeNewUseCase,
-                                       GetShopEtalaseUseCase getShopEtalaseUseCase,
-                                       AddToWishListUseCase addToWishListUseCase,
-                                       RemoveFromWishListUseCase removeFromWishListUseCase,
-                                       UserSession userSession) {
+    public ShopProductLimitedListNewPresenter(GetShopProductListWithAttributeNewUseCase productListWithAttributeNewUseCase,
+                                              GetShopProductFeaturedWithAttributeNewUseCase getShopProductFeaturedWithAttributeNewUseCase,
+                                              GetShopEtalaseUseCase getShopEtalaseUseCase,
+                                              AddToWishListUseCase addToWishListUseCase,
+                                              RemoveFromWishListUseCase removeFromWishListUseCase,
+                                              UserSession userSession) {
         this.getShopProductFeaturedWithAttributeNewUseCase = getShopProductFeaturedWithAttributeNewUseCase;
         this.productListWithAttributeNewUseCase = productListWithAttributeNewUseCase;
         this.getShopEtalaseUseCase = getShopEtalaseUseCase;
@@ -255,7 +255,7 @@ public class ShopProductListNewPresenter extends BaseDaggerPresenter<ShopProduct
         }
         // replace the first with selected id list
         // loop all selected etalase.
-        for (int i = selectedEtalaseIdList.size()-1; i >= 0; i--) {
+        for (int i = selectedEtalaseIdList.size() - 1; i >= 0; i--) {
             ShopEtalaseViewModel selectedShopEtalaseViewModel = selectedEtalaseIdList.get(i);
             // loop the shop view model list to check if already in there.
             // if there, continue; otherwise, add new object to list
@@ -267,7 +267,7 @@ public class ShopProductListNewPresenter extends BaseDaggerPresenter<ShopProduct
                 }
             }
             if (!isExistInCurrentList) { // add in index 1 and so on
-                int indexToReplace = shopEtalaseViewModels.size() >= 1? 1: 0;
+                int indexToReplace = shopEtalaseViewModels.size() >= 1 ? 1 : 0;
                 shopEtalaseViewModels.add(indexToReplace, selectedShopEtalaseViewModel);
             }
         }
@@ -278,11 +278,10 @@ public class ShopProductListNewPresenter extends BaseDaggerPresenter<ShopProduct
     @Override
     public void detachView() {
         super.detachView();
-        if (productListWithAttributeNewUseCase != null) {
-            productListWithAttributeNewUseCase.unsubscribe();
-        }
-        if (getShopProductFeaturedWithAttributeNewUseCase != null) {
-            getShopProductFeaturedWithAttributeNewUseCase.unsubscribe();
-        }
+        productListWithAttributeNewUseCase.unsubscribe();
+        getShopProductFeaturedWithAttributeNewUseCase.unsubscribe();
+        getShopEtalaseUseCase.unsubscribe();
+        addToWishListUseCase.unsubscribe();
+        removeFromWishListUseCase.unsubscribe();
     }
 }

@@ -1,4 +1,4 @@
-package com.tokopedia.shop.product.view.presenter;
+package com.tokopedia.shop.product.view.presenter.newpresenter;
 
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
@@ -16,10 +16,10 @@ import com.tokopedia.shop.etalase.data.source.cloud.model.PagingListOther;
 import com.tokopedia.shop.etalase.domain.interactor.GetShopEtalaseUseCase;
 import com.tokopedia.shop.etalase.domain.model.ShopEtalaseRequestModel;
 import com.tokopedia.shop.product.domain.interactor.DeleteShopProductUseCase;
-import com.tokopedia.shop.product.domain.interactor.GetShopProductListWithAttributeUseCase;
+import com.tokopedia.shop.product.domain.interactor.GetShopProductListWithAttributeNewUseCase;
 import com.tokopedia.shop.product.domain.model.ShopProductRequestModel;
-import com.tokopedia.shop.product.view.listener.ShopProductListViewOld;
-import com.tokopedia.shop.product.view.model.ShopProductViewModelOld;
+import com.tokopedia.shop.product.view.listener.newlistener.ShopProductDedicatedListView;
+import com.tokopedia.shop.product.view.model.newmodel.ShopProductViewModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.wishlist.common.domain.interactor.AddToWishListUseCase;
 import com.tokopedia.wishlist.common.domain.interactor.RemoveFromWishListUseCase;
@@ -34,27 +34,29 @@ import rx.Subscriber;
 /**
  * Created by nathan on 2/6/18.
  */
-@Deprecated
-public class ShopProductListPresenterOld extends BaseDaggerPresenter<ShopProductListViewOld> {
 
-    private final GetShopProductListWithAttributeUseCase getShopProductListWithAttributeUseCase;
+public class ShopProductListPresenterNew extends BaseDaggerPresenter<ShopProductDedicatedListView> {
+
+    private final GetShopProductListWithAttributeNewUseCase productListWithAttributeNewUseCase;
+    private final GetShopEtalaseUseCase getShopEtalaseUseCase;
     private final AddToWishListUseCase addToWishListUseCase;
     private final RemoveFromWishListUseCase removeFromWishListUseCase;
-    private final DeleteShopProductUseCase deleteShopProductUseCase;
-    private final GetShopInfoUseCase getShopInfoUseCase;
-    private final GetShopEtalaseUseCase getShopEtalaseUseCase;
+
     private final UserSession userSession;
+
+    private final GetShopInfoUseCase getShopInfoUseCase;
+    private final DeleteShopProductUseCase deleteShopProductUseCase;
     private final static int USE_ACE = 1;
 
     @Inject
-    public ShopProductListPresenterOld(GetShopProductListWithAttributeUseCase getShopProductListWithAttributeUseCase,
+    public ShopProductListPresenterNew(GetShopProductListWithAttributeNewUseCase productListWithAttributeNewUseCase,
                                        AddToWishListUseCase addToWishListUseCase,
                                        RemoveFromWishListUseCase removeFromWishListUseCase,
                                        DeleteShopProductUseCase deleteShopProductUseCase,
                                        GetShopInfoUseCase getShopInfoUseCase,
                                        GetShopEtalaseUseCase getShopEtalaseUseCase,
                                        UserSession userSession) {
-        this.getShopProductListWithAttributeUseCase = getShopProductListWithAttributeUseCase;
+        this.productListWithAttributeNewUseCase = productListWithAttributeNewUseCase;
         this.addToWishListUseCase = addToWishListUseCase;
         this.removeFromWishListUseCase = removeFromWishListUseCase;
         this.deleteShopProductUseCase = deleteShopProductUseCase;
@@ -117,7 +119,7 @@ public class ShopProductListPresenterOld extends BaseDaggerPresenter<ShopProduct
             @Override
             public void onError(Throwable e) {
                 if (isViewAttached()) {
-                    getView().showGetListError(e);
+                    getView().onErrorGetShopInfo(e);
                 }
             }
 
@@ -130,7 +132,7 @@ public class ShopProductListPresenterOld extends BaseDaggerPresenter<ShopProduct
 
     private void getShopProductWithEtalase(final ShopProductRequestModel shopProductRequestModel) {
         if (TextUtils.isEmpty(shopProductRequestModel.getEtalaseId())) {
-            getView().onSuccessGetEtalase("", "");
+            getView().onSuccessGetEtalaseName("", "");
             getShopProductWithWishList(shopProductRequestModel);
             return;
         }
@@ -177,14 +179,16 @@ public class ShopProductListPresenterOld extends BaseDaggerPresenter<ShopProduct
                         shopProductRequestModel.setEtalaseId("");
                     }
                 }
-                getView().onSuccessGetEtalase(shopProductRequestModel.getEtalaseId(), etalaseName);
+                getView().onSuccessGetEtalaseName(shopProductRequestModel.getEtalaseId(), etalaseName);
                 getShopProductWithWishList(shopProductRequestModel);
             }
         });
     }
 
     private void getShopProductWithWishList(ShopProductRequestModel shopProductRequestModel) {
-        getShopProductListWithAttributeUseCase.execute(GetShopProductListWithAttributeUseCase.createRequestParam(shopProductRequestModel), new Subscriber<PagingList<ShopProductViewModelOld>>() {
+        productListWithAttributeNewUseCase.execute(
+                GetShopProductListWithAttributeNewUseCase.createRequestParam(shopProductRequestModel),
+                new Subscriber<PagingList<ShopProductViewModel>>() {
             @Override
             public void onCompleted() {
 
@@ -198,8 +202,9 @@ public class ShopProductListPresenterOld extends BaseDaggerPresenter<ShopProduct
             }
 
             @Override
-            public void onNext(PagingList<ShopProductViewModelOld> shopProductList) {
-                getView().renderList(shopProductList.getList(), PagingListUtils.checkNextPage(shopProductList));
+            public void onNext(PagingList<ShopProductViewModel> shopProductList) {
+                getView().renderProductList(shopProductList.getList(),
+                        PagingListUtils.checkNextPage(shopProductList));
             }
         });
     }
@@ -259,6 +264,9 @@ public class ShopProductListPresenterOld extends BaseDaggerPresenter<ShopProduct
     @Override
     public void detachView() {
         super.detachView();
-        getShopProductListWithAttributeUseCase.unsubscribe();
+        addToWishListUseCase.unsubscribe();
+        removeFromWishListUseCase.unsubscribe();
+        productListWithAttributeNewUseCase.unsubscribe();
+        getShopEtalaseUseCase.unsubscribe();
     }
 }

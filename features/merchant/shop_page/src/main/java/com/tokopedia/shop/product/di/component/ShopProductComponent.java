@@ -3,9 +3,10 @@ package com.tokopedia.shop.product.di.component;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.product.di.module.ShopProductModule;
 import com.tokopedia.shop.product.di.scope.ShopProductScope;
-import com.tokopedia.shop.product.view.fragment.ShopProductListFragment;
+import com.tokopedia.shop.product.view.fragment.ShopProductListFragmentOld;
 import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedNewFragment;
 import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedFragmentOld;
+import com.tokopedia.shop.product.view.fragment.ShopProductListNewFragment;
 
 import dagger.Component;
 
@@ -18,7 +19,8 @@ public interface ShopProductComponent {
 
     void inject(ShopProductListLimitedFragmentOld shopProductListLimitedFragmentOld);
 
-    void inject(ShopProductListFragment shopProductListFragment);
+    void inject(ShopProductListFragmentOld shopProductListFragment);
     void inject(ShopProductListLimitedNewFragment shopProductListLimitedNewFragment);
+    void inject(ShopProductListNewFragment shopProductListNewFragment);
 
 }

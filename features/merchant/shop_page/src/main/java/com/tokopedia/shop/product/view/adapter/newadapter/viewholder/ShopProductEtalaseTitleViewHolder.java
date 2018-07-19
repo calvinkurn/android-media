@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.product.view.adapter.newadapter.ShopProductAdapterTypeFactory;
 import com.tokopedia.shop.product.view.adapter.newadapter.ShopProductNewAdapter;
@@ -28,7 +29,7 @@ public class ShopProductEtalaseTitleViewHolder extends AbstractViewHolder<ShopPr
 
     @Override
     public void bind(ShopProductEtalaseTitleViewModel shopProductFeaturedViewModel) {
-        textView.setText(shopProductFeaturedViewModel.getEtalaseName());
+        textView.setText(MethodChecker.fromHtml(shopProductFeaturedViewModel.getEtalaseName()));
     }
 
     private void findViews(View view) {

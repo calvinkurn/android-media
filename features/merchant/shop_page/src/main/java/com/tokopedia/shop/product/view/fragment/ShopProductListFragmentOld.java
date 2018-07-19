@@ -48,7 +48,7 @@ import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductListViewHol
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductSingleViewHolderOld;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolderOld;
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener;
-import com.tokopedia.shop.product.view.listener.ShopProductListView;
+import com.tokopedia.shop.product.view.listener.ShopProductListViewOld;
 import com.tokopedia.shop.product.view.model.ShopProductViewModelOld;
 import com.tokopedia.shop.product.view.presenter.ShopProductListPresenterOld;
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity;
@@ -61,7 +61,7 @@ import javax.inject.Inject;
  * Created by nathan on 2/15/18.
  */
 @Deprecated
-public class ShopProductListFragment extends BaseSearchListFragment<ShopProductViewModelOld, ShopProductAdapterTypeFactoryOld> implements ShopProductListView, ShopProductClickedListener, ShopProductAdapterTypeFactoryOld.TypeFactoryListener {
+public class ShopProductListFragmentOld extends BaseSearchListFragment<ShopProductViewModelOld, ShopProductAdapterTypeFactoryOld> implements ShopProductListViewOld, ShopProductClickedListener, ShopProductAdapterTypeFactoryOld.TypeFactoryListener {
 
     public static final int SPAN_COUNT = 2;
     private static final int REQUEST_CODE_USER_LOGIN = 100;
@@ -101,8 +101,8 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
     private BottomActionView bottomActionView;
     private ShopInfo shopInfo;
 
-    public static ShopProductListFragment createInstance(String shopId, String keyword, String etalaseId, String sort, String attribution) {
-        ShopProductListFragment shopProductListFragment = new ShopProductListFragment();
+    public static ShopProductListFragmentOld createInstance(String shopId, String keyword, String etalaseId, String sort, String attribution) {
+        ShopProductListFragmentOld shopProductListFragment = new ShopProductListFragmentOld();
         Bundle bundle = new Bundle();
         bundle.putString(ShopParamConstant.EXTRA_SHOP_ID, shopId);
         bundle.putString(ShopParamConstant.EXTRA_PRODUCT_KEYWORD, keyword);
@@ -219,7 +219,7 @@ public class ShopProductListFragment extends BaseSearchListFragment<ShopProductV
                     shopPageTracking.eventClickSortProductList(getString(R.string.shop_info_title_tab_product), shopId,
                             shopProductListPresenterOld.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
                 }
-                ShopProductListFragment.this.startActivityForResult(ShopProductSortActivity.createIntent(getActivity(), sortName, shopId), REQUEST_CODE_SORT);
+                ShopProductListFragmentOld.this.startActivityForResult(ShopProductSortActivity.createIntent(getActivity(), sortName, shopId), REQUEST_CODE_SORT);
             }
         });
         if (!TextUtils.isEmpty(keyword)) {
