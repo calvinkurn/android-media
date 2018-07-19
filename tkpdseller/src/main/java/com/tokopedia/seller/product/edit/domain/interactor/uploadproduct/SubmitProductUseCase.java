@@ -2,7 +2,6 @@ package com.tokopedia.seller.product.edit.domain.interactor.uploadproduct;
 
 import android.text.TextUtils;
 
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.seller.product.edit.data.exception.ImageUploadErrorException;
 import com.tokopedia.seller.product.edit.domain.interactor.GetProductDetailUseCase;
@@ -93,12 +92,13 @@ public class SubmitProductUseCase extends UseCase<Boolean> {
                         }
                     }
                 })
-                .doOnError(new Action1<Throwable>() {
+                .onErrorResumeNext(new Func1<Throwable, Observable<? extends ProductViewModel>>() {
                     @Override
-                    public void call(Throwable throwable) {
+                    public Observable<? extends ProductViewModel> call(Throwable throwable) {
                         if (!(throwable instanceof SocketTimeoutException) && !(throwable instanceof UnknownHostException)) {
                             throw new ImageUploadErrorException();
                         }
+                        return Observable.error(throwable);
                     }
                 })
                 .doOnNext(new Action1<ProductViewModel>() {
@@ -126,14 +126,6 @@ public class SubmitProductUseCase extends UseCase<Boolean> {
             @Override
             public ProductViewModel call(List<BasePictureViewModel> basePictureViewModels) {
                 return productViewModel;
-            }
-        }).onErrorReturn(new Func1<Throwable, ProductViewModel>() {
-            @Override
-            public ProductViewModel call(Throwable throwable) {
-                if (!(throwable instanceof SocketTimeoutException) && !(throwable instanceof UnknownHostException)) {
-                    throw new ImageUploadErrorException();
-                }
-                return null;
             }
         });
     }
