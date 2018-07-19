@@ -2,15 +2,16 @@ package com.tokopedia.home.account.presentation.adapter.buyer;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter;
+import com.tokopedia.home.account.presentation.adapter.AccountTypeFactory;
 
 import java.util.List;
 
 /**
  * @author okasurya on 7/17/18.
  */
-public class BuyerAccountAdapter extends BaseAdapter<BuyerAccountTypeFactory> {
+public class BuyerAccountAdapter extends BaseAdapter<AccountTypeFactory> {
 
-    public BuyerAccountAdapter(BuyerAccountTypeFactory adapterTypeFactory, List<Visitable> visitables) {
+    public BuyerAccountAdapter(AccountTypeFactory adapterTypeFactory, List<Visitable> visitables) {
         super(adapterTypeFactory, visitables);
     }
 }

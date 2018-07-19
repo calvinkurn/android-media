@@ -46,6 +46,9 @@ public class CategoryGridView extends BaseCustomView {
         textTitle = view.findViewById(R.id.text_title);
         textLink = view.findViewById(R.id.text_link);
         recyclerCategory = view.findViewById(R.id.recycler_category);
+
+        adapter = new CategoryGridAdapter();
+        recyclerCategory.setAdapter(adapter);
         recyclerCategory.setLayoutManager(new GridLayoutManager(getContext(), SPAN_COUNT, GridLayoutManager.VERTICAL, false));
     }
 
@@ -60,8 +63,7 @@ public class CategoryGridView extends BaseCustomView {
                 textLink.setOnClickListener(v -> listener.onLinkClicked(categoryGrid.getApplinkUrl()));
             }
 
-            adapter = new CategoryGridAdapter(listener);
-            recyclerCategory.setAdapter(adapter);
+            adapter.setListener(listener);
             adapter.setNewData(categoryGrid.getItems());
         }
     }

@@ -27,26 +27,25 @@ public class CategoryGridViewHolder extends RecyclerView.ViewHolder {
     private TextView textDescription;
 
     private Context context;
-    private CategoryGridView.OnClickListener listener;
 
-    public CategoryGridViewHolder(Context context, View itemView, CategoryGridView.OnClickListener listener) {
+    public CategoryGridViewHolder(Context context, View itemView) {
         super(itemView);
         this.context = context;
-        this.listener = listener;
 
         this.layoutCategoryGrid = itemView.findViewById(R.id.layout_category_grid);
         this.imageIcon = itemView.findViewById(R.id.image_icon);
         this.textDescription = itemView.findViewById(R.id.text_desc);
     }
 
-    public void bind(CategoryItem categoryItem) {
+    public void bind(CategoryItem categoryItem, CategoryGridView.OnClickListener listener) {
         if(!TextUtils.isEmpty(categoryItem.getImageUrl())) {
             ImageHandler.loadImage(context, imageIcon, categoryItem.getImageUrl(), R.drawable.ic_big_notif_customerapp);
         } else if(categoryItem.getResourceId() != 0) {
             imageIcon.setImageDrawable(AppCompatResources.getDrawable(context, categoryItem.getResourceId()));
         }
 
-        layoutCategoryGrid.setOnClickListener(v -> listener.onCategoryItemClicked(categoryItem));
         textDescription.setText(categoryItem.getDescription());
+
+        if(listener != null) layoutCategoryGrid.setOnClickListener(v -> listener.onCategoryItemClicked(categoryItem));
     }
 }

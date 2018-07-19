@@ -25,50 +25,32 @@
         android:background="@color/white"
         android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
-        <com.tokopedia.home.account.presentation.view.BuyerCardView
-            android:layout_margin="8dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-        <com.tokopedia.home.account.presentation.view.TokopediaPayCardView
-            android:layout_margin="8dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-        <com.tokopedia.home.account.presentation.view.AnnouncementCardView
-            android:layout_margin="8dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-        <com.tokopedia.home.account.presentation.view.categorygridview.CategoryGridView
-            android:layout_margin="16dp"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-
-        <!--<LinearLayout-->
+        <!--<FrameLayout-->
+            <!--android:id="@+id/container_account_home"-->
             <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:orientation="vertical">-->
+            <!--android:layout_height="match_parent" />-->
 
-            <!--<android.support.design.widget.TabLayout-->
-                <!--android:id="@+id/tab_home_account"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--app:tabGravity="fill"-->
-                <!--app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"-->
-                <!--app:tabIndicatorColor="@color/tkpd_main_green"-->
-                <!--app:tabMode="scrollable"-->
-                <!--app:tabSelectedTextColor="@color/tkpd_main_green"-->
-                <!--android:background="@color/white"-->
-                <!--style="@style/Tabs.Main"/>-->
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tab_home_account"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tabGravity="fill"
+            app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
+            app:tabIndicatorColor="@color/tkpd_main_green"
+            app:tabMode="scrollable"
+            app:tabSelectedTextColor="@color/tkpd_main_green"
+            android:background="@color/white"
+            style="@style/Tabs.Main"/>
 
-            <!--<View-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="2dp"-->
-                <!--android:background="@drawable/top_bar_shadow" />-->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@drawable/top_bar_shadow" />
 
-            <!--<android.support.v4.view.ViewPager-->
-                <!--android:id="@+id/pager_home_account"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="match_parent" />-->
-        <!--</LinearLayout>-->
+        <android.support.v4.view.ViewPager
+            android:id="@+id/pager_home_account"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
     </LinearLayout>
 </LinearLayout>

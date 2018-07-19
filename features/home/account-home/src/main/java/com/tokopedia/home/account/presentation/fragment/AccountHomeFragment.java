@@ -15,22 +15,25 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.presentation.adapter.AccountHomePagerAdapter;
+import com.tokopedia.home.account.presentation.view.BuyerCardView;
 
 /**
  * @author okasurya on 7/16/18.
  */
 public class AccountHomeFragment extends TkpdBaseV4Fragment {
     private Toolbar toolbar;
-//    private TabLayout tabLayout;
-//    private ViewPager viewPager;
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
     private PagerAdapter adapter;
+    private FrameLayout container;
 
-    private boolean isLoaded = false;
+//    private boolean isLoaded = false;
 
     public static Fragment newInstance() {
         return new AccountHomeFragment();
@@ -41,38 +44,39 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment {
         super.onCreate(savedInstanceState);
     }
 
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser && isResumed()) {
-            onResume();
-        }
-    }
+//    @Override
+//    public void setUserVisibleHint(boolean isVisibleToUser) {
+//        super.setUserVisibleHint(isVisibleToUser);
+//        if (isVisibleToUser && isResumed()) {
+//            onResume();
+//        }
+//    }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (!getUserVisibleHint()) {
-            return;
-        }
-        if (!isLoaded) {
-            loadData();
-            isLoaded = true;
-        }
-    }
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        if (!getUserVisibleHint()) {
+//            return;
+//        }
+//        if (!isLoaded) {
+//            loadData();
+//            isLoaded = true;
+//        }
+//    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_account_home, container, false);
         initView(view);
+        setAdapter();
         return view;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        setAdapter();
+
     }
 
     @Override
@@ -97,21 +101,25 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment {
         }
         return super.onOptionsItemSelected(item);
     }
-
-    private void loadData() {
-
-    }
-
-    public void setLoaded(boolean loaded) {
-        isLoaded = loaded;
-    }
+//
+//    private void loadData() {
+//
+//    }
+//
+//    public void setLoaded(boolean loaded) {
+//        isLoaded = loaded;
+//    }
 
     private void initView(View view) {
         setHasOptionsMenu(true);
         getActivity().invalidateOptionsMenu();
         setToolbar(view);
-//        tabLayout = view.findViewById(R.id.tab_home_account);
-//        viewPager = view.findViewById(R.id.pager_home_account);
+        tabLayout = view.findViewById(R.id.tab_home_account);
+        viewPager = view.findViewById(R.id.pager_home_account);
+
+//        getChildFragmentManager().beginTransaction()
+//                .replace(R.id.container_account_home, BuyerAccountFragment.newInstance(), "BuyerAccountFragment")
+//                .commit();
     }
 
     private void setToolbar(View view) {
@@ -128,8 +136,8 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment {
                 getContext().getString(R.string.label_account_seller)
         };
         adapter = new AccountHomePagerAdapter(getChildFragmentManager(), titles);
-//        viewPager.setAdapter(adapter);
-//        tabLayout.setupWithViewPager(viewPager);
-//        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        viewPager.setAdapter(adapter);
+        tabLayout.setupWithViewPager(viewPager);
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
     }
 }

@@ -16,26 +16,29 @@ class CategoryGridAdapter extends RecyclerView.Adapter<CategoryGridViewHolder> {
     private List<CategoryItem> categories;
     private CategoryGridView.OnClickListener listener;
 
-    public CategoryGridAdapter(CategoryGridView.OnClickListener listener) {
+    public CategoryGridAdapter() {
         this.categories = new ArrayList<>();
-        this.listener = listener;
     }
 
     @NonNull
     @Override
     public CategoryGridViewHolder onCreateViewHolder(@NonNull ViewGroup view, int viewType) {
         // todo context from view(?)
-        return new CategoryGridViewHolder(view.getContext(), view, listener);
+        return new CategoryGridViewHolder(view.getContext(), view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull CategoryGridViewHolder holder, int position) {
-        holder.bind(categories.get(position));
+        holder.bind(categories.get(position), listener);
     }
 
     @Override
     public int getItemCount() {
         return categories.size();
+    }
+
+    public void setListener(CategoryGridView.OnClickListener listener) {
+        this.listener = listener;
     }
 
     public void setNewData(List<CategoryItem> items) {
