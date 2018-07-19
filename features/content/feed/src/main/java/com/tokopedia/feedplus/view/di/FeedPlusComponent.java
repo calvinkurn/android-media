@@ -38,7 +38,5 @@ public interface FeedPlusComponent {
 
     void inject(RecentViewFragment recentViewFragment);
 
-    void inject(ExploreFragment exploreFragment);
-
     FollowKolPostUseCase getFollowKolPostUseCase();
 }

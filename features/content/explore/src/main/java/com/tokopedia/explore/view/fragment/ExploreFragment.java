@@ -1,4 +1,4 @@
-package com.tokopedia.feedplus.view.fragment;
+package com.tokopedia.explore.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -8,9 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.feedplus.R;
-import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent;
-import com.tokopedia.kol.KolComponentInstance;
+import com.tokopedia.explore.R;
 
 /**
  * @author by milhamj on 19/07/18.
@@ -25,10 +23,6 @@ public class ExploreFragment extends BaseDaggerFragment {
 
     @Override
     protected void initInjector() {
-        DaggerFeedPlusComponent.builder()
-                .kolComponent(KolComponentInstance.getKolComponent(getActivity().getApplication()))
-                .build()
-                .inject(this);
     }
 
     @Nullable

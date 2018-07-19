@@ -63,7 +63,4 @@
     <string name="react_native_content_detail_title">Post Detail</string>
 
     <string name="total_voter">%s telah memilih</string>
-
-    <!--Explore-->
-    <string name="search_your_inspiration">Cari inspirasi kamu</string>
 </resources>
