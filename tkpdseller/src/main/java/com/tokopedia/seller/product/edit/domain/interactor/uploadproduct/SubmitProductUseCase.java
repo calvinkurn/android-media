@@ -93,6 +93,14 @@ public class SubmitProductUseCase extends UseCase<Boolean> {
                         }
                     }
                 })
+                .doOnError(new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        if (!(throwable instanceof SocketTimeoutException) && !(throwable instanceof UnknownHostException)) {
+                            throw new ImageUploadErrorException();
+                        }
+                    }
+                })
                 .doOnNext(new Action1<ProductViewModel>() {
                     @Override
                     public void call(ProductViewModel productViewModel) {
@@ -119,12 +127,13 @@ public class SubmitProductUseCase extends UseCase<Boolean> {
             public ProductViewModel call(List<BasePictureViewModel> basePictureViewModels) {
                 return productViewModel;
             }
-        }).doOnError(new Action1<Throwable>() {
+        }).onErrorReturn(new Func1<Throwable, ProductViewModel>() {
             @Override
-            public void call(Throwable throwable) {
+            public ProductViewModel call(Throwable throwable) {
                 if (!(throwable instanceof SocketTimeoutException) && !(throwable instanceof UnknownHostException)) {
                     throw new ImageUploadErrorException();
                 }
+                return null;
             }
         });
     }
