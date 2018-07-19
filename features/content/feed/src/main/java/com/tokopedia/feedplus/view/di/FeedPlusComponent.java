@@ -5,6 +5,7 @@ import android.content.Context;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.feedplus.domain.usecase.FollowKolPostUseCase;
+import com.tokopedia.feedplus.view.fragment.ExploreFragment;
 import com.tokopedia.feedplus.view.fragment.FeedPlusDetailFragment;
 import com.tokopedia.feedplus.view.fragment.FeedPlusFragment;
 import com.tokopedia.feedplus.view.fragment.RecentViewFragment;
@@ -36,6 +37,8 @@ public interface FeedPlusComponent {
     void inject(FeedPlusDetailFragment feedPlusDetailFragment);
 
     void inject(RecentViewFragment recentViewFragment);
+
+    void inject(ExploreFragment exploreFragment);
 
     FollowKolPostUseCase getFollowKolPostUseCase();
 }
