@@ -64,6 +64,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     @Inject
     DealCategoryAdapterPresenter mPresenter;
     private SpannableString headerText;
+    private boolean showHighlightText;
 
     public DealsCategoryAdapter(List<ProductItem> categoryItems, INavigateToActivityRequest toActivityRequest, Boolean... layoutType) {
         if (categoryItems == null)
@@ -215,6 +216,9 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
     }
 
+    public void showHighLightText(boolean value){
+        this.showHighlightText=value;
+    }
 
     public void add(ProductItem item, boolean refreshItem) {
         categoryItems.add(item);
@@ -236,6 +240,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             for (ProductItem item : items) {
                 add(item, refreshItem);
             }
+
         }
     }
 
@@ -549,20 +554,25 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         private void setDealTitle(int position, ProductItem value) {
             this.valueItem = value;
-            SpannableString spannableString = new SpannableString(valueItem.getDisplayName());
-            if (highLightText != null && !highLightText.isEmpty() && Utils.containsIgnoreCase(valueItem.getDisplayName(), highLightText)) {
-                StyleSpan styleSpan = new StyleSpan(Typeface.BOLD);
-                int fromindex = valueItem.getDisplayName().toLowerCase().indexOf(highLightText.toLowerCase());
-                if (fromindex == -1) {
-                    fromindex = valueItem.getDisplayName().toLowerCase().indexOf(lowerhighlight.toLowerCase());
+            if(showHighlightText) {
+                SpannableString spannableString = new SpannableString(valueItem.getDisplayName());
+                if (highLightText != null && !highLightText.isEmpty() && Utils.containsIgnoreCase(valueItem.getDisplayName(), highLightText)) {
+                    StyleSpan styleSpan = new StyleSpan(Typeface.BOLD);
+                    int fromindex = valueItem.getDisplayName().toLowerCase().indexOf(highLightText.toLowerCase());
+                    if (fromindex == -1) {
+                        fromindex = valueItem.getDisplayName().toLowerCase().indexOf(lowerhighlight.toLowerCase());
+                    }
+                    if (fromindex == -1) {
+                        fromindex = valueItem.getDisplayName().toLowerCase().indexOf(upperhighlight.toLowerCase());
+                    }
+                    int toIndex = fromindex + highLightText.length();
+                    spannableString.setSpan(styleSpan, fromindex, toIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 }
-                if (fromindex == -1) {
-                    fromindex = valueItem.getDisplayName().toLowerCase().indexOf(upperhighlight.toLowerCase());
-                }
-                int toIndex = fromindex + highLightText.length();
-                spannableString.setSpan(styleSpan, fromindex, toIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                tvDealTitle.setText(spannableString);
+            }else{
+                tvDealTitle.setText(valueItem.getDisplayName());
+
             }
-            tvDealTitle.setText(spannableString);
             tvBrandName.setText(value.getBrand().getTitle());
         }
 

@@ -20,13 +20,13 @@ public class DealsSearchContract {
 
         void navigateToActivityRequest(Intent intent, int requestCode);
 
-        void renderFromSearchResults(List<ProductItem> productItems, String searchText, int count);
+        void renderFromSearchResults();
 
         RequestParams getParams();
 
         android.view.View getRootView();
 
-        void setTrendingDealsOrSuggestions(List<ProductItem> searchViewModels, boolean isTrendingDeals, String highlight);
+        void setTrendingDealsOrSuggestions(List<ProductItem> searchViewModels, boolean isTrendingDeals, String highlight, int count);
 
         void removeFooter();
 

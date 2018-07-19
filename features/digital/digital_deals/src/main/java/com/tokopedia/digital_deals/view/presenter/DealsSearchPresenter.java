@@ -6,21 +6,20 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
 
 import com.google.gson.reflect.TypeToken;
-import com.tokopedia.abstraction.common.utils.view.CommonUtils;;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.domain.getusecase.GetSearchDealsListRequestUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetSearchNextUseCase;
-import com.tokopedia.digital_deals.view.model.response.SearchResponse;
-import com.tokopedia.digital_deals.view.activity.DealDetailsActivity;
 import com.tokopedia.digital_deals.view.activity.DealsHomeActivity;
 import com.tokopedia.digital_deals.view.activity.DealsLocationActivity;
 import com.tokopedia.digital_deals.view.contractor.DealsSearchContract;
-import com.tokopedia.digital_deals.view.utils.Utils;
-import com.tokopedia.digital_deals.view.model.ProductItem;
 import com.tokopedia.digital_deals.view.model.Location;
+import com.tokopedia.digital_deals.view.model.ProductItem;
+import com.tokopedia.digital_deals.view.model.response.SearchResponse;
+import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.usecase.RequestParams;
 
 import java.lang.reflect.Type;
@@ -30,6 +29,8 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import rx.Subscriber;
+
+;
 
 
 public class DealsSearchPresenter
@@ -43,7 +44,6 @@ public class DealsSearchPresenter
     private String highlight;
     private boolean isLoading;
     private boolean isLastPage;
-    private boolean SEARCH_SUBMITTED = false;
     private RequestParams searchNextParams = RequestParams.create();
 
     @Inject
@@ -80,10 +80,7 @@ public class DealsSearchPresenter
                 RestResponse restResponse = typeRestResponseMap.get(token);
                 DataResponse dataResponse = restResponse.getData();
                 SearchResponse searchResponse = (SearchResponse) dataResponse.getData();
-                if (SEARCH_SUBMITTED)
-                    getView().renderFromSearchResults(processSearchResponse(searchResponse), searchText, searchResponse.getCount());
-                else
-                    getView().setTrendingDealsOrSuggestions(processSearchResponse(searchResponse), false, highlight);
+                getView().setTrendingDealsOrSuggestions(processSearchResponse(searchResponse), false, highlight, searchResponse.getCount());
                 checkIfToLoad(getView().getLayoutManager());
                 CommonUtils.dumper("enter onNext");
             }
@@ -93,7 +90,7 @@ public class DealsSearchPresenter
     @Override
     public void initialize() {
         mTopDeals = getView().getActivity().getIntent().getParcelableArrayListExtra("TOPDEALS");
-        getView().setTrendingDealsOrSuggestions(mTopDeals, true, null);
+        getView().setTrendingDealsOrSuggestions(mTopDeals, true, null, mTopDeals.size());
     }
 
     @Override
@@ -104,24 +101,26 @@ public class DealsSearchPresenter
 
     @Override
     public void searchTextChanged(String searchText) {
-        SEARCH_SUBMITTED = false;
-        if (searchText != null && !searchText.equals("")) {
+        if (!TextUtils.isEmpty(searchText)) {
             if (searchText.length() > 2) {
                 getDealsListBySearch(searchText);
-            }
-            if (searchText.length() == 0) {
-                getView().setTrendingDealsOrSuggestions(mTopDeals, true, null);
+            } else {
+                getSearchDealsListRequestUseCase.unsubscribe();
+                getSearchNextUseCase.unsubscribe();
+                getView().setTrendingDealsOrSuggestions(mTopDeals, true, null, mTopDeals.size());
             }
         } else {
-            getView().setTrendingDealsOrSuggestions(mTopDeals, true, null);
+            getSearchDealsListRequestUseCase.unsubscribe();
+            getSearchNextUseCase.unsubscribe();
+            getView().setTrendingDealsOrSuggestions(mTopDeals, true, null, mTopDeals.size());
         }
     }
 
     @Override
     public void searchSubmitted(String searchText) {
-        SEARCH_SUBMITTED = true;
-        getDealsListBySearch(searchText);
-
+        if (searchText.length() > 2) {
+            getView().renderFromSearchResults();
+        }
     }
 
     @Override
@@ -195,8 +194,7 @@ public class DealsSearchPresenter
         } else {
             isLastPage = true;
         }
-        List<ProductItem> productItems = searchResponse.getDeals();
-        return productItems;
+        return searchResponse.getDeals();
     }
 
 }

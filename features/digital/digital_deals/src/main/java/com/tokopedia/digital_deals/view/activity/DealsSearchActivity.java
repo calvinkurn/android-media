@@ -1,7 +1,6 @@
 package com.tokopedia.digital_deals.view.activity;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
@@ -17,17 +16,14 @@ import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.style.ClickableSpan;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.digital_deals.R;
-import com.tokopedia.digital_deals.di.DaggerDealsComponent;
 import com.tokopedia.digital_deals.di.DealsComponentInstance;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
 import com.tokopedia.digital_deals.view.contractor.DealsSearchContract;
@@ -55,10 +51,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
     private LinearLayout llDeals;
     private CoordinatorLayout baseMainContent;
     private ConstraintLayout clLocation;
-
     private LinearLayoutManager layoutManager;
-
-    private android.view.View progressBarLayout;
     private SearchInputView searchInputView;
     private RecyclerView rvDeals;
     private ImageView back;
@@ -69,6 +62,8 @@ public class DealsSearchActivity extends DealsBaseActivity implements
     @Inject
     public DealsSearchPresenter mPresenter;
     private DealsCategoryAdapter dealsCategoryAdapter;
+    private int listCount;
+    private String searchText;
 
     @Override
     public int getLayoutRes() {
@@ -84,13 +79,11 @@ public class DealsSearchActivity extends DealsBaseActivity implements
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         mPresenter.attachView(this);
         mPresenter.initialize();
-
     }
 
     private void setUpVariables() {
         rvDeals = findViewById(R.id.rv_search_results);
         searchInputView = findViewById(R.id.search_input_view);
-        progressBarLayout = findViewById(R.id.progress_bar_layout);
         mainContent = findViewById(R.id.main_content);
         back = findViewById(R.id.imageViewBack);
         noContent = findViewById(R.id.no_content);
@@ -116,12 +109,12 @@ public class DealsSearchActivity extends DealsBaseActivity implements
                 if (hasFocus) {
                     back.setImageResource(R.drawable.ic_close_deals);
                     clLocation.setVisibility(View.GONE);
+
                     dealsCategoryAdapter.setTopDealsLayout(true);
                     if (firstTimeRefresh)
                         firstTimeRefresh = false;
-                    else
+                    else if (!TextUtils.isEmpty(searchInputView.getSearchText()) && searchInputView.getSearchText().length() > 2)
                         dealsCategoryAdapter.removeHeaderAndFooter();
-
                     dealsCategoryAdapter.notifyDataSetChanged();
                 }
             }
@@ -158,39 +151,26 @@ public class DealsSearchActivity extends DealsBaseActivity implements
     }
 
     @Override
-    public void renderFromSearchResults(List<ProductItem> productItems, String searchText, int count) {
-        Location location = Utils.getSingletonInstance().getLocation(getActivity());
+    public void renderFromSearchResults() {
+        if (listCount > 0) {
+            Location location = Utils.getSingletonInstance().getLocation(getActivity());
 
-        if (productItems != null && productItems.size() > 0) {
-            llDeals.setVisibility(View.VISIBLE);
-            noContent.setVisibility(View.GONE);
-            dealsCategoryAdapter.clearList();
-            dealsCategoryAdapter.addAll(productItems, false);
             dealsCategoryAdapter.setTopDealsLayout(false);
+            if (firstTimeRefresh)
+                firstTimeRefresh = false;
+            dealsCategoryAdapter.removeHeaderAndFooter();
             dealsCategoryAdapter.notifyDataSetChanged();
             rvDeals.addOnScrollListener(rvOnScrollListener);
-            if (productItems.size() > 0) {
-                if (count == 0)
-                    count = productItems.size();
-            }
-            SpannableString headerString = getHeaderFormattedText(searchText, count);
+            SpannableString headerString = getHeaderFormattedText(searchText, listCount);
             if (!TextUtils.isEmpty(headerString))
                 dealsCategoryAdapter.addHeader(headerString);
-            hideKeyboard();
-        } else {
+            KeyboardHandler.hideSoftKeyboard(getActivity());
+            rvDeals.requestFocus();
+            clLocation.setVisibility(View.VISIBLE);
+            tvCityName.setText(location.getName());
+        }else{
             llDeals.setVisibility(View.GONE);
             noContent.setVisibility(View.VISIBLE);
-        }
-        clLocation.setVisibility(View.VISIBLE);
-        tvCityName.setText(location.getName());
-
-    }
-
-    private void hideKeyboard() {
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (imm != null) {
-            imm.hideSoftInputFromWindow(searchInputView.getSearchTextView().getWindowToken(), 0);
-            rvDeals.requestFocus();
         }
     }
 
@@ -225,20 +205,30 @@ public class DealsSearchActivity extends DealsBaseActivity implements
     }
 
     @Override
-    public void setTrendingDealsOrSuggestions(List<ProductItem> searchViewModels, boolean isTrendingDeals, String highlight) {
+    public void setTrendingDealsOrSuggestions(List<ProductItem> productItems, boolean isTrendingDeals, String highlight, int count) {
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
-        if (searchViewModels != null && !searchViewModels.isEmpty()) {
+        if (productItems != null && !productItems.isEmpty()) {
+            rvDeals.clearOnScrollListeners();
             dealsCategoryAdapter.clearList();
-            dealsCategoryAdapter.addAll(searchViewModels, false);
+            dealsCategoryAdapter.addAll(productItems, false);
             dealsCategoryAdapter.setTopDealsLayout(true);
-            dealsCategoryAdapter.notifyDataSetChanged();
+            if (productItems.size() > 0) {
+                if (count == 0)
+                    listCount = productItems.size();
+                else
+                    listCount = count;
+            }
+            searchText = highlight;
             if (isTrendingDeals) {
                 dealsCategoryAdapter.addHeader(new SpannableString(""));
-                rvDeals.removeOnScrollListener(rvOnScrollListener);
+                dealsCategoryAdapter.showHighLightText(false);
             } else {
                 rvDeals.addOnScrollListener(rvOnScrollListener);
+                dealsCategoryAdapter.showHighLightText(true);
                 dealsCategoryAdapter.setHighLightText(highlight);
             }
+            dealsCategoryAdapter.notifyDataSetChanged();
+
             llDeals.setVisibility(View.VISIBLE);
 
             noContent.setVisibility(View.GONE);
