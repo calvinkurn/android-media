@@ -1,11 +1,7 @@
 package com.tokopedia.flight.cancellation.view.fragment;
 
-import android.Manifest;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -15,17 +11,16 @@ import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
-import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.di.FlightCancellationComponent;
 import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationAttachementAdapterTypeFactory;
@@ -34,25 +29,23 @@ import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationAttachme
 import com.tokopedia.flight.cancellation.view.contract.FlightCancellationReasonAndProofContract;
 import com.tokopedia.flight.cancellation.view.presenter.FlightCancellationReasonAndProofPresenter;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttachmentViewModel;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationCameraPassData;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperViewModel;
 import com.tokopedia.flight.common.util.FlightAnalytics;
+import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
+import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.RuntimePermissions;
-
-@RuntimePermissions
 public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment implements FlightCancellationReasonAndProofContract.View, FlightCancellationAttachementAdapterTypeFactory.OnAdapterInteractionListener {
     private static final String EXTRA_CANCELLATION_VIEW_MODEL = "EXTRA_CANCELLATION_VIEW_MODEL";
     private static final String EXTRA_ATTACHMENT_VIEW_MODEL = "EXTRA_ATTACHMENT_VIEW_MODEL";
     private static final String EXTRA_IMAGE_LOCAL = "EXTRA_IMAGE_LOCAL";
-    private static final int REQUEST_CODE_GALLERY = 1001;
-    private static int REQUEST_CODE_CAMERA = 1002;
+    private static final int REQUEST_CODE_IMAGE = 1001;
     private ProgressBar progressBar;
 
     private LinearLayout container;
@@ -254,23 +247,12 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
 
     @Override
     public void onUploadAttachmentButtonClicked() {
-        AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(getActivity());
-        myAlertDialog.setMessage(R.string.flight_cancellation_upload_attachment_title);
-        myAlertDialog.setPositiveButton(R.string.flight_cancellation_gallery_label, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                FlightCancellationReasonAndProofFragmentPermissionsDispatcher.actionOpenGalleryWithCheck(FlightCancellationReasonAndProofFragment.this);
-            }
-        });
-        myAlertDialog.setNegativeButton(R.string.flight_cancellation_camera_label, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                FlightCancellationReasonAndProofFragmentPermissionsDispatcher.actionOpenCameraWithCheck(FlightCancellationReasonAndProofFragment.this);
-            }
-        });
-        Dialog dialog = myAlertDialog.create();
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.show();
+        ImagePickerBuilder builder = new ImagePickerBuilder(getString(R.string.choose_image),
+                new int[]{ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA}, GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
+                ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, null, true,
+                null, null);
+        Intent intent = ImagePickerActivity.getIntent(getActivity(), builder);
+        startActivityForResult(intent, REQUEST_CODE_IMAGE);
     }
 
     @Override
@@ -281,38 +263,15 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == REQUEST_CODE_GALLERY) {
-            if (resultCode == Activity.RESULT_OK && data != null) {
-                if (getActivity() != null && getActivity().getApplication() instanceof FlightModuleRouter) {
-                    String key = ((FlightModuleRouter) getActivity().getApplication()).getGalleryExtraSelectionPathResultKey();
-                    if (data.hasExtra(key)) {
-                        String filepath = data.getStringExtra(key);
-                        presenter.onSuccessGetImage(filepath);
-                    }
-                }
+        if (requestCode == REQUEST_CODE_IMAGE && resultCode == Activity.RESULT_OK && data != null) {
+            ArrayList<String> imagePathList = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS);
+            if (imagePathList == null || imagePathList.size() <= 0) {
+                return;
             }
-        } else if (requestCode == REQUEST_CODE_CAMERA && resultCode == Activity.RESULT_OK) {
-
-            presenter.onSuccessGetImage(fileFromCameraLocTemp);
-        }
-    }
-
-    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    public void actionOpenCamera() {
-        if (getActivity() != null && getActivity().getApplication() instanceof FlightModuleRouter) {
-            FlightCancellationCameraPassData passData = ((FlightModuleRouter) getActivity().getApplication()).startCaptureWithCamera(getActivity());
-            fileFromCameraLocTemp = passData.getImagePathLoc();
-            startActivityForResult(passData.getDestinationIntent(), REQUEST_CODE_CAMERA);
-        }
-    }
-
-
-    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    public void actionOpenGallery() {
-        if (getActivity() != null && getActivity().getApplication() instanceof FlightModuleRouter) {
-            Intent intent = ((FlightModuleRouter) getActivity().getApplication()).getGalleryIntent(getActivity());
-            startActivityForResult(intent, REQUEST_CODE_GALLERY);
+            String imagePath = imagePathList.get(0);
+            if (!TextUtils.isEmpty(imagePath)) {
+                presenter.onSuccessGetImage(imagePath);
+            }
         }
     }
 
