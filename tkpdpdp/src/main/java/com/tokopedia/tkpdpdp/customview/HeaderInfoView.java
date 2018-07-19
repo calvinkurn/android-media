@@ -178,6 +178,7 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
 
     public void renderProductCampaign(Campaign campaign) {
         if(campaign != null && campaign.getActive()) {
+            textTimerTitle.setText(campaign.getCampaignTypeName());
             tvPriceFinal.setText(campaign.getDiscountedPriceFmt());
             textOriginalPrice.setText(campaign.getOriginalPriceFmt());
             textOriginalPrice.setPaintFlags(

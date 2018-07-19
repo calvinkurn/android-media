@@ -40,6 +40,18 @@ public class Campaign implements Parcelable {
     @Expose
     private String originalPriceFmt;
 
+    @SerializedName("campaign_type_name")
+    @Expose
+    private String campaignTypeName;
+
+    public String getCampaignTypeName() {
+        return campaignTypeName;
+    }
+
+    public void setCampaignTypeName(String campaignTypeName) {
+        this.campaignTypeName = campaignTypeName;
+    }
+
     public Boolean getActive() {
         return isActive;
     }
@@ -123,6 +135,7 @@ public class Campaign implements Parcelable {
         endDate = in.readString();
         originalPrice = in.readString();
         originalPriceFmt = in.readString();
+        campaignTypeName = in.readString();
     }
 
     @Override
@@ -145,6 +158,7 @@ public class Campaign implements Parcelable {
         dest.writeString(endDate);
         dest.writeString(originalPrice);
         dest.writeString(originalPriceFmt);
+        dest.writeString(campaignTypeName);
     }
 
     @SuppressWarnings("unused")
