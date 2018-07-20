@@ -732,7 +732,7 @@ public class PosRouterApplication extends MainApplication implements
 
     @Override
     public boolean isLoginInactivePhoneLinkEnabled() {
-        return true;
+        return false;
     }
 
     public PosAppComponent getPosAppComponent() {
