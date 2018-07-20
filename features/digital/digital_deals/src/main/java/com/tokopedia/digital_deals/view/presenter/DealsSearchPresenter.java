@@ -6,21 +6,20 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
 
 import com.google.gson.reflect.TypeToken;
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.domain.getusecase.GetSearchDealsListRequestUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetSearchNextUseCase;
-import com.tokopedia.digital_deals.view.model.response.SearchResponse;
-import com.tokopedia.digital_deals.view.activity.DealDetailsActivity;
 import com.tokopedia.digital_deals.view.activity.DealsHomeActivity;
 import com.tokopedia.digital_deals.view.activity.DealsLocationActivity;
 import com.tokopedia.digital_deals.view.contractor.DealsSearchContract;
-import com.tokopedia.digital_deals.view.utils.Utils;
-import com.tokopedia.digital_deals.view.model.ProductItem;
 import com.tokopedia.digital_deals.view.model.Location;
+import com.tokopedia.digital_deals.view.model.ProductItem;
+import com.tokopedia.digital_deals.view.model.response.SearchResponse;
+import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.usecase.RequestParams;
 
 import java.lang.reflect.Type;
@@ -30,6 +29,8 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import rx.Subscriber;
+
+;
 
 
 public class DealsSearchPresenter
@@ -43,7 +44,6 @@ public class DealsSearchPresenter
     private String highlight;
     private boolean isLoading;
     private boolean isLastPage;
-    private boolean SEARCH_SUBMITTED = false;
     private RequestParams searchNextParams = RequestParams.create();
 
     @Inject
@@ -75,15 +75,12 @@ public class DealsSearchPresenter
 
             @Override
             public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
-                Type token = new TypeToken<DataResponse<SearchResponse>>(){
+                Type token = new TypeToken<DataResponse<SearchResponse>>() {
                 }.getType();
                 RestResponse restResponse = typeRestResponseMap.get(token);
                 DataResponse dataResponse = restResponse.getData();
                 SearchResponse searchResponse = (SearchResponse) dataResponse.getData();
-                if (SEARCH_SUBMITTED)
-                    getView().renderFromSearchResults(processSearchResponse(searchResponse), searchText, searchResponse.getCount());
-                else
-                    getView().setSuggestions(processSearchResponse(searchResponse), highlight);
+                getView().setTrendingDealsOrSuggestions(processSearchResponse(searchResponse), false, highlight, searchResponse.getCount());
                 checkIfToLoad(getView().getLayoutManager());
                 CommonUtils.dumper("enter onNext");
             }
@@ -93,8 +90,7 @@ public class DealsSearchPresenter
     @Override
     public void initialize() {
         mTopDeals = getView().getActivity().getIntent().getParcelableArrayListExtra("TOPDEALS");
-        Location location=Utils.getSingletonInstance().getLocation(getView().getActivity());
-        getView().setTrendingDeals(mTopDeals, location);
+        getView().setTrendingDealsOrSuggestions(mTopDeals, true, null, mTopDeals.size());
     }
 
     @Override
@@ -105,44 +101,39 @@ public class DealsSearchPresenter
 
     @Override
     public void searchTextChanged(String searchText) {
-        SEARCH_SUBMITTED = false;
-        if (searchText != null && !searchText.equals("")) {
+        if (!TextUtils.isEmpty(searchText)) {
             if (searchText.length() > 2) {
                 getDealsListBySearch(searchText);
-            }
-            if (searchText.length() == 0) {
-                getView().setTrendingDeals(mTopDeals, Utils.getSingletonInstance().getLocation(getView().getActivity()));
+            } else {
+                getSearchDealsListRequestUseCase.unsubscribe();
+                getSearchNextUseCase.unsubscribe();
+                getView().setTrendingDealsOrSuggestions(mTopDeals, true, null, mTopDeals.size());
             }
         } else {
-            getView().setTrendingDeals(mTopDeals, Utils.getSingletonInstance().getLocation(getView().getActivity()));
+            getSearchDealsListRequestUseCase.unsubscribe();
+            getSearchNextUseCase.unsubscribe();
+            getView().setTrendingDealsOrSuggestions(mTopDeals, true, null, mTopDeals.size());
         }
     }
 
     @Override
     public void searchSubmitted(String searchText) {
-        SEARCH_SUBMITTED = true;
-        getDealsListBySearch(searchText);
-
+        if (searchText.length() > 2) {
+            getView().renderFromSearchResults();
+        }
     }
 
     @Override
     public boolean onItemClick(int id) {
         if (id == R.id.tv_change_city) {
             getView().navigateToActivityRequest(new Intent(getView().getActivity(), DealsLocationActivity.class), DealsHomeActivity.REQUEST_CODE_DEALSLOCATIONACTIVITY);
-            getView().getActivity().overridePendingTransition( R.anim.slide_in_up, R.anim.hold );
-        }else if (id == R.id.imageViewBack) {
+            getView().getActivity().overridePendingTransition(R.anim.slide_in_up, R.anim.hold);
+        } else if (id == R.id.imageViewBack) {
             getView().goBack();
         }
         return true;
     }
 
-
-    @Override
-    public void onSearchResultClick(ProductItem searchViewModel) {
-        Intent detailsIntent = new Intent(getView().getActivity(), DealDetailsActivity.class);
-        detailsIntent.putExtra(DealDetailsPresenter.HOME_DATA, searchViewModel.getSeoUrl());
-        getView().navigateToActivity(detailsIntent);
-    }
 
     @Override
     public void onRecyclerViewScrolled(LinearLayoutManager layoutManager) {
@@ -172,11 +163,8 @@ public class DealsSearchPresenter
                 DataResponse dataResponse = restResponse.getData();
                 SearchResponse searchResponse = (SearchResponse) dataResponse.getData();
                 isLoading = false;
-                getView().removeFooter(SEARCH_SUBMITTED);
-                if (SEARCH_SUBMITTED)
-                    getView().addDealsToCards(processSearchResponse(searchResponse));
-                else
-                    getView().addDeals(processSearchResponse(searchResponse));
+                getView().removeFooter();
+                getView().addDealsToCards(processSearchResponse(searchResponse));
                 checkIfToLoad(getView().getLayoutManager());
             }
         });
@@ -192,7 +180,7 @@ public class DealsSearchPresenter
                     && firstVisibleItemPosition >= 0) {
                 loadMoreItems();
             } else {
-                getView().addFooter(SEARCH_SUBMITTED);
+                getView().addFooter();
             }
         }
     }
@@ -206,8 +194,7 @@ public class DealsSearchPresenter
         } else {
             isLastPage = true;
         }
-        List<ProductItem> productItems= searchResponse.getDeals();
-        return productItems;
+        return searchResponse.getDeals();
     }
 
 }

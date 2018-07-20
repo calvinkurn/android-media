@@ -9,18 +9,6 @@ public class TokoPointDetailEntity {
     @SerializedName("tokopoints")
     TokoPointEntity tokoPoints;
 
-    @Expose
-    @SerializedName("luckyegg")
-    LuckyEggEntity luckyEgg;
-
-    public LuckyEggEntity getLuckyEgg() {
-        return luckyEgg;
-    }
-
-    public void setLuckyEgg(LuckyEggEntity luckyEgg) {
-        this.luckyEgg = luckyEgg;
-    }
-
     public TokoPointEntity getTokoPoints() {
         return tokoPoints;
     }
@@ -33,7 +21,6 @@ public class TokoPointDetailEntity {
     public String toString() {
         return "TokoPointDetailEntity{" +
                 "tokoPoints=" + tokoPoints +
-                ", luckyEgg=" + luckyEgg +
                 '}';
     }
 }

@@ -138,8 +138,6 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
     private void restoreState() {
         if (savedState != null) {
-            // For Example
-            //tv1.setText(savedState.getString("text"));
             onRestoreState(savedState);
         }
     }
@@ -180,11 +178,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
     }
 
     protected void initInjector() {
-        orderListComponent = DaggerOrderListComponent.builder()
-                .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
-                .build();
-        GraphqlClient.init(getActivity());
-        orderListComponent.inject(this);
+        getComponent(OrderListComponent.class).inject(this);
     }
 
 

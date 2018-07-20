@@ -17,11 +17,11 @@ import dagger.Component;
  */
 
 @CategoryScope
-@Component (modules = CategoryModule.class, dependencies = AppComponent.class)
+@Component(modules = CategoryModule.class, dependencies = AppComponent.class)
 public interface CategoryComponent {
-    void inject (CategoryActivity categoryActivity);
+    void inject(CategoryActivity categoryActivity);
 
-    void inject (CategoryPresenter categoryPresenter);
+    void inject(CategoryPresenter categoryPresenter);
 
     void inject(ProductFragment productFragment);
 

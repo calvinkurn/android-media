@@ -12,13 +12,19 @@ public class PromoContent {
     @Expose
     private String code;
 
-    @SerializedName("url")
-    @Expose
-    private String url;
-
     @SerializedName("content")
     @Expose
     private String content;
+
+    @SerializedName("friend_count")
+    @Expose
+    private String friendCount;
+
+    @SerializedName("url")
+    @Expose
+    private String shareUrl;
+
+
 
     public String getCode() {
         return code;
@@ -36,11 +42,19 @@ public class PromoContent {
         this.content = content;
     }
 
-    public String getUrl() {
-        return url;
+    public String getFriendCount() {
+        return friendCount;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setFriendCount(String friendCount) {
+        this.friendCount = friendCount;
+    }
+
+    public String getShareUrl() {
+        return shareUrl;
+    }
+
+    public void setShareUrl(String shareUrl) {
+        this.shareUrl = shareUrl;
     }
 }

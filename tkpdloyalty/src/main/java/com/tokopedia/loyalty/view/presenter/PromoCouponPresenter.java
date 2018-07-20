@@ -13,6 +13,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseErrorException;
+import com.tokopedia.core.network.exception.model.UnProcessableHttpException;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
@@ -125,6 +126,7 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
         param.put("product_id", String.valueOf(productId));
         param.put("page", String.valueOf(1));
         param.put("page_size", String.valueOf(20));
+        param.put("type", IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING);
 
         //TODO Revert Later
         promoCouponInteractor.getCouponList(
@@ -352,7 +354,7 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
             @Override
             public void onError(Throwable e) {
                 view.hideProgressLoading();
-                if (e instanceof LoyaltyErrorException || e instanceof ResponseErrorException) {
+                if (e instanceof LoyaltyErrorException || e instanceof ResponseErrorException || e instanceof com.tokopedia.abstraction.common.network.exception.ResponseErrorException) {
                     couponData.setErrorMessage(e.getMessage());
                     view.couponError();
                 } else {
@@ -396,7 +398,7 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
         if (jsonbody != null || jsonbody.length() > 0) {
             JsonElement jsonElement = new JsonParser().parse(jsonbody);
             requestBody = jsonElement.getAsJsonObject();
-            if(platform.equals(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EVENT_STRING))
+            if (platform.equals(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EVENT_STRING))
                 submitEventVoucher(data, requestBody, false);
             else
                 submitDealVoucher(data, requestBody, false);

@@ -3,6 +3,8 @@ package com.tokopedia.transaction.orders.orderdetails.data;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class MetaDataInfo {
 
     @SerializedName("end_date")
@@ -11,6 +13,9 @@ public class MetaDataInfo {
     @SerializedName("entity_address")
     @Expose
     private EntityAddress entityAddress;
+    @SerializedName("entity_packages")
+    @Expose
+    private List<EntityPackage> entityPackages;
     @SerializedName("entity_brand_name")
     @Expose
     private String entityBrandName;
@@ -53,6 +58,14 @@ public class MetaDataInfo {
 
     public void setEntityAddress(EntityAddress entityAddress) {
         this.entityAddress = entityAddress;
+    }
+
+    public List<EntityPackage> getEntityPackages() {
+        return entityPackages;
+    }
+
+    public void setEntityPackages(List<EntityPackage> entityPackages) {
+        this.entityPackages = entityPackages;
     }
 
     public String getEntityBrandName() {

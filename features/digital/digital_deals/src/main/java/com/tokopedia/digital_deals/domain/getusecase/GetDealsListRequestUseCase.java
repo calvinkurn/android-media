@@ -33,7 +33,7 @@ public class GetDealsListRequestUseCase extends RestRequestUseCase {
         List<RestRequest> tempRequest = new ArrayList<>();
 
         String param = String.valueOf(params.get(DealsHomePresenter.TAG));
-        String url = DealsUrl.DEALS_DOMAIN + DealsUrl.DEALS_LIST +"/" + param;
+        String url = DealsUrl.DEALS_DOMAIN + DealsUrl.HelperUrl.DEALS_LIST +"/" + param;
         //Request 1
         Type token = new TypeToken<DataResponse<DealsResponse>>() {
         }.getType();
@@ -46,7 +46,7 @@ public class GetDealsListRequestUseCase extends RestRequestUseCase {
         }.getType();
 
         params.remove(DealsHomePresenter.TAG);
-        String url2 = DealsUrl.DEALS_DOMAIN + DealsUrl.DEALS_LIST_SEARCH;
+        String url2 = DealsUrl.DEALS_DOMAIN + DealsUrl.HelperUrl.DEALS_LIST_SEARCH;
         RestRequest restRequest2 = new RestRequest.Builder(url2, token2)
                 .setQueryParams(params)
                 .build();

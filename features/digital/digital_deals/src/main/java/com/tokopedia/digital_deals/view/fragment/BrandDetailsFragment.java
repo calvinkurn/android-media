@@ -28,23 +28,20 @@ import android.widget.TextView;
 
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.digital_deals.R;
-import com.tokopedia.digital_deals.di.DaggerDealsComponent;
 import com.tokopedia.digital_deals.di.DealsComponent;
-import com.tokopedia.digital_deals.di.DealsModule;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
 import com.tokopedia.digital_deals.view.contractor.BrandDetailsContract;
-import com.tokopedia.digital_deals.view.presenter.BrandDetailsPresenter;
-import com.tokopedia.digital_deals.view.utils.Utils;
+import com.tokopedia.digital_deals.view.customview.ExpandableTextView;
 import com.tokopedia.digital_deals.view.model.Brand;
 import com.tokopedia.digital_deals.view.model.ProductItem;
+import com.tokopedia.digital_deals.view.presenter.BrandDetailsPresenter;
+import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.usecase.RequestParams;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -67,7 +64,7 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
     private ImageView ivArrowSeeMore;
     private RecyclerView recyclerViewDeals;
     private View progressBarLayout;
-    private at.blogc.android.views.ExpandableTextView tvExpandableDesc;
+    private ExpandableTextView tvExpandableDesc;
     private ProgressBar progBar;
     private LinearLayout noContent;
     @Inject
@@ -181,7 +178,7 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
                 tvDealsCount.setText(String.format(getResources().getString(R.string.number_of_items), productItems.size()));
             else
                 tvDealsCount.setText(String.format(getResources().getString(R.string.number_of_items), count));
-            categoryAdapter = new DealsCategoryAdapter(getActivity(), productItems, this, !isShortLayout, true);
+            categoryAdapter = new DealsCategoryAdapter(productItems, this, !isShortLayout, true);
 
             recyclerViewDeals.setAdapter(categoryAdapter);
             recyclerViewDeals.setVisibility(View.VISIBLE);

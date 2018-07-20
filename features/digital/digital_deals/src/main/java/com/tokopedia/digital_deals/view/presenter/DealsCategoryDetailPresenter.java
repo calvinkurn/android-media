@@ -5,11 +5,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
 
 import com.google.gson.reflect.TypeToken;
-import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.common.network.data.model.RestResponse;
-import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.domain.getusecase.GetAllBrandsUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetCategoryDetailRequestUseCase;
@@ -37,9 +37,6 @@ import rx.Subscriber;
 public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCategoryDetailContract.View>
         implements DealsCategoryDetailContract.Presenter {
 
-    private String PROMOURL = "https://www.tokopedia.com/promo/tiket/events/";
-    private String FAQURL = "https://www.tokopedia.com/bantuan/faq-tiket-event/";
-    private String TRANSATIONSURL = "https://pulsa.tokopedia.com/order-list/";
     public final static String TAG = "url";
     private boolean isLoading;
     private boolean isLastPage;
@@ -88,12 +85,6 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
             }
             searchIntent.putParcelableArrayListExtra("TOPDEALS", searchItems);
             getView().navigateToActivityRequest(searchIntent, DealsHomeActivity.REQUEST_CODE_DEALSSEARCHACTIVITY);
-        } else if (id == R.id.action_promo) {
-            getView().startGeneralWebView(PROMOURL);
-        } else if (id == R.id.action_booked_history) {
-            getView().startGeneralWebView(TRANSATIONSURL);
-        } else if (id == R.id.action_faq) {
-            getView().startGeneralWebView(FAQURL);
         } else {
             getView().getActivity().onBackPressed();
         }

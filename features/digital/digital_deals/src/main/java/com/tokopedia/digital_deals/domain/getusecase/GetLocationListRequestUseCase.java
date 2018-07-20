@@ -28,7 +28,7 @@ public class GetLocationListRequestUseCase extends RestRequestUseCase {
     protected List<RestRequest> buildRequest() {
         List<RestRequest> tempRequest = new ArrayList<>();
 
-        String url = DealsUrl.DEALS_DOMAIN + DealsUrl.DEALS_LOCATIONS;
+        String url = DealsUrl.DEALS_DOMAIN + DealsUrl.HelperUrl.DEALS_LOCATIONS;
         //Request 1
         Type token = new TypeToken<DataResponse<LocationResponse>>() {
         }.getType();

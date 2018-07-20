@@ -17,24 +17,23 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.digital_deals.R;
-import com.tokopedia.digital_deals.di.DaggerDealsComponent;
 import com.tokopedia.digital_deals.di.DealsComponent;
-import com.tokopedia.digital_deals.di.DealsModule;
 import com.tokopedia.digital_deals.view.activity.DealDetailsActivity;
 import com.tokopedia.digital_deals.view.contractor.SelectQuantityContract;
+import com.tokopedia.digital_deals.view.model.PackageViewModel;
+import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse;
 import com.tokopedia.digital_deals.view.presenter.SelectQuantityPresenter;
 import com.tokopedia.digital_deals.view.utils.DealFragmentCallbacks;
 import com.tokopedia.digital_deals.view.utils.Utils;
-import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse;
-import com.tokopedia.digital_deals.view.model.PackageViewModel;
 import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;
+
+;
 
 public class SelectDealQuantityFragment extends BaseDaggerFragment implements SelectQuantityContract.View, View.OnClickListener {
 
@@ -132,7 +131,7 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
     void setButtons() {
 
         if (CURRENT_QUANTITY > 1) {
-            ivSubtract.setColorFilter(ContextCompat.getColor(getContext(), R.color.green_nob), android.graphics.PorterDuff.Mode.SRC_IN);
+            ivSubtract.setColorFilter(ContextCompat.getColor(getContext(), R.color.green_250), android.graphics.PorterDuff.Mode.SRC_IN);
             ivSubtract.setClickable(true);
 
         } else {
@@ -140,7 +139,7 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
             ivSubtract.setClickable(false);
         }
         if (CURRENT_QUANTITY < MAX_QUANTITY) {
-            ivAdd.setColorFilter(ContextCompat.getColor(getContext(), R.color.green_nob), android.graphics.PorterDuff.Mode.SRC_IN);
+            ivAdd.setColorFilter(ContextCompat.getColor(getContext(), R.color.green_250), android.graphics.PorterDuff.Mode.SRC_IN);
             ivAdd.setClickable(true);
 
         } else {

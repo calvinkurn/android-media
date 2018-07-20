@@ -14,12 +14,13 @@ import com.tokopedia.digital_deals.view.fragment.DealDetailsFragment;
 import com.tokopedia.digital_deals.view.fragment.DealsHomeFragment;
 import com.tokopedia.digital_deals.view.fragment.SelectDealQuantityFragment;
 import com.tokopedia.digital_deals.view.fragment.SelectLocationFragment;
+import com.tokopedia.oms.di.OmsModule;
 import com.tokopedia.oms.domain.postusecase.PostVerifyCartUseCase;
 
 import dagger.Component;
 
 @DealsScope
-@Component(modules = DealsModule.class, dependencies = BaseAppComponent.class)
+@Component(modules = OmsModule.class, dependencies = BaseAppComponent.class)
 
 public interface DealsComponent {
 

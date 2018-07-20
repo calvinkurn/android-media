@@ -3,26 +3,25 @@ package com.tokopedia.digital_deals.view.presenter;
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.google.gson.reflect.TypeToken;
-import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.common.network.data.model.RestResponse;
-import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.domain.getusecase.GetDealDetailsUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetDealLikesUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetSearchNextUseCase;
+import com.tokopedia.digital_deals.view.contractor.DealDetailsContract;
+import com.tokopedia.digital_deals.view.model.Outlet;
+import com.tokopedia.digital_deals.view.model.ProductItem;
+import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse;
 import com.tokopedia.digital_deals.view.model.response.GetLikesResponse;
 import com.tokopedia.digital_deals.view.model.response.SearchResponse;
-import com.tokopedia.digital_deals.view.contractor.DealDetailsContract;
 import com.tokopedia.digital_deals.view.utils.Utils;
-import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse;
-import com.tokopedia.digital_deals.view.model.ProductItem;
-import com.tokopedia.digital_deals.view.model.Outlet;
 import com.tokopedia.usecase.RequestParams;
 
 import java.lang.reflect.Type;

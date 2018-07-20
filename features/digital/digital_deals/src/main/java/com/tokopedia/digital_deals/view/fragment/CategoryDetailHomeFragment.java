@@ -65,6 +65,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     private CategoriesModel categoriesModel;
     private CategoryDetailCallbacks fragmentCallbacks;
     private String locationName;
+    private DealsCategoryAdapter dealsAdapter;
 
 
     @Override
@@ -116,6 +117,8 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
         seeAllBrands.setOnClickListener(this);
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerViewDeals.setLayoutManager(layoutManager);
+        dealsAdapter=new DealsCategoryAdapter(null, this, !IS_SHORT_LAYOUT);
+        recyclerViewDeals.setAdapter(dealsAdapter);
 
     }
 
@@ -143,7 +146,8 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
                 numberOfDeals.setText(String.format(getResources().getString(R.string.number_of_items), deals.size()));
             else
                 numberOfDeals.setText(String.format(getResources().getString(R.string.number_of_items), count));
-            recyclerViewDeals.setAdapter(new DealsCategoryAdapter(getActivity(), deals, this, !IS_SHORT_LAYOUT));
+            dealsAdapter.addAll(deals, false);
+            dealsAdapter.notifyDataSetChanged();
             recyclerViewDeals.setVisibility(View.VISIBLE);
             recyclerViewDeals.addOnScrollListener(rvOnScrollListener);
             noContent.setVisibility(View.GONE);
@@ -161,7 +165,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     public void renderBrandList(List<Brand> brandList) {
         if (brandList != null) {
             clBrands.setVisibility(View.VISIBLE);
-            recyclerViewBrands.setAdapter(new DealsBrandAdapter(getActivity(), brandList, true));
+            recyclerViewBrands.setAdapter(new DealsBrandAdapter(brandList, true));
         }else{
             clBrands.setVisibility(View.GONE);
         }
@@ -200,18 +204,12 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     public void hideSearchButton() {
         MenuItem item = mMenu.findItem(R.id.action_menu_search);
         item.setVisible(false);
-        item.setEnabled(false);
     }
 
     @Override
     public void showSearchButton() {
         MenuItem item = mMenu.findItem(R.id.action_menu_search);
         item.setVisible(true);
-        item.setEnabled(true);
-    }
-
-    @Override
-    public void startGeneralWebView(String url) {
 
     }
 

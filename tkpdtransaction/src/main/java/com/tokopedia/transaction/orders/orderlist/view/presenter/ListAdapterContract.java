@@ -29,7 +29,7 @@ public class ListAdapterContract {
 
         void setConditionalInfo(int successCondInfoVisiblity, String successConditionalText, Color color);
 
-        void setFailStatusBgColor(boolean statusFail);
+        void setFailStatusBgColor(String statusColor);
 
         void setStatus(String statusText);
 

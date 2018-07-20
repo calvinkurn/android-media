@@ -141,7 +141,7 @@ public class GetReplyMapper extends BaseChatApiCallMapper<ReplyData,ChatRoomView
                 item.getMsg(),
                 item.isMessageIsRead(),
                 false,
-                isSender(item.getSenderId())
+                !item.isOpposite()
         );
         list.add(messageViewModel);
     }
@@ -155,7 +155,7 @@ public class GetReplyMapper extends BaseChatApiCallMapper<ReplyData,ChatRoomView
                 item.getAttachment().getId(),
                 item.getAttachment().getType(),
                 item.getReplyTime(),
-                isSender(item.getSenderId()),
+                !item.isOpposite(),
                 item.getAttachment().getAttributes().getImageUrl(),
                 item.getAttachment().getAttributes().getThumbnail(),
                 item.isMessageIsRead(),
@@ -216,7 +216,7 @@ public class GetReplyMapper extends BaseChatApiCallMapper<ReplyData,ChatRoomView
                 invoiceAttributes.getDescription(),
                 invoiceAttributes.getImageUrl(),
                 invoiceAttributes.getAmount(),
-                isSender(item.getSenderId()),
+                !item.isOpposite(),
                 item.isMessageIsRead()
         );
 
@@ -239,7 +239,7 @@ public class GetReplyMapper extends BaseChatApiCallMapper<ReplyData,ChatRoomView
                 item.getAttachment().getAttributes().getProductProfile().getPrice(),
                 item.getAttachment().getAttributes().getProductProfile().getUrl(),
                 item.getAttachment().getAttributes().getProductProfile().getImageUrl(),
-                isSender(item.getSenderId()),
+                !item.isOpposite(),
                 item.getMsg()
         );
 
@@ -285,16 +285,10 @@ public class GetReplyMapper extends BaseChatApiCallMapper<ReplyData,ChatRoomView
             contacts) {
 
         for (Contact contact : contacts) {
-            boolean isShopOwner = String.valueOf(contact.getShopId()).equals(sessionHandler
-                    .getShopID());
-            String allowedOpponentRole = "";
-            if(isShopOwner) allowedOpponentRole = USER_ROLE;
-            else if(contact.getRole().equals(TOKOPEDIA_ADMIN_ROLE)) allowedOpponentRole = TOKOPEDIA_ADMIN_ROLE;
-            else allowedOpponentRole = SHOP_OWNER_ROLE;
 
             if (contact.getUserId() != 0
                     && !String.valueOf(contact.getUserId()).equals(sessionHandler.getLoginID())
-                    && contact.getRole().equals(allowedOpponentRole)) {
+                    && contact.isInterlocutor()) {
 
                 if (!TextUtils.isEmpty(contact.getAttributes().getName())) {
                     chatRoomViewModel.setNameHeader(contact.getAttributes().getName());
@@ -318,9 +312,5 @@ public class GetReplyMapper extends BaseChatApiCallMapper<ReplyData,ChatRoomView
             }
         }
         return list;
-    }
-
-    private boolean isSender(String senderId) {
-        return senderId.equals(sessionHandler.getLoginID());
     }
 }

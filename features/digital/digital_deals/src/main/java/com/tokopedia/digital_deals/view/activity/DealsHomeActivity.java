@@ -7,11 +7,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.digital_deals.R;
+import com.tokopedia.digital_deals.data.source.DealsUrl;
 import com.tokopedia.digital_deals.view.fragment.DealsHomeFragment;
-
-import static com.tokopedia.digital_deals.view.utils.Utils.Constants.DIGITAL_DEALS;
 
 public class DealsHomeActivity extends DealsBaseActivity {
 
@@ -21,7 +19,7 @@ public class DealsHomeActivity extends DealsBaseActivity {
     public final static int REQUEST_CODE_DEALDETAILACTIVITY=103;
     public final static int REQUEST_CODE_LOGIN=104;
 
-    @DeepLink({DIGITAL_DEALS})
+    @DeepLink({DealsUrl.AppLink.DIGITAL_DEALS})
     public static Intent getCallingApplinksTaskStask(Context context, Bundle extras) {
         Intent destination;
         try {

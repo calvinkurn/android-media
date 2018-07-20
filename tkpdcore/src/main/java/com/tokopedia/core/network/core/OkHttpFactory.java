@@ -446,7 +446,7 @@ public class OkHttpFactory {
                 .addDebugInterceptor()
                 .build();
     }
-    
+
     public OkHttpClient buildDaggerClientBearerEvents(EventInerceptors eventInterceptor,
                                                       OkHttpRetryPolicy okHttpRetryPolicy,
                                                       ChuckInterceptor chuckInterceptor,
@@ -458,20 +458,6 @@ public class OkHttpFactory {
         if (GlobalConfig.isAllowDebuggingTools()) {
             tkpdOkHttpBuilder.addInterceptor(debugInterceptor);
             tkpdOkHttpBuilder.addInterceptor(chuckInterceptor);
-            tkpdOkHttpBuilder.addInterceptor(loggingInterceptor);
-        }
-        return tkpdOkHttpBuilder.build();
-    }
-
-    public OkHttpClient buildDaggerClientBearerEventsDeals(EventInerceptors eventInterceptor,
-                                                      OkHttpRetryPolicy okHttpRetryPolicy,
-                                                      DebugInterceptor debugInterceptor,
-                                                      HttpLoggingInterceptor loggingInterceptor) {
-        TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(builder)
-                .addInterceptor(eventInterceptor)
-                .setOkHttpRetryPolicy(okHttpRetryPolicy);
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            tkpdOkHttpBuilder.addInterceptor(debugInterceptor);
             tkpdOkHttpBuilder.addInterceptor(loggingInterceptor);
         }
         return tkpdOkHttpBuilder.build();

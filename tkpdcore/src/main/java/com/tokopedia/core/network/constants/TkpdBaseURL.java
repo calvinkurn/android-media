@@ -61,8 +61,6 @@ public class TkpdBaseURL {
     public static String POS_DOMAIN = "https://gw.tokopedia.com/";
     public static String MAPS_DOMAIN = "https://gw.tokopedia.com/";
     public static String EVENTS_DOMAIN = "https://booking.tokopedia.com/";
-    public static String DEALS_DOMAIN = "https://booking-staging.tokopedia.com/";
-    public static String OMS_DOMAIN = "https://omscart.tokopedia.com/";
     public static String BASE_API_DOMAIN = "https://api.tokopedia.com/";
 
     public static String WALLET_DOMAIN = "https://www.tokocash.com/";
@@ -732,7 +730,6 @@ public class TkpdBaseURL {
         public static final String GET_SHOP_SCORE_DETAIL = "/v1/shopstats/shopscore/dtl/";
         public static final String GET_GM_SUBSCRIBE_PRODUCT = "/v1/gold/product";
         public static final String GET_FEATURED_PRODUCTS = "/v1/mobile/featured_product/{shopId}?json=1";
-        public static final String SET_CASHBACK_PRODUCTS = "/v1/cashback/set";
         public static final String GET_CASHBACK_PRODUCTS = "v1/tx/cashback";
     }
 

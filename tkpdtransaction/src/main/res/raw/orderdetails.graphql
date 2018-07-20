@@ -23,6 +23,7 @@ query OMSDETAILS($orderCategoryStr: String, $upstream:String, $orderId: String, 
     items {
       id
       imageUrl
+      category
       title
       quantity
       price
@@ -63,6 +64,11 @@ query OMSDETAILS($orderCategoryStr: String, $upstream:String, $orderId: String, 
         method
         key
         name
+        color {
+          textColor
+          border
+          background
+        }
         body {
           appURL
           method
@@ -95,6 +101,12 @@ query OMSDETAILS($orderCategoryStr: String, $upstream:String, $orderId: String, 
       weight
       control
       header
+      uri
+      color {
+        textColor
+        border
+        background
+      }
       body {
         appURL
         webURL

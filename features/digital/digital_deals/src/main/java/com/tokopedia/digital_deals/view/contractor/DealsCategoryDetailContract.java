@@ -40,8 +40,6 @@ public class DealsCategoryDetailContract {
 
         void showSearchButton();
 
-        void startGeneralWebView(String url);
-
         void removeFooter();
 
         void addFooter();

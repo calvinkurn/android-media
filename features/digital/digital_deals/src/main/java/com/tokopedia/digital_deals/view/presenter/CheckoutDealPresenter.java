@@ -7,21 +7,19 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.constant.IRouterConstant;
-import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.drawer2.data.pojo.profile.ProfileModel;
-import com.tokopedia.core.drawer2.domain.interactor.ProfileUseCase;
-import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.digital_deals.DealsModuleRouter;
 import com.tokopedia.digital_deals.R;
+import com.tokopedia.digital_deals.data.source.DealsUrl;
 import com.tokopedia.digital_deals.view.contractor.CheckoutDealContractor;
 import com.tokopedia.digital_deals.view.model.Outlet;
 import com.tokopedia.digital_deals.view.model.PackageViewModel;
+import com.tokopedia.digital_deals.view.model.cart.CartItem;
+import com.tokopedia.digital_deals.view.model.cart.CartItems;
+import com.tokopedia.digital_deals.view.model.cart.Configuration;
+import com.tokopedia.digital_deals.view.model.cart.MetaData;
 import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse;
-import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
-import com.tokopedia.oms.domain.model.request.cart.CartItem;
-import com.tokopedia.oms.domain.model.request.cart.CartItems;
-import com.tokopedia.oms.domain.model.request.cart.Configuration;
-import com.tokopedia.oms.domain.model.request.cart.MetaData;
 import com.tokopedia.oms.domain.postusecase.PostPaymentUseCase;
 import com.tokopedia.oms.scrooge.ScroogePGUtil;
 import com.tokopedia.oms.view.utils.Utils;
@@ -39,7 +37,6 @@ public class CheckoutDealPresenter
         extends BaseDaggerPresenter<CheckoutDealContractor.View>
         implements CheckoutDealContractor.Presenter {
 
-    private ProfileUseCase profileUseCase;
     private PostPaymentUseCase postPaymentUseCase;
     private String promocode = "";
     private RequestParams paymentparams;
@@ -47,22 +44,19 @@ public class CheckoutDealPresenter
     public static String EXTRA_DEALDETAIL = "EXTRA_DEALDETAIL";
     public static String EXTRA_CART = "EXTRA_CART";
     public static String EXTRA_PACKAGEVIEWMODEL = "EXTRA_PACKAGEVIEWMODEL";
-    private ProfileModel profileModel;
     private String email;
     private DealsDetailsResponse dealDetail;
     private PackageViewModel packageViewModel;
     private String cartData;
 
     @Inject
-    public CheckoutDealPresenter(PostPaymentUseCase postPaymentUseCase, ProfileUseCase profileUseCase) {
+    public CheckoutDealPresenter(PostPaymentUseCase postPaymentUseCase) {
         this.postPaymentUseCase = postPaymentUseCase;
-        this.profileUseCase = profileUseCase;
     }
 
     @Override
     public void onDestroy() {
         postPaymentUseCase.unsubscribe();
-        profileUseCase.unsubscribe();
     }
 
     @Override
@@ -73,36 +67,6 @@ public class CheckoutDealPresenter
     @Override
     public void updatePromoCode(String code) {
         this.promocode = code;
-    }
-
-    @Override
-    public void getProfile() {
-        getView().showProgressBar();
-        profileUseCase.execute(com.tokopedia.core.base.domain.RequestParams.EMPTY, new Subscriber<ProfileModel>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                throwable.printStackTrace();
-                Intent intent = ((TkpdCoreRouter) getView().getActivity().getApplication()).
-                        getLoginIntent(getView().getActivity());
-                getView().getActivity().startActivity(intent);
-                getView().hideProgressBar();
-            }
-
-            @Override
-            public void onNext(ProfileModel model) {
-                profileModel = model;
-                email = profileModel.getProfileData().getUserInfo().getUserEmail();
-                getView().setEmailIDPhoneNumber(profileModel.getProfileData().getUserInfo().getUserEmail(),
-                        profileModel.getProfileData().getUserInfo().getUserPhone());
-
-                getView().hideProgressBar();
-            }
-        });
     }
 
 
@@ -140,29 +104,27 @@ public class CheckoutDealPresenter
 
 
     private void goToLoyaltyActivity() {
-
-        ;
         JsonObject requestBody = convertPackageToCartItem(packageViewModel);
-
-        Intent loyaltyIntent = LoyaltyActivity.newInstanceCouponActive(getView().getActivity(), com.tokopedia.digital_deals.view.utils.Utils.Constants.DEALS, com.tokopedia.digital_deals.view.utils.Utils.Constants.DEALS);
+        Intent loyaltyIntent = ((DealsModuleRouter) getView().getActivity().getApplication()).
+                tkpdCartCheckoutGetLoyaltyOldCheckoutCouponActiveIntent(getView().getActivity(),
+                        DealsUrl.AppLink.DEALS,
+                        DealsUrl.AppLink.DEALS,
+                        "");
         loyaltyIntent.putExtra(com.tokopedia.oms.view.utils.Utils.Constants.CHECKOUTDATA, requestBody.toString());
         loyaltyIntent.putExtra(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PRODUCTID, packageViewModel.getDigitalProductID());
         loyaltyIntent.putExtra(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CATEGORYID, packageViewModel.getDigitalCategoryID());
         getView().navigateToActivityRequest(loyaltyIntent, IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
     }
 
-    @Override
-    public String getSCREEN_NAME() {
-        return null;
-    }
 
     public void getCheckoutDetails() {
-        getView().showProgressBar();
         Intent intent = getView().getActivity().getIntent();
         this.dealDetail = intent.getParcelableExtra(CheckoutDealPresenter.EXTRA_DEALDETAIL);
         this.cartData = intent.getStringExtra(CheckoutDealPresenter.EXTRA_CART);
         this.packageViewModel = intent.getParcelableExtra(CheckoutDealPresenter.EXTRA_PACKAGEVIEWMODEL);
         getView().renderFromDetails(dealDetail, packageViewModel);
+        getView().setEmailIDPhoneNumber(((DealsModuleRouter) getView().getActivity().getApplication()).getUserEmailProfil(),
+                ((DealsModuleRouter) getView().getActivity().getApplication()).getUserPhoneNumber());
     }
 
     private JsonObject convertCartItemToJson(String cart) {
@@ -236,10 +198,10 @@ public class CheckoutDealPresenter
         });
     }
 
-    public void updateAmount(long discountAmount){
+    public void updateAmount(long discountAmount) {
         getView().updateAmount(com.tokopedia.digital_deals.view.utils.Utils.convertToCurrencyString(packageViewModel.getSalesPrice() *
                 packageViewModel.getSelectedQuantity() +
-                packageViewModel.getCommission()-discountAmount));
+                packageViewModel.getCommission() - discountAmount));
 
     }
 

@@ -415,8 +415,10 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
         RecyclerView.ItemDecoration itemDecoration = null;
 
         if (voteRecyclerView != null && voteRecyclerView.getAdapter() != null) {
-            for (int i = 0; i < voteRecyclerView.getAdapter().getItemCount(); i++) {
-                voteRecyclerView.removeItemDecoration(voteRecyclerView.getItemDecorationAt(i));
+            int loop = voteRecyclerView.getItemDecorationCount();
+            while (voteRecyclerView.getItemDecorationCount() > 0) {
+                voteRecyclerView.removeItemDecorationAt(loop-1);
+                loop--;
             }
         }
 

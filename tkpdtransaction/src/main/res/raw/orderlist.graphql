@@ -38,6 +38,10 @@ query ($orderCategory: OrderCategory, $Page: Int, $PerPage: Int, $orderId: Int) 
       name
       uri
     }
+    dotMenu {
+      name
+      uri
+     }
     paymentData {
       label
       value
@@ -49,6 +53,7 @@ query ($orderCategory: OrderCategory, $Page: Int, $PerPage: Int, $orderId: Int) 
       label
       value
       textColor
+      imageUrl
       backgroundColor
     }
     actionButtons {

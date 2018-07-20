@@ -10,9 +10,13 @@ public class Items {
     @Expose
     private String title;
 
+    @SerializedName("category")
+    @Expose
+    private String category;
+
     @SerializedName("tapActions")
     @Expose
-    private List<TapActions> tapActions;
+    private List<ActionButton> tapActions;
 
     @SerializedName("price")
     @Expose
@@ -24,7 +28,7 @@ public class Items {
 
     @SerializedName("quantity")
     @Expose
-    private String quantity;
+    private int quantity;
 
     @SerializedName("promotionAmount")
     @Expose
@@ -51,11 +55,19 @@ public class Items {
         this.title = title;
     }
 
-    public List<TapActions> getTapActions() {
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public List<ActionButton> getTapActions() {
         return tapActions;
     }
 
-    public void setTapActions(List<TapActions> tapActions) {
+    public void setTapActions(List<ActionButton> tapActions) {
         this.tapActions = tapActions;
     }
 
@@ -75,11 +87,11 @@ public class Items {
         this.imageUrl = imageUrl;
     }
 
-    public String getQuantity() {
+    public int getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(String quantity) {
+    public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
 

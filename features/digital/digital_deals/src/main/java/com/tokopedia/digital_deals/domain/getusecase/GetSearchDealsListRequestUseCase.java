@@ -31,7 +31,7 @@ public class GetSearchDealsListRequestUseCase extends RestRequestUseCase {
     protected List<RestRequest> buildRequest() {
         List<RestRequest> tempRequest = new ArrayList<>();
 
-        String url = DealsUrl.DEALS_DOMAIN + DealsUrl.DEALS_LIST_SEARCH;
+        String url = DealsUrl.DEALS_DOMAIN + DealsUrl.HelperUrl.DEALS_LIST_SEARCH;
 
         Type token = new TypeToken<DataResponse<SearchResponse>>() {
         }.getType();

@@ -9,14 +9,15 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.common.network.data.model.RestResponse;
-import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.digital_deals.R;
 
+import com.tokopedia.digital_deals.data.source.DealsUrl;
 import com.tokopedia.digital_deals.view.model.response.DealsResponse;
 import com.tokopedia.digital_deals.domain.getusecase.GetAllBrandsUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetDealsListRequestUseCase;
@@ -59,9 +60,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
     private boolean isLastPage;
     private volatile boolean isDealsLoaded = false;
     private volatile boolean isBrandsLoaded = false;
-    private String PROMOURL = "https://www.tokopedia.com/promo/produk-digital/entertainment";
-    private String FAQURL = "https://www.tokopedia.com/contact-us#step2";
-    private String TRANSATIONSURL = "https://pulsa.tokopedia.com/order-list/";
+
     public final static String TAG = "url";
     private final String CAROUSEL = "carousel";
     private final String TOP = "top";
@@ -129,7 +128,6 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
                         else if (currentPage + 1 >= totalPages) {
                             currentPage = 0;
                         }
-                        CommonUtils.dumper("in slide on next , currentPage " + currentPage + " , total page" + totalPages);
                         mTouchViewPager.setCurrentItem(currentPage, true);
                     }
                 });
@@ -155,17 +153,17 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
         } else if (id == R.id.action_menu_favourite) {
 
         } else if (id == R.id.action_promo) {
-            getView().startGeneralWebView(PROMOURL);
+            getView().startGeneralWebView(DealsUrl.WebUrl.PROMOURL);
         } else if (id == R.id.action_booked_history) {
-            getView().startGeneralWebView(TRANSATIONSURL);
+            getView().startGeneralWebView(DealsUrl.WebUrl.TRANSATIONSURL);
         } else if (id == R.id.action_faq) {
-            getView().startGeneralWebView(FAQURL);
+            getView().startGeneralWebView(DealsUrl.WebUrl.FAQURL);
         } else if (id == R.id.tv_see_all_brands) {
             Intent brandIntent = new Intent(getView().getActivity(), AllBrandsActivity.class);
             brandIntent.putParcelableArrayListExtra(AllBrandsActivity.EXTRA_LIST, (ArrayList<? extends Parcelable>) categoriesModels);
             getView().navigateToActivity(brandIntent);
         } else if (id == R.id.see_all_promo) {
-            getView().startGeneralWebView(PROMOURL);
+            getView().startGeneralWebView(DealsUrl.WebUrl.PROMOURL);
         } else {
             getView().getActivity().onBackPressed();
         }

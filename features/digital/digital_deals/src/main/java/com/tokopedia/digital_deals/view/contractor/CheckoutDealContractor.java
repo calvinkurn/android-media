@@ -27,15 +27,9 @@ public class CheckoutDealContractor {
 
         void setEmailIDPhoneNumber(String emailID, String phoneNumber);
 
-        RequestParams getParams();
-
         android.view.View getRootView();
 
         void showPromoSuccessMessage(String text, String message, long discountAmount);
-
-        void showCashbackMessage(String text);
-
-        void hideSuccessMessage();
 
         void updateAmount(String s);
     }
@@ -44,14 +38,11 @@ public class CheckoutDealContractor {
 
         void onDestroy();
 
-        void getProfile();
-
         void updateEmail(String email);
 
         void updatePromoCode(String code);
 
         void clickGoToPromo();
 
-        public String getSCREEN_NAME();
     }
 }

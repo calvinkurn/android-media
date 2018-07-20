@@ -30,7 +30,7 @@ public class VerifyMyCartResponse {
     @Override
     public String toString() {
         return
-                "VerifyCartResponse{" +
+                "VerifyMyCartResponse{" +
                         "cart = '" + cart + '\'' +
                         ",status = '" + status + '\'' +
                         "}";

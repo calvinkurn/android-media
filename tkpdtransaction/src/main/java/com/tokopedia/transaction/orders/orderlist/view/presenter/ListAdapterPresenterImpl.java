@@ -53,18 +53,15 @@ public class ListAdapterPresenterImpl extends BaseDaggerPresenter<ListAdapterCon
     @Override
     public void setDotMenuVisibility(List<DotMenuList> dotMenuLists) {
         if (dotMenuLists != null) {
-            view.setDotMenuVisibility(dotMenuLists.size() > 0 ? View.VISIBLE : View.GONE);
+            view.setDotMenuVisibility(View.VISIBLE);
         }
     }
 
     @Override
     public void setViewData(Order order) {
         view.setStatus(order.statusStr());
-        if (order.status() == ORDER_CANCELLED || order.status() == ORDER_REFUNDED || order.status() == ORDER_FAILED) {
-            view.setFailStatusBgColor(true);
-        } else {
-            view.setFailStatusBgColor(false);
-        }
+            view.setFailStatusBgColor(order.statusColor());
+
         if (!order.conditionalInfo().text().equals("")) {
             ConditionalInfo conditionalInfo = order.conditionalInfo();
             view.setConditionalInfo(View.VISIBLE, conditionalInfo.text(), conditionalInfo.color());

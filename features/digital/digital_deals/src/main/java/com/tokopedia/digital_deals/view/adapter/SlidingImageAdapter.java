@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.view.presenter.DealsHomePresenter;
 
@@ -20,17 +20,14 @@ import java.util.List;
 public class SlidingImageAdapter extends PagerAdapter {
 
 
-    private List<String> IMAGES;
-    private LayoutInflater inflater;
+    private List<String> imagesUrl;
     private Context context;
     private DealsHomePresenter mPresenter;
 
 
-    public SlidingImageAdapter(Context context, List<String> IMAGES, DealsHomePresenter presenter) {
-        this.context = context;
-        this.IMAGES = IMAGES;
+    public SlidingImageAdapter(List<String> imagesUrl, DealsHomePresenter presenter) {
+        this.imagesUrl = imagesUrl;
         this.mPresenter = presenter;
-        inflater = LayoutInflater.from(context);
     }
 
     @Override
@@ -40,17 +37,18 @@ public class SlidingImageAdapter extends PagerAdapter {
 
     @Override
     public int getCount() {
-        return IMAGES.size();
+        return (imagesUrl == null) ? 0 : imagesUrl.size();
     }
 
     @Override
     public Object instantiateItem(ViewGroup view, int position) {
-        View imageLayout = inflater.inflate(R.layout.deals_banner_item, view, false);
+        this.context=view.getContext();
+        View imageLayout = LayoutInflater.from(context).inflate(R.layout.deals_banner_item, view, false);
 
         assert imageLayout != null;
         final ImageView imageView = imageLayout.findViewById(R.id.banner_item);
 
-        ImageHandler.loadImage(context, imageView, IMAGES.get(position), R.color.grey_1100, R.color.grey_1100);
+        ImageHandler.loadImage(context, imageView, imagesUrl.get(position), R.color.grey_1100, R.color.grey_1100);
 
         view.addView(imageLayout, 0);
         imageLayout.setOnClickListener(new View.OnClickListener() {

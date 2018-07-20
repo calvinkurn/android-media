@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.view.model.Media;
 
@@ -22,12 +22,10 @@ public class SlidingImageAdapterDealDetails extends PagerAdapter {
 
 
     private List<String> images;
-    private LayoutInflater inflater;
     private Context context;
 
 
-    public SlidingImageAdapterDealDetails(Context context, List<Media> mediaList) {
-        this.context = context;
+    public SlidingImageAdapterDealDetails(List<Media> mediaList) {
         if (mediaList != null) {
             this.images=new ArrayList<>();
             for (Media media : mediaList) {
@@ -35,7 +33,6 @@ public class SlidingImageAdapterDealDetails extends PagerAdapter {
                     this.images.add(media.getUrl());
             }
         }
-        inflater = LayoutInflater.from(context);
     }
 
     @Override
@@ -45,15 +42,13 @@ public class SlidingImageAdapterDealDetails extends PagerAdapter {
 
     @Override
     public int getCount() {
-        if (images != null) {
-            return images.size();
-        }
-        return 0;
+        return (images == null) ? 0 : images.size();
     }
 
     @Override
     public Object instantiateItem(ViewGroup view, int position) {
-        View imageLayout = inflater.inflate(R.layout.deal_image_item, view, false);
+        this.context=view.getContext();
+        View imageLayout = LayoutInflater.from(context).inflate(R.layout.deal_image_item, view, false);
 
         assert imageLayout != null;
         final ImageView imageView = imageLayout.findViewById(R.id.deal_image);
