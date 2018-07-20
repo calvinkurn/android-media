@@ -1,12 +1,8 @@
 package com.tokopedia.kol.feature.createpost.di;
 
-import android.content.Context;
-
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.imageuploader.di.ImageUploaderModule;
 import com.tokopedia.kol.common.di.KolComponent;
 import com.tokopedia.kol.feature.createpost.view.activity.CreatePostImageEditorActivity;
+import com.tokopedia.kol.feature.createpost.view.fragment.CreatePostWebviewFragment;
 
 import dagger.Component;
 
@@ -19,4 +15,5 @@ public interface CreatePostComponent {
 
     void inject(CreatePostImageEditorActivity createPostImageEditorActivity);
 
+    void inject(CreatePostWebviewFragment createPostWebviewFragment);
 }

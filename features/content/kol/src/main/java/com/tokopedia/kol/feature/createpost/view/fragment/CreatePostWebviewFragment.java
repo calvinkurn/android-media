@@ -3,13 +3,16 @@ package com.tokopedia.kol.feature.createpost.view.fragment;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.view.View;
 import android.webkit.WebView;
-import android.widget.Button;
-import android.widget.RelativeLayout;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseWebViewFragment;
-import com.tokopedia.kol.R;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.kol.KolComponentInstance;
+import com.tokopedia.kol.common.di.DaggerKolComponent;
+import com.tokopedia.kol.common.di.KolComponent;
+import com.tokopedia.kol.feature.createpost.di.CreatePostModule;
+import com.tokopedia.kol.feature.createpost.di.DaggerCreatePostComponent;
 
 /**
  * @author by yfsx on 07/06/18.
@@ -19,6 +22,8 @@ public class CreatePostWebviewFragment extends BaseWebViewFragment {
     public static final String FORM_URL = "form_url";
     public static final String SUCCESS_URL_PATH = "/content/new/success";
 
+    UserSession userSession;
+
     public static CreatePostWebviewFragment newInstance(Bundle bundle) {
         CreatePostWebviewFragment fragment = new CreatePostWebviewFragment();
         fragment.setArguments(bundle);
@@ -27,7 +32,15 @@ public class CreatePostWebviewFragment extends BaseWebViewFragment {
 
     @Override
     protected void initInjector() {
-
+        KolComponent kolComponent = DaggerKolComponent.builder().baseAppComponent(
+                ((BaseMainApplication)getActivity().getApplicationContext()).getBaseAppComponent())
+                .build();
+        DaggerCreatePostComponent.builder().kolComponent(kolComponent).build();
+        DaggerCreatePostComponent.builder()
+                .kolComponent(KolComponentInstance.getKolComponent(getActivity().getApplication()))
+                .createPostModule(new CreatePostModule())
+                .build()
+                .inject(this);
     }
 
     @Override
@@ -53,12 +66,12 @@ public class CreatePostWebviewFragment extends BaseWebViewFragment {
     @Nullable
     @Override
     protected String getUserIdForHeader() {
-        return null;
+        return userSession.getUserId();
     }
 
     @Nullable
     @Override
     protected String getAccessToken() {
-        return null;
+        return userSession.getAccessToken();
     }
 }
