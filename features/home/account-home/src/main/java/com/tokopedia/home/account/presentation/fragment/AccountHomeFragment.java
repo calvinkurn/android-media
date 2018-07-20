@@ -3,10 +3,7 @@ package com.tokopedia.home.account.presentation.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -18,22 +15,33 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
+import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.home.account.R;
-import com.tokopedia.home.account.presentation.adapter.AccountHomePagerAdapter;
-import com.tokopedia.home.account.presentation.view.BuyerCardView;
+import com.tokopedia.home.account.di.component.AccountHomeComponent;
+import com.tokopedia.home.account.di.component.DaggerAccountHomeComponent;
+import com.tokopedia.home.account.presentation.AccountHome;
+import com.tokopedia.home.account.presentation.presenter.AccountHomePresenter;
+
+import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * @author okasurya on 7/16/18.
  */
-public class AccountHomeFragment extends TkpdBaseV4Fragment {
+public class AccountHomeFragment extends TkpdBaseV4Fragment implements AccountHome.View {
+    @Inject
+    AccountHomePresenter presenter;
     private Toolbar toolbar;
-    private TabLayout tabLayout;
-    private ViewPager viewPager;
-    private PagerAdapter adapter;
-    private FrameLayout container;
 
 //    private boolean isLoaded = false;
+    //    private TabLayout tabLayout;
+//    private ViewPager viewPager;
+//    private PagerAdapter adapter;
+    private FrameLayout container;
 
     public static Fragment newInstance() {
         return new AccountHomeFragment();
@@ -42,6 +50,7 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initInjector();
     }
 
 //    @Override
@@ -76,7 +85,8 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
+        GraphqlClient.init(getContext());
+        presenter.getAccount("");
     }
 
     @Override
@@ -92,7 +102,7 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.menu_setting) {
+        if (item.getItemId() == R.id.menu_setting) {
             Toast.makeText(getContext(), "Setting", Toast.LENGTH_LONG).show();
             return true;
         } else if (item.getItemId() == R.id.menu_notification) {
@@ -100,6 +110,16 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void initInjector() {
+        AccountHomeComponent component = DaggerAccountHomeComponent.builder()
+                .baseAppComponent(
+                        ((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent()
+                ).build();
+
+        component.inject(this);
+        presenter.attachView(this);
     }
 //
 //    private void loadData() {
@@ -114,30 +134,40 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment {
         setHasOptionsMenu(true);
         getActivity().invalidateOptionsMenu();
         setToolbar(view);
-        tabLayout = view.findViewById(R.id.tab_home_account);
-        viewPager = view.findViewById(R.id.pager_home_account);
+//        tabLayout = view.findViewById(R.id.tab_home_account);
+//        viewPager = view.findViewById(R.id.pager_home_account);
 
-//        getChildFragmentManager().beginTransaction()
-//                .replace(R.id.container_account_home, BuyerAccountFragment.newInstance(), "BuyerAccountFragment")
-//                .commit();
+        getChildFragmentManager().beginTransaction()
+                .replace(R.id.container_account_home, BuyerAccountFragment.newInstance(), "BuyerAccountFragment")
+                .commit();
     }
 
     private void setToolbar(View view) {
         toolbar = view.findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.title_account);
-        if(getActivity() instanceof AppCompatActivity) {
+        if (getActivity() instanceof AppCompatActivity) {
             ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         }
     }
 
     private void setAdapter() {
-        String[] titles = {
-                getContext().getString(R.string.label_account_buyer),
-                getContext().getString(R.string.label_account_seller)
-        };
-        adapter = new AccountHomePagerAdapter(getChildFragmentManager(), titles);
-        viewPager.setAdapter(adapter);
-        tabLayout.setupWithViewPager(viewPager);
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+//        String[] titles = {
+//                getContext().getString(R.string.label_account_buyer),
+//                getContext().getString(R.string.label_account_seller)
+//        };
+//        adapter = new AccountHomePagerAdapter(getChildFragmentManager(), titles);
+//        viewPager.setAdapter(adapter);
+//        tabLayout.setupWithViewPager(viewPager);
+//        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+    }
+
+    @Override
+    public void renderBuyerData(List<Visitable> visitables) {
+
+    }
+
+    @Override
+    public void renderSellerData(List<Visitable> visitables) {
+
     }
 }

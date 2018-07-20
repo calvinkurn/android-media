@@ -1,0 +1,22 @@
+package com.tokopedia.home.account.presentation;
+
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+
+import java.util.List;
+
+/**
+ * @author okasurya on 7/20/18.
+ */
+public interface AccountHome {
+    interface Presenter extends CustomerPresenter<View> {
+        void getAccount(String query);
+    }
+
+    interface View extends CustomerView {
+        void renderBuyerData(List<Visitable> visitables);
+
+        void renderSellerData(List<Visitable> visitables);
+    }
+}

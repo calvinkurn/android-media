@@ -11,6 +11,8 @@ import com.tokopedia.home.account.presentation.viewmodel.BuyerCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuGridViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayViewModel;
 
+import rx.Observable;
+
 /**
  * @author okasurya on 7/17/18.
  */
@@ -19,6 +21,10 @@ public class AccountTypeFactory extends BaseAdapterTypeFactory {
     public AbstractViewHolder createViewHolder(View parent, int type) {
         if(type == BuyerCardViewHolder.LAYOUT) {
             return new BuyerCardViewHolder(parent);
+        } else if(type == MenuGridViewHolder.LAYOUT){
+            return new MenuGridViewHolder(parent);
+        } else if(type == TokopediaPayViewHolder.LAYOUT) {
+            return new TokopediaPayViewHolder(parent);
         }
         return super.createViewHolder(parent, type);
     }
