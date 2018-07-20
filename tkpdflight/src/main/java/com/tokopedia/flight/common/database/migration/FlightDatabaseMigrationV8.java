@@ -1,7 +1,7 @@
 package com.tokopedia.flight.common.database.migration;
 
-import com.raizlabs.android.dbflow.sql.migration.BaseMigration;
 import com.raizlabs.android.dbflow.annotation.Migration;
+import com.raizlabs.android.dbflow.sql.migration.BaseMigration;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;

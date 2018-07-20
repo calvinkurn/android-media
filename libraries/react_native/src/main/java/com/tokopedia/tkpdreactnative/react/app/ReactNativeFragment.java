@@ -56,6 +56,7 @@ public abstract class ReactNativeFragment extends Fragment implements DefaultHar
         super.onDestroyView();
         if(reactRootView != null) {
             reactRootView.unmountReactApplication();
+            reactRootView = null;
         }
     }
 

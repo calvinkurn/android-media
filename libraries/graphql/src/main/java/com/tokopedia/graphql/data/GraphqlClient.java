@@ -13,7 +13,7 @@ import com.tokopedia.user.session.UserSession;
 
 import retrofit2.Retrofit;
 
-import static com.tokopedia.network.constant.TkpdBaseURL.HOME_DATA_BASE_URL;
+import static com.tokopedia.network.constant.TkpdBaseURL.DEFAULT_TOKOPEDIA_GQL_URL;
 
 public class GraphqlClient {
     private static Retrofit sRetrofit = null;
@@ -28,7 +28,7 @@ public class GraphqlClient {
         if (sRetrofit == null) {
             UserSession userSession = new UserSession(context.getApplicationContext());
             sRetrofit = CommonNetwork.createRetrofit(context.getApplicationContext(),
-                    HOME_DATA_BASE_URL, (NetworkRouter) context.getApplicationContext(),
+                    DEFAULT_TOKOPEDIA_GQL_URL, (NetworkRouter) context.getApplicationContext(),
                     userSession);
             sFingerprintManager = new FingerprintManager(userSession);
 

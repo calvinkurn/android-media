@@ -3,12 +3,10 @@ package com.tokopedia.discovery.imagesearch.search;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 
-import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.imagesearch.search.fragment.ImageSearchProductListFragment;
@@ -74,12 +72,6 @@ public class ImageSearchActivity extends DiscoveryActivity
             onProductQuerySubmit(searchQuery);
         } else {
             searchView.showSearch(true, false);
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    KeyboardHandler.showSoftKeyboard(ImageSearchActivity.this);
-                }
-            }, 200);
         }
 
         super.initView();

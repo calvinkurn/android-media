@@ -14,6 +14,7 @@ public class FlightUrl {
     public static final String FLIGHT_CLASS_PATH = FLIGHT_PATH + "dropdown/class";
     public static final String FLIGHT_CART_PATH = FLIGHT_PATH + "cart";
     public static final String FLIGHT_CHECK_VOUCHER_CODE = FLIGHT_PATH + "voucher/check";
+    public static final String FLIGHT_CANCEL_VOUCHER_CODE = FLIGHT_PATH + "voucher/cancel";
     public static final String FLIGHT_PASSENGER_SAVED = FLIGHT_PATH + "passenger";
     public static final String FLIGHT_CANCELLATION_PATH = FLIGHT_PATH + "cancel/";
     public static final String FLIGHT_CANCELLATION_PASSENGER = FLIGHT_CANCELLATION_PATH + "passenger";
@@ -23,7 +24,7 @@ public class FlightUrl {
     public static final String FLIGHT_CHECKOUT_BOOKING = "travel/v1/oms/checkout";
     public static final String FLIGHT_ORDERS = FLIGHT_PATH + "order/list";
     public static final String FLIGHT_ORDER = FLIGHT_PATH + "order/{id}";
-    public static final String FLIGHT_BANNER_VERSION = "v1.4/banner";
+    public static final String FLIGHT_PROMO = FLIGHT_PATH + "promo/banner";
     public static final String PROMO_PATH =  "promo/";
     public static final String CONTACT_US_PATH = "contact-us";
     public static final String CONTACT_US_FLIGHT_PREFIX = "?pid=46&ivtype=4";
@@ -34,8 +35,6 @@ public class FlightUrl {
     public static String ALL_PROMO_LINK = WEB_DOMAIN + "promo/";
     public static String CONTACT_US = WEB_DOMAIN + "contact-us";
     public static String CONTACT_US_FLIGHT_PREFIX_GLOBAL = WEB_DOMAIN + "contact-us?pid=46&ivtype=4";
-    public static String PULSA_BASE_URL = "https://pulsa-api-staging.tokopedia.com/";
-    public static String BANNER_PATH = PULSA_BASE_URL + "v1.4/banner";
 
     public static String getUrlPdf(String orderId, String filename, String userId) {
         return WEB_DOMAIN + "pesawat/pdf/generate?invoice_id=" + orderId + "&pdf=" + filename + "&user_id=" + userId;
