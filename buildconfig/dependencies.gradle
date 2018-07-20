@@ -8,7 +8,7 @@ ext {
     jacocoVersion = "0.7.9"
     kotlinVersion = "1.2.40"
 
-    supportLibraryVersion = '27.1.1'
+    supportLibraryVersion = '26.0.2'
     playServiceVersion = '11.0.4'
     butterKnifeVersion = '9.0.0-SNAPSHOT'
     dbFlowVersion = '3.0.1'
@@ -18,8 +18,8 @@ ext {
     permissionDispatcherVersion = '2.4.0'
     deeplinkDispatchVersion = '3.0.0-rc1'
     espressoVersion = "2.2.2"
-    runnerVersion = "0.5"
-    rulesVersion = "0.5"
+    runnerVersion = "1.0.2"
+    rulesVersion = "1.0.2"
     apolloVersion = '0.3.0'
     lottieVersion = '2.0.0-rc1'
     cardioVersion = '5.5.1'
@@ -193,7 +193,7 @@ ext {
 
     testDependencies = [
             junit              : "junit:junit:4.12",
-            mockitorCore       : "org.mockito:mockito-core:1.10.19",
+            mockitorCore       : "org.mockito:mockito-core:1.7.1",
             uiautomator        : 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2',
             spoon              : 'com.squareup.spoon:spoon-client:1.6.4',
             androidAnnotation  : "com.android.support:support-annotations:$supportLibraryVersion",
