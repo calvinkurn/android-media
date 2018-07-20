@@ -9,20 +9,25 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
+        android:theme="?toolbarTheme"
         app:contentInsetLeft="0dp"
         app:contentInsetStart="0dp"
-        app:contentInsetStartWithNavigation="0dp"
-        app:layout_collapseMode="pin"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:subtitleTextAppearance="@style/TitleTextAppearance.White"
-        app:titleTextAppearance="@style/SubTitleTextAppearance" />
+        app:subtitleTextAppearance="?subtitleTextAppearance"
+        app:titleTextAppearance="?titleTextAppearance"/>
+
+    <include layout="@layout/header_train_schedule_detail"
+        android:id="@+id/header_train_schedule_detail"
+        android:layout_below="@id/toolbar"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"/>
 
     <android.support.design.widget.TabLayout
         android:id="@+id/indicator"
+        android:layout_below="@+id/header_train_schedule_detail"
         style="@style/Tabs.Secondary.Train"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/toolbar"
         app:tabGravity="fill"
         app:tabMode="fixed"
         app:tabIndicatorColor="@color/colorPrimary"
@@ -30,18 +35,17 @@
         android:background="@color/white"
         app:tabSelectedTextColor="@color/colorPrimary"
         app:tabTextAppearance="@style/TitlePageWhiteIndicator"
-        app:tabTextColor="@color/font_black_disabled_38" />
+        app:tabTextColor="@color/font_black_disabled_38"/>
 
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
         android:layout_below="@id/indicator"
-        android:layout_above="@+id/button_submit">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
         <com.tokopedia.abstraction.base.view.widget.TouchViewPager
             android:id="@+id/pager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"/>
 
     </RelativeLayout>
 
@@ -49,6 +53,6 @@
         android:id="@+id/button_submit"
         style="@style/Button.Submit.Orange"
         android:layout_alignParentBottom="true"
-        android:text="@string/label_choose" />
+        android:text="@string/label_choose"/>
 
 </RelativeLayout>

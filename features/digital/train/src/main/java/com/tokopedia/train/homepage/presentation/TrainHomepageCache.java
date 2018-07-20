@@ -2,7 +2,6 @@ package com.tokopedia.train.homepage.presentation;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.text.TextUtils;
 
 import com.tokopedia.train.common.util.TrainDateUtil;
 import com.tokopedia.train.homepage.presentation.model.TrainHomepageViewModel;
@@ -54,27 +53,29 @@ public class TrainHomepageCache {
     }
 
     public void saveToCache(TrainHomepageViewModel trainHomepageViewModel) {
-        editor.putString(ORIGIN_STATION_CODE, trainHomepageViewModel.getOriginStation()
-                .getStationCode()).apply();
-        editor.putString(ORIGIN_CITY_NAME, trainHomepageViewModel.getOriginStation()
-                .getCityName()).apply();
-        editor.putString(DESTINATION_STATION_CODE, trainHomepageViewModel.getDestinationStation()
-                .getStationCode()).apply();
-        editor.putString(DESTINATION_CITY_NAME, trainHomepageViewModel.getDestinationStation()
-                .getCityName()).apply();
+        if (trainHomepageViewModel != null) {
+            editor.putString(ORIGIN_STATION_CODE, trainHomepageViewModel.getOriginStation()
+                    .getStationCode()).apply();
+            editor.putString(ORIGIN_CITY_NAME, trainHomepageViewModel.getOriginStation()
+                    .getCityName()).apply();
+            editor.putString(DESTINATION_STATION_CODE, trainHomepageViewModel.getDestinationStation()
+                    .getStationCode()).apply();
+            editor.putString(DESTINATION_CITY_NAME, trainHomepageViewModel.getDestinationStation()
+                    .getCityName()).apply();
 
-        boolean isOneWay = trainHomepageViewModel.isOneWay();
-        editor.putBoolean(IS_ONE_WAY, isOneWay).apply();
-        editor.putString(DEPARTURE_DATE, trainHomepageViewModel.getDepartureDate()).apply();
-        editor.putString(DEPARTURE_DATE_FMT, trainHomepageViewModel.getDepartureDateFmt().toString()).apply();
-        if (!isOneWay) {
-            editor.putString(RETURN_DATE, trainHomepageViewModel.getReturnDate()).apply();
-            editor.putString(RETURN_DATE_FMT, trainHomepageViewModel.getReturnDateFmt().toString()).apply();
+            boolean isOneWay = trainHomepageViewModel.isOneWay();
+            editor.putBoolean(IS_ONE_WAY, isOneWay).apply();
+            editor.putString(DEPARTURE_DATE, trainHomepageViewModel.getDepartureDate()).apply();
+            editor.putString(DEPARTURE_DATE_FMT, trainHomepageViewModel.getDepartureDateFmt().toString()).apply();
+            if (!isOneWay) {
+                editor.putString(RETURN_DATE, trainHomepageViewModel.getReturnDate()).apply();
+                editor.putString(RETURN_DATE_FMT, trainHomepageViewModel.getReturnDateFmt().toString()).apply();
+            }
+
+            editor.putInt(NUM_OF_ADULT_PASSENGER, trainHomepageViewModel.getTrainPassengerViewModel().getAdult());
+            editor.putInt(NUM_OF_INFANT_PASSENGER, trainHomepageViewModel.getTrainPassengerViewModel().getInfant());
+            editor.putString(PASSENGER_FMT, trainHomepageViewModel.getPassengerFmt()).apply();
         }
-
-        editor.putInt(NUM_OF_ADULT_PASSENGER, trainHomepageViewModel.getTrainPassengerViewModel().getAdult());
-        editor.putInt(NUM_OF_INFANT_PASSENGER, trainHomepageViewModel.getTrainPassengerViewModel().getInfant());
-        editor.putString(PASSENGER_FMT, trainHomepageViewModel.getPassengerFmt()).apply();
     }
 
     public TrainHomepageViewModel buildTrainHomepageViewModelFromCache() {
@@ -106,7 +107,8 @@ public class TrainHomepageCache {
         TrainPassengerViewModel trainPassengerViewModel = new TrainPassengerViewModel(
                 numOfAdultPassenger, numOfInfantPassenger);
 
-        String passengerFmt = sharedPrefs.getString(PASSENGER_FMT, "");
+        String defaultPassengerFmt = buildPassengerTextFormatted(trainPassengerViewModel);
+        String passengerFmt = sharedPrefs.getString(PASSENGER_FMT, defaultPassengerFmt);
 
         return new TrainHomepageViewModel.Builder()
                 .setOriginStation(originTrainStationAndCityViewModel)
@@ -119,6 +121,17 @@ public class TrainHomepageCache {
                 .setPassengerFmt(passengerFmt)
                 .setIsOneWay(isOneWay)
                 .build();
+    }
+
+    private String buildPassengerTextFormatted(TrainPassengerViewModel passData) {
+        String passengerFmt = "";
+        if (passData.getAdult() > 0) {
+            passengerFmt = passData.getAdult() + " Dewasa";
+            if (passData.getInfant() > 0) {
+                passengerFmt += ", " + passData.getInfant() + " Bayi";
+            }
+        }
+        return passengerFmt;
     }
 
 }

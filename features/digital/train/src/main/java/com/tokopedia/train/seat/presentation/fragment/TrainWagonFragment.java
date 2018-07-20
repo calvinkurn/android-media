@@ -133,7 +133,7 @@ public class TrainWagonFragment extends BaseDaggerFragment implements TrainWagon
                 if (trainWagonViewModel.getMaxColumn() == 4 && (position + 1) % trainWagonViewModel.getMaxColumn() == 2)
                     return 2;
                 else if (trainWagonViewModel.getMaxColumn() == 5 && (position + 1) % trainWagonViewModel.getMaxColumn() == 3)
-                    return 3;
+                    return 2;
                 else
                     return 1;
             }

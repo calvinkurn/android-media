@@ -2,6 +2,7 @@ package com.tokopedia.train.common.di;
 
 import android.content.Context;
 
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.train.common.domain.TrainRepository;
@@ -19,6 +20,8 @@ public interface TrainComponent {
 
     @ApplicationContext
     Context getContext();
+
+    UserSession userSession();
 
     TrainRepository trainRepository();
 

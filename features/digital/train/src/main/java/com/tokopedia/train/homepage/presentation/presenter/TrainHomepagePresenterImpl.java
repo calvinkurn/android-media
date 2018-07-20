@@ -3,6 +3,7 @@ package com.tokopedia.train.homepage.presentation.presenter;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.util.TrainDateUtil;
 import com.tokopedia.train.homepage.presentation.TrainHomepageCache;
@@ -27,10 +28,12 @@ public class TrainHomepagePresenterImpl extends BaseDaggerPresenter<TrainHomepag
     private final int MAX_BOOKING_DAYS_FROM_TODAY = 90;
 
     private TrainHomepageCache trainHomepageCache;
+    private UserSession userSession;
 
     @Inject
-    public TrainHomepagePresenterImpl(TrainHomepageCache trainHomepageCache) {
+    public TrainHomepagePresenterImpl(TrainHomepageCache trainHomepageCache, UserSession userSession) {
         this.trainHomepageCache = trainHomepageCache;
+        this.userSession = userSession;
     }
 
     @Override
@@ -134,6 +137,14 @@ public class TrainHomepagePresenterImpl extends BaseDaggerPresenter<TrainHomepag
 
     @Override
     public void initialize() {
+        if (userSession.isLoggedIn()) {
+            onInitialize();
+        } else {
+            getView().navigateToLoginPage();
+        }
+    }
+
+    private void onInitialize() {
         getView().setHomepageViewModel(trainHomepageCache.buildTrainHomepageViewModelFromCache());
         final TrainHomepageViewModel trainHomepageViewModel = getView().getHomepageViewModel();
 
@@ -218,6 +229,15 @@ public class TrainHomepagePresenterImpl extends BaseDaggerPresenter<TrainHomepag
     @Override
     public void saveHomepageViewModelToCache(TrainHomepageViewModel viewModel) {
         trainHomepageCache.saveToCache(viewModel);
+    }
+
+    @Override
+    public void onLoginRecieved() {
+        if (userSession.isLoggedIn()) {
+            onInitialize();
+        } else {
+            getView().closePage();
+        }
     }
 
     private boolean validateFields() {
