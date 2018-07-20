@@ -195,8 +195,6 @@ public class PromoCodePresenter implements IPromoCodePresenter {
         requestParams.putObject("checkoutdata", requestBody);
         requestParams.putBoolean("ispromocodecase", flag);
         ((LoyaltyModuleRouter) view.getContext().getApplicationContext()).verifyDealPromo(requestParams)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
                 .subscribe(new Subscriber<com.tokopedia.abstraction.common.utils.TKPDMapParam<String, Object>>() {
                     @Override
                     public void onCompleted() {

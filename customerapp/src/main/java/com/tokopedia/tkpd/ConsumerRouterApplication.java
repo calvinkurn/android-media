@@ -47,6 +47,7 @@ import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
+import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -56,6 +57,7 @@ import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.data.viewmodel.PopUpNotif;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
+import com.tokopedia.core.exception.SessionExpiredException;
 import com.tokopedia.core.gallery.GalleryActivity;
 import com.tokopedia.core.gallery.GallerySelectedFragment;
 import com.tokopedia.core.gallery.GalleryType;
@@ -69,6 +71,7 @@ import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
+import com.tokopedia.core.network.exception.model.UnProcessableHttpException;
 import com.tokopedia.digital_deals.DealsModuleRouter;
 import com.tokopedia.digital_deals.di.DaggerDealsComponent;
 import com.tokopedia.digital_deals.di.DealsComponent;
@@ -831,6 +834,24 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Interceptor getChuckInterceptor() {
         return getAppComponent().chuckInterceptor();
+    }
+
+    @Override
+    public void handleOmsPromoError(String bodyResponse, String errorMessage) throws IOException {
+        if (errorMessage != null && bodyResponse != null) {
+            if (errorMessage.equals("invalid_request") || errorMessage.equals("invalid_grant")) {
+                Intent intent = new Intent();
+                intent.setAction(BaseActivity.FORCE_LOGOUT);
+                MainApplication.getAppContext().sendBroadcast(intent);
+                throw new SessionExpiredException(errorMessage);
+            } else {
+                    throw new UnProcessableHttpException(bodyResponse);
+            }
+        }else if(bodyResponse!=null){
+            throw new UnProcessableHttpException(bodyResponse);
+        }else{
+            throw new UnProcessableHttpException();
+        }
     }
 
     @Override
@@ -1940,8 +1961,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void registerShake(String screenName,Activity activity) {
-        ShakeDetectManager.getShakeDetectManager().registerShake(screenName,activity);
+    public void registerShake(String screenName, Activity activity) {
+        ShakeDetectManager.getShakeDetectManager().registerShake(screenName, activity);
     }
 
     @Override
@@ -2198,7 +2219,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public String getUserPhoneNumber(){
+    public String getUserPhoneNumber() {
         return SessionHandler.getPhoneNumber();
     }
 

@@ -13,6 +13,7 @@ import com.tokopedia.oms.data.CloudOmsDataStore;
 import com.tokopedia.oms.data.OmsRepositoryData;
 import com.tokopedia.oms.data.source.OmsApi;
 import com.tokopedia.oms.data.source.OmsUrl;
+import com.tokopedia.oms.domain.OmsInterceptor;
 import com.tokopedia.oms.domain.postusecase.PostVerifyCartUseCase;
 import com.tokopedia.user.session.UserSession;
 
@@ -46,7 +47,7 @@ public class OmsModule {
         return new OkHttpClient.Builder()
                 .addInterceptor(httpLoggingInterceptor)
                 .addInterceptor(errorResponseInterceptor)
-                .addInterceptor(new TkpdAuthInterceptor(context, (NetworkRouter) context, userSession))
+                .addInterceptor(new OmsInterceptor(context, (NetworkRouter) context, userSession))
                 .addInterceptor(new FingerprintInterceptor((NetworkRouter) context, userSession))
                 .addInterceptor(((OmsModuleRouter) context).getChuckInterceptor())
                 .build();

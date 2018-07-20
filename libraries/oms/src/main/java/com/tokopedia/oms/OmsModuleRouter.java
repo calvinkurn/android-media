@@ -1,9 +1,13 @@
 package com.tokopedia.oms;
 
+import java.io.IOException;
+
 import okhttp3.Interceptor;
 
 public interface OmsModuleRouter {
 
 
-    public Interceptor getChuckInterceptor();
+    Interceptor getChuckInterceptor();
+
+    void handleOmsPromoError(String bodyResponse, String errorMessage) throws IOException;
 }
