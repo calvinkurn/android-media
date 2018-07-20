@@ -36,7 +36,6 @@ public class GMCacheApiWhiteList {
         cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.GOLD_MERCHANT_DOMAIN, StatisticConstant.GET_SHOP_CATEGORY, ONE_DAY, true));
         cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.GOLD_MERCHANT_DOMAIN, StatisticConstant.GET_PRODUCT_TABLE, ONE_DAY, true));
         cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.GOLD_MERCHANT_DOMAIN, StatisticConstant.GET_BUYER_TABLE, ONE_DAY, true));
-        cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.GOLD_MERCHANT_DOMAIN, GMCommonUrl.FEATURED_PRODUCT_URL, ONE_HOUR, true));
         return cacheApiWhiteList;
     }
 }
