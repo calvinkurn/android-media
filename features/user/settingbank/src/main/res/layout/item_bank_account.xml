@@ -1,24 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    app:cardCornerRadius="5dp"
-    app:cardElevation="@dimen/dp_8"
-    app:cardUseCompatPadding="true">
 
     <android.support.constraint.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:background="@drawable/bank_card_background"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <TextView
             android:id="@+id/main_account"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/green_main_account"
+            android:background="@drawable/green_main_bank_account"
             android:fontFamily="sans-serif-medium"
             android:gravity="center_horizontal"
             android:lineSpacingExtra="@dimen/sp_10"
@@ -121,4 +115,3 @@
             />
 
     </android.support.constraint.ConstraintLayout>
-</android.support.v7.widget.CardView>
