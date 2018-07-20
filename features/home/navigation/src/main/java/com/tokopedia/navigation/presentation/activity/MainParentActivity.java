@@ -18,10 +18,9 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.design.component.BottomNavigation;
+import com.tokopedia.home.account.presentation.fragment.AccountHomeFragment;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
-import com.tokopedia.navigation.presentation.fragment.AccountFragment;
-import com.tokopedia.navigation.presentation.fragment.CartFragment;
 import com.tokopedia.navigation.presentation.fragment.InboxFragment;
 
 /**
@@ -32,6 +31,7 @@ public class MainParentActivity extends BaseAppCompatActivity implements
 
     private BottomNavigation bottomNavigation;
     private TouchViewPager viewPager;
+    private FragmentAdapter adapterViewPager;
 
     private UserSession userSession;
 
@@ -47,13 +47,15 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         bottomNavigation = findViewById(R.id.bottomnav);
         viewPager = findViewById(R.id.container);
 
-        FragmentAdapter adapterViewPager = new FragmentAdapter(getSupportFragmentManager());
+        adapterViewPager = new FragmentAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapterViewPager);
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            public void onPageScrollStateChanged(int state) { }
+            public void onPageScrollStateChanged(int state) {
+            }
 
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) { }
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
 
             public void onPageSelected(int position) {
                 bottomNavigation.getMenu().getItem(position).setChecked(true);
@@ -131,20 +133,21 @@ public class MainParentActivity extends BaseAppCompatActivity implements
             switch (position) {
                 case 0:
                     if (MainParentActivity.this.getApplication() instanceof GlobalNavRouter) {
-                        return ((GlobalNavRouter)MainParentActivity.this.getApplication()).getHomeFragment();
+                        return ((GlobalNavRouter) MainParentActivity.this.getApplication()).getHomeFragment();
                     }
                 case 1:
                     if (MainParentActivity.this.getApplication() instanceof GlobalNavRouter) {
-                        return ((GlobalNavRouter)MainParentActivity.this.getApplication()).getFeedPlusFragment();
+                        return ((GlobalNavRouter) MainParentActivity.this.getApplication()).getFeedPlusFragment();
                     }
                 case 2:
                     return InboxFragment.newInstance();
                 case 3:
                     if (MainParentActivity.this.getApplication() instanceof GlobalNavRouter) {
-                        return ((GlobalNavRouter)MainParentActivity.this.getApplication()).getCartFragment();
+                        return ((GlobalNavRouter) MainParentActivity.this.getApplication()).getCartFragment();
                     }
                 case 4:
-                    return AccountFragment.newInstance();
+                    // todo: do we need router for this?
+                    return AccountHomeFragment.newInstance();
                 default:
                     return null;
             }
