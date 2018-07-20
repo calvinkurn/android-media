@@ -28,9 +28,11 @@ public class FeedDetailSubscriber extends Subscriber<GraphqlResponse> {
     private static final int MAX_RATING = 100;
     private static final int NUM_STARS = 5;
     private final FeedPlusDetail.View viewListener;
+    private final int page;
 
-    public FeedDetailSubscriber(FeedPlusDetail.View viewListener) {
+    public FeedDetailSubscriber(FeedPlusDetail.View viewListener, int page) {
         this.viewListener = viewListener;
+        this.page = page;
     }
 
     @Override
@@ -53,9 +55,18 @@ public class FeedDetailSubscriber extends Subscriber<GraphqlResponse> {
     public void onNext(GraphqlResponse graphqlResponse) {
         FeedQuery feedQuery = graphqlResponse.getData(FeedQuery.class);
 
-        if (!hasFeed(feedQuery)) {
-            viewListener.onEmptyFeedDetail();
-            return;
+        if (page == 1) {
+            viewListener.dismissLoading();
+            if (!hasFeed(feedQuery)) {
+                viewListener.onEmptyFeedDetail();
+                return;
+            }
+        } else {
+            viewListener.dismissLoadingMore();
+            if (!hasFeed(feedQuery)) {
+                viewListener.setHasNextPage(false);
+                return;
+            }
         }
 
         List<Feed> feedList = feedQuery.getFeed().getData();
@@ -65,7 +76,7 @@ public class FeedDetailSubscriber extends Subscriber<GraphqlResponse> {
                 feedDetail.getSource().getShop(),
                 feedDetail.getContent().getStatusActivity());
 
-        if (viewListener.getPagingHandler().getPage() == 1
+        if (page == 1
                 && feedList.get(0).getContent().getProducts().size() == 1) {
             viewListener.onSuccessGetSingleFeedDetail(
                     headerViewModel,

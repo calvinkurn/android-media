@@ -6,7 +6,6 @@ import android.content.res.Resources;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailHeaderViewModel;
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.SingleFeedDetailViewModel;
 
@@ -24,8 +23,6 @@ public interface FeedPlusDetail {
 
         String getString(int resId);
 
-        PagingHandler getPagingHandler();
-
         Resources getResources();
 
         int getColor(int resId);
@@ -42,6 +39,12 @@ public interface FeedPlusDetail {
 
         void showLoading();
 
+        void dismissLoading();
+
+        void showLoadingMore();
+
+        void dismissLoadingMore();
+
         void showLoadingProgress();
 
         void onGoToProductDetail(String productId, boolean wishlist, int adapterPosition);
@@ -54,6 +57,8 @@ public interface FeedPlusDetail {
 
         void onSuccessGetSingleFeedDetail(FeedDetailHeaderViewModel headerViewModel,
                                           SingleFeedDetailViewModel feedDetailViewModel);
+
+        void setHasNextPage(boolean hasNextPage);
     }
 
     interface Presenter extends CustomerPresenter<View> {

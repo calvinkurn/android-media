@@ -216,7 +216,7 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onErrorGetFeedDetail(String errorMessage) {
-        finishLoading();
+        dismissLoading();
         footer.setVisibility(View.GONE);
         NetworkErrorHelper.showEmptyState(getActivity(), getView(), errorMessage,
                 new NetworkErrorHelper.RetryClickedListener() {
@@ -227,14 +227,8 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
                 });
     }
 
-    private void finishLoading() {
-        footer.setVisibility(View.VISIBLE);
-        adapter.dismissLoading();
-    }
-
     @Override
     public void onEmptyFeedDetail() {
-        finishLoading();
         adapter.showEmpty();
         footer.setVisibility(View.GONE);
     }
@@ -260,7 +254,6 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     @Override
     public void onSuccessGetSingleFeedDetail(final FeedDetailHeaderViewModel header,
                                              SingleFeedDetailViewModel singleFeedDetailViewModel) {
-        finishLoading();
         footer.setVisibility(View.VISIBLE);
 
         if (pagingHandler.getPage() == 1) {
@@ -286,7 +279,6 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
             final FeedDetailHeaderViewModel header,
             ArrayList<Visitable> listDetail,
             boolean hasNextPage) {
-        finishLoading();
         footer.setVisibility(View.VISIBLE);
 
         if (pagingHandler.getPage() == 1) {
@@ -331,6 +323,22 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     public void showLoading() {
         footer.setVisibility(View.GONE);
         adapter.showLoading();
+    }
+
+    @Override
+    public void dismissLoading() {
+        footer.setVisibility(View.VISIBLE);
+        adapter.dismissLoading();
+    }
+
+    @Override
+    public void showLoadingMore() {
+        adapter.showLoadingMore();
+    }
+
+    @Override
+    public void dismissLoadingMore() {
+        adapter.dismissLoadingMore();
     }
 
     @Override
@@ -387,13 +395,13 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public PagingHandler getPagingHandler() {
-        return pagingHandler;
+    public int getColor(int resId) {
+        return MethodChecker.getColor(getActivity(), resId);
     }
 
     @Override
-    public int getColor(int resId) {
-        return MethodChecker.getColor(getActivity(), resId);
+    public void setHasNextPage(boolean hasNextPage) {
+        pagingHandler.setHasNext(hasNextPage);
     }
 
     private void dismissLoadingProgress() {

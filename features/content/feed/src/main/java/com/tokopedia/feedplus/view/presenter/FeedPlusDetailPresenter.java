@@ -53,10 +53,15 @@ public class FeedPlusDetailPresenter extends BaseDaggerPresenter<FeedPlusDetail.
 
     @Override
     public void getFeedDetail(String detailId, int page) {
-        getView().showLoading();
+        if (page == 1) {
+            getView().showLoading();
+        } else {
+            getView().showLoadingMore();
+        }
+
         getFeedsDetailUseCase.execute(
                 GetFeedsDetailUseCase.getFeedDetailParam(userSession.getUserId(), detailId, page),
-                new FeedDetailSubscriber(getView())
+                new FeedDetailSubscriber(getView(), page)
         );
     }
 
