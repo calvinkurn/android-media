@@ -133,7 +133,7 @@
 
 
         <com.tokopedia.design.label.LabelView
-            android:id="@+id/labelViewLogisticProduct"
+            android:id="@+id/labelViewWeightLogisticProduct"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_72"
             android:clickable="true"
