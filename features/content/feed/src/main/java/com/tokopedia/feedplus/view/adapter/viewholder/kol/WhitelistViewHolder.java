@@ -54,7 +54,7 @@ public class WhitelistViewHolder extends AbstractViewHolder<WhitelistViewModel> 
         tvDesc.setText(!TextUtils.isEmpty(model.getWhitelist().getDesc()) ?
                 model.getWhitelist().getDesc() :
                 "");
-        ImageHandler.LoadImage(ivPhoto, userSession.getProfilePicture());
+        ImageHandler.loadImageCircle2(ivPhoto.getContext(), ivPhoto, userSession.getProfilePicture());
     }
 
     private void initViewListener(final WhitelistViewModel model) {

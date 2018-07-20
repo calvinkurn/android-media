@@ -17,6 +17,7 @@
 
         <com.tokopedia.feedplus.view.customview.RoundedCornerImageView
             android:id="@+id/iv_photo"
+            android:background="@drawable/container_circle_corners_border"
             android:layout_width="50dp"
             android:layout_height="match_parent"
             app:layout_constraintTop_toBottomOf="parent"

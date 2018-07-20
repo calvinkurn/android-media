@@ -3,6 +3,10 @@ query WhitelistQuery() {
         __typename
         iswhitelist
         url
+        title
+        title_identifier
+        description
+        post_success
         error
     }
 }

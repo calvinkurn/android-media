@@ -18,17 +18,17 @@ android {
     defaultConfig {
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments = ['targetModuleName': 'TkpdStream']
+                arguments = ['targetModuleName': 'TkpdVote']
             }
         }
     }
 }
 
 project.ext {
-    artifactId = 'groupchat'
-    groupId = 'com.tokopedia.groupchat'
-    versionName = "${tkpdGroupchatVersion}"
-    artifactName ="groupchat-release"
+    artifactId = 'vote'
+    groupId = 'com.tokopedia.vote'
+    versionName = "${tkpdVoteVersion}"
+    artifactName ="vote-release"
 }
 dependencies {
 
