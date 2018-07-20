@@ -34,7 +34,7 @@ public class SimilarSearchAppEventTracking implements AppEventTracking {
     }
 
     interface Label {
-        String LabelKeywordProduct = "Keyword: %s - product id: %s}";
+        String LabelKeywordProduct = "Keyword: %s - product id: %s";
         String LabelProductIDTitle = "product id: %s";
         String LabelScreeName = "%s";
         String LabelProductID = "%s";

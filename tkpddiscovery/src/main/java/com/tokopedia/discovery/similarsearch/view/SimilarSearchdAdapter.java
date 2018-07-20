@@ -123,13 +123,15 @@ public class SimilarSearchdAdapter extends RecyclerView.Adapter<SimilarSearchdAd
                     bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
                     intent.putExtras(bundle);
                     itemView.getContext().startActivity(intent);
-                    SimilarSearchTracking.eventClickSimilarProduct("searchproduct - product "+data.getId());
+                    SimilarSearchTracking.eventClickSimilarProduct("searchproduct - product "+data.getId(),productsItem);
                 }
             });
 
         }
 
         public void updateView(ProductsItem productsItem,int position) {
+
+            SimilarSearchTracking.eventUserSeeSimilarProduct(String.valueOf(productsItem.getId()),productsItem);
             this.productsItem = productsItem;
             int placeholderColors[] = {R.color.light_green1,R.color.light_blue1,R.color.light_red1,R.color.light_yellow1};
             ImageHandler.loadImage(itemView.getContext(),mProductImage,productsItem.getImageUrl(), new ColorDrawable(ContextCompat.getColor(itemView.getContext(),placeholderColors[position%4])));

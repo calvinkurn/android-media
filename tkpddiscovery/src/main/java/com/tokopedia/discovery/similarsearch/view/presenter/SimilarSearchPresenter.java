@@ -67,7 +67,6 @@ public class SimilarSearchPresenter extends BaseDaggerPresenter<SimilarSearchCon
             @Override
             public void onNext(List<ProductsItem> productsItems) {
                 if(productsItems != null && productsItems.size() > 0) {
-                    SimilarSearchTracking.eventUserSeeSimilarProduct(getView().getProductID());
                     getView().setProductList(productsItems);
                 }else {
                     getView().setEmptyLayoutVisible();
