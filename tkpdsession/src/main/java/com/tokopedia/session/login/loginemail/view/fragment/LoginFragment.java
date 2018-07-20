@@ -511,7 +511,7 @@ public class LoginFragment extends BaseDaggerFragment
     @Override
     public void onSuccessDiscoverLogin(ArrayList<DiscoverItemViewModel> listProvider) {
         loginButton.setEnabled(true);
-        listProvider.add(2, getLoginPhoneNumberBean());
+        if (!GlobalConfig.isSellerApp()) listProvider.add(2, getLoginPhoneNumberBean());
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(0, 20, 0, 15);
