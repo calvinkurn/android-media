@@ -583,7 +583,7 @@ public class AuthUtil {
                 hexString.append(String.format("%02x", b & 0xff));
             }
             return hexString.toString();
-        } catch (NoSuchAlgorithmException e) {
+        } catch (Throwable e) {
             e.printStackTrace();
             return "";
         }
