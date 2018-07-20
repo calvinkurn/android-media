@@ -290,6 +290,9 @@ public class TkpdState extends com.tokopedia.abstraction.constant.TkpdState {
         public static final String TYPE_IMAGE = "image/jpeg";
         public static final String TYPE_IMAGE_2 = "image/*";
         public static final String TYPE_TEXT = "text/plain";
+        public static final String Gmail = "com.google.android.gm";
+        public static final String Sms = "com.google.android.apps.messaging";
+
         /**
          * Format for twitter : "http://www.twitter.com/intent/tweet?url=YOURURL&text=YOURTEXT"
          */

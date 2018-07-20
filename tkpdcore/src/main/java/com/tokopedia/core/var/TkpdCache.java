@@ -242,7 +242,7 @@ public class TkpdCache extends com.tokopedia.abstraction.constant.TkpdCache {
         public static final String MAINAPP_RATING_TITLE = "mainapp_rating_title";
         public static final String MAINAPP_RATING_MESSAGE = "mainapp_rating_message";
 
-        public static final String APP_REFFERAL_CONTENT = "app_refferal_content";
+        public static final String REFERRAL_SUBHEADER = "referral_subheader";
         public static final String APP_SHARE_WELCOME_MESSAGE = "app_share_welcome_message";
         public static final String APP_REFERRAL_TITLE = "app_referral_title";
         public static final String APP_REFERRAL_HOWITWORKS = "app_referral_howitworks";
@@ -250,6 +250,8 @@ public class TkpdCache extends com.tokopedia.abstraction.constant.TkpdCache {
         public static final String APP_SHOW_RECOMENDATION_BUTTON = "mainapp_show_recomendation_button";
         public static final String APP_SHOW_TOKOPOINT_NATIVE = "app_enable_tokopoint_native";
         public static final String APP_SHARE_DEFAULT_MESSAGE = "app_share_default_message";
+        public static final String REFFERAL_TERMS = "referral_terms";
+        public static final String REFERRAL_TITLE_DESC = "app_refferal_content";
 
 
         public static final String MAINAPP_SHOW_SIMPLE_APP_RATING = "mainapp_show_simple_app_rating";
