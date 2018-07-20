@@ -337,5 +337,10 @@ public class Utils {
         public final static String EVENTS = "events";
         public final static String HOMEDATA = "homedata";
         public final static String FAVOURITEDATA = "favouritedata";
+        public static final int PAYMENTSUCCESS = 189;
+        public static final int REVIEW_REQUEST = 1901;
+        public static final int SELECT_TICKET_REQUEST = 1902;
+        public static String EXTRA_PACKAGEVIEWMODEL = "packageviewmodel";
+        public static String EXTRA_SEATLAYOUTVIEWMODEL = "seatlayoutviewmodel";
     }
 }

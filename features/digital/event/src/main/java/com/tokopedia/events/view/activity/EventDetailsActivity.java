@@ -183,7 +183,7 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
     @Override
     public void navigateToActivityRequest(Intent intent, int requestCode) {
         hideProgressBar();
-        startActivity(intent);
+        startActivityForResult(intent,requestCode);
 
     }
 
@@ -381,5 +381,15 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
     @Override
     public String getScreenName() {
         return mPresenter.getSCREEN_NAME();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == Utils.Constants.SELECT_TICKET_REQUEST) {
+            if (resultCode == Utils.Constants.PAYMENTSUCCESS) {
+                finish();
+            }
+        }
     }
 }

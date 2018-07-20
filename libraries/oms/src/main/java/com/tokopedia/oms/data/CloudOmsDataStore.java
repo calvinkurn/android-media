@@ -11,7 +11,6 @@ import javax.inject.Inject;
 import rx.Observable;
 
 
-
 public class CloudOmsDataStore implements OmsDataStore {
 
     private final OmsApi omsApi;
@@ -22,8 +21,8 @@ public class CloudOmsDataStore implements OmsDataStore {
     }
 
     @Override
-    public Observable<VerifyMyCartResponse> verifyCart(JsonObject requestBody,boolean flag) {
-        return omsApi.postCartVerify(requestBody,flag);
+    public Observable<VerifyMyCartResponse> verifyCart(JsonObject requestBody, boolean flag) {
+        return omsApi.postCartVerify(requestBody, flag).map(new DataResponseMapper<>());
     }
 
     @Override

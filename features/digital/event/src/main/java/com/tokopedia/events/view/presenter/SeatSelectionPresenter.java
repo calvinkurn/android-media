@@ -29,6 +29,7 @@ import com.tokopedia.events.domain.postusecase.VerifyCartUseCase;
 import com.tokopedia.events.view.activity.ReviewTicketActivity;
 import com.tokopedia.events.view.contractor.SeatSelectionContract;
 import com.tokopedia.events.view.utils.EventsGAConst;
+import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.EventsDetailsViewModel;
 import com.tokopedia.events.view.viewmodel.PackageViewModel;
 import com.tokopedia.events.view.viewmodel.SeatLayoutViewModel;
@@ -129,8 +130,8 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
         super.attachView(view);
         remoteConfig = new FirebaseRemoteConfigImpl(view.getActivity());
         eventsDetailsViewModel = getView().getActivity().getIntent().getParcelableExtra("event_detail");
-        selectedpkgViewModel = getView().getActivity().getIntent().getParcelableExtra(EventBookTicketPresenter.EXTRA_PACKAGEVIEWMODEL);
-        seatLayoutViewModel = getView().getActivity().getIntent().getParcelableExtra(EventBookTicketPresenter.EXTRA_SEATLAYOUTVIEWMODEL);
+        selectedpkgViewModel = getView().getActivity().getIntent().getParcelableExtra(Utils.Constants.EXTRA_PACKAGEVIEWMODEL);
+        seatLayoutViewModel = getView().getActivity().getIntent().getParcelableExtra(Utils.Constants.EXTRA_SEATLAYOUTVIEWMODEL);
         getView().setEventTitle(getView().getActivity().getIntent().getStringExtra("EventTitle"));
     }
 

@@ -328,7 +328,7 @@ public class EventReviewTicketPresenter
         remoteConfig = new FirebaseRemoteConfigImpl(view.getActivity());
         Intent intent = view.getActivity().getIntent();
         this.eventsDetailsViewModel = intent.getParcelableExtra("event_detail");
-        this.checkoutData = intent.getParcelableExtra(EventBookTicketPresenter.EXTRA_PACKAGEVIEWMODEL);
+        this.checkoutData = intent.getParcelableExtra(Utils.Constants.EXTRA_PACKAGEVIEWMODEL);
         this.selectedSeatViewModel = intent.getParcelableExtra(SeatSelectionPresenter.EXTRA_SEATSELECTEDMODEL);
         getView().renderFromPackageVM(checkoutData, selectedSeatViewModel);
         getAndInitForms();

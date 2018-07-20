@@ -276,7 +276,7 @@ public class EventBookTicketActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        mPresenter.onActivityResult(requestCode);
+        mPresenter.onActivityResult(requestCode, resultCode);
     }
 
     @Override
@@ -298,4 +298,6 @@ public class EventBookTicketActivity
         super.onPause();
         hideProgressBar();
     }
+
+
 }

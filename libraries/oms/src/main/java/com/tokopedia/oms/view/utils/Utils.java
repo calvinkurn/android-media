@@ -64,7 +64,7 @@ public class Utils {
                     }
                 }
             }
-        }catch (Exception ex){
+        } catch (Exception ex) {
 
         }
 

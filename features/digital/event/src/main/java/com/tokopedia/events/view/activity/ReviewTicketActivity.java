@@ -39,7 +39,6 @@ import com.tokopedia.events.view.utils.ImageTextViewHolder;
 import com.tokopedia.events.view.viewmodel.PackageViewModel;
 import com.tokopedia.events.view.viewmodel.SelectedSeatViewModel;
 import com.tokopedia.oms.scrooge.ScroogePGUtil;
-import com.tokopedia.oms.view.utils.Utils;
 
 import java.util.List;
 
@@ -507,6 +506,7 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
                 String url = data.getStringExtra(ScroogePGUtil.SUCCESS_MSG_URL) + "/" + String.valueOf(true);
                 RouteManager.route(this, url);
             }
+            setResult(com.tokopedia.events.view.utils.Utils.Constants.PAYMENTSUCCESS);
             this.finish();
         }
     }

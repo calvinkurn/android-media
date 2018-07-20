@@ -66,9 +66,6 @@ public class EventBookTicketPresenter
     private EventsDetailsViewModel dataModel;
     private List<LocationDateModel> locationDateModels;
 
-    public static String EXTRA_PACKAGEVIEWMODEL = "packageviewmodel";
-    public static String EXTRA_SEATLAYOUTVIEWMODEL = "seatlayoutviewmodel";
-
     @Inject
     public EventBookTicketPresenter(GetEventSeatLayoutUseCase seatLayoutUseCase, PostValidateShowUseCase useCase, ProfileUseCase profileCase) {
         this.getSeatLayoutUseCase = seatLayoutUseCase;
@@ -132,16 +129,16 @@ public class EventBookTicketPresenter
                 if (objectResponse.getStatus() != 400) {
                     if (hasSeatLayout == 1 && seatLayoutViewModel.getArea() != null) {
                         Intent reviewTicketIntent = new Intent(getView().getActivity(), SeatSelectionActivity.class);
-                        reviewTicketIntent.putExtra(EXTRA_PACKAGEVIEWMODEL, selectedPackageViewModel);
-                        reviewTicketIntent.putExtra(EXTRA_SEATLAYOUTVIEWMODEL, seatLayoutViewModel);
+                        reviewTicketIntent.putExtra(Utils.Constants.EXTRA_PACKAGEVIEWMODEL, selectedPackageViewModel);
+                        reviewTicketIntent.putExtra(Utils.Constants.EXTRA_SEATLAYOUTVIEWMODEL, seatLayoutViewModel);
                         reviewTicketIntent.putExtra("event_detail", dataModel);
                         reviewTicketIntent.putExtra("EventTitle", eventTitle);
-                        getView().navigateToActivityRequest(reviewTicketIntent, 100);
+                        getView().navigateToActivityRequest(reviewTicketIntent, Utils.Constants.REVIEW_REQUEST);
                     } else {
                         Intent reviewTicketIntent = new Intent(getView().getActivity(), ReviewTicketActivity.class);
-                        reviewTicketIntent.putExtra(EXTRA_PACKAGEVIEWMODEL, selectedPackageViewModel);
+                        reviewTicketIntent.putExtra(Utils.Constants.EXTRA_PACKAGEVIEWMODEL, selectedPackageViewModel);
                         reviewTicketIntent.putExtra("event_detail", dataModel);
-                        getView().navigateToActivityRequest(reviewTicketIntent, 100);
+                        getView().navigateToActivityRequest(reviewTicketIntent, Utils.Constants.REVIEW_REQUEST);
                     }
                 } else {
                     getView().showMessage(objectResponse.getMessageError());
@@ -151,12 +148,17 @@ public class EventBookTicketPresenter
     }
 
     @Override
-    public void onActivityResult(int requestCode) {
+    public void onActivityResult(int requestCode, int resultCode) {
         if (requestCode == getView().getRequestCode()) {
             if (SessionHandler.isV4Login(getView().getActivity())) {
                 getProfile();
             } else {
                 getView().hideProgressBar();
+            }
+        } else if (requestCode == Utils.Constants.REVIEW_REQUEST) {
+            if (resultCode == Utils.Constants.PAYMENTSUCCESS) {
+                getView().getActivity().setResult(Utils.Constants.PAYMENTSUCCESS);
+                getView().getActivity().finish();
             }
         }
     }
