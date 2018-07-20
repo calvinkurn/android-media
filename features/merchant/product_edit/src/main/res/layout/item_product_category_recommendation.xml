@@ -9,7 +9,7 @@
     <com.tokopedia.product.edit.price.LabelRadioButton
         android:id="@+id/labelRadioButton"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/dp_72"
         android:clickable="true"
         android:foreground="?android:attr/selectableItemBackground"
         android:padding="@dimen/dp_16"

@@ -4,11 +4,13 @@
     <string name="title_activity_video_recommendation">Rekomendasi Video Produk</string>
     <string name="product_from_to_video">%1$d dari %2$d Video</string>
     <string name="label_video_add">Tambah Video Produk</string>
+    <string name="label_product_add">Tambah Produk</string>
     <string name="label_save">Simpan</string>
     <string name="label_add">Tambah</string>
     <string name="label_delete">Delete</string>
     <string name="label_cancel">Batal</string>
     <string name="label_choose">Pilih</string>
+    <string name="label_next">Selanjutnya</string>
     <string name="label_always_available">Selalu Tersedia</string>
 
     <string name="product_add_tag_video_recommendation">rekomendasi</string>
@@ -71,6 +73,7 @@
     <string name="product_label_process_time">Waktu Proses</string>
     <string name="product_label_catalog">Katalog</string>
     <string name="product_label_product_name">Nama Produk</string>
+    <string name="product_label_product_picture">Gambar Produk</string>
     <string name="product_label_product_brand">Merek</string>
     <string name="product_label_product_catalog">Katalog Produk</string>
     <string name="product_label_description_product">Deskripsi Produk</string>

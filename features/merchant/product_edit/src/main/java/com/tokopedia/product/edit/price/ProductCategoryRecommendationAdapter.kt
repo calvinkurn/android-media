@@ -6,7 +6,9 @@ import android.view.ViewGroup
 import com.tokopedia.product.edit.R
 import kotlinx.android.synthetic.main.item_product_category_recommendation.view.*
 
-class ProductCategoryRecommendationAdapter(var categoryRecommendationList: ArrayList<String>) : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
+class ProductCategoryRecommendationAdapter(private var categoryRecommendationList: ArrayList<String>) : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
+
+    private var selectedPosition = -1
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val itemLayoutView = LayoutInflater.from(parent.context)
@@ -23,5 +25,9 @@ class ProductCategoryRecommendationAdapter(var categoryRecommendationList: Array
     fun replaceData(categoryRecommendationList: ArrayList<String>) {
         this.categoryRecommendationList = categoryRecommendationList
         notifyDataSetChanged()
+    }
+
+    fun getSelectedCategory(){
+
     }
 }

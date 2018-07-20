@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.dialog.BaseTextPickerDialogFragment
+import com.tokopedia.product.edit.price.BaseProductAddFragment
 import com.tokopedia.product.edit.view.fragment.ProductAddVideoFragment
 
 class ProductAddVideoActivity : BaseSimpleActivity(), BaseTextPickerDialogFragment.Listener {
@@ -13,7 +14,7 @@ class ProductAddVideoActivity : BaseSimpleActivity(), BaseTextPickerDialogFragme
     private lateinit var productAddVideoFragment: Fragment
 
     override fun getNewFragment(): Fragment{
-        productAddVideoFragment = ProductAddVideoFragment.createInstance()
+        productAddVideoFragment = BaseProductAddFragment.createInstance()
         return productAddVideoFragment
     }
 
