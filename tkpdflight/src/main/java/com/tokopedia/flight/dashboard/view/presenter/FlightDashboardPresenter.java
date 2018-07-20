@@ -695,7 +695,11 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
             @Override
             public void onNext(List<BannerDetail> bannerDetailList) {
                 if (isViewAttached()) {
-                    getView().renderBannerView(bannerDetailList);
+                    if (bannerDetailList.size() > 0) {
+                        getView().renderBannerView(bannerDetailList);
+                    } else {
+                        getView().hideBannerView();
+                    }
                 }
             }
         });

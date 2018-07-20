@@ -39,7 +39,7 @@ public class ShareData implements Parcelable {
     private String textContent;
     private String source;
     private String id = "";
-    private String productUrl;
+    private String pathSticker;
 
     public ShareData() {
     }
@@ -54,7 +54,7 @@ public class ShareData implements Parcelable {
         textContent = in.readString();
         source = in.readString();
         id = in.readString();
-        productUrl = in.readString();
+        pathSticker = in.readString();
     }
 
     @Override
@@ -68,7 +68,7 @@ public class ShareData implements Parcelable {
         dest.writeString(textContent);
         dest.writeString(source);
         dest.writeString(id);
-        dest.writeString(productUrl);
+        dest.writeString(pathSticker);
     }
 
     @Override
@@ -167,14 +167,6 @@ public class ShareData implements Parcelable {
         this.id = id;
     }
 
-    public String getProductUrl() {
-        return productUrl;
-    }
-
-    public void setProductUrl(String productUrl) {
-        this.productUrl = productUrl;
-    }
-
     public String renderShareUri() {
         if (getUri() == null) {
             return "";
@@ -239,6 +231,14 @@ public class ShareData implements Parcelable {
             return new String[0];
     }
 
+    public String getPathSticker() {
+        return pathSticker;
+    }
+
+    public void setPathSticker(String pathSticker) {
+        this.pathSticker = pathSticker;
+    }
+
     public static class Builder {
         private String name;
         private String price;
@@ -249,7 +249,7 @@ public class ShareData implements Parcelable {
         private String textContent;
         private String source;
         private String id;
-        private String productUrl;
+        private String pathSticker;
 
         private Builder() {
         }
@@ -303,13 +303,13 @@ public class ShareData implements Parcelable {
             return this;
         }
 
-        public Builder setProductUrl(String productUrl) {
-            this.productUrl = productUrl;
+        public Builder setPathSticker(String pathSticker) {
+            this.pathSticker = pathSticker;
             return this;
         }
 
         public Builder but() {
-            return aShareData().setName(name).setPrice(price).setUri(uri).setDescription(description).setImgUri(imgUri).setProductUrl(productUrl);
+            return aShareData().setName(name).setPrice(price).setUri(uri).setDescription(description).setImgUri(imgUri);
         }
 
         public ShareData build() {
@@ -323,7 +323,7 @@ public class ShareData implements Parcelable {
             shareData.setTextContent(textContent);
             shareData.setSource(source);
             shareData.setId(id);
-            shareData.setProductUrl(productUrl);
+            shareData.setPathSticker(pathSticker);
             return shareData;
         }
 

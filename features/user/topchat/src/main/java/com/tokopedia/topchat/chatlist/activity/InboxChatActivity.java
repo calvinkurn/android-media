@@ -32,6 +32,7 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chatroom.view.listener.ChatNotifInterface;
 import com.tokopedia.topchat.common.InboxMessageConstant;
+import com.tokopedia.topchat.common.TopChatRouter;
 import com.tokopedia.topchat.common.util.SpaceItemDecoration;
 import com.tokopedia.topchat.chatlist.adapter.IndicatorAdapter;
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics;
@@ -85,7 +86,9 @@ public class InboxChatActivity extends DrawerPresenterActivity
 
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         taskStackBuilder.addNextIntent(homeIntent);
-        taskStackBuilder.addNextIntent(channelListIntent);
+        if (((TopChatRouter) context.getApplicationContext()).isEnabledGroupChat()) {
+            taskStackBuilder.addNextIntent(channelListIntent);
+        }
         return taskStackBuilder;
     }
 
@@ -144,7 +147,7 @@ public class InboxChatActivity extends DrawerPresenterActivity
         indicator.addItemDecoration(new SpaceItemDecoration((int) getActivity().getResources().getDimension(R.dimen.step_size_nob)));
         indicator.setAdapter(indicatorAdapter);
 
-        if (isEnabledGroupChat()) {
+        if (isIndicatorVisible()) {
             indicatorLayout.setVisibility(View.VISIBLE);
         } else {
             indicatorLayout.setVisibility(View.GONE);
@@ -164,6 +167,11 @@ public class InboxChatActivity extends DrawerPresenterActivity
     private boolean isEnabledGroupChat() {
         return getApplicationContext() instanceof TkpdInboxRouter
                 && ((TkpdInboxRouter) getApplicationContext()).isEnabledGroupChat();
+    }
+
+    private boolean isIndicatorVisible() {
+        return getApplicationContext() instanceof TkpdInboxRouter
+                && ((TkpdInboxRouter) getApplicationContext()).isIndicatorVisible();
     }
 
     private List<IndicatorItem> getIndicatorList() {
@@ -302,7 +310,7 @@ public class InboxChatActivity extends DrawerPresenterActivity
     }
 
     public void showIndicators() {
-        if (!GlobalConfig.isSellerApp() && isEnabledGroupChat()) {
+        if (!GlobalConfig.isSellerApp() && isIndicatorVisible()) {
             indicatorLayout.setVisibility(View.VISIBLE);
         }
     }

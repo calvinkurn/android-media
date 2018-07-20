@@ -131,7 +131,7 @@
                 android:layout_marginTop="@dimen/il_margin_xsmall"
                 android:text="2-5 Hari"
                 app:layout_constraintLeft_toLeftOf="@+id/text_label_processing_time"
-                app:layout_constraintRight_toRightOf="@id/line_separator_vertical_two"
+                app:layout_constraintRight_toRightOf="@+id/line_separator_vertical_two"
                 app:layout_constraintTop_toBottomOf="@+id/text_label_processing_time" />
 
             <View

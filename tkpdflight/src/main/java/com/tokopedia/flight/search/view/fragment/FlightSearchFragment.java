@@ -333,17 +333,12 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     @Override
     public void onItemClicked(FlightSearchViewModel flightSearchViewModel) {
         flightSearchPresenter.onSearchItemClicked(flightSearchViewModel);
-        if (onFlightSearchFragmentListener != null) {
-            onFlightSearchFragmentListener.selectFlight(flightSearchViewModel.getId());
-        }
     }
 
     @Override
     public void onItemClicked(FlightSearchViewModel flightSearchViewModel, int adapterPosition) {
         flightSearchPresenter.onSearchItemClicked(flightSearchViewModel, adapterPosition);
-        if (onFlightSearchFragmentListener != null) {
-            onFlightSearchFragmentListener.selectFlight(flightSearchViewModel.getId());
-        }
+
     }
 
     public void actionFetchFlightSearchData() {
@@ -386,6 +381,13 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     @Override
     public boolean isNeedRefreshAirline() {
         return needRefreshAirline;
+    }
+
+    @Override
+    public void navigateToNextPage(String selectedId) {
+        if (onFlightSearchFragmentListener != null) {
+            onFlightSearchFragmentListener.selectFlight(selectedId);
+        }
     }
 
     /**
@@ -490,7 +492,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     }
 
     protected void onSelectedFromDetail(String selectedId) {
-        onFlightSearchFragmentListener.selectFlight(selectedId);
+        flightSearchPresenter.onSearchItemClicked(selectedId);
     }
 
     @Override

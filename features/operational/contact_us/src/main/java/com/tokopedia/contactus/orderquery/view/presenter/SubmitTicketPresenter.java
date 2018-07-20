@@ -2,6 +2,7 @@ package com.tokopedia.contactus.orderquery.view.presenter;
 
 import android.content.Context;
 import android.graphics.BitmapFactory;
+import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
@@ -144,10 +145,15 @@ public class SubmitTicketPresenter extends BaseDaggerPresenter<SubmitTicketContr
         pass.setMessageBody(getView().getDescription());
         pass.setAttachment(getView().getImageList());
         pass.setName(SessionHandler.getLoginName(context));
+
+
+
         if (submitTicketInvoiceData.getBuyerPurchaseList().getDetail().getId() > 0)
             pass.setOrderId(String.valueOf(submitTicketInvoiceData.getBuyerPurchaseList().getDetail().getId()));
-        if (submitTicketInvoiceData.getBuyerPurchaseList().getDetail().getId() > 0)
-            pass.setInvoiceNumber(String.valueOf(submitTicketInvoiceData.getBuyerPurchaseList().getDetail().getId()));
+
+        if(submitTicketInvoiceData.getBuyerPurchaseList().getDetail()!= null && !TextUtils.isEmpty(submitTicketInvoiceData.getBuyerPurchaseList().getDetail().getCode())) {
+            pass.setInvoiceNumber(submitTicketInvoiceData.getBuyerPurchaseList().getDetail().getCode());
+        }
         return pass;
     }
 

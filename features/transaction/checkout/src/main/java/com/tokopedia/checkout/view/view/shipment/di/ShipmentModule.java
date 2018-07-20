@@ -17,6 +17,7 @@ import com.tokopedia.checkout.domain.usecase.CheckoutUseCase;
 import com.tokopedia.checkout.domain.usecase.EditAddressUseCase;
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.domain.usecase.GetThanksToppayUseCase;
+import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.di.module.ConverterDataModule;
 import com.tokopedia.checkout.view.di.module.PeopleAddressModule;
 import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule;
@@ -63,8 +64,8 @@ public class ShipmentModule {
 
     @Provides
     @ShipmentScope
-    CheckoutUseCase provideCheckoutUseCase(ICartRepository cartRepository, ICheckoutMapper checkoutMapper) {
-        return new CheckoutUseCase(cartRepository, checkoutMapper);
+    CheckoutUseCase provideCheckoutUseCase(ICheckoutModuleRouter checkoutModuleRouter, ICartRepository cartRepository, ICheckoutMapper checkoutMapper) {
+        return new CheckoutUseCase(cartRepository, checkoutMapper, checkoutModuleRouter);
     }
 
     @Provides
