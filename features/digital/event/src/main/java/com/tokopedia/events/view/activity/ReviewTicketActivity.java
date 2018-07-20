@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.constant.IRouterConstant;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
@@ -37,6 +38,8 @@ import com.tokopedia.events.view.utils.EventsGAConst;
 import com.tokopedia.events.view.utils.ImageTextViewHolder;
 import com.tokopedia.events.view.viewmodel.PackageViewModel;
 import com.tokopedia.events.view.viewmodel.SelectedSeatViewModel;
+import com.tokopedia.oms.scrooge.ScroogePGUtil;
+import com.tokopedia.oms.view.utils.Utils;
 
 import java.util.List;
 
@@ -499,6 +502,12 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
                 default:
                     break;
             }
+        } else if (requestCode == ScroogePGUtil.REQUEST_CODE_OPEN_SCROOGE_PAGE) {
+            if (data != null) {
+                String url = data.getStringExtra(ScroogePGUtil.SUCCESS_MSG_URL) + "/" + String.valueOf(true);
+                RouteManager.route(this, url);
+            }
+            this.finish();
         }
     }
 

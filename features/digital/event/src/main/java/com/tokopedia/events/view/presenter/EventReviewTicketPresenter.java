@@ -534,7 +534,7 @@ public class EventReviewTicketPresenter
                 public void onNext(JsonObject checkoutResponse) {
                     String paymentData = com.tokopedia.oms.view.utils.Utils.transform(checkoutResponse);
                     String paymentURL = checkoutResponse.get("url").getAsString();
-                    ScroogePGUtil.openScroogePage(getView().getActivity(), paymentURL, true, paymentData, "Deal Payment");
+                    ScroogePGUtil.openScroogePage(getView().getActivity(), paymentURL, true, paymentData, "Event Payment");
                     getView().hideProgressBar();
 
                 }

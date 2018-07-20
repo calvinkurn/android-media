@@ -69,6 +69,7 @@ dependencies {
     annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
     implementation 'at.blogc:expandabletextview:1.0.5'
+    compile project(path: ':libraries:applink')
 }
 
 apply from: '../../../publish_local.gradle'
