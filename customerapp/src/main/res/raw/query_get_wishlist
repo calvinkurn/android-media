@@ -10,30 +10,27 @@ query wishlist($user_id: Int, $page: Int, $count: Int){
         url
         image
         price
+        condition
+        available
+        status
         price_formatted
-        prev_price
         minimum_order
         wholesale_price {
           minimum
           maximum
           price
         }
-        condition
         shop {
           id
           name
           url
-          reputation {
-            score
-            set
-            level
-            image
-          }
-          official_store
           gold_merchant
+          official_store
           status
           location
+
         }
+        preorder
         badges {
           title
           image_url
@@ -42,14 +39,6 @@ query wishlist($user_id: Int, $page: Int, $count: Int){
           title
           color
         }
-        available
-        status
-        preorder
-        rating
-        review_count
-        wishlist
-        default_child_id
-        is_ncf
       }
       pagination {
         next_url
