@@ -5,7 +5,7 @@ import android.text.TextUtils;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.home.account.data.AccountMapper;
+import com.tokopedia.home.account.data.mapper.AccountMapper;
 import com.tokopedia.home.account.data.model.AccountModel;
 import com.tokopedia.home.account.presentation.viewmodel.AccountViewModel;
 import com.tokopedia.usecase.RequestParams;

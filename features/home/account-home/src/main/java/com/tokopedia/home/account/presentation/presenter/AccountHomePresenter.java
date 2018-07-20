@@ -5,9 +5,15 @@ import com.tokopedia.home.account.presentation.AccountHome;
 import com.tokopedia.home.account.presentation.viewmodel.AccountViewModel;
 import com.tokopedia.usecase.RequestParams;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.inject.Inject;
 
 import rx.Subscriber;
+
+import static com.tokopedia.home.account.AccountConstants.QUERY;
+import static com.tokopedia.home.account.AccountConstants.VARIABLES;
 
 /**
  * @author okasurya on 7/20/18.
@@ -25,6 +31,10 @@ public class AccountHomePresenter implements AccountHome.Presenter {
     @Override
     public void getAccount(String query) {
         RequestParams requestParams = RequestParams.create();
+
+        requestParams.putString(QUERY, query);
+        requestParams.putObject(VARIABLES, new HashMap<>());
+
         getAccountUseCase.execute(requestParams, new Subscriber<AccountViewModel>() {
             @Override
             public void onCompleted() {

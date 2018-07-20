@@ -1,4 +1,4 @@
-package com.tokopedia.home.account.data;
+package com.tokopedia.home.account.data.mapper;
 
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.home.account.data.model.AccountModel;
@@ -17,7 +17,7 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
 
     @Override
     public AccountViewModel call(GraphqlResponse graphqlResponse) {
-        graphqlResponse.getData(AccountModel.class);
+        AccountModel accountModel = graphqlResponse.getData(AccountModel.class);
         return null;
     }
 }

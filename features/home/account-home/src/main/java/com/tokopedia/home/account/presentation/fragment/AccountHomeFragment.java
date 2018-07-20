@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.di.component.AccountHomeComponent;
@@ -38,7 +39,7 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements AccountHo
     private Toolbar toolbar;
 
 //    private boolean isLoaded = false;
-    //    private TabLayout tabLayout;
+//    private TabLayout tabLayout;
 //    private ViewPager viewPager;
 //    private PagerAdapter adapter;
     private FrameLayout container;
@@ -85,8 +86,11 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements AccountHo
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        GraphqlClient.init(getContext());
-        presenter.getAccount("");
+        if(getContext() != null) {
+            GraphqlClient.init(getContext());
+
+            presenter.getAccount(GraphqlHelper.loadRawString(getContext().getResources(), R.raw.query_account_home));
+        }
     }
 
     @Override
