@@ -166,7 +166,7 @@ class ShopInfoFragmentNew: BaseDaggerFragment(), ShopInfoView, BaseEmptyViewHold
     }
 
     private fun displayImageBackground(shopInfo: ShopInfo) {
-        if (TextApiUtils.isValueTrue(shopInfo.info.shopIsOfficial) || shopInfo.info.isShopIsGoldBadge){
+        if (!(TextApiUtils.isValueTrue(shopInfo.info.shopIsOfficial) || shopInfo.info.isShopIsGoldBadge)){
             shopBackgroundImageView.visibility = View.GONE
         } else {
             shopBackgroundImageView.visibility = View.VISIBLE

@@ -1,5 +1,6 @@
 package com.tokopedia.design.label;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
@@ -9,6 +10,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.content.res.AppCompatResources;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -125,6 +127,12 @@ public class LabelView extends BaseCustomView {
         contentTextView.setTypeface(null, contentTextStyleValue);
         contentTextView.setMaxLines(maxLines);
         contentTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, contentTextSize);
+
+        DisplayMetrics dm = new DisplayMetrics();
+        ((Activity)getContext()).getWindowManager().getDefaultDisplay().getMetrics(dm);
+
+        contentTextView.setMaxWidth((int)(dm.widthPixels * 0.3));
+
         invalidate();
         requestLayout();
     }
