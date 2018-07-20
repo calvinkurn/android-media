@@ -364,16 +364,20 @@ public class ShopPageHeaderViewHolder {
         switch ((int) shopInfo.getInfo().getShopStatus()) {
             case ShopStatusDef.CLOSED:
                 showShopClosed(shopInfo);
+                shopWarningTickerView.setOnClickListener(null);
                 break;
             case ShopStatusDef.MODERATED:
                 showShopModerated(shopInfo);
+                shopWarningTickerView.setOnClickListener(null);
                 break;
             case ShopStatusDef.NOT_ACTIVE:
                 showShopNotActive(shopInfo);
                 if (isMyShop){
                     shopWarningTickerView.setOnClickListener(view ->
                         listener.goToHelpCenter(ShopUrl.SHOP_HELP_CENTER));
-                    }
+                } else {
+                    shopWarningTickerView.setOnClickListener(null);
+                }
                 break;
             default:
                 shopWarningTickerView.setVisibility(View.GONE);
