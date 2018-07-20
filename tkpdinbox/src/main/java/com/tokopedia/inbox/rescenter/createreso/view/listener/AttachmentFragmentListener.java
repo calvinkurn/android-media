@@ -39,9 +39,9 @@ public interface AttachmentFragmentListener {
 
         void btnContinueClicked();
 
-        void handleDefaultOldUploadImageHandlerResult(int resultCode, Intent data);
+        void handleImageResult(int resultCode, Intent data);
 
-        void handleNewGalleryResult(int resultCode, Intent data);
+        void handleVideoResult(int resultCode, Intent data);
 
         void onAdapterChanged(List<AttachmentViewModel> attachmentViewModelList);
     }

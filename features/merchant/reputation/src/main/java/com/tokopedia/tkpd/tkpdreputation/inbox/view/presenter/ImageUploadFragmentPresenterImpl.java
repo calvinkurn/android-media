@@ -16,6 +16,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.GetS
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SendReviewUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SetReviewFormCacheUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.ImageUploadPreviewActivity;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.ImageUploadPreviewFragment;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.ImageUploadPreviewFragmentView;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.sendreview.SendReviewPass;
@@ -26,6 +27,8 @@ import java.util.List;
 import java.util.UUID;
 
 import rx.Subscriber;
+
+import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
 
 /**
  * Created by Nisie on 2/12/16.
@@ -55,23 +58,15 @@ public class ImageUploadFragmentPresenterImpl implements ImageUploadFragmentPres
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if ((requestCode == ImageUploadHandler.REQUEST_CODE)
-                && (resultCode == Activity.RESULT_OK || resultCode == GalleryBrowser.RESULT_CODE)) {
+        if (requestCode == ImageUploadPreviewFragment.REQUEST_CODE_IMAGE_REVIEW && resultCode == Activity.RESULT_OK && data!= null) {
 
             int position = viewListener.getAdapter().getList().size();
             ImageUpload image = new ImageUpload();
             image.setPosition(position);
             image.setImageId(SendReviewUseCase.IMAGE + UUID.randomUUID().toString());
-
-            switch (resultCode) {
-                case GalleryBrowser.RESULT_CODE:
-                    image.setFileLoc(data.getStringExtra(ImageGallery.EXTRA_URL));
-                    break;
-                case Activity.RESULT_OK:
-                    image.setFileLoc(cameraFileLoc);
-                    break;
-                default:
-                    break;
+            ArrayList<String> imageUrlOrPathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS);
+            if (imageUrlOrPathList!= null && imageUrlOrPathList.size() > 0) {
+                image.setFileLoc(imageUrlOrPathList.get(0));
             }
             viewListener.getAdapter().addImage(image);
             viewListener.setPreviewImage(image);

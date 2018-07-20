@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.BroadcastReceiver;
@@ -68,6 +69,9 @@ import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
+import com.tokopedia.digital_deals.DealsModuleRouter;
+import com.tokopedia.digital_deals.di.DaggerDealsComponent;
+import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -94,6 +98,7 @@ import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
+import com.tokopedia.core.router.transactionmodule.UnifiedOrderRouter;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartRequest;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
 import com.tokopedia.core.router.transactionmodule.sharedata.CouponListResult;
@@ -186,6 +191,7 @@ import com.tokopedia.loyalty.view.fragment.LoyaltyNotifFragmentDialog;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.network.service.AccountsService;
+import com.tokopedia.otp.OtpModuleRouter;
 import com.tokopedia.oms.OmsModuleRouter;
 import com.tokopedia.oms.domain.PostVerifyCartWrapper;
 import com.tokopedia.otp.OtpModuleRouter;
@@ -368,6 +374,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         InstantLoanChuckRouter,
         InstantLoanRouter,
         TopChatRouter,
+        TokopointRouter,
+        OtpModuleRouter,
+        UnifiedOrderRouter,
         DealsModuleRouter,
         OmsModuleRouter,
         EventModuleRouter,
@@ -2230,7 +2239,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void goToCreateTopadsPromo(Context context, String productId, String shopId, String source) {
-
         Intent topadsIntent = context.getPackageManager()
                 .getLaunchIntentForPackage(DrawerBuyerHelper.TOP_SELLER_APPLICATION_PACKAGE);
         if (topadsIntent != null) {
