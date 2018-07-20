@@ -218,9 +218,7 @@ class ShopInfoFragmentNew: BaseDaggerFragment(), ShopInfoView, BaseEmptyViewHold
         }
     }
 
-    override fun showListNoteError(throwable: Throwable?) {
-
-    }
+    override fun showListNoteError(throwable: Throwable?) {}
 
     override fun onEmptyContentItemTextClicked() {}
 

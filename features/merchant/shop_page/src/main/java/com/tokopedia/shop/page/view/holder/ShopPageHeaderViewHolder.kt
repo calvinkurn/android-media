@@ -14,6 +14,7 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
 import com.tokopedia.shop.common.util.TextApiUtils
+import com.tokopedia.shop.extension.formatToSimpleNumber
 import kotlinx.android.synthetic.main.partial_shop_page_header_2.view.*
 
 class ShopPageHeaderViewHolder(private val view: View, private val listener: ShopPageHeaderListener){
@@ -23,7 +24,7 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
         isShopFavourited = TextApiUtils.isValueTrue(shopInfo.getInfo().getShopAlreadyFavorited())
         view.shopName.text = MethodChecker.fromHtml(shopInfo.info.shopName).toString()
         view.shopFollower.text = MethodChecker.fromHtml(view.context.getString(R.string.shop_page_header_total_follower,
-                shopInfo.info.shopTotalFavorit.toString()))
+                shopInfo.info.shopTotalFavorit.toDouble().formatToSimpleNumber()))
         view.shopFollower.setOnClickListener { listener.onFollowerTextClicked() }
         ImageHandler.loadImageCircle2(view.context, view.shopImageView, shopInfo.info.shopAvatar)
         when {
