@@ -79,6 +79,7 @@ import com.tokopedia.session.register.view.activity.SmartLockActivity;
 import com.tokopedia.session.register.view.subscriber.registerinitial.GetFacebookCredentialSubscriber;
 import com.tokopedia.session.register.view.viewmodel.DiscoverItemViewModel;
 import com.tokopedia.session.register.view.viewmodel.createpassword.CreatePasswordViewModel;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 
 import java.util.ArrayList;
 
