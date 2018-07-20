@@ -79,7 +79,7 @@
             android:gravity="center_horizontal"
             android:orientation="vertical"
             android:padding="@dimen/dp_20"
-            android:visibility="gone">
+            android:visibility="visible">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -104,11 +104,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
-                android:paddingLeft="@dimen/sp_32"
-                android:paddingRight="@dimen/sp_32"
                 android:text="Hasil produk serupa tidak dapat ditemukan. Silahkan pilih produk lain."
                 android:textColor="#8a000000"
-                android:textSize="14sp" />
+                android:textSize="@dimen/sp_16" />
 
 
         </LinearLayout>

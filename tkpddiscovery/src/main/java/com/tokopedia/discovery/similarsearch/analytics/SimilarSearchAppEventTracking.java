@@ -27,6 +27,8 @@ public class SimilarSearchAppEventTracking implements AppEventTracking {
         String EventImpressionProduct = "impression product";
         String EventClickSimilarProduct = "click - similar product";
         String EventNoSimilarProduct = "no similar product";
+        String EventAddWishList = "Add Wishlist";
+        String EventRemoveWishList = "Remove Wishlist";
 
 
     }

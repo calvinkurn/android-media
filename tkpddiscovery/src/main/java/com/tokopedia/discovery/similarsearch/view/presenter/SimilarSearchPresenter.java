@@ -110,12 +110,14 @@ public class SimilarSearchPresenter extends BaseDaggerPresenter<SimilarSearchCon
     }
 
     private void addWishlist(String productId, String userId, int adapterPosition) {
+        SimilarSearchTracking.eventAddWishList(productId);
         addWishlistActionUseCase.execute(AddWishlistActionUseCase.generateParam(productId, userId),
                 new AddWishlistActionSubscriber(wishListListener, adapterPosition));
     }
 
 
     private void removeWishlist(String productId, String userId, int adapterPosition) {
+        SimilarSearchTracking.eventRemoveWishList(productId);
         removeWishlistActionUseCase.execute(RemoveWishlistActionUseCase.generateParam(productId, userId),
                 new RemoveWishlistActionSubscriber(wishListListener, adapterPosition));
     }

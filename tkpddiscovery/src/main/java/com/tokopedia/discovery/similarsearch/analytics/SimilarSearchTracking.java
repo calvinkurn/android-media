@@ -43,4 +43,22 @@ public class SimilarSearchTracking extends UnifyTracking {
                 String.format(SimilarSearchAppEventTracking.Label.LabelProductID, productId)
         ).getEvent());
     }
+
+    public static void eventAddWishList(String productId) {
+        sendGTMEvent(new EventTracking(
+                SimilarSearchAppEventTracking.Event.GenericViewSearchResult,
+                SimilarSearchAppEventTracking.Category.EventSearchResult,
+                SimilarSearchAppEventTracking.Action.EventAddWishList,
+                String.format(SimilarSearchAppEventTracking.Label.LabelProductID, productId)
+        ).getEvent());
+    }
+
+    public static void eventRemoveWishList(String productId) {
+        sendGTMEvent(new EventTracking(
+                SimilarSearchAppEventTracking.Event.GenericViewSearchResult,
+                SimilarSearchAppEventTracking.Category.EventSearchResult,
+                SimilarSearchAppEventTracking.Action.EventRemoveWishList,
+                String.format(SimilarSearchAppEventTracking.Label.LabelProductID, productId)
+        ).getEvent());
+    }
 }
