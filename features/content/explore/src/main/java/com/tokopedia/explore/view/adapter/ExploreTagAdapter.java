@@ -2,9 +2,12 @@ package com.tokopedia.explore.view.adapter;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.tokopedia.explore.R;
 import com.tokopedia.explore.view.listener.ExploreFragmentListener;
 import com.tokopedia.explore.view.viewmodel.ExploreTagViewModel;
 
@@ -30,12 +33,14 @@ public class ExploreTagAdapter extends RecyclerView.Adapter<ExploreTagAdapter.Vi
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return null;
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_explore_tag, parent, false);
+        return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-
+        holder.tag.setText(list.get(position).getTag());
     }
 
     @Override
@@ -43,21 +48,21 @@ public class ExploreTagAdapter extends RecyclerView.Adapter<ExploreTagAdapter.Vi
         return list.size();
     }
 
-    public List<ExploreTagViewModel> getList() {
-        return list;
-    }
-
     public void setList(List<ExploreTagViewModel> list) {
         this.list = list;
+        notifyDataSetChanged();
     }
 
     public void setListener(ExploreFragmentListener listener) {
         this.listener = listener;
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        public ViewHolder(View itemView) {
+    class ViewHolder extends RecyclerView.ViewHolder {
+        TextView tag;
+
+        ViewHolder(View itemView) {
             super(itemView);
+            tag = itemView.findViewById(R.id.tag);
         }
     }
 }

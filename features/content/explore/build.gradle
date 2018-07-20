@@ -33,6 +33,10 @@ dependencies {
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
+    implementation rootProject.ext.miscDependencies.multiDex
+
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 }
+
+apply from: '../../../publish_local.gradle'

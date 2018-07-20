@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
-
 import android.support.v7.widget.Toolbar;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
@@ -19,8 +18,8 @@ import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.explore.view.fragment.ContentExploreFragment;
 import com.tokopedia.feedplus.R;
-import com.tokopedia.feedplus.view.fragment.FeedPlusDetailFragment;
 
 /**
  * @author by nisie on 5/18/17.
@@ -81,17 +80,18 @@ public class FeedPlusDetailActivity extends BasePresenterActivity implements Has
         if (getIntent().getExtras() != null)
             bundle.putAll(getIntent().getExtras());
 
-        FeedPlusDetailFragment fragment = FeedPlusDetailFragment.createInstance(bundle);
+        //TODO milhamj revert this to FeedPlusDetailFragment
+        ContentExploreFragment fragment = ContentExploreFragment.newInstance();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         if (getSupportFragmentManager().findFragmentByTag(
-                FeedPlusDetailFragment.class.getSimpleName()) == null) {
+                ContentExploreFragment.class.getSimpleName()) == null) {
             fragmentTransaction.replace(R.id.container,
                     fragment,
                     fragment.getClass().getSimpleName());
         } else
             fragmentTransaction.replace(R.id.container,
                     getSupportFragmentManager().findFragmentByTag(
-                            FeedPlusDetailFragment.class.getSimpleName()));
+                            ContentExploreFragment.class.getSimpleName()));
         fragmentTransaction.commit();
 
     }
