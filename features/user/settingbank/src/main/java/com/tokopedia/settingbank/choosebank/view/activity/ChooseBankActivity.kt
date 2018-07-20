@@ -13,6 +13,7 @@ import com.tokopedia.settingbank.choosebank.view.fragment.ChooseBankFragment
 
 class ChooseBankActivity : BaseSimpleActivity() {
 
+
     override fun getNewFragment(): Fragment {
         val bundle = Bundle()
         if (intent.extras != null) {
@@ -23,9 +24,16 @@ class ChooseBankActivity : BaseSimpleActivity() {
 
     companion object {
         val PARAM_RESULT_DATA: String? = "RESULT_DATA"
+        val PARAM_BANK_ID: String = "bank_id"
 
         fun createIntentChooseBank(context: Context): Intent {
             var intent = Intent(context, ChooseBankActivity::class.java)
+            return intent
+        }
+
+        fun createIntentChooseBank(context: Context, bankId: String): Intent {
+            var intent = Intent(context, ChooseBankActivity::class.java)
+            intent.putExtra(PARAM_BANK_ID, bankId)
             return intent
         }
 

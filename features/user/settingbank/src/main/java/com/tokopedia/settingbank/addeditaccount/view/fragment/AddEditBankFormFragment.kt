@@ -58,9 +58,7 @@ class AddEditBankFormFragment : AddEditBankContract.View,
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_add_edit_bank_form, container, false)
-
     }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -100,6 +98,15 @@ class AddEditBankFormFragment : AddEditBankContract.View,
                     .bottom_sheet_info_add_bank_account, null)
             bottomInfoDialog.setContentView(bottomLayout)
 
+//            bottomInfoDialog.setOnShowListener(DialogInterface.OnShowListener { dialog: DialogInterface? ->
+//                run {
+//                    val d = dialog as BottomSheetDialog
+//                    val bottomSheet = d.findViewById<FrameLayout>(android.support.design.R.id
+//                            .design_bottom_sheet) as FrameLayout
+//                    BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
+//                }
+//            })
+
             val bankAccountImage: ImageView = bottomLayout.findViewById(R.id.bank_account_image)
             ImageHandler.LoadImage(bankAccountImage, SettingBankUrl.Companion.IMAGE_BOTTOM_DIALOG_ADD_ACCOUNT)
 
@@ -113,7 +120,12 @@ class AddEditBankFormFragment : AddEditBankContract.View,
 
 
     private fun goToAddBank() {
-        val intentChooseBank = ChooseBankActivity.createIntentChooseBank(activity!!)
+        val intentChooseBank : Intent = if(bankFormModel.bankId.isEmpty()) {
+            ChooseBankActivity.createIntentChooseBank(activity!!)
+        }else{
+            ChooseBankActivity.createIntentChooseBank(activity!!,
+                    bankFormModel.bankId)
+        }
         startActivityForResult(intentChooseBank, REQUEST_CHOOSE_BANK)
     }
 
@@ -167,9 +179,6 @@ class AddEditBankFormFragment : AddEditBankContract.View,
             }
 
             override fun afterTextChanged(text: Editable) {
-                if (text.isEmpty()) {
-                    setWrapperError(wrapper_account_name, getString(R.string.error_field_required))
-                }
                 checkIsValidForm()
 
             }
@@ -189,9 +198,6 @@ class AddEditBankFormFragment : AddEditBankContract.View,
             }
 
             override fun afterTextChanged(text: Editable) {
-                if (text.isEmpty()) {
-                    setWrapperError(wrapper_account_number, getString(R.string.error_field_required))
-                }
                 checkIsValidForm()
 
             }

@@ -36,6 +36,7 @@ class ChooseBankFragment : ChooseBankContract.View, BankListener, SearchInputVie
     lateinit var presenter: ChooseBankPresenter
 
     var query = ""
+    private val MIN_CHAR_SEARCH: Int = 3
 
     override fun getScreenName(): String {
         return SCREEN_NAME_CHOOSE_BANK
@@ -67,6 +68,7 @@ class ChooseBankFragment : ChooseBankContract.View, BankListener, SearchInputVie
         bank_list_rv.adapter = adapter
 
         search_input_view.setListener(this)
+
     }
 
 
@@ -110,6 +112,18 @@ class ChooseBankFragment : ChooseBankContract.View, BankListener, SearchInputVie
     override fun onSuccessGetBankList(listBank: ArrayList<BankViewModel>) {
         adapter.hideSearchNotFound()
         adapter.setList(listBank)
+
+        setSelectedBank()
+    }
+
+    private fun setSelectedBank() {
+        if (activity != null
+                && activity?.intent != null
+                && !activity?.intent!!.getStringExtra(ChooseBankActivity.PARAM_BANK_ID)
+                        .isNullOrEmpty()){
+            val bankId = activity?.intent!!.getStringExtra(ChooseBankActivity.PARAM_BANK_ID)
+            adapter.setSelectedFromBankId(bankId)
+        }
     }
 
     override fun onSearchSubmitted(query: String) {
@@ -119,10 +133,13 @@ class ChooseBankFragment : ChooseBankContract.View, BankListener, SearchInputVie
         }
     }
 
+
     override fun onSearchTextChanged(query: String) {
         if (query.isEmpty()) {
             KeyboardHandler.DropKeyboard(context, view)
             presenter.getBankList()
+        } else if (query.length > MIN_CHAR_SEARCH) {
+            presenter.searchBank(query)
         }
     }
 

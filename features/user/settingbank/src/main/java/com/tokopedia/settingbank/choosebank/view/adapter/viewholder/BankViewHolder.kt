@@ -1,6 +1,7 @@
 package com.tokopedia.settingbank.choosebank.view.adapter.viewholder
 
 import android.view.View
+import android.widget.RadioButton
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -20,12 +21,18 @@ class BankViewHolder(val v: View, val listener: BankListener) :
     }
 
     val bankName: TextView = itemView.findViewById(R.id.bank_name)
+    val bankRadio: RadioButton = itemView.findViewById(R.id.bank_radio)
+
 
     override fun bind(element: BankViewModel?) {
         if (element != null) {
             bankName.text = MethodChecker.fromHtml(element.bankName)
 
-            bankName.setOnClickListener { v -> listener.onBankSelected(adapterPosition, element) }
+            if (element.isSelected) {
+                bankRadio.isChecked = true
+            }
+
+            bankName.setOnClickListener { listener.onBankSelected(adapterPosition, element) }
         }
     }
 

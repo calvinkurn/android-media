@@ -2,7 +2,6 @@ package com.tokopedia.settingbank.choosebank.view.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
-import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.settingbank.choosebank.view.viewmodel.BankViewModel
 
 /**
@@ -13,7 +12,9 @@ class BankAdapter(adapterTypeFactory: BankTypeFactoryImpl,
     : BaseAdapter<BankTypeFactoryImpl>(adapterTypeFactory, listBank) {
 
     fun setSelected(adapterPosition: Int) {
-        //TODO REMOVE LAST SELECTED ITEM
+        for (visitable in visitables) {
+            (visitable as BankViewModel).isSelected = false
+        }
         (this.visitables[adapterPosition] as BankViewModel).isSelected = true
         this.notifyItemChanged(adapterPosition)
     }
@@ -30,6 +31,15 @@ class BankAdapter(adapterTypeFactory: BankTypeFactoryImpl,
 
     fun hideSearchNotFound() {
         //TODO
+    }
+
+    fun setSelectedFromBankId(bankId: String?) {
+        if (!bankId.isNullOrEmpty()) {
+            for (visitable in visitables) {
+                (visitable as BankViewModel).isSelected = bankId.equals(visitable.bankId)
+            }
+            notifyDataSetChanged()
+        }
     }
 
 
