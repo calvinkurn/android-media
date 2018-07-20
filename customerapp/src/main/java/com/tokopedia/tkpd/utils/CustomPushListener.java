@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.moengage.core.ConfigurationProvider;
@@ -19,7 +20,7 @@ public class CustomPushListener extends PushMessageListener {
     @Override
     protected void onPostNotificationReceived(Context context, Bundle extras) {
         super.onPostNotificationReceived(context, extras);
-
+        Log.e("onPostNoReceiv",extras.toString());
 
         //Update your own notification inbox
     }
@@ -27,6 +28,8 @@ public class CustomPushListener extends PushMessageListener {
     //if the app wants to modify the logic for showing notifications
     @Override
     public boolean isNotificationRequired(Context context, Bundle extras) {
+        Log.e("isNotificationRequired",extras.toString());
+
         boolean result = super.isNotificationRequired(context,
                 extras);//if SUPER is not not called then it will throw an exception
         if (result) {
@@ -41,6 +44,7 @@ public class CustomPushListener extends PushMessageListener {
     public NotificationCompat.Builder onCreateNotification(Context context, Bundle extras,
                                                            ConfigurationProvider provider) {
         NotificationCompat.Builder builder = super.onCreateNotification(context, extras, provider);
+        Log.e("onCreateNotification",extras.toString());
 
         //add properties to the builder as required
         long when = System.currentTimeMillis();
@@ -69,8 +73,7 @@ public class CustomPushListener extends PushMessageListener {
         Intent notificationIntent = new Intent(context, ParentIndexHome.class);
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
 
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context)
-                .setSmallIcon(R.drawable.ic_icon)
+        builder.setSmallIcon(R.drawable.ic_icon)
                 .setCustomContentView(contentViewBig)
                 .setCustomBigContentView(contentViewBig)
                 .setContentTitle("Custom Notification")
@@ -83,11 +86,14 @@ public class CustomPushListener extends PushMessageListener {
     @Override
     public void onNonMoEngageMessageReceived(Context context, Bundle extras) {
         super.onNonMoEngageMessageReceived(context, extras);
+        Log.e("onNonMReceived",extras.toString());
+
         //do your own stuff here
     }
 
     @Override
     public void onNotificationNotRequired(Context context, Bundle extras) {
+        Log.e("onNnNotRequired",extras.toString());
 
     }
 
