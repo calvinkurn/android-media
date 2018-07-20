@@ -247,8 +247,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 } else {
                     actionLayout.setVisibility(View.VISIBLE);
                     actionLayout.removeAllViews();
-
-                    for (int i = 0; i < item.getActionButtons().size(); i++) {
+                    int size = item.getActionButtons().size();
+                    for (int i = 0; i < size; i++) {
                         ActionButton actionButton = item.getActionButtons().get(i);
 
                         TextView actionTextView = renderActionButtons(i, actionButton, item);
