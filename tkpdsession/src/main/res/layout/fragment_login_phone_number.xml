@@ -87,6 +87,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_24"
         android:textSize="12sp"
+        android:visibility="gone"
         android:fontFamily="sans-serif"
         android:textStyle="normal"
         android:textColor="@color/black_38"
