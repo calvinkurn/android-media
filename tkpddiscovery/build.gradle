@@ -82,6 +82,8 @@ dependencies {
     }
     implementation project(rootProject.ext.libraries.analytics)
     implementation rootProject.ext.miscDependencies.flexBoxLayout
+    compile project(path: ':libraries:graphql')
+    compile project(path: ':features:top_ads:top_ads_management')
 }
 
 apply from: '../publish_local.gradle'

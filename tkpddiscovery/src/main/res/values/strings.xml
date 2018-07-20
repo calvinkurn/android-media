@@ -54,4 +54,6 @@
     <string name="invalid_image_search_response" >Terjadi kesalahan, ulangi beberapa saat lagi</string>
     <string name="image_not_supported">Ukuran gambar tidak didukung</string>
     <string name="title_all">Semua</string>
+    <string name="produk_serupa">Produk Serupa</string>
+    <string name="megerti">Mengerti</string>
 </resources>

@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
@@ -43,6 +45,9 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.He
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
+import com.tokopedia.discovery.similarsearch.SimilarSearchManager;
+import com.tokopedia.discovery.similarsearch.analytics.SimilarSearchTracking;
+import com.tokopedia.discovery.similarsearch.view.SimilarSearchActivity;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
@@ -96,6 +101,8 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     public int spanCount;
 
     private static final String ARG_VIEW_MODEL = "ARG_VIEW_MODEL";
+
+
 
     public static ImageSearchProductListFragment newInstance(ProductViewModel productViewModel) {
         Bundle args = new Bundle();
@@ -225,6 +232,9 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         }
         topAdsRecyclerAdapter.setSpanSizeLookup(onSpanSizeLookup());
         adapter.setTotalData(productViewModel.getTotalData());
+
+
+
     }
 
     private List<Visitable> initMappingProduct() {
@@ -552,6 +562,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         startActivityForResult(intent, REQUEST_CODE_GOTO_PRODUCT_DETAIL);
     }
 
+
     @Override
     public void onShopItemClicked(int position, Shop shop) {
         Intent intent = ((DiscoveryRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), shop.getId());
@@ -586,6 +597,11 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         intent.putExtra(ProductDetailRouter.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition);
         sendItemClickTrackingEvent(item);
         startActivityForResult(intent, REQUEST_CODE_GOTO_PRODUCT_DETAIL);
+    }
+
+    @Override
+    public void onLongClick(ProductItem item, int adapterPosition) {
+        SimilarSearchManager.getInstance(getContext()).startSimilarSearchIfEnable(getQueryKey(),item);
     }
 
     @Override

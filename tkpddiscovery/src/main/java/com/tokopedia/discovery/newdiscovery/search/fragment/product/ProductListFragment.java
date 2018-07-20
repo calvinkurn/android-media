@@ -1,5 +1,6 @@
 package com.tokopedia.discovery.newdiscovery.search.fragment.product;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,6 +14,8 @@ import android.view.ViewGroup;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
@@ -50,6 +53,16 @@ import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
 import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterHelper;
+import com.tokopedia.discovery.similarsearch.SimilarSearchManager;
+import com.tokopedia.discovery.similarsearch.analytics.SimilarSearchAppEventTracking;
+import com.tokopedia.discovery.similarsearch.analytics.SimilarSearchTracking;
+import com.tokopedia.discovery.similarsearch.view.SimilarSearchActivity;
+import com.tokopedia.showcase.ShowCaseBuilder;
+import com.tokopedia.showcase.ShowCaseContentPosition;
+import com.tokopedia.showcase.ShowCaseDialog;
+import com.tokopedia.showcase.ShowCaseObject;
+import com.tokopedia.showcase.ShowCasePreference;
+import com.tokopedia.topads.common.view.utils.ShowCaseDialogFactory;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
@@ -101,6 +114,7 @@ public class ProductListFragment extends SearchSectionFragment
 
     private ArrayList<Option> quickFilterOptions;
 
+
     public static ProductListFragment newInstance(ProductViewModel productViewModel) {
         Bundle args = new Bundle();
         args.putParcelable(ARG_VIEW_MODEL, productViewModel);
@@ -109,9 +123,11 @@ public class ProductListFragment extends SearchSectionFragment
         return productListFragment;
     }
 
+    SimilarSearchManager similarSearchManager ;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        similarSearchManager = SimilarSearchManager.getInstance(getContext());
         if (savedInstanceState != null) {
             loadDataFromSavedState(savedInstanceState);
         } else {
@@ -529,6 +545,12 @@ public class ProductListFragment extends SearchSectionFragment
         startActivityForResult(intent, REQUEST_CODE_GOTO_PRODUCT_DETAIL);
     }
 
+    @Override
+    public void onLongClick(ProductItem item, int adapterPosition) {
+        similarSearchManager.startSimilarSearchIfEnable(getSearchParameter().getQueryKey(),item);
+
+    }
+
     private void sendItemClickTrackingEvent(ProductItem item) {
         String userId = SessionHandler.isV4Login(getContext()) ?
                 SessionHandler.getLoginID(getContext()) : "";
@@ -752,7 +774,9 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void onTopAdsLoaded() {
-
+        if (similarSearchManager.isSimilarSearchEnable()){
+            startShowCase();
+        }
     }
 
     @Override
@@ -906,5 +930,73 @@ public class ProductListFragment extends SearchSectionFragment
     @Override
     protected String getScreenName() {
         return getScreenNameId();
+    }
+    private ShowCaseDialog showCaseDialog;
+    public void startShowCase() {
+
+        final String showCaseTag = ProductListFragment.class.getName();
+        if (ShowCasePreference.hasShown(getActivity(), showCaseTag)) {
+            return;
+        }
+        if (showCaseDialog != null) {
+            return;
+        }
+
+        final ArrayList<ShowCaseObject> showCaseList = new ArrayList<>();
+
+        if (recyclerView == null)
+            return;
+
+        recyclerView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (getView() == null) {
+                    return;
+                }
+
+                View itemView = getItemRecyclerView();
+                if (itemView != null) {
+                    showCaseList.add(
+                            new ShowCaseObject(
+                                    itemView.findViewById(R.id.container),
+                                    "Lihat Barang Serupa",
+                                    "Tekan dan tahan produk ini untuk lihat barang serupa dan tambah ke wishlist",
+                                    ShowCaseContentPosition.BOTTOM));
+                }
+
+                if (showCaseList.isEmpty())
+                    return;
+
+                showCaseDialog = createShowCaseDialog();
+                showCaseDialog.show(getActivity(), showCaseTag, showCaseList);
+            }
+        }, 300);
+    }
+    private ShowCaseDialog createShowCaseDialog() {
+        return  new ShowCaseBuilder()
+                .customView(R.layout.item_top_ads_show_case)
+                .titleTextColorRes(R.color.white)
+                .spacingRes(R.dimen.spacing_show_case)
+                .arrowWidth(R.dimen.arrow_width_show_case)
+                .textColorRes(R.color.grey_400)
+                .shadowColorRes(R.color.shadow)
+                .backgroundContentColorRes(R.color.black)
+                .textSizeRes(R.dimen.fontvs)
+                .finishStringRes(R.string.megerti)
+                .useCircleIndicator(true)
+                .clickable(true)
+                .useArrow(true)
+                .useSkipWord(false)
+                .build();
+    }
+
+    public View getItemRecyclerView() {
+        int position = 2;//((GridLayoutManager)recyclerView.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
+        if(recyclerView.getAdapter().getItemCount() >= position) {
+            recyclerView.stopScroll();
+            recyclerView.getLayoutManager().scrollToPosition(position + 2);
+            return ((GridLayoutManager)recyclerView.getLayoutManager()).findViewByPosition(position);
+        }
+        return null;
     }
 }

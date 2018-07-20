@@ -116,6 +116,14 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
             }
         });
 
+        container.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                itemClickListener.onLongClick(productItem,getAdapterPosition());
+                return true;
+            }
+        });
+
         container.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
