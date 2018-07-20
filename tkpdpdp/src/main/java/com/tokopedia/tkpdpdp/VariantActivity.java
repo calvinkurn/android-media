@@ -582,6 +582,7 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
             productDetailData.getInfo().setProductId(child.getProductId());
             productDetailData.getInfo().setProductName(child.getName());
             productDetailData.getInfo().setProductPrice(child.getPriceFmt());
+            productDetailData.getInfo().setProductPriceUnformatted(child.getPrice());
             productDetailData.getInfo().setProductUrl(child.getUrl());
             productDetailData.getInfo().setProductAlreadyWishlist(child.isWishlist()?1:0);
             productDetailData.getInfo().setProductStockWording(child.getStockWording());
