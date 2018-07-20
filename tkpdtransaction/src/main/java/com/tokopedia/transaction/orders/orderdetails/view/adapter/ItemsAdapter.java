@@ -197,7 +197,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
                 }
                 if (itemType == ITEM_DEALS || itemType == ITEM_EVENTS) {
-                    validDate.setText(String.format(context.getResources().getString(R.string.text_valid_till), metaDataInfo.getEndDate()));
+                    if (!TextUtils.isEmpty(metaDataInfo.getEndDate()))
+                        validDate.setText(" " + metaDataInfo.getEndDate());
                 }
 
                 EntityAddress entityAddress = metaDataInfo.getEntityAddress();
@@ -242,6 +243,35 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             }
 
             if (itemType == ITEM_DEALS || itemType == ITEM_EVENTS) {
+                if (item.getTapActions() != null && item.getTapActions().size() > 0 && !item.isTapActionsLoaded()) {
+                    progressBar.setVisibility(View.VISIBLE);
+                    tapActionLayout.setVisibility(View.GONE);
+                    presenter.setActionButton(item.getTapActions(), ItemsAdapter.this, getIndex(), true);
+                }
+
+                if (item.isTapActionsLoaded()) {
+                    progressBar.setVisibility(View.GONE);
+                    if (item.getTapActions() == null || item.getTapActions().size() == 0) {
+                        tapActionLayout.setVisibility(View.GONE);
+                    } else {
+                        tapActionLayout.setVisibility(View.VISIBLE);
+                        tapActionLayout.removeAllViews();
+                        int size = item.getTapActions().size();
+                        for (int i = 0; i < size; i++) {
+                            ActionButton actionButton = item.getTapActions().get(i);
+                            TextView tapActionTextView = renderActionButtons(i, actionButton, item);
+                            if (actionButton.getControl().equalsIgnoreCase(KEY_BUTTON)) {
+                                presenter.setActionButton(item.getTapActions(), ItemsAdapter.this, getIndex(), true);
+                            } else {
+                                setActionButtonClick(tapActionTextView, actionButton);
+                            }
+                            tapActionLayout.addView(tapActionTextView);
+                        }
+                    }
+                } else if (!item.isTapActionsLoaded()) {
+                    progressBar.setVisibility(View.GONE);
+                }
+
                 if (item.getActionButtons() == null || item.getActionButtons().size() == 0) {
                     actionLayout.setVisibility(View.GONE);
                 } else {
@@ -271,36 +301,6 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         }
                         actionLayout.addView(actionTextView);
                     }
-                }
-
-
-                if (item.getTapActions() != null && item.getTapActions().size() > 0 && !item.isTapActionsLoaded()) {
-                    progressBar.setVisibility(View.VISIBLE);
-                    tapActionLayout.setVisibility(View.GONE);
-                    presenter.setActionButton(item.getTapActions(), ItemsAdapter.this, getIndex(), true);
-                }
-
-                if (item.isTapActionsLoaded()) {
-                    progressBar.setVisibility(View.GONE);
-                    if (item.getTapActions() == null || item.getTapActions().size() == 0) {
-                        tapActionLayout.setVisibility(View.GONE);
-                    } else {
-                        tapActionLayout.setVisibility(View.VISIBLE);
-                        tapActionLayout.removeAllViews();
-                        int size = item.getTapActions().size();
-                        for (int i = 0; i < size; i++) {
-                            ActionButton actionButton = item.getTapActions().get(i);
-                            TextView tapActionTextView = renderActionButtons(i, actionButton, item);
-                            if (actionButton.getControl().equalsIgnoreCase(KEY_BUTTON)) {
-                                presenter.setActionButton(item.getTapActions(), ItemsAdapter.this, getIndex(), true);
-                            } else {
-                                setActionButtonClick(tapActionTextView, actionButton);
-                            }
-                            tapActionLayout.addView(tapActionTextView);
-                        }
-                    }
-                } else if (!item.isTapActionsLoaded()) {
-                    progressBar.setVisibility(View.GONE);
                 }
             }
         }
