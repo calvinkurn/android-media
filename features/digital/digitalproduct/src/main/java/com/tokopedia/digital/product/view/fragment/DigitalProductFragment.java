@@ -152,6 +152,8 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     private static final String DIGITAL_SMARTCARD = "mainapp_digital_smartcard";
 
+    private static final int DEFAULT_POST_DELAYED_VALUE = 1000;
+
     @BindView(R2.id.main_container)
     NestedScrollView mainHolderContainer;
     @BindView(R2.id.pb_main_loading)
@@ -398,6 +400,15 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     public void renderBannerListData(String title, List<BannerData> bannerDataList) {
         this.bannerDataListState = getBannerDataWithoutEmptyItem(bannerDataList);
         promoGuidePagerAdapter.setBannerDataList(title, bannerDataList);
+        promoViewPager.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (promoViewPager != null) {
+                    promoViewPager.setCurrentItem(0);
+                    promoViewPager.measureCurrentView(promoViewPager.getChildAt(0));
+                }
+            }
+        }, DEFAULT_POST_DELAYED_VALUE);
     }
 
     @Override
@@ -1245,13 +1256,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         promoTabLayout.setupWithViewPager(promoViewPager);
         promoViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(promoTabLayout));
         promoViewPager.setAdapter(getViewPagerAdapter(tabCount, firstTab));
-        promoViewPager.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                promoViewPager.setCurrentItem(0);
-                promoViewPager.measureCurrentView(promoViewPager.getChildAt(0));
-            }
-        }, 1000);
     }
 
     private PagerAdapter getViewPagerAdapter(int tabCount, String firstTab) {

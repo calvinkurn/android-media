@@ -142,7 +142,7 @@ public class FacadeShopTransaction {
                                                 gson.fromJson(jsonObject.toString(), OrderShippingData.class);
                                         listener.OnSuccess(getNewOrderModel(data), data);
 
-                                    } catch (JSONException je) {
+                                    } catch (Throwable je) {
                                         Log.e(STUART, FACADE_SHOP_TRANSACTION + je.getLocalizedMessage());
                                     }
                                 } else {

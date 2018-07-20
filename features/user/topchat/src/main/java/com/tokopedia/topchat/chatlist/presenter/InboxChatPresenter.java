@@ -255,6 +255,10 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
     }
 
     public void goToDetailMessage(int position, ChatListViewModel listMessage) {
+
+        if(viewModel == null)
+            return;
+
         ws.close(1000, "");
         getView().dropKeyboard();
 

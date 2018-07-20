@@ -39,7 +39,6 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.tkpdpdp.tracking.ProductPageTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragmentV4;
 import com.tokopedia.core.app.MainApplication;
@@ -51,6 +50,8 @@ import com.tokopedia.core.network.entity.variant.Child;
 import com.tokopedia.core.network.entity.variant.Option;
 import com.tokopedia.core.network.entity.variant.ProductVariant;
 import com.tokopedia.core.product.intentservice.ProductInfoIntentService;
+import com.tokopedia.core.product.interactor.CacheInteractor;
+import com.tokopedia.core.product.interactor.CacheInteractorImpl;
 import com.tokopedia.core.product.listener.DetailFragmentInteractionListener;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
 import com.tokopedia.core.product.model.productdetail.ProductBreadcrumb;
@@ -117,9 +118,11 @@ import com.tokopedia.tkpdpdp.listener.AppBarStateChangeListener;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenter;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenterImpl;
+import com.tokopedia.tkpdpdp.tracking.ProductPageTracking;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsAddToCart;
 import com.tokopedia.transactionanalytics.EnhancedECommerceCartMapData;
 import com.tokopedia.transactionanalytics.EnhancedECommerceProductCartMapData;
+import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -162,7 +165,7 @@ import static com.tokopedia.tkpdpdp.VariantActivity.SELECTED_VARIANT_RESULT_STAY
  */
 @RuntimePermissions
 public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetailPresenter>
-        implements ProductDetailView {
+        implements ProductDetailView, WishListActionListener {
 
     private static final int FROM_COLLAPSED = 0;
     private static final int FROM_EXPANDED = 1;
@@ -250,6 +253,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     private UserSession userSession;
     private int selectedQuantity;
     private String selectedRemarkNotes;
+    private CacheInteractor cacheInteractor;
 
     private RemoteConfig remoteConfig;
     private ShowCaseDialog showCaseDialog;
@@ -278,6 +282,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         if (remoteConfig.getBoolean(ENABLE_VARIANT) == false) {
             useVariant = false;
         }
+        cacheInteractor = new CacheInteractorImpl();
         localCacheHandler = new com.tokopedia.abstraction.common.utils.LocalCacheHandler(MainApplication.getAppContext(), PRODUCT_DETAIL);
         localCacheHandler.putBoolean(STATE_ORIENTATION_CHANGED, Boolean.FALSE);
         localCacheHandler.applyEditor();
@@ -291,7 +296,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     protected void initialPresenter() {
-        this.presenter = new ProductDetailPresenterImpl(this);
+        this.presenter = new ProductDetailPresenterImpl(this, this);
     }
 
     @Override
@@ -508,7 +513,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     @Override
     public void onBuyClick(String source) {
         if (productData.getInfo().getHasVariant()) {
-            if (!onClickBuyWhileRequestingVariant) {
+            if (!onClickBuyWhileRequestingVariant && productVariant != null) {
                 openVariantPage(generateStateVariant(source));
             } else {
                 onClickBuyWhileRequestingVariant = true;
@@ -593,6 +598,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     public void updateButtonBuyListener() {
         buttonBuyView.removeLoading();
         if (onClickBuyWhileRequestingVariant) {
+            onClickBuyWhileRequestingVariant = false;
             onBuyClick(lastStateOnClickBuyWhileRequestVariant);
         }
     }
@@ -685,6 +691,9 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void openVariantPage(int state) {
+        if (productVariant == null) {
+            return;
+        }
         Intent intent = new Intent(getActivity(), VariantActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(VariantActivity.KEY_VARIANT_DATA, productVariant);
@@ -792,7 +801,14 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         } catch (NumberFormatException e) {
             this.selectedQuantity = 1;
         }
-        startShowCase();
+        if (isAllowShowCaseNcf()) {
+            startShowCase();
+        }
+    }
+
+    private boolean isAllowShowCaseNcf() {
+        return buttonBuyView.getVisibility() == View.VISIBLE
+                && buttonBuyView.containerNewButtonBuy.getVisibility() == View.VISIBLE;
     }
 
     @Override
@@ -1601,6 +1617,36 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         }
     }
 
+    @Override
+    public void onErrorAddWishList(String errorMessage, String productId) {
+        finishLoadingWishList();
+        showWishListRetry(errorMessage);
+    }
+
+    @Override
+    public void onSuccessAddWishlist(String productId) {
+        finishLoadingWishList();
+        showSuccessWishlistSnackBar();
+        updateWishListStatus(1);
+        actionSuccessAddToWishlist(Integer.parseInt(productId));
+        cacheInteractor.deleteProductDetail(Integer.parseInt(productId));
+    }
+
+    @Override
+    public void onErrorRemoveWishlist(String errorMessage, String productId) {
+        finishLoadingWishList();
+        showWishListRetry(errorMessage);
+    }
+
+    @Override
+    public void onSuccessRemoveWishlist(String productId) {
+        finishLoadingWishList();
+        showToastMessage(getString(R.string.msg_remove_wishlist));
+        updateWishListStatus(ProductDetailFragment.STATUS_NOT_WISHLIST);
+        actionSuccessRemoveFromWishlist(Integer.parseInt(productId));
+        cacheInteractor.deleteProductDetail(Integer.parseInt(productId));
+    }
+
     private class EditClick implements View.OnClickListener {
         private final ProductDetailData data;
 
@@ -1704,6 +1750,11 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     public void renderAddToCartSuccessOpenCart(AddToCartResult addToCartResult) {
         buttonBuyView.removeLoading();
         checkoutAnalyticsAddToCart.eventClickAddToCartImpressionAtcSuccess();
+        ProductPageTracking.eventAppsFlyer(
+                String.valueOf(productData.getInfo().getProductId()),
+                productData.getInfo().getProductPrice(),
+                selectedQuantity
+        );
         updateCartNotification();
         enhanceEcommerceAtc(addToCartResult);
         if (getActivity() != null && getActivity().getApplicationContext() instanceof PdpRouter) {
@@ -1717,6 +1768,11 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     public void renderAddToCartSuccess(AddToCartResult addToCartResult) {
         buttonBuyView.removeLoading();
         checkoutAnalyticsAddToCart.eventClickAddToCartImpressionAtcSuccess();
+        ProductPageTracking.eventAppsFlyer(
+                String.valueOf(productData.getInfo().getProductId()),
+                productData.getInfo().getProductPrice(),
+                selectedQuantity
+        );
         updateCartNotification();
         enhanceEcommerceAtc(addToCartResult);
         showSnackbarSuccessAtc(addToCartResult.getMessage());
@@ -1790,7 +1846,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         }
         checkoutAnalyticsAddToCart.enhancedECommerceAddToCart(
                 enhancedECommerceCartMapData.getCartMap(),
-                (productData.getInfo().getHasVariant() ? productVariant.generateVariantValue(productData.getInfo().getProductId()): "non variant"),
+                (productData.getInfo().getHasVariant() ? productVariant.generateVariantValue(productData.getInfo().getProductId()) : "non variant"),
                 eventAction
         );
     }

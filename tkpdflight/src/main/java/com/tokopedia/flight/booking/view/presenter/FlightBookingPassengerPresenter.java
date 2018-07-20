@@ -341,7 +341,8 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
             currentPassengerViewModel.setPassengerBirthdate(selectedPassenger.getPassengerBirthdate());
         }
 
-        if (selectedPassenger.getPassportExpiredDate() != null && flightPassengerInfoValidator
+        if (selectedPassenger.getPassportExpiredDate() != null && !selectedPassenger.getPassportExpiredDate().isEmpty() &&
+                selectedPassenger.getPassportExpiredDate().length() > 0 && flightPassengerInfoValidator
                 .validateExpiredDateOfPassportAtLeast6Month(FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT,
                         FlightDateUtil.DEFAULT_VIEW_FORMAT, selectedPassenger.getPassportExpiredDate()),
                         sixMonthFromDeparture) && flightPassengerInfoValidator.validateExpiredDateOfPassportMax20Years(
