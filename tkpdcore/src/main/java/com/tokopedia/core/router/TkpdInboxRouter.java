@@ -8,8 +8,6 @@ import android.support.v4.app.Fragment;
 
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 
-import java.util.ArrayList;
-
 /**
  * @author by nisie on 9/14/17.
  */
@@ -24,6 +22,7 @@ public interface TkpdInboxRouter {
 
     String ENABLE_GROUPCHAT = "enable_groupchat";
     String IS_CHAT_BOT = "is_chat_bot";
+    String INDICATOR_VISIBILITY = "indicator_groupchat";
 
 
     Intent getAskBuyerIntent(Context context, String toUserId,
@@ -74,4 +73,6 @@ public interface TkpdInboxRouter {
     boolean isEnabledGroupChat();
 
     Intent getChatBotIntent(Context context, String messageId);
+
+    boolean isIndicatorVisible();
 }

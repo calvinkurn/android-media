@@ -66,7 +66,7 @@ import permissions.dispatcher.RuntimePermissions;
  * Created by sandeepgoyal on 16/04/18.
  */
 @RuntimePermissions
-public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTicketContract.View {
+public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTicketContract.View, ImageUploadAdapter.OnSelectImageClick {
 
     public static final String KEY_QUERY_TICKET = "KEY_QUERY_TICKET";
     @BindView(R2.id.constraint_layout)
@@ -114,7 +114,7 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
         ButterKnife.bind(this, view);
         imageUploadHandler = ImageUploadHandler.createInstance(this);
         presenter.attachView(this);
-        imageUploadAdapter = new ImageUploadAdapter(getContext());
+        imageUploadAdapter = new ImageUploadAdapter(getContext(),this);
         rvSelectedImages.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         rvSelectedImages.setAdapter(imageUploadAdapter);
         edtQuery.addTextChangedListener(watcher(edtQuery));
@@ -340,10 +340,7 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
     }
 
 
-    @OnClick(R2.id.iv_upload)
-    public void onViewClicked() {
-        showImagePickerDialog();
-    }
+
 
     @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     void showRationaleForStorageAndCamera(final PermissionRequest request) {
@@ -441,7 +438,7 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
     }
 
     public boolean onBackPressed() {
-        if (imageUploadAdapter.getItemCount() > 0) {
+        if (imageUploadAdapter.getItemCount() > 1) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
             builder.setTitle(getString(R.string.title_dialog_wrong_scan));
             builder.setMessage("Pesan Anda akan hilang jika menutup halaman ini, Anda yakin?");
@@ -464,5 +461,10 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
         } else {
             return false;
         }
+    }
+
+    @Override
+    public void onClick() {
+        showImagePickerDialog();
     }
 }

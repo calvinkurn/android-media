@@ -124,9 +124,9 @@ public interface DetailResChatFragmentListener {
 
         void sendIconPressed(String message, List<AttachmentViewModel> attachmentList);
 
-        void handleDefaultOldUploadImageHandlerResult(int resultCode, Intent data);
+        void handleImageResult(int resultCode, Intent data);
 
-        void handleNewGalleryResult(int resultCode, Intent data);
+        void handleVideoResult(int resultCode, Intent data);
 
         void actionAcceptSolution();
 

@@ -99,7 +99,9 @@ public class MultipleAddressFormActivity extends BaseCheckoutActivity {
         dialog.setOnOkClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                fragment.stayInPage();
+                if (fragment != null) {
+                    fragment.stayInPage();
+                }
                 dialog.dismiss();
             }
         });
