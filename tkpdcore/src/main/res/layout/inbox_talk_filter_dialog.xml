@@ -24,7 +24,7 @@
             android:minHeight="56dp"
             android:text="@string/title_filter_but"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:id="@+id/textView2" />
+            android:id="@+id/tv_discount" />
 
         <Spinner
             android:layout_width="match_parent"

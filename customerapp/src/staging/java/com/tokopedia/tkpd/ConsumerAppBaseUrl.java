@@ -42,7 +42,6 @@ public class ConsumerAppBaseUrl {
     public static final String MAPS_DOMAIN = "https://api-staging.tokopedia.com/";
     public static final String BASE_WALLET = "https://wallet-staging.tokopedia.id/";
     public static final String EVENT_DOMAIN = "https://booking-staging.tokopedia.com/";
-    public static final String OMS_DOMAIN = "https://omscart.tokopedia.com/";
     public static final String TOKOPOINT_API_DOMAIN = "https://gw-staging.tokopedia.com/tokopoints/api/";
     public static final String TOKO_CAMPAIGN_URL = "https://booking-staging.tokopedia.com/trigger/v1/api/";
     public static final String HOME_DATA_BASE_URL = "https://gql-staging.tokopedia.com/";
@@ -51,4 +50,6 @@ public class ConsumerAppBaseUrl {
     public static final String GAMIFICATION_BASE_URL = "https://gql-staging.tokopedia.com/";
     public static final String ACCOUNTS_DOMAIN = "https://accounts-staging.tokopedia.com";
     public static final String TOP_PAY_DOMAIN = "https://pay-staging.tokopedia.id";
+    public static final String OMS_DOMAIN = "https://omscart-staging.tokopedia.com/";
+    public static final String DEALS_DOMAIN = "https://booking-staging.tokopedia.com/";
 }
