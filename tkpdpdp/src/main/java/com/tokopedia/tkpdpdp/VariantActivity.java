@@ -214,6 +214,7 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
         widgetQty.setNumber(selectedQuantity);
         etNotesSeller.setText(selectedRemarkNotes);
         widgetQty.setOnPickerActionListener(num -> {
+            selectedQuantity = num;
             if (isCampaign()) {
                 textCartPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(productDetailData.getCampaign().getDiscountedPrice() * num, true));
             } else {
