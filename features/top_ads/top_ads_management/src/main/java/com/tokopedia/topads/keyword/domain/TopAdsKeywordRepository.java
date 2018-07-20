@@ -12,6 +12,7 @@ import rx.Observable;
  * Created by normansyahputa on 5/18/17.
  */
 
+@Deprecated
 public interface TopAdsKeywordRepository {
     Observable<KeywordDashboardDomain> getDashboardKeyword(RequestParams requestParams);
 

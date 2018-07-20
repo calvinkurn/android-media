@@ -174,6 +174,7 @@ public class TemplateChatFragment extends BaseDaggerFragment
     @Override
     public void setTemplate(List<Visitable> listTemplate) {
         adapter.setList(listTemplate);
+        if(listTemplate != null) prepareResult();
     }
 
     @Override
@@ -282,6 +283,7 @@ public class TemplateChatFragment extends BaseDaggerFragment
         switch (requestCode) {
             case 100:
                 if (resultCode == Activity.RESULT_OK) {
+                    presenter.reloadTemplate();
                     String string = data.getStringExtra(LIST_RESULT);
                     int index = data.getIntExtra(INDEX_RESULT, -1);
                     String text = "";
@@ -300,7 +302,6 @@ public class TemplateChatFragment extends BaseDaggerFragment
                             break;
                         default:
                             break;
-
                     }
                     prepareResult();
                     snackbarInfo.setText(text);
