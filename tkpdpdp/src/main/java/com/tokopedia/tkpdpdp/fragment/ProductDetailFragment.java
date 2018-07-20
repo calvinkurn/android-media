@@ -120,6 +120,9 @@ import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenter;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenterImpl;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
+import com.tokopedia.topads.sdk.domain.model.Data;
+import com.tokopedia.topads.sdk.domain.model.Product;
+import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.widget.TopAdsCarouselView;
@@ -163,6 +166,7 @@ import static com.tokopedia.tkpdpdp.VariantActivity.SELECTED_VARIANT_RESULT_SKIP
 import static com.tokopedia.tkpdpdp.VariantActivity.SELECTED_VARIANT_RESULT_STAY_IN_PDP;
 import static com.tokopedia.topads.sdk.domain.TopAdsParams.DEFAULT_KEY_EP;
 import static com.tokopedia.topads.sdk.domain.TopAdsParams.SRC_INTERMEDIARY_VALUE;
+import static com.tokopedia.topads.sdk.domain.TopAdsParams.SRC_PDP_VALUE;
 
 /**
  * ProductDetailFragment
@@ -1920,7 +1924,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     private void renderTopAds(){
         TopAdsParams params = new TopAdsParams();
-        params.getParam().put(TopAdsParams.KEY_SRC, SRC_INTERMEDIARY_VALUE);
+        params.getParam().put(TopAdsParams.KEY_SRC, SRC_PDP_VALUE);
         params.getParam().put(TopAdsParams.KEY_EP, DEFAULT_KEY_EP);
 
         Config config = new Config.Builder()
@@ -1935,4 +1939,33 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         topAds.loadTopAds();
     }
 
+    @Override
+    public void onTopAdsLoaded() {
+
+    }
+
+    @Override
+    public void onTopAdsFailToLoad(int errorCode, String message) {
+
+    }
+
+    @Override
+    public void onProductItemClicked(int position, Product product) {
+
+    }
+
+    @Override
+    public void onShopItemClicked(int position, Shop shop) {
+
+    }
+
+    @Override
+    public void onAddFavorite(int position, Data data) {
+
+    }
+
+    @Override
+    public void onAddWishList(int position, Data data) {
+
+    }
 }

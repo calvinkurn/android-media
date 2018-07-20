@@ -34,6 +34,7 @@ public class TopAdsParams {
 
     public static final String SRC_DIRECTORY_VALUE = "directory";
     public static final String SRC_INTERMEDIARY_VALUE = "intermediary";
+    public static final String SRC_PDP_VALUE = "pdp";
 
     public static final String DEFAULT_KEY_ITEM = "2";
     public static final String DEFAULT_KEY_EP = "product";
