@@ -312,7 +312,7 @@ public class CartListPresenter implements ICartListPresenter {
                 if (wholesalePrices != null && wholesalePrices.size() > 0) {
                     double subTotalWholesalePrice = 0;
                     for (WholesalePrice wholesalePrice : wholesalePrices) {
-                        if (itemQty >= wholesalePrice.getQtyMin() && itemQty <= wholesalePrice.getQtyMax()) {
+                        if (itemQty >= wholesalePrice.getQtyMin()) {
                             subTotalWholesalePrice = itemQty * wholesalePrice.getPrdPrc();
                             hasCalculateWholesalePrice = true;
                             data.getCartItemData().getOriginData().setWholesalePriceFormatted(wholesalePrice.getPrdPrcFmt());
