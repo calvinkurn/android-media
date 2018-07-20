@@ -34,6 +34,7 @@ import com.tokopedia.checkout.domain.usecase.GetCouponListCartMarketPlaceUseCase
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.di.component.CartComponentInjector;
 import com.tokopedia.checkout.view.view.cartlist.CartActivity;
+import com.tokopedia.checkout.view.view.cartlist.CartFragment;
 import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.createticket.ContactUsConstant;
 import com.tokopedia.contactus.createticket.activity.ContactUsActivity;
@@ -51,6 +52,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.data.viewmodel.PopUpNotif;
+import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gallery.GalleryActivity;
@@ -127,6 +129,7 @@ import com.tokopedia.feedplus.domain.model.FollowKolDomain;
 import com.tokopedia.feedplus.domain.usecase.FollowKolPostUseCase;
 import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.feedplus.view.di.FeedPlusComponent;
+import com.tokopedia.feedplus.view.fragment.FeedPlusFragment;
 import com.tokopedia.fingerprint.util.FingerprintConstant;
 import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.FlightModuleRouter;
@@ -149,6 +152,7 @@ import com.tokopedia.groupchat.chatroom.data.ChatroomUrl;
 import com.tokopedia.groupchat.chatroom.view.activity.GroupChatActivity;
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics;
 import com.tokopedia.home.IHomeRouter;
+import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;
 import com.tokopedia.imageuploader.ImageUploaderRouter;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
@@ -166,6 +170,10 @@ import com.tokopedia.logisticuploadawb.ILogisticUploadAwbRouter;
 import com.tokopedia.logisticuploadawb.UploadAwbLogisticActivity;
 import com.tokopedia.loyalty.LoyaltyRouter;
 import com.tokopedia.loyalty.broadcastreceiver.TokoPointDrawerBroadcastReceiver;
+import com.tokopedia.loyalty.di.component.DaggerTokopointComponent;
+import com.tokopedia.loyalty.di.component.TokopointComponent;
+import com.tokopedia.loyalty.di.module.ServiceApiModule;
+import com.tokopedia.loyalty.domain.usecase.GetTokopointUseCase;
 import com.tokopedia.loyalty.router.ITkpdLoyaltyModuleRouter;
 import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
 import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
@@ -174,6 +182,7 @@ import com.tokopedia.loyalty.view.activity.PromoListActivity;
 import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
 import com.tokopedia.loyalty.view.fragment.LoyaltyNotifFragmentDialog;
+import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.network.service.AccountsService;
@@ -326,7 +335,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ReactApplication,
         TkpdInboxRouter,
         IWalletRouter,
-        LoyaltyRouter,
+        LoyaltyRouter, // 1 loyalty
         ReputationRouter,
         SessionRouter,
         AbstractionRouter,
@@ -341,8 +350,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         GroupChatModuleRouter,
         ApplinkRouter,
         ShopModuleRouter,
-        LoyaltyModuleRouter,
-        ITkpdLoyaltyModuleRouter,
+        LoyaltyModuleRouter, // 2 loyalty
+        ITkpdLoyaltyModuleRouter, // 3 loyalty
         ICheckoutModuleRouter,
         com.tokopedia.transaction.router.ICartCheckoutModuleRouter,
         GamificationRouter,
@@ -357,7 +366,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         InstantLoanRouter,
         TopChatRouter,
         TokopointRouter,
-        SearchBarRouter {
+        SearchBarRouter,
+        GlobalNavRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -377,6 +387,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private ReactNativeComponent reactNativeComponent;
     private RemoteConfig remoteConfig;
     private TokoCashComponent tokoCashComponent;
+    private TokopointComponent tokopointComponent;
 
     private CacheManager cacheManager;
     private UserSession userSession;
@@ -438,6 +449,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         eventComponent = DaggerEventComponent.builder()
                 .appComponent(getApplicationComponent())
                 .eventModule(new EventModule(this))
+                .build();
+
+        tokopointComponent = DaggerTokopointComponent.builder()
+                .serviceApiModule(new ServiceApiModule())
                 .build();
     }
 
@@ -1648,6 +1663,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Observable<TokoPointDrawerData> getTokopointUseCase() {
+        com.tokopedia.usecase.RequestParams params = com.tokopedia.usecase.RequestParams.create();
+        params.putString(GetTokopointUseCase.KEY_PARAM,
+                CommonUtils.loadRawString(getResources(), com.tokopedia.loyalty.R.raw.tokopoints_query));
+        return this.tokopointComponent.getTokopointUseCase().createObservable(params);
+    }
+
+    @Override
     public BroadcastReceiver getBroadcastReceiverTokocashPending() {
         return new TokocashPendingDataBroadcastReceiver();
     }
@@ -2308,5 +2331,23 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent gotoQrScannerPage(Context context) {
         return QrScannerActivity.newInstance(this);
+    }
+
+    /**
+     * Global Nav Router
+     */
+    @Override
+    public Fragment getHomeFragment() {
+        return new HomeFragment();
+    }
+
+    @Override
+    public Fragment getFeedPlusFragment() {
+        return new FeedPlusFragment();
+    }
+
+    @Override
+    public Fragment getCartFragment() {
+        return CartFragment.newInstance(CartFragment.class.getSimpleName());
     }
 }

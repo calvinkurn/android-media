@@ -3,15 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/toolbar"
     android:layout_width="match_parent"
-    android:layout_height="?attr/actionBarSize"
-    android:background="?colorPrimary"
+    android:layout_height="?actionBarSize"
+    android:background="@color/white"
     app:contentInsetStart="0dp"
     app:contentInsetEnd="0dp"
     app:contentInsetStartWithNavigation="0dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="?actionBarSize"
         android:orientation="horizontal"
         android:padding="8dp">
 
@@ -20,9 +20,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@null"
+            android:src="@drawable/ic_qr_scan_searchbar"
+            android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="4dp"
-            android:src="@drawable/ic_scan_qr_searchbar"
+            android:layout_marginEnd="4dp"
             android:layout_centerVertical="true"/>
 
         <LinearLayout
@@ -65,8 +67,8 @@
             android:layout_centerVertical="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@null"
             android:scaleType="fitCenter"
+            android:background="@null"
             android:src="@drawable/ic_wishlist_searchbar"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="4dp"
@@ -79,8 +81,8 @@
             android:layout_centerVertical="true"
             android:layout_width="42dp"
             android:layout_height="40dp"
-            android:background="@null"
             android:scaleType="center"
+            android:background="@null"
             android:src="@drawable/ic_notif_searchbar"/>
 
     </RelativeLayout>

@@ -1,5 +1,6 @@
 package com.tokopedia.navigation.presentation.fragment;
 
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -13,6 +14,7 @@ import com.tokopedia.searchbar.NotificationToolbar;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by meta on 19/06/18.
@@ -39,9 +41,15 @@ public class InboxFragment extends ParentFragment {
 
         adapter = new InboxAdapter();
 
+        SwipeRefreshLayout swipe = view.findViewById(R.id.swipe);
         RecyclerView recyclerView = view.findViewById(R.id.recyclerview);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        swipe.setOnRefreshListener(() -> {
+            adapter.clear();
+            adapter.addAll(data());
+        });
 
         adapter.addAll(data());
         recyclerView.setAdapter(adapter);
@@ -56,10 +64,10 @@ public class InboxFragment extends ParentFragment {
 
     private List<Inbox> data() {
         List<Inbox> data = new ArrayList<>();
-        data.add(new Inbox(R.drawable.ic_menu_profile, "Chat", "Percakapan pribadi Anda"));
-        data.add(new Inbox(R.drawable.ic_menu_cart, "Diskusi", "Tanya jawab seputar produk"));
-        data.add(new Inbox(R.drawable.ic_menu_home, "Ulasan", "Berikan penilaian dan ulasan produk"));
-        data.add(new Inbox(R.drawable.ic_menu_inbox, "Pesan Bantuan", "Pantau status bantuan dari Tokopedia"));
+        data.add(new Inbox(R.drawable.ic_topchat, R.string.chat, R.string.chat_desc));
+        data.add(new Inbox(R.drawable.ic_tanyajawab, R.string.diskusi, R.string.diskusi_desc));
+        data.add(new Inbox(R.drawable.ic_ulasan, R.string.ulasan, R.string.ulasan_desc));
+        data.add(new Inbox(R.drawable.ic_pesan_bantuan, R.string.pesan_bantuan, R.string.pesan_bantuan_desc));
         return data;
     }
 
@@ -67,7 +75,7 @@ public class InboxFragment extends ParentFragment {
     public void setupToolbar(View view) {
         try {
             this.toolbar = view.findViewById(R.id.toolbar);
-            ((MainParentActivity) getActivity()).setSupportActionBar(toolbar);
+            ((MainParentActivity) Objects.requireNonNull(getActivity())).setSupportActionBar(toolbar);
         } catch (Exception ignored) {}
     }
 

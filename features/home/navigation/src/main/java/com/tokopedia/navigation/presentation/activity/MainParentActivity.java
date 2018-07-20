@@ -1,7 +1,5 @@
 package com.tokopedia.navigation.presentation.activity;
 
-import android.content.BroadcastReceiver;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -9,34 +7,33 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.activity.BaseAppCompatActivity;
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.constants.TokoPointDrawerBroadcastReceiverConstant;
-import com.tokopedia.core.router.loyaltytokopoint.ILoyaltyRouter;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.component.BottomNavigation;
-import com.tokopedia.feedplus.view.fragment.FeedPlusFragment;
 import com.tokopedia.home.account.presentation.fragment.AccountHomeFragment;
-import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;
+import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
-import com.tokopedia.navigation.presentation.fragment.CartFragment;
 import com.tokopedia.navigation.presentation.fragment.InboxFragment;
 
 /**
  * Created by meta on 19/06/18.
  */
-public class MainParentActivity extends AppCompatActivity implements
+public class MainParentActivity extends BaseAppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener, HasComponent {
 
     private BottomNavigation bottomNavigation;
     private TouchViewPager viewPager;
     private FragmentAdapter adapterViewPager;
+
+    private UserSession userSession;
 
     private boolean isUserFirstTimeLogin = false;
 
@@ -44,6 +41,8 @@ public class MainParentActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_parent);
+
+        userSession = ((AbstractionRouter) this.getApplication()).getSession();
 
         bottomNavigation = findViewById(R.id.bottomnav);
         viewPager = findViewById(R.id.container);
@@ -66,6 +65,7 @@ public class MainParentActivity extends AppCompatActivity implements
         bottomNavigation.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
 
         viewPager.setOnTouchListener((arg0, arg1) -> true);
+        viewPager.setAllowPageSwitching(false);
 
         if (savedInstanceState == null) {
             onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_home));
@@ -73,8 +73,6 @@ public class MainParentActivity extends AppCompatActivity implements
 
         bottomNavigation.setNotification(2000, 2);
         bottomNavigation.setNotification(1200, 3);
-
-        registerBroadcastReceiverHeaderTokoPoint();
     }
 
     @Override
@@ -100,18 +98,18 @@ public class MainParentActivity extends AppCompatActivity implements
     }
 
     @Override
-    public AppComponent getComponent() {
+    public BaseAppComponent getComponent() {
         return getApplicationComponent();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (SessionHandler.isV4Login(this) && isUserFirstTimeLogin) {
+        if (userSession.isLoggedIn() && isUserFirstTimeLogin) {
             reloadPage();
         }
 
-        isUserFirstTimeLogin = !SessionHandler.isV4Login(this);
+        isUserFirstTimeLogin = !userSession.isLoggedIn();
     }
 
     private void reloadPage() {
@@ -120,8 +118,8 @@ public class MainParentActivity extends AppCompatActivity implements
         bottomNavigation.getMenu().getItem(0).setChecked(true);
     }
 
-    public AppComponent getApplicationComponent() {
-        return ((MainApplication) getApplication()).getAppComponent();
+    public BaseAppComponent getApplicationComponent() {
+        return ((BaseMainApplication) getApplication()).getBaseAppComponent();
     }
 
     public class FragmentAdapter extends FragmentPagerAdapter {
@@ -134,14 +132,21 @@ public class MainParentActivity extends AppCompatActivity implements
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    return HomeFragment.newInstance();
+                    if (MainParentActivity.this.getApplication() instanceof GlobalNavRouter) {
+                        return ((GlobalNavRouter) MainParentActivity.this.getApplication()).getHomeFragment();
+                    }
                 case 1:
-                    return new FeedPlusFragment();
+                    if (MainParentActivity.this.getApplication() instanceof GlobalNavRouter) {
+                        return ((GlobalNavRouter) MainParentActivity.this.getApplication()).getFeedPlusFragment();
+                    }
                 case 2:
                     return InboxFragment.newInstance();
                 case 3:
-                    return CartFragment.newInstance();
+                    if (MainParentActivity.this.getApplication() instanceof GlobalNavRouter) {
+                        return ((GlobalNavRouter) MainParentActivity.this.getApplication()).getCartFragment();
+                    }
                 case 4:
+                    // todo: do we need router for this?
                     return AccountHomeFragment.newInstance();
                 default:
                     return null;
@@ -159,25 +164,5 @@ public class MainParentActivity extends AppCompatActivity implements
         }
     }
 
-    private BroadcastReceiver broadcastReceiverTokoPoint;
 
-    protected void registerBroadcastReceiverHeaderTokoPoint() {
-        if (getApplication() instanceof ILoyaltyRouter) {
-            broadcastReceiverTokoPoint = ((ILoyaltyRouter) getApplication()).getTokoPointBroadcastReceiver();
-            registerReceiver(
-                    broadcastReceiverTokoPoint,
-                    new IntentFilter(TokoPointDrawerBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP)
-            );
-        }
-    }
-
-    protected void unregisterBroadcastReceiverHeaderTokoPoint() {
-        unregisterReceiver(broadcastReceiverTokoPoint);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unregisterBroadcastReceiverHeaderTokoPoint();
-    }
 }
