@@ -343,7 +343,7 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @Override
-    public void processCheckPromoCodeFromSuggestedPromo(String promoCode) {
+    public void processCheckPromoCodeFromSuggestedPromo(String promoCode, boolean isAutoApply) {
         view.showProgressLoading();
 
         List<UpdateCartRequest> updateCartRequestList = new ArrayList<>();
@@ -376,10 +376,9 @@ public class CartListPresenter implements ICartListPresenter {
                         .subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
                         .unsubscribeOn(Schedulers.newThread())
-                        .subscribe(getSubscriberCheckPromoCodeFromSuggestion())
+                        .subscribe(getSubscriberCheckPromoCodeFromSuggestion(isAutoApply))
         );
     }
-
 
     @Override
     public void processToShipmentForm(boolean toAddressChoice) {
@@ -796,7 +795,7 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @NonNull
-    private Subscriber<PromoCodeCartListData> getSubscriberCheckPromoCodeFromSuggestion() {
+    private Subscriber<PromoCodeCartListData> getSubscriberCheckPromoCodeFromSuggestion(boolean isAutoApply) {
         return new Subscriber<PromoCodeCartListData>() {
             @Override
             public void onCompleted() {
@@ -814,7 +813,7 @@ public class CartListPresenter implements ICartListPresenter {
                 view.hideProgressLoading();
                 if (!promoCodeCartListData.isError())
                     view.renderCheckPromoCodeFromSuggestedPromoSuccess(promoCodeCartListData);
-                else
+                else if (!isAutoApply)
                     view.renderErrorCheckPromoCodeFromSuggestedPromo(promoCodeCartListData.getErrorMessage());
             }
         };

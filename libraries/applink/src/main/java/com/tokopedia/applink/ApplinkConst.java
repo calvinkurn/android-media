@@ -92,16 +92,24 @@ public interface ApplinkConst {
     String PROMO_LIST = "tokopedia://promoNative";
     String EXPLORE = "tokopedia://jump/{section}";
 
+    String DIGITAL_ORDER = "tokopedia://digital/order";
+    String EVENTS_ORDER = "tokopedia://events/order";
+    String DEALS_ORDER = "tokopedia://deals/order";
+    String FLIGHT_ORDER = "tokopedia://pesawat/order";
+
     String SELLER_INFO_DETAIL = "tokopedia://sellerinfo/detail";
 
     String TC_LANDING = "tokopedia://tc-landing";
 
     String CONTENT_EXPLORE = "tokopedia://content/explore/{tab_name}/{category_id}";
     String CONTENT_DETAIL ="tokopedia://content/{post_id}";
+
+    String PLAY_NOTIFICATION_VIDEO ="tokopedia://play-notif-video";
     String INBOX_TICKET = "tokopedia://customercare";
     String TICKET_DETAIL = "tokopedia://customercare/{ticket_id}";
 
     String ORDER_TRACKING = "tokopedia://order/tracking";
+
 
     interface SellerApp {
         String PRODUCT_ADD = "sellerapp://product/add";

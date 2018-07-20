@@ -1,6 +1,7 @@
 package com.tokopedia.feedplus.view.listener;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.res.Resources;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
@@ -34,6 +35,8 @@ public interface FeedPlusDetail {
         void showLoadingProgress();
 
         Activity getActivity();
+
+        Context getContext();
 
         String getString(int resId);
 

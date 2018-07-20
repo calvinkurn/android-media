@@ -111,7 +111,7 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
             @Override
             public void onClick(View v) {
                 if (productItem.isWishlistButtonEnabled()) {
-                    itemClickListener.onWishlistButtonClicked(productItem, getAdapterPosition());
+                    itemClickListener.onWishlistButtonClicked(productItem);
                 }
             }
         });
