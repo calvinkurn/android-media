@@ -512,10 +512,16 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
                 locationPass.setLatitude(String.valueOf(MONAS_LATITUDE));
                 locationPass.setLongitude(String.valueOf(MONAS_LONGITUDE));
             }
-
-            Intent intent = GeolocationActivity.createInstance(getActivity(), locationPass);
-            startActivityForResult(intent, REQUEST_CODE);
-
+            if (getArguments().getString(EXTRA_PLATFORM_PAGE, "")
+                    .equalsIgnoreCase(PLATFORM_MARKETPLACE_CART)) {
+                startActivityForResult(GeolocationActivity.createInstanceFromMarketplaceCart(
+                        getActivity(), locationPass), REQUEST_CODE
+                );
+            } else {
+                startActivityForResult(GeolocationActivity.createInstance(
+                        getActivity(), locationPass), REQUEST_CODE
+                );
+            }
         } else {
             CommonUtils.dumper("Google play services unavailable");
             Dialog dialog = availability.getErrorDialog(getActivity(), resultCode, 0);

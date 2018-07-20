@@ -474,7 +474,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         } else {
             Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
         }
-        Intent intent = GeolocationActivity.createInstance(getActivity(), locationPass);
+        Intent intent = GeolocationActivity.createInstanceFromMarketplaceCart(getActivity(), locationPass);
         startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT);
     }
 
@@ -849,7 +849,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     }
                 }
             }
-            Intent intent = GeolocationActivity.createInstance(getActivity(), locationPass);
+            Intent intent = GeolocationActivity.createInstanceFromMarketplaceCart(getActivity(), locationPass);
             startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT);
         } else {
             shipmentAdapter.setSelectedCourier(cartItemPosition, courierItemData);
