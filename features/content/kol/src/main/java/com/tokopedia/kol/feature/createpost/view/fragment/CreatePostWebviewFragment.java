@@ -14,6 +14,8 @@ import com.tokopedia.kol.common.di.KolComponent;
 import com.tokopedia.kol.feature.createpost.di.CreatePostModule;
 import com.tokopedia.kol.feature.createpost.di.DaggerCreatePostComponent;
 
+import javax.inject.Inject;
+
 /**
  * @author by yfsx on 07/06/18.
  */
@@ -22,6 +24,7 @@ public class CreatePostWebviewFragment extends BaseWebViewFragment {
     public static final String FORM_URL = "form_url";
     public static final String SUCCESS_URL_PATH = "/content/new/success";
 
+    @Inject
     UserSession userSession;
 
     public static CreatePostWebviewFragment newInstance(Bundle bundle) {
