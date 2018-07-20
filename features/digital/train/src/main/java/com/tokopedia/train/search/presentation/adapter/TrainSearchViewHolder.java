@@ -157,7 +157,7 @@ public class TrainSearchViewHolder extends AbstractViewHolder<TrainScheduleViewM
 
         if (flagItemLayout.getChildCount() > 0) {
             LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) flagItem.getLayoutParams();
-            layoutParams.setMargins(10, 0, 0, 0);
+            layoutParams.setMargins(5, 0, 0, 0);
             flagLayout.setLayoutParams(layoutParams);
         }
         flagItemLayout.addView(view);

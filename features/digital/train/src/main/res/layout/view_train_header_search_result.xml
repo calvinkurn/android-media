@@ -9,26 +9,31 @@
     android:orientation="horizontal"
     android:weightSum="3">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:layout_weight="1">
 
         <TextView
             android:id="@+id/origin_code"
             style="@style/TextView.Title.Bold"
-            android:layout_gravity="center_horizontal"
-            android:text="JKT" />
+            android:gravity="center_vertical"
+            android:layout_centerHorizontal="true"
+            android:layout_centerInParent="true"
+            android:text="JKT"
+            android:visibility="invisible"/>
 
         <TextView
             android:id="@+id/origin_city"
             style="@style/TextView.Micro"
             android:layout_below="@+id/origin_code"
-            android:layout_gravity="center_horizontal"
-            android:text="Kota Jakarta" />
+            android:layout_centerHorizontal="true"
+            android:layout_centerInParent="true"
+            android:text="Kota Jakarta"
+            android:textSize="@dimen/dp_16"
+            android:visibility="visible"/>
 
-    </LinearLayout>
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="0dp"
@@ -64,25 +69,29 @@
 
     </LinearLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:layout_weight="1">
 
         <TextView
             android:id="@+id/destination_code"
             style="@style/TextView.Title.Bold"
-            android:layout_gravity="center_horizontal"
-            android:text="JKT" />
+            android:gravity="center_vertical"
+            android:layout_centerHorizontal="true"
+            android:layout_centerInParent="false"
+            android:text="JKT"
+            android:visibility="visible"/>
 
         <TextView
             android:id="@+id/destination_city"
             style="@style/TextView.Micro"
-            android:layout_below="@+id/origin_code"
-            android:layout_gravity="center_horizontal"
-            android:text="Kota Jakarta" />
+            android:layout_below="@+id/destination_code"
+            android:layout_centerHorizontal="true"
+            android:layout_centerInParent="true"
+            android:text="Kota Jakarta"
+            android:visibility="visible"/>
 
-    </LinearLayout>
+    </RelativeLayout>
 
 </LinearLayout>

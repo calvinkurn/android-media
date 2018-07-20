@@ -12,7 +12,7 @@
         android:layout_margin="@dimen/dp_8"
         android:background="@android:color/white"
         android:elevation="4dp"
-        app:cardElevation="2dp">
+        app:cardElevation="4dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
