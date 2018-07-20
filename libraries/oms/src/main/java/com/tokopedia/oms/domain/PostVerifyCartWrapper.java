@@ -24,7 +24,7 @@ public class PostVerifyCartWrapper {
     }
 
     public Observable<TKPDMapParam<String, Object>> verifyPromo(com.tokopedia.usecase.RequestParams requestParams) {
-        return postVerifyCartUseCase.getExecuteObservable(requestParams).subscribeOn(Schedulers.computation())
+        return postVerifyCartUseCase.getExecuteObservable(requestParams).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread()).map(new Func1<VerifyMyCartResponse, TKPDMapParam<String, Object>>() {
                     @Override
                     public TKPDMapParam<String, Object> call(VerifyMyCartResponse verifyCartResponse) {

@@ -3,8 +3,8 @@ package com.tokopedia.oms.domain;
 import android.content.Context;
 import android.util.Log;
 
+import com.tokopedia.abstraction.common.network.exception.ResponseErrorException;
 import com.tokopedia.network.NetworkRouter;
-import com.tokopedia.network.exception.ResponseErrorException;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.user.session.UserSession;
 
