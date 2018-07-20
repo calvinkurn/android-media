@@ -521,7 +521,8 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
     }
 
     private boolean isDigitalSmartcardEnabled() {
-        return remoteConfig.getBoolean(DIGITAL_SMARTCARD, false);
+        return true;
+//        return remoteConfig.getBoolean(DIGITAL_SMARTCARD, false);
     }
 
 }
