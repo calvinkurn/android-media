@@ -18,6 +18,7 @@ import com.tokopedia.core.referral.listener.FriendsWelcomeView;
 import com.tokopedia.core.referral.presenter.IReferralFriendsWelcomePresenter;
 import com.tokopedia.core.referral.presenter.ReferralFriendsWelcomePresenter;
 import com.tokopedia.core.var.TkpdUrl;
+import com.tokopedia.design.bottomsheet.BottomSheetView;
 
 import butterknife.BindView;
 
@@ -99,10 +100,10 @@ public class FragmentReferralFriendsWelcome extends BasePresenterFragment<IRefer
         TextViewHelpLink.setText(Html.fromHtml(presenter.getHowItWorks()));
         TextViewHelpLink.setOnClickListener(view1 -> {
             UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_KNOW_MORE,"");
-            startActivity(ManageWebViewActivity.getCallingIntent(getActivity(), TkpdUrl.REFERRAL_URL, getString(R.string.app_name)));
+            showOnBoardingTooltip(getActivity().getString(R.string.acquisition_referral) ,getActivity().getString(R.string.what_is_referral_tokocash) );
         });
         welcomeMessageHearer.setText(Html.fromHtml(getString(R.string.referral_welcome_header)));
-        welcomeMessageSubHearer.setText(presenter.getSubHeaderFromFirebase());
+        welcomeMessageSubHearer.setText(Html.fromHtml(presenter.getSubHeaderFromFirebase()));
     }
 
     @Override
@@ -134,4 +135,16 @@ public class FragmentReferralFriendsWelcome extends BasePresenterFragment<IRefer
     public void showToastMessage(String message) {
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
+
+    private void showOnBoardingTooltip(String title, String content) {
+        BottomSheetView mToolTip = new BottomSheetView(context);
+        mToolTip.renderBottomSheet(new BottomSheetView.BottomSheetField
+                .BottomSheetFieldBuilder()
+                .setTitle(title)
+                .setBody(content)
+                .build());
+
+        mToolTip.show();
+    }
+
 }
