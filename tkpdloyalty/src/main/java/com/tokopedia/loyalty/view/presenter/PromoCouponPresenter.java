@@ -354,7 +354,7 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
             @Override
             public void onError(Throwable e) {
                 view.hideProgressLoading();
-                if (e instanceof LoyaltyErrorException || e instanceof ResponseErrorException || e instanceof UnProcessableHttpException) {
+                if (e instanceof LoyaltyErrorException || e instanceof ResponseErrorException) {
                     couponData.setErrorMessage(e.getMessage());
                     view.couponError();
                 } else {

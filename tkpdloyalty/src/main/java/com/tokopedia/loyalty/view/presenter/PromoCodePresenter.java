@@ -204,7 +204,7 @@ public class PromoCodePresenter implements IPromoCodePresenter {
                     @Override
                     public void onError(Throwable e) {
                         view.hideProgressLoading();
-                        if (e instanceof TokoPointResponseErrorException || e instanceof ResponseErrorException  || e instanceof UnProcessableHttpException) {
+                        if (e instanceof TokoPointResponseErrorException || e instanceof ResponseErrorException ) {
                             view.onPromoCodeError(e.getMessage());
                         } else view.onGetGeneralError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                     }
