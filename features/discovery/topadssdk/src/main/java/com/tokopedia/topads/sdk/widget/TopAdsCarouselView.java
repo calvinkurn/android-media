@@ -1,0 +1,166 @@
+package com.tokopedia.topads.sdk.widget;
+
+
+import android.content.Context;
+import android.content.res.TypedArray;
+import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.AttributeSet;
+import android.widget.LinearLayout;
+
+import com.tokopedia.topads.sdk.R;
+import com.tokopedia.topads.sdk.base.Config;
+import com.tokopedia.topads.sdk.base.adapter.Item;
+import com.tokopedia.topads.sdk.domain.model.Data;
+import com.tokopedia.topads.sdk.domain.model.Product;
+import com.tokopedia.topads.sdk.domain.model.Shop;
+import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsListener;
+import com.tokopedia.topads.sdk.presenter.TopAdsPresenter;
+import com.tokopedia.topads.sdk.view.AdsView;
+import com.tokopedia.topads.sdk.view.DisplayMode;
+import com.tokopedia.topads.sdk.view.adapter.AdsItemAdapter;
+
+import java.util.List;
+
+/**
+ * Created by errysuprayogi on 7/20/18.
+ */
+
+public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAdsClickListener {
+
+    private static final String TAG = TopAdsCarouselView.class.getSimpleName();
+    private TopAdsPresenter presenter;
+    private RecyclerView recyclerView;
+    private AdsItemAdapter adapter;
+    private TypedArray styledAttributes;
+    private TopAdsListener adsListener;
+    private TopAdsItemClickListener adsItemClickListener;
+
+    public TopAdsCarouselView(Context context) {
+        super(context);
+        inflateView(context, null, 0);
+    }
+
+    public TopAdsCarouselView(Context context, @Nullable AttributeSet attrs) {
+        super(context, attrs);
+        inflateView(context, attrs, 0);
+    }
+
+    public TopAdsCarouselView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        inflateView(context, attrs, defStyleAttr);
+    }
+
+    private void inflateView(Context context, AttributeSet attrs, int defStyle) {
+        styledAttributes = context.obtainStyledAttributes(attrs, R.styleable.TopAdsView, defStyle, 0);
+        inflate(getContext(), R.layout.layout_ads_carousel, this);
+        adapter = new AdsItemAdapter(getContext());
+        adapter.setItemClickListener(this);
+        recyclerView = (RecyclerView) findViewById(R.id.list);
+        recyclerView.setNestedScrollingEnabled(false);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL,
+                false));
+        recyclerView.setAdapter(adapter);
+    }
+
+    public void setConfig(Config config) {
+        presenter.setConfig(config);
+    }
+
+    public void setAdsListener(TopAdsListener adsListener) {
+        this.adsListener = adsListener;
+    }
+
+    public void setAdsItemClickListener(TopAdsItemClickListener adsItemClickListener) {
+        this.adsItemClickListener = adsItemClickListener;
+    }
+
+    @Override
+    public void initPresenter() {
+        presenter = new TopAdsPresenter(getContext());
+        presenter.attachView(this);
+        presenter.setMaxItems(styledAttributes.getInteger(R.styleable.TopAdsView_items, 15));
+        String ep = styledAttributes.getString(R.styleable.TopAdsView_ep);
+        presenter.setEndpoinParam((ep == null ? "0" : ep));
+        setDisplayMode(DisplayMode.GRID);
+    }
+
+    @Override
+    public void setMaxItems(int items) {
+        presenter.setMaxItems(items);
+    }
+
+    @Override
+    public void setDisplayMode(DisplayMode displayMode) {
+        presenter.setDisplayMode(displayMode);
+    }
+
+    @Override
+    public void loadTopAds() {
+        presenter.loadTopAds();
+    }
+
+    @Override
+    public void displayAds(List<Item> list, int position) {
+        adapter.setList(list);
+        if (adsListener != null) {
+            adsListener.onTopAdsLoaded();
+        }
+    }
+
+    @Override
+    public void notifyAdsErrorLoaded(int errorCode, String message) {
+        if (adsListener != null) {
+            adsListener.onTopAdsFailToLoad(errorCode, message);
+        }
+    }
+
+    @Override
+    public void onShopItemClicked(int position, Data data) {
+        Shop shop = data.getShop();
+        shop.setAdRefKey(data.getAdRefKey());
+        shop.setAdId(data.getId());
+        presenter.openShopTopAds(position, data.getShopClickUrl(), shop);
+    }
+
+    @Override
+    public void onProductItemClicked(int position, Data data) {
+        Product product = data.getProduct();
+        product.setAdRefKey(data.getAdRefKey());
+        product.setAdId(data.getId());
+        presenter.openProductTopAds(position, data.getProductClickUrl(), product);
+    }
+
+    @Override
+    public void onAddFavorite(int position, Data dataShop) {
+        if (adsItemClickListener != null) {
+            adsItemClickListener.onAddFavorite(position, dataShop);
+        }
+    }
+
+    @Override
+    public void onAddWishLish(int position, Data data) {
+        if (adsItemClickListener != null) {
+            adsItemClickListener.onAddWishList(position, data);
+        }
+    }
+
+    @Override
+    public void notifyProductClickListener(int position, Product product) {
+        if (adsItemClickListener != null) {
+            adsItemClickListener.onProductItemClicked(position, product);
+        }
+    }
+
+    @Override
+    public void notifyShopClickListener(int position, Shop shop) {
+        if (adsItemClickListener != null) {
+            adsItemClickListener.onShopItemClicked(position, shop);
+        }
+    }
+
+}
