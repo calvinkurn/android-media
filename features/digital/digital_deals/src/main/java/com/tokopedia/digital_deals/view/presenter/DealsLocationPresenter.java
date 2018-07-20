@@ -1,17 +1,15 @@
 package com.tokopedia.digital_deals.view.presenter;
 
 import com.google.gson.reflect.TypeToken;
-import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
-import com.tokopedia.common.network.data.model.RestRequest;
 import com.tokopedia.common.network.data.model.RestResponse;
-import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.digital_deals.domain.getusecase.GetLocationListRequestUseCase;
-import com.tokopedia.digital_deals.domain.model.locationdomainmodel.LocationDomainModel;
 import com.tokopedia.digital_deals.view.contractor.DealsLocationContract;
-import com.tokopedia.digital_deals.view.utils.Utils;
-import com.tokopedia.digital_deals.view.viewmodel.LocationViewModel;
+import com.tokopedia.digital_deals.view.model.Location;
+import com.tokopedia.digital_deals.view.model.response.LocationResponse;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -29,8 +27,8 @@ public class DealsLocationPresenter extends BaseDaggerPresenter<DealsLocationCon
     private boolean isTopLocations = true;
 
     private GetLocationListRequestUseCase getSearchLocationListRequestUseCase;
-    private List<LocationViewModel> mTopLocations;
-    private List<LocationViewModel> mAllLocations;
+    private List<Location> mTopLocations;
+    private List<Location> mAllLocations;
 
     @Inject
     public DealsLocationPresenter(GetLocationListRequestUseCase getLocationListRequestUseCase) {
@@ -39,11 +37,13 @@ public class DealsLocationPresenter extends BaseDaggerPresenter<DealsLocationCon
 
     @Override
     public void getLocationListBySearch(String searchText) {
-        List<LocationViewModel> locationViewModels = new ArrayList<>();
-        for (LocationViewModel location : mAllLocations)
-            if (location.getName().trim().toLowerCase().contains(searchText.trim().toLowerCase()))
-                locationViewModels.add(location);
-        getView().renderFromSearchResults(locationViewModels, !isTopLocations);
+        List<Location> locationList = new ArrayList<>();
+        if (mAllLocations != null) {
+            for (Location location : mAllLocations)
+                if (location.getName().trim().toLowerCase().contains(searchText.trim().toLowerCase()))
+                    locationList.add(location);
+        }
+        getView().renderFromSearchResults(locationList, !isTopLocations);
     }
 
     public void getLocations() {
@@ -70,16 +70,13 @@ public class DealsLocationPresenter extends BaseDaggerPresenter<DealsLocationCon
 
             @Override
             public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
-                Type token = new TypeToken<DataResponse<LocationDomainModel>>(){
-                    }.getType();
+                Type token = new TypeToken<DataResponse<LocationResponse>>() {
+                }.getType();
                 RestResponse restResponse = typeRestResponseMap.get(token);
                 DataResponse dataResponse = restResponse.getData();
-                LocationDomainModel locationDomainModel = (LocationDomainModel) dataResponse.getData();
-                mTopLocations = Utils.getSingletonInstance()
-                        .convertIntoLocationListItemsViewModel(locationDomainModel.getLocations());
-                mAllLocations = Utils.getSingletonInstance()
-                        .convertIntoLocationListItemsViewModel(locationDomainModel.getLocations());
-
+                LocationResponse locationResponse = (LocationResponse) dataResponse.getData();
+                mTopLocations = locationResponse.getLocations();
+                mAllLocations = locationResponse.getLocations();
                 getView().renderFromSearchResults(mTopLocations, isTopLocations);
                 getView().showViews();
                 getView().hideProgressBar();

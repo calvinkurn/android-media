@@ -15,26 +15,25 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.digital_deals.R;
-import com.tokopedia.digital_deals.di.DaggerDealsComponent;
-import com.tokopedia.digital_deals.di.DealsModule;
+import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.digital_deals.view.activity.DealDetailsActivity;
 import com.tokopedia.digital_deals.view.contractor.SelectQuantityContract;
+import com.tokopedia.digital_deals.view.model.PackageViewModel;
+import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse;
 import com.tokopedia.digital_deals.view.presenter.SelectQuantityPresenter;
 import com.tokopedia.digital_deals.view.utils.DealFragmentCallbacks;
 import com.tokopedia.digital_deals.view.utils.Utils;
-import com.tokopedia.digital_deals.view.viewmodel.DealsDetailsViewModel;
-import com.tokopedia.digital_deals.view.viewmodel.PackageViewModel;
 import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;
+
+;
 
 public class SelectDealQuantityFragment extends BaseDaggerFragment implements SelectQuantityContract.View, View.OnClickListener {
 
@@ -60,11 +59,12 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
     @Inject
     public SelectQuantityPresenter mPresenter;
     private PackageViewModel packageViewModel;
-    private DealsDetailsViewModel dealDetails;
+    private DealsDetailsResponse dealDetails;
     private DealFragmentCallbacks fragmentCallbacks;
 
 
     private static final int EVENT_LOGIN_REQUEST = 1099;
+
     public static Fragment createInstance() {
         Fragment fragment = new SelectDealQuantityFragment();
         return fragment;
@@ -84,10 +84,7 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
 
     @Override
     protected void initInjector() {
-        DaggerDealsComponent.builder()
-                .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
-                .dealsModule(new DealsModule(getContext()))
-                .build().inject(this);
+        getComponent(DealsComponent.class).inject(this);
         mPresenter.attachView(this);
     }
 
@@ -128,13 +125,13 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
         tvTotalAmount = view.findViewById(R.id.tv_total_amount);
         llContinue = view.findViewById(R.id.ll_continue);
         progressBarLayout = view.findViewById(R.id.progress_bar_layout);
-        mainContent=view.findViewById(R.id.main_content);
+        mainContent = view.findViewById(R.id.main_content);
     }
 
     void setButtons() {
 
         if (CURRENT_QUANTITY > 1) {
-            ivSubtract.setColorFilter(ContextCompat.getColor(getContext(), R.color.green_nob), android.graphics.PorterDuff.Mode.SRC_IN);
+            ivSubtract.setColorFilter(ContextCompat.getColor(getContext(), R.color.green_250), android.graphics.PorterDuff.Mode.SRC_IN);
             ivSubtract.setClickable(true);
 
         } else {
@@ -142,7 +139,7 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
             ivSubtract.setClickable(false);
         }
         if (CURRENT_QUANTITY < MAX_QUANTITY) {
-            ivAdd.setColorFilter(ContextCompat.getColor(getContext(), R.color.green_nob), android.graphics.PorterDuff.Mode.SRC_IN);
+            ivAdd.setColorFilter(ContextCompat.getColor(getContext(), R.color.green_250), android.graphics.PorterDuff.Mode.SRC_IN);
             ivAdd.setClickable(true);
 
         } else {
@@ -154,7 +151,7 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
 
     void setUpTotalAmount() {
 
-            tvTotalAmount.setText(Utils.convertToCurrencyString(dealDetails.getSalesPrice() * CURRENT_QUANTITY));
+        tvTotalAmount.setText(Utils.convertToCurrencyString(dealDetails.getSalesPrice() * CURRENT_QUANTITY));
 
     }
 
@@ -177,7 +174,7 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
             setButtons();
 
         } else if (v.getId() == R.id.ll_continue) {
-            packageViewModel=new PackageViewModel();
+            packageViewModel = new PackageViewModel();
             packageViewModel.setCategoryId(dealDetails.getCategoryId());
             packageViewModel.setProductId(dealDetails.getId());
             packageViewModel.setSalesPrice(dealDetails.getSalesPrice());
@@ -206,18 +203,23 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
     }
 
     @Override
-    public void renderFromDetails(DealsDetailsViewModel dealDetail) {
+    public void renderFromDetails(DealsDetailsResponse dealDetail) {
 
+        ImageHandler.loadImage(getContext(), ivBrand, dealDetails.getImageWeb(), R.color.grey_1100, R.color.grey_1100);
         if (dealDetails.getBrand() != null) {
-            ImageHandler.loadImage(getContext(), ivBrand, dealDetails.getBrand().getFeaturedThumbnailImage(), R.color.grey_1100, R.color.grey_1100);
             tvBrandName.setText(dealDetails.getBrand().getTitle());
         }
 
         tvDealDetails.setText(dealDetails.getDisplayName());
 
         tvQuantity.setText(String.format(getContext().getResources().getString(R.string.quantity_of_deals), CURRENT_QUANTITY));
-        tvMrp.setText(Utils.convertToCurrencyString(dealDetails.getMrp()));
-        tvMrp.setPaintFlags(tvMrp.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        if(dealDetails.getMrp()!=0){
+            tvMrp.setVisibility(View.VISIBLE);
+            tvMrp.setText(Utils.convertToCurrencyString(dealDetails.getMrp()));
+            tvMrp.setPaintFlags(tvMrp.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        }else{
+            tvMrp.setVisibility(View.GONE);
+        }
         tvSalesPrice.setText(Utils.convertToCurrencyString(dealDetails.getSalesPrice()));
         tvTotalAmount.setText(Utils.convertToCurrencyString(dealDetails.getSalesPrice()));
 

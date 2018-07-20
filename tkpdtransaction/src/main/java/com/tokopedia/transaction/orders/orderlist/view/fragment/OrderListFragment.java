@@ -1,22 +1,20 @@
 package com.tokopedia.transaction.orders.orderlist.view.fragment;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.util.RefreshHandler;
-import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.orderlist.data.Order;
 import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
@@ -34,7 +32,7 @@ import javax.inject.Inject;
 
 
 
-public class OrderListFragment extends BaseDaggerFragment implements
+public class OrderListFragment extends BasePresenterFragment<OrderListContract.Presenter> implements
         RefreshHandler.OnRefreshHandlerListener, OrderListContract.View, OrderListAdapter.OnMenuItemListener {
 
     private static final String ORDER_CATEGORY = "orderCategory";
@@ -57,69 +55,82 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
     private ArrayList<Order> mOrderDataList;
     private String mOrderCategory;
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        setHasOptionsMenu(getOptionsMenuEnable());
+
+    public static Fragment newInstance(int orderCategory) {
+        Fragment fragment = new OrderListFragment();
+        Bundle arg = new Bundle();
+        arg.putInt(ORDER_CATEGORY, orderCategory);
+        fragment.setArguments(arg);
+
+        return fragment;
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        initInjector();
-        if (getArguments() != null) {
-            setupArguments(getArguments());
-        }
-        initialPresenter();
+    protected boolean isRetainInstance() {
+        return false;
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        return inflater.inflate(getFragmentLayout(), container, false);
+    protected void onFirstTimeLaunched() {
+
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        initView(view);
-        initialVar();
-        setViewListener();
-        setActionVar();
+    public void onSaveState(Bundle state) {
+
+    }
+
+    @Override
+    public void onRestoreState(Bundle savedState) {
+
     }
 
 
+    @Override
     protected boolean getOptionsMenuEnable() {
         return false;
     }
 
+    @Override
     protected void initialPresenter() {
         presenter.attachView(this);
     }
 
+    @Override
     protected void initInjector() {
         orderListComponent = DaggerOrderListComponent.builder()
                 .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
                 .build();
-        GraphqlClient.init(getActivity());
         orderListComponent.inject(this);
     }
 
-
-    protected void setupArguments(Bundle arguments) {
-        mOrderCategory = arguments.getString(ORDER_CATEGORY);
+    @Override
+    protected void initialListener(Activity activity) {
     }
 
+    @Override
+    protected void setupArguments(Bundle arguments) {
+        int category = arguments.getInt(ORDER_CATEGORY);
+        switch (category) {
+            case 2:
+                mOrderCategory = OrderCategory.DIGITAL;
+                break;
+        }
+    }
+
+    @Override
     protected int getFragmentLayout() {
         return R.layout.fragment_transaction_list_order_module;
     }
 
+    @Override
     protected void initView(View view) {
         recyclerView = view.findViewById(R.id.order_list_rv);
         swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
         emptyLayout = view.findViewById(R.id.empty_view);
     }
 
+    @Override
     protected void setViewListener() {
         refreshHandler = new RefreshHandler(getActivity(), getView(), this);
         refreshHandler.setPullEnabled(true);
@@ -205,11 +216,6 @@ public class OrderListFragment extends BaseDaggerFragment implements
         }
     }
 
-    @Override
-    public Context getAppContext() {
-        return getActivity().getApplicationContext();
-    }
-
     private NetworkErrorHelper.RetryClickedListener getEditShipmentRetryListener() {
         return new NetworkErrorHelper.RetryClickedListener() {
             @Override
@@ -219,10 +225,12 @@ public class OrderListFragment extends BaseDaggerFragment implements
         };
     }
 
+    @Override
     protected void initialVar() {
         orderListAdapter = new OrderListAdapter(getActivity(), this);
     }
 
+    @Override
     protected void setActionVar() {
         initialData();
     }
@@ -288,17 +296,15 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
+    }
 
     @Override
     public void startUri(String uri) {
         if (!uri.equals(""))
             TransactionPurchaseRouter.startWebViewActivity(getActivity(), uri);
     }
-
-    @Override
-    protected String getScreenName() {
-        return this.getClass().getSimpleName();
-    }
-
 }
-

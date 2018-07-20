@@ -1,19 +1,22 @@
 package com.tokopedia.checkout.domain.usecase;
 
+import android.os.Build;
+
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.checkout.domain.datamodel.cartcheckout.CheckoutData;
 import com.tokopedia.checkout.domain.mapper.ICheckoutMapper;
+import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.transactiondata.entity.request.CheckoutRequest;
-import com.tokopedia.transactiondata.entity.response.checkout.CheckoutDataResponse;
 import com.tokopedia.transactiondata.repository.ICartRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
+import java.security.PublicKey;
+
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.functions.Func1;
 
 /**
  * @author anggaprasetiyo on 26/02/18.
@@ -22,17 +25,22 @@ import rx.functions.Func1;
 public class CheckoutUseCase extends UseCase<CheckoutData> {
     public static final String PARAM_CARTS = "carts";
     private static final String PARAM_OPTIONAL = "optional";
-    public static final String PARAM_IS_THANKYOU_NATIVE = "is_thankyou_native";
+    private static final String PARAM_IS_THANKYOU_NATIVE = "is_thankyou_native";
     private static final String PARAM_IS_THANKYOU_NATIVE_NEW = "is_thankyou_native_new";
+    private static final String PARAM_FINGERPRINT_PUBLICKEY = "fingerprint_publickey";
+    private static final String PARAM_FINGERPRINT_SUPPORT = "fingerprint_support";
 
     private final ICartRepository cartRepository;
     private final ICheckoutMapper checkoutMapper;
+    private final ICheckoutModuleRouter checkoutModuleRouter;
 
     @Inject
     public CheckoutUseCase(ICartRepository cartRepository,
-                           ICheckoutMapper checkoutMapper) {
+                           ICheckoutMapper checkoutMapper,
+                           ICheckoutModuleRouter checkoutModuleRouter) {
         this.cartRepository = cartRepository;
         this.checkoutMapper = checkoutMapper;
+        this.checkoutModuleRouter = checkoutModuleRouter;
     }
 
     @Override
@@ -43,12 +51,25 @@ public class CheckoutUseCase extends UseCase<CheckoutData> {
         param.put(PARAM_OPTIONAL, "0");
         param.put(PARAM_IS_THANKYOU_NATIVE, "1");
         param.put(PARAM_IS_THANKYOU_NATIVE_NEW, "1");
+        param = createParamFingerprint(param);
         return cartRepository.checkout(param)
-                .map(new Func1<CheckoutDataResponse, CheckoutData>() {
-                    @Override
-                    public CheckoutData call(CheckoutDataResponse checkoutDataResponse) {
-                        return checkoutMapper.convertCheckoutData(checkoutDataResponse);
-                    }
-                });
+                .map(checkoutMapper::convertCheckoutData);
+    }
+
+    private TKPDMapParam<String, String> createParamFingerprint(TKPDMapParam<String, String> tkpdMapParam) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkoutModuleRouter != null
+                && checkoutModuleRouter.checkoutModuleRouterGetEnableFingerprintPayment()) {
+            PublicKey publicKey = checkoutModuleRouter.checkoutModuleRouterGeneratePublicKey();
+            if (publicKey != null) {
+                tkpdMapParam.put(PARAM_FINGERPRINT_PUBLICKEY, checkoutModuleRouter.checkoutModuleRouterGetPublicKey(publicKey));
+                tkpdMapParam.put(PARAM_FINGERPRINT_SUPPORT, String.valueOf(true));
+            } else {
+                tkpdMapParam.put(PARAM_FINGERPRINT_SUPPORT, String.valueOf(false));
+            }
+        } else {
+            tkpdMapParam.put(PARAM_FINGERPRINT_SUPPORT, String.valueOf(false));
+        }
+        return tkpdMapParam;
+
     }
 }

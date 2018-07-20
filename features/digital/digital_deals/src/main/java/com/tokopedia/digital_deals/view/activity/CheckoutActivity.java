@@ -9,23 +9,20 @@ import android.support.v4.app.FragmentTransaction;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.view.fragment.CheckoutHomeFragment;
 import com.tokopedia.digital_deals.view.fragment.DealDetailsAllRedeemLocationsFragment;
 import com.tokopedia.digital_deals.view.utils.DealFragmentCallbacks;
 import com.tokopedia.digital_deals.view.utils.Utils;
-import com.tokopedia.digital_deals.view.viewmodel.DealsDetailsViewModel;
-import com.tokopedia.digital_deals.view.viewmodel.OutletViewModel;
+import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse;
+import com.tokopedia.digital_deals.view.model.Outlet;
 import com.tokopedia.oms.scrooge.ScroogePGUtil;
 
 import java.util.List;
 
-import okhttp3.Route;
+public class CheckoutActivity extends DealsBaseActivity implements DealFragmentCallbacks {
 
-public class CheckoutActivity extends BaseSimpleActivity implements DealFragmentCallbacks {
-
-    private List<OutletViewModel> outlets;
+    private List<Outlet> outlets;
     private final String LOCATION_FRAGMENT = "LOCATION_FRAGMENT";
     private final String HOME_FRAGMENT = "HOME_FRAGMENT";
     private Drawable drawable;
@@ -39,7 +36,7 @@ public class CheckoutActivity extends BaseSimpleActivity implements DealFragment
     @Override
     protected Fragment getNewFragment() {
         drawable=toolbar.getNavigationIcon();
-        toolbar.setTitle(getResources().getString(R.string.activity_checkout_title));
+        updateTitle(getResources().getString(R.string.activity_checkout_title));
 
         getSupportFragmentManager().addOnBackStackChangedListener(getListener());
         return CheckoutHomeFragment.createInstance(getIntent().getExtras());
@@ -55,11 +52,8 @@ public class CheckoutActivity extends BaseSimpleActivity implements DealFragment
         if (data != null) {
             if (requestCode == ScroogePGUtil.REQUEST_CODE_OPEN_SCROOGE_PAGE) {
                 String orderId = Utils.fetchOrderId(data.getStringExtra(ScroogePGUtil.SUCCESS_MSG_URL));
-                String url = data.getStringExtra(ScroogePGUtil.SUCCESS_MSG_URL) + "/" + true;
+                String url = data.getStringExtra(ScroogePGUtil.SUCCESS_MSG_URL) + "?from_payment=true" ;
                 RouteManager.route(this, url);
-//                Intent intent = ((TkpdCoreRouter) getApplication())
-//                        .getOrderListDetailActivity(this, orderId, "DEALS", true);
-//                this.startActivity(intent);
                 this.finish();
             }
         }
@@ -67,7 +61,7 @@ public class CheckoutActivity extends BaseSimpleActivity implements DealFragment
     }
 
     @Override
-    public void replaceFragment(List<OutletViewModel> outlets, int flag) {
+    public void replaceFragment(List<Outlet> outlets, int flag) {
         this.outlets = outlets;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.setCustomAnimations(R.anim.slide_in_up, R.anim.slide_in_down, R.anim.slide_out_down, R.anim.slide_out_up);
@@ -77,17 +71,17 @@ public class CheckoutActivity extends BaseSimpleActivity implements DealFragment
     }
 
     @Override
-    public void replaceFragment(DealsDetailsViewModel detailsViewModel, int flag) {
+    public void replaceFragment(DealsDetailsResponse detailsViewModel, int flag) {
 
     }
 
     @Override
-    public List<OutletViewModel> getOutlets() {
+    public List<Outlet> getOutlets() {
         return outlets;
     }
 
     @Override
-    public DealsDetailsViewModel getDealDetails() {
+    public DealsDetailsResponse getDealDetails() {
         return null;
     }
 
@@ -100,15 +94,15 @@ public class CheckoutActivity extends BaseSimpleActivity implements DealFragment
                     if (manager.getBackStackEntryCount() >= 1) {
                         String topOnStack = manager.getBackStackEntryAt(manager.getBackStackEntryCount() - 1).getName();
                         if (topOnStack.equals(LOCATION_FRAGMENT)) {
-                            toolbar.setTitle(getResources().getString(R.string.redeem_locations));
+                            updateTitle(getResources().getString(R.string.redeem_locations));
                             toolbar.setNavigationIcon(R.drawable.ic_close_deals);
 
                         } else {
-                            toolbar.setTitle(getResources().getString(R.string.activity_checkout_title));
+                            updateTitle(getResources().getString(R.string.activity_checkout_title));
                             toolbar.setNavigationIcon(drawable);
                         }
                     } else {
-                        toolbar.setTitle(getResources().getString(R.string.activity_checkout_title));
+                        updateTitle(getResources().getString(R.string.activity_checkout_title));
                         toolbar.setNavigationIcon(drawable);
 
                     }

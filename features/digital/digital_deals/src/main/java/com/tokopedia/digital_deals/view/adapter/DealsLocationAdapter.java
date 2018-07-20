@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.view.utils.Utils;
-import com.tokopedia.digital_deals.view.viewmodel.LocationViewModel;
+import com.tokopedia.digital_deals.view.model.Location;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,23 +18,23 @@ public class DealsLocationAdapter extends RecyclerView.Adapter<DealsLocationAdap
 
 
     private Context context;
-    private List<LocationViewModel> locations;
+    private List<Location> locations;
     private ActionListener actionListener;
 
-    public DealsLocationAdapter(Context context, List<LocationViewModel> locations, ActionListener actionListener) {
-        this.context = context;
+    public DealsLocationAdapter(List<Location> locations, ActionListener actionListener) {
         this.locations = new ArrayList<>();
         this.locations = locations;
         this.actionListener=actionListener;
     }
 
-    public void updateAdapter(List<LocationViewModel> locations) {
+    public void updateAdapter(List<Location> locations) {
         this.locations = locations;
         notifyDataSetChanged();
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+        this.context = viewGroup.getContext();
         return new ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.location_item, viewGroup, false));
     }
 
@@ -46,10 +46,7 @@ public class DealsLocationAdapter extends RecyclerView.Adapter<DealsLocationAdap
 
     @Override
     public int getItemCount() {
-        if (locations != null) {
-            return locations.size();
-        }
-        return 0;
+        return (locations == null) ? 0 : locations.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -74,14 +71,14 @@ public class DealsLocationAdapter extends RecyclerView.Adapter<DealsLocationAdap
             return this.index;
         }
 
-        public void bindData(LocationViewModel location) {
+        public void bindData(Location location) {
             locationName.setText(location.getName());
             itemView.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-            LocationViewModel location=Utils.getSingletonInstance().getLocation(context);
+            Location location=Utils.getSingletonInstance().getLocation(context);
             Utils.getSingletonInstance().updateLocation(context, locations.get(getIndex()));
             actionListener.onLocationItemSelected(location!=null);
         }

@@ -4,7 +4,7 @@ import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.common.network.data.model.RestRequest;
 import com.tokopedia.common.network.domain.RestRequestUseCase;
-import com.tokopedia.digital_deals.domain.model.branddetailsmodel.BrandDetailsDomain;
+import com.tokopedia.digital_deals.view.model.response.BrandDetailsResponse;
 import com.tokopedia.digital_deals.view.presenter.BrandDetailsPresenter;
 import com.tokopedia.usecase.RequestParams;
 
@@ -36,7 +36,7 @@ public class GetBrandDetailsUseCase extends RestRequestUseCase {
         params1.remove(BrandDetailsPresenter.TAG);
         if(params.getBoolean("search_next", false))
             params1=new HashMap<>();
-        Type token = new TypeToken<DataResponse<BrandDetailsDomain>>() {
+        Type token = new TypeToken<DataResponse<BrandDetailsResponse>>() {
         }.getType();
 
         RestRequest restRequest1 = new RestRequest.Builder(url, token)

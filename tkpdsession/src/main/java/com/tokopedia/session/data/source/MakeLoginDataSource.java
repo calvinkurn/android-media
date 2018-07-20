@@ -1,15 +1,11 @@
 package com.tokopedia.session.data.source;
 
-import android.util.Log;
-
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.network.service.AccountsService;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
 import com.tokopedia.session.domain.mapper.MakeLoginMapper;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -67,6 +63,7 @@ public class MakeLoginDataSource {
                 }else{
                     sessionHandler.setTempLoginName(makeLoginDomain.getFullName());
                     sessionHandler.setTempLoginSession(String.valueOf(makeLoginDomain.getUserId()));
+                    sessionHandler.setIsMSISDNVerified(makeLoginDomain.isMsisdnVerified());
                 }
             }
         };

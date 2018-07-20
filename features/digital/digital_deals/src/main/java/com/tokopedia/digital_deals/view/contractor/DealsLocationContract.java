@@ -5,7 +5,7 @@ import android.content.Intent;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.digital_deals.view.viewmodel.LocationViewModel;
+import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
@@ -17,7 +17,7 @@ public class DealsLocationContract {
 
         void navigateToActivityRequest(Intent intent, int requestCode);
 
-        void renderFromSearchResults(List<LocationViewModel> locationViewModelList, boolean isTopLocations);
+        void renderFromSearchResults(List<Location> locationList, boolean isTopLocations);
 
         void showProgressBar();
 

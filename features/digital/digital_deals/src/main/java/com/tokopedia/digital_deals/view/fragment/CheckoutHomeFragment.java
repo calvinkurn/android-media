@@ -17,23 +17,22 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.digital_deals.R;
-import com.tokopedia.digital_deals.di.DaggerDealsComponent;
-import com.tokopedia.digital_deals.di.DealsModule;
+import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.digital_deals.view.activity.CheckoutActivity;
 import com.tokopedia.digital_deals.view.contractor.CheckoutDealContractor;
+import com.tokopedia.digital_deals.view.model.PackageViewModel;
+import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse;
 import com.tokopedia.digital_deals.view.presenter.CheckoutDealPresenter;
 import com.tokopedia.digital_deals.view.utils.DealFragmentCallbacks;
 import com.tokopedia.digital_deals.view.utils.Utils;
-import com.tokopedia.digital_deals.view.viewmodel.DealsDetailsViewModel;
-import com.tokopedia.digital_deals.view.viewmodel.PackageViewModel;
-import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;
+
+;
 
 public class CheckoutHomeFragment extends BaseDaggerFragment implements CheckoutDealContractor.View, View.OnClickListener {
 
@@ -68,10 +67,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
 
     @Override
     protected void initInjector() {
-        DaggerDealsComponent.builder()
-                .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
-                .dealsModule(new DealsModule(getContext()))
-                .build().inject(this);
+        getComponent(DealsComponent.class).inject(this);
         mPresenter.attachView(this);
     }
 
@@ -92,7 +88,6 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
         View view = inflater.inflate(R.layout.fragment_checkout_deal, container, false);
         setViewIds(view);
         setHasOptionsMenu(true);
-        mPresenter.getProfile();
         mPresenter.getCheckoutDetails();
         return view;
     }
@@ -121,7 +116,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
         mainContent = view.findViewById(R.id.main_content);
         progressParLayout = view.findViewById(R.id.progress_bar_layout);
         ivRemovePromo = view.findViewById(R.id.iv_remove_promo);
-        clPromoAmount=view.findViewById(R.id.cl_promo);
+        clPromoAmount = view.findViewById(R.id.cl_promo);
         Drawable img = getResources().getDrawable(R.drawable.ic_promo_code);
         tvApplyPromo.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
 
@@ -140,23 +135,30 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
     }
 
     @Override
-    public void renderFromDetails(DealsDetailsViewModel dealDetails, PackageViewModel packageViewModel) {
+    public void renderFromDetails(DealsDetailsResponse dealDetails, PackageViewModel packageViewModel) {
 
 
-        if (dealDetails.getBrand() != null) {
-            ImageHandler.loadImage(getContext(), imageViewBrand,
-                    dealDetails.getBrand().getFeaturedThumbnailImage(),
-                    R.color.grey_1100, R.color.grey_1100);
+        ImageHandler.loadImage(getContext(), imageViewBrand,
+                dealDetails.getImageWeb(),
+                R.color.grey_1100, R.color.grey_1100);
+
+        if (dealDetails.getBrand() != null)
             tvBrandName.setText(dealDetails.getBrand().getTitle());
-        }
+
 
         tvDealDetails.setText(dealDetails.getDisplayName());
         tvExpiryDate.setText(String.format(getString(R.string.valid_through),
                 Utils.convertEpochToString(dealDetails.getSaleEndDate())));
 
 
-        tvMrp.setText(Utils.convertToCurrencyString(packageViewModel.getMrp()));
-        tvMrp.setPaintFlags(tvMrp.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        if (dealDetails.getMrp() != 0) {
+            tvMrp.setVisibility(View.VISIBLE);
+            tvMrp.setText(Utils.convertToCurrencyString(dealDetails.getMrp()));
+            tvMrp.setPaintFlags(tvMrp.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        } else {
+            tvMrp.setVisibility(View.GONE);
+        }
+
         tvSalesPrice.setText(Utils.convertToCurrencyString(packageViewModel.getSalesPrice()));
         tvTotalQuantityPrice.setText(Utils.convertToCurrencyString(packageViewModel.getSalesPrice() *
                 packageViewModel.getSelectedQuantity()));
@@ -173,7 +175,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
                 packageViewModel.getCommission()));
         tvNumberVouchers.setText(String.format(getActivity().getResources().getString(R.string.number_of_vouchers),
                 packageViewModel.getSelectedQuantity()));
-        if (dealDetails.getOutlets() != null && dealDetails.getOutlets().size() != 0) {
+        if (dealDetails.getOutlets() != null && dealDetails.getOutlets().size() > 0) {
             tvNumberLocations.setText(String.format(getResources().getString(R.string.number_of_locations)
                     , dealDetails.getOutlets().size()));
         }
@@ -205,12 +207,6 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
     }
 
     @Override
-    public RequestParams getParams() {
-
-        return null;
-    }
-
-    @Override
     public View getRootView() {
         return mainContent;
     }
@@ -221,30 +217,26 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
         clPromoApplied.setVisibility(View.VISIBLE);
         tvDiscount.setText(message);
         tvVoucherCode.setText(text);
-        if(discountAmount!=0){
+        if (discountAmount != 0) {
             clPromoAmount.setVisibility(View.VISIBLE);
-            TextView view=getRootView().findViewById(R.id.tv_promo_discount);
+            TextView view = getRootView().findViewById(R.id.tv_promo_discount);
             view.setText(Utils.convertToCurrencyString(discountAmount));
-        }else{
+        } else {
             clPromoAmount.setVisibility(View.GONE);
         }
         mPresenter.updateAmount(discountAmount);
 
     }
 
-    @Override
-    public void showCashbackMessage(String text) {
-
-    }
-
-    @Override
-    public void hideSuccessMessage() {
-
-    }
 
     @Override
     public void updateAmount(String s) {
         tvAmount.setText(s);
+    }
+
+    @Override
+    protected String getScreenName() {
+        return null;
     }
 
     @Override
@@ -270,10 +262,6 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
         }
     }
 
-    @Override
-    protected String getScreenName() {
-        return null;
-    }
 
     @Override
     public void onDestroyView() {
@@ -293,10 +281,12 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
                             , data.getExtras().getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_MESSAGE)
                             , data.getExtras().getLong(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_DISCOUNT_AMOUNT));
                     break;
-//                case LoyaltyActivity.VOUCHER_RESULT_CODE:
-//                    mPresenter.updatePromoCode(data.getExtras().getString(LoyaltyActivity.VOUCHER_CODE));
-//                    showPromoSuccessMessage(data.getExtras().getString(LoyaltyActivity.VOUCHER_MESSAGE), getResources().getColor(R.color.green_nob));
-//                    break;
+                case IRouterConstant.LoyaltyModule.ResultLoyaltyActivity.COUPON_RESULT_CODE:
+                    mPresenter.updatePromoCode(data.getExtras().getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_CODE));
+                    showPromoSuccessMessage(data.getExtras().getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_CODE)
+                            , data.getExtras().getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_MESSAGE)
+                            , data.getExtras().getLong(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_DISCOUNT_AMOUNT));
+                    break;
                 default:
                     break;
             }

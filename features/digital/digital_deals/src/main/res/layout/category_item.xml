@@ -33,7 +33,7 @@
         android:id="@+id/tv_category"
         android:layout_width="70dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/new_margin_small"
+        android:layout_marginTop="@dimen/dp_8"
         android:gravity="center"
         android:singleLine="true"
         tools:text="Makanan"

@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseErrorException;
+import com.tokopedia.core.network.exception.model.UnProcessableHttpException;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
@@ -125,6 +126,7 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
         param.put("product_id", String.valueOf(productId));
         param.put("page", String.valueOf(1));
         param.put("page_size", String.valueOf(20));
+        param.put("type", IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING);
 
         //TODO Revert Later
         promoCouponInteractor.getCouponList(

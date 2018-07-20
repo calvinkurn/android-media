@@ -9,25 +9,30 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;;
 import com.tokopedia.digital_deals.R;
+import com.tokopedia.digital_deals.view.model.Media;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 
 public class SlidingImageAdapterDealDetails extends PagerAdapter {
 
 
-    private List<String> image;
-    private LayoutInflater inflater;
+    private List<String> images;
     private Context context;
 
 
-    public SlidingImageAdapterDealDetails(Context context, List<String> image) {
-        this.context = context;
-        this.image = image;
-        inflater = LayoutInflater.from(context);
+    public SlidingImageAdapterDealDetails(List<Media> mediaList) {
+        if (mediaList != null) {
+            this.images=new ArrayList<>();
+            for (Media media : mediaList) {
+                if (media != null && media.getUrl() != null && media.getUrl().length() > 0)
+                    this.images.add(media.getUrl());
+            }
+        }
     }
 
     @Override
@@ -37,17 +42,18 @@ public class SlidingImageAdapterDealDetails extends PagerAdapter {
 
     @Override
     public int getCount() {
-        return image.size();
+        return (images == null) ? 0 : images.size();
     }
 
     @Override
     public Object instantiateItem(ViewGroup view, int position) {
-        View imageLayout = inflater.inflate(R.layout.deal_image_item, view, false);
+        this.context=view.getContext();
+        View imageLayout = LayoutInflater.from(context).inflate(R.layout.deal_image_item, view, false);
 
         assert imageLayout != null;
         final ImageView imageView = imageLayout.findViewById(R.id.deal_image);
 
-        ImageHandler.loadImage(context, imageView, image.get(position), R.color.grey_1100, R.color.grey_1100);
+        ImageHandler.loadImage(context, imageView, images.get(position), R.color.grey_1100, R.color.grey_1100);
 
         view.addView(imageLayout, 0);
 

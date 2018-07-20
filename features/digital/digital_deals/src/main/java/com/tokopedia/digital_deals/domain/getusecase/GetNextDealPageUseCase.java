@@ -4,8 +4,9 @@ import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.common.network.data.model.RestRequest;
 import com.tokopedia.common.network.domain.RestRequestUseCase;
-import com.tokopedia.digital_deals.data.entity.response.homeresponse.DealsResponse;
+import com.tokopedia.digital_deals.view.model.response.DealsResponse;
 import com.tokopedia.digital_deals.view.presenter.DealsHomePresenter;
+import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.usecase.RequestParams;
 
 import java.lang.reflect.Type;
@@ -32,7 +33,7 @@ public class GetNextDealPageUseCase extends RestRequestUseCase {
     protected List<RestRequest> buildRequest() {
         List<RestRequest> tempRequest=new ArrayList<>();
         HashMap<String, Object> map = params.getParameters();
-        String nextUrl= String.valueOf(map.get(DealsHomePresenter.TAG));
+        String nextUrl= String.valueOf(map.get(Utils.NEXT_URL));
         Type token=new TypeToken<DataResponse<DealsResponse>>(){
 
         }.getType();

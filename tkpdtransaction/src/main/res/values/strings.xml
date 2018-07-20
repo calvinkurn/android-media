@@ -268,6 +268,4 @@
     <string name="bottom_btn_text">Beli Lagi</string>
     <string name="date">date</string>
     <string name="label_oder_detail_btn_unggah_awb">Unggah</string>
-    <string name="text_redeem_voucher">Redeem Voucher</string>
-    <string name="text_valid_till">Berlaku hingga %s</string>
 </resources>

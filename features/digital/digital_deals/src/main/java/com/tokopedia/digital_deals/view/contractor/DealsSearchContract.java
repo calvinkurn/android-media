@@ -6,9 +6,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.digital_deals.domain.model.searchdomainmodel.ValuesItemDomain;
-import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
-import com.tokopedia.digital_deals.view.viewmodel.LocationViewModel;
+import com.tokopedia.digital_deals.view.model.ProductItem;
+import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
@@ -17,35 +16,23 @@ import java.util.List;
 
 public class DealsSearchContract {
     public interface View extends CustomerView {
-        void showMessage(String message);
-
         Activity getActivity();
 
         void navigateToActivityRequest(Intent intent, int requestCode);
 
-        void renderFromSearchResults(List<CategoryItemsViewModel> categoryItemsViewModels, String searchText, int count);
-
-        void showProgressBar();
-
-        void hideProgressBar();
+        void renderFromSearchResults();
 
         RequestParams getParams();
 
         android.view.View getRootView();
 
-        FragmentManager getFragmentManagerInstance();
+        void setTrendingDealsOrSuggestions(List<ProductItem> searchViewModels, boolean isTrendingDeals, String highlight, int count);
 
-        void setTrendingDeals(List<CategoryItemsViewModel> searchViewModels, LocationViewModel location);
+        void removeFooter();
 
-        void setSuggestions(List<CategoryItemsViewModel> suggestions, String highlight);
+        void addFooter();
 
-        void removeFooter(boolean searchSubmitted);
-
-        void addFooter(boolean searchSubmitted);
-
-        void addDealsToCards(List<CategoryItemsViewModel> categoryItemsViewModels);
-
-        void addDeals(List<CategoryItemsViewModel> searchViewModels);
+        void addDealsToCards(List<ProductItem> productItems);
 
         LinearLayoutManager getLayoutManager();
 
@@ -67,8 +54,6 @@ public class DealsSearchContract {
         void searchSubmitted(String searchText);
 
         boolean onItemClick(int id);
-
-        void onSearchResultClick(CategoryItemsViewModel searchViewModel);
 
         void onRecyclerViewScrolled(LinearLayoutManager layoutManager);
     }

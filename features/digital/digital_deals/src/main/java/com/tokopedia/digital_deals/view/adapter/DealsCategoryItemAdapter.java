@@ -9,23 +9,21 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.view.activity.CategoryDetailActivity;
-import com.tokopedia.digital_deals.view.presenter.DealDetailsPresenter;
-import com.tokopedia.digital_deals.view.viewmodel.CategoriesModel;
-import com.tokopedia.digital_deals.view.viewmodel.CategoryViewModel;
+import com.tokopedia.digital_deals.view.model.CategoriesModel;
+import com.tokopedia.digital_deals.view.model.CategoryItem;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class DealsCategoryItemAdapter extends RecyclerView.Adapter<DealsCategoryItemAdapter.ViewHolder> {
 
-    private List<CategoryViewModel> categoryItems;
+    private List<CategoryItem> categoryItems;
     private Context context;
 
-    public DealsCategoryItemAdapter(Context context, List<CategoryViewModel> categoryItems) {
-        this.context = context;
+    public DealsCategoryItemAdapter(List<CategoryItem> categoryItems) {
         this.categoryItems = new ArrayList<>();
         this.categoryItems = categoryItems;
 
@@ -44,10 +42,10 @@ public class DealsCategoryItemAdapter extends RecyclerView.Adapter<DealsCategory
             textViewCatItem = itemView.findViewById(R.id.tv_category);
         }
 
-        public void bindData(final CategoryViewModel categoryViewModel) {
-            textViewCatItem.setText(categoryViewModel.getTitle());
+        public void bindData(final CategoryItem categoryItem) {
+            textViewCatItem.setText(categoryItem.getTitle());
             itemView.setOnClickListener(this);
-            ImageHandler.loadImage(context, imageViewCatItem, categoryViewModel.getMediaUrl(), R.color.grey_1100, R.color.grey_1100);
+            ImageHandler.loadImage(context, imageViewCatItem, categoryItem.getMediaUrl(), R.color.grey_1100, R.color.grey_1100);
 
         }
 
@@ -76,14 +74,12 @@ public class DealsCategoryItemAdapter extends RecyclerView.Adapter<DealsCategory
 
     @Override
     public int getItemCount() {
-        if (categoryItems != null) {
-            return categoryItems.size();
-        }
-        return 0;
+        return (categoryItems == null) ? 0 : categoryItems.size();
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        this.context = parent.getContext();
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.category_item, parent, false);
 

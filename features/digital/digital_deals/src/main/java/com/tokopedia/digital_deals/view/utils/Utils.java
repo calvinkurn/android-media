@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.renderscript.Allocation;
@@ -13,7 +12,6 @@ import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,29 +20,15 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
-import com.tokopedia.core.product.model.share.ShareData;
-import com.tokopedia.core.util.BranchSdkUtils;
-import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.abstraction.constant.TkpdCache;
+import com.tokopedia.digital_deals.DealsModuleRouter;
 import com.tokopedia.digital_deals.R;
-import com.tokopedia.digital_deals.domain.model.DealsCategoryDomain;
-import com.tokopedia.digital_deals.domain.model.DealsCategoryItemDomain;
-import com.tokopedia.digital_deals.domain.model.DealsDomain;
-import com.tokopedia.digital_deals.domain.model.PageDomain;
-import com.tokopedia.digital_deals.domain.model.branddetailsmodel.BrandDomain;
-import com.tokopedia.digital_deals.domain.model.dealdetailsdomainmodel.DealsDetailsDomain;
-import com.tokopedia.digital_deals.domain.model.dealdetailsdomainmodel.MediaDomain;
-import com.tokopedia.digital_deals.domain.model.dealdetailsdomainmodel.Outlet;
-import com.tokopedia.digital_deals.domain.model.locationdomainmodel.LocationItemDomain;
-import com.tokopedia.digital_deals.domain.model.searchdomainmodel.FilterDomainModel;
-import com.tokopedia.digital_deals.domain.model.searchdomainmodel.ValuesItemDomain;
-import com.tokopedia.digital_deals.view.viewmodel.BrandViewModel;
-import com.tokopedia.digital_deals.view.viewmodel.CatalogViewModel;
-import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
-import com.tokopedia.digital_deals.view.viewmodel.CategoryViewModel;
-import com.tokopedia.digital_deals.view.viewmodel.DealsDetailsViewModel;
-import com.tokopedia.digital_deals.view.viewmodel.LocationViewModel;
-import com.tokopedia.digital_deals.view.viewmodel.OutletViewModel;
-import com.tokopedia.digital_deals.view.viewmodel.PageViewModel;
+import com.tokopedia.digital_deals.data.source.DealsUrl;
+import com.tokopedia.digital_deals.view.model.CategoryItem;
+import com.tokopedia.digital_deals.view.model.FilterItem;
+import com.tokopedia.digital_deals.view.model.Location;
+import com.tokopedia.digital_deals.view.model.ValuesItem;
+import com.tokopedia.digital_deals.view.model.response.DealsResponse;
 
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -58,17 +42,15 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 
-import static com.tokopedia.digital_deals.view.utils.Utils.Constants.DIGITAL_DEALS;
-
 
 public class Utils {
     private static Utils singleInstance;
-    private static LocationViewModel location;
+    private static Location location;
     public static String BRAND_QUERY_PARAM_TREE = "tree";
     public static String BRAND_QUERY_PARAM_BRAND = "brand";
     public static String BRAND_QUERY_PARAM_CHILD_CATEGORY_ID = "child_category_ids";
     public static String BRAND_QUERY_PARAM_CITY_ID = "cities";
-    public static String BRAND_QUERY_PARAM_LOCATION_ID= "location_id";
+    public static final String NEXT_URL="nexturl";
     private float defaultBitmapScale = 0.1f;
     private static final float MAX_RADIUS = 25.0f;
     private static final float MIN_RADIUS = 0.0f;
@@ -80,271 +62,88 @@ public class Utils {
     }
 
     private Utils() {
-        Log.d("UTILS", "Utils Instance created");
     }
 
-    public ArrayList<CategoryViewModel> convertIntoCategoryListViewModel(DealsDomain dealsDomain) {
+    public ArrayList<CategoryItem> convertIntoCategoryListViewModel(DealsResponse dealsResponse) {
 
-        ArrayList<CategoryViewModel> categoryViewModels = new ArrayList<>();
-        if (dealsDomain.getDealsCategory() != null) {
-            for (DealsCategoryDomain dealsCategoryDomain : dealsDomain.getDealsCategory()) {
+        ArrayList<CategoryItem> categoryRespons = new ArrayList<>();
+        if (dealsResponse.getHome()!=null && dealsResponse.getCategoryItems()!= null) {
+            for (CategoryItem categoryItem : dealsResponse.getCategoryItems()) {
 
-                CategoryViewModel category = new CategoryViewModel();
-                category.setTitle(dealsCategoryDomain.getTitle());
-                category.setCategoryId(dealsCategoryDomain.getId());
-                category.setCount(dealsCategoryDomain.getCount());
-                category.setName(dealsCategoryDomain.getName());
-                category.setMediaUrl(dealsCategoryDomain.getMediaUrl());
-                category.setUrl(dealsCategoryDomain.getUrl());
-                category.setItems(convertIntoCategoryListItemsViewModel(dealsCategoryDomain.getItems()));
+                CategoryItem category = new CategoryItem();
+                category.setTitle(categoryItem.getTitle());
+                category.setCategoryId(categoryItem.getCategoryId());
+                category.setCount(categoryItem.getCount());
+                category.setName(categoryItem.getName());
+                category.setMediaUrl(categoryItem.getMediaUrl());
+                category.setUrl(categoryItem.getUrl());
+                category.setItems(categoryItem.getItems());
 
-                switch (dealsCategoryDomain.getName().toLowerCase()) {
+                switch (categoryItem.getName().toLowerCase()) {
                     case "top":
-                        categoryViewModels.add(0, category);
+                        categoryRespons.add(0, category);
                         break;
                     case "carousel":
-                        categoryViewModels.add(0, category);
+                        categoryRespons.add(0, category);
                         break;
                     default:
-                        categoryViewModels.add(category);
+                        categoryRespons.add(category);
                         break;
                 }
             }
 
-            applyFilterOnCategories(categoryViewModels, dealsDomain.getFilters());
+            applyFilterOnCategories(categoryRespons, dealsResponse.getFilters());
 
 
         }
-        return categoryViewModels;
+        return categoryRespons;
     }
 
-    private void applyFilterOnCategories(ArrayList<CategoryViewModel> categoryViewModels, List<FilterDomainModel> filters) {
+    private void applyFilterOnCategories(ArrayList<CategoryItem> categoryRespons, List<FilterItem> filters) {
         Map<Integer, Integer> sortOrder = new HashMap<>();
         if (filters != null) {
-            if(categoryViewModels.get(0).getCategoryId()==categoryViewModels.get(1).getCategoryId()){
-                categoryViewModels.get(1).setCategoryId(-1);            //Since carousel and top have same id's
+            if(categoryRespons.get(0).getCategoryId()== categoryRespons.get(1).getCategoryId()){
+                categoryRespons.get(1).setCategoryId(-1);            //Since carousel and top have same id's
             }
-            sortOrder.put(categoryViewModels.get(0).getCategoryId(), -1);   //dummy for top or carousel
-            sortOrder.put(categoryViewModels.get(1).getCategoryId(), -2);   //dummy for top or carousel
-            for (FilterDomainModel filter : filters) {
+            sortOrder.put(categoryRespons.get(0).getCategoryId(), -1);   //dummy for top or carousel
+            sortOrder.put(categoryRespons.get(1).getCategoryId(), -2);   //dummy for top or carousel
+            for (FilterItem filter : filters) {
                 if (filter.getAttributeName().equals("child_category_ids")) {
                     if (filter.getValues() != null) {
-                        for (ValuesItemDomain value : filter.getValues()) {
+                        for (ValuesItem value : filter.getValues()) {
                             sortOrder.put(value.getId(), value.getPriority());
                         }
                     }
-                    if(sortOrder.size()==categoryViewModels.size()){
-                        Collections.sort(categoryViewModels, new CategoryItemComparator(sortOrder));
+                    if(sortOrder.size()== categoryRespons.size()){
+                        Collections.sort(categoryRespons, new CategoryItemComparator(sortOrder));
                     }
                 }
             }
         }
     }
 
-    private class CategoryItemComparator implements Comparator<CategoryViewModel>
-    {
+    private class CategoryItemComparator implements Comparator<CategoryItem> {
         private Map<Integer, Integer> sortOrder;
 
-        public CategoryItemComparator(Map<Integer, Integer> sortOrder)
-        {
+        public CategoryItemComparator(Map<Integer, Integer> sortOrder) {
             this.sortOrder = sortOrder;
         }
 
         @Override
-        public int compare(CategoryViewModel i1, CategoryViewModel i2)
-        {
+        public int compare(CategoryItem i1, CategoryItem i2) {
             Integer id1 = sortOrder.get(i1.getCategoryId());
-            if (id1 == null)
-            {
+            if (id1 == null) {
                 throw new IllegalArgumentException("Bad id encountered: " +
                         i1.getCategoryId());
             }
             Integer id2 = sortOrder.get(i2.getCategoryId());
-            if (id2 == null)
-            {
+            if (id2 == null) {
                 throw new IllegalArgumentException("Bad id encountered: " +
                         i2.getCategoryId());
             }
             return id1.compareTo(id2);
         }
     }
-
-    public ArrayList<CategoryItemsViewModel> convertIntoCategoryListItemsViewModel(List<DealsCategoryItemDomain> categoryResponseItemsList) {
-        ArrayList<CategoryItemsViewModel> categoryItemsViewModelList = new ArrayList<>();
-        try {
-            if (categoryResponseItemsList != null) {
-                CategoryItemsViewModel categoryItemsViewModel;
-                for (DealsCategoryItemDomain categoryEntity : categoryResponseItemsList) {
-                    categoryItemsViewModel = new CategoryItemsViewModel();
-                    categoryItemsViewModel.setMrp(categoryEntity.getMrp());
-                    categoryItemsViewModel.setId(categoryEntity.getId());
-                    categoryItemsViewModel.setDisplayName(categoryEntity.getDisplayName());
-                    categoryItemsViewModel.setSalesPrice(categoryEntity.getSalesPrice());
-                    categoryItemsViewModel.setSeoUrl(categoryEntity.getSeoUrl());
-                    categoryItemsViewModel.setSoldQuantity(categoryEntity.getSoldQuantity());
-                    categoryItemsViewModel.setImageWeb(categoryEntity.getImageWeb());
-                    categoryItemsViewModel.setMrp(categoryEntity.getMrp());
-                    categoryItemsViewModel.setThumbnailWeb(categoryEntity.getThumbnailWeb());
-                    categoryItemsViewModel.setLikes(categoryEntity.getLikes());
-                    categoryItemsViewModel.setSavingPercentage(categoryEntity.getSavingPercentage());
-
-                    try {
-                        BrandViewModel brandViewModel = new BrandViewModel();
-                        brandViewModel.setTitle(categoryEntity.getBrand().getTitle());
-                        brandViewModel.setFeaturedImage(categoryEntity.getBrand().getFeaturedImage());
-                        brandViewModel.setFeaturedThumbnailImage(categoryEntity.getBrand().getFeaturedThumbnailImage());
-                        brandViewModel.setUrl(categoryEntity.getBrand().getUrl());
-
-                        categoryItemsViewModel.setBrand(brandViewModel);
-                    } catch (Exception e) {
-
-                    }
-
-                    categoryItemsViewModel.setCityName(categoryEntity.getCityName());
-                    categoryItemsViewModel.setMinStartDate(categoryEntity.getMinStartDate());
-                    categoryItemsViewModel.setMaxEndDate(categoryEntity.getMaxEndDate());
-                    categoryItemsViewModel.setLongRichDesc(categoryEntity.getLongRichDesc());
-                    categoryItemsViewModel.setDisplayTags(categoryEntity.getDisplayTags());
-                    categoryItemsViewModel.setLiked(categoryEntity.isLiked());
-//                categoryItemsViewModel.setDisplayTags(categoryEntity.getDisplayTags());
-//                categoryItemsViewModel.setTnc(categoryEntity.getTnc());
-//                categoryItemsViewModel.setIsTop(categoryEntity.getIsTop());
-
-                    categoryItemsViewModel.setUrl(categoryEntity.getUrl());
-                    categoryItemsViewModelList.add(categoryItemsViewModel);
-
-                    CatalogViewModel catalogViewModel = new CatalogViewModel();
-                    catalogViewModel.setDigitalCategoryId(categoryEntity.getCatalog().getDigitalCategoryId());
-                    catalogViewModel.setDigitalProductId(categoryEntity.getCatalog().getDigitalProductId());
-                    catalogViewModel.setDigitalProductCode(categoryEntity.getCatalog().getDigitalProductCode());
-                    categoryItemsViewModel.setCatalog(catalogViewModel);
-
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return categoryItemsViewModelList;
-    }
-
-    public List<LocationViewModel> convertIntoLocationListItemsViewModel(List<LocationItemDomain> locationItemsDomain) {
-        List<LocationViewModel> locationItemsViewModelList = new ArrayList<>();
-        if (locationItemsDomain != null) {
-            LocationViewModel locationViewModel;
-            for (LocationItemDomain locationItemDomain : locationItemsDomain) {
-                locationViewModel = new LocationViewModel();
-                locationViewModel.setId(locationItemDomain.getId());
-                locationViewModel.setCountry(locationItemDomain.getCountry());
-                locationViewModel.setDistrict(locationItemDomain.getDistrict());
-                locationViewModel.setName(locationItemDomain.getName());
-                locationViewModel.setSearchName(locationItemDomain.getSearchName());
-                locationViewModel.setCategoryId(locationItemDomain.getCategoryId());
-                locationViewModel.setUrl(locationItemDomain.getUrl());
-                locationItemsViewModelList.add(locationViewModel);
-            }
-        }
-        return locationItemsViewModelList;
-    }
-
-
-    public DealsDetailsViewModel convertIntoDealDetailsViewModel(DealsDetailsDomain detailsDomain) {
-        DealsDetailsViewModel viewModel = new DealsDetailsViewModel();
-        viewModel.setCategoryId(detailsDomain.getCategoryId());
-        viewModel.setId(detailsDomain.getId());
-        viewModel.setBrandId(detailsDomain.getBrandId());
-        viewModel.setDisplayName(detailsDomain.getDisplayName());
-        viewModel.setLongRichDesc(detailsDomain.getLongRichDesc());
-        viewModel.setMrp(detailsDomain.getMrp());
-        viewModel.setSalesPrice(detailsDomain.getSalesPrice());
-        viewModel.setSavingPercentage(detailsDomain.getSavingPercentage());
-        viewModel.setUrl(detailsDomain.getUrl());
-        viewModel.setSaleEndDate(detailsDomain.getSaleEndDate());
-        viewModel.setLikes(detailsDomain.getLikes());
-        viewModel.setRecommendationUrl(detailsDomain.getRecommendationUrl());
-        viewModel.setTnc(detailsDomain.getTnc());
-        viewModel.setIsLiked(detailsDomain.isLiked());
-        viewModel.setSeoUrl(detailsDomain.getSeoUrl());
-        List<OutletViewModel> outletViewModel = null;
-        if (detailsDomain.getOutlets() != null && detailsDomain.getOutlets().size() != 0) {
-
-            outletViewModel = new ArrayList<>();
-            for (Outlet outlet : detailsDomain.getOutlets()) {
-                outletViewModel.add(convertIntoOutletViewModel(outlet));
-            }
-        }
-        List<String> mediaUrl = null;
-        if (detailsDomain.getMedia() != null && detailsDomain.getMedia().size() != 0) {
-            mediaUrl = new ArrayList<>();
-            for (MediaDomain mediaDomain : detailsDomain.getMedia())
-                mediaUrl.add(mediaDomain.getUrl());
-        }
-        viewModel.setMediaUrl(mediaUrl);
-        CatalogViewModel catalogViewModel = new CatalogViewModel();
-        catalogViewModel.setDigitalCategoryId(detailsDomain.getCatalog().getDigitalCategoryId());
-        catalogViewModel.setDigitalProductId(detailsDomain.getCatalog().getDigitalProductId());
-        catalogViewModel.setDigitalProductCode(detailsDomain.getCatalog().getDigitalProductCode());
-        viewModel.setCatalog(catalogViewModel);
-        viewModel.setOutlets(outletViewModel);
-        BrandViewModel brandViewModel = new BrandViewModel();
-        brandViewModel.setTitle(detailsDomain.getBrand().getTitle());
-        brandViewModel.setFeaturedImage(detailsDomain.getBrand().getFeaturedImage());
-        brandViewModel.setFeaturedThumbnailImage(detailsDomain.getBrand().getFeaturedThumbnailImage());
-        brandViewModel.setUrl(detailsDomain.getBrand().getUrl());
-        viewModel.setBrand(brandViewModel);
-        viewModel.setImageWeb(detailsDomain.getImageWeb());
-        viewModel.setThumbnailWeb(detailsDomain.getThumbnailWeb());
-
-        return viewModel;
-    }
-
-    public OutletViewModel convertIntoOutletViewModel(Outlet outlet) {
-        OutletViewModel viewModel = new OutletViewModel();
-        viewModel.setProductId(outlet.getProductId());
-        viewModel.setLocationId(outlet.getLocationId());
-        viewModel.setName(outlet.getName());
-        viewModel.setSearchName(outlet.getSearchName());
-        viewModel.setDistrict(outlet.getDistrict());
-        viewModel.setGmapAddress(outlet.getGmapAddress());
-        viewModel.setNeighbourhood(outlet.getNeighbourhood());
-        viewModel.setCoordinates(outlet.getCoordinates());
-        viewModel.setState(outlet.getState());
-        viewModel.setCountry(outlet.getCountry());
-        return viewModel;
-    }
-
-    public List<BrandViewModel> convertIntoBrandListViewModel(List<BrandDomain> brandList) {
-
-        List<BrandViewModel> brandViewModels = new ArrayList<>();
-        if (brandList != null) {
-            for (BrandDomain brandDomain : brandList) {
-                brandViewModels.add(convertIntoBrandViewModel(brandDomain));
-            }
-        }
-        return brandViewModels;
-    }
-
-    public BrandViewModel convertIntoBrandViewModel(BrandDomain brandDomain) {
-        BrandViewModel brandViewModel = new BrandViewModel();
-        brandViewModel.setTitle(brandDomain.getTitle());
-        brandViewModel.setFeaturedImage(brandDomain.getFeaturedImage());
-        brandViewModel.setDescription(brandDomain.getDescription());
-        brandViewModel.setFeaturedThumbnailImage(brandDomain.getFeaturedThumbnailImage());
-        brandViewModel.setUrl(brandDomain.getUrl());
-        brandViewModel.setSeoUrl(brandDomain.getSeoUrl());
-        return brandViewModel;
-    }
-
-
-    public PageViewModel convertIntoPageViewModel(PageDomain pageDomain) {
-
-        PageViewModel pageViewModel = new PageViewModel();
-        if (pageDomain != null) {
-            pageViewModel.setUriNext(pageDomain.getUriNext());
-            pageViewModel.setUriPrev(pageDomain.getUriPrev());
-        }
-        return pageViewModel;
-    }
-
 
     public static boolean containsIgnoreCase(String src, String what) {
         final int length = what.length();
@@ -396,20 +195,20 @@ public class Utils {
         return String.format(RUPIAH_FORMAT, NumberFormat.getNumberInstance(locale).format(value));
     }
 
-    public LocationViewModel getLocation(Context context) {
+    public Location getLocation(Context context) {
 
         if (location == null) {
             final LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, TkpdCache.DEALS_LOCATION);
             String locationjson = localCacheHandler.getString(TkpdCache.Key.KEY_DEALS_LOCATION, null);
             if (locationjson != null) {
                 Gson gson = new Gson();
-                location = gson.fromJson(locationjson, LocationViewModel.class);
+                location = gson.fromJson(locationjson, Location.class);
             }
         }
         return location;
     }
 
-    public void updateLocation(Context context, LocationViewModel locatn) {
+    public void updateLocation(Context context, Location locatn) {
 
         location = locatn;
         final LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, TkpdCache.DEALS_LOCATION);
@@ -454,35 +253,13 @@ public class Utils {
     }
 
     public void shareDeal(String deeplinkSlug, Context context, String name, String imageUrl) {
-
-        ShareData shareData = ShareData.Builder.aShareData()
-                .setType("")
-                .setName(name)
-                .setUri(DIGITAL_DEALS + "/" + deeplinkSlug)
-                .setImgUri(imageUrl)
-                .build();
-        BranchSdkUtils.generateBranchLink(shareData, (Activity) context, new BranchSdkUtils.GenerateShareContents() {
-            @Override
-            public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
-                Intent share = new Intent(android.content.Intent.ACTION_SEND);
-                share.setType("text/plain");
-                share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-                share.putExtra(Intent.EXTRA_TEXT, branchUrl);
-                context.startActivity(Intent.createChooser(share, "Share link!"));
-            }
-        });
+        String uri= DealsUrl.AppLink.DIGITAL_DEALS + "/" + deeplinkSlug;
+        ((DealsModuleRouter)((Activity) context).getApplication()).shareDeal(context, uri, name, imageUrl);
     }
-
-
-
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public Bitmap setBlur(Bitmap smallBitmap, float radius, Context context) {
         if (radius > MIN_RADIUS && radius <= MAX_RADIUS) {
-
-//            int width = Math.round(smallBitmap.getWidth() * defaultBitmapScale);
-//            int height = Math.round(smallBitmap.getHeight() * defaultBitmapScale);
-
             Bitmap inputBitmap = Bitmap.createScaledBitmap(smallBitmap, smallBitmap.getWidth(), smallBitmap.getHeight(), false);
             Bitmap outputBitmap = Bitmap.createBitmap(inputBitmap);
 
@@ -499,14 +276,6 @@ public class Utils {
         }else{
             return smallBitmap;
         }
-    }
-
-
-    public static class Constants {
-
-        public final static String DEALS = "deals";
-        public static final String DIGITAL_DEALS = "tokopedia://deals";
-        public static final String DIGITAL_DEALS_DETAILS = "tokopedia://deals/{slug}";
     }
 
     public static String fetchOrderId(String url) {

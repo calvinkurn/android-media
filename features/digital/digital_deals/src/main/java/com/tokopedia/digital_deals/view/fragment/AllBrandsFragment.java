@@ -1,6 +1,5 @@
 package com.tokopedia.digital_deals.view.fragment;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,22 +12,21 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.digital_deals.R;
-import com.tokopedia.digital_deals.di.DaggerDealsComponent;
-import com.tokopedia.digital_deals.di.DealsModule;
+import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.digital_deals.view.adapter.DealsBrandAdapter;
 import com.tokopedia.digital_deals.view.contractor.AllBrandsContract;
 import com.tokopedia.digital_deals.view.customview.SearchInputView;
+import com.tokopedia.digital_deals.view.model.Brand;
+import com.tokopedia.digital_deals.view.model.CategoriesModel;
+import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.digital_deals.view.presenter.AllBrandsPresenter;
 import com.tokopedia.digital_deals.view.utils.Utils;
-import com.tokopedia.digital_deals.view.viewmodel.BrandViewModel;
-import com.tokopedia.digital_deals.view.viewmodel.CategoriesModel;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
@@ -44,7 +42,6 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
     private LinearLayout noContent;
     private FrameLayout progressBarLayout;
     private GridLayoutManager layoutManager;
-
     private RecyclerView recyclerview;
     private SearchInputView searchInputView;
     @Inject
@@ -93,14 +90,9 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
         searchInputView.setSearchImageViewDimens(getResources().getDimensionPixelSize(R.dimen.dp_24), getResources().getDimensionPixelSize(R.dimen.dp_24));
         layoutManager = new GridLayoutManager(getContext(), SPAN_COUNT_3, GridLayoutManager.VERTICAL, false);
         recyclerview.setLayoutManager(layoutManager);
-        recyclerview.setAdapter(new DealsBrandAdapter(getContext(), null, !IS_SHORT_LAYOUT));
+        recyclerview.setAdapter(new DealsBrandAdapter(null, !IS_SHORT_LAYOUT));
         searchInputView.setListener(this);
-        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (imm != null) {
-            imm.hideSoftInputFromWindow(searchInputView.getSearchTextView().getWindowToken(), 0);
-            baseMainContent.requestFocus();
-        }
-
+        KeyboardHandler.DropKeyboard(getContext(), searchInputView);
     }
 
     @Override
@@ -119,16 +111,12 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
     public void onSearchTextChanged(String text) {
 
         mPresenter.searchTextChanged(text);
-
     }
 
 
     @Override
     protected void initInjector() {
-        DaggerDealsComponent.builder()
-                .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
-                .dealsModule(new DealsModule(getContext()))
-                .build().inject(this);
+        getComponent(DealsComponent.class).inject(this);
         mPresenter.attachView(this);
     }
 
@@ -153,19 +141,15 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
     }
 
     @Override
-    public void renderBrandList(List<BrandViewModel> brandList, boolean isSearchSubmitted) {
+    public void renderBrandList(List<Brand> brandList, boolean isSearchSubmitted) {
 
-        if (brandList != null && brandList.size() != 0) {
+        if (brandList != null && brandList.size() > 0) {
             ((DealsBrandAdapter) recyclerview.getAdapter()).updateAdapter(brandList);
             recyclerview.setVisibility(View.VISIBLE);
             recyclerview.addOnScrollListener(rvOnScrollListener);
             noContent.setVisibility(View.GONE);
             if (isSearchSubmitted) {
-                InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                if (imm != null) {
-                    imm.hideSoftInputFromWindow(searchInputView.getSearchTextView().getWindowToken(), 0);
-                    recyclerview.requestFocus();
-                }
+                KeyboardHandler.DropKeyboard(getContext(), searchInputView);
             }
         } else {
             recyclerview.setVisibility(View.GONE);
@@ -192,9 +176,11 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
 
     @Override
     public RequestParams getParams() {
+        Location location = Utils.getSingletonInstance().getLocation(getActivity());
+
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(Utils.BRAND_QUERY_PARAM_TREE, Utils.BRAND_QUERY_PARAM_BRAND);
-//        requestParams.putInt("page_size", 5);
+        requestParams.putInt(Utils.BRAND_QUERY_PARAM_CITY_ID, location.getId());
         if (categoriesModel.getPosition() != 0) {
             requestParams.putInt(Utils.BRAND_QUERY_PARAM_CHILD_CATEGORY_ID, categoriesModel.getCategoryId());
         }
@@ -220,8 +206,10 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
     }
 
     @Override
-    public void addBrandsToCards(List<BrandViewModel> brandList) {
-        ((DealsBrandAdapter) recyclerview.getAdapter()).addAll(brandList);
+    public void addBrandsToCards(List<Brand> brandList) {
+        if(brandList!=null) {
+            ((DealsBrandAdapter) recyclerview.getAdapter()).addAll(brandList);
+        }
 
     }
 

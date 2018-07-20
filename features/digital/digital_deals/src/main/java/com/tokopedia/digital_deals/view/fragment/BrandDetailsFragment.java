@@ -28,27 +28,25 @@ import android.widget.TextView;
 
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.digital_deals.R;
-import com.tokopedia.digital_deals.di.DaggerDealsComponent;
-import com.tokopedia.digital_deals.di.DealsModule;
+import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
 import com.tokopedia.digital_deals.view.contractor.BrandDetailsContract;
+import com.tokopedia.digital_deals.view.customview.ExpandableTextView;
+import com.tokopedia.digital_deals.view.model.Brand;
+import com.tokopedia.digital_deals.view.model.ProductItem;
 import com.tokopedia.digital_deals.view.presenter.BrandDetailsPresenter;
 import com.tokopedia.digital_deals.view.utils.Utils;
-import com.tokopedia.digital_deals.view.viewmodel.BrandViewModel;
-import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.usecase.RequestParams;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
-public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDetailsContract.View, View.OnClickListener {
+public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDetailsContract.View, View.OnClickListener, DealsCategoryAdapter.INavigateToActivityRequest {
     private final boolean isShortLayout = true;
 
     private CollapsingToolbarLayout collapsingToolbarLayout;
@@ -66,7 +64,7 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
     private ImageView ivArrowSeeMore;
     private RecyclerView recyclerViewDeals;
     private View progressBarLayout;
-    private at.blogc.android.views.ExpandableTextView tvExpandableDesc;
+    private ExpandableTextView tvExpandableDesc;
     private ProgressBar progBar;
     private LinearLayout noContent;
     @Inject
@@ -154,10 +152,7 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
 
     @Override
     protected void initInjector() {
-        DaggerDealsComponent.builder()
-                .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
-                .dealsModule(new DealsModule(getContext()))
-                .build().inject(this);
+        getComponent(DealsComponent.class).inject(this);
         mPresenter.attachView(this);
     }
 
@@ -169,26 +164,21 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
 
 
     @Override
-    public void renderBrandDetails(List<CategoryItemsViewModel> categoryItemsViewModels, BrandViewModel brandViewModel, int count) {
-        collapsingToolbarLayout.setTitle(brandViewModel.getTitle());
-        tvExpandableDesc.setText(brandViewModel.getDescription());
+    public void renderBrandDetails(List<ProductItem> productItems, Brand brand, int count) {
+        collapsingToolbarLayout.setTitle(brand.getTitle());
+        tvExpandableDesc.setText(brand.getDescription());
         tvCityName.setText(String.format(getResources().getString(R.string.deals_brand_detail_location), Utils.getSingletonInstance().getLocation(getActivity()).getName()));
-
-//        ImageHandler.loadImage(getActivity(), ivHeader, brandViewModel.getFeaturedImage(), R.color.grey_1100, R.color.grey_1100);
-        loadBrandImage(ivHeader, brandViewModel.getFeaturedImage());
-//        ImageHandler.loadImageChat(ivHeader, brandViewModel.getFeaturedImage(), new
-
-
-        ImageHandler.loadImage(getActivity(), ivBrandLogo, brandViewModel.getFeaturedThumbnailImage(), R.color.grey_1100, R.color.grey_1100);
-        for (CategoryItemsViewModel categoryItemsViewModel : categoryItemsViewModels) {
-            categoryItemsViewModel.setBrand(brandViewModel);
-        }
-        if (categoryItemsViewModels.size() != 0) {
+        loadBrandImage(ivHeader, brand.getFeaturedImage());
+        ImageHandler.loadImage(getActivity(), ivBrandLogo, brand.getFeaturedThumbnailImage(), R.color.grey_1100, R.color.grey_1100);
+        if (productItems!=null && productItems.size() > 0) {
+            for (ProductItem productItem : productItems) {
+                productItem.setBrand(brand);
+            }
             if (count == 0)
-                tvDealsCount.setText(String.format(getResources().getString(R.string.number_of_items), categoryItemsViewModels.size()));
+                tvDealsCount.setText(String.format(getResources().getString(R.string.number_of_items), productItems.size()));
             else
                 tvDealsCount.setText(String.format(getResources().getString(R.string.number_of_items), count));
-            categoryAdapter = new DealsCategoryAdapter(getActivity(), categoryItemsViewModels, !isShortLayout, true);
+            categoryAdapter = new DealsCategoryAdapter(productItems, this, !isShortLayout, true);
 
             recyclerViewDeals.setAdapter(categoryAdapter);
             recyclerViewDeals.setVisibility(View.VISIBLE);
@@ -256,11 +246,10 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
 
     @Override
     public RequestParams getParams() {
-        BrandViewModel brandViewModel = getArguments().getParcelable(BrandDetailsPresenter.BRAND_DATA);
+        Brand brand = getArguments().getParcelable(BrandDetailsPresenter.BRAND_DATA);
         RequestParams requestParams = RequestParams.create();
-        requestParams.putString(BrandDetailsPresenter.TAG, brandViewModel.getUrl());
-        requestParams.putInt(Utils.BRAND_QUERY_PARAM_LOCATION_ID, Utils.getSingletonInstance().getLocation(getActivity()).getId());
-//        requestParams.putInt("size", 5);
+        requestParams.putString(BrandDetailsPresenter.TAG, brand.getUrl());
+        requestParams.putInt(Utils.BRAND_QUERY_PARAM_CITY_ID, Utils.getSingletonInstance().getLocation(getActivity()).getId());
         return requestParams;
     }
 
@@ -286,8 +275,10 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
     }
 
     @Override
-    public void addDealsToCards(ArrayList<CategoryItemsViewModel> categoryList) {
-        ((DealsCategoryAdapter) recyclerViewDeals.getAdapter()).addAll(categoryList);
+    public void addDealsToCards(List<ProductItem> categoryList) {
+        if(categoryList!=null) {
+            ((DealsCategoryAdapter) recyclerViewDeals.getAdapter()).addAll(categoryList);
+        }
     }
 
     private RecyclerView.OnScrollListener rvOnScrollListener = new RecyclerView.OnScrollListener() {
@@ -313,5 +304,10 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
     @Override
     protected String getScreenName() {
         return null;
+    }
+
+    @Override
+    public void onNavigateToActivityRequest(Intent intent, int requestCode) {
+        navigateToActivityRequest(intent, requestCode);
     }
 }

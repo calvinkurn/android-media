@@ -4,9 +4,8 @@ import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.common.network.data.model.RestRequest;
 import com.tokopedia.common.network.domain.RestRequestUseCase;
-import com.tokopedia.digital_deals.data.source.DealsBaseURL;
 import com.tokopedia.digital_deals.data.source.DealsUrl;
-import com.tokopedia.digital_deals.domain.model.allbrandsdomainmodel.AllBrandsDomain;
+import com.tokopedia.digital_deals.view.model.response.AllBrandsResponse;
 import com.tokopedia.usecase.RequestParams;
 
 import java.lang.reflect.Type;
@@ -31,9 +30,9 @@ public class GetAllBrandsUseCase extends RestRequestUseCase {
         List<RestRequest> tempRequest = new ArrayList<>();
 
         HashMap<String, Object> map = params.getParameters();
-        String url = DealsBaseURL.DEALS_DOMAIN + DealsUrl.DEALS_LIST_SEARCH;
+        String url = DealsUrl.DEALS_DOMAIN + DealsUrl.HelperUrl.DEALS_LIST_SEARCH;
         //Request 1
-        Type token = new TypeToken<DataResponse<AllBrandsDomain>>() {
+        Type token = new TypeToken<DataResponse<AllBrandsResponse>>() {
         }.getType();
 
         RestRequest restRequest1 = new RestRequest.Builder(url, token)

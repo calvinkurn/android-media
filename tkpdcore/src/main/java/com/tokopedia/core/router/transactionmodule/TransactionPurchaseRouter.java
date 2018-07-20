@@ -27,7 +27,6 @@ public class TransactionPurchaseRouter {
 
     public static final String EXTRA_STATE_TAB_POSITION = "EXTRA_STATE_TAB_POSITION";
     public static final String EXTRA_STATE_TX_FILTER = "EXTRA_STATE_TX_FILTER";
-    public static final String EXTRA_OMS_ORDER_CATEGORY = "EXTRA_OMS_ORDER_CATEGORY";
 
     public final static int TAB_POSITION_PURCHASE_SUMMARY = 0;
     public final static int TAB_POSITION_PURCHASE_VERIFICATION = 1;

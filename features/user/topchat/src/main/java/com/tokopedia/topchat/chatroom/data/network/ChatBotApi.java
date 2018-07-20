@@ -25,7 +25,7 @@ import rx.Observable;
 
 public interface ChatBotApi {
 
-    String PATH_SET_RATING = "/cs/chatbot/post-rating";
+    String PATH_SET_RATING = "/cs/chatbot/v2/post-rating";
     String PATH_INVOICE_LIST = "/cs/chatbot/invoice-list";
     String PATH_SEND_REASON_RATING = "/cs/chatbot/api/rating/post-reason";
 

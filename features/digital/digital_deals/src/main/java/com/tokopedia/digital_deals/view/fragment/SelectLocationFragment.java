@@ -16,17 +16,15 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.digital_deals.R;
-import com.tokopedia.digital_deals.di.DaggerDealsComponent;
-import com.tokopedia.digital_deals.di.DealsModule;
-import com.tokopedia.digital_deals.view.activity.DealsLocationActivity;
+import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.digital_deals.view.adapter.DealsLocationAdapter;
 import com.tokopedia.digital_deals.view.contractor.DealsLocationContract;
 import com.tokopedia.digital_deals.view.customview.SearchInputView;
+import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.digital_deals.view.presenter.DealsLocationPresenter;
-import com.tokopedia.digital_deals.view.viewmodel.LocationViewModel;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
@@ -81,7 +79,7 @@ public class SelectLocationFragment extends BaseDaggerFragment implements
         llTopEvents = view.findViewById(R.id.ll_topcities);
         noContent = view.findViewById(R.id.no_content);
         baseMainContent = view.findViewById(R.id.base_main_content);
-        dealsCategoryAdapter = new DealsLocationAdapter(getActivity(), null, this);
+        dealsCategoryAdapter = new DealsLocationAdapter(null, this);
         llSearchView = view.findViewById(R.id.ll_search);
         rvSearchResults.setAdapter(dealsCategoryAdapter);
         searchInputView.setSearchHint(getResources().getString(R.string.search_input_hint_location));
@@ -110,7 +108,7 @@ public class SelectLocationFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public void renderFromSearchResults(List<LocationViewModel> locationViewModelList, boolean isTopLocations) {
+    public void renderFromSearchResults(List<Location> locationList, boolean isTopLocations) {
 
         if (isTopLocations) {
             tvTopDeals.setVisibility(View.VISIBLE);
@@ -118,17 +116,13 @@ public class SelectLocationFragment extends BaseDaggerFragment implements
         } else {
             tvTopDeals.setVisibility(View.GONE);
         }
-        if (locationViewModelList != null && locationViewModelList.size() != 0) {
-            dealsCategoryAdapter.updateAdapter(locationViewModelList);
+        if (locationList != null && locationList.size() > 0) {
+            dealsCategoryAdapter.updateAdapter(locationList);
             rvSearchResults.setVisibility(View.VISIBLE);
             noContent.setVisibility(View.GONE);
             llTopEvents.setVisibility(View.VISIBLE);
             if (isTopLocations) {
-                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                if (imm != null) {
-                    imm.hideSoftInputFromWindow(searchInputView.getSearchTextView().getWindowToken(), 0);
-                    rvSearchResults.requestFocus();
-                }
+                KeyboardHandler.DropKeyboard(getContext(), searchInputView);
             }
 
         } else {
@@ -168,21 +162,15 @@ public class SelectLocationFragment extends BaseDaggerFragment implements
 
     @Override
     protected void initInjector() {
-        DaggerDealsComponent.builder()
-                .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
-                .dealsModule(new DealsModule(getContext()))
-                .build().inject(this);
+        getComponent(DealsComponent.class).inject(this);
         mPresenter.attachView(this);
     }
 
 
     @Override
     public void onLocationItemSelected(boolean locationUpdated) {
-
         getActivity().setResult(RESULT_OK, new Intent().putExtra(EXTRA_CALLBACK_LOCATION, locationUpdated));
-
-        ((DealsLocationActivity)getActivity()).finish();
-
+        getActivity().finish();
     }
 
     @Override

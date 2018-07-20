@@ -6,8 +6,8 @@ import android.support.v7.widget.LinearLayoutManager;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.digital_deals.view.viewmodel.BrandViewModel;
-import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
+import com.tokopedia.digital_deals.view.model.Brand;
+import com.tokopedia.digital_deals.view.model.ProductItem;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ public class BrandDetailsContract {
 
         void navigateToActivityRequest(Intent intent, int requestCode);
 
-        void renderBrandDetails(List<CategoryItemsViewModel> categoryItemsViewModels, BrandViewModel brandViewModel, int count);
+        void renderBrandDetails(List<ProductItem> productItems, Brand brand, int count);
 
         void showProgressBar();
 
@@ -41,7 +41,7 @@ public class BrandDetailsContract {
 
         void addFooter();
 
-        void addDealsToCards(ArrayList<CategoryItemsViewModel> categoryList);
+        void addDealsToCards(List<ProductItem> categoryList);
     }
 
     public interface Presenter extends CustomerPresenter<BrandDetailsContract.View> {

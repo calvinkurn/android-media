@@ -107,7 +107,7 @@
 
         <TextView
             android:id="@+id/tv_brand_name"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_8"
             android:ellipsize="end"
@@ -115,6 +115,7 @@
             android:maxWidth="@dimen/dp_145"
             android:textColor="@color/black_38"
             android:textSize="@dimen/sp_12"
+            android:lines="1"
             android:textStyle="normal"
             app:layout_constraintBottom_toBottomOf="@+id/iv_tag"
             app:layout_constraintLeft_toRightOf="@+id/iv_tag"

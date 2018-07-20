@@ -6,11 +6,8 @@ import android.support.v7.widget.LinearLayoutManager;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.digital_deals.view.viewmodel.BrandViewModel;
-import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
-import com.tokopedia.digital_deals.view.viewmodel.CategoryViewModel;
-import com.tokopedia.digital_deals.view.viewmodel.DealsDetailsViewModel;
-import com.tokopedia.digital_deals.view.viewmodel.PageViewModel;
+import com.tokopedia.digital_deals.view.model.Brand;
+import com.tokopedia.digital_deals.view.model.ProductItem;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
@@ -25,9 +22,9 @@ public class DealsCategoryDetailContract {
 
         void navigateToActivity(Intent intent);
 
-        void renderCategoryList(List<CategoryItemsViewModel> deals, int count);
+        void renderCategoryList(List<ProductItem> deals, int count);
 
-        void renderBrandList(List<BrandViewModel> brandList);
+        void renderBrandList(List<Brand> brandList);
 
         RequestParams getCategoryParams();
 
@@ -43,13 +40,11 @@ public class DealsCategoryDetailContract {
 
         void showSearchButton();
 
-        void startGeneralWebView(String url);
-
         void removeFooter();
 
         void addFooter();
 
-        void addDealsToCards(List<CategoryItemsViewModel> categoryItemsViewModels);
+        void addDealsToCards(List<ProductItem> productItems);
 
         LinearLayoutManager getLayoutManager();
 

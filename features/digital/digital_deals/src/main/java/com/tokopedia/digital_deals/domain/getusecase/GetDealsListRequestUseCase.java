@@ -4,10 +4,9 @@ import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.common.network.data.model.RestRequest;
 import com.tokopedia.common.network.domain.RestRequestUseCase;
-import com.tokopedia.digital_deals.data.entity.response.homeresponse.DealsResponse;
-import com.tokopedia.digital_deals.data.source.DealsBaseURL;
+import com.tokopedia.digital_deals.view.model.response.DealsResponse;
 import com.tokopedia.digital_deals.data.source.DealsUrl;
-import com.tokopedia.digital_deals.domain.model.allbrandsdomainmodel.AllBrandsDomain;
+import com.tokopedia.digital_deals.view.model.response.AllBrandsResponse;
 import com.tokopedia.digital_deals.view.presenter.DealsHomePresenter;
 
 import java.lang.reflect.Type;
@@ -34,7 +33,7 @@ public class GetDealsListRequestUseCase extends RestRequestUseCase {
         List<RestRequest> tempRequest = new ArrayList<>();
 
         String param = String.valueOf(params.get(DealsHomePresenter.TAG));
-        String url = DealsBaseURL.DEALS_DOMAIN + DealsUrl.DEALS_LIST +"/" + param;
+        String url = DealsUrl.DEALS_DOMAIN + DealsUrl.HelperUrl.DEALS_LIST +"/" + param;
         //Request 1
         Type token = new TypeToken<DataResponse<DealsResponse>>() {
         }.getType();
@@ -43,11 +42,11 @@ public class GetDealsListRequestUseCase extends RestRequestUseCase {
                 .build();
         tempRequest.add(restRequest1);
 
-        Type token2 = new TypeToken<DataResponse<AllBrandsDomain>>() {
+        Type token2 = new TypeToken<DataResponse<AllBrandsResponse>>() {
         }.getType();
 
         params.remove(DealsHomePresenter.TAG);
-        String url2 = DealsBaseURL.DEALS_DOMAIN + DealsUrl.DEALS_LIST_SEARCH;
+        String url2 = DealsUrl.DEALS_DOMAIN + DealsUrl.HelperUrl.DEALS_LIST_SEARCH;
         RestRequest restRequest2 = new RestRequest.Builder(url2, token2)
                 .setQueryParams(params)
                 .build();

@@ -1,28 +1,28 @@
 package com.tokopedia.digital_deals.view.presenter;
 
 import android.content.Intent;
-import android.os.Parcelable;
 import android.support.v7.widget.LinearLayoutManager;
+import android.text.TextUtils;
 
 import com.google.gson.reflect.TypeToken;
-import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.common.network.data.model.RestResponse;
-import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.domain.getusecase.GetAllBrandsUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetCategoryDetailRequestUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetNextCategoryPageUseCase;
-import com.tokopedia.digital_deals.domain.model.allbrandsdomainmodel.AllBrandsDomain;
-import com.tokopedia.digital_deals.domain.model.categorydomainmodel.CategoryDetailsDomain;
 import com.tokopedia.digital_deals.view.activity.DealsHomeActivity;
 import com.tokopedia.digital_deals.view.activity.DealsSearchActivity;
 import com.tokopedia.digital_deals.view.contractor.DealsCategoryDetailContract;
+import com.tokopedia.digital_deals.view.model.Brand;
+import com.tokopedia.digital_deals.view.model.Page;
+import com.tokopedia.digital_deals.view.model.ProductItem;
+import com.tokopedia.digital_deals.view.model.response.AllBrandsResponse;
+import com.tokopedia.digital_deals.view.model.response.CategoryDetailsResponse;
 import com.tokopedia.digital_deals.view.utils.Utils;
-import com.tokopedia.digital_deals.view.viewmodel.BrandViewModel;
-import com.tokopedia.digital_deals.view.viewmodel.CategoryItemsViewModel;
-import com.tokopedia.digital_deals.view.viewmodel.PageViewModel;
 import com.tokopedia.usecase.RequestParams;
 
 import java.lang.reflect.Type;
@@ -37,24 +37,19 @@ import rx.Subscriber;
 public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCategoryDetailContract.View>
         implements DealsCategoryDetailContract.Presenter {
 
-    private String PROMOURL = "https://www.tokopedia.com/promo/tiket/events/";
-    private String FAQURL = "https://www.tokopedia.com/bantuan/faq-tiket-event/";
-    private String TRANSATIONSURL = "https://pulsa.tokopedia.com/order-list/";
     public final static String TAG = "url";
     private boolean isLoading;
     private boolean isLastPage;
     private volatile boolean isDealsLoaded = false;
     private volatile boolean isBrandsLoaded = false;
-    private final int PAGE_SIZE = 20;
 
     private GetAllBrandsUseCase getAllBrandsUseCase;
     private GetCategoryDetailRequestUseCase getCategoryDetailRequestUseCase;
     private GetNextCategoryPageUseCase getNextCategoryPageUseCase;
-    private ArrayList<CategoryItemsViewModel> categoryViewModels;
-    private List<BrandViewModel> brandViewModels;
-    private PageViewModel pageViewModel;
-
-    RequestParams searchNextParams = RequestParams.create();
+    private List<ProductItem> productItems;
+    private List<Brand> brands;
+    private Page page;
+    private RequestParams searchNextParams = RequestParams.create();
 
 
     @Inject
@@ -81,21 +76,15 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
         if (id == R.id.action_menu_search) {
             Intent searchIntent = new Intent(getView().getActivity(), DealsSearchActivity.class);
             int size = 5;
-            if (categoryViewModels.size() < size) {
-                size = categoryViewModels.size();
+            if (productItems.size() < size) {
+                size = productItems.size();
             }
-            ArrayList<CategoryItemsViewModel> searchItems = new ArrayList<CategoryItemsViewModel>();
+            ArrayList<ProductItem> searchItems = new ArrayList<ProductItem>();
             for (int i = 0; i < size; i++) {
-                searchItems.add(categoryViewModels.get(i));
+                searchItems.add(productItems.get(i));
             }
             searchIntent.putParcelableArrayListExtra("TOPDEALS", searchItems);
             getView().navigateToActivityRequest(searchIntent, DealsHomeActivity.REQUEST_CODE_DEALSSEARCHACTIVITY);
-        } else if (id == R.id.action_promo) {
-            getView().startGeneralWebView(PROMOURL);
-        } else if (id == R.id.action_booked_history) {
-            getView().startGeneralWebView(TRANSATIONSURL);
-        } else if (id == R.id.action_faq) {
-            getView().startGeneralWebView(FAQURL);
         } else {
             getView().getActivity().onBackPressed();
         }
@@ -107,8 +96,9 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
         checkIfToLoad(layoutManager);
     }
 
-    public void getBrandsList() {
-        getView().showProgressBar();
+    public void getBrandsList(boolean showProgressBar) {
+        if (showProgressBar)
+            getView().showProgressBar();
         getAllBrandsUseCase.setRequestParams(getView().getBrandParams());
         getAllBrandsUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
@@ -124,63 +114,63 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
                 NetworkErrorHelper.showEmptyState(getView().getActivity(), getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
-                        getBrandsList();
+                        getBrandsList(true);
                     }
                 });
             }
 
             @Override
             public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
-                Type token = new TypeToken<DataResponse<AllBrandsDomain>>() {
+                Type token = new TypeToken<DataResponse<AllBrandsResponse>>() {
                 }.getType();
                 RestResponse restResponse = typeRestResponseMap.get(token);
                 DataResponse data = restResponse.getData();
-                AllBrandsDomain dealEntity = (AllBrandsDomain) data.getData();
+                AllBrandsResponse dealEntity = (AllBrandsResponse) data.getData();
                 isBrandsLoaded = true;
-                brandViewModels = Utils.getSingletonInstance().convertIntoBrandListViewModel(dealEntity.getBrands());
-                getView().renderBrandList(brandViewModels);
+                brands = dealEntity.getBrands();
+                getView().renderBrandList(brands);
                 showHideViews();
                 CommonUtils.dumper("enter onNext");
             }
         });
     }
 
-    public void getCategoryDetails() {
-        getView().showProgressBar();
+    public void getCategoryDetails(boolean showProgressBar) {
+        if (showProgressBar)
+            getView().showProgressBar();
         getCategoryDetailRequestUseCase.setRequestParams(getView().getCategoryParams());
         getCategoryDetailRequestUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
 
-                    CommonUtils.dumper("enter onCompleted");
+                CommonUtils.dumper("enter onCompleted");
             }
 
             @Override
             public void onError(Throwable e) {
-                    CommonUtils.dumper("enter error");
-                    e.printStackTrace();
-                    getView().hideProgressBar();
-                    NetworkErrorHelper.showEmptyState(getView().getActivity(), getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
-                        @Override
-                        public void onRetryClicked() {
-                            getCategoryDetails();
-                        }
-                    });
+                CommonUtils.dumper("enter error");
+                e.printStackTrace();
+                getView().hideProgressBar();
+                NetworkErrorHelper.showEmptyState(getView().getActivity(), getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        getCategoryDetails(true);
+                    }
+                });
             }
 
             @Override
             public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
-                Type token = new TypeToken<DataResponse<CategoryDetailsDomain>>(){
+                Type token = new TypeToken<DataResponse<CategoryDetailsResponse>>() {
                 }.getType();
                 RestResponse restResponse = typeRestResponseMap.get(token);
                 DataResponse dataResponse = restResponse.getData();
-                CategoryDetailsDomain dealEntity = (CategoryDetailsDomain) dataResponse.getData();
+                CategoryDetailsResponse dealEntity = (CategoryDetailsResponse) dataResponse.getData();
                 isDealsLoaded = true;
-                categoryViewModels = Utils.getSingletonInstance()
-                        .convertIntoCategoryListItemsViewModel(dealEntity.getDealItems());
-                pageViewModel = Utils.getSingletonInstance().convertIntoPageViewModel(dealEntity.getPage());
+                productItems = dealEntity.getDealItems();
+                page = dealEntity.getPage();
                 getNextPageUrl();
-                getView().renderCategoryList(categoryViewModels, dealEntity.getCount());
+                getView().renderCategoryList(productItems, dealEntity.getCount());
                 checkIfToLoad(getView().getLayoutManager());
                 showHideViews();
             }
@@ -205,18 +195,17 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
 
             @Override
             public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
-                Type token = new TypeToken<DataResponse<CategoryDetailsDomain>>(){
+                Type token = new TypeToken<DataResponse<CategoryDetailsResponse>>() {
                 }.getType();
                 RestResponse restResponse = typeRestResponseMap.get(token);
                 DataResponse dataResponse = restResponse.getData();
-                CategoryDetailsDomain categoryDetailsDomain = (CategoryDetailsDomain) dataResponse.getData();
+                CategoryDetailsResponse categoryDetailsResponse = (CategoryDetailsResponse) dataResponse.getData();
                 isLoading = false;
-                ArrayList<CategoryItemsViewModel> categoryList = Utils.getSingletonInstance()
-                        .convertIntoCategoryListItemsViewModel(categoryDetailsDomain.getDealItems());
-                pageViewModel = Utils.getSingletonInstance().convertIntoPageViewModel(categoryDetailsDomain.getPage());
+                List<ProductItem> productItems = categoryDetailsResponse.getDealItems();
+                page = categoryDetailsResponse.getPage();
                 getView().removeFooter();
                 getNextPageUrl();
-                getView().addDealsToCards(categoryList);
+                getView().addDealsToCards(productItems);
                 checkIfToLoad(getView().getLayoutManager());
             }
         });
@@ -237,14 +226,15 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
         }
     }
 
-    void getNextPageUrl() {
+    private void getNextPageUrl() {
+        if (page != null) {
 
-        String nexturl = pageViewModel.getUriNext();
-        if (nexturl != null && !nexturl.isEmpty() && nexturl.length() > 0) {
-            searchNextParams.putString(TAG, nexturl);
-            isLastPage = false;
-        } else {
-            isLastPage = true;
+            if (!TextUtils.isEmpty(page.getUriNext())) {
+                searchNextParams.putString(Utils.NEXT_URL, page.getUriNext());
+                isLastPage = false;
+            } else {
+                isLastPage = true;
+            }
         }
     }
 

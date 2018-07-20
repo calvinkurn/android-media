@@ -30,7 +30,7 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
     private TextView tvpPromoHour;
     private LinearLayout containerButtonBuy;
     private ProgressBar variantProgressBar;
-    private View containerNewButtonBuy;
+    public View containerNewButtonBuy;
     public View btnCart;
     public View btnNewBuy;
     private ProgressBar progressBarVariant;

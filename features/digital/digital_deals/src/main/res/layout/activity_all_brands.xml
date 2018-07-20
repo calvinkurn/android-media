@@ -37,9 +37,9 @@
             android:background="@color/white"
             app:layout_scrollFlags="scroll|snap"
             app:tabGravity="fill"
-            app:tabIndicatorColor="@color/green_nob"
+            app:tabIndicatorColor="@color/green_250"
             app:tabMode="scrollable"
-            app:tabSelectedTextColor="@color/green_nob"
+            app:tabSelectedTextColor="@color/green_250"
             app:tabTextAppearance="@style/DealsTabLayoutTextStyle"
             app:tabTextColor="@color/black_38" />
     </android.support.design.widget.AppBarLayout>

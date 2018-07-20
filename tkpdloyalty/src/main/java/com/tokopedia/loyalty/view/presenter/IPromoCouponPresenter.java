@@ -26,11 +26,11 @@ public interface IPromoCouponPresenter {
 
     void submitEventVoucher(CouponData couponData, JsonObject requestBody, boolean flag);
 
-    void submitDealVoucher(CouponData couponData, JsonObject requestBody, boolean flag);
-
     void parseAndSubmitEventVoucher(String json, CouponData couponData, String platform);
 
     void detachView();
 
     void submitFlightVoucher(CouponData data, String cartId);
+
+    void submitDealVoucher(CouponData couponData, JsonObject requestBody, boolean flag);
 }
