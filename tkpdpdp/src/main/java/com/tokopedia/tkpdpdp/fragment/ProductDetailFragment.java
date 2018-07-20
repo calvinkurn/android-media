@@ -39,6 +39,7 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.tkpdpdp.tracking.ProductPageTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragmentV4;
@@ -117,6 +118,11 @@ import com.tokopedia.tkpdpdp.listener.AppBarStateChangeListener;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenter;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenterImpl;
+import com.tokopedia.topads.sdk.base.Config;
+import com.tokopedia.topads.sdk.domain.TopAdsParams;
+import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsListener;
+import com.tokopedia.topads.sdk.widget.TopAdsCarouselView;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsAddToCart;
 import com.tokopedia.transactionanalytics.EnhancedECommerceCartMapData;
 import com.tokopedia.transactionanalytics.EnhancedECommerceProductCartMapData;
@@ -155,6 +161,8 @@ import static com.tokopedia.tkpdpdp.VariantActivity.KEY_STATE_RESULT_VARIANT;
 import static com.tokopedia.tkpdpdp.VariantActivity.KEY_VARIANT_DATA;
 import static com.tokopedia.tkpdpdp.VariantActivity.SELECTED_VARIANT_RESULT_SKIP_TO_CART;
 import static com.tokopedia.tkpdpdp.VariantActivity.SELECTED_VARIANT_RESULT_STAY_IN_PDP;
+import static com.tokopedia.topads.sdk.domain.TopAdsParams.DEFAULT_KEY_EP;
+import static com.tokopedia.topads.sdk.domain.TopAdsParams.SRC_INTERMEDIARY_VALUE;
 
 /**
  * ProductDetailFragment
@@ -163,7 +171,7 @@ import static com.tokopedia.tkpdpdp.VariantActivity.SELECTED_VARIANT_RESULT_STAY
  */
 @RuntimePermissions
 public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetailPresenter>
-        implements ProductDetailView {
+        implements ProductDetailView, TopAdsItemClickListener, TopAdsListener {
 
     private static final int FROM_COLLAPSED = 0;
     private static final int FROM_EXPANDED = 1;
@@ -217,6 +225,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     private ButtonBuyView buttonBuyView;
     private LastUpdateView lastUpdateView;
     private LatestTalkView latestTalkView;
+    private TopAdsCarouselView topAds;
     private ProgressBar progressBar;
     private NestedScrollView nestedScrollView;
 
@@ -331,6 +340,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         nestedScrollView = view.findViewById(R.id.nested_scroll_pdp);
         toolbar = (Toolbar) view.findViewById(R.id.toolbar);
         appBarLayout = (AppBarLayout) view.findViewById(R.id.appbar);
+        topAds = view.findViewById(R.id.topads);
         collapsingToolbarLayout
                 = (CollapsingToolbarLayout) view.findViewById(R.id.collapsing_toolbar);
         transactionDetailView
@@ -800,6 +810,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         if (isAllowShowCaseNcf()) {
             startShowCase();
         }
+        renderTopAds();
     }
 
     private boolean isAllowShowCaseNcf() {
@@ -1905,6 +1916,23 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                         }
                     }
                 });
+    }
+
+    private void renderTopAds(){
+        TopAdsParams params = new TopAdsParams();
+        params.getParam().put(TopAdsParams.KEY_SRC, SRC_INTERMEDIARY_VALUE);
+        params.getParam().put(TopAdsParams.KEY_EP, DEFAULT_KEY_EP);
+
+        Config config = new Config.Builder()
+                .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
+                .setUserId(SessionHandler.getLoginID(getActivity()))
+                .topAdsParams(params)
+                .build();
+
+        topAds.setAdsItemClickListener(this);
+        topAds.setAdsListener(this);
+        topAds.setConfig(config);
+        topAds.loadTopAds();
     }
 
 }
