@@ -37,12 +37,12 @@ import com.tokopedia.feedplus.view.adapter.viewholder.feeddetail.DetailFeedAdapt
 import com.tokopedia.feedplus.view.analytics.FeedTrackingEventLabel;
 import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.feedplus.view.listener.FeedPlusDetail;
-import com.tokopedia.feedplus.view.listener.WishlistListener;
 import com.tokopedia.feedplus.view.presenter.FeedPlusDetailPresenter;
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailHeaderViewModel;
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailViewModel;
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.SingleFeedDetailViewModel;
 import com.tokopedia.kol.KolComponentInstance;
+import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import java.util.ArrayList;
 
@@ -53,7 +53,7 @@ import javax.inject.Inject;
  */
 
 public class FeedPlusDetailFragment extends BaseDaggerFragment
-        implements FeedPlusDetail.View, WishlistListener {
+        implements FeedPlusDetail.View, WishListActionListener {
 
     private static final String ARGS_DETAIL_ID = "DETAIL_ID";
     private static final int REQUEST_OPEN_PDP = 111;
@@ -338,35 +338,51 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onErrorAddWishList(String errorMessage, int adapterPosition) {
+    public void onErrorAddWishList(String errorMessage, String productId) {
         dismissLoadingProgress();
         NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
 
     @Override
-    public void onSuccessAddWishlist(int adapterPosition) {
+    public void onSuccessAddWishlist(String productID) {
         dismissLoadingProgress();
-        if (adapter.getList().get(adapterPosition) instanceof FeedDetailViewModel) {
-            ((FeedDetailViewModel) adapter.getList().get(adapterPosition)).setWishlist(true);
-            adapter.notifyItemChanged(adapterPosition);
+
+        for (int i = 0; i < adapter.getList().size(); i++) {
+            if (adapter.getList().get(i) instanceof FeedDetailViewModel) {
+                FeedDetailViewModel feedDetailViewModel = ((FeedDetailViewModel) adapter.getList().get(i));
+                if (productID.equals(String.valueOf(feedDetailViewModel.getProductId()))) {
+                    feedDetailViewModel.setWishlist(true);
+                    adapter.notifyItemChanged(i);
+                    break;
+                }
+            }
         }
+
         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_add_wishlist));
     }
 
     @Override
-    public void onErrorRemoveWishlist(String errorMessage, int adapterPosition) {
+    public void onErrorRemoveWishlist(String errorMessage, String productId) {
         dismissLoadingProgress();
         NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
 
     }
 
     @Override
-    public void onSuccessRemoveWishlist(int adapterPosition) {
+    public void onSuccessRemoveWishlist(String productID) {
         dismissLoadingProgress();
-        if (adapter.getList().get(adapterPosition) instanceof FeedDetailViewModel) {
-            ((FeedDetailViewModel) adapter.getList().get(adapterPosition)).setWishlist(false);
-            adapter.notifyItemChanged(adapterPosition);
+
+        for (int i = 0; i < adapter.getList().size(); i++) {
+            if (adapter.getList().get(i) instanceof FeedDetailViewModel) {
+                FeedDetailViewModel feedDetailViewModel = ((FeedDetailViewModel) adapter.getList().get(i));
+                if (productID.equals(String.valueOf(feedDetailViewModel.getProductId()))) {
+                    feedDetailViewModel.setWishlist(false);
+                    adapter.notifyItemChanged(i);
+                    break;
+                }
+            }
         }
+
         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_remove_wishlist));
     }
 

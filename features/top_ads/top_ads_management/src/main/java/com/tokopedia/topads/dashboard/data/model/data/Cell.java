@@ -40,6 +40,13 @@ public class Cell {
     @SerializedName("cost_sum")
     @Expose
     private float costSum;
+    @SerializedName("all_gross_profit")
+    @Expose
+    private float grossProfit;
+    @SerializedName("all_sold_sum")
+    @Expose
+    private float soldSum;
+
     @SerializedName("impression_sum_fmt")
     @Expose
     private String impressionSumFmt;
@@ -58,6 +65,12 @@ public class Cell {
     @SerializedName("cost_sum_fmt")
     @Expose
     private String costSumFmt;
+    @SerializedName("all_gross_profit_fmt")
+    @Expose
+    private String grossProfitFmt;
+    @SerializedName("all_sold_sum_fmt")
+    @Expose
+    private String soldSumFmt;
 
     public int getDateDay() {
         return dateDay;
@@ -177,6 +190,38 @@ public class Cell {
 
     public void setCostSumFmt(String costSumFmt) {
         this.costSumFmt = costSumFmt;
+    }
+
+    public float getGrossProfit() {
+        return grossProfit;
+    }
+
+    public void setGrossProfit(float grossProfit) {
+        this.grossProfit = grossProfit;
+    }
+
+    public float getSoldSum() {
+        return soldSum;
+    }
+
+    public void setSoldSum(float soldSum) {
+        this.soldSum = soldSum;
+    }
+
+    public String getGrossProfitFmt() {
+        return grossProfitFmt;
+    }
+
+    public void setGrossProfitFmt(String grossProfitFmt) {
+        this.grossProfitFmt = grossProfitFmt;
+    }
+
+    public String getSoldSumFmt() {
+        return soldSumFmt;
+    }
+
+    public void setSoldSumFmt(String soldSumFmt) {
+        this.soldSumFmt = soldSumFmt;
     }
 
     public Date getDate(){

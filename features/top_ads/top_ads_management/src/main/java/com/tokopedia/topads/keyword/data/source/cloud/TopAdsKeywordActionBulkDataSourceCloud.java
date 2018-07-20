@@ -1,13 +1,13 @@
 package com.tokopedia.topads.keyword.data.source.cloud;
 
+import com.tokopedia.abstraction.common.data.model.request.DataRequest;
 import com.tokopedia.core.base.common.util.GetData;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
-import com.tokopedia.topads.dashboard.data.model.request.DataRequest;
 import com.tokopedia.topads.dashboard.data.model.response.PageDataResponse;
 import com.tokopedia.topads.keyword.data.model.cloud.bulkkeyword.DataBulkKeyword;
 import com.tokopedia.topads.keyword.data.model.cloud.bulkkeyword.Keyword;
 import com.tokopedia.topads.keyword.data.source.cloud.api.KeywordApi;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
 import java.util.List;

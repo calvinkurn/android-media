@@ -70,6 +70,8 @@ ext {
     tkpdContactUsVersion = '2.22'
     tkpdCommonNetworkVersion = '2.22'
     tkpdTokopointVersion = '2.22'
+    tkpdDealsVersion = '2.22'
+    tkpdOmsVersion = '2.22'
 
     networkDependencies = [
             retrofit          : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
@@ -189,6 +191,7 @@ ext {
             hansel                : "io.hansel.preprocessor:preprocessor:6.5.0",
             sendBird              : "com.sendbird.sdk:sendbird-android-sdk:3.0.49",
             apacheLang            : "org.apache.commons:commons-lang3:3.0",
+            ucrop                 : "com.github.yalantis:ucrop:2.2.2",
             flexBoxLayout         : "com.google.android:flexbox:0.3.2"
     ]
 
@@ -260,12 +263,14 @@ ext {
             goldMerchantSubscribe : "com.tokopedia.gm:gold_merchant-subscribe:${tkpdGoldMerchantVersion}",
             topAdsManagement      : "com.tokopedia.topads:top_ads_management:${tkpdTopAdsSDKVersion}",
             youtubeutil           : "com.tokopedia.youtubeutil:youtubeutil:${tkpdYoutubeUtilVersion}",
-            districtRecommendation: "com.tokopedia.district_recommendation:district_recommendation:${tkpdDistrictRecommendationVersion}"
+            districtRecommendation: "com.tokopedia.district_recommendation:district_recommendation:${tkpdDistrictRecommendationVersion}",
+            digitalDeals          : "com.tokopedia.digital_deals:digital_deals:${tkpdDealsVersion}",
+            omsApi                : "com.tokopedia.oms:oms:${tkpdOmsVersion}"
     ]
 
     tkpdLibDependencies = [
             expandableOption: "com.tokopedia.tkpdlib:expandableoption:0.7.1",
-            showcase        : "com.tokopedia.tkpdlib:showcase-stepper:0.5.12",
+            showcase        : "com.tokopedia.tkpdlib:showcase-stepper:0.5.15",
             youtubePlayer   : "com.tokopedia.youtube:player:0.0.1"
     ]
 
@@ -299,7 +304,7 @@ ext {
             shopPage              : ":features:merchant:shop_page",
             productEdit           : ":features:merchant:product_edit",
             topAdsManagement      : ":features:top_ads:top_ads_management",
-            topAdsCommon          : ":features:top_ads:top_ads_management_common",
+            topAdsManagementCommon    : ":features:top_ads:top_ads_management_common",
             topAdsSourceTagging   : ":features:top_ads:top_ads_management_sourcetagging",
             tokoCash              : ":features:fintech:tokocash",
             flight                : ":tkpdflight",
@@ -323,7 +328,8 @@ ext {
             logisticuploadawb     : ":features:logistic:logisticuploadawb",
             vote                  : ":features:user:vote",
             instantLoan           : ":features:fintech:instant_loan",
-            tokopoints            : ":features:promo:tokopoints"
+            tokopoints            : ":features:promo:tokopoints",
+            digitalDeals          : ":features:digital:digital_deals"
     ]
 
     libraries = [
@@ -342,12 +348,15 @@ ext {
             fingerprint       : ":libraries:fingerprint",
             bottomSheetBuilder: ":libraries:bottom_sheet_builder",
             userSession       : ":libraries:user_session",
+            imagePicker       : ":libraries:image_picker",
+            cameraView        : ":libraries:camera_view",
             imageuploader     : ":libraries:imageuploader",
             youtubeApi        : ":libraries:YouTubeAndroidPlayerApi",
             analytics         : ":libraries:analytics",
             graphql           : ":libraries:graphql",
             commonNetwork     : ":libraries:common_network",
             youtubeutil       : ":libraries:youtubeutil"
+            omsApi            : ":libraries:oms"
 
     ]
 }
