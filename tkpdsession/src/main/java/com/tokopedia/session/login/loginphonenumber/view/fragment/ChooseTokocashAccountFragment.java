@@ -53,7 +53,7 @@ import static com.tokopedia.session.login.loginemail.view.fragment.LoginFragment
  */
 
 public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
-        ChooseTokocashAccount.View {
+        ChooseTokocashAccount.View, ChooseTokocashAccount.ViewAdapter {
     private int REQUEST_SECURITY_QUESTION = 101;
 
     TextView message;
@@ -238,8 +238,6 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         message.setText(getPromptText());
-        presenter.checkAutoLogin(viewModel.getKey(), adapter.getItemCount(), adapter.getList());
-
     }
 
     private Spanned getPromptText() {

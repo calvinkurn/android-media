@@ -205,11 +205,17 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_VERIFY_PHONE
                 && resultCode == Activity.RESULT_OK) {
+
             ChooseTokoCashAccountViewModel chooseTokoCashAccountViewModel = getChooseAccountData(data);
-            if (chooseTokoCashAccountViewModel != null && !chooseTokoCashAccountViewModel
+            if(chooseTokoCashAccountViewModel!= null
+                    && chooseTokoCashAccountViewModel.getListAccount().size() == 1) {
+                getActivity().setResult(Activity.RESULT_OK);
+                getActivity().finish();
+            }else if (chooseTokoCashAccountViewModel != null && !chooseTokoCashAccountViewModel
                     .getListAccount().isEmpty()) {
                 goToChooseAccountPage(chooseTokoCashAccountViewModel);
-            } else {
+            }
+            else {
                 goToNoTokocashAccountPage();
             }
         } else if (requestCode == REQUEST_CHOOSE_ACCOUNT
