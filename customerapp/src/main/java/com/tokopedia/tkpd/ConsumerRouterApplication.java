@@ -93,6 +93,7 @@ import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
+import com.tokopedia.core.router.transactionmodule.UnifiedOrderRouter;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartRequest;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
 import com.tokopedia.core.router.transactionmodule.sharedata.CouponListResult;
@@ -361,7 +362,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         InstantLoanRouter,
         TopChatRouter,
         TokopointRouter,
-        OtpModuleRouter {
+        OtpModuleRouter,
+        UnifiedOrderRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;
