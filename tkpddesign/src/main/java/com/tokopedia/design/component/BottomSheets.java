@@ -9,6 +9,7 @@ import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CoordinatorLayout;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -21,9 +22,11 @@ import com.tokopedia.design.R;
 
 public abstract class BottomSheets extends BottomSheetDialogFragment {
 
-    private View inflatedView;
-
     public abstract int getLayoutResourceId();
+
+    public int getBaseLayoutResourceId(){
+        return R.layout.widget_bottomsheet;
+    }
 
     public abstract void initView(View view);
 
@@ -40,7 +43,8 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
     }
 
     private BottomSheetBehavior bottomSheetBehavior;
-
+    private View inflatedView;
+    
     public interface BottomSheetDismissListener {
         void onDismiss();
     }
@@ -51,7 +55,7 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
     @Override
     public void setupDialog(Dialog dialog, int style) {
         super.setupDialog(dialog, style);
-        inflatedView = View.inflate(getContext(), R.layout.widget_bottomsheet, null);
+        inflatedView = View.inflate(getContext(), getBaseLayoutResourceId(), null);
 
         configView(inflatedView);
 
@@ -152,5 +156,15 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
         inflatedView.invalidate();
         inflatedView.measure(0, 0);
         bottomSheetBehavior.setPeekHeight(inflatedView.getMeasuredHeight());
+    }
+
+    protected void updateHeight(int height) {
+        ViewGroup.LayoutParams params = inflatedView.getLayoutParams();
+        params.height = height;
+        inflatedView.setLayoutParams(params);
+        inflatedView.setMinimumHeight(height);
+        inflatedView.invalidate();
+        inflatedView.measure(0, 0);
+        bottomSheetBehavior.setPeekHeight(height);
     }
 }

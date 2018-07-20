@@ -66,6 +66,7 @@ import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
 import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
+import com.tokopedia.sellerapp.utils.FingerprintModelGenerator;
 import com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
@@ -94,11 +95,9 @@ import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity
 import com.tokopedia.fingerprint.util.FingerprintConstant;
 import com.tokopedia.gm.GMModuleRouter;
 import com.tokopedia.gm.cashback.domain.GetCashbackUseCase;
-import com.tokopedia.gm.cashback.domain.SetCashbackUseCase;
 import com.tokopedia.gm.common.di.component.DaggerGMComponent;
 import com.tokopedia.gm.common.di.component.GMComponent;
 import com.tokopedia.gm.common.di.module.GMModule;
-import com.tokopedia.gm.common.logout.GMLogout;
 import com.tokopedia.gm.featured.domain.interactor.GMFeaturedProductGetListUseCase;
 import com.tokopedia.gm.subscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.imageuploader.ImageUploaderRouter;
@@ -164,6 +163,7 @@ import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
+import com.tokopedia.topads.TopAdsComponentInstance;
 import com.tokopedia.topads.TopAdsModuleRouter;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsComponent;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
@@ -248,7 +248,7 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public TopAdsComponent getTopAdsComponent() {
         if (topAdsComponent == null) {
-            topAdsComponent = daggerTopAdsBuilder.appComponent(getApplicationComponent()).build();
+            topAdsComponent = TopAdsComponentInstance.getComponent(this);
         }
         return topAdsComponent;
     }
@@ -498,7 +498,6 @@ public abstract class SellerRouterApplication extends MainApplication
         new CacheApiClearAllUseCase().executeSync();
 
         TkpdSellerLogout.onLogOut(appComponent);
-        GMLogout.onLogOut(appComponent);
     }
 
     @Override
@@ -888,12 +887,6 @@ public abstract class SellerRouterApplication extends MainApplication
             actionApplink(activity, appLinkScheme);
         }
 
-    }
-
-    @Override
-    public Observable<Boolean> setCashBack(String productId, int cashback) {
-        SetCashbackUseCase setCashbackUseCase = getGMComponent().getSetCashbackUseCase();
-        return setCashbackUseCase.getExecuteObservableAsync(SetCashbackUseCase.createRequestParams(productId, cashback));
     }
 
     @Override
@@ -1382,8 +1375,13 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public Intent getOrderListIntent(Context context) {
+        return OrderListActivity.getInstance(context);
+    }
+
+    @Override
     public FingerprintModel getFingerprintModel() {
-        return null;
+        return FingerprintModelGenerator.generateFingerprintModel(this);
     }
 
     @Override
