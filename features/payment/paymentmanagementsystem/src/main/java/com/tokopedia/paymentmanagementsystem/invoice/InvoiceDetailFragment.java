@@ -63,5 +63,10 @@ public class InvoiceDetailFragment extends BaseWebViewFragment {
         return invoiceDetailFragment;
     }
 
+    @Override
+    protected void loadWeb(){
+        super.loadWeb();
+        webView.getSettings().setBuiltInZoomControls(false);
+    }
 
 }
