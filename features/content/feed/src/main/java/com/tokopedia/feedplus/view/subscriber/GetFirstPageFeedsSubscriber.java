@@ -640,7 +640,8 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                 "",
                 kolPostDomain.getTagsType(),
                 kolPostDomain.getCaption(),
-                kolPostDomain.getContentLink()
+                !TextUtils.isEmpty(kolPostDomain.getContentLink()) ? kolPostDomain.getContentLink()
+                        : kolPostDomain.getContentUrl()
         );
     }
 
