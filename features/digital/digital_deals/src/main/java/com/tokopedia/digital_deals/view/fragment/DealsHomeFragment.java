@@ -238,7 +238,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     @Override
     public void renderCategoryList(List<CategoryItem> categoryList, CategoryItem carousel, CategoryItem top) {
 
-        if (top.getItems() != null && carousel.getItems().size() > 0) {
+        if (top.getItems() != null && top.getItems().size() > 0) {
             rvTrendingDeals.setVisibility(View.VISIBLE);
             noContent.setVisibility(View.GONE);
             DealsCategoryAdapter categoryAdapter = new DealsCategoryAdapter(top.getItems(), this, IS_SHORT_LAYOUT);
