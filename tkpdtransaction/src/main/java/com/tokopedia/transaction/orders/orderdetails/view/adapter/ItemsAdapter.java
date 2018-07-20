@@ -268,7 +268,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                             tapActionLayout.addView(tapActionTextView);
                         }
                     }
-                } else if (item.getTapActions() != null || item.getTapActions().size() == 0) {
+                } else if (item.getTapActions() == null || item.getTapActions().size() == 0) {
                     progressBar.setVisibility(View.GONE);
                 }
 
