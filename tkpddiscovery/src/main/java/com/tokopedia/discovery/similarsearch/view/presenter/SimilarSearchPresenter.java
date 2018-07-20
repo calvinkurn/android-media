@@ -3,29 +3,18 @@ package com.tokopedia.discovery.similarsearch.view.presenter;
 import android.os.Bundle;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.utils.GraphqlHelper;
-import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.newdiscovery.domain.usecase.AddWishlistActionUseCase;
-import com.tokopedia.discovery.newdiscovery.domain.usecase.RemoveWishlistActionUseCase;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.listener.WishlistActionListener;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.subscriber.AddWishlistActionSubscriber;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.subscriber.RemoveWishlistActionSubscriber;
 import com.tokopedia.discovery.similarsearch.analytics.SimilarSearchTracking;
 import com.tokopedia.discovery.similarsearch.domain.GetSimilarProductUseCase;
 import com.tokopedia.discovery.similarsearch.model.ProductsItem;
-import com.tokopedia.discovery.similarsearch.model.SearchProductList;
 import com.tokopedia.discovery.similarsearch.view.SimilarSearchContract;
 import com.tokopedia.discovery.similarsearch.view.SimilarSearchFragment;
-import com.tokopedia.graphql.data.GraphqlClient;
-import com.tokopedia.graphql.data.model.GraphqlRequest;
-import com.tokopedia.graphql.data.model.GraphqlResponse;
-import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.wishlist.common.listener.WishListActionListener;
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -34,15 +23,15 @@ import rx.Subscriber;
 public class SimilarSearchPresenter extends BaseDaggerPresenter<SimilarSearchContract.View> implements SimilarSearchContract.Presenter{
 
 
-    AddWishlistActionUseCase addWishlistActionUseCase;
-    RemoveWishlistActionUseCase removeWishlistActionUseCase;
+    AddWishListUseCase addWishlistActionUseCase;
+    RemoveWishListUseCase removeWishlistActionUseCase;
     GetSimilarProductUseCase getSimilarProductUseCase;
 
-    private WishlistActionListener wishListListener;
+    private WishListActionListener wishListListener;
 
 
     @Inject
-    public SimilarSearchPresenter(AddWishlistActionUseCase addWishlistActionUseCase, RemoveWishlistActionUseCase removeWishlistActionUseCase, GetSimilarProductUseCase getSimilarProductUseCase) {
+    public SimilarSearchPresenter(AddWishListUseCase addWishlistActionUseCase, RemoveWishListUseCase removeWishlistActionUseCase, GetSimilarProductUseCase getSimilarProductUseCase) {
         this.addWishlistActionUseCase = addWishlistActionUseCase;
         this.removeWishlistActionUseCase = removeWishlistActionUseCase;
         this.getSimilarProductUseCase = getSimilarProductUseCase;
@@ -111,15 +100,15 @@ public class SimilarSearchPresenter extends BaseDaggerPresenter<SimilarSearchCon
 
     private void addWishlist(String productId, String userId, int adapterPosition) {
         SimilarSearchTracking.eventAddWishList(productId);
-        addWishlistActionUseCase.execute(AddWishlistActionUseCase.generateParam(productId, userId),
-                new AddWishlistActionSubscriber(wishListListener, adapterPosition));
+        addWishlistActionUseCase.createObservable(productId, userId,
+                wishListListener);
     }
 
 
     private void removeWishlist(String productId, String userId, int adapterPosition) {
         SimilarSearchTracking.eventRemoveWishList(productId);
-        removeWishlistActionUseCase.execute(RemoveWishlistActionUseCase.generateParam(productId, userId),
-                new RemoveWishlistActionSubscriber(wishListListener, adapterPosition));
+        removeWishlistActionUseCase.createObservable(productId,
+                userId, wishListListener);
     }
 
     public void setWishListListener(SimilarSearchFragment wishListListener) {

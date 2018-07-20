@@ -14,24 +14,23 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
 
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.listener.WishlistActionListener;
 import com.tokopedia.discovery.similarsearch.di.SimilarSearchComponent;
 import com.tokopedia.discovery.similarsearch.di.DaggerSimilarSearchComponent;
 import com.tokopedia.discovery.similarsearch.model.ProductsItem;
 import com.tokopedia.discovery.similarsearch.view.presenter.SimilarSearchPresenter;
+import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
-public class SimilarSearchFragment extends BaseDaggerFragment implements SimilarSearchContract.View, WishlistActionListener, SimilarSearchdAdapter.WishListClickListener {
+public class SimilarSearchFragment extends BaseDaggerFragment implements SimilarSearchContract.View, WishListActionListener, SimilarSearchdAdapter.WishListClickListener {
 
     static final String PRODUCT_ID = "product_id";
     @Inject
@@ -193,32 +192,33 @@ public class SimilarSearchFragment extends BaseDaggerFragment implements Similar
 
     }
 
+
     @Override
-    public void onErrorAddWishList(String errorMessage, int adapterPosition) {
-        enableWishlistButton(adapterPosition);
-        mAdapter.notifyItemChanged(adapterPosition);
+    public void onErrorAddWishList(String errorMessage, String productId) {
+        enableWishlistButton(mAdapter.getIndex(productId));
+        mAdapter.notifyItemChanged(mAdapter.getIndex(productId));
         NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
 
     @Override
-    public void onSuccessAddWishlist(int adapterPosition) {
-        mAdapter.updateWishlistStatus(adapterPosition, true);
-        enableWishlistButton(adapterPosition);
-        mAdapter.notifyItemChanged(adapterPosition);
+    public void onSuccessAddWishlist(String productId) {
+        mAdapter.updateWishlistStatus(productId, true);
+        enableWishlistButton(mAdapter.getIndex(productId));
+        mAdapter.notifyItemChanged(mAdapter.getIndex(productId));
         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_add_wishlist));
     }
 
     @Override
-    public void onErrorRemoveWishlist(String errorMessage, int adapterPosition) {
-        enableWishlistButton(adapterPosition);
+    public void onErrorRemoveWishlist(String errorMessage, String productId) {
+        enableWishlistButton(mAdapter.getIndex(productId));
         NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
 
     @Override
-    public void onSuccessRemoveWishlist(int adapterPosition) {
-        mAdapter.updateWishlistStatus(adapterPosition, false);
-        enableWishlistButton(adapterPosition);
-        mAdapter.notifyItemChanged(adapterPosition);
+    public void onSuccessRemoveWishlist(String productId) {
+        mAdapter.updateWishlistStatus(productId, false);
+        enableWishlistButton(mAdapter.getIndex(productId));
+        mAdapter.notifyItemChanged(mAdapter.getIndex(productId));
         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_remove_wishlist));
     }
 

@@ -224,4 +224,11 @@ public class ProductsItem{
 			",discount_expired_time = '" + discountExpiredTime + '\'' + 
 			"}";
 		}
+
+	@Override
+	public boolean equals(Object obj) {
+		ProductsItem productsItem = (ProductsItem) obj;
+		return id == productsItem.getId();
+
+	}
 }

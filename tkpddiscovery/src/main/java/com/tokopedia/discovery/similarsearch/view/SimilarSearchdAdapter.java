@@ -70,8 +70,14 @@ public class SimilarSearchdAdapter extends RecyclerView.Adapter<SimilarSearchdAd
         productsItems.get(adapterPosition).setWishlistButtonEnabled(value);
     }
 
-    public void updateWishlistStatus(int adapterPosition, boolean value) {
-        productsItems.get(adapterPosition).setWishListed(value);
+    public void updateWishlistStatus(String productId, boolean value) {
+        productsItems.get(getIndex(productId)).setWishListed(value);
+    }
+
+    public int getIndex(String productId) {
+        ProductsItem productItem = new ProductsItem();
+        productItem.setId(Integer.parseInt(productId));
+        return productsItems.indexOf(productItem);
     }
 
     class SimilarProdcutItem extends RecyclerView.ViewHolder {
