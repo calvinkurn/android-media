@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -29,10 +30,13 @@ import android.widget.Toast;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.R2;
+import com.tokopedia.contactus.inboxticket.activity.InboxTicketActivity;
 import com.tokopedia.contactus.orderquery.data.ImageUpload;
 import com.tokopedia.contactus.orderquery.data.SubmitTicketInvoiceData;
+import com.tokopedia.contactus.orderquery.di.DaggerOrderQueryComponent;
 import com.tokopedia.contactus.orderquery.di.OrderQueryComponent;
 import com.tokopedia.contactus.orderquery.view.adapter.ImageUploadAdapter;
 import com.tokopedia.contactus.orderquery.view.presenter.SubmitTicketContract;
@@ -41,7 +45,6 @@ import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.RequestPermissionUtil;
-import com.tokopedia.contactus.orderquery.di.DaggerOrderQueryComponent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +66,7 @@ import permissions.dispatcher.RuntimePermissions;
  * Created by sandeepgoyal on 16/04/18.
  */
 @RuntimePermissions
-public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTicketContract.View {
+public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTicketContract.View, ImageUploadAdapter.OnSelectImageClick {
 
     public static final String KEY_QUERY_TICKET = "KEY_QUERY_TICKET";
     @BindView(R2.id.constraint_layout)
@@ -111,7 +114,7 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
         ButterKnife.bind(this, view);
         imageUploadHandler = ImageUploadHandler.createInstance(this);
         presenter.attachView(this);
-        imageUploadAdapter = new ImageUploadAdapter(getContext());
+        imageUploadAdapter = new ImageUploadAdapter(getContext(),this);
         rvSelectedImages.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         rvSelectedImages.setAdapter(imageUploadAdapter);
         edtQuery.addTextChangedListener(watcher(edtQuery));
@@ -206,21 +209,24 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
     public void showMessage(String message) {
         Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
     }
+
     ProgressDialog progress;
+
     @Override
     public void showProgress(String message) {
-        if(progress == null) {
+        if (progress == null) {
             progress = new ProgressDialog(getContext());
         }
-        if(!progress.isShowing()) {
+        if (!progress.isShowing()) {
             progress.setMessage(message);
             progress.setIndeterminate(true);
             progress.show();
         }
     }
+
     @Override
     public void hideProgress() {
-        if(progress != null && progress.isShowing()) {
+        if (progress != null && progress.isShowing()) {
             progress.dismiss();
             progress = null;
         }
@@ -334,10 +340,7 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
     }
 
 
-    @OnClick(R2.id.iv_upload)
-    public void onViewClicked() {
-        showImagePickerDialog();
-    }
+
 
     @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     void showRationaleForStorageAndCamera(final PermissionRequest request) {
@@ -411,26 +414,31 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
     }
 
     @OnClick(R2.id.btn_tutup)
-    public void ontutupClick(){
+    public void ontutupClick() {
         toolTipLayout.setVisibility(View.GONE);
     }
+
     @Override
     public void showToolTip() {
         toolTipLayout.setVisibility(View.VISIBLE);
     }
 
     @OnClick(R2.id.btn_ok)
-    public void onOkClick(){
+    public void onOkClick() {
         submitSuccess.setVisibility(View.GONE);
-        getActivity().finish();
+        Intent intent = new Intent(getActivity(), InboxTicketActivity.class);
+        getActivity().startActivity(new Intent(getActivity(), InboxTicketActivity.class));
+        LocalBroadcastManager manager = LocalBroadcastManager.getInstance(getActivity());
+        manager.sendBroadcast(new Intent(ContactUsModuleRouter.ACTION_CLOSE_ACTIVITY));
     }
+
     @Override
     public void showSuccessDialog() {
         submitSuccess.setVisibility(View.VISIBLE);
     }
 
     public boolean onBackPressed() {
-        if(imageUploadAdapter.getItemCount()>0) {
+        if (imageUploadAdapter.getItemCount() > 1) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
             builder.setTitle(getString(R.string.title_dialog_wrong_scan));
             builder.setMessage("Pesan Anda akan hilang jika menutup halaman ini, Anda yakin?");
@@ -450,8 +458,13 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
                         }
                     }).create().show();
             return true;
-        }else {
+        } else {
             return false;
         }
+    }
+
+    @Override
+    public void onClick() {
+        showImagePickerDialog();
     }
 }

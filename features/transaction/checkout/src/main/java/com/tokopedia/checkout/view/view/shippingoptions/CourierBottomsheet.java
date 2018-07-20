@@ -20,6 +20,8 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.checkout.R;
+import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
+import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.view.di.component.CartComponent;
@@ -28,6 +30,8 @@ import com.tokopedia.checkout.view.view.shippingoptions.di.CourierComponent;
 import com.tokopedia.checkout.view.view.shippingoptions.di.CourierModule;
 import com.tokopedia.checkout.view.view.shippingoptions.di.DaggerCourierComponent;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -51,6 +55,8 @@ public class CourierBottomsheet extends BottomSheetDialog implements CourierCont
     private ActionListener actionListener;
     private int cartItemPosition;
     private ShipmentDetailData shipmentDetailData;
+    private List<ShopShipment> shopShipmentList;
+    private RecipientAddressModel recipientAddressModel;
     private Activity activity;
 
     @Inject
@@ -64,12 +70,17 @@ public class CourierBottomsheet extends BottomSheetDialog implements CourierCont
     private BottomSheetBehavior behavior;
     private boolean actionDismiss;
 
-    public CourierBottomsheet(@NonNull Activity activity, @NonNull ShipmentDetailData shipmentDetailData,
+    public CourierBottomsheet(@NonNull Activity activity,
+                              @NonNull ShipmentDetailData shipmentDetailData,
+                              @NonNull List<ShopShipment> shopShipmentList,
+                              @NonNull RecipientAddressModel recipientAddressModel,
                               @NonNull int cartItemPosition) {
         super(activity);
         this.activity = activity;
         this.cartItemPosition = cartItemPosition;
         this.shipmentDetailData = shipmentDetailData;
+        this.shopShipmentList = shopShipmentList;
+        this.recipientAddressModel = recipientAddressModel;
         setCancelable(false);
         initializeInjector();
         initializeView(activity);
@@ -104,6 +115,7 @@ public class CourierBottomsheet extends BottomSheetDialog implements CourierCont
                 checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickXOnCourierOption();
             }
         });
+
     }
 
     public void updateHeight() {
@@ -132,7 +144,7 @@ public class CourierBottomsheet extends BottomSheetDialog implements CourierCont
 
     private void initializeData(ShipmentDetailData shipmentDetailData) {
         presenter.attachView(this);
-        presenter.loadCourier(shipmentDetailData);
+        presenter.loadCourier(shipmentDetailData, shopShipmentList);
         setupRecyclerView();
     }
 
@@ -151,6 +163,10 @@ public class CourierBottomsheet extends BottomSheetDialog implements CourierCont
 
     public void setListener(ActionListener listener) {
         this.actionListener = listener;
+    }
+
+    public void setSelectedCourier(CourierItemData selectedCourier) {
+        presenter.setSelectedCourier(selectedCourier);
     }
 
     private void setupRecyclerView() {
@@ -179,7 +195,7 @@ public class CourierBottomsheet extends BottomSheetDialog implements CourierCont
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
-                        presenter.loadCourier(shipmentDetailData);
+                        presenter.loadCourier(shipmentDetailData, shopShipmentList);
                     }
                 });
     }
@@ -205,20 +221,32 @@ public class CourierBottomsheet extends BottomSheetDialog implements CourierCont
 
     void onCloseClick() {
         actionDismiss = true;
-        behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        if (behavior != null) {
+            behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        } else {
+            dismiss();
+        }
     }
 
     @Override
     public void onBackPressed() {
         actionDismiss = true;
-        behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        if (behavior != null) {
+            behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        } else {
+            dismiss();
+        }
     }
 
     @Override
     public void onCourierItemClick(CourierItemData courierItemData) {
         actionDismiss = true;
-        behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-        actionListener.onShipmentItemClick(courierItemData, cartItemPosition);
+        if (behavior != null) {
+            behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        } else {
+            dismiss();
+        }
+        actionListener.onShipmentItemClick(courierItemData, recipientAddressModel, cartItemPosition);
     }
 
     @Override
@@ -232,6 +260,8 @@ public class CourierBottomsheet extends BottomSheetDialog implements CourierCont
     }
 
     public interface ActionListener {
-        void onShipmentItemClick(CourierItemData courierItemData, int cartItemPosition);
+        void onShipmentItemClick(CourierItemData courierItemData, RecipientAddressModel recipientAddressModel, int cartItemPosition);
     }
+
+
 }

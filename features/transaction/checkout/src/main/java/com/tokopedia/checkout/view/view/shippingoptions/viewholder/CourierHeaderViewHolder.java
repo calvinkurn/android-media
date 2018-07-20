@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.view.view.shippingoptions.viewholder;
 
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -27,7 +28,13 @@ public class CourierHeaderViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bindData(ShipmentTypeData shipmentTypeData) {
-        tvShipmentType.setText(String.format("%s (%s)", shipmentTypeData.getShipmentType(), shipmentTypeData.getEtd()));
+        if (!TextUtils.isEmpty(shipmentTypeData.getShipmentType())) {
+            if (!TextUtils.isEmpty(shipmentTypeData.getEtd())) {
+                tvShipmentType.setText(String.format("%s (%s)", shipmentTypeData.getShipmentType(), shipmentTypeData.getEtd()));
+            } else {
+                tvShipmentType.setText(String.format("%s", shipmentTypeData.getShipmentType()));
+            }
+        }
         if (getAdapterPosition() == POSITION_HEADER_AFTER_TICKER) {
             vSeparator.setVisibility(View.GONE);
         } else {

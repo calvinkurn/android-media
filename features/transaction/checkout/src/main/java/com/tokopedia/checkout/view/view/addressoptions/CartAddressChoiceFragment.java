@@ -62,6 +62,7 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
 
     private Token token;
     private RecipientAddressModel currentAddress;
+    private boolean isMenuVisible;
 
     @Inject
     CartAddressChoicePresenter mCartAddressChoicePresenter;
@@ -90,8 +91,10 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        menu.clear();
-        inflater.inflate(R.menu.menu_address_choice, menu);
+        if (isMenuVisible) {
+            menu.clear();
+            inflater.inflate(R.menu.menu_address_choice, menu);
+        }
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -192,6 +195,9 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
                         currentAddress, false);
             }
         });
+
+        isMenuVisible = false;
+        getActivity().invalidateOptionsMenu();
     }
 
     @Override
@@ -202,6 +208,10 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
 
     @Override
     public void renderRecipientData(List<RecipientAddressModel> recipientAddressModels, boolean isNewlyCreatedAddress) {
+        if (!isMenuVisible && recipientAddressModels.size() > 0) {
+            isMenuVisible = true;
+            getActivity().invalidateOptionsMenu();
+        }
         mShipmentAddressListAdapter.setAddressList(recipientAddressModels);
         mShipmentAddressListAdapter.notifyDataSetChanged();
         for (RecipientAddressModel recipientAddressModel : recipientAddressModels) {
@@ -223,6 +233,8 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
 
     @Override
     public void renderEmptyRecipientData() {
+        isMenuVisible = false;
+        getActivity().invalidateOptionsMenu();
         llContent.setVisibility(View.GONE);
         btSendToCurrentAddress.setVisibility(View.GONE);
         llNetworkErrorView.setVisibility(View.VISIBLE);
@@ -276,6 +288,8 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
 
     @Override
     public void showNoConnection(@NonNull String message) {
+        isMenuVisible = false;
+        getActivity().invalidateOptionsMenu();
         llContent.setVisibility(View.GONE);
         btSendToCurrentAddress.setVisibility(View.GONE);
         llNetworkErrorView.setVisibility(View.VISIBLE);
