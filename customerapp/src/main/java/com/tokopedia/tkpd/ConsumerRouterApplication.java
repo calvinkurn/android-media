@@ -837,17 +837,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void handleOmsPromoError(String bodyResponse, String errorMessage) throws IOException {
-        if (errorMessage != null && bodyResponse != null) {
-            if (errorMessage.equals("invalid_request") || errorMessage.equals("invalid_grant")) {
-                Intent intent = new Intent();
-                intent.setAction(BaseActivity.FORCE_LOGOUT);
-                MainApplication.getAppContext().sendBroadcast(intent);
-                throw new SessionExpiredException(errorMessage);
-            } else {
-                    throw new UnProcessableHttpException(bodyResponse);
-            }
-        }else if(bodyResponse!=null){
+    public void handleOmsPromoError(String bodyResponse) throws IOException {
+        if(bodyResponse!=null){
             throw new UnProcessableHttpException(bodyResponse);
         }else{
             throw new UnProcessableHttpException();

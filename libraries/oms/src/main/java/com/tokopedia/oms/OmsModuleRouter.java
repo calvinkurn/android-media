@@ -9,5 +9,5 @@ public interface OmsModuleRouter {
 
     Interceptor getChuckInterceptor();
 
-    void handleOmsPromoError(String bodyResponse, String errorMessage) throws IOException;
+    void handleOmsPromoError(String bodyResponse) throws IOException;
 }
