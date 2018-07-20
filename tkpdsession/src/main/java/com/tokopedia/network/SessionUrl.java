@@ -7,7 +7,7 @@ package com.tokopedia.network;
 public class SessionUrl {
     public static String BASE_DOMAIN = "https://ws.tokopedia.com/";
     public static String ACCOUNTS_DOMAIN = "https://accounts.tokopedia.com/";
-    public static String CHANGE_PHONE_DOMAIN = "https://13-feature-m-staging.tokopedia.com";
+    public static String CHANGE_PHONE_DOMAIN = "https://m.tokopedia.com/";
 
     public static final String PATH_GET_TOKEN = "token";
     public static final String PATH_GET_INFO = "info";
