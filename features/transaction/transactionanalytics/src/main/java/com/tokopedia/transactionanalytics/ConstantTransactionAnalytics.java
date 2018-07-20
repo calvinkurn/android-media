@@ -7,7 +7,7 @@ public interface ConstantTransactionAnalytics {
 
     interface Key {
         String EVENT = "event";
-        String EVENT_CATEGORY = "eventCAtegory";
+        String EVENT_CATEGORY = "eventCategory";
         String EVENT_ACTION = "eventAction";
         String EVENT_LABEL = "eventLabel";
         String E_COMMERCE = "ecommerce";

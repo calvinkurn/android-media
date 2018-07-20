@@ -1,9 +1,9 @@
-package com.tokopedia.core.manage.people.address.listener;
+package com.tokopedia.transactionanalytics.listener;
 
 /**
  * @author anggaprasetiyo on 19/07/18.
  */
-public interface IAnalyticsAddAddressFragmentListener {
+public interface ITransactionAnalyticsAddAddress {
 
     void sendAnalyticsOnSubmitSaveAddressClicked();
 

@@ -41,7 +41,7 @@ import com.tokopedia.core.manage.people.address.fragment.adapter.ProvinceAdapter
 import com.tokopedia.core.manage.people.address.fragment.adapter.RegencyAdapter;
 import com.tokopedia.core.manage.people.address.fragment.adapter.SubDistrictAdapter;
 import com.tokopedia.core.manage.people.address.listener.AddAddressFragmentView;
-import com.tokopedia.core.manage.people.address.listener.IAnalyticsAddAddressFragmentListener;
+import com.tokopedia.transactionanalytics.listener.ITransactionAnalyticsAddAddress;
 import com.tokopedia.core.manage.people.address.model.Destination;
 import com.tokopedia.core.manage.people.address.model.DistrictRecommendationAddress;
 import com.tokopedia.core.manage.people.address.model.Token;
@@ -68,7 +68,7 @@ import static com.tokopedia.core.manage.people.address.ManageAddressConstant.REQ
  * Created by nisie on 9/6/16.
  */
 public class AddAddressFragment extends BasePresenterFragment<AddAddressPresenter>
-        implements AddAddressFragmentView, IAnalyticsAddAddressFragmentListener, GeoLocationUtils.GeoLocationListener {
+        implements AddAddressFragmentView, ITransactionAnalyticsAddAddress, GeoLocationUtils.GeoLocationListener {
 
     private static final int DISTRICT_RECOMMENDATION_REQUEST_CODE = 130715;
     private static final String ADDRESS = "district_recommendation_address";

@@ -12,12 +12,13 @@ import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.district_recommendation.R;
 import com.tokopedia.district_recommendation.domain.model.Token;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
+import com.tokopedia.transactionanalytics.listener.ITransactionAnalyticsDistrictRecommendation;
 
 import static com.tokopedia.district_recommendation.view.DistrictRecommendationContract.Constant.ARGUMENT_DATA_TOKEN;
 import static com.tokopedia.district_recommendation.view.DistrictRecommendationContract.Constant.ARGUMENT_IS_FROM_MARKETPLACE_CART;
 
 public class DistrictRecommendationActivity extends BasePresenterActivity implements
-        DistrictRecommendationContract.IAnalyticsDistrictRecommendation {
+        ITransactionAnalyticsDistrictRecommendation {
 
     private CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
 

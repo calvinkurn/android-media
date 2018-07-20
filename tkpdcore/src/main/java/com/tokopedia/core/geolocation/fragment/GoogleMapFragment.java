@@ -39,7 +39,7 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.geolocation.adapter.SuggestionLocationAdapter;
 import com.tokopedia.core.geolocation.domain.IMapsRepository;
 import com.tokopedia.core.geolocation.listener.GoogleMapView;
-import com.tokopedia.core.geolocation.listener.IAnalyticsGeoLocationListener;
+import com.tokopedia.transactionanalytics.listener.ITransactionAnalyticsGeoLocationPinPoint;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.geolocation.presenter.GoogleMapPresenter;
 import com.tokopedia.core.geolocation.presenter.GoogleMapPresenterImpl;
@@ -86,7 +86,7 @@ public class GoogleMapFragment extends BasePresenterFragment<GoogleMapPresenter>
     private SuggestionLocationAdapter adapter;
     private ActionBar actionBar;
     private BottomSheetDialog dialog;
-    private IAnalyticsGeoLocationListener analyticsGeoLocationListener;
+    private ITransactionAnalyticsGeoLocationPinPoint analyticsGeoLocationListener;
 
     public static Fragment newInstance(LocationPass locationPass) {
         GoogleMapFragment fragment = new GoogleMapFragment();
@@ -146,7 +146,7 @@ public class GoogleMapFragment extends BasePresenterFragment<GoogleMapPresenter>
 
     @Override
     protected void initialListener(Activity activity) {
-        analyticsGeoLocationListener = (IAnalyticsGeoLocationListener) activity;
+        analyticsGeoLocationListener = (ITransactionAnalyticsGeoLocationPinPoint) activity;
     }
 
     @Override

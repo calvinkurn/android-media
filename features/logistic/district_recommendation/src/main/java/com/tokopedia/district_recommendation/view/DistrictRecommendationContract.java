@@ -38,15 +38,6 @@ public interface DistrictRecommendationContract {
         void showNoConnection(@NonNull String message);
     }
 
-    interface IAnalyticsDistrictRecommendation{
-
-        void sendAnalyticsOnBackPressClicked();
-
-        void sendAnalyticsOnDistrictDropdownSelectionItemClicked(String districtName);
-
-        void sendAnalyticsOnClearTextDistrictRecommendationInput();
-    }
-
     interface Presenter extends CustomerPresenter<View> {
         void setToken(Token token);
 

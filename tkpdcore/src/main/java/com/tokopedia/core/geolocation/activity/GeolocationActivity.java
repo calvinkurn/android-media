@@ -15,7 +15,7 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.geolocation.fragment.GoogleMapFragment;
 import com.tokopedia.core.geolocation.listener.GeolocationView;
-import com.tokopedia.core.geolocation.listener.IAnalyticsGeoLocationListener;
+import com.tokopedia.transactionanalytics.listener.ITransactionAnalyticsGeoLocationPinPoint;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.geolocation.presenter.GeolocationPresenter;
 import com.tokopedia.core.geolocation.presenter.GeolocationPresenterImpl;
@@ -34,7 +34,7 @@ import permissions.dispatcher.RuntimePermissions;
  */
 @RuntimePermissions
 public class GeolocationActivity extends BasePresenterActivity<GeolocationPresenter>
-        implements GeolocationView, IAnalyticsGeoLocationListener {
+        implements GeolocationView, ITransactionAnalyticsGeoLocationPinPoint {
 
     public static final String EXTRA_EXISTING_LOCATION = "EXTRA_EXISTING_LOCATION";
     public static final String EXTRA_IS_FROM_MARKETPLACE_CART = "EXTRA_IS_FROM_CHECKOUT_CART";

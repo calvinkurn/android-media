@@ -1,9 +1,9 @@
-package com.tokopedia.core.geolocation.listener;
+package com.tokopedia.transactionanalytics.listener;
 
 /**
  * @author anggaprasetiyo on 20/07/18.
  */
-public interface IAnalyticsGeoLocationListener {
+public interface ITransactionAnalyticsGeoLocationPinPoint {
 
     void sendAnalyticsOnDropdownSuggestionItemClicked();
 

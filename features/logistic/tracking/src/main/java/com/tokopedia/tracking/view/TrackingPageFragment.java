@@ -28,6 +28,7 @@ import com.tokopedia.tracking.presenter.ITrackingPagePresenter;
 import com.tokopedia.tracking.utils.DateUtil;
 import com.tokopedia.tracking.viewmodel.TrackingViewModel;
 import com.tokopedia.transactionanalytics.OrderAnalyticsOrderTracking;
+import com.tokopedia.transactionanalytics.listener.ITransactionAnalyticsTrackingOrder;
 
 import javax.inject.Inject;
 
@@ -39,7 +40,7 @@ import static com.tokopedia.tracking.view.TrackingPageActivity.URL_LIVE_TRACKING
  */
 
 public class TrackingPageFragment extends BaseDaggerFragment implements
-        ITrackingPageFragment, IAnalyticsTrackingPageFragment {
+        ITrackingPageFragment, ITransactionAnalyticsTrackingOrder {
 
     private static final String ADDITIONAL_INFO_URL = "https://m.tokopedia.com/bantuan/217217126-agen-logistik-di-tokopedia";
     private static final String INVALID_REFERENCE_STATUS = "resi tidak valid";
