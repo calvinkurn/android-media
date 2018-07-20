@@ -134,23 +134,27 @@ public abstract class TopAdsDetailViewFragment<T extends TopAdsDetailViewPresent
 
     @Override
     public void onTurnOffAdSuccess(BulkAction dataResponseActionAds) {
-        loadData();
-        setResultAdDetailChanged();
-        snackbarRetry.hideRetrySnackbar();
+        if (isAdded()) {
+            loadData();
+            setResultAdDetailChanged();
+            snackbarRetry.hideRetrySnackbar();
+        }
     }
 
     @Override
     public void onTurnOffAdError() {
-        setStatusSwitch(!status.isChecked());
-        hideLoading();
-        snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                setStatusSwitch(false);
-                turnOffAd();
-            }
-        });
-        snackbarRetry.showRetrySnackbar();
+        if (isAdded()) {
+            setStatusSwitch(!status.isChecked());
+            hideLoading();
+            snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+                @Override
+                public void onRetryClicked() {
+                    setStatusSwitch(false);
+                    turnOffAd();
+                }
+            });
+            snackbarRetry.showRetrySnackbar();
+        }
     }
 
     @Override
