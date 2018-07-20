@@ -11,12 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.core.analytics.AppScreen;
-<<<<<<< HEAD
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
-=======
->>>>>>> upstream/release
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.Visitable;
