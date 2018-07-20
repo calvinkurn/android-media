@@ -206,12 +206,6 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         if (entityAddress.getName() != null) {
                             cityName.setText(entityAddress.getName());
                         }
-                    if (itemType == ITEM_EVENTS)
-                        if (TextUtils.isEmpty(metaDataInfo.getEntityPackages().get(0).getAddress())) {
-                            itemView.findViewById(R.id.ll_details2).setVisibility(View.GONE);
-                        }else{
-                            tvRightAddress.setText(metaDataInfo.getEntityPackages().get(0).getAddress());
-                        }
                 }
                 if (itemType == ITEM_EVENTS) {
                     if (TextUtils.isEmpty(metaDataInfo.getEntityProductName())) {
@@ -219,16 +213,30 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     } else {
                         tvRightTypeofEvents.setText(metaDataInfo.getEntityProductName());
                     }
-                    if (item.getQuantity()== 0) {
+                    if (metaDataInfo.getEntityPackages() != null && metaDataInfo.getEntityPackages().size() > 0) {
+                        if (TextUtils.isEmpty(metaDataInfo.getEntityPackages().get(0).getAddress())) {
+                            itemView.findViewById(R.id.ll_details2).setVisibility(View.GONE);
+                        } else {
+                            tvRightAddress.setText(metaDataInfo.getEntityPackages().get(0).getAddress());
+                        }
+                    } else {
+                        itemView.findViewById(R.id.ll_details2).setVisibility(View.GONE);
+                    }
+                    if (metaDataInfo.getEntityPackages() != null && metaDataInfo.getEntityPackages().size() > 0) {
+                        if (TextUtils.isEmpty(metaDataInfo.getEntityPackages().get(0).getDisplayName())) {
+                            itemView.findViewById(R.id.ll_details3).setVisibility(View.GONE);
+                        } else {
+                            tvRightCategoryTicket.setText(metaDataInfo.getEntityPackages().get(0).getDisplayName());
+                        }
+                    } else {
+                        itemView.findViewById(R.id.ll_details3).setVisibility(View.GONE);
+                    }
+                    if (item.getQuantity() == 0) {
                         itemView.findViewById(R.id.ll_details4).setVisibility(View.GONE);
-                    }else{
+                    } else {
                         tvRightNumberOfBooking.setText(String.valueOf(item.getQuantity()));
                     }
-                    if (TextUtils.isEmpty(metaDataInfo.getEntityPackages().get(0).getDisplayName())) {
-                        itemView.findViewById(R.id.ll_details3).setVisibility(View.GONE);
-                    } else {
-                        tvRightCategoryTicket.setText(metaDataInfo.getEntityPackages().get(0).getDisplayName());
-                    }
+
                 }
 
             }
