@@ -58,6 +58,11 @@ public class SimilarSearchdAdapter extends RecyclerView.Adapter<SimilarSearchdAd
 
     public void setProductsItems(List<ProductsItem> productsItems) {
         this.productsItems = productsItems;
+        if(productsItems != null) {
+            for(ProductsItem productsItem: productsItems) {
+                SimilarSearchTracking.eventUserSeeSimilarProduct(String.valueOf(productsItem.getId()),productsItem);
+            }
+        }
         notifyDataSetChanged();
     }
 
@@ -123,7 +128,7 @@ public class SimilarSearchdAdapter extends RecyclerView.Adapter<SimilarSearchdAd
                     bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
                     intent.putExtras(bundle);
                     itemView.getContext().startActivity(intent);
-                    SimilarSearchTracking.eventClickSimilarProduct("searchproduct - product "+data.getId(),productsItem);
+                    SimilarSearchTracking.eventClickSimilarProduct("searchproduct - product "+productsItem.getId(),productsItem);
                 }
             });
 
@@ -131,7 +136,7 @@ public class SimilarSearchdAdapter extends RecyclerView.Adapter<SimilarSearchdAd
 
         public void updateView(ProductsItem productsItem,int position) {
 
-            SimilarSearchTracking.eventUserSeeSimilarProduct(String.valueOf(productsItem.getId()),productsItem);
+
             this.productsItem = productsItem;
             int placeholderColors[] = {R.color.light_green1,R.color.light_blue1,R.color.light_red1,R.color.light_yellow1};
             ImageHandler.loadImage(itemView.getContext(),mProductImage,productsItem.getImageUrl(), new ColorDrawable(ContextCompat.getColor(itemView.getContext(),placeholderColors[position%4])));
