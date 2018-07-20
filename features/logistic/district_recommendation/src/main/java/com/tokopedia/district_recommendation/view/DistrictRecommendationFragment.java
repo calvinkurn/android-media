@@ -26,6 +26,7 @@ import com.tokopedia.district_recommendation.di.DistrictRecommendationComponent;
 import com.tokopedia.district_recommendation.domain.mapper.AddressMapper;
 import com.tokopedia.district_recommendation.domain.model.Address;
 import com.tokopedia.district_recommendation.domain.model.Token;
+import com.tokopedia.transactionanalytics.listener.ITransactionAnalyticsDistrictRecommendation;
 
 import java.util.concurrent.TimeUnit;
 
@@ -58,7 +59,7 @@ public class DistrictRecommendationFragment
     private DistrictRecommendationAdapter adapter;
     private CompositeSubscription compositeSubscription;
 
-    private DistrictRecommendationContract.IAnalyticsDistrictRecommendation analyticsListener;
+    private ITransactionAnalyticsDistrictRecommendation transactionAnalyticsDistrictRecommendation;
 
     @Inject
     DistrictRecommendationContract.Presenter presenter;
@@ -121,7 +122,7 @@ public class DistrictRecommendationFragment
 
     @Override
     protected void initialListener(Activity activity) {
-        analyticsListener = (DistrictRecommendationContract.IAnalyticsDistrictRecommendation) activity;
+        transactionAnalyticsDistrictRecommendation = (ITransactionAnalyticsDistrictRecommendation) activity;
     }
 
     @Override
@@ -187,7 +188,7 @@ public class DistrictRecommendationFragment
         ImageView closeButton = this.searchAddress.findViewById(searchCloseButtonId);
         if (closeButton != null)
             closeButton.setOnClickListener(v ->
-                    analyticsListener.sendAnalyticsOnClearTextDistrictRecommendationInput());
+                    transactionAnalyticsDistrictRecommendation.sendAnalyticsOnClearTextDistrictRecommendationInput());
 
     }
 
@@ -339,7 +340,7 @@ public class DistrictRecommendationFragment
 
     @Override
     public void onItemClick(Address address) {
-        analyticsListener.sendAnalyticsOnDistrictDropdownSelectionItemClicked(address.getDistrictName());
+        transactionAnalyticsDistrictRecommendation.sendAnalyticsOnDistrictDropdownSelectionItemClicked(address.getDistrictName());
         Intent resultIntent = new Intent();
         resultIntent.putExtra(INTENT_DATA_ADDRESS, address);
         resultIntent.putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS, addressMapper.convertAddress(address));
