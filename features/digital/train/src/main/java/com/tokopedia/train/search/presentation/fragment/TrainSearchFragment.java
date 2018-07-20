@@ -3,6 +3,7 @@ package com.tokopedia.train.search.presentation.fragment;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,11 +11,13 @@ import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder;
@@ -189,10 +192,38 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
     protected abstract void getDataFromFragment();
 
     private void initializeTripInfo() {
+        setVisibilityTripInfo(originCode, originCodeTv, originCityTv);
+        setVisibilityTripInfo(destinationCode, destinationCodeTv, destinationCityTv);
         originCodeTv.setText(originCode);
         originCityTv.setText(originCity);
         destinationCodeTv.setText(destinationCode);
         destinationCityTv.setText(destinationCity);
+    }
+
+    private void setVisibilityTripInfo(String codeString, TextView codeTextView, TextView cityTextView) {
+        RelativeLayout.LayoutParams layoutParams =
+                (RelativeLayout.LayoutParams) codeTextView.getLayoutParams();
+        if (TextUtils.isEmpty(codeString)) {
+            setCenterTextView(layoutParams, codeTextView);
+            codeTextView.setVisibility(View.INVISIBLE);
+            cityTextView.setTypeface(cityTextView.getTypeface(), Typeface.BOLD);
+            cityTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+        } else {
+            removeCenterTextView(layoutParams, codeTextView);
+            codeTextView.setVisibility(View.VISIBLE);
+            cityTextView.setTypeface(cityTextView.getTypeface(), Typeface.NORMAL);
+            cityTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
+        }
+    }
+
+    private void setCenterTextView(RelativeLayout.LayoutParams layoutParams, TextView textView) {
+        layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+        textView.setLayoutParams(layoutParams);
+    }
+
+    private void removeCenterTextView(RelativeLayout.LayoutParams layoutParams, TextView textView) {
+        layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT, 0);
+        textView.setLayoutParams(layoutParams);
     }
 
     private void setUpButtonActionView(View view) {
@@ -449,8 +480,7 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
     }
 
     private void removePaddingSortAndFilterSearch() {
-        RecyclerView recyclerView = getRecyclerView(getView());
-        recyclerView.setPadding(
+        getRecyclerView(getView()).setPadding(
                 EMPTY_MARGIN,
                 EMPTY_MARGIN,
                 EMPTY_MARGIN,

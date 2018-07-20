@@ -17,16 +17,19 @@ import com.tokopedia.train.passenger.presentation.viewmodel.TrainPassengerViewMo
 public class TrainBookingAddPassengerActivity extends TrainBaseActivity implements TrainBookingAddPassengerFragment.ActionListener {
 
     public static final String PASSENGER_DATA = "passenger_data";
+    public static final String IS_CHECK_SAME_AS_BUYER = "is_check_same_as_buyer";
 
-    public static Intent callingIntent(Context context, TrainPassengerViewModel trainPassengerViewModel) {
+    public static Intent callingIntent(Context context, TrainPassengerViewModel trainPassengerViewModel, boolean isCheckSameAsBuyer) {
         Intent intent = new Intent(context, TrainBookingAddPassengerActivity.class);
         intent.putExtra(PASSENGER_DATA, trainPassengerViewModel);
+        intent.putExtra(IS_CHECK_SAME_AS_BUYER, isCheckSameAsBuyer);
         return intent;
     }
 
     @Override
     protected Fragment getNewFragment() {
-        return TrainBookingAddPassengerFragment.newInstance(getIntent().getParcelableExtra(PASSENGER_DATA));
+        return TrainBookingAddPassengerFragment.newInstance(getIntent().getParcelableExtra(PASSENGER_DATA),
+                getIntent().getBooleanExtra(IS_CHECK_SAME_AS_BUYER, false));
     }
 
     @Override
