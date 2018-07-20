@@ -8,6 +8,7 @@ import android.webkit.WebView;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseWebViewFragment;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.utils.network.URLGenerator;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.common.di.DaggerKolComponent;
 import com.tokopedia.kol.common.di.KolComponent;
@@ -63,7 +64,8 @@ public class CreatePostWebviewFragment extends BaseWebViewFragment {
 
     @Override
     protected String getUrl() {
-        return getArguments().getString(FORM_URL);
+        return URLGenerator.generateURLSessionLogin(
+                getArguments().getString(FORM_URL), userSession.getDeviceId(), userSession.getUserId());
     }
 
     @Nullable
