@@ -25,6 +25,7 @@ import com.tokopedia.design.base.BaseCustomView;
  */
 
 public class LabelView extends BaseCustomView {
+    private static final float MAX_WIDTH_PERCENT_CONTENT = 0.3f;
 
     private ImageView imageView;
     private TextView titleTextView;
@@ -33,6 +34,7 @@ public class LabelView extends BaseCustomView {
 
     private Drawable imageDrawable;
     private int imageWidth;
+    private int imageHeight;
     private int imageMarginRight;
     private String titleText;
     private String subTitleText;
@@ -48,6 +50,7 @@ public class LabelView extends BaseCustomView {
     private int maxLines;
     private float titleTextSize;
     private float contentTextSize;
+    private float contentMaxWidthPercentage;
     private int minTitleWidth;
 
     private boolean enabled;
@@ -75,6 +78,7 @@ public class LabelView extends BaseCustomView {
                 imageDrawable = AppCompatResources.getDrawable(getContext(), drawableId);
             }
             imageWidth = (int) styledAttributes.getDimension(R.styleable.LabelView_lv_image_width, getResources().getDimension(R.dimen.dp_32));
+            imageHeight = (int) styledAttributes.getDimension(R.styleable.LabelView_lv_image_height, imageWidth);
             imageMarginRight = (int) styledAttributes.getDimension(R.styleable.LabelView_lv_image_margin_right, getResources().getDimension(R.dimen.dp_8));
             titleText = styledAttributes.getString(R.styleable.LabelView_lv_title);
             titleColorValue = styledAttributes.getColor(R.styleable.LabelView_lv_title_color, ContextCompat.getColor(getContext(), R.color.font_black_primary_70));
@@ -85,6 +89,7 @@ public class LabelView extends BaseCustomView {
             titleTextStyleValue = styledAttributes.getInt(R.styleable.LabelView_lv_title_text_style, Typeface.NORMAL);
             maxLines = styledAttributes.getInt(R.styleable.LabelView_lv_content_max_lines, 1);
             contentTextSize = styledAttributes.getDimension(R.styleable.LabelView_lv_content_text_size, getResources().getDimension(R.dimen.sp_16));
+            contentMaxWidthPercentage = styledAttributes.getFloat(R.styleable.LabelView_lv_content_max_width_percentage, MAX_WIDTH_PERCENT_CONTENT);
             titleTextSize = styledAttributes.getDimension(R.styleable.LabelView_lv_title_text_size, contentTextSize);
             minTitleWidth = styledAttributes.getDimensionPixelSize(R.styleable.LabelView_lv_title_min_width, 0);
         } finally {
@@ -112,7 +117,7 @@ public class LabelView extends BaseCustomView {
         }
         ViewGroup.LayoutParams layoutParams = imageView.getLayoutParams();
         layoutParams.width = imageWidth;
-        layoutParams.height = imageWidth;
+        layoutParams.height = imageHeight;
         imageView.setLayoutParams(layoutParams);
         titleTextView.setText(titleText);
         titleTextView.setTypeface(null, titleTextStyleValue);
@@ -121,6 +126,8 @@ public class LabelView extends BaseCustomView {
         if (!TextUtils.isEmpty(subTitleText)) {
             subTitleTextView.setText(subTitleText);
             subTitleTextView.setVisibility(View.VISIBLE);
+        } else {
+            subTitleTextView.setVisibility(View.GONE);
         }
         contentTextView.setText(contentText);
         contentTextView.setTextColor(contentColorValue);
@@ -131,7 +138,7 @@ public class LabelView extends BaseCustomView {
         DisplayMetrics dm = new DisplayMetrics();
         ((Activity)getContext()).getWindowManager().getDefaultDisplay().getMetrics(dm);
 
-        contentTextView.setMaxWidth((int)(dm.widthPixels * 0.3));
+        contentTextView.setMaxWidth((int)(dm.widthPixels * contentMaxWidthPercentage));
 
         invalidate();
         requestLayout();

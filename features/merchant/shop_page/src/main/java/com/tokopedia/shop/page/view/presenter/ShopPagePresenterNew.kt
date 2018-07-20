@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession
 import com.tokopedia.abstraction.common.network.exception.UserNotLoginException
 import com.tokopedia.gm.common.domain.interactor.DeleteFeatureProductListCacheUseCase
 import com.tokopedia.reputation.common.data.source.cloud.model.ReputationSpeed
+import com.tokopedia.reputation.common.domain.interactor.DeleteReputationSpeedDailyCacheUseCase
 import com.tokopedia.reputation.common.domain.interactor.GetReputationSpeedUseCase
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
 import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoUseCase
@@ -34,6 +35,7 @@ constructor(private val getShopInfoUseCase: GetShopInfoUseCase,
             private val deleteShopInfoUseCase: DeleteShopInfoUseCase,
             private val deleteShopEtalaseUseCase: DeleteShopEtalaseUseCase,
             private val deleteShopNoteUseCase: DeleteShopNoteUseCase,
+            private val deleteReputationSpeedDailyUseCase: DeleteReputationSpeedDailyCacheUseCase,
             private val userSession: UserSession) : BaseDaggerPresenter<ShopPageView>() {
 
     fun isMyShop(shopId: String) = (userSession.shopId == shopId)
@@ -92,6 +94,7 @@ constructor(private val getShopInfoUseCase: GetShopInfoUseCase,
         deleteShopEtalaseUseCase.executeSync()
         deleteShopNoteUseCase.executeSync()
         deleteFeatureProductListCacheUseCase.executeSync()
+        deleteReputationSpeedDailyUseCase.executeSync()
     }
 
     override fun detachView() {
@@ -104,5 +107,6 @@ constructor(private val getShopInfoUseCase: GetShopInfoUseCase,
         deleteShopEtalaseUseCase.unsubscribe()
         deleteShopNoteUseCase.unsubscribe()
         deleteFeatureProductListCacheUseCase.unsubscribe()
+        deleteReputationSpeedDailyUseCase.unsubscribe()
     }
 }

@@ -34,6 +34,9 @@ public class ShopCacheApiWhiteList {
         // Shop statistic speed
         cacheApiWhiteList.add(new CacheApiWhiteListDomain(ReputationCommonUrl.BASE_URL, ReputationCommonUrl.STATISTIC_SPEED_URL, ONE_HOUR, true));
 
+        // Shop statistic speed_v2
+        cacheApiWhiteList.add(new CacheApiWhiteListDomain(ReputationCommonUrl.BASE_URL, ReputationCommonUrl.STATISTIC_SPEED_URL_V2, ONE_HOUR, true));
+
         // Shop note
         cacheApiWhiteList.add(new CacheApiWhiteListDomain(ShopCommonUrl.BASE_URL, ShopUrl.SHOP_NOTE_PATH, ONE_HOUR));
 
