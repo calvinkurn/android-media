@@ -155,11 +155,6 @@ public class EventBookTicketPresenter
             } else {
                 getView().hideProgressBar();
             }
-        } else if (requestCode == Utils.Constants.REVIEW_REQUEST) {
-            if (resultCode == Utils.Constants.PAYMENTSUCCESS) {
-                getView().getActivity().setResult(Utils.Constants.PAYMENTSUCCESS);
-                getView().getActivity().finish();
-            }
         }
     }
 

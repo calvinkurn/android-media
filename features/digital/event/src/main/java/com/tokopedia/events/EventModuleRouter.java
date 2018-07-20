@@ -18,4 +18,5 @@ public interface EventModuleRouter {
 
     public SessionHandler getSessionHandler();
 
+    String ACTION_CLOSE_ACTIVITY = "action_close_activity";
 }

@@ -3,12 +3,14 @@ package com.tokopedia.events.view.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
@@ -29,6 +31,7 @@ import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.R;
 import com.tokopedia.events.R2;
 import com.tokopedia.events.di.DaggerEventComponent;
@@ -38,6 +41,7 @@ import com.tokopedia.events.view.contractor.EventsDetailsContract;
 import com.tokopedia.events.view.presenter.EventsDetailsPresenter;
 import com.tokopedia.events.view.utils.CurrencyUtil;
 import com.tokopedia.events.view.utils.EventsGAConst;
+import com.tokopedia.events.view.utils.FinishActivityReceiver;
 import com.tokopedia.events.view.utils.ImageTextViewHolder;
 import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
@@ -100,9 +104,10 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
     ImageTextViewHolder locationHolder;
     ImageTextViewHolder addressHolder;
 
-    EventComponent eventComponent;
+    private EventComponent eventComponent;
     @Inject
     EventsDetailsPresenter mPresenter;
+    private FinishActivityReceiver finishReceiver = new FinishActivityReceiver(this);
 
     public static String FROM = "from";
 
@@ -142,6 +147,10 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
 
         tvExpandableDescription.setInterpolator(new OvershootInterpolator());
         tvExpandableTermsNCondition.setInterpolator(new OvershootInterpolator());
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(EventModuleRouter.ACTION_CLOSE_ACTIVITY);
+        LocalBroadcastManager.getInstance(this).registerReceiver(finishReceiver, intentFilter);
 
         setupToolbar();
         toolbar.setTitle("Events");
@@ -183,7 +192,7 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
     @Override
     public void navigateToActivityRequest(Intent intent, int requestCode) {
         hideProgressBar();
-        startActivityForResult(intent,requestCode);
+        startActivityForResult(intent, requestCode);
 
     }
 
@@ -381,15 +390,5 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
     @Override
     public String getScreenName() {
         return mPresenter.getSCREEN_NAME();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == Utils.Constants.SELECT_TICKET_REQUEST) {
-            if (resultCode == Utils.Constants.PAYMENTSUCCESS) {
-                finish();
-            }
-        }
     }
 }

@@ -2,8 +2,10 @@ package com.tokopedia.events.view.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -15,6 +17,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.R;
 import com.tokopedia.events.R2;
 import com.tokopedia.events.di.DaggerEventComponent;
@@ -26,6 +29,7 @@ import com.tokopedia.events.view.fragment.LocationDateBottomSheetFragment;
 import com.tokopedia.events.view.presenter.EventBookTicketPresenter;
 import com.tokopedia.events.view.utils.CurrencyUtil;
 import com.tokopedia.events.view.utils.EventsGAConst;
+import com.tokopedia.events.view.utils.FinishActivityReceiver;
 import com.tokopedia.events.view.utils.ImageTextViewHolder;
 import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.EventsDetailsViewModel;
@@ -78,6 +82,8 @@ public class EventBookTicketActivity
     private String title;
 
     private LocationDateBottomSheetFragment locationFragment;
+    private FinishActivityReceiver finishReceiver = new FinishActivityReceiver(this);
+
 
     private static final int EVENT_LOGIN_REQUEST = 1099;
     private static final String BOOK_TICKET_FRAGMENT = "bookticketfragment";
@@ -99,6 +105,9 @@ public class EventBookTicketActivity
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(EventModuleRouter.ACTION_CLOSE_ACTIVITY);
+        LocalBroadcastManager.getInstance(this).registerReceiver(finishReceiver, intentFilter);
     }
 
 

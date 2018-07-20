@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.view.View;
@@ -26,6 +27,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
+import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.R;
 import com.tokopedia.events.R2;
 import com.tokopedia.events.di.DaggerEventComponent;
@@ -35,6 +37,7 @@ import com.tokopedia.events.view.contractor.EventReviewTicketsContractor;
 import com.tokopedia.events.view.presenter.EventReviewTicketPresenter;
 import com.tokopedia.events.view.utils.CurrencyUtil;
 import com.tokopedia.events.view.utils.EventsGAConst;
+import com.tokopedia.events.view.utils.FinishActivityReceiver;
 import com.tokopedia.events.view.utils.ImageTextViewHolder;
 import com.tokopedia.events.view.viewmodel.PackageViewModel;
 import com.tokopedia.events.view.viewmodel.SelectedSeatViewModel;
@@ -133,15 +136,14 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
     @BindView(R2.id.goto_promo)
     View gotoPromo;
 
-    EventComponent eventComponent;
+    private EventComponent eventComponent;
     @Inject
     EventReviewTicketPresenter mPresenter;
 
     public static final int PAYMENT_REQUEST_CODE = 65000;
     private ImageTextViewHolder timeHolder;
     private ImageTextViewHolder addressHolder;
-    FirebaseRemoteConfigImpl remoteConfig;
-
+    private FinishActivityReceiver finishReceiver = new FinishActivityReceiver(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,7 +154,6 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
         timeHolder = new ImageTextViewHolder();
         addressHolder = new ImageTextViewHolder();
 
-        remoteConfig = new FirebaseRemoteConfigImpl(this);
         ButterKnife.bind(timeHolder, eventTimeTv);
         ButterKnife.bind(addressHolder, eventAddressTv);
 
@@ -503,10 +504,11 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
             }
         } else if (requestCode == ScroogePGUtil.REQUEST_CODE_OPEN_SCROOGE_PAGE) {
             if (data != null) {
-                String url = data.getStringExtra(ScroogePGUtil.SUCCESS_MSG_URL) + "/" + String.valueOf(true);
+                String url = data.getStringExtra(ScroogePGUtil.SUCCESS_MSG_URL) + "?from_payment=true" ;
                 RouteManager.route(this, url);
             }
-            setResult(com.tokopedia.events.view.utils.Utils.Constants.PAYMENTSUCCESS);
+            LocalBroadcastManager manager = LocalBroadcastManager.getInstance(getActivity());
+            manager.sendBroadcast(new Intent(EventModuleRouter.ACTION_CLOSE_ACTIVITY));
             this.finish();
         }
     }
