@@ -146,7 +146,7 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
     }
 
     @Override
-    public void putString(String key, String value) {
+    public void setString(String key, String value) {
         if (!GlobalConfig.isAllowDebuggingTools()) {
             throw new RuntimeException("Are you insane?");
         }
