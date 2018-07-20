@@ -2319,6 +2319,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public boolean isLoginInactivePhoneLinkEnabled() {
+        return remoteConfig.getBoolean(SessionRouter.ENABLE_LOGIN_INACTIVE_PHONE_LINK);
+    }
+
+    @Override
     public Intent getChangePhoneNumberRequestIntent(Context context) {
         return ChangePhoneNumberRequestActivity.getCallingIntent(context);
     }

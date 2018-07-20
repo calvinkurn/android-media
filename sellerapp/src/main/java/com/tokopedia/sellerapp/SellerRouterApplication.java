@@ -1425,4 +1425,9 @@ public abstract class SellerRouterApplication extends MainApplication
     public boolean isIndicatorVisible() {
         return false; //Sellerapp dont have groupchat therefore always set false to indicator
     }
+
+    @Override
+    public boolean isLoginInactivePhoneLinkEnabled() {
+        return remoteConfig.getBoolean(SessionRouter.ENABLE_LOGIN_INACTIVE_PHONE_LINK);
+    }
 }

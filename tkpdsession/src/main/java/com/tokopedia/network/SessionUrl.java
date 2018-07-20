@@ -86,7 +86,7 @@ public class SessionUrl {
     }
 
     public static class ChangePhone {
-        public static final String WEBVIEW_CHANGE_PHONE_NUMBER = "/user/activation/inactive-phone";
+        public static final String WEBVIEW_CHANGE_PHONE_NUMBER = "user/activation/inactive-phone";
         public static final String PATH_WEBVIEW_CHANGE_PHONE_NUMBER =
                 CHANGE_PHONE_DOMAIN + WEBVIEW_CHANGE_PHONE_NUMBER;
     }
