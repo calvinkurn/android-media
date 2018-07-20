@@ -58,11 +58,7 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
     public boolean getBoolean(String key, Boolean defaultValue) {
         if (GlobalConfig.isAllowDebuggingTools()) {
             String cacheValue = sharedPrefs.getString(key, String.valueOf(defaultValue));
-            if (cacheValue.equalsIgnoreCase(String.valueOf(defaultValue))) {
-                if (firebaseRemoteConfig != null) {
-                    return firebaseRemoteConfig.getBoolean(key);
-                }
-            } else {
+            if (!cacheValue.equalsIgnoreCase(String.valueOf(defaultValue)) && !cacheValue.isEmpty()) {
                 return cacheValue.equalsIgnoreCase("true");
             }
         }
@@ -108,11 +104,7 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
     public long getLong(String key, long defaultValue) {
         if (GlobalConfig.isAllowDebuggingTools()) {
             String cacheValue = sharedPrefs.getString(key, String.valueOf(defaultValue));
-            if (cacheValue.equalsIgnoreCase(String.valueOf(defaultValue))) {
-                if (firebaseRemoteConfig != null) {
-                    return firebaseRemoteConfig.getLong(key);
-                }
-            } else {
+            if (!cacheValue.equalsIgnoreCase(String.valueOf(defaultValue)) && !cacheValue.isEmpty()) {
                 return Long.parseLong(cacheValue);
             }
         }
@@ -131,11 +123,7 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
     public String getString(String key, String defaultValue) {
         if (GlobalConfig.isAllowDebuggingTools()) {
             String cacheValue = sharedPrefs.getString(key, defaultValue);
-            if (cacheValue.equalsIgnoreCase(defaultValue)) {
-                if (firebaseRemoteConfig != null) {
-                    return firebaseRemoteConfig.getString(key);
-                }
-            } else {
+            if (!cacheValue.equalsIgnoreCase(defaultValue) && !cacheValue.isEmpty()) {
                 return cacheValue;
             }
         }
