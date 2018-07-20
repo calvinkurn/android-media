@@ -1,5 +1,7 @@
 package com.tokopedia.core.network.retrofit.interceptors;
 
+import android.util.Log;
+
 import com.tkpd.library.utils.AnalyticsLog;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
@@ -76,6 +78,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
 
     protected Response checkForceLogout(Chain chain, Response response, Request finalRequest) throws
             IOException {
+        Log.d("adr", "checkForceLogout: "+response.peekBody(512).string());
         if (isNeedGcmUpdate(response)) {
             return refreshTokenAndGcmUpdate(chain, response, finalRequest);
         } else if (isUnauthorized(finalRequest, response)) {
@@ -103,14 +106,6 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         AnalyticsLog.logInvalidGrant(response.request().url().toString());
     }
 
-    protected Response checkShowForceLogout(Chain chain, Request newestRequest) throws IOException {
-        Response response = chain.proceed(newestRequest);
-        if (isUnauthorized(newestRequest, response) || isNeedGcmUpdate(response)) {
-            ServerErrorHandler.showForceLogoutDialog();
-            ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString());
-        }
-        return response;
-    }
 
     protected void checkResponse(String string, Response response) {
         String bodyResponse = string;
@@ -372,7 +367,8 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         try {
             accessTokenRefresh.refreshToken();
             Request newest = recreateRequestWithNewAccessToken(chain);
-            return checkShowForceLogout(chain, newest);
+            return chain.proceed(newest);
+
         } catch (IOException e) {
             e.printStackTrace();
             return response;
@@ -385,13 +381,13 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
             String newAccessToken = accessTokenRefresh.refreshToken();
             doRelogin(newAccessToken);
 
+            Request newestRequest;
             if (finalRequest.header(AUTHORIZATION).contains(BEARER)) {
-                Request newestRequest = recreateRequestWithNewAccessToken(chain);
-                return checkShowForceLogout(chain, newestRequest);
+                newestRequest = recreateRequestWithNewAccessToken(chain);
             } else {
-                Request newestRequest = recreateRequestWithNewAccessTokenAccountsAuth(chain);
-                return checkShowForceLogout(chain, newestRequest);
+                newestRequest = recreateRequestWithNewAccessTokenAccountsAuth(chain);
             }
+            return chain.proceed(newestRequest);
         } catch (IOException e) {
             e.printStackTrace();
             return response;
