@@ -897,7 +897,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onOpenKolTooltip(int rowNumber, String url) {
-        ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity(), url);
+        feedModuleRouter.openRedirectUrl(getActivity(), url);
     }
 
     @Override
