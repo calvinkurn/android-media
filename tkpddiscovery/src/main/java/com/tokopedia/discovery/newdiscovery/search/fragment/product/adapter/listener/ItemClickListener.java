@@ -16,7 +16,8 @@ public interface ItemClickListener extends EmptyStateClickListener {
 
     void onLongClick(ProductItem item, int adapterPosition);
 
-    void onWishlistButtonClicked(ProductItem productItem, int adapterPosition);
+
+    void onWishlistButtonClicked(ProductItem productItem);
 
     void onSuggestionClicked(String suggestedQuery);
 
