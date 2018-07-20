@@ -11,6 +11,8 @@ public interface ConstantTransactionAnalytics {
         String VIEW_ATC = "viewATC";
         String REMOVE_FORM_CART = "removeFromCart";
         String ADD_TO_CART = "addToCart";
+        String CLICK_COURIER = "clickCourier";
+        String VIEW_COURIER = "viewCourier";
     }
 
     interface EventCategory {
@@ -115,6 +117,9 @@ public interface ConstantTransactionAnalytics {
         String CLICK_HAPUS_DAN_TAMBAH_WISHLIST_FrOM_HaPUS_PRODUK_BERKENDALA = "click hapus dan tambah wishlist from hapus produk berkendala";
         String CLICK_HAPUS_FROM_HAPUS_PRODUK_BERKENDALA = "click hapus from hapus produk berkendala";
         String CLICK_BELI = "click beli";
+
+        String CLICK_SELECT_COURIER = "click select courier";
+        String CLICK_COURIER_OPTION = "click courier option";
     }
 
     interface EventLabel {
@@ -122,5 +127,19 @@ public interface ConstantTransactionAnalytics {
         String NOT_SUCCESS = "not success";
         String COURIER_NOT_COMPLETE = "courier not complete";
         String KUOTA_PENUKARAN = "kuota penukaran";
+    }
+
+    interface ScreenName {
+        String CART = "/cart";
+        String CHECKOUT = "/cart/shipment";
+        String SELECT_COURIER = "/selectcourier";
+        String PROMO_PAGE_FROM_CART_TAB_PROMO = "/cart/voucher";
+        String PROMO_PAGE_FROM_CART_TAB_COUPON = "/cart/coupon";
+        String PROMO_PAGE_FROM_CHECKOUT_TAB_PROMO = "/cart/shipment/voucher";
+        String PROMO_PAGE_FROM_CHECKOUT_TAB_COUPON = "/cart/shipment/coupon";
+        String MULTI_ADDRESS_PAGE = "/cart/shipment/multiple";
+        String EDIT_MULTIPLE_ADDRESS_PAGE = "/cart/shipment/multiple/edit";
+        String ADDRESS_LIST_PAGE = "/cart/address";
+        String ADD_NEW_ADDRESS_PAGE = "/cart/address/create";
     }
 }

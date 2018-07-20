@@ -675,7 +675,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
     @Override
     public void onBannerItemClick(int position, BannerDetail bannerDetail) {
-        flightAnalytics.eventPromotionClick(position + 1, bannerDetail.getAttributes().getTitle(), bannerDetail.getAttributes().getImgUrl());
+        flightAnalytics.eventPromotionClick(position + 1, bannerDetail.getAttributes().getDescription(), bannerDetail.getAttributes().getLinkUrl());
     }
 
     private void getBannerData() {
@@ -695,7 +695,11 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
             @Override
             public void onNext(List<BannerDetail> bannerDetailList) {
                 if (isViewAttached()) {
-                    getView().renderBannerView(bannerDetailList);
+                    if (bannerDetailList.size() > 0) {
+                        getView().renderBannerView(bannerDetailList);
+                    } else {
+                        getView().hideBannerView();
+                    }
                 }
             }
         });

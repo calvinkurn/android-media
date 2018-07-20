@@ -89,7 +89,7 @@ public class ShipmentAddressListPresenter
                         @Override
                         public void onError(Throwable throwable) {
                             throwable.printStackTrace();
-                            if (isViewAttached()) {
+                            if (isViewAttached() && getMvpView().getActivityContext() != null) {
                                 getMvpView().hideLoading();
                                 String message;
                                 if (throwable instanceof UnknownHostException ||

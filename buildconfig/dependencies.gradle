@@ -52,6 +52,7 @@ ext {
     tkpdRideVersion = '1.+'
     tkpdProfileVersion = '2.22'
     tkpdShopVersion = '2.22'
+    tkpdProductVersion = '2.22'
     tkpdKolVersion = '2.22'
     tkpdPushNotifVersion = '2.22'
     tkpdGamificationVersion = '2.22'
@@ -67,6 +68,7 @@ ext {
     tkpdGraphqlVersion = '2.22'
     tkpdContactUsVersion = '2.22'
     tkpdCommonNetworkVersion = '2.22'
+    tkpdTokopointVersion = '2.22'
 
     networkDependencies = [
             retrofit          : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
@@ -138,7 +140,7 @@ ext {
     analyticsDependencies = [
             appsflyer  : "com.appsflyer:af-android-sdk:4.8.11@aar",
             installRef : "com.android.installreferrer:installreferrer:1.0",
-            moengage   : "com.moengage:moe-android-sdk:8.2.00",
+            moengage   : "com.moengage:moe-android-sdk:9.1.04",
             moengageMSG: "com.moengage:addon-messaging:2.0.03",
             branch     : "io.branch.sdk.android:library:2.+",
             logentries : "com.github.LogentriesCommunity:le_android:logentries-android-4.4.1"
@@ -183,7 +185,7 @@ ext {
             imagecropper          : "com.theartofdev.edmodo:android-image-cropper:2.5.1",
             reactNative           : "com.facebook.react:react-native:$reactNativeVersion",
             codePushReactNative   : "com.microsoft.codepush:rn-codepush:5.1.3",
-            hansel                : "io.hansel.preprocessor:preprocessor:6.3.0",
+            hansel                : "io.hansel.preprocessor:preprocessor:6.5.0",
             sendBird              : "com.sendbird.sdk:sendbird-android-sdk:3.0.49",
             apacheLang            : "org.apache.commons:commons-lang3:3.0",
             flexBoxLayout         : "com.google.android:flexbox:0.3.2"
@@ -248,11 +250,13 @@ ext {
             shopCommon            : "com.tokopedia.shop:shop-common:${tkpdShopVersion}",
             goldMerchantCommon    : "com.tokopedia.gm:gold_merchant-common:${tkpdGoldMerchantVersion}",
             shopPage              : "com.tokopedia.shop:shop-page:${tkpdShopVersion}",
+            productEdit           : "com.tokopedia.product:product-edit:${tkpdProductVersion}",
             kol                   : "com.tokopedia.kol:kol:${tkpdKolVersion}",
             pushNotif             : "com.tokopedia.pushnotif:push_notification:${tkpdPushNotifVersion}",
             gamification          : "com.tokopedia.gamification:gamification:${tkpdGamificationVersion}",
             mitraToppers          : "com.tokopedia.mitratoppers:mitra_toppers:${tkpdMitraToppersVersion}",
             goldMerchant          : "com.tokopedia.gm:gold_merchant:${tkpdGoldMerchantVersion}",
+            goldMerchantSubscribe : "com.tokopedia.gm:gold_merchant-subscribe:${tkpdGoldMerchantVersion}",
             topAdsManagement      : "com.tokopedia.topads:top_ads_management:${tkpdTopAdsSDKVersion}",
             districtRecommendation: "com.tokopedia.district_recommendation:district_recommendation:${tkpdDistrictRecommendationVersion}"
     ]
@@ -269,6 +273,7 @@ ext {
 
     features = [
             loyalty               : ":tkpdloyalty",
+            nps                   : ":features:common:nps",
             feed                  : ":features:content:feed",
             digitalproduct        : ":features:digital:digitalproduct",
             core                  : ":tkpdcore",
@@ -277,7 +282,7 @@ ext {
             transaction           : ":tkpdtransaction",
             transactioncommon     : ":tkpdtransaction-common",
             session               : ":tkpdsession",
-            topAdsSdk             : ":tkpdtopadssdk",
+            topAdsSdk             : ":features:discovery:topadssdk",
             productDetail         : ":tkpdpdp",
             seller                : ":tkpdseller",
             payment               : ":features:payment:payment",
@@ -285,10 +290,12 @@ ext {
             districtRecommendation: ":features:logistic:district_recommendation",
             goldMerchantCommon    : ":features:merchant:gold_merchant_common",
             goldMerchant          : ":features:merchant:gold_merchant",
+            goldMerchantSubscribe : ":features:merchant:gold_merchant_subscribe",
             reputationCommon      : ":features:merchant:reputation_common",
             reputation            : ":features:merchant:reputation",
             shopCommon            : ":features:merchant:shop_common",
             shopPage              : ":features:merchant:shop_page",
+            productEdit           : ":features:merchant:product_edit",
             topAdsManagement      : ":features:top_ads:top_ads_management",
             topAdsCommon          : ":features:top_ads:top_ads_management_common",
             topAdsSourceTagging   : ":features:top_ads:top_ads_management_sourcetagging",
@@ -297,20 +304,24 @@ ext {
             flightNoOp            : ":features:digital:flight_no_op",
             mitraToppers          : ":features:fintech:mitra_toppers",
             event                 : ":features:digital:event",
-            home                  : ":tkpdhome",
+            home                  : ":features:discovery:home",
             content               : ":tkpdcontent",
             checkout              : ":features:transaction:checkout",
             kol                   : ":features:content:kol",
             groupchat             : ":features:user:groupchat",
             gamification          : ":features:promo:gamification",
             profile               : ":features:user:profile",
+            topchat               : ":features:user:topchat",
             contactUs             : ":features:operational:contact_us",
             otp                   : ":features:user:otp",
             logisticdata          : ":features:logistic:logisticdata",
             transactiondata       : ":features:transaction:transactiondata",
             transactionanalytics  : ":features:transaction:transactionanalytics",
             tracking              : ":features:logistic:tracking",
-            logisticuploadawb     : ":features:logistic:logisticuploadawb"
+            logisticuploadawb     : ":features:logistic:logisticuploadawb",
+            vote                  : ":features:user:vote",
+            instantLoan           : ":features:fintech:instant_loan",
+            tokopoints            : ":features:promo:tokopoints"
     ]
 
     libraries = [
