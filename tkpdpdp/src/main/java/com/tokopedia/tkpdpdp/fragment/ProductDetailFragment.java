@@ -139,6 +139,7 @@ import permissions.dispatcher.RuntimePermissions;
 
 import static android.app.Activity.RESULT_OK;
 import static com.tokopedia.core.product.model.productdetail.ProductInfo.PRD_STATE_PENDING;
+import static com.tokopedia.core.product.model.productdetail.ProductInfo.PRD_STATE_WAREHOUSE;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.EXTRA_PRODUCT_ID;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.WIHSLIST_STATUS_IS_WISHLIST;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.WISHLIST_STATUS_UPDATED_POSITION;
@@ -508,7 +509,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     @Override
     public void onBuyClick(String source) {
         if (productData.getInfo().getHasVariant()) {
-            if (!onClickBuyWhileRequestingVariant) {
+            if (!onClickBuyWhileRequestingVariant && productVariant != null) {
                 openVariantPage(generateStateVariant(source));
             } else {
                 onClickBuyWhileRequestingVariant = true;
@@ -593,6 +594,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     public void updateButtonBuyListener() {
         buttonBuyView.removeLoading();
         if (onClickBuyWhileRequestingVariant) {
+            onClickBuyWhileRequestingVariant = false;
             onBuyClick(lastStateOnClickBuyWhileRequestVariant);
         }
     }
@@ -685,6 +687,9 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void openVariantPage(int state) {
+        if (productVariant == null) {
+            return;
+        }
         Intent intent = new Intent(getActivity(), VariantActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(VariantActivity.KEY_VARIANT_DATA, productVariant);
@@ -792,7 +797,14 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         } catch (NumberFormatException e) {
             this.selectedQuantity = 1;
         }
-        startShowCase();
+        if (isAllowShowCaseNcf()) {
+            startShowCase();
+        }
+    }
+
+    private boolean isAllowShowCaseNcf() {
+        return buttonBuyView.getVisibility() == View.VISIBLE
+                && buttonBuyView.containerNewButtonBuy.getVisibility() == View.VISIBLE;
     }
 
     @Override
@@ -1704,6 +1716,11 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     public void renderAddToCartSuccessOpenCart(AddToCartResult addToCartResult) {
         buttonBuyView.removeLoading();
         checkoutAnalyticsAddToCart.eventClickAtcAddToCartImpressionAtcSuccess();
+        ProductPageTracking.eventAppsFlyer(
+                String.valueOf(productData.getInfo().getProductId()),
+                productData.getInfo().getProductPrice(),
+                selectedQuantity
+        );
         updateCartNotification();
         enhanceEcommerceAtc(addToCartResult);
         if (getActivity() != null && getActivity().getApplicationContext() instanceof PdpRouter) {
@@ -1717,6 +1734,11 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     public void renderAddToCartSuccess(AddToCartResult addToCartResult) {
         buttonBuyView.removeLoading();
         checkoutAnalyticsAddToCart.eventClickAtcAddToCartImpressionAtcSuccess();
+        ProductPageTracking.eventAppsFlyer(
+                String.valueOf(productData.getInfo().getProductId()),
+                productData.getInfo().getProductPrice(),
+                selectedQuantity
+        );
         updateCartNotification();
         enhanceEcommerceAtc(addToCartResult);
         showSnackbarSuccessAtc(addToCartResult.getMessage());

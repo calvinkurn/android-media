@@ -1,13 +1,16 @@
 package com.tokopedia.tkpd;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
@@ -128,6 +131,7 @@ import com.tokopedia.feedplus.domain.usecase.FollowKolPostUseCase;
 import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.feedplus.view.di.FeedPlusComponent;
 import com.tokopedia.fingerprint.util.FingerprintConstant;
+import com.tokopedia.fingerprint.view.FingerPrintDialog;
 import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.TkpdFlight;
@@ -289,6 +293,7 @@ import com.tokopedia.usecase.UseCase;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -1291,12 +1296,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         } else {
             actionApplink(activity, appLinkScheme);
         }
-
-    }
-
-    @Override
-    public Observable<Boolean> setCashBack(String productId, int cashback) {
-        return Observable.just(false);
     }
 
     @Override
@@ -1795,6 +1794,22 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return getAppComponent().chuckInterceptor();
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
+    @Override
+    public PublicKey checkoutModuleRouterGeneratePublicKey() {
+        return FingerPrintDialog.generatePublicKey(getAppContext());
+    }
+
+    @Override
+    public String checkoutModuleRouterGetPublicKey(PublicKey publicKey) {
+        return FingerPrintDialog.getPublicKey(publicKey);
+    }
+
+    @Override
+    public boolean checkoutModuleRouterGetEnableFingerprintPayment() {
+        return getEnableFingerprintPayment();
+    }
+
     @Override
     public FingerprintInterceptor checkoutModuleRouterGetCartCheckoutFingerPrintInterceptor() {
         return getAppComponent().fingerprintInterceptor();
@@ -2146,7 +2161,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void goToCreateTopadsPromo(Context context, String productId, String shopId, String source) {
-
         Intent topadsIntent = context.getPackageManager()
                 .getLaunchIntentForPackage(DrawerBuyerHelper.TOP_SELLER_APPLICATION_PACKAGE);
         if (topadsIntent != null) {

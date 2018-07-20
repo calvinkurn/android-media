@@ -72,10 +72,6 @@ public class CartActivity extends BaseCheckoutActivity implements CartFragment.A
         if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
             getSupportFragmentManager().popBackStack();
         } else {
-            startActivity(
-                    ((ICheckoutModuleRouter) getApplication())
-                            .getHomePageIntent(this)
-            );
             finish();
         }
     }

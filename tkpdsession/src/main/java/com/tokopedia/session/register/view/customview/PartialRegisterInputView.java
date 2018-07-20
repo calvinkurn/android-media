@@ -31,8 +31,6 @@ public class PartialRegisterInputView extends BaseCustomView{
     TextView btnRegister;
     TkpdHintTextInputLayout wrapper;
 
-    private static final Pattern pattern = Pattern.compile("^[\\d]{8,15}$");
-
     @Inject
     RegisterInitialPresenter presenter;
 
@@ -81,18 +79,13 @@ public class PartialRegisterInputView extends BaseCustomView{
         if (s == null) {
             wrapper.setError(null);
             wrapper.setErrorEnabled(false);
-            showHintAndHideError();
+            hideError();
         } else {
             wrapper.setErrorEnabled(true);
             wrapper.setError(s);
-            hideHintAndShowError();
+            showError();
         }
     }
-
-    private boolean isPhoneNumber(CharSequence s) {
-        return pattern.matcher(s).matches();
-    }
-
 
     private TextWatcher watcher(final TkpdHintTextInputLayout wrapper) {
 
@@ -104,18 +97,11 @@ public class PartialRegisterInputView extends BaseCustomView{
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(s.length() > 0) {
-                    setWrapperError(wrapper, null);
-                }
+                setWrapperError(wrapper, null);
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (isPhoneNumber(s)){
-                    tvMessage.setVisibility(View.VISIBLE);
-                } else {
-                    tvMessage.setVisibility(View.GONE);
-                }
             }
         };
     }
@@ -133,13 +119,11 @@ public class PartialRegisterInputView extends BaseCustomView{
         }
     }
 
-    private void showHintAndHideError() {
-        tvMessage.setVisibility(VISIBLE);
+    private void hideError() {
         tvError.setVisibility(GONE);
     }
 
-    private void hideHintAndShowError() {
-        tvMessage.setVisibility(GONE);
+    private void showError() {
         tvError.setVisibility(VISIBLE);
     }
 }

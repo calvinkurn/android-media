@@ -449,16 +449,20 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
 
     @Override
     public void onCartDataEnableToCheckout() {
-        btnToShipment.setBackgroundResource(R.drawable.orange_button_rounded);
-        btnToShipment.setTextColor(getResources().getColor(R.color.white));
-        btnToShipment.setOnClickListener(getOnClickButtonToShipmentListener());
+        if (isAdded()) {
+            btnToShipment.setBackgroundResource(R.drawable.orange_button_rounded);
+            btnToShipment.setTextColor(getResources().getColor(R.color.white));
+            btnToShipment.setOnClickListener(getOnClickButtonToShipmentListener());
+        }
     }
 
     @Override
     public void onCartDataDisableToCheckout() {
-        btnToShipment.setBackgroundResource(R.drawable.bg_grey_button_rounded_checkout_module);
-        btnToShipment.setTextColor(getResources().getColor(R.color.grey_500));
-        btnToShipment.setOnClickListener(null);
+        if (isAdded()) {
+            btnToShipment.setBackgroundResource(R.drawable.bg_grey_button_rounded_checkout_module);
+            btnToShipment.setTextColor(getResources().getColor(R.color.grey_500));
+            btnToShipment.setOnClickListener(null);
+        }
     }
 
     @Override

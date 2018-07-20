@@ -494,8 +494,10 @@ public class HotlistFragment extends SearchSectionFragment
         topAdsRecyclerAdapter.setHasHeader(true);
         topAdsRecyclerAdapter.setSpanSizeLookup(onSpanSizeLookup());
         recyclerView.setAdapter(topAdsRecyclerAdapter);
-        recyclerView.addItemDecoration(new ProductItemDecoration(getContext().getResources().getDimensionPixelSize(R.dimen.dp_16)));
-        recyclerView.setBackgroundColor(getContext().getResources().getColor(R.color.white));
+        recyclerView.addItemDecoration(new ProductItemDecoration(
+                getContext().getResources().getDimensionPixelSize(R.dimen.dp_16),
+                getContext().getResources().getColor(R.color.white)
+        ));
         topAdsRecyclerAdapter.setLayoutManager(getGridLayoutManager());
     }
 

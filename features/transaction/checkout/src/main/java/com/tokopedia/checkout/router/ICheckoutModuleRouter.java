@@ -8,6 +8,7 @@ import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 
+import java.security.PublicKey;
 import java.util.HashMap;
 
 import retrofit2.Converter;
@@ -55,4 +56,10 @@ public interface ICheckoutModuleRouter {
     Intent getHomeFeedIntent(Context context);
 
     Intent getHomePageIntent(Context context);
+
+    boolean checkoutModuleRouterGetEnableFingerprintPayment();
+
+    PublicKey checkoutModuleRouterGeneratePublicKey();
+
+    String checkoutModuleRouterGetPublicKey(PublicKey publicKey);
 }
