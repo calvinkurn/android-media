@@ -6,14 +6,13 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -40,8 +39,8 @@ import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.adapter.CartListAdapter;
 import com.tokopedia.checkout.view.base.BaseCheckoutFragment;
-import com.tokopedia.checkout.view.compoundview.ToolbarView;
-import com.tokopedia.checkout.view.compoundview.ToolbarWithBackButtonView;
+import com.tokopedia.checkout.view.compoundview.ToolbarRemoveView;
+import com.tokopedia.checkout.view.compoundview.ToolbarRemoveWithBackView;
 import com.tokopedia.checkout.view.di.component.CartComponent;
 import com.tokopedia.checkout.view.di.component.CartComponentInjector;
 import com.tokopedia.checkout.view.di.component.CartListComponent;
@@ -52,6 +51,7 @@ import com.tokopedia.checkout.view.holderitemdata.CartItemHolderData;
 import com.tokopedia.checkout.view.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.checkout.view.holderitemdata.CartItemTickerErrorHolderData;
 import com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceActivity;
+import com.tokopedia.checkout.view.view.cartlist.removecartitem.RemoveCartItemFragment;
 import com.tokopedia.checkout.view.view.multipleaddressform.MultipleAddressFormActivity;
 import com.tokopedia.checkout.view.view.shipment.ShipmentActivity;
 import com.tokopedia.checkout.view.view.shipment.ShipmentData;
@@ -97,8 +97,10 @@ public class CartFragment extends BaseCheckoutFragment implements
         CartListAdapter.ActionListener,
         ICartListView,
         TopAdsItemClickListener,
-        RefreshHandler.OnRefreshHandlerListener {
+        RefreshHandler.OnRefreshHandlerListener,
+        ToolbarRemoveView.OnToolbarRemoveAllCartListener {
 
+    private View parentView;
     private RecyclerView cartRecyclerView;
     private TextView btnToShipment;
     private TextView tvTotalPrice;
@@ -121,8 +123,8 @@ public class CartFragment extends BaseCheckoutFragment implements
     private RefreshHandler refreshHandler;
 
     private boolean mIsMenuVisible = false;
+    private boolean isToolbarWithBackButton = true;
 
-//    private ActionListener mDataPasserListener;
     private CartListData cartListData;
     private PromoCodeAppliedData promoCodeAppliedData;
 
@@ -135,17 +137,6 @@ public class CartFragment extends BaseCheckoutFragment implements
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-//        try {
-//            mDataPasserListener = (ActionListener) activity;
-//        } catch (ClassCastException e) {
-//            throw new ClassCastException(getActivity().toString() +
-//                    " must implement OnPassingCartDataListener");
-//        }
-    }
-
-    @Override
     public void onDestroy() {
         cartListAdapter.unsubscribeSubscription();
         dPresenter.detachView();
@@ -155,7 +146,7 @@ public class CartFragment extends BaseCheckoutFragment implements
     @Override
     protected void initInjector() {
         CartListComponent cartListComponent = DaggerCartListComponent.builder()
-                .cartComponent(getComponent())
+                .cartComponent(CartComponentInjector.newInstance(getActivity().getApplication()).getCartApiServiceComponent())
                 .cartListModule(new CartListModule(this))
                 .trackingAnalyticsModule(new TrackingAnalyticsModule())
                 .build();
@@ -190,7 +181,7 @@ public class CartFragment extends BaseCheckoutFragment implements
 //            TextView deleteTextView = (TextView) item.getActionView();
 //            deleteTextView.setOnClickListener(new View.OnClickListener() {
 //                @Override
-//                public void onClick(View view) {
+////                public void onClick(View view) {
 //                    cartPageAnalytics.eventClickCartClickHapusOnTopRightCorner();
 //                    mDataPasserListener.onRemoveAllCartMenuClicked(cartListAdapter.getCartItemDataList());
 //                }
@@ -201,8 +192,6 @@ public class CartFragment extends BaseCheckoutFragment implements
 
     @Override
     protected void initialListener(Activity activity) { }
-
-    private boolean isToolbarWithBackButton = true;
 
     @Override
     protected void setupArguments(Bundle arguments) {
@@ -220,7 +209,7 @@ public class CartFragment extends BaseCheckoutFragment implements
     @Override
     protected void initView(View view) {
         setupToolbar(view);
-
+        this.parentView = view;
         cartRecyclerView = view.findViewById(R.id.rv_cart);
         btnToShipment = view.findViewById(R.id.go_to_courier_page_button);
         tvTotalPrice = view.findViewById(R.id.tv_total_prices);
@@ -240,10 +229,25 @@ public class CartFragment extends BaseCheckoutFragment implements
     private void setupToolbar(View view) {
         Toolbar toolbar = view.findViewById(R.id.toolbar);
         if (isToolbarWithBackButton) {
-            toolbar.addView(new ToolbarWithBackButtonView(getActivity()));
+            toolbar.addView(toolbarRemoveWithBackView());
         } else {
-            toolbar.addView(new ToolbarView(getActivity()));
+            toolbar.addView(toolbarRemoveView());
         }
+    }
+
+    private ToolbarRemoveWithBackView toolbarRemoveWithBackView() {
+        ToolbarRemoveWithBackView toolbar = new ToolbarRemoveWithBackView(getActivity());
+        toolbar.navigateUp(getActivity());
+        toolbar.setOnClickRemove(this);
+        toolbar.setTitle(getString(R.string.cart));
+        return toolbar;
+    }
+
+    private ToolbarRemoveView toolbarRemoveView() {
+        ToolbarRemoveView toolbar = new ToolbarRemoveView(getActivity());
+        toolbar.setOnClickRemove(this);
+        toolbar.setTitle(getString(R.string.cart));
+        return toolbar;
     }
 
     @Override
@@ -531,7 +535,6 @@ public class CartFragment extends BaseCheckoutFragment implements
     public String getStringFromResource(int resId) {
         return null;
     }
-
 
     @Override
     public TKPDMapParam<String, String> getGeneratedAuthParamNetwork(
@@ -830,11 +833,12 @@ public class CartFragment extends BaseCheckoutFragment implements
         try {
             rootview.findViewById(com.tokopedia.core.R.id.main_retry).setVisibility(View.VISIBLE);
         } catch (NullPointerException e) {
-            View emptyState = LayoutInflater.from(getActivity()).
-                    inflate(R.layout.layout_empty_shopping_cart_new, (ViewGroup) rootview);
+            View container = parentView.findViewById(R.id.rl_content);
+            View emptyState = parentView.findViewById(R.id.empty_cart);
             layoutUsedPromo = emptyState.findViewById(R.id.layout_used_promo);
             TextView textviewPromoCode = emptyState.findViewById(R.id.textview_promo_code);
             ImageView buttonCancel = emptyState.findViewById(R.id.button_cancel);
+            container.setVisibility(View.GONE);
 
             if (cartListData != null && cartListData.getAutoApplyData() != null &&
                     cartListData.getAutoApplyData().isSuccess()) {
@@ -1120,11 +1124,52 @@ public class CartFragment extends BaseCheckoutFragment implements
         cartPageAnalytics.sendScreenName(getActivity(), getScreenName());
     }
 
-    public interface ActionListener {
-        void onRemoveAllCartMenuClicked(List<CartItemData> cartItemData);
+    @Override
+    public void onToolbarRemoveAllCart() {
+        Fragment fragment = getChildFragmentManager().findFragmentById(R.id.rl_content);
+        if (!(fragment instanceof RemoveCartItemFragment)) {
+            cartPageAnalytics.eventClickCartClickHapusOnTopRightCorner();
+            getChildFragmentManager().beginTransaction()
+                    .replace(R.id.rl_content, RemoveCartItemFragment.newInstance(cartListAdapter.getCartItemDataList()))
+                    .addToBackStack(null)
+                    .commit();
+        }
     }
 
-    public CartComponent getComponent() {
-        return CartComponentInjector.newInstance(getActivity().getApplication()).getCartApiServiceComponent();
+    public void startToRefresh() {
+        if (refreshHandler != null)
+            refreshHandler.startRefresh();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (getView() != null) {
+            getView().setFocusableInTouchMode(true);
+            getView().requestFocus();
+            getView().setOnKeyListener((v, keyCode, event) -> {
+                if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_BACK){
+                    onBackPressed();
+                    return true;
+                }
+                return false;
+            });
+        }
+    }
+
+    public void onBackPressed() {
+        Fragment fragment = getChildFragmentManager().findFragmentById(R.id.rl_content);
+        if (fragment instanceof RemoveCartItemFragment) {
+            ((RemoveCartItemFragment)fragment).getCheckoutAnalyticsCart().eventClickCartClickArrowBackFromHapus();
+            getChildFragmentManager().beginTransaction().remove(fragment).commit();
+            getChildFragmentManager().popBackStack();
+        } else {
+            getCartPageAnalytics().eventClickCartClickArrowBack();
+            getActivity().onBackPressed();
+        }
+    }
+
+    public interface ActionListener {
+        void onRemoveAllCartMenuClicked(List<CartItemData> cartItemData);
     }
 }

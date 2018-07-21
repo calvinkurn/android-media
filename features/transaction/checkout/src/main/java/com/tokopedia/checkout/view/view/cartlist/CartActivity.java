@@ -20,7 +20,9 @@ import java.util.List;
  * @author anggaprasetiyo on 18/01/18.
  */
 
-public class CartActivity extends BaseCheckoutActivity implements CartFragment.ActionListener {
+public class CartActivity extends BaseCheckoutActivity
+//        implements CartFragment.ActionListener
+{
 
     @DeepLink(CheckoutAppLink.CART)
     public static Intent getCallingIntent(Context context, Bundle extras) {
@@ -49,12 +51,6 @@ public class CartActivity extends BaseCheckoutActivity implements CartFragment.A
 
     @Override
     protected void initView() { }
-
-//    @Override
-//    public void setTitle(CharSequence title) {
-//        super.setTitle(title);
-//        updateTitle(title.toString());
-//    }
 
 //    @Override
 //    public void onBackPressed() {
@@ -86,16 +82,16 @@ public class CartActivity extends BaseCheckoutActivity implements CartFragment.A
     @Override
     protected void setActionVar() { }
 
-    @Override
-    public void onRemoveAllCartMenuClicked(List<CartItemData> cartItemData) {
-        Fragment fragment = getCurrentFragment();
-        if (fragment == null || !(fragment instanceof RemoveCartItemFragment)) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.parent_view, RemoveCartItemFragment.newInstance(cartItemData))
-                    .addToBackStack(null)
-                    .commit();
-        }
-    }
+//    @Override
+//    public void onRemoveAllCartMenuClicked(List<CartItemData> cartItemData) {
+//        Fragment fragment = getCurrentFragment();
+//        if (fragment == null || !(fragment instanceof RemoveCartItemFragment)) {
+//            getSupportFragmentManager().beginTransaction()
+//                    .replace(R.id.parent_view, RemoveCartItemFragment.newInstance(cartItemData))
+//                    .addToBackStack(null)
+//                    .commit();
+//        }
+//    }
 
     @Override
     protected Fragment getNewFragment() {

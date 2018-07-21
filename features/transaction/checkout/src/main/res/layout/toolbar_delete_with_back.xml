@@ -27,8 +27,7 @@
         android:textSize="16sp"
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
-        android:layout_gravity="center_vertical"
-        android:text="Keranjang"/>
+        android:layout_gravity="center_vertical"/>
 
     <Button
         android:layout_alignParentRight="true"
@@ -41,6 +40,6 @@
         android:textAllCaps="false"
         android:textColor="#61000000"
         android:background="@null"
-        android:text="Hapus"/>
+        android:text="@string/delete"/>
 
 </RelativeLayout>
