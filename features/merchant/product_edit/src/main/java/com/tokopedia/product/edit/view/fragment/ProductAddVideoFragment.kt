@@ -302,13 +302,13 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
         builder.setTitle(R.string.product_add_title_dialog_add_video)
         builder.setMessage(R.string.product_add_description_dialog_add_video)
         builder.setCancelable(true)
-        builder.setPositiveButton(R.string.label_add, { dialog, id ->
+        builder.setPositiveButton(R.string.label_add, { _, _ ->
             setVideoRecommendationChosen(videoViewModel.videoID, true)
             listener?.notifyVideoChanged()
             addVideoChosenToList(videoViewModel)
             showSnackbarGreen(getString(R.string.product_add_message_success_add_video_recommendation))
         })
-        builder.setNegativeButton(R.string.label_cancel, { dialog, id -> dialog.cancel() })
+        builder.setNegativeButton(R.string.label_cancel, { dialog, _ -> dialog.cancel() })
 
         val alert = builder.create()
         alert.show()
@@ -319,13 +319,13 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
         builder.setTitle(R.string.product_add_title_dialog_delete_video)
         builder.setMessage(R.string.product_add_description_dialog_delete_video)
         builder.setCancelable(true)
-        builder.setPositiveButton(R.string.label_delete, { dialog, id ->
+        builder.setPositiveButton(R.string.label_delete, { _, _ ->
             setVideoRecommendationChosen(videoViewModel.videoID, false)
             deleteVideoChosenFromList(videoViewModel)
             listener?.notifyVideoChanged()
             showSnackbarGreen(getString(R.string.product_add_message_success_delete_video_chosen))
         })
-        builder.setNegativeButton(R.string.label_cancel, { dialog, id -> dialog.cancel() })
+        builder.setNegativeButton(R.string.label_cancel, { dialog, _ -> dialog.cancel() })
 
         val alert = builder.create()
         alert.show()
@@ -342,7 +342,6 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
     private fun addVideoChosenToList(videoViewModel: VideoViewModel) {
         videoIDs.add(videoViewModel.videoID!!)
         videoViewModelList.add(videoViewModel)
-        videoViewModel
         updateListData(videoViewModel, ADD_VIDEO_CHOSEN)
         (activity as AppCompatActivity).supportActionBar?.subtitle = getString(R.string.product_from_to_video, videoIDs.size, MAX_VIDEO)
     }
