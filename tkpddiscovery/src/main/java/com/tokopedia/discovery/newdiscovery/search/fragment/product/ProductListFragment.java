@@ -766,9 +766,7 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void onTopAdsLoaded() {
-        if (similarSearchManager.isSimilarSearchEnable()){
             startShowCase();
-        }
     }
 
     @Override
@@ -924,10 +922,16 @@ public class ProductListFragment extends SearchSectionFragment
         return getScreenNameId();
     }
     private ShowCaseDialog showCaseDialog;
-    public void startShowCase() {
 
+
+    private boolean isShowCaseAllowed(String tag) {
+        return similarSearchManager.isSimilarSearchEnable() && !ShowCasePreference.hasShown(getActivity(), tag);
+    }
+
+
+    public void startShowCase() {
         final String showCaseTag = ProductListFragment.class.getName();
-        if (ShowCasePreference.hasShown(getActivity(), showCaseTag)) {
+        if (!isShowCaseAllowed(showCaseTag)){
             return;
         }
         if (showCaseDialog != null) {
@@ -946,13 +950,13 @@ public class ProductListFragment extends SearchSectionFragment
                     return;
                 }
 
-                View itemView = getItemRecyclerView();
+                View itemView = scrollToShowCaseItem();
                 if (itemView != null) {
                     showCaseList.add(
                             new ShowCaseObject(
                                     itemView.findViewById(R.id.container),
-                                    "Lihat Barang Serupa",
-                                    "Tekan dan tahan produk ini untuk lihat barang serupa dan tambah ke wishlist",
+                                    getString(R.string.view_similar_item),
+                                    getString(R.string.press_to_see_similar),
                                     ShowCaseContentPosition.BOTTOM));
                 }
 
@@ -982,12 +986,12 @@ public class ProductListFragment extends SearchSectionFragment
                 .build();
     }
 
-    public View getItemRecyclerView() {
-        int position = 2;//((GridLayoutManager)recyclerView.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
-        if(recyclerView.getAdapter().getItemCount() >= position) {
+    private static int PRODUCT_POSITION = 2;
+    public View scrollToShowCaseItem() {
+        if(recyclerView.getAdapter().getItemCount() >= PRODUCT_POSITION) {
             recyclerView.stopScroll();
-            recyclerView.getLayoutManager().scrollToPosition(position + 2);
-            return ((GridLayoutManager)recyclerView.getLayoutManager()).findViewByPosition(position);
+            recyclerView.getLayoutManager().scrollToPosition(PRODUCT_POSITION);
+            return ((GridLayoutManager)recyclerView.getLayoutManager()).findViewByPosition(PRODUCT_POSITION);
         }
         return null;
     }

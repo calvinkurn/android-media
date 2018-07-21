@@ -55,4 +55,6 @@
     <string name="title_all">Semua</string>
     <string name="produk_serupa">Produk Serupa</string>
     <string name="megerti">Mengerti</string>
+    <string name="view_similar_item">Lihat Barang Serupa</string>
+    <string name="press_to_see_similar">Tekan dan tahan produk ini untuk lihat barang serupa dan tambah ke wishlist</string>
 </resources>
