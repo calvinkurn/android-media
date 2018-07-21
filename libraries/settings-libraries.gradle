@@ -17,3 +17,4 @@ include 'libraries:imageuploader'
 include "libraries:YouTubeAndroidPlayerApi"
 include "libraries:graphql"
 include "libraries:common_network"
+include "libraries:oms"
