@@ -1399,4 +1399,9 @@ public abstract class SellerRouterApplication extends MainApplication
     public void goToManageShipping(Context context) {
         startActivity(new Intent(context, EditShippingActivity.class));
     }
+
+    @Override
+    public void goToEditShop(Context context) {
+        startActivity(getIntentManageShop(context));
+    }
 }

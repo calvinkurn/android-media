@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.constant.ShopStatusDef
+import com.tokopedia.shop.common.constant.ShopUrl
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
 import com.tokopedia.shop.common.util.TextApiUtils
 import com.tokopedia.shop.extension.formatToSimpleNumber
@@ -127,7 +128,7 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
                     }
 
                     override fun onClick(p0: View?) {
-
+                        listener.goToHelpCenter(ShopUrl.SHOP_HELP_CENTER)
                     }
                 }
             } else null)
@@ -217,6 +218,7 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
         fun openShop()
         fun requestOpenShop()
         fun goToHowActivate()
+        fun goToHelpCenter(url: String)
     }
 
 }
