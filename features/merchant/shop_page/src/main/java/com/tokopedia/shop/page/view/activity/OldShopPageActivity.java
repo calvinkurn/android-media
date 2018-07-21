@@ -434,6 +434,11 @@ public class OldShopPageActivity extends BaseTabActivity implements ShopPageProm
     }
 
     @Override
+    public void goToHelpCenter(String url) {
+        ShopWebViewActivity.startIntent(this, url);
+    }
+
+    @Override
     public void onShopNameClicked() {
         goToShopInfo();
         if(shopInfo != null) {

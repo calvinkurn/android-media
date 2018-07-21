@@ -150,7 +150,7 @@ public class ShopScheduleDialog extends DialogFragment {
                         posButton.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                if (validateForm()) {
+                                if (validateForm() && shopEditorPresenter != null) {
                                     if (closeCheckbox.isChecked()) {
                                         shopScheduleModel = new ShopScheduleModel(noteText.getText().toString(),
                                                 startDate.getText().toString(), endDate.getText().toString(), 2); // close shop
@@ -344,13 +344,13 @@ public class ShopScheduleDialog extends DialogFragment {
 
     private void calculateDate(String date){
         String[] dates = date.split("/");
-        if (!TextUtils.isEmpty(dates[0])) {
+        if (dates.length > 0 && !TextUtils.isEmpty(dates[0])) {
             day = Integer.parseInt(dates[0]);
         }
-        if (!TextUtils.isEmpty(dates[1])) {
+        if (dates.length > 1 && !TextUtils.isEmpty(dates[1])) {
             month = Integer.parseInt(dates[1]);
         }
-        if (!TextUtils.isEmpty(dates[2])) {
+        if (dates.length > 2 && !TextUtils.isEmpty(dates[2])) {
             year = Integer.parseInt(dates[2]);
         }
     }
