@@ -3,7 +3,10 @@ package com.tokopedia.home.account.presentation.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -24,6 +27,7 @@ import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.di.component.AccountHomeComponent;
 import com.tokopedia.home.account.di.component.DaggerAccountHomeComponent;
 import com.tokopedia.home.account.presentation.AccountHome;
+import com.tokopedia.home.account.presentation.adapter.AccountHomePagerAdapter;
 import com.tokopedia.home.account.presentation.presenter.AccountHomePresenter;
 
 import java.util.List;
@@ -38,11 +42,10 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements AccountHo
     AccountHomePresenter presenter;
     private Toolbar toolbar;
 
-//    private boolean isLoaded = false;
-//    private TabLayout tabLayout;
-//    private ViewPager viewPager;
-//    private PagerAdapter adapter;
-    private FrameLayout container;
+    private boolean isLoaded = false;
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
+    private PagerAdapter adapter;
 
     public static Fragment newInstance() {
         return new AccountHomeFragment();
@@ -54,25 +57,25 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements AccountHo
         initInjector();
     }
 
-//    @Override
-//    public void setUserVisibleHint(boolean isVisibleToUser) {
-//        super.setUserVisibleHint(isVisibleToUser);
-//        if (isVisibleToUser && isResumed()) {
-//            onResume();
-//        }
-//    }
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser && isResumed()) {
+            onResume();
+        }
+    }
 
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//        if (!getUserVisibleHint()) {
-//            return;
-//        }
-//        if (!isLoaded) {
-//            loadData();
-//            isLoaded = true;
-//        }
-//    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (!getUserVisibleHint()) {
+            return;
+        }
+        if (!isLoaded) {
+            loadData();
+            isLoaded = true;
+        }
+    }
 
     @Nullable
     @Override
@@ -125,25 +128,22 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements AccountHo
         component.inject(this);
         presenter.attachView(this);
     }
-//
-//    private void loadData() {
-//
-//    }
-//
-//    public void setLoaded(boolean loaded) {
-//        isLoaded = loaded;
-//    }
+
+    private void loadData() {
+
+    }
+
+    public void setLoaded(boolean loaded) {
+        isLoaded = loaded;
+    }
 
     private void initView(View view) {
         setHasOptionsMenu(true);
         getActivity().invalidateOptionsMenu();
         setToolbar(view);
-//        tabLayout = view.findViewById(R.id.tab_home_account);
-//        viewPager = view.findViewById(R.id.pager_home_account);
-
-        getChildFragmentManager().beginTransaction()
-                .replace(R.id.container_account_home, BuyerAccountFragment.newInstance(), "BuyerAccountFragment")
-                .commit();
+        tabLayout = view.findViewById(R.id.tab_home_account);
+        viewPager = view.findViewById(R.id.pager_home_account);
+        setAdapter();
     }
 
     private void setToolbar(View view) {
@@ -155,14 +155,13 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements AccountHo
     }
 
     private void setAdapter() {
-//        String[] titles = {
-//                getContext().getString(R.string.label_account_buyer),
-//                getContext().getString(R.string.label_account_seller)
-//        };
-//        adapter = new AccountHomePagerAdapter(getChildFragmentManager(), titles);
-//        viewPager.setAdapter(adapter);
-//        tabLayout.setupWithViewPager(viewPager);
-//        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        String[] titles = {
+                getContext().getString(R.string.label_account_buyer),
+                getContext().getString(R.string.label_account_seller)
+        };
+        adapter = new AccountHomePagerAdapter(getChildFragmentManager(), titles);
+        viewPager.setAdapter(adapter);
+        tabLayout.setupWithViewPager(viewPager);
     }
 
     @Override

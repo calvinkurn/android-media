@@ -17,6 +17,7 @@ import com.tokopedia.home.account.presentation.fragment.SellerAccountFragment;
  * @author okasurya on 7/16/18.
  */
 public class AccountHomePagerAdapter extends FragmentPagerAdapter {
+
     private String[] titles;
 
     public AccountHomePagerAdapter(FragmentManager fragmentManager, String[] titles) {
@@ -25,19 +26,13 @@ public class AccountHomePagerAdapter extends FragmentPagerAdapter {
     }
 
     @Override
-    public int getCount() {
-        return 2;
-    }
-
-    @Override
-    public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
-        return false;
-    }
-
-    @Nullable
-    @Override
     public CharSequence getPageTitle(int position) {
         return titles[position];
+    }
+
+    @Override
+    public int getCount() {
+        return titles.length;
     }
 
     @Override

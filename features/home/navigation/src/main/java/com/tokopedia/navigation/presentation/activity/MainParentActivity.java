@@ -171,5 +171,8 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         }
     }
 
-
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
 }

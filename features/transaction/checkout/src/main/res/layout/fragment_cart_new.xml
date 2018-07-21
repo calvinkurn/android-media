@@ -89,6 +89,7 @@
                     android:textSize="14sp" />
 
             </LinearLayout>
+
         </FrameLayout>
 
         <com.tokopedia.core.customwidget.SwipeToRefresh
@@ -103,9 +104,12 @@
                 android:id="@+id/rv_cart"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
+
         </com.tokopedia.core.customwidget.SwipeToRefresh>
 
     </RelativeLayout>
+
+    <include layout="@layout/layout_empty_shopping_cart_new" />
 
     <LinearLayout
         android:id="@+id/ll_network_error_view"
