@@ -111,11 +111,12 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment {
 //    }
 
     private void initView(View view) {
-        setHasOptionsMenu(true);
-        getActivity().invalidateOptionsMenu();
+//        setHasOptionsMenu(true);
+//        getActivity().invalidateOptionsMenu();
         setToolbar(view);
         tabLayout = view.findViewById(R.id.tab_home_account);
         viewPager = view.findViewById(R.id.pager_home_account);
+        setAdapter();
 
 //        getChildFragmentManager().beginTransaction()
 //                .replace(R.id.container_account_home, BuyerAccountFragment.newInstance(), "BuyerAccountFragment")
@@ -138,6 +139,5 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment {
         adapter = new AccountHomePagerAdapter(getChildFragmentManager(), titles);
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
     }
 }
