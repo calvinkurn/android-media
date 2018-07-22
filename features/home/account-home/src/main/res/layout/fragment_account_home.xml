@@ -15,7 +15,8 @@
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="61dp" />
+            android:layout_height="61dp"
+            app:elevation="@dimen/dp_0"/>
 
         <com.tokopedia.design.component.Tabs
             android:id="@+id/tab_home_account"

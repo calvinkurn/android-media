@@ -14,12 +14,14 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.di.component.BuyerAccountComponent;
 import com.tokopedia.home.account.di.component.DaggerBuyerAccountComponent;
 import com.tokopedia.home.account.presentation.BuyerAccount;
 import com.tokopedia.home.account.presentation.adapter.AccountTypeFactory;
 import com.tokopedia.home.account.presentation.adapter.buyer.BuyerAccountAdapter;
+import com.tokopedia.home.account.presentation.viewmodel.AccountViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,8 +31,9 @@ import javax.inject.Inject;
 /**
  * @author okasurya on 7/16/18.
  */
-public class BuyerAccountFragment extends TkpdBaseV4Fragment implements BuyerAccount.View {
+public class BuyerAccountFragment extends TkpdBaseV4Fragment implements BuyerAccount.View, AccountTypeFactory.Listener {
     public static final String TAG = BuyerAccountFragment.class.getSimpleName();
+    private static final String ACCOUNT_DATA = "account_data";
 
     private RecyclerView recyclerView;
     private BuyerAccountAdapter adapter;
@@ -38,8 +41,12 @@ public class BuyerAccountFragment extends TkpdBaseV4Fragment implements BuyerAcc
     @Inject
     BuyerAccount.Presenter presenter;
 
-    public static Fragment newInstance() {
-        return new BuyerAccountFragment();
+    public static Fragment newInstance(AccountViewModel accountViewModel) {
+        Fragment fragment = new BuyerAccountFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(ACCOUNT_DATA, accountViewModel);
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     @Override
@@ -60,10 +67,14 @@ public class BuyerAccountFragment extends TkpdBaseV4Fragment implements BuyerAcc
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        adapter = new BuyerAccountAdapter(new AccountTypeFactory(), new ArrayList<>());
+        adapter = new BuyerAccountAdapter(new AccountTypeFactory(this), new ArrayList<>());
         recyclerView.setAdapter(adapter);
 
-        presenter.getData();
+        if (getArguments() != null && getArguments().getParcelable(ACCOUNT_DATA) != null) {
+            loadData(((AccountViewModel) getArguments().getParcelable(ACCOUNT_DATA)).getBuyerViewModels());
+        }
+
+//        presenter.getData();
     }
 
     @Override
@@ -75,6 +86,11 @@ public class BuyerAccountFragment extends TkpdBaseV4Fragment implements BuyerAcc
     public void loadData(List<Visitable> data) {
         Log.d("okasurya", TAG + ".loadData" + data.get(0).toString());
         adapter.addMoreData(data);
+    }
+
+    @Override
+    public void onTokopediaPayLinkClicked() {
+        RouteManager.route(getContext(), "tokopedia://wallet");
     }
 
     private void initInjector() {

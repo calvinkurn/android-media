@@ -1,5 +1,6 @@
 package com.tokopedia.home.account.presentation.adapter;
 
+import android.support.annotation.NonNull;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
@@ -17,6 +18,12 @@ import rx.Observable;
  * @author okasurya on 7/17/18.
  */
 public class AccountTypeFactory extends BaseAdapterTypeFactory {
+    private Listener listener;
+
+    public AccountTypeFactory(@NonNull Listener listener) {
+        this.listener = listener;
+    }
+
     @Override
     public AbstractViewHolder createViewHolder(View parent, int type) {
         if(type == BuyerCardViewHolder.LAYOUT) {
@@ -24,7 +31,7 @@ public class AccountTypeFactory extends BaseAdapterTypeFactory {
         } else if(type == MenuGridViewHolder.LAYOUT){
             return new MenuGridViewHolder(parent);
         } else if(type == TokopediaPayViewHolder.LAYOUT) {
-            return new TokopediaPayViewHolder(parent);
+            return new TokopediaPayViewHolder(parent, listener);
         }
         return super.createViewHolder(parent, type);
     }
@@ -39,5 +46,9 @@ public class AccountTypeFactory extends BaseAdapterTypeFactory {
 
     public int type(MenuGridViewModel menuGridViewModel) {
         return MenuGridViewHolder.LAYOUT;
+    }
+
+    public interface Listener {
+        void onTokopediaPayLinkClicked();
     }
 }

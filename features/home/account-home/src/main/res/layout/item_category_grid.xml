@@ -26,8 +26,8 @@
         tools:text="Pesanan Baru"/>
     <TextView
         android:id="@+id/text_counter"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:layout_width="@dimen/dp_20"
+        android:layout_height="@dimen/dp_20"
         android:maxLines="1"
         android:background="@drawable/circle_red"
         android:textColor="@color/white"

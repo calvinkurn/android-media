@@ -15,11 +15,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.graphql.data.GraphqlClient;
@@ -27,9 +25,12 @@ import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.di.component.AccountHomeComponent;
 import com.tokopedia.home.account.di.component.DaggerAccountHomeComponent;
 import com.tokopedia.home.account.presentation.AccountHome;
+import com.tokopedia.home.account.presentation.adapter.AccountFragmentItem;
 import com.tokopedia.home.account.presentation.adapter.AccountHomePagerAdapter;
 import com.tokopedia.home.account.presentation.presenter.AccountHomePresenter;
+import com.tokopedia.home.account.presentation.viewmodel.AccountViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -45,7 +46,7 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements AccountHo
     private boolean isLoaded = false;
     private TabLayout tabLayout;
     private ViewPager viewPager;
-    private PagerAdapter adapter;
+    private AccountHomePagerAdapter adapter;
 
     public static Fragment newInstance() {
         return new AccountHomeFragment();
@@ -82,14 +83,13 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements AccountHo
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_account_home, container, false);
         initView(view);
-        setAdapter();
         return view;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if(getContext() != null) {
+        if (getContext() != null) {
             GraphqlClient.init(getContext());
 
             presenter.getAccount(GraphqlHelper.loadRawString(getContext().getResources(), R.raw.query_account_home));
@@ -117,6 +117,24 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements AccountHo
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void renderData(AccountViewModel accountViewModel) {
+        List<AccountFragmentItem> fragmentItems = new ArrayList<>();
+        AccountFragmentItem item = new AccountFragmentItem();
+        item.setFragment(BuyerAccountFragment.newInstance(accountViewModel));
+        item.setTitle(getContext().getString(R.string.label_account_buyer));
+        fragmentItems.add(item);
+
+        if(accountViewModel.isSeller()) {
+            item = new AccountFragmentItem();
+            item.setFragment(SellerAccountFragment.newInstance(accountViewModel));
+            item.setTitle(getContext().getString(R.string.label_account_seller));
+            fragmentItems.add(item);
+        }
+
+        adapter.setItems(fragmentItems);
     }
 
     private void initInjector() {
@@ -155,22 +173,8 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements AccountHo
     }
 
     private void setAdapter() {
-        String[] titles = {
-                getContext().getString(R.string.label_account_buyer),
-                getContext().getString(R.string.label_account_seller)
-        };
-        adapter = new AccountHomePagerAdapter(getChildFragmentManager(), titles);
+        adapter = new AccountHomePagerAdapter(getChildFragmentManager());
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
-    }
-
-    @Override
-    public void renderBuyerData(List<Visitable> visitables) {
-
-    }
-
-    @Override
-    public void renderSellerData(List<Visitable> visitables) {
-
     }
 }

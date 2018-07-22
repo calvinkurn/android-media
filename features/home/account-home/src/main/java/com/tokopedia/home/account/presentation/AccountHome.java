@@ -3,6 +3,7 @@ package com.tokopedia.home.account.presentation;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.home.account.presentation.viewmodel.AccountViewModel;
 
 import java.util.List;
 
@@ -15,8 +16,6 @@ public interface AccountHome {
     }
 
     interface View extends CustomerView {
-        void renderBuyerData(List<Visitable> visitables);
-
-        void renderSellerData(List<Visitable> visitables);
+        void renderData(AccountViewModel accountViewModel);
     }
 }

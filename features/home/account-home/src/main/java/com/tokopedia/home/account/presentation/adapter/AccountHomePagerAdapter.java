@@ -1,46 +1,42 @@
 package com.tokopedia.home.account.presentation.adapter;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.PagerAdapter;
-import android.view.View;
-import android.view.ViewGroup;
 
-import com.tokopedia.home.account.presentation.fragment.BuyerAccountFragment;
-import com.tokopedia.home.account.presentation.fragment.SellerAccountFragment;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author okasurya on 7/16/18.
  */
-public class AccountHomePagerAdapter extends FragmentPagerAdapter {
+public class AccountHomePagerAdapter extends FragmentStatePagerAdapter {
+    private List<AccountFragmentItem> items;
 
-    private String[] titles;
-
-    public AccountHomePagerAdapter(FragmentManager fragmentManager, String[] titles) {
+    public AccountHomePagerAdapter(FragmentManager fragmentManager) {
         super(fragmentManager);
-        this.titles = titles;
+        this.items = new ArrayList<>();
+    }
+
+    public void setItems(List<AccountFragmentItem> items) {
+        this.items.clear();
+        this.items.addAll(items);
+        notifyDataSetChanged();
     }
 
     @Override
     public CharSequence getPageTitle(int position) {
-        return titles[position];
+        return items.get(position).getTitle();
     }
 
     @Override
     public int getCount() {
-        return titles.length;
+        return items.size();
     }
 
     @Override
     public Fragment getItem(int position) {
-        if (position == 0) {
-            return BuyerAccountFragment.newInstance();
-        } else {
-            return SellerAccountFragment.newInstance();
-        }
+        return items.get(position).getFragment();
     }
 }

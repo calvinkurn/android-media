@@ -6,7 +6,6 @@ import com.tokopedia.home.account.presentation.viewmodel.AccountViewModel;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -20,13 +19,12 @@ import static com.tokopedia.home.account.AccountConstants.VARIABLES;
  */
 public class AccountHomePresenter implements AccountHome.Presenter {
     private GetAccountUseCase getAccountUseCase;
+    private AccountHome.View view;
 
     @Inject
     public AccountHomePresenter(GetAccountUseCase getAccountUseCase) {
         this.getAccountUseCase = getAccountUseCase;
     }
-
-    private AccountHome.View view;
 
     @Override
     public void getAccount(String query) {
@@ -48,7 +46,7 @@ public class AccountHomePresenter implements AccountHome.Presenter {
 
             @Override
             public void onNext(AccountViewModel accountViewModel) {
-
+                view.renderData(accountViewModel);
             }
         });
 
