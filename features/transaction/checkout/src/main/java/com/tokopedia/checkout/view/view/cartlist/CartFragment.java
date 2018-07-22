@@ -840,11 +840,12 @@ public class CartFragment extends BaseCheckoutFragment implements
         try {
             rootview.findViewById(com.tokopedia.core.R.id.main_retry).setVisibility(View.VISIBLE);
         } catch (NullPointerException e) {
-            View emptyState = LayoutInflater.from(getActivity()).
-                    inflate(R.layout.layout_empty_shopping_cart_new, (ViewGroup) rootview);
+            View container = parentView.findViewById(R.id.rl_content);
+            View emptyState = parentView.findViewById(R.id.empty_cart);
             layoutUsedPromo = emptyState.findViewById(R.id.layout_used_promo);
             TextView textviewPromoCode = emptyState.findViewById(R.id.textview_promo_code);
             ImageView buttonCancel = emptyState.findViewById(R.id.button_cancel);
+            container.setVisibility(View.GONE);
 
             if (cartListData != null && cartListData.getAutoApplyData() != null &&
                     cartListData.getAutoApplyData().isSuccess()) {
@@ -1137,7 +1138,9 @@ public class CartFragment extends BaseCheckoutFragment implements
     @Override
     public void onToolbarRemoveAllCart() {
         Fragment fragment = getChildFragmentManager().findFragmentById(R.id.rl_content);
-        if (!(fragment instanceof RemoveCartItemFragment)) {
+        if (!(fragment instanceof RemoveCartItemFragment)
+                && cartListAdapter.getCartItemDataList() != null
+                && cartListAdapter.getCartItemDataList().size() > 0) {
             cartPageAnalytics.eventClickCartClickHapusOnTopRightCorner();
             getChildFragmentManager().beginTransaction()
                     .replace(R.id.rl_content, RemoveCartItemFragment.newInstance(cartListAdapter.getCartItemDataList()))

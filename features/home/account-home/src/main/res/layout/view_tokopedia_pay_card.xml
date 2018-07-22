@@ -41,7 +41,7 @@
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginStart="8dp"
-            android:src="@drawable/ic_tokocash"
+            android:src="@drawable/ic_tokocash_green"
             android:tint="@color/white"
             app:backgroundTint="@color/white"
             app:borderWidth="0dp"
@@ -50,7 +50,7 @@
             app:layout_constraintEnd_toEndOf="@+id/text_amount_left"
             app:layout_constraintStart_toStartOf="@+id/text_amount_left"
             app:layout_constraintTop_toBottomOf="@+id/label_tokopedia_pay"
-            tools:src="@drawable/ic_tokocash" />
+            tools:src="@drawable/ic_tokocash_green" />
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/image_icon_right"

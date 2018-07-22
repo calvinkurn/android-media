@@ -672,7 +672,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     private void forceLoadFirstPage() {
-        hasLoadedOnce = false;
         loadData(true);
     }
 

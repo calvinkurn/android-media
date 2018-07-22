@@ -31,7 +31,6 @@ public class MainParentActivity extends BaseAppCompatActivity implements
 
     private BottomNavigation bottomNavigation;
     private TouchViewPager viewPager;
-    private FragmentAdapter adapterViewPager;
 
     private UserSession userSession;
 
@@ -47,7 +46,7 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         bottomNavigation = findViewById(R.id.bottomnav);
         viewPager = findViewById(R.id.container);
 
-        adapterViewPager = new FragmentAdapter(getSupportFragmentManager());
+        FragmentAdapter adapterViewPager = new FragmentAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapterViewPager);
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {

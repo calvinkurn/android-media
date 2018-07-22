@@ -565,6 +565,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void setItems(List<Visitable> items) {
+        if (items.get(0) instanceof HeaderViewModel) {
+            HeaderViewModel dataHeader = (HeaderViewModel) items.get(0);
+            updateHeaderItem(dataHeader);
+        }
         adapter.setItems(items);
     }
 
