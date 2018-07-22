@@ -72,6 +72,21 @@ public class CartActivity extends BaseCheckoutActivity
 //            finish();
 //        }
 //    }
+    public void onBackPressed() {
+        Fragment currentFragment = getCurrentFragment();
+        if (currentFragment instanceof RemoveCartItemFragment) {
+            ((RemoveCartItemFragment) currentFragment)
+                    .getCheckoutAnalyticsCart().eventClickCartClickArrowBackFromHapus();
+        } else if (currentFragment instanceof CartFragment) {
+            ((CartFragment) currentFragment)
+                    .getCartPageAnalytics().eventClickCartClickArrowBack();
+        }
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            getSupportFragmentManager().popBackStack();
+        } else {
+            finish();
+        }
+    }
 
     @Override
     protected void setViewListener() { }

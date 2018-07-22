@@ -8,10 +8,8 @@ import com.tokopedia.core.network.apiservices.ace.AceSearchService;
 import com.tokopedia.core.network.apiservices.ace.apis.SearchApi;
 import com.tokopedia.core.network.apiservices.hades.HadesService;
 import com.tokopedia.core.network.apiservices.hades.apis.HadesApi;
-import com.tokopedia.core.network.apiservices.mojito.MojitoAuthService;
 import com.tokopedia.core.network.apiservices.mojito.MojitoService;
 import com.tokopedia.core.network.apiservices.mojito.apis.MojitoApi;
-import com.tokopedia.core.network.apiservices.mojito.apis.MojitoAuthApi;
 import com.tokopedia.discovery.intermediary.data.mapper.IntermediaryCategoryMapper;
 import com.tokopedia.discovery.intermediary.data.repository.IntermediaryRepositoryImpl;
 import com.tokopedia.discovery.intermediary.data.source.IntermediaryDataSource;
@@ -19,10 +17,8 @@ import com.tokopedia.discovery.intermediary.domain.IntermediaryRepository;
 import com.tokopedia.discovery.intermediary.domain.interactor.GetCategoryHeaderUseCase;
 import com.tokopedia.discovery.intermediary.domain.interactor.GetIntermediaryCategoryUseCase;
 import com.tokopedia.discovery.intermediary.view.IntermediaryPresenter;
-import com.tokopedia.discovery.newdiscovery.data.mapper.AddWishlistActionMapper;
-import com.tokopedia.discovery.newdiscovery.data.mapper.RemoveWishlistActionMapper;
-import com.tokopedia.discovery.newdiscovery.domain.usecase.AddWishlistActionUseCase;
-import com.tokopedia.discovery.newdiscovery.domain.usecase.RemoveWishlistActionUseCase;
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
 /**
  * Created by alifa on 3/27/17.
@@ -35,15 +31,14 @@ public class IntermediaryDependencyInjector {
         UIThread postExecutionThread = new UIThread();
 
         HadesService hadesService = new HadesService();
-        MojitoAuthService mojitoAuthService = new MojitoAuthService();
         HadesApi hadesApi = hadesService.getApi();
         AceSearchService aceSearchService = new AceSearchService();
         SearchApi searchApi = aceSearchService.getApi();
         MojitoService mojitoService = new MojitoService();
         MojitoApi mojitoApi = mojitoService.getApi();
         IntermediaryCategoryMapper mapper = new IntermediaryCategoryMapper();
-        IntermediaryDataSource dataSource = new IntermediaryDataSource(context,hadesApi,
-                searchApi,mojitoApi,mapper);
+        IntermediaryDataSource dataSource = new IntermediaryDataSource(context, hadesApi,
+                searchApi, mojitoApi, mapper);
 
         IntermediaryRepository repository = new IntermediaryRepositoryImpl(dataSource);
 
@@ -51,9 +46,9 @@ public class IntermediaryDependencyInjector {
                 threadExecutor, postExecutionThread, repository);
         GetCategoryHeaderUseCase getCategoryHeaderUseCase = new GetCategoryHeaderUseCase(threadExecutor, postExecutionThread, repository);
 
-        return  new IntermediaryPresenter(getIntermediaryCategoryUseCase, getCategoryHeaderUseCase,
-                new AddWishlistActionUseCase(threadExecutor, postExecutionThread, mojitoAuthService.getApi(), new AddWishlistActionMapper()),
-                new RemoveWishlistActionUseCase(threadExecutor, postExecutionThread, mojitoAuthService.getApi(), new RemoveWishlistActionMapper()));
+        return new IntermediaryPresenter(getIntermediaryCategoryUseCase, getCategoryHeaderUseCase,
+                new AddWishListUseCase(context),
+                new RemoveWishListUseCase(context));
 
     }
 }

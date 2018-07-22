@@ -4,17 +4,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.view.Menu;
 import android.view.View;
 import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
 import com.tokopedia.discovery.newdiscovery.base.DiscoveryActivity;
 import com.tokopedia.discovery.newdiscovery.hotlist.di.component.DaggerHotlistComponent;
 import com.tokopedia.discovery.newdiscovery.hotlist.di.component.HotlistComponent;
@@ -26,7 +24,6 @@ import com.tokopedia.tkpdpdp.listener.AppBarStateChangeListener;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.ArrayList;
 
 import javax.inject.Inject;
 
@@ -46,6 +43,7 @@ public class HotlistActivity extends DiscoveryActivity
     private TextView descriptionTxt;
     private DescriptionView descriptionView;
     public FragmentListener fragmentListener;
+    private CollapsingToolbarLayout toolbarLayout;
 
     @Inject
     HotlistPresenter hotlistPresenter;
@@ -107,12 +105,12 @@ public class HotlistActivity extends DiscoveryActivity
                 switch (state) {
                     case COLLAPSED:
                         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back_black_thin);
-                        if(searchItem!=null)
+                        if (searchItem != null)
                             searchItem.setIcon(R.drawable.search_icon);
                         break;
                     case EXPANDED:
                         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back_white);
-                        if(searchItem!=null)
+                        if (searchItem != null)
                             searchItem.setIcon(R.drawable.ic_search_thin);
                         break;
                 }
@@ -128,7 +126,7 @@ public class HotlistActivity extends DiscoveryActivity
     @Override
     public void onSearchViewShown() {
         super.onSearchViewShown();
-        if(fragmentListener!=null){
+        if (fragmentListener != null) {
             fragmentListener.stopScroll();
         }
         appBarLayout.setVisibility(View.GONE);
@@ -141,7 +139,7 @@ public class HotlistActivity extends DiscoveryActivity
         appBarLayout.setVisibility(View.VISIBLE);
     }
 
-    public void renderHotlistDescription(String txt){
+    public void renderHotlistDescription(String txt) {
         descriptionView = new DescriptionView();
         descriptionView.setDescTxt(txt);
         descriptionTxt.setOnClickListener(new View.OnClickListener() {
@@ -188,6 +186,29 @@ public class HotlistActivity extends DiscoveryActivity
                 .appComponent(getComponent())
                 .build();
         hotlistComponent.inject(this);
+    }
+
+    private CharSequence getToolbarTitle() {
+        return toolbarLayout.getTitle();
+    }
+
+    @Override
+    protected int getLayoutRes() {
+        return R.layout.activity_hotlist;
+    }
+
+    @Override
+    protected void initView() {
+        super.initView();
+        toolbarLayout = findViewById(R.id.toolbar_layout);
+    }
+
+    @Override
+    protected void setToolbarTitle(String query) {
+        if (getSupportActionBar() != null && query != null) {
+            getSupportActionBar().setTitle(query);
+            toolbarLayout.setTitle(query);
+        }
     }
 
     @Override

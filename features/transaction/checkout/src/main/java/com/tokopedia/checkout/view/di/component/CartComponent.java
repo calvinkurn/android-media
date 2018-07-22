@@ -11,6 +11,7 @@ import com.tokopedia.checkout.domain.mapper.ICheckoutMapper;
 import com.tokopedia.checkout.domain.mapper.IShipmentMapper;
 import com.tokopedia.checkout.domain.mapper.ITopPayMapper;
 import com.tokopedia.checkout.domain.mapper.IVoucherCouponMapper;
+import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.di.module.CartUseCaseModule;
 import com.tokopedia.checkout.view.di.module.CheckoutRouterModule;
 import com.tokopedia.checkout.view.di.module.CheckoutUseCaseModule;
@@ -44,6 +45,9 @@ import dagger.Component;
         dependencies = BaseAppComponent.class
 )
 public interface CartComponent {
+
+    ICheckoutModuleRouter checkoutModuleRouter();
+
     ICartRepository cartRepository();
 
     ITopPayRepository topPayRepository();

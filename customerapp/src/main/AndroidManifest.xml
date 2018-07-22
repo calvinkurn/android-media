@@ -300,6 +300,9 @@
             android:screenOrientation="portrait" />
 
 
+        <activity
+            android:name=".home.TkpdYoutubeVideoActivity"
+            android:screenOrientation="sensor"/>
     </application>
 
 </manifest>
