@@ -18,6 +18,8 @@ public interface ShopModuleRouter {
 
     Fragment getShopTalkFragment();
 
+    void goToEditShop(Context context);
+
     void goToManageShop(Context context);
 
     void goToEditShopNote(Context context);

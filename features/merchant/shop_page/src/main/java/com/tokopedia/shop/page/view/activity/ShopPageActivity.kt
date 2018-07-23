@@ -39,6 +39,7 @@ import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.shop.ShopModuleRouter
 import com.tokopedia.shop.analytic.ShopPageTracking
 import com.tokopedia.shop.common.constant.ShopAppLink
+import com.tokopedia.shop.common.constant.ShopUrl
 import com.tokopedia.shop.favourite.view.activity.ShopFavouriteListActivity
 import com.tokopedia.shop.info.view.fragment.ShopInfoFragmentNew
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity
@@ -137,6 +138,19 @@ class ShopPageActivity: BaseSimpleActivity(), HasComponent<ShopComponent>,
         viewPager.adapter = shopPageViewPagerAdapter
 
         tabLayout.setupWithViewPager(viewPager)
+        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabReselected(tab: TabLayout.Tab?) {}
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {}
+
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                shopInfo?.run {
+                    shopPageTracking.eventClickTabShopPage(titles[tab.getPosition()], shopId,
+                            presenter.isMyShop(shopId!!), ShopPageTracking.getShopType(info))
+                }
+            }
+
+        })
         onProductListDetailFullyHide()
         viewPager.currentItem = tabPosition
         swipeToRefresh.setOnRefreshListener { refreshData() }
@@ -374,7 +388,9 @@ class ShopPageActivity: BaseSimpleActivity(), HasComponent<ShopComponent>,
     }
 
     override fun openShop() {
-
+        if (application is ShopModuleRouter){
+            (application as ShopModuleRouter).goToEditShop(this)
+        }
     }
 
     override fun requestOpenShop() {
@@ -382,7 +398,11 @@ class ShopPageActivity: BaseSimpleActivity(), HasComponent<ShopComponent>,
     }
 
     override fun goToHowActivate() {
+        ShopWebViewActivity.startIntent(this, ShopUrl.SHOP_HELP_CENTER)
+    }
 
+    override fun goToHelpCenter(url: String) {
+        ShopWebViewActivity.startIntent(this, url)
     }
 
 }

@@ -14,6 +14,7 @@ import com.tokopedia.reputation.common.data.repository.ReputationCommonRepositor
 import com.tokopedia.reputation.common.data.source.ReputationCommonDataSource;
 import com.tokopedia.reputation.common.data.source.cloud.ReputationCommonCloudDataSource;
 import com.tokopedia.reputation.common.data.source.cloud.api.ReputationCommonApi;
+import com.tokopedia.reputation.common.domain.interactor.GetReputationSpeedDailyUseCase;
 import com.tokopedia.reputation.common.domain.interactor.GetReputationSpeedUseCase;
 import com.tokopedia.reputation.common.domain.repository.ReputationCommonRepository;
 import com.tokopedia.shop.info.di.scope.ShopInfoScope;
@@ -100,8 +101,14 @@ public class ShopInfoModule {
 
     @ShopInfoScope
     @Provides
-    public GetReputationSpeedUseCase provideGetFeatureProductListUseCase(ReputationCommonRepository reputationCommonRepository) {
+    public GetReputationSpeedUseCase provideGetGetReputationSpeedUseCase(ReputationCommonRepository reputationCommonRepository) {
         return new GetReputationSpeedUseCase(reputationCommonRepository);
+    }
+
+    @ShopInfoScope
+    @Provides
+    public GetReputationSpeedDailyUseCase provideGetReputationSpeedDailyUseCase(ReputationCommonRepository reputationCommonRepository) {
+        return new GetReputationSpeedDailyUseCase(reputationCommonRepository);
     }
 }
 

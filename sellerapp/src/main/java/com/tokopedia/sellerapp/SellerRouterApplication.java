@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 
@@ -19,6 +20,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
+import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.contact_us.createticket.activity.ContactUsActivity;
@@ -72,6 +74,7 @@ import com.tokopedia.seller.shopsettings.shipping.EditShippingActivity;
 import com.tokopedia.sellerapp.onboarding.activity.OnboardingSellerActivity;
 import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
 import com.tokopedia.shop.page.view.activity.ShopPageActivity;
+import com.tokopedia.shop.open.ShopOpenRouter;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.shopinfo.limited.fragment.ShopTalkLimitedFragment;
@@ -87,6 +90,8 @@ import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
 import com.tokopedia.district_recommendation.domain.mapper.TokenMapper;
+import com.tokopedia.district_recommendation.domain.model.Token;
+import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity;
 import com.tokopedia.fingerprint.util.FingerprintConstant;
 import com.tokopedia.gm.GMModuleRouter;
 import com.tokopedia.gm.cashback.domain.GetCashbackUseCase;
@@ -787,7 +792,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getIntentCreateShop(Context context) {
-        Intent intent = TkpdSeller.getIntentCreateEditShop(context, true, true);
+        Intent intent = ShopOpenRouter.getIntentCreateEditShop(context, true, true);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         return intent;
     }
@@ -1393,5 +1398,10 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void goToManageShipping(Context context) {
         startActivity(new Intent(context, EditShippingActivity.class));
+    }
+
+    @Override
+    public void goToEditShop(Context context) {
+        startActivity(getIntentManageShop(context));
     }
 }

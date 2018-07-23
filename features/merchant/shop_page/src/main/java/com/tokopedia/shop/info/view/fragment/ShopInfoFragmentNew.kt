@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.reputation.common.data.source.cloud.model.ReputationSpeed
+import com.tokopedia.reputation.common.data.source.cloud.model.ReputationSpeedV2
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopModuleRouter
 import com.tokopedia.shop.analytic.ShopPageTracking
@@ -142,6 +143,10 @@ class ShopInfoFragmentNew: BaseDaggerFragment(), ShopInfoView, BaseEmptyViewHold
 
     private fun gotoShopDiscussion() {
         if (activity.application is ShopModuleRouter){
+            shopInfo.run {
+                shopPageTracking.eventClickDiscussion(shopId,
+                        presenter.isMyshop(shopId), ShopPageTracking.getShopType(shopInfo.info))
+            }
             (activity.application as ShopModuleRouter).goToShopDiscussion(activity, shopId)
         }
     }
@@ -166,7 +171,7 @@ class ShopInfoFragmentNew: BaseDaggerFragment(), ShopInfoView, BaseEmptyViewHold
     }
 
     private fun displayImageBackground(shopInfo: ShopInfo) {
-        if (TextApiUtils.isValueTrue(shopInfo.info.shopIsOfficial) || shopInfo.info.isShopIsGoldBadge){
+        if (!(TextApiUtils.isValueTrue(shopInfo.info.shopIsOfficial) || shopInfo.info.isShopIsGoldBadge)){
             shopBackgroundImageView.visibility = View.GONE
         } else {
             shopBackgroundImageView.visibility = View.VISIBLE
@@ -213,9 +218,7 @@ class ShopInfoFragmentNew: BaseDaggerFragment(), ShopInfoView, BaseEmptyViewHold
         }
     }
 
-    override fun showListNoteError(throwable: Throwable?) {
-
-    }
+    override fun showListNoteError(throwable: Throwable?) {}
 
     override fun onEmptyContentItemTextClicked() {}
 
@@ -239,8 +242,8 @@ class ShopInfoFragmentNew: BaseDaggerFragment(), ShopInfoView, BaseEmptyViewHold
         labelViewProcessOrder.setContent(getString(R.string.shop_page_speed_shop_not_available))
     }
 
-    override fun onSuccessGetReputation(reputationSpeed: ReputationSpeed) {
-        val speedLevelDescription = reputationSpeed.recent12Month.speedLevelDescription
+    override fun onSuccessGetReputation(reputationSpeed: ReputationSpeedV2) {
+        val speedLevelDescription = reputationSpeed.speedFmt
 
         if (TextUtils.isEmpty(speedLevelDescription)) {
             labelViewProcessOrder.setContent(getString(R.string.shop_page_speed_shop_not_available))
