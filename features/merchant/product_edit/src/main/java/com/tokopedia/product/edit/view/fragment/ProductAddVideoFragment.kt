@@ -100,6 +100,11 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
         })
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        productAddVideoPresenter.detachView()
+    }
+
     override fun getAdapterTypeFactory(): ProductAddVideoAdapterTypeFactory {
         return ProductAddVideoAdapterTypeFactory(this, this)
     }
