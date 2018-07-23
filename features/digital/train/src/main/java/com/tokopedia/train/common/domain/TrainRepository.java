@@ -6,6 +6,8 @@ import com.tokopedia.train.search.presentation.model.AvailabilityKeySchedule;
 import com.tokopedia.train.search.presentation.model.FilterSearchData;
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
 import com.tokopedia.train.seat.data.entity.TrainSeatMapEntity;
+import com.tokopedia.train.seat.domain.model.TrainPassengerSeat;
+import com.tokopedia.train.seat.domain.model.request.ChangeSeatMapRequest;
 import com.tokopedia.train.station.domain.model.TrainStation;
 
 import java.util.HashMap;
@@ -43,4 +45,5 @@ public interface TrainRepository {
 
     Observable<List<TrainStation>> getAllStations();
 
+    Observable<List<TrainPassengerSeat>> changeSeats(List<ChangeSeatMapRequest> requests);
 }

@@ -6,6 +6,7 @@ import com.tokopedia.train.search.data.entity.SearchDataResponse;
 import com.tokopedia.train.seat.data.entity.TrainKaiSeatMapEntity;
 import com.tokopedia.train.station.data.entity.StationDataEntity;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import retrofit2.http.Body;
@@ -37,4 +38,7 @@ public interface TrainApi {
     @Headers({"Content-Type: application/json"})
     Observable<DataResponse<TrainKaiSeatMapEntity>> seats(@Body Map<String, Object> params);
 
+    @POST("./")
+    @Headers({"Content-Type: application/json"})
+    Observable<DataResponse<String>> changeSeats(@Body HashMap<String, Object> parameters);
 }
