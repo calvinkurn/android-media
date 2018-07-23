@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:foreground="?android:attr/selectableItemBackground"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <LinearLayout
@@ -15,9 +17,10 @@
             android:layout_gravity="center_vertical"
             android:layout_marginRight="16dp"
             android:layout_marginEnd="16dp"
-            android:src="@drawable/ic_menu_profile"
+            android:src="@drawable/ic_badge_gold"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            tools:visibility="visible"/>
 
         <LinearLayout
             android:layout_width="0dp"
@@ -29,8 +32,8 @@
                 android:id="@+id/title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Chat"
-                android:textColor="@color/grey_title"
+                tools:text="Chat"
+                android:textColor="@color/grey_550"
                 android:lineSpacingExtra="3dp"
                 android:fontFamily="sans-serif"/>
 
@@ -38,28 +41,16 @@
                 android:id="@+id/subtitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/grey_subtitle"
+                android:textColor="@color/grey_500"
                 android:lineSpacingExtra="2dp"
-                android:text="Percakapan pribadi Anda"/>
+                tools:text="Percakapan pribadi Anda"/>
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/text_badge"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:textSize="16sp"
-            android:gravity="center"
-            android:layout_marginRight="@dimen/dp_16"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:layout_gravity="center_vertical"
-            android:textColor="@color/white"
-            android:background="@drawable/circle_red"
-            android:text="2"/>
-
         <ImageView
             android:layout_gravity="center_vertical"
-            android:src="@drawable/ic_arrow_gray"
+            android:src="@drawable/ic_arrow_right_default"
+            android:tint="@color/grey_400"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
@@ -70,6 +61,6 @@
         android:layout_marginStart="@dimen/dp_16"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="@color/grey_border"/>
+        android:background="@color/grey_300"/>
 
 </LinearLayout>

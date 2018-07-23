@@ -16,6 +16,7 @@ import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.base.presentation.BaseTemporaryDrawerActivity;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.gcm.Constants;
@@ -44,7 +45,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class InboxTalkActivity extends DrawerPresenterActivity implements
+public class InboxTalkActivity extends BaseTemporaryDrawerActivity implements
         InboxTalkActivityView,
         NotificationReceivedListener, InboxTalkResultReceiver.Receiver {
 
@@ -87,6 +88,10 @@ public class InboxTalkActivity extends DrawerPresenterActivity implements
         taskStackBuilder.addNextIntent(homeIntent);
         taskStackBuilder.addNextIntent(destination);
         return taskStackBuilder;
+    }
+
+    public static Intent getCallingIntent(Context context) {
+        return new Intent(context, InboxTalkActivity.class);
     }
 
     @Override

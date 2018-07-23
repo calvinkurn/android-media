@@ -17,6 +17,7 @@ import com.tokopedia.contactus.inboxticket.presenter.InboxTicketPresenterImpl;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.DrawerPresenterActivity;
+import com.tokopedia.core.base.presentation.BaseTemporaryDrawerActivity;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -26,7 +27,7 @@ import com.tokopedia.core.var.TkpdState;
 /**
  * Created by Nisie on 4/21/16.
  */
-public class InboxTicketActivity extends DrawerPresenterActivity<InboxTicketPresenter> {
+public class InboxTicketActivity extends BaseTemporaryDrawerActivity<InboxTicketPresenter> {
 
     @DeepLink(ApplinkConst.INBOX_TICKET)
     public static TaskStackBuilder getCallingTaskStackList(Context context, Bundle extras) {
@@ -119,7 +120,7 @@ public class InboxTicketActivity extends DrawerPresenterActivity<InboxTicketPres
         super.onBackPressed();
     }
 
-    private static Intent getCallingIntent(Context context) {
+    public static Intent getCallingIntent(Context context) {
         return new Intent(context, InboxTicketActivity.class);
     }
 }
