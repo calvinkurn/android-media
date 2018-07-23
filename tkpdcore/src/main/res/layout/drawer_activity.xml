@@ -37,7 +37,6 @@
 
     </LinearLayout>
 
-    <include layout="@layout/drawer_layout"
-        />
+    <include layout="@layout/drawer_layout" />
 
 </android.support.v4.widget.DrawerLayout>

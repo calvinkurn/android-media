@@ -1,5 +1,7 @@
 package com.tokopedia.navigation;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 
 /**
@@ -12,4 +14,12 @@ public interface GlobalNavRouter {
     Fragment getFeedPlusFragment();
 
     Fragment getCartFragment();
+
+    Intent getInboxChatIntent(Context context);
+
+    Intent getInboxDiscussionIntent(Context context);
+
+    Intent getInboxReviewIntent(Context context);
+
+    Intent getInboxHelpIntent(Context context);
 }

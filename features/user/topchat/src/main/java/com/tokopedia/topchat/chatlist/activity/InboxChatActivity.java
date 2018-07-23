@@ -20,6 +20,7 @@ import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
+import com.tokopedia.core.base.presentation.BaseTemporaryDrawerActivity;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
@@ -44,7 +45,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class InboxChatActivity extends DrawerPresenterActivity
+public class InboxChatActivity extends BaseTemporaryDrawerActivity
         implements InboxMessageConstant, NotificationReceivedListener, HasComponent,
         ChatNotifInterface, IndicatorAdapter.OnIndicatorClickListener {
 
@@ -227,14 +228,17 @@ public class InboxChatActivity extends DrawerPresenterActivity
     public void onSuccessGetTopChatNotification(int notifUnreads) {
 
         if (notifUnreads > 0) {
-            TextView titleTextView = (TextView) toolbar.findViewById(R.id.actionbar_title);
-            titleTextView.setText(String.format(getString(R.string.chat_title), notifUnreads));
+            setTitleToolbar(String.format(getString(R.string.chat_title), notifUnreads));
         } else {
-            TextView titleTextView = (TextView) toolbar.findViewById(R.id.actionbar_title);
-            titleTextView.setText(getString(R.string.chat_title_without_notif));
+            setTitleToolbar(getString(R.string.chat_title_without_notif));
         }
 
         indicatorAdapter.setNotification(POSITION_TOP_CHAT, notifUnreads);
+    }
+
+    private void setTitleToolbar(String titleToolbar) {
+        TextView titleTextView = toolbar.findViewById(R.id.actionbar_title);
+        titleTextView.setText(titleToolbar);
     }
 
     public static Intent getCallingIntent(Context context) {
