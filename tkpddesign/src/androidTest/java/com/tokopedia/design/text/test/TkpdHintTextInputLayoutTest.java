@@ -57,16 +57,6 @@ public class TkpdHintTextInputLayoutTest {
         assertEquals(view.getEditText().getId(), R.id.edit_text);
         assertNull(view.getError());
 
-//        view = getActivity().findViewById(R.id.text_input_layout2);
-//        TkpdHintTextInputLayout view2 = spy(view);
-//        assertFalse(view.isCounterEnabled());
-//        assertFalse(view.isSuccessShown());
-//        assertEquals(-1, view.getCounterMaxLength());
-//        assertEquals(view.getEditText().getId(), R.id.edit_text2);
-//        assertNull(view.getError());
-//
-//        view2.setCounterEnabled(true);
-
     }
 
     private Activity getActivity() {
