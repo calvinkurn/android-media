@@ -49,10 +49,12 @@ import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactor
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.EmptyKolPostViewHolder;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.ExploreViewHolder;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder;
+import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostYoutubeViewHolder;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.EmptyKolPostViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.ExploreViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
+import com.tokopedia.kol.feature.post.view.viewmodel.KolPostYoutubeViewModel;
 import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 
@@ -136,6 +138,11 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
     @Override
     public int type(KolPostViewModel kolViewModel) {
         return KolPostViewHolder.LAYOUT;
+    }
+
+    @Override
+    public int type(KolPostYoutubeViewModel kolPostYoutubeViewModel) {
+        return KolPostYoutubeViewHolder.LAYOUT;
     }
 
     @Override
@@ -240,6 +247,8 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
             viewHolder = new EmptyFeedBeforeLoginViewHolder(view, viewListener);
         else if (type == KolPostViewHolder.LAYOUT)
             viewHolder = new KolPostViewHolder(view, kolPostListener, KolPostViewHolder.Type.FEED);
+        else if (type == KolPostYoutubeViewHolder.LAYOUT)
+            viewHolder = new KolPostYoutubeViewHolder(view, kolPostListener, KolPostYoutubeViewHolder.Type.FEED);
         else if (type == EmptyKolPostViewHolder.LAYOUT)
             viewHolder = new EmptyKolPostViewHolder(view);
         else if (type == ExploreViewHolder.LAYOUT)

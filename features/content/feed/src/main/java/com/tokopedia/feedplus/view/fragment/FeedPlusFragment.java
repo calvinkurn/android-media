@@ -166,6 +166,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         if (savedInstanceState != null && savedInstanceState.getString(FIRST_CURSOR) != null)
             firstCursor = savedInstanceState.getString(FIRST_CURSOR, "");
         initVar();
+        setRetainInstance(true);
     }
 
 
@@ -902,7 +903,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onOpenKolTooltip(int rowNumber, String url) {
-        ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity(), url);
+        feedModuleRouter.openRedirectUrl(getActivity(), url);
     }
 
     @Override

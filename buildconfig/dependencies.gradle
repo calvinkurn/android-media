@@ -64,6 +64,7 @@ ext {
     tkpdHomeVersion = '2.22'
     tkpdMitraToppersVersion = '2.22'
     tkpdDistrictRecommendationVersion = '2.22'
+    tkpdYoutubeUtilVersion = '2.22'
     tkpdAnalyticsVersion = '2.22'
     tkpdVoteVersion = '2.22'
     tkpdGraphqlVersion = '2.22'
@@ -262,6 +263,7 @@ ext {
             goldMerchant          : "com.tokopedia.gm:gold_merchant:${tkpdGoldMerchantVersion}",
             goldMerchantSubscribe : "com.tokopedia.gm:gold_merchant-subscribe:${tkpdGoldMerchantVersion}",
             topAdsManagement      : "com.tokopedia.topads:top_ads_management:${tkpdTopAdsSDKVersion}",
+            youtubeutil           : "com.tokopedia.youtubeutil:youtubeutil:${tkpdYoutubeUtilVersion}",
             districtRecommendation: "com.tokopedia.district_recommendation:district_recommendation:${tkpdDistrictRecommendationVersion}",
             vote                  : "com.tokopedia.user:user:${tkpdVoteVersion}",
             digitalDeals          : "com.tokopedia.digital_deals:digital_deals:${tkpdDealsVersion}",
@@ -307,7 +309,7 @@ ext {
             topAdsManagementCommon    : ":features:top_ads:top_ads_management_common",
             topAdsSourceTagging   : ":features:top_ads:top_ads_management_sourcetagging",
             tokoCash              : ":features:fintech:tokocash",
-            flight                : ":tkpdflight",
+            flight                : ":features:digital:flight",
             flightNoOp            : ":features:digital:flight_no_op",
             mitraToppers          : ":features:fintech:mitra_toppers",
             event                 : ":features:digital:event",
@@ -355,6 +357,7 @@ ext {
             analytics         : ":libraries:analytics",
             graphql           : ":libraries:graphql",
             commonNetwork     : ":libraries:common_network",
-            omsApi            : ":libraries:oms"
+            omsApi            : ":libraries:oms",
+            youtubeutil       : ":libraries:youtubeutil"
     ]
 }
