@@ -8,11 +8,10 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.*
 import android.widget.ImageView
-import com.tkpd.library.ui.utilities.TkpdProgressDialog
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.core.network.NetworkErrorHelper
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.TkpdHintTextInputLayout
 import com.tokopedia.settingbank.R
@@ -39,7 +38,6 @@ class AddEditBankFormFragment : AddEditBankContract.View,
     private val REQUEST_OTP: Int = 103
 
     lateinit var presenter: AddEditBankPresenter
-    lateinit var progressDialog: TkpdProgressDialog
     lateinit var bottomInfoDialog: BottomSheetDialog
     lateinit var alertDialog: Dialog
 
@@ -269,10 +267,8 @@ class AddEditBankFormFragment : AddEditBankContract.View,
     }
 
     override fun showLoading() {
-        if (!::progressDialog.isInitialized) {
-            progressDialog = TkpdProgressDialog(context, TkpdProgressDialog.NORMAL_PROGRESS)
-        }
-        progressDialog.showDialog()
+        progress_bar.visibility = View.VISIBLE
+        main_form.visibility = View.GONE
     }
 
     override fun resetError() {
@@ -282,7 +278,8 @@ class AddEditBankFormFragment : AddEditBankContract.View,
     }
 
     override fun hideLoading() {
-        if (::progressDialog.isInitialized) progressDialog.dismiss()
+        progress_bar.visibility = View.GONE
+        main_form.visibility = View.VISIBLE
     }
 
     override fun onSuccessAddEditBank() {

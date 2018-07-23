@@ -3,12 +3,11 @@ package com.tokopedia.settingbank.banklist.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tkpd.library.ui.utilities.TkpdProgressDialog
-import com.tkpd.library.ui.view.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -47,7 +46,6 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
     lateinit var adapter: BankAccountAdapter
     lateinit var alertDialog: Dialog
     lateinit var linearLayoutManager: LinearLayoutManager
-    lateinit var progressDialog: TkpdProgressDialog
 
     private var enableAddButton = false
     private var reason = ""
@@ -286,21 +284,13 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
 
     override fun showLoadingFull() {
         progress_bar.visibility = View.VISIBLE
+        main_view.visibility = View.GONE
     }
 
     override fun hideLoadingFull() {
         progress_bar.visibility = View.GONE
-    }
+        main_view.visibility = View.VISIBLE
 
-    override fun showLoadingDialog() {
-        if (!::progressDialog.isInitialized) {
-            progressDialog = TkpdProgressDialog(context, TkpdProgressDialog.NORMAL_PROGRESS)
-        }
-        progressDialog.showDialog()
-    }
-
-    override fun hideLoadingDialog() {
-        if (::progressDialog.isInitialized) progressDialog.dismiss()
     }
 
     override fun showLoadingList() {

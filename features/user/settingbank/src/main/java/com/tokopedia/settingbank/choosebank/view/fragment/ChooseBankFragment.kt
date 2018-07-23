@@ -3,14 +3,14 @@ package com.tokopedia.settingbank.choosebank.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tkpd.library.ui.view.LinearLayoutManager
-import com.tkpd.library.utils.KeyboardHandler
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.settingbank.R
 import com.tokopedia.settingbank.addeditaccount.analytics.AddEditBankAnalytics.Companion.SCREEN_NAME_CHOOSE_BANK

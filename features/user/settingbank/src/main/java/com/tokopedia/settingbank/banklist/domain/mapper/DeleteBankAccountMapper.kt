@@ -1,7 +1,7 @@
 package com.tokopedia.settingbank.banklist.domain.mapper
 
-import com.tkpd.library.utils.network.MessageErrorException
 import com.tokopedia.abstraction.common.data.model.response.DataResponse
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.settingbank.banklist.domain.pojo.DeleteBankAccountPojo
 import retrofit2.Response
 import rx.functions.Func1

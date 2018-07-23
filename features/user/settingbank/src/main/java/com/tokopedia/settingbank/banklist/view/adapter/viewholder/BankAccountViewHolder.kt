@@ -9,7 +9,6 @@ import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.core.app.MainApplication
 import com.tokopedia.settingbank.R
 import com.tokopedia.settingbank.banklist.view.listener.BankAccountPopupListener
 import com.tokopedia.settingbank.banklist.view.viewmodel.BankAccountViewModel
@@ -76,7 +75,7 @@ class BankAccountViewHolder(val v: View, val listener: BankAccountPopupListener)
                         element)
             }
         }
-        setupPopupMenu(element, popupMenu)
+        setupPopupMenu(element, popupMenu, context)
         popupMenu.show()
     }
 
@@ -104,19 +103,17 @@ class BankAccountViewHolder(val v: View, val listener: BankAccountPopupListener)
         }
     }
 
-    private fun setupPopupMenu(element: BankAccountViewModel?, popupMenu: PopupMenu) {
+    private fun setupPopupMenu(element: BankAccountViewModel?, popupMenu: PopupMenu, context: Context) {
         if (element != null) {
 
             popupMenu.menu.clear()
 
             if (element.isDefaultBank != null && !element.isDefaultBank!!) {
-                popupMenu.menu.add(1, MENU_MAKE_DEFAULT, 1, MainApplication.getAppContext()
-                        .getString(R.string.menu_make_main_account))
+                popupMenu.menu.add(1, MENU_MAKE_DEFAULT, 1,
+                        context.getString(R.string.menu_make_main_account))
             }
-            popupMenu.menu.add(1, MENU_EDIT, 2, MainApplication.getAppContext()
-                    .getString(R.string.menu_edit))
-            popupMenu.menu.add(1, MENU_DELETE, 3, MainApplication.getAppContext()
-                    .getString(R.string.menu_delete))
+            popupMenu.menu.add(1, MENU_EDIT, 2, context.getString(R.string.menu_edit))
+            popupMenu.menu.add(1, MENU_DELETE, 3, context.getString(R.string.menu_delete))
 
         }
     }

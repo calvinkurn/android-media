@@ -33,10 +33,6 @@ interface SettingBankContract {
 
         fun onEmptyList(enableAddButton: Boolean, reason: String)
 
-        fun showLoadingDialog()
-
-        fun hideLoadingDialog()
-
         fun showLoadingList()
 
         fun hideLoadingList()

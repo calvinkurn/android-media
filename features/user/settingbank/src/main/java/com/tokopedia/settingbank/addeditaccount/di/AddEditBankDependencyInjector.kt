@@ -4,17 +4,14 @@ import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.readystatesoftware.chuck.ChuckInterceptor
-import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse
-import com.tokopedia.abstraction.common.network.exception.HeaderErrorResponse
 import com.tokopedia.abstraction.common.network.interceptor.DebugInterceptor
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
-import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.abstraction.common.utils.GlobalConfig
-import com.tokopedia.core.network.retrofit.coverters.GeneratedHostConverter
-import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter
-import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter
-import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor
+import com.tokopedia.network.NetworkRouter
+import com.tokopedia.network.converter.StringResponseConverter
+import com.tokopedia.network.interceptor.FingerprintInterceptor
+import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.settingbank.addeditaccount.domain.mapper.AddBankMapper
 import com.tokopedia.settingbank.addeditaccount.domain.mapper.EditBankMapper
 import com.tokopedia.settingbank.addeditaccount.domain.mapper.ValidateBankMapper
@@ -48,13 +45,7 @@ class AddEditBankDependencyInjector {
 
             val stringResponseConverter = StringResponseConverter()
 
-            val tkpdResponseConverter = TkpdResponseConverter()
-
-            val generatedHostConverter = GeneratedHostConverter()
-
             val retrofitBuilder: Retrofit.Builder = Retrofit.Builder()
-                    .addConverterFactory(generatedHostConverter)
-                    .addConverterFactory(tkpdResponseConverter)
                     .addConverterFactory(stringResponseConverter)
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
@@ -63,20 +54,18 @@ class AddEditBankDependencyInjector {
 
             val httpLoggingInterceptor = HttpLoggingInterceptor()
 
-            if (com.tokopedia.core.util.GlobalConfig.isAllowDebuggingTools()) {
+            if (GlobalConfig.isAllowDebuggingTools()) {
                 httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
             } else {
                 httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.NONE
             }
 
-            val fingerprintInterceptor = FingerprintInterceptor()
+            val networkRouter : NetworkRouter = context as NetworkRouter
 
-            val abstractionSession: com.tokopedia.abstraction.common.data.model.session.UserSession = (context as AbstractionRouter).session
-
-            val abstractionRouter: AbstractionRouter = context
+            val fingerprintInterceptor = FingerprintInterceptor(networkRouter, session)
 
             val tkpdAuthInterceptor = TkpdAuthInterceptor(context,
-                    abstractionRouter, abstractionSession)
+                    networkRouter, session)
 
             val builder: OkHttpClient.Builder = OkHttpClient.Builder()
 

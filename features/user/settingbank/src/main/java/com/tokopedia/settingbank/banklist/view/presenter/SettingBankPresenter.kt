@@ -77,7 +77,7 @@ class SettingBankPresenter(private val userSession: UserSession,
     }
 
     override fun setMainAccount(adapterPosition: Int, element: BankAccountViewModel?) {
-        view.showLoadingDialog()
+        view.showLoadingFull()
         if (element != null) {
             setDefaultBankAccountUseCase.execute(SetDefaultBankAccountUseCase.getParam(
                     element.accountId!!
@@ -87,12 +87,12 @@ class SettingBankPresenter(private val userSession: UserSession,
                 }
 
                 override fun onError(e: Throwable) {
-                    view.hideLoadingDialog()
+                    view.hideLoadingFull()
                     view.onErrorSetDefaultBank(ErrorHandler.getErrorMessage(view.getContext(), e))
                 }
 
                 override fun onNext(isSuccess: Boolean) {
-                    view.hideLoadingDialog()
+                    view.hideLoadingFull()
                     if (isSuccess) {
                         view.onSuccessSetDefault(adapterPosition)
                     } else {
@@ -105,7 +105,7 @@ class SettingBankPresenter(private val userSession: UserSession,
     }
 
     override fun deleteAccount(adapterPosition: Int, element: BankAccountViewModel?) {
-        view.showLoadingDialog()
+        view.showLoadingFull()
         if (element != null) {
             deleteBankAccountUseCase.execute(DeleteBankAccountUseCase.getParam(
                     element.accountId!!
@@ -115,12 +115,12 @@ class SettingBankPresenter(private val userSession: UserSession,
                 }
 
                 override fun onError(e: Throwable) {
-                    view.hideLoadingDialog()
+                    view.hideLoadingFull()
                     view.onErrorDeleteAccount(ErrorHandler.getErrorMessage(view.getContext(), e))
                 }
 
                 override fun onNext(isSuccess: Boolean) {
-                    view.hideLoadingDialog()
+                    view.hideLoadingFull()
                     if (isSuccess)
                         view.onSuccessDeleteAccount(adapterPosition)
                     else
