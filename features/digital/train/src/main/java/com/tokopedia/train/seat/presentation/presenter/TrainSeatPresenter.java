@@ -98,7 +98,7 @@ public class TrainSeatPresenter extends BaseDaggerPresenter<TrainSeatContract.Vi
 
     @Override
     public void onRunningOutOfTime() {
-        getView().backToHomePage();
+        getView().showExpiredPaymentDialog();
     }
 
     @Override

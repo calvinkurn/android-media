@@ -165,5 +165,8 @@
     <string name="train_seat_prefix_toolbar_title">Perjalanan Pergi</string>
     <string name="train_seat_toolbar_title">Pilih Kursi</string>
     <string name="train_seat_prefix_toolbar_return_trip_title">Perjalanan Pulang</string>
+    <string name="train_seat_expired_payment_time">Waktu Pembayaran Berakhir</string>
+    <string name="train_seat_expired_payment_time_desc">Batas waktu pembayaran tiket telah habis. Silakan lakukan pemesanan tiket baru.</string>
+    <string name="train_seat_expired_payment_time_cta">Kembali ke pencarian</string>
 
 </resources>

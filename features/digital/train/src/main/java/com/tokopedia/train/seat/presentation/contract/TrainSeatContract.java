@@ -31,7 +31,7 @@ public interface TrainSeatContract {
 
         void renderExpireDateCountdown(Date expireDate);
 
-        void backToHomePage();
+        void showExpiredPaymentDialog();
 
         List<TrainSeatPassengerViewModel> getPassengers();
 
