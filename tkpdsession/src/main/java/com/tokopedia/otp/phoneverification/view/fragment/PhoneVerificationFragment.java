@@ -214,12 +214,12 @@ public class PhoneVerificationFragment extends BaseDaggerFragment
     @TargetApi(Build.VERSION_CODES.M)
     private void showCheckSMSPermission() {
         if (ContextCompat.checkSelfPermission(getActivity(),
-                Manifest.permission.READ_SMS) == PackageManager.PERMISSION_DENIED
-                && !getActivity().shouldShowRequestPermissionRationale(Manifest.permission.READ_SMS)) {
+                Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_DENIED
+                && !getActivity().shouldShowRequestPermissionRationale(Manifest.permission.RECEIVE_SMS)) {
             new android.support.v7.app.AlertDialog.Builder(getActivity())
                     .setMessage(
                             RequestPermissionUtil
-                                    .getNeedPermissionMessage(Manifest.permission.READ_SMS)
+                                    .getNeedPermissionMessage(Manifest.permission.RECEIVE_SMS)
                     )
                     .setPositiveButton(com.tokopedia.core.R.string.title_ok, new DialogInterface.OnClickListener() {
                         @Override
@@ -234,11 +234,11 @@ public class PhoneVerificationFragment extends BaseDaggerFragment
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
                             RequestPermissionUtil.onPermissionDenied(getActivity(),
-                                    Manifest.permission.READ_SMS);
+                                    Manifest.permission.RECEIVE_SMS);
                         }
                     })
                     .show();
-        } else if (getActivity().shouldShowRequestPermissionRationale(Manifest.permission.READ_SMS)) {
+        } else if (getActivity().shouldShowRequestPermissionRationale(Manifest.permission.RECEIVE_SMS)) {
             PhoneVerificationFragmentPermissionsDispatcher
                     .checkSmsPermissionWithCheck(PhoneVerificationFragment.this);
         }
@@ -562,7 +562,7 @@ public class PhoneVerificationFragment extends BaseDaggerFragment
     }
 
 
-    @NeedsPermission(Manifest.permission.READ_SMS)
+    @NeedsPermission(Manifest.permission.RECEIVE_SMS)
     public void processOTPSMS(String otpCode) {
         if (otpEditText != null)
             otpEditText.setText(otpCode);
@@ -576,22 +576,22 @@ public class PhoneVerificationFragment extends BaseDaggerFragment
                 PhoneVerificationFragment.this, requestCode, grantResults);
     }
 
-    @OnShowRationale(Manifest.permission.READ_SMS)
+    @OnShowRationale(Manifest.permission.RECEIVE_SMS)
     void showRationaleForReadSms(final PermissionRequest request) {
-        RequestPermissionUtil.onShowRationale(getActivity(), request, Manifest.permission.READ_SMS);
+        RequestPermissionUtil.onShowRationale(getActivity(), request, Manifest.permission.RECEIVE_SMS);
     }
 
-    @OnPermissionDenied(Manifest.permission.READ_SMS)
+    @OnPermissionDenied(Manifest.permission.RECEIVE_SMS)
     void showDeniedForReadSms() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.READ_SMS);
+        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.RECEIVE_SMS);
     }
 
-    @OnNeverAskAgain(Manifest.permission.READ_SMS)
+    @OnNeverAskAgain(Manifest.permission.RECEIVE_SMS)
     void showNeverAskForReadSms() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.READ_SMS);
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.RECEIVE_SMS);
     }
 
-    @NeedsPermission(Manifest.permission.READ_SMS)
+    @NeedsPermission(Manifest.permission.RECEIVE_SMS)
     public void checkSmsPermission() {
 
     }
