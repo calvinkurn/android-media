@@ -200,7 +200,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="dialog_payment_cancellation_confirmation">Apakah Anda yakin membatalkan transaksi ini?</string>
     <string name="dialog_payment_cancellation_confirmation_detil1">Jumlah Kupon yg diaktifkan : </string>
     <string name="dialog_payment_cancellation_confirmation_detil2">Daftar Kupon : </string>
-    <string name="dialog_image_upload_option" >Bagaimana Anda ingin mengunggah gambar</string>
+    <string name="dialog_image_upload_option">Bagaimana Anda ingin mengunggah gambar</string>
 
     <string-array name="return_policy">
         <item>@string/return_policy_not_set</item>
@@ -703,7 +703,6 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="exit_chat_title">Keluar dari Chat?</string>
     <string name="exit_chat_body">Keluar dari Chat akan membatalkan pengiriman gambar yang sedang berlangsung.</string>
     <string name="exit_chat_yes">Keluar dari Chat</string>
-
 
 
     <!-- Strings related to inbox -->
@@ -2182,7 +2181,7 @@ di Tokopedia Sekarang!</string>
     <string name="notif_channel_general">Notifikasi</string>
     <string name="title_hockeyapp_download">Nakama harus menggunakan aplikasi Tokopedia versi beta</string>
     <string name="title_download">Download</string>
-    <string name="app_share_explore_btn_label">Mulai Belanja</string>
+    <string name="app_share_explore_btn_label">Dapatkan Cashback-mu</string>
     <string name="app_share_label_desc"><![CDATA[Sudah merasakan berbagai kemudahan dengan aplikasi Tokopedia? Ayo ajak orang-orang terdekatmu untuk ikut menikmati mudahnya beli, bayar ini itu lewat aplikasi Tokopedia]]></string>
     <string name="drawer_title_referral_appshare">Dapatkan TokoCash</string>
     <string name="app_share_default_msg"><![CDATA[Ada bonus cashback hingga Rp30.000 khusus buat kamu! Yuk mulai beli & bayar ini itu di Aplikasi Tokopedia, gunakan kode %s.]]></string>
@@ -2194,8 +2193,8 @@ di Tokopedia Sekarang!</string>
     <string name="phone_not_verified_error_message">Silakan verifikasi nomor handphone Anda untuk masuk ke halaman berikutnya.</string>
     <string name="copy_coupon_code_text">Kode voucher telah tersalin</string>
     <string name="cek_label"> Cek : </string>
-    <string name="referral_welcome_desc" formatted="false" ><![CDATA[Hai %s, kamu mendapatkan kode referral dari %s. Gunakan kode ini saat transaksi pertamamu di Tokopedia & nikmati bonus cashback ke TokoCash.]]></string>
-<string name="discussion_shop_label_show_more_discussion">Lihat Diskusi Selengkapnya</string>
+    <string name="referral_welcome_desc" formatted="false"><![CDATA[Gak perlu masukin kode, kamu pasti dapat <b>cashback 50% </b>hingga <b>Rp30.000</b> dalam dua langkah mudah:]]></string>
+    <string name="discussion_shop_label_show_more_discussion">Lihat Diskusi Selengkapnya</string>
     <string name="discussion_shop_label_empty_list_title">Belum ada diskusi di toko ini</string>
     <string name="discussion_shop_label_empty_list_content">Diskusi memberikan kesempatan tanya jawab oleh pembeli &amp; penjual sebelum melakukan transaksi</string>
 
@@ -2225,6 +2224,8 @@ di Tokopedia Sekarang!</string>
     <string name="dapatkan_cashback_dalam">Dapatkan Cashback dalam 3 Langkah:</string>
     <string name="bagi_kode_referral">Bagi kode referral-mu</string>
     <string name="apa_itu_tokocash">Apa itu TokoCash?</string>
+    <string name="cashback_enter_tokocash"><![CDATA[<font color=\'#8a000000\'>Cashback akan masuk ke TokoCash.</font> <br /><font color=\'#399c3f\'>Apa itu TokoCash?</font>]]></string>
+    <string name="referral_welcome_header"><![CDATA[<font color=\'#399c3f\'>Givana</font> memberi kamu Promo Referral.]]></string>
     <string name="referral_percent_label">Rp 0 / Rp 1.000.000</string>
     <string name="referral_count_label">0 teman diajak</string>
 
