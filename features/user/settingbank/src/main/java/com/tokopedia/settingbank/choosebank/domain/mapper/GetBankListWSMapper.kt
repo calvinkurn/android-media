@@ -1,7 +1,7 @@
 package com.tokopedia.settingbank.choosebank.domain.mapper
 
 import com.tkpd.library.utils.network.MessageErrorException
-import com.tokopedia.abstraction.common.data.model.response.ResponseV4ErrorException
+import com.tokopedia.abstraction.common.data.model.response.DataResponse
 import com.tokopedia.settingbank.choosebank.domain.pojo.BankAccount
 import com.tokopedia.settingbank.choosebank.domain.pojo.BankListPojo
 import com.tokopedia.settingbank.choosebank.view.viewmodel.BankListViewModel
@@ -12,36 +12,22 @@ import rx.functions.Func1
 /**
  * @author by nisie on 7/2/18.
  */
-class GetBankListWSMapper : Func1<Response<BankListPojo>,
+class GetBankListWSMapper : Func1<Response<DataResponse<BankListPojo>>,
         BankListViewModel> {
 
-    override fun call(response: Response<BankListPojo>): BankListViewModel {
-        var messageError: String
-
-        if (response.isSuccessful) {
-
-            val pojo: BankListPojo = response.body().copy()
-
-            if (pojo.data != null
-                    && pojo.message_error?.isEmpty()!!) {
-
-                return mapToViewModel(pojo)
-
-            } else if (pojo.message_error?.isNotEmpty()!!) {
-                throw ResponseV4ErrorException(response.body().message_error)
-            } else {
-                throw MessageErrorException("")
-            }
-
+    override fun call(response: Response<DataResponse<BankListPojo>>): BankListViewModel {
+        if (response.body().header.messages.isEmpty() ||
+                response.body().header.messages[0].isBlank()) {
+            val pojo: BankListPojo = response.body().data
+            return mapToViewModel(pojo)
         } else {
-            messageError = response.code().toString()
-            throw RuntimeException(messageError)
+            throw MessageErrorException(response.body().header.messages[0])
         }
     }
 
     private fun mapToViewModel(pojo: BankListPojo): BankListViewModel {
         val listBank = ArrayList<BankViewModel>()
-        for (data: BankAccount in pojo.data!!.banks) {
+        for (data: BankAccount in pojo.banks) {
             listBank.add(BankViewModel(
                     data.bank_id,
                     data.bank_name,
@@ -52,7 +38,7 @@ class GetBankListWSMapper : Func1<Response<BankListPojo>,
     }
 
     private fun hasNextPage(pojo: BankListPojo): Boolean {
-        return pojo.data?.has_next_page != null && pojo.data.has_next_page
+        return pojo.has_next_page != null && pojo.has_next_page
     }
 
 }

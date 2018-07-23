@@ -1,5 +1,6 @@
 package com.tokopedia.settingbank.banklist.domain.mapper
 
+import com.tkpd.library.utils.network.MessageErrorException
 import com.tokopedia.abstraction.common.data.model.response.DataResponse
 import com.tokopedia.settingbank.banklist.domain.pojo.SetDefaultBankAccountPojo
 import retrofit2.Response
@@ -12,9 +13,13 @@ class SetDefaultBankAccountMapper : Func1<Response<DataResponse<SetDefaultBankAc
         Boolean> {
 
     override fun call(response: Response<DataResponse<SetDefaultBankAccountPojo>>): Boolean {
-
-        val pojo: SetDefaultBankAccountPojo = response.body().data
-        return pojo.is_success ?: false
+        if (response.body().header.messages.isEmpty() ||
+                response.body().header.messages[0].isBlank()) {
+            val pojo: SetDefaultBankAccountPojo = response.body().data
+            return pojo.is_success ?: false
+        } else {
+            throw MessageErrorException(response.body().header.messages[0])
+        }
 
     }
 

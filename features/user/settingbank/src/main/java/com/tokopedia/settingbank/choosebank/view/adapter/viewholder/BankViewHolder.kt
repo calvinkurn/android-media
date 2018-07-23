@@ -22,7 +22,7 @@ class BankViewHolder(val v: View, val listener: BankListener) :
 
     val bankName: TextView = itemView.findViewById(R.id.bank_name)
     val bankRadio: RadioButton = itemView.findViewById(R.id.bank_radio)
-
+    val container: View = itemView.findViewById(R.id.container)
 
     override fun bind(element: BankViewModel?) {
         if (element != null) {
@@ -32,7 +32,9 @@ class BankViewHolder(val v: View, val listener: BankListener) :
                 bankRadio.isChecked = true
             }
 
-            bankName.setOnClickListener { listener.onBankSelected(adapterPosition, element) }
+            container.setOnClickListener { listener.onBankSelected(adapterPosition, element) }
+            bankRadio.setOnClickListener { listener.onBankSelected(adapterPosition, element) }
+
         }
     }
 

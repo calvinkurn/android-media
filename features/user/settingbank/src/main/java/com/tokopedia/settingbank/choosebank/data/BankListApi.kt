@@ -1,5 +1,6 @@
 package com.tokopedia.settingbank.choosebank.data
 
+import com.tokopedia.abstraction.common.data.model.response.DataResponse
 import com.tokopedia.settingbank.choosebank.domain.pojo.BankListPojo
 import retrofit2.Response
 import retrofit2.http.GET
@@ -13,6 +14,6 @@ interface BankListApi {
 
     @GET(BankListUrl.PATH_SEARCH_BANK_ACCOUNT)
     fun getBankList(@QueryMap params: HashMap<String, Any>):
-            Observable<Response<BankListPojo>>
+            Observable<Response<DataResponse<BankListPojo>>>
 
 }

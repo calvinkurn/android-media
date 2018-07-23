@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.settingbank.choosebank.view.fragment.ChooseBankFragment
 
@@ -12,6 +13,12 @@ import com.tokopedia.settingbank.choosebank.view.fragment.ChooseBankFragment
  */
 
 class ChooseBankActivity : BaseSimpleActivity() {
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        toolbar.navigationIcon = ContextCompat.getDrawable(this, com.tokopedia.abstraction.R.drawable.ic_close_default)
+    }
 
 
     override fun getNewFragment(): Fragment {

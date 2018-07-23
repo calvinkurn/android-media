@@ -260,9 +260,12 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
 
 
     override fun addNewAccount() {
-        if (enableAddButton) {
+        if (presenter.isMsisdnVerified() && enableAddButton) {
             val intentBankForm = AddEditBankActivity.createIntentAddBank(activity!!)
             startActivityForResult(intentBankForm, REQUEST_ADD_BANK)
+        } else if (!presenter.isMsisdnVerified()) {
+            //TODO : Go to Phone Verification Activation Activity
+            NetworkErrorHelper.showSnackbar(activity, "Belon dibuat")
         } else {
             showErrorAddAccount(reason)
         }
@@ -298,7 +301,7 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == REQUEST_ADD_BANK
+        if ((requestCode == REQUEST_ADD_BANK || requestCode == REQUEST_EDIT_BANK)
                 && resultCode == Activity.RESULT_OK) {
             //Refresh data to renew validation and because there is no bank logo from form
             getBankList()

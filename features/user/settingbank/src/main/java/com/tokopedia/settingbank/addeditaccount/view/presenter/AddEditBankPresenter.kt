@@ -12,6 +12,7 @@ import com.tokopedia.settingbank.addeditaccount.domain.usecase.ValidateBankUseCa
 import com.tokopedia.settingbank.addeditaccount.view.listener.AddEditBankContract
 import com.tokopedia.settingbank.addeditaccount.view.viewmodel.BankFormModel
 import com.tokopedia.settingbank.addeditaccount.view.viewmodel.ValidateBankViewModel
+import com.tokopedia.settingbank.addeditaccount.view.viewmodel.ValidationForm
 import com.tokopedia.user.session.UserSession
 import rx.Subscriber
 
@@ -43,7 +44,7 @@ class AddEditBankPresenter(private val userSession: UserSession,
             override fun onError(e: Throwable) {
                 view.hideLoading()
                 val errorMessage: String = ErrorHandler.getErrorMessage(view.getContext(), e)
-                showError("", errorMessage)
+                showErrorGeneral(errorMessage)
             }
 
             override fun onNext(validateBankViewModel: ValidateBankViewModel) {
@@ -62,29 +63,37 @@ class AddEditBankPresenter(private val userSession: UserSession,
                         view.onCloseForm()
                     }
 
-                } else if (!validateBankViewModel.paramName.isNullOrBlank()
-                        && !validateBankViewModel.message.isNullOrBlank()) {
-                    val messageError = validateBankViewModel.message
-                    showError(validateBankViewModel.paramName!!, messageError!!)
+                } else if (validateBankViewModel.listValidation.isNotEmpty()) {
+                    showErrorForm(validateBankViewModel.listValidation)
                 }
             }
         })
     }
 
-    private fun showError(paramName: String, messageError: String) {
+    private fun showErrorForm(listValidation: List<ValidationForm>) {
         val paramAccountNumber = "acc_no"
         val paramAccountName = "acc_name"
 
+        for (form in listValidation) {
+            when {
+                form.paramName.equals(paramAccountNumber) -> view.onErrorAccountNumber(form.message
+                        ?: "")
+                form.paramName.equals(paramAccountName) -> view.onErrorAccountName(form.message
+                        ?: "")
+            }
+        }
+    }
+
+    private fun showErrorGeneral(messageError: String) {
         val accountNumber = "nomor rekening"
         val accountName = "nama rekening"
 
         when {
-            paramName.equals(paramAccountNumber) -> view.onErrorAccountNumber(messageError)
-            paramName.equals(paramAccountName) -> view.onErrorAccountName(messageError)
             messageError.toLowerCase().contains(accountNumber) -> view.onErrorAccountNumber(messageError)
             messageError.toLowerCase().contains(accountName) -> view.onErrorAccountName(messageError)
             else -> view.onErrorGeneral(messageError)
         }
+
     }
 
     override fun addBank(bankFormModel: BankFormModel) {
@@ -107,9 +116,9 @@ class AddEditBankPresenter(private val userSession: UserSession,
 
             override fun onNext(isSuccess: Boolean) {
                 view.hideLoading()
-                if(isSuccess) {
+                if (isSuccess) {
                     view.onSuccessAddEditBank()
-                }else{
+                } else {
                     view.onErrorAddBank("")
                 }
             }
@@ -138,9 +147,9 @@ class AddEditBankPresenter(private val userSession: UserSession,
 
             override fun onNext(isSuccess: Boolean) {
                 view.hideLoading()
-                if(isSuccess) {
+                if (isSuccess) {
                     view.onSuccessAddEditBank()
-                }else{
+                } else {
                     view.onErrorEditBank("")
                 }
             }

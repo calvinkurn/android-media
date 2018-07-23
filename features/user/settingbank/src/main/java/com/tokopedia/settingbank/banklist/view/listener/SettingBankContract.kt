@@ -54,5 +54,7 @@ interface SettingBankContract {
         fun deleteAccount(adapterPosition: Int, element: BankAccountViewModel?)
 
         fun loadMore()
+
+        fun isMsisdnVerified(): Boolean
     }
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.settingbank.banklist.domain.mapper
 
+import com.tkpd.library.utils.network.MessageErrorException
 import com.tokopedia.abstraction.common.data.model.response.DataResponse
 import com.tokopedia.settingbank.banklist.domain.pojo.BankAccount
 import com.tokopedia.settingbank.banklist.domain.pojo.BankAccountListPojo
@@ -17,9 +18,15 @@ class GetBankAccountListMapper : Func1<Response<DataResponse<BankAccountListPojo
 
     override fun call(response: Response<DataResponse<BankAccountListPojo>>):
             BankAccountListViewModel {
-        val pojo: BankAccountListPojo = response.body().data
-        return mapToViewModel(pojo)
+        if (response.body().header.messages.isEmpty() ||
+                response.body().header.messages[0].isBlank()) {
+            val pojo: BankAccountListPojo = response.body().data
+            return mapToViewModel(pojo)
 
+        } else {
+            throw MessageErrorException(response.body().header.messages[0])
+
+        }
     }
 
     private fun mapToViewModel(pojo: BankAccountListPojo): BankAccountListViewModel {

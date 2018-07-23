@@ -6,6 +6,10 @@ package com.tokopedia.settingbank.addeditaccount.view.viewmodel
 data class ValidateBankViewModel(
         val isSuccess: Boolean? = false,
         val isDataChanged: Boolean? = false,
-        val paramName: String?,
-        val message: String?
+        val listValidation: List<ValidationForm> = ArrayList()
+)
+
+data class ValidationForm(
+        val paramName: String? = "",
+        val message: String? = ""
 )

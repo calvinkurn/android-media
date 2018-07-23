@@ -93,9 +93,9 @@ class SettingBankPresenter(private val userSession: UserSession,
 
                 override fun onNext(isSuccess: Boolean) {
                     view.hideLoadingDialog()
-                    if(isSuccess) {
+                    if (isSuccess) {
                         view.onSuccessSetDefault(adapterPosition)
-                    }else{
+                    } else {
                         view.onErrorSetDefaultBank("")
 
                     }
@@ -130,6 +130,10 @@ class SettingBankPresenter(private val userSession: UserSession,
             })
 
         }
+    }
+
+    override fun isMsisdnVerified(): Boolean {
+        return userSession.isMsisdnVerified
     }
 
     override fun detachView() {
