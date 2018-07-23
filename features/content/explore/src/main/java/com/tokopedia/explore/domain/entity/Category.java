@@ -8,9 +8,25 @@ public class Category {
 
     @SerializedName("id")
     @Expose
-    public int id;
+    private int id;
     @SerializedName("name")
     @Expose
-    public String name;
+    private String name;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
 }

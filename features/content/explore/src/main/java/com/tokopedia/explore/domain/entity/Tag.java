@@ -8,21 +8,69 @@ public class Tag {
 
     @SerializedName("id")
     @Expose
-    public int id;
+    private int id;
     @SerializedName("type")
     @Expose
-    public String type;
+    private String type;
     @SerializedName("url")
     @Expose
-    public String url;
+    private String url;
     @SerializedName("link")
     @Expose
-    public String link;
+    private String link;
     @SerializedName("price")
     @Expose
-    public String price;
+    private String price;
     @SerializedName("caption")
     @Expose
-    public String caption;
+    private String caption;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getLink() {
+        return link;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
+    }
+
+    public String getPrice() {
+        return price;
+    }
+
+    public void setPrice(String price) {
+        this.price = price;
+    }
+
+    public String getCaption() {
+        return caption;
+    }
+
+    public void setCaption(String caption) {
+        this.caption = caption;
+    }
 
 }

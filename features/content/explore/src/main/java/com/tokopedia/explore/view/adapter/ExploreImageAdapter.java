@@ -9,7 +9,7 @@ import android.widget.ImageView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.explore.R;
-import com.tokopedia.explore.view.listener.ExploreFragmentListener;
+import com.tokopedia.explore.view.listener.ContentExploreContract;
 import com.tokopedia.explore.view.viewmodel.ExploreImageViewModel;
 
 import java.util.ArrayList;
@@ -24,7 +24,7 @@ import javax.inject.Inject;
 public class ExploreImageAdapter extends RecyclerView.Adapter<ExploreImageAdapter.ViewHolder> {
 
     private List<ExploreImageViewModel> list;
-    private ExploreFragmentListener listener;
+    private ContentExploreContract listener;
 
     @Inject
     public ExploreImageAdapter() {
@@ -54,7 +54,7 @@ public class ExploreImageAdapter extends RecyclerView.Adapter<ExploreImageAdapte
         notifyDataSetChanged();
     }
 
-    public void setListener(ExploreFragmentListener listener) {
+    public void setListener(ContentExploreContract listener) {
         this.listener = listener;
     }
 

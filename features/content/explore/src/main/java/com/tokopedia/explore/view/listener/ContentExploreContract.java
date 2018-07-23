@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
  * @author by milhamj on 20/07/18.
  */
 
-public interface ExploreFragmentListener {
+public interface ContentExploreContract {
 
     interface View extends CustomerView {
 

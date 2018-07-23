@@ -3,7 +3,11 @@ package com.tokopedia.explore.domain.interactor;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.explore.R;
+import com.tokopedia.explore.domain.entity.GetDiscoveryKolData;
 import com.tokopedia.explore.view.subscriber.GetExploreDataSubscriber;
+import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 
 import java.util.HashMap;
@@ -32,8 +36,17 @@ public class GetExploreDataUseCase {
         this.graphqlUseCase = graphqlUseCase;
     }
 
-    public void execute(Map<String, Object> variables, GetExploreDataSubscriber getExploreDataSubscriber) {
+    public void execute(Map<String, Object> variables,
+                        GetExploreDataSubscriber getExploreDataSubscriber) {
+        graphqlUseCase.clearRequest();
 
+        String query = GraphqlHelper.loadRawString(context.getResources(),
+                R.raw.query_get_explore_data);
+
+        GraphqlRequest request = new GraphqlRequest(query, GetDiscoveryKolData.class, variables);
+
+        graphqlUseCase.addRequest(request);
+        graphqlUseCase.execute(getExploreDataSubscriber);
     }
 
     public void unsubscribe() {

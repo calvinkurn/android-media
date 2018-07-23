@@ -10,12 +10,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.explore.R;
+import com.tokopedia.explore.di.DaggerExploreComponent;
 import com.tokopedia.explore.view.adapter.ExploreImageAdapter;
 import com.tokopedia.explore.view.adapter.ExploreTagAdapter;
-import com.tokopedia.explore.view.listener.ExploreFragmentListener;
+import com.tokopedia.explore.view.listener.ContentExploreContract;
 import com.tokopedia.explore.view.viewmodel.ExploreImageViewModel;
 import com.tokopedia.explore.view.viewmodel.ExploreTagViewModel;
 
@@ -28,13 +32,24 @@ import javax.inject.Inject;
  * @author by milhamj on 19/07/18.
  */
 
-public class ContentExploreFragment extends BaseDaggerFragment implements ExploreFragmentListener.View {
+public class ContentExploreFragment extends BaseDaggerFragment implements ContentExploreContract.View {
 
     private static final int IMAGE_SPAN_COUNT = 3;
 
     private SearchInputView searchInspiration;
     private RecyclerView exploreTagRv;
     private RecyclerView exploreImageRv;
+
+    @Inject
+    ContentExploreContract.Presenter presenter;
+
+    @Inject
+    ExploreTagAdapter tagAdapter;
+
+    @Inject
+    ExploreImageAdapter imageAdapter;
+
+    private EndlessRecyclerViewScrollListener recyclerviewScrollListener;
 
     public static ContentExploreFragment newInstance() {
         ContentExploreFragment fragment = new ContentExploreFragment();
@@ -43,11 +58,6 @@ public class ContentExploreFragment extends BaseDaggerFragment implements Explor
         return fragment;
     }
 
-    @Inject
-    ExploreTagAdapter tagAdapter;
-
-    @Inject
-    ExploreImageAdapter imageAdapter;
 
     @Override
     protected String getScreenName() {
@@ -56,6 +66,12 @@ public class ContentExploreFragment extends BaseDaggerFragment implements Explor
 
     @Override
     protected void initInjector() {
+        BaseAppComponent baseAppComponent
+                = ((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent();
+        DaggerExploreComponent.builder()
+                .baseAppComponent(baseAppComponent)
+                .build()
+                .inject(this);
     }
 
     @Nullable
@@ -70,6 +86,7 @@ public class ContentExploreFragment extends BaseDaggerFragment implements Explor
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        presenter.attachView(this);
         List<ExploreImageViewModel> imageList = new ArrayList<>();
         imageList.add(new ExploreImageViewModel("http://www.mymbuzz.com/wp-content/uploads/sites/2/2017/03/Doctor-Who-Series-10-photos-3.jpeg"));
         imageList.add(new ExploreImageViewModel("http://www.scififantasynetwork.com/wp-content/uploads/2017/04/The-Pilot-banner.jpg"));
@@ -124,6 +141,22 @@ public class ContentExploreFragment extends BaseDaggerFragment implements Explor
         loadTagData(tagList);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
+    }
+
+    @Override
+    public void updateCursor(String cursor) {
+        presenter.updateCursor(cursor);
+    }
+
+    @Override
+    public void updateCategoryId(int categoryId) {
+        presenter.updateCategoryId(categoryId);
+    }
+
     private void initView(View view) {
         searchInspiration = view.findViewById(R.id.search_inspiration);
         exploreTagRv = view.findViewById(R.id.explore_tag_rv);
@@ -133,8 +166,6 @@ public class ContentExploreFragment extends BaseDaggerFragment implements Explor
                 LinearLayoutManager.HORIZONTAL,
                 false);
         exploreTagRv.setLayoutManager(linearLayoutManager);
-        //TODO milhamj use DI
-        tagAdapter = new ExploreTagAdapter();
         exploreTagRv.setAdapter(tagAdapter);
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(),
@@ -142,9 +173,10 @@ public class ContentExploreFragment extends BaseDaggerFragment implements Explor
                 GridLayoutManager.VERTICAL,
                 false);
         exploreImageRv.setLayoutManager(gridLayoutManager);
-        //TODO milhamj use DI
-        imageAdapter = new ExploreImageAdapter();
         exploreImageRv.setAdapter(imageAdapter);
+
+        recyclerviewScrollListener = onScrollListener(gridLayoutManager);
+        exploreImageRv.addOnScrollListener(recyclerviewScrollListener);
     }
 
     private void loadImageData(List<ExploreImageViewModel> imageViewModelList) {
@@ -153,5 +185,14 @@ public class ContentExploreFragment extends BaseDaggerFragment implements Explor
 
     private void loadTagData(List<ExploreTagViewModel> tagViewModelList) {
         tagAdapter.setList(tagViewModelList);
+    }
+
+    private EndlessRecyclerViewScrollListener onScrollListener(GridLayoutManager layoutManager) {
+        return new EndlessRecyclerViewScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+
+            }
+        };
     }
 }

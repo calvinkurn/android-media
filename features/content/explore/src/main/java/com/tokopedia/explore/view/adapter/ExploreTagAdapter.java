@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tokopedia.explore.R;
-import com.tokopedia.explore.view.listener.ExploreFragmentListener;
+import com.tokopedia.explore.view.listener.ContentExploreContract;
 import com.tokopedia.explore.view.viewmodel.ExploreTagViewModel;
 
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ import javax.inject.Inject;
 public class ExploreTagAdapter extends RecyclerView.Adapter<ExploreTagAdapter.ViewHolder> {
 
     private List<ExploreTagViewModel> list;
-    private ExploreFragmentListener listener;
+    private ContentExploreContract listener;
 
     @Inject
     public ExploreTagAdapter() {
@@ -53,7 +53,7 @@ public class ExploreTagAdapter extends RecyclerView.Adapter<ExploreTagAdapter.Vi
         notifyDataSetChanged();
     }
 
-    public void setListener(ExploreFragmentListener listener) {
+    public void setListener(ContentExploreContract listener) {
         this.listener = listener;
     }
 
