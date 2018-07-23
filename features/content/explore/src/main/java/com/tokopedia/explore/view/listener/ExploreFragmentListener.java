@@ -11,10 +11,16 @@ public interface ExploreFragmentListener {
 
     interface View extends CustomerView {
 
+        void updateCursor(String cursor);
+
+        void updateCategoryId(int categoryId);
     }
 
     interface Presenter extends CustomerPresenter<View> {
+        void getExploreData();
 
+        void updateCursor(String cursor);
+
+        void updateCategoryId(int categoryId);
     }
-
 }
