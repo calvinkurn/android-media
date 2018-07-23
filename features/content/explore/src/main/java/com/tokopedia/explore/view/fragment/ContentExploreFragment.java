@@ -25,6 +25,7 @@ import com.tokopedia.explore.view.adapter.ExploreTagAdapter;
 import com.tokopedia.explore.view.listener.ContentExploreContract;
 import com.tokopedia.explore.view.viewmodel.ExploreImageViewModel;
 import com.tokopedia.explore.view.viewmodel.ExploreTagViewModel;
+import com.tokopedia.graphql.data.GraphqlClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +54,6 @@ public class ContentExploreFragment extends BaseDaggerFragment implements Conten
     @Inject
     ExploreImageAdapter imageAdapter;
 
-    private EndlessRecyclerViewScrollListener recyclerviewScrollListener;
     private boolean canLoadMore;
 
     public static ContentExploreFragment newInstance() {
@@ -91,66 +91,25 @@ public class ContentExploreFragment extends BaseDaggerFragment implements Conten
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        GraphqlClient.init(getContext());
         presenter.attachView(this);
-
-        List<ExploreImageViewModel> imageList = new ArrayList<>();
-        imageList.add(new ExploreImageViewModel("http://www.mymbuzz.com/wp-content/uploads/sites/2/2017/03/Doctor-Who-Series-10-photos-3.jpeg"));
-        imageList.add(new ExploreImageViewModel("http://www.scififantasynetwork.com/wp-content/uploads/2017/04/The-Pilot-banner.jpg"));
-        imageList.add(new ExploreImageViewModel("http://downloads.bbc.co.uk/tv/isite-static/doctorwho/wallpapers/christmas-2015/day-1/doctor-gallifrey-16x9.jpg"));
-        imageList.add(new ExploreImageViewModel("https://tse3.mm.bing.net/th?id=OIP.xPCr-zKH0ZUk-1Lx9rqkQgHaKd&pid=Api"));
-        imageList.add(new ExploreImageViewModel("http://www.bang2write.com/wp-content/uploads/2017/07/tp-graphic-dr-whodunnit.jpg"));
-        imageList.add(new ExploreImageViewModel("http://www.mymbuzz.com/wp-content/uploads/sites/2/2017/03/Doctor-Who-Series-10-photos-3.jpeg"));
-        imageList.add(new ExploreImageViewModel("http://www.scififantasynetwork.com/wp-content/uploads/2017/04/The-Pilot-banner.jpg"));
-        imageList.add(new ExploreImageViewModel("http://downloads.bbc.co.uk/tv/isite-static/doctorwho/wallpapers/christmas-2015/day-1/doctor-gallifrey-16x9.jpg"));
-        imageList.add(new ExploreImageViewModel("https://tse3.mm.bing.net/th?id=OIP.xPCr-zKH0ZUk-1Lx9rqkQgHaKd&pid=Api"));
-        imageList.add(new ExploreImageViewModel("http://www.bang2write.com/wp-content/uploads/2017/07/tp-graphic-dr-whodunnit.jpg"));
-        imageList.add(new ExploreImageViewModel("http://www.mymbuzz.com/wp-content/uploads/sites/2/2017/03/Doctor-Who-Series-10-photos-3.jpeg"));
-        imageList.add(new ExploreImageViewModel("http://www.scififantasynetwork.com/wp-content/uploads/2017/04/The-Pilot-banner.jpg"));
-        imageList.add(new ExploreImageViewModel("http://downloads.bbc.co.uk/tv/isite-static/doctorwho/wallpapers/christmas-2015/day-1/doctor-gallifrey-16x9.jpg"));
-        imageList.add(new ExploreImageViewModel("https://tse3.mm.bing.net/th?id=OIP.xPCr-zKH0ZUk-1Lx9rqkQgHaKd&pid=Api"));
-        imageList.add(new ExploreImageViewModel("http://www.bang2write.com/wp-content/uploads/2017/07/tp-graphic-dr-whodunnit.jpg"));
-        imageList.add(new ExploreImageViewModel("http://www.mymbuzz.com/wp-content/uploads/sites/2/2017/03/Doctor-Who-Series-10-photos-3.jpeg"));
-        imageList.add(new ExploreImageViewModel("http://www.scififantasynetwork.com/wp-content/uploads/2017/04/The-Pilot-banner.jpg"));
-        imageList.add(new ExploreImageViewModel("http://downloads.bbc.co.uk/tv/isite-static/doctorwho/wallpapers/christmas-2015/day-1/doctor-gallifrey-16x9.jpg"));
-        imageList.add(new ExploreImageViewModel("https://tse3.mm.bing.net/th?id=OIP.xPCr-zKH0ZUk-1Lx9rqkQgHaKd&pid=Api"));
-        imageList.add(new ExploreImageViewModel("http://www.bang2write.com/wp-content/uploads/2017/07/tp-graphic-dr-whodunnit.jpg"));
-        imageList.add(new ExploreImageViewModel("http://www.mymbuzz.com/wp-content/uploads/sites/2/2017/03/Doctor-Who-Series-10-photos-3.jpeg"));
-        imageList.add(new ExploreImageViewModel("http://www.scififantasynetwork.com/wp-content/uploads/2017/04/The-Pilot-banner.jpg"));
-        imageList.add(new ExploreImageViewModel("http://downloads.bbc.co.uk/tv/isite-static/doctorwho/wallpapers/christmas-2015/day-1/doctor-gallifrey-16x9.jpg"));
-        imageList.add(new ExploreImageViewModel("https://tse3.mm.bing.net/th?id=OIP.xPCr-zKH0ZUk-1Lx9rqkQgHaKd&pid=Api"));
-        imageList.add(new ExploreImageViewModel("http://www.bang2write.com/wp-content/uploads/2017/07/tp-graphic-dr-whodunnit.jpg"));
-        imageList.add(new ExploreImageViewModel("http://www.mymbuzz.com/wp-content/uploads/sites/2/2017/03/Doctor-Who-Series-10-photos-3.jpeg"));
-        imageList.add(new ExploreImageViewModel("http://www.scififantasynetwork.com/wp-content/uploads/2017/04/The-Pilot-banner.jpg"));
-        imageList.add(new ExploreImageViewModel("http://downloads.bbc.co.uk/tv/isite-static/doctorwho/wallpapers/christmas-2015/day-1/doctor-gallifrey-16x9.jpg"));
-        imageList.add(new ExploreImageViewModel("https://tse3.mm.bing.net/th?id=OIP.xPCr-zKH0ZUk-1Lx9rqkQgHaKd&pid=Api"));
-        imageList.add(new ExploreImageViewModel("http://www.bang2write.com/wp-content/uploads/2017/07/tp-graphic-dr-whodunnit.jpg"));
-        imageList.add(new ExploreImageViewModel("http://www.mymbuzz.com/wp-content/uploads/sites/2/2017/03/Doctor-Who-Series-10-photos-3.jpeg"));
-        imageList.add(new ExploreImageViewModel("http://www.scififantasynetwork.com/wp-content/uploads/2017/04/The-Pilot-banner.jpg"));
-        imageList.add(new ExploreImageViewModel("http://downloads.bbc.co.uk/tv/isite-static/doctorwho/wallpapers/christmas-2015/day-1/doctor-gallifrey-16x9.jpg"));
-        imageList.add(new ExploreImageViewModel("https://tse3.mm.bing.net/th?id=OIP.xPCr-zKH0ZUk-1Lx9rqkQgHaKd&pid=Api"));
-        imageList.add(new ExploreImageViewModel("http://www.bang2write.com/wp-content/uploads/2017/07/tp-graphic-dr-whodunnit.jpg"));
-        imageList.add(new ExploreImageViewModel("http://www.mymbuzz.com/wp-content/uploads/sites/2/2017/03/Doctor-Who-Series-10-photos-3.jpeg"));
-        imageList.add(new ExploreImageViewModel("http://www.scififantasynetwork.com/wp-content/uploads/2017/04/The-Pilot-banner.jpg"));
-        imageList.add(new ExploreImageViewModel("http://downloads.bbc.co.uk/tv/isite-static/doctorwho/wallpapers/christmas-2015/day-1/doctor-gallifrey-16x9.jpg"));
-        imageList.add(new ExploreImageViewModel("https://tse3.mm.bing.net/th?id=OIP.xPCr-zKH0ZUk-1Lx9rqkQgHaKd&pid=Api"));
-        imageList.add(new ExploreImageViewModel("http://www.bang2write.com/wp-content/uploads/2017/07/tp-graphic-dr-whodunnit.jpg"));
-        loadImageData(imageList);
-
-        List<ExploreTagViewModel> tagList = new ArrayList<>();
-        tagList.add(new ExploreTagViewModel("Fashion Ilham"));
-        tagList.add(new ExploreTagViewModel("Fashion Jean"));
-        tagList.add(new ExploreTagViewModel("Fashion Steven"));
-        tagList.add(new ExploreTagViewModel("Fashion Nisie"));
-        tagList.add(new ExploreTagViewModel("Fashion Yoas"));
-        tagList.add(new ExploreTagViewModel("Fashion Hendri"));
-        tagList.add(new ExploreTagViewModel("Fashion Atin"));
-        loadTagData(tagList);
+        presenter.getExploreData();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         presenter.detachView();
+    }
+
+    @Override
+    public void onSuccessGetExploreData() {
+
+    }
+
+    @Override
+    public void onErrorGetExploreData() {
+
     }
 
     @Override
@@ -185,8 +144,8 @@ public class ContentExploreFragment extends BaseDaggerFragment implements Conten
         exploreImageRv.setLayoutManager(gridLayoutManager);
         exploreImageRv.setAdapter(imageAdapter);
 
-        recyclerviewScrollListener = onScrollListener(gridLayoutManager);
-        exploreImageRv.addOnScrollListener(recyclerviewScrollListener);
+        EndlessRecyclerViewScrollListener scrollListener = onScrollListener(gridLayoutManager);
+        exploreImageRv.addOnScrollListener(scrollListener);
     }
 
     private void loadImageData(List<ExploreImageViewModel> imageViewModelList) {

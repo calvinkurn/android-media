@@ -11,6 +11,10 @@ public interface ContentExploreContract {
 
     interface View extends CustomerView {
 
+        void onSuccessGetExploreData();
+
+        void onErrorGetExploreData();
+
         void updateCursor(String cursor);
 
         void updateCategoryId(int categoryId);
