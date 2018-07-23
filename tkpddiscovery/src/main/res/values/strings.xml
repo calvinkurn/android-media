@@ -33,6 +33,8 @@
     <string name="error_get_dynamic_filter">Gagal memperoleh data Filter dan Sort</string>
     <string name="msg_empty_search_2">Silakan melakukan pencarian kembali dengan menggunakan kata kunci lain.</string>
     <string name="msg_empty_search_1">Oops... hasil pencarian Anda tidak dapat ditemukan.</string>
+    <string name="msg_empty_search_with_filter_1">Oops, Produk tidak ditemukan :(</string>
+    <string name="msg_empty_search_with_filter_2">Hasil pencarian untuk \"%s\" tidak ditemukan. Coba kurangi filter pencarian Anda :</string>
     <string name="empty_search_content_template">Hasil pencarian untuk \"%s\" tidak ditemukan. Coba keyword lain?</string>
     <string name="empty_search_button_text">Lakukan Pencarian Baru</string>
     <string name="result_count_template_text">%s Produk</string>
@@ -59,4 +61,5 @@
     <string name="press_to_see_similar">Tekan dan tahan produk pilihan Anda untuk melihat produk serupa.</string>
     <string name="similar_product_not_found">Hasil produk serupa tidak dapat ditemukan. Silahkan pilih produk lain.</string>
     <string name="title_product_not_found">Produk serupa tidak ditemukan</string>
+    <string name="empty_state_selected_filter_price_name">Filter Harga</string>
 </resources>

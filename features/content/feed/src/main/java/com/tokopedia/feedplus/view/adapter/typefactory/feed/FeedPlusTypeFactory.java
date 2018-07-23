@@ -12,6 +12,7 @@ import com.tokopedia.feedplus.view.viewmodel.kol.ContentProductViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.ProductCommunicationViewModel;
+import com.tokopedia.feedplus.view.viewmodel.kol.WhitelistViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreBrandsViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreCampaignViewModel;
 import com.tokopedia.feedplus.view.viewmodel.product.ActivityCardViewModel;
@@ -63,6 +64,8 @@ public interface FeedPlusTypeFactory {
     int type(EmptyFeedBeforeLoginModel emptyFeedBeforeLoginModel);
 
     int type(RetryModel retryModel);
+
+    int type(WhitelistViewModel whitelistViewModel);
 
     AbstractViewHolder createViewHolder(View view, int viewType);
 }
