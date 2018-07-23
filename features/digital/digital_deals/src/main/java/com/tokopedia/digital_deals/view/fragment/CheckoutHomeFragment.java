@@ -4,10 +4,12 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,7 +44,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
     private ConstraintLayout clPromoAmount;
     private ViewGroup mainContent;
     private TextView tvPaymentMethod;
-    private View paymentMethod;
+    private CardView paymentMethod;
     private ImageView imageViewBrand;
     private TextView tvDealDetails;
     private TextView tvBrandName;
@@ -109,6 +111,11 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
         tvNumberVouchers = view.findViewById(R.id.tv_number_vouchers);
         etEmailID = view.findViewById(R.id.tv_email);
         paymentMethod = view.findViewById(R.id.cl_btn_payment);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            paymentMethod.setCardElevation(getResources().getDimension(R.dimen.dp_8));
+        } else {
+            paymentMethod.setCardElevation(getResources().getDimension(R.dimen.dp_0));
+        }
         tvPaymentMethod = view.findViewById(R.id.ll_select_payment_method);
         tvApplyPromo = view.findViewById(R.id.tv_promocode);
         clPromoApplied = view.findViewById(R.id.cl_promo_applied);

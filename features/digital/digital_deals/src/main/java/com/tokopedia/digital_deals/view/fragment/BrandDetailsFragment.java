@@ -123,7 +123,7 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
         toolbar = view.findViewById(R.id.toolbar);
 
         ((BaseSimpleActivity) getActivity()).setSupportActionBar(toolbar);
-
+        recyclerViewDeals.setNestedScrollingEnabled(false);
         toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_action_back));
         collapsingToolbarLayout.setTitle(" ");
         tvSeeMoreBtn.setOnClickListener(this);
