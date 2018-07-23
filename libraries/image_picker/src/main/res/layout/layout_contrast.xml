@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/image_editor_control_height"
+    android:orientation="vertical"
+    android:visibility="gone"
+    tools:visibility="visible"
+    android:clipChildren="false"
+    android:clipToPadding="false">
+
+    <TextView
+        android:id="@+id/tv_contrast"
+        style="@style/TextView.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_20"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/default_contrast" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:clipChildren="false"
+        android:clipToPadding="false">
+
+        <com.tokopedia.imagepicker.editor.widget.TwoLineSeekBar
+            android:id="@+id/seekBar_contrast"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:high_color="@color/tkpd_main_green"
+            app:high_stroke_width="@dimen/dp_2"
+            app:line_color="@color/grey_700"
+            app:line_width="@dimen/dp_1"
+            app:nail_color="@color/grey_700"
+            app:nail_radius="@dimen/dp_0"
+            app:nail_stroke_width="@dimen/dp_0"
+            app:thumb_color="@color/white"
+            app:thumb_radius="@dimen/dp_12"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:paddingLeft="@dimen/dp_2"
+            android:paddingRight="@dimen/dp_2"/>
+    </RelativeLayout>
+
+</LinearLayout>
