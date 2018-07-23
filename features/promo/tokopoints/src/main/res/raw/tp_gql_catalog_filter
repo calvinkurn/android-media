@@ -1,20 +1,30 @@
-{
-  filter: hachikoCatalogFilter {
+query Filter ($slug: String){
+  filter : tokopointsCatalogFilter (slug: $slug) {
     categories {
       id
+      parentID
       name
-      image_id
-      image_url
-      index
       timeRemainingSeconds
+      imageID
+      imageURL
       isSelected
+      index
+      subcategory {
+        id
+        parentID
+        name
+        categoryIndex
+      }
     }
-    points_range {
+    pointRanges {
       id
       text
       index
+      minPoint
+      maxPoint
+      myPoint
     }
-    sort_type {
+    sortType {
       id
       text
     }

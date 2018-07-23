@@ -1,67 +1,82 @@
-query CatalogListQuery($category_id: Int, $points_range: Int, $page: Int, $page_size: Int, $sort_id: Int) {
-  catalog: hachikoCatalogList(category_id: $category_id, points_range: $points_range, page: $page, page_size: $page_size, sort_id: $sort_id) {
-    catalogs {
+query CatalogCouponListing($categoryID: Int, $pointRange: Int, $sortID: Int, $page: Int, $limit: Int, $serviceID: String, $categoryIDCoupon: Int, $includeExtraInfo: Int) {
+  catalog : tokopointsCatalogList(input: {categoryID: $categoryID, pointRange: $pointRange, sortID: $sortID, page: $page, limit: $limit}) {
+    catalogs : catalogList {
       id
-      promo_id
-      base_code
-      slug
+      promoID
+      catalogType
       expired
       points
-      points_str
-      title
       quota
-      sub_title
-      thumbnail_url
-      thumbnail_url_mobile
-      image_url
-      image_url_mobile
-      is_gift
+      title
+      subtitle
+      thumbnailURL
+      thumbnailURLMobile
+      imageURL
+      imageUrlMobile
+      thumbnailV2URL
+      thumbnailV2URLMobile
+      imageV2URL
+      imageV2URLMobile
+      slug
+      baseCode
+      pointsStr
+      isGift
       expiredLabel
       expiredStr
       isDisabled
+      isDisabledButton
       disableErrorMessage
       upperTextDesc
-      isDisabledButton
     }
-    has_next
   }
-  coupons: hachikoMyCouponList(page: $page, page_size: $page_size) {
-    total_data
-    coupons {
-      catalog_id
-      usage {
-        active_count_down
-        expired_count_down
-        text
-        usage_str
-        btn_usage {
+
+  coupons : tokopointsCouponList(input: {serviceID: $serviceID, categoryID: $categoryID, categoryIDCoupon: $categoryIDCoupon, page: $page, limit: $limit, includeExtraInfo: $includeExtraInfo}) {
+      coupons : tokopointsCouponData {
+        id
+        promoID
+        code
+        expired
+        title
+        catalogTitle
+        subTitle
+        catalogSubTitle
+        description
+        icon
+        imageUrl
+        imageUrlMobile
+        thumbnailUrl
+        thumbnailUrlMobile
+        imageV2Url
+        imageV2UrlMobile
+        thumbnailV2Url
+        thumbnailV2UrlMobile
+        cta
+        ctaDesktop
+        slug
+        usage {
+          activeCountdown
+          expiredCountdown
           text
-          url
-          applink
-          type
+          usageStr
+          buttonUsage {
+            text
+            url
+            appLink
+            type
+          }
         }
       }
-      promo_id
-      code
-      expired
-      title
-      sub_title
-      catalog_title
-      catalog_sub_title
-      description
-      icon
-      image_url
-      image_url_mobile
-      thumbnail_url
-      thumbnail_url_mobile
-      cta
-      cta_desktop
+      tokopointsPaging {
+        hasNext
+      }
+      tokopointsExtraInfo {
+        infoHTML
+        linkText
+        linkUrl
+      }
+      tokopointsEmptyMessage {
+        title
+        subTitle
+      }
     }
-    extra_info {
-      info_html
-      link_text
-      link_url
-    }
-    has_next
-  }
 }

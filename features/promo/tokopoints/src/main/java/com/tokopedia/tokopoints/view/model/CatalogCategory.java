@@ -16,11 +16,11 @@ public class CatalogCategory implements Parcelable {
     private String name;
 
     @Expose
-    @SerializedName("image_id")
+    @SerializedName("imageID")
     private String imageId;
 
     @Expose
-    @SerializedName("image_url")
+    @SerializedName("imageURL")
     private String imageUrl;
 
     @Expose
@@ -29,11 +29,24 @@ public class CatalogCategory implements Parcelable {
 
     @Expose
     @SerializedName("timeRemainingSeconds")
-    private long timeRemainingSeconds = 30000 + System.currentTimeMillis();
+    private long timeRemainingSeconds;
+    private long timeWithCurrentMs;
 
     @Expose
     @SerializedName("isSelected")
     private boolean isSelected;
+
+    public CatalogCategory() {
+
+    }
+
+    public long getTimeWithCurrentMs() {
+        return timeWithCurrentMs;
+    }
+
+    public void setTimeWithCurrentMs(long timeWithCurrentMs) {
+        this.timeWithCurrentMs = timeWithCurrentMs;
+    }
 
     public boolean isSelected() {
         return isSelected;
@@ -41,10 +54,6 @@ public class CatalogCategory implements Parcelable {
 
     public void setSelected(boolean selected) {
         isSelected = selected;
-    }
-
-    public CatalogCategory() {
-
     }
 
     public long getTimeRemainingSeconds() {
@@ -119,6 +128,7 @@ public class CatalogCategory implements Parcelable {
         parcel.writeString(imageId);
         parcel.writeString(imageUrl);
         parcel.writeLong(timeRemainingSeconds);
+        parcel.writeLong(timeWithCurrentMs);
     }
 
     private CatalogCategory(Parcel in) {
@@ -128,6 +138,7 @@ public class CatalogCategory implements Parcelable {
         imageId = in.readString();
         imageUrl = in.readString();
         timeRemainingSeconds = in.readLong();
+        timeWithCurrentMs = in.readLong();
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {

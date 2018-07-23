@@ -60,7 +60,6 @@ public class MyCouponListingFragment extends BaseDaggerFragment implements MyCou
         super.onViewCreated(view, savedInstanceState);
         mPresenter.attachView(this);
         initListener();
-        showLoader();
         mPresenter.getCoupons();
     }
 

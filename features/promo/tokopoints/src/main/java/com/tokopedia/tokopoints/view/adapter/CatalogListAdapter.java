@@ -108,7 +108,15 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
             holder.quota.setVisibility(View.GONE);
         } else {
             holder.quota.setVisibility(View.VISIBLE);
-            holder.quota.setText(MethodChecker.fromHtml(item.getUpperTextDesc()));
+            StringBuilder upperText = new StringBuilder();
+            for (int i = 0; i < item.getUpperTextDesc().size(); i++) {
+                if (i == 1) {
+                    upperText.append("<font color='#ff5722'>" + item.getUpperTextDesc().get(i) + "</font>");
+                } else {
+                    upperText.append(item.getUpperTextDesc().get(i)).append(" ");
+                }
+            }
+            holder.quota.setText(MethodChecker.fromHtml(upperText.toString()));
         }
 
         //Quota text handling
@@ -136,37 +144,11 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
 
         if (item.isDisabledButton()) {
             holder.btnContinue.setBackgroundResource(R.drawable.bg_button_disabled);
+            holder.btnContinue.setTextColor(ContextCompat.getColor(holder.btnContinue.getContext(), R.color.black_12));
         } else {
             holder.btnContinue.setBackgroundResource(R.drawable.bg_button_primary);
+            holder.btnContinue.setTextColor(ContextCompat.getColor(holder.btnContinue.getContext(), R.color.white));
         }
-
-//        if (item.getQuota() != null && item.getQuota() > 0) {
-//            String firstSpan = holder.quota.getResources().getString(R.string.tp_label_remaining_exchange);
-//            String secondSpan = " " + item.getQuota() + "x";
-//            Spannable wordtoSpan = new SpannableString(firstSpan + secondSpan);
-//            wordtoSpan.setSpan(new ForegroundColorSpan(ContextCompat.getColor(holder.quota.getContext(), R.color.orange_red)),
-//                    firstSpan.length(),
-//                    wordtoSpan.length(),
-//                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-//            holder.quota.setText(wordtoSpan);
-//            holder.quota.setVisibility(View.VISIBLE);
-//
-//            holder.btnContinue.setEnabled(true);
-//            holder.btnContinue.setBackgroundResource(R.drawable.bg_button_primary);
-//        } else if (item.getQuota() != null && item.getQuota() == 0) {
-//            holder.quota.setText(R.string.tp_label_coupon_expired);
-//            holder.quota.setVisibility(View.VISIBLE);
-//            ImageUtil.dimImage(holder.imgBanner);
-//
-//            holder.btnContinue.setEnabled(false);
-//            holder.btnContinue.setBackgroundResource(R.drawable.bg_button_disabled);
-//        } else {
-//            holder.quota.setVisibility(View.GONE);
-//            ImageUtil.unDimImage(holder.imgBanner);
-//
-//            holder.btnContinue.setEnabled(true);
-//            holder.btnContinue.setBackgroundResource(R.drawable.bg_button_primary);
-//        }
 
         holder.btnContinue.setOnClickListener(v -> {
             //call validate api the show dialog

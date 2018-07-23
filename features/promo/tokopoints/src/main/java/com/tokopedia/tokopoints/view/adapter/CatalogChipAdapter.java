@@ -1,6 +1,7 @@
 package com.tokopedia.tokopoints.view.adapter;
 
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -24,53 +25,31 @@ public class CatalogChipAdapter extends RecyclerView.Adapter<CatalogChipAdapter.
     private CatalogListingPresenter mPresenter;
 
     /*This section is exclusively for handling flash-sale timer*/
-    private List<ViewHolder> mViewHolders;
+    final private List<ViewHolder> mViewHolders;
     private CatalogCategory mItem;
     private Handler mHandler = new Handler();
+    private Timer mTimer;
+
     private Runnable mRunnableUpdateTime = new Runnable() {
         @Override
         public void run() {
             synchronized (mViewHolders) {
                 long currentTime = System.currentTimeMillis();
                 for (ViewHolder holder : mViewHolders) {
-                    holder.updateTimeRemaining(currentTime);
+                    if (mItem.getTimeRemainingSeconds() > 0) {
+                        holder.updateTimeRemaining(currentTime);
+                    }
                 }
             }
         }
     };
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView label, time;
-        public LinearLayout outer;
-
-        public ViewHolder(View view) {
-            super(view);
-            label = view.findViewById(R.id.text_label);
-            time = view.findViewById(R.id.text_time);
-            outer = view.findViewById(R.id.outer);
-        }
-
-        /*This section is exclusively for handling flash-sale timer*/
-        public void updateTimeRemaining(long currentTime) {
-            long timeDiff = mItem.getTimeRemainingSeconds() - currentTime;
-            if (timeDiff > 0) {
-                int seconds = (int) (timeDiff / 1000) % 60;
-                int minutes = (int) ((timeDiff / (1000 * 60)) % 60);
-                int hours = (int) ((timeDiff / (1000 * 60 * 60)) % 24);
-//                time.setText(hours + " : " + minutes + " : " + seconds);
-                time.setText(String.format(Locale.ENGLISH, "%02d : %02d : %02d", hours, minutes, seconds));
-            } else {
-                //refreshing the homepage for tokopoints
-                mPresenter.getHomePageData();
-                mPresenter.getPointData();
-            }
-        }
-    }
-
     public CatalogChipAdapter(CatalogListingPresenter presenter, List<CatalogCategory> items) {
         this.mPresenter = presenter;
         this.mItems = items;
-
+        for (int i = 0; i < mItems.size(); i++) {
+            mItems.get(i).setTimeWithCurrentMs(mItems.get(i).getTimeRemainingSeconds() + System.currentTimeMillis());
+        }
         /*This section is exclusively for handling flash-sale timer*/
         mViewHolders = new ArrayList<>();
         startUpdateTimer();
@@ -78,17 +57,19 @@ public class CatalogChipAdapter extends RecyclerView.Adapter<CatalogChipAdapter.
 
     /*This section is exclusively for handling flash-sale timer*/
     private void startUpdateTimer() {
-        Timer tmr = new Timer();
-        tmr.schedule(new TimerTask() {
+        mTimer = new Timer();
+        mTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                mHandler.post(mRunnableUpdateTime);
+                if (mHandler != null) {
+                    mHandler.post(mRunnableUpdateTime);
+                }
             }
         }, 1000, 1000);
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.tp_layout_catalog_chips, parent, false);
 
@@ -96,13 +77,15 @@ public class CatalogChipAdapter extends RecyclerView.Adapter<CatalogChipAdapter.
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         final CatalogCategory item = mItems.get(position);
 
         /*This section is exclusively for handling flash-sale timer*/
         mItem = item;
-        synchronized (mViewHolders) {
-            mViewHolders.add(holder);
+        if (item.getTimeRemainingSeconds() > 0) {
+            synchronized (mViewHolders) {
+                mViewHolders.add(holder);
+            }
         }
 
         holder.label.setText(item.getName());
@@ -120,11 +103,49 @@ public class CatalogChipAdapter extends RecyclerView.Adapter<CatalogChipAdapter.
         });
 
         /*This section is exclusively for handling flash-sale timer*/
-        holder.updateTimeRemaining(System.currentTimeMillis());
+        if (item.getTimeRemainingSeconds() > 0) {
+            holder.updateTimeRemaining(System.currentTimeMillis());
+        }
     }
 
     @Override
     public int getItemCount() {
         return mItems.size();
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        public TextView label, time;
+        public LinearLayout outer;
+
+        public ViewHolder(View view) {
+            super(view);
+            label = view.findViewById(R.id.text_label);
+            time = view.findViewById(R.id.text_time);
+            outer = view.findViewById(R.id.outer);
+        }
+
+        /*This section is exclusively for handling flash-sale timer*/
+        public void updateTimeRemaining(long currentTime) {
+            long timeDiff = mItem.getTimeWithCurrentMs() - currentTime;
+            if (timeDiff > 0) {
+                int seconds = (int) (timeDiff / 1000) % 60;
+                int minutes = (int) ((timeDiff / (1000 * 60)) % 60);
+                int hours = (int) ((timeDiff / (1000 * 60 * 60)) % 24);
+                time.setText(String.format(Locale.ENGLISH, "%02d : %02d : %02d", hours, minutes, seconds));
+            } else {
+                //refreshing the homepage for tokopoints
+                try {
+                    mTimer.cancel();
+                    mHandler.removeCallbacks(mRunnableUpdateTime);
+                    mHandler = null;
+                    mRunnableUpdateTime = null;
+                    mTimer = null;
+                    mPresenter.getHomePageData();
+                    mPresenter.getPointData();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }

@@ -24,14 +24,17 @@ public interface CommonConstant {
 
     interface GraphqlVariableKeys {
         String PAGE = "page";
-        String PAGE_SIZE = "page_size";
-        String SORT_ID = "sort_id";
-        String CATEGORY_ID = "category_id";
-        String POINTS_RANGE = "points_range";
+        String PAGE_SIZE = "limit";
+        String SORT_ID = "sortID";
+        String CATEGORY_ID = "categoryID";
+        String POINTS_RANGE = "pointRange";
         String CATALOG_ID = "catalog_id";
         String IS_GIFT = "is_gift";
         String PROMO_CODE = "promoCode";
         String DEVICE = "device";
+        String SERVICE_ID = "serviceID";
+        String CATEGORY_ID_COUPON = "categoryIDCoupon";
+        String SLUG = "slug";
     }
 
     class BaseUrl {

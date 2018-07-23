@@ -54,9 +54,11 @@ public class CatalogListingPresenter extends BaseDaggerPresenter<CatalogListingC
                 variablesBanner);
         mGetHomePageData.addRequest(graphqlRequestBanners);
 
+        Map<String, Object> variableFilter = new HashMap<>();
+        variableFilter.put(CommonConstant.GraphqlVariableKeys.SLUG, "");
         GraphqlRequest graphqlRequestFilter = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.tp_gql_catalog_filter),
                 CatalogFilterOuter.class,
-                variablesBanner);
+                variableFilter);
         mGetHomePageData.addRequest(graphqlRequestFilter);
 
         mGetHomePageData.execute(new Subscriber<GraphqlResponse>() {

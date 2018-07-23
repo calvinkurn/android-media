@@ -28,7 +28,7 @@ public class CouponListAdapter extends RecyclerView.Adapter<CouponListAdapter.Vi
         public ViewHolder(View view) {
             super(view);
             description = view.findViewById(R.id.text_description);
-            label = view.findViewById(R.id.text_label);
+            label = view.findViewById(R.id.text_time_label);
             value = view.findViewById(R.id.text_time_value);
             btnContinue = view.findViewById(R.id.button_continue);
             imgBanner = view.findViewById(R.id.img_banner);

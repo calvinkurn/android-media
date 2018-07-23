@@ -168,7 +168,11 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         //setup category type
         mChipAdapter = new CatalogChipAdapter(mPresenter, filters.getCategories());
         mRecyclerViewChips.setLayoutManager(new LinearLayoutManager(getActivityContext(), LinearLayoutManager.HORIZONTAL, false));
-        mRecyclerViewChips.addItemDecoration(new PaddingItemDecoration(getResources().getDimensionPixelSize(R.dimen.tp_margin_medium)));
+
+        if (mRecyclerViewChips.getItemDecorationCount() == 0) {
+            mRecyclerViewChips.addItemDecoration(new PaddingItemDecoration(getResources().getDimensionPixelSize(R.dimen.tp_margin_medium)));
+        }
+
         mRecyclerViewChips.setAdapter(mChipAdapter);
 
         mSelectedCategory = lookupForSelectedCategory(filters.getCategories());

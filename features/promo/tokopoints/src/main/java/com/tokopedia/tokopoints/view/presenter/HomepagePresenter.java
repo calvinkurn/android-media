@@ -127,6 +127,8 @@ public class HomepagePresenter extends BaseDaggerPresenter<HomepageContract.View
         variables.put(CommonConstant.GraphqlVariableKeys.SORT_ID, CommonConstant.DEFAULT_SORT_TYPE); // 1 for all catalog
         variables.put(CommonConstant.GraphqlVariableKeys.CATEGORY_ID, CommonConstant.DEFAULT_CATEGORY_TYPE); // zero for no filter
         variables.put(CommonConstant.GraphqlVariableKeys.POINTS_RANGE, 0); //zero for all catalog
+        variables.put(CommonConstant.GraphqlVariableKeys.SERVICE_ID, "");
+        variables.put(CommonConstant.GraphqlVariableKeys.CATEGORY_ID_COUPON, 0);
         GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(), R.raw.tp_gql_tokopoint_promos),
                 TokoPointPromosEntity.class,
                 variables);
