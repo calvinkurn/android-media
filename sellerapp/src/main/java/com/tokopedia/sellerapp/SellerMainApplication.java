@@ -19,7 +19,6 @@ import com.raizlabs.android.dbflow.config.TkpdCacheApiGeneratedDatabaseHolder;
 import com.raizlabs.android.dbflow.config.TkpdSellerGeneratedDatabaseHolder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.constant.AbstractionBaseURL;
-import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.core.gcm.Constants;
@@ -205,6 +204,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         CotpUrl.BASE_URL = SellerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
         GMCommonUrl.BASE_URL = SellerAppBaseUrl.BASE_GOLD_MERCHANT_DOMAIN;
         SQLoginUrl.BASE_URL = SellerAppBaseUrl.BASE_DOMAIN;
+        SessionUrl.CHANGE_PHONE_DOMAIN = SellerAppBaseUrl.CHANGE_PHONE_DOMAIN;
 
     }
 

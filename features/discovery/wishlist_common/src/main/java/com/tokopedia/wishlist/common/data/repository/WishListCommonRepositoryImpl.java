@@ -23,13 +23,4 @@ public class WishListCommonRepositoryImpl implements WishListCommonRepository {
         return wishListCommonDataSource.getWishList(userId, productIdList);
     }
 
-    @Override
-    public Observable<Boolean> addToWishList(String userId, String productId) {
-        return wishListCommonDataSource.addToWishList(userId, productId);
-    }
-
-    @Override
-    public Observable<Boolean> removeFromWishList(String userId, String productId) {
-        return wishListCommonDataSource.removeFromWishList(userId, productId);
-    }
 }
