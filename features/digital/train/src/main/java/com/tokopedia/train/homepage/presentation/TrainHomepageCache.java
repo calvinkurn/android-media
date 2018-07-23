@@ -22,16 +22,20 @@ public class TrainHomepageCache {
 
     private final String DEFAULT_ORIGIN_STATION_CODE = "GMR";
     private final String DEFAULT_ORIGIN_CITY_NAME = "Jakarta";
+    private final String DEFAULT_ORIGIN_ISLAND_NAME = "";
     private final String DEFAULT_DESTINATION_STATION_CODE = "BD";
     private final String DEFAULT_DESTINATION_CITY_NAME = "Bandung";
+    private final String DEFAULT_DESTINATION_ISLAND_NAME = "";
     private final int DEFAULT_NUM_OF_ADULT_PASSENGER = 1;
     private final int DEFAULT_NUM_OF_INFANT_PASSENGER = 0;
     private final boolean DEFAULT_IS_ONE_WAY = true;
 
     private static final String ORIGIN_STATION_CODE = "ORIGIN_STATION_CODE";
     private static final String ORIGIN_CITY_NAME = "ORIGIN_CITY_NAME";
+    private static final String ORIGIN_ISLAND_NAME = "ORIGIN_ISLAND_NAME";
     private static final String DESTINATION_STATION_CODE = "DESTINATION_STATION_CODE";
     private static final String DESTINATION_CITY_NAME = "DESTINATION_CITY_NAME";
+    private static final String DESTINATION_ISLAND_NAME = "DESTINATION_ISLAND_NAME";
     private static final String DEPARTURE_DATE = "DEPARTURE_DATE";
     private static final String DEPARTURE_DATE_FMT = "DEPARTURE_DATE_FMT";
     private static final String RETURN_DATE = "RETURN_DATE";
@@ -58,10 +62,15 @@ public class TrainHomepageCache {
                     .getStationCode()).apply();
             editor.putString(ORIGIN_CITY_NAME, trainHomepageViewModel.getOriginStation()
                     .getCityName()).apply();
+            editor.putString(ORIGIN_ISLAND_NAME, trainHomepageViewModel.getOriginStation()
+                    .getIslandName()).apply();
+
             editor.putString(DESTINATION_STATION_CODE, trainHomepageViewModel.getDestinationStation()
                     .getStationCode()).apply();
             editor.putString(DESTINATION_CITY_NAME, trainHomepageViewModel.getDestinationStation()
                     .getCityName()).apply();
+            editor.putString(DESTINATION_ISLAND_NAME, trainHomepageViewModel.getDestinationStation()
+                    .getIslandName()).apply();
 
             boolean isOneWay = trainHomepageViewModel.isOneWay();
             editor.putBoolean(IS_ONE_WAY, isOneWay).apply();
@@ -81,13 +90,16 @@ public class TrainHomepageCache {
     public TrainHomepageViewModel buildTrainHomepageViewModelFromCache() {
         String originCityName = sharedPrefs.getString(ORIGIN_CITY_NAME, DEFAULT_ORIGIN_CITY_NAME);
         String originStationCode = sharedPrefs.getString(ORIGIN_STATION_CODE, DEFAULT_ORIGIN_STATION_CODE);
+        String originIslandName = sharedPrefs.getString(ORIGIN_ISLAND_NAME, DEFAULT_ORIGIN_ISLAND_NAME);
         TrainStationAndCityViewModel originTrainStationAndCityViewModel = new TrainStationAndCityViewModel(
-                originCityName, originStationCode
+                originCityName, originStationCode, originIslandName
         );
+
         String destinationCityName = sharedPrefs.getString(DESTINATION_CITY_NAME, DEFAULT_DESTINATION_CITY_NAME);
         String destinationStationCode = sharedPrefs.getString(DESTINATION_STATION_CODE, DEFAULT_DESTINATION_STATION_CODE);
+        String destinationIslandName = sharedPrefs.getString(DESTINATION_ISLAND_NAME, DEFAULT_DESTINATION_ISLAND_NAME);
         TrainStationAndCityViewModel destinationTrainStationAndCityViewModel = new TrainStationAndCityViewModel(
-                destinationCityName, destinationStationCode
+                destinationCityName, destinationStationCode, destinationIslandName
         );
 
         Date departureDateCal = TrainDateUtil.addTimeToCurrentDate(Calendar.DATE, 1); // departure date = today + 1
@@ -95,6 +107,10 @@ public class TrainHomepageCache {
                 TrainDateUtil.dateToString(departureDateCal, TrainDateUtil.DEFAULT_FORMAT));
         String departureDateFmt = sharedPrefs.getString(DEPARTURE_DATE_FMT,
                 TrainDateUtil.dateToString(departureDateCal, TrainDateUtil.DEFAULT_VIEW_FORMAT));
+        if (TrainDateUtil.stringToDate(departureDate).before(TrainDateUtil.getCurrentDate())) {
+            departureDate = TrainDateUtil.dateToString(departureDateCal, TrainDateUtil.DEFAULT_FORMAT);
+            departureDateFmt = TrainDateUtil.dateToString(departureDateCal, TrainDateUtil.DEFAULT_VIEW_FORMAT);
+        }
 
         boolean isOneWay = sharedPrefs.getBoolean(IS_ONE_WAY, DEFAULT_IS_ONE_WAY);
 
