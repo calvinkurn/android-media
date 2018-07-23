@@ -56,7 +56,7 @@
     <string name="produk_serupa">Produk Serupa</string>
     <string name="megerti">Mengerti</string>
     <string name="view_similar_item">Lihat Barang Serupa</string>
-    <string name="press_to_see_similar">Tekan dan tahan produk ini untuk lihat barang serupa dan tambah ke wishlist</string>
+    <string name="press_to_see_similar">Tekan dan tahan produk pilihan Anda untuk melihat produk serupa.</string>
     <string name="similar_product_not_found">Hasil produk serupa tidak dapat ditemukan. Silahkan pilih produk lain.</string>
     <string name="title_product_not_found">Produk serupa tidak ditemukan</string>
 </resources>
