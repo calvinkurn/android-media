@@ -334,7 +334,7 @@ public class EventReviewTicketPresenter
         getAndInitForms();
     }
 
-    public void verifyCart() {
+    private void verifyCart() {
         getView().showProgressBar();
         final RequestParams params = RequestParams.create();
         params.putObject(Utils.Constants.CHECKOUTDATA, convertPackageToCartItem(checkoutData));
@@ -471,19 +471,17 @@ public class EventReviewTicketPresenter
     }
 
     private JsonObject convertCartItemToJson(JsonObject cart) {
-        JsonObject jsonObject = cart;
-
-        for (JsonElement jsonElement : jsonObject.get("cart_items").getAsJsonArray()) {
-            jsonElement.getAsJsonObject().get("meta_data").getAsJsonObject().get("entity_address")
-                    .getAsJsonObject().addProperty("email", this.email);
+        for (JsonElement jsonElement : cart.get(com.tokopedia.oms.view.utils.Utils.Constants.CART_ITEMS).getAsJsonArray()) {
+            jsonElement.getAsJsonObject().get(com.tokopedia.oms.view.utils.Utils.Constants.META_DATA).getAsJsonObject().get(com.tokopedia.oms.view.utils.Utils.Constants.ENTITY_ADDRESS)
+                    .getAsJsonObject().addProperty(com.tokopedia.oms.view.utils.Utils.Constants.EMAIL, this.email);
             if (eventsDetailsViewModel.getSchedulesViewModels().size() > 0)
-                jsonElement.getAsJsonObject().get("meta_data").getAsJsonObject().get("entity_address")
+                jsonElement.getAsJsonObject().get(com.tokopedia.oms.view.utils.Utils.Constants.META_DATA).getAsJsonObject().get(com.tokopedia.oms.view.utils.Utils.Constants.ENTITY_ADDRESS)
                         .getAsJsonObject().addProperty("name", eventsDetailsViewModel.getAddress());
-            jsonElement.getAsJsonObject().get("meta_data").getAsJsonObject().addProperty("entity_brand_name", "");
+            jsonElement.getAsJsonObject().get(com.tokopedia.oms.view.utils.Utils.Constants.META_DATA).getAsJsonObject().addProperty(com.tokopedia.oms.view.utils.Utils.Constants.ENTITY_BRAND_NAME, "");
         }
-        jsonObject.addProperty("promocode", promocode);
-        jsonObject.addProperty("order_title", checkoutData.getDisplayName());
-        return jsonObject;
+        cart.addProperty(com.tokopedia.oms.view.utils.Utils.Constants.PROMO, promocode);
+        cart.addProperty(com.tokopedia.oms.view.utils.Utils.Constants.ORDER_TITLE, checkoutData.getDisplayName());
+        return cart;
     }
 
     private void getPaymentLink() {

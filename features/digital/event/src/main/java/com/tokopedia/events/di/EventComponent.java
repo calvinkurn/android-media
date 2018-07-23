@@ -13,6 +13,7 @@ import com.tokopedia.events.view.activity.EventsHomeActivity;
 import com.tokopedia.events.view.activity.ReviewTicketActivity;
 import com.tokopedia.events.view.activity.SeatSelectionActivity;
 import com.tokopedia.events.view.fragment.FragmentAddTickets;
+import com.tokopedia.events.view.utils.VerifyCartWrapper;
 import com.tokopedia.oms.di.OmsModule;
 import com.tokopedia.oms.domain.postusecase.PostVerifyCartUseCase;
 
@@ -27,6 +28,8 @@ import dagger.Component;
 public interface EventComponent {
 
     VerifyCartUseCase getVerifyCartUseCase();
+
+    VerifyCartWrapper getVerifyCartWrapper();
 
     PostVerifyCartUseCase getPostVerifyCartUseCase();
 

@@ -12,7 +12,6 @@ import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseErrorException;
-import com.tokopedia.core.network.exception.model.UnProcessableHttpException;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
@@ -395,7 +394,7 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
     @Override
     public void parseAndSubmitEventVoucher(String jsonbody, CouponData data, String platform) {
         JsonObject requestBody;
-        if (jsonbody != null || jsonbody.length() > 0) {
+        if (jsonbody != null && jsonbody.length() > 0) {
             JsonElement jsonElement = new JsonParser().parse(jsonbody);
             requestBody = jsonElement.getAsJsonObject();
             if (platform.equals(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EVENT_STRING))

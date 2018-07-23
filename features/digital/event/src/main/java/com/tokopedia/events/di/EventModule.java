@@ -31,6 +31,7 @@ import com.tokopedia.events.domain.GetSearchEventsListRequestUseCase;
 import com.tokopedia.events.domain.GetSearchNextUseCase;
 import com.tokopedia.events.domain.postusecase.PostValidateShowUseCase;
 import com.tokopedia.events.domain.postusecase.VerifyCartUseCase;
+import com.tokopedia.events.view.utils.VerifyCartWrapper;
 
 import dagger.Module;
 import dagger.Provides;
@@ -213,6 +214,12 @@ public class EventModule {
                                           ProfileRepository profileRepository) {
         return new ProfileUseCase(
                 threadExecutor, postExecutionThread, profileRepository);
+    }
+
+    @Provides
+    @EventScope
+    VerifyCartWrapper providesVerifyCartWrapper(VerifyCartUseCase useCase) {
+        return new VerifyCartWrapper(useCase);
     }
 
 
