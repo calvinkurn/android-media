@@ -1,5 +1,7 @@
 package com.tokopedia.train.seat.presentation.presenter;
 
+import android.support.annotation.NonNull;
+
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.util.TrainDateUtil;
@@ -9,6 +11,7 @@ import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
 import com.tokopedia.train.passenger.domain.model.TrainTrip;
 import com.tokopedia.train.seat.domain.TrainChangeSeatUseCase;
 import com.tokopedia.train.seat.domain.TrainGetSeatsUseCase;
+import com.tokopedia.train.seat.domain.model.TrainPassengerSeat;
 import com.tokopedia.train.seat.domain.model.request.ChangeSeatMapRequest;
 import com.tokopedia.train.seat.presentation.contract.TrainSeatContract;
 import com.tokopedia.train.seat.presentation.viewmodel.TrainSeatPassengerSeatViewModel;
@@ -107,41 +110,55 @@ public class TrainSeatPresenter extends BaseDaggerPresenter<TrainSeatContract.Vi
     }
 
     @Override
+    public void onChangePassengerConfirmDialogAccepted() {
+        getView().hidePage();
+        getView().showLoading();
+        List<ChangeSeatMapRequest> requests = transformSeatRequest(getView().getTrainSoftbook().getTokpedBookCode(),
+                getView().getOriginalPassenger(),
+                getView().getPassengers());
+        trainChangeSeatUseCase.execute(
+                trainChangeSeatUseCase.createRequest(requests), new Subscriber<List<TrainPassengerSeat>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        if (isViewAttached()) {
+                            getView().hideLoading();
+                            getView().showPage();
+                            onViewCreated();
+                            getSeatMaps();
+                        }
+                    }
+
+                    @Override
+                    public void onNext(List<TrainPassengerSeat> trainPassengerSeats) {
+                        getView().hideLoading();
+                        getView().showPage();
+                        List<TrainSeatPassengerViewModel> passengers = getView().getOriginalPassenger();
+                        passengers = getView().getPassengers();
+                        navigateToReview(passengers);
+                    }
+                });
+    }
+
+    @Override
     public void onSubmitButtonClicked() {
         getView().hidePage();
         getView().showLoading();
-        List<ChangeSeatMapRequest> requests = transformSeatRequest("",
+        List<ChangeSeatMapRequest> requests = transformSeatRequest(getView().getTrainSoftbook().getTokpedBookCode(),
                 getView().getOriginalPassenger(),
                 getView().getPassengers());
         if (requests.size() > 0) {
-            trainGetSeatsUseCase.execute(
-                    trainChangeSeatUseCase.createRequest(requests),
-                    new Subscriber<List<TrainWagonViewModel>>() {
-                        @Override
-                        public void onCompleted() {
-
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            e.printStackTrace();
-                            if (isViewAttached()) {
-                                getView().hideLoading();
-                                getView().showPage();
-
-                            }
-                        }
-
-                        @Override
-                        public void onNext(List<TrainWagonViewModel> trainWagonViewModels) {
-                            getView().hideLoading();
-                            getView().showPage();
-                            List<TrainSeatPassengerViewModel> passengers = getView().getOriginalPassenger();
-                            passengers = getView().getPassengers();
-                            navigateToReview(passengers);
-                        }
-                    });
+            getView().showPage();
+            getView().hideLoading();
+            getView().showConfirmChangePassengersDialog(getView().getPassengers());
         } else {
+            getView().showPage();
+            getView().hideLoading();
             getView().navigateToReview(getView().getTrainSoftbook());
         }
     }
@@ -224,41 +241,57 @@ public class TrainSeatPresenter extends BaseDaggerPresenter<TrainSeatContract.Vi
         if (!returning) {
             if (trainSoftbook.getDepartureTrips().size() > 0) {
                 List<TrainSeatPassengerViewModel> originPassengers = new ArrayList<>();
+                List<TrainSeatPassengerViewModel> passengers = new ArrayList<>();
                 List<TrainPaxPassenger> paxPassengers = trainSoftbook.getDepartureTrips().get(0).getPaxPassengers();
-                prepareTrainSeatPassengerViewModel(originPassengers, paxPassengers);
+                prepareTrainSeatPassengerViewModel(originPassengers, passengers, paxPassengers);
                 getView().setOriginPassenger(originPassengers);
-                getView().setPassengers(originPassengers);
+                getView().setPassengers(passengers);
             }
         } else {
             if (trainSoftbook.getReturnTrips().size() > 0) {
                 List<TrainSeatPassengerViewModel> originPassengers = new ArrayList<>();
+                List<TrainSeatPassengerViewModel> passengers = new ArrayList<>();
                 List<TrainPaxPassenger> paxPassengers = trainSoftbook.getReturnTrips().get(0).getPaxPassengers();
-                prepareTrainSeatPassengerViewModel(originPassengers, paxPassengers);
+                prepareTrainSeatPassengerViewModel(originPassengers, passengers, paxPassengers);
                 getView().setOriginPassenger(originPassengers);
-                getView().setPassengers(originPassengers);
+                getView().setPassengers(passengers);
             }
         }
     }
 
-    private void prepareTrainSeatPassengerViewModel(List<TrainSeatPassengerViewModel> originPassengers, List<TrainPaxPassenger> paxPassengers) {
+    private void prepareTrainSeatPassengerViewModel(List<TrainSeatPassengerViewModel> originPassengers,
+                                                    List<TrainSeatPassengerViewModel> passengers,
+                                                    List<TrainPaxPassenger> paxPassengers) {
         TrainSeatPassengerViewModel viewModel;
+        TrainSeatPassengerViewModel cloneViewModel;
         for (int i = 0; i < paxPassengers.size(); i++) {
             TrainPaxPassenger trainPaxPassenger = paxPassengers.get(i);
-            viewModel = new TrainSeatPassengerViewModel();
-            viewModel.setName(trainPaxPassenger.getName());
-            viewModel.setNumber(trainPaxPassenger.getIdNumber());
-            viewModel.setPassengerNumber(i + 1);
-            TrainSeatPassengerSeatViewModel trainSeatPassengerSeatViewModel = new TrainSeatPassengerSeatViewModel();
-            trainSeatPassengerSeatViewModel.setColumn(trainPaxPassenger.getSeat().getColumn());
-            trainSeatPassengerSeatViewModel.setRow(trainPaxPassenger.getSeat().getRow());
-            trainSeatPassengerSeatViewModel.setWagonCode(trainPaxPassenger.getSeat().getWagonNo());
-            trainSeatPassengerSeatViewModel.setClassSeat(trainPaxPassenger.getSeat().getKlass());
-            viewModel.setSeatViewModel(trainSeatPassengerSeatViewModel);
+            viewModel = transformTrainPaxToPassengerWithSeat(i, trainPaxPassenger);
+            cloneViewModel = transformTrainPaxToPassengerWithSeat(i, trainPaxPassenger);
             originPassengers.add(viewModel);
+            passengers.add(cloneViewModel);
         }
     }
 
-    private List<ChangeSeatMapRequest> transformSeatRequest(String bookCode, List<TrainSeatPassengerViewModel> originalPassenger, List<TrainSeatPassengerViewModel> passengers) {
+    @NonNull
+    private TrainSeatPassengerViewModel transformTrainPaxToPassengerWithSeat(int i, TrainPaxPassenger trainPaxPassenger) {
+        TrainSeatPassengerViewModel cloneViewModel;
+        cloneViewModel = new TrainSeatPassengerViewModel();
+        cloneViewModel.setName(trainPaxPassenger.getName());
+        cloneViewModel.setNumber(trainPaxPassenger.getIdNumber());
+        cloneViewModel.setPassengerNumber(i + 1);
+        TrainSeatPassengerSeatViewModel cloneSeatViewModel = new TrainSeatPassengerSeatViewModel();
+        cloneSeatViewModel.setColumn(trainPaxPassenger.getSeat().getColumn());
+        cloneSeatViewModel.setRow(trainPaxPassenger.getSeat().getRow());
+        cloneSeatViewModel.setWagonCode(trainPaxPassenger.getSeat().getWagonNo());
+        cloneSeatViewModel.setClassSeat(trainPaxPassenger.getSeat().getKlass());
+        cloneViewModel.setSeatViewModel(cloneSeatViewModel);
+        return cloneViewModel;
+    }
+
+    private List<ChangeSeatMapRequest> transformSeatRequest(String bookCode,
+                                                            List<TrainSeatPassengerViewModel> originalPassenger,
+                                                            List<TrainSeatPassengerViewModel> passengers) {
         List<ChangeSeatMapRequest> requests = new ArrayList<>();
         ChangeSeatMapRequest request;
         for (TrainSeatPassengerViewModel passenger : originalPassenger) {

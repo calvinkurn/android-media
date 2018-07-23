@@ -168,5 +168,8 @@
     <string name="train_seat_expired_payment_time">Waktu Pembayaran Berakhir</string>
     <string name="train_seat_expired_payment_time_desc">Batas waktu pembayaran tiket telah habis. Silakan lakukan pemesanan tiket baru.</string>
     <string name="train_seat_expired_payment_time_cta">Kembali ke pencarian</string>
+    <string name="train_seat_confirm_change_seat_title">Apakah Anda yakin dengan pilihan kursi berikut?</string>
+    <string name="train_seat_confirm_dialog_accept">Lanjut</string>
+    <string name="train_seat_confirm_dialog_cancel">Ubah Kursi</string>
 
 </resources>
