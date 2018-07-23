@@ -58,7 +58,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="end"
-        android:paddingBottom="@dimen/dp_16"
+        android:paddingBottom="@dimen/dp_8"
         android:paddingRight="@dimen/dp_16"
         android:paddingTop="@dimen/dp_4"
         android:text="@string/label_change_address"
@@ -73,7 +73,8 @@
             style="@style/TextSmallMediumBlack38"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/label_note_for_seller" />
+            android:text="@string/label_note_for_seller"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/tv_btn_show_notes_for_seller"
@@ -87,7 +88,15 @@
             android:text="@string/label_button_add_note"
             android:textColor="@color/tkpd_main_green"
             android:textSize="@dimen/sp_12"
-            android:textStyle="normal" />
+            android:textStyle="normal"
+            android:visibility="gone" />
+
+        <!--<android.support.design.widget.TextInputLayout-->
+        <!--android:id="@+id/text_input_layout_shipper_name"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginBottom="@dimen/dp_8"-->
+        <!--android:hint="@string/label_note_for_seller">-->
 
         <android.support.v7.widget.AppCompatEditText
             android:id="@+id/et_notes_for_seller"
@@ -95,6 +104,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_label_note_for_seller"
             android:fontFamily="sans-serif"
+            android:hint="@string/label_note_for_seller"
             android:imeActionLabel="Selesai"
             android:imeOptions="actionDone"
             android:maxLines="3"
@@ -106,9 +116,9 @@
             android:textSize="@dimen/sp_12"
             android:textStyle="normal"
             app:backgroundTint="@color/tkpd_main_green"
-            tools:ignore="TextFields"
-            tools:text="Saya pesan warna merah yah min.. jangan sampai salah kirim
-barangnya gan!" />
+            tools:ignore="TextFields" />
+
+        <!--</android.support.design.widget.TextInputLayout>-->
 
         <TextView
             android:id="@+id/tv_error_form_remark_validation"
@@ -165,7 +175,8 @@ barangnya gan!" />
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:layout_marginTop="@dimen/dp_8"
-        android:background="@color/grey_300" />
+        android:background="@color/grey_300"
+        android:visibility="gone" />
 
     <LinearLayout
         android:layout_width="match_parent"
