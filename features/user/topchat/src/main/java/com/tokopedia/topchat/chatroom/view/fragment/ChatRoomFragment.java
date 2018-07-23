@@ -876,8 +876,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         switch (requestCode) {
             case 100:
                 if (resultCode == Activity.RESULT_OK) {
-                    ArrayList<String> strings = data.getStringArrayListExtra("string");
-                    templateAdapter.update(strings);
+                    if(!isChatBot) presenter.getTemplate();
                     break;
                 }
                 break;

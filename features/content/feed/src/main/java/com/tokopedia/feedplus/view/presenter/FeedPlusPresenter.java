@@ -228,7 +228,7 @@ public class FeedPlusPresenter
     public void likeKol(int id, int rowNumber, FeedPlus.View.Kol kolListener) {
         likeKolPostUseCase.execute(LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.ACTION_LIKE),
                 new LikeKolPostSubscriber
-                (rowNumber, getView(), kolListener));
+                        (rowNumber, getView(), kolListener));
 
     }
 
@@ -256,7 +256,7 @@ public class FeedPlusPresenter
         followKolPostUseCase.execute(
                 FollowKolPostUseCase.getParam(id,
                         FollowKolPostUseCase.PARAM_UNFOLLOW),
-                new FollowUnfollowKolRecommendationSubscriber(id,FollowKolPostUseCase
+                new FollowUnfollowKolRecommendationSubscriber(id, FollowKolPostUseCase
                         .PARAM_UNFOLLOW, rowNumber, position, getView(),
                         kolListener));
 

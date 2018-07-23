@@ -1,10 +1,11 @@
 package com.tokopedia.contactus.home.view.fragment;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.home.di.ContactUsComponent;
+import com.tokopedia.contactus.home.di.DaggerContactUsComponent;
 import com.tokopedia.contactus.home.view.presenter.PurchaseListContract;
 import com.tokopedia.contactus.home.view.presenter.SellerPurchasePresenter;
-import com.tokopedia.contactus.home.di.DaggerContactUsComponent;
 
 import javax.inject.Inject;
 
@@ -18,8 +19,8 @@ public class SellerPurchaseFragment extends BuyerPurchaseFragment {
 
     ContactUsComponent contactUsComponent;
     public static SellerPurchaseFragment newInstance() {
-        SellerPurchaseFragment fragment = new SellerPurchaseFragment();
-        return fragment;
+        return new SellerPurchaseFragment();
+
     }
 
     protected void initInjector() {
@@ -29,6 +30,9 @@ public class SellerPurchaseFragment extends BuyerPurchaseFragment {
         contactUsComponent.inject(this);
     }
 
+    protected String getType() {
+        return getString(R.string.penjualan);
+    }
 
     @Override
     public PurchaseListContract.Presenter getPresenter() {

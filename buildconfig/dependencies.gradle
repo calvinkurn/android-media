@@ -70,6 +70,8 @@ ext {
     tkpdContactUsVersion = '2.22'
     tkpdCommonNetworkVersion = '2.22'
     tkpdTokopointVersion = '2.22'
+    tkpdDealsVersion = '2.22'
+    tkpdOmsVersion = '2.22'
 
     networkDependencies = [
             retrofit          : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
@@ -262,7 +264,9 @@ ext {
             topAdsManagement      : "com.tokopedia.topads:top_ads_management:${tkpdTopAdsSDKVersion}",
             districtRecommendation: "com.tokopedia.district_recommendation:district_recommendation:${tkpdDistrictRecommendationVersion}",
             vote                  : "com.tokopedia.user:user:${tkpdVoteVersion}"
-
+            districtRecommendation: "com.tokopedia.district_recommendation:district_recommendation:${tkpdDistrictRecommendationVersion}",
+            digitalDeals          : "com.tokopedia.digital_deals:digital_deals:${tkpdDealsVersion}",
+            omsApi                : "com.tokopedia.oms:oms:${tkpdOmsVersion}"
     ]
 
     tkpdLibDependencies = [
@@ -325,7 +329,8 @@ ext {
             logisticuploadawb     : ":features:logistic:logisticuploadawb",
             vote                  : ":features:user:vote",
             instantLoan           : ":features:fintech:instant_loan",
-            tokopoints            : ":features:promo:tokopoints"
+            tokopoints            : ":features:promo:tokopoints",
+            digitalDeals          : ":features:digital:digital_deals"
     ]
 
     libraries = [
@@ -350,6 +355,7 @@ ext {
             youtubeApi        : ":libraries:YouTubeAndroidPlayerApi",
             analytics         : ":libraries:analytics",
             graphql           : ":libraries:graphql",
-            commonNetwork     : ":libraries:common_network"
+            commonNetwork     : ":libraries:common_network",
+            omsApi            : ":libraries:oms"
     ]
 }

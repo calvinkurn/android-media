@@ -22,6 +22,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.design.quickfilter.QuickSingleFilterView;
+import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
@@ -32,6 +33,7 @@ import com.tokopedia.flight.common.util.FlightErrorUtil;
 import com.tokopedia.flight.dashboard.view.activity.FlightDashboardActivity;
 import com.tokopedia.flight.detail.view.activity.FlightDetailOrderActivity;
 import com.tokopedia.flight.orderlist.contract.FlightOrderListContract;
+import com.tokopedia.flight.orderlist.di.DaggerFlightOrderComponent;
 import com.tokopedia.flight.orderlist.di.FlightOrderComponent;
 import com.tokopedia.flight.orderlist.presenter.FlightOrderListPresenter;
 import com.tokopedia.flight.orderlist.view.adapter.FlightOrderAdapter;
@@ -83,8 +85,11 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
 
     @Override
     protected void initInjector() {
-        getComponent(FlightOrderComponent.class)
-                .inject(this);
+        FlightOrderComponent component = DaggerFlightOrderComponent.builder()
+                .flightComponent(FlightComponentInstance.getFlightComponent(getActivity().getApplication()))
+                .build();
+
+        component.inject(this);
     }
 
     @NonNull
