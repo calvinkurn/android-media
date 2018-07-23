@@ -58,6 +58,15 @@
                     android:layout_toRightOf="@id/tv_text_sender"
                     android:lineSpacingExtra="5sp"
                     tools:text="Adidas" />
+
+                <ImageView
+                    android:id="@+id/img_shop_badge"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/tv_shop_name"
+                    tools:src="@drawable/ic_badge_official" />
+
             </RelativeLayout>
 
             <View
