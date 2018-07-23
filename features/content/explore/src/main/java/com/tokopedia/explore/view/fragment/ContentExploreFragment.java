@@ -3,12 +3,15 @@ package com.tokopedia.explore.view.fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -39,6 +42,7 @@ public class ContentExploreFragment extends BaseDaggerFragment implements Conten
     private SearchInputView searchInspiration;
     private RecyclerView exploreTagRv;
     private RecyclerView exploreImageRv;
+    private ProgressBar progressBar;
 
     @Inject
     ContentExploreContract.Presenter presenter;
@@ -50,6 +54,7 @@ public class ContentExploreFragment extends BaseDaggerFragment implements Conten
     ExploreImageAdapter imageAdapter;
 
     private EndlessRecyclerViewScrollListener recyclerviewScrollListener;
+    private boolean canLoadMore;
 
     public static ContentExploreFragment newInstance() {
         ContentExploreFragment fragment = new ContentExploreFragment();
@@ -87,6 +92,7 @@ public class ContentExploreFragment extends BaseDaggerFragment implements Conten
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.attachView(this);
+
         List<ExploreImageViewModel> imageList = new ArrayList<>();
         imageList.add(new ExploreImageViewModel("http://www.mymbuzz.com/wp-content/uploads/sites/2/2017/03/Doctor-Who-Series-10-photos-3.jpeg"));
         imageList.add(new ExploreImageViewModel("http://www.scififantasynetwork.com/wp-content/uploads/2017/04/The-Pilot-banner.jpg"));
@@ -149,6 +155,8 @@ public class ContentExploreFragment extends BaseDaggerFragment implements Conten
 
     @Override
     public void updateCursor(String cursor) {
+        canLoadMore = !TextUtils.isEmpty(cursor);
+
         presenter.updateCursor(cursor);
     }
 
@@ -161,6 +169,7 @@ public class ContentExploreFragment extends BaseDaggerFragment implements Conten
         searchInspiration = view.findViewById(R.id.search_inspiration);
         exploreTagRv = view.findViewById(R.id.explore_tag_rv);
         exploreImageRv = view.findViewById(R.id.explore_image_rv);
+        progressBar = view.findViewById(R.id.progress_bar);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(),
                 LinearLayoutManager.HORIZONTAL,
@@ -168,6 +177,7 @@ public class ContentExploreFragment extends BaseDaggerFragment implements Conten
         exploreTagRv.setLayoutManager(linearLayoutManager);
         exploreTagRv.setAdapter(tagAdapter);
 
+        ViewCompat.setNestedScrollingEnabled(exploreImageRv, false);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(),
                 IMAGE_SPAN_COUNT,
                 GridLayoutManager.VERTICAL,
@@ -187,11 +197,17 @@ public class ContentExploreFragment extends BaseDaggerFragment implements Conten
         tagAdapter.setList(tagViewModelList);
     }
 
+    private boolean isLoading() {
+        return progressBar.getVisibility() == View.VISIBLE;
+    }
+
     private EndlessRecyclerViewScrollListener onScrollListener(GridLayoutManager layoutManager) {
         return new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
+                if (canLoadMore && !isLoading()) {
 
+                }
             }
         };
     }
