@@ -6,17 +6,22 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.util.TrainDateUtil;
+import com.tokopedia.train.homepage.domain.GetTrainPromoUseCase;
 import com.tokopedia.train.homepage.presentation.TrainHomepageCache;
 import com.tokopedia.train.homepage.presentation.listener.TrainHomepageView;
 import com.tokopedia.train.homepage.presentation.model.TrainHomepageViewModel;
 import com.tokopedia.train.homepage.presentation.model.TrainPassengerViewModel;
+import com.tokopedia.train.homepage.presentation.model.TrainPromoViewModel;
 import com.tokopedia.train.homepage.presentation.model.TrainSearchPassDataViewModel;
 import com.tokopedia.train.station.presentation.adapter.viewmodel.TrainStationAndCityViewModel;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import javax.inject.Inject;
+
+import rx.Subscriber;
 
 /**
  * @author Rizky on 21/02/18.
@@ -29,10 +34,14 @@ public class TrainHomepagePresenterImpl extends BaseDaggerPresenter<TrainHomepag
 
     private TrainHomepageCache trainHomepageCache;
     private UserSession userSession;
+    private GetTrainPromoUseCase getTrainPromoUseCase;
 
     @Inject
-    public TrainHomepagePresenterImpl(TrainHomepageCache trainHomepageCache, UserSession userSession) {
+    public TrainHomepagePresenterImpl(TrainHomepageCache trainHomepageCache,
+                                      GetTrainPromoUseCase getTrainPromoUseCase,
+                                      UserSession userSession) {
         this.trainHomepageCache = trainHomepageCache;
+        this.getTrainPromoUseCase = getTrainPromoUseCase;
         this.userSession = userSession;
     }
 
@@ -311,4 +320,28 @@ public class TrainHomepagePresenterImpl extends BaseDaggerPresenter<TrainHomepag
         return passengerFmt;
     }
 
+    @Override
+    public void getTrainPromoList() {
+        getTrainPromoUseCase.execute(new Subscriber<List<TrainPromoViewModel>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                getView().hidePromoList();
+            }
+
+            @Override
+            public void onNext(List<TrainPromoViewModel> trainPromoViewModelList) {
+                getView().renderPromoList(trainPromoViewModelList);
+            }
+        });
+    }
+
+    @Override
+    public void onDestroy() {
+        if (getTrainPromoUseCase != null) getTrainPromoUseCase.unsubscribe();
+    }
 }
