@@ -366,8 +366,31 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                         if (domain.getContent() != null
                                 && domain.getContent().getKolPostDomain() != null) {
                             if (domain.getContent().getKolPostDomain().getType().equals(KOLTYPE_YOUTUBE)) {
-                                KolPostYoutubeViewModel kolPostYoutubeViewModel = convertToKolYoutubeViewModel(domain);
+                                KolPostYoutubeViewModel kolPostYoutubeViewModel
+                                        = convertToKolYoutubeViewModel(domain);
                                 listFeedView.add(kolPostYoutubeViewModel);
+
+                                List<FeedEnhancedTracking.Promotion> list = new ArrayList<>();
+                                list.add(new FeedEnhancedTracking.Promotion(
+                                        kolPostYoutubeViewModel.getKolId(),
+                                        FeedEnhancedTracking.Promotion.createContentNameAnnouncement(
+                                                kolPostYoutubeViewModel.getTagsType(),
+                                                kolPostYoutubeViewModel.getCardType()),
+                                        TextUtils.isEmpty(kolPostYoutubeViewModel.getName()) ?
+                                                FeedEnhancedTracking.Promotion.TRACKING_EMPTY :
+                                                kolPostYoutubeViewModel.getName(),
+                                        listFeedView.size(),
+                                        TextUtils.isEmpty(kolPostYoutubeViewModel.getLabel()) ?
+                                                FeedEnhancedTracking.Promotion.TRACKING_EMPTY :
+                                                kolPostYoutubeViewModel.getLabel(),
+                                        kolPostYoutubeViewModel.getTagsId(),
+                                        TextUtils.isEmpty(kolPostYoutubeViewModel.getTagsLink()) ?
+                                                FeedEnhancedTracking.Promotion.TRACKING_EMPTY :
+                                                kolPostYoutubeViewModel.getTagsLink()
+                                ));
+                                TrackingUtils.eventTrackingEnhancedEcommerce(
+                                        FeedEnhancedTracking.getImpressionTracking(list, loginIdInt)
+                                );
                             } else {
                                 KolPostViewModel kolViewModel = convertToKolViewModel(domain);
                                 listFeedView.add(kolViewModel);
@@ -379,15 +402,15 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                                                 kolViewModel.getTagsType(),
                                                 kolViewModel.getCardType())
                                         ,
-                                        kolViewModel.getName().equals("") ?
+                                        TextUtils.isEmpty(kolViewModel.getName()) ?
                                                 FeedEnhancedTracking.Promotion.TRACKING_EMPTY :
                                                 kolViewModel.getName(),
                                         listFeedView.size(),
-                                        kolViewModel.getLabel().equals("") ?
+                                        TextUtils.isEmpty(kolViewModel.getLabel()) ?
                                                 FeedEnhancedTracking.Promotion.TRACKING_EMPTY :
                                                 kolViewModel.getLabel(),
                                         kolViewModel.getTagsId(),
-                                        kolViewModel.getTagsLink().equals("") ?
+                                        TextUtils.isEmpty(kolViewModel.getTagsLink()) ?
                                                 FeedEnhancedTracking.Promotion.TRACKING_EMPTY :
                                                 kolViewModel.getTagsLink()
                                 ));
@@ -587,7 +610,8 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                 "",
                 kolPostDomain.getTagsType(),
                 kolPostDomain.getCaption(),
-                kolPostDomain.getContentLink()
+                !TextUtils.isEmpty(kolPostDomain.getContentLink()) ? kolPostDomain.getContentLink()
+                        : kolPostDomain.getContentUrl()
         );
     }
 
@@ -616,7 +640,8 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                 "",
                 kolPostDomain.getTagsType(),
                 kolPostDomain.getCaption(),
-                kolPostDomain.getContentLink()
+                !TextUtils.isEmpty(kolPostDomain.getContentLink()) ? kolPostDomain.getContentLink()
+                        : kolPostDomain.getContentUrl()
         );
     }
 
