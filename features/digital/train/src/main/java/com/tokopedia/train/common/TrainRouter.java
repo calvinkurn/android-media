@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SnapHelper;
 
 import com.tokopedia.train.passenger.presentation.viewmodel.ProfileBuyerInfo;
 
@@ -24,5 +26,11 @@ public interface TrainRouter {
     Intent getIntentOfLoyaltyActivityWithoutCoupon(Activity activity, String platform);
 
     Intent getLoginIntent();
+
+    SnapHelper getSnapHelper();
+
+    RecyclerView.ItemDecoration getSpacingItemDecorationHome(int spacing, int displayMode);
+
+    Intent getPromoListIntent(Activity activity);
 
 }
