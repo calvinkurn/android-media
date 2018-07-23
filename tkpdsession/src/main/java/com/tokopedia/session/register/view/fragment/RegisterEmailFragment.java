@@ -338,6 +338,12 @@ public class RegisterEmailFragment extends BaseDaggerFragment
         };
     }
 
+    /**
+     * This textwatcher cause lag on UI.
+     * the owner of this code should fix this.
+     * @param editText
+     * @return
+     */
     private TextWatcher phoneWatcher(final EditText editText) {
         return new TextWatcher() {
 
