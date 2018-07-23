@@ -111,11 +111,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
         tvNumberVouchers = view.findViewById(R.id.tv_number_vouchers);
         etEmailID = view.findViewById(R.id.tv_email);
         paymentMethod = view.findViewById(R.id.cl_btn_payment);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            paymentMethod.setCardElevation(getResources().getDimension(R.dimen.dp_8));
-        } else {
-            paymentMethod.setCardElevation(getResources().getDimension(R.dimen.dp_0));
-        }
+        setCardViewElevation();
         tvPaymentMethod = view.findViewById(R.id.ll_select_payment_method);
         tvApplyPromo = view.findViewById(R.id.tv_promocode);
         clPromoApplied = view.findViewById(R.id.cl_promo_applied);
@@ -129,6 +125,13 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
 
     }
 
+    private void setCardViewElevation() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            paymentMethod.setCardElevation(getResources().getDimension(R.dimen.dp_8));
+        } else {
+            paymentMethod.setCardElevation(getResources().getDimension(R.dimen.dp_0));
+        }
+    }
 
     @Override
     public void showMessage(String message) {

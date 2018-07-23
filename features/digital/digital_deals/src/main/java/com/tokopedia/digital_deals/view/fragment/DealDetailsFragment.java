@@ -187,11 +187,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         baseMainContent = view.findViewById(R.id.base_main_content);
         progressBarLayout = view.findViewById(R.id.progress_bar_layout);
         cardView = view.findViewById(R.id.cv_checkout);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            cardView.setCardElevation(getResources().getDimension(R.dimen.dp_8));
-        } else {
-            cardView.setCardElevation(getResources().getDimension(R.dimen.dp_0));
-        }
+        setCardViewElevation();
         progBar = view.findViewById(R.id.prog_bar);
         clRedeemInstuctns = view.findViewById(R.id.cl_redeem_instructions);
         Drawable img = getResources().getDrawable(R.drawable.ic_see_location);
@@ -210,6 +206,14 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         recyclerViewDeals.setLayoutManager(mLayoutManager);
         recyclerViewDeals.setAdapter(new DealsCategoryAdapter(new ArrayList<ProductItem>(), this, IS_SHORT_LAYOUT));
         recyclerViewDeals.addOnScrollListener(rvOnScrollListener);
+    }
+
+    private void setCardViewElevation() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            cardView.setCardElevation(getResources().getDimension(R.dimen.dp_8));
+        } else {
+            cardView.setCardElevation(getResources().getDimension(R.dimen.dp_0));
+        }
     }
 
 
