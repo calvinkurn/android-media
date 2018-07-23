@@ -213,9 +213,9 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
         addressReceiverName.setText(editableAddress.getRecipientName());
         address.setText(String.format(
                 "%s, %s, %s, %s",
-                editableAddress.getAddressStreet(),
-                editableAddress.getAddressCityName(),
-                editableAddress.getAddressProvinceName(),
+                editableAddress.getStreet(),
+                editableAddress.getCityName(),
+                editableAddress.getProvinceName(),
                 editableAddress.getRecipientPhoneNumber()
         ));
     }
@@ -274,10 +274,9 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
     }
 
     private void openAddressSelectionPage() {
-        Intent intent = CartAddressChoiceActivity.createInstance(getActivity(), null,
+        Intent intent = CartAddressChoiceActivity.createInstance(getActivity(),
                 CartAddressChoiceActivity.TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST);
-        startActivityForResult(
-                intent, CartAddressChoiceActivity.REQUEST_CODE);
+        startActivityForResult(intent, CartAddressChoiceActivity.REQUEST_CODE);
     }
 
     private void setProductView(View view, MultipleAddressAdapterData productData, TextView senderName) {
@@ -366,17 +365,6 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
         addressTitle = view.findViewById(R.id.address_title);
         addressReceiverName = view.findViewById(R.id.address_receiver_name);
         address = view.findViewById(R.id.address);
-        addressTitle.setText(itemData.getAddressTitle());
-        addressReceiverName.setText(itemData.getAddressReceiverName());
-        address.setText(
-                String.format(
-                        "%s, %s, %s, %s",
-                        itemData.getAddressStreet(),
-                        itemData.getAddressCityName(),
-                        itemData.getAddressProvinceName(),
-                        itemData.getRecipientPhoneNumber()
-                )
-        );
         addressLayout.setOnClickListener(onAddressLayoutClickedListener());
         chooseAddressButton = view.findViewById(R.id.choose_address_button);
         chooseAddressButton.setOnClickListener(onChooseAddressClickedListener());
