@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <com.tokopedia.home.account.presentation.widget.CustomSwitchPreference
+        android:defaultValue="@bool/pref_chat_default"
+        android:key="@string/pref_chat_key"
+        android:title="@string/label_chat"/>
+
+    <com.tokopedia.home.account.presentation.widget.CustomSwitchPreference
+        android:defaultValue="@bool/pref_chat_admin_default"
+        android:key="@string/pref_chat_admin_key"
+        android:title="@string/label_chat_admin"/>
+
+    <com.tokopedia.home.account.presentation.widget.CustomSwitchPreference
+        android:defaultValue="@bool/pref_talk_default"
+        android:key="@string/pref_talk_key"
+        android:title="@string/label_talk"/>
+
+    <com.tokopedia.home.account.presentation.widget.CustomSwitchPreference
+        android:defaultValue="@bool/pref_review_default"
+        android:key="@string/pref_review_key"
+        android:title="@string/label_review"/>
+
+    <com.tokopedia.home.account.presentation.widget.CustomSwitchPreference
+        android:defaultValue="@bool/pref_bulletin_default"
+        android:key="@string/pref_bulletin_key"
+        android:title="@string/label_bulletin"/>
+</PreferenceScreen>

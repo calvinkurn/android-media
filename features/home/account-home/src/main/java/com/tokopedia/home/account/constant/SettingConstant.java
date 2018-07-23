@@ -1,0 +1,26 @@
+package com.tokopedia.home.account.constant;
+
+public class SettingConstant {
+    public static final int SETTING_ACCOUNT_ID = 1;
+    public static final int SETTING_SHOP_ID = 2;
+    public static final int SETTING_TKPD_PAY_ID = 3;
+    public static final int SETTING_NOTIFICATION_ID = 4;
+    public static final int SETTING_TOUCH_ID = 5;
+    public static final int SETTING_TNC_ID = 6;
+    public static final int SETTING_PRIVACY_ID = 7;
+    public static final int SETTING_HELP_CENTER_ID = 8;
+    public static final int SETTING_OUT_ID = 9;
+    public static final int SETTING_ACCOUNT_PERSONAL_DATA_ID = 11;
+    public static final int SETTING_ACCOUNT_PASS_ID = 12;
+    public static final int SETTING_ACCOUNT_ADDRESS_ID = 13;
+    public static final int SETTING_SHOP_INFO_ID = 21;
+    public static final int SETTING_SHOP_ETALASE_ID = 22;
+    public static final int SETTING_SHOP_PRODUCT_ID = 23;
+    public static final int SETTING_SHOP_LOCATION_ID = 24;
+    public static final int SETTING_SHOP_SHIPMENT_ID = 25;
+    public static final int SETTING_SHOP_NOTE_ID = 26;
+    public static final int SETTING_TOKOCASH_ID = 31;
+    public static final int SETTING_SALDO_ID = 32;
+    public static final int SETTING_BANK_ACCOUNT_ID = 33;
+    public static final int SETTING_CREDIT_CARD_ID = 34;
+}

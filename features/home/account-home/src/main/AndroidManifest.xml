@@ -1,2 +1,24 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tokopedia.home.account" />
+    package="com.tokopedia.home.account" >
+    <application>
+        <activity android:name=".presentation.activity.GeneralSettingActivity"
+            android:label="@string/label_menu_setting"
+            android:theme="@style/Theme.White"/>
+
+        <activity android:name=".presentation.activity.AccountSettingActivity"
+            android:label="@string/screentitle_account_setting"
+            android:theme="@style/Theme.White"/>
+
+        <activity android:name=".presentation.activity.StoreSettingActivity"
+            android:label="@string/screentitle_store_setting"
+            android:theme="@style/Theme.White"/>
+
+        <activity android:name=".presentation.activity.TkpdPaySettingActivity"
+            android:label="@string/screentitle_tkpd_pay_setting"
+            android:theme="@style/Theme.White"/>
+
+        <activity android:name=".presentation.activity.NotificationSettingActivity"
+            android:label="@string/screentitle_notification_setting"
+            android:theme="@style/Theme.White.Preference"/>
+    </application>
+</manifest>
