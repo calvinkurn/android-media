@@ -280,6 +280,7 @@ public class CartListPresenter implements ICartListPresenter {
         double subtotalPrice = 0;
         int totalAllCartItemQty = 0;
         Map<String, Double> subtotalWholesalePriceMap = new HashMap<>();
+        List<String> parentIds = new ArrayList<>();
         for (CartItemHolderData data : dataList) {
             String parentId = data.getCartItemData().getOriginData().getParentId();
             String productId = data.getCartItemData().getOriginData().getProductId();
@@ -299,8 +300,7 @@ public class CartListPresenter implements ICartListPresenter {
             if (wholesalePrices != null && wholesalePrices.size() > 0) {
                 double subTotalWholesalePrice = 0;
                 for (WholesalePrice wholesalePrice : wholesalePrices) {
-                    if (itemQty >= wholesalePrice.getQtyMin() &&
-                            itemQty <= wholesalePrice.getQtyMax()) {
+                    if (itemQty >= wholesalePrice.getQtyMin() && itemQty <= wholesalePrice.getQtyMax()) {
                         subTotalWholesalePrice = itemQty * wholesalePrice.getPrdPrc();
                         hasCalculateWholesalePrice = true;
                         data.getCartItemData().getOriginData().setWholesalePriceFormatted(wholesalePrice.getPrdPrcFmt());
@@ -320,8 +320,11 @@ public class CartListPresenter implements ICartListPresenter {
                     subtotalWholesalePriceMap.put(parentId, subTotalWholesalePrice);
                 }
             } else {
-                subtotalPrice = subtotalPrice + (itemQty * data.getCartItemData().getOriginData().getPricePlan());
-                data.getCartItemData().getOriginData().setWholesalePriceFormatted(null);
+                if (!parentIds.contains(data.getCartItemData().getOriginData().getParentId())) {
+                    subtotalPrice = subtotalPrice + (itemQty * data.getCartItemData().getOriginData().getPricePlan());
+                    data.getCartItemData().getOriginData().setWholesalePriceFormatted(null);
+                    parentIds.add(data.getCartItemData().getOriginData().getParentId());
+                }
             }
         }
 

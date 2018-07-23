@@ -29,5 +29,7 @@ public interface IMultipleAddressView {
 
     void showErrorLayout(String message);
 
+    void navigateToCartList();
+
     Activity getActivityContext();
 }

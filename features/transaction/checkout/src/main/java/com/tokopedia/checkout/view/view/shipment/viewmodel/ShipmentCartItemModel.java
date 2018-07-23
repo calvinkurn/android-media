@@ -1,5 +1,9 @@
 package com.tokopedia.checkout.view.view.shipment.viewmodel;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import com.google.gson.Gson;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
@@ -8,6 +12,9 @@ import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.view.view.shipment.ShipmentData;
 import com.tokopedia.transaction.common.data.pickuppoint.Store;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +22,7 @@ import java.util.List;
  * @author Irfan Khoirul on 23/04/18.
  */
 
-public class ShipmentCartItemModel implements ShipmentData {
+public class ShipmentCartItemModel implements ShipmentData, Parcelable {
 
     private boolean allItemError;
     private boolean isError;
@@ -36,6 +43,8 @@ public class ShipmentCartItemModel implements ShipmentData {
     private boolean productFcancelPartial;
     private boolean productIsPreorder;
 
+    private List<CartItemModel> cartItemModels = new ArrayList<>();
+
     // For pickup point
     private String destinationDistrictId;
     private String destinationDistrictName;
@@ -51,11 +60,86 @@ public class ShipmentCartItemModel implements ShipmentData {
     // Address Model for multiple address shipment, null if single address shipment
     private RecipientAddressModel recipientAddressModel;
 
-    // Only for single address shipment
-    private List<CartItemModel> cartItemModels = new ArrayList<>();
-
     public ShipmentCartItemModel() {
     }
+
+    protected ShipmentCartItemModel(Parcel in) {
+        allItemError = in.readByte() != 0;
+        isError = in.readByte() != 0;
+        errorMessage = in.readString();
+        isWarning = in.readByte() != 0;
+        warningMessage = in.readString();
+        shopId = in.readInt();
+        shipmentCartData = in.readParcelable(ShipmentCartData.class.getClassLoader());
+        selectedShipmentDetailData = in.readParcelable(ShipmentDetailData.class.getClassLoader());
+        shopShipmentList = in.createTypedArrayList(ShopShipment.CREATOR);
+        shopName = in.readString();
+        isGoldMerchant = in.readByte() != 0;
+        isOfficialStore = in.readByte() != 0;
+        weightUnit = in.readInt();
+        productFinsurance = in.readByte() != 0;
+        productFcancelPartial = in.readByte() != 0;
+        productIsPreorder = in.readByte() != 0;
+        destinationDistrictId = in.readString();
+        destinationDistrictName = in.readString();
+        tokenPickup = in.readString();
+        unixTime = in.readString();
+        store = in.readParcelable(Store.class.getClassLoader());
+        stateDetailSubtotalViewExpanded = in.readByte() != 0;
+        stateAllItemViewExpanded = in.readByte() != 0;
+        stateDropshipperDetailExpanded = in.readByte() != 0;
+        stateDropshipperHasError = in.readByte() != 0;
+        recipientAddressModel = in.readParcelable(RecipientAddressModel.class.getClassLoader());
+        cartItemModels = in.createTypedArrayList(CartItemModel.CREATOR);
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeByte((byte) (allItemError ? 1 : 0));
+        dest.writeByte((byte) (isError ? 1 : 0));
+        dest.writeString(errorMessage);
+        dest.writeByte((byte) (isWarning ? 1 : 0));
+        dest.writeString(warningMessage);
+        dest.writeInt(shopId);
+        dest.writeParcelable(shipmentCartData, flags);
+        dest.writeParcelable(selectedShipmentDetailData, flags);
+        dest.writeTypedList(shopShipmentList);
+        dest.writeString(shopName);
+        dest.writeByte((byte) (isGoldMerchant ? 1 : 0));
+        dest.writeByte((byte) (isOfficialStore ? 1 : 0));
+        dest.writeInt(weightUnit);
+        dest.writeByte((byte) (productFinsurance ? 1 : 0));
+        dest.writeByte((byte) (productFcancelPartial ? 1 : 0));
+        dest.writeByte((byte) (productIsPreorder ? 1 : 0));
+        dest.writeString(destinationDistrictId);
+        dest.writeString(destinationDistrictName);
+        dest.writeString(tokenPickup);
+        dest.writeString(unixTime);
+        dest.writeParcelable(store, flags);
+        dest.writeByte((byte) (stateDetailSubtotalViewExpanded ? 1 : 0));
+        dest.writeByte((byte) (stateAllItemViewExpanded ? 1 : 0));
+        dest.writeByte((byte) (stateDropshipperDetailExpanded ? 1 : 0));
+        dest.writeByte((byte) (stateDropshipperHasError ? 1 : 0));
+        dest.writeParcelable(recipientAddressModel, flags);
+        dest.writeTypedList(cartItemModels);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<ShipmentCartItemModel> CREATOR = new Creator<ShipmentCartItemModel>() {
+        @Override
+        public ShipmentCartItemModel createFromParcel(Parcel in) {
+            return new ShipmentCartItemModel(in);
+        }
+
+        @Override
+        public ShipmentCartItemModel[] newArray(int size) {
+            return new ShipmentCartItemModel[size];
+        }
+    };
 
     public static ShipmentCartItemModel clone(ShipmentCartItemModel shipmentCartItemModel, List<CartItemModel> cartItemModels) {
         ShipmentCartItemModel newShipmentCartItemModel = new ShipmentCartItemModel();
@@ -302,5 +386,65 @@ public class ShipmentCartItemModel implements ShipmentData {
 
     public void setShopShipmentList(List<ShopShipment> shopShipmentList) {
         this.shopShipmentList = shopShipmentList;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (!(o instanceof ShipmentCartItemModel)) return false;
+
+        ShipmentCartItemModel that = (ShipmentCartItemModel) o;
+
+        return new EqualsBuilder()
+                .append(isAllItemError(), that.isAllItemError())
+                .append(isError(), that.isError())
+                .append(isWarning(), that.isWarning())
+                .append(getShopId(), that.getShopId())
+                .append(isGoldMerchant(), that.isGoldMerchant())
+                .append(isOfficialStore(), that.isOfficialStore())
+                .append(getWeightUnit(), that.getWeightUnit())
+                .append(isProductFinsurance(), that.isProductFinsurance())
+                .append(isProductFcancelPartial(), that.isProductFcancelPartial())
+                .append(isProductIsPreorder(), that.isProductIsPreorder())
+                .append(getErrorMessage(), that.getErrorMessage())
+                .append(getWarningMessage(), that.getWarningMessage())
+                .append(getShopShipmentList(), that.getShopShipmentList())
+                .append(getShopName(), that.getShopName())
+                .append(getCartItemModels(), that.getCartItemModels())
+                .append(getDestinationDistrictId(), that.getDestinationDistrictId())
+                .append(getDestinationDistrictName(), that.getDestinationDistrictName())
+                .append(getTokenPickup(), that.getTokenPickup())
+                .append(getUnixTime(), that.getUnixTime())
+                .append(getStore(), that.getStore())
+                .append(getRecipientAddressModel(), that.getRecipientAddressModel())
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(isAllItemError())
+                .append(isError())
+                .append(getErrorMessage())
+                .append(isWarning())
+                .append(getWarningMessage())
+                .append(getShopId())
+                .append(getShopShipmentList())
+                .append(getShopName())
+                .append(isGoldMerchant())
+                .append(isOfficialStore())
+                .append(getWeightUnit())
+                .append(isProductFinsurance())
+                .append(isProductFcancelPartial())
+                .append(isProductIsPreorder())
+                .append(getCartItemModels())
+                .append(getDestinationDistrictId())
+                .append(getDestinationDistrictName())
+                .append(getTokenPickup())
+                .append(getUnixTime())
+                .append(getStore())
+                .append(getRecipientAddressModel())
+                .toHashCode();
     }
 }

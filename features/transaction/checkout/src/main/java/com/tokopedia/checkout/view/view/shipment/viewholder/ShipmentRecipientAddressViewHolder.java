@@ -14,12 +14,14 @@ import android.widget.TextView;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.view.view.shipment.ShipmentAdapterActionListener;
+import com.tokopedia.checkout.view.view.shipment.ShipmentData;
 import com.tokopedia.design.component.TextViewCompat;
 import com.tokopedia.design.pickuppoint.PickupPointLayout;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Aghny A. Putra on 02/03/18
@@ -43,6 +45,7 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
     private PickupPointLayout pickupPointLayout;
     private TextViewCompat tvChangeAddress;
 
+    private RecipientAddressModel recipientAddress;
     private ShipmentAdapterActionListener shipmentAdapterActionListener;
 
     public ShipmentRecipientAddressViewHolder(View itemView, ShipmentAdapterActionListener shipmentAdapterActionListener) {

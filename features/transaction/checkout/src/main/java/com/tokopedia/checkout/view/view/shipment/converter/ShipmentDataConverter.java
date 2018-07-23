@@ -86,6 +86,7 @@ public class ShipmentDataConverter {
                     shipmentCartItemModel = new ShipmentCartItemModel();
                     getShipmentItem(shipmentCartItemModel, userAddress, groupShop, cartShipmentAddressFormData.getKeroToken(),
                             String.valueOf(cartShipmentAddressFormData.getKeroUnixTime()), true);
+                    setCartItemModelError(shipmentCartItemModel);
                     shipmentCartItemModels.add(shipmentCartItemModel);
                 }
             }
@@ -95,11 +96,20 @@ public class ShipmentDataConverter {
                 shipmentCartItemModel = new ShipmentCartItemModel();
                 getShipmentItem(shipmentCartItemModel, userAddress, groupShop, cartShipmentAddressFormData.getKeroToken(),
                         String.valueOf(cartShipmentAddressFormData.getKeroUnixTime()), false);
+                setCartItemModelError(shipmentCartItemModel);
                 shipmentCartItemModels.add(shipmentCartItemModel);
             }
         }
 
         return shipmentCartItemModels;
+    }
+
+    private void setCartItemModelError(ShipmentCartItemModel shipmentCartItemModel) {
+        if (shipmentCartItemModel.isAllItemError()) {
+            for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
+                cartItemModel.setError(true);
+            }
+        }
     }
 
     private void getShipmentItem(ShipmentCartItemModel shipmentCartItemModel,

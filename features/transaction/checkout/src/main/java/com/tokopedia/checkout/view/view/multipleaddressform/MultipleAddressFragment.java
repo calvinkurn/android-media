@@ -62,11 +62,8 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
     @Inject
     CheckoutAnalyticsMultipleAddress checkoutAnalyticsMultipleAddress;
 
-    public static final int ADD_SHIPMENT_ADDRESS_REQUEST_CODE = 21;
     public static final int EDIT_SHIPMENT_ADDRESS_REQUEST_CODE = 22;
-    private static final String ADD_SHIPMENT_FRAGMENT_TAG = "ADD_SHIPMENT_FRAGMENT_TAG";
     private static final String ADDRESS_EXTRA = "ADDRESS_EXTRA";
-    private static final String DISTRICT_RECOMMENDATION_TOKEN = "DISTRICT_RECOMMENDATION_TOKEN";
 
     private MultipleAddressAdapter multipleAddressAdapter;
     private RecyclerView rvOrderAddressList;
@@ -347,6 +344,14 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
                         presenter.processGetCartList();
                     }
                 });
+    }
+
+    @Override
+    public void navigateToCartList() {
+        if (getActivity() != null) {
+            getActivity().setResult(MultipleAddressFormActivity.RESULT_CODE_RELOAD_CART_PAGE);
+            getActivity().finish();
+        }
     }
 
     @Override

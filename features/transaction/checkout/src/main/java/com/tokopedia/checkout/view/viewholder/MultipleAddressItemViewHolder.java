@@ -302,7 +302,7 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
                               int position) {
         shippingIndex.setText(
                 shippingIndex.getText().toString().replace(
-                        "#", String.valueOf(itemData.getAddressPosition() + 1)
+                        "#", String.valueOf(getAdapterPosition() + 1)
                 )
         );
         deleteButton.setOnClickListener(new View.OnClickListener() {

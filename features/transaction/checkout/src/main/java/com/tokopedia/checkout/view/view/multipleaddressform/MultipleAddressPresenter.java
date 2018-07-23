@@ -76,10 +76,10 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
             @Override
             public void onNext(CartListData cartListData) {
                 view.hideInitialLoading();
-                if (!cartListData.isError()) {
+                if (cartListData != null && cartListData.getCartItemDataList().size() > 0) {
                     view.renderCartData(cartListData);
                 } else {
-                    view.showError(cartListData.getErrorMessage());
+                    view.navigateToCartList();
                 }
             }
         });

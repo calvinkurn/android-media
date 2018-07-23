@@ -33,6 +33,7 @@ import com.tokopedia.checkout.domain.usecase.CheckoutUseCase;
 import com.tokopedia.checkout.domain.usecase.EditAddressUseCase;
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.domain.usecase.GetThanksToppayUseCase;
+import com.tokopedia.checkout.view.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCheckoutButtonModel;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentDonationModel;
@@ -79,6 +80,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private final CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase;
     private final ChangeShippingAddressUseCase changeShippingAddressUseCase;
 
+    private CartItemPromoHolderData cartItemPromoHolderData;
     private List<ShipmentCartItemModel> shipmentCartItemModelList;
     private RecipientAddressModel recipientAddressModel;
     private PromoCodeAppliedData promoCodeAppliedData;
@@ -142,12 +144,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public void setShipmentCartItemModelList(List<ShipmentCartItemModel> recipientCartItemList) {
-        if (shipmentCartItemModelList != null) {
-            this.shipmentCartItemModelList.clear();
-            this.shipmentCartItemModelList.addAll(recipientCartItemList);
-        } else {
-            this.shipmentCartItemModelList = recipientCartItemList;
-        }
+//        if (shipmentCartItemModelList != null) {
+//            this.shipmentCartItemModelList.clear();
+//            this.shipmentCartItemModelList.addAll(recipientCartItemList);
+//        } else {
+        this.shipmentCartItemModelList = recipientCartItemList;
+//        }
     }
 
     @Override
@@ -228,11 +230,21 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void processLoadCheckoutPage(boolean isInitialLoad) {
-        if (isInitialLoad) {
-            getView().showInitialLoading();
-        } else {
+    public CartItemPromoHolderData getCartItemPromoHolderData() {
+        return cartItemPromoHolderData;
+    }
+
+    @Override
+    public void setCartItemPromoHolderData(CartItemPromoHolderData cartItemPromoHolderData) {
+        this.cartItemPromoHolderData = cartItemPromoHolderData;
+    }
+
+    @Override
+    public void processInitialLoadCheckoutPage(boolean isFromMultipleAddress) {
+        if (isFromMultipleAddress) {
             getView().showLoading();
+        } else {
+            getView().showInitialLoading();
         }
         TKPDMapParam<String, String> paramGetShipmentForm = new TKPDMapParam<>();
         paramGetShipmentForm.put("lang", "id");
@@ -255,20 +267,20 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             @Override
                             public void onError(Throwable e) {
                                 e.printStackTrace();
-                                if (isInitialLoad) {
-                                    getView().hideInitialLoading();
-                                } else {
+                                if (isFromMultipleAddress) {
                                     getView().hideLoading();
+                                } else {
+                                    getView().hideInitialLoading();
                                 }
                                 getView().showToastError(ErrorHandler.getErrorMessage(getView().getActivityContext(), e));
                             }
 
                             @Override
                             public void onNext(CartShipmentAddressFormData cartShipmentAddressFormData) {
-                                if (isInitialLoad) {
-                                    getView().hideInitialLoading();
-                                } else {
+                                if (isFromMultipleAddress) {
                                     getView().hideLoading();
+                                } else {
+                                    getView().hideInitialLoading();
                                 }
 
                                 if (cartShipmentAddressFormData.isError()) {
@@ -277,12 +289,129 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     if (cartShipmentAddressFormData.getGroupAddress() == null || cartShipmentAddressFormData.getGroupAddress().isEmpty()) {
                                         getView().renderNoRecipientAddressShipmentForm(cartShipmentAddressFormData);
                                     } else {
-                                        getView().renderCheckoutPage(cartShipmentAddressFormData, isInitialLoad);
+                                        initializePresenterData(cartShipmentAddressFormData);
+                                        getView().renderCheckoutPage();
                                     }
                                 }
                             }
                         })
         );
+    }
+
+    private void initializePresenterData(CartShipmentAddressFormData cartShipmentAddressFormData) {
+        if (!cartShipmentAddressFormData.isMultiple()) {
+            setRecipientAddressModel(getView().getShipmentDataConverter()
+                    .getRecipientAddressModel(cartShipmentAddressFormData));
+        } else {
+            setRecipientAddressModel(null);
+        }
+
+        if (cartShipmentAddressFormData.getDonation() != null) {
+            setShipmentDonationModel(getView().getShipmentDataConverter().getShipmentDonationModel(cartShipmentAddressFormData));
+        } else {
+            setShipmentDonationModel(null);
+        }
+
+        setShipmentCartItemModelList(getView()
+                .getShipmentDataConverter().getShipmentItems(cartShipmentAddressFormData));
+    }
+
+    @Override
+    public void processReloadCheckoutPageFromMultipleAddress(CartItemPromoHolderData oldCartItemPromoHolderData,
+                                                             CartPromoSuggestion oldCartPromoSuggestion,
+                                                             RecipientAddressModel oldRecipientAddressModel,
+                                                             ArrayList<ShipmentCartItemModel> oldShipmentCartItemModels,
+                                                             ShipmentCostModel oldShipmentCostModel,
+                                                             ShipmentDonationModel oldShipmentDonationModel,
+                                                             ShipmentCheckoutButtonModel oldShipmentCheckoutButtonModel) {
+        getView().showLoading();
+        TKPDMapParam<String, String> paramGetShipmentForm = new TKPDMapParam<>();
+        paramGetShipmentForm.put("lang", "id");
+
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putObject(GetShipmentAddressFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS,
+                getGeneratedAuthParamNetwork(paramGetShipmentForm));
+
+        compositeSubscription.add(
+                getShipmentAddressFormUseCase.createObservable(requestParams)
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .subscribe(new Subscriber<CartShipmentAddressFormData>() {
+                            @Override
+                            public void onCompleted() {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                e.printStackTrace();
+                                getView().hideLoading();
+                                getView().showToastError(ErrorHandler.getErrorMessage(getView().getActivityContext(), e));
+                            }
+
+                            @Override
+                            public void onNext(CartShipmentAddressFormData cartShipmentAddressFormData) {
+                                getView().hideLoading();
+
+                                if (cartShipmentAddressFormData.isError()) {
+                                    getView().showToastError(cartShipmentAddressFormData.getErrorMessage());
+                                } else {
+                                    if (cartShipmentAddressFormData.getGroupAddress() == null || cartShipmentAddressFormData.getGroupAddress().isEmpty()) {
+                                        getView().renderNoRecipientAddressShipmentForm(cartShipmentAddressFormData);
+                                    } else {
+                                        RecipientAddressModel newRecipientAddressModel =
+                                                getView().getShipmentDataConverter().getRecipientAddressModel(cartShipmentAddressFormData);
+                                        List<ShipmentCartItemModel> shipmentCartItemModelList =
+                                                getView().getShipmentDataConverter().getShipmentItems(cartShipmentAddressFormData);
+                                        if (checkAddressHasChanged(oldRecipientAddressModel, newRecipientAddressModel) ||
+                                                checkShipmentItemHasChanged(oldShipmentCartItemModels, shipmentCartItemModelList)) {
+                                            initializePresenterData(cartShipmentAddressFormData);
+                                            getView().renderDataChangedFromMultipleAddress(cartShipmentAddressFormData);
+                                        }
+                                    }
+                                }
+                            }
+                        })
+        );
+    }
+
+    private boolean checkAddressHasChanged(RecipientAddressModel oldModel, RecipientAddressModel newModel) {
+        return !oldModel.equals(newModel);
+    }
+
+    private boolean checkShipmentItemHasChanged(List<ShipmentCartItemModel> oldShipmentCartItemModelList,
+                                                List<ShipmentCartItemModel> newShipmentCartItemModelList) {
+        if (oldShipmentCartItemModelList.size() != newShipmentCartItemModelList.size()) {
+            return true;
+        } else {
+            List<ShipmentCartItemModel> equalShipmentCartItemModelList = new ArrayList<>();
+            for (ShipmentCartItemModel oldShipmentCartItemModel : oldShipmentCartItemModelList) {
+                for (ShipmentCartItemModel newShipmentCartItemModel : newShipmentCartItemModelList) {
+                    if (isSameCartObject(oldShipmentCartItemModel, newShipmentCartItemModel) &&
+                            oldShipmentCartItemModel.equals(newShipmentCartItemModel) &&
+                            oldShipmentCartItemModel.getCartItemModels().size() == newShipmentCartItemModel.getCartItemModels().size() &&
+                            oldShipmentCartItemModel.getShopShipmentList().size() == newShipmentCartItemModel.getShopShipmentList().size()) {
+                        for (ShopShipment oldShopShipment : oldShipmentCartItemModel.getShopShipmentList()) {
+                            for (ShopShipment newShopShipment : newShipmentCartItemModel.getShopShipmentList()) {
+                                if (oldShopShipment.getShipId() == newShopShipment.getShipId() &&
+                                        oldShopShipment.getShipProds().size() == newShopShipment.getShipProds().size() &&
+                                        !equalShipmentCartItemModelList.contains(oldShipmentCartItemModel)) {
+                                    equalShipmentCartItemModelList.add(oldShipmentCartItemModel);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (equalShipmentCartItemModelList.size() != newShipmentCartItemModelList.size()) {
+                return true;
+            } else {
+                return false;
+            }
+        }
     }
 
     @Override
@@ -589,7 +718,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                      ShipmentCartItemModel newShipmentCartItemModel) {
 
         if (oldShipmentCartItemModel.getRecipientAddressModel() != null && newShipmentCartItemModel.getRecipientAddressModel() != null) {
-            if (!oldShipmentCartItemModel.getRecipientAddressModel().getId().equals(newShipmentCartItemModel.getRecipientAddressModel().getId())) {
+            if (!oldShipmentCartItemModel.getRecipientAddressModel().getId().equals(newShipmentCartItemModel.getRecipientAddressModel().getId()) ||
+                    oldShipmentCartItemModel.getRecipientAddressModel().getLatitude() != newShipmentCartItemModel.getRecipientAddressModel().getLatitude() ||
+                    oldShipmentCartItemModel.getRecipientAddressModel().getLongitude() != newShipmentCartItemModel.getRecipientAddressModel().getLongitude() ||
+                    !oldShipmentCartItemModel.getRecipientAddressModel().getPostalCode().equalsIgnoreCase(newShipmentCartItemModel.getRecipientAddressModel().getPostalCode()) ||
+                    !oldShipmentCartItemModel.getRecipientAddressModel().getDestinationDistrictId().equals(newShipmentCartItemModel.getRecipientAddressModel().getDestinationDistrictId())) {
                 return false;
             }
         }
