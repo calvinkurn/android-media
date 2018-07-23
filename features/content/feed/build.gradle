@@ -45,6 +45,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.reactNative)
     implementation project(rootProject.ext.libraries.userSession)
+    implementation project(rootProject.ext.libraries.youtubeutil)
 
     implementation rootProject.ext.miscDependencies.reactNative
 

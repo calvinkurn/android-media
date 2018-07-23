@@ -64,6 +64,7 @@ ext {
     tkpdHomeVersion = '2.22'
     tkpdMitraToppersVersion = '2.22'
     tkpdDistrictRecommendationVersion = '2.22'
+    tkpdYoutubeUtilVersion = '2.22'
     tkpdAnalyticsVersion = '2.22'
     tkpdGraphqlVersion = '2.22'
     tkpdContactUsVersion = '2.22'
@@ -261,6 +262,7 @@ ext {
             goldMerchant          : "com.tokopedia.gm:gold_merchant:${tkpdGoldMerchantVersion}",
             goldMerchantSubscribe : "com.tokopedia.gm:gold_merchant-subscribe:${tkpdGoldMerchantVersion}",
             topAdsManagement      : "com.tokopedia.topads:top_ads_management:${tkpdTopAdsSDKVersion}",
+            youtubeutil           : "com.tokopedia.youtubeutil:youtubeutil:${tkpdYoutubeUtilVersion}",
             districtRecommendation: "com.tokopedia.district_recommendation:district_recommendation:${tkpdDistrictRecommendationVersion}",
             digitalDeals          : "com.tokopedia.digital_deals:digital_deals:${tkpdDealsVersion}",
             omsApi                : "com.tokopedia.oms:oms:${tkpdOmsVersion}"
@@ -353,6 +355,8 @@ ext {
             analytics         : ":libraries:analytics",
             graphql           : ":libraries:graphql",
             commonNetwork     : ":libraries:common_network",
+            youtubeutil       : ":libraries:youtubeutil"
             omsApi            : ":libraries:oms"
+
     ]
 }
