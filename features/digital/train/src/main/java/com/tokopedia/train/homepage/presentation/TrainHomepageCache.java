@@ -22,7 +22,7 @@ public class TrainHomepageCache {
 
     private final String DEFAULT_ORIGIN_STATION_CODE = "GMR";
     private final String DEFAULT_ORIGIN_CITY_NAME = "Jakarta";
-    private final String DEFAULT_ORIGIN_ISLAND_NAME = "";
+    private final String DEFAULT_ORIGIN_ISLAND_NAME = "Jawa";
     private final String DEFAULT_DESTINATION_STATION_CODE = "BD";
     private final String DEFAULT_DESTINATION_CITY_NAME = "Bandung";
     private final String DEFAULT_DESTINATION_ISLAND_NAME = "Jawa";
