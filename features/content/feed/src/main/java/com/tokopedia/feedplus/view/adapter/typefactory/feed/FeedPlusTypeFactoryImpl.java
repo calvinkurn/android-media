@@ -14,6 +14,7 @@ import com.tokopedia.feedplus.view.adapter.viewholder.kol.ContentProductViewHold
 import com.tokopedia.feedplus.view.adapter.viewholder.kol.KolRecommendationViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.kol.PollViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.kol.ProductCommunicationViewHolder;
+import com.tokopedia.feedplus.view.adapter.viewholder.kol.WhitelistViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.officialstore.OfficialStoreBrandsViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.officialstore.OfficialStoreCampaignViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.productcard.ActivityCardViewHolder;
@@ -35,6 +36,7 @@ import com.tokopedia.feedplus.view.viewmodel.kol.ContentProductViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.ProductCommunicationViewModel;
+import com.tokopedia.feedplus.view.viewmodel.kol.WhitelistViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreBrandsViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreCampaignViewModel;
 import com.tokopedia.feedplus.view.viewmodel.product.ActivityCardViewModel;
@@ -184,6 +186,11 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
     }
 
     @Override
+    public int type(WhitelistViewModel whitelistViewModel) {
+        return WhitelistViewHolder.LAYOUT;
+    }
+
+    @Override
     public int type(EmptyFeedBeforeLoginModel emptyFeedBeforeLoginModel) {
         return EmptyFeedBeforeLoginViewHolder.LAYOUT;
     }
@@ -246,6 +253,8 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
             viewHolder = new EmptyKolPostViewHolder(view);
         else if (type == ExploreViewHolder.LAYOUT)
             viewHolder = new ExploreViewHolder(view, kolPostListener);
+        else if (type == WhitelistViewHolder.LAYOUT)
+            viewHolder = new WhitelistViewHolder(view, viewListener);
         else
             viewHolder = super.createViewHolder(view, type);
         return viewHolder;

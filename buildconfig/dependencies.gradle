@@ -66,6 +66,7 @@ ext {
     tkpdDistrictRecommendationVersion = '2.22'
     tkpdYoutubeUtilVersion = '2.22'
     tkpdAnalyticsVersion = '2.22'
+    tkpdVoteVersion = '2.22'
     tkpdGraphqlVersion = '2.22'
     tkpdContactUsVersion = '2.22'
     tkpdCommonNetworkVersion = '2.22'
@@ -264,6 +265,7 @@ ext {
             topAdsManagement      : "com.tokopedia.topads:top_ads_management:${tkpdTopAdsSDKVersion}",
             youtubeutil           : "com.tokopedia.youtubeutil:youtubeutil:${tkpdYoutubeUtilVersion}",
             districtRecommendation: "com.tokopedia.district_recommendation:district_recommendation:${tkpdDistrictRecommendationVersion}",
+            vote                  : "com.tokopedia.user:user:${tkpdVoteVersion}",
             digitalDeals          : "com.tokopedia.digital_deals:digital_deals:${tkpdDealsVersion}",
             omsApi                : "com.tokopedia.oms:oms:${tkpdOmsVersion}"
     ]

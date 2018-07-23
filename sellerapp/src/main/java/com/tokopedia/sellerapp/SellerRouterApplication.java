@@ -78,6 +78,9 @@ import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberWa
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.share.DefaultShare;
+import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartRequest;
+import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
+import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.core.shopinfo.limited.fragment.ShopTalkLimitedFragment;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.DeepLinkChecker;
@@ -1368,6 +1371,31 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getDistrictRecommendationIntent(Activity activity, com.tokopedia.core.manage.people.address.model.Token token) {
         return DistrictRecommendationActivity.createInstance(activity, new TokenMapper().convertTokenModel(token));
+    }
+
+    @Override
+    public boolean isSupportApplink(String appLink) {
+        return false;
+    }
+
+    @Override
+    public Intent getOrderListIntent(Context context) {
+        return null;
+    }
+
+    @Override
+    public Observable<AddToCartResult> addToCartProduct(AddToCartRequest addToCartRequest) {
+        return null;
+    }
+
+    @Override
+    public Intent getCartIntent(Activity activity) {
+        return null;
+    }
+
+    @Override
+    public void updateMarketplaceCartCounter(CartNotificationListener listener) {
+
     }
 
     @Override
