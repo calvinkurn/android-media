@@ -33,7 +33,6 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
     private final EmptyWrapViewHolder.Callback emptyProductOnClickListener;
     private final ShopProductEtalaseListViewHolder.OnShopProductEtalaseListViewHolderListener onShopProductEtalaseListViewHolderListener;
     private final boolean isHorizontalLayout;
-    private boolean needToShowEtalase;
 
     private OnShopProductAdapterTypeFactoryListener onShopProductAdapterTypeFactoryListener;
     public interface OnShopProductAdapterTypeFactoryListener{
@@ -53,10 +52,6 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
         this.onShopProductEtalaseListViewHolderListener = onShopProductEtalaseListViewHolderListener;
         this.onShopProductAdapterTypeFactoryListener = onShopProductAdapterTypeFactoryListener;
         this.isHorizontalLayout = isHorizontalLayout;
-    }
-
-    public void setShowEtalase(boolean needToShow) {
-        needToShowEtalase = needToShow;
     }
 
     @Override

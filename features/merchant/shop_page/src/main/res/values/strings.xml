@@ -73,8 +73,8 @@
     <string name="shop_note_empty_note_title_seller">Toko Anda belum memiliki catatan toko.</string>
 
     <string name="shop_note_empty_note_title">Toko ini belum memiliki catatan</string>
-    <string name="shop_note_empty_note_title_owner">Catatan toko anda kosong</string>
-    <string name="shop_note_empty_note_content_owner">Tambah catatan seputar toko anda sekarang</string>
+    <string name="shop_note_empty_note_title_owner">Catatan Toko Anda kosong</string>
+    <string name="shop_note_empty_note_content_owner">Tambah catatan seputar Toko Anda sekarang</string>
     <string name="shop_note_empty_note_button_owner">Tambah Catatan</string>
 
     <string name="shop_product_discount_percentage_format">%1$s%% Off</string>
@@ -84,10 +84,15 @@
     <string name="shop_product_label_wholesale">Grosir</string>
     <string name="shop_product_label_po">PO</string>
     <string name="shop_product_limited_empty_product_title">Toko ini belum memiliki produk</string>
-    <string name="shop_product_limited_empty_product_title_owner">Toko anda belum memiliki produk</string>
+    <string name="shop_product_limited_empty_product_title_owner">Toko Anda belum memiliki produk</string>
+    <string name="shop_product_limited_empty_product_title_owner_at_etalase">Toko Anda belum memiliki produk di etalase ini</string>
     <string name="shop_product_limited_empty_product_content_owner">Tambah produk &amp; mulai berjualan sekarang &#x21;</string>
-    <string name="shop_product_empty_product_title">Tidak ada \"%1$s\" di etalase ini</string>
-    <string name="shop_product_empty_product_title_owner">Ubah kata pencarian anda atau pilih etalase lain</string>
+    <string name="shop_product_empty_product_title_etalase">Tidak ada \"%1$s\" di etalase ini</string>
+    <string name="shop_product_empty_product_title_owner_etalase">Ubah kata pencarian Anda atau pilih etalase lain</string>
+
+    <string name="shop_product_empty_product_title_no_etalase">Tidak hasil pencarian untuk \"%1$s\"</string>
+    <string name="shop_product_empty_product_title_owner_no_etalase">Ubah kata pencarian Anda</string>
+
 
     <string name="shop_info_default_etalase">Pilih Etalase</string>
     <string name="shop_info_default_etalase_title">Etalase</string>
@@ -112,7 +117,8 @@
     <string name="choose_etalase_label">Pilih Etalase</string>
     <string name="see_shop_information">Lihat Informasi Toko</string>
     <string name="see_label">Lihat</string>
-    <string name="shop_product_empty_title_desc">Tidak ada produk di etalase ini</string>
+    <string name="shop_product_empty_title_etalase_desc">Tidak ada produk di etalase ini</string>
+    <string name="shop_product_empty_title_desc">Tidak ada produk di toko ini</string>
     <string name="out_of_stock">Stok Kosong</string>
     <string name="shop_page_label_view_more">Lihat Produk Selengkapnya</string>
     <string name="official_store_label">Official Store</string>

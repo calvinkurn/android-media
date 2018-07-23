@@ -28,7 +28,7 @@ import static com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_PROMO_
 import static com.tokopedia.shop.common.constant.ShopPageConstant.ITEM_OFFSET;
 
 public class ShopProductNewAdapter extends BaseListAdapter<BaseShopProductViewModel, ShopProductAdapterTypeFactory>
-        implements DataEndlessScrollListener.OnDataEndlessScrollListener, ShopProductAdapterTypeFactory.OnShopProductAdapterTypeFactoryListener {
+        implements DataEndlessScrollListener.OnDataEndlessScrollListener {
 
     private ShopProductPromoViewModel shopProductPromoViewModel;
     private List<ShopProductViewModel> shopProductViewModelList;
@@ -39,7 +39,6 @@ public class ShopProductNewAdapter extends BaseListAdapter<BaseShopProductViewMo
     //    private View promoView;
 //    private String promoUrl;
     private View etalaseView;
-    private boolean needToShowEtalase;
 
     public ShopProductNewAdapter(ShopProductAdapterTypeFactory baseListAdapterTypeFactory) {
         super(baseListAdapterTypeFactory, null);
@@ -102,8 +101,6 @@ public class ShopProductNewAdapter extends BaseListAdapter<BaseShopProductViewMo
         List<ShopEtalaseViewModel> shopEtalaseViewModelList = shopProductEtalaseListViewModel.getEtalaseModelList();
         for (int i = 0, sizei = shopEtalaseViewModelList.size(); i < sizei; i++) {
             if (shopEtalaseViewModelList.get(i).getEtalaseId().equalsIgnoreCase(etalaseId)) {
-                setSelectedEtalaseId(etalaseId);
-                setShopEtalaseTitle(etalaseName);
                 return false;
             }
         }
@@ -116,8 +113,6 @@ public class ShopProductNewAdapter extends BaseListAdapter<BaseShopProductViewMo
         if (shopEtalaseViewModelList.size() > ShopPageConstant.ETALASE_TO_SHOW) {
             shopEtalaseViewModelList.remove(shopEtalaseViewModelList.size() - 1);
         }
-        setSelectedEtalaseId(etalaseId);
-        setShopEtalaseTitle(etalaseName);
         return true;
     }
 
@@ -244,17 +239,4 @@ public class ShopProductNewAdapter extends BaseListAdapter<BaseShopProductViewMo
         return shopProductViewModelList.size();
     }
 
-
-    public void setNeedToShowEtalase(boolean needToShowEtalase) {
-        if (this.needToShowEtalase != needToShowEtalase) {
-            this.needToShowEtalase = needToShowEtalase;
-            notifyItemChanged(DEFAULT_ETALASE_POSITION);
-            notifyItemChanged(DEFAULT_ETALASE_TITLE_POSITION);
-        }
-    }
-
-    @Override
-    public boolean needToShowEtalase() {
-        return needToShowEtalase;
-    }
 }

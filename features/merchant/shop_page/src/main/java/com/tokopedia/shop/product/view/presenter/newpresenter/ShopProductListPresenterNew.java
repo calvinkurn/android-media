@@ -15,10 +15,12 @@ import com.tokopedia.shop.etalase.data.source.cloud.model.EtalaseModel;
 import com.tokopedia.shop.etalase.data.source.cloud.model.PagingListOther;
 import com.tokopedia.shop.etalase.domain.interactor.GetShopEtalaseUseCase;
 import com.tokopedia.shop.etalase.domain.model.ShopEtalaseRequestModel;
+import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel;
 import com.tokopedia.shop.product.domain.interactor.DeleteShopProductUseCase;
 import com.tokopedia.shop.product.domain.interactor.GetShopProductListWithAttributeNewUseCase;
 import com.tokopedia.shop.product.domain.model.ShopProductRequestModel;
 import com.tokopedia.shop.product.view.listener.newlistener.ShopProductDedicatedListView;
+import com.tokopedia.shop.product.view.mapper.ShopProductMapperNew;
 import com.tokopedia.shop.product.view.model.newmodel.ShopProductViewModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.wishlist.common.domain.interactor.AddToWishListUseCase;
@@ -69,6 +71,28 @@ public class ShopProductListPresenterNew extends BaseDaggerPresenter<ShopProduct
         return userSession.getShopId().equals(shopId);
     }
 
+    public void getShopInfo(final String shopId) {
+        getShopInfoUseCase.execute(GetShopInfoUseCase.createRequestParam(shopId),
+                new Subscriber<ShopInfo>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (isViewAttached()) {
+                            getView().onErrorGetShopInfo(e);
+                        }
+                    }
+
+                    @Override
+                    public void onNext(ShopInfo shopInfo) {
+                        getView().onSuccessGetShopInfo(shopInfo);
+                    }
+                });
+    }
+
     @NonNull
     private static ShopProductRequestModel getShopProductRequestModel(
             String shopId,
@@ -82,17 +106,21 @@ public class ShopProductListPresenterNew extends BaseDaggerPresenter<ShopProduct
                 useAce,
                 itemPerPage
         );
-        if (etalaseId != null)
+        if (!TextUtils.isEmpty(etalaseId)) {
             shopProductRequestModel.setEtalaseId(etalaseId);
+        }
 
-        if (keyword != null)
+        if (!TextUtils.isEmpty(keyword)) {
             shopProductRequestModel.setKeyword(keyword);
+        }
 
-        if (wholesale > 0)
+        if (wholesale > 0) {
             shopProductRequestModel.setWholesale(wholesale);
+        }
 
-        if (orderBy > 0)
+        if (orderBy > 0) {
             shopProductRequestModel.setOrderBy(orderBy);
+        }
 
         return shopProductRequestModel;
     }
@@ -109,104 +137,116 @@ public class ShopProductListPresenterNew extends BaseDaggerPresenter<ShopProduct
         getShopProductWithEtalase(shopProductRequestModel);
     }
 
-    public void getShopInfo(final String shopId) {
-        getShopInfoUseCase.execute(GetShopInfoUseCase.createRequestParam(shopId), new Subscriber<ShopInfo>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (isViewAttached()) {
-                    getView().onErrorGetShopInfo(e);
-                }
-            }
-
-            @Override
-            public void onNext(ShopInfo shopInfo) {
-                getView().onSuccessGetShopInfo(shopInfo);
-            }
-        });
-    }
-
     private void getShopProductWithEtalase(final ShopProductRequestModel shopProductRequestModel) {
-        if (TextUtils.isEmpty(shopProductRequestModel.getEtalaseId())) {
-            getView().onSuccessGetEtalaseName("", "");
+        // if no etalase id, continue to get get Product as usual
+        String selectedEtalaseId = shopProductRequestModel.getEtalaseId();
+        if (TextUtils.isEmpty(selectedEtalaseId)) {
             getShopProductWithWishList(shopProductRequestModel);
             return;
         }
+
+        // has etalase id
+        // if there is no etalase list yet,
+        //    1. From deeplink: etalaseID might contains as name instead of ID, so we need to loop the list to get the ID
+        //    2. get the etalase list, merge and show the etalaselist to the view
+        // if there is already etalase list, continue to get the product list
         ShopEtalaseRequestModel shopEtalaseRequestModel = new ShopEtalaseRequestModel(shopProductRequestModel.getShopId(),
                 userSession.getUserId(), userSession.getDeviceId());
-        getShopEtalaseUseCase.execute(GetShopEtalaseUseCase.createParams(shopEtalaseRequestModel), new Subscriber<PagingListOther<EtalaseModel>>() {
-            @Override
-            public void onCompleted() {
 
-            }
+        if (getView().getShopEtalaseViewModelList().size() > 0) {
+            // the view has already had shop etalase list. So, no need to get from network.
+            getShopProductWithWishList(shopProductRequestModel);
+        } else {
+            getShopEtalaseUseCase.execute(GetShopEtalaseUseCase.createParams(shopEtalaseRequestModel), new Subscriber<PagingListOther<EtalaseModel>>() {
+                @Override
+                public void onCompleted() {
 
-            @Override
-            public void onError(Throwable e) {
-                if (isViewAttached()) {
-                    getView().showGetListError(e);
                 }
-            }
 
-            @Override
-            public void onNext(PagingListOther<EtalaseModel> etalaseModelList) {
-                List<EtalaseModel> etalaseModelListTemp = new ArrayList<>();
-                etalaseModelListTemp.addAll(etalaseModelList.getListOther());
-                if (etalaseModelList.getList() != null && !etalaseModelList.getList().isEmpty()) {
-                    etalaseModelListTemp.addAll(etalaseModelList.getList());
-                }
-                String etalaseName = "";
-                for (EtalaseModel etalaseModel : etalaseModelListTemp) {
-                    if (shopProductRequestModel.getEtalaseId().equalsIgnoreCase(etalaseModel.getEtalaseId())) {
-                        etalaseName = etalaseModel.getEtalaseName();
-                        shopProductRequestModel.setUseAce((etalaseModel.getUseAce() == USE_ACE));
+                @Override
+                public void onError(Throwable e) {
+                    if (isViewAttached()) {
+                        getView().onErrorGetEtalaseList(e);
+                        getShopProductWithWishList(shopProductRequestModel);
                     }
                 }
-                // If etalase Id not found, then reset etalaseId
-                if (TextUtils.isEmpty(etalaseName)) {
-                    for (EtalaseModel etalaseModel : etalaseModelListTemp) {
-                        if (shopProductRequestModel.getEtalaseId().replaceAll("[\\W_]", "")
-                                .equalsIgnoreCase(etalaseModel.getEtalaseName().replaceAll("[\\W_]", ""))) {
-                            shopProductRequestModel.setEtalaseId(etalaseModel.getEtalaseId());
-                            etalaseName = etalaseModel.getEtalaseName();
-                            shopProductRequestModel.setUseAce((etalaseModel.getUseAce() == USE_ACE));
+
+                @Override
+                public void onNext(PagingListOther<EtalaseModel> etalaseModelList) {
+                    List<EtalaseModel> etalaseModelListTemp = new ArrayList<>();
+                    etalaseModelListTemp.addAll(etalaseModelList.getListOther());
+                    if (etalaseModelList.getList() != null && !etalaseModelList.getList().isEmpty()) {
+                        etalaseModelListTemp.addAll(etalaseModelList.getList());
+                    }
+
+                    // id might come from deeplink
+                    // So, if the selected name is empty, we know that the id might come from deeplink
+                    // If the selectedName is not empty, we don't need to do find name anymore.
+                    String selectedEtalaseName = getView().getSelectedEtalaseName();
+                    if (TextUtils.isEmpty(selectedEtalaseName)) { // name is empty, id might be from deeplink, or from other activity
+                        for (EtalaseModel etalaseModel : etalaseModelListTemp) {
+                            if (selectedEtalaseId.equalsIgnoreCase(etalaseModel.getEtalaseId())) {
+                                selectedEtalaseName = etalaseModel.getEtalaseName();
+                                shopProductRequestModel.setUseAce((etalaseModel.getUseAce() == USE_ACE));
+                                break;
+                            }
+                        }
+                        // If etalase Id not found, then we check the selectedEtalaseId with name.
+                        if (TextUtils.isEmpty(selectedEtalaseName)) {
+                            String cleanedSelectedEtalaseId = cleanString(selectedEtalaseId);
+                            for (EtalaseModel etalaseModel : etalaseModelListTemp) {
+                                String cleanedEtalaseName = cleanString(etalaseModel.getEtalaseName());
+                                if (cleanedSelectedEtalaseId.equalsIgnoreCase(cleanedEtalaseName)) {
+                                    shopProductRequestModel.setEtalaseId(etalaseModel.getEtalaseId());
+                                    selectedEtalaseName = etalaseModel.getEtalaseName();
+                                    shopProductRequestModel.setUseAce((etalaseModel.getUseAce() == USE_ACE));
+                                    break;
+                                }
+                            }
+                            if (TextUtils.isEmpty(selectedEtalaseName)) {
+                                shopProductRequestModel.setEtalaseId("");
+                            }
                         }
                     }
-                    if (TextUtils.isEmpty(etalaseName)) {
-                        shopProductRequestModel.setEtalaseId("");
-                    }
+
+                    getView().addNewEtalaseToChip(selectedEtalaseId, selectedEtalaseName);
+                    ArrayList<ShopEtalaseViewModel> etalaseViewModelList = getView().getSelectedEtalaseViewModelList();
+
+                    List<ShopEtalaseViewModel> shopEtalaseViewModelList = ShopProductMapperNew.mergeEtalaseList(
+                            etalaseModelList, etalaseViewModelList, ShopPageConstant.ETALASE_TO_SHOW);
+                    getView().onSuccessGetEtalaseList(shopEtalaseViewModelList, shopProductRequestModel.getEtalaseId(), selectedEtalaseName);
+                    getShopProductWithWishList(shopProductRequestModel);
                 }
-                getView().onSuccessGetEtalaseName(shopProductRequestModel.getEtalaseId(), etalaseName);
-                getShopProductWithWishList(shopProductRequestModel);
-            }
-        });
+            });
+        }
+    }
+
+    private String cleanString(String text) {
+        return text.replaceAll("[\\W_]", "");
     }
 
     private void getShopProductWithWishList(ShopProductRequestModel shopProductRequestModel) {
         productListWithAttributeNewUseCase.execute(
                 GetShopProductListWithAttributeNewUseCase.createRequestParam(shopProductRequestModel),
                 new Subscriber<PagingList<ShopProductViewModel>>() {
-            @Override
-            public void onCompleted() {
+                    @Override
+                    public void onCompleted() {
 
-            }
+                    }
 
-            @Override
-            public void onError(Throwable e) {
-                if (isViewAttached()) {
-                    getView().showGetListError(e);
-                }
-            }
+                    @Override
+                    public void onError(Throwable e) {
+                        if (isViewAttached()) {
+                            getView().showGetListError(e);
+                        }
+                    }
 
-            @Override
-            public void onNext(PagingList<ShopProductViewModel> shopProductList) {
-                getView().renderProductList(shopProductList.getList(),
-                        PagingListUtils.checkNextPage(shopProductList));
-            }
-        });
+                    @Override
+                    public void onNext(PagingList<ShopProductViewModel> shopProductList) {
+                        getView().renderProductList(shopProductList.getList(),
+                                PagingListUtils.checkNextPage(shopProductList));
+                    }
+                });
     }
 
     public void addToWishList(final String productId) {
@@ -268,5 +308,7 @@ public class ShopProductListPresenterNew extends BaseDaggerPresenter<ShopProduct
         removeFromWishListUseCase.unsubscribe();
         productListWithAttributeNewUseCase.unsubscribe();
         getShopEtalaseUseCase.unsubscribe();
+        getShopInfoUseCase.unsubscribe();
+        deleteShopProductUseCase.unsubscribe();
     }
 }

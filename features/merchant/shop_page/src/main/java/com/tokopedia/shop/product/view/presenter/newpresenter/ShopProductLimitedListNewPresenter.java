@@ -22,6 +22,7 @@ import com.tokopedia.shop.product.domain.interactor.GetShopProductListWithAttrib
 import com.tokopedia.shop.product.domain.model.ShopProductRequestModel;
 import com.tokopedia.shop.product.util.ShopProductOfficialStoreUtils;
 import com.tokopedia.shop.product.view.listener.newlistener.ShopProductListView;
+import com.tokopedia.shop.product.view.mapper.ShopProductMapperNew;
 import com.tokopedia.shop.product.view.model.ShopProductBaseViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductHomeViewModelOld;
 import com.tokopedia.shop.product.view.model.ShopProductLimitedEtalaseTitleViewModel;
@@ -88,11 +89,11 @@ public class ShopProductLimitedListNewPresenter extends BaseDaggerPresenter<Shop
     }
 
     public void getProductListWithAttributes(String shopId, boolean isShopClosed,
-                                             boolean isOfficialStore, int page, boolean useAce,
+                                             boolean isOfficialStore, int page,
                                              int itemPerPage,
                                              String etalaseId) {
         ShopProductRequestModel shopProductRequestModel = new ShopProductRequestModel(shopId, isShopClosed,
-                isOfficialStore, page, useAce, itemPerPage);
+                isOfficialStore, page, true, itemPerPage);
         if (!TextUtils.isEmpty(etalaseId)) {
             shopProductRequestModel.setEtalaseId(etalaseId);
         }
@@ -144,14 +145,16 @@ public class ShopProductLimitedListNewPresenter extends BaseDaggerPresenter<Shop
 
     public void loadProductPromoModel(String promotionWebViewUrl) {
         if (!TextApiUtils.isTextEmpty(promotionWebViewUrl)) {
-            ShopProductPromoViewModel shopProductPromoViewModel = new ShopProductPromoViewModel();
-            shopProductPromoViewModel.setUserId(userSession.getUserId());
-            shopProductPromoViewModel.setLogin(userSession.isLoggedIn());
             String url = promotionWebViewUrl;
             if (userSession.isLoggedIn()) {
                 url = ShopProductOfficialStoreUtils.getLogInUrl(url, userSession.getDeviceId(), userSession.getUserId());
             }
-            shopProductPromoViewModel.setUrl(url);
+            ShopProductPromoViewModel shopProductPromoViewModel = new ShopProductPromoViewModel(
+                    url,
+                    userSession.getUserId(),
+                    userSession.getAccessToken(),
+                    userSession.isLoggedIn()
+            );
             getView().renderShopProductPromo(shopProductPromoViewModel);
         } else {
             getView().renderShopProductPromo(null);
@@ -230,49 +233,11 @@ public class ShopProductLimitedListNewPresenter extends BaseDaggerPresenter<Shop
             @Override
             public void onNext(PagingListOther<EtalaseModel> pagingListOther) {
                 if (isViewAttached()) {
-                    getView().onSuccessGetEtalaseList(mergeListOther(pagingListOther, selectedEtalaseIdList, limit));
+                    getView().onSuccessGetEtalaseList(
+                            ShopProductMapperNew.mergeEtalaseList(pagingListOther, selectedEtalaseIdList, limit));
                 }
             }
         });
-    }
-
-    private List<ShopEtalaseViewModel> mergeListOther(PagingListOther<EtalaseModel> pagingListOther,
-                                                      final ArrayList<ShopEtalaseViewModel> selectedEtalaseIdList, final int limit) {
-        if (pagingListOther.getList() != null && !pagingListOther.getList().isEmpty()) {
-            pagingListOther.getListOther().addAll(pagingListOther.getList());
-        }
-        if (pagingListOther.getListOther().size() == 0) {
-            return new ArrayList<>();
-        }
-        List<ShopEtalaseViewModel> shopEtalaseViewModels = new ArrayList<>();
-        // loop to convert to view model, only get until limit.
-        for (EtalaseModel etalaseModel : pagingListOther.getListOther()) {
-            // add to primary list
-            if (shopEtalaseViewModels.size() < limit) {
-                ShopEtalaseViewModel model = new ShopEtalaseViewModel(etalaseModel);
-                shopEtalaseViewModels.add(model);
-            }
-        }
-        // replace the first with selected id list
-        // loop all selected etalase.
-        for (int i = selectedEtalaseIdList.size() - 1; i >= 0; i--) {
-            ShopEtalaseViewModel selectedShopEtalaseViewModel = selectedEtalaseIdList.get(i);
-            // loop the shop view model list to check if already in there.
-            // if there, continue; otherwise, add new object to list
-            boolean isExistInCurrentList = false;
-            for (ShopEtalaseViewModel shopEtalaseViewModel : shopEtalaseViewModels) {
-                if (shopEtalaseViewModel.getEtalaseId().equalsIgnoreCase(selectedShopEtalaseViewModel.getEtalaseId())) {
-                    isExistInCurrentList = true;
-                    break;
-                }
-            }
-            if (!isExistInCurrentList) { // add in index 1 and so on
-                int indexToReplace = shopEtalaseViewModels.size() >= 1 ? 1 : 0;
-                shopEtalaseViewModels.add(indexToReplace, selectedShopEtalaseViewModel);
-            }
-        }
-        return shopEtalaseViewModels;
-
     }
 
     @Override

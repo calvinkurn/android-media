@@ -9,6 +9,7 @@ import com.tokopedia.shop.product.view.model.newmodel.BaseShopProductViewModel;
 import com.tokopedia.shop.product.view.model.newmodel.ShopProductPromoViewModel;
 import com.tokopedia.shop.product.view.model.newmodel.ShopProductViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public interface ShopProductDedicatedListView extends BaseListViewListener<BaseShopProductViewModel> {
@@ -23,7 +24,8 @@ public interface ShopProductDedicatedListView extends BaseListViewListener<BaseS
 
     void renderProductList(@NonNull List<ShopProductViewModel> list, boolean hasNextPage);
 
-    void onSuccessGetEtalaseList(List<ShopEtalaseViewModel> shopEtalaseViewModelList);
+    void onSuccessGetEtalaseList(List<ShopEtalaseViewModel> shopEtalaseViewModelList, String selectedEtalaseId,
+                                 String selectedEtalaseName);
 
     void onErrorGetEtalaseList(Throwable e);
 
@@ -31,7 +33,13 @@ public interface ShopProductDedicatedListView extends BaseListViewListener<BaseS
 
     void onErrorGetShopInfo(Throwable e);
 
-    void onSuccessGetEtalaseName(String etalaseId, String etalaseName);
+    ArrayList<ShopEtalaseViewModel> getSelectedEtalaseViewModelList();
+
+    List<ShopEtalaseViewModel> getShopEtalaseViewModelList();
+
+    String getSelectedEtalaseName();
+
+    void addNewEtalaseToChip(String etalaseId, String etalaseName);
 
 
 }

@@ -129,11 +129,11 @@ public class ShopProductListFragmentOld extends BaseSearchListFragment<ShopProdu
         EmptyModel emptyModel = new EmptyModel();
         emptyModel.setIconRes(R.drawable.ic_empty_list_search);
         if (TextUtils.isEmpty(keyword)) {
-            emptyModel.setTitle(getString(R.string.shop_product_empty_title_desc));
+            emptyModel.setTitle(getString(R.string.shop_product_empty_title_etalase_desc));
         } else {
-            emptyModel.setTitle(getString(R.string.shop_product_empty_product_title, keyword));
+            emptyModel.setTitle(getString(R.string.shop_product_empty_product_title_etalase, keyword));
         }
-        emptyModel.setContent(getString(R.string.shop_product_empty_product_title_owner));
+        emptyModel.setContent(getString(R.string.shop_product_empty_product_title_owner_etalase));
         return emptyModel;
     }
 

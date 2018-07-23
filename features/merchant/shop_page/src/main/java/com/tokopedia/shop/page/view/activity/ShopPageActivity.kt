@@ -140,6 +140,9 @@ class ShopPageActivity: BaseSimpleActivity(), HasComponent<ShopComponent>,
         onProductListDetailFullyHide()
         viewPager.currentItem = tabPosition
         swipeToRefresh.setOnRefreshListener { refreshData() }
+
+        mainLayout.requestFocus();
+
         getShopInfo()
     }
 
@@ -317,6 +320,7 @@ class ShopPageActivity: BaseSimpleActivity(), HasComponent<ShopComponent>,
         if (requestCode == REQUEST_CODER_USER_LOGIN){
             refreshData()
         }
+        //TODO from product list detail, scroll to top and empty the searchView.
     }
 
     private fun refreshData() {

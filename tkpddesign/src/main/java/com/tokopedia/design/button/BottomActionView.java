@@ -1,5 +1,6 @@
 package com.tokopedia.design.button;
 
+import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -185,6 +186,11 @@ public class BottomActionView extends BaseCustomView {
     public void startHideAnimation() {
         if (showAnimator!= null && showAnimator.isRunning()) {
             showAnimator.cancel();
+            // hide halfway show is running
+            Animator hideHalfPart = ObjectAnimator.ofFloat(this, "translationY",
+                    this.getTranslationY(), getHeight());
+            hideHalfPart.start();
+            return;
         }
         if (hideAnimator == null) {
             hideAnimator = ObjectAnimator.ofFloat(this, "translationY", 0, getHeight());
@@ -196,6 +202,11 @@ public class BottomActionView extends BaseCustomView {
     public void startShowAnimation() {
         if (hideAnimator!= null && hideAnimator.isRunning()) {
             hideAnimator.cancel();
+            // show halfway hide is running
+            Animator showHalfPart = ObjectAnimator.ofFloat(this, "translationY",
+                    this.getTranslationY(), 0);
+            showHalfPart.start();
+            return;
         }
         if (showAnimator == null) {
             showAnimator = ObjectAnimator.ofFloat(this, "translationY", getHeight(), 0);
