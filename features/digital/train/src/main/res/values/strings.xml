@@ -96,7 +96,7 @@
     <string name="train_passenger_contact_email_invalid_error">Email kontak tidak valid</string>
     <string name="train_passenger_contact_phone_empty_error">Telepon Kontak tidak boleh kosong</string>
     <string name="train_passenger_contact_phone_invalid_error">Telepon Kontak tidak valid</string>
-    <string name="train_passenger_contact_phone_max_length_error">Telepon Kontak maksimal 13 digit</string>
+    <string name="train_passenger_contact_phone_max_length_error">Telepon Kontak maksimal 15 digit</string>
     <string name="train_passenger_contact_phone_min_length_error">Telepon Kontak minimal 9 digit</string>
     <string name="train_passenger_passenger_not_fullfilled_error">Info penumpang tidak boleh ada yang kosong</string>
     <string name="train_dialog_booking_passanger_title">Batalkan Pengisian Data</string>
