@@ -55,7 +55,7 @@ public class CardPagerAdapter extends PagerAdapter implements CardAdapter {
         View view = LayoutInflater.from(container.getContext())
                 .inflate(R.layout.order_list_item, container, false);
         container.addView(view);
-        new ContactUsPurchaseViewHolder(view).bind(mData.get(position));
+        new ContactUsPurchaseViewHolder(view, "Home").bind(mData.get(position));
 
         CardView cardView = view.findViewById(R.id.base_cardview);
 
