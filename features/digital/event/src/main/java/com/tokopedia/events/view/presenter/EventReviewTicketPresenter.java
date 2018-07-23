@@ -368,7 +368,7 @@ public class EventReviewTicketPresenter
                     cartData = verifyCartResponse.getCart();
 
                     if (!isPromoCodeCase) {
-                        if ("failure".equals(verifyCartResponse.getStatus().getResult())) {
+                        if ("failure" .equals(verifyCartResponse.getStatus().getResult())) {
                             getView().hideProgressBar();
                             getView().showMessage("Silahkan Isi Data Pelanggan Tambahan");
                         } else {
@@ -431,7 +431,7 @@ public class EventReviewTicketPresenter
                     Log.d("ReviewTicketPresenter", verifyCartResponse.toString());
 
                     if (!isPromoCodeCase) {
-                        if ("failure".equals(verifyCartResponse.getStatus().getResult())) {
+                        if ("failure" .equals(verifyCartResponse.getStatus().getResult())) {
                             getView().hideProgressBar();
                             getView().showMessage("Silahkan Isi Data Pelanggan Tambahan");
                         } else {
@@ -532,7 +532,7 @@ public class EventReviewTicketPresenter
                 public void onNext(JsonObject checkoutResponse) {
                     String paymentData = com.tokopedia.oms.view.utils.Utils.transform(checkoutResponse);
                     String paymentURL = checkoutResponse.get("url").getAsString();
-                    ScroogePGUtil.openScroogePage(getView().getActivity(), paymentURL, true, paymentData, "Event Payment");
+                    ScroogePGUtil.openScroogePage(getView().getActivity(), paymentURL, true, paymentData, getView().getActivity().getResources().getString(R.string.pembayaran));
                     getView().hideProgressBar();
 
                 }

@@ -5,6 +5,8 @@ import android.util.Log;
 
 import com.tkpd.library.ui.widget.TouchViewPager;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
@@ -154,7 +156,7 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
             UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_PROMO, "");
             return true;
         } else if (id == R.id.action_booked_history) {
-            startGeneralWebView(TRANSATIONSURL);
+            RouteManager.route(getView().getActivity(), ApplinkConst.EVENTS_ORDER);
             UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_DAFTAR_TRANSAKSI, "");
             return true;
         } else if (id == R.id.action_faq) {
