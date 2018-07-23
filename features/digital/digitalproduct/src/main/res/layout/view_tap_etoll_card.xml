@@ -23,6 +23,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             app:srcCompat="@drawable/ic_nfc_need_activation"
             android:id="@+id/imageview_error" />
 
@@ -49,6 +50,7 @@
     <android.support.v7.widget.AppCompatButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
         android:id="@+id/button_try_again"
         android:visibility="gone"
         android:text="Coba Lagi"
