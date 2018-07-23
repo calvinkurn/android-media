@@ -2,7 +2,6 @@ package com.tokopedia.digital.product.view.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -87,7 +86,6 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHol
             @Override
             public void onInitializationFailure(YouTubeThumbnailView youTubeThumbnailView, YouTubeInitializationResult youTubeInitializationResult) {
                 progressBar.setVisibility(View.GONE);
-                Log.e("YoutubeInitFailure", youTubeInitializationResult.toString());
                 youtubeListenerInitialize(youtubeViewUrl, progressBar);
             }
         };
