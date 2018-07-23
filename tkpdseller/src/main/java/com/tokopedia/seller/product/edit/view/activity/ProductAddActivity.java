@@ -53,7 +53,7 @@ import static com.tkpd.library.utils.CommonUtils.checkCollectionNotNull;
  */
 
 @RuntimePermissions
-public class ProductAddActivity extends BaseProductAddEditActivity implements ProductAddImageView{
+public class ProductAddActivity extends BaseProductAddEditActivity implements ProductAddImageView {
 
     public static final String EXTRA_IMAGE_URLS = "img_urls";
     public static final String IMAGE = "image/";
@@ -132,14 +132,7 @@ public class ProductAddActivity extends BaseProductAddEditActivity implements Pr
         imageUrls = new ArrayList<>();
         for (int i = 0; i < imagesCount; i++) {
             String imageUrl = oriImageUrls.get(i);
-            if (FileUtils.isInTkpdCache(new File(imageUrl))) {
-                imageUrls.add(imageUrl);
-            } else {
-                File photo = FileUtils.writeImageToTkpdPath(imageUrl);
-                if (photo != null) {
-                    imageUrls.add(photo.getAbsolutePath());
-                }
-            }
+            imageUrls.add(imageUrl);
         }
         dismissDialog();
         createProductAddFragment();
@@ -273,14 +266,14 @@ public class ProductAddActivity extends BaseProductAddEditActivity implements Pr
         productAddImagePresenter.convertUrisToLocalPaths(imageUris);
     }
 
-    private void initPresenter(){
+    private void initPresenter() {
         if (productAddImagePresenter == null) {
             productAddImagePresenter = new ProductAddImagePresenter();
         }
         productAddImagePresenter.attachView(this);
     }
 
-    private void showProductAddFragment(){
+    private void showProductAddFragment() {
         if (!ProductAddActivity.this.isPausing() && !ProductAddActivity.this.isFinishing()) {
             dismissDialog();
             createProductAddFragment();
@@ -298,7 +291,7 @@ public class ProductAddActivity extends BaseProductAddEditActivity implements Pr
     @Override
     protected void onPause() {
         dismissDialog();
-        if (productAddImagePresenter!= null) {
+        if (productAddImagePresenter != null) {
             productAddImagePresenter.detachView();
         }
         super.onPause();
