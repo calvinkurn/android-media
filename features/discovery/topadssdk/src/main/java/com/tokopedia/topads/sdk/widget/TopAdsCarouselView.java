@@ -59,7 +59,7 @@ public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAd
 
     private void inflateView(Context context, AttributeSet attrs, int defStyle) {
         styledAttributes = context.obtainStyledAttributes(attrs, R.styleable.TopAdsView, defStyle, 0);
-        inflate(getContext(), R.layout.layout_ads_carousel, this);
+        inflate(context, R.layout.layout_ads_carousel, this);
         adapter = new AdsItemAdapter(getContext());
         adapter.setItemClickListener(this);
         recyclerView = (RecyclerView) findViewById(R.id.list);
