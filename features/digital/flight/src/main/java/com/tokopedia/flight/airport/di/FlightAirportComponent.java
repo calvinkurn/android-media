@@ -1,5 +1,6 @@
 package com.tokopedia.flight.airport.di;
 
+import com.tokopedia.flight.airport.service.GetAirportListJobService;
 import com.tokopedia.flight.airport.service.GetAirportListService;
 import com.tokopedia.flight.airport.view.fragment.FlightAirportPickerFragment;
 import com.tokopedia.flight.common.di.component.FlightComponent;
@@ -15,4 +16,6 @@ public interface FlightAirportComponent {
     void inject(FlightAirportPickerFragment flightAirportPickerFragment);
 
     void inject(GetAirportListService getAirportListService);
+
+    void inject(GetAirportListJobService getAirportListJobService);
 }

@@ -33,6 +33,7 @@ public class GetAirportListService extends JobIntentService implements FlightAir
         intent.putExtra(ARG_EXTRA_GET_AIRPORT, CODE_EXTRA_GET_AIRPORT);
         intent.putExtra(ARG_EXTRA_VERSION_AIRPORT, versionCloudAirport);
         GetAirportListService.enqueueWork(context, intent);
+
     }
 
     static void enqueueWork(Context context, Intent work) {
