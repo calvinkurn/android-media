@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.Config;
+import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
@@ -35,7 +36,6 @@ public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAd
     private TopAdsPresenter presenter;
     private RecyclerView recyclerView;
     private AdsItemAdapter adapter;
-    private TypedArray styledAttributes;
     private TopAdsListener adsListener;
     private TopAdsItemClickListener adsItemClickListener;
 
@@ -58,7 +58,6 @@ public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAd
     }
 
     private void inflateView(Context context, AttributeSet attrs, int defStyle) {
-        styledAttributes = context.obtainStyledAttributes(attrs, R.styleable.TopAdsView, defStyle, 0);
         inflate(context, R.layout.layout_ads_carousel, this);
         adapter = new AdsItemAdapter(getContext());
         adapter.setItemClickListener(this);
@@ -86,9 +85,8 @@ public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAd
     public void initPresenter() {
         presenter = new TopAdsPresenter(getContext());
         presenter.attachView(this);
-        presenter.setMaxItems(styledAttributes.getInteger(R.styleable.TopAdsView_items, 15));
-        String ep = styledAttributes.getString(R.styleable.TopAdsView_ep);
-        presenter.setEndpoinParam((ep == null ? "0" : ep));
+        presenter.setMaxItems(15);
+        presenter.setEndpoinParam("1");
         setDisplayMode(DisplayMode.GRID);
     }
 
