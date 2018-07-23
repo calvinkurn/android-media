@@ -73,6 +73,7 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
     private FrameLayout layoutWarning;
     private TextViewCompat tvWarning;
     private ImageView imgShopBadge;
+    private TextView tvNoteCharCounter;
 
     private CartItemHolderData cartItemHolderData;
     private QuantityTextWatcher.QuantityTextwatcherListener quantityTextwatcherListener;
@@ -105,6 +106,7 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
         this.layoutWarning = itemView.findViewById(R.id.layout_warning);
         this.tvWarning = itemView.findViewById(R.id.tv_warning);
         this.imgShopBadge = itemView.findViewById(R.id.img_shop_badge);
+        this.tvNoteCharCounter = itemView.findViewById(R.id.tv_note_char_counter);
 
         etRemark.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -246,10 +248,12 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
         if (StringUtils.isBlank(data.getCartItemData().getUpdatedData().getRemark())
                 && !data.isEditableRemark()) {
             this.etRemark.setVisibility(View.GONE);
+            this.tvNoteCharCounter.setVisibility(View.GONE);
             this.tvLabelRemarkOption.setVisibility(View.VISIBLE);
             this.etRemark.setText("");
         } else {
             this.etRemark.setVisibility(View.VISIBLE);
+            this.tvNoteCharCounter.setVisibility(View.VISIBLE);
             this.tvLabelRemarkOption.setVisibility(View.GONE);
             this.etRemark.setText(data.getCartItemData().getUpdatedData().getRemark());
             this.etRemark.setSelection(etRemark.length());
@@ -370,6 +374,12 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void renderErrorFormItemValidation(CartItemHolderData data) {
+        String noteCounter = String.format("%d/%d karakter", data.getCartItemData().getUpdatedData().getRemark().length(),
+                data.getCartItemData().getUpdatedData().getMaxCharRemark());
+        tvNoteCharCounter.setText(noteCounter);
+        if (data.getCartItemData().getUpdatedData().getRemark().length() > 0) {
+            this.tvNoteCharCounter.setVisibility(View.VISIBLE);
+        }
         if (data.getErrorFormItemValidationType() == CartItemHolderData.ERROR_EMPTY) {
             this.tvErrorFormValidation.setText("");
             this.tvErrorFormValidation.setVisibility(View.GONE);
@@ -383,11 +393,13 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
                 }
                 this.tvErrorFormRemarkValidation.setVisibility(View.VISIBLE);
                 this.tvErrorFormRemarkValidation.setText(data.getErrorFormItemValidationMessage());
+                this.tvNoteCharCounter.setVisibility(View.GONE);
             } else {
                 this.tvErrorFormValidation.setText(data.getErrorFormItemValidationMessage());
                 this.tvErrorFormValidation.setVisibility(View.VISIBLE);
                 this.tvErrorFormRemarkValidation.setVisibility(View.GONE);
                 this.tvErrorFormRemarkValidation.setText("");
+                this.tvNoteCharCounter.setVisibility(View.VISIBLE);
             }
         }
         actionListener.onCartItemAfterErrorChecked();
