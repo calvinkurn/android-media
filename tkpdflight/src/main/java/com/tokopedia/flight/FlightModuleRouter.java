@@ -69,4 +69,6 @@ public interface FlightModuleRouter {
     Intent getPromoDetailIntent(Context context, String slug);
 
     File writeImage(String filePath, int qualityProcentage);
+
+    Intent getOrderListIntent(Context context);
 }
