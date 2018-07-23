@@ -28,9 +28,7 @@ class BankViewHolder(val v: View, val listener: BankListener) :
         if (element != null) {
             bankName.text = MethodChecker.fromHtml(element.bankName)
 
-            if (element.isSelected) {
-                bankRadio.isChecked = true
-            }
+            bankRadio.isChecked = element.isSelected
 
             container.setOnClickListener { listener.onBankSelected(adapterPosition, element) }
             bankRadio.setOnClickListener { listener.onBankSelected(adapterPosition, element) }

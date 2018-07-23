@@ -110,7 +110,6 @@ class ChooseBankFragment : ChooseBankContract.View, BankListener, SearchInputVie
     }
 
     override fun onSuccessGetBankList(listBank: ArrayList<BankViewModel>) {
-        adapter.hideSearchNotFound()
         adapter.setList(listBank)
 
         setSelectedBank()
@@ -120,7 +119,7 @@ class ChooseBankFragment : ChooseBankContract.View, BankListener, SearchInputVie
         if (activity != null
                 && activity?.intent != null
                 && !activity?.intent!!.getStringExtra(ChooseBankActivity.PARAM_BANK_ID)
-                        .isNullOrEmpty()){
+                        .isNullOrEmpty()) {
             val bankId = activity?.intent!!.getStringExtra(ChooseBankActivity.PARAM_BANK_ID)
             adapter.setSelectedFromBankId(bankId)
         }
@@ -138,15 +137,13 @@ class ChooseBankFragment : ChooseBankContract.View, BankListener, SearchInputVie
         if (query.isEmpty()) {
             KeyboardHandler.DropKeyboard(context, view)
             presenter.getBankList()
-        } else if (query.length > MIN_CHAR_SEARCH) {
+        } else if (query.length >= MIN_CHAR_SEARCH) {
             presenter.searchBank(query)
         }
     }
 
     override fun onSuccessSearchBank(list: ArrayList<BankViewModel>) {
-        adapter.hideSearchNotFound()
         adapter.setList(list)
-
     }
 
     override fun onEmptySearchBank() {
