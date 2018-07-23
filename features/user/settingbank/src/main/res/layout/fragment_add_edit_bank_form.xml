@@ -13,7 +13,7 @@
         android:layout_marginLeft="@dimen/dp_8"
         android:layout_marginRight="@dimen/dp_8"
         android:fontFamily="sans-serif"
-        android:gravity="center_horizontal"
+        android:gravity="left"
         android:lineSpacingExtra="6sp"
         android:text="@string/add_bank_prompt"
         android:textColor="@color/black_38"
@@ -32,15 +32,16 @@
         android:hint="@string/bank_name_title"
         app:layout_constraintTop_toBottomOf="@id/prompt_text">
 
-        <com.tokopedia.design.component.EditTextCompat
-            android:id="@+id/bank_name_edit_text"
+        <EditText
+            android:id="@+id/bank_name_et"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clickable="false"
             android:focusable="false"
             android:singleLine="true"
             android:textColor="@color/font_black_primary_70"
-            app:drawableRightCompat="@drawable/ic_arrow_down_grey"/>
+            android:drawableRight="@drawable/ic_arrow_down_grey"
+           />
     </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
     <com.tokopedia.design.text.TkpdHintTextInputLayout
@@ -80,7 +81,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ "
-            android:hint="@string/account_name_title"
             android:inputType="textCapSentences"
             android:singleLine="true"
             android:textColor="@color/font_black_primary_70"/>

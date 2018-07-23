@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.core.network.NetworkErrorHelper
+import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.TkpdHintTextInputLayout
 import com.tokopedia.settingbank.R
 import com.tokopedia.settingbank.addeditaccount.analytics.AddEditBankAnalytics
@@ -40,6 +41,8 @@ class AddEditBankFormFragment : AddEditBankContract.View,
     lateinit var presenter: AddEditBankPresenter
     lateinit var progressDialog: TkpdProgressDialog
     lateinit var bottomInfoDialog: BottomSheetDialog
+    lateinit var alertDialog: Dialog
+
     private var bankFormModel = BankFormModel()
 
     override fun getScreenName(): String {
@@ -66,15 +69,47 @@ class AddEditBankFormFragment : AddEditBankContract.View,
         setMode()
 
         submit_button.setOnClickListener({
+            showConfirmationDialog()
+        })
+
+        bank_name_et.setOnClickListener({
+            goToAddBank()
+        })
+    }
+
+    private fun showConfirmationDialog() {
+
+        if (!::alertDialog.isInitialized) {
+            alertDialog = Dialog(activity, Dialog.Type.PROMINANCE)
+        }
+
+        alertDialog.setTitle(getString(R.string.add_bank_account_prompt_title))
+        alertDialog.setDesc(composeMakeMainDescription())
+        alertDialog.setBtnCancel(getString(R.string.edit))
+        alertDialog.setBtnOk(getString(R.string.yes_correct))
+        alertDialog.setOnCancelClickListener({ alertDialog.dismiss() })
+        alertDialog.setOnOkClickListener({
             setupBankFormModel()
             if (!bankFormModel.status.isBlank()) {
                 presenter.validateBank(bankFormModel)
             }
+            alertDialog.dismiss()
         })
 
-        bank_name_edit_text.setOnClickListener({
-            goToAddBank()
-        })
+        alertDialog.show()
+    }
+
+    private fun composeMakeMainDescription(): String {
+        return if (bankFormModel.status == BankFormModel.Companion.STATUS_ADD) {
+            String.format("%s %s %s %s" +
+                    " %s.",
+                    getString(R.string.you_will_add_account),
+                    bank_name_et.text.toString(),
+                    account_number_edit_text.text.toString(),
+                    getString(R.string.under_name),
+                    account_name_et.text.toString())
+        } else ""
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater) {
@@ -98,15 +133,6 @@ class AddEditBankFormFragment : AddEditBankContract.View,
                     .bottom_sheet_info_add_bank_account, null)
             bottomInfoDialog.setContentView(bottomLayout)
 
-//            bottomInfoDialog.setOnShowListener(DialogInterface.OnShowListener { dialog: DialogInterface? ->
-//                run {
-//                    val d = dialog as BottomSheetDialog
-//                    val bottomSheet = d.findViewById<FrameLayout>(android.support.design.R.id
-//                            .design_bottom_sheet) as FrameLayout
-//                    BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
-//                }
-//            })
-
             val bankAccountImage: ImageView = bottomLayout.findViewById(R.id.bank_account_image)
             ImageHandler.LoadImage(bankAccountImage, SettingBankUrl.Companion.IMAGE_BOTTOM_DIALOG_ADD_ACCOUNT)
 
@@ -120,9 +146,9 @@ class AddEditBankFormFragment : AddEditBankContract.View,
 
 
     private fun goToAddBank() {
-        val intentChooseBank : Intent = if(bankFormModel.bankId.isEmpty()) {
+        val intentChooseBank: Intent = if (bankFormModel.bankId.isEmpty()) {
             ChooseBankActivity.createIntentChooseBank(activity!!)
-        }else{
+        } else {
             ChooseBankActivity.createIntentChooseBank(activity!!,
                     bankFormModel.bankId)
         }
@@ -144,7 +170,7 @@ class AddEditBankFormFragment : AddEditBankContract.View,
                     .PARAM_DATA)
             account_name_et.setText(bankFormModel.accountName)
             account_number_edit_text.setText(bankFormModel.accountNumber)
-            bank_name_edit_text.setText(bankFormModel.bankName)
+            bank_name_et.setText(bankFormModel.bankName)
             checkIsValidForm()
         }
     }
@@ -153,7 +179,7 @@ class AddEditBankFormFragment : AddEditBankContract.View,
     private fun setupBankFormModel() {
         bankFormModel.accountName = account_name_et.text.toString()
         bankFormModel.accountNumber = account_number_edit_text.text.toString()
-        bankFormModel.bankName = bank_name_edit_text.text.toString()
+        bankFormModel.bankName = bank_name_et.text.toString()
     }
 
     override fun onResume() {
@@ -219,7 +245,7 @@ class AddEditBankFormFragment : AddEditBankContract.View,
     private fun checkIsValidForm() {
         val accountName = account_name_et.text.toString().trim()
         val accountNumber = account_number_edit_text.text.toString().trim()
-        val bankName = bank_name_edit_text.text.toString().trim()
+        val bankName = bank_name_et.text.toString().trim()
 
         if (presenter.isValidForm(accountName, accountNumber, bankName)) {
             enableSubmitButton()
@@ -322,7 +348,7 @@ class AddEditBankFormFragment : AddEditBankContract.View,
                     .PARAM_RESULT_DATA)
             bankFormModel.bankId = selectedModel.bankId!!
             bankFormModel.bankName = selectedModel.bankName!!
-            bank_name_edit_text.setText(selectedModel.bankName)
+            bank_name_et.setText(selectedModel.bankName)
             checkIsValidForm()
         }
     }

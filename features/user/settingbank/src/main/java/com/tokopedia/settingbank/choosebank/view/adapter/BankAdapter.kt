@@ -20,7 +20,7 @@ class BankAdapter(adapterTypeFactory: BankTypeFactoryImpl,
             (visitable as BankViewModel).isSelected = false
         }
         (this.visitables[adapterPosition] as BankViewModel).isSelected = true
-        this.notifyItemChanged(adapterPosition)
+        this.notifyDataSetChanged()
     }
 
     fun setList(listBank: ArrayList<BankViewModel>) {

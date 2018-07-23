@@ -40,4 +40,9 @@
     <string name="label_edit_pickup">Ubah Gerai</string>
     <string name="empty_search_result_default">Pencarian tidak ditemukan</string>
 
+    <string name="edit">Ubah</string>
+    <string name="yes_correct">Ya, Benar</string>
+
+
+
 </resources>

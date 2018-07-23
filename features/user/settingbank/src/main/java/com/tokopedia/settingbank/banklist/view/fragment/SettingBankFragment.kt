@@ -168,6 +168,9 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
     override fun onSuccessSetDefault(adapterPosition: Int) {
         adapter.changeMain(adapterPosition)
         linearLayoutManager.scrollToPosition(0)
+
+        NetworkErrorHelper.showSnackbar(activity, getString(R.string.success_set_main_bank_account))
+
     }
 
     override fun onErrorSetDefaultBank(errorMessage: String) {
@@ -180,7 +183,7 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
 
     private fun composeMakeMainDescription(element: BankAccountViewModel?): String {
         return if (element != null) {
-            String.format("%s %s %s %s %s %s",
+            String.format("%s %s %s %s %s %s.",
                     getString(R.string.you_will_make_account),
                     element.bankName,
                     element.accountNumber,
@@ -230,7 +233,7 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
 
     private fun composeDeleteDescription(element: BankAccountViewModel?): String {
         return if (element != null) {
-            String.format("%s %s %s %s %s",
+            String.format("%s %s %s %s %s.",
                     getString(R.string.you_will_delete),
                     element.bankName,
                     element.accountNumber,
@@ -251,6 +254,8 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
         } else {
             onEmptyList(true, "")
         }
+
+        NetworkErrorHelper.showSnackbar(activity, getString(R.string.success_delete_bank_account))
     }
 
     override fun onErrorDeleteAccount(errorMessage: String) {
@@ -309,7 +314,13 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (resultCode == Activity.RESULT_OK) {
+        if (activity != null && resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                REQUEST_ADD_BANK -> NetworkErrorHelper.showSnackbar(activity!!,
+                        getString(R.string.success_add_bank_account))
+                REQUEST_EDIT_BANK ->  NetworkErrorHelper.showSnackbar(activity!!,
+                        getString(R.string.success_edit_bank_account))
+            }
             getBankList()
         }
 
