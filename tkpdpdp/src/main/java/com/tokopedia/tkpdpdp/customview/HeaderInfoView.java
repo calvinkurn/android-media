@@ -2,6 +2,7 @@ package com.tokopedia.tkpdpdp.customview;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Paint;
 import android.os.Build;
@@ -18,6 +19,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.network.entity.variant.Campaign;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
@@ -266,6 +269,10 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
+                Activity activity = ((Activity) context);
+                Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext()).getHomeIntent(activity);
+                activity.startActivity(intent);
+                activity.finish();
             }
         });
         dialog.show();
