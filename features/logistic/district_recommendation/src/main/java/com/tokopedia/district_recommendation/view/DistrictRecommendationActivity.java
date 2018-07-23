@@ -12,7 +12,6 @@ import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.district_recommendation.R;
 import com.tokopedia.district_recommendation.domain.model.Token;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
-import com.tokopedia.transactionanalytics.listener.ITransactionAnalyticsDistrictRecommendation;
 
 import static com.tokopedia.district_recommendation.view.DistrictRecommendationContract.Constant.ARGUMENT_DATA_TOKEN;
 import static com.tokopedia.district_recommendation.view.DistrictRecommendationContract.Constant.ARGUMENT_IS_FROM_MARKETPLACE_CART;
@@ -22,7 +21,7 @@ public class DistrictRecommendationActivity extends BasePresenterActivity implem
 
     private CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
 
-    public static Intent createInstance(Activity activity, Token token) {
+    public static Intent createInstanceIntent(Activity activity, Token token) {
         Intent intent = new Intent(activity, DistrictRecommendationActivity.class);
         intent.putExtra(ARGUMENT_DATA_TOKEN, token);
         intent.putExtra(ARGUMENT_IS_FROM_MARKETPLACE_CART, false);

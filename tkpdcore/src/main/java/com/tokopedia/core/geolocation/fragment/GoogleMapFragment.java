@@ -39,7 +39,7 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.geolocation.adapter.SuggestionLocationAdapter;
 import com.tokopedia.core.geolocation.domain.IMapsRepository;
 import com.tokopedia.core.geolocation.listener.GoogleMapView;
-import com.tokopedia.transactionanalytics.listener.ITransactionAnalyticsGeoLocationPinPoint;
+import com.tokopedia.core.geolocation.listener.ITransactionAnalyticsGeoLocationPinPoint;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.geolocation.presenter.GoogleMapPresenter;
 import com.tokopedia.core.geolocation.presenter.GoogleMapPresenterImpl;

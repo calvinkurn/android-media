@@ -310,7 +310,7 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
                 locationPass.setLongitude(lon);
                 locationPass.setGeneratedAddress(orderData.getAddress().getGeoLocation(context));
             }
-            Intent intent = GeolocationActivity.createInstance(context, locationPass);
+            Intent intent = GeolocationActivity.createInstanceIntent(context, locationPass);
             viewListener.navigateToActivityRequest(intent,
                     AddToCartActivity.REQUEST_CHOOSE_LOCATION);
         } else {

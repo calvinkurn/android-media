@@ -15,7 +15,7 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.geolocation.fragment.GoogleMapFragment;
 import com.tokopedia.core.geolocation.listener.GeolocationView;
-import com.tokopedia.transactionanalytics.listener.ITransactionAnalyticsGeoLocationPinPoint;
+import com.tokopedia.core.geolocation.listener.ITransactionAnalyticsGeoLocationPinPoint;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.geolocation.presenter.GeolocationPresenter;
 import com.tokopedia.core.geolocation.presenter.GeolocationPresenterImpl;
@@ -43,7 +43,15 @@ public class GeolocationActivity extends BasePresenterActivity<GeolocationPresen
     private Uri uriData;
     private CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
 
-    public static Intent createInstance(@NonNull Context context, @Nullable LocationPass locationPass) {
+//    public static Intent createInstance(@NonNull Context context, @Nullable LocationPass locationPass) {
+//        Intent intent = new Intent(context, GeolocationActivity.class);
+//        Bundle bundle = new Bundle();
+//        bundle.putParcelable(EXTRA_EXISTING_LOCATION, locationPass);
+//        intent.putExtras(bundle);
+//        return intent;
+//    }
+
+    public static Intent createInstanceIntent(@NonNull Context context, @Nullable LocationPass locationPass) {
         Intent intent = new Intent(context, GeolocationActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_EXISTING_LOCATION, locationPass);

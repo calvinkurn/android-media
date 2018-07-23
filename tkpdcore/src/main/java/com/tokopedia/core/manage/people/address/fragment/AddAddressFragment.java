@@ -518,7 +518,7 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
                         getActivity(), locationPass), REQUEST_CODE
                 );
             } else {
-                startActivityForResult(GeolocationActivity.createInstance(
+                startActivityForResult(GeolocationActivity.createInstanceIntent(
                         getActivity(), locationPass), REQUEST_CODE
                 );
             }

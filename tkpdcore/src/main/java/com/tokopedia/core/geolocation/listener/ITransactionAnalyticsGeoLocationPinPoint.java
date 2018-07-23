@@ -1,4 +1,4 @@
-package com.tokopedia.transactionanalytics.listener;
+package com.tokopedia.core.geolocation.listener;
 
 /**
  * @author anggaprasetiyo on 20/07/18.

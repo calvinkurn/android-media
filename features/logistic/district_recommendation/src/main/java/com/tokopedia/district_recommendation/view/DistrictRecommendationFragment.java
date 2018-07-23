@@ -26,7 +26,6 @@ import com.tokopedia.district_recommendation.di.DistrictRecommendationComponent;
 import com.tokopedia.district_recommendation.domain.mapper.AddressMapper;
 import com.tokopedia.district_recommendation.domain.model.Address;
 import com.tokopedia.district_recommendation.domain.model.Token;
-import com.tokopedia.transactionanalytics.listener.ITransactionAnalyticsDistrictRecommendation;
 
 import java.util.concurrent.TimeUnit;
 
