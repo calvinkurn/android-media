@@ -23,6 +23,7 @@ class BaseProductEditFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        llCategoryCatalog.setOnClickListener { startActivity(Intent(activity, ProductEditCategoryActivity::class.java)) }
         labelViewNameProduct.setOnClickListener { startActivity(Intent(activity, ProductEditNameActivity::class.java)) }
         labelViewPriceProduct.setOnClickListener { startActivity(Intent(activity, ProductEditPriceActivity::class.java)) }
         labelViewDescriptionProduct.setOnClickListener { startActivity(Intent(activity, ProductEditDescriptionActivity::class.java)) }

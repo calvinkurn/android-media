@@ -9,6 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
         <android.support.v7.widget.AppCompatTextView
             style="@style/TextView.TitleBig.Bold"
             android:text="@string/product_label_what_do_you_sell"
@@ -82,30 +83,6 @@
                 android:paddingRight="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_8"/>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@drawable/line_divider"
-                android:layout_marginLeft="@dimen/dp_16" />
-
-            <android.support.v7.widget.AppCompatTextView
-                style="@style/TextView.TitleBig.Bold"
-                android:text="@string/product_label_choose_product_catalog"
-                android:layout_marginTop="@dimen/dp_24"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"/>
-
-            <com.tokopedia.design.label.LabelView
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_72"
-                android:clickable="true"
-                android:foreground="?android:attr/selectableItemBackground"
-                app:lv_content_color="@color/tkpd_main_green"
-                app:lv_title="@string/product_label_catalog"
-                app:lv_content="@string/label_choose"
-                android:paddingLeft="@dimen/dp_16"
-                android:paddingRight="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_8"/>
         </LinearLayout>
     </LinearLayout>
 

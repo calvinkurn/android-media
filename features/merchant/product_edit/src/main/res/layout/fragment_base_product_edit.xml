@@ -57,6 +57,26 @@
                     style="@style/TextView.Micro.BlackSecondary"
                     android:text="Anker Bluetooth Speaker" />
 
+                <LinearLayout
+                    android:id="@+id/llCategoryCatalog"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_check"/>
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_weight="1"
+                        style="@style/TextView.Small.Green"
+                        android:text="@string/label_edit" />
+
+                </LinearLayout>
+
             </LinearLayout>
         </LinearLayout>
 

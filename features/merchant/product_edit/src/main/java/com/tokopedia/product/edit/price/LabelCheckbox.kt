@@ -21,8 +21,7 @@ class LabelCheckbox : BaseCustomView {
     private lateinit var checkboxTextView: TextView
     private lateinit var checkboxStatus: CheckBox
     private lateinit var summaryTextView: TextView
-    
-    private var listener: CompoundButton.OnCheckedChangeListener? = null
+
     private var titleText: String? = null
     private var checkboxEnable: Boolean = false
     private var titleTextSize: Float = 0.toFloat()
@@ -95,11 +94,6 @@ class LabelCheckbox : BaseCustomView {
         if(subTitleText!=null)
             setSubTitle(subTitleText!!)
         checkboxStatus.isEnabled = checkboxEnable
-        checkboxStatus.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (listener != null) {
-                listener?.onCheckedChanged(buttonView, isChecked)
-            }
-        }
         this.rootView.isClickable = true
         this.rootView.setOnClickListener { checkboxStatus.isChecked = !checkboxStatus.isChecked }
         invalidate()
@@ -114,37 +108,12 @@ class LabelCheckbox : BaseCustomView {
         checkboxStatus = view.findViewById(R.id.checkbox_status)
     }
 
-    fun setSubTitle(summaryText: String) {
+    private fun setSubTitle(summaryText: String) {
         if (TextUtils.isEmpty(summaryText)) {
             summaryTextView.visibility = View.GONE
         } else {
             summaryTextView.text = summaryText
             summaryTextView.visibility = View.VISIBLE
         }
-    }
-
-    fun setcheckboxStatusText(textTitle: String) {
-        checkboxTextView.text = textTitle
-        invalidate()
-        requestLayout()
-    }
-
-    fun setCheckedNoListener(isChecked: Boolean) {
-        val tempListener = this.listener
-        this.listener = null
-        checkboxStatus.isChecked = isChecked
-        this.listener = tempListener
-        invalidate()
-        requestLayout()
-    }
-
-    fun setCheckboxEnabled(enabled: Boolean) {
-        if (checkboxStatus.isEnabled != enabled) {
-            checkboxStatus.isEnabled = enabled
-        }
-    }
-
-    fun setListenerValue(listener: CompoundButton.OnCheckedChangeListener) {
-        this.listener = listener
     }
 }

@@ -9,6 +9,7 @@
     <string name="label_add">Tambah</string>
     <string name="label_delete">Delete</string>
     <string name="label_cancel">Batal</string>
+    <string name="label_edit">Ubah</string>
     <string name="label_choose">Pilih</string>
     <string name="label_next">Selanjutnya</string>
     <string name="label_always_available">Selalu Tersedia</string>
@@ -45,11 +46,14 @@
     <string name="product_url_video">URL Video</string>
     <string name="product_error_no_video_url_name">Url Video harus diisi</string>
 
-    <string name="product_currency_value_idr">1</string>
-    <string name="product_currency_value_usd">2</string>
-
     <string name="product_grosir_not_available_if_has_variant">Harga grosir tidak berlaku jika memiliki varian produk.</string>
 
+    <string name="product_label_rupiah">Rp</string>
+    <string name="product_label_usd">US$</string>
+    <string name="product_label_gram">Gram</string>
+    <string name="product_label_kilogram">Kilogram</string>
+    <string name="product_label_day">Hari</string>
+    <string name="product_label_week">Minggu</string>
     <string name="product_label_what_do_you_sell">Apa yang Anda jual?</string>
     <string name="product_label_choose_product_category">Pilih Kategori Produk</string>
     <string name="product_label_category_recommendation">Rekomendasi Kategori</string>
@@ -59,6 +63,7 @@
     <string name="product_label_recommendation_price">Rekomendasi Harga Pasar Rp 1.150.000. Gunakan</string>
     <string name="product_label_product_price">Harga Produk</string>
     <string name="product_label_wholesale_price">Harga Grosir</string>
+    <string name="product_label_currency">Mata Uang</string>
     <string name="product_label_video_product">Video Produk</string>
     <string name="product_label_additional_info">Info Lanjutan</string>
     <string name="product_label_minimum_buy">Pemesanan Minimum</string>

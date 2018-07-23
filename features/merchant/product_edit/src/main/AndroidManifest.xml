@@ -14,6 +14,11 @@
             android:theme="@style/Theme.White"/>
 
         <activity
+            android:name=".view.activity.ProductEditCategoryActivity"
+            android:label="@string/product_label_product_category"
+            android:theme="@style/Theme.White"/>
+
+        <activity
             android:name=".view.activity.ProductEditNameActivity"
             android:label="@string/product_label_product_name"
             android:theme="@style/Theme.White"/>
