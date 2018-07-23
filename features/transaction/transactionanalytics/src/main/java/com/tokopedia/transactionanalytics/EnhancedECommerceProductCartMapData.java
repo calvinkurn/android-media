@@ -25,6 +25,7 @@ public class EnhancedECommerceProductCartMapData {
     public static final String KEY_LIST = "list";
     public static final String KEY_DIMENSION_38 = "dimension38";
     public static final String KEY_DIMENSION_40 = "dimension40";
+    public static final String KEY_DIMENSION_45 = "dimension45";
     public static final String KEY_ATTRIBUTION = "attribution";
 
     public static final String DEFAULT_VALUE_NONE_OTHER = "none / other";
@@ -103,5 +104,6 @@ public class EnhancedECommerceProductCartMapData {
 
     public void setCartId(String cartId) {
         Product.put(KEY_CART_ID, cartId);
+        Product.put(KEY_DIMENSION_45, cartId);
     }
 }

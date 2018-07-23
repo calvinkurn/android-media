@@ -238,6 +238,11 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel> {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if(messageItem == null){
+                    return;
+                }
+
                 if (presenter.isInActionMode()){
                     if (messageItem.isChecked()) {
                         setReadState();
@@ -247,7 +252,8 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel> {
                         presenter.onSelected(position);
                     }
                 }else {
-                    if (!messageItem.getLabel().equals(ADMIN)
+                    if (messageItem.getLabel() != null
+                            && !messageItem.getLabel().equals(ADMIN)
                             && !messageItem.getLabel().equals(OFFICIAL)
                             && messageItem.getSenderId() != null) {
                         if (messageItem.getLabel().equals(SELLER)) {

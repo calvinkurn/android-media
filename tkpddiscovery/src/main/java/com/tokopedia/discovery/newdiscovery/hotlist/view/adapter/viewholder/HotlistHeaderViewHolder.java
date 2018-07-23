@@ -94,7 +94,12 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
     @Override
     public void bind(HotlistHeaderViewModel element) {
         hasTagAdapter.setData(element.getHashTags());
-        productCount.setText(String.format(context.getString(R.string.product_count), decimalFormat.format(element.getTotalData())));
+        if (element.getTotalData() == 0) {
+            productCount.setVisibility(View.GONE);
+        } else {
+            productCount.setVisibility(View.VISIBLE);
+            productCount.setText(String.format(context.getString(R.string.product_count), decimalFormat.format(element.getTotalData())));
+        }
         if (element.getHotlistPromo() != null) {
             hotlistPromoView.setVisibility(View.VISIBLE);
             renderPromoView(element.getHotlistTitle(), element.getHotlistPromo());

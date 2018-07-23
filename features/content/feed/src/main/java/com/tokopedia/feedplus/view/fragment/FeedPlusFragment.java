@@ -671,6 +671,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
         }
     }
 
+    private void forceLoadFirstPage() {
+        loadData(true);
+    }
+
     @Override
     public void onProductItemClicked(int position, Product product) {
         goToProductDetail(product.getId(),
@@ -747,6 +751,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
             firstCursor = "";
         if (getUserVisibleHint() && presenter != null) {
             loadData(getUserVisibleHint());
+        }
+        if (!hasFeed()) {
+            forceLoadFirstPage();
         }
     }
 
