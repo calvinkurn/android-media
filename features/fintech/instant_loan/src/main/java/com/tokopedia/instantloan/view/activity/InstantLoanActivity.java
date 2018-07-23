@@ -16,6 +16,7 @@ import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.ApplinkConst;
@@ -31,7 +32,6 @@ import com.tokopedia.instantloan.R;
 import com.tokopedia.instantloan.data.model.response.BannerEntity;
 import com.tokopedia.instantloan.ddcollector.DDCollectorManager;
 import com.tokopedia.instantloan.di.component.InstantLoanComponent;
-import com.tokopedia.instantloan.network.InstantLoanUrl;
 import com.tokopedia.instantloan.view.adapter.BannerPagerAdapter;
 import com.tokopedia.instantloan.view.adapter.InstantLoanPagerAdapter;
 import com.tokopedia.instantloan.view.contractor.BannerContractor;
@@ -59,18 +59,23 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
     private ViewPager mBannerPager;
     private FloatingActionButton mBtnNextBanner, mBtnPreviousBanner;
 
-    public static String TAB_NAME = "tab_name";
+    public static final String TAB_NAME = "tab_name";
+    private static final String TAB_INSTAN = "instan";
+    private static final String TAB_TANPA_AGUNAN = "tanpaagunan";
+    private static final String TAB_AGUNAN = "agunan";
 
     private TabLayout tabLayout;
-    private HeightWrappingViewPager viewPager;
+    private HeightWrappingViewPager heightWrappingViewPager;
+    private int activeTabPosition = 0;
+    private boolean instantLoanEnabled = true;
 
     public static Intent createIntent(Context context) {
         return new Intent(context, InstantLoanActivity.class);
     }
 
 
-    @Deeplink({ApplinkConst.INSTANT_LOAN})
-    public static Intent getInstantLoanCallingIntent(Context context, Bundle bundle){
+    @DeepLink({ApplinkConst.INSTANT_LOAN, ApplinkConst.INSTANT_LOAN_TAB})
+    public static Intent getInstantLoanCallingIntent(Context context, Bundle bundle) {
         Intent intent = new Intent(context, InstantLoanActivity.class);
         intent.putExtras(bundle);
         return intent;
@@ -93,8 +98,7 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
 
     private void loadSection() {
 
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
-        if (remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SHOW_INSTANT_LOAN, true)) {
+        if (instantLoanEnabled) {
             populateThreeTabItem();
         } else {
             populateTwoTabItem();
@@ -102,8 +106,8 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
         InstantLoanPagerAdapter instantLoanPagerAdapter =
                 new InstantLoanPagerAdapter(getSupportFragmentManager());
         instantLoanPagerAdapter.setData(instantLoanItemList);
-        viewPager.setAdapter(instantLoanPagerAdapter);
-        tabLayout.setupWithViewPager(viewPager);
+        heightWrappingViewPager.setAdapter(instantLoanPagerAdapter);
+        tabLayout.setupWithViewPager(heightWrappingViewPager);
         setActiveTab();
     }
 
@@ -126,12 +130,12 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
 
 
     private void setActiveTab() {
-        viewPager.getViewTreeObserver().addOnGlobalLayoutListener(
+        heightWrappingViewPager.getViewTreeObserver().addOnGlobalLayoutListener(
                 new ViewTreeObserver.OnGlobalLayoutListener() {
                     @Override
                     public void onGlobalLayout() {
-                        viewPager.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                        viewPager.setCurrentItem(0);
+                        heightWrappingViewPager.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                        heightWrappingViewPager.setCurrentItem(activeTabPosition);
                     }
                 });
     }
@@ -152,6 +156,53 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
     protected void onCreate(Bundle savedInstanceState) {
         NetworkClient.init(this);
         super.onCreate(savedInstanceState);
+
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
+        instantLoanEnabled = remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SHOW_INSTANT_LOAN, true);
+
+        if (getIntent() != null && getIntent().getExtras() != null) {
+            Bundle bundle = getIntent().getExtras();
+            String tabName = bundle.getString(TAB_NAME);
+
+            if (tabName != null) {
+                switch (tabName) {
+                    case TAB_INSTAN:
+                        if (instantLoanEnabled) {
+                            activeTabPosition = 0;
+                        } else {
+                            finish();
+                        }
+
+                        break;
+
+                    case TAB_TANPA_AGUNAN:
+                        if (instantLoanEnabled) {
+                            activeTabPosition = 1;
+                        } else {
+                            activeTabPosition = 0;
+                        }
+
+                        break;
+                    case TAB_AGUNAN:
+                        if (instantLoanEnabled) {
+                            activeTabPosition = 2;
+                        } else {
+                            activeTabPosition = 1;
+                        }
+
+                        break;
+                    default:
+                        activeTabPosition = 0;
+                }
+            }
+        } else {
+            activeTabPosition = 0;
+        }
+
+        TabLayout.Tab tab = tabLayout.getTabAt(activeTabPosition);
+        if (tab != null) {
+            tab.select();
+        }
     }
 
     @Override
@@ -237,8 +288,8 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
     }
 
     private void initializeView() {
-        tabLayout = (TabLayout) findViewById(R.id.tabs);
-        viewPager = findViewById(R.id.pager);
+        tabLayout = findViewById(R.id.tabs);
+        heightWrappingViewPager = findViewById(R.id.pager);
         mBtnNextBanner = findViewById(R.id.button_next);
         mBtnPreviousBanner = findViewById(R.id.button_previous);
     }
