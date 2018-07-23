@@ -25,7 +25,7 @@ public class TrainHomepageCache {
     private final String DEFAULT_ORIGIN_ISLAND_NAME = "";
     private final String DEFAULT_DESTINATION_STATION_CODE = "BD";
     private final String DEFAULT_DESTINATION_CITY_NAME = "Bandung";
-    private final String DEFAULT_DESTINATION_ISLAND_NAME = "";
+    private final String DEFAULT_DESTINATION_ISLAND_NAME = "Jawa";
     private final int DEFAULT_NUM_OF_ADULT_PASSENGER = 1;
     private final int DEFAULT_NUM_OF_INFANT_PASSENGER = 0;
     private final boolean DEFAULT_IS_ONE_WAY = true;

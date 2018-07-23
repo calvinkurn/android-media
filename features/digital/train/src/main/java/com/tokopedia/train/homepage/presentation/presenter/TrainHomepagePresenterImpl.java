@@ -262,7 +262,7 @@ public class TrainHomepagePresenterImpl extends BaseDaggerPresenter<TrainHomepag
             getView().showOriginAndDestinationShouldNotSameError(R.string.train_homepage_origin_destination_should_not_same_error_message);
             isValid = false;
         } else if (!viewModel.getDestinationStation().getIslandName()
-                .equals(viewModel.getOriginStation().getIslandName())) {
+                .equalsIgnoreCase(viewModel.getOriginStation().getIslandName())) {
             getView().showOriginAndDestinationIslandShouldBeTheSame(R.string.train_homepage_origin_destination_island_should_be_the_same_error_message);
             isValid = false;
         }
