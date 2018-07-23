@@ -91,6 +91,8 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
     private static final int REQUEST_CODE_LOYALTY = 200;
     public static final int DEFAULT_IS_COUPON_ZERO = 0;
     public static final int DEFAULT_IS_COUPON_ONE = 1;
+    private static final String ORDER_CATEGORY = "orderCategory";
+
     @Inject
     FlightBookingReviewPresenter flightBookingReviewPresenter;
     @Inject
@@ -673,7 +675,8 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
             taskStackBuilder.addNextIntent(intent);
         }
         Intent homepageFlight = FlightDashboardActivity.getCallingIntent(getActivity());
-        Intent ordersFlight = FlightOrderListActivity.getCallingIntent(getActivity());
+        Intent ordersFlight = ((FlightModuleRouter)getActivity().getApplication()).getOrderListIntent(getActivity());
+        ordersFlight.putExtra(ORDER_CATEGORY,"FLIGHTS");
         taskStackBuilder.addNextIntent(homepageFlight);
         taskStackBuilder.addNextIntent(ordersFlight);
         taskStackBuilder.startActivities();

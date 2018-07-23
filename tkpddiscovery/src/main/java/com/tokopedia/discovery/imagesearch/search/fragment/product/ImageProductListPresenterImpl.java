@@ -2,27 +2,23 @@ package com.tokopedia.discovery.imagesearch.search.fragment.product;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.domain.DefaultSubscriber;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
+import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
 import com.tokopedia.discovery.newdiscovery.domain.model.SearchResultModel;
-import com.tokopedia.discovery.newdiscovery.domain.usecase.AddWishlistActionUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
-import com.tokopedia.discovery.newdiscovery.domain.usecase.RemoveWishlistActionUseCase;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.ProductViewModelHelper;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.listener.WishlistActionListener;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.subscriber.AddWishlistActionSubscriber;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.subscriber.RemoveWishlistActionSubscriber;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
-import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
+import com.tokopedia.wishlist.common.listener.WishListActionListener;
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,10 +35,10 @@ public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProd
     @Inject
     GetProductUseCase getProductUseCase;
     @Inject
-    AddWishlistActionUseCase addWishlistActionUseCase;
+    AddWishListUseCase addWishlistActionUseCase;
     @Inject
-    RemoveWishlistActionUseCase removeWishlistActionUseCase;
-    private WishlistActionListener wishlistActionListener;
+    RemoveWishListUseCase removeWishlistActionUseCase;
+    private WishListActionListener wishListActionListener;
     private Context context;
 
 
@@ -56,9 +52,9 @@ public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProd
 
     @Override
     public void attachView(ImageProductListFragmentView viewListener,
-                           WishlistActionListener wishlistActionListener) {
+                           WishListActionListener wishlistActionListener) {
         super.attachView(viewListener);
-        this.wishlistActionListener = wishlistActionListener;
+        this.wishListActionListener = wishlistActionListener;
     }
 
 
@@ -115,13 +111,13 @@ public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProd
 
 
     @Override
-    public void handleWishlistButtonClicked(ProductItem productItem, int adapterPosition) {
+    public void handleWishlistButtonClicked(ProductItem productItem) {
         if (getView().isUserHasLogin()) {
-            getView().disableWishlistButton(adapterPosition);
+            getView().disableWishlistButton(productItem.getProductID());
             if (productItem.isWishlisted()) {
-                removeWishlist(productItem.getProductID(), getView().getUserId(), adapterPosition);
+                removeWishlist(productItem.getProductID(), getView().getUserId());
             } else {
-                addWishlist(productItem.getProductID(), getView().getUserId(), adapterPosition);
+                addWishlist(productItem.getProductID(), getView().getUserId());
             }
         } else {
             launchLoginActivity(productItem.getProductID());
@@ -134,14 +130,12 @@ public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProd
         getView().launchLoginActivity(extras);
     }
 
-    private void addWishlist(String productId, String userId, int adapterPosition) {
-        addWishlistActionUseCase.execute(AddWishlistActionUseCase.generateParam(productId, userId),
-                new AddWishlistActionSubscriber(wishlistActionListener, adapterPosition));
+    private void addWishlist(String productId, String userId) {
+        addWishlistActionUseCase.createObservable(productId, userId, wishListActionListener);
     }
 
-    private void removeWishlist(String productId, String userId, int adapterPosition) {
-        removeWishlistActionUseCase.execute(RemoveWishlistActionUseCase.generateParam(productId, userId),
-                new RemoveWishlistActionSubscriber(wishlistActionListener, adapterPosition));
+    private void removeWishlist(String productId, String userId) {
+        removeWishlistActionUseCase.createObservable(productId, userId, wishListActionListener);
     }
 
     private void removeDefaultCategoryParam(RequestParams params) {
