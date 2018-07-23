@@ -109,9 +109,9 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
                                        int parentPosition) {
         multipleAddressItemData = itemData;
         renderHeader(itemData, listener, itemDataList, getAdapterPosition());
-        renderAddress(itemData, listener, itemDataList, parentPosition);
-        renderNotes(itemData);
+        renderAddress(itemData, listener, parentPosition);
         renderQuantity(itemData, getAdapterPosition());
+        renderNotes(itemData);
     }
 
     private void initTextWatcherDebouncer(CompositeSubscription compositeSubscription) {
@@ -283,14 +283,7 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
 
     private void renderAddress(MultipleAddressItemData itemData,
                                MultipleAddressItemAdapter.MultipleAddressItemAdapterListener listener,
-                               List<MultipleAddressItemData> itemDataList,
                                int parentPosition) {
-//        addressTitle.setText(itemData.getRecipientAddressModel().getAddressName());
-//        addressReceiverName.setText(itemData.getRecipientAddressModel().getRecipientName());
-//        address.setText(itemData.getRecipientAddressModel().getStreet()
-//                + ", " + itemData.getRecipientAddressModel().getCityName()
-//                + ", " + itemData.getRecipientAddressModel().getProvinceName()
-//                + ", " + itemData.getRecipientAddressModel().getRecipientPhoneNumber());
         pseudoEditButton.setVisibility(View.GONE);
         tvChangeRecipientAddress.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -301,9 +294,6 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
         });
 
         addressTitle.setVisibility(View.GONE);
-//        tvRecipientPhone.setVisibility(View.GONE);
-//        tvChangeAddress.setVisibility(View.GONE);
-//        tvAddressStatus.setVisibility(View.GONE);
         String addressName = itemData.getRecipientAddressModel().getAddressName();
         String recipientName = itemData.getRecipientAddressModel().getRecipientName();
         addressName = " (" + addressName + ")";
@@ -376,7 +366,16 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
             tvBtnShowNotesForSeller.setVisibility(View.GONE);
         }
 
-        etNotesForSeller.addTextChangedListener(new NoteTextWatcher(noteTextwatcherListener));
+        if (noteTextwatcherListener != null) {
+            etNotesForSeller.addTextChangedListener(new NoteTextWatcher(noteTextwatcherListener));
+        } else {
+            noteTextwatcherListener = new NoteTextWatcher.NoteTextwatcherListener() {
+                @Override
+                public void onNoteChanged(Editable editable) {
+                    itemNoteTextWatcherAction(editable, multipleAddressItemData);
+                }
+            };
+        }
         validateNote(itemData);
     }
 

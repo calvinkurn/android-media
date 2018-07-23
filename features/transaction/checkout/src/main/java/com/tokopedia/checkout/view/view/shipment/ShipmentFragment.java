@@ -240,7 +240,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             shipmentPresenter.setShipmentDonationModel(savedInstanceState.getParcelable(ShipmentDonationModel.class.getSimpleName()));
             shipmentPresenter.setShipmentCostModel(savedInstanceState.getParcelable(ShipmentCostModel.class.getSimpleName()));
             shipmentPresenter.setShipmentCheckoutButtonModel(savedInstanceState.getParcelable(ShipmentCheckoutButtonModel.class.getSimpleName()));
-            renderCheckoutPage();
+            renderCheckoutPage(true);
         }
     }
 
@@ -386,7 +386,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void renderCheckoutPage() {
+    public void renderCheckoutPage(boolean isInitialRender) {
         if (getArguments() != null) {
             initializePresenterData(getArguments());
         }
@@ -401,7 +401,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         initRecyclerViewData(
                 promoCodeAppliedData, cartPromoSuggestion, recipientAddressModel,
                 shipmentCartItemModelList, shipmentDonationModel, shipmentCostModel,
-                shipmentCheckoutButtonModel, true
+                shipmentCheckoutButtonModel, isInitialRender
         );
     }
 

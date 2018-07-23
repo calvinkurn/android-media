@@ -290,7 +290,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                         getView().renderNoRecipientAddressShipmentForm(cartShipmentAddressFormData);
                                     } else {
                                         initializePresenterData(cartShipmentAddressFormData);
-                                        getView().renderCheckoutPage();
+                                        getView().renderCheckoutPage(!isFromMultipleAddress);
                                     }
                                 }
                             }
