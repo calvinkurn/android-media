@@ -26,6 +26,7 @@ public class TrainStationViewModelMapper {
             viewModel.setStationId(station.getStationId());
             viewModel.setStationCode(station.getStationCode());
             viewModel.setStationName(station.getStationName());
+            viewModel.setIslandName(station.getIslandName());
         }
         return viewModel;
     }

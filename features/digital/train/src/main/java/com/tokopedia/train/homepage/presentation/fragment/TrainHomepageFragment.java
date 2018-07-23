@@ -378,7 +378,12 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
     }
 
     @Override
-    public void getShowOriginAndDestinationShouldNotSameError(int resId) {
+    public void showOriginAndDestinationShouldNotSameError(int resId) {
+        showMessageErrorInSnackBar(resId);
+    }
+
+    @Override
+    public void showOriginAndDestinationIslandShouldBeTheSame(int resId) {
         showMessageErrorInSnackBar(resId);
     }
 
