@@ -45,6 +45,7 @@ import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
+import com.tokopedia.core.manage.people.bank.activity.ManagePeopleBankActivity;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -1416,7 +1417,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void openRedirectUrl(Activity activity, String url) {
-        goToWebview(activity,url);
+        goToWebview(activity, url);
     }
 
     @Override
@@ -1426,6 +1427,15 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getSettingBankIntent(Context context) {
-        return SettingBankActivity.Companion.createIntent(context);
+        if (isEnabledRevampBankAccount())
+            return SettingBankActivity.Companion.createIntent(context);
+        else {
+            return ManagePeopleBankActivity.createInstance(context);
+        }
+    }
+
+    private boolean isEnabledRevampBankAccount() {
+//        return remoteConfig.getBoolean("is_enabled_new_setting_bank");
+        return true;
     }
 }

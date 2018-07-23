@@ -1,6 +1,5 @@
 package com.tokopedia.tkpd;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.BroadcastReceiver;
@@ -70,6 +69,7 @@ import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
+import com.tokopedia.core.manage.people.bank.activity.ManagePeopleBankActivity;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
@@ -313,8 +313,7 @@ import rx.schedulers.Schedulers;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FROM_DEEPLINK;
-import static com.tokopedia.core.router.productdetail.ProductDetailRouter
-        .ARG_PARAM_PRODUCT_PASS_DATA;
+import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PARAM_PRODUCT_PASS_DATA;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.SHARE_DATA;
 
 /**
@@ -1932,8 +1931,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void registerShake(String screenName,Activity activity) {
-        ShakeDetectManager.getShakeDetectManager().registerShake(screenName,activity);
+    public void registerShake(String screenName, Activity activity) {
+        ShakeDetectManager.getShakeDetectManager().registerShake(screenName, activity);
     }
 
     @Override
@@ -2328,6 +2327,16 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getSettingBankIntent(Context context) {
-        return SettingBankActivity.Companion.createIntent(context);
+        if (isEnabledRevampBankAccount())
+            return SettingBankActivity.Companion.createIntent(context);
+        else {
+            return ManagePeopleBankActivity.createInstance(context);
+        }
+    }
+
+    private boolean isEnabledRevampBankAccount() {
+//        return remoteConfig.getBoolean("is_enabled_new_setting_bank");
+        return true;
+
     }
 }
