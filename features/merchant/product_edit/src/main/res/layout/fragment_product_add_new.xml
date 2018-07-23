@@ -17,7 +17,7 @@
             android:layout_marginRight="@dimen/dp_16"/>
 
         <com.tokopedia.design.text.TkpdHintTextInputLayout
-            android:id="@+id/text_input_layout_name"
+            android:id="@+id/textInputLayoutName"
             style="@style/HintTextInputLayout"
             android:layout_marginTop="@dimen/dp_16"
             android:hint="@string/product_label_product_name"
@@ -27,7 +27,7 @@
             android:layout_marginLeft="@dimen/dp_12">
 
             <EditText
-                android:id="@+id/edit_text_name"
+                android:id="@+id/editTextName"
                 style="@style/EditText"
                 android:layout_width="match_parent"
                 android:hint="@string/product_hint_product_name"
@@ -37,70 +37,76 @@
 
         </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
-
-        <android.support.v7.widget.AppCompatTextView
-            style="@style/TextView.TitleBig.Bold"
-            android:text="@string/product_label_choose_product_category"
-            android:layout_marginTop="@dimen/dp_24"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"/>
-
-        <android.support.v7.widget.AppCompatTextView
-            style="@style/TextView.Title.BlackSecondary"
-            android:text="@string/product_label_category_recommendation"
-            android:layout_marginTop="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
-            android:layout_marginBottom="@dimen/dp_16"/>
-
-       <android.support.v7.widget.RecyclerView
-           android:id="@+id/recyclerView"
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"/>
-
-        <android.support.v7.widget.AppCompatTextView
-            style="@style/TextView.Title.Bold"
-            android:text="@string/product_label_not_find_category"
-            android:layout_marginTop="@dimen/dp_24"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"/>
-
-        <com.tokopedia.design.label.LabelView
+        <LinearLayout
+            android:id="@+id/llCategory"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_72"
-            android:clickable="true"
-            android:foreground="?android:attr/selectableItemBackground"
-            app:lv_content_color="@color/tkpd_main_green"
-            app:lv_title="@string/product_label_choose_another_category"
-            app:lv_content="@string/label_choose"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_8"/>
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+            <android.support.v7.widget.AppCompatTextView
+                style="@style/TextView.TitleBig.Bold"
+                android:text="@string/product_label_choose_product_category"
+                android:layout_marginTop="@dimen/dp_24"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"/>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@drawable/line_divider"
-            android:layout_marginLeft="@dimen/dp_16" />
+            <android.support.v7.widget.AppCompatTextView
+                style="@style/TextView.Title.BlackSecondary"
+                android:text="@string/product_label_category_recommendation"
+                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginBottom="@dimen/dp_16"/>
 
-        <android.support.v7.widget.AppCompatTextView
-            style="@style/TextView.TitleBig.Bold"
-            android:text="@string/product_label_choose_product_catalog"
-            android:layout_marginTop="@dimen/dp_24"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"/>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
 
-        <com.tokopedia.design.label.LabelView
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_72"
-            android:clickable="true"
-            android:foreground="?android:attr/selectableItemBackground"
-            app:lv_content_color="@color/tkpd_main_green"
-            app:lv_title="@string/product_label_catalog"
-            app:lv_content="@string/label_choose"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_8"/>
+            <android.support.v7.widget.AppCompatTextView
+                style="@style/TextView.Title.Bold"
+                android:text="@string/product_label_not_find_category"
+                android:layout_marginTop="@dimen/dp_24"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"/>
+
+            <com.tokopedia.design.label.LabelView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_72"
+                android:clickable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:lv_content_color="@color/tkpd_main_green"
+                app:lv_title="@string/product_label_choose_another_category"
+                app:lv_content="@string/label_choose"
+                android:paddingLeft="@dimen/dp_16"
+                android:paddingRight="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_8"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@drawable/line_divider"
+                android:layout_marginLeft="@dimen/dp_16" />
+
+            <android.support.v7.widget.AppCompatTextView
+                style="@style/TextView.TitleBig.Bold"
+                android:text="@string/product_label_choose_product_catalog"
+                android:layout_marginTop="@dimen/dp_24"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"/>
+
+            <com.tokopedia.design.label.LabelView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_72"
+                android:clickable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:lv_content_color="@color/tkpd_main_green"
+                app:lv_title="@string/product_label_catalog"
+                app:lv_content="@string/label_choose"
+                android:paddingLeft="@dimen/dp_16"
+                android:paddingRight="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_8"/>
+        </LinearLayout>
     </LinearLayout>
 
 </android.support.v4.widget.NestedScrollView>

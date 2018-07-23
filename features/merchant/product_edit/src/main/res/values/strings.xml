@@ -76,6 +76,7 @@
     <string name="product_label_product_picture">Gambar Produk</string>
     <string name="product_label_product_brand">Merek</string>
     <string name="product_label_product_catalog">Katalog Produk</string>
+    <string name="product_label_product_category">Kategori Produk</string>
     <string name="product_label_description_product">Deskripsi Produk</string>
     <string name="product_label_information_product">Keterangan Produk</string>
     <string name="product_label_feature_product">Fitur Produk</string>
