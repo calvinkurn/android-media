@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
+import com.tokopedia.settingbank.BankRouter
 import com.tokopedia.settingbank.R
 import com.tokopedia.settingbank.addeditaccount.view.activity.AddEditBankActivity
 import com.tokopedia.settingbank.addeditaccount.view.viewmodel.BankFormModel
@@ -39,6 +40,8 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
 
     private val REQUEST_ADD_BANK: Int = 101
     private val REQUEST_EDIT_BANK: Int = 102
+    private val REQUEST_PHONE_VERIFICATION: Int = 103
+
 
     lateinit var presenter: SettingBankPresenter
     lateinit var adapter: BankAccountAdapter
@@ -263,9 +266,14 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
         if (presenter.isMsisdnVerified() && enableAddButton) {
             val intentBankForm = AddEditBankActivity.createIntentAddBank(activity!!)
             startActivityForResult(intentBankForm, REQUEST_ADD_BANK)
-        } else if (!presenter.isMsisdnVerified()) {
-            //TODO : Go to Phone Verification Activation Activity
-            NetworkErrorHelper.showSnackbar(activity, "Belon dibuat")
+        } else if (activity != null
+                && activity!!.applicationContext is BankRouter
+                && !presenter.isMsisdnVerified()
+        ) {
+            val intentPhoneVerification = (activity!!.applicationContext as BankRouter)
+                    .getPhoneVerificationActivityIntent(activity!!)
+            startActivityForResult(intentPhoneVerification, REQUEST_PHONE_VERIFICATION)
+
         } else {
             showErrorAddAccount(reason)
         }
@@ -301,9 +309,7 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if ((requestCode == REQUEST_ADD_BANK || requestCode == REQUEST_EDIT_BANK)
-                && resultCode == Activity.RESULT_OK) {
-            //Refresh data to renew validation and because there is no bank logo from form
+        if (resultCode == Activity.RESULT_OK) {
             getBankList()
         }
 

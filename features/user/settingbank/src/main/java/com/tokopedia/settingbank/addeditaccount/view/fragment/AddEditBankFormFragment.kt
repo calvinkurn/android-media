@@ -142,7 +142,7 @@ class AddEditBankFormFragment : AddEditBankContract.View,
             (activity!! as AddEditBankActivity).setTitle(getString(R.string.title_edit_bank))
             bankFormModel = activity!!.intent.getParcelableExtra(AddEditBankActivity.Companion
                     .PARAM_DATA)
-            account_name_edit_text.setText(bankFormModel.accountName)
+            account_name_et.setText(bankFormModel.accountName)
             account_number_edit_text.setText(bankFormModel.accountNumber)
             bank_name_edit_text.setText(bankFormModel.bankName)
             checkIsValidForm()
@@ -151,7 +151,7 @@ class AddEditBankFormFragment : AddEditBankContract.View,
 
 
     private fun setupBankFormModel() {
-        bankFormModel.accountName = account_name_edit_text.text.toString()
+        bankFormModel.accountName = account_name_et.text.toString()
         bankFormModel.accountNumber = account_number_edit_text.text.toString()
         bankFormModel.bankName = bank_name_edit_text.text.toString()
     }
@@ -162,7 +162,7 @@ class AddEditBankFormFragment : AddEditBankContract.View,
     }
 
     private fun setViewListener() {
-        account_name_edit_text.addTextChangedListener(accountNameWatcher(wrapper_account_name))
+        account_name_et.addTextChangedListener(accountNameWatcher(wrapper_account_name))
         account_number_edit_text.addTextChangedListener(accountNumberWatcher(wrapper_account_number))
     }
 
@@ -217,7 +217,7 @@ class AddEditBankFormFragment : AddEditBankContract.View,
 
 
     private fun checkIsValidForm() {
-        val accountName = account_name_edit_text.text.toString().trim()
+        val accountName = account_name_et.text.toString().trim()
         val accountNumber = account_number_edit_text.text.toString().trim()
         val bankName = bank_name_edit_text.text.toString().trim()
 

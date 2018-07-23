@@ -10,14 +10,14 @@
         android:id="@+id/prompt_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_8"
         android:fontFamily="sans-serif"
         android:gravity="center_horizontal"
         android:lineSpacingExtra="6sp"
         android:text="@string/add_bank_prompt"
         android:textColor="@color/black_38"
         android:textSize="@dimen/sp_12"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:layout_marginRight="@dimen/dp_8"
         android:textStyle="normal"
         />
 
@@ -75,10 +75,12 @@
         android:hint="@string/account_name_title"
         app:layout_constraintTop_toBottomOf="@id/wrapper_account_number">
 
-        <com.tokopedia.design.component.EditTextCompat
-            android:id="@+id/account_name_edit_text"
+        <EditText
+            android:id="@+id/account_name_et"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ "
+            android:hint="@string/account_name_title"
             android:inputType="textCapSentences"
             android:singleLine="true"
             android:textColor="@color/font_black_primary_70"/>
@@ -90,11 +92,11 @@
         android:layout_height="@dimen/btn_height"
         android:layout_alignParentBottom="true"
         android:layout_marginTop="@dimen/dp_40"
-        android:textColor="@color/font_black_disabled_38"
         android:background="@drawable/bg_button_disabled"
         android:fontFamily="sans-serif-medium"
         android:gravity="center"
         android:text="@string/button_next"
+        android:textColor="@color/font_black_disabled_38"
         android:textSize="@dimen/sp_13"
         app:layout_constraintTop_toBottomOf="@id/wrapper_account_name"/>
 
