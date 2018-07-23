@@ -6,6 +6,7 @@ import android.os.Parcelable;
 public class TrainStationAndCityViewModel implements Parcelable {
     private String cityName;
     private String stationCode;
+    private String islandName;
 
     public TrainStationAndCityViewModel() {
     }
@@ -13,11 +14,13 @@ public class TrainStationAndCityViewModel implements Parcelable {
     protected TrainStationAndCityViewModel(Parcel in) {
         cityName = in.readString();
         stationCode = in.readString();
+        islandName = in.readString();
     }
 
-    public TrainStationAndCityViewModel(String cityName, String stationCode) {
+    public TrainStationAndCityViewModel(String cityName, String stationCode, String islandName) {
         this.cityName = cityName;
         this.stationCode = stationCode;
+        this.islandName = islandName;
     }
 
     public static final Creator<TrainStationAndCityViewModel> CREATOR = new Creator<TrainStationAndCityViewModel>() {
@@ -48,6 +51,14 @@ public class TrainStationAndCityViewModel implements Parcelable {
         this.stationCode = stationCode;
     }
 
+    public String getIslandName() {
+        return islandName;
+    }
+
+    public void setIslandName(String islandName) {
+        this.islandName = islandName;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -57,5 +68,6 @@ public class TrainStationAndCityViewModel implements Parcelable {
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(cityName);
         parcel.writeString(stationCode);
+        parcel.writeString(islandName);
     }
 }

@@ -15,6 +15,7 @@ import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.Menus;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
@@ -260,8 +261,19 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
     }
 
     @Override
-    public void backToHomePage() {
-        getActivity().finish();
+    public void showExpiredPaymentDialog() {
+        final Dialog dialog = new Dialog(getActivity(), Dialog.Type.RETORIC);
+        dialog.setTitle(getString(R.string.train_seat_expired_payment_time));
+        dialog.setDesc(getString(R.string.train_seat_expired_payment_time_desc));
+        dialog.setBtnOk(getString(R.string.train_seat_expired_payment_time_cta));
+        dialog.setOnOkClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                getActivity().finish();
+            }
+        });
+        dialog.show();
     }
 
     @Override

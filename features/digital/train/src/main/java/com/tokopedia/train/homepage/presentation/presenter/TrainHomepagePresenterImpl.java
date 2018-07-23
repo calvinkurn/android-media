@@ -160,13 +160,15 @@ public class TrainHomepagePresenterImpl extends BaseDaggerPresenter<TrainHomepag
         if (trainHomepageViewModel.getDepartureDate() != null && !trainHomepageViewModel.getDepartureDate().isEmpty()) {
             Calendar departureCalendar = TrainDateUtil.getCurrentCalendar();
             departureCalendar.setTime(TrainDateUtil.stringToDate(trainHomepageViewModel.getDepartureDate()));
-            onDepartureDateChange(departureCalendar.get(Calendar.YEAR), departureCalendar.get(Calendar.MONTH), departureCalendar.get(Calendar.DATE));
+            onDepartureDateChange(departureCalendar.get(Calendar.YEAR), departureCalendar.get(Calendar.MONTH),
+                    departureCalendar.get(Calendar.DATE));
         }
 
         if (!trainHomepageViewModel.getReturnDate().isEmpty()) {
-            Calendar returnDate = TrainDateUtil.getCurrentCalendar();
-            returnDate.setTime(TrainDateUtil.stringToDate(trainHomepageViewModel.getReturnDate()));
-            onReturnDateChange(returnDate.get(Calendar.YEAR), returnDate.get(Calendar.MONTH), returnDate.get(Calendar.DATE));
+            Calendar returnCalendar = TrainDateUtil.getCurrentCalendar();
+            returnCalendar.setTime(TrainDateUtil.stringToDate(trainHomepageViewModel.getReturnDate()));
+            onReturnDateChange(returnCalendar.get(Calendar.YEAR), returnCalendar.get(Calendar.MONTH),
+                    returnCalendar.get(Calendar.DATE));
         }
 
         renderUi();
@@ -266,7 +268,11 @@ public class TrainHomepagePresenterImpl extends BaseDaggerPresenter<TrainHomepag
                         viewModel.getDestinationStation().getStationCode() == null &&
                         viewModel.getOriginStation().getCityName().equalsIgnoreCase(viewModel.getDestinationStation().getCityName()))
                 ) {
-            getView().getShowOriginAndDestinationShouldNotSameError(R.string.train_homepage_origin_destination_should_not_same_error_message);
+            getView().showOriginAndDestinationShouldNotSameError(R.string.train_homepage_origin_destination_should_not_same_error_message);
+            isValid = false;
+        } else if (!viewModel.getDestinationStation().getIslandName()
+                .equalsIgnoreCase(viewModel.getOriginStation().getIslandName())) {
+            getView().showOriginAndDestinationIslandShouldBeTheSame(R.string.train_homepage_origin_destination_island_should_be_the_same_error_message);
             isValid = false;
         }
         return isValid;
@@ -306,7 +312,6 @@ public class TrainHomepagePresenterImpl extends BaseDaggerPresenter<TrainHomepag
 
         getView().setHomepageViewModel(viewModel);
     }
-
 
     @NonNull
     private String buildPassengerTextFormatted(TrainPassengerViewModel passData) {

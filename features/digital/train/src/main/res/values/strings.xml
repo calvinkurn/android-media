@@ -121,6 +121,7 @@
     <string name="train_homepage_origin_should_not_empty_error_message">Stasiun asal belum diisi.</string>
     <string name="train_homepage_destination_should_not_empty_error_message">Stasiun tujuan belum diisi</string>
     <string name="train_homepage_origin_destination_should_not_same_error_message">Kota/Stasiun asal harus berbeda dengan tujuan</string>
+    <string name="train_homepage_origin_destination_island_should_be_the_same_error_message">Tidak bisa beda pulau</string>
     <string name="train_station_all_stations_label">Semua Stasiun</string>
     <string name="train_station_station_label">Stasiun</string>
     <string name="train_station_city_label">Kota</string>
@@ -167,5 +168,8 @@
     <string name="train_seat_prefix_toolbar_title">Perjalanan Pergi</string>
     <string name="train_seat_toolbar_title">Pilih Kursi</string>
     <string name="train_seat_prefix_toolbar_return_trip_title">Perjalanan Pulang</string>
+    <string name="train_seat_expired_payment_time">Waktu Pembayaran Berakhir</string>
+    <string name="train_seat_expired_payment_time_desc">Batas waktu pembayaran tiket telah habis. Silakan lakukan pemesanan tiket baru.</string>
+    <string name="train_seat_expired_payment_time_cta">Kembali ke pencarian</string>
 
 </resources>
