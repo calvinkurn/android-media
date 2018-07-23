@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Base64;
 
@@ -26,11 +27,13 @@ import com.tokopedia.discovery.newdiscovery.domain.model.SearchResultModel;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import retrofit2.Response;
 import rx.Observable;
@@ -53,8 +56,8 @@ public class GetImageSearchUseCase<T> extends UseCase<SearchResultModel> {
     private ImageSearchService imageSearchService;
     private Context context;
 
-    private final int OPTIMUM_WIDTH = 600;
-    private final int OPTIMUM_HEIGHT = 600;
+    private final int OPTIMUM_WIDTH = 300;
+    private final int OPTIMUM_HEIGHT = 300;
 
     private final int MAX_WIDTH = 1280;
     private final int MAX_HEIGHT = 720;
@@ -110,6 +113,10 @@ public class GetImageSearchUseCase<T> extends UseCase<SearchResultModel> {
                         }
 
                         myBitmap = ImageHandler.RotatedBitmap(myBitmap, imagePath);
+
+                        saveBitmapToPhone(myBitmap);
+
+
                     } catch (IOException exception) {
                         exception.printStackTrace();
                     }
@@ -134,6 +141,30 @@ public class GetImageSearchUseCase<T> extends UseCase<SearchResultModel> {
                             .map(productMapper)
                             .flatMap(wishlistDataEnricher(getUserId()));
                 });
+    }
+
+    private void saveBitmapToPhone(Bitmap bitmap) {
+
+        FileOutputStream out = null;
+        Random random = new Random();
+
+        String path = Environment.getExternalStorageDirectory().toString();
+        File file = new File(path, "tokopedia" + String.valueOf(random.nextInt()) + ".png"); // the File to save , append increasing numeric counter to prevent files from getting overwritten.
+
+        try {
+            out = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (out != null) {
+                    out.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private String getRequestImageSearchPayload() {
