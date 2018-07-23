@@ -18,6 +18,7 @@ import android.view.WindowManager;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -30,6 +31,7 @@ import com.tokopedia.instantloan.R;
 import com.tokopedia.instantloan.data.model.response.BannerEntity;
 import com.tokopedia.instantloan.ddcollector.DDCollectorManager;
 import com.tokopedia.instantloan.di.component.InstantLoanComponent;
+import com.tokopedia.instantloan.network.InstantLoanUrl;
 import com.tokopedia.instantloan.view.adapter.BannerPagerAdapter;
 import com.tokopedia.instantloan.view.adapter.InstantLoanPagerAdapter;
 import com.tokopedia.instantloan.view.contractor.BannerContractor;
@@ -57,12 +59,23 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
     private ViewPager mBannerPager;
     private FloatingActionButton mBtnNextBanner, mBtnPreviousBanner;
 
+    public static String TAB_NAME = "tab_name";
+
     private TabLayout tabLayout;
     private HeightWrappingViewPager viewPager;
 
     public static Intent createIntent(Context context) {
         return new Intent(context, InstantLoanActivity.class);
     }
+
+
+    @Deeplink({ApplinkConst.INSTANT_LOAN})
+    public static Intent getInstantLoanCallingIntent(Context context, Bundle bundle){
+        Intent intent = new Intent(context, InstantLoanActivity.class);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
 
     @Override
     protected void setupLayout(Bundle savedInstanceState) {
