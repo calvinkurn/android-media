@@ -4,10 +4,13 @@
     <string name="title_activity_video_recommendation">Rekomendasi Video Produk</string>
     <string name="product_from_to_video">%1$d dari %2$d Video</string>
     <string name="label_video_add">Tambah Video Produk</string>
+    <string name="label_product_add">Tambah Produk</string>
     <string name="label_save">Simpan</string>
     <string name="label_add">Tambah</string>
     <string name="label_delete">Delete</string>
     <string name="label_cancel">Batal</string>
+    <string name="label_choose">Pilih</string>
+    <string name="label_next">Selanjutnya</string>
     <string name="label_always_available">Selalu Tersedia</string>
 
     <string name="product_add_tag_video_recommendation">rekomendasi</string>
@@ -47,11 +50,12 @@
 
     <string name="product_grosir_not_available_if_has_variant">Harga grosir tidak berlaku jika memiliki varian produk.</string>
 
-    <string name="product_label_product_name">Nama Produk</string>
-    <string name="product_hint_product_name">Tulis Nama Produk</string>
-
-    <string name="product_label_product_brand">Merek</string>
-
+    <string name="product_label_what_do_you_sell">Apa yang Anda jual?</string>
+    <string name="product_label_choose_product_category">Pilih Kategori Produk</string>
+    <string name="product_label_category_recommendation">Rekomendasi Kategori</string>
+    <string name="product_label_not_find_category">Tidak sesuai kategori diatas?</string>
+    <string name="product_label_choose_another_category">Pilih Kategori Lain</string>
+    <string name="product_label_choose_product_catalog">Pilih Katalog Produk</string>
     <string name="product_label_recommendation_price">Rekomendasi Harga Pasar Rp 1.150.000. Gunakan</string>
     <string name="product_label_product_price">Harga Produk</string>
     <string name="product_label_wholesale_price">Harga Grosir</string>
@@ -63,8 +67,15 @@
     <string name="product_label_stock_count">Jumlah Stock</string>
     <string name="product_label_stock_always_available">Stock Selalu Tersedia</string>
     <string name="product_label_stock_limited">Stock Terbatas</string>
-
-
+    <string name="product_label_insurance">Asuransi Pengiriman</string>
+    <string name="product_label_free_return">Free Returns</string>
+    <string name="product_label_pre_order">Pre order</string>
+    <string name="product_label_process_time">Waktu Proses</string>
+    <string name="product_label_catalog">Katalog</string>
+    <string name="product_label_product_name">Nama Produk</string>
+    <string name="product_label_product_picture">Gambar Produk</string>
+    <string name="product_label_product_brand">Merek</string>
+    <string name="product_label_product_catalog">Katalog Produk</string>
     <string name="product_label_description_product">Deskripsi Produk</string>
     <string name="product_label_information_product">Keterangan Produk</string>
     <string name="product_label_feature_product">Fitur Produk</string>
@@ -77,6 +88,7 @@
     <string name="product_label_product_etalase">Etalase</string>
     <string name="product_label_product_variant">Varian</string>
 
+    <string name="product_hint_product_name">Tulis Nama Produk</string>
     <string name="product_hint_product_sku">Tulis SKU Produk</string>
     <string name="product_hint_product_brand">Tulis Merek Produk</string>
     <string name="product_hint_feature_product">Contoh: Tahan air, berbahan alami</string>
@@ -86,6 +98,7 @@
     <string name="product_subtitle_product_logistic">Tulis berat produk dan pengaturan pengiriman</string>
     <string name="product_subtitle_product_etalase">Atur produk di etalase yang sesuai</string>
     <string name="product_subtitle_product_variant">Tambah jika produk memiliki berbagai variasi</string>
+    <string name="product_subtitle_product_pre_order">Aktifkan untuk memperpanjang waktu pengiriman</string>
 
     <string name="product_helper_product_brand">Nama merek membantu pembeli mencari produk Anda</string>
     <string name="product_helper_product_stock">Stock akan berkurang otomatis jika produk terbeli</string>

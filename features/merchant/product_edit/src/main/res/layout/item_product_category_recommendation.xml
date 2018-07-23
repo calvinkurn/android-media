@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <com.tokopedia.product.edit.price.LabelRadioButton
+        android:id="@+id/labelRadioButton"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_72"
+        android:clickable="true"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:padding="@dimen/dp_16"
+        app:lr_title="@string/product_label_stock_always_available"
+        app:lr_subtitle="@string/label_add"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/line_divider"
+        android:layout_marginLeft="@dimen/dp_16" />
+
+</LinearLayout>
