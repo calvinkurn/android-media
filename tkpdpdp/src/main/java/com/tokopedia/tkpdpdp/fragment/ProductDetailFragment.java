@@ -1225,7 +1225,8 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                         if (productVariant != null) {
                             pictureView.renderData(productData);
                             headerInfoView.renderData(productData);
-                            headerInfoView.renderStockAvailability(productData.getInfo());
+                            headerInfoView.renderStockAvailability(productData.getCampaign().getActive(),
+                                    productData.getInfo());
                             shopInfoView.renderData(productData);
                             presenter.updateRecentView(getActivity(), productData.getInfo().getProductId());
                             ratingTalkCourierView.renderData(productData);
@@ -1463,7 +1464,8 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             if (productVariant.getChildFromProductId(defaultChild).isEnabled()) {
                 productData.getInfo().setProductStockWording(productVariant.getChildFromProductId(defaultChild).getStockWording());
                 productData.getInfo().setLimitedStock(productVariant.getChildFromProductId(defaultChild).isLimitedStock());
-                headerInfoView.renderStockAvailability(productData.getInfo());
+                headerInfoView.renderStockAvailability(productData.getCampaign().getActive(),
+                        productData.getInfo());
             }
 
             buttonBuyView.updateButtonForVariantProduct(productVariant.getChildFromProductId(
@@ -1483,7 +1485,8 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         if (productData != null && productData.getInfo() != null && productStock.isEnabled()) {
             productData.getInfo().setProductStockWording(productStockNonVariant.getStockWording());
             productData.getInfo().setLimitedStock(productStockNonVariant.isLimitedStock());
-            headerInfoView.renderStockAvailability(productData.getInfo());
+            headerInfoView.renderStockAvailability(productData.getCampaign().getActive(),
+                    productData.getInfo());
         }
     }
 
@@ -1941,4 +1944,8 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                 });
     }
 
+    @Override
+    public void refreshData() {
+        presenter.requestProductDetail(getActivity(), productPass, INIT_REQUEST, false, useVariant);
+    }
 }
