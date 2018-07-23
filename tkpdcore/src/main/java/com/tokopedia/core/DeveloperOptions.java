@@ -1,6 +1,9 @@
 package com.tokopedia.core;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.AppCompatEditText;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -13,6 +16,7 @@ import com.tkpd.library.utils.OneOnClick;
 import com.tokopedia.analytics.debugger.GtmLogger;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.onboarding.ConstantOnBoarding;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.util.SessionHandler;
@@ -28,12 +32,18 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
     private TextView testOnBoarding;
     private TextView vForceCrash;
     private View vMaintenance;
+    private AppCompatEditText remoteConfigKeyEditText;
+    private AppCompatEditText remoteConfigValueEditText;
+    private AppCompatButton remoteConfigCheckBtn;
+    private AppCompatButton remoteConfigSaveBtn;
 
     private TextView vGoTochuck;
     private CheckBox toggleChuck;
 
     private TextView vGoToAnalytics;
     private CheckBox toggleAnalytics;
+
+    private static TkpdCoreRouter tkpdCoreRouter;
 
     @Override
     public String getScreenName() {
@@ -45,7 +55,12 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_developer_options);
 
+        setupView();
+        initListener();
+        initView();
+    }
 
+    private void setupView() {
         vForceCrash = (TextView) findViewById(R.id.force_crash);
 
         vMaintenance = findViewById(R.id.maintenance);
@@ -60,8 +75,10 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
         vGoToAnalytics = (TextView) findViewById(R.id.goto_analytics);
         toggleAnalytics = (CheckBox) findViewById(R.id.toggle_analytics);
 
-        initListener();
-        initView();
+        remoteConfigKeyEditText = findViewById(R.id.et_remote_config_key);
+        remoteConfigValueEditText = findViewById(R.id.et_remote_config_value);
+        remoteConfigCheckBtn = findViewById(R.id.btn_remote_config_check);
+        remoteConfigSaveBtn = findViewById(R.id.btn_remote_config_save);
     }
 
     private void initListener() {
@@ -88,13 +105,12 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
                         ConstantOnBoarding.CACHE_FREE_RETURN);
 
 
-
             }
         });
         testOnBoarding.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(InboxRouter.getFreeReturnOnBoardingActivityIntent(getBaseContext(), "1234"),789);
+                startActivityForResult(InboxRouter.getFreeReturnOnBoardingActivityIntent(getBaseContext(), "1234"), 789);
             }
         });
 
@@ -128,6 +144,47 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
             }
         });
 
+        remoteConfigCheckBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                actionCheckValueRemoteConfig();
+            }
+        });
+        remoteConfigSaveBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                actionSaveValueRemoteConfig();
+            }
+        });
+    }
+
+    private void actionSaveValueRemoteConfig() {
+        String key = remoteConfigKeyEditText.getText().toString().trim();
+        String value = remoteConfigValueEditText.getText().toString().trim();
+        if (key.isEmpty() || value.isEmpty()) {
+            Toast.makeText(this, "Please check the input should not empty", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
+        coreRouter(getApplicationContext()).setStringRemoteConfigLocal(key, value);
+        remoteConfigKeyEditText.setText(null);
+        remoteConfigValueEditText.setText(null);
+    }
+
+    private void actionCheckValueRemoteConfig() {
+        String key = remoteConfigKeyEditText.getText().toString().trim();
+        if (key.isEmpty()) {
+            Toast.makeText(this, "Please type the key", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        remoteConfigValueEditText.setText(String.valueOf(coreRouter(getApplicationContext()).getStringRemoteConfig(key)));
+    }
+
+    private static TkpdCoreRouter coreRouter(Context applicationContext) {
+        if (tkpdCoreRouter == null) {
+            tkpdCoreRouter = (TkpdCoreRouter) applicationContext;
+        }
+        return tkpdCoreRouter;
     }
 
     public void initView() {
