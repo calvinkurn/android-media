@@ -92,7 +92,7 @@ public class ProductListFragment extends SearchSectionFragment
     private static final String EXTRA_SEARCH_PARAMETER = "EXTRA_SEARCH_PARAMETER";
     private static final String EXTRA_FORCE_SEARCH = "EXTRA_FORCE_SEARCH";
     private static final String EXTRA_QUICK_FILTER_LIST = "EXTRA_QUICK_FILTER_LIST";
-
+    private static int PRODUCT_POSITION = 2;
     protected RecyclerView recyclerView;
     @Inject
     ProductListPresenter presenter;
@@ -108,7 +108,8 @@ public class ProductListFragment extends SearchSectionFragment
     private boolean forceSearch;
 
     private ArrayList<Option> quickFilterOptions;
-
+    private SimilarSearchManager similarSearchManager ;
+    private ShowCaseDialog showCaseDialog;
 
     public static ProductListFragment newInstance(ProductViewModel productViewModel) {
         Bundle args = new Bundle();
@@ -118,7 +119,7 @@ public class ProductListFragment extends SearchSectionFragment
         return productListFragment;
     }
 
-    SimilarSearchManager similarSearchManager ;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -921,7 +922,7 @@ public class ProductListFragment extends SearchSectionFragment
     protected String getScreenName() {
         return getScreenNameId();
     }
-    private ShowCaseDialog showCaseDialog;
+
 
 
     private boolean isShowCaseAllowed(String tag) {
@@ -986,7 +987,7 @@ public class ProductListFragment extends SearchSectionFragment
                 .build();
     }
 
-    private static int PRODUCT_POSITION = 2;
+
     public View scrollToShowCaseItem() {
         if(recyclerView.getAdapter().getItemCount() >= PRODUCT_POSITION) {
             recyclerView.stopScroll();

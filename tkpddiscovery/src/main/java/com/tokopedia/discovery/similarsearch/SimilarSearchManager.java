@@ -10,9 +10,9 @@ import com.tokopedia.discovery.similarsearch.view.SimilarSearchActivity;
 
 public class SimilarSearchManager {
 
-     Context context;
+     private Context context;
      private static final String FIREBASE_SIMILAR_SEARCH_REMOTE_CONFIG_KEY = "app_enable_similar_search";
-     RemoteConfig remoteConfig;
+     private RemoteConfig remoteConfig;
 
     public SimilarSearchManager(Context context) {
         this.context = context;
