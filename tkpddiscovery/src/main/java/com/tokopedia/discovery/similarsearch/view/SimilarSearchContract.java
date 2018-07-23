@@ -25,6 +25,9 @@ public interface SimilarSearchContract {
         void enableWishlistButton(int adapterPosition);
         String getUserId();
         void launchLoginActivity(Bundle extras);
+
+
+        String getScreenName();
     }
 
     public interface Presenter {

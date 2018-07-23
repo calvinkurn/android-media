@@ -27,8 +27,8 @@ public class SimilarSearchAppEventTracking implements AppEventTracking {
         String EventImpressionProduct = "impression product";
         String EventClickSimilarProduct = "click - similar product";
         String EventNoSimilarProduct = "no similar product";
-        String EventAddWishList = "Add Wishlist";
-        String EventRemoveWishList = "Remove Wishlist";
+        String EventAddWishList = "add wishlist";
+        String EventRemoveWishList = "remove wishlist";
 
 
     }
@@ -38,6 +38,8 @@ public class SimilarSearchAppEventTracking implements AppEventTracking {
         String LabelProductIDTitle = "product id: %s";
         String LabelScreeName = "%s";
         String LabelProductID = "%s";
+        String LableOriginProductId = "origin product id: %s - " + LabelScreeName;
+
 
     }
 }

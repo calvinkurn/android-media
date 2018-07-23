@@ -40,19 +40,19 @@ public class SimilarSearchTracking extends UnifyTracking {
                 String.format(SimilarSearchAppEventTracking.Label.LabelScreeName, screenName)
         ).getEvent());
     }
-    public static void eventUserSeeNoSimilarProduct(String productId) {
+    public static void eventUserSeeNoSimilarProduct(String productId,String screenName) {
         sendGTMEvent(new EventTracking(
                 SimilarSearchAppEventTracking.Event.GenericViewSearchResult,
                 SimilarSearchAppEventTracking.Category.EventSimilarProduct,
                 SimilarSearchAppEventTracking.Action.EventNoSimilarProduct,
-                String.format(SimilarSearchAppEventTracking.Label.LabelProductID, productId)
+                String.format(SimilarSearchAppEventTracking.Label.LableOriginProductId, productId,screenName)
         ).getEvent());
     }
 
     public static void eventAddWishList(String productId) {
         sendGTMEvent(new EventTracking(
                 SimilarSearchAppEventTracking.Event.GenericViewSearchResult,
-                SimilarSearchAppEventTracking.Category.EventSearchResult,
+                SimilarSearchAppEventTracking.Category.EventSimilarProduct,
                 SimilarSearchAppEventTracking.Action.EventAddWishList,
                 String.format(SimilarSearchAppEventTracking.Label.LabelProductID, productId)
         ).getEvent());
@@ -61,7 +61,7 @@ public class SimilarSearchTracking extends UnifyTracking {
     public static void eventRemoveWishList(String productId) {
         sendGTMEvent(new EventTracking(
                 SimilarSearchAppEventTracking.Event.GenericViewSearchResult,
-                SimilarSearchAppEventTracking.Category.EventSearchResult,
+                SimilarSearchAppEventTracking.Category.EventSimilarProduct,
                 SimilarSearchAppEventTracking.Action.EventRemoveWishList,
                 String.format(SimilarSearchAppEventTracking.Label.LabelProductID, productId)
         ).getEvent());

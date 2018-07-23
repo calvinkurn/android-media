@@ -116,8 +116,8 @@ public class SimilarSearchFragment extends BaseDaggerFragment implements Similar
     }
 
     @Override
-    protected String getScreenName() {
-        return null;
+    public String getScreenName() {
+        return "/searchproduct - product";
     }
 
     @Override

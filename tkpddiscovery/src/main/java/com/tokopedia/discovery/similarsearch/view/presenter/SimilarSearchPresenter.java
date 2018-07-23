@@ -60,6 +60,7 @@ public class SimilarSearchPresenter extends BaseDaggerPresenter<SimilarSearchCon
 
             @Override
             public void onError(Throwable e) {
+                SimilarSearchTracking.eventUserSeeNoSimilarProduct(getView().getProductID(),getView().getScreenName());
                 getView().setEmptyLayoutVisible();
                 getView().setContentLayoutGone();
             }
@@ -70,7 +71,7 @@ public class SimilarSearchPresenter extends BaseDaggerPresenter<SimilarSearchCon
                     getView().setProductList(productsItems);
                 }else {
                     getView().setEmptyLayoutVisible();
-                    SimilarSearchTracking.eventUserSeeNoSimilarProduct(getView().getProductID());
+                    SimilarSearchTracking.eventUserSeeNoSimilarProduct(getView().getProductID(),getView().getScreenName());
                     getView().setContentLayoutGone();
                 }
             }

@@ -60,7 +60,8 @@ public class SimilarSearchdAdapter extends RecyclerView.Adapter<SimilarSearchdAd
         this.productsItems = productsItems;
         if(productsItems != null) {
             for(ProductsItem productsItem: productsItems) {
-                SimilarSearchTracking.eventUserSeeSimilarProduct(String.valueOf(productsItem.getId()),productsItem);
+                if(productsItem.getId() != 0)
+                    SimilarSearchTracking.eventUserSeeSimilarProduct(String.valueOf(productsItem.getId()),productsItem);
             }
         }
         notifyDataSetChanged();
@@ -128,7 +129,7 @@ public class SimilarSearchdAdapter extends RecyclerView.Adapter<SimilarSearchdAd
                     bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
                     intent.putExtras(bundle);
                     itemView.getContext().startActivity(intent);
-                    SimilarSearchTracking.eventClickSimilarProduct("searchproduct - product "+productsItem.getId(),productsItem);
+                    SimilarSearchTracking.eventClickSimilarProduct("/searchproduct - product "+productsItem.getId(),productsItem);
                 }
             });
 
