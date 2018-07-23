@@ -624,6 +624,11 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
 
     }
 
+    @Override
+    public void onSelectedFilterRemoved(String uniqueId) {
+
+    }
+
     private void sendItemClickTrackingEvent(ProductItem item) {
         String userId = SessionHandler.isV4Login(getContext()) ?
                 SessionHandler.getLoginID(getContext()) : "";
