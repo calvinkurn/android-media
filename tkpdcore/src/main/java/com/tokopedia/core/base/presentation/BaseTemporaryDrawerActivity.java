@@ -44,7 +44,6 @@ public class BaseTemporaryDrawerActivity<T> extends DrawerPresenterActivity<T> {
             super.setupToolbar();
         else {
             toolbar = findViewById(R.id.app_bar);
-            initTitle(toolbar);
             setSupportActionBar(toolbar);
             if (getSupportActionBar() != null) {
                 getSupportActionBar().setDisplayShowCustomEnabled(true);
@@ -97,10 +96,4 @@ public class BaseTemporaryDrawerActivity<T> extends DrawerPresenterActivity<T> {
     @Override
     protected void setActionVar() { }
 
-    @Override
-    public void onBackPressed() {
-        if (GlobalConfig.isSellerApp())
-            super.onBackPressed();
-
-    }
 }

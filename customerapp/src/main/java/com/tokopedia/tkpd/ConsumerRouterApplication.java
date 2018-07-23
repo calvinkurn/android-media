@@ -2428,21 +2428,21 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getInboxChatIntent(Context context) {
-        return InboxChatActivity.getCallingIntent(context);
+        return new Intent(context, InboxChatActivity.class);
     }
 
     @Override
     public Intent getInboxDiscussionIntent(Context context) {
-        return InboxTalkActivity.getCallingIntent(context);
+        return new Intent(context, InboxTalkActivity.class);
     }
 
     @Override
     public Intent getInboxReviewIntent(Context context) {
-        return InboxReputationActivity.getCallingIntent(context);
+        return new Intent(context, InboxReputationActivity.class);
     }
 
     @Override
     public Intent getInboxHelpIntent(Context context) {
-        return InboxTicketActivity.getCallingIntent(context);
+        return new Intent(context, InboxTicketActivity.class);
     }
 }

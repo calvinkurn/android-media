@@ -288,7 +288,7 @@
         <item name="android:itemTextAppearance">@style/TextAppearance</item>
     </style>
 
-    <style name="AppBarTheme.White" parent="ThemeOverlay.AppCompat.Light">
+    <style name="AppBarTheme.White" parent="ThemeOverlay.AppCompat.Dark">
         <item name="actionModeBackground">@color/white</item>
         <item name="android:actionModeBackground">@color/white</item>
         <item name="android:textColorPrimary">@color/abc_primary_text_material_light</item>
@@ -306,11 +306,6 @@
         <item name="android:textColor">@color/white</item>
     </style>
 
-    <style name="ToolbarText.White" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">
-        <item name="android:textSize">17sp</item>
-        <item name="android:textColor">@color/abc_primary_text_material_light</item>
-    </style>
-
     <style name="ToolbarText.SansSerifMedium" parent="ToolbarText">
         <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:textColor">@color/black_70</item>
@@ -319,11 +314,6 @@
     <style name="ToolbarSubtitleText" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle">
         <item name="android:textSize">12sp</item>
         <item name="android:textColor">@color/white</item>
-    </style>
-
-    <style name="ToolbarSubtitleText.White" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle">
-        <item name="android:textSize">12sp</item>
-        <item name="android:textColor">@color/abc_primary_text_material_light</item>
     </style>
 
     <style name="ToolbarSubtitleText.SansSerifMedium" parent="ToolbarSubtitleText">
