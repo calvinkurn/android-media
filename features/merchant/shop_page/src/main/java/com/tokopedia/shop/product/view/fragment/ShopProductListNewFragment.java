@@ -385,7 +385,9 @@ public class ShopProductListNewFragment extends BaseListFragment<BaseShopProduct
             bottomActionView.hide();
             shopProductNewAdapter.addElement(getEmptyDataViewModel());
         } else {
-            bottomActionView.show();
+            if (isLoadingInitialData) {
+                bottomActionView.show();
+            }
             isLoadingInitialData = false;
         }
         shopProductNewAdapter.notifyDataSetChanged();
