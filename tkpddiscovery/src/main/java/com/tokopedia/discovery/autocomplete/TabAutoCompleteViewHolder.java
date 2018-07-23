@@ -126,8 +126,9 @@ public class TabAutoCompleteViewHolder extends AbstractViewHolder<TabAutoComplet
                     list = prepareShopSearch(searchData, element.getSearchTerm());
                     shopFragmentList.addAll(list);
                     shopFragment.addBulkSearchResult(list);
-                    allFragmentList.addAll(insertTitle(list, searchData.getName()));
-                    allFragment.addBulkSearchResult(insertTitle(list, searchData.getName()));
+                    list = insertTitle(list, searchData.getName());
+                    allFragmentList.addAll(list);
+                    allFragment.addBulkSearchResult(list);
                     continue;
             }
         }
