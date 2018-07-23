@@ -2402,5 +2402,3 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         remoteConfig.setString(key, value);
     }
 }
-
-}

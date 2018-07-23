@@ -23,7 +23,7 @@ public class PostVerifyCartUseCase extends UseCase<VerifyMyCartResponse> {
     @Override
     public Observable<VerifyMyCartResponse> createObservable(RequestParams requestParams) {
         JsonObject requestBody = (JsonObject) requestParams.getObject(Utils.Constants.CHECKOUTDATA);
-        boolean flag = requestParams.getBoolean("ispromocodecase", false);
+        boolean flag = requestParams.getBoolean(Utils.Constants.PROMOCODECASE, false);
         return omsRepository.verifyCard(requestBody, flag);
     }
 }
