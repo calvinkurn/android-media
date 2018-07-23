@@ -52,4 +52,5 @@ public class ConsumerAppBaseUrl {
     public static final String TOP_PAY_DOMAIN = "https://pay-staging.tokopedia.id";
     public static final String OMS_DOMAIN = "https://omscart-staging.tokopedia.com/";
     public static final String DEALS_DOMAIN = "https://booking-staging.tokopedia.com/";
+    public static final String CHANGE_PHONE_DOMAIN = "https://13-feature-m-staging.tokopedia.com";
 }
