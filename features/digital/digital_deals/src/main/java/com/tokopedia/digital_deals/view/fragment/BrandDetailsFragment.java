@@ -33,10 +33,12 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DealsComponent;
+import com.tokopedia.digital_deals.view.activity.DealsHomeActivity;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
 import com.tokopedia.digital_deals.view.contractor.BrandDetailsContract;
 import com.tokopedia.digital_deals.view.customview.ExpandableTextView;
 import com.tokopedia.digital_deals.view.model.Brand;
+import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.digital_deals.view.model.ProductItem;
 import com.tokopedia.digital_deals.view.presenter.BrandDetailsPresenter;
 import com.tokopedia.digital_deals.view.utils.Utils;
@@ -45,6 +47,8 @@ import com.tokopedia.usecase.RequestParams;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import static android.app.Activity.RESULT_OK;
 
 public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDetailsContract.View, View.OnClickListener, DealsCategoryAdapter.INavigateToActivityRequest {
     private final boolean isShortLayout = true;
@@ -72,6 +76,7 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
     private DealsCategoryAdapter categoryAdapter;
     private LinearLayoutManager layoutManager;
     private Toolbar toolbar;
+    private String locationName;
 
     public static Fragment createInstance(Bundle bundle) {
         Fragment fragment = new BrandDetailsFragment();
@@ -85,7 +90,7 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
         View view = inflater.inflate(R.layout.fragment_brand_detail, container, false);
         setViewIds(view);
         setHasOptionsMenu(true);
-        mPresenter.getBrandDetails();
+        mPresenter.getBrandDetails(true);
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
@@ -123,7 +128,7 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
         toolbar = view.findViewById(R.id.toolbar);
 
         ((BaseSimpleActivity) getActivity()).setSupportActionBar(toolbar);
-
+        recyclerViewDeals.setNestedScrollingEnabled(false);
         toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_action_back));
         collapsingToolbarLayout.setTitle(" ");
         tvSeeMoreBtn.setOnClickListener(this);
@@ -190,7 +195,7 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
             noContent.setVisibility(View.VISIBLE);
             recyclerViewDeals.removeOnScrollListener(rvOnScrollListener);
         }
-
+        locationName = Utils.getSingletonInstance().getLocation(getContext()).getName();
         baseMainContent.setVisibility(View.VISIBLE);
 
     }
@@ -293,6 +298,26 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
             mPresenter.onRecyclerViewScrolled(layoutManager);
         }
     };
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        switch (requestCode) {
+            case DealsHomeActivity.REQUEST_CODE_DEALDETAILACTIVITY:
+                if (resultCode == RESULT_OK) {
+                    Location location1 = Utils.getSingletonInstance().getLocation(getActivity());
+                    if (!locationName.equals(location1.getName())) {
+                        mPresenter.getBrandDetails(true);
+                    } else {
+                        mPresenter.getBrandDetails(false);
+                    }
+                }
+                break;
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
 
 
     @Override
