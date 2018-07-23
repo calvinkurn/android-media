@@ -46,7 +46,7 @@ public class AdsItemDecoration extends RecyclerView.ItemDecoration {
         } else {
             outRect.right = 0;
         }
-        outRect.bottom = 0;
+        outRect.bottom = isBottomProductItem(parent, absolutePos, relativePos, totalSpanCount) ? spacing : spacing / 2;;
     }
 
     private boolean isTopProductItem(RecyclerView parent, int absolutePos, int relativePos, int totalSpanCount) {
