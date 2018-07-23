@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
@@ -74,6 +75,7 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
     private TextViewCompat tvWarning;
     private ImageView imgShopBadge;
     private TextView tvNoteCharCounter;
+    private LinearLayout productProperties;
 
     private CartItemHolderData cartItemHolderData;
     private QuantityTextWatcher.QuantityTextwatcherListener quantityTextwatcherListener;
@@ -107,6 +109,7 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
         this.tvWarning = itemView.findViewById(R.id.tv_warning);
         this.imgShopBadge = itemView.findViewById(R.id.img_shop_badge);
         this.tvNoteCharCounter = itemView.findViewById(R.id.tv_note_char_counter);
+        this.productProperties = itemView.findViewById(R.id.product_properties);
 
         etRemark.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -288,6 +291,14 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
         );
 
         this.tvInfoCashBack.setText(data.getCartItemData().getOriginData().getCashBackInfo());
+
+        if (data.getCartItemData().getOriginData().isCashBack() ||
+                data.getCartItemData().getOriginData().isPreOrder() ||
+                data.getCartItemData().getOriginData().isFreeReturn()) {
+            productProperties.setVisibility(View.VISIBLE);
+        } else {
+            productProperties.setVisibility(View.GONE);
+        }
 
 
         this.btnQtyPlus.setOnClickListener(new View.OnClickListener() {

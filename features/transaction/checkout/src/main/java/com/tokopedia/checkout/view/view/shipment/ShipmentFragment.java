@@ -1044,15 +1044,16 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             rvShipment.post(new Runnable() {
                 @Override
                 public void run() {
+                    shipmentAdapter.updateShipmentCostModel();
                     shipmentAdapter.updateItemAndTotalCost(position);
                     shipmentAdapter.updateInsuranceTncVisibility();
                 }
             });
         } else {
+            shipmentAdapter.updateShipmentCostModel();
             shipmentAdapter.updateItemAndTotalCost(position);
             shipmentAdapter.updateInsuranceTncVisibility();
         }
-        shipmentAdapter.updateShipmentCostModel();
     }
 
     private void checkRecyclerViewFillScreen() {

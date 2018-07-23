@@ -628,8 +628,11 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                 cbInsuranceDisabled.setVisibility(View.VISIBLE);
                 cbInsuranceDisabled.setChecked(true);
                 cbInsuranceDisabled.setClickable(false);
-                cbInsurance.setChecked(true);
-                shipmentCartItemModel.getSelectedShipmentDetailData().setUseInsurance(true);
+                if (useInsurance == null) {
+                    cbInsurance.setChecked(true);
+                    shipmentCartItemModel.getSelectedShipmentDetailData().setUseInsurance(true);
+                    mActionListener.onInsuranceChecked(getAdapterPosition());
+                }
             } else if (courierItemData.getInsuranceType() == InsuranceConstant.INSURANCE_TYPE_NO) {
                 cbInsurance.setChecked(false);
                 llInsurance.setVisibility(View.GONE);
