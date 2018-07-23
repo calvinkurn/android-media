@@ -927,12 +927,16 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
         if (imagePickerPresenter == null) {
             imagePickerPresenter = new ImagePickerPresenter();
             imagePickerPresenter.attachView(this);
+        } else if (!imagePickerPresenter.isViewAttached()) {
+            imagePickerPresenter.attachView(this);
         }
     }
 
     private void initImageCropPresenter() {
         if (imageRatioCropPresenter == null) {
             imageRatioCropPresenter = new ImageRatioCropPresenter();
+            imageRatioCropPresenter.attachView(this);
+        } else if(!imageRatioCropPresenter.isViewAttached()) {
             imageRatioCropPresenter.attachView(this);
         }
     }
