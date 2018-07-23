@@ -426,7 +426,6 @@ dependencies {
 
     implementation project(rootProject.ext.libraries.analytics)
 
-
 }
 
 
