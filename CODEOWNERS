@@ -1,5 +1,4 @@
 /tkpdsession/       @tokopedia/minion-kevin
-/tkpdflight/        @tokopedia/minion-mark
 /tkpdloyalty/       @tokopedia/minion-bob
 /tkpdride/          @vishalgupta1987
 /tkpddigital/       @tokopedia/minion-mark
@@ -30,6 +29,7 @@
 /features/top_ads/top_ads_management_common/            @tokopedia/minion-stuart
 /features/top_ads/top_ads_management_sourcetagging/     @tokopedia/minion-stuart
 
+/features/digital/flight/               @tokopedia/minion-mark
 /features/digital/flight_no_op/         @tokopedia/minion-mark
 /features/payment/payment/              @tokopedia/minion-bob
 
