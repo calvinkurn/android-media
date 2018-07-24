@@ -158,7 +158,7 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:visibility="visible"
+        android:visibility="gone"
         android:padding="@dimen/dp_16"
         android:id="@+id/container_image_helper"
         android:layout_width="match_parent"

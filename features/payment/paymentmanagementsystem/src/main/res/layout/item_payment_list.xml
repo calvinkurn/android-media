@@ -220,7 +220,7 @@
                     style="@style/TextView.Small.Green"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
-                    android:text="@string/payment_label_view_detail" />
+                    android:text="@string/payment_label_view_invoice" />
 
             </RelativeLayout>
 
