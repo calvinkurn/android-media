@@ -631,13 +631,10 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         HockeyAppHelper.checkForUpdate(this);
         RxUtils.getNewCompositeSubIfUnsubscribed(subscription);
         FCMCacheManager.checkAndSyncFcmId(getApplicationContext());
-        if (SessionHandler.isV4Login(this)) {
-            if (isUserFirstTimeLogin) {
-                initStateFragment = INIT_STATE_FRAGMENT_HOME;
-                adapter = new PagerAdapter(getSupportFragmentManager());
-                setupViewPager();
-                adapter.notifyDataSetChanged();
-            }
+        if (SessionHandler.isV4Login(this) ) {
+            if ( isUserFirstTimeLogin) {
+
+            adapter.notifyDataSetChanged();}
             updateCartNotification();
         }
 
@@ -849,6 +846,8 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
                     DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
                     Intent applinkIntent = new Intent(this, ParentIndexHome.class);
                     applinkIntent.setData(Uri.parse(applink));
+                    if (getIntent() != null && getIntent().getExtras() != null)
+                        applinkIntent.putExtras(getIntent().getExtras());
                     deepLinkDelegate.dispatchFrom(this, applinkIntent);
                 } catch (ActivityNotFoundException ex) {
                     ex.printStackTrace();

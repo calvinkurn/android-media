@@ -83,6 +83,7 @@
     <string name="select_seat">Silakan pilih %1$d kursi</string>
     <string name="hasil_tidak">Hasil pencarian Anda tidak dapat ditemukan.</string>
     <string name="kunci_filter">Silakan lakukan pencarian dengan kata kunci / filter lain</string>
+    <string name="sale_not_started">Belum Mulai</string>
 
     <!-- need to changed -->
 

@@ -1,15 +1,12 @@
 package com.tokopedia.checkout.view.view.shipment.viewholder;
 
-import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
-import android.text.style.StyleSpan;
+import android.text.style.TypefaceSpan;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -49,7 +46,7 @@ public class ShipmentInsuranceTncViewHolder extends RecyclerView.ViewHolder {
             int color = ContextCompat.getColor(tvInsuranceTnc.getContext(), R.color.tkpd_main_green);
             tosAgreementText.setSpan(new ForegroundColorSpan(color), startSpan, endSpan,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            tosAgreementText.setSpan(new StyleSpan(Typeface.BOLD), startSpan, endSpan,
+            tosAgreementText.setSpan(new TypefaceSpan("sans-serif-medium"), startSpan, endSpan,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             tosAgreementText.setSpan(new ForegroundColorSpan(color), startSpan, endSpan,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);

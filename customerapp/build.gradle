@@ -91,8 +91,8 @@ buildscript {
 android {
 
     project.ext {
-        defaultVersionCode = 222001101;
-        defaultVersionName = "2.22";
+        defaultVersionCode = 227001101;
+        defaultVersionName = "2.27";
         react = [
                 nodeExecutableAndArgs: ["${nodeExecutableAndArgs}"]
         ]
@@ -150,7 +150,7 @@ android {
         }
         release {
             signingConfig signingConfigs.debug
-            ext.enableHansel=false
+            ext.enableHansel=true
             minifyEnabled true
             zipAlignEnabled true
             shrinkResources true
@@ -213,6 +213,7 @@ android {
         packagingOptions {
             exclude "lib/arm64-v8a/libgnustl_shared.so"
         }
+        resConfigs "en", "id"
     }
 
 
@@ -246,13 +247,17 @@ android {
 }
 
 dependencies {
+
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
     implementation project(rootProject.ext.features.core)
+    implementation project(rootProject.ext.features.contactUs)
     implementation project(rootProject.ext.features.gamification)
     implementation project(rootProject.ext.features.kol)
     implementation project(rootProject.ext.features.shopPage)
+    implementation project(rootProject.ext.features.goldMerchantSubscribe)
     implementation project(rootProject.ext.features.home)
+    implementation project(rootProject.ext.features.vote)
     implementation project(rootProject.ext.features.groupchat)
     implementation project(rootProject.ext.features.event)
     implementation project(rootProject.ext.features.tokoCash)
@@ -276,12 +281,20 @@ dependencies {
     implementation project(rootProject.ext.features.districtRecommendation)
     implementation project(rootProject.ext.features.contactUs)
     implementation project(rootProject.ext.features.otp)
-    implementation project(rootProject.ext.features.topAdsCommon)
+    implementation project(rootProject.ext.features.topAdsManagementCommon)
+    implementation project(rootProject.ext.features.goldMerchant)
+    implementation project(rootProject.ext.features.goldMerchantCommon)
+    implementation project(rootProject.ext.features.instantLoan)
     implementation project(rootProject.ext.features.topAdsSourceTagging)
+    implementation project(rootProject.ext.features.digitalDeals)
     implementation project(rootProject.ext.features.checkout)
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.tracking)
     implementation project(rootProject.ext.features.logisticuploadawb)
+    implementation project(rootProject.ext.features.topchat)
+    implementation project(rootProject.ext.features.nps)
+    implementation project(rootProject.ext.features.transactionanalytics)
+    implementation project(rootProject.ext.features.tokopoints)
     implementation project(rootProject.ext.features.train)
 
     implementation project(rootProject.ext.libraries.pushNotif)
@@ -291,13 +304,19 @@ dependencies {
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.omsApi)
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.fingerprint)
+    implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.imageuploader)
+    implementation project(rootProject.ext.libraries.imagePicker)
+    implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.travelCalendar)
 
     implementation rootProject.ext.miscDependencies.bcaOneClick
     implementation project(rootProject.ext.features.shopCommon)
+    implementation project(rootProject.ext.libraries.network)
+    implementation project(rootProject.ext.libraries.config)
 
     implementation rootProject.ext.playServicesDependencies.remoteConfig
     implementation rootProject.ext.playServicesDependencies.firebase
