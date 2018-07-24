@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.product.edit.R
+import com.tokopedia.product.edit.price.model.ProductCategory
 import com.tokopedia.product.edit.price.viewholder.ProductEditCategoryCatalogViewHolder
 
 class ProductEditCategoryFragment : Fragment(), ProductEditCategoryCatalogViewHolder.Listener{
@@ -32,7 +33,7 @@ class ProductEditCategoryFragment : Fragment(), ProductEditCategoryCatalogViewHo
 
     }
 
-    override fun onCategoryRecommendationChoosen(value: String) {
+    override fun onCategoryRecommendationChoosen(productCategory: ProductCategory) {
 
     }
 

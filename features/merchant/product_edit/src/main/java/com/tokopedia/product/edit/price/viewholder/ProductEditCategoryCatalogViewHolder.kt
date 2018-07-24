@@ -4,12 +4,13 @@ import android.content.Context
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import com.tokopedia.product.edit.price.ProductCategoryRecommendationAdapter
+import com.tokopedia.product.edit.price.model.ProductCategory
 import kotlinx.android.synthetic.main.partial_product_edit_category.view.*
 
 class ProductEditCategoryCatalogViewHolder(var view: View, var listener: Listener, context: Context?): ProductCategoryRecommendationAdapter.Listener{
 
     interface Listener {
-        fun onCategoryRecommendationChoosen(value: String)
+        fun onCategoryRecommendationChoosen(productCategory: ProductCategory)
         fun onLabelCatalogClicked()
         fun onLabelCategoryClicked()
     }
@@ -17,10 +18,19 @@ class ProductEditCategoryCatalogViewHolder(var view: View, var listener: Listene
     init {
         view.labelCatalog.setOnClickListener { listener.onLabelCatalogClicked() }
 
-        val categoryRecommendationList = ArrayList<String>()
-        categoryRecommendationList.add("a")
-        categoryRecommendationList.add("b")
-        categoryRecommendationList.add("c")
+        val categoryRecommendationList = ArrayList<ProductCategory>()
+        categoryRecommendationList.add(ProductCategory().apply {
+            categoryId = 1
+            categoryName = "test"
+        })
+        categoryRecommendationList.add(ProductCategory().apply {
+            categoryId = 2
+            categoryName = "qwe"
+        })
+        categoryRecommendationList.add(ProductCategory().apply {
+            categoryId = 3
+            categoryName = "dsa"
+        })
         val productCategoryRecommendationAdapter = ProductCategoryRecommendationAdapter(categoryRecommendationList, this)
         view.recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         view.recyclerView.adapter = productCategoryRecommendationAdapter
@@ -28,8 +38,8 @@ class ProductEditCategoryCatalogViewHolder(var view: View, var listener: Listene
         view.recyclerView.isNestedScrollingEnabled = false
     }
 
-    override fun onCategoryRecommendationChoosen(value: String) {
-        listener.onCategoryRecommendationChoosen(value)
+    override fun onCategoryRecommendationChoosen(productCategory: ProductCategory) {
+        listener.onCategoryRecommendationChoosen(productCategory)
     }
 
     fun setCategoryChosen(value: String){

@@ -7,9 +7,13 @@ import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.view.*
 import com.tokopedia.product.edit.R
+import com.tokopedia.product.edit.price.BaseProductEditFragment.Companion.EXTRA_CATALOG
+import com.tokopedia.product.edit.price.model.ProductCatalog
 import kotlinx.android.synthetic.main.fragment_product_edit_catalog_picker.*
 
 class ProductEditCatalogPickerFragment : Fragment() {
+
+    private lateinit var productCatalogAdapter: ProductCatalogAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,15 +26,33 @@ class ProductEditCatalogPickerFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val dataDummy = ArrayList<String>()
-        dataDummy.add("w")
-        dataDummy.add("w")
-        dataDummy.add("w")
-        dataDummy.add("w")
-        dataDummy.add("w")
-        dataDummy.add("w")
-        dataDummy.add("w")
-        val productCatalogAdapter = ProductCatalogAdapter(dataDummy)
+        val dataDummy = ArrayList<ProductCatalog>()
+        val productCatalog = ProductCatalog()
+        dataDummy.add(productCatalog.apply {
+            catalogId = 1
+            catalogName = "aw"
+            catalogImage = "url" })
+        dataDummy.add(productCatalog.apply {
+            catalogId = 2
+            catalogName = "wo"
+            catalogImage = "url" })
+        dataDummy.add(productCatalog.apply {
+            catalogId = 2
+            catalogName = "wo"
+            catalogImage = "url" })
+        dataDummy.add(productCatalog.apply {
+            catalogId = 2
+            catalogName = "wo"
+            catalogImage = "url" })
+        dataDummy.add(productCatalog.apply {
+            catalogId = 2
+            catalogName = "wo"
+            catalogImage = "url" })
+        dataDummy.add(productCatalog.apply {
+            catalogId = 2
+            catalogName = "wo"
+            catalogImage = "url" })
+        productCatalogAdapter = ProductCatalogAdapter(dataDummy)
         recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         recyclerView.adapter = productCatalogAdapter
         recyclerView.setHasFixedSize(true)
@@ -44,7 +66,7 @@ class ProductEditCatalogPickerFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if (item?.itemId == R.id.action_next) {
             val intent = Intent()
-            intent.putExtra(EXTRA_CATALOG, "CATALOG")
+            intent.putExtra(EXTRA_CATALOG, productCatalogAdapter.getSelectedCatalog())
             activity!!.setResult(Activity.RESULT_OK, intent)
             activity!!.finish()
             return true
@@ -53,7 +75,6 @@ class ProductEditCatalogPickerFragment : Fragment() {
     }
 
     companion object {
-        const val EXTRA_CATALOG = "EXTRA_CATALOG"
         fun createInstance(): Fragment {
             return ProductEditCatalogPickerFragment()
         }

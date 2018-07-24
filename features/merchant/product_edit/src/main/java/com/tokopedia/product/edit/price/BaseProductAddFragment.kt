@@ -15,8 +15,15 @@ import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_GALLERY
 import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
+import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
 import com.tokopedia.product.edit.R
-import com.tokopedia.product.edit.price.ProductEditCatalogPickerFragment.Companion.EXTRA_CATALOG
+import com.tokopedia.product.edit.price.BaseProductEditFragment.Companion.EXTRA_CATALOG
+import com.tokopedia.product.edit.price.BaseProductEditFragment.Companion.EXTRA_CATEGORY
+import com.tokopedia.product.edit.price.BaseProductEditFragment.Companion.EXTRA_IMAGES
+import com.tokopedia.product.edit.price.BaseProductEditFragment.Companion.EXTRA_NAME
+import com.tokopedia.product.edit.price.model.ProductCatalog
+import com.tokopedia.product.edit.price.model.ProductCategory
+import com.tokopedia.product.edit.price.model.ProductName
 import com.tokopedia.product.edit.price.viewholder.ProductEditCategoryCatalogViewHolder
 import com.tokopedia.product.edit.price.viewholder.ProductEditCategoryCatalogViewHolder.Companion.REQUEST_CODE_GET_CATALOG
 import com.tokopedia.product.edit.price.viewholder.ProductEditCategoryCatalogViewHolder.Companion.REQUEST_CODE_GET_CATEGORY
@@ -28,6 +35,10 @@ import kotlinx.android.synthetic.main.fragment_product_add_new.*
 class BaseProductAddFragment : Fragment(), ProductEditNameViewHolder.Listener, ProductEditCategoryCatalogViewHolder.Listener {
 
     private lateinit var productEditCategoryCatalogViewHolder: ProductEditCategoryCatalogViewHolder
+    private lateinit var productCatalog: ProductCatalog
+    private lateinit var productName: ProductName
+    private lateinit var productCategory: ProductCategory
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
@@ -43,16 +54,18 @@ class BaseProductAddFragment : Fragment(), ProductEditNameViewHolder.Listener, P
         productEditCategoryCatalogViewHolder = ProductEditCategoryCatalogViewHolder(view, this, context)
     }
 
-    override fun onNameChanged(name: String) {
-        if (name.isNotEmpty()) {
+    override fun onNameChanged(productName: ProductName) {
+        if (productName.name!!.isNotEmpty()) {
             categoryCatalogViewHolder.visibility = View.VISIBLE
         } else {
             categoryCatalogViewHolder.visibility = View.GONE
         }
+        this.productName = productName
     }
 
-    override fun onCategoryRecommendationChoosen(value: String) {
-        productEditCategoryCatalogViewHolder.setCategoryChosen(value)
+    override fun onCategoryRecommendationChoosen(productCategory: ProductCategory) {
+        this.productCategory = productCategory
+        productEditCategoryCatalogViewHolder.setCategoryChosen(productCategory.categoryName!!)
     }
 
     override fun onLabelCategoryClicked() {
@@ -83,17 +96,26 @@ class BaseProductAddFragment : Fragment(), ProductEditNameViewHolder.Listener, P
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 REQUEST_CODE_GET_CATALOG -> {
-                    productEditCategoryCatalogViewHolder.setCatalogChosen(data!!.getStringExtra(EXTRA_CATALOG))
+                    productCatalog = data.getParcelableExtra(EXTRA_CATALOG)
+                    productEditCategoryCatalogViewHolder.setCatalogChosen(productCatalog.catalogName!!)
                 }
                 REQUEST_CODE_GET_CATEGORY -> {
-                    productEditCategoryCatalogViewHolder.setCategoryChosen("CATEGORY")
+                    productCategory = data.getParcelableExtra(EXTRA_CATEGORY)
+                    productEditCategoryCatalogViewHolder.setCategoryChosen(productCategory.categoryName!!)
                 }
                 REQUEST_CODE_GET_IMAGES -> {
-                    startActivity(Intent(activity, BaseProductEditActivity::class.java))
+                    val imageUrlOrPathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS)
+
+                    val intent = Intent(activity, BaseProductEditActivity::class.java)
+                    intent.putExtra(EXTRA_NAME, productName)
+                    intent.putExtra(EXTRA_CATALOG, productCatalog)
+                    intent.putExtra(EXTRA_CATEGORY, productCategory)
+                    intent.putStringArrayListExtra(EXTRA_IMAGES, imageUrlOrPathList)
+                    startActivity(intent)
                     activity?.finish()
                 }
             }

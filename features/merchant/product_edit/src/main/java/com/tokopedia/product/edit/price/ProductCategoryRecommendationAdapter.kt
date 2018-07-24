@@ -5,15 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.product.edit.R
+import com.tokopedia.product.edit.price.model.ProductCategory
 import kotlinx.android.synthetic.main.item_product_category_recommendation.view.*
 
-class ProductCategoryRecommendationAdapter(private var categoryRecommendationList: ArrayList<String>,
+class ProductCategoryRecommendationAdapter(private var categoryRecommendationList: ArrayList<ProductCategory>,
                                            var listener: Listener) : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
     var selectedPosition = -1
 
     interface Listener {
-        fun onCategoryRecommendationChoosen(value: String)
+        fun onCategoryRecommendationChoosen(productCategory: ProductCategory)
     }
 
     init {
@@ -27,7 +28,7 @@ class ProductCategoryRecommendationAdapter(private var categoryRecommendationLis
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        holder.itemView.titleTextView.text = categoryRecommendationList[position]
+        holder.itemView.titleTextView.text = categoryRecommendationList[position].categoryName
         holder.itemView.radioButtonStatus.isChecked = selectedPosition == position
     }
 
@@ -37,12 +38,12 @@ class ProductCategoryRecommendationAdapter(private var categoryRecommendationLis
         return super.getItemId(position)
     }
 
-    fun replaceData(categoryRecommendationList: ArrayList<String>) {
+    fun replaceData(categoryRecommendationList: ArrayList<ProductCategory>) {
         this.categoryRecommendationList = categoryRecommendationList
         notifyDataSetChanged()
     }
 
-    fun getSelectedCategory(): String{
+    fun getSelectedCategory(): ProductCategory{
         return categoryRecommendationList[selectedPosition]
     }
 
