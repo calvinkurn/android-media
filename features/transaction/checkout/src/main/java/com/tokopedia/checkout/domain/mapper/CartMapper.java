@@ -21,6 +21,7 @@ import com.tokopedia.transactiondata.entity.response.resetcart.ResetCartDataResp
 import com.tokopedia.transactiondata.entity.response.updatecart.UpdateCartDataResponse;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -119,6 +120,7 @@ public class CartMapper implements ICartMapper {
 
                     wholesalePrices.add(wholesalePriceDomainModel);
                 }
+                Collections.reverse(wholesalePrices);
                 cartItemDataOrigin.setWholesalePrice(wholesalePrices);
             }
 

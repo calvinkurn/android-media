@@ -24,5 +24,7 @@ public interface IMoengageContainer
 
     void setUserData(CustomerWrapper customerWrapper, String source);
 
+    void setPushPreference(boolean status);
+
     void logoutEvent();
 }

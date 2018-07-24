@@ -28,7 +28,7 @@ public interface ICartListPresenter {
 
     void reCalculateSubTotal(List<CartItemHolderData> dataList);
 
-    void processCheckPromoCodeFromSuggestedPromo(String promoCode);
+    void processCheckPromoCodeFromSuggestedPromo(String promoCode, boolean isAutoApply);
 
 //    void processToShipmentForm(boolean toAddressChoice);
 
