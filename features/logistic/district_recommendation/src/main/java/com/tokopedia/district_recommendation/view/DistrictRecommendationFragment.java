@@ -1,5 +1,6 @@
 package com.tokopedia.district_recommendation.view;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
@@ -8,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -134,6 +136,7 @@ public class DistrictRecommendationFragment
         return R.layout.fragment_search_address;
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void initView(View view) {
         this.searchAddress = view.findViewById(R.id.search_address);
@@ -155,6 +158,18 @@ public class DistrictRecommendationFragment
                 return true;
             }
         });
+
+
+        ImageView closeButton = searchAddress.findViewById(R.id.search_close_btn);
+        if (closeButton != null) closeButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_UP)
+                    transactionAnalyticsDistrictRecommendation.sendAnalyticsOnClearTextDistrictRecommendationInput();
+                return false;
+            }
+        });
+
     }
 
     private void submitQuery(String text) {
@@ -182,13 +197,6 @@ public class DistrictRecommendationFragment
 
     @Override
     protected void setViewListener() {
-        int searchCloseButtonId = searchAddress.getContext().getResources()
-                .getIdentifier("android:id/search_close_btn", null, null);
-        ImageView closeButton = this.searchAddress.findViewById(searchCloseButtonId);
-        if (closeButton != null)
-            closeButton.setOnClickListener(v ->
-                    transactionAnalyticsDistrictRecommendation.sendAnalyticsOnClearTextDistrictRecommendationInput());
-
     }
 
     @Override

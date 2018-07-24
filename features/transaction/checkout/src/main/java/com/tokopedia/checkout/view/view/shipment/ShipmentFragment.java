@@ -27,6 +27,7 @@ import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressMo
 import com.tokopedia.checkout.domain.datamodel.cartcheckout.CheckoutData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
+import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShipProd;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
@@ -61,6 +62,7 @@ import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
@@ -106,6 +108,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     RatesDataConverter ratesDataConverter;
     @Inject
     CheckoutAnalyticsCourierSelection checkoutAnalyticsCourierSelection;
+    @Inject
+    CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
 
     private HashSet<ShipmentSelectionStateData> shipmentSelectionStateDataHashSet = new HashSet<>();
 
@@ -584,6 +588,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void navigateToSetPinpoint(String message, LocationPass locationPass) {
+        sendAnalyticsOnEditPinPointErrorValidation(message);
         if (getView() != null) {
             LayoutInflater inflater = getLayoutInflater();
             View layout = inflater.inflate(R.layout.toast_rectangle, getView().findViewById(R.id.toast_layout));
@@ -602,6 +607,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             Intent intent = GeolocationActivity.createInstanceFromMarketplaceCart(getActivity(), locationPass);
             startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT);
         }
+    }
+
+    private void sendAnalyticsOnEditPinPointErrorValidation(String message) {
+        checkoutAnalyticsChangeAddress.eventViewShippingCartChangeAddressViewValidationErrorTandaiLokasi(message);
     }
 
     @Override
@@ -873,17 +882,25 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             courierBottomsheet.setSelectedCourier(shipmentDetailData.getSelectedCourier());
         }
         courierBottomsheet.setListener(this);
-        courierBottomsheet.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow(DialogInterface dialogInterface) {
-                checkoutAnalyticsCourierSelection.sendScreenName(
-                        getActivity(), ConstantTransactionAnalytics.ScreenName.SELECT_COURIER
-                );
-                courierBottomsheet.updateHeight();
-                checkoutAnalyticsCourierSelection.eventViewAtcCourierSelectionImpressionCourierSelection();
-            }
+        courierBottomsheet.setOnShowListener(dialogInterface -> {
+            sendAnalyticsOnBottomShetCourierSelectionShow(shopShipmentList);
+            checkoutAnalyticsCourierSelection.sendScreenName(
+                    getActivity(), ConstantTransactionAnalytics.ScreenName.SELECT_COURIER
+            );
+            courierBottomsheet.updateHeight();
+            checkoutAnalyticsCourierSelection.eventViewAtcCourierSelectionImpressionCourierSelection();
         });
         courierBottomsheet.show();
+    }
+
+    private void sendAnalyticsOnBottomShetCourierSelectionShow(List<ShopShipment> shopShipmentList) {
+        for (ShopShipment shopShipment : shopShipmentList) {
+            for (ShipProd shipProd : shopShipment.getShipProds()) {
+                checkoutAnalyticsCourierSelection.eventViewCourierSelectionImpressionCourierOption(
+                        shopShipment.getShipName(), shipProd.getShipProdName()
+                );
+            }
+        }
     }
 
     @Override

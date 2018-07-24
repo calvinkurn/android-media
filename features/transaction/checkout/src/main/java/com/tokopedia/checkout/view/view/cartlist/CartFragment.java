@@ -75,6 +75,7 @@ import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.TopAdsView;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
 import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
@@ -112,6 +113,8 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
     RecyclerView.ItemDecoration cartItemDecoration;
     @Inject
     CheckoutAnalyticsCart cartPageAnalytics;
+    @Inject
+    CheckoutAnalyticsCourierSelection checkoutAnalyticsCourierSelection;
 
     private RefreshHandler refreshHandler;
 
@@ -236,8 +239,13 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
             @Override
             public void onClick(View view) {
                 dPresenter.processToUpdateCartData();
+                sendAnalyticsOnButtonCheckoutClicked();
             }
         };
+    }
+
+    private void sendAnalyticsOnButtonCheckoutClicked() {
+        checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickSelectCourierOnCart();
     }
 
     @Override
