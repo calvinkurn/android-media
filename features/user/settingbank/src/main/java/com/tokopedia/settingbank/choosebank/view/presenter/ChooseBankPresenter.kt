@@ -66,8 +66,7 @@ class ChooseBankPresenter(private val userSession: UserSession,
 
     private fun getBankListFromWS() {
         getBankListWSUseCase.execute(GetBankListWSUseCase.getParam("", currentPage,
-                userSession.userId,
-                userSession.deviceId),
+                userSession.userId),
                 object : Subscriber<BankListViewModel>() {
                     override fun onCompleted() {
 

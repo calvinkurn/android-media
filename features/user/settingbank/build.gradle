@@ -19,10 +19,6 @@ buildscript {
 }
 
 dependencies {
-
-    //This is included because DbFlow Bank
-    implementation project(rootProject.ext.features.core)
-
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.design)
