@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.KolRouter;
 import com.tokopedia.kol.R;
@@ -39,7 +40,7 @@ import javax.inject.Inject;
  * @author by yfsx on 23/07/18.
  */
 public class KolPostDetailFragment extends BaseDaggerFragment
-        implements KolPostListener.View.ViewHolder {
+        implements KolPostListener.View.Like, KolPostListener.View.ViewHolder {
 
     private static final int OPEN_KOL_COMMENT = 101;
 
@@ -48,6 +49,8 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     private AbstractionRouter abstractionRouter;
     private KolRouter kolRouter;
 
+    @Inject
+    KolPostListener.Presenter presenter;
     @Inject
     UserSession userSession;
 
@@ -107,6 +110,27 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onLikeKolSuccess(int rowNumber) {
+        if (adapter.getList().get(rowNumber) != null
+                && adapter.getList().get(rowNumber) instanceof KolPostViewModel) {
+            KolPostViewModel kolPostViewModel =
+                    ((KolPostViewModel) adapter.getList().get(rowNumber));
+            kolPostViewModel.setLiked(!kolPostViewModel.isLiked());
+            if (kolPostViewModel.isLiked()) {
+                kolPostViewModel.setTotalLike(kolPostViewModel.getTotalLike() + 1);
+            } else {
+                kolPostViewModel.setTotalLike(kolPostViewModel.getTotalLike() - 1);
+            }
+            adapter.notifyItemChanged(rowNumber);
+        }
+    }
+
+    @Override
+    public void onLikeKolError(String message) {
+        showError(message);
+    }
+
+    @Override
     public UserSession getUserSession() {
         return userSession;
     }
@@ -144,12 +168,12 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onLikeKolClicked(int rowNumber, int id) {
-
+        presenter.likeKol(id, rowNumber, this);
     }
 
     @Override
     public void onUnlikeKolClicked(int adapterPosition, int id) {
-
+        presenter.likeKol(id, adapterPosition, this);
     }
 
     @Override
@@ -201,6 +225,14 @@ public class KolPostDetailFragment extends BaseDaggerFragment
                             adapter.getList().get(rowNumber)).getTotalComment() +
                     totalNewComment);
             adapter.notifyItemChanged(rowNumber);
+        }
+    }
+
+    private void showError(String message) {
+        if (message == null) {
+            NetworkErrorHelper.showSnackbar(getActivity());
+        } else {
+            NetworkErrorHelper.showSnackbar(getActivity(), message);
         }
     }
 }
