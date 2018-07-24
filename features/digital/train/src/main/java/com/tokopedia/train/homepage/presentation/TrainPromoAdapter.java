@@ -72,6 +72,13 @@ public class TrainPromoAdapter extends RecyclerView.Adapter {
                 listener.onClickCopyPromoCode(trainPromoViewModel.getAttributes().getPromoCode());
             }
         });
+
+        itemHolder.layoutItemPromo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.onClickItemPromo(position);
+            }
+        });
     }
 
     @Override
@@ -103,5 +110,6 @@ public class TrainPromoAdapter extends RecyclerView.Adapter {
 
     public interface ListenerTrainPromoAdapter {
         void onClickCopyPromoCode(String promoCode);
+        void onClickItemPromo(int position);
     }
 }
