@@ -1,12 +1,19 @@
 package com.tokopedia.home.account.data.mapper;
 
+import android.content.Context;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.data.model.AccountModel;
+import com.tokopedia.home.account.presentation.viewmodel.MenuItemViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.AccountViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.BuyerCardViewModel;
+import com.tokopedia.home.account.presentation.viewmodel.MenuGridViewModel;
+import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
+import com.tokopedia.home.account.presentation.viewmodel.MenuTitleViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayViewModel;
 
 import java.util.ArrayList;
@@ -24,8 +31,11 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
     public static final String LABEL_TOKO_CASH = "TokoCash";
     public static final String LABEL_DEPOSIT = "Saldo";
 
+    private Context context;
+
     @Inject
-    AccountMapper() {
+    AccountMapper(@ApplicationContext Context context) {
+        this.context = context;
     }
 
     @Override
@@ -61,6 +71,52 @@ public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
         tokopediaPayViewModel.setLabelRight(LABEL_DEPOSIT);
         tokopediaPayViewModel.setAmountRight(accountModel.getDeposit().getDepositFmt());
         visitables.add(tokopediaPayViewModel);
+
+        MenuTitleViewModel menuTitleViewModel = new MenuTitleViewModel();
+        menuTitleViewModel.setTitle(context.getString(R.string.title_menu_transaction));
+        visitables.add(menuTitleViewModel);
+
+        MenuListViewModel menuListViewModel = new MenuListViewModel();
+        menuListViewModel.setMenu(context.getString(R.string.title_menu_waiting_for_payment));
+        menuListViewModel.setMenuDescription(context.getString(R.string.label_menu_waiting_for_payment));
+        menuListViewModel.setApplink("tokopedia://dev-option");
+        visitables.add(menuListViewModel);
+
+        List<MenuItemViewModel> items = new ArrayList<>();
+        MenuItemViewModel item = new MenuItemViewModel(
+                R.drawable.ic_tokopoint,
+                context.getString(R.string.label_menu_waiting_confirmation),
+                "tokopedia://home"
+        );
+        items.add(item);
+
+        item = new MenuItemViewModel(
+                R.drawable.ic_tokocash_green,
+                context.getString(R.string.label_menu_order_processed),
+                "tokopedia://home"
+        );
+        items.add(item);
+
+        item = new MenuItemViewModel(
+                R.drawable.ic_tokocash_green,
+                context.getString(R.string.label_menu_order_processed),
+                "tokopedia://home"
+        );
+        items.add(item);
+
+        item = new MenuItemViewModel(
+                R.drawable.ic_tokocash_green,
+                context.getString(R.string.label_menu_order_processed),
+                "tokopedia://home"
+        );
+        items.add(item);
+
+        MenuGridViewModel orderMenu = new MenuGridViewModel();
+        orderMenu.setTitle(context.getString(R.string.title_menu_shopping_transaction));
+        orderMenu.setLinkText(context.getString(R.string.label_menu_show_tx_history));
+        orderMenu.setApplinkUrl("tokopedia://order");
+        orderMenu.setItems(items);
+        visitables.add(orderMenu);
 
         return visitables;
     }

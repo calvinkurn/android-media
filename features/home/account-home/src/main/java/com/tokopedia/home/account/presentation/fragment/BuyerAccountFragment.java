@@ -21,6 +21,7 @@ import com.tokopedia.home.account.di.component.DaggerBuyerAccountComponent;
 import com.tokopedia.home.account.presentation.BuyerAccount;
 import com.tokopedia.home.account.presentation.adapter.AccountTypeFactory;
 import com.tokopedia.home.account.presentation.adapter.buyer.BuyerAccountAdapter;
+import com.tokopedia.home.account.presentation.viewmodel.MenuItemViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.AccountViewModel;
 
 import java.util.ArrayList;
@@ -91,6 +92,16 @@ public class BuyerAccountFragment extends TkpdBaseV4Fragment implements BuyerAcc
     @Override
     public void onTokopediaPayLinkClicked() {
         RouteManager.route(getContext(), "tokopedia://wallet");
+    }
+
+    @Override
+    public void onMenuGridItemClicked(MenuItemViewModel item) {
+
+    }
+
+    @Override
+    public void onMenuGridLinkClicked(String applink) {
+
     }
 
     private void initInjector() {

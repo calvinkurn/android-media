@@ -12,4 +12,11 @@
     <string name="label_tokopedia_pay_see_all">Lihat Semua</string>
     <string name="label_tokopedia_pay_deposit">Saldo</string>
     <string name="label_tokopedia_pay_wallet">TokoCash</string>
+    <string name="title_menu_transaction">Transaksi</string>
+    <string name="title_menu_waiting_for_payment">Menunggu Pembayaran</string>
+    <string name="label_menu_waiting_for_payment">Semua transaksi yang belum dibayar</string>
+    <string name="title_menu_shopping_transaction">Transaksi Belanja</string>
+    <string name="label_menu_show_tx_history">Lihat Riwayat</string>
+    <string name="label_menu_waiting_confirmation">Menunggu Konfirmasi</string>
+    <string name="label_menu_order_processed">Pesanan Diproses</string>
 </resources>
