@@ -216,8 +216,8 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
     }
 
-    public void showHighLightText(boolean value){
-        this.showHighlightText=value;
+    public void showHighLightText(boolean value) {
+        this.showHighlightText = value;
     }
 
     public void add(ProductItem item, boolean refreshItem) {
@@ -229,7 +229,8 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     public void clearList() {
         isHeaderAdded = false;
         isFooterAdded = false;
-        categoryItems.clear();
+        if (categoryItems != null)
+            categoryItems.clear();
     }
 
     public void addAll(List<ProductItem> items, Boolean... refreshItems) {
@@ -554,7 +555,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         private void setDealTitle(int position, ProductItem value) {
             this.valueItem = value;
-            if(showHighlightText) {
+            if (showHighlightText) {
                 SpannableString spannableString = new SpannableString(valueItem.getDisplayName());
                 if (highLightText != null && !highLightText.isEmpty() && Utils.containsIgnoreCase(valueItem.getDisplayName(), highLightText)) {
                     StyleSpan styleSpan = new StyleSpan(Typeface.BOLD);
@@ -569,7 +570,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                     spannableString.setSpan(styleSpan, fromindex, toIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 }
                 tvDealTitle.setText(spannableString);
-            }else{
+            } else {
                 tvDealTitle.setText(valueItem.getDisplayName());
 
             }
