@@ -19,7 +19,7 @@ import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.explore.R;
 import com.tokopedia.explore.di.DaggerExploreComponent;
 import com.tokopedia.explore.view.adapter.ExploreImageAdapter;
-import com.tokopedia.explore.view.adapter.ExploreTagAdapter;
+import com.tokopedia.explore.view.adapter.ExploreCategoryAdapter;
 import com.tokopedia.explore.view.adapter.factory.ExploreImageTypeFactory;
 import com.tokopedia.explore.view.adapter.factory.ExploreImageTypeFactoryImpl;
 import com.tokopedia.explore.view.listener.ContentExploreContract;
@@ -45,14 +45,14 @@ public class ContentExploreFragment extends BaseDaggerFragment implements Conten
 
     private View view;
     private SearchInputView searchInspiration;
-    private RecyclerView exploreTagRv;
+    private RecyclerView exploreCategoryRv;
     private RecyclerView exploreImageRv;
 
     @Inject
     ContentExploreContract.Presenter presenter;
 
     @Inject
-    ExploreTagAdapter tagAdapter;
+    ExploreCategoryAdapter categoryAdapter;
 
     @Inject
     ExploreImageAdapter imageAdapter;
@@ -131,15 +131,15 @@ public class ContentExploreFragment extends BaseDaggerFragment implements Conten
 
     @Override
     public void onCategoryClicked(int position, int categoryId) {
-        for (ExploreCategoryViewModel categoryViewModel : tagAdapter.getList()) {
+        for (ExploreCategoryViewModel categoryViewModel : categoryAdapter.getList()) {
             if (categoryViewModel.isActive()) {
                 categoryViewModel.setActive(false);
-                tagAdapter.notifyItemChanged(tagAdapter.getList().indexOf(categoryViewModel));
+                categoryAdapter.notifyItemChanged(categoryAdapter.getList().indexOf(categoryViewModel));
                 break;
             }
         }
-        tagAdapter.getList().get(position).setActive(true);
-        tagAdapter.notifyItemChanged(position);
+        categoryAdapter.getList().get(position).setActive(true);
+        categoryAdapter.notifyItemChanged(position);
         updateCategoryId(categoryId);
         updateCursor("");
         imageAdapter.clearData();
@@ -158,15 +158,15 @@ public class ContentExploreFragment extends BaseDaggerFragment implements Conten
 
     private void initView() {
         searchInspiration = view.findViewById(R.id.search_inspiration);
-        exploreTagRv = view.findViewById(R.id.explore_tag_rv);
+        exploreCategoryRv = view.findViewById(R.id.explore_category_rv);
         exploreImageRv = view.findViewById(R.id.explore_image_rv);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(),
                 LinearLayoutManager.HORIZONTAL,
                 false);
-        exploreTagRv.setLayoutManager(linearLayoutManager);
-        tagAdapter.setListener(this);
-        exploreTagRv.setAdapter(tagAdapter);
+        exploreCategoryRv.setLayoutManager(linearLayoutManager);
+        categoryAdapter.setListener(this);
+        exploreCategoryRv.setAdapter(categoryAdapter);
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(),
                 IMAGE_SPAN_COUNT,
@@ -195,7 +195,7 @@ public class ContentExploreFragment extends BaseDaggerFragment implements Conten
     }
 
     private void loadTagData(List<ExploreCategoryViewModel> tagViewModelList) {
-        tagAdapter.setList(tagViewModelList);
+        categoryAdapter.setList(tagViewModelList);
     }
 
     private boolean isLoading() {

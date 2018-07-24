@@ -28,7 +28,7 @@
         </android.support.design.widget.CollapsingToolbarLayout>
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/explore_tag_rv"
+            android:id="@+id/explore_category_rv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingBottom="@dimen/dp_16"

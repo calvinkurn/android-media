@@ -20,13 +20,13 @@ import javax.inject.Inject;
  * @author by milhamj on 20/07/18.
  */
 
-public class ExploreTagAdapter extends RecyclerView.Adapter<ExploreTagAdapter.ViewHolder> {
+public class ExploreCategoryAdapter extends RecyclerView.Adapter<ExploreCategoryAdapter.ViewHolder> {
 
     private List<ExploreCategoryViewModel> list;
     private ContentExploreContract.View listener;
 
     @Inject
-    public ExploreTagAdapter() {
+    public ExploreCategoryAdapter() {
         this.list = new ArrayList<>();
     }
 
