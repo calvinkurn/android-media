@@ -9,6 +9,7 @@ import com.tokopedia.explore.domain.entity.PostKol;
 import com.tokopedia.explore.domain.entity.Tag;
 import com.tokopedia.explore.view.listener.ContentExploreContract;
 import com.tokopedia.explore.view.viewmodel.ExploreCategoryViewModel;
+import com.tokopedia.explore.view.viewmodel.ExploreImageViewModel;
 import com.tokopedia.explore.view.viewmodel.ExploreViewModel;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.kol.common.util.TimeConverter;
@@ -50,7 +51,7 @@ public class GetExploreDataSubscriber extends Subscriber<GraphqlResponse> {
         GetDiscoveryKolData discoveryKolData = exploreData.getGetDiscoveryKolData();
 
         view.updateCursor(discoveryKolData.getLastCursor());
-        List<KolPostViewModel> kolPostViewModelList
+        List<ExploreImageViewModel> kolPostViewModelList
                 = convertToKolPostViewModelList(discoveryKolData.getPostKol());
         List<ExploreCategoryViewModel> categoryViewModelList
                 = convertToCategoryViewModelList(discoveryKolData.getCategories());
@@ -60,19 +61,18 @@ public class GetExploreDataSubscriber extends Subscriber<GraphqlResponse> {
         view.dismissLoading();
     }
 
-    private List<KolPostViewModel> convertToKolPostViewModelList(List<PostKol> postKolList) {
-        List<KolPostViewModel> kolPostViewModelList = new ArrayList<>();
+    private List<ExploreImageViewModel> convertToKolPostViewModelList(List<PostKol> postKolList) {
+        List<ExploreImageViewModel> kolPostViewModelList = new ArrayList<>();
         for (PostKol postKol : postKolList) {
             kolPostViewModelList.add(convertToKolPostViewModel(postKol));
         }
         return kolPostViewModelList;
     }
 
-    private KolPostViewModel convertToKolPostViewModel(PostKol postKol) {
+    private ExploreImageViewModel convertToKolPostViewModel(PostKol postKol) {
         Content content = getContent(postKol);
         Tag tag = getKolTag(content);
-
-        return new KolPostViewModel(
+        KolPostViewModel kolPostViewModel = new KolPostViewModel(
                 postKol.getUserId(),
                 "",
                 "",
@@ -97,6 +97,8 @@ public class GetExploreDataSubscriber extends Subscriber<GraphqlResponse> {
                 getTagCaption(tag),
                 getTagLink(tag)
         );
+
+        return new ExploreImageViewModel(getImageUrl(content), kolPostViewModel);
     }
 
     private String generateTime(String rawTime) {

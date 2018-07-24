@@ -1,7 +1,5 @@
 package com.tokopedia.explore.view.viewmodel;
 
-import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
-
 import java.util.List;
 
 /**
@@ -9,21 +7,21 @@ import java.util.List;
  */
 
 public class ExploreViewModel {
-    private List<KolPostViewModel> kolPostViewModelList;
+    private List<ExploreImageViewModel> exploreImageViewModelList;
     private List<ExploreCategoryViewModel> tagViewModelList;
 
-    public ExploreViewModel(List<KolPostViewModel> kolPostViewModelList,
+    public ExploreViewModel(List<ExploreImageViewModel> exploreImageViewModelList,
                             List<ExploreCategoryViewModel> tagViewModelList) {
-        this.kolPostViewModelList = kolPostViewModelList;
+        this.exploreImageViewModelList = exploreImageViewModelList;
         this.tagViewModelList = tagViewModelList;
     }
 
-    public List<KolPostViewModel> getKolPostViewModelList() {
-        return kolPostViewModelList;
+    public List<ExploreImageViewModel> getExploreImageViewModelList() {
+        return exploreImageViewModelList;
     }
 
-    public void setKolPostViewModelList(List<KolPostViewModel> kolPostViewModelList) {
-        this.kolPostViewModelList = kolPostViewModelList;
+    public void setExploreImageViewModelList(List<ExploreImageViewModel> exploreImageViewModelList) {
+        this.exploreImageViewModelList = exploreImageViewModelList;
     }
 
     public List<ExploreCategoryViewModel> getTagViewModelList() {

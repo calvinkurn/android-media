@@ -1,16 +1,15 @@
 package com.tokopedia.explore.view.adapter;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.explore.R;
-import com.tokopedia.explore.view.listener.ContentExploreContract;
-import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.explore.view.adapter.factory.ExploreImageTypeFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,10 +20,10 @@ import javax.inject.Inject;
  * @author by milhamj on 20/07/18.
  */
 
-public class ExploreImageAdapter extends RecyclerView.Adapter<ExploreImageAdapter.ViewHolder> {
+public class ExploreImageAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
-    private List<KolPostViewModel> list;
-    private ContentExploreContract.View listener;
+    private List<Visitable> list;
+    private ExploreImageTypeFactory typeFactory;
 
     @Inject
     public ExploreImageAdapter() {
@@ -33,15 +32,15 @@ public class ExploreImageAdapter extends RecyclerView.Adapter<ExploreImageAdapte
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_explore_image, parent, false);
-        return new ViewHolder(view);
+    public AbstractViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        Context context = parent.getContext();
+        View view = LayoutInflater.from(context).inflate(viewType, parent, false);
+        return typeFactory.createViewHolder(view, viewType);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        ImageHandler.LoadImage(holder.image, list.get(position).getKolImage());
+    public void onBindViewHolder(@NonNull AbstractViewHolder holder, int position) {
+        holder.bind(list.get(position));
     }
 
     @Override
@@ -49,22 +48,19 @@ public class ExploreImageAdapter extends RecyclerView.Adapter<ExploreImageAdapte
         return list.size();
     }
 
-    public void addList(List<KolPostViewModel> list) {
+    @SuppressWarnings("unchecked")
+    @Override
+    public int getItemViewType(int position) {
+        return list.get(position).type(typeFactory);
+    }
+
+    public List<Visitable> getList() {
+        return list;
+    }
+
+    public void addList(List<Visitable> list) {
         int position = getItemCount();
         this.list.addAll(list);
         notifyItemRangeInserted(position, list.size());
-    }
-
-    public void setListener(ContentExploreContract.View listener) {
-        this.listener = listener;
-    }
-
-    class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView image;
-
-        ViewHolder(View itemView) {
-            super(itemView);
-            image = itemView.findViewById(R.id.image);
-        }
     }
 }

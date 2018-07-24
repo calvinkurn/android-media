@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
@@ -24,10 +25,12 @@ import com.tokopedia.explore.view.adapter.ExploreImageAdapter;
 import com.tokopedia.explore.view.adapter.ExploreTagAdapter;
 import com.tokopedia.explore.view.listener.ContentExploreContract;
 import com.tokopedia.explore.view.viewmodel.ExploreCategoryViewModel;
+import com.tokopedia.explore.view.viewmodel.ExploreImageViewModel;
 import com.tokopedia.explore.view.viewmodel.ExploreViewModel;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -39,6 +42,7 @@ import javax.inject.Inject;
 public class ContentExploreFragment extends BaseDaggerFragment implements ContentExploreContract.View {
 
     private static final int IMAGE_SPAN_COUNT = 3;
+    private static final int IMAGE_SPAN_SINGLE = 1;
     private static final int LOAD_MORE_THRESHOLD = 2;
 
     private View view;
@@ -107,7 +111,7 @@ public class ContentExploreFragment extends BaseDaggerFragment implements Conten
 
     @Override
     public void onSuccessGetExploreData(ExploreViewModel exploreViewModel) {
-        loadImageData(exploreViewModel.getKolPostViewModelList());
+        loadImageData(exploreViewModel.getExploreImageViewModelList());
         loadTagData(exploreViewModel.getTagViewModelList());
     }
 
@@ -157,9 +161,19 @@ public class ContentExploreFragment extends BaseDaggerFragment implements Conten
                 IMAGE_SPAN_COUNT,
                 GridLayoutManager.VERTICAL,
                 false);
+        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                if (imageAdapter.getList().get(position) instanceof KolPostViewModel) {
+                    return IMAGE_SPAN_SINGLE;
+                } else if (imageAdapter.getList().get(position) instanceof LoadingMoreModel){
+                    return IMAGE_SPAN_COUNT;
+                }
+                return 0;
+            }
+        });
         exploreImageRv.setLayoutManager(gridLayoutManager);
         exploreImageRv.addOnScrollListener(onScrollListener(gridLayoutManager));
-        imageAdapter.setListener(this);
         exploreImageRv.setAdapter(imageAdapter);
 
         progressBar.getIndeterminateDrawable()
@@ -169,8 +183,8 @@ public class ContentExploreFragment extends BaseDaggerFragment implements Conten
                 );
     }
 
-    private void loadImageData(List<KolPostViewModel> kolPostViewModelList) {
-        imageAdapter.addList(kolPostViewModelList);
+    private void loadImageData(List<ExploreImageViewModel> exploreImageViewModelList) {
+        imageAdapter.addList(new ArrayList<>(exploreImageViewModelList));
     }
 
     private void loadTagData(List<ExploreCategoryViewModel> tagViewModelList) {
