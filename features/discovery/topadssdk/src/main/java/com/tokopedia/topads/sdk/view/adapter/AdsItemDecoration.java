@@ -39,14 +39,14 @@ public class AdsItemDecoration extends RecyclerView.ItemDecoration {
 
         final int totalSpanCount = getTotalSpanCount(parent);
 
-        outRect.top = 0; //isTopProductItem(parent, absolutePos, relativePos, totalSpanCount) ? spacing : spacing / 2;
-        outRect.left = 0; //isFirstInRow(relativePos, totalSpanCount) ? spacing : spacing / 2;
+        outRect.top = isTopProductItem(parent, absolutePos, relativePos, totalSpanCount) ? 0 : spacing / 2;
+        outRect.left = isFirstInRow(relativePos, totalSpanCount) ? 0 : spacing / 2;
         if (parent.getLayoutManager() instanceof GridLayoutManager) {
-            outRect.right = isLastInRow(relativePos, totalSpanCount) ? spacing : spacing / 2;
+            outRect.right = isLastInRow(relativePos, totalSpanCount) ? 0 : spacing / 2;
         } else {
             outRect.right = 0;
         }
-        outRect.bottom = 0; //isBottomProductItem(parent, absolutePos, relativePos, totalSpanCount) ? spacing : spacing / 2;
+        outRect.bottom = isBottomProductItem(parent, absolutePos, relativePos, totalSpanCount) ? 0 : spacing / 2;
     }
 
     private boolean isTopProductItem(RecyclerView parent, int absolutePos, int relativePos, int totalSpanCount) {
